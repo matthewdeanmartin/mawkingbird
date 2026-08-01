@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading…</title>
+    <!--
+      GitHub Pages serves exactly ONE custom 404 per site: the one at the site
+      root (/404.html). There is no per-directory 404, so a missing path under a
+      subpath deployment like /canary/ ALSO lands here, on the production root's
+      404 — which is why a chunk-load reload on canary used to boot the ROOT app
+      and bounce you to /.
+
+      This shim routes the request to the correct SPA shell while preserving the
+      full deep link. It redirects to the owning app's index (/<subpath>/ for a
+      subpath deployment, / otherwise) and stashes the original path in the query
+      string under ?spa=…; the decoder in index.html restores it into history
+      before Angular's router reads the URL, so /canary/accounts/123 comes back
+      as /canary/accounts/123, not /canary/.
+
+      Keep SUBPATHS in sync with the subpath deployments published by
+      .github/scripts/publish-gh-pages.sh.
+    -->
+    <script>
+      (function () {
+        // Subpath deployments that own their own index.html (base href = /<name>/).
+        var SUBPATHS = ['canary'];
+        var loc = window.location;
+        var path = loc.pathname;
+        var base = '/';
+        for (var i = 0; i < SUBPATHS.length; i++) {
+          if (path.indexOf('/' + SUBPATHS[i] + '/') === 0) {
+            base = '/' + SUBPATHS[i] + '/';
+            break;
+          }
+        }
+        // Encode the full original path + query + hash so the SPA can restore the
+        // exact deep link after it boots from the right index.html.
+        var original = path + loc.search + loc.hash;
+        loc.replace(base + '?spa=' + encodeURIComponent(original));
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>This site requires JavaScript. <a href="/">Return home.</a></p>
+    </noscript>
+    <p>Loading…</p>
+  </body>
+</html>
