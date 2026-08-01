@@ -1,0 +1,1 @@
+function n(e){let t=e.trim().replace(/\/+$/,"");return t?/^https?:\/\//i.test(t)?t:`${o(t)?"http":"https"}://${t}`:""}var s=/^(\d{1,3}\.){3}\d{1,3}(:\d+)?$/;function o(e){let t=e.replace(/:\d+$/,"").toLowerCase();return t==="localhost"||t.endsWith(".localhost")||t==="127.0.0.1"||t==="[::1]"||t==="::1"||s.test(e)}export{n as a};

@@ -1,0 +1,1 @@
+function r(n=document.baseURI){try{return new URL(n).pathname.replace(/\/+$/,"").endsWith("/canary")}catch{return!1}}function e(n=document.baseURI){return r(n)?"canary_logo_104.png":"mockigbird_logo_104.png"}export{r as a,e as b};
