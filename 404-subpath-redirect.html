@@ -22,14 +22,17 @@
     -->
     <script>
       (function () {
-        // Subpath deployments that own their own index.html (base href = /<name>/).
+        // SITE_BASE is rewritten for a project Pages mirror (e.g. /mawkingbird/).
+        // Subpath deployments own an index below that base (e.g. canary/).
+        var SITE_BASE = '/';
         var SUBPATHS = ['canary'];
         var loc = window.location;
         var path = loc.pathname;
-        var base = '/';
+        var base = SITE_BASE;
         for (var i = 0; i < SUBPATHS.length; i++) {
-          if (path.indexOf('/' + SUBPATHS[i] + '/') === 0) {
-            base = '/' + SUBPATHS[i] + '/';
+          var candidate = SITE_BASE + SUBPATHS[i] + '/';
+          if (path.indexOf(candidate) === 0) {
+            base = candidate;
             break;
           }
         }

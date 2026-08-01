@@ -1,79 +1,52 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <title>Mawkingbird</title>
-    <base href="/mawkingbird/"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
+    <meta charset="utf-8" />
+    <title>Loading…</title>
     <!--
-      Content-Security-Policy. This app is served as static files with no
-      backend we control, so the policy ships as a meta tag; see
-      docs/security.md for the header-only directives (frame-ancestors) that a
-      host which *can* set headers should add on top.
+      GitHub Pages serves exactly ONE custom 404 per site: the one at the site
+      root (/404.html). There is no per-directory 404, so a missing path under a
+      subpath deployment like /canary/ ALSO lands here, on the production root's
+      404 — which is why a chunk-load reload on canary used to boot the ROOT app
+      and bounce you to /.
 
-      script-src is the directive that matters here. Everything this app holds —
-      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
-      origin's localStorage, so any script that runs here can read all of it.
-      The allowlist is therefore exactly 'self' and nothing else: no third-party
-      origin can execute here, so no third party — and no future owner of a
-      third party's expired domain — can read any of it. Analytics is served
-      from our own origin (public/vendor/count.js, refreshed at build time by
-      scripts/vendor-analytics.mjs) for precisely that reason.
+      This shim routes the request to the correct SPA shell while preserving the
+      full deep link. It redirects to the owning app's index (/<subpath>/ for a
+      subpath deployment, / otherwise) and stashes the original path in the query
+      string under ?spa=…; the decoder in index.html restores it into history
+      before Angular's router reads the URL, so /canary/accounts/123 comes back
+      as /canary/accounts/123, not /canary/.
 
-      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
-      scripts that used to be inline in this file now live in boot.js.
-
-      style-src needs 'unsafe-inline' because Angular injects component styles
-      as <style> elements at runtime; removing it requires a per-response nonce,
-      which a static host cannot generate.
-
-      connect-src / img-src are deliberately wide: the user points this client
-      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
-      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
-      a localhost instance still works during development.
+      Keep SUBPATHS in sync with the subpath deployments published by
+      .github/scripts/publish-gh-pages.sh.
     -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data: blob: https: http:;
-        font-src 'self' data:;
-        connect-src 'self' https: http: ws: wss:;
-        media-src 'self' data: blob: https: http:;
-        worker-src 'self' blob:;
-        manifest-src 'self';
-        form-action 'self';
-        base-uri 'self';
-        object-src 'none';
-        frame-src 'none';
-      "/>
-
-    <!--
-      Outbound links go to arbitrary sites, and some in-app URLs carry content in
-      the query string (/message/?m=…). Send only the origin cross-origin.
-    -->
-    <meta name="referrer" content="strict-origin-when-cross-origin"/>
-
-    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
-    <link rel="manifest" href="site.webmanifest"/>
-
-    <!--
-      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
-      this is a blocking script; the src is relative so it resolves against
-      <base href> (/canary/ loads its own copy).
-
-      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
-      on the first counted page view, and only when the user has not opted out —
-      so opting out means the script is never fetched or run at all.
-    -->
-    <script src="boot.js"></script>
-  <link rel="stylesheet" href="styles-IVRZIYIS.css"></head>
+    <script>
+      (function () {
+        // SITE_BASE is rewritten for a project Pages mirror (e.g. /mawkingbird/).
+        // Subpath deployments own an index below that base (e.g. canary/).
+        var SITE_BASE = '/mawkingbird/';
+        var SUBPATHS = ['canary'];
+        var loc = window.location;
+        var path = loc.pathname;
+        var base = SITE_BASE;
+        for (var i = 0; i < SUBPATHS.length; i++) {
+          var candidate = SITE_BASE + SUBPATHS[i] + '/';
+          if (path.indexOf(candidate) === 0) {
+            base = candidate;
+            break;
+          }
+        }
+        // Encode the full original path + query + hash so the SPA can restore the
+        // exact deep link after it boots from the right index.html.
+        var original = path + loc.search + loc.hash;
+        loc.replace(base + '?spa=' + encodeURIComponent(original));
+      })();
+    </script>
+  </head>
   <body>
-    <app-root></app-root>
-  <link rel="modulepreload" href="chunk-C3KF5S3W.js"><link rel="modulepreload" href="chunk-E6MWB5PJ.js"><link rel="modulepreload" href="chunk-QJLTIYA2.js"><link rel="modulepreload" href="chunk-WTALUHM6.js"><link rel="modulepreload" href="chunk-5J7QYHD6.js"><link rel="modulepreload" href="chunk-5TOEYSV2.js"><link rel="modulepreload" href="chunk-UCPZ53VX.js"><link rel="modulepreload" href="chunk-ZSFKQH25.js"><link rel="modulepreload" href="chunk-VFKXI3X4.js"><link rel="modulepreload" href="chunk-E3ETVPSK.js"><script src="main-4ZQCBMO7.js" type="module"></script></body>
+    <noscript>
+      <p>This site requires JavaScript. <a href="/">Return home.</a></p>
+    </noscript>
+    <p>Loading…</p>
+  </body>
 </html>
