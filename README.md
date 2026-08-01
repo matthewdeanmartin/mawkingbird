@@ -5,6 +5,10 @@ This repository publishes the GitHub-hosted mirror of
 
 https://matthewdeanmartin.github.io/mawkingbird/
 
+The continuously deployed canary is available at:
+
+https://matthewdeanmartin.github.io/mawkingbird/canary/
+
 The application source and deployment workflow live in
 [matthewdeanmartin/mastodon_mock](https://github.com/matthewdeanmartin/mastodon_mock).
 The generated static site is written to this repository's `gh-pages` branch.
