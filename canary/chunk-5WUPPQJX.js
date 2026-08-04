@@ -1,0 +1,19 @@
+import{a as c,b as p}from"./chunk-MMWEHQVX.js";import{i as l}from"./chunk-IJXV64OK.js";import"./chunk-6AKY26SU.js";import"./chunk-CV2B2NXJ.js";import"./chunk-3DJ2KKK5.js";import"./chunk-TCRIDOBA.js";import"./chunk-G4BP7P4V.js";import"./chunk-34AOEO35.js";import"./chunk-ANGMM54X.js";import"./chunk-T5QTA65I.js";import"./chunk-CQEG6Z5L.js";import"./chunk-S356Q3XC.js";import"./chunk-FKXTIY3D.js";import"./chunk-YRC4JDKX.js";import"./chunk-IANSQ4AN.js";import"./chunk-XCHXMIHO.js";import"./chunk-MTQJMEYR.js";import"./chunk-366J5XSU.js";import"./chunk-BRUPVKQB.js";import"./chunk-B4ZNDEPE.js";import"./chunk-EEIZFIJR.js";import"./chunk-TXMK4M42.js";import"./chunk-EPRUYW5T.js";import"./chunk-P2IX67QQ.js";import"./chunk-OEGPC5AO.js";import"./chunk-C77GAQ5S.js";import"./chunk-VLFF7L3C.js";import"./chunk-BK6SV4EA.js";import"./chunk-J2UU7UJB.js";import"./chunk-K7YN64RF.js";import"./chunk-IBHRHAVS.js";import"./chunk-RYXE67GT.js";import"./chunk-CFY4CHY4.js";import"./chunk-H52EQVAN.js";import"./chunk-RMZSQSCU.js";import"./chunk-UXC4CRHO.js";import"./chunk-ASWU3KU3.js";import"./chunk-A6ZBR4NR.js";import"./chunk-IJTRHPGU.js";import"./chunk-ANWH4L7C.js";import"./chunk-N5V6GD67.js";import"./chunk-37D4Y3OS.js";import"./chunk-BOSGKEUJ.js";import"./chunk-ESEWJN5D.js";import"./chunk-I3L5ALGN.js";import"./chunk-I35KKFIT.js";import"./chunk-SSUXHLXO.js";import"./chunk-YZ6VLKPO.js";import"./chunk-JHRT5STV.js";import"./chunk-SPNHI25B.js";import"./chunk-6HITDN3U.js";import"./chunk-NONOZVMU.js";import"./chunk-S2LCZOOX.js";import"./chunk-KL2A677A.js";import"./chunk-V7EVCSD5.js";import"./chunk-CE63ORLI.js";import"./chunk-RPEO5CTZ.js";import"./chunk-R3EWYRVK.js";import{Fa as o,Ib as d,Sa as a,ib as s,jb as n,kb as r,lb as i}from"./chunk-76KFXCZS.js";import"./chunk-7CGTOI24.js";var m=`
+<p><strong>Why I asked a bot to create this.</strong></p>
+<p>I miss 2018 twitter. It was before the redesign that still is on the renamed twitter. So goal one is to bring back the proper design. You used to be able to do that with a browser plugin, but eventually Twitter broke that. This first of all, fixes that.</p>
+<p><strong>Other things this client has:</strong></p>
+<p>\xB7 Twitter Blue features, but for free.<br>
+\xB7 Give everyone a blue check, or a check to everyone with more followers than you.<br>
+\xB7 No infinite feed \u2014 it eventually stops; click to get the next page. Touch grass.<br>
+\xB7 Bookmarks tacked on to the end of the finite feed. Bookmarks are to be revisited.<br>
+\xB7 The algorithm isn't evil: no injected rage or stranger content you didn't ask for. It's your tags and feed sorted by the product of likes, replies and retweets.<br>
+\xB7 Failwhale is back.<br>
+\xB7 Follow everyone on a collection.<br>
+\xB7 House ads for my other projects.<br>
+\xB7 Cyber-begging links for the Mastodon network and your instance \u2014 this stuff isn't free, go help them out.<br>
+\xB7 Bsky and RSS as feed providers.<br>
+\xB7 Twitter-style Analytics (on a little data).<br>
+\xB7 Modern search: saved searches, facets, and so on.</p>
+<p>Why "mawkingbird"? Because mockingbird as a domain is taken. I started this while building a mock mastodon server to integration-test my other mastodon projects.</p>
+<p><strong>Implementation.</strong> Written in Angular, latest signals patterns, tested against a mock mastodon instance and real instances. I've been daily-driving it and now like it better than elk.zone.</p>
+`,u=class t{status=p({id:"mawkingbird:design",content:m,account:c});static \u0275fac=function(e){return new(e||t)};static \u0275cmp=a({type:t,selectors:[["app-about"]],decls:3,vars:1,consts:[[1,"page-head"],["filterContext","thread",3,"status"]],template:function(e,h){e&1&&(n(0,"div",0),d(1,"Design"),r(),i(2,"app-status-card",1)),e&2&&(o(2),s("status",h.status))},dependencies:[l],encapsulation:2})};export{u as About};
