@@ -27,4 +27,23 @@
   if (target && target.charAt(0) === '/' && target.charAt(1) !== '/' && target.charAt(1) !== '\\') {
     history.replaceState(null, '', target);
   }
+
+  /**
+   * Mark the /test/ deployment on <html>, before anything paints.
+   *
+   * Done here rather than in the Angular bundle so the grey background is
+   * present from the first frame: applying it after bootstrap would show a
+   * white page that turns grey, which reads as a rendering bug rather than a
+   * deliberate signal. It also survives the bundle failing to load — a broken
+   * test deployment still looks like the test deployment, which is exactly
+   * when knowing where you are matters most.
+   *
+   * The <base> element is the signal, matching `isTestBuild()` in
+   * build-flavor.ts. Both read the same fact and must agree.
+   */
+  var baseEl = document.querySelector('base');
+  var basePath = baseEl ? new URL(baseEl.href, window.location.href).pathname : '/';
+  if (basePath.replace(/\/+$/, '').split('/').pop() === 'test') {
+    document.documentElement.classList.add('is-test-build');
+  }
 })();
