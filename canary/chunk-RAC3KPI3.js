@@ -1,1 +1,0 @@
-import{p as b,q as c,r as d,s as e,t as f}from"./chunk-SPK7PS2D.js";import"./chunk-TXMK4M42.js";import{c as a}from"./chunk-WWKF4Z7L.js";import"./chunk-T6SO5LPX.js";import"./chunk-C6Q5SG76.js";export{c as ACCOUNT_ORIGIN,b as AUTH_ORIGIN,f as MawkingbirdSession,e as accountOrigin,d as authOrigin,a as corsProxyOrigin};
