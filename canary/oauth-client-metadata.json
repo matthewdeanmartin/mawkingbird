@@ -1,0 +1,21 @@
+{
+  "client_id": "https://matthewdeanmartin.github.io/mawkingbird/canary/oauth-client-metadata.json",
+  "client_name": "Mawkingbird",
+  "client_uri": "https://matthewdeanmartin.github.io/mawkingbird/canary/",
+  "logo_uri": "https://matthewdeanmartin.github.io/mawkingbird/canary/android-chrome-192x192.png",
+  "tos_uri": "https://matthewdeanmartin.github.io/mawkingbird/canary/terms",
+  "redirect_uris": [
+    "https://matthewdeanmartin.github.io/mawkingbird/canary/oauth/bluesky/callback"
+  ],
+  "scope": "atproto transition:generic transition:chat.bsky",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "none",
+  "application_type": "web",
+  "dpop_bound_access_tokens": true
+}
