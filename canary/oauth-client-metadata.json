@@ -7,7 +7,7 @@
   "redirect_uris": [
     "https://matthewdeanmartin.github.io/mawkingbird/canary/oauth/bluesky/callback"
   ],
-  "scope": "atproto transition:generic transition:chat.bsky",
+  "scope": "atproto transition:generic transition:chat.bsky rpc:com.atproto.moderation.createReport?aud=*",
   "grant_types": [
     "authorization_code",
     "refresh_token"
