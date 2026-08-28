@@ -1,0 +1,21 @@
+{
+  "client_id": "https://matthewdeanmartin.github.io/mawkingbird/oauth-client-metadata.json",
+  "client_name": "Mawkingbird",
+  "client_uri": "https://matthewdeanmartin.github.io/mawkingbird/",
+  "logo_uri": "https://matthewdeanmartin.github.io/mawkingbird/android-chrome-192x192.png",
+  "tos_uri": "https://matthewdeanmartin.github.io/mawkingbird/terms",
+  "redirect_uris": [
+    "https://matthewdeanmartin.github.io/mawkingbird/oauth/bluesky/callback"
+  ],
+  "scope": "atproto transition:generic transition:chat.bsky rpc:com.atproto.moderation.createReport?aud=*",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "none",
+  "application_type": "web",
+  "dpop_bound_access_tokens": true
+}
