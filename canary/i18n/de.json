@@ -1,0 +1,19 @@
+{
+  "footer": {
+    "buildLog": "Build-Log",
+    "builtAt": "Erstellt {{date}} UTC",
+    "end": "Das war alles. Hier darf auch mal Schluss sein.",
+    "failWhale": "Fail Whale",
+    "hotkeys": "? für Tastatur",
+    "hotkeys.title": "Tastenkürzel (oder drücke überall ?)",
+    "privacy": "Datenschutz",
+    "reportBug": "Fehler melden",
+    "rules": "Regeln & Bedingungen von {{host}}",
+    "server": "Server",
+    "source": "Mockingbird-Quellcode"
+  },
+  "localePicker": {
+    "auto": "Automatisch (Browser)",
+    "label": "Sprache der Oberfläche"
+  }
+}
