@@ -1,0 +1,1 @@
+import{R as e,f as a}from"./chunk-GUCBFZO3.js";var r=class t{loaded=new a(1);publish(o){this.loaded.next(o)}static \u0275fac=function(i){return new(i||t)};static \u0275prov=e({token:t,factory:t.\u0275fac,providedIn:"root"})};export{r as a};
