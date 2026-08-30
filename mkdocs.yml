@@ -1,0 +1,44 @@
+---
+site_name: Mawkingbird Help
+site_url: !ENV [READTHEDOCS_CANONICAL_URL, "https://mawkingbird.readthedocs.io/"]
+site_author: Matthew Martin
+site_description: Short, practical guides for using Mawkingbird.
+
+theme:
+  name: readthedocs
+  features:
+    - navigation.footer
+
+markdown_extensions:
+  - attr_list
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Start here:
+      - Welcome to Mawkingbird: start/welcome.md
+      - Look around without an account: start/look-around.md
+      - Sign in: start/sign-in.md
+      - Sign in with Mastodon: start/sign-in-mastodon.md
+      - Sign in with Bluesky: start/sign-in-bluesky.md
+      - Your first ten minutes: start/first-ten-minutes.md
+      - A quick tour of the screen: start/screen-tour.md
+  - Reading:
+      - Understand your Home feed: reading/home-feed.md
+  - Finding people:
+      - Find people to follow: finding-people/find-people.md
+  - Posting:
+      - Write and publish a basic post: posting/basic-post.md
+  - Glossary: glossary.md
+
+plugins:
+  - search
+
+validation:
+  nav:
+    omitted_files: warn
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
