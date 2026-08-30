@@ -63,6 +63,14 @@
     <link rel="manifest" href="site.webmanifest"/>
 
     <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql"/>
+
+    <!--
       SPA deep-link restore. Must run synchronously ahead of the app bundle, so
       this is a blocking script; the src is relative so it resolves against
       <base href> (/canary/ loads its own copy).
@@ -75,5 +83,5 @@
   <link rel="stylesheet" href="styles-OZ7SZFJO.css"></head>
   <body>
     <app-root></app-root>
-  <link rel="modulepreload" href="chunk-IHGZEVMV.js"><link rel="modulepreload" href="chunk-KL7GM4YG.js"><link rel="modulepreload" href="chunk-WUCGRUPG.js"><link rel="modulepreload" href="chunk-SEITHFTA.js"><link rel="modulepreload" href="chunk-JOPHTRII.js"><link rel="modulepreload" href="chunk-EC6HDENR.js"><link rel="modulepreload" href="chunk-B2VDJ2MY.js"><link rel="modulepreload" href="chunk-FFZJB6FM.js"><link rel="modulepreload" href="chunk-MGL76OVA.js"><link rel="modulepreload" href="chunk-2JGAWDJ3.js"><script src="main-PONFGMXM.js" type="module"></script></body>
+  <link rel="modulepreload" href="chunk-XM3IBJ7L.js"><link rel="modulepreload" href="chunk-MKBQMPY5.js"><link rel="modulepreload" href="chunk-WUCGRUPG.js"><link rel="modulepreload" href="chunk-SEITHFTA.js"><link rel="modulepreload" href="chunk-JOPHTRII.js"><link rel="modulepreload" href="chunk-EC6HDENR.js"><link rel="modulepreload" href="chunk-FRWCOVOP.js"><link rel="modulepreload" href="chunk-FFZJB6FM.js"><link rel="modulepreload" href="chunk-QAKPNIZP.js"><link rel="modulepreload" href="chunk-2JGAWDJ3.js"><script src="main-UDUNHQDX.js" type="module"></script></body>
 </html>
