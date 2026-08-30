@@ -28,6 +28,16 @@ nav:
       - Understand your Home feed: reading/home-feed.md
   - Finding people:
       - Find people to follow: finding-people/find-people.md
+      - Start with a Mawkingbird Starter Kit: finding-people/starter-kits.md
+      - Explore bundled Mastodon collections: finding-people/collections.md
+      - Search for something that interests you: finding-people/search-interests.md
+      - Search for a particular person: finding-people/search-people.md
+      - Understand profiles and handles: finding-people/profiles-handles.md
+      - Follow, request, or unfollow: finding-people/follow-unfollow.md
+      - Find people through directories: finding-people/directories.md
+      - Look for people from your contacts: finding-people/contacts.md
+      - Import a follow list: finding-people/import-follow-list.md
+      - Find sites to read with RSS: finding-people/rss-discovery.md
   - Posting:
       - Write and publish a basic post: posting/basic-post.md
       - Choose who can see a post: posting/visibility.md
@@ -41,6 +51,25 @@ nav:
       - Schedule a post: posting/schedule.md
       - Choose where a post is published: posting/destinations.md
       - Fix, edit, or delete a post: posting/edit-delete.md
+  - Connections and accounts:
+      - Connections: connections/index.md
+      - Add, switch, or remove an account: connections/accounts.md
+      - Control how long connections stay saved: connections/credentials.md
+      - Connect Mastodon: connections/mastodon.md
+      - Connect Bluesky: connections/bluesky.md
+      - Read public Twitter accounts: connections/twitter.md
+      - Connect GitHub: connections/github.md
+      - Save bookmarks to Raindrop.io: connections/raindrop.md
+      - Connect Dropbox: connections/dropbox.md
+      - Connect OpenRouter for writing help: connections/openrouter.md
+      - Connect a link shortener: connections/link-shorteners.md
+      - Publish to a blog: connections/blogs.md
+      - Connect a Blogger blog: connections/blogger.md
+      - Connect a Mataroa blog: connections/mataroa.md
+      - Connect an existing Hugo blog: connections/hugo.md
+      - Connect GitHub Gist for pastes: connections/github-gist.md
+      - Use the Mawkingbird proxy: connections/cors-proxy.md
+      - Check a connection with Connection Doctor: connections/connection-doctor.md
   - Glossary: glossary.md
 
 plugins:

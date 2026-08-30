@@ -4,6 +4,8 @@ Following someone means their future posts can appear in your Home feed. You can
 
 Open **More → Find Friends** to see all of Mawkingbird's discovery choices in one place.
 
+The available Starter Kits, collections, and RSS kits are growing catalogs. Their subjects and membership will change over time; the methods in these guides stay the same.
+
 ## Start with a starter kit
 
 A starter kit is a suggested group of accounts. It is the easiest choice when you want an interesting feed but do not know any account names yet.
@@ -44,5 +46,18 @@ You do not need these choices to get started. Starter kits and subject search ar
 ## Anonymous follows
 
 You can follow people while browsing anonymously. Those follows belong to the current browser rather than to an online account. They may not be available on another device or after browser data is cleared.
+
+## Learn one method
+
+- [Start with a Mawkingbird Starter Kit](starter-kits.md)
+- [Explore bundled Mastodon collections](collections.md)
+- [Search for something that interests you](search-interests.md)
+- [Search for a particular person](search-people.md)
+- [Understand profiles and handles](profiles-handles.md)
+- [Follow, request, or unfollow](follow-unfollow.md)
+- [Find people through directories](directories.md)
+- [Look for people from your contacts](contacts.md)
+- [Import a follow list](import-follow-list.md)
+- [Find sites to read with RSS](rss-discovery.md)
 
 Next: [Understand your Home feed](../reading/home-feed.md).

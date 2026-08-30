@@ -10,6 +10,8 @@ Choose **Bluesky** if your account has a handle such as `yourname.bsky.social` o
 
 If you have both, start with either one. You can connect the other later and read both from Mawkingbird.
 
+After signing in, see [Connections](../connections/index.md) to add the other network, and [Add, switch, or remove an account](../connections/accounts.md) if you want to keep several separate accounts in this browser.
+
 ## If you do not have an account
 
 You can [look around without an account](look-around.md). Mawkingbird does not require you to register before you can see how it works.

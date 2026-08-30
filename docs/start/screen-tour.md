@@ -28,6 +28,8 @@ Mawkingbird keeps the places you will use most in the main navigation. On a narr
 
 Open the account menu by choosing your name or picture. From here you can visit your profile, switch between saved accounts, add another account, or log out.
 
+See [Add, switch, or remove an account](../connections/accounts.md) for the details.
+
 ## The Home feed
 
 The center of Home contains the writing buttons, feed controls, and posts. Other areas may suggest people to follow or subjects that are active.

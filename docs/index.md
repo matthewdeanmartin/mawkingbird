@@ -17,6 +17,8 @@ If you want to get moving immediately, follow [Your first ten minutes](start/fir
 - [Understand your Home feed](reading/home-feed.md)
 - [Find people to follow](finding-people/find-people.md)
 - [Write and publish a basic post](posting/basic-post.md)
+- [Connect another account or service](connections/index.md)
+- [Add, switch, or remove an account](connections/accounts.md)
 - [Look up an unfamiliar word](glossary.md)
 
 Use the search box to find a feature or a phrase you see in Mawkingbird. Each guide covers one small job, so you can read what you need and get back to the app.
