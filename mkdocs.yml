@@ -30,6 +30,17 @@ nav:
       - Find people to follow: finding-people/find-people.md
   - Posting:
       - Write and publish a basic post: posting/basic-post.md
+      - Choose who can see a post: posting/visibility.md
+      - Reply, mention, or quote: posting/replies-mentions-quotes.md
+      - Add a photo or other media: posting/media.md
+      - Write useful media descriptions: posting/alt-text.md
+      - Add a poll: posting/polls.md
+      - Add a content warning: posting/content-warnings.md
+      - Write a thread: posting/threads.md
+      - Save and return to a draft: posting/drafts.md
+      - Schedule a post: posting/schedule.md
+      - Choose where a post is published: posting/destinations.md
+      - Fix, edit, or delete a post: posting/edit-delete.md
   - Glossary: glossary.md
 
 plugins:

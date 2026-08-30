@@ -50,4 +50,16 @@ Your text stays in the composer. Read the **Not posted** message, correct the pr
 
 ## Next steps
 
-Keep this first post simple. Separate guides will cover visibility, replies, mentions, media descriptions, polls, content warnings, sensitive media, threads, drafts, scheduling, and publishing to more than one destination.
+Keep this first post simple. When you need another feature, use one focused guide:
+
+- [Choose who can see a post](visibility.md)
+- [Reply, mention, or quote](replies-mentions-quotes.md)
+- [Add a photo or other media](media.md)
+- [Write useful media descriptions](alt-text.md)
+- [Add a poll](polls.md)
+- [Add a content warning](content-warnings.md)
+- [Write a thread](threads.md)
+- [Save and return to a draft](drafts.md)
+- [Schedule a post](schedule.md)
+- [Choose where a post is published](destinations.md)
+- [Fix, edit, or delete a post](edit-delete.md)
