@@ -5055,6 +5055,8 @@
     "plus.adoption.leaveOff.hint.b": "exactly as they are and changes nothing on your account. You can switch this on again whenever you like, and you'll be asked this same question.",
     "plus.adoption.noReplace": "There's no option to replace your account's copy with this browser's — that would delete things from your other devices, and working out which change came first isn't something this app tries to guess.",
     "plus.adoption.reassure": "Nothing has gone wrong, and you can't lose anything by picking either one — this only decides what this browser shows from now on.",
+    "plus.adoption.summaryLead": "You're switching this on for the first time, so there are two sets to combine: the",
+    "plus.adoption.title": "You have {{noun}} here and on your account",
     "plus.checking": "Checking…",
     "plus.checkingAccount": "Checking your account…",
     "plus.checkout.cancelled": "Checkout cancelled. Nothing was charged.",
