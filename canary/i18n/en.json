@@ -939,6 +939,7 @@
     "plusTitle": "Part of Mawkingbird Plus",
     "plusWhy": "Checking hundreds of websites is the most expensive thing this app can do, so it is kept for supporters.",
     "probing": "Checking {{done}} of {{total}} sites · {{found}} feeds found",
+    "rateLimited": "The CORS proxy asked us to slow down — waiting a moment before carrying on.",
     "rescan": "Check again",
     "resultCount.one": "<strong>{{count}}</strong> feed found",
     "resultCount.other": "<strong>{{count}}</strong> feeds found",
