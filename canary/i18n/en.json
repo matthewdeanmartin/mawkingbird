@@ -946,13 +946,16 @@
     "resultNone": "No feeds found. None of the websites your friends link to publish one that could be followed.",
     "reusedOne": "{{count}} site was already checked in an earlier run",
     "reusedOther": "{{count}} sites were already checked in earlier runs",
+    "runningHint": "You can leave this open; closing it needs the Stop button.",
     "signedOut": "Sign in to check the people you follow.",
     "start": "Start checking",
     "stop": "Stop and keep what was found",
     "title": "Find your friends’ blogs",
     "via": "from {{handle}}",
     "walking": "Reading the list of people you follow…",
-    "walkingCount": "{{count}} accounts read"
+    "walkingCount": "{{count}} of about {{total}} accounts read · {{links}} websites to check",
+    "walkingCountUnknown": "{{count}} accounts read · {{links}} websites to check",
+    "walkingSlow": "Big following lists take a while — this reads them 80 at a time."
   },
   "funding": {
     "title": "Funding"
