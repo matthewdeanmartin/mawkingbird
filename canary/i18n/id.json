@@ -506,8 +506,6 @@
     "faultInjection.title": "Suntikan fault",
     "findFriends.advancedHeading": "Lanjutan",
     "findFriends.advancedSub": "Berguna kalau kamu sudah tahu siapa yang kamu cari, atau sedang memindahkan mengikuti dari tempat lain.",
-    "findFriends.bundledCollections.desc": "Koleksi asli yang dikurasi orang lain, disertakan dalam aplikasi karena Mastodon belum bisa mencari koleksi.",
-    "findFriends.bundledCollections.title": "Koleksi bawaan",
     "findFriends.contacts.descPicker": "Pilih orang dari kontak ponsel kamu dan lihat siapa yang punya akun. Nama yang khas paling mudah ditemukan; nama umum perlu dicek ulang.",
     "findFriends.contacts.descUpload": "Unggah ekspor kontak dan lihat siapa yang punya akun. Nama yang khas paling mudah ditemukan; nama umum perlu dicek ulang.",
     "findFriends.contacts.title": "Cari kontak kamu",
@@ -5458,10 +5456,6 @@
     "savePost": "Simpan postingan",
     "title": "Markah ini mau disimpan ke mana?",
     "unwrap": "Buka bungkus dan simpan tautan pertama"
-  },
-  "bundledCollections": {
-    "intro": "Ini kumpulan asli, dikurasi oleh orang sungguhan di instansi masing-masing — diambil gambarnya dan disertakan bersama Mawkingbird supaya kamu bisa menemukannya. Mastodon belum punya cara untuk mencari kumpulan, jadi satu-satunya yang bisa dijangkau siapa pun hanyalah yang tautannya pernah dikirim ke mereka. Buka salah satu untuk melihat anggotanya dan mencicipi apa yang mereka posting.",
-    "title": "Kumpulan bawaan"
   },
   "common": {
     "cancel": "Batal",

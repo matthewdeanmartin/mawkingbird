@@ -810,8 +810,6 @@
     "faultInjection.title": "Injection de pannes",
     "findFriends.advancedHeading": "Avancé",
     "findFriends.advancedSub": "Utile une fois que tu sais qui tu cherches, ou que tu importes des abonnements venus d’ailleurs.",
-    "findFriends.bundledCollections.desc": "Des collections réelles organisées par d’autres personnes, fournies avec l’appli car Mastodon ne peut pas encore rechercher de collections.",
-    "findFriends.bundledCollections.title": "Collections intégrées",
     "findFriends.contacts.descPicker": "Choisis des personnes dans les contacts de ton téléphone et vois qui a un compte. Les noms distinctifs fonctionnent mieux ; les noms courants demanderont une seconde vérification.",
     "findFriends.contacts.descUpload": "Importe un export de contacts et vois qui a un compte. Les noms distinctifs fonctionnent mieux ; les noms courants demanderont une seconde vérification.",
     "findFriends.contacts.title": "Rechercher tes contacts",
@@ -5729,10 +5727,6 @@
     "empty": "Aucun message public pour l’instant.",
     "loading": "Chargement…",
     "local": "Local"
-  },
-  "bundledCollections": {
-    "intro": "Ce sont de vraies collections, constituées par de vraies personnes sur leurs propres instances — capturées et livrées avec Mawkingbird pour que tu puisses les trouver, tout simplement. Mastodon n’a pas encore de moyen de rechercher des collections, les seules accessibles sont donc celles dont on t’a envoyé le lien. Ouvres-en une pour voir ses membres et goûter à ce qu’ils publient.",
-    "title": "Collections incluses"
   },
   "listTimeline": {
     "addPeopleByName": "Ajouter des personnes par nom",

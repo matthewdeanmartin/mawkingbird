@@ -698,8 +698,6 @@
     "faultInjection.title": "障害注入",
     "findFriends.advancedHeading": "詳細",
     "findFriends.advancedSub": "探している人が分かっているときや、別の場所からフォローを移すときに便利です。",
-    "findFriends.bundledCollections.desc": "他の人が作成した実際のコレクションです。Mastodonはまだコレクションを検索できないため、アプリに同梱されています。",
-    "findFriends.bundledCollections.title": "同梱コレクション",
     "findFriends.contacts.descPicker": "スマートフォンの連絡先から人を選び、アカウントがある人を確認します。特徴的な名前が最適で、一般的な名前は再確認が必要です。",
     "findFriends.contacts.descUpload": "連絡先のエクスポートをアップロードし、アカウントがある人を確認します。特徴的な名前が最適で、一般的な名前は再確認が必要です。",
     "findFriends.contacts.title": "連絡先を探す",

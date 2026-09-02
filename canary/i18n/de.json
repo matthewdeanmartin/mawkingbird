@@ -803,8 +803,6 @@
     "faultInjection.title": "Fehler-Einschleusung",
     "findFriends.advancedHeading": "Fortgeschritten",
     "findFriends.advancedSub": "Nützlich, sobald du weißt, wen du suchst, oder wenn du Follows von woanders mitbringst.",
-    "findFriends.bundledCollections.desc": "Echte Sammlungen, von anderen Leuten zusammengestellt und mit der App ausgeliefert, weil Mastodon noch nicht nach Sammlungen suchen kann.",
-    "findFriends.bundledCollections.title": "Mitgelieferte Sammlungen",
     "findFriends.contacts.descPicker": "Wähle Leute aus den Kontakten deines Telefons und sieh, wer ein Konto hat. Ungewöhnliche Namen funktionieren am besten; bei häufigen lohnt ein zweiter Blick.",
     "findFriends.contacts.descUpload": "Lade einen Kontakt-Export hoch und sieh, wer ein Konto hat. Ungewöhnliche Namen funktionieren am besten; bei häufigen lohnt ein zweiter Blick.",
     "findFriends.contacts.title": "Nach deinen Kontakten suchen",
@@ -5642,10 +5640,6 @@
     "status.added": "hinzugefügt",
     "status.error": "Fehler",
     "status.notfound": "nicht gefunden"
-  },
-  "bundledCollections": {
-    "intro": "Dies sind echte Sammlungen, die von echten Personen auf ihren eigenen Servern zusammengestellt wurden — als Momentaufnahme in Mawkingbird enthalten, damit du sie überhaupt finden kannst. Mastodon kann Sammlungen noch nicht durchsuchen. Deshalb sind nur jene erreichbar, deren Link jemand geteilt hat. Öffne eine Sammlung, um ihre Mitglieder und eine Auswahl ihrer Beiträge zu sehen.",
-    "title": "Mitgelieferte Sammlungen"
   },
   "bundledStarterKits": {
     "account.one": "{{count}} Konto",
