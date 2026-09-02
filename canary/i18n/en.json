@@ -2127,6 +2127,7 @@
     "plans.table.yes": "Yes",
     "plans.title": "What each plan includes",
     "profile.actions.back": "← Back",
+    "profile.actions.backWord": "Back",
     "profile.actions.cancel": "Cancel",
     "profile.actions.copyAccount": "Copy account…",
     "profile.actions.editLocalProfile": "Edit local profile",
