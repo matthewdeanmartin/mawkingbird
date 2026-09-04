@@ -1674,8 +1674,6 @@
     "rss.all": "すべて",
     "rss.allItems": "すべての項目",
     "rss.article.corsProxy": "CORSプロキシ",
-    "rss.article.highlightFirst": "引用するには、まず文章をハイライトしてください。",
-    "rss.article.share": "これを共有 ↗",
     "rss.cancel": "キャンセル",
     "rss.checkInSettings": "設定で確認してください",
     "rss.corsWarning": "— ここで失敗するフィードには通常CORSプロキシが必要です。",

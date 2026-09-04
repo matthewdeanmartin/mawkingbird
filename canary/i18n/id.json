@@ -1492,8 +1492,6 @@
     "rss.all": "Semua",
     "rss.allItems": "Semua item",
     "rss.article.corsProxy": "proxy CORS",
-    "rss.article.highlightFirst": "Sorot bagian teks dulu untuk mengutipnya.",
-    "rss.article.share": "Bagikan ini ↗",
     "rss.cancel": "Batal",
     "rss.checkInSettings": "Cek di pengaturan",
     "rss.corsWarning": "— feed yang gagal di sini biasanya butuh proxy CORS.",

@@ -1796,8 +1796,6 @@
     "rss.all": "Tout",
     "rss.allItems": "Tous les éléments",
     "rss.article.corsProxy": "proxy CORS",
-    "rss.article.highlightFirst": "Surligne d’abord un passage pour le citer.",
-    "rss.article.share": "Partager ceci ↗",
     "rss.cancel": "Annuler",
     "rss.checkInSettings": "Vérifie-les dans les paramètres",
     "rss.corsWarning": "— un flux qui échoue ici a généralement besoin d’un proxy CORS.",
