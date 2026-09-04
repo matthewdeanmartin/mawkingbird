@@ -3461,6 +3461,8 @@
     "page.loading": "Opening…",
     "page.notFound": "We couldn't open that to read.",
     "page.viewThread": "View as a thread",
+    "saveToLibrary.remove": "Remove from library",
+    "saveToLibrary.save": "Save to library",
     "toolbar.align": "Alignment",
     "toolbar.align.justify": "Justified",
     "toolbar.align.left": "Ragged right",
