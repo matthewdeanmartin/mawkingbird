@@ -441,6 +441,8 @@
     "deleteDraftCopy": "Delete the private draft copy?",
     "dismiss": "Dismiss",
     "dismissBuildStatus": "Dismiss build status",
+    "downloadDraft": "Download a copy",
+    "draftUnsaved": "This draft could not be saved in your browser. Your writing is still here.",
     "drafts": "Drafts",
     "draftsTab": "📝 Drafts",
     "editing": "Editing",
