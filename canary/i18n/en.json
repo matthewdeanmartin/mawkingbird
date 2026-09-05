@@ -400,16 +400,21 @@
   "bundledStarterKits": {
     "account.one": "{{count}} account",
     "account.other": "{{count}} accounts",
+    "allLanguages": "All languages",
     "byThem": "Curated by {{curator}}",
     "byUs": "Ours",
     "filter.label": "Filter these",
     "filter.none": "Nothing here matches “{{query}}”. Clear the filter to see every set.",
     "filter.placeholder": "photography, science, news…",
     "intro": "Each of these is a ready-made set of accounts. Open one to see who is in it, sample what they post, and follow the whole set in one go — or pick through it.",
+    "languageNote": "Browse any language here. This does not change the languages in your settings. Older sets with no language label are also shown.",
+    "languages": "Pack languages",
     "moreWays": "Looking for something more specific?",
     "moreWaysLink": "Every way to find people",
+    "myLanguages": "My languages",
     "open": "· open →",
-    "title": "People to follow"
+    "title": "People to follow",
+    "updated": "Catalogue updated {{date}}"
   },
   "common": {
     "cancel": "Cancel",
@@ -436,6 +441,7 @@
     "byteCount": "{{count}} bytes",
     "cancel": "Cancel",
     "cancelEdit": "Cancel edit",
+    "changedBeforePublish": "The post or account changed while attachments were being saved. Nothing new was published. Review your post and send it again.",
     "choicePlaceholder": "Choice {{index}}",
     "clear": "Clear",
     "deleteDraftCopy": "Delete the private draft copy?",
@@ -573,6 +579,10 @@
     "terms.detail": "Your instance's terms of service.",
     "terms.title": "Terms of Service",
     "termsOfServiceFor": "Terms of Service — {{host}}"
+  },
+  "drafts": {
+    "removeFailed": "Could not remove the draft from this browser. Please try again.",
+    "saveFailed": "Could not save the draft in this browser. The original has been kept. Free some browser storage and try again."
   },
   "effectiveAudience": {
     "approximateCount": "~{{count}}",
@@ -5752,6 +5762,7 @@
     "title": "Sign in to {{action}}"
   },
   "starterCollection": {
+    "browse": "Browse starter kits",
     "couldNotFollow": "Could not follow",
     "findFriends": "Find friends another way",
     "followAll": "Follow all {{count}}",
@@ -5765,7 +5776,8 @@
     "membersAria": "{{title}} accounts",
     "notFound": "Not found",
     "note": "Anonymous follows use the collection’s built-in account snapshot immediately. Signed-in follows are resolved by your server before the real follow request is sent.",
-    "opening": "Opening…"
+    "opening": "Opening…",
+    "unavailable": "This starter kit is no longer available. Browse the current kits to find people to follow."
   },
   "starterKitPost": {
     "account.one": "{{count}} account",
