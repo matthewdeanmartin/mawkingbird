@@ -432,6 +432,7 @@
     "attachMedia": "Attach media — or paste / drag & drop an image",
     "blogDraft": "Draft",
     "blueskyLimit": "Bluesky limit",
+    "bskyAudience": "Bluesky posts are public. Choose public visibility to publish to Bluesky, or select Fedi to keep a restricted audience.",
     "byteCount": "{{count}} bytes",
     "cancel": "Cancel",
     "cancelEdit": "Cancel edit",
