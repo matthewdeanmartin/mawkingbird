@@ -1,0 +1,21 @@
+{
+  "client_id": "https://mawkingbird.com/test/oauth-client-metadata.json",
+  "client_name": "Mawkingbird",
+  "client_uri": "https://mawkingbird.com/test/",
+  "logo_uri": "https://mawkingbird.com/test/android-chrome-192x192.png",
+  "tos_uri": "https://mawkingbird.com/test/terms",
+  "redirect_uris": [
+    "https://mawkingbird.com/test/oauth/bluesky/callback"
+  ],
+  "scope": "atproto transition:generic transition:chat.bsky rpc:com.atproto.moderation.createReport?aud=*",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "none",
+  "application_type": "web",
+  "dpop_bound_access_tokens": true
+}
