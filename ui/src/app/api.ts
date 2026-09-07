@@ -607,7 +607,7 @@ export class Api {
     id: string,
     maxId?: string,
     limit = 80,
-  ): Observable<{ accounts: Account[]; nextMaxId: string | null }> {
+  ): Observable<{ accounts: Account[]; nextMaxId: string | null; paginationKnown: boolean }> {
     let params = new HttpParams().set('limit', String(limit));
     if (maxId) {
       params = params.set('max_id', maxId);
@@ -618,6 +618,8 @@ export class Api {
         map((response) => ({
           accounts: response.body ?? [],
           nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
+          // A full page without an exposed Link header cannot prove completeness.
+          paginationKnown: response.headers.has('Link') || (response.body ?? []).length < limit,
         })),
       );
   }

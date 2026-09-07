@@ -27,6 +27,7 @@ import { CopyPreview, ProfileListCopy } from '../../providers/account/profile-li
 import { SupporterStatus } from '../../providers/account/supporter-status';
 import { writeBlockMessage } from '../../providers/account/write-block';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { PeopleListsPanel } from '../../lists/people-lists-panel';
 
 /**
  * Which sections the Feeds page shows. `/feeds` shows everything; `/feeds/lists`
@@ -217,7 +218,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.confirm.deleteCollection.confirm: Delete collection
 @Component({
   selector: 'app-lists',
-  imports: [RouterLink, FormsModule, ConfirmDialog, TranslocoPipe],
+  imports: [RouterLink, FormsModule, ConfirmDialog, TranslocoPipe, PeopleListsPanel],
   templateUrl: './lists.html',
   styleUrl: './lists.css',
 })

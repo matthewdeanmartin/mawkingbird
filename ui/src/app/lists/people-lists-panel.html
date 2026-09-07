@@ -1,0 +1,83 @@
+@if (service.eligible()) {
+  <section class="people-panel" aria-labelledby="people-lists-title">
+    <h2 id="people-lists-title">{{ 'peopleLists.title' | transloco }}</h2>
+    <p>{{ 'peopleLists.intro' | transloco }}</p>
+    @if (!loading()) {
+      <p class="muted">{{ 'peopleLists.status.' + status() | transloco }}</p>
+      @if (service.lastSync(); as date) {
+        <p class="muted small">
+          {{ 'peopleLists.lastSync' | transloco }} {{ date | date: 'medium' }}
+        </p>
+      }
+    }
+    @if (service.job(); as job) {
+      <div class="job" role="status" aria-live="polite">
+        @if (job.phase === 'reading' || job.phase === 'writing') {
+          <p>{{ 'peopleLists.step.' + job.step | transloco }}</p>
+        } @else if (job.phase === 'paused') {
+          <p>{{ 'bulk.rateLimited' | transloco: { secs: pauseSeconds() } }}</p>
+        } @else {
+          <p>{{ 'peopleLists.' + job.phase | transloco }}</p>
+        }
+        <p>{{ 'peopleLists.progress' | transloco: job }}</p>
+        <p>{{ 'peopleLists.changes' | transloco: job }}</p>
+      </div>
+      @if (job.error) {
+        <p class="error" role="alert">{{ job.error }}</p>
+      }
+      @if (service.running()) {
+        <progress
+          [value]="job.step === 'lists' ? job.completed : null"
+          max="11"
+          [attr.aria-label]="'peopleLists.title' | transloco"
+        ></progress>
+        <button type="button" class="btn" (click)="service.stop()">
+          {{ 'bulk.stop' | transloco }}
+        </button>
+      }
+    }
+    @if (!service.running()) {
+      <button type="button" class="btn" (click)="open()" [disabled]="loading()">
+        {{ (status() === 'new' ? 'peopleLists.generate' : 'peopleLists.update') | transloco }}
+      </button>
+    }
+  </section>
+  @if (dialog()) {
+    <div class="overlay">
+      <section
+        class="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="people-dialog-title"
+        appFocusTrap
+        (dismissed)="dialog.set(false)"
+      >
+        <h2 id="people-dialog-title">{{ 'peopleLists.dialog.title' | transloco }}</h2>
+        <div class="dialog-body">
+          <p>{{ 'peopleLists.dialog.scope' | transloco }}</p>
+          <ul>
+            @for (category of categories; track category) {
+              <li>{{ 'peopleLists.category.' + category | transloco }}</li>
+            }
+          </ul>
+          <p>{{ 'peopleLists.dialog.following' | transloco }}</p>
+          <p>{{ 'peopleLists.dialog.sample' | transloco }}</p>
+          <p>{{ 'peopleLists.dialog.snapshot' | transloco }}</p>
+          <p>{{ 'peopleLists.dialog.sync' | transloco }}</p>
+        </div>
+        <label class="only-add"
+          ><input type="checkbox" [ngModel]="onlyAdd()" (ngModelChange)="onlyAdd.set($event)" />
+          {{ 'peopleLists.onlyAdd' | transloco }}</label
+        >
+        <div class="actions">
+          <button type="button" class="btn" (click)="dialog.set(false)">
+            {{ 'common.close' | transloco }}
+          </button>
+          <button type="button" class="btn" [disabled]="service.running()" (click)="start()">
+            {{ 'peopleLists.start' | transloco }}
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+}

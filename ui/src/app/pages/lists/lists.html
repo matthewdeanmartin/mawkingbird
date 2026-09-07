@@ -43,6 +43,7 @@
 
 @if (!showSectionPicker || section() !== 'landing') {
   @if (shows('lists') && showsSection('lists')) {
+    <app-people-lists-panel [lists]="lists()" [loading]="loading()" (changed)="load()" />
     <div class="new-list">
       <input
         type="text"

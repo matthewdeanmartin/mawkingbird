@@ -620,6 +620,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Whether Home uses the generated same-server friends list.',
   },
   {
+    base: 'mockingbird_people_lists',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'cache',
+    note: 'Generated people-list references, sync freshness, and bounded interaction evidence. Rebuilt from the server; never exported.',
+  },
+  {
     base: 'mockingbird_feature_flags',
     storage: 'local',
     suffix: 'none',
