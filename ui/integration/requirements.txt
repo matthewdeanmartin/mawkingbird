@@ -1,0 +1,2 @@
+# Test the published wheel, never the sibling source checkout.
+mastodon-mock==0.6.0

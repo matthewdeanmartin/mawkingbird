@@ -7,7 +7,7 @@ flows. Catalogue kits use the same ImportFollows machinery as the hand-picked ki
 anonymous follows use home-instance IDs, signed-in follows resolve each handle on
 the reader's server.
 
-From `mastodon_mock/ui`, in Git Bash:
+From `mawkingbird/ui`, in Git Bash:
 
 ```bash
 make starter-catalog-update

@@ -8,7 +8,8 @@ You need:
 
 - the key from the **API** page in your Mataroa dashboard;
 - the public address of your blog;
-- the [Mawkingbird proxy](cors-proxy.md), or a self-hosted proxy configured with the help of the future contributor documentation.
+- the [Mawkingbird proxy](cors-proxy.md), or a
+  [self-hosted proxy](../contributing.md#related-services-and-self-hosting).
 
 The proxy can read the Mataroa key and the posts sent through it. Continue only if you are comfortable with that.
 

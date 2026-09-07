@@ -1,6 +1,9 @@
 # Contributing
 
-Notes for people changing the Mockingbird UI. Everything here is a rule we
+For repository setup, testing, documentation changes, and publishing, start with
+[Contributing to Mawkingbird](../../docs/contributing.md).
+
+This guide covers design rules for people changing the Mawkingbird UI. Everything here is a rule we
 arrived at by getting it wrong first; each section says what the rule is and
 what breaking it looked like.
 

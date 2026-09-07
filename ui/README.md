@@ -13,7 +13,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
@@ -37,17 +37,18 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build
+npm run build:mockingbird
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This compiles the standalone client into `dist-mockingbird/browser`. By default,
+the production build optimizes the application for performance and speed.
 
 ## Running unit tests
 
 To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-ng test
+npm test
 ```
 
 Spec files share a single jsdom realm, so a global mutated in one file leaks into
@@ -56,15 +57,18 @@ own, read
 [docs/shared-jsdom-realm-in-tests.md](docs/shared-jsdom-realm-in-tests.md) before
 writing it off as flaky.
 
-## Running end-to-end tests
+## Running integration tests
 
-For end-to-end (e2e) testing, run:
+To exercise the real Angular API client against an isolated PyPI installation
+of `mastodon-mock`, install uv and Python 3.13 or newer, then run in Git Bash:
 
 ```bash
-ng e2e
+npm run test:integration
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The runner starts and stops an in-memory server on a free local port. It does
+not use the sibling mock-server checkout. These are HTTP integration tests,
+not browser click-through tests. See [Contributing](../docs/contributing.md).
 
 ## Additional Resources
 

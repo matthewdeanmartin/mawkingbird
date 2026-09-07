@@ -20,3 +20,6 @@ build writes to `ui/dist-admin`.
 Production, canary and sandbox remain at `mawkingbird.com`, `/canary/`, and
 `/test/`. Help remains at https://mawkingbird.readthedocs.io/.
 See [MIGRATION.md](MIGRATION.md) for publishing activation and rollback.
+
+For setup, testing, design rules, and help-page changes, see
+[Contributing](docs/contributing.md).

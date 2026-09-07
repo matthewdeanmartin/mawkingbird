@@ -24,3 +24,6 @@ If you want to get moving immediately, follow [Your first ten minutes](start/fir
 Use the search box to find a feature or a phrase you see in Mawkingbird. Each guide covers one small job, so you can read what you need and get back to the app.
 
 [Open Mawkingbird](https://mawkingbird.com/){ .btn }
+
+Want to report a bug, improve these guides, or work on the client? See
+[Contributing to Mawkingbird](contributing.md).

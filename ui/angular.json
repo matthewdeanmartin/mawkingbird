@@ -134,6 +134,18 @@
           },
           "defaultConfiguration": "mockingbird"
         },
+        "integration": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "runnerConfig": "vitest.integration.config.ts",
+            "buildTarget": "ui:build:mockingbird,development",
+            "tsConfig": "tsconfig.integration.json",
+            "include": ["../integration/**/*.integration.ts"],
+            "setupFiles": ["integration/setup.ts"],
+            "watch": false
+          }
+        },
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {

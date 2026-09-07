@@ -26,6 +26,8 @@ If you were setting up another connection, return to that page and repeat its te
 
 Choose **Stop using a proxy**.
 
-Operating your own proxy is an alternative for people who run their own services. Its setup belongs in the contributor documentation, not this user guide.
+Operating your own proxy is an alternative for people who run their own services.
+See [Related services and self-hosting](../contributing.md#related-services-and-self-hosting)
+for the proxy repository and its setup instructions.
 
 Related: [Read public Twitter accounts](twitter.md) and [Connect a Mataroa blog](mataroa.md).

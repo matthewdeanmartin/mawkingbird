@@ -71,6 +71,7 @@ nav:
       - Use the Mawkingbird proxy: connections/cors-proxy.md
       - Check a connection with Connection Doctor: connections/connection-doctor.md
   - Glossary: glossary.md
+  - Contributing: contributing.md
 
 plugins:
   - search

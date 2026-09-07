@@ -22,22 +22,23 @@ vocabulary and formality matters more than raw throughput.
 Dispatch in large batches, not one subagent per small area. Every dispatch (subagent or fresh
 session) re-pays the cost of reading the skill and glossary before translating a single key,
 so a language done as ~5 large dispatches is far cheaper than the same language done as ~50
-small ones. See "Batch size" in `.claude/skills/translate-ui/SKILL.md` step 3.
+small ones. Use [the translation context](../i18n-context/README.md), the locale's
+glossary in `i18n-context/`, and the generated work order to keep each batch consistent.
 
 ## Bot work order
 
 Replace `de` below with the target locale and give this prompt to the bot:
 
 > Add German (`de`) as a Mockingbird interface language. Work from `ui/`. Read
-> `.claude/skills/translate-ui/SKILL.md` completely and follow it. Run
+> `i18n-context/README.md`, `i18n-context/en.context.json`, and the locale's glossary. Run
 > `make i18n-todo L=de`, then translate only the keys in `i18n-context/todo-de.md` into
 > `public/i18n/de.json`, preserving every placeholder and markup tag. Add `de` to
 > `IN_PROGRESS_LOCALES` in `src/app/i18n/locale.ts` so the footer picker is available on `/test/`
 > and `/canary/` while you work. Move it to `PRODUCTION_LOCALES` only when it is ready for root
 > branch. Run `make i18n`, the relevant i18n/locale tests, and `make test`. Force German in the
 > footer and walk home, a post, compose, settings, first-run, login, and an error state. Fix
-> clipping, overflow, untranslated hardcoded UI, and bad terminology you find. Record genuine
-> language-specific lessons in the skill. An incomplete locale may remain on `/test/` and
+> clipping, overflow, untranslated hardcoded UI, and bad terminology you find. Record
+> language-specific lessons in the locale's glossary. An incomplete locale may remain on `/test/` and
 > `/canary/`; do not promote it to `PRODUCTION_LOCALES` while a gate fails. Report the exact
 > remaining blockers.
 
