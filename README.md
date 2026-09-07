@@ -1,13 +1,12 @@
 # Mawkingbird
 
-This repository publishes the GitHub-hosted mirror of
-[Mawkingbird](https://mawkingbird.com/):
+This repository hosts [Mawkingbird](https://mawkingbird.com/) on GitHub Pages.
 
-https://matthewdeanmartin.github.io/mawkingbird/
+Production uses the origin root; canary and sandbox use `/canary/` and `/test/`.
 
 The continuously deployed canary is available at:
 
-https://matthewdeanmartin.github.io/mawkingbird/canary/
+https://mawkingbird.com/canary/
 
 The maintained application source now lives in [ui/](ui/), forked from
 `mastodon_mock` at `4d981c458abc1d1ed7f2929f33e53a4f8fee1ca8`. The original UI

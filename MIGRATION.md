@@ -1,5 +1,37 @@
 # Mawkingbird source migration
 
+## Current publishing configuration (outage repair)
+
+The workflows now publish production, canary, and test to this repository's
+gh-pages branch with GITHUB_TOKEN and explicitly request a Pages rebuild.
+Production builds with base href `/`, root OAuth metadata, the shared subpath
+404 fallback, and CNAME mawkingbird.com. No workflow publishes to mastodon_mock.
+The old mirror jobs were removed: they would overwrite this custom-domain site
+with `/mawkingbird/` assets and break it again. Production has an enforcing
+base/404/OAuth check before publication. MAWKINGBIRD_PUBLISH_ENABLED controls
+activation. Production stays manually promoted; canary/test run on main pushes.
+
+The github.io fallback is currently a redirect because the owner moved the
+custom-domain binding here. An independent fallback requires a separate Pages
+site and remains follow-up work. The original topology/runbook below is retained
+as migration history, not the current deployment procedure.
+
+> Hosting change reported by the owner after this plan: mawkingbird.com was
+> disconnected from mastodon_mock and attached to mawkingbird, with Cloudflare
+> previously in front. Production is reported down. The source-only hosting
+> topology and publishing activation steps below are now historical; do not
+> activate those publishers without reconciling their destinations, CNAME files,
+> base hrefs, and the requirement for an independent github.io fallback. No DNS
+> or certificate diagnosis has been performed as part of the legacy build fix.
+
+Follow-up read-only checks at 2026-09-07 13:49 UTC: Google DNS, Cloudflare DNS,
+and the local resolver all resolve the domain to Cloudflare. HTTPS returns 200;
+GitHub reports the new repository's certificate approved and HTTPS enforced.
+The served HTML still has base href `/mawkingbird/`: `/mawkingbird/boot.js`
+returns 404 while `/boot.js` returns 200. This is a deployment-path mismatch,
+not an unresolved public DNS record. The old github.io mirror URL now returns
+301 to mawkingbird.com and no longer provides an independent fallback.
+
 ## Decisions and inventory (2026-09-07)
 
 The owner requested a snapshot of today's UI as the frozen legacy fork and no
@@ -104,6 +136,8 @@ concurrency groups do not lock across repositories.
 ## Rollback
 
 Disable the new activation variable and workflows, then drain all active runs.
+If the old workflow archive has landed, restore the two YAML files from
+mastodon_mock/.github_backup/ to .github/workflows/ and land that restoration.
 Re-enable the old workflows and clear their retirement variable only after this.
 For canary-only failure, production never changed. For a production failure,
 dispatch the old production publisher at the recorded source SHA and verify both
@@ -124,9 +158,13 @@ reissuing certificates. DNS may remain unchanged for the same GitHub account.
 
 ## Local validation and current handoff state
 
-The migration is prepared locally, not committed, pushed, or activated. No
-GitHub settings, deploy keys, secrets, DNS, certificates, or Cloudflare settings
-were modified. The new production deploy secret is not yet configured.
+The source migration is prepared locally, not committed, pushed, or activated.
+On 2026-09-07 both old publishing workflows were disabled in GitHub and
+MAWKINGBIRD_PUBLISH_RETIRED was set to true. No queued or running Actions runs
+were returned by the subsequent checks. Their local YAML files were moved into
+mastodon_mock/.github_backup/ at the owner's request. The new activation flag
+remains unset and the new production deploy secret is not yet configured.
+Deploy keys, secrets, DNS, certificates, and Cloudflare settings were not changed.
 
 Validated in Git Bash with Node 24.18.0 / npm 12.0.2 (CI uses Node 22):
 
