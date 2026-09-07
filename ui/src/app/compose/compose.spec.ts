@@ -2046,6 +2046,24 @@ describe('Compose', () => {
 
   // ------------------------------------------------------- reply mention seeding
 
+  it('requires rendered Markdown before showing a preview', () => {
+    const fixture = setUp();
+    for (const text of [
+      'plain text',
+      'https://example.com/*star',
+      '*unfinished',
+      '#hashtag',
+      '@person hello',
+    ]) {
+      internals(fixture).text.set(text);
+      expect(internals(fixture).previewVisible(), text).toBe(false);
+    }
+    for (const text of ['**bold**', '*italic*', '`code`', '# Heading']) {
+      internals(fixture).text.set(text);
+      expect(internals(fixture).previewVisible(), text).toBe(true);
+    }
+  });
+
   it('previews user content but never the automatic reply mention alone', () => {
     const f = setUp();
     f.componentRef.setInput('inReplyToId', 's1');
@@ -2054,13 +2072,15 @@ describe('Compose', () => {
     expect(internals(f).previewVisible()).toBe(false);
 
     internals(f).text.update((text) => text + 'H');
+    expect(internals(f).previewVisible()).toBe(false);
+    internals(f).text.update((text) => text + ' **hello**');
     expect(internals(f).previewVisible()).toBe(true);
     internals(f).text.set('@alice@dmv.community ');
     expect(internals(f).previewVisible()).toBe(false);
     internals(f).text.set('');
     expect(internals(f).previewVisible()).toBe(false);
     internals(f).text.set('H');
-    expect(internals(f).previewVisible()).toBe(true);
+    expect(internals(f).previewVisible()).toBe(false);
   });
 
   it('does not preview an initial group of reply mentions', () => {
@@ -2070,6 +2090,8 @@ describe('Compose', () => {
     f.detectChanges();
     expect(internals(f).previewVisible()).toBe(false);
     internals(f).text.update((text) => text + 'Hello');
+    expect(internals(f).previewVisible()).toBe(false);
+    internals(f).text.update((text) => text + ' *world*');
     expect(internals(f).previewVisible()).toBe(true);
   });
 

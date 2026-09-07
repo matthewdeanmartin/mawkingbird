@@ -1266,6 +1266,9 @@
       @if (wizardError()) {
         <p class="write-warning" role="alert">⚠ {{ wizardError() }}</p>
       }
+      @if (wizardBusy()) {
+        <p role="status">{{ publication.progress() }}</p>
+      }
 
       <div class="wizard-actions">
         <button
@@ -1361,5 +1364,12 @@
   </div>
 }
 @if (publishedHere()) {
-  <p role="status">{{ 'pages.write.publishedHere' | transloco }}</p>
+  <p role="status">
+    {{ (scheduledHere() ? 'pages.write.scheduledHere' : 'pages.write.publishedHere') | transloco }}
+    @if (publication.link(); as link) {
+      <a [href]="link" target="_blank" rel="noopener noreferrer">{{
+        'pages.write.openPublished' | transloco
+      }}</a>
+    }
+  </p>
 }

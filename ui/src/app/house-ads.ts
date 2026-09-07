@@ -69,10 +69,10 @@ export const HOUSE_ADS: HouseAd[] = [
   },
   {
     id: 'mimb-lite',
-    title: '🪶 MIMB lite',
+    title: '🪶 A blog-style Mastodon reader',
     text: 'The blog-style Mastodon reader, right in your browser.',
     url: 'https://matthewdeanmartin.github.io/mastodon_is_my_blog/mimb_lite/index.html',
-    cta: 'Open MIMB lite ↗',
+    cta: 'Open the reader ↗',
   },
   {
     id: 'youtuber-finder',

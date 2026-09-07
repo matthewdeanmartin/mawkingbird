@@ -181,6 +181,16 @@ describe('Conversations', () => {
 
   // ---------------------------------------------------------------- initial load
 
+  it('opens the conversation drawer on entry and closes it when a chat is selected', () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.chat-page')?.classList.contains('list-open')).toBe(true);
+    fixture.componentInstance.select(botRows(fixture)[0]);
+    fixture.detectChanges();
+    expect(element.querySelector('.chat-page')?.classList.contains('list-open')).toBe(false);
+  });
+
   it('fetches conversations and notifications on init and clears loading', () => {
     const fixture = TestBed.createComponent(Conversations);
     fixture.detectChanges();

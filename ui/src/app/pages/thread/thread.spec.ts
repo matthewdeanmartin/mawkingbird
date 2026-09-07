@@ -572,7 +572,8 @@ describe('Thread', () => {
     expect(chatInternals(fixture).chatKey()).toBeNull();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('a.btn[href*="/conversations"]')).toBeNull();
-    expect(el.querySelector('button[disabled][title*="two-person"]')).not.toBeNull();
+    expect(el.querySelector('button[disabled][title*="two-person"]')).toBeNull();
+    expect(el.textContent).not.toContain('Open in chat');
   });
 
   it('disables "open in chat" for a solo thread (only me)', () => {
@@ -583,6 +584,16 @@ describe('Thread', () => {
     fixture.detectChanges();
 
     expect(chatInternals(fixture).chatKey()).toBeNull();
+  });
+
+  it('hides open in chat when I have not participated in the thread', () => {
+    const fixture = setUpWithId('1');
+    TestBed.inject(Auth).account.set(ME);
+    httpMock.expectOne('/api/v1/statuses/1').flush(makeStatusBy('1', 'them', 'them'));
+    httpMock.expectOne('/api/v1/statuses/1/context').flush(makeContext());
+    fixture.detectChanges();
+    expect(chatInternals(fixture).chatKey()).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Open in chat');
   });
 
   it('hides "open in chat" entirely for a read-only RSS thread, rather than showing it disabled', async () => {

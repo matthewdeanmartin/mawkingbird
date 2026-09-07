@@ -270,13 +270,14 @@
       </header>
 
       @if (chat.kind === 'public') {
-        <div class="public-banner" role="alert">
-          <span class="public-banner-icon">📢</span>
-          <div>
-            <strong>{{ 'pages.conversations.publicBanner.title' | transloco }}</strong>
+        <details class="public-banner">
+          <summary>
+            📢 <strong>{{ 'pages.conversations.publicBanner.title' | transloco }}</strong>
+          </summary>
+          <div class="public-banner-details">
             {{ 'pages.conversations.publicBanner.body' | transloco }}
           </div>
-        </div>
+        </details>
       }
 
       <!-- Bot conversation picker. Sits above the transcript because it changes
@@ -516,6 +517,7 @@
         <div class="chat-compose" [class.compose-public]="chat.kind === 'public'">
           <app-compose
             [compact]="true"
+            [chatMode]="true"
             [inReplyToId]="replyToId()"
             [initialText]="replyMentions()"
             [initialVisibility]="replyVisibility()"

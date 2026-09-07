@@ -226,7 +226,7 @@ export class Thread implements OnInit {
     }
     const me = this.auth.account();
     const posts = this.thread();
-    if (!me || !posts.length) {
+    if (!me || !posts.some((post) => post.account.id === me.id)) {
       return null;
     }
     // Bluesky posts route to a different DM system; if any post is bsky this

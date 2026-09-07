@@ -228,6 +228,35 @@ textarea {
   max-width: 140px;
 }
 
+.chat-tools-toggle {
+  display: none;
+}
+@media (max-width: 800px) {
+  .compose-chat {
+    padding: 4px;
+  }
+  .compose-chat textarea {
+    min-height: 38px;
+    max-height: 120px;
+    padding: 6px 8px;
+  }
+  .compose-chat .chat-tools-toggle {
+    display: inline-flex;
+    margin-right: auto;
+  }
+  .compose-chat:not(.chat-tools-open) .compose-selects,
+  .compose-chat:not(.chat-tools-open) .compose-tools {
+    display: none;
+  }
+  .compose-chat .compose-tools {
+    flex-wrap: wrap;
+  }
+  .compose-chat .compose-bottom {
+    gap: 4px;
+    margin-top: 4px;
+  }
+}
+
 /* The preview toggle only earns a slot when the chat pane is reasonably wide. */
 .compose-compact .preview-toggle {
   display: none;

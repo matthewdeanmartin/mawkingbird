@@ -82,6 +82,7 @@ import {
 } from './split-modes';
 import { WriteWorkspace } from './write-workspace';
 import { BlueskyPublication, blueskyThreadError } from './bluesky-publication';
+import { WritePublication } from './write-publication';
 import { Terminology } from '../../terminology';
 
 type DraftFilter = 'all' | DraftKind;
@@ -134,7 +135,9 @@ export interface Notice {
 // i18n pages.write.pageNote: Drafts, editor and notes, side by side. Nothing else.
 // i18n pages.write.aria.drafts: Drafts
 // i18n pages.write.newDraftButton: New
-// i18n pages.write.publishedHere: Published to Bluesky.
+// i18n pages.write.publishedHere: Published.
+// i18n pages.write.scheduledHere: Scheduled.
+// i18n pages.write.openPublished: Open published post
 // i18n pages.write.aria.filterDraftsByKind: Filter drafts by kind
 // i18n pages.write.loadingDrafts: Loading drafts…
 // i18n pages.write.noDraftsOfKind: No drafts of that kind.
@@ -290,11 +293,12 @@ export interface Notice {
   ],
   templateUrl: './write-page.html',
   styleUrls: ['./write-workspace.css', './write-editor.css', './write-overlays.css'],
-  providers: [VisibilityState, LinkShortening, BlueskyPublication],
+  providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication],
 })
 export class WritePage implements OnInit, OnDestroy {
-  private blueskyPublication = inject(BlueskyPublication);
+  protected publication = inject(WritePublication);
   protected publishedHere = signal(false);
+  protected scheduledHere = signal(false);
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
   private transloco = inject(TranslocoService);
@@ -1206,7 +1210,7 @@ export class WritePage implements OnInit, OnDestroy {
     this.resetProofreading();
   }
 
-  /** Review the current draft, then publish Bluesky in place. */
+  /** Review and publish without leaving the writing workspace. */
   protected publish(): void {
     if (!this.hasContent()) {
       return;
@@ -1219,37 +1223,11 @@ export class WritePage implements OnInit, OnDestroy {
       this.setWizardTarget(firstTarget);
     }
     if (!first) {
-      if (this.wizardTarget() === 'bsky') {
-        this.enterWizardStep('targets');
-        void this.wizardFinish();
-        return;
-      }
-      // Every step switched off. An empty dialog would be worse than none.
-      // Attachments are the exception: their destination determines whether
-      // they must be uploaded to Mastodon, so that choice cannot be skipped.
-      if (this.media().length) {
-        this.enterWizardStep('targets');
-        return;
-      }
-      this.handOffToComposer();
+      this.enterWizardStep('targets');
+      if (!this.media().length) void this.wizardFinish();
       return;
     }
     this.enterWizardStep(first);
-  }
-
-  /**
-   * Hand the text to the composer, which owns publishing.
-   *
-   * Deliberately not guarded. The unsaved-work guard exists to stop writing
-   * being thrown away, and handing it to the composer is the opposite of
-   * throwing it away — the text goes with you. Prompting "you have unsaved
-   * writing" on the way to publishing it would be nonsense.
-   */
-  private handOffToComposer(): void {
-    this.drafts.handoff({ ...this.snapshot(), target: this.wizardTarget() });
-    this.dirty.set(false);
-    this.wizardStep.set(null);
-    void this.router.navigate(['/home']);
   }
 
   // ------------------------------------------------------------ publish wizard
@@ -1490,8 +1468,7 @@ export class WritePage implements OnInit, OnDestroy {
   /**
    * The end of the wizard.
    *
-   * Bluesky stays in this workspace, including failures and thread recovery.
-   * Other destinations retain their existing reviewed composer handoff.
+   * Every destination stays here, including failures and thread recovery.
    */
   private async wizardFinish(): Promise<void> {
     if (this.wizardBusy()) return;
@@ -1530,29 +1507,18 @@ export class WritePage implements OnInit, OnDestroy {
     this.wizardBusy.set(true);
     this.wizardError.set(null);
     try {
-      if (target === 'bsky') {
-        await this.blueskyPublication.publish(parts, this.media());
-        this.dirty.set(false);
-        this.wizardStep.set(null);
-        this.newDraft();
-        this.publishedHere.set(true);
-        return;
-      }
       if (
         (this.wizardTarget() === 'fedi' || this.wizardTarget() === 'both') &&
         this.media().some((item) => item.media.id.startsWith('local:'))
       ) {
         await this.prepareMediaForTarget(this.wizardTarget());
       }
-      this.drafts.handoff({ ...this.snapshot(), target: this.wizardTarget() }, undefined, {
-        media: this.media(),
-        scheduleAt: at,
-        publishImmediately: true,
-      });
-      this.mediaTransferred = true;
+      await this.publication.publish({ ...this.snapshot(), target }, this.media(), at);
+      this.scheduledHere.set(!!at);
       this.dirty.set(false);
       this.wizardStep.set(null);
-      await this.router.navigate(['/home']);
+      this.newDraft();
+      this.publishedHere.set(true);
     } catch (error: unknown) {
       this.wizardError.set(
         error instanceof Error ? error.message : "The attachments couldn't be prepared.",

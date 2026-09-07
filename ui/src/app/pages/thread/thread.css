@@ -2,10 +2,29 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 10px 16px;
+  gap: 2px;
+  padding: 5px 10px;
   border-bottom: 1px solid var(--border);
+}
+
+/* Same quiet, compact controls as Home's feed toolbar. */
+.reader-bar .btn {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 7px;
+  font-size: 13px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+.reader-bar .btn:hover {
+  background: var(--hover);
+}
+.reader-bar .btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .reader-font {

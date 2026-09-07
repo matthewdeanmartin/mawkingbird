@@ -155,7 +155,7 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.mute: Mute
 // i18n pages.conversations.block: Block
 // i18n pages.conversations.report: Report
-// i18n pages.conversations.publicBanner.title: THIS CONVERSATION IS PUBLIC.
+// i18n pages.conversations.publicBanner.title: Public conversation
 // i18n pages.conversations.publicBanner.body: Every message here is visible to anyone on the internet — this is a reply thread, not a private DM.
 // i18n pages.conversations.bot.pickerAriaLabel: Conversation
 // i18n pages.conversations.bot.allConversations: All conversations
@@ -260,7 +260,7 @@ export class Conversations implements OnInit, OnDestroy {
    *
    * Ignored entirely above the breakpoint, where both panes fit side by side.
    */
-  protected listOpen = signal(false);
+  protected listOpen = signal(true);
 
   protected toggleList(): void {
     this.listOpen.update((open) => !open);

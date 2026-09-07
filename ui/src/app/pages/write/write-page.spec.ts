@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal, signal } from '@angular/core';
 import { Router, provideRouter } from '@angular/router';
 import { BlueskyPublication } from './bluesky-publication';
+import { WritePublication } from './write-publication';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
@@ -602,7 +603,9 @@ describe('WritePage', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('hands the text to the composer rather than posting from here', () => {
+  it('hands the text to the composer rather than posting from here', async () => {
+    // Regression: Write now owns the publishing operation and never hands off.
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     signIn();
     const fixture = setUp();
     httpMock.expectOne(SCHEDULED_URL).flush([]);
@@ -612,12 +615,18 @@ describe('WritePage', () => {
     page.onBodyInput('ready to go\n---\nsecond post');
     runWizardToEnd(fixture);
 
-    const handoff = TestBed.inject(Drafts).takeHandoff();
-    expect(handoff?.snapshot.segments).toEqual(['ready to go', 'second post']);
-    expect(handoff?.publishImmediately).toBe(true);
-    // The existing composer owns provider-specific publishing; the writing
-    // page marks the handoff for immediate send after the target-last review.
-    expect(httpMock.match((r) => r.method === 'POST')).toHaveLength(0);
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
+    const first = httpMock.expectOne('/api/v1/statuses');
+    expect(first.request.body.status).toBe('ready to go');
+    first.flush({ id: 'published-1' });
+    await vi.waitFor(() => {
+      const next = httpMock.expectOne('/api/v1/statuses');
+      expect(next.request.body.status).toBe('second post');
+      expect(next.request.body.in_reply_to_id).toBe('published-1');
+      next.flush({ id: 'published-2' });
+    });
+    await vi.waitFor(() => expect(page.body()).toBe(''));
+    expect(navigate).not.toHaveBeenCalled();
   });
 
   it('publishing is not held up by the unsaved-work guard', () => {
@@ -628,12 +637,18 @@ describe('WritePage', () => {
     const page = internals(fixture);
     page.newDraft();
     page.onBodyInput('never saved, straight to publish');
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
     runWizardToEnd(fixture);
 
     expect(page.pendingSwitch()).toBeNull();
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.segments).toEqual([
-      'never saved, straight to publish',
-    ]);
+    expect(publish).toHaveBeenCalledWith(
+      expect.objectContaining({ segments: ['never saved, straight to publish'] }),
+      [],
+      '',
+    );
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
   // ------------------------------------------------------------------ sidecar
@@ -962,7 +977,7 @@ describe('WritePage', () => {
     expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
-  it('walks forward through the steps and publishes at the end', () => {
+  it('walks forward through the steps and publishes at the end', async () => {
     signIn();
     const fixture = setUp();
     httpMock.expectOne(SCHEDULED_URL).flush([]);
@@ -977,11 +992,15 @@ describe('WritePage', () => {
     expect(page.wizardStep()).toBe('when');
     page.wizardForward();
 
-    expect(page.wizardStep()).toBeNull();
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.segments).toEqual(['the finished piece']);
+    const request = httpMock.expectOne('/api/v1/statuses');
+    expect(request.request.body.status).toBe('the finished piece');
+    expect(page.wizardStep()).toBe('when');
+    request.flush({ id: 'published' });
+    await vi.waitFor(() => expect(page.wizardStep()).toBeNull());
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
-  it('publishes immediately when every step is switched off', () => {
+  it('publishes immediately when every step is switched off', async () => {
     // Someone who turned the whole wizard off must not get an empty dialog.
     TestBed.inject(Auth).mode.set('anonymous');
     TestBed.inject(ClientPrefs).wizardSteps.set({
@@ -991,10 +1010,18 @@ describe('WritePage', () => {
       when: false,
     });
     const fixture = setUp();
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
     openWizard(fixture, 'straight out');
 
-    expect(internals(fixture).wizardStep()).toBeNull();
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.segments).toEqual(['straight out']);
+    expect(publish).toHaveBeenCalledWith(
+      expect.objectContaining({ segments: ['straight out'] }),
+      [],
+      '',
+    );
+    await vi.waitFor(() => expect(internals(fixture).wizardStep()).toBeNull());
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
   it('still asks for the destination when attachments require target-specific preparation', () => {
@@ -1089,6 +1116,9 @@ describe('WritePage', () => {
     httpMock.expectOne(SCHEDULED_URL).flush([]);
     flushStatusScans([]);
     const page = internals(fixture);
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
     page.newDraft();
     page.onBodyInput('A picture');
     page.onPaste({
@@ -1113,14 +1143,17 @@ describe('WritePage', () => {
       description: null,
     });
 
-    const drafts = TestBed.inject(Drafts);
-    await vi.waitFor(() => expect(drafts.hasHandoff()).toBe(true));
-    expect(drafts.takeHandoff()?.media?.[0].media.id).toBe('media-1');
+    await vi.waitFor(() => expect(publish).toHaveBeenCalled());
+    expect(publish.mock.calls[0][1][0].media.id).toBe('media-1');
+    expect(TestBed.inject(Drafts).hasHandoff()).toBe(false);
   });
 
   it('carries the chosen target into the handoff', () => {
     TestBed.inject(Auth).mode.set('anonymous');
     const fixture = setUp();
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
     const page = internals(fixture);
     openWizard(fixture);
     page.wizardForward();
@@ -1128,7 +1161,8 @@ describe('WritePage', () => {
     page.setWizardTarget('paste');
     page.wizardForward();
 
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.target).toBe('paste');
+    expect(publish).toHaveBeenCalledWith(expect.objectContaining({ target: 'paste' }), [], '');
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
   it('previews the same splits the editor shows', () => {
@@ -1194,9 +1228,12 @@ describe('WritePage', () => {
     expect(page.wizardStep()).toBe('targets');
   });
 
-  it('publishes non-Mastodon targets without offering a browser-based schedule', () => {
+  it('publishes non-Mastodon targets without offering a browser-based schedule', async () => {
     TestBed.inject(Auth).mode.set('anonymous');
     const fixture = setUp();
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
     const page = internals(fixture);
     openWizard(fixture, 'publish this as a paste');
 
@@ -1205,8 +1242,9 @@ describe('WritePage', () => {
     page.setWizardTarget('paste');
     page.wizardForward();
 
-    expect(page.wizardStep()).toBeNull();
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.target).toBe('paste');
+    expect(publish).toHaveBeenCalledWith(expect.objectContaining({ target: 'paste' }), [], '');
+    await vi.waitFor(() => expect(page.wizardStep()).toBeNull());
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
   });
 
   it('drops a Mastodon schedule when the destination changes', () => {
@@ -1235,7 +1273,7 @@ describe('WritePage', () => {
     expect(page.wizardStep()).toBe('when');
   });
 
-  it('schedules from the last step instead of handing off', () => {
+  it('schedules from the last step instead of handing off', async () => {
     signIn();
     const fixture = setUp();
     httpMock.expectOne(SCHEDULED_URL).flush([]);
@@ -1251,10 +1289,11 @@ describe('WritePage', () => {
     page.setWizardScheduleAt('2027-01-01T09:00');
     page.wizardForward();
 
-    const handoff = TestBed.inject(Drafts).takeHandoff();
-    expect(handoff?.scheduleAt).toBe('2027-01-01T09:00');
-    expect(handoff?.publishImmediately).toBe(true);
-    expect(page.wizardStep()).toBeNull();
+    expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
+    const request = httpMock.expectOne('/api/v1/statuses');
+    expect(request.request.body.scheduled_at).toBe(new Date('2027-01-01T09:00').toISOString());
+    request.flush({ id: 'scheduled', scheduled_at: new Date('2027-01-01T09:00').toISOString() });
+    await vi.waitFor(() => expect(page.wizardStep()).toBeNull());
     httpMock.match(() => true);
   });
 
@@ -1435,7 +1474,10 @@ describe('WritePage', () => {
       page.setVisibility('private');
       runWizardToEnd(fixture);
 
-      expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.visibility).toBe('private');
+      expect(TestBed.inject(Drafts).takeHandoff()).toBeNull();
+      const request = httpMock.expectOne('/api/v1/statuses');
+      expect(request.request.body.visibility).toBe('private');
+      request.flush({ id: 'published-private' });
     });
 
     /**

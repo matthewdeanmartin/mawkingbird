@@ -39,35 +39,16 @@
       </a>
     }
 
-    <!-- Open this thread as a 1:1 chat. Enabled only when the whole thread is
-         exactly you and one other person — group threads stay disabled (chat's
-         multi-person experience isn't ready, and we'd rather not tempt anyone
-         into it), and shown that way with an explanation: a signed-in Mastodon
-         reader in a growing group thread can plausibly wonder why the button
-         went away. A read-only post (RSS, Bluesky, anonymous, Twitter) never
-         has a Mastodon DM to open at all — chatPartner() returns null on every
-         single view of one, not just sometimes — so there the disabled button
-         is not a state to explain, only permanent noise. Omitted entirely
-         there rather than rendered inert. -->
-    @if (!readOnlyPost()) {
-      @if (chatQueryParams(); as params) {
-        <a
-          class="btn btn-outline"
-          [routerLink]="['/conversations']"
-          [queryParams]="params"
-          [title]="'pages.thread.chat.continueTitle' | transloco"
-        >
-          💬 {{ 'pages.thread.chat.open' | transloco }}
-        </a>
-      } @else {
-        <button
-          class="btn btn-outline"
-          disabled
-          [title]="'pages.thread.chat.unavailableTitle' | transloco"
-        >
-          💬 {{ 'pages.thread.chat.open' | transloco }}
-        </button>
-      }
+    <!-- Only offer chat for an existing exchange with one other person. -->
+    @if (chatQueryParams(); as params) {
+      <a
+        class="btn btn-outline"
+        [routerLink]="['/conversations']"
+        [queryParams]="params"
+        [title]="'pages.thread.chat.continueTitle' | transloco"
+      >
+        💬 {{ 'pages.thread.chat.open' | transloco }}
+      </a>
     }
   </div>
 

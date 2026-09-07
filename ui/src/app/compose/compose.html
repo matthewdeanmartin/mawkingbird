@@ -1,6 +1,8 @@
 <div
   class="compose"
   [class.compose-compact]="compact()"
+  [class.compose-chat]="chatMode()"
+  [class.chat-tools-open]="chatToolsOpen()"
   [class.drag-over]="dragOver()"
   (dragenter)="onDragEnter($event)"
   (dragover)="onDragOver($event)"
@@ -72,12 +74,12 @@
     [ngModel]="text()"
     (ngModelChange)="text.set($event)"
     [placeholder]="placeholderText()"
-    [rows]="compact() ? 2 : 3"
+    [rows]="chatMode() ? 1 : compact() ? 2 : 3"
     (focus)="onBoxFocus(0, $event)"
     (keydown)="onBoxKeydown($event)"
     (paste)="onPaste($event)"
   ></textarea>
-  @if (showReplyMentionHint()) {
+  @if (showReplyMentionHint() && (!chatMode() || chatToolsOpen())) {
     <p class="reply-mention-hint muted" [innerHTML]="'compose.replyMentionHint' | transloco"></p>
   }
   @if (
@@ -294,6 +296,18 @@
   }
 
   <div class="compose-bottom">
+    @if (chatMode()) {
+      <button
+        class="tool-btn chat-tools-toggle"
+        type="button"
+        [attr.aria-expanded]="chatToolsOpen()"
+        (click)="chatToolsOpen.set(!chatToolsOpen())"
+        [attr.aria-label]="'compose.chatTools' | transloco"
+        [title]="'compose.chatTools' | transloco"
+      >
+        •••
+      </button>
+    }
     <div class="compose-selects">
       @if (showTargetPicker()) {
         <select

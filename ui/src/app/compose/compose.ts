@@ -574,6 +574,9 @@ export class Compose implements OnDestroy {
    * horizontal space is scarce (/conversations).
    */
   readonly compact = input(false);
+  readonly chatMode = input(false);
+  protected chatToolsOpen = signal(false);
+  // i18n compose.chatTools: More reply options
   /**
    * Whether this mount participates in "thoughtful posting" (see
    * {@link ClientPrefs.thoughtfulPosting}). Opt-in, and deliberately so: a
@@ -988,7 +991,7 @@ export class Compose implements OnDestroy {
   );
 
   // Live preview (rendered like the feed will render it — not WYSIWYG).
-  // Appears as soon as there's a character to render, gone when empty.
+  // Show a preview only when supported Markdown changes the rendered text.
   // Compact composers start with it off; the 👁 toolbar button toggles it.
   protected previewOn = signal(true);
   private readonly previewSeed = signal('');
@@ -998,7 +1001,15 @@ export class Compose implements OnDestroy {
       this.previewOn() &&
       this.segments().some((segment, index) => {
         const content = segment.trim();
-        return content !== '' && !(index === 0 && seed && seed.startsWith(content));
+        if (!content || (index === 0 && seed && seed.startsWith(content))) return false;
+        const html = renderStatusText(segment, this.customEmojis.emojis());
+        // Preview earns space only when supported Markdown changes rendering.
+        // Mentions, URLs, plain text and incomplete markers aren't a preview.
+        const rendered = applyMinimalMarkdown(html);
+        return (
+          rendered !== html &&
+          rendered !== new DOMParser().parseFromString(html, 'text/html').body.innerHTML
+        );
       })
     );
   });
