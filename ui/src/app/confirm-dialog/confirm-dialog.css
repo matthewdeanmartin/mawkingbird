@@ -1,0 +1,37 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 360px;
+  max-width: 100%;
+}
+
+h3 {
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 16px;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}

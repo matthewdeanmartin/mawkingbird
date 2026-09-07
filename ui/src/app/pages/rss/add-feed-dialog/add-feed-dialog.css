@@ -1,0 +1,153 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 420px;
+  max-width: 100%;
+}
+
+h3 {
+  margin: 0 0 8px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.small {
+  font-size: 13px;
+}
+
+/* type="text", not type="url": the box accepts handles and bare domains, which
+   a url input would reject before the resolver ever sees them. */
+form input[type='text'] {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 12px 0;
+}
+
+.feed-error {
+  color: #e0245e;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.retry-line {
+  margin: 0 0 8px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.resolved-line {
+  margin: 0 0 8px;
+}
+
+/* A button that reads as a link: the action sits inline in a sentence, where a
+   second real button would compete with the dialog's own primary action. */
+.link-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.resolved.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.account .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.account-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.account-name {
+  font-weight: 600;
+}
+
+/* Handles are long and must not push the Follow button off the dialog. */
+.account-text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.done {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.candidates {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 8px;
+}
+
+.candidates legend {
+  padding: 0 4px;
+}
+
+.candidate {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.candidate-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.candidate-title {
+  font-weight: 600;
+}
+
+/* Feed URLs are long, and the title is what identifies the choice — the URL is
+   confirmation for anyone who wants it, and the first thing to give up space. */
+.candidate-url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

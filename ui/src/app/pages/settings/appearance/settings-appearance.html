@@ -1,0 +1,77 @@
+<div class="spage-head">
+  <h1>{{ 'settings.appearance.title' | transloco }}</h1>
+  <p>{{ 'settings.appearance.intro' | transloco }}</p>
+</div>
+
+<form class="spage-body" (ngSubmit)="save()">
+  <app-blue-controls />
+
+  @if (isMock) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.appearance.media' | transloco }}</span>
+        <div class="scontrol">
+          <select
+            [ngModel]="displayMedia()"
+            (ngModelChange)="displayMedia.set($event)"
+            name="display_media"
+          >
+            <option value="default">{{ 'settings.appearance.media.default' | transloco }}</option>
+            <option value="show_all">{{ 'settings.appearance.media.showAll' | transloco }}</option>
+            <option value="hide_all">{{ 'settings.appearance.media.hideAll' | transloco }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.appearance.animations' | transloco }}</span>
+        <div class="scontrol">
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="reduceMotion()"
+              (ngModelChange)="reduceMotion.set($event)"
+              name="reduce_motion"
+            />
+            {{ 'settings.appearance.reduceMotion' | transloco }}
+          </label>
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="disableSwiping()"
+              (ngModelChange)="disableSwiping.set($event)"
+              name="disable_swiping"
+            />
+            {{ 'settings.appearance.disableSwiping' | transloco }}
+          </label>
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.appearance.contentWarnings' | transloco }}</span>
+        <div class="scontrol">
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="expandSpoilers()"
+              (ngModelChange)="expandSpoilers.set($event)"
+              name="expand_spoilers"
+            />
+            {{ 'settings.appearance.expandSpoilers' | transloco }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sactions">
+      @if (saved()) {
+        <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+      }
+      <button class="btn" type="submit" [disabled]="saving()">
+        {{ (saving() ? 'common.saving' : 'common.saveChanges') | transloco }}
+      </button>
+    </div>
+  }
+</form>

@@ -1,0 +1,83 @@
+/* Same geometry as the other dialogs. The backdrop is a real button here —
+   unlike the welcome dialog — because clicking away is a legitimate answer. */
+.ad-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: rgb(0 0 0 / 55%);
+  cursor: default;
+}
+
+.ad-dialog {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(760px, 88vh);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+}
+
+.ad-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.ad-summary {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.ad-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ad-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.ad-detail {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ad-note {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* A column, not a right-aligned row: the decline button now carries a line
+   saying what declining actually does, and that sentence belongs under the
+   button rather than beside it. */
+.ad-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.ad-actions p {
+  margin: 0;
+}

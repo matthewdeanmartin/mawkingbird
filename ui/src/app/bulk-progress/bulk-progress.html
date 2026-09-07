@@ -1,0 +1,74 @@
+@if (job(); as j) {
+  <section class="bulk-progress" [class.is-paused]="j.phase === 'paused'">
+    <div class="bp-head">
+      <div>
+        <strong>{{ spec()?.labelKey ?? '' | transloco }}</strong>
+        @if (j.targetLabel) {
+          <span class="bp-target muted">· {{ j.targetLabel }}</span>
+        }
+        <div class="muted small" role="status" aria-live="polite">{{ status() }}</div>
+      </div>
+      <div class="bp-actions">
+        @if (canCancel()) {
+          <button class="btn btn-outline btn-sm" type="button" (click)="cancel()">
+            {{ 'bulk.stop' | transloco }}
+          </button>
+        } @else {
+          <button class="btn btn-outline btn-sm" type="button" (click)="dismiss()">
+            {{ 'bulk.dismiss' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Indeterminate while the planning pass is still counting: there is no
+         honest percentage until the total is known. -->
+    <div
+      class="progress-track"
+      [class.indeterminate]="pct() === null"
+      role="progressbar"
+      [attr.aria-valuenow]="pct()"
+      [attr.aria-valuemin]="0"
+      [attr.aria-valuemax]="100"
+      [attr.aria-valuetext]="status()"
+    >
+      <div class="progress-fill" [style.width.%]="pct() ?? 100"></div>
+    </div>
+
+    <p class="bp-line small">
+      @if (pct(); as p) {
+        <span class="bp-pct">{{ p }}%</span>
+      }
+      <span class="muted">
+        {{ j.done.toLocaleString() }}
+        @if (j.total !== null) {
+          <span> / {{ j.total.toLocaleString() }}</span>
+        }
+        {{ 'bulk.processed' | transloco: { unit: unitLabel() } }}
+      </span>
+      @if (pauseSeconds(); as secs) {
+        <span class="bp-paused">{{ 'bulk.rateLimited' | transloco: { secs: secs } }}</span>
+      } @else if (eta(); as remaining) {
+        <span class="muted">{{ 'bulk.progress.remaining' | transloco: { time: remaining } }}</span>
+      }
+    </p>
+
+    <p class="bp-line small muted">
+      {{ 'bulk.progress.changed' | transloco: { count: j.changed.toLocaleString() } }}
+      @if (j.skipped) {
+        ·
+        {{ 'bulk.progress.alreadyCorrect' | transloco: { count: j.skipped.toLocaleString() } }}
+      }
+      @if (j.failed) {
+        ·
+        <span class="bp-failed">{{
+          'bulk.progress.failed' | transloco: { count: j.failed.toLocaleString() }
+        }}</span>
+      }
+    </p>
+
+    @if (j.error && j.phase !== 'running') {
+      <p class="bp-line small bp-failed">{{ j.error }}</p>
+    }
+  </section>
+}

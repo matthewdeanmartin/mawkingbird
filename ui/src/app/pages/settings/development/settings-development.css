@@ -1,0 +1,12 @@
+.scope-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.scope-chips code {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--border, #e0e0e0);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}

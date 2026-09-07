@@ -1,0 +1,111 @@
+<div class="spage-head">
+  <h1>{{ 'settings.spotlight.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.spotlight.intro' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.spotlight.rotation' | transloco: { shown: shown } }}
+  </p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.spotlight.show' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [checked]="store.enabled()"
+            (change)="store.setEnabled($any($event.target).checked)"
+          />
+          {{ 'settings.spotlight.show.label' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.spotlight.show.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="ssection">
+    <h2>{{ 'settings.spotlight.each' | transloco }}</h2>
+    <p class="muted small">
+      {{ 'settings.spotlight.clicks.explain' | transloco }}
+    </p>
+
+    <ul class="spotlight-list">
+      @for (row of store.rows(); track row.ad.id) {
+        <li class="spotlight-row" [class.spotlight-off]="row.disabled || !store.enabled()">
+          <label class="spotlight-switch">
+            <input
+              type="checkbox"
+              [checked]="!row.disabled"
+              [disabled]="!store.enabled()"
+              (change)="store.setAdEnabled(row.ad.id, $any($event.target).checked)"
+            />
+            <span class="sr-only">{{
+              'settings.spotlight.showOne' | transloco: { title: row.ad.title }
+            }}</span>
+          </label>
+
+          <div class="spotlight-detail">
+            <p class="spotlight-name">
+              {{ row.ad.title }}
+              @if (!store.enabled()) {
+                <span class="pill">{{ 'settings.spotlight.pill.allOff' | transloco }}</span>
+              } @else if (row.disabled) {
+                <span class="pill">{{ 'settings.spotlight.pill.off' | transloco }}</span>
+              } @else if (row.dismissed) {
+                <span class="pill">{{ 'settings.spotlight.pill.dismissed' | transloco }}</span>
+              } @else if (row.showing) {
+                <span class="pill pill-on">{{
+                  'settings.spotlight.pill.showing' | transloco
+                }}</span>
+              } @else {
+                <span class="pill">{{ 'settings.spotlight.pill.upNext' | transloco }}</span>
+              }
+            </p>
+            <p class="muted small">{{ row.ad.text }}</p>
+            <a class="spotlight-url" [href]="row.ad.url" target="_blank" rel="noopener noreferrer">
+              {{ row.ad.cta }}
+            </a>
+          </div>
+
+          <p class="spotlight-clicks">
+            @if (row.clicks; as clicks) {
+              <strong>{{ clicks.count }}</strong>
+              <span class="muted small">
+                {{
+                  (clicks.count === 1
+                    ? 'settings.spotlight.click.one'
+                    : 'settings.spotlight.click.other'
+                  ) | transloco
+                }}
+                @if (clickedOn(clicks.lastClickedAt); as when) {
+                  {{ 'settings.spotlight.lastClicked' | transloco: { when: when } }}
+                }
+              </span>
+            } @else {
+              <span class="muted small">{{ 'settings.spotlight.neverClicked' | transloco }}</span>
+            }
+          </p>
+        </li>
+      }
+    </ul>
+
+    <div class="spotlight-actions">
+      <button class="btn btn-outline btn-sm" type="button" (click)="store.enableAll()">
+        {{ 'settings.spotlight.enableAll' | transloco }}
+      </button>
+      @if (store.totalClicks()) {
+        <button class="btn btn-outline btn-sm" type="button" (click)="store.clearClicks()">
+          {{
+            (store.totalClicks() === 1
+              ? 'settings.spotlight.forget.one'
+              : 'settings.spotlight.forget.other'
+            ) | transloco: { count: store.totalClicks() }
+          }}
+        </button>
+      }
+    </div>
+  </section>
+</div>

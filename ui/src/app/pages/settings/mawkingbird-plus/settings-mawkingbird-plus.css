@@ -1,0 +1,258 @@
+.plus-identity,
+.plus-signin,
+.plus-supporter,
+.plus-offer,
+.plus-vault {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 12px 0;
+}
+
+.plus-identity h2,
+.plus-signin h2,
+.plus-supporter h2,
+.plus-offer h2,
+.plus-vault h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.plus-vault-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.plus-vault-title p {
+  margin: 0;
+}
+
+.plus-vault-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.plus-vault-toggle:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.plus-vault h3 {
+  margin: 18px 0 8px;
+  font-size: 15px;
+}
+
+.plus-vault-diagnostics {
+  display: grid;
+  grid-template-columns: minmax(130px, auto) 1fr;
+  gap: 7px 16px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.plus-vault-diagnostics dt {
+  color: var(--muted, inherit);
+  font-size: 14px;
+}
+
+.plus-vault-diagnostics dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.plus-vault-benefit {
+  margin: 8px 0 2px;
+}
+
+.plus-vault-benefit strong {
+  font-size: 22px;
+}
+
+.plus-vault-form {
+  display: grid;
+  gap: 7px;
+  max-width: 430px;
+  margin: 12px 0;
+}
+
+.plus-vault-form label,
+.plus-vault-policy {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.plus-vault-form .btn {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+.plus-vault select {
+  display: block;
+  width: min(100%, 430px);
+  margin: 6px 0 12px;
+}
+
+.plus-vault-delete {
+  color: var(--danger, #b42318);
+}
+
+@media (width <= 480px) {
+  .plus-vault-title {
+    flex-direction: column;
+  }
+
+  .plus-vault-diagnostics {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .plus-vault-diagnostics dd:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+/* Two columns so labels and values line up; wraps to one on narrow screens. */
+.plus-identity dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin: 0 0 16px;
+}
+
+.plus-identity dt {
+  color: var(--muted, inherit);
+  font-size: 14px;
+}
+
+.plus-identity dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (width <= 480px) {
+  .plus-identity dl {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .plus-identity dd:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+.plus-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 6px;
+}
+
+/* The vault's two verbs, each with a line saying what happens after it. Stacked
+   rather than a button row, because the explanation is the point — see the
+   comment in the template. */
+.plus-vault-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 12px 0 6px;
+}
+
+.plus-vault-action p {
+  margin: 6px 0 0;
+  max-width: 60ch;
+}
+
+/* "What you are getting": two columns, label and number, right-aligned figures
+   so they can be compared down the column. Replaced a <dl> that rendered as a
+   ragged indented list. */
+.plus-usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.plus-usage-table th,
+.plus-usage-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.plus-usage-table tbody th {
+  font-weight: 500;
+}
+
+.plus-usage-table td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.plus-feature-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plus-feature-list li {
+  border-top: 1px solid var(--border);
+}
+
+.plus-feature-list li:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.plus-feature-list label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 2px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/*
+  The benefits table, rendered from PLUS_BENEFITS.
+
+  Scrolls inside its own box rather than widening the settings column: three
+  columns of prose is the one thing on this page that cannot be made to fit a
+  narrow viewport, and a page that scrolls sideways is worse than a table that
+  does.
+*/
+.plus-benefits {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+}
+
+.plus-benefits th,
+.plus-benefits td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.plus-benefits thead th {
+  background: var(--hover);
+  font-weight: 600;
+}
+
+/* The row heading is the capability; the two value cells carry the comparison. */
+.plus-benefits tbody th {
+  font-weight: 600;
+  white-space: nowrap;
+}

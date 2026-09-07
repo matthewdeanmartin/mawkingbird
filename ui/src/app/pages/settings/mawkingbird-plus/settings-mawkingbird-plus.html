@@ -1,0 +1,905 @@
+<div class="spage-head">
+  <h1>{{ 'settings.plus.title' | transloco }}</h1>
+  <!--
+    The pitch is for people who are not supporters yet. Rendering it
+    unconditionally told a paying subscriber their account was free, directly
+    above a "Plan: Mawkingbird Plus" line — the contradiction that made the
+    whole page untrustworthy.
+  -->
+  @if (!plus.isSupporter()) {
+    <p>
+      {{ 'settings.plus.intro.free' | transloco }}
+    </p>
+  } @else {
+    <p>{{ 'settings.plus.intro.supporter' | transloco }}</p>
+  }
+</div>
+
+<div class="spage-body">
+  @if (!session.ready()) {
+    <p class="muted" role="status">{{ 'settings.plus.checkingAccount' | transloco }}</p>
+  } @else if (session.user(); as user) {
+    @if (checkoutOutcome() === 'success') {
+      <p class="connection-ok" role="status">
+        {{ 'settings.plus.checkout.thanks' | transloco }}
+      </p>
+    } @else if (checkoutOutcome() === 'cancel') {
+      <p class="muted" role="status">{{ 'settings.plus.checkout.cancelled' | transloco }}</p>
+    }
+
+    <!--
+      Sign-in and plan in one block. They were two sections saying overlapping
+      things — "Plan: Mawkingbird Plus" in one and the renewal date in the
+      other — which meant the answer to "what am I paying for and until when"
+      was split across the page with a feature list in between.
+    -->
+    <section class="plus-identity">
+      <h2>{{ 'settings.plus.account.title' | transloco }}</h2>
+      <dl>
+        <dt>{{ 'settings.plus.account.signIn' | transloco }}</dt>
+        <dd>
+          {{
+            user.auth === 'email'
+              ? ('settings.plus.account.auth.email' | transloco)
+              : ('settings.plus.account.auth.full' | transloco)
+          }}
+        </dd>
+        <dt>{{ 'settings.plus.account.plan' | transloco }}</dt>
+        <dd>
+          {{
+            plus.isSupporter()
+              ? ('settings.plus.account.plan.plus' | transloco)
+              : ('settings.plus.account.plan.free' | transloco)
+          }}
+          @if (plus.isSupporter() && plus.subscription(); as subscription) {
+            @if (subscription.cancelAtPeriodEnd) {
+              <span class="muted small">
+                {{ 'settings.plus.account.cancelledUntil' | transloco }}
+                {{ subscription.renewsAt | date: 'longDate' }}
+              </span>
+            } @else {
+              <span class="muted small">
+                {{ 'settings.plus.account.renews' | transloco }}
+                {{ subscription.renewsAt | date: 'longDate' }}
+              </span>
+            }
+          }
+        </dd>
+      </dl>
+      @if (plus.isSupporter()) {
+        <p class="muted small">
+          {{ 'settings.plus.account.manageNote' | transloco }}
+        </p>
+      }
+      <p class="muted small">
+        {{ 'settings.plus.account.signOutNote' | transloco }}
+      </p>
+      <button class="btn btn-outline" type="button" (click)="signOut()">
+        {{ 'settings.plus.account.signOut' | transloco }}
+      </button>
+    </section>
+
+    <ng-template #vaultPanel>
+      @if (vaultPreference.available) {
+        <section class="plus-vault" aria-labelledby="plus-vault-heading">
+          <div class="plus-vault-title">
+            <div>
+              <h2 id="plus-vault-heading">{{ 'settings.plus.vault.title' | transloco }}</h2>
+              <p class="muted small">
+                {{ 'settings.plus.vault.testNote' | transloco }}
+              </p>
+            </div>
+            <label class="plus-vault-toggle">
+              <input
+                type="checkbox"
+                [checked]="vaultPreference.enabled()"
+                [disabled]="!plus.isSupporter() || vaultBusy()"
+                (change)="setVaultEnabled($any($event.target).checked)"
+              />
+              <span>{{
+                vaultPreference.enabled() ? 'On' : ('settings.plus.vault.off' | transloco)
+              }}</span>
+            </label>
+          </div>
+
+          <h3>{{ 'settings.plus.vault.whyTitle' | transloco }}</h3>
+          <dl class="plus-vault-diagnostics">
+            <dt>{{ 'settings.plus.vault.deployment' | transloco }}</dt>
+            <dd class="connection-ok">{{ 'settings.plus.vault.rolloutEnabled' | transloco }}</dd>
+            <dt>{{ 'settings.plus.vault.entitlement' | transloco }}</dt>
+            <dd
+              [class.connection-ok]="plus.isSupporter()"
+              [class.config-error]="!plus.isSupporter()"
+            >
+              {{
+                plus.isSupporter()
+                  ? ('settings.plus.vault.recognized' | transloco)
+                  : ('settings.plus.vault.notRecognized' | transloco)
+              }}
+            </dd>
+            <dt>{{ 'settings.plus.vault.syncSwitch' | transloco }}</dt>
+            <dd>
+              {{ vaultPreference.enabled() ? 'On' : ('settings.plus.vault.offHere' | transloco) }}
+            </dd>
+            <dt>{{ 'settings.plus.vault.store' | transloco }}</dt>
+            <dd>
+              @switch (vault.state()) {
+                @case ('unknown') {
+                  {{ 'settings.plus.vault.state.unchecked' | transloco }}
+                }
+                @case ('absent') {
+                  {{ 'settings.plus.vault.state.ready' | transloco }}
+                }
+                @case ('locked') {
+                  {{ 'settings.plus.vault.state.locked' | transloco }}
+                }
+                @case ('unlocked') {
+                  <span class="connection-ok">{{
+                    'settings.plus.vault.state.open' | transloco
+                  }}</span>
+                }
+                @case ('unavailable') {
+                  <span class="config-error">
+                    @switch (vault.unavailableReason()) {
+                      @case ('needs-plus') {
+                        {{ 'settings.plus.vault.error.noPlus' | transloco }}
+                      }
+                      @case ('needs-idp') {
+                        {{ 'settings.plus.vault.error.strongerSignIn' | transloco }}
+                      }
+                      @case ('not-a-tester') {
+                        {{ 'settings.plus.vault.error.notTester' | transloco }}
+                      }
+                      @case ('offline') {
+                        {{ 'settings.plus.vault.error.unreachable' | transloco }}
+                      }
+                      @default {
+                        {{ 'settings.plus.vault.error.badSignIn' | transloco }}
+                      }
+                    }
+                  </span>
+                }
+              }
+            </dd>
+            @if (vault.meta(); as meta) {
+              <dt>{{ 'settings.plus.vault.bytes' | transloco }}</dt>
+              <dd>{{ formatBytes(meta.bytes) }}</dd>
+              <dt>{{ 'settings.plus.vault.expiry' | transloco }}</dt>
+              <dd>
+                {{
+                  meta.expiresAt
+                    ? (meta.expiresAt | date: 'medium')
+                    : ('settings.plus.vault.noExpiry' | transloco)
+                }}
+              </dd>
+            }
+          </dl>
+
+          <h3>{{ 'settings.plus.vault.gettingTitle' | transloco }}</h3>
+          @if (vault.unlocked()) {
+            <p class="plus-vault-benefit">
+              <span
+                [innerHTML]="
+                  (vault.count() === 1
+                    ? 'settings.plus.vault.credentials.one'
+                    : 'settings.plus.vault.credentials.other'
+                  ) | transloco: { count: vault.count() }
+                "
+              ></span>
+            </p>
+            @if (vaultConnectors().length > 0) {
+              <p class="muted small">
+                {{ 'settings.plus.vault.storedFor' | transloco }}
+                {{ vaultConnectors().join(', ') }}.
+              </p>
+            } @else {
+              <p class="muted small">
+                {{ 'settings.plus.vault.empty' | transloco }}
+              </p>
+            }
+          } @else if (vault.meta()) {
+            <p class="muted small">
+              {{ 'settings.plus.vault.lockedNote' | transloco }}
+            </p>
+          } @else {
+            <p class="muted small">{{ 'settings.plus.vault.noneStored' | transloco }}</p>
+          }
+
+          @if (!plus.isSupporter()) {
+            <p class="config-error" role="alert">
+              {{ 'settings.plus.vault.tokenFreeNote' | transloco }}
+            </p>
+          } @else if (vaultPreference.enabled()) {
+            @switch (vault.state()) {
+              @case ('unknown') {
+                <button
+                  class="btn btn-outline"
+                  type="button"
+                  [disabled]="vaultBusy()"
+                  (click)="refreshVault()"
+                >
+                  {{
+                    vaultBusy()
+                      ? ('settings.plus.checking' | transloco)
+                      : ('settings.plus.vault.checkTest' | transloco)
+                  }}
+                </button>
+              }
+              @case ('unavailable') {
+                <button
+                  class="btn btn-outline"
+                  type="button"
+                  [disabled]="vaultBusy()"
+                  (click)="refreshVault()"
+                >
+                  {{
+                    vaultBusy()
+                      ? ('settings.plus.checking' | transloco)
+                      : ('settings.plus.vault.retryDiagnostics' | transloco)
+                  }}
+                </button>
+              }
+              @case ('absent') {
+                <form class="plus-vault-form" (submit)="$event.preventDefault(); createVault()">
+                  <label for="vault-new-passphrase">{{
+                    'settings.plus.vault.newPassphrase' | transloco
+                  }}</label>
+                  <input
+                    id="vault-new-passphrase"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                    [value]="vaultPassphrase()"
+                    (input)="vaultPassphrase.set($any($event.target).value)"
+                  />
+                  <label for="vault-new-passphrase-again">{{
+                    'settings.plus.vault.repeatPassphrase' | transloco
+                  }}</label>
+                  <input
+                    id="vault-new-passphrase-again"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                    [value]="vaultPassphraseAgain()"
+                    (input)="vaultPassphraseAgain.set($any($event.target).value)"
+                  />
+                  <button class="btn" type="submit" [disabled]="vaultBusy()">
+                    {{
+                      vaultBusy()
+                        ? ('settings.plus.vault.creating' | transloco)
+                        : ('settings.plus.vault.create' | transloco)
+                    }}
+                  </button>
+                </form>
+              }
+              @case ('locked') {
+                <form class="plus-vault-form" (submit)="$event.preventDefault(); unlockVault()">
+                  <label for="vault-passphrase">{{
+                    'settings.plus.vault.passphrase' | transloco
+                  }}</label>
+                  <input
+                    id="vault-passphrase"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    [value]="vaultPassphrase()"
+                    (input)="vaultPassphrase.set($any($event.target).value)"
+                  />
+                  <button class="btn" type="submit" [disabled]="vaultBusy()">
+                    {{
+                      vaultBusy()
+                        ? ('settings.plus.vault.unlocking' | transloco)
+                        : ('settings.plus.vault.unlock' | transloco)
+                    }}
+                  </button>
+                </form>
+              }
+              @case ('unlocked') {
+                <!--
+                  Both buttons say what they do to something the reader can see,
+                  and each has a line under it saying what happens after.
+
+                  "Lock now" said neither. A button whose meaning you cannot
+                  guess reads as a threat — the safe assumption about an unknown
+                  verb next to your stored passwords is that clicking it breaks
+                  something — so the honest ones go unclicked and the feature
+                  goes unused.
+                -->
+                <div class="plus-vault-buttons">
+                  <div class="plus-vault-action">
+                    <button
+                      class="btn btn-outline"
+                      type="button"
+                      [disabled]="vaultBusy()"
+                      (click)="syncExistingVaultKeys()"
+                    >
+                      {{ 'settings.plus.vault.copyKeys' | transloco }}
+                    </button>
+                    <p class="muted small">
+                      {{ 'settings.plus.vault.copyKeys.hint' | transloco }}
+                    </p>
+                  </div>
+                  <div class="plus-vault-action">
+                    <button
+                      class="btn btn-outline"
+                      type="button"
+                      [disabled]="vaultBusy()"
+                      (click)="lockVault()"
+                    >
+                      {{ 'settings.plus.vault.close' | transloco }}
+                    </button>
+                    <p class="muted small">
+                      {{ 'settings.plus.vault.close.hint' | transloco }}
+                    </p>
+                  </div>
+                </div>
+
+                <label class="plus-vault-policy" for="vault-policy">{{
+                  'settings.plus.vault.delete' | transloco
+                }}</label>
+                <select
+                  id="vault-policy"
+                  [disabled]="vaultBusy()"
+                  [value]="vaultPolicyValue()"
+                  (change)="setVaultPolicy($any($event.target).value)"
+                >
+                  <option value="idle-90">
+                    {{ 'settings.plus.vault.policy.idle90' | transloco }}
+                  </option>
+                  <option value="idle-365">
+                    {{ 'settings.plus.vault.policy.idle365' | transloco }}
+                  </option>
+                  <option value="absolute-90">
+                    {{ 'settings.plus.vault.policy.age90' | transloco }}
+                  </option>
+                  <option value="absolute-365">
+                    {{ 'settings.plus.vault.policy.age365' | transloco }}
+                  </option>
+                  <option value="never">
+                    {{ 'settings.plus.vault.policy.never' | transloco }}
+                  </option>
+                </select>
+
+                <form
+                  class="plus-vault-form"
+                  (submit)="$event.preventDefault(); changeVaultPassphrase()"
+                >
+                  <label for="vault-next-passphrase">{{
+                    'settings.plus.vault.changePassphrase' | transloco
+                  }}</label>
+                  <input
+                    id="vault-next-passphrase"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                    [value]="vaultNextPassphrase()"
+                    (input)="vaultNextPassphrase.set($any($event.target).value)"
+                  />
+                  <button class="btn btn-outline" type="submit" [disabled]="vaultBusy()">
+                    {{ 'settings.plus.vault.changePassphrase' | transloco }}
+                  </button>
+                </form>
+
+                <button
+                  class="btn btn-outline plus-vault-delete"
+                  type="button"
+                  [disabled]="vaultBusy()"
+                  (click)="destroyVault()"
+                >
+                  {{
+                    vaultDeleteArmed()
+                      ? ('settings.plus.vault.deleteConfirm' | transloco)
+                      : ('settings.plus.vault.deleteAction' | transloco)
+                  }}
+                </button>
+              }
+            }
+          }
+
+          @if (vaultMessage(); as message) {
+            <p class="muted small" role="status">{{ message }}</p>
+          }
+        </section>
+      }
+    </ng-template>
+
+    @if (plus.isSupporter() && features.decided()) {
+      <!--
+        The same toggles as the welcome dialog, so a decision made once in a
+        modal is never a decision the user is stuck with. Shown only after the
+        dialog has been answered, so the two are never on screen together
+        disagreeing about the same switches.
+      -->
+      <section class="plus-features">
+        <h2>{{ 'settings.plus.features.title' | transloco }}</h2>
+        <p class="muted small">
+          {{ 'settings.plus.features.intro' | transloco }}
+        </p>
+        <ul class="plus-feature-list">
+          @for (row of featureRows(); track row.feature) {
+            <li>
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="row.on"
+                  (change)="setFeature(row.feature, $any($event.target).checked)"
+                />
+                <span>{{ row.label }}</span>
+              </label>
+            </li>
+          }
+        </ul>
+        @if (adoptionError(); as failure) {
+          <p class="config-error" role="alert">{{ failure }}</p>
+        }
+      </section>
+    }
+
+    <ng-container [ngTemplateOutlet]="vaultPanel" />
+
+    @if (plus.isSupporter()) {
+      <!--
+        Diagnostics, in two halves because there are two different questions.
+        "Is it working" wants local against remote with the drift named; "is it
+        worth it" wants what the subscription has actually done. Mixing them
+        produces a table that answers neither.
+
+        Nothing here loads on its own: reading diagnostics must not change what
+        it reports, and polling would add background requests to answer a
+        question nobody is asking most of the time.
+      -->
+      <section class="plus-diagnostics">
+        <h2>{{ 'settings.plus.diagnostics.title' | transloco }}</h2>
+
+        <h3>{{ 'settings.plus.diagnostics.whatStored' | transloco }}</h3>
+        @if (diagnostics.state() === 'idle') {
+          <p class="muted small">
+            {{ 'settings.plus.diagnostics.intro' | transloco }}
+          </p>
+          <button class="btn btn-outline" type="button" (click)="loadDiagnostics()">
+            {{ 'settings.plus.diagnostics.check' | transloco }}
+          </button>
+        } @else if (diagnostics.state() === 'loading') {
+          <p class="muted" role="status">{{ 'settings.plus.diagnostics.reading' | transloco }}</p>
+        } @else if (diagnostics.state() === 'failed') {
+          <p class="config-error" role="alert">{{ diagnostics.error() }}</p>
+          <button class="btn btn-outline" type="button" (click)="loadDiagnostics()">
+            {{ 'settings.plus.diagnostics.retry' | transloco }}
+          </button>
+        } @else {
+          <p>
+            <strong>{{ 'settings.plus.diagnostics.oneAccount' | transloco }}</strong>
+            {{ 'settings.plus.diagnostics.oneAccount.body' | transloco }}
+          </p>
+
+          <h4>{{ 'settings.plus.diagnostics.sharedSettings' | transloco }}</h4>
+          <table class="plus-diag-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'settings.plus.diagnostics.data' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.diagnostics.thisBrowser' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.title' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{{ 'settings.plus.diagnostics.settings' | transloco }}</th>
+                <td>
+                  {{ diagnostics.settings().localKeys }}
+                  {{ 'settings.plus.diagnostics.keysOpen' | transloco
+                  }}{{ formatBytes(diagnostics.settings().localBytes) }})
+                </td>
+                <td>
+                  @if (diagnostics.settings().remoteBytes === null) {
+                    <span class="muted">{{
+                      'settings.plus.diagnostics.nothingStored' | transloco
+                    }}</span>
+                  } @else {
+                    {{ formatBytes(diagnostics.settings().remoteBytes ?? 0)
+                    }}{{ 'settings.plus.diagnostics.revision' | transloco }}
+                    {{ diagnostics.settings().remoteRevision }}
+                  }
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>{{ 'settings.plus.diagnostics.byAccount' | transloco }}</h4>
+          @if (diagnostics.storedAccountCount() === 0) {
+            <p class="muted small">{{ 'settings.plus.diagnostics.noneSaved' | transloco }}</p>
+          } @else {
+            <p class="muted small">
+              {{
+                (diagnostics.storedAccountCount() === 1
+                  ? 'settings.plus.diagnostics.storedAccounts.one'
+                  : 'settings.plus.diagnostics.storedAccounts.other'
+                ) | transloco: { count: diagnostics.storedAccountCount() }
+              }}
+            </p>
+          }
+          <table class="plus-diag-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'settings.plus.diagnostics.mastodonAccount' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.diagnostics.trusted' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.diagnostics.rssFeeds' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.diagnostics.lists' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (account of diagnostics.accountRows(); track account.accountKey) {
+                <tr>
+                  <th scope="row">
+                    {{ account.label }}
+                    @if (account.active) {
+                      <span class="muted small">{{
+                        'settings.plus.diagnostics.current' | transloco
+                      }}</span>
+                    }
+                    @if (!account.stored) {
+                      <br /><span class="muted small">{{
+                        'settings.plus.diagnostics.noneFromAccount' | transloco
+                      }}</span>
+                    }
+                  </th>
+                  <td>{{ account.trust }}</td>
+                  <td>{{ account.feeds }}</td>
+                  <td>{{ account.lists }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <h4>{{ 'settings.plus.diagnostics.comparison' | transloco }}</h4>
+          <p class="muted small">
+            {{ 'settings.plus.diagnostics.syncAffects' | transloco }}
+            {{ diagnostics.activeAccountLabel()
+            }}{{ 'settings.plus.diagnostics.syncAffects.after' | transloco }}
+          </p>
+          <table class="plus-diag-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'settings.plus.diagnostics.data' | transloco }}</th>
+                <th scope="col">{{ 'settings.plus.diagnostics.thisBrowser' | transloco }}</th>
+                <th scope="col">
+                  {{ 'settings.plus.diagnostics.savedFor' | transloco }}
+                  {{ diagnostics.activeAccountLabel() }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of diagnostics.collectionRows(); track row.collection) {
+                <tr>
+                  <th scope="row">{{ row.label }}</th>
+                  <td>{{ row.local }}</td>
+                  <td>
+                    @if (row.remote === null) {
+                      <!-- Not "0": a failed read is a fact about the network, not
+                           a claim that the account holds nothing. -->
+                      @if (row.error; as reason) {
+                        <span class="config-error small">{{ reason }}</span>
+                      } @else {
+                        <span class="muted">{{
+                          'settings.plus.diagnostics.couldNotRead' | transloco
+                        }}</span>
+                      }
+                    } @else {
+                      {{ row.remote }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          @if (diagnostics.settings().remoteUpdatedAt; as updated) {
+            <p class="muted small">
+              {{ 'settings.plus.diagnostics.lastUpdated' | transloco }}
+              {{ updated | date: 'medium' }}.
+            </p>
+          }
+          @if (diagnostics.quota(); as quota) {
+            <p class="muted small">
+              {{ 'settings.plus.diagnostics.using' | transloco }} {{ formatBytes(quota.used) }}
+              {{ 'settings.plus.diagnostics.of' | transloco }} {{ formatBytes(quota.limit) }}.
+            </p>
+          }
+
+          <!--
+            A refusal is reported before any difference is, and it disables the
+            fix. Otherwise the panel says "these do not match, press Sync" about
+            an account the server is refusing to write to — which is what
+            happened: the button 402'd silently and the page kept insisting.
+          -->
+          @if (diagnostics.blocked(); as reason) {
+            <p class="config-error" role="alert">{{ reason }}</p>
+          }
+          @if (diagnostics.drifted()) {
+            <p role="status">
+              {{
+                'settings.plus.sync.drifted'
+                  | transloco: { account: diagnostics.activeAccountLabel() }
+              }}
+            </p>
+            <!--
+              The reason is shown *before* the press, not after it. A "Sync now"
+              that only reports "settings sync is off" once clicked is a button
+              that looks broken, and the reason was knowable all along.
+            -->
+            @if (syncBlockedReason(); as blocked) {
+              <p class="config-error" role="alert">{{ blocked }}</p>
+            }
+            <button
+              class="btn"
+              type="button"
+              [disabled]="
+                syncing() ||
+                pendingAdoption() !== null ||
+                syncBlockedReason() !== null ||
+                diagnostics.blocked() !== null
+              "
+              (click)="syncNow()"
+            >
+              {{
+                syncing()
+                  ? ('settings.plus.diagnostics.syncing' | transloco)
+                  : ('settings.plus.diagnostics.syncNow' | transloco)
+              }}
+            </button>
+          } @else {
+            <p class="muted small" role="status">
+              {{ 'settings.plus.diagnostics.matches' | transloco }}
+            </p>
+          }
+          @if (syncMessage(); as message) {
+            <p class="muted small" role="status">{{ message }}</p>
+          }
+        }
+
+        <!--
+          A table, and a running total rather than today's counters.
+
+          This panel used to be a <dl> of four numbers that all reset at
+          midnight, which meant it greeted a subscriber who had not read
+          anything since breakfast with a column of zeros — on the page whose
+          other button cancels the subscription. Worse, the quota row said
+          "Unlimited while Plus is active (2 free-tier reads remain today)":
+          the parenthesis is an internal accounting detail about a limit this
+          reader does not have, and reading it as a *restriction* is the only
+          reasonable thing a paying customer can do with it.
+
+          So the free-tier remainder is not rendered for a supporter at all,
+          and the headline number is one that only ever grows.
+        -->
+        <h3>{{ 'settings.plus.usage.gettingTitle' | transloco }}</h3>
+        <table class="plus-usage-table">
+          <tbody>
+            <tr>
+              <th scope="row">
+                {{ 'settings.plus.tally.articlesRead' | transloco }}
+                @if (tally.localOnly()) {
+                  <span class="muted small">{{
+                    'settings.plus.usage.countedHere' | transloco
+                  }}</span>
+                } @else if (tally.since(); as since) {
+                  <span class="muted small"
+                    >{{ 'settings.plus.usage.since' | transloco }}
+                    {{ since | date: 'longDate' }}</span
+                  >
+                }
+              </th>
+              <td>{{ tally.total() | number }}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                {{ 'settings.plus.usage.openedToday' | transloco }}
+                <span class="muted small">{{
+                  'settings.plus.usage.resetsMidnight' | transloco
+                }}</span>
+              </th>
+              <td>{{ articleQuota.plusFetches() + articleQuota.freeFetches() | number }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{{ 'settings.plus.usage.dailyLimit' | transloco }}</th>
+              <!-- Full stop. A subscriber has no limit, so there is no number
+                   here to qualify, and nothing in parentheses to misread. -->
+              <td>{{ 'settings.plus.usage.none' | transloco }}</td>
+            </tr>
+            @if (proxyUsage().accountTotal; as total) {
+              <tr>
+                <th scope="row">{{ 'settings.plus.usage.fetchedAll' | transloco }}</th>
+                <!-- Reported by the proxy on traffic that was happening anyway,
+                     so knowing it costs no extra request. -->
+                <td>{{ total | number }}</td>
+              </tr>
+            }
+            <tr>
+              <th scope="row">{{ 'settings.plus.usage.fetchedHere' | transloco }}</th>
+              <td>{{ proxyUsage().requests | number }}</td>
+            </tr>
+            @for (row of diagnostics.collectionRows(); track row.collection) {
+              <tr>
+                <th scope="row">
+                  {{ row.label }} {{ 'settings.plus.usage.keptOnAccount' | transloco }}
+                </th>
+                <td>{{ row.local | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        @if (diagnostics.state() === 'idle') {
+          <p class="muted small">{{ 'settings.plus.usage.checkAbove' | transloco }}</p>
+        }
+      </section>
+    }
+
+    @if (!plus.isSupporter()) {
+      <section class="plus-offer">
+        <h2>{{ 'settings.plus.offer.title' | transloco }}</h2>
+        <p>
+          <strong>${{ priceUsd }} {{ 'settings.plus.offer.aYear' | transloco }}</strong>
+          {{ 'settings.plus.offer.staysFree' | transloco }}
+        </p>
+        <p>
+          {{ 'settings.plus.offer.buysTwoThings' | transloco }}
+        </p>
+        <!--
+          Rendered from PLUS_BENEFITS rather than written out, because the prose
+          that used to sit here claimed "everything works exactly the same
+          whether you pay or not" while this same page rendered a read-only
+          banner for unsubscribed profile storage. A table generated from the
+          entitlements cannot drift from them that way.
+        -->
+        <table class="plus-benefits">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'settings.plus.offer.what' | transloco }}</th>
+              <th scope="col">{{ 'settings.plus.offer.free' | transloco }}</th>
+              <th scope="col">{{ 'settings.plus.offer.plus' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (benefit of benefits(); track benefit.id) {
+              <tr>
+                <th scope="row">{{ benefit.label }}</th>
+                <td>{{ benefit.free }}</td>
+                <td>{{ benefit.plus }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <!--
+          The exact numbers deliberately are not above. "60 requests a minute"
+          tells a reader nothing about whether it is enough for them, and it cost
+          the table two rows of jargon to say. It lives on /plans instead, in
+          full, for the reader who wants it.
+        -->
+        <p class="muted small">
+          <a routerLink="/plans">{{ 'settings.plus.offer.seeExactly' | transloco }}</a>
+          {{ 'settings.plus.offer.seeExactly.after' | transloco }}
+        </p>
+        <p class="muted small">
+          {{ 'settings.plus.offer.moreMayFollow' | transloco }}
+        </p>
+        <div class="plus-actions">
+          <button
+            class="btn"
+            type="button"
+            [disabled]="plus.startingCheckout()"
+            (click)="plus.startCheckout()"
+          >
+            {{
+              plus.startingCheckout()
+                ? ('settings.plus.checkout.starting' | transloco)
+                : ('settings.plus.checkout.cta' | transloco: { price: priceUsd })
+            }}
+          </button>
+        </div>
+        <!--
+          Directly under the button that caused it. An alert at the foot of the
+          page, below the fine print, is one someone has to go looking for —
+          which defeats the point of showing it at all.
+        -->
+        @if (plus.error(); as message) {
+          <p class="feed-error" role="alert">{{ message }}</p>
+        }
+        <p class="muted small">
+          {{ 'settings.plus.offer.stripeNote' | transloco }}
+        </p>
+      </section>
+    }
+
+    <!--
+      The same alert again for a signed-in supporter, who has no subscribe
+      button to sit under but can still hit a billing error — a failed token
+      refresh, say. Rendered only when the offer section is absent, so it never
+      appears twice.
+    -->
+    @if (plus.isSupporter() && plus.error(); as message) {
+      <p class="feed-error" role="alert">{{ message }}</p>
+    }
+  } @else {
+    <section class="plus-signin">
+      <h2>{{ 'settings.plus.signin.title' | transloco }}</h2>
+      <!--
+        This paragraph used to say signing in "mainly raises your proxy rate
+        limit" and that the rest was for "later". Both were false at the time it
+        was written: lists, feeds, trust and settings sync were already stored
+        per account and already refused writes without one.
+      -->
+      <p>
+        {{ 'settings.plus.signin.intro' | transloco }}
+        <a routerLink="/plans">{{ 'settings.plus.signin.seeInclude' | transloco }}</a>
+      </p>
+
+      @if (linkSent()) {
+        <!--
+          Deliberately says nothing about whether the address is known. The
+          service answers identically for a registered and an unregistered
+          address, and a message like "welcome back" here would hand back the
+          enumeration answer the endpoint refuses to give.
+        -->
+        <p class="connection-ok" role="status">
+          {{ 'settings.plus.signin.linkSent' | transloco }}
+        </p>
+      } @else {
+        <!--
+          Under the form that caused it. An alert at the foot of the page, below
+          the fine print, is one someone has to go looking for — which defeats
+          the point of showing it. The same reasoning as the checkout error.
+        -->
+        @if (session.error(); as message) {
+          <p class="feed-error" role="alert">{{ message }}</p>
+        }
+        <form class="plus-signin-form" (submit)="$event.preventDefault(); sendLink()">
+          <label for="plus-email">{{ 'settings.plus.signin.emailLabel' | transloco }}</label>
+          <input
+            id="plus-email"
+            type="email"
+            autocomplete="email"
+            required
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+          />
+          <button class="btn" type="submit" [disabled]="session.sendingLink()">
+            {{
+              session.sendingLink()
+                ? ('settings.plus.signin.sending' | transloco)
+                : ('settings.plus.signin.sendLink' | transloco)
+            }}
+          </button>
+        </form>
+      }
+
+      <p class="muted small">
+        {{ 'settings.plus.signin.noPassword' | transloco }}
+      </p>
+    </section>
+  }
+
+  <!--
+    The same alert for a signed-in user, who has no sign-in form for it to sit
+    under but can still hit a service error on a token refresh. Rendered only
+    when signed in, so it never appears twice.
+  -->
+  @if (session.user() && session.error(); as message) {
+    <p class="feed-error" role="alert">{{ message }}</p>
+  }
+</div>
+
+<!-- Rendered last so it sits above the page it blocks. -->
+@if (showWelcome()) {
+  <app-plus-welcome-dialog (saved)="welcomeSaved()" />
+}
+
+<!-- Only one of these is ever on screen: the welcome dialog cannot be answered
+     without closing, and a toggle cannot be flipped behind it. -->
+@if (pendingAdoption(); as pending) {
+  <app-adoption-dialog
+    [collection]="pending.collection"
+    [localCount]="pending.localCount"
+    [remoteCount]="pending.remoteCount"
+    (chose)="resolveAdoption($event)"
+    (cancelled)="cancelAdoption()"
+  />
+}

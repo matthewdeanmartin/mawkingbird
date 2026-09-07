@@ -1,0 +1,92 @@
+/* Below the doors and visually quieter than them: available to anyone who wants
+   it, without competing with the reason they came to this page. */
+.chooser-privacy {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
+.chooser-privacy .checkline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chooser-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.chooser-card {
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 560px;
+  max-width: 94vw;
+  text-align: center;
+}
+
+.chooser-title {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.chooser-sub {
+  margin: 0 auto 28px;
+  max-width: 44ch;
+  line-height: 1.5;
+}
+
+.doors {
+  display: grid;
+  gap: 12px;
+}
+
+.door {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.door:hover {
+  background: var(--col-hover, rgba(127, 127, 127, 0.08));
+}
+
+.door-badge {
+  font-size: 30px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.door-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.door-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.door-hint {
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.chooser-out {
+  margin: 24px 0 0;
+}

@@ -1,0 +1,205 @@
+<div class="obs-page">
+  <div class="obs-head">
+    <h1>{{ 'storageDiagnostics.title' | transloco }}</h1>
+    <p class="muted">
+      {{ 'storageDiagnostics.intro' | transloco }}
+    </p>
+    <nav class="page-menu">
+      <a class="page-menu-link" routerLink="/observability">{{
+        'storageDiagnostics.backToObservability' | transloco
+      }}</a>
+    </nav>
+  </div>
+
+  <!-- ========================== Local storage ============================ -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'storageDiagnostics.localHeading' | transloco }}</h2>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" (click)="refreshStorage()">
+          {{ 'storageDiagnostics.refresh' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile">
+        <div class="tile-value">{{ storage().entries.length }}</div>
+        <div class="tile-label muted">{{ 'storageDiagnostics.tileKeys' | transloco }}</div>
+      </div>
+      <div class="tile">
+        <div class="tile-value">{{ formatBytes(storage().totalBytes) }}</div>
+        <div class="tile-label muted">{{ 'storageDiagnostics.tileTotalSize' | transloco }}</div>
+      </div>
+      @if (biggest(); as b) {
+        <div class="tile">
+          <div class="tile-value">{{ formatBytes(b.bytes) }}</div>
+          <div class="tile-label muted" [title]="b.key">
+            {{ 'storageDiagnostics.tileLargestKey' | transloco }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <p class="muted small section-note">
+      {{ 'storageDiagnostics.localNote' | transloco }}
+    </p>
+
+    @if (storage().entries.length) {
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'storageDiagnostics.colKey' | transloco }}</th>
+              <th class="num">{{ 'storageDiagnostics.colSize' | transloco }}</th>
+              <th class="num">{{ 'storageDiagnostics.colChars' | transloco }}</th>
+              <th class="actions-col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of storage().entries; track entry.key) {
+              <tr>
+                <td class="storage-key">
+                  <code>{{ entry.key }}</code>
+                  @if (keyNote(entry.key); as note) {
+                    <span class="muted small key-note">{{ note }}</span>
+                  }
+                </td>
+                <td class="num">{{ formatBytes(entry.bytes) }}</td>
+                <td class="num muted">{{ entry.valueChars.toLocaleString() }}</td>
+                <td class="actions-col">
+                  <button
+                    class="btn btn-outline btn-sm danger"
+                    (click)="deleteKey(entry)"
+                    [attr.aria-label]="
+                      'storageDiagnostics.deleteKeyAriaLabel' | transloco: { key: entry.key }
+                    "
+                  >
+                    {{ 'storageDiagnostics.delete' | transloco }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted center">{{ 'storageDiagnostics.localEmpty' | transloco }}</p>
+    }
+  </section>
+
+  <!-- ========================= Remote storage ============================ -->
+  <!-- The service's own byte counter, not an estimate made here: it is the
+       number that decides whether a write succeeds, so a second opinion
+       computed on this side would only be a worse copy of it. -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'storageDiagnostics.remoteHeading' | transloco }}</h2>
+      @if (remote(); as r) {
+        <div class="section-actions">
+          <span class="tier-tag" [attr.data-tier]="r.tier">{{
+            'storageDiagnostics.remotePlan' | transloco: { tier: r.tier }
+          }}</span>
+        </div>
+      }
+    </div>
+    @if (remote(); as r) {
+      <div class="tiles">
+        <div class="tile">
+          <div class="tile-value">{{ formatBytes(r.used) }}</div>
+          <div class="tile-label muted">{{ 'storageDiagnostics.remoteUsed' | transloco }}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ formatBytes(r.limit) }}</div>
+          <div class="tile-label muted">
+            {{ 'storageDiagnostics.remoteAllowance' | transloco }}
+          </div>
+        </div>
+      </div>
+      <!-- `!== null`, not a truthiness check: an empty account is a ratio of 0,
+           which is a real reading and should draw an empty bar rather than no
+           bar at all. -->
+      @if (remoteRatio() !== null) {
+        <div
+          class="quota-bar"
+          role="img"
+          [attr.aria-label]="
+            'storageDiagnostics.remoteBarAriaLabel' | transloco: { label: remoteLabel() }
+          "
+          [title]="remoteLabel()"
+        >
+          <div class="quota-fill" [style.width.%]="(remoteRatio() ?? 0) * 100"></div>
+        </div>
+      }
+      <p class="muted small section-note">
+        {{
+          'storageDiagnostics.remoteNote' | transloco: { label: remoteLabel(), when: remoteWhen() }
+        }}
+      </p>
+    } @else {
+      <p class="muted center">
+        {{ 'storageDiagnostics.remoteEmpty' | transloco }}
+      </p>
+    }
+  </section>
+
+  <!-- ============================= IndexedDB ============================= -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2 [innerHTML]="'storageDiagnostics.idbHeading' | transloco"></h2>
+      <div class="section-actions">
+        <span class="muted small">{{ quotaLabel() }}</span>
+        <button
+          class="btn btn-outline btn-sm"
+          (click)="refreshIndexedDb()"
+          [disabled]="idbLoading()"
+        >
+          {{
+            (idbLoading() ? 'storageDiagnostics.scanning' : 'storageDiagnostics.refresh')
+              | transloco
+          }}
+        </button>
+      </div>
+    </div>
+    <p class="muted small section-note" [innerHTML]="'storageDiagnostics.idbNote' | transloco"></p>
+    @if (idb(); as report) {
+      @if (report.quota.persisted) {
+        <p class="muted small">
+          {{ 'storageDiagnostics.idbPersistent' | transloco }}
+        </p>
+      }
+      @if (!report.supported) {
+        <p class="muted center">{{ report.note }}</p>
+      } @else if (report.databases.length) {
+        <div class="table-wrap">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>{{ 'storageDiagnostics.colDatabase' | transloco }}</th>
+                <th class="num">{{ 'storageDiagnostics.colVersion' | transloco }}</th>
+                <th>{{ 'storageDiagnostics.colObjectStores' | transloco }}</th>
+                <th class="num">{{ 'storageDiagnostics.colRecords' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (db of report.databases; track db.name) {
+                <tr [class.row-bad]="!!db.error">
+                  <td class="storage-key">
+                    <code>{{ db.name }}</code>
+                  </td>
+                  <td class="num muted">{{ db.version ?? '—' }}</td>
+                  <td class="muted small">{{ storeSummary(db) }}</td>
+                  <td class="num">{{ db.error ? '—' : totalRecords(db).toLocaleString() }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="muted center">{{ 'storageDiagnostics.idbEmpty' | transloco }}</p>
+      }
+    } @else {
+      <p class="muted center">{{ 'storageDiagnostics.scanning' | transloco }}</p>
+    }
+  </section>
+</div>

@@ -1,0 +1,156 @@
+<div class="spage-head">
+  <h1>{{ 'settings.server.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.server.intro' | transloco }}
+  </p>
+</div>
+
+<div class="spage-body">
+  <section class="ssection">
+    <h2>{{ 'settings.server.current' | transloco }}</h2>
+    <div class="current-card">
+      <div>
+        <strong>{{ currentHost() }}</strong>
+        @if (suggestion(); as item) {
+          <div class="muted small">
+            @if (item.category) {
+              {{ item.category }}
+            }
+            @if (item.users) {
+              {{
+                'settings.server.usersListed' | transloco: { count: item.users.toLocaleString() }
+              }}
+            }
+          </div>
+          @if (item.description) {
+            <p>{{ item.description }}</p>
+          }
+        }
+      </div>
+      <div
+        class="connection"
+        [class.bad]="connectionStatus() === 'unreachable'"
+        [class.degraded]="connectionStatus() === 'degraded'"
+      >
+        @switch (connectionStatus()) {
+          @case ('checking') {
+            {{ 'settings.server.status.checking' | transloco }}
+          }
+          @case ('available') {
+            {{ 'settings.server.status.available' | transloco }}
+          }
+          @case ('degraded') {
+            {{ 'settings.server.status.degraded' | transloco }}
+          }
+          @case ('unreachable') {
+            {{ 'settings.server.status.unreachable' | transloco }}
+          }
+        }
+      </div>
+    </div>
+    <button class="btn btn-outline btn-sm check-button" type="button" (click)="checkCurrent()">
+      {{ 'settings.server.checkConnection' | transloco }}
+    </button>
+    @if (changed()) {
+      <p class="success" aria-live="polite">
+        {{ 'settings.server.changed' | transloco: { host: currentHost() } }}
+      </p>
+    }
+  </section>
+
+  <section class="ssection">
+    <h2>{{ 'settings.server.findAnother' | transloco }}</h2>
+    <p class="muted">
+      {{ 'settings.server.findAnother.hint' | transloco }}
+    </p>
+    <app-server-discovery [currentServer]="currentUrl()" (selected)="useServer($event)" />
+  </section>
+
+  <section class="ssection">
+    <h2>{{ 'settings.server.specific' | transloco }}</h2>
+    <p class="muted">{{ 'settings.server.specific.hint' | transloco }}</p>
+    <app-server-picker (picked)="useServer($event)" />
+  </section>
+
+  <!-- Search is the one call that can be pointed somewhere else, because plenty of
+       servers turn it off for logged-out visitors while serving everything else
+       fine. Feeds, profiles and your account stay put. -->
+  <section class="ssection">
+    <h2>{{ 'settings.server.search' | transloco }}</h2>
+    <p class="muted">
+      {{ 'settings.server.search.hint' | transloco }}
+    </p>
+
+    <div class="current-card">
+      <div>
+        @if (searchServer.host(); as host) {
+          <strong>{{ host }}</strong>
+          <div class="muted small">{{ 'settings.server.search.here' | transloco }}</div>
+        } @else {
+          <strong>{{ 'settings.server.search.own' | transloco }}</strong>
+          <div class="muted small">{{ 'settings.server.search.none' | transloco }}</div>
+        }
+      </div>
+      @if (searchServer.active()) {
+        <button class="btn btn-outline btn-sm" type="button" (click)="clearSearchServer()">
+          {{ 'settings.server.search.useOwn' | transloco }}
+        </button>
+      }
+    </div>
+
+    <app-search-server-discovery
+      [currentServer]="searchServer.host() ?? ''"
+      (selected)="useSearchServer($event)"
+    />
+
+    <!-- The skip list, made visible. A cache you can't see, with a button that
+         says only "Clear", is a mystery; a count and a sample is a fact. -->
+    @if (rejects.count()) {
+      <details class="reject-list">
+        <summary>
+          {{
+            (rejects.count() === 1
+              ? 'settings.server.rejects.one'
+              : 'settings.server.rejects.other'
+            ) | transloco: { count: rejects.count() }
+          }}
+        </summary>
+        <p class="muted small">
+          {{ 'settings.server.rejects.hint' | transloco }}
+        </p>
+        <ul>
+          @for (server of rejects.recent(); track server.domain) {
+            <li>
+              <code>{{ server.domain }}</code>
+              <span class="muted small">{{ rejectReason(server.status) }}</span>
+            </li>
+          }
+        </ul>
+        <button class="btn btn-outline btn-sm" type="button" (click)="forgetRejects()">
+          {{ 'settings.server.rejects.forget' | transloco: { count: rejects.count() } }}
+        </button>
+      </details>
+    }
+  </section>
+
+  <details class="ssection anonymous-browsing">
+    <summary>{{ 'settings.server.anonymous' | transloco }}</summary>
+    <div class="anonymous-setting">
+      <label for="followed-post-max-age">
+        <strong>{{ 'settings.anonymous.maxAge' | transloco }}</strong>
+      </label>
+      <p class="muted small">
+        {{ 'settings.anonymous.maxAge.hint' | transloco }}
+      </p>
+      <select
+        id="followed-post-max-age"
+        [ngModel]="anonymousPreferences.followedPostMaxAgeDays()"
+        (ngModelChange)="setMaximumAge($event)"
+      >
+        @for (option of ageOptions; track option.days) {
+          <option [ngValue]="option.days">{{ option.key | transloco }}</option>
+        }
+      </select>
+    </div>
+  </details>
+</div>

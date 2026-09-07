@@ -1,0 +1,103 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="cancelled.emit()"
+  (keyup.escape)="cancelled.emit()"
+>
+  <div
+    class="dialog"
+    role="alertdialog"
+    aria-labelledby="consent-title"
+    aria-describedby="consent-body"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    @if (selfHosted()) {
+      <h3 id="consent-title">
+        {{ 'twitter.consent.titleSelfHosted' | transloco: { source: source().label } }}
+      </h3>
+    } @else {
+      <h3 id="consent-title" class="warn">
+        {{
+          'twitter.consent.titleWarn' | transloco: { proxy: proxy().label, source: source().label }
+        }}
+      </h3>
+    }
+
+    <div id="consent-body">
+      <p>
+        {{ 'twitter.consent.intro' | transloco: { source: source().label } }}
+      </p>
+
+      @if (selfHosted()) {
+        <p [innerHTML]="'twitter.consent.selfHostedBody' | transloco"></p>
+      } @else {
+        <section class="who">
+          <h4>{{ 'twitter.consent.whoHeading' | transloco }}</h4>
+          <p class="operator">{{ proxy().label }}</p>
+          <p class="pitch">{{ proxy().pitch }}</p>
+          <p class="links">
+            <a [href]="proxy().homepage" target="_blank" rel="noopener noreferrer">
+              {{ 'twitter.consent.theirWebsite' | transloco }}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a [href]="source().homepage" target="_blank" rel="noopener noreferrer">
+              {{ 'twitter.consent.aboutSource' | transloco: { source: source().label } }}
+            </a>
+          </p>
+          <p class="hint">{{ 'twitter.consent.readTermsHint' | transloco }}</p>
+        </section>
+
+        <section class="risk">
+          <h4>{{ 'twitter.consent.riskHeading' | transloco }}</h4>
+          <p>{{ 'twitter.consent.riskIntro' | transloco: { proxy: proxy().label } }}</p>
+          <ul>
+            <li
+              [innerHTML]="
+                'twitter.consent.riskSpendCredits' | transloco: { source: source().label }
+              "
+            ></li>
+            <li>{{ 'twitter.consent.riskLookup' | transloco }}</li>
+          </ul>
+          <p [innerHTML]="'twitter.consent.riskReadingHistory' | transloco"></p>
+        </section>
+
+        <section class="scope">
+          <h4>{{ 'twitter.consent.scopeHeading' | transloco }}</h4>
+          <p>
+            {{ 'twitter.consent.scopeBody' | transloco: { source: source().label } }}
+          </p>
+          <p>
+            {{ 'twitter.consent.scopeRunOwnIntro' | transloco }}
+            <a
+              href="https://developers.cloudflare.com/workers/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ 'twitter.consent.runYourOwnProxy' | transloco }}</a
+            >
+            {{ 'twitter.consent.scopeRunOwnOutro' | transloco }}
+          </p>
+        </section>
+      }
+    </div>
+
+    <div class="consent-actions">
+      <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+        {{ 'twitter.consent.decline' | transloco }}
+      </button>
+      <button
+        class="btn"
+        [class.btn-danger]="!selfHosted()"
+        type="button"
+        (click)="accepted.emit()"
+      >
+        @if (selfHosted()) {
+          {{ 'twitter.consent.useMyProxy' | transloco }}
+        } @else {
+          {{ 'twitter.consent.acceptRisk' | transloco }}
+        }
+      </button>
+    </div>
+  </div>
+</div>

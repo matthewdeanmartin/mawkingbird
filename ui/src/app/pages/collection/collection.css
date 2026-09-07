@@ -1,0 +1,149 @@
+.page-head-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.conversion-message {
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.coll-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.description {
+  margin: 0 0 4px;
+}
+
+.coll-actions {
+  margin-top: 8px;
+}
+
+.danger {
+  color: #e0245e;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+}
+
+.add-member {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.add-member input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.member-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.member-row .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.acct {
+  font-size: 13px;
+}
+
+.del {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.del:hover {
+  color: #e0245e;
+  background: var(--bg);
+}
+
+/* ------------------------------------------------- preview post sampling */
+.sample-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sample-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sample-field select {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--col-bg);
+  color: inherit;
+}
+
+.sample-rule {
+  text-align: center;
+  padding: 12px 16px;
+}

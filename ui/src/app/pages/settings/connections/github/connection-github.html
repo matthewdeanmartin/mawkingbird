@@ -1,0 +1,111 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.github.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.github.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+@if (github.connected() && github.user(); as user) {
+  <div class="github-linked">
+    <img class="github-avatar" [src]="user.avatar_url" alt="" decoding="async" />
+    <span class="names">
+      <a class="name" [href]="user.html_url" target="_blank" rel="noopener">
+        {{ user.name || user.login }}
+      </a>
+      <span class="muted small">&#64;{{ user.login }}</span>
+    </span>
+    <app-storage-badge [where]="where()" />
+    <button class="btn" type="button" (click)="proveGitHubConnection()" [disabled]="githubBusy()">
+      {{
+        (githubBusy()
+          ? 'settings.connections.github.calling'
+          : 'settings.connections.github.runProof'
+        ) | transloco
+      }}
+    </button>
+    <button class="btn btn-outline" type="button" (click)="disconnectGitHub()">
+      {{ 'settings.connections.github.disconnect' | transloco }}
+    </button>
+  </div>
+  @if (expiryLabel(github.expiresAt()); as expiry) {
+    <p class="muted small">
+      @if (where() === 'local') {
+        {{ 'settings.connections.github.tokenDeletedOn' | transloco: { date: expiry } }}
+      } @else {
+        {{ 'settings.connections.github.tokenClearedOn' | transloco: { date: expiry } }}
+      }
+    </p>
+  }
+  <p class="muted small">
+    {{ 'settings.connections.github.lookingForFriends' | transloco }}
+    <a [routerLink]="['/settings/import-export']" fragment="github-friends">
+      {{ 'settings.connections.github.findFriendsLink' | transloco }}
+    </a>
+    {{ 'settings.connections.github.findFriendsAfter' | transloco }}
+  </p>
+
+  @if (github.notifications(); as notifications) {
+    <div class="github-proof" role="status">
+      <strong>{{ 'settings.connections.github.success' | transloco }}</strong>
+      {{
+        (notifications.length === 1
+          ? 'settings.connections.github.unreadNotifications.one'
+          : 'settings.connections.github.unreadNotifications.other'
+        ) | transloco: { count: notifications.length }
+      }}
+      {{
+        (github.following()?.length === 1
+          ? 'settings.connections.github.followedAccounts.one'
+          : 'settings.connections.github.followedAccounts.other'
+        ) | transloco: { count: github.following()?.length ?? 0 }
+      }}
+      <span [innerHTML]="'settings.connections.github.directlyFrom' | transloco"></span>
+    </div>
+  }
+} @else {
+  <ol class="setup-steps muted small">
+    <li>
+      <a
+        href="https://github.com/settings/tokens/new?scopes=notifications%2Cread%3Auser&description=Mawkingbird"
+        target="_blank"
+        rel="noopener"
+        >{{ 'settings.connections.github.createTokenLink' | transloco }}</a
+      >
+      <span [innerHTML]="'settings.connections.github.tokenScopes' | transloco"></span>
+    </li>
+    <li><span [innerHTML]="'settings.connections.github.validatesWith' | transloco"></span></li>
+  </ol>
+  <p class="credential-warning small">
+    <span [innerHTML]="'settings.connections.github.credentialWarning' | transloco"></span>
+  </p>
+  <form class="github-form" (ngSubmit)="connectGitHub()">
+    <input
+      type="password"
+      name="githubToken"
+      [placeholder]="'settings.connections.github.tokenPlaceholder' | transloco"
+      autocomplete="off"
+      [ngModel]="githubToken()"
+      (ngModelChange)="githubToken.set($event)"
+      [disabled]="githubBusy()"
+    />
+    <button class="btn" type="submit" [disabled]="!githubToken().trim() || githubBusy()">
+      {{
+        (githubBusy()
+          ? 'settings.connections.github.checking'
+          : 'settings.connections.github.connect'
+        ) | transloco
+      }}
+    </button>
+  </form>
+}
+@if (githubNotice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (githubError(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}

@@ -1,0 +1,92 @@
+<section class="fd-page">
+  <header class="fd-head">
+    <div>
+      <h1>{{ 'feedDoctor.title' | transloco }}</h1>
+      <!-- The sample is the population. Every claim below is about these posts,
+           never about "your feed" as an abstraction — and the Doctor states it
+           louder than the analytics page because its claims sound more certain. -->
+      <p class="muted small">
+        @if (loading()) {
+          {{ 'feedDoctor.reading' | transloco }}
+        } @else {
+          {{ sampleLine() }}
+        }
+      </p>
+    </div>
+    <button class="btn btn-outline" type="button" [disabled]="loading()" (click)="run()">
+      {{ 'feedDoctor.checkAgain' | transloco }}
+    </button>
+  </header>
+
+  <!-- Signed in, Home is FeedAggregator merging Mastodon with Bluesky, Twitter and
+       RSS — so the useful question is not "which follow went quiet" (there are no
+       per-follow reads to report on) but "which whole source stalled, and do they
+       even cover the same days". -->
+  @if (!isAnonymous() && droppedByWindow() > 0) {
+    <p class="fd-note">
+      {{
+        (droppedByWindow() === 1 ? 'feedDoctor.windowHidden.one' : 'feedDoctor.windowHidden.other')
+          | transloco: { count: droppedByWindow() }
+      }}
+      <a routerLink="/settings/appearance">{{ 'feedDoctor.widen' | transloco }}</a>
+    </p>
+  }
+
+  @if (loading()) {
+    <p class="muted" role="status">{{ 'feedDoctor.collecting' | transloco }}</p>
+  } @else {
+    @for (verdict of verdicts(); track verdict.id) {
+      <!-- Healthy checks collapse to their headline. A page of green ticks is a page
+           people stop reading. -->
+      <article class="fd-verdict" [class.fd-ok]="verdict.severity === 'ok'">
+        <h2 [class.fd-warn]="verdict.severity === 'warn'">
+          <span aria-hidden="true">{{ icon(verdict) }}</span>
+          {{ verdict.headline }}
+        </h2>
+
+        @if (verdict.detail.length) {
+          <ul class="fd-detail">
+            @for (line of verdict.detail; track line) {
+              <li>{{ line }}</li>
+            }
+          </ul>
+        }
+
+        @if (verdict.actions.length) {
+          <div class="fd-actions">
+            @for (action of verdict.actions; track action.label) {
+              @if (actedOn(action); as done) {
+                <span class="muted small">{{ done }}</span>
+              } @else if (action.kind === 'review-filters') {
+                <!-- Reading filters live in appearance, which (unlike /settings/moderation
+                     and /settings/follows) is not anonymous-guarded — and an anonymous
+                     reader is exactly who this page is for. -->
+                <a class="btn btn-outline" routerLink="/settings/appearance">{{ action.label }}</a>
+              } @else if (action.kind === 'review-quiet') {
+                <a class="btn btn-outline" routerLink="/feeds">{{ action.label }}</a>
+              } @else if (action.kind === 'review-window' || action.kind === 'wait-out-cooldown') {
+                <a class="btn btn-outline" routerLink="/settings/appearance">{{ action.label }}</a>
+              } @else if (action.kind === 'widen-window') {
+                <!-- Widens the window and sends the reader back to the feed it
+                     just unblocked. Acting on the diagnosis is the point of the
+                     page; a link to a settings screen would make them find the
+                     control themselves after being told exactly what it is. -->
+                <button class="btn btn-outline" type="button" (click)="widenWindow()">
+                  {{ action.label }}
+                </button>
+              } @else if (action.kind === 'show-calm') {
+                <button class="btn btn-outline" type="button" (click)="turnCalmOff()">
+                  {{ action.label }}
+                </button>
+              } @else {
+                <button class="btn btn-outline" type="button" (click)="act(action)">
+                  {{ action.label }}
+                </button>
+              }
+            }
+          </div>
+        }
+      </article>
+    }
+  }
+</section>

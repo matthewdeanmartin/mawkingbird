@@ -1,0 +1,108 @@
+/* The instance-picker combo. Styles mirror the login page's server combo so the
+   affordance reads identically wherever it appears (login, fail whale). */
+.server-combo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.server-field {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.server-combo input {
+  width: 100%;
+  margin: 0;
+}
+
+/* --- Curated instance suggestions (from joinmastodon.org) --- */
+.server-suggest {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.server-suggest li {
+  margin: 0;
+}
+
+.suggest-row {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.suggest-row:hover {
+  background: var(--bg);
+}
+
+.suggest-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.suggest-domain {
+  font-weight: 700;
+}
+
+.suggest-cat {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 1px 7px;
+}
+
+.suggest-size {
+  font-size: 12px;
+}
+
+.suggest-desc {
+  font-size: 12px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.server-status {
+  margin: 6px 0 0;
+  min-height: 1.2em;
+}
+
+.server-status .text-button {
+  border: 0;
+  padding: 0 3px;
+  background: none;
+  color: var(--accent);
+  font-size: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

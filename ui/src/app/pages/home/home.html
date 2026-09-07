@@ -1,0 +1,514 @@
+@if (writingError()) {
+  <p role="alert">{{ 'drafts.saveFailed' | transloco }}</p>
+}
+
+@if (!auth.isAnonymous) {
+  <app-announcements />
+}
+
+@if (showFollowNudge()) {
+  <aside class="follow-nudge">
+    <div class="nudge-copy">
+      <strong>{{ 'pages.home.nudge.title' | transloco }}</strong>
+      <span class="muted">
+        {{
+          (followingCount() === 1 ? 'pages.home.nudge.follow.one' : 'pages.home.nudge.follow.other')
+            | transloco: { count: followingCount() }
+        }}
+      </span>
+    </div>
+    <a class="btn nudge-cta" routerLink="/find-friends">{{ 'pages.home.nudge.cta' | transloco }}</a>
+    <button
+      class="nudge-dismiss"
+      type="button"
+      [attr.aria-label]="'pages.home.nudge.dismiss' | transloco"
+      (click)="dismissNudge()"
+    >
+      ✕
+    </button>
+  </aside>
+}
+
+@if (auth.shouldOfferLogin) {
+  <a
+    class="anonymous-login-post"
+    routerLink="/login"
+    (click)="auth.exitAnonymous()"
+    [attr.aria-label]="'pages.home.anonPost.ariaLabel' | transloco: { post: words().post }"
+  >
+    <div class="anonymous-login-post-label muted">
+      📌 {{ 'pages.home.anonPost.pinned' | transloco }}
+    </div>
+    <div class="anonymous-login-post-body">
+      <div class="anonymous-login-post-avatar" aria-hidden="true">M</div>
+      <div class="anonymous-login-post-content">
+        <div class="anonymous-login-post-author">
+          <strong>Mawkingbird</strong>
+          <span class="muted">&#64;mawkingbird</span>
+        </div>
+        <p [innerHTML]="'pages.home.anonPost.ariaLabel' | transloco: { post: words().post }"></p>
+      </div>
+    </div>
+  </a>
+}
+
+<!-- What sits at the top of the feed: a way in to writing, not a box already
+     open. The box is one click away and stays gone until asked for, because the
+     distance between "landed on Home" and "posted" is the thing worth lengthening.
+     Arriving with a draft skips all of it — that IS the deliberate publish step. -->
+@if (offersWriting() && !fromDraft() && !openedDraft() && !miniComposerOpen()) {
+  <div class="write-cta">
+    <button class="btn write-btn" type="button" (click)="startWriting()">
+      ✍ {{ 'pages.home.write.button' | transloco }}
+    </button>
+    <!-- Under thoughtful posting there is no Quick post button and no note
+         explaining its absence: the setting is the user's own choice, and
+         narrating it back to them on every visit to Home is the app talking
+         about itself instead of showing their feed. Write is the only path,
+         and the button says so. -->
+    @if (offersMiniComposer()) {
+      <button class="btn btn-outline write-btn" type="button" (click)="openMiniComposer()">
+        💬 {{ 'pages.home.write.quickPost' | transloco }}
+      </button>
+    }
+  </div>
+} @else if (offersWriting()) {
+  <!-- Un-gated when finishing a draft: that IS the deliberate publish step. -->
+  <app-compose
+    [gateable]="!fromDraft() && !openedDraft()"
+    [initialDraft]="openedDraft()"
+    (posted)="onPosted($event)"
+  />
+}
+
+<!-- Outside the block above on purpose: this is the Eliza practice box, not a
+     way to post, so collapsing the real composer must not take it away. -->
+@if (auth.isAnonymous && eliza.following()) {
+  <app-local-compose (posted)="onLocalPosted()" />
+}
+
+<app-command-bar
+  [providerChips]="!justMyServer.effectiveEnabled()"
+  [showImages]="false"
+  [showReaderControls]="false"
+  [showRefresh]="!live()"
+  [showFeedViews]="true"
+  [showFeedDoctor]="true"
+  [view]="view()"
+  (refresh)="load(true)"
+  (providerVisibilityChanged)="load()"
+  (viewChange)="setView($event)"
+>
+</app-command-bar>
+
+<!-- Was a lone "Local Feed" link projected into the command bar above, which
+     lacked the bar's `command-item` class and so shrank and scrolled out of
+     sight under the right rail. Now a row of its own, with the server's other
+     feeds alongside it. -->
+@if (justMyServer.effectiveEnabled()) {
+  <app-pinned-server-feeds />
+}
+
+<!-- FILTER: content narrowing for every presentation above. Like WHAT and HOW,
+     this name stays in source rather than becoming another visible label. -->
+@if (!nothingFollowed()) {
+  <div
+    class="home-filters"
+    role="group"
+    [attr.aria-label]="'pages.home.filters.ariaLabel' | transloco"
+  >
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="showBoosts()"
+      [attr.aria-pressed]="showBoosts()"
+      (click)="toggleBoosts()"
+    >
+      🔁 {{ 'pages.home.filters.retweets' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="showReplies()"
+      [attr.aria-pressed]="showReplies()"
+      (click)="toggleReplies()"
+    >
+      💬 {{ 'pages.home.filters.replies' | transloco }}
+    </button>
+    <label class="home-window">
+      📅
+      <select
+        [ngModel]="prefs.homeWindow()"
+        (ngModelChange)="setHomeWindow($event)"
+        [attr.aria-label]="'pages.home.filters.windowAriaLabel' | transloco"
+      >
+        <option value="today">{{ 'pages.home.filters.window.today' | transloco }}</option>
+        <option value="week">{{ 'pages.home.filters.window.week' | transloco }}</option>
+        <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
+      </select>
+    </label>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm feed-filter"
+      [class.active]="prefs.algoCalm()"
+      [attr.aria-pressed]="prefs.algoCalm()"
+      (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
+      [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
+    >
+      😌 {{ 'pages.home.filters.calm.label' | transloco }}
+    </button>
+    <app-feed-language-picker />
+  </div>
+}
+
+<!-- READER: the full long-form control set gets its own fourth row. Keeping it
+     out of HOW prevents these controls from starting beyond the visible edge. -->
+@if (prefs.feedReader()) {
+  <app-reader-toolbar />
+}
+
+<!-- Members and Analytics are views *of the loaded feed*, so they replace the
+     timeline rather than navigating away — the command bar toggles back. -->
+@if (view() === 'members') {
+  <app-feed-members [source]="feedSource()" />
+} @else if (view() === 'analytics') {
+  <app-feed-analytics [source]="feedSource()" />
+} @else if (view() === 'media') {
+  <app-profile-media-grid
+    [items]="mediaItems()"
+    [loading]="loading()"
+    [loadingMore]="autoLoading()"
+    [exhausted]="!canLoadMore()"
+    (opened)="openPhotoItem($event)"
+    (more)="loadMore()"
+  />
+  @if (openPhoto(); as photoKey) {
+    <app-profile-photo-view
+      [items]="mediaItems()"
+      [activeKey]="photoKey"
+      (closed)="openPhoto.set(null)"
+      (navigated)="navigatePhoto($event)"
+      (wantMore)="loadMore()"
+    />
+  }
+} @else if (view() === 'articles') {
+  <section class="home-articles" [attr.aria-label]="'pages.home.articles.ariaLabel' | transloco">
+    @for (article of articles(); track article.status.id) {
+      <article class="home-article">
+        <app-preview-card [card]="article.card" />
+        <p class="muted small home-article-meta">&#64;{{ article.status.account.acct }}</p>
+      </article>
+    } @empty {
+      <p class="muted center">{{ 'pages.home.articles.empty' | transloco }}</p>
+    }
+  </section>
+  <!-- Articles pages toward ARTICLE_TARGET on its own, but a feed that is thin
+       on links stops at the feed maximum well short of it. The button is how the
+       reader pushes past that, exactly as they can in the feed view. -->
+  <div class="feed-more-actions">
+    @if (autoLoading()) {
+      <p class="muted center">{{ 'pages.home.loadMore.loading' | transloco }}</p>
+    } @else if (canLoadMore()) {
+      <button class="btn btn-outline more" type="button" (click)="loadMore()">
+        {{ 'pages.home.loadMore.button' | transloco }}
+      </button>
+    }
+  </div>
+} @else {
+  <!-- The "older posts are hidden" offer used to live here, above the feed. It
+       is reactive — `olderAvailable()` reads `droppedByWindow()`, which the
+       aggregator increments *while paging* — so clicking "Load more" could make
+       this paragraph appear above everything already on screen and shove the
+       post being read down by its height. That is the feed "jumping around"
+       after Load more. The same offer already exists at the end of the feed
+       (`feed-window-end` below), where it appears at the same moment, says more,
+       and cannot displace read content. See sprint/ux-1-scroll-restoration.md.
+
+       Rule for this region: nothing above the list may appear or resize after
+       first paint. Anything reactive goes below the list. -->
+
+  <!-- The feed used to seed itself with an Eliza invite, the universal starter
+       kit, and every shipped starter-kit post whenever the timeline was thin.
+       Well meant, but it put the same handful of collections in front of the
+       same person on every fresh browser, forever. One link to the hub is the
+       better trade: ten ways to jump-start a feed, chosen rather than served. -->
+  @if (loading()) {
+    <p class="muted center">
+      {{
+        (waitingForServerList()
+          ? 'pages.home.loading.preparingServer'
+          : 'pages.home.loading.generic'
+        ) | transloco
+      }}
+    </p>
+  } @else if (nothingFollowed()) {
+    <!--
+      The first-run destination, once the preview posts are gone.
+
+      One heading and one button, because at this moment the visitor has
+      exactly one useful move and every additional choice competes with it.
+      Kept distinct from the empty state below: "you have not followed anyone
+      yet" and "the people you follow have not posted" are different facts and
+      want different answers.
+    -->
+    <div class="home-empty">
+      <p class="home-empty-lead">{{ 'pages.home.empty.lead' | transloco }}</p>
+      <a class="btn" routerLink="/find-friends">{{ 'pages.home.empty.cta' | transloco }}</a>
+    </div>
+  } @else if (!visible().length && allHiddenByFilters()) {
+    <!-- Posts arrived and the filters hid every one of them. "Find friends to
+         follow" is the worst possible answer here: it blames the reader's
+         follows for a feed their own filters emptied, and sends them off to fix
+         something that is not broken. Name the filter and offer the undo, the
+         same as the end-of-feed notes below. -->
+    <div class="feed-all-hidden">
+      <p class="muted">
+        {{
+          (statuses().length === 1
+            ? 'pages.home.allHidden.loaded.one'
+            : 'pages.home.allHidden.loaded.other'
+          ) | transloco: { count: statuses().length }
+        }}
+      </p>
+      @if (hiddenByCalm()) {
+        <button type="button" class="link-button" (click)="showCalmHidden()">
+          {{ 'pages.home.allHidden.turnCalmOff' | transloco: { count: hiddenByCalm() } }}
+        </button>
+      } @else if (hiddenByFilters()) {
+        <button type="button" class="link-button" (click)="showEverything()">
+          {{ 'pages.home.allHidden.showHidden' | transloco: { count: hiddenByFilters() } }}
+        </button>
+      } @else {
+        <span class="muted small">
+          {{ 'pages.home.allHidden.languagePicker' | transloco }}
+        </span>
+      }
+    </div>
+  } @else if (!visible().length) {
+    <p class="muted center">
+      <a routerLink="/find-friends">{{ 'pages.home.noneVisible.findFriends' | transloco }}</a>
+    </p>
+  } @else {
+    @for (s of visible(); track s.id) {
+      <app-status-card
+        [status]="s"
+        (changed)="onChanged(s, $event)"
+        (deleted)="onDeleted($event)"
+        (replied)="onPosted($event)"
+      />
+    }
+
+    <!-- Bookmarks the reader asked for, below the feed and above the buttons.
+         Appended a page at a time by "Review bookmarks" and never on their own:
+         the old automatic tail fired only when the cap, the cooldown and a
+         non-empty bookmark list coincided, which meant nobody ever saw it. -->
+    @if (visibleBookmarkReview().length) {
+      <div class="feed-cap">
+        <div class="feed-cap-rule">{{ 'pages.home.feedCap.savedRule' | transloco }}</div>
+      </div>
+      @for (s of visibleBookmarkReview(); track s.id) {
+        <div class="bookmark-label muted">
+          🔖 {{ 'pages.home.feedCap.fromBookmarks' | transloco }}
+        </div>
+        <app-status-card
+          [status]="s"
+          (changed)="onBookmarkChanged(s, $event)"
+          (deleted)="onBookmarkDeleted($event)"
+          (replied)="onPosted($event)"
+        />
+      }
+    }
+
+    @if (capActive()) {
+      <div class="feed-cap">
+        <div class="feed-cap-rule">{{ 'pages.home.feedCap.endRule' | transloco }}</div>
+        <p class="feed-cap-msg">
+          {{ 'pages.home.feedCap.message' | transloco }}
+          <span class="muted">
+            {{ 'pages.home.feedCap.resetsIn' | transloco: { minutes: capMinutesLeft() } }}
+          </span>
+        </p>
+        <!-- The cooldown still stops the feed; what changed is that it no longer
+             stops it silently, and no longer stops the bookmarks the reader
+             already saved. Reviewing what you kept is not doomscrolling. -->
+        @if (canReviewBookmarks()) {
+          <button
+            class="btn btn-outline more"
+            type="button"
+            [disabled]="loadingBookmarks()"
+            (click)="reviewBookmarks()"
+          >
+            {{
+              loadingBookmarks()
+                ? ('pages.home.reviewBookmarks.loading' | transloco)
+                : ('pages.home.reviewBookmarks.button' | transloco)
+            }}
+          </button>
+        }
+      </div>
+    } @else if (autoLoading()) {
+      <p class="muted center">{{ 'pages.home.loadMore.loading' | transloco }}</p>
+    } @else if (canLoadMore()) {
+      <!-- The pair. Each press appends its own kind and re-renders both, so the
+           reader can alternate freely: a page of feed, a page of bookmarks,
+           another page of feed. "Review bookmarks" appears only when there are
+           bookmarks to show — a dead button beside a live one is noise. -->
+      <div class="feed-more-actions">
+        <button class="btn btn-outline more" type="button" (click)="loadMore()">
+          {{ 'pages.home.loadMore.button' | transloco }}
+        </button>
+        @if (canReviewBookmarks()) {
+          <button
+            class="btn btn-outline more"
+            type="button"
+            [disabled]="loadingBookmarks()"
+            (click)="reviewBookmarks()"
+          >
+            {{
+              loadingBookmarks()
+                ? ('pages.home.reviewBookmarks.loading' | transloco)
+                : ('pages.home.reviewBookmarks.button' | transloco)
+            }}
+          </button>
+        }
+      </div>
+    } @else if (olderAvailable()) {
+      <!-- Not the end of the timeline: the *window* stopped the fetch, because a
+           page crossed the cutoff. Saying "all caught up" here is false — there
+           are older posts one click away — so offer the click that gets them
+           rather than a dead end. -->
+      <div class="feed-window-end">
+        <p class="muted small">
+          {{ 'pages.home.windowEnd.everythingFrom' | transloco: { window: windowLabel() } }}
+        </p>
+        <button class="btn btn-outline more" (click)="widenWindow()">
+          {{ 'pages.home.windowEnd.loadOlder' | transloco }}
+        </button>
+      </div>
+    } @else {
+      <!-- The end of the feed is exactly where "why is my feed like this" gets
+           asked, and nobody goes looking for a doctor when nothing hurts. This is
+           the Doctor's primary entry point; the command bar link is the permalink.
+           See sprint/anon-office-3-feed-doctor.md. -->
+      <p class="muted center small">
+        @if (hiddenByFilters(); as hidden) {
+          <!-- Saying "all caught up" while filters hold posts back is the claim
+               that sent readers hunting for a bug. Name the number instead. The
+               chips only re-show posts already fetched, so this never implies a
+               new page is coming — "Load more" above is what fetches. -->
+          {{ 'pages.home.feedEnd.matchingFilters' | transloco }}
+          <button type="button" class="link-button" (click)="showEverything()">
+            {{ 'pages.home.feedEnd.showHiddenByFilters' | transloco: { count: hidden } }}
+          </button>
+        } @else if (hiddenByCalm(); as calmed) {
+          <!-- Calm could empty a feed without ever saying so, which reads as
+               "my follows went quiet" rather than "I turned a filter on". Same
+               shape as the chips above: name the number, offer the undo. -->
+          {{ 'pages.home.feedEnd.calmLettingThrough' | transloco }}
+          <button type="button" class="link-button" (click)="showCalmHidden()">
+            {{ 'pages.home.feedEnd.showHiddenByCalm' | transloco: { count: calmed } }}
+          </button>
+        } @else if (hiddenByLanguage(); as byLanguage) {
+          <!-- No one-click undo for this one, deliberately: the language filter
+               is a multi-language choice rather than a toggle, so re-admitting
+               "the rest" would mean guessing which languages were meant. The
+               picker is in the filter bar at the top of this same page, so
+               naming the number and pointing at it is the honest move. -->
+          {{ 'pages.home.feedEnd.chosenLanguages' | transloco }}
+          <span class="muted">
+            {{
+              (byLanguage === 1
+                ? 'pages.home.feedEnd.moreInAnotherLanguage.one'
+                : 'pages.home.feedEnd.moreInAnotherLanguage.other'
+              ) | transloco: { count: byLanguage }
+            }}
+          </span>
+        } @else {
+          {{ 'pages.home.feedEnd.allCaughtUp' | transloco }}
+          <a routerLink="/feed-doctor">{{ 'pages.home.feedEnd.checkDoctor' | transloco }}</a>
+        }
+      </p>
+      <!-- The end of the feed is where saved posts are most welcome, and the
+           one place the reader is definitely not still scrolling something
+           else. Offered here as well as beside "Load more". -->
+      @if (canReviewBookmarks()) {
+        <div class="feed-more-actions">
+          <button
+            class="btn btn-outline more"
+            type="button"
+            [disabled]="loadingBookmarks()"
+            (click)="reviewBookmarks()"
+          >
+            {{
+              loadingBookmarks()
+                ? ('pages.home.reviewBookmarks.loading' | transloco)
+                : ('pages.home.reviewBookmarks.button' | transloco)
+            }}
+          </button>
+        </div>
+      }
+    }
+  }
+
+  <!-- Provider warnings live below the feed, not above it.
+
+       Every one of these is reactive and can turn on mid-session: the anonymous
+       provider records errors as pages come in, and the Twitter connector's
+       `unloaded()` / `errorSummary()` change as it resolves saved accounts.
+       Above the list, that made them arrive *behind* the reader — a block of
+       text inserting itself above the post being read and pushing it down.
+
+       They are status, not headlines: nothing here changes what the feed shows,
+       each one is an offer to go fix something elsewhere, and the end of the
+       feed is where a reader asks why it looks the way it does. -->
+  @if (auth.isAnonymous && anonymousProvider.errors().length) {
+    <aside class="muted feed-warning" role="status">
+      @for (warning of anonymousProvider.errors(); track warning) {
+        <div>{{ warning }}</div>
+      }
+      <a routerLink="/settings/follows">{{
+        'pages.home.warnings.anonymousErrors.link' | transloco
+      }}</a>
+    </aside>
+  }
+
+  <!-- Twitter posts are shown from the saved copy, so Home never spends on its
+       own. When some followed accounts have nothing saved yet, say so and price
+       the fix rather than quietly leaving them out of the feed. -->
+  @if (twitterProvider.unloaded(); as pending) {
+    <aside class="muted feed-warning" role="status">
+      <div>
+        {{
+          (pending === 1
+            ? 'pages.home.twitterUnloaded.summary.one'
+            : 'pages.home.twitterUnloaded.summary.other'
+          ) | transloco: { count: pending }
+        }}
+      </div>
+      <a routerLink="/settings/connections/twitter">
+        {{
+          (pending === 1
+            ? 'pages.home.twitterUnloaded.loadLink.one'
+            : 'pages.home.twitterUnloaded.loadLink.other'
+          ) | transloco: { count: pending }
+        }}
+      </a>
+    </aside>
+  }
+  <!-- One line, not one per account. When the free CORS proxies refuse together
+       every followed account reports the same failure, and printing all of them
+       buried the feed under identical text. -->
+  @if (twitterProvider.errorSummary(); as summary) {
+    <aside class="muted feed-warning" role="status">
+      <div>{{ summary }}</div>
+      @if (twitterProvider.paused()) {
+        <div>
+          {{ 'pages.home.warnings.twitterPaused.message' | transloco }}
+          <button type="button" class="linklike" (click)="retryTwitter()">
+            {{ 'pages.home.warnings.twitterPaused.retry' | transloco }}
+          </button>
+        </div>
+      }
+    </aside>
+  }
+}

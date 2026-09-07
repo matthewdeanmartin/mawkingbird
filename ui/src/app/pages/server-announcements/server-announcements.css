@@ -1,0 +1,112 @@
+.server-header {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.server-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: none;
+}
+
+.server-identity h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.server-handle,
+.server-stats {
+  margin: 2px 0;
+}
+
+.server-bio {
+  margin: 6px 0;
+}
+
+.server-announcement-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px 16px;
+}
+
+.server-announcement {
+  position: relative;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/*
+  Read vs. dismissed, both at full contrast.
+
+  This was `opacity: 0.6`, which in dark mode dimmed near-white text toward the
+  near-black background and produced exactly the unreadable grey the theme's
+  --muted is defined to avoid. Dimming is the wrong tool: the point of this page
+  is that a dismissed announcement stays *findable*, and findable means legible.
+
+  So the state is carried by the accent stripe instead — present and coloured
+  when there is something to act on, present and neutral when there is not.
+  Text colour never changes, so both states inherit --text and stay AAA in both
+  themes.
+*/
+.server-announcement {
+  border-left: 3px solid var(--accent);
+}
+
+.server-announcement.dismissed {
+  border-left-color: var(--border);
+  background: var(--hover);
+}
+
+.announcement-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.announcement-new {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-weight: 600;
+}
+
+.reactions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.reaction,
+.add-reaction {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.reaction.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.picker {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dismiss-one {
+  margin-top: 6px;
+}

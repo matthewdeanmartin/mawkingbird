@@ -1,0 +1,100 @@
+<button
+  class="ld-backdrop"
+  type="button"
+  [attr.aria-label]="'leaveDialog.close' | transloco"
+  (click)="close()"
+></button>
+<!-- Escape is already handled by the component's own document keydown listener,
+     so the trap only manages focus here (appFocusTrapCloseOnEscape="false"). -->
+<section
+  class="ld-dialog"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="ld-title"
+  appFocusTrap
+  [appFocusTrapCloseOnEscape]="false"
+>
+  <div class="ld-head">
+    <h2 id="ld-title">
+      @if (isAnonymous()) {
+        {{ 'leaveDialog.leaveAnonymous' | transloco }}
+      } @else {
+        {{ 'leaveDialog.logOutOf' | transloco: { who: who() } }}
+      }
+      <!-- `who()` already resolves to the Bluesky handle: the identity is adapted
+           into a normal Account, so no third title is needed here. -->
+    </h2>
+    <button
+      class="icon-close"
+      type="button"
+      [attr.aria-label]="'leaveDialog.close' | transloco"
+      (click)="close()"
+    >
+      ×
+    </button>
+  </div>
+
+  <!-- Ordered least to most destructive, and each says what survives rather than
+       only what goes: "this can't be undone" is a warning, but "your saved accounts
+       are kept" is the part that lets someone choose confidently. -->
+  <div class="ld-options">
+    <button class="ld-option" type="button" (click)="leave()">
+      <span class="ld-option-title">{{ 'leaveDialog.returnToLogin' | transloco }}</span>
+      <span class="muted small">
+        @if (isAnonymous()) {
+          {{ 'leaveDialog.stayAnonymous' | transloco }}
+        } @else if (isBluesky()) {
+          {{ 'leaveDialog.stayBluesky' | transloco }}
+        } @else {
+          {{ 'leaveDialog.stayDefault' | transloco }}
+        }
+      </span>
+    </button>
+
+    <!-- The emphasised one: the shared-machine case, which is the reason this
+         dialog exists at all. Hidden for a Bluesky-primary identity, whose data
+         is not anonymous data — offering it there would name data they don't
+         have, on a button that sounds like it erases the data they do. -->
+    @if (!isBluesky()) {
+      <button class="ld-option ld-option-primary" type="button" (click)="deleteAnonymous()">
+        <span class="ld-option-title">{{
+          'leaveDialog.deleteAnonymousThenLeave' | transloco
+        }}</span>
+        <span class="muted small">
+          {{ 'leaveDialog.deleteAnonymousDetail' | transloco }}
+        </span>
+      </button>
+    }
+
+    <button class="ld-option ld-option-danger" type="button" (click)="deleteEverything()">
+      <span class="ld-option-title">{{ 'leaveDialog.removeAllThenLeave' | transloco }}</span>
+      <span class="muted small">
+        @if (isBluesky()) {
+          {{ 'leaveDialog.removeAllDetailBluesky' | transloco }}
+        } @else {
+          {{ 'leaveDialog.removeAllDetailDefault' | transloco }}
+        }
+      </span>
+    </button>
+  </div>
+
+  <div class="ld-actions">
+    <button class="btn btn-outline" type="button" (click)="downloadBackup()">
+      @if (exported()) {
+        ✓ {{ 'leaveDialog.backupDownloaded' | transloco }}
+      } @else {
+        {{ 'leaveDialog.downloadFirst' | transloco }}
+      }
+    </button>
+    <button class="btn btn-outline" type="button" (click)="close()">
+      {{ 'leaveDialog.cancel' | transloco }}
+    </button>
+  </div>
+
+  @if (exportError(); as msg) {
+    <p class="ld-error" role="alert">{{ msg }}</p>
+  }
+  <p class="muted small">
+    {{ 'leaveDialog.backupNote' | transloco }}
+  </p>
+</section>

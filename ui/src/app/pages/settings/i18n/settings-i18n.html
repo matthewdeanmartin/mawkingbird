@@ -1,0 +1,361 @@
+<div class="spage-head">
+  <h1>{{ 'settings.i18n.title' | transloco }}</h1>
+  <p>{{ 'settings.i18n.intro' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  @if (uiLocale.hasChoice) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'localePicker.label' | transloco }}</span>
+        <div class="scontrol">
+          <app-locale-picker />
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (!auth.isAnonymous) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.i18n.postingLang' | transloco }}</span>
+        <div class="scontrol">
+          <select
+            [ngModel]="postingLang()"
+            (ngModelChange)="postingLang.set($event); postingLanguageSaved.set(false)"
+            name="postingLanguage"
+          >
+            <option value="">{{ 'settings.i18n.notSpecified' | transloco }}</option>
+            @for (language of postingLanguageOptions; track language.code) {
+              <option [value]="language.code">{{ language.name }}</option>
+            }
+          </select>
+          <span class="hint">{{ 'settings.i18n.postingLang.hint' | transloco }}</span>
+          <div>
+            <button
+              type="button"
+              class="btn"
+              [disabled]="savingPostingLanguage()"
+              (click)="savePostingLanguage()"
+            >
+              {{
+                (savingPostingLanguage() ? 'common.saving' : 'settings.i18n.savePostingLang')
+                  | transloco
+              }}
+            </button>
+            @if (postingLanguageSaved()) {
+              <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.trending' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.excludeUnknownLangTrends()"
+            (ngModelChange)="toggleExclude($event)"
+            name="excludeUnknownLangTrends"
+          />
+          {{ 'settings.i18n.excludeTrends' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.i18n.excludeTrends.hint' | transloco }}
+        </span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.feedPosts' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.hideForeignLangPosts()"
+            (ngModelChange)="prefs.setHideForeignLangPosts($event)"
+            name="hideForeignLangPosts"
+          />
+          {{ 'settings.i18n.hideForeign' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.i18n.hideForeign.hint' | transloco }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.known' | transloco }}</span>
+      <div class="scontrol">
+        <span class="hint">
+          {{ 'settings.i18n.known.hint' | transloco }}
+        </span>
+
+        <div class="lang-chips">
+          @for (code of knownCodes(); track code) {
+            <span class="lang-chip">
+              {{ name(code) }}
+              @if (prefs.knownLanguages().includes(code)) {
+                <button
+                  type="button"
+                  class="chip-x"
+                  (click)="remove(code)"
+                  [attr.aria-label]="'settings.i18n.removeLang' | transloco: { lang: name(code) }"
+                >
+                  ×
+                </button>
+              } @else {
+                <span class="chip-auto" [title]="'settings.i18n.auto.title' | transloco">{{
+                  'settings.i18n.auto' | transloco
+                }}</span>
+              }
+            </span>
+          }
+        </div>
+
+        <div class="lang-add">
+          <select [ngModel]="toAdd()" (ngModelChange)="toAdd.set($event)" name="addLang">
+            <option value="">{{ 'settings.i18n.addLang' | transloco }}</option>
+            @for (code of addable(); track code) {
+              <option [value]="code">{{ name(code) }}</option>
+            }
+          </select>
+          <button type="button" class="btn" (click)="add()" [disabled]="!toAdd()">
+            {{ 'settings.i18n.add' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.learning' | transloco }}</span>
+      <div class="scontrol">
+        <span class="hint">
+          {{ 'settings.i18n.learning.hint.before' | transloco }}
+          <strong>{{ 'settings.i18n.learning.neverHidden' | transloco }}</strong>
+          {{ 'settings.i18n.learning.hint.after' | transloco }}
+        </span>
+
+        @if (prefs.learningLanguages().length) {
+          <div class="learning-list">
+            @for (code of prefs.learningLanguages(); track code) {
+              <div class="learning-row">
+                <span class="learning-name">{{ name(code) }}</span>
+                <label class="checkline">
+                  <input
+                    type="checkbox"
+                    [ngModel]="prefs.appendsTranslation(code)"
+                    (ngModelChange)="toggleAppend(code, $event)"
+                    [name]="'append-' + code"
+                  />
+                  {{ 'settings.i18n.appendTranslation' | transloco }}
+                </label>
+                <button
+                  type="button"
+                  class="chip-x"
+                  (click)="removeLearning(code)"
+                  [attr.aria-label]="'settings.i18n.stopLearning' | transloco: { lang: name(code) }"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+          <span class="hint">
+            {{ 'settings.i18n.appendTranslation.hint' | transloco }}
+          </span>
+        } @else {
+          <span class="hint">{{ 'settings.i18n.learning.none' | transloco }}</span>
+        }
+
+        <div class="lang-add">
+          <select [ngModel]="toLearn()" (ngModelChange)="toLearn.set($event)" name="learnLang">
+            <option value="">{{ 'settings.i18n.addLearning' | transloco }}</option>
+            @for (code of learnable(); track code) {
+              <option [value]="code">{{ name(code) }}</option>
+            }
+          </select>
+          <button type="button" class="btn" (click)="addLearning()" [disabled]="!toLearn()">
+            {{ 'settings.i18n.add' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.dontWaste' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.skipSameLanguageTranslation()"
+            (ngModelChange)="prefs.setSkipSameLanguageTranslation($event)"
+            name="skipSameLanguageTranslation"
+          />
+          {{ 'settings.i18n.skipSame' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.i18n.skipSame.hint' | transloco }}
+        </span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.autoTranslate' | transloco }}</span>
+      <div class="scontrol">
+        <select
+          [ngModel]="prefs.autoTranslateMode()"
+          (ngModelChange)="prefs.setAutoTranslateMode($event)"
+          name="autoTranslateMode"
+        >
+          <option value="off">{{ 'settings.i18n.auto.off' | transloco }}</option>
+          <option value="view">{{ 'settings.i18n.auto.view' | transloco }}</option>
+          <option value="hover">{{ 'settings.i18n.auto.hover' | transloco }}</option>
+        </select>
+        <span class="hint">
+          {{ 'settings.i18n.auto.hint.before' | transloco }}
+          <strong>{{ engineLabels.mastodon }}</strong
+          >{{ 'settings.i18n.auto.hint.after' | transloco }}
+        </span>
+
+        @if (prefs.autoTranslateMode() !== 'off') {
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="prefs.translateAllForeign()"
+              (ngModelChange)="prefs.setTranslateAllForeign($event)"
+              name="translateAllForeign"
+            />
+            {{ 'settings.i18n.translateAll.before' | transloco }}
+            <strong>{{ 'settings.i18n.translateAll.every' | transloco }}</strong>
+            {{ 'settings.i18n.translateAll.after' | transloco }}
+          </label>
+          <span class="hint">
+            {{ 'settings.i18n.translateAll.hint' | transloco }}
+          </span>
+
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="prefs.autoTranslateUsesAi()"
+              (ngModelChange)="prefs.setAutoTranslateUsesAi($event)"
+              name="autoTranslateUsesAi"
+            />
+            {{ 'settings.i18n.useAi' | transloco }}
+          </label>
+          <span class="hint">
+            {{ 'settings.i18n.useAi.hint' | transloco: { engine: engineLabels.mastodon } }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.budget' | transloco }}</span>
+      <div class="scontrol">
+        <span class="hint">
+          {{ 'settings.i18n.budget.hint' | transloco }}
+        </span>
+
+        @for (engine of engines; track engine) {
+          <div class="budget-block">
+            <div class="budget-head">
+              <strong>{{ engineLabels[engine] }}</strong>
+              <span
+                class="budget-count"
+                [class.over-soft]="usage.overSoftLimit(engine)"
+                [class.at-hard]="usage.atHardLimit(engine)"
+              >
+                {{
+                  'settings.i18n.budget.count'
+                    | transloco: { today: usage.today(engine), left: usage.remainingToday(engine) }
+                }}
+              </span>
+            </div>
+
+            @if (usage.atHardLimit(engine)) {
+              <span class="hint budget-warn">
+                {{ 'settings.i18n.budget.usedUp' | transloco }}
+              </span>
+            } @else if (usage.overSoftLimit(engine)) {
+              <span class="hint budget-warn">
+                {{ 'settings.i18n.budget.warned' | transloco }}
+              </span>
+            }
+
+            <div class="budget-limits">
+              <label>
+                {{ 'settings.i18n.budget.warnAt' | transloco }}
+                <input
+                  type="number"
+                  min="1"
+                  [ngModel]="draftLimits()[engine].soft"
+                  (ngModelChange)="setDraft(engine, 'soft', $event)"
+                  [name]="engine + 'Soft'"
+                />
+              </label>
+              <label>
+                {{ 'settings.i18n.budget.stopAt' | transloco }}
+                <input
+                  type="number"
+                  min="1"
+                  [ngModel]="draftLimits()[engine].hard"
+                  (ngModelChange)="setDraft(engine, 'hard', $event)"
+                  [name]="engine + 'Hard'"
+                />
+              </label>
+              <button type="button" class="btn" (click)="saveLimits(engine)">
+                {{ 'settings.rss.save' | transloco }}
+              </button>
+              <button type="button" class="btn" (click)="resetUsage(engine)">
+                {{ 'settings.i18n.budget.reset' | transloco }}
+              </button>
+            </div>
+
+            <span class="hint">
+              {{ 'settings.i18n.budget.total' | transloco: { count: usage.total(engine) } }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.inferred' | transloco }}</span>
+      <div class="scontrol">
+        <ul class="infer-list">
+          <li>
+            {{ 'settings.i18n.inferred.ui' | transloco }}
+            <strong>{{ name(uiLanguage()) }}</strong>
+          </li>
+          <li>
+            {{ 'settings.i18n.inferred.browser' | transloco }}
+            @if (browserLangs.length) {
+              @for (c of browserLangs; track c; let last = $last) {
+                <strong>{{ name(c) }}</strong
+                >{{ last ? '' : ', ' }}
+              }
+            } @else {
+              <span class="hint">{{ 'settings.i18n.inferred.noneReported' | transloco }}</span>
+            }
+          </li>
+          <li>
+            {{ 'settings.i18n.inferred.posting' | transloco }}
+            @if (postingLang()) {
+              <strong>{{ name(postingLang()) }}</strong>
+            } @else {
+              <span class="hint">{{ 'settings.i18n.inferred.notSet' | transloco }}</span>
+            }
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="explore">
+  <!-- ===== Left: server intro ===== -->
+  <aside class="intro">
+    @if (instance(); as inst) {
+      <p
+        class="intro-lede"
+        [innerHTML]="'pages.explore.introLede' | transloco: { domain: inst.domain }"
+      ></p>
+      <div class="intro-banner" aria-hidden="true">
+        <span>{{ inst.title }}</span>
+      </div>
+      @if (inst.description) {
+        <p class="intro-desc">{{ inst.description }}</p>
+      }
+      <dl class="intro-stats">
+        <div>
+          <dt>{{ 'pages.explore.administeredBy' | transloco }}</dt>
+          <dd>
+            @if (inst.contact.account; as admin) {
+              <a [routerLink]="['/accounts', admin.id]" class="admin">
+                <img [src]="admin.avatar_static || admin.avatar" alt="" decoding="async" />
+                <span>
+                  {{ admin.display_name || admin.username }}
+                  <small>&#64;{{ admin.username }}</small>
+                </span>
+              </a>
+            } @else {
+              <span class="muted">{{
+                inst.contact.email || ('pages.explore.theServerStaff' | transloco)
+              }}</span>
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>{{ 'pages.explore.serverStats' | transloco }}</dt>
+          <dd
+            [innerHTML]="
+              'pages.explore.activeUsers'
+                | transloco: { count: inst.usage.users.active_month.toLocaleString() }
+            "
+          ></dd>
+        </div>
+      </dl>
+    } @else {
+      <p class="muted">{{ 'pages.explore.loadingServerInfo' | transloco }}</p>
+    }
+  </aside>
+
+  <!-- ===== Center: trending feed ===== -->
+  <section class="feed">
+    <header class="feed-head">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 17l6-6 4 4 7-7M14 8h6v6" />
+      </svg>
+      <h1>{{ 'pages.explore.trending' | transloco }}</h1>
+    </header>
+
+    <div class="feed-tabs" role="tablist">
+      <button
+        role="tab"
+        [class.active]="tab() === 'posts'"
+        [attr.aria-selected]="tab() === 'posts'"
+        (click)="selectTab('posts')"
+      >
+        {{ 'pages.explore.tabs.posts' | transloco }}
+      </button>
+      <button
+        role="tab"
+        [class.active]="tab() === 'hashtags'"
+        [attr.aria-selected]="tab() === 'hashtags'"
+        (click)="selectTab('hashtags')"
+      >
+        {{ 'pages.explore.tabs.hashtags' | transloco }}
+      </button>
+    </div>
+
+    @if (tab() === 'posts') {
+      @if (loadingPosts()) {
+        <p class="muted pad">{{ 'pages.explore.loadingPosts' | transloco }}</p>
+      } @else if (!posts().length) {
+        <p class="muted pad">{{ 'pages.explore.noTrendingPosts' | transloco }}</p>
+      } @else {
+        @for (status of posts(); track status.id) {
+          <article class="post">
+            <div class="post-head">
+              <img
+                class="avatar"
+                [src]="status.account.avatar_static || status.account.avatar"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="who">
+                <span class="name">{{
+                  status.account.display_name || status.account.username
+                }}</span>
+                <span class="acct muted">&#64;{{ status.account.acct }}</span>
+              </div>
+            </div>
+            <div class="post-body" [innerHTML]="status.content"></div>
+            @if (status.media_attachments.length) {
+              <div class="media">
+                @for (m of status.media_attachments; track m.id) {
+                  <img
+                    [src]="m.preview_url || m.url"
+                    [alt]="m.description || ''"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                }
+              </div>
+            }
+            <div class="post-meta muted">
+              <span>{{
+                'pages.explore.repliesCount' | transloco: { count: status.replies_count }
+              }}</span>
+              <span>{{
+                'pages.explore.boostsCount'
+                  | transloco: { count: status.reblogs_count, boosts: words().boosts }
+              }}</span>
+              <span>{{
+                'pages.explore.favouritesCount' | transloco: { count: status.favourites_count }
+              }}</span>
+            </div>
+          </article>
+        }
+      }
+    } @else {
+      @if (loadingTags()) {
+        <p class="muted pad">{{ 'pages.explore.loadingHashtags' | transloco }}</p>
+      } @else if (!tags().length) {
+        <p class="muted pad">{{ 'pages.explore.noTrendingHashtags' | transloco }}</p>
+      } @else {
+        <ul class="tag-list">
+          @for (tag of tags(); track tag.id) {
+            <li>
+              <a [routerLink]="['/tags', tag.name]" class="tag">
+                <span class="tag-name">#{{ tag.name }}</span>
+                <span class="tag-uses muted">{{
+                  'pages.explore.recentUses' | transloco: { count: tagUses(tag).toLocaleString() }
+                }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </section>
+
+  <!-- ===== Right: sign-in CTA ===== -->
+  <aside class="cta">
+    <div class="cta-brand">
+      <span class="brand-mark" aria-hidden="true">m</span>
+      <span class="brand-name">{{ instance()?.title || 'mastodon_mock' }}</span>
+    </div>
+
+    <p class="cta-blurb">
+      <strong>{{ 'pages.explore.cta.headline' | transloco }}</strong>
+    </p>
+    <p class="cta-blurb muted">
+      {{ 'pages.explore.cta.blurb' | transloco }}
+    </p>
+
+    @if (auth.isAuthenticated) {
+      <a class="btn btn-primary" routerLink="/home">{{
+        'pages.explore.cta.backToTimeline' | transloco
+      }}</a>
+    } @else {
+      <a class="btn btn-primary" href="login">{{
+        'pages.explore.cta.createAccount' | transloco
+      }}</a>
+      <a class="btn btn-outline" href="login">{{ 'pages.explore.cta.login' | transloco }}</a>
+    }
+  </aside>
+</div>

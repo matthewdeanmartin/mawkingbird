@@ -1,0 +1,96 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Wider than the generic confirm dialog: the whole point here is that the
+   consequences are spelled out, and they need room to be read. */
+.bulk-dialog {
+  width: 460px;
+}
+
+h3 {
+  margin: 0 0 10px;
+}
+
+.bulk-target {
+  margin: -4px 0 10px;
+  color: var(--muted);
+}
+
+.bulk-summary {
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.bulk-effects {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.bulk-effects li {
+  margin-bottom: 2px;
+}
+
+.bulk-backup {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.bulk-backup p {
+  margin: 0 0 8px;
+}
+
+.backup-done {
+  color: #00ba7c;
+  font-weight: 600;
+}
+
+.bulk-error {
+  color: #e0245e;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* The commit button for an irreversible action is filled red, not accent blue.
+   `.btn` is a solid accent button by default, so an outline-style danger class
+   would read as *less* prominent than Cancel — the wrong way round here. */
+.btn.btn-danger {
+  background: #e0245e;
+  border-color: #e0245e;
+  color: #fff;
+}
+
+.btn.btn-danger:hover:not(:disabled) {
+  background: #c31e51;
+}
+
+/* Live counters during the planning pass. Tabular figures so the numbers
+   climbing don't shift the line's width under the reader. */
+.plan-progress {
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}

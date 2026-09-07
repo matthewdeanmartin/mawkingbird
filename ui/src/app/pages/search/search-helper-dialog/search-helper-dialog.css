@@ -1,0 +1,159 @@
+.sh-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: rgb(0 0 0 / 55%);
+  cursor: default;
+}
+
+.sh-dialog {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(760px, 88vh);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+}
+
+.sh-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sh-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.icon-close {
+  border: 0;
+  padding: 0 5px;
+  background: transparent;
+  color: inherit;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.sh-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.sh-ask textarea,
+.sh-edit textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+/* Placeholder text inherits `color` in some engines, which is `--text` here —
+   white on white in the dark theme. State it. */
+.sh-ask textarea::placeholder,
+.sh-edit textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.sh-error {
+  color: #d63b3b;
+  font-size: 13px;
+}
+
+/* The model declining is information, not a failure — it must not read as red. */
+.sh-problem {
+  margin: 14px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--hover);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.sh-summary {
+  margin: 14px 0 8px;
+  font-weight: 600;
+}
+
+.sh-attempts {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.sh-attempt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* The query is clickable so a "worse" candidate can still be chosen — the
+   winner is the app's opinion, not a decision. */
+.sh-attempt-query {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.sh-attempt-win code {
+  font-weight: 700;
+}
+
+.sh-attempt-dead {
+  opacity: 0.6;
+}
+
+/* Untried is not the same as dead: nothing is known about these, so they are
+   dimmed less than a query that came back empty. */
+.sh-attempt-untried {
+  opacity: 0.8;
+}
+
+.sh-attempt-untried .sh-attempt-query code {
+  font-style: italic;
+}
+
+.sh-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.sh-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}

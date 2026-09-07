@@ -1,0 +1,118 @@
+:host {
+  display: contents;
+}
+
+/* Narrow, and beside the measure rather than inside it. The reading column
+   never gives up width to make room for this — the measure is the point of the
+   page, and a rail that squeezed the prose would be a worse trade than no rail. */
+.notes-rail {
+  flex: 0 0 auto;
+  width: 15rem;
+  align-self: start;
+  position: sticky;
+  top: 12px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.notes-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.notes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.note {
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+  font-size: 13px;
+}
+
+/* The notes on the page you are looking at. Emphasis rather than a filter:
+   seeing the rest in the margin is how you remember they are there. */
+.note.current {
+  border-left-color: var(--accent);
+}
+
+.note.moved {
+  border-left-style: dashed;
+}
+
+.note-moved {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 4px;
+  font-size: 12px;
+}
+
+.note-quote {
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+  /* Bounded: a quote is a reminder of where the note is, not the passage
+     itself, and a long one would push every other note off the rail. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-body {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.tool {
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 3px 6px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tool:hover {
+  background: var(--hover);
+}
+
+.tool.danger:hover {
+  background: color-mix(in srgb, var(--danger, #c2255c) 18%, transparent);
+}
+
+/* Below the width where a 15rem rail and a 68ch measure both fit, the rail goes
+   under the text instead of beside it. A phone has room for one column. */
+@media (max-width: 1100px) {
+  .notes-rail {
+    width: auto;
+    position: static;
+    max-height: none;
+    margin-top: 16px;
+  }
+}

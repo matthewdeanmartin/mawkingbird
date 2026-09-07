@@ -1,0 +1,548 @@
+<div class="chat-page" [class.list-open]="listOpen()">
+  <!-- Narrow screens only: the chat list is a drawer, so the transcript keeps
+       the screen. Hidden above the breakpoint, where both panes fit. -->
+  <button
+    class="chat-list-toggle"
+    type="button"
+    [attr.aria-expanded]="listOpen()"
+    aria-controls="chat-list"
+    (click)="toggleList()"
+  >
+    {{
+      listOpen()
+        ? ('pages.conversations.close' | transloco)
+        : ('pages.conversations.chats' | transloco)
+    }}
+  </button>
+
+  <aside class="chat-list" id="chat-list">
+    <div class="chat-list-head">{{ 'pages.conversations.chatListHeading' | transloco }}</div>
+    <div class="chat-filters">
+      <!-- "All" means all *people*. Bots are the odd one out — a chat with Eliza
+           or a language model is a different kind of thing from a chat with a
+           person, and someone who wants one goes looking for it. Leaving this
+           "All" costs a little precision and keeps the row readable. -->
+      <div
+        class="seg"
+        role="group"
+        [aria-label]="'pages.conversations.filters.whoAriaLabel' | transloco"
+      >
+        <button
+          [class.active]="prefs.chatAudience() === 'all'"
+          (click)="prefs.setChatAudience('all')"
+          [title]="'pages.conversations.filters.allTitle' | transloco"
+        >
+          {{ 'pages.conversations.filters.all' | transloco }}
+        </button>
+        <button
+          [class.active]="prefs.chatAudience() === 'mutuals'"
+          (click)="prefs.setChatAudience('mutuals')"
+          [title]="'pages.conversations.filters.mutualsTitle' | transloco"
+        >
+          {{ 'pages.conversations.filters.mutuals' | transloco }}
+        </button>
+        <!-- Only with somewhere to lead: without a bot correspondent this
+             filter can only ever produce an empty list. -->
+        @if (bots.peers().length) {
+          <button
+            [class.active]="prefs.chatAudience() === 'bots'"
+            (click)="prefs.setChatAudience('bots')"
+            [title]="'pages.conversations.filters.botTitle' | transloco"
+          >
+            {{ 'pages.conversations.filters.bot' | transloco }}
+          </button>
+        }
+      </div>
+      <div
+        class="seg"
+        role="group"
+        [aria-label]="'pages.conversations.filters.kindAriaLabel' | transloco"
+      >
+        <button [class.active]="prefs.chatKind() === 'all'" (click)="prefs.setChatKind('all')">
+          {{ 'pages.conversations.filters.all' | transloco }}
+        </button>
+        <button
+          [class.active]="prefs.chatKind() === 'private'"
+          (click)="prefs.setChatKind('private')"
+          [title]="'pages.conversations.filters.privateTitle' | transloco"
+        >
+          {{ 'pages.conversations.badge.private' | transloco }}
+        </button>
+        <button
+          [class.active]="prefs.chatKind() === 'public'"
+          (click)="prefs.setChatKind('public')"
+          [title]="'pages.conversations.filters.publicTitle' | transloco"
+        >
+          {{ 'pages.conversations.badge.public' | transloco }}
+        </button>
+        @if (bsky.linked()) {
+          <button
+            [class.active]="prefs.chatKind() === 'bsky'"
+            (click)="prefs.setChatKind('bsky')"
+            [title]="'pages.conversations.filters.bskyTitle' | transloco"
+          >
+            {{ 'pages.conversations.badge.bluesky' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+    @if (bskyScopeError()) {
+      <p class="muted small bsky-scope-hint">
+        {{ 'pages.conversations.bskyScopeHint.a' | transloco }}
+        <a routerLink="/settings/connections/bluesky">{{
+          'pages.conversations.bskyScopeHint.link' | transloco
+        }}</a
+        >.
+      </p>
+    }
+    @if (loading()) {
+      <p class="muted center">{{ 'pages.conversations.loading' | transloco }}</p>
+    } @else if (!chats().length) {
+      <p class="muted center small">
+        {{ 'pages.conversations.emptyChats' | transloco }}
+      </p>
+    } @else if (!visibleChats().length) {
+      <p class="muted center small">{{ 'pages.conversations.noMatch' | transloco }}</p>
+    }
+    @for (c of visibleChats(); track c.key) {
+      <button
+        class="conv-row"
+        [class.active]="c.key === selectedKey()"
+        [class.unread]="c.unread"
+        (click)="select(c)"
+      >
+        <div class="conv-avatars">
+          @if (c.kind === 'bsky') {
+            @for (m of (c.members ?? []).slice(0, 3); track m.did) {
+              @if (m.avatar) {
+                <img [src]="m.avatar" alt="" loading="lazy" decoding="async" />
+              } @else {
+                <span class="avatar-fallback">🦋</span>
+              }
+            }
+            @if (!(c.members ?? []).length) {
+              <span class="avatar-fallback">🦋</span>
+            }
+          } @else {
+            @for (a of c.accounts.slice(0, 3); track a.id) {
+              <img [src]="a.avatar_static || a.avatar" alt="" loading="lazy" decoding="async" />
+            }
+            @if (!c.accounts.length) {
+              <span class="avatar-fallback">💬</span>
+            }
+          }
+        </div>
+        <div class="conv-body">
+          <div class="conv-title">
+            <span class="conv-names">{{ title(c) }}</span>
+            @if (c.unread) {
+              <span class="unread-dot" [title]="'pages.conversations.unreadTitle' | transloco"
+                >●</span
+              >
+            }
+            @if (c.kind === 'public') {
+              <span class="kind-badge kind-public">{{
+                'pages.conversations.badge.publicUpper' | transloco
+              }}</span>
+            } @else if (c.kind === 'bsky') {
+              <span class="kind-badge kind-bsky">{{
+                'pages.conversations.badge.bluesky' | transloco
+              }}</span>
+            } @else if (c.kind === 'bot') {
+              <!-- "This browser" rather than "Private": both are true, but the
+                   surprising one is that nothing here leaves the machine. -->
+              <span class="kind-badge kind-bot">{{
+                'pages.conversations.badge.bot' | transloco
+              }}</span>
+            } @else {
+              <span class="kind-badge kind-private">{{
+                'pages.conversations.badge.private' | transloco
+              }}</span>
+            }
+          </div>
+          @if (c.lastStatus) {
+            <div class="conv-preview muted" [innerHTML]="stripped(c.lastStatus)"></div>
+          } @else if (c.previewText) {
+            <div class="conv-preview muted">{{ c.previewText }}</div>
+          }
+        </div>
+      </button>
+    }
+    <!-- Only when there is Mastodon history to page through. A bot row is not
+         that: "Load more" fetches older mentions, and an anonymous visitor whose
+         only chat is Eliza has none to fetch. -->
+    @if (!loading() && hasServerChats()) {
+      <div class="chat-load-more">
+        @if (chatsExhausted()) {
+          <span class="muted small">{{ 'pages.conversations.noOlderMessages' | transloco }}</span>
+        } @else {
+          <button
+            class="btn btn-outline btn-sm"
+            [disabled]="loadingMoreChats()"
+            (click)="loadMoreChats()"
+            [title]="'pages.conversations.loadMoreTitle' | transloco"
+          >
+            {{
+              loadingMoreChats()
+                ? ('pages.conversations.loading' | transloco)
+                : ('pages.conversations.loadMore' | transloco)
+            }}
+          </button>
+        }
+      </div>
+    }
+  </aside>
+
+  <section class="chat-pane">
+    @if (selected(); as chat) {
+      <header class="chat-head">
+        <div class="head-avatars">
+          @if (chat.kind === 'bsky') {
+            @for (m of (chat.members ?? []).slice(0, 4); track m.did) {
+              @if (m.avatar) {
+                <img
+                  [src]="m.avatar"
+                  [attr.aria-label]="m.handle"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+            }
+          } @else {
+            @for (a of chat.accounts.slice(0, 4); track a.id) {
+              <a [routerLink]="['/accounts', a.id]" [attr.aria-label]="a.display_name"
+                ><img [src]="a.avatar_static || a.avatar" alt="" loading="lazy" decoding="async"
+              /></a>
+            }
+          }
+        </div>
+        <div class="head-identity">
+          <div class="head-title">{{ title(chat) }}</div>
+          <div class="head-accts muted small">
+            @for (h of chat.handles; track h; let last = $last) {
+              <span>&#64;{{ h }}{{ last ? '' : ', ' }}</span>
+            }
+          </div>
+        </div>
+        @if (chat.kind === 'public') {
+          <span class="kind-badge kind-public">{{
+            'pages.conversations.badge.publicUpper' | transloco
+          }}</span>
+        } @else if (chat.kind === 'bsky') {
+          <span class="kind-badge kind-bsky">{{
+            'pages.conversations.badge.bluesky' | transloco
+          }}</span>
+        } @else if (chat.kind === 'bot') {
+          <span class="kind-badge kind-bot">{{ 'pages.conversations.badge.bot' | transloco }}</span>
+        } @else {
+          <span class="kind-badge kind-private">{{
+            'pages.conversations.badge.private' | transloco
+          }}</span>
+        }
+        <!-- No moderation menu for bots: there is nobody to mute, block or
+             report, and offering it would imply otherwise. -->
+        @if (chat.accounts.length && chat.kind !== 'bot') {
+          <details class="danger-menu">
+            <summary [aria-label]="'pages.conversations.actionsAriaLabel' | transloco">•••</summary>
+            <div class="danger-menu-panel">
+              @for (a of chat.accounts; track a.id) {
+                <div class="menu-account">
+                  <div class="menu-account-name muted small">&#64;{{ a.acct }}</div>
+                  @if (moderated()[a.id]; as state) {
+                    <span class="muted small">{{ state }}</span>
+                  } @else {
+                    <button type="button" (click)="muteParticipant(a)">
+                      {{ 'pages.conversations.mute' | transloco }}
+                    </button>
+                    <button type="button" (click)="blockParticipant(a)">
+                      {{ 'pages.conversations.block' | transloco }}
+                    </button>
+                    <button type="button" (click)="reportTarget.set(a)">
+                      {{ 'pages.conversations.report' | transloco }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </details>
+        }
+      </header>
+
+      @if (chat.kind === 'public') {
+        <div class="public-banner" role="alert">
+          <span class="public-banner-icon">📢</span>
+          <div>
+            <strong>{{ 'pages.conversations.publicBanner.title' | transloco }}</strong>
+            {{ 'pages.conversations.publicBanner.body' | transloco }}
+          </div>
+        </div>
+      }
+
+      <!-- Bot conversation picker. Sits above the transcript because it changes
+           what the transcript *is*, unlike anything else in this header. -->
+      @if (chat.kind === 'bot') {
+        <div class="bot-bar">
+          <!-- A picker over one option is a control that cannot do anything;
+               it appears once there is a second conversation to switch to. -->
+          @if (peerConversations().length > 1) {
+            <div class="bot-picker">
+              <select
+                [ngModel]="flattened() ? 'all' : currentConversationId()"
+                (ngModelChange)="pickConversation($event)"
+                name="conversation"
+                [aria-label]="'pages.conversations.bot.pickerAriaLabel' | transloco"
+              >
+                @for (conversation of peerConversations(); track conversation.id) {
+                  <option [value]="conversation.id">{{ conversation.title }}</option>
+                }
+                <option value="all">
+                  {{ 'pages.conversations.bot.allConversations' | transloco }}
+                </option>
+              </select>
+            </div>
+          }
+          <button class="btn btn-outline btn-sm" type="button" (click)="newConversation()">
+            {{ 'pages.conversations.bot.newConversation' | transloco }}
+          </button>
+        </div>
+        @if (flattened()) {
+          <p class="muted small bot-note">
+            {{
+              'pages.conversations.bot.everyConversationWith'
+                | transloco: { name: chat.accounts[0].display_name }
+            }}
+          </p>
+        }
+        <!-- Eliza's history is not kept, and that should be said before someone
+             starts a conversation they assume they can come back to. -->
+        @if (selectedPeer() === 'eliza') {
+          <p class="muted small bot-note">
+            {{ 'pages.conversations.bot.elizaNoMemory' | transloco }}
+          </p>
+        }
+      }
+
+      <div class="chat-scroll" #scroller>
+        @if (threadLoading()) {
+          <p class="muted center small">{{ 'pages.conversations.loadingThread' | transloco }}</p>
+        }
+        @if (chat.kind === 'bot') {
+          @for (m of botMessages(); track m.id) {
+            <div class="bubble-row" [class.mine]="m.from === 'me'">
+              <div class="bubble" [class.bubble-mine]="m.from === 'me'">
+                <div class="bubble-text">{{ m.text }}</div>
+                @if (m.incomplete) {
+                  <!-- Kept rather than hidden: these tokens were paid for, and a
+                       truncated answer presented as whole would be worse. -->
+                  <div class="bubble-incomplete small">
+                    {{ 'pages.conversations.bot.cutOff' | transloco }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          @if (botStreaming()) {
+            <p class="muted center small">
+              {{ 'pages.conversations.bot.answering' | transloco }}
+              <button class="btn btn-outline btn-sm" type="button" (click)="llm.stop()">
+                {{ 'pages.conversations.bot.stopGenerating' | transloco }}
+              </button>
+            </p>
+          }
+          @if (!botMessages().length && !botStreaming()) {
+            <p class="muted center small">
+              {{
+                'pages.conversations.bot.nothingYet'
+                  | transloco: { name: chat.accounts[0].display_name }
+              }}
+            </p>
+          }
+          @if (llm.error(); as message) {
+            <p class="chat-error" role="alert">{{ message }}</p>
+          }
+        }
+        @if (chat.kind === 'bsky') {
+          @for (m of bskyMessages(); track m.id) {
+            <div class="bubble-row" [class.mine]="bskyIsMine(m)">
+              @if (!bskyIsMine(m)) {
+                <span
+                  class="bubble-avatar"
+                  [attr.aria-label]="bskyAuthor(chat, m.sender.did)?.handle"
+                >
+                  @if (bskyAuthor(chat, m.sender.did)?.avatar; as av) {
+                    <img [src]="av" alt="" loading="lazy" decoding="async" />
+                  }
+                </span>
+              }
+              <div class="bubble" [class.bubble-mine]="bskyIsMine(m)">
+                @if (!bskyIsMine(m) && (chat.members ?? []).length > 1) {
+                  <div class="bubble-author small">
+                    {{
+                      bskyAuthor(chat, m.sender.did)?.displayName ||
+                        bskyAuthor(chat, m.sender.did)?.handle
+                    }}
+                  </div>
+                }
+                <div class="bubble-content">{{ m.text }}</div>
+                <div class="bubble-meta muted">
+                  <span>{{ m.sentAt | humanTime }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+        @for (m of chat.kind === 'bsky' ? [] : messages(); track m.id) {
+          <div class="bubble-row" [class.mine]="isMine(m)">
+            @if (!isMine(m)) {
+              <a
+                [routerLink]="['/accounts', m.account.id]"
+                class="bubble-avatar"
+                [attr.aria-label]="m.account.acct"
+              >
+                <img
+                  [src]="m.account.avatar_static || m.account.avatar"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            }
+            <div class="bubble" [class.bubble-mine]="isMine(m)">
+              @if (!isMine(m) && chat.accounts.length > 1) {
+                <div class="bubble-author small">
+                  {{ m.account.display_name || m.account.username }}
+                </div>
+              }
+              <div class="bubble-content" [innerHTML]="stripped(m)"></div>
+              @for (media of m.media_attachments; track media.id) {
+                <img
+                  class="bubble-media"
+                  [src]="media.preview_url || media.url"
+                  [alt]="media.description || ''"
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+              <div class="bubble-meta muted">
+                <span>{{ m.created_at | humanTime }}</span>
+                <span class="bubble-actions">
+                  <button
+                    class="bubble-action"
+                    [class.on]="m.favourited"
+                    (click)="toggleFave(m)"
+                    [title]="'pages.conversations.likeTitle' | transloco"
+                    [aria-label]="'pages.conversations.likeTitle' | transloco"
+                  >
+                    <span aria-hidden="true">{{ prefs.favStyle() === 'heart' ? '❤️' : '⭐' }}</span>
+                  </button>
+                  <button
+                    class="bubble-action"
+                    [class.on]="m.bookmarked"
+                    (click)="toggleBookmark(m)"
+                    [title]="'pages.conversations.bookmarkTitle' | transloco"
+                    [aria-label]="'pages.conversations.bookmarkTitle' | transloco"
+                  >
+                    <span aria-hidden="true">🔖</span>
+                  </button>
+                  @if (chat.kind === 'public') {
+                    <button
+                      class="bubble-action"
+                      [class.on]="m.reblogged"
+                      (click)="toggleBoost(m)"
+                      [title]="words().Boost"
+                      [attr.aria-label]="words().Boost"
+                    >
+                      <span aria-hidden="true">🔁</span>
+                    </button>
+                  }
+                  <a
+                    class="bubble-action"
+                    [routerLink]="['/statuses', m.id]"
+                    [title]="'pages.conversations.openAs' | transloco: { term: words().post }"
+                    >↗</a
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (chat.kind === 'private' && chat.accounts.length > 1) {
+        <div class="group-hint muted small">
+          {{ 'pages.conversations.groupHint' | transloco }}
+        </div>
+      }
+
+      @if (chat.kind === 'bot') {
+        <div class="chat-compose bot-compose">
+          <textarea
+            rows="2"
+            [ngModel]="botDraft()"
+            (ngModelChange)="botDraft.set($event)"
+            (keydown.enter)="$event.preventDefault(); sendToBot()"
+            [placeholder]="
+              'pages.conversations.bot.messagePlaceholder'
+                | transloco: { name: chat.accounts[0].display_name }
+            "
+          ></textarea>
+          <button
+            class="btn"
+            (click)="sendToBot()"
+            [disabled]="botStreaming() || !botDraft().trim()"
+          >
+            {{ 'pages.conversations.send' | transloco }}
+          </button>
+        </div>
+      } @else if (chat.kind === 'bsky') {
+        <div class="chat-compose bsky-compose">
+          <textarea
+            rows="2"
+            [ngModel]="bskyDraft()"
+            (ngModelChange)="bskyDraft.set($event)"
+            (keydown.enter)="$event.preventDefault(); sendBskyMessage()"
+            [placeholder]="'pages.conversations.bskyMessagePlaceholder' | transloco"
+          ></textarea>
+          <button
+            class="btn"
+            (click)="sendBskyMessage()"
+            [disabled]="bskySending() || !bskyDraft().trim()"
+          >
+            {{ 'pages.conversations.send' | transloco }}
+          </button>
+        </div>
+      } @else {
+        <div class="chat-compose" [class.compose-public]="chat.kind === 'public'">
+          <app-compose
+            [compact]="true"
+            [inReplyToId]="replyToId()"
+            [initialText]="replyMentions()"
+            [initialVisibility]="replyVisibility()"
+            [lockVisibility]="chat.kind === 'private'"
+            [placeholder]="
+              chat.kind === 'public'
+                ? ('pages.conversations.replyPublicly' | transloco)
+                : ('pages.conversations.replyPrivately' | transloco)
+            "
+            (posted)="onReplyPosted($event)"
+          />
+        </div>
+      }
+    } @else {
+      <div class="chat-empty muted center">
+        <p>{{ 'pages.conversations.selectPrompt' | transloco }}</p>
+        <p class="small">{{ 'pages.conversations.legend' | transloco }}</p>
+      </div>
+    }
+  </section>
+</div>
+
+@if (reportTarget(); as target) {
+  <app-report-dialog
+    [username]="target.acct"
+    [accountId]="target.id"
+    (closed)="reportTarget.set(null)"
+    (submitted)="reportTarget.set(null)"
+  />
+}

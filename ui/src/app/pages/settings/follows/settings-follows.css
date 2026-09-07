@@ -1,0 +1,55 @@
+.account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-row:last-child {
+  border-bottom: 0;
+}
+
+.account-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.account-link .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+}
+
+.req-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}
+
+/* Pointer to the bulk boost switches, which live on their own page. */
+.follows-crosslink {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}

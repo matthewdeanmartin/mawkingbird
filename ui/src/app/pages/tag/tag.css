@@ -1,0 +1,66 @@
+.tag-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 0.85em;
+}
+
+.more {
+  display: block;
+  margin: 16px auto;
+}
+
+/* Add-to-bundle sits below the header rather than beside Follow, because the two mean
+   different things: Follow pushes a tag into Home forever, a bundle is a feed you open
+   on purpose. It also works signed out, which the Follow button does not. */
+.bundle-bar {
+  padding: 0 16px 10px;
+}
+
+.bundle-picker {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+}
+
+.bundle-picker .checkline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 14px;
+}
+
+.bundle-new {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.bundle-new input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The "My posts" toggle and the line explaining what it actually searched. */
+.tag-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+}

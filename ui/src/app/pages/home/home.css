@@ -1,0 +1,370 @@
+.anonymous-login-post {
+  display: block;
+  border-bottom: 1px solid var(--border);
+  background: var(--col-bg);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.anonymous-login-post:hover {
+  background: var(--hover);
+}
+
+.anonymous-login-post-label {
+  padding: 8px 16px 0 64px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.anonymous-login-post-body {
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px 16px;
+}
+
+.anonymous-login-post-avatar {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.anonymous-login-post-content {
+  min-width: 0;
+}
+
+.anonymous-login-post-author {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.anonymous-login-post-content p {
+  margin: 5px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.follow-nudge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: var(--accent-soft, var(--col-bg));
+}
+
+.home-filters {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.home-filters .btn-sm,
+.feed-filter {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 7px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.home-filters .btn:hover {
+  background: var(--hover);
+}
+
+.home-filters .btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.home-articles {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.home-article-meta {
+  margin: 4px 4px 0;
+}
+
+.nudge-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.nudge-cta {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nudge-dismiss {
+  border: none;
+  background: none;
+  color: var(--muted, #888);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.feed-cap {
+  text-align: center;
+  padding: 24px 16px 40px;
+}
+
+.feed-cap-rule {
+  color: var(--muted, #888);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.feed-cap-msg {
+  margin: 0;
+  font-weight: 600;
+}
+
+.feed-cap-msg .muted {
+  display: block;
+  font-weight: 400;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Marker above each post in the bookmark tail, boost-label style. */
+.bookmark-label {
+  font-size: 13px;
+  padding: 8px 16px 0 56px;
+}
+
+.starter-pack-post {
+  display: flex;
+  gap: 12px;
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--col-bg);
+}
+
+.starter-pack-avatar {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.starter-pack-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.starter-pack-author {
+  display: flex;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.starter-pack-content > a {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.starter-pack-content > a:hover {
+  color: var(--accent);
+}
+
+/* Eliza invite reuses the starter-pack layout with an image avatar + CTA. */
+img.starter-pack-avatar {
+  object-fit: cover;
+  background: none;
+}
+
+.eliza-invite-copy {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+a.eliza-invite {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.eliza-invite:hover {
+  background: var(--accent-soft, rgba(128, 128, 128, 0.06));
+}
+
+/* Thoughtful posting's stand-in for the writing box. Deliberately a single
+   quiet row: the point of the mode is that Home stops inviting you to type. */
+.write-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.write-btn {
+  text-decoration: none;
+}
+
+/* How far back the feed reaches. Sits with the Retweets/Replies chips. */
+.home-window {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px 0 7px;
+  border: 0;
+  border-radius: 5px;
+  font-size: 13px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.home-window:hover {
+  background: var(--hover);
+}
+
+.home-window select {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+/* Provider warnings, below the feed. `.older-note` used to sit here for a note
+   above the list; that note is gone (see home.html) because anything above the
+   list that can appear mid-session displaces what the reader is reading. */
+.feed-warning {
+  margin: 12px 0 0;
+}
+
+/* The window stopped the fetch, not the timeline: older posts are one click
+   away, so this reads as an offer rather than an ending. */
+.feed-window-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.feed-window-end p {
+  margin: 0;
+}
+
+/* Posts arrived and every one is filtered out of view. Same centred, quiet
+   shape as the window-end note — it answers the same kind of question. */
+.feed-all-hidden {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.feed-all-hidden p {
+  margin: 0;
+}
+
+/* "Load more" and "Review bookmarks", side by side. Wraps rather than
+   shrinking, so a narrow screen stacks them instead of clipping the labels. */
+.feed-more-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* A button that reads as a link, for the inline "Try again now" on the Twitter
+   unavailable notice. Same shape as the one in status-card.css; component
+   styles are scoped, so it does not carry across. */
+.linklike {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.linklike:hover {
+  text-decoration: underline;
+}
+
+/* The first-run empty state: one sentence and one button, centred.
+
+   Distinct from the "nothing new" empty state, which is a muted line — this one
+   is the visitor's only useful move on a fresh browser and is sized to be
+   found rather than skimmed past. */
+.home-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Wider gap under a bigger lead, so the two read as one unit rather than
+     crowding each other. */
+  gap: 20px;
+  padding: 48px 16px;
+  text-align: center;
+}
+
+/* The button keeps pace with the lead above it. Left at default size it became
+   the quiet element on the page, which inverts the point — the sentence exists
+   to get this pressed. */
+.home-empty .btn {
+  font-size: 17px;
+  padding: 12px 22px;
+}
+
+/*
+  Sized to be the thing on the page, not a caption.
+
+  This was 15px body text in `--muted` grey — a whisper, for the one sentence a
+  first-time visitor most needs to read, above the only button that helps them.
+  Now ~2x body and in full-strength text colour, because muting it was the other
+  half of what made it disappear.
+
+  26px rather than a display size: this is a sentence to be read and acted on,
+  and past roughly this point type stops reading as confident and starts reading
+  as alarmed. `clamp` keeps it from crowding a narrow phone.
+*/
+.home-empty-lead {
+  margin: 0;
+  max-width: 24ch;
+  color: var(--text);
+  font-size: clamp(21px, 5.5vw, 26px);
+  font-weight: 600;
+  line-height: 1.25;
+}

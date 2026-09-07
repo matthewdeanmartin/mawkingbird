@@ -1,0 +1,32 @@
+@for (a of announcements(); track a.id) {
+  <div class="announcement" [class.read]="a.read">
+    <button
+      class="dismiss"
+      [title]="'announcements.dismiss' | transloco"
+      (click)="dismiss(a)"
+      [attr.aria-label]="'announcements.dismiss' | transloco"
+    >
+      <span aria-hidden="true">✕</span>
+    </button>
+    <div class="label">{{ 'announcements.label' | transloco }}</div>
+    <div class="content" [innerHTML]="a.content"></div>
+    <div class="reactions">
+      @for (r of a.reactions; track r.name) {
+        <button class="reaction" [class.on]="r.me" (click)="toggleReaction(a, r.name)">
+          {{ r.name }} <span>{{ r.count }}</span>
+        </button>
+      }
+      <span class="picker">
+        @for (e of quickReactions; track e) {
+          <button
+            class="add-reaction"
+            [title]="'announcements.react' | transloco: { emoji: e }"
+            (click)="toggleReaction(a, e)"
+          >
+            {{ e }}
+          </button>
+        }
+      </span>
+    </div>
+  </div>
+}

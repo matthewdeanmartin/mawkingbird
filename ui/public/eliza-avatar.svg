@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Eliza">
+  <defs>
+    <linearGradient id="eliza-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6bff"/>
+      <stop offset="1" stop-color="#5b48c9"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="20" fill="url(#eliza-bg)"/>
+  <!-- friendly bird -->
+  <g transform="translate(48 50)">
+    <ellipse cx="0" cy="6" rx="22" ry="20" fill="#fdfcff"/>
+    <circle cx="0" cy="-14" r="15" fill="#fdfcff"/>
+    <!-- eyes -->
+    <circle cx="-6" cy="-15" r="2.6" fill="#3a2f66"/>
+    <circle cx="6" cy="-15" r="2.6" fill="#3a2f66"/>
+    <!-- beak -->
+    <path d="M-4 -9 L4 -9 L0 -3 Z" fill="#ffb347"/>
+    <!-- wing -->
+    <path d="M12 2 q14 2 18 14 q-12 0 -18 -6 Z" fill="#c9bdff"/>
+    <!-- little cheek blush -->
+    <circle cx="-10" cy="-9" r="2.4" fill="#ffd3e0" opacity="0.8"/>
+    <circle cx="10" cy="-9" r="2.4" fill="#ffd3e0" opacity="0.8"/>
+  </g>
+</svg>

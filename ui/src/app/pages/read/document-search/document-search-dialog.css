@@ -1,0 +1,115 @@
+:host {
+  display: contents;
+}
+
+/* Anchored under the toolbar rather than centred over the text: a reader
+   searching is looking for a passage *in the page behind this*, and a modal in
+   the middle of it would cover the thing they are trying to find. */
+.search-dialog {
+  position: absolute;
+  z-index: 6;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 34rem);
+  margin-top: 6px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+}
+
+.search-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.search-count {
+  margin: 6px 0 0;
+}
+
+.search-results {
+  /* Bounded so a document with two hundred matches does not become the page.
+     The list scrolls; the reader keeps their place behind it. */
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-result:hover {
+  background: var(--hover);
+}
+
+/* Which of these you are already looking at. Not a disabled state — clicking it
+   is a legitimate way to scroll back to the match on this page. */
+.search-result.on-this-page {
+  background: var(--accent-soft);
+}
+
+.search-context {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-context mark {
+  background: var(--accent-soft);
+  color: inherit;
+  border-radius: 2px;
+}
+
+.search-page {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.tool {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tool:hover {
+  background: var(--hover);
+}

@@ -1,0 +1,238 @@
+<div class="read-toolbar-outer">
+  <div
+    class="read-toolbar"
+    role="toolbar"
+    [attr.aria-label]="'reader.toolbar.label' | transloco"
+    (focusout)="onFocusOut($event)"
+  >
+    <div class="tool-group">
+      <button
+        class="tool"
+        type="button"
+        [class.active]="typographyOpen()"
+        [attr.aria-expanded]="typographyOpen()"
+        [title]="'reader.toolbar.typographyTitle' | transloco"
+        (click)="toggleTypography()"
+      >
+        <span aria-hidden="true">Aa</span>
+        <span class="sr-only">{{ 'reader.toolbar.typography' | transloco }}</span>
+      </button>
+
+      <!-- Pages vs. scroll. A segmented pair rather than one toggle, because
+         "Pages" alone gives no clue what the other state is. -->
+      <button
+        class="tool"
+        type="button"
+        [class.active]="prefs.readerPageFlip()"
+        [attr.aria-pressed]="prefs.readerPageFlip()"
+        [title]="'reader.toolbar.pageFlipTitle' | transloco"
+        (click)="setPageFlip(true)"
+      >
+        {{ 'reader.toolbar.pageFlip' | transloco }}
+      </button>
+      <button
+        class="tool"
+        type="button"
+        [class.active]="!prefs.readerPageFlip()"
+        [attr.aria-pressed]="!prefs.readerPageFlip()"
+        [title]="'reader.toolbar.scrollTitle' | transloco"
+        (click)="setPageFlip(false)"
+      >
+        {{ 'reader.toolbar.scroll' | transloco }}
+      </button>
+    </div>
+
+    @if (paging()) {
+      <div class="tool-group pager">
+        <button
+          class="tool"
+          type="button"
+          [disabled]="!canPrev()"
+          [title]="'reader.toolbar.previousPage' | transloco"
+          [attr.aria-label]="'reader.toolbar.previousPage' | transloco"
+          (click)="previousPage.emit()"
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+        <!-- Announced as a full sentence; shown as the bare fraction, which is
+           all a reader glancing at it needs. -->
+        <span class="position" role="status">
+          <span aria-hidden="true">
+            {{ 'reader.toolbar.pagePosition' | transloco: { page: page(), total: pageCount() } }}
+          </span>
+          <span class="sr-only">
+            {{ 'reader.toolbar.pageOf' | transloco: { page: page(), total: pageCount() } }}
+          </span>
+        </span>
+        <button
+          class="tool"
+          type="button"
+          [disabled]="!canNext()"
+          [title]="'reader.toolbar.nextPage' | transloco"
+          [attr.aria-label]="'reader.toolbar.nextPage' | transloco"
+          (click)="nextPage.emit()"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+        @if (minutesLeft(); as minutes) {
+          <span class="muted remaining">
+            {{ 'reader.toolbar.minutesLeft' | transloco: { minutes: minutes } }}
+          </span>
+        }
+      </div>
+    }
+
+    <div class="tool-group">
+      @if (canSearch()) {
+        <button
+          class="tool"
+          type="button"
+          [class.active]="searchOpen()"
+          [attr.aria-expanded]="searchOpen()"
+          [title]="'reader.toolbar.searchTitle' | transloco"
+          (click)="findInDocument.emit()"
+        >
+          {{ 'reader.toolbar.search' | transloco }}
+        </button>
+      }
+      <button
+        class="tool"
+        type="button"
+        [class.active]="libraryOpen()"
+        [attr.aria-pressed]="libraryOpen()"
+        [disabled]="!libraryEnabled()"
+        [title]="'reader.toolbar.libraryTitle' | transloco"
+        (click)="toggleLibrary.emit()"
+      >
+        {{ 'reader.toolbar.library' | transloco }}
+      </button>
+      @if (canExit()) {
+        <button
+          class="tool"
+          type="button"
+          [title]="'reader.toolbar.exitTitle' | transloco"
+          (click)="exit.emit()"
+        >
+          {{ 'reader.toolbar.exit' | transloco }}
+        </button>
+      }
+    </div>
+
+    @if (typographyOpen()) {
+      <div class="typography">
+        <div class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.size' | transloco }}</span>
+          <button
+            class="tool"
+            type="button"
+            [title]="'reader.toolbar.smaller' | transloco"
+            [attr.aria-label]="'reader.toolbar.smaller' | transloco"
+            (click)="bumpFont(-1)"
+          >
+            <span aria-hidden="true">A−</span>
+          </button>
+          <span class="typo-value" aria-live="polite">{{ prefs.readerFontSize() }}px</span>
+          <button
+            class="tool"
+            type="button"
+            [title]="'reader.toolbar.larger' | transloco"
+            [attr.aria-label]="'reader.toolbar.larger' | transloco"
+            (click)="bumpFont(1)"
+          >
+            <span aria-hidden="true">A+</span>
+          </button>
+        </div>
+
+        <label class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.typeface' | transloco }}</span>
+          <select [value]="prefs.readerFontFamily()" (change)="setFontFamily($event)">
+            @for (font of readerFonts; track font.id) {
+              <option [value]="font.id">{{ font.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.paper' | transloco }}</span>
+          <select [value]="prefs.readerTheme()" (change)="setTheme($event)">
+            <option value="app">{{ 'reader.toolbar.paper.app' | transloco }}</option>
+            <option value="light">{{ 'reader.toolbar.paper.light' | transloco }}</option>
+            <option value="sepia">{{ 'reader.toolbar.paper.sepia' | transloco }}</option>
+            <option value="dark">{{ 'reader.toolbar.paper.dark' | transloco }}</option>
+            <option value="solarized">{{ 'reader.toolbar.paper.solarized' | transloco }}</option>
+          </select>
+        </label>
+
+        <label class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.lineHeight' | transloco }}</span>
+          <input
+            type="range"
+            min="1.2"
+            max="2.2"
+            step="0.05"
+            [value]="prefs.readerLineHeight()"
+            (input)="setLineHeight($event)"
+          />
+          <span class="typo-value">{{ prefs.readerLineHeight() }}</span>
+        </label>
+
+        <label class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.align' | transloco }}</span>
+          <select [value]="prefs.readerTextAlign()" (change)="setAlign($event)">
+            <option value="left">{{ 'reader.toolbar.align.left' | transloco }}</option>
+            <option value="justify">{{ 'reader.toolbar.align.justify' | transloco }}</option>
+          </select>
+        </label>
+
+        <!-- Where "Define" sends a word. Here rather than in Settings because
+             it is a reading control, and the reader is where anyone discovers
+             they want to change it. -->
+        <label class="typo-row">
+          <span class="typo-label">{{ 'reader.toolbar.dictionary' | transloco }}</span>
+          <select [value]="prefs.readerDictionary()" (change)="setDictionary($event)">
+            @for (entry of dictionaries; track entry.id) {
+              <option [value]="entry.id">{{ entry.label }}</option>
+            }
+          </select>
+        </label>
+
+        @if (prefs.readerDictionary() === 'custom') {
+          <label class="typo-row typo-stack">
+            <span class="typo-label">{{ 'reader.toolbar.dictionaryTemplate' | transloco }}</span>
+            <input
+              type="url"
+              [value]="prefs.readerDictionaryCustom()"
+              [placeholder]="customTemplateExample"
+              [attr.aria-invalid]="customTemplateBad() ? 'true' : null"
+              (change)="setCustomDictionary($event)"
+            />
+            <!-- Rejected at the point of typing, not silently at lookup time:
+                 a template that fails later is a button that does nothing. -->
+            <span class="muted small">
+              {{
+                (customTemplateBad()
+                  ? 'reader.toolbar.dictionaryTemplateBad'
+                  : 'reader.toolbar.dictionaryTemplateHint'
+                ) | transloco
+              }}
+            </span>
+          </label>
+        }
+
+        <div class="typo-row typo-done">
+          <button class="tool" type="button" (click)="closeTypography()">
+            {{ 'reader.toolbar.done' | transloco }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+  <!-- Kept inside the toolbar's sticky, opaque box. A separate sticky line
+       used a guessed toolbar height and crossed the prose whenever controls
+       wrapped onto another row. -->
+  @if (progress() !== null) {
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" [style.width.%]="(progress() ?? 0) * 100"></div>
+    </div>
+  }
+</div>

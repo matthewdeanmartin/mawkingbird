@@ -1,0 +1,64 @@
+.intro {
+  display: block;
+  padding: 12px 16px 16px;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--border);
+}
+
+.kit-row {
+  display: flex;
+  gap: 14px;
+  margin: 12px 16px;
+  padding: 16px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--col-bg));
+  color: var(--text);
+  text-decoration: none;
+}
+
+.kit-row:hover {
+  background: color-mix(in srgb, var(--accent) 12%, var(--col-bg));
+  text-decoration: none;
+}
+
+.kit-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: var(--accent);
+  color: #fff;
+}
+
+.kit-body p {
+  margin: 4px 0 6px;
+  line-height: 1.5;
+}
+
+/* Narrows the merged list. Full width so it is obviously about everything below
+   it rather than about the first card. */
+.kit-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 16px 4px;
+}
+
+.kit-filter input,
+.kit-filter select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  font-size: 15px;
+  min-width: 0;
+}
+
+.kit-none,
+.kit-more {
+  margin: 16px;
+  line-height: 1.5;
+}

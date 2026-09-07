@@ -1,0 +1,128 @@
+<div class="board">
+  <div class="board-head">
+    <h3>{{ 'pages.write.board.title' | transloco }}</h3>
+    <p class="muted small">
+      {{ 'pages.write.board.intro' | transloco }}
+    </p>
+    <button class="btn btn-outline btn-sm" type="button" (click)="close()">
+      {{ 'pages.write.board.close' | transloco }}
+    </button>
+  </div>
+
+  <!-- A move is a purely visual change; without this it is invisible to the
+       people most likely to be using the keyboard path. -->
+  <p class="sr-only" role="status">{{ announcement() }}</p>
+
+  <div class="board-columns">
+    @for (column of columns(); track column.id) {
+      <section
+        class="board-column"
+        [class.over]="dragOver() === column.id"
+        [class.derived]="derived(column.id)"
+        [attr.aria-label]="
+          (label(column.id) | transloco) +
+          ', ' +
+          ((column.items.length === 1
+            ? 'pages.write.board.columnDraftCount.one'
+            : 'pages.write.board.columnDraftCount.other'
+          ) | transloco: { count: column.items.length })
+        "
+        (dragover)="onDragOver(column.id, $event)"
+        (drop)="onDrop(column.id, $event)"
+      >
+        <header class="column-head">
+          <h4>{{ label(column.id) | transloco }}</h4>
+          <span class="chip-count">{{ column.items.length }}</span>
+        </header>
+
+        @if (column.items.length) {
+          <ul class="column-cards">
+            @for (item of column.items; track item.key) {
+              <li
+                class="card"
+                [class.current]="currentKey() === item.key"
+                [class.dragging]="dragging() === item.key"
+                [attr.draggable]="!derived(column.id)"
+                (dragstart)="onDragStart(item, $event)"
+                (dragend)="onDragEnd()"
+              >
+                <button class="card-open" type="button" (click)="open(item)">
+                  <span class="card-text">{{ item.preview }}</span>
+                  <span class="card-meta muted">
+                    @switch (item.kind) {
+                      @case ('local') {
+                        <span [title]="'pages.write.title.localOnly' | transloco">💾</span>
+                      }
+                      @case ('scheduled') {
+                        <span
+                          [title]="
+                            'pages.write.board.title.parked' | transloco: { noun: words().post }
+                          "
+                          >⏳</span
+                        >
+                      }
+                      @case ('self') {
+                        <span
+                          [title]="
+                            'pages.write.board.title.selfOnly' | transloco: { noun: words().post }
+                          "
+                          >🔒</span
+                        >
+                      }
+                      @case ('paste') {
+                        <span [title]="'pages.write.title.pasteService' | transloco">📋</span>
+                      }
+                    }
+                    <span>{{ item.at | humanTime }}</span>
+                  </span>
+                </button>
+
+                <!-- The keyboard path, and not an afterthought: a board you can
+                     only use with a mouse is one half the users cannot use. -->
+                @if (!derived(column.id)) {
+                  <div class="card-menu-wrap">
+                    <button
+                      class="card-menu-button"
+                      type="button"
+                      [attr.aria-expanded]="menuFor() === item.key"
+                      [attr.aria-label]="
+                        'pages.write.board.moveAriaLabel' | transloco: { preview: item.preview }
+                      "
+                      (click)="toggleMenu(item, $event)"
+                    >
+                      <span aria-hidden="true">⋯</span>
+                    </button>
+                    @if (menuFor() === item.key) {
+                      <div
+                        class="card-menu"
+                        [style.top.px]="menuAt()?.top"
+                        [style.left.px]="menuAt()?.left"
+                      >
+                        <p class="card-menu-title muted small">
+                          {{ 'pages.write.board.moveTo' | transloco }}
+                        </p>
+                        @for (target of moveTargets; track target) {
+                          <button
+                            type="button"
+                            [disabled]="target === column.id"
+                            (click)="move(item, target)"
+                          >
+                            {{ label(target) | transloco }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <!-- Keeps its heading and says what belongs here: an unexplained
+               empty column reads as broken rather than as available. -->
+          <p class="column-empty muted small">{{ hint(column.id) | transloco }}</p>
+        }
+      </section>
+    }
+  </div>
+</div>

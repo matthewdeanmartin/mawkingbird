@@ -1,0 +1,295 @@
+/*
+ * The workspace frame: the page, its tabs, the three-pane grid, and the drafts
+ * and notes rails either side of the editor.
+ *
+ * Split out of one 900-line stylesheet because /write keeps growing. The three
+ * files follow the three things on screen: this frame, the editor inside it
+ * (write-editor.css), and everything that opens *over* it — wizard, dialogs,
+ * board (write-overlays.css). A rule belongs here if it survives the editor
+ * being empty.
+ */
+
+.write {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 12px 24px;
+}
+
+.write-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 4px;
+}
+
+.write-head h2 {
+  margin: 0;
+}
+
+.write-head-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.page-note {
+  margin: 0 4px 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* --- tabs --- */
+
+.write-tabs {
+  display: flex;
+  gap: 4px;
+  margin-right: auto;
+}
+
+.write-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.write-tab:hover {
+  color: inherit;
+}
+
+.write-tab.on {
+  color: inherit;
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+/* Kept in the DOM rather than removed, so switching tabs doesn't tear down the
+   editor and lose an in-progress body. The pane toggles alongside it only exist
+   on narrow screens, where the panes collapse. */
+.hidden-tab,
+.pane-toggle {
+  display: none;
+}
+
+/* --- notes tab --- */
+
+.notes-tab {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.note-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.note-badges {
+  display: inline-flex;
+  gap: 6px;
+  margin-right: 8px;
+}
+
+.note-text {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.note-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Three panes, like /chat's two-box grid but with a second rail. The editor
+   takes the slack: the side panes hold lists, which have a natural width. */
+.panes {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 300px;
+  gap: 12px;
+  align-items: start;
+}
+
+.pane {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  min-width: 0;
+}
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pane-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.pane-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.pane-link {
+  font-size: 12px;
+}
+
+/* --- notes pane --- */
+
+.jot {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.jot-box {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 8px;
+}
+
+.jot-kind {
+  font-size: 12px;
+  max-width: 7.5rem;
+}
+
+.pkm-badge {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* --- drafts pane --- */
+
+.draft-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82em;
+  cursor: pointer;
+}
+
+.chip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.chip-count {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+.draft-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.draft-row.current {
+  background: var(--hover);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.draft-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.draft-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+/* --- narrow screens ---
+   The side panes become disclosures above the editor rather than disappearing.
+   Nothing in this workspace may become unreachable on a laptop. */
+@media (max-width: 1100px) {
+  .panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pane-toggle {
+    display: inline-flex;
+  }
+
+  .pane-left,
+  .pane-right {
+    display: none;
+  }
+
+  .pane-left.open,
+  .pane-right.open {
+    display: block;
+  }
+
+  /* Source order puts the editor second; on one column it should come first,
+     because it is what the page is for. */
+  .pane-editor {
+    order: -1;
+  }
+}

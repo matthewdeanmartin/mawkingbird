@@ -1,0 +1,126 @@
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.lightbox-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.lightbox-img {
+  max-width: min(90vw, 1100px);
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-caption {
+  color: #eee;
+  font-size: 14px;
+  text-align: center;
+  max-width: 90vw;
+}
+
+.lightbox-counter {
+  color: #ccc;
+  font-size: 13px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.lightbox-nav {
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  margin: 0 8px;
+}
+
+.lightbox-nav:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/*
+  On a narrow screen the arrows cannot sit beside the image.
+
+  The overlay is a flex row — [‹] [figure] [›] — and the image claims
+  `min(90vw, 1100px)`. On a phone that is 90vw plus two 52px buttons and their
+  margins, ~120px more than the viewport: the arrows were crushed to unusable
+  slivers or pushed off-screen entirely, so a four-image post had images two
+  through four with no way to reach them. (Swipe now works too — see
+  lightbox.ts — but a visible control should not vanish.)
+
+  Overlaying them on the image keeps both affordances at full size. Slightly
+  inset from the edges rather than flush, so they do not collide with the
+  browser's own edge-swipe gesture areas.
+*/
+@media (max-width: 700px) {
+  .lightbox-overlay {
+    padding: 12px;
+  }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    /* Smaller than the desktop 52px, but still comfortably over the ~44px
+       minimum touch target. */
+    width: 48px;
+    height: 48px;
+    font-size: 34px;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .lightbox-nav.prev {
+    left: 8px;
+  }
+
+  .lightbox-nav.next {
+    right: 8px;
+  }
+
+  /* The image no longer shares the row with the arrows, so it can have the
+     width back. */
+  .lightbox-img {
+    max-width: 100%;
+  }
+}

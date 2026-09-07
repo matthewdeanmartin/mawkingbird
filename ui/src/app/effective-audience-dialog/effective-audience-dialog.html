@@ -1,0 +1,271 @@
+<div class="overlay" role="presentation" tabindex="-1" (click)="close()" (keyup.escape)="close()">
+  <div
+    class="dialog audience-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="audience-dialog-title"
+    appFocusTrap
+    (dismissed)="close()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="audience-dialog-title">{{ 'effectiveAudience.title' | transloco }}</h3>
+
+    @if (asking()) {
+      <!-- The consent screen. This is the only place the cost is stated before
+           it is spent, so it states it in requests *and* in seconds — "63 API
+           calls" means nothing to most people; "about a minute" does. -->
+      <p class="lead">{{ 'effectiveAudience.lead' | transloco }}</p>
+
+      <fieldset class="sides">
+        <legend class="muted small">{{ 'effectiveAudience.measure' | transloco }}</legend>
+        <label class="side">
+          <input type="checkbox" [checked]="wantFollowing()" (change)="toggleFollowing()" />
+          <span class="side-name">{{ 'effectiveAudience.friends' | transloco }}</span>
+          <span class="side-cost muted">{{
+            'effectiveAudience.sideCost'
+              | transloco
+                : {
+                    count: fmt(followingTotal()),
+                    requests: callsFor(followingTotal()),
+                  }
+          }}</span>
+        </label>
+        <label class="side">
+          <input type="checkbox" [checked]="wantFollowers()" (change)="toggleFollowers()" />
+          <span class="side-name">{{ 'effectiveAudience.followers' | transloco }}</span>
+          <span class="side-cost muted">{{
+            'effectiveAudience.sideCost'
+              | transloco
+                : {
+                    count: fmt(followersTotal()),
+                    requests: callsFor(followersTotal()),
+                  }
+          }}</span>
+        </label>
+      </fieldset>
+
+      <p
+        class="cost"
+        role="status"
+        [innerHTML]="
+          (estimatedCalls() === 1
+            ? 'effectiveAudience.estimatedCost.one'
+            : 'effectiveAudience.estimatedCost.other'
+          )
+            | transloco
+              : {
+                  count: estimatedCalls().toLocaleString(),
+                  time: estimatedTime(),
+                }
+        "
+      ></p>
+
+      <details class="how">
+        <summary class="muted small">{{ 'effectiveAudience.howTitle' | transloco }}</summary>
+        <ul class="muted small">
+          <li
+            [innerHTML]="
+              'effectiveAudience.how.effective'
+                | transloco: { days: dormantDays, post: words().post }
+            "
+          ></li>
+          <li [innerHTML]="'effectiveAudience.how.dormant' | transloco: { days: dormantDays }"></li>
+          <li
+            [innerHTML]="
+              'effectiveAudience.how.lowCadence'
+                | transloco: { rate: lowCadenceRate, posts: words().posts }
+            "
+          ></li>
+          <li [innerHTML]="'effectiveAudience.how.zombies' | transloco"></li>
+        </ul>
+      </details>
+    } @else {
+      @if (running()) {
+        <p class="lead">{{ 'effectiveAudience.reading' | transloco }}</p>
+      }
+
+      <!-- Per-side progress. Two bars rather than one, because the two sides
+           have wildly different sizes and a merged bar hides which one is slow. -->
+      @for (side of state()?.sides ?? []; track side) {
+        @if (state()?.progress?.[side]; as p) {
+          <div class="side-progress">
+            <div class="side-progress-head">
+              <span class="side-name">{{ sideLabel(side) }}</span>
+              <span class="muted small" role="status" aria-live="polite">
+                <!-- While running, "n of total" frames progress against the
+                     server's count. Once finished, that count is just a stale
+                     counter to compare against and `scanned` is the fact — so
+                     "2,914 of 2,912 read" stops being shown as if it were an
+                     overshoot. -->
+                {{
+                  (p.done
+                    ? p.apiCalls === 1
+                      ? 'effectiveAudience.progress.done.one'
+                      : 'effectiveAudience.progress.done.other'
+                    : p.apiCalls === 1
+                      ? 'effectiveAudience.progress.running.one'
+                      : 'effectiveAudience.progress.running.other'
+                  )
+                    | transloco
+                      : {
+                          scanned: p.scanned.toLocaleString(),
+                          total: fmt(p.total),
+                          calls: p.apiCalls.toLocaleString(),
+                        }
+                }}
+              </span>
+            </div>
+            <div
+              class="bar-track"
+              role="progressbar"
+              [attr.aria-valuenow]="pctOf(p.scanned, p.total)"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-label]="scannedAriaLabel(side)"
+            >
+              <div
+                class="bar-fill"
+                [class.complete]="p.done"
+                [style.width.%]="pctOf(p.scanned, p.total)"
+              ></div>
+            </div>
+          </div>
+        }
+      }
+
+      @if (failed()) {
+        <p class="audience-error">
+          {{ 'effectiveAudience.scanError' | transloco: { error: state()?.error } }}
+        </p>
+        <p class="muted small">{{ 'effectiveAudience.nothingChanged' | transloco }}</p>
+      }
+
+      @if (stopped() && hasResults()) {
+        <p class="sampled-note">
+          {{ 'effectiveAudience.stoppedEarly' | transloco }}
+        </p>
+      }
+
+      @if (hasResults()) {
+        @for (row of resultRows(); track row.side) {
+          <section class="result">
+            <h4>
+              {{ row.label }}
+              <span class="muted small coverage">{{ coverageLabel(row.result) }}</span>
+            </h4>
+
+            <div class="tiles">
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'effectiveAudience.effective' | transloco
+                }}</span>
+                <span class="tile-value">
+                  {{
+                    (row.result.complete
+                      ? 'effectiveAudience.exactCount'
+                      : 'effectiveAudience.approximateCount'
+                    ) | transloco: { count: fmt(row.result.effective) }
+                  }}
+                  <small class="tile-sub muted">{{
+                    'effectiveAudience.percentOf'
+                      | transloco
+                        : { percent: row.result.effectiveRatePct, total: fmt(row.result.total) }
+                  }}</small>
+                </span>
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{ 'effectiveAudience.zombies' | transloco }}</span>
+                <span class="tile-value">
+                  {{
+                    (row.result.complete
+                      ? 'effectiveAudience.exactCount'
+                      : 'effectiveAudience.approximateCount'
+                    ) | transloco: { count: fmt(row.result.estimatedZombies) }
+                  }}
+                  <small class="tile-sub muted">{{
+                    'effectiveAudience.zombieRate'
+                      | transloco: { percent: row.result.zombieRatePct }
+                  }}</small>
+                </span>
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{ 'effectiveAudience.dormant' | transloco }}</span>
+                <span class="tile-value">
+                  {{ fmt(row.result.dormant) }}
+                  <small class="tile-sub muted">{{
+                    'effectiveAudience.ofRead' | transloco: { count: fmt(row.result.scanned) }
+                  }}</small>
+                </span>
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'effectiveAudience.lowCadence' | transloco
+                }}</span>
+                <span class="tile-value">
+                  {{ fmt(row.result.lowCadence) }}
+                  <small class="tile-sub muted">{{
+                    'effectiveAudience.underPerDay' | transloco: { rate: lowCadenceRate }
+                  }}</small>
+                </span>
+              </div>
+            </div>
+
+            @if (row.result.overRead) {
+              <p class="muted small bias">
+                {{
+                  (row.result.scanned === 1
+                    ? 'effectiveAudience.readBias.one'
+                    : 'effectiveAudience.readBias.other'
+                  )
+                    | transloco
+                      : {
+                          scanned: row.result.scanned.toLocaleString(),
+                          statedTotal: row.result.statedTotal.toLocaleString(),
+                        }
+                }}
+              </p>
+            }
+            @if (!row.result.complete) {
+              <!-- Sampling bias, said out loud. Mastodon returns followers
+                     newest-first, and recent followers skew active, so a partial
+                     read flatters the effective number. Hiding that would make
+                     the estimate quietly wrong in a consistent direction. -->
+              <p class="muted small bias">
+                {{ 'effectiveAudience.sampled' | transloco: { percent: coveragePct(row.result) } }}
+              </p>
+            }
+          </section>
+        }
+      }
+    }
+
+    <div class="confirm-actions">
+      @if (asking()) {
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'effectiveAudience.cancel' | transloco }}
+        </button>
+        <button class="btn" type="button" [disabled]="!canStart()" (click)="start()">
+          {{
+            (estimatedCalls() === 1 ? 'effectiveAudience.scan.one' : 'effectiveAudience.scan.other')
+              | transloco: { count: estimatedCalls().toLocaleString() }
+          }}
+        </button>
+      } @else if (running()) {
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'effectiveAudience.close' | transloco }}
+        </button>
+        <button class="btn" type="button" (click)="stop()">
+          {{ 'effectiveAudience.stopEstimate' | transloco }}
+        </button>
+      } @else {
+        <button class="btn btn-outline" type="button" (click)="again()">
+          {{ 'effectiveAudience.scanAgain' | transloco }}
+        </button>
+        <button class="btn" type="button" (click)="close()">
+          {{ 'effectiveAudience.done' | transloco }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

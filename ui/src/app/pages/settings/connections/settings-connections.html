@@ -1,0 +1,132 @@
+<div class="spage-head">
+  <h1>{{ 'settings.connections.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.intro' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.rssBefore' | transloco }}
+    <a [routerLink]="['/settings/rss']">{{ 'settings.connections.rssLink' | transloco }}</a
+    >.
+  </p>
+</div>
+
+<div class="spage-body">
+  @if (vaultInventoryNeedsAttention()) {
+    <p class="muted small">
+      {{ 'settings.connections.vaultClosed' | transloco }}
+      <!-- The unlock route is flag-gated; with the flag off this link led
+           nowhere, so the sentence stops at the symptom rather than offering a
+           fix the reader cannot reach. -->
+      @if (flags.enabled('mawkingbird-plus')) {
+        <a [routerLink]="['/settings/mawkingbird-plus']">{{
+          'settings.connections.openPlus' | transloco
+        }}</a>
+        {{ 'settings.connections.openPlusAfter' | transloco }}
+      }
+    </p>
+  }
+  <ul class="catalog" [aria-label]="'settings.connections.catalogAriaLabel' | transloco">
+    @for (row of rows(); track row.entry.id) {
+      <li>
+        <a
+          class="catalog-card"
+          [class.unavailable]="row.unavailableReason"
+          [routerLink]="['/settings/connections', row.entry.id]"
+        >
+          <span class="catalog-emoji" aria-hidden="true">{{ row.entry.emoji }}</span>
+          <span class="catalog-body">
+            <span class="catalog-title">
+              <span class="catalog-label">{{ row.entry.label | transloco }}</span>
+              @if (row.flagged) {
+                <span class="pill pill-off">{{
+                  'settings.connections.pillTurnedOff' | transloco
+                }}</span>
+              } @else if (row.unavailableReason) {
+                <span class="pill pill-off">{{
+                  'settings.connections.pillUnavailable' | transloco
+                }}</span>
+              } @else if (row.connected) {
+                <span class="pill pill-on">{{
+                  'settings.connections.pillConnected' | transloco
+                }}</span>
+              } @else {
+                <span class="pill">{{ 'settings.connections.pillNotConnected' | transloco }}</span>
+              }
+              <span class="pill pill-scope" [title]="scopeCopy[row.entry.scope].detail | transloco">
+                {{ scopeCopy[row.entry.scope].label | transloco }}
+              </span>
+              @if (row.storage; as storage) {
+                <app-storage-badge [where]="storage" />
+              }
+            </span>
+            <span class="muted catalog-pitch">{{ row.entry.pitch | transloco }}</span>
+            @if (row.unavailableReason; as reason) {
+              <span class="muted small catalog-reason">{{ reason }}</span>
+            } @else {
+              <span class="catalog-enables">
+                @for (feature of row.entry.enables; track feature) {
+                  <span class="enable">{{ feature | transloco }}</span>
+                }
+              </span>
+            }
+          </span>
+          <span class="chev" aria-hidden="true">›</span>
+        </a>
+        <!-- Outside the card: a link inside a link is invalid, and the card is
+           still worth opening — its page explains what the connector does. -->
+        @if (row.flagged) {
+          <p class="muted small catalog-flag-link">
+            <a [routerLink]="['/settings/feature-flags']">{{
+              'settings.connections.turnBackOn' | transloco
+            }}</a>
+          </p>
+        }
+      </li>
+    }
+  </ul>
+
+  <section class="conn-section">
+    <h2>{{ 'settings.connections.doctorHeading' | transloco }}</h2>
+    <p class="muted">
+      {{ 'settings.connections.doctorBody' | transloco }}
+    </p>
+    <p>
+      <a class="btn doctor-link" [routerLink]="['/settings/connections/doctor']">
+        {{ 'settings.connections.doctorLink' | transloco }}
+      </a>
+    </p>
+  </section>
+
+  <section class="conn-section">
+    <h2>{{ 'settings.connections.retentionHeading' | transloco }}</h2>
+    <p class="muted">
+      {{ 'settings.connections.retentionBody' | transloco }}
+    </p>
+    <p class="muted">
+      {{ 'settings.connections.retentionDropboxNote' | transloco }}
+    </p>
+    <div
+      class="lifetime-options"
+      role="group"
+      [aria-label]="'settings.connections.retentionAriaLabel' | transloco"
+    >
+      @for (option of lifetimeOptions; track option.value) {
+        <label class="lifetime-option">
+          <input
+            type="radio"
+            name="credentialLifetime"
+            [value]="option.value"
+            [checked]="lifetimes.lifetime() === option.value"
+            (change)="setLifetime(option.value)"
+          />
+          <span>{{ option.label }}</span>
+        </label>
+      }
+    </div>
+    @if (lifetimes.lifetime() === 'never') {
+      <p class="muted lifetime-warning">
+        {{ 'settings.connections.retentionNeverWarning' | transloco }}
+      </p>
+    }
+  </section>
+</div>

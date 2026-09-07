@@ -1,0 +1,181 @@
+<div class="spage-head">
+  <h1>{{ 'settings.content.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.content.intro' | transloco }}
+  </p>
+  <p class="muted">
+    {{ 'settings.content.flipside.before' | transloco }}
+    <a routerLink="/settings/moderation">{{ 'settings.content.flipside.link' | transloco }}</a
+    >{{ 'settings.content.flipside.after' | transloco }}
+  </p>
+</div>
+
+<div class="spage-body">
+  <h2>{{ 'settings.content.howFar' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.content.howFar.hint' | transloco }}
+  </p>
+
+  <div class="scontrol trust-levels">
+    <label class="checkline">
+      <input
+        type="radio"
+        name="trust_level"
+        [checked]="trusted.level() === 'none'"
+        (change)="setLevel('none')"
+      />
+      {{ 'settings.content.level.none' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.level.none.note' | transloco }}
+    </p>
+
+    <label class="checkline">
+      <input
+        type="radio"
+        name="trust_level"
+        [checked]="trusted.level() === 'individuals'"
+        (change)="setLevel('individuals')"
+      />
+      {{ 'settings.content.level.individuals' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.level.individuals.note' | transloco }}
+    </p>
+
+    <label class="checkline">
+      <input
+        type="radio"
+        name="trust_level"
+        [checked]="trusted.level() === 'follows'"
+        (change)="setLevel('follows')"
+      />
+      {{ 'settings.content.level.follows' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.level.follows.note' | transloco }}
+    </p>
+
+    <label class="checkline">
+      <input
+        type="radio"
+        name="trust_level"
+        [checked]="trusted.level() === 'follows-boosts'"
+        (change)="setLevel('follows-boosts')"
+      />
+      {{ 'settings.content.level.followsBoosts' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.level.followsBoosts.note' | transloco }}
+    </p>
+  </div>
+
+  @if (trusted.trustsFollows()) {
+    <p class="muted small">
+      {{ 'settings.content.keptNote' | transloco }}
+    </p>
+  }
+
+  <h2>{{ 'settings.content.everyone' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.content.everyone.hint' | transloco }}
+  </p>
+
+  <div class="scontrol">
+    <label class="checkline">
+      <input
+        type="checkbox"
+        [checked]="trusted.expandAllCwSetting()"
+        [disabled]="trusted.level() === 'none'"
+        (change)="toggleCw()"
+        name="expand_all_cw"
+      />
+      {{ 'settings.content.expandCw' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.expandCw.note' | transloco }}
+    </p>
+
+    <label class="checkline">
+      <input
+        type="checkbox"
+        [checked]="trusted.showAllSensitiveSetting()"
+        [disabled]="trusted.level() === 'none'"
+        (change)="toggleSensitive()"
+        name="show_all_sensitive"
+      />
+      {{ 'settings.content.showSensitive' | transloco }}
+    </label>
+    <p class="muted small checkline-note">
+      {{ 'settings.content.showSensitive.note' | transloco }}
+    </p>
+  </div>
+
+  @if (trusted.level() === 'none') {
+    <p class="muted small">
+      {{ 'settings.content.revokedNote' | transloco }}
+    </p>
+  }
+
+  <!-- Mastodon serves `reading:expand:spoilers` on GET /api/v1/preferences but
+       offers no way to write it: it is settable only from the instance's own web
+       Preferences page, behind a session cookie. Hence a status row and a link
+       out, rather than a switch that would silently fail to save. -->
+  @if (showsServerRow() && serverExpandsCw() !== null) {
+    <h2>{{ 'settings.content.onServer' | transloco }}</h2>
+    <p class="muted small">
+      {{ 'settings.content.onServer.before' | transloco }}
+      <strong>{{
+        (serverExpandsCw() ? 'settings.content.on' : 'settings.content.off') | transloco
+      }}</strong
+      >{{ 'settings.content.onServer.after' | transloco }}
+      @if (serverPrefsUrl(); as prefsUrl) {
+        <a [href]="prefsUrl" target="_blank" rel="noopener noreferrer">{{
+          'settings.content.changeThere' | transloco
+        }}</a
+        >.
+      }
+    </p>
+    <p class="muted small">
+      {{ 'settings.content.independent' | transloco }}
+    </p>
+  }
+
+  <h2>{{ 'settings.content.trusted' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.content.trusted.before' | transloco }} <strong>•••</strong>
+    {{ 'settings.content.trusted.after' | transloco }}
+  </p>
+
+  @if (!trusted.list().length) {
+    <p class="muted">
+      {{ 'settings.content.trusted.empty' | transloco }}
+    </p>
+  } @else {
+    <ul class="trust-list">
+      @for (row of trusted.list(); track row.key) {
+        <li class="trust-row">
+          <span class="trust-acct">{{ row.acct }}</span>
+          <button type="button" class="btn btn-outline btn-sm" (click)="untrust(row.key)">
+            {{ 'settings.content.stopTrusting' | transloco }}
+          </button>
+        </li>
+      }
+    </ul>
+    <button type="button" class="btn btn-outline btn-sm" (click)="clearAll()">
+      {{ 'settings.content.stopTrustingAll' | transloco: { count: trusted.count() } }}
+    </button>
+  }
+
+  <h2>{{ 'settings.content.revoke' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.content.revoke.hint' | transloco }}
+  </p>
+  <button type="button" class="btn btn-outline btn-sm" (click)="revokeAll()">
+    {{ 'settings.content.revokeAll' | transloco }}
+  </button>
+
+  <p class="muted small footnote">
+    {{ 'settings.content.footnote' | transloco }}
+  </p>
+</div>

@@ -1,0 +1,1448 @@
+<!-- Wide layout (rails are dropped for /search in the shell). The search bar is a
+     full-width header; below it we split into two boxes when a search has results
+     (form + refinement controls left, results right). Cramming the search bar into
+     the narrow left column overflowed it, so it lives up top spanning both. -->
+@let postSearchRan = !!results() && type() === 'statuses';
+@let postResults = (results()?.statuses?.length ?? 0) > 0 && type() === 'statuses';
+@let accountResultsRan = type() === 'accounts' && loadedAccountCount() > 0;
+@let twoBox = postResults || accountResultsRan;
+
+<div class="search-shell">
+  <div class="search-bar">
+    <!-- One query box for both networks. The Bluesky panel used to bring its own,
+         which is how the two engines drifted into looking like separate apps —
+         the box, the Search button and every control beside them are shared, and
+         only what they *do* switches on the network. -->
+    <input
+      type="text"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      (keyup.enter)="run()"
+      [placeholder]="queryPlaceholder()"
+    />
+    <!-- Network first, then what to look for: the same two-step the reader makes
+         in their head. Both are plain selects, because the Mastodon side has
+         always been a select and consistency is the whole point here. -->
+    <select
+      [ngModel]="networkSelection()"
+      (ngModelChange)="onNetworkSelect($event)"
+      [attr.aria-label]="'pages.search.network.ariaLabel' | transloco"
+    >
+      <option value="mastodon">{{ 'pages.search.network.mastodon' | transloco }}</option>
+      <option value="bluesky">🦋 {{ 'pages.search.network.bluesky' | transloco }}</option>
+    </select>
+    <!-- The engines are an action, not a fourth type: picking one opens a tab and
+         the select snaps back to the real type (see onTypeSelect). -->
+    <select
+      #typeSelect
+      [ngModel]="type()"
+      (ngModelChange)="onTypeSelect($event, typeSelect)"
+      [attr.aria-label]="'pages.search.type.ariaLabel' | transloco"
+    >
+      <option value="accounts">{{ 'pages.search.type.accounts' | transloco }}</option>
+      <!-- Disabled rather than hidden: an option that vanishes reads as a bug,
+           while a disabled one with a reason beneath the bar teaches what this
+           network can do. See typeUnavailable. -->
+      <option value="statuses" [disabled]="typeUnavailable('statuses')">
+        {{ 'pages.search.type.posts' | transloco }}
+      </option>
+      <option value="hashtags" [disabled]="typeUnavailable('hashtags')">
+        {{ 'pages.search.type.hashtags' | transloco }}
+      </option>
+      <optgroup [label]="'pages.search.type.web' | transloco">
+        @for (e of webEngines; track e.id) {
+          <option [value]="e.id">{{ e.label }}</option>
+        }
+      </optgroup>
+    </select>
+    <button class="btn" [disabled]="searchDisabled()" (click)="run()">
+      {{ 'pages.search.action.search' | transloco }}
+    </button>
+    @if (canUseSearchHelper()) {
+      <button
+        class="btn btn-outline"
+        type="button"
+        [title]="'pages.search.action.searchHelperTitle' | transloco"
+        [attr.aria-label]="'pages.search.action.helpMeSearch' | transloco"
+        (click)="searchHelperOpen.set(true)"
+      >
+        🤖
+      </button>
+    }
+    <button
+      class="btn btn-outline"
+      type="button"
+      [title]="'pages.search.action.syntaxHelpTitle' | transloco: { post: words().post }"
+      [attr.aria-label]="'pages.search.action.syntaxHelp' | transloco"
+      (click)="syntaxHelpOpen.set(true)"
+    >
+      {{ 'pages.search.action.syntax' | transloco }}
+    </button>
+    @if (type() === 'statuses' || type() === 'accounts') {
+      <button
+        class="btn btn-outline"
+        [class.on]="advancedOpen()"
+        (click)="toggleAdvanced()"
+        [attr.aria-expanded]="advancedOpen()"
+      >
+        {{ 'pages.search.action.advanced' | transloco }}
+      </button>
+    }
+
+    <!-- Saved searches sit OUTSIDE the blueskyMode guard: the list is shared by
+         both engines, and each row re-runs against the network it was saved
+         against (see `runSaved`). Keeping it inside meant a Bluesky-primary
+         reader — who now lands on this panel by default — could not save or
+         re-run a single search. -->
+    <!-- Saved searches: a dropdown of stored definitions to re-run. -->
+    <details class="saved-menu" [open]="savedMenuOpen()">
+      <summary class="btn btn-outline" (click)="savedMenuOpen.set(!savedMenuOpen())">
+        {{ 'pages.search.saved.summary' | transloco: { count: saved.count() } }} ▾
+      </summary>
+      <div class="saved-panel">
+        @if (!saved.count()) {
+          <p class="muted small saved-empty">{{ 'pages.search.saved.empty' | transloco }}</p>
+        }
+        @for (item of saved.all(); track item.id) {
+          <div class="saved-row">
+            <button class="saved-run" (click)="runSaved(item.id)" [title]="item.name">
+              {{ item.name }}
+              @if (item.network === 'bluesky') {
+                <span class="muted small">· 🦋</span>
+              }
+              @if (!item.authenticated) {
+                <span class="muted small">{{ 'pages.search.saved.anonymous' | transloco }}</span>
+              }
+            </button>
+            <button
+              class="saved-del"
+              (click)="saved.delete(item.id)"
+              [attr.aria-label]="'pages.search.saved.deleteLabel' | transloco"
+              [title]="'pages.search.saved.deleteTitle' | transloco"
+            >
+              ✕
+            </button>
+          </div>
+        }
+      </div>
+    </details>
+
+    <!-- Save works in both engines; the Bluesky panel hands its criteria up
+         through (saveRequested) so naming happens in this one shared dialog. -->
+    @if (blueskyMode()) {
+      <button
+        class="btn btn-outline"
+        [disabled]="saved.atLimit()"
+        (click)="blueskyPanel()?.requestSave()"
+      >
+        {{ 'pages.search.action.save' | transloco }}
+      </button>
+    } @else {
+      <button class="btn btn-outline" [disabled]="saved.atLimit()" (click)="openSaveDialog()">
+        {{ 'pages.search.action.save' | transloco }}
+      </button>
+    }
+    <!-- Share works on both now. Bluesky's criteria round-trip through the query
+         box (see bluesky-query-serializer), so a Bluesky link carries its
+         operators in `q` rather than needing the Mastodon param encoding. -->
+    <button class="btn btn-outline" (click)="share()">
+      {{
+        (shareCopied() ? 'pages.search.action.linkCopied' : 'pages.search.action.share') | transloco
+      }}
+    </button>
+  </div>
+
+  <!-- Recent searches: the queries you actually typed, remembered automatically.
+
+       Separate from "Saved" above on purpose. Saved is curation — named, full
+       structured definitions, capped at 20, kept until deleted. This is history:
+       unnamed, just the words and the tab, ten of them, rolling off the end.
+       Folding them together would either bury a hand-built list under every
+       typo, or require naming a search before you may repeat it.
+
+       Shown only with an empty box and nothing on screen: a reader looking at
+       results is not looking for their history, and this is exactly the blank
+       moment the list answers. -->
+  @if (recent.count() && !query().trim() && !results() && !loadedAccountCount()) {
+    <div class="recent-row">
+      <span class="muted small recent-label">{{ 'pages.search.recent.label' | transloco }}</span>
+      @for (item of recent.all(); track item.query + item.type) {
+        <span class="recent-chip">
+          <button
+            type="button"
+            class="recent-run"
+            (click)="runRecent(item)"
+            [title]="'pages.search.recent.searchAgain' | transloco: { query: item.query }"
+          >
+            {{ item.query }}
+            <!-- Which tab it ran on. The same words as posts and as accounts are
+                 different searches, so the list keeps them apart and has to say
+                 which is which. -->
+            <span class="muted recent-type">{{
+              item.type === 'statuses'
+                ? ('pages.search.recent.posts' | transloco)
+                : item.type === 'accounts'
+                  ? ('pages.search.recent.people' | transloco)
+                  : ('pages.search.recent.tags' | transloco)
+            }}</span>
+          </button>
+          <button
+            type="button"
+            class="recent-del"
+            (click)="forgetRecent(item, $event)"
+            [attr.aria-label]="'pages.search.recent.forgetLabel' | transloco: { query: item.query }"
+            [title]="'pages.search.recent.forget' | transloco"
+          >
+            ✕
+          </button>
+        </span>
+      }
+      <button type="button" class="recent-clear muted small" (click)="recent.clear()">
+        {{ 'pages.search.recent.clear' | transloco }}
+      </button>
+    </div>
+  }
+
+  <!-- Why an option in the type select is greyed out. Sits under the bar rather
+       than in a tooltip: the reader who needs it is the one who just tried to
+       click it. -->
+  @if (blueskyMode() && !session.linked()) {
+    <p class="muted small type-unavailable" role="status">
+      {{ 'pages.search.blueskyNeedsLink' | transloco }}
+      <a routerLink="/settings/connections/bluesky">{{
+        'pages.search.linkOneInSettings' | transloco
+      }}</a
+      >.
+      {{ 'pages.search.accountSearchWorksWithoutLink' | transloco }}
+    </p>
+  } @else if (blueskyMode()) {
+    <p class="muted small type-unavailable" role="status">
+      {{ 'pages.search.hashtagsMastodonOnly' | transloco }}
+    </p>
+  }
+
+  <!-- A web engine can't express replies/media/dates/language, so the serializer
+       drops them. Say which, rather than let the tab that just opened look like
+       it ran the search on screen. -->
+  @if (webDropped().length) {
+    <p class="muted small web-dropped" role="status">
+      {{
+        (webDropped().length === 1
+          ? 'pages.search.webDropped.note.one'
+          : 'pages.search.webDropped.note.other'
+        ) | transloco: { engine: webEngineLabel(), criteria: webDroppedLabels().join(', ') }
+      }}
+    </p>
+  }
+
+  <!-- Search server: a full-width row of its own, directly under the search bar.
+       A server combo needs horizontal room and the two-box layout below has none
+       to give, so it spans the shell instead of squeezing into a column.
+       Mastodon-only, and not for parity's sake: Bluesky has one AppView, so
+       there is no "which server am I searching" question to answer. -->
+  @if (!blueskyMode()) {
+    <div class="search-server-row">
+      <button
+        class="btn btn-outline btn-sm search-server-toggle"
+        type="button"
+        (click)="toggleSearchServer()"
+        [attr.aria-expanded]="searchServerOpen()"
+      >
+        <!-- Always the actual host, never "this server": the whole point of the chip
+           is to answer "where am I searching?" from the search page, without
+           going to Settings to look it up. -->
+        <span
+          [innerHTML]="'pages.search.server.searching' | transloco: { host: searchHostLabel() }"
+        ></span>
+        ▾
+      </button>
+      @if (searchServer.active()) {
+        <span class="muted small search-server-note">
+          {{ 'pages.search.server.publicResults' | transloco: { host: browsingHostLabel() } }}
+        </span>
+      } @else {
+        <span class="muted small search-server-note">
+          {{
+            capabilities.active
+              ? ('pages.search.server.browsing' | transloco)
+              : ('pages.search.server.own' | transloco)
+          }}
+        </span>
+      }
+    </div>
+  }
+
+  @if (searchServerOpen() && !blueskyMode()) {
+    <div class="search-server-panel">
+      <p class="muted small">
+        {{ 'pages.search.server.instructions' | transloco }}
+      </p>
+      <div class="search-server-controls">
+        <input
+          type="text"
+          class="search-server-input"
+          [ngModel]="searchServerInput()"
+          (ngModelChange)="searchServerInput.set($event)"
+          (keyup.enter)="applySearchServer()"
+          [placeholder]="serverHostPlaceholder"
+          [attr.aria-label]="'pages.search.server.hostLabel' | transloco"
+        />
+        <button
+          class="btn btn-sm"
+          type="button"
+          [disabled]="searchServerStatus() === 'checking'"
+          (click)="applySearchServer()"
+        >
+          {{
+            (searchServerStatus() === 'checking'
+              ? 'pages.search.server.checking'
+              : 'pages.search.server.use'
+            ) | transloco
+          }}
+        </button>
+        @if (searchServer.active()) {
+          <button class="btn btn-outline btn-sm" type="button" (click)="clearSearchServer()">
+            {{ 'pages.search.server.useOwn' | transloco }}
+          </button>
+        }
+      </div>
+
+      <!-- Every verdict below comes from a real anonymous search for a well-known
+           account: reachable-but-unsearchable is the exact failure we're catching. -->
+      @switch (searchServerStatus()) {
+        @case ('checking') {
+          <p class="muted small">{{ 'pages.search.server.testing' | transloco }}</p>
+        }
+        @case ('ok') {
+          <!-- Account search and post search fail separately, and post search is the
+               one that usually fails: the probe asks for a common hashtag, because
+               anonymous full-text search is off practically everywhere. A host typed
+               in by hand is still adopted — but we say what it does. -->
+          @if (searchServerTagsOnly()) {
+            <p class="fail small">
+              {{ 'pages.search.server.tagsOnly' | transloco: { accounts: searchServerHits() } }}
+            </p>
+          } @else if (searchServerPostHits() === 0) {
+            <p class="fail small">
+              {{ 'pages.search.server.noPosts' | transloco: { accounts: searchServerHits() } }}
+            </p>
+          } @else {
+            <p class="ok small">
+              <span
+                [innerHTML]="
+                  'pages.search.server.works'
+                    | transloco
+                      : {
+                          accounts: searchServerHits(),
+                          posts: searchServerPostHits(),
+                          postWord: words().posts,
+                        }
+                "
+              ></span>
+            </p>
+          }
+        }
+        @case ('no-results') {
+          <p class="fail small">
+            {{ 'pages.search.server.noIndex' | transloco }}
+          </p>
+        }
+        @case ('auth-required') {
+          <p class="fail small">
+            {{ 'pages.search.server.authRequired' | transloco }}
+          </p>
+        }
+        @case ('unreachable') {
+          <p class="fail small">{{ 'pages.search.server.unreachable' | transloco }}</p>
+        }
+      }
+
+      <!-- Don't know a host that allows search? Neither does anybody. Go find one. -->
+      <app-search-server-discovery
+        [currentServer]="searchServer.host() ?? ''"
+        (selected)="useDiscoveredSearchServer($event)"
+      />
+    </div>
+  }
+
+  @if (saveDialogOpen()) {
+    <div class="save-dialog">
+      <input
+        type="text"
+        [ngModel]="saveName()"
+        (ngModelChange)="saveName.set($event)"
+        (keyup.enter)="confirmSave()"
+        [placeholder]="'pages.search.savedNamePlaceholder' | transloco"
+        [attr.aria-label]="'pages.search.savedNameLabel' | transloco"
+      />
+      <button class="btn btn-sm" (click)="confirmSave()">
+        {{ 'pages.search.action.save' | transloco }}
+      </button>
+      <button class="btn btn-outline btn-sm" (click)="saveDialogOpen.set(false)">
+        {{ 'pages.search.action.cancel' | transloco }}
+      </button>
+    </div>
+  }
+  @if (savedNotice()) {
+    <p class="saved-notice muted small">{{ savedNotice() }}</p>
+  }
+
+  @if (blueskyMode()) {
+    <!-- Bluesky renders into the *same* two-box grid as Mastodon: form and
+         refinement controls in the sticky left column, results on the right.
+         The panel used to replace this whole block, which is how it ended up
+         with filters stacked across the top and a layout of its own — the
+         filters were never in a column because there was no column. -->
+    <app-bluesky-search-panel
+      class="search-page"
+      [class.two-box]="blueskyPanel()?.twoBox()"
+      [query]="query()"
+      [target]="blueskyTarget()"
+      [advancedOpen]="advancedOpen()"
+      [savedToRun]="pendingBlueskySaved()"
+      (queryChange)="query.set($event)"
+      (saveRequested)="openBlueskySaveDialog($event)"
+    />
+  } @else {
+    <div class="search-page" [class.two-box]="twoBox">
+      <!--
+        A `<details>` rather than a signal-driven block, and open by default.
+
+        The controls start visible at every width. Readers can collapse them
+        using the summary; on phones the controls stay above the results.
+      -->
+      <details class="search-form-box" [hidden]="!twoBox && !advancedOpen()" open>
+        <summary class="refine-summary">
+          <span>{{ 'pages.search.refine.summary' | transloco }}</span>
+          @if (activeRefinementCount(); as active) {
+            <span class="refine-active-count">{{
+              (active === 1
+                ? 'pages.search.refine.activeCount.one'
+                : 'pages.search.refine.activeCount.other'
+              ) | transloco: { count: active }
+            }}</span>
+          }
+        </summary>
+        @if (type() === 'statuses') {
+          <div class="budget-row">
+            <label class="muted small" for="api-budget">{{
+              'pages.search.budget.maximumApiCalls' | transloco
+            }}</label>
+            <select
+              id="api-budget"
+              [ngModel]="apiBudget()"
+              (ngModelChange)="setBudget($event)"
+              [attr.aria-label]="'pages.search.budget.maximumApiCalls' | transloco"
+            >
+              @for (b of budgetOptions; track b.value) {
+                <option [value]="b.value">{{ b.label | transloco }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        @if (advancedOpen() && type() === 'statuses') {
+          <div class="advanced-panel">
+            @if (capabilities.active) {
+              <p class="muted small">
+                {{ 'pages.search.anonymousPostSearch' | transloco }}
+                <a routerLink="/login">{{ 'pages.search.fullTextSignIn' | transloco }}</a>
+                {{ 'pages.search.fullTextPostSearch' | transloco }}
+              </p>
+            }
+
+            <label class="adv-field">
+              <span class="muted small">{{ 'pages.search.field.exactPhrase' | transloco }}</span>
+              <input
+                type="text"
+                [ngModel]="exactPhrase()"
+                (ngModelChange)="exactPhrase.set($event)"
+                [placeholder]="'pages.search.placeholder.exactPhrase' | transloco"
+              />
+            </label>
+
+            <label class="adv-field">
+              <span class="muted small">{{ 'pages.search.field.excludeWords' | transloco }}</span>
+              <input
+                type="text"
+                [ngModel]="excludeWords()"
+                (ngModelChange)="excludeWords.set($event)"
+                [placeholder]="'pages.search.placeholder.excludeWords' | transloco"
+              />
+            </label>
+
+            <label class="adv-field">
+              <span class="muted small">{{ 'pages.search.field.postedBy' | transloco }}</span>
+              <input
+                type="text"
+                [ngModel]="author()"
+                (ngModelChange)="author.set($event)"
+                [disabled]="capabilities.active"
+                [placeholder]="authorPlaceholder"
+              />
+            </label>
+
+            <div class="advanced-fields">
+              <label>
+                <span class="muted small">{{ 'pages.search.field.postedAfter' | transloco }}</span>
+                <input type="date" [ngModel]="after()" (ngModelChange)="after.set($event)" />
+              </label>
+              <label>
+                <span class="muted small">{{ 'pages.search.field.postedBefore' | transloco }}</span>
+                <input type="date" [ngModel]="before()" (ngModelChange)="before.set($event)" />
+              </label>
+              <label>
+                <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
+                <select [ngModel]="language()" (ngModelChange)="language.set($event)">
+                  @for (l of languages; track l.code) {
+                    <option [value]="l.code">{{ l.label | transloco }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="advanced-fields">
+              <label>
+                <span class="muted small">{{ 'pages.search.field.content' | transloco }}</span>
+                <select [ngModel]="contentType()" (ngModelChange)="contentType.set($event)">
+                  @for (c of contentTypes; track c.value) {
+                    <option [value]="c.value">{{ c.label | transloco }}</option>
+                  }
+                </select>
+              </label>
+              <label>
+                <span class="muted small">{{ 'pages.search.field.replies' | transloco }}</span>
+                <select [ngModel]="replies()" (ngModelChange)="replies.set($event)">
+                  <option value="include">
+                    {{ 'pages.search.field.includeReplies' | transloco }}
+                  </option>
+                  <option value="only">{{ 'pages.search.field.repliesOnly' | transloco }}</option>
+                  <option value="exclude">
+                    {{ 'pages.search.field.excludeReplies' | transloco }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                <span class="muted small">{{ 'pages.search.field.sensitive' | transloco }}</span>
+                <select [ngModel]="sensitive()" (ngModelChange)="sensitive.set($event)">
+                  <option value="include">{{ 'pages.search.field.include' | transloco }}</option>
+                  <option value="only">{{ 'pages.search.field.sensitiveOnly' | transloco }}</option>
+                  <option value="exclude">
+                    {{ 'pages.search.field.excludeSensitive' | transloco }}
+                  </option>
+                </select>
+              </label>
+              @if (!capabilities.active) {
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.searchIn' | transloco }}</span>
+                  <select [ngModel]="scope()" (ngModelChange)="scope.set($event)">
+                    <option value="all">
+                      {{ 'pages.search.field.publicAndLibrary' | transloco }}
+                    </option>
+                    <option value="public">{{ 'pages.search.field.public' | transloco }}</option>
+                    <option value="library">
+                      {{ 'pages.search.field.myLibrary' | transloco }}
+                    </option>
+                  </select>
+                </label>
+              }
+            </div>
+
+            <div class="advanced-actions">
+              <button class="btn btn-sm" (click)="applyAdvanced()">
+                {{ 'pages.search.action.applyAndSearch' | transloco }}
+              </button>
+              @if (hasAdvanced()) {
+                <button class="btn btn-outline btn-sm" (click)="clearAdvanced()">
+                  {{ 'pages.search.recent.clear' | transloco }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (advancedOpen() && type() === 'accounts') {
+          <div class="advanced-panel">
+            <p class="muted small">
+              {{ 'pages.search.accountSearchDescription' | transloco }}
+            </p>
+
+            <label class="adv-field">
+              <span class="muted small">{{ 'pages.search.accountField.matchOn' | transloco }}</span>
+              <select [ngModel]="accountSource()" (ngModelChange)="accountSource.set($event)">
+                @for (s of accountSources; track s.value) {
+                  <option [value]="s.value">{{ s.label | transloco }}</option>
+                }
+              </select>
+            </label>
+
+            <div class="num-facet-grid">
+              <div class="num-facet">
+                <span class="muted small">{{
+                  'pages.search.accountField.followers' | transloco
+                }}</span>
+                <div class="num-range">
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.minimum' | transloco"
+                    [ngModel]="followersMin()"
+                    (ngModelChange)="followersMin.set($event)"
+                    [attr.aria-label]="'pages.search.accountField.minimumFollowers' | transloco"
+                  />
+                  <span class="muted">–</span>
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.maximum' | transloco"
+                    [ngModel]="followersMax()"
+                    (ngModelChange)="followersMax.set($event)"
+                    [attr.aria-label]="'pages.search.accountField.maximumFollowers' | transloco"
+                  />
+                </div>
+              </div>
+              <div class="num-facet">
+                <span class="muted small">{{
+                  'pages.search.accountField.following' | transloco
+                }}</span>
+                <div class="num-range">
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.minimum' | transloco"
+                    [ngModel]="followingMin()"
+                    (ngModelChange)="followingMin.set($event)"
+                    [attr.aria-label]="'pages.search.accountField.minimumFollowing' | transloco"
+                  />
+                  <span class="muted">–</span>
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.maximum' | transloco"
+                    [ngModel]="followingMax()"
+                    (ngModelChange)="followingMax.set($event)"
+                    [attr.aria-label]="'pages.search.accountField.maximumFollowing' | transloco"
+                  />
+                </div>
+              </div>
+              <div class="num-facet">
+                <span class="muted small">{{ 'pages.search.accountField.posts' | transloco }}</span>
+                <div class="num-range">
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.minimum' | transloco"
+                    [ngModel]="statusesMin()"
+                    (ngModelChange)="statusesMin.set($event)"
+                    [attr.aria-label]="
+                      'pages.search.accountField.minimumPosts' | transloco: { posts: words().posts }
+                    "
+                  />
+                  <span class="muted">–</span>
+                  <input
+                    type="number"
+                    min="0"
+                    [placeholder]="'pages.search.accountField.maximum' | transloco"
+                    [ngModel]="statusesMax()"
+                    (ngModelChange)="statusesMax.set($event)"
+                    [attr.aria-label]="
+                      'pages.search.accountField.maximumPosts' | transloco: { posts: words().posts }
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+            <p class="muted small">
+              {{ 'pages.search.accountRangesDescription' | transloco }}
+            </p>
+
+            <div class="advanced-actions">
+              <button class="btn btn-sm" (click)="applyAccountAdvanced()">
+                {{ 'pages.search.action.applyAndSearch' | transloco }}
+              </button>
+              @if (hasAccountAdvanced()) {
+                <button class="btn btn-outline btn-sm" (click)="clearAccountAdvanced()">
+                  {{ 'pages.search.recent.clear' | transloco }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Refinement controls live in the form box, beside the results (post mode only).
+         Everything here runs on already-loaded results — no API calls. -->
+        @if (postSearchRan) {
+          <!-- Active-filter chips (§10). 'server' chips were sent to Mastodon;
+           'loaded' chips are applied to the results already in hand. Shown even
+           for zero results, alongside Explain. -->
+          @if (chips().length) {
+            <div class="chips">
+              @for (chip of chips(); track chip.key + chip.labelKey) {
+                <span
+                  class="chip"
+                  [class.chip-server]="chip.origin === 'server'"
+                  [class.chip-loaded]="chip.origin === 'loaded'"
+                  [title]="
+                    (chip.origin === 'server'
+                      ? 'pages.search.chip.sentToServer'
+                      : 'pages.search.chip.appliedToLoaded'
+                    ) | transloco
+                  "
+                >
+                  {{ chip.labelKey | transloco: chip.labelParams }}
+                </span>
+              }
+            </div>
+          }
+
+          <!-- Refine controls need actual posts to act on. -->
+          @if (postResults) {
+            <div class="refine-bar">
+              <input
+                type="search"
+                class="refine-filter"
+                [ngModel]="loadedFilter()"
+                (ngModelChange)="loadedFilter.set($event)"
+                [placeholder]="'pages.search.refine.filterResults' | transloco"
+                [attr.aria-label]="'pages.search.refine.filterLoadedResults' | transloco"
+              />
+              <div
+                class="group-by"
+                role="group"
+                [attr.aria-label]="'pages.search.refine.groupBy' | transloco"
+              >
+                <span class="muted small">{{ 'pages.search.refine.groupBy' | transloco }}</span>
+                <div class="seg">
+                  <button [class.active]="grouping() === 'none'" (click)="grouping.set('none')">
+                    {{ 'pages.search.refine.none' | transloco }}
+                  </button>
+                  <button [class.active]="grouping() === 'author'" (click)="grouping.set('author')">
+                    {{ 'pages.search.refine.author' | transloco }}
+                  </button>
+                  <button [class.active]="grouping() === 'date'" (click)="grouping.set('date')">
+                    {{ 'pages.search.refine.date' | transloco }}
+                  </button>
+                </div>
+              </div>
+              <!-- Sort of the loaded posts — reorders in memory, no new search. -->
+              <label class="sort-by">
+                <span class="muted small">{{ 'pages.search.refine.sort' | transloco }}</span>
+                <select
+                  [ngModel]="statusSort()"
+                  (ngModelChange)="statusSort.set($event)"
+                  [attr.aria-label]="
+                    'pages.search.refine.sortPosts' | transloco: { posts: words().posts }
+                  "
+                >
+                  @for (s of statusSorts; track s.value) {
+                    <option [value]="s.value">{{ s.label | transloco }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            @if (facets().length) {
+              <details class="refine-facets" [open]="refineOpen()">
+                <summary (click)="$event.preventDefault(); refineOpen.set(!refineOpen())">
+                  {{ 'pages.search.refine.loadedPosts' | transloco }}
+                  <span class="muted small">{{
+                    'pages.search.refine.basedOnPosts' | transloco: { count: loadedCount() }
+                  }}</span>
+                </summary>
+                @for (facet of facets(); track facet.kind) {
+                  <div class="facet">
+                    <div class="facet-label muted small">{{ facet.labelKey | transloco }}</div>
+                    @for (v of facet.values.slice(0, 5); track v.value) {
+                      <label class="facet-value">
+                        <input
+                          type="checkbox"
+                          [checked]="isFacetSelected(facet.kind, v.value)"
+                          (change)="toggleFacet(facet.kind, v.value)"
+                        />
+                        <span>{{ v.labelKey ? (v.labelKey | transloco) : v.text }}</span>
+                        <span class="muted facet-count">{{ v.count }}</span>
+                      </label>
+                    }
+                  </div>
+                }
+                <!-- Flood control. A handful of accounts posting the same thing
+                     repeatedly can be the whole result set; Mastodon has no
+                     `-from:` operator, so this is the only place to undo it. -->
+                @if (authorFacet(); as authors) {
+                  <div class="facet flood-control">
+                    <div class="facet-label muted small">
+                      {{ 'pages.search.refine.excludeAuthor' | transloco }}
+                    </div>
+                    @for (a of authors.values.slice(0, 8); track a.value) {
+                      <div class="exclude-row" [class.excluded]="isAuthorExcluded(a.value)">
+                        <label class="facet-value">
+                          <input
+                            type="checkbox"
+                            [checked]="isAuthorExcluded(a.value)"
+                            (change)="toggleExcludedAuthor(a.value)"
+                          />
+                          <span>{{ a.labelKey ? (a.labelKey | transloco) : a.text }}</span>
+                          <span class="muted facet-count">{{ a.count }}</span>
+                        </label>
+                        <!-- Escalation: excluding is scoped to this query, muting
+                             is forever and everywhere. -->
+                        @if (isAuthorMuted(a.value)) {
+                          <span class="muted small muted-flag">{{
+                            'pages.search.refine.muted' | transloco
+                          }}</span>
+                        } @else {
+                          <button
+                            type="button"
+                            class="link-btn"
+                            (click)="muteAuthorEverywhere(a.value)"
+                            [title]="'pages.search.refine.muteEverywhereTitle' | transloco"
+                          >
+                            {{ 'pages.search.refine.muteEverywhere' | transloco }}
+                          </button>
+                        }
+                      </div>
+                    }
+                    @if (excludedAuthors().size) {
+                      <button class="btn btn-outline btn-sm" (click)="clearExcludedAuthors()">
+                        {{ 'pages.search.refine.showExcluded' | transloco }}
+                      </button>
+                    }
+                  </div>
+                }
+
+                <div class="facet">
+                  <label class="facet-value">
+                    <input
+                      type="checkbox"
+                      [checked]="collapseRepeats()"
+                      (change)="collapseRepeats.set(!collapseRepeats())"
+                    />
+                    <span>{{
+                      'pages.search.refine.collapseRepeatedSentence'
+                        | transloco: { posts: words().posts }
+                    }}</span>
+                  </label>
+                  <p class="muted small collapse-note">
+                    {{ 'pages.search.refine.collapseHint' | transloco: { posts: words().posts } }}
+                  </p>
+                </div>
+
+                @if (selectedFacets().length || loadedFilter() || excludedAuthors().size) {
+                  <button class="btn btn-outline btn-sm" (click)="clearRefinements()">
+                    {{ 'pages.search.refine.clearFilters' | transloco }}
+                  </button>
+                }
+              </details>
+            }
+
+            <div class="result-status muted small">
+              {{
+                'pages.search.refine.showingPosts'
+                  | transloco: { shown: shownCount(), loaded: loadedCount() }
+              }}<br />
+              @if (excludedCount()) {
+                {{
+                  'pages.search.refine.hiddenFrom'
+                    | transloco
+                      : {
+                          hidden: excludedCount(),
+                          excluded: excludedAuthors().size,
+                          accountWord:
+                            excludedAuthors().size === 1
+                              ? ('pages.search.refine.account' | transloco)
+                              : ('pages.search.refine.accounts' | transloco),
+                        }
+                }}<br />
+              }
+              @if (repeatsHidden()) {
+                {{
+                  'pages.search.refine.collapsed'
+                    | transloco: { count: repeatsHidden(), posts: words().posts }
+                }}<br />
+              }
+              {{
+                'pages.search.refine.apiCalls'
+                  | transloco: { used: callsUsed(), budget: apiBudget() }
+              }}
+            </div>
+
+            <!-- Excluding a flooder can leave almost nothing, because the
+                 flooder *was* the corpus. Say so and offer the fix rather than
+                 silently spending API calls on a checkbox click. -->
+            @if (suggestMoreAfterExclusion()) {
+              <div class="thin-results">
+                <p class="muted small">
+                  {{
+                    'pages.search.refine.onlyLeft'
+                      | transloco
+                        : {
+                            count: shownCount(),
+                            postWord: shownCount() === 1 ? words().post : words().posts,
+                            accountWord:
+                              excludedAuthors().size === 1
+                                ? ('pages.search.refine.account' | transloco)
+                                : ('pages.search.refine.accounts' | transloco),
+                          }
+                  }}
+                </p>
+                <button
+                  class="btn btn-sm"
+                  type="button"
+                  [disabled]="searching()"
+                  (click)="loadMore(true)"
+                >
+                  {{
+                    (searching()
+                      ? 'pages.search.results.loading'
+                      : 'pages.search.results.loadMorePosts'
+                    ) | transloco
+                  }}
+                </button>
+              </div>
+            }
+          }
+          <!-- /postResults -->
+
+          <!-- Explain (§9): the honesty anchor. Shows exactly what was sent to the
+           server vs. filtered locally, and any anonymous hashtag transform. -->
+          @if (explain(); as ex) {
+            <details class="explain" [open]="explainOpen()">
+              <summary (click)="explainOpen.set(!explainOpen())">
+                {{ 'pages.search.explain.summary' | transloco }}
+              </summary>
+
+              <div class="explain-section">
+                <div class="explain-head muted small">
+                  {{ 'pages.search.explain.endpoint' | transloco }}
+                </div>
+                <code>{{ ex.endpoint }}</code>
+              </div>
+
+              @if (ex.mastodonQuery) {
+                <div class="explain-section">
+                  <div class="explain-head muted small">
+                    {{ 'pages.search.explain.mastodonQuery' | transloco }}
+                  </div>
+                  <code>{{ ex.mastodonQuery }}</code>
+                </div>
+              }
+
+              @if (ex.anonymousTags?.length) {
+                <div class="explain-section">
+                  <div class="explain-head muted small">
+                    {{ 'pages.search.explain.anonymousTransformation' | transloco }}
+                  </div>
+                  <p class="small">
+                    {{ 'pages.search.explain.searchedAsHashtags.a' | transloco }}
+                    @for (t of ex.anonymousTags; track t) {
+                      <span class="tag-lit">#{{ t }}</span>
+                    }
+                    {{ 'pages.search.explain.searchedAsHashtags.b' | transloco }}
+                  </p>
+                </div>
+              }
+
+              @if (ex.serverCriteria.length) {
+                <div class="explain-section">
+                  <div class="explain-head muted small">
+                    {{ 'pages.search.explain.serverCriteria' | transloco }}
+                  </div>
+                  <ul class="small">
+                    @for (c of ex.serverCriteria; track $index) {
+                      <li>{{ c.labelKey | transloco: c.labelParams }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (ex.loadedCriteria.length) {
+                <div class="explain-section">
+                  <div class="explain-head muted small">
+                    {{ 'pages.search.explain.loadedCriteria' | transloco }}
+                  </div>
+                  <ul class="small">
+                    @for (c of ex.loadedCriteria; track $index) {
+                      <li>{{ c.labelKey | transloco: c.labelParams }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              <div class="explain-section">
+                <div class="explain-head muted small">
+                  {{ 'pages.search.explain.apiUsage' | transloco }}
+                </div>
+                <ul class="small">
+                  <li>
+                    {{
+                      'pages.search.explain.maximumCalls'
+                        | transloco: { count: ex.apiUsage.maximum }
+                    }}
+                  </li>
+                  <li>
+                    {{ 'pages.search.explain.usedCalls' | transloco: { count: ex.apiUsage.used } }}
+                  </li>
+                  @if (ex.apiUsage.tagsDropped) {
+                    <li>
+                      {{
+                        'pages.search.explain.truncated'
+                          | transloco: { count: ex.apiUsage.tagsDropped }
+                      }}
+                    </li>
+                  }
+                </ul>
+              </div>
+            </details>
+          }
+        }
+
+        <!-- Account refinement: numeric gates live in Advanced; here are the text
+         filter + categorical/bucket facets over the loaded people. -->
+        @if (type() === 'accounts' && loadedAccountCount()) {
+          <div class="refine-bar">
+            <input
+              type="search"
+              class="refine-filter"
+              [ngModel]="accountFilter()"
+              (ngModelChange)="accountFilter.set($event)"
+              [placeholder]="'pages.search.refine.filterPeople' | transloco"
+              [attr.aria-label]="'pages.search.refine.filterLoadedPeople' | transloco"
+            />
+            <!-- Sort of the loaded people — reorders in memory, no new search. -->
+            <label class="sort-by">
+              <span class="muted small">{{ 'pages.search.refine.sort' | transloco }}</span>
+              <select
+                [ngModel]="accountSort()"
+                (ngModelChange)="accountSort.set($event)"
+                [attr.aria-label]="'pages.search.refine.sortPeople' | transloco"
+              >
+                @for (s of accountSorts; track s.value) {
+                  <option [value]="s.value">{{ s.label | transloco }}</option>
+                }
+              </select>
+            </label>
+            <!-- Follow state comes from the relationship map rather than the
+                 account, so it sits here beside the sort instead of among the
+                 facets below (which are all computed from the accounts). -->
+            <div
+              class="seg follow-seg"
+              role="group"
+              [attr.aria-label]="'pages.search.refine.filterFollowState' | transloco"
+            >
+              <button
+                type="button"
+                [class.active]="followFilter() === 'all'"
+                (click)="followFilter.set('all')"
+              >
+                {{ 'pages.search.refine.everyone' | transloco }}
+              </button>
+              <button
+                type="button"
+                [class.active]="followFilter() === 'following'"
+                (click)="followFilter.set('following')"
+                [title]="'pages.search.refine.onlyFollowing' | transloco"
+              >
+                {{ 'pages.search.refine.iFollow' | transloco }}
+              </button>
+              <button
+                type="button"
+                [class.active]="followFilter() === 'not-following'"
+                (click)="followFilter.set('not-following')"
+                [title]="'pages.search.refine.notFollowing' | transloco"
+              >
+                {{ 'pages.search.refine.notYet' | transloco }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Only ever shown when something actually arrived without a date;
+               Mastodon's own search supplies one for every account. -->
+          @if (canEnrichActivity()) {
+            <p class="enrich-offer muted small">
+              {{
+                'pages.search.refine.activityMissing'
+                  | transloco: { count: accountsMissingActivity().length }
+              }}
+              <button type="button" class="link-button" (click)="enrichActivity()">
+                {{ 'pages.search.refine.checkActivity' | transloco }}
+              </button>
+              <span class="muted">{{ 'pages.search.refine.oneApiCall' | transloco }}</span>
+            </p>
+          } @else if (enrichingActivity()) {
+            <p class="enrich-offer muted small">
+              {{ 'pages.search.refine.checkingActivity' | transloco }}
+            </p>
+          }
+          @if (enrichError(); as error) {
+            <p class="enrich-offer error small" role="alert">{{ error }}</p>
+          }
+
+          @if (accountFacets().length) {
+            <details class="refine-facets" [open]="refineOpen()">
+              <summary (click)="$event.preventDefault(); refineOpen.set(!refineOpen())">
+                {{ 'pages.search.refine.loadedPeople' | transloco }}
+                <span class="muted small">{{
+                  'pages.search.refine.basedOnAccounts' | transloco: { count: loadedAccountCount() }
+                }}</span>
+              </summary>
+              @for (facet of accountFacets(); track facet.kind) {
+                <div class="facet">
+                  <div class="facet-label muted small">{{ facet.labelKey | transloco }}</div>
+                  <!-- `showAll` facets are bounded ordered ladders where the
+                       last row matters as much as the first — see AccountFacet. -->
+                  @for (
+                    v of facet.showAll ? facet.values : facet.values.slice(0, 5);
+                    track v.value
+                  ) {
+                    <label class="facet-value">
+                      <input
+                        type="checkbox"
+                        [checked]="isAccountFacetSelected(facet.kind, v.value)"
+                        (change)="toggleAccountFacet(facet.kind, v.value)"
+                      />
+                      <span>{{ v.labelKey ? (v.labelKey | transloco) : v.text }}</span>
+                      <span class="muted facet-count">{{ v.count }}</span>
+                    </label>
+                  }
+                </div>
+              }
+              @if (selectedAccountFacets().length || accountFilter()) {
+                <button class="btn btn-outline btn-sm" (click)="clearAccountRefinements()">
+                  {{ 'pages.search.refine.clearFilters' | transloco }}
+                </button>
+              }
+            </details>
+          }
+
+          <div class="result-status muted small">
+            {{
+              'pages.search.refine.showingAccounts'
+                | transloco: { shown: shownAccountCount(), loaded: loadedAccountCount() }
+            }}<br />
+            {{
+              'pages.search.refine.apiCallsUsed'
+                | transloco: { used: callsUsed(), budget: apiBudget() }
+            }}
+          </div>
+        }
+      </details>
+
+      <div class="search-results-box">
+        <!-- Says the search finished, at the top of the results and inside them.
+             On a phone the grid collapses with the form column first, so a
+             completed search otherwise changes only the facets far above this
+             point — "facets alone look like nothing happened". `aria-live` so
+             the same news reaches a reader who is not watching the page. -->
+        <p class="result-announcement" role="status" aria-live="polite">
+          @if (resultAnnouncement(); as found) {
+            {{ found }}
+          }
+        </p>
+
+        <!-- Curated sets whose name or description matches. Both corpora are
+             compiled in, so this costs no request and cannot fail — which is why
+             it can sit above every account search instead of behind a fourth
+             entry in the type dropdown. Until now a kit was reachable only from
+             the Find Friends hub, so a reader who saw one once could not ask for
+             it again by name. -->
+        @if (kitMatches().length) {
+          <div class="kit-matches">
+            <h2 class="kit-matches-head">{{ 'pages.search.kits.heading' | transloco }}</h2>
+            @for (kit of kitMatches(); track kit.link) {
+              <a class="kit-match" [routerLink]="kit.link">
+                <strong>{{ kit.title }}</strong>
+                <span class="muted small">{{ kit.blurb }}</span>
+                <span class="muted small">{{
+                  (kit.accountCount === 1
+                    ? 'pages.search.kits.accounts.one'
+                    : 'pages.search.kits.accounts.other'
+                  ) | transloco: { count: kit.accountCount }
+                }}</span>
+              </a>
+            }
+          </div>
+        }
+
+        @if (type() === 'accounts' && !accountResultsRan && !accountSearchRan() && !searching()) {
+          <!-- Nothing searched yet and looking for people: answer "what can I type
+           here?", the same question the posts tab answers with its operator
+           reference. This used to list offsite directories, which is a fine
+           answer to "where do I find people" but not to the question an empty
+           search box poses — and /find-friends is that hub, linked from the foot
+           of the help rather than competing with the search the reader came to
+           run. Once a search has run (even to zero results) we show the results
+           block's empty state instead, so the button never looks inert. -->
+          <div class="search-idle">
+            <app-account-search-help (syntaxHelp)="syntaxHelpOpen.set(true)" />
+          </div>
+        }
+
+        @if (!results() && type() === 'statuses') {
+          <!-- Nothing searched yet: answer the question an empty search box poses,
+             which is "what can I type here?". This space used to show trending
+             posts — engaging, but it taught nothing and buried the operators in
+             a dialog nobody opens. Unchanged for a search that ran and found
+             nothing: that is the results block's empty state, below. -->
+          <div class="search-idle">
+            <app-search-syntax-help [embedded]="true" />
+          </div>
+        }
+
+        @if (!results() && type() === 'hashtags') {
+          @if (trendingTags().length) {
+            <div class="page-head">{{ 'pages.search.results.trendingHashtags' | transloco }}</div>
+            @for (h of trendingTags(); track h.name) {
+              <a class="result-tag" [routerLink]="['/tags', h.name]">
+                #{{ h.name }}
+                <span class="muted tag-uses">{{
+                  'pages.search.results.recentUses'
+                    | transloco: { count: tagUses(h).toLocaleString() }
+                }}</span>
+              </a>
+            }
+          }
+        }
+
+        @if (type() === 'accounts' && (accountResultsRan || accountSearchRan() || searching())) {
+          @if (loadedAccountCount()) {
+            <div class="page-head">
+              {{ 'pages.search.results.people' | transloco }}
+              @if (searching()) {
+                <!-- Results are already on screen here, so the slow notice is a
+                     footnote rather than the main message. -->
+                <span class="muted small">
+                  {{ 'pages.search.results.searchingPosts' | transloco
+                  }}{{ searchSlow() ? ('pages.search.results.searchingSlow' | transloco) : '' }}
+                </span>
+              }
+            </div>
+            @for (item of visibleAccounts(); track item.account.id) {
+              <app-account-result-card
+                [item]="item"
+                [relationship]="relationshipFor(item.account.id)"
+                [profileLink]="accountLink(item.account)"
+                [expanded]="isAccountExpanded(item.account.id)"
+                [followBusy]="isFollowBusy(item.account.id)"
+                [anonymous]="capabilities.active"
+                (follow)="onFollow($event)"
+                (unfollow)="onUnfollow($event)"
+                (toggleExpand)="toggleAccountExpand(item.account.id)"
+              />
+            }
+            @if (!shownAccountCount()) {
+              <p class="muted center">{{ 'pages.search.results.noLoadedPeople' | transloco }}</p>
+            }
+          } @else if (searching()) {
+            <p class="muted center" role="status">
+              {{ 'pages.search.results.searching' | transloco }}
+              @if (searchSlow()) {
+                <!-- Named rather than left to a spinner that stopped reading as
+                     "working" several seconds ago. Federated servers are
+                     genuinely this slow sometimes, and someone told so will
+                     wait; someone staring at a frozen spinner leaves. -->
+                <br />
+                <span class="small">{{ 'pages.search.results.stillWaiting' | transloco }}</span>
+              }
+            </p>
+          } @else if (searchTimedOut()) {
+            <p class="search-unavailable" role="alert">
+              {{ 'pages.search.results.timedOut' | transloco }}
+            </p>
+            <p class="muted center">
+              <button type="button" class="btn btn-outline" (click)="retrySearch()">
+                {{ 'pages.search.results.tryAgain' | transloco }}
+              </button>
+            </p>
+          } @else {
+            <p class="muted center">{{ 'pages.search.results.noPeople' | transloco }}</p>
+            <!-- "No people found" is only the truth when search actually ran. -->
+            @if (emptyExplanation(); as why) {
+              <p class="search-unavailable" role="status">{{ why }}</p>
+            }
+            <!-- Searching needs a name to search for; the directory doesn't. -->
+            <p class="muted center small">
+              {{ 'pages.search.results.directory' | transloco }}
+              <a routerLink="/directory">{{
+                'pages.search.results.browseDirectory' | transloco
+              }}</a>
+              {{ 'pages.search.results.insteadOfSearching' | transloco }}
+            </p>
+          }
+        }
+
+        <!--
+          Posts and hashtags render only once `results()` exists, so before the
+          first answer arrives this column was simply blank — no spinner, no
+          explanation, and on a hung server no ending either. The accounts tab
+          above had a "Searching…"; these did not.
+        -->
+        @if (type() !== 'accounts' && !results() && searching()) {
+          <p class="muted center" role="status">
+            {{ 'pages.search.results.searching' | transloco }}
+            @if (searchSlow()) {
+              <br />
+              <span class="small">{{ 'pages.search.results.stillWaiting' | transloco }}</span>
+            }
+          </p>
+        }
+        @if (type() !== 'accounts' && searchTimedOut()) {
+          <p class="search-unavailable" role="alert">
+            {{ 'pages.search.results.timedOut' | transloco }}
+          </p>
+          <p class="muted center">
+            <button type="button" class="btn btn-outline" (click)="retrySearch()">
+              {{ 'pages.search.results.tryAgain' | transloco }}
+            </button>
+          </p>
+        }
+
+        @if (results(); as r) {
+          @if (r.hashtags.length) {
+            <div class="page-head">{{ 'pages.search.results.hashtags' | transloco }}</div>
+            @for (h of r.hashtags; track h.name) {
+              <a class="result-tag" [routerLink]="['/tags', h.name]">#{{ h.name }}</a>
+            }
+          }
+
+          @if (r.statuses.length) {
+            <div class="page-head">{{ 'pages.search.results.posts' | transloco }}</div>
+            @for (group of groups(); track group.key) {
+              @if (group.label) {
+                <div class="group-head">
+                  {{ group.labelIsKey ? (group.label | transloco) : group.label }}
+                </div>
+              }
+              @for (s of group.statuses; track s.id) {
+                <app-status-card
+                  [status]="s"
+                  (changed)="onChanged($event)"
+                  (deleted)="onDeleted($event)"
+                />
+                <!-- Repeats this row stands in for. The count is the point:
+                     "+36 near-identical" is the evidence of flooding. -->
+                @if (duplicatesOf(s.id); as dupes) {
+                  @if (dupes.length) {
+                    <div class="repeat-note muted small">
+                      <span>
+                        {{
+                          (dupes.length === 1
+                            ? 'pages.search.results.repeatNote.one'
+                            : 'pages.search.results.repeatNote.other'
+                          )
+                            | transloco
+                              : {
+                                  count: dupes.length,
+                                  postWord: words().post,
+                                  postsWord: words().posts,
+                                }
+                        }}
+                      </span>
+                      <button type="button" class="link-btn" (click)="toggleRepeat(s.id)">
+                        {{
+                          (isRepeatExpanded(s.id)
+                            ? 'pages.search.results.hide'
+                            : 'pages.search.results.show'
+                          ) | transloco
+                        }}
+                      </button>
+                    </div>
+                    @if (isRepeatExpanded(s.id)) {
+                      <div class="repeat-list">
+                        @for (d of dupes; track d.id) {
+                          <app-status-card
+                            [status]="d"
+                            (changed)="onChanged($event)"
+                            (deleted)="onDeleted($event)"
+                          />
+                        }
+                      </div>
+                    }
+                  }
+                }
+              }
+            }
+            @if (!shownCount()) {
+              <p class="muted center">{{ 'pages.search.results.noLoadedPosts' | transloco }}</p>
+            }
+
+            <!-- Load more keeps paging past the budget (up to a safety cap) so you can
+             grow the faceting corpus as much as you like. -->
+            <div class="load-more-row">
+              @if (canLoadMore()) {
+                <button class="btn btn-outline" [disabled]="searching()" (click)="loadMore(true)">
+                  @if (searching()) {
+                    {{ 'pages.search.results.loading' | transloco }}
+                  } @else {
+                    {{ 'pages.search.results.loadMorePosts' | transloco }}
+                  }
+                </button>
+              } @else {
+                <p class="muted small center">
+                  {{
+                    'pages.search.results.loadedSummary'
+                      | transloco
+                        : { count: loadedCount(), postsWord: words().posts, calls: callsUsed() }
+                  }}
+                </p>
+              }
+            </div>
+          }
+
+          @if (type() !== 'accounts' && !r.hashtags.length && !r.statuses.length) {
+            <p class="muted center">{{ 'pages.search.results.noResults' | transloco }}</p>
+
+            <!-- A tag with no posts is still a tag worth following: you follow
+                 #mawkingbird precisely to catch the first post. The claim is
+                 hedged unless post search actually works here — otherwise
+                 "nobody has posted this" would be a confident lie about a
+                 server that simply has no index. -->
+            @if (canFollowSearchedTag() && tagCandidate(); as tag) {
+              <div class="tag-offer center">
+                <p class="muted small">
+                  @if (searchSawEverything()) {
+                    <span
+                      [innerHTML]="'pages.search.results.nobodyPosted' | transloco: { tag: tag }"
+                    ></span>
+                  } @else {
+                    <span
+                      [innerHTML]="'pages.search.results.noPostsForTag' | transloco: { tag: tag }"
+                    ></span>
+                  }
+                  {{ 'pages.search.results.followingTag' | transloco }}
+                </p>
+                <a class="btn btn-outline" [routerLink]="['/tags', tag]">
+                  {{ 'pages.search.results.viewAndFollow' | transloco: { tag: tag } }}
+                </a>
+              </div>
+            }
+            <!-- Three different things produce an empty result set and only one of
+               them is "nobody posted about this". Say which one this was. -->
+            @if (emptyExplanation(); as why) {
+              <p class="search-unavailable" role="status">{{ why }}</p>
+              @if (!searchServerOpen()) {
+                <p class="center">
+                  <button class="btn btn-outline" type="button" (click)="toggleSearchServer()">
+                    {{ 'pages.search.results.chooseSearchServer' | transloco }}
+                  </button>
+                </p>
+              }
+            }
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
+
+@if (searchHelperOpen()) {
+  <app-search-helper-dialog
+    [seed]="query()"
+    [context]="searchHelperContext()"
+    (useQuery)="useSuggestedQuery($event)"
+    (closed)="searchHelperOpen.set(false)"
+  />
+}
+
+@if (syntaxHelpOpen()) {
+  <app-search-syntax-help [network]="networkSelection()" (closed)="syntaxHelpOpen.set(false)" />
+}

@@ -1,0 +1,398 @@
+/*
+ * The editor itself: the writing box (or boxes), its toolbar, the split
+ * preview beside it, and the feedback shown while writing.
+ *
+ * See write-workspace.css for how these three stylesheets divide up.
+ */
+
+/* --- editor --- */
+
+.editor-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-id {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.dirty-dot {
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 0;
+}
+
+.split-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.split-hint {
+  margin: 8px 12px 0;
+  font-size: 12px;
+}
+
+.editor-box {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 8px 12px;
+  min-height: 320px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 12px;
+}
+
+.editor-box:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.write-cw {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 8px 12px 0;
+}
+
+.write-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 0 12px 10px;
+}
+
+.write-tool {
+  min-width: 34px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 7px;
+}
+
+.write-tool:hover:not(:disabled),
+.write-tool.on {
+  background: var(--hover);
+  border-color: var(--accent);
+}
+
+.write-tool:disabled,
+.write-tool.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.write-language {
+  max-width: 180px;
+}
+
+.write-emoji-anchor {
+  position: relative;
+}
+
+.write-emoji-popover {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  top: calc(100% + 6px);
+  width: min(360px, 80vw);
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+}
+
+.write-media,
+.write-poll {
+  margin: 0 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.write-media-item,
+.write-poll-option,
+.wizard-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.write-media-item img,
+.write-media-file {
+  width: 72px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.write-media-item img {
+  object-fit: cover;
+}
+
+.write-media-file {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  overflow: hidden;
+  font-size: 11px;
+  text-align: center;
+}
+
+.write-media-item input,
+.write-poll-option input {
+  flex: 1;
+  min-width: 0;
+}
+
+.write-poll-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.editor-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 12px 12px;
+}
+
+.bar-gap {
+  flex: 1;
+}
+
+.editor-empty {
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.editor-empty p {
+  margin: 0 0 12px;
+}
+
+/* --- split preview: the first virtuous distraction --- */
+
+.segments {
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 12px;
+}
+
+.segments-head {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+/* The one warning red: over-limit counts, errors, and warn marks. */
+.over,
+.write-warning,
+.finding.warn .finding-mark {
+  color: #e0245e;
+}
+
+.segment {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 48px;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.segment.over {
+  background: rgba(224, 36, 94, 0.06);
+}
+
+.segment-num,
+.segment-len {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.segment-len {
+  text-align: right;
+}
+
+.segment-text {
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Visibility picker: a <select> in the cramped composer, every choice here. */
+.write-visibility,
+.write-schedule {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.write-visibility {
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+/* Differs from .write-tool only in shape: a word, not a square icon. */
+.write-visibility-option {
+  min-width: 0;
+  min-height: 28px;
+  border-color: transparent;
+  border-radius: 6px;
+  font-size: 0.85em;
+  padding: 2px 8px;
+  text-transform: capitalize;
+}
+
+.write-visibility-option:hover:not(:disabled),
+.write-visibility-option.active {
+  background: var(--hover);
+}
+
+.write-visibility-option.active {
+  border-color: var(--accent);
+}
+
+.write-visibility-locked,
+.link-note-setup {
+  white-space: nowrap;
+}
+
+/* Missing-description notice, beside the boxes where descriptions are typed.
+   Advisory unless the user opted in under Settings -> Writing. */
+.write-alt-note {
+  margin: 6px 12px 0;
+  font-size: 0.9em;
+  color: var(--warn, inherit);
+}
+
+.write-alt-note.advisory {
+  color: inherit;
+  opacity: 0.75;
+}
+
+/* Writing feedback in the editor. Findings reuse the wizard's .finding rules. */
+.write-findings,
+.write-proofread-consent {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.write-findings {
+  margin: 10px 12px 0;
+}
+
+.write-finding-list {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.write-proofread {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.write-proofread-consent {
+  flex-basis: 100%;
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+/* One box per post. Numbers matter more here: with several boxes on screen,
+   "post 3 is over the limit" needs something to point at. */
+.write-boxes {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.write-box {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 8px;
+}
+
+.write-box-num {
+  padding-top: 8px;
+  min-width: 1.5em;
+  text-align: right;
+}
+
+.editor-box-small {
+  min-height: 96px;
+  width: 100%;
+  margin: 0;
+}
+
+.write-box-add {
+  justify-self: start;
+  margin-left: calc(1.5em + 8px);
+}
+
+/* Link shortening note, mirroring the compact composer's .link-note. */
+.link-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 12px 0;
+  font-size: 0.85em;
+  line-height: 1.35;
+}
+
+.link-note-text {
+  flex: 1 1 220px;
+}
+
+/* --- notices --- */
+
+.write-warning,
+.write-notice {
+  margin: 8px 12px 0;
+  font-size: 13px;
+}
+
+.center {
+  text-align: center;
+  padding: 20px 12px;
+}

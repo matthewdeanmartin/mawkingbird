@@ -1,0 +1,64 @@
+<div class="page-head">{{ title() }}</div>
+@if (owner(); as o) {
+  <p class="muted small page-sub">
+    {{ 'endorsedList.managedOn' | transloco }}
+    <a [routerLink]="['/accounts', o.id]">{{ o.display_name || o.username }}</a
+    >{{ 'endorsedList.profileSuffix' | transloco }}
+  </p>
+}
+
+@if (error()) {
+  <p class="muted center">{{ error() }}</p>
+}
+
+<div class="tabs">
+  <button class="tab" [class.active]="tab() === 'feed'" (click)="setTab('feed')">
+    {{ 'endorsedList.feed' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
+    {{ 'endorsedList.members' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'endorsedList.loading' | transloco }}</p>
+} @else if (!members().length) {
+  @if (!error()) {
+    <p class="muted center">{{ 'endorsedList.empty' | transloco }}</p>
+  }
+} @else if (tab() === 'feed') {
+  @if (cappedNote()) {
+    <p class="muted small page-sub">{{ cappedNote() }}</p>
+  }
+  @if (feedLoading()) {
+    <p class="muted center">{{ 'endorsedList.loadingFeed' | transloco }}</p>
+  } @else if (!feed().length) {
+    <p class="muted center">{{ 'endorsedList.emptyFeed' | transloco }}</p>
+  } @else {
+    @for (s of feed(); track s.id; let i = $index) {
+      <app-status-card
+        [status]="s"
+        (changed)="onChanged(i, $event)"
+        (deleted)="onDeleted($event)"
+      />
+    }
+  }
+} @else {
+  @for (a of members(); track a.id) {
+    <div class="member-row">
+      <a class="member-link" [routerLink]="['/accounts', a.id]">
+        <img
+          class="avatar"
+          [src]="a.avatar_static || a.avatar"
+          [alt]="a.username"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="names">
+          <span class="name">{{ a.display_name || a.username }}</span>
+          <span class="acct muted">&#64;{{ a.acct }}</span>
+        </span>
+      </a>
+    </div>
+  }
+}

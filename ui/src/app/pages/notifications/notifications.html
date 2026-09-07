@@ -1,0 +1,293 @@
+<div class="live-toggle">
+  <div class="notif-filters">
+    <!-- Which network. Shown only when there is a choice to make: with no
+         Bluesky account linked this is a switch between one thing and an error
+         message. -->
+    @if (bskySession.linked()) {
+      <div
+        class="seg source-seg"
+        role="group"
+        [attr.aria-label]="'pages.notifications.sourceAriaLabel' | transloco"
+      >
+        <button [class.active]="source() === 'mastodon'" (click)="setSource('mastodon')">
+          {{ 'pages.notifications.source.mastodon' | transloco }}
+        </button>
+        <button [class.active]="source() === 'bluesky'" (click)="setSource('bluesky')">
+          {{ 'pages.notifications.source.bluesky' | transloco }}
+        </button>
+      </div>
+    }
+    <!-- Accounts New to Me reads relationships from the Mastodon server, so it
+         has nothing to say about Bluesky actors. -->
+    @if (source() === 'mastodon') {
+      <div
+        class="seg view-seg"
+        role="group"
+        [attr.aria-label]="'pages.notifications.viewAriaLabel' | transloco"
+      >
+        <button [class.active]="view() === 'notifications'" (click)="setView('notifications')">
+          {{ 'pages.notifications.notifications' | transloco }}
+        </button>
+        <button [class.active]="view() === 'new-accounts'" (click)="setView('new-accounts')">
+          {{ 'pages.notifications.newAccounts' | transloco }}
+        </button>
+      </div>
+    }
+    @if (view() === 'notifications') {
+      <!-- Friends/Followers batches api.relationships() over account ids this
+           server issued. A `bsky:` id can only 400 there, so the filter is
+           hidden rather than shown and broken. -->
+      @if (source() === 'mastodon') {
+        <div
+          class="seg"
+          role="group"
+          [attr.aria-label]="'pages.notifications.audience.from' | transloco"
+        >
+          <button [class.active]="audience() === 'all'" (click)="audience.set('all')">
+            {{ 'pages.notifications.audience.all' | transloco }}
+          </button>
+          <button [class.active]="audience() === 'friends'" (click)="audience.set('friends')">
+            {{ 'pages.notifications.audience.friends' | transloco }}
+          </button>
+          <button [class.active]="audience() === 'followers'" (click)="audience.set('followers')">
+            {{ 'pages.notifications.audience.followers' | transloco }}
+          </button>
+        </div>
+      }
+      <!-- The type dropdown is built from whatever arrived, so it works for
+           either source with no changes. -->
+      <select
+        class="type-select"
+        [ngModel]="typeFilter()"
+        (ngModelChange)="typeFilter.set($event)"
+        [title]="'pages.notifications.type.title' | transloco"
+      >
+        <option value="all">{{ 'pages.notifications.type.all' | transloco }}</option>
+        @for (t of types(); track t) {
+          <option [value]="t">{{ label(t) }}</option>
+        }
+      </select>
+    }
+  </div>
+  <!-- Live is a Mastodon WebSocket, governed by Blue → "Auto-refresh timeline"
+       rather than a button here, so one setting covers every live surface. What
+       is left is a status light. Bluesky has no notification stream — it is
+       polled — so that side gets an honest Refresh instead. -->
+  @if (source() === 'mastodon') {
+    @if (live()) {
+      <a
+        class="live-badge"
+        routerLink="/settings/blue"
+        [title]="'pages.notifications.live.title' | transloco"
+      >
+        {{ 'pages.notifications.live.label' | transloco }}
+      </a>
+    }
+  } @else {
+    <button
+      class="btn btn-outline"
+      [disabled]="loading()"
+      (click)="refresh()"
+      [title]="'pages.notifications.refresh.title' | transloco"
+    >
+      {{ 'pages.notifications.refresh.label' | transloco }}
+    </button>
+  }
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'pages.notifications.loading' | transloco }}</p>
+} @else if (bskyError(); as error) {
+  <!-- A reason beats "No notifications yet", which would be a different and
+       wrong claim when the fetch is what failed. -->
+  <p class="muted center">{{ error }}</p>
+} @else if (!items().length) {
+  <p class="muted center">{{ 'pages.notifications.empty' | transloco }}</p>
+} @else if (view() === 'new-accounts') {
+  @if (accountActionError(); as error) {
+    <p class="new-account-error" role="alert">{{ error }}</p>
+  }
+  @if (relationshipChecksPending() && !newAccounts().length) {
+    <p class="muted center">{{ 'pages.notifications.checkingAccounts' | transloco }}</p>
+  } @else if (relationshipCheckFailed() && !newAccounts().length) {
+    <p class="muted center">{{ 'pages.notifications.relationshipCheckFailed' | transloco }}</p>
+  } @else if (!newAccounts().length) {
+    <p class="muted center">{{ 'pages.notifications.noUnfamiliarAccounts' | transloco }}</p>
+  } @else {
+    <div class="new-account-list">
+      @for (candidate of newAccounts(); track candidate.account.id) {
+        <app-account-result-card
+          [item]="newAccountItem(candidate)"
+          [relationship]="candidate.relationship"
+          [profileLink]="['/accounts', candidate.account.id]"
+          [reason]="newAccountReason(candidate)"
+          [reasonLink]="newAccountReasonLink(candidate)"
+          [followBusy]="isAccountActionBusy(candidate.account.id)"
+          [showModerationMenu]="true"
+          (follow)="followAccount($event)"
+          (muteAccount)="muteAccount($event)"
+          (blockAccount)="blockAccount($event)"
+        />
+      }
+    </div>
+  }
+} @else if (!visible().length) {
+  <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
+} @else {
+  @for (row of rows(); track row.key) {
+    @if (row.kind === 'group') {
+      <div class="notif notif-group">
+        <div class="group-avatars">
+          @for (g of row.sample; track g.account.id) {
+            <a [routerLink]="['/accounts', g.account.id]" [attr.aria-label]="g.account.acct">
+              <img
+                class="notif-avatar"
+                [ngSrc]="g.account.avatar_static || g.account.avatar || 'favicon-32x32.png'"
+                [alt]="g.account.username"
+                width="40"
+                height="40"
+              />
+            </a>
+          }
+        </div>
+        <div class="notif-body">
+          <span class="group-summary">
+            @for (g of row.sample; track g.account.id; let last = $last) {
+              <a class="who" [routerLink]="['/accounts', g.account.id]">{{
+                g.account.display_name || g.account.username
+              }}</a
+              >{{ last ? '' : ', ' }}
+            }
+            @if (listMode(row.type)) {
+              <button
+                class="others-link"
+                (click)="openGroupList(row)"
+                [title]="'pages.notifications.seeEveryone' | transloco: { type: label(row.type) }"
+              >
+                {{ othersLabel(row) }}
+              </button>
+            } @else {
+              <span class="who">{{ othersLabel(row) }}</span>
+            }
+            <span class="what muted">{{ label(row.type) }}</span>
+          </span>
+          <a class="excerpt" [routerLink]="['/statuses', row.status.id]">
+            <span class="excerpt-content" [innerHTML]="row.status.content"></span>
+            @if (row.status.media_attachments.length && showImages()) {
+              <span class="excerpt-media">
+                @for (m of row.status.media_attachments; track m.id) {
+                  <img
+                    [src]="m.preview_url || m.url"
+                    [alt]="m.description || ''"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                }
+              </span>
+            }
+          </a>
+        </div>
+      </div>
+    } @else {
+      <div class="notif">
+        <a [routerLink]="['/accounts', row.notif.account.id]">
+          <img
+            class="notif-avatar"
+            [ngSrc]="
+              row.notif.account.avatar_static || row.notif.account.avatar || 'favicon-32x32.png'
+            "
+            [alt]="row.notif.account.username"
+            width="40"
+            height="40"
+          />
+        </a>
+        <div class="notif-body">
+          <a class="who" [routerLink]="['/accounts', row.notif.account.id]">{{
+            row.notif.account.display_name || row.notif.account.username
+          }}</a>
+          <span class="what muted">{{ label(row.notif.type) }}</span>
+          @if (row.notif.status) {
+            <!-- Bluesky replies and mentions also arrive as type 'mention', but
+                 "open in chat" means the Mastodon DM tab and `chatKey` builds a
+                 key from a Mastodon acct. A bsky reply goes to its thread, which
+                 is where the reply actually is. -->
+            @if (row.notif.type === 'mention' && source() === 'mastodon') {
+              <!-- Mentions open as a chat: click the body to jump into the DM
+                   tab's public chat with this person (we nudge chat over thread). -->
+              <a
+                class="excerpt"
+                [routerLink]="['/conversations']"
+                [queryParams]="{ open: chatKey(row.notif) }"
+              >
+                <span class="excerpt-content" [innerHTML]="row.notif.status.content"></span>
+                @if (row.notif.status.media_attachments.length && showImages()) {
+                  <span class="excerpt-media">
+                    @for (m of row.notif.status.media_attachments; track m.id) {
+                      <img
+                        [src]="m.preview_url || m.url"
+                        [alt]="m.description || ''"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    }
+                  </span>
+                }
+              </a>
+              <div class="mention-actions">
+                <a
+                  class="btn btn-sm"
+                  [routerLink]="['/conversations']"
+                  [queryParams]="{ open: chatKey(row.notif) }"
+                >
+                  {{ 'pages.notifications.openChat' | transloco }}
+                </a>
+                <a class="btn btn-outline btn-sm" [routerLink]="['/statuses', row.notif.status.id]">
+                  {{ 'pages.notifications.viewThread' | transloco }}
+                </a>
+              </div>
+            } @else {
+              <a class="excerpt" [routerLink]="['/statuses', row.notif.status.id]">
+                <span class="excerpt-content" [innerHTML]="row.notif.status.content"></span>
+                @if (row.notif.status.media_attachments.length && showImages()) {
+                  <span class="excerpt-media">
+                    @for (m of row.notif.status.media_attachments; track m.id) {
+                      <img
+                        [src]="m.preview_url || m.url"
+                        [alt]="m.description || ''"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    }
+                  </span>
+                }
+              </a>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+}
+
+@if (!loading() && items().length) {
+  <div class="load-more-row">
+    @if (exhausted()) {
+      <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
+    } @else {
+      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+        {{
+          (loadingMore() ? 'pages.notifications.loading' : 'pages.notifications.loadMore')
+            | transloco
+        }}
+      </button>
+    }
+  </div>
+}
+
+@if (listTarget(); as target) {
+  <app-account-list-dialog
+    [statusId]="target.statusId"
+    [mode]="target.mode"
+    (closed)="listTarget.set(null)"
+  />
+}

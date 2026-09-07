@@ -1,0 +1,160 @@
+<div class="spage-head">
+  <h1>{{ (isNew ? 'settings.filters.add' : 'settings.filters.edit') | transloco }}</h1>
+  <p>{{ 'settings.filters.edit.intro' | transloco }}</p>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'common.loading' | transloco }}</p>
+} @else {
+  <form class="spage-body" (ngSubmit)="save()">
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.filters.titleLabel' | transloco }}</span>
+        <div class="scontrol">
+          <input
+            type="text"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            name="title"
+            [attr.placeholder]="'settings.filters.titlePlaceholder' | transloco"
+          />
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.filters.contexts' | transloco }}</span>
+        <div class="scontrol">
+          @for (opt of contextOptions; track opt.value) {
+            <label class="checkline">
+              <input
+                type="checkbox"
+                [checked]="hasContext(opt.value)"
+                (change)="toggleContext(opt.value, $any($event.target).checked)"
+              />
+              {{ opt.key | transloco }}
+            </label>
+          }
+          <span class="hint">{{ 'settings.filters.contexts.hint' | transloco }}</span>
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.filters.action' | transloco }}</span>
+        <div class="scontrol">
+          <label class="radioline">
+            <input
+              type="radio"
+              name="action"
+              value="warn"
+              [checked]="action() === 'warn'"
+              (change)="action.set('warn')"
+            />
+            {{ 'settings.filters.action.warn' | transloco }}
+          </label>
+          <label class="radioline">
+            <input
+              type="radio"
+              name="action"
+              value="hide"
+              [checked]="action() === 'hide'"
+              (change)="action.set('hide')"
+            />
+            {{ 'settings.filters.action.hide' | transloco }}
+          </label>
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.filters.expire' | transloco }}</span>
+        <div class="scontrol">
+          @if (!isNew) {
+            <label class="checkline">
+              <input
+                type="checkbox"
+                [checked]="keepExpiry()"
+                (change)="keepExpiry.set($any($event.target).checked)"
+              />
+              {{
+                'settings.filters.keepExpiry'
+                  | transloco
+                    : {
+                        when: currentExpiry()
+                          ? (currentExpiry() | date: 'medium')
+                          : ('settings.filters.neverExpires' | transloco),
+                      }
+              }}
+            </label>
+          }
+          @if (isNew || !keepExpiry()) {
+            <select
+              name="expires_in"
+              [ngModel]="expiresIn()"
+              (ngModelChange)="expiresIn.set($event)"
+            >
+              @for (opt of expiryOptions; track opt.key) {
+                <option [ngValue]="opt.value">{{ opt.key | transloco }}</option>
+              }
+            </select>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="ssection">
+      <h2>{{ 'settings.filters.keywords' | transloco }}</h2>
+      <div class="kw-table">
+        @for (row of keywords(); track $index; let i = $index) {
+          <div class="kw-row">
+            <input
+              type="text"
+              [attr.placeholder]="'settings.filters.keywordPlaceholder' | transloco"
+              [ngModel]="row.keyword"
+              (ngModelChange)="setKeyword(i, 'keyword', $event)"
+              [name]="'kw_' + i"
+              [disabled]="row.id !== null"
+            />
+            <label class="checkline kw-whole">
+              <input
+                type="checkbox"
+                [checked]="row.whole_word"
+                [disabled]="row.id !== null"
+                (change)="setKeyword(i, 'whole_word', $any($event.target).checked)"
+              />
+              {{ 'settings.filters.wholeWord' | transloco }}
+            </label>
+            <button
+              type="button"
+              class="btn btn-outline btn-sm"
+              (click)="removeKeywordRow(i)"
+              [attr.aria-label]="'settings.filters.removeKeyword' | transloco"
+            >
+              ✕
+            </button>
+          </div>
+        }
+      </div>
+      <button type="button" class="btn btn-outline btn-sm" (click)="addKeywordRow()">
+        {{ 'settings.filters.addKeyword' | transloco }}
+      </button>
+      <p class="hint">
+        {{ 'settings.filters.wholeWord.hint' | transloco }}
+      </p>
+    </div>
+
+    @if (error(); as message) {
+      <p class="form-error">{{ message }}</p>
+    }
+
+    <div class="sactions">
+      <a class="btn btn-outline" routerLink="/settings/filters">{{
+        'common.cancel' | transloco
+      }}</a>
+      <button class="btn" type="submit" [disabled]="saving()">
+        {{
+          (saving() ? 'common.saving' : isNew ? 'settings.filters.create' : 'common.saveChanges')
+            | transloco
+        }}
+      </button>
+    </div>
+  </form>
+}

@@ -1,0 +1,281 @@
+<div class="page-head">
+  <h2>{{ 'pages.pastes.title' | transloco }}</h2>
+</div>
+<p class="page-note">
+  {{ 'pages.pastes.note.a' | transloco }}
+  {{ 'pages.pastes.note.b' | transloco }}
+  <a routerLink="/credits">{{ 'pages.pastes.note.creditsPrivacy' | transloco }}</a
+  >.
+</p>
+
+<div class="paste-tabs" role="tablist">
+  <button
+    role="tab"
+    [class.active]="tab() === 'mine'"
+    [attr.aria-selected]="tab() === 'mine'"
+    (click)="selectTab('mine')"
+  >
+    {{ 'pages.pastes.tabs.mine' | transloco }}
+  </button>
+  <button
+    role="tab"
+    [class.active]="tab() === 'feeds'"
+    [attr.aria-selected]="tab() === 'feeds'"
+    (click)="selectTab('feeds')"
+  >
+    {{ 'pages.pastes.tabs.feeds' | transloco }}
+  </button>
+</div>
+
+@if (history.persistError(); as message) {
+  <p class="paste-error" role="alert">{{ message }}</p>
+}
+
+@if (error(); as message) {
+  <p class="paste-error" role="alert">{{ message }}</p>
+}
+
+@if (notice(); as message) {
+  <p class="paste-notice" role="status">✓ {{ message }}</p>
+}
+
+@if (tab() === 'feeds') {
+  <section class="feed-settings" aria-labelledby="paste-feeds-heading">
+    <h3 id="paste-feeds-heading">{{ 'pages.pastes.feeds.heading' | transloco }}</h3>
+    <p class="muted">{{ 'pages.pastes.feeds.intro' | transloco }}</p>
+
+    <!-- These hosts refuse cross-origin requests, so the proxy isn't a fallback
+         for the unlucky few: it is the only way to read them at all. Still
+         opt-in per feed, and still never switched on automatically. -->
+    <p class="muted small proxy-summary">
+      @if (proxyLabel(); as label) {
+        {{ 'pages.pastes.feeds.proxyConfigured' | transloco: { label: label } }}
+      } @else {
+        {{ 'pages.pastes.feeds.proxyMissing' | transloco }}
+      }
+      <a [routerLink]="['/settings/connections/cors-proxy']">
+        {{
+          (proxyLabel() ? 'pages.pastes.feeds.changeProxy' : 'pages.pastes.feeds.setupProxy')
+            | transloco
+        }}
+      </a>
+    </p>
+
+    @for (provider of providers.feeds; track provider.id) {
+      <div class="feed-row">
+        <div>
+          <strong>{{ provider.label }}</strong>
+          @if (usesProxy(provider)) {
+            <span class="proxy-badge" [title]="'pages.pastes.feeds.proxyTitle' | transloco">
+              {{ 'pages.pastes.feeds.viaProxy' | transloco }}
+            </span>
+          }
+          <div class="muted small">{{ provider.feedUrl }}</div>
+          @if (needsKey(provider)) {
+            <div class="muted small">
+              {{ 'pages.pastes.feeds.needsKey' | transloco }}
+            </div>
+          }
+        </div>
+        <div class="feed-actions">
+          @if (proxyLabel()) {
+            <label
+              class="proxy-switch muted small"
+              [title]="'pages.pastes.feeds.fetchThrough' | transloco: { label: proxyLabel() }"
+            >
+              <input
+                type="checkbox"
+                [checked]="usesProxy(provider)"
+                (change)="toggleProxy(provider)"
+              />
+              {{ 'pages.pastes.feeds.viaProxy' | transloco }}
+            </label>
+          }
+          <button class="btn btn-outline btn-sm" type="button" (click)="toggleFeed(provider)">
+            {{
+              (isFollowing(provider) ? 'pages.pastes.feeds.unfollow' : 'pages.pastes.feeds.follow')
+                | transloco: { noun: feedNoun(provider) }
+            }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- The key is what turns a read-only firehose into "post it, then see your
+         own paste". Free, no account — so this is a button, not a field that
+         sends people looking for a signup page. -->
+    <section class="pastepile-key" aria-labelledby="pastepile-key-heading">
+      <h4 id="pastepile-key-heading">{{ 'pages.pastes.key.heading' | transloco }}</h4>
+      @if (pastepileKey.connected()) {
+        <p class="muted small">
+          {{ 'pages.pastes.key.createdIntro' | transloco }}
+          <code>{{ pastepileKey.prefix() }}…</code>
+          (<span>{{ 'pages.pastes.key.plan' | transloco: { plan: pastepileKey.plan() } }}</span
+          >),
+          {{ 'pages.pastes.key.createdDetails' | transloco }}
+          @if (!pastepileKey.allowsNeverExpiry()) {
+            {{ 'pages.pastes.key.neverExpiry' | transloco }}
+          }
+        </p>
+        <div class="feed-row">
+          <span class="muted small">{{ 'pages.pastes.key.saved' | transloco }}</span>
+          <button
+            class="btn btn-outline btn-sm"
+            type="button"
+            [disabled]="keyBusy()"
+            (click)="removeKey()"
+          >
+            {{ (keyBusy() ? 'pages.pastes.key.removing' : 'pages.pastes.key.revoke') | transloco }}
+          </button>
+        </div>
+      } @else {
+        <p class="muted small">
+          {{ 'pages.pastes.key.anonymous' | transloco }}
+        </p>
+        <button class="btn btn-sm" type="button" [disabled]="keyBusy()" (click)="generateKey()">
+          {{ (keyBusy() ? 'pages.pastes.key.getting' : 'pages.pastes.key.getFree') | transloco }}
+        </button>
+      }
+    </section>
+  </section>
+} @else {
+  @if (!history.records().length) {
+    <p class="muted center">{{ 'pages.pastes.empty' | transloco }}</p>
+  } @else {
+    <div class="paste-list">
+      @for (paste of history.records(); track paste.providerId + ':' + paste.slug) {
+        <article class="paste-card">
+          @if (editing() === paste.slug) {
+            <label>
+              <span>{{ 'pages.pastes.edit.title' | transloco }}</span>
+              <input type="text" [ngModel]="editTitle()" (ngModelChange)="editTitle.set($event)" />
+            </label>
+            <label>
+              <span>{{ 'pages.pastes.edit.language' | transloco }}</span>
+              <select [ngModel]="editLanguage()" (ngModelChange)="editLanguage.set($event)">
+                @for (
+                  language of providers.get(paste.providerId)?.languages ?? [];
+                  track language.value
+                ) {
+                  <option [value]="language.value">{{ language.label }}</option>
+                }
+              </select>
+            </label>
+            <label>
+              <span>{{ 'pages.pastes.edit.content' | transloco }}</span>
+              <textarea
+                rows="12"
+                [ngModel]="editContent()"
+                (ngModelChange)="editContent.set($event)"
+              ></textarea>
+            </label>
+            <div class="paste-actions">
+              <button
+                class="btn btn-sm"
+                type="button"
+                [disabled]="busy() === paste.slug || !editContent().trim()"
+                (click)="save(paste)"
+              >
+                {{
+                  (busy() === paste.slug ? 'pages.pastes.edit.saving' : 'pages.pastes.edit.save')
+                    | transloco
+                }}
+              </button>
+              <button class="btn btn-outline btn-sm" type="button" (click)="cancelEdit()">
+                {{ 'pages.pastes.edit.cancel' | transloco }}
+              </button>
+            </div>
+          } @else {
+            <div class="paste-card-head">
+              <div>
+                <h3>{{ paste.title || ('pages.pastes.untitled' | transloco) }}</h3>
+                <div class="muted small">
+                  {{ paste.providerLabel }} · {{ paste.language }} · {{ paste.visibility }} ·
+                  {{ paste.createdAt | humanTime }}
+                </div>
+              </div>
+              <span class="expiry">{{ paste.expiry }}</span>
+            </div>
+            <pre>{{ paste.content }}</pre>
+            <div class="paste-actions">
+              <a class="btn btn-sm" [href]="paste.url" target="_blank" rel="noopener noreferrer">
+                {{ 'pages.pastes.actions.open' | transloco }}
+              </a>
+              <a
+                class="btn btn-outline btn-sm"
+                [href]="paste.rawUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ 'pages.pastes.actions.raw' | transloco }}
+              </a>
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                [class.active]="sharing() === paste.slug"
+                (click)="toggleShare(paste)"
+                [title]="'pages.pastes.actions.shareTitle' | transloco: { post: words().Post }"
+              >
+                {{
+                  (sharing() === paste.slug
+                    ? 'pages.pastes.actions.closeShare'
+                    : 'pages.pastes.actions.share'
+                  ) | transloco
+                }}
+              </button>
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                (click)="editForPost(paste)"
+                [title]="
+                  'pages.pastes.actions.editForPostTitle' | transloco: { post: words().Post }
+                "
+              >
+                {{ 'pages.pastes.actions.editForPost' | transloco: { post: words().post } }}
+              </button>
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                (click)="convertToDraft(paste)"
+                [title]="'pages.pastes.actions.toDraftTitle' | transloco"
+              >
+                {{ 'pages.pastes.actions.toDraft' | transloco }}
+              </button>
+              @if (!isImmutable(paste.providerId)) {
+                <button class="btn btn-outline btn-sm" type="button" (click)="beginEdit(paste)">
+                  {{ 'pages.pastes.actions.edit' | transloco }}
+                </button>
+                <button
+                  class="btn btn-outline btn-sm danger"
+                  type="button"
+                  [disabled]="busy() === paste.slug"
+                  (click)="delete(paste)"
+                >
+                  {{ 'pages.pastes.actions.deleteRemote' | transloco }}
+                </button>
+              }
+              <button class="btn btn-outline btn-sm" type="button" (click)="forget(paste)">
+                {{ 'pages.pastes.actions.forget' | transloco }}
+              </button>
+            </div>
+            @if (sharing() === paste.slug) {
+              <div class="paste-share">
+                <p class="muted small">
+                  {{
+                    'pages.pastes.share.description' | transloco: { provider: paste.providerLabel }
+                  }}
+                </p>
+                <app-compose
+                  [compact]="true"
+                  [initialText]="shareText(paste)"
+                  [placeholder]="'pages.pastes.share.placeholder' | transloco"
+                  (posted)="onShared()"
+                />
+              </div>
+            }
+          }
+        </article>
+      }
+    </div>
+  }
+}

@@ -1,0 +1,39 @@
+/* The host is a wrapper the layout should not see. `.actions` on the status
+   card is a flex row with its own gap, and an extra element between it and the
+   button would take the gap for itself and leave the button unaligned with the
+   bookmark next to it. `display: contents` lets the button be the flex item. */
+:host {
+  display: contents;
+}
+
+/* Matches `.action` in `status-card.css` rather than borrowing it: view
+   encapsulation means the card's class does not reach a child component's
+   button, and a control that sat a few pixels off from the bookmark beside it
+   would look like a mistake. The geometry — and the reason for it — is the
+   card's: 13px ink with a 40x32 hit area, because 2px of padding around 13px
+   text is a ~20px target against the ~44px a fingertip needs. The row's own gap
+   already reserves the space, so the hit area grows and the ink does not. */
+.save-to-library {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 2px;
+  cursor: pointer;
+  min-height: 40px;
+  min-width: 32px;
+}
+
+.save-to-library:hover {
+  color: var(--accent);
+}
+
+/* On a shelf already. The filled state is the whole readout — there is no
+   count or label beside it to carry the meaning. */
+.save-to-library.on {
+  color: var(--accent);
+}

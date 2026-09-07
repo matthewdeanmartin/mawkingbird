@@ -1,0 +1,146 @@
+{
+  "$schema": {
+    "$comment": "Not a real JSON Schema — a note to whoever opens this file next.",
+    "purpose": "The translator's brief. One entry per key that needs one, written ONCE in English and reused for every language, forever. This file is build-time only and is never shipped to browsers.",
+    "why": "A bare dictionary strips exactly what a translator needs. Given {\"status.boost.action\": \"Boost\"} and asked for Chinese, a model has no way to know Boost is a fediverse noun-verb meaning 're-share unmodified' rather than 'amplify/promote' — so it produces something in the register of a municipal economic-development slogan. It is not being stupid; it was handed a word with no referent.",
+    "fields": {
+      "desc": "REQUIRED. What the string means and does. Disambiguates every homograph.",
+      "surface": "Where it renders (button, paragraph, tooltip, placeholder). Register and length follow from this.",
+      "max": "Soft character budget. German compounds and Finnish cases overflow narrow buttons; a translator must know when it is tight.",
+      "glossary": "Glossary terms this string uses. Forces consistency with the translate-ui skill.",
+      "pos": "noun / verb / adjective. Post, Boost, Like, Filter and Mute are all both in English.",
+      "tone": "neutral / playful / warning / error. This app is wry in places; a warning must not be.",
+      "placeholders": "What each {{param}} holds, so it is never translated or reordered blindly.",
+      "dnt": "Do not translate — brand names, handles, hashtags, product names."
+    },
+    "coverage": "Deliberately NOT required to be complete. Most keys (Cancel, Save, Settings) are unambiguous, and demanding an entry for each would be make-work that trains everyone to write 'the save button' to silence a gate. The one rule worth enforcing: a key whose English contains a glossary term must have an entry."
+  },
+  "footer.rules": {
+    "desc": "Link to the server's own rules and terms-of-service page. {{host}} is a domain name like 'mastodon.social'.",
+    "surface": "footer link",
+    "placeholders": {
+      "host": "A server domain name, or the word Server when unknown."
+    },
+    "glossary": [
+      "instance"
+    ],
+    "dnt": [
+      "{{host}}"
+    ]
+  },
+  "footer.server": {
+    "desc": "Stands in for the server's domain name when we don't know it yet. Reads as '<Server> rules & terms'.",
+    "surface": "footer link, substituted into footer.rules",
+    "glossary": [
+      "instance"
+    ],
+    "pos": "noun"
+  },
+  "footer.source": {
+    "desc": "Link to this app's source code on GitHub. 'Mockingbird' is the product name.",
+    "surface": "footer link",
+    "dnt": [
+      "Mockingbird"
+    ]
+  },
+  "footer.reportBug": {
+    "desc": "Opens a dialog for reporting a problem with the app.",
+    "surface": "footer link-styled button",
+    "max": 20
+  },
+  "footer.privacy": {
+    "desc": "Link to the privacy section of the credits page.",
+    "surface": "footer link",
+    "max": 16
+  },
+  "footer.failWhale": {
+    "desc": "Link to a deliberately silly error page. A joke referencing early Twitter's overload mascot — a whale lifted by birds. Keep the joke or find the local equivalent; a literal 'whale that failed' is wrong.",
+    "surface": "footer link",
+    "tone": "playful",
+    "glossary": [
+      "fail whale"
+    ],
+    "max": 16
+  },
+  "footer.hotkeys": {
+    "desc": "Opens the keyboard-shortcuts overlay. The literal '?' is the key you press, so keep it as a character.",
+    "surface": "footer link-styled button",
+    "tone": "playful",
+    "max": 18,
+    "dnt": [
+      "?"
+    ]
+  },
+  "footer.hotkeys.title": {
+    "desc": "Tooltip for the shortcuts button. '?' is the keyboard key.",
+    "surface": "title attribute",
+    "dnt": [
+      "?"
+    ]
+  },
+  "footer.end": {
+    "desc": "Reassurance at the bottom of a feed. The joke: this app's feeds are finite and end, unlike an infinite scroll, and stopping is fine. Render the reassurance, not the words.",
+    "surface": "footer paragraph",
+    "tone": "playful"
+  },
+  "footer.builtAt": {
+    "desc": "When this build was produced. {{date}} is a preformatted UTC timestamp; 'UTC' is a technical abbreviation.",
+    "surface": "small footer metadata line",
+    "placeholders": {
+      "date": "Preformatted timestamp, already localized. Never translate or reformat."
+    },
+    "dnt": [
+      "{{date}}",
+      "UTC"
+    ]
+  },
+  "footer.buildLog": {
+    "desc": "Link to this build's CI run log. Lowercase on purpose — it sits mid-sentence.",
+    "surface": "footer metadata link",
+    "max": 14
+  },
+  "localePicker.label": {
+    "desc": "Accessible name for the control that changes the language of the app's interface. Not the language of posts — that is a separate setting.",
+    "surface": "screen-reader label and aria-label on a select",
+    "glossary": [
+      "interface language"
+    ]
+  },
+  "localePicker.auto": {
+    "desc": "The option meaning 'follow whatever language my browser asks for', as opposed to forcing one. Selecting it clears the stored choice.",
+    "surface": "first option in a language select",
+    "max": 24
+  },
+  "flags.proxyAllorigins.label": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyAllorigins.description": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorssh.label": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorssh.description": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorsfix.label": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorsfix.description": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorslol.label": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  },
+  "flags.proxyCorslol.description": {
+    "desc": "The four public CORS proxies are on the chopping block (2026-08-30) — they each failed often enough that they default to off. Do not translate: the strings are due for deletion, and translating them would leave an orphan in every locale. Only the Mawkingbird Plus proxy and a self-hosted proxy stay.",
+    "translate": false
+  }
+}

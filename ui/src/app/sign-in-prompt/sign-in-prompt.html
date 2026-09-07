@@ -1,0 +1,36 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="dismissed.emit()"
+  (keyup.escape)="dismissed.emit()"
+>
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sign-in-prompt-title"
+    appFocusTrap
+    (dismissed)="dismissed.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="sign-in-prompt-title">
+      {{ 'signInPrompt.title' | transloco: { action: action() } }}
+    </h3>
+    <!-- Says what still works without an account. Without this the prompt reads
+         as "you cannot use this app", which is not true and not what we mean. -->
+    <p>{{ 'signInPrompt.body' | transloco }}</p>
+    <div class="sign-in-actions">
+      <button class="btn btn-outline" type="button" (click)="dismissed.emit()">
+        {{ 'signInPrompt.notNow' | transloco }}
+      </button>
+      <a class="btn btn-outline" routerLink="/welcome-back" (click)="leaveAnonymous()">
+        {{ 'signInPrompt.createAccount' | transloco }}
+      </a>
+      <a class="btn" routerLink="/login" (click)="leaveAnonymous()">
+        {{ 'signInPrompt.signIn' | transloco }}
+      </a>
+    </div>
+  </div>
+</div>

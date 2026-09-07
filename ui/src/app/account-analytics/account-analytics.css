@@ -1,0 +1,426 @@
+.sample-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+}
+
+.load-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.load-more-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.load-more-btn:hover {
+  background: var(--hover);
+}
+
+.live-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.live-pill {
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.live-active {
+  background: #1f9d55;
+}
+
+.live-slowing {
+  background: #c98a00;
+}
+
+.live-dormant {
+  background: #9aa0a6;
+}
+
+.live-detail {
+  font-size: 13px;
+}
+
+.trend {
+  font-size: 13px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.trend.up {
+  color: #1f9d55;
+}
+
+.trend.down {
+  color: #d1425c;
+}
+
+.chart-title {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 72px;
+}
+
+.bars.labelled {
+  height: 92px;
+}
+
+.bar-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  transition: height 0.2s ease;
+}
+
+.bar-label {
+  margin-top: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lang-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.lang-name {
+  flex: 0 0 96px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lang-bar-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--hover);
+  overflow: hidden;
+}
+
+.lang-bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.lang-pct {
+  flex: 0 0 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.tile-label {
+  font-size: 12.5px;
+}
+
+.tile-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+/* The unit or the raw count under a headline number. Its own line, so tiles in
+   a row keep their big numbers aligned regardless of which have a subtitle. */
+.tile-sub {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.fan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+}
+
+.fan:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.fan-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.fan-name {
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  min-width: 0;
+}
+
+.fan-name small {
+  font-weight: 400;
+}
+
+.fan-count {
+  margin-left: auto;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.top-post {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.rank {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+.top-post-card {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* --- Posting calendar ("the lawn") --- */
+
+/* The grid is sized by its week count, so a wide sample scrolls sideways
+   rather than squashing the squares into unreadable slivers. */
+.lawn-scroll {
+  overflow-x: auto;
+  padding: 4px 0 2px;
+}
+
+.lawn {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: min-content;
+}
+
+.lawn-months {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 14px;
+  height: 14px;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.lawn-month {
+  grid-row: 1;
+  white-space: nowrap;
+}
+
+.lawn-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.lawn-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lawn-day {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--hover);
+  flex: none;
+}
+
+/* Four steps of the accent colour; level 0 stays the empty-cell grey. */
+.lawn-day.heat-1 {
+  background: color-mix(in srgb, var(--accent) 28%, var(--col-bg));
+}
+
+.lawn-day.heat-2 {
+  background: color-mix(in srgb, var(--accent) 52%, var(--col-bg));
+}
+
+.lawn-day.heat-3 {
+  background: color-mix(in srgb, var(--accent) 76%, var(--col-bg));
+}
+
+.lawn-day.heat-4 {
+  background: var(--accent);
+}
+
+.lawn-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 11.5px;
+}
+
+.lawn-peak {
+  margin-left: auto;
+}
+
+/* --- Counted top-N lists (partners, hashtags, link domains) --- */
+
+/* Numbered semantically (an <ol> — these are ranked) but the markers are
+   suppressed: the counts on the right already carry the ordering, and digits
+   plus counts on one row reads as two competing numbers. */
+.counted {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.counted-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.counted-row:last-child {
+  border-bottom: none;
+}
+
+.counted-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.counted-label {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a.counted-label:hover {
+  text-decoration: underline;
+}
+
+.counted-count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Tags and domains side by side on desktop, stacked once that would squeeze
+   the labels into ellipses. */
+.topic-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .topic-cols {
+    grid-template-columns: 1fr;
+  }
+}

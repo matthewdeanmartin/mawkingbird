@@ -1,0 +1,38 @@
+.mataroa-form {
+  display: grid;
+  gap: 14px;
+  max-width: 620px;
+}
+
+.mataroa-form > label:not(.profile-feed-option, .proxy-consent) {
+  display: grid;
+  gap: 6px;
+}
+
+.mataroa-form input[type='password'],
+.mataroa-form input[type='url'] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-feed-option,
+.proxy-consent,
+.connected-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.profile-feed-option > span {
+  display: grid;
+  gap: 3px;
+}
+
+.connected-row {
+  align-items: center;
+  margin: 18px 0 10px;
+}
+
+.connected-row .btn {
+  margin-left: auto;
+}

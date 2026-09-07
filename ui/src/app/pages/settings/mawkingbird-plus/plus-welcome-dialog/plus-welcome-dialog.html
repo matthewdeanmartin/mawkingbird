@@ -1,0 +1,60 @@
+<!--
+  No backdrop button, no close X, and no Escape handler — unlike every other
+  dialog in this app. That is the point: Save is the only way out, which is what
+  makes it a click-wrap. A plain div, because a backdrop the user can click is
+  exactly the affordance being withheld.
+-->
+<div class="pw-backdrop"></div>
+<section
+  class="pw-dialog"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="pw-title"
+  aria-describedby="pw-intro"
+>
+  <h2 id="pw-title">{{ 'settings.plus.welcome.title' | transloco }}</h2>
+  <p id="pw-intro" class="pw-intro">
+    {{ 'settings.plus.welcome.intro' | transloco }}
+  </p>
+
+  <ul class="pw-list">
+    @for (row of rows(); track row.feature) {
+      <li class="pw-row">
+        <label class="pw-toggle">
+          <input
+            type="checkbox"
+            [checked]="row.on"
+            (change)="toggle(row.feature, $any($event.target).checked)"
+          />
+          <span class="pw-label">
+            <span class="pw-name">{{ row.label }}</span>
+            <span class="pw-detail">{{ row.detail }}</span>
+          </span>
+        </label>
+      </li>
+    }
+
+    <!--
+      Shown disabled rather than omitted: a greyed-out "API key sync" answers
+      "are my API keys being synced?" with a plain no, which a missing row does
+      not.
+    -->
+    @for (row of plannedRows(); track row.feature) {
+      <li class="pw-row pw-row-planned">
+        <label class="pw-toggle">
+          <input type="checkbox" disabled [checked]="false" />
+          <span class="pw-label">
+            <span class="pw-name">{{ row.label }}</span>
+            <span class="pw-detail">{{ row.detail }}</span>
+          </span>
+        </label>
+      </li>
+    }
+  </ul>
+
+  <div class="pw-actions">
+    <button class="btn" type="button" (click)="save()">
+      {{ 'settings.plus.welcome.save' | transloco }}
+    </button>
+  </div>
+</section>

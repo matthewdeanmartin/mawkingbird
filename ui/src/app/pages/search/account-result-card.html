@@ -1,0 +1,187 @@
+@let a = account();
+
+<!--
+  The whole card opens the profile; see onCardClick for why it is a decline-list
+  rather than a wrapper link. No role or tabindex: the display-name link inside
+  is the same destination with the same name, already in the tab order, so
+  announcing the card as one more control would add noise, not access.
+-->
+<div
+  class="acct-card"
+  [class.expanded]="expanded()"
+  tabindex="-1"
+  (mousedown)="onCardMouseDown()"
+  (click)="onCardClick($event)"
+  (keydown)="onCardKeydown($event)"
+>
+  <div class="acct-main">
+    <a
+      class="acct-avatar-link"
+      [routerLink]="profileLink()"
+      [attr.aria-label]="a.display_name || a.username"
+    >
+      <img
+        class="avatar"
+        [src]="a.avatar_static || a.avatar"
+        [alt]="a.username"
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+
+    <div class="acct-body">
+      <div class="acct-headline">
+        <a class="acct-name" [routerLink]="profileLink()">
+          <strong>{{ a.display_name || a.username }}</strong>
+          <app-verified-badge [account]="a" />
+        </a>
+        <span class="muted acct-handle">&#64;{{ a.acct }}</span>
+
+        @if (a.bot) {
+          <span class="badge-pill" [title]="'pages.search.card.automatedAccount' | transloco">{{
+            'pages.search.card.bot' | transloco
+          }}</span>
+        }
+        @if (a.locked) {
+          <span class="badge-pill" [title]="'pages.search.card.requiresFollowApproval' | transloco"
+            >🔒</span
+          >
+        }
+        @if (followedBy() && !mutual()) {
+          <span class="badge-pill soft" [title]="'pages.search.card.followsYou' | transloco">{{
+            'pages.search.card.followsYou' | transloco
+          }}</span>
+        }
+      </div>
+
+      @if (reason(); as why) {
+        <div class="acct-reason small">
+          <span class="muted">{{ 'pages.search.card.whySeeingThis' | transloco }}</span>
+          @if (reasonLink(); as link) {
+            <a [routerLink]="link">{{ why }}</a>
+          } @else {
+            <span>{{ why }}</span>
+          }
+        </div>
+      }
+
+      @if (a.note) {
+        <div class="acct-bio" appRenderedHtmlLinks [innerHTML]="a.note"></div>
+      }
+
+      <div class="acct-stats muted small">
+        @let postsCount = a.statuses_count | humanCount;
+        @let followingCount = a.following_count | humanCount;
+        @let followersCount = a.followers_count | humanCount;
+        <span
+          [title]="words().Posts"
+          [innerHTML]="'pages.search.card.postsCount' | transloco: { count: postsCount }"
+        ></span>
+        <span
+          [title]="'pages.search.card.following' | transloco"
+          [innerHTML]="'pages.search.card.followingCount' | transloco: { count: followingCount }"
+        ></span>
+        <span
+          [title]="'pages.search.card.followers' | transloco"
+          [innerHTML]="'pages.search.card.followersCount' | transloco: { count: followersCount }"
+        ></span>
+        @if (lastPosted(); as last) {
+          <span
+            class="acct-activity"
+            [class.stale]="last.stale"
+            [title]="
+              'pages.search.card.lastPostedTitle'
+                | transloco: { date: a.last_status_at || ('pages.search.card.never' | transloco) }
+            "
+            >{{ last.labelKey | transloco: last.labelParams }}</span
+          >
+        } @else if (activityUnknown()) {
+          <span
+            class="acct-activity unknown"
+            [title]="'pages.search.card.arrivedWithoutDate' | transloco: { post: words().post }"
+            >{{ 'pages.search.card.activityUnknown' | transloco }}</span
+          >
+        }
+      </div>
+
+      @if (a.fields.length) {
+        <dl class="acct-fields">
+          @for (f of a.fields.slice(0, 4); track f.name) {
+            <div class="acct-field" [class.verified]="!!f.verified_at">
+              <dt [innerHTML]="f.name"></dt>
+              <dd [innerHTML]="f.value"></dd>
+            </div>
+          }
+        </dl>
+      }
+    </div>
+
+    <div class="acct-actions">
+      <button
+        class="btn btn-sm follow-btn"
+        [class.following]="isFollowingState()"
+        [class.mutual]="mutual()"
+        [disabled]="followBusy()"
+        (click)="onFollowClick()"
+      >
+        {{ followBusy() ? '…' : (followLabel() | transloco) }}
+      </button>
+      @if (showModerationMenu()) {
+        <details class="acct-danger-menu">
+          <summary
+            class="btn btn-outline btn-sm"
+            [attr.aria-label]="'pages.search.card.moreAccountActions' | transloco"
+          >
+            •••
+          </summary>
+          <div class="acct-danger-panel">
+            <div class="menu-note muted small">{{ 'pages.search.card.muteFor' | transloco }}</div>
+            @for (duration of muteDurations; track duration.label) {
+              <button
+                type="button"
+                (click)="muteAccount.emit({ account: a, seconds: duration.seconds })"
+              >
+                {{ duration.label | transloco }}
+              </button>
+            }
+            <button class="danger-action" type="button" (click)="blockAccount.emit(a)">
+              {{ 'pages.search.card.blockAccount' | transloco }}
+            </button>
+          </div>
+        </details>
+      }
+    </div>
+  </div>
+
+  <!-- Topic mode: the posts that made this account surface. Zero API cost —
+       they came back with the search — so they show inline, not behind expand. -->
+  @if (matchingPosts().length) {
+    <div class="acct-matches">
+      <div class="acct-matches-head muted small">
+        {{ 'pages.search.card.matchedOn' | transloco }}
+      </div>
+      @for (s of inlinePosts(); track s.id) {
+        <app-status-card [status]="s" />
+      }
+      @if (extraPostCount()) {
+        <button class="acct-more-posts muted small" (click)="toggleExpand.emit()">
+          @if (expanded()) {
+            {{ 'pages.search.card.showFewerPosts' | transloco }}
+          } @else {
+            {{
+              (extraPostCount() === 1
+                ? 'pages.search.card.moreMatchingPost.one'
+                : 'pages.search.card.moreMatchingPost.other'
+              ) | transloco: { count: extraPostCount() }
+            }}
+          }
+        </button>
+      }
+      @if (expanded()) {
+        @for (s of matchingPosts().slice(inlinePosts().length); track s.id) {
+          <app-status-card [status]="s" />
+        }
+      }
+    </div>
+  }
+</div>

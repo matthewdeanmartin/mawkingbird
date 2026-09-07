@@ -1,0 +1,31 @@
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A rel=me verified link: green outline on the row plus an explicit badge. */
+.meta-row.meta-verified input {
+  border-color: #00ba7c;
+}
+
+.meta-verified-badge {
+  color: #00ba7c;
+  font-weight: 700;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.meta-row input {
+  flex: 1;
+  max-width: none;
+}
+
+.add-field {
+  align-self: flex-start;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}

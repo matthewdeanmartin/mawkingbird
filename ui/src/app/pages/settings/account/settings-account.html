@@ -1,0 +1,109 @@
+<div class="spage-head">
+  <h1>{{ 'settings.account.title' | transloco }}</h1>
+  <p>{{ 'settings.account.intro' | transloco }}</p>
+</div>
+
+<form class="spage-body" (ngSubmit)="changePassword()">
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.account.username' | transloco }}</span>
+      <div class="scontrol">
+        <strong>&#64;{{ acct() }}</strong>
+        <span class="hint">{{ 'settings.account.username.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  @if (isMock) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.currentPassword' | transloco }}</span>
+        <div class="scontrol">
+          <input
+            type="password"
+            autocomplete="current-password"
+            [ngModel]="currentPassword()"
+            (ngModelChange)="currentPassword.set($event)"
+            name="current_password"
+          />
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.newPassword' | transloco }}</span>
+        <div class="scontrol">
+          <input
+            type="password"
+            autocomplete="new-password"
+            [ngModel]="newPassword()"
+            (ngModelChange)="newPassword.set($event)"
+            name="new_password"
+          />
+        </div>
+      </div>
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.confirmPassword' | transloco }}</span>
+        <div class="scontrol">
+          <input
+            type="password"
+            autocomplete="new-password"
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+            name="confirm_password"
+          />
+          @if (passwordError()) {
+            <span class="hint error">{{ passwordError() }}</span>
+          }
+          <span class="hint">{{ 'settings.account.mockNote' | transloco }}</span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.password' | transloco }}</span>
+        <div class="scontrol">
+          <span class="hint">{{ 'settings.account.password.hint' | transloco }}</span>
+          <a [href]="passwordChangeUrl" target="_blank" rel="noopener noreferrer">
+            {{ 'settings.account.password.link' | transloco: { host: instanceHost } }}
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isMock) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.sessions' | transloco }}</span>
+        <div class="scontrol">
+          <span class="hint">{{ 'settings.account.sessions.mock' | transloco }}</span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.account.sessions' | transloco }}</span>
+        <div class="scontrol">
+          <span class="hint">{{ 'settings.account.sessions.hint' | transloco }}</span>
+          <a [href]="passwordChangeUrl" target="_blank" rel="noopener noreferrer">
+            {{ 'settings.account.sessions.link' | transloco: { host: instanceHost } }}
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isMock) {
+    <div class="sactions">
+      @if (saved()) {
+        <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+      }
+      <button class="btn" type="submit" [disabled]="saving()">
+        {{ 'settings.account.changePassword' | transloco }}
+      </button>
+    </div>
+  }
+</form>

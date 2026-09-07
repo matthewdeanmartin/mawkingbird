@@ -1,0 +1,261 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.linkShortener.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.linkShortener.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<p class="credential-warning small">
+  {{ 'settings.connections.linkShortener.credentialWarning' | transloco }}
+</p>
+
+<section class="picker">
+  <h2 class="section-title">
+    {{ 'settings.connections.linkShortener.servicesHeading' | transloco }}
+  </h2>
+  <ul class="provider-list">
+    @for (item of catalog; track item.id) {
+      <li>
+        <button
+          class="provider"
+          type="button"
+          [class.chosen]="selected() === item.id"
+          (click)="choose(item.id)"
+        >
+          <span class="provider-emoji" aria-hidden="true">{{ item.emoji }}</span>
+          <span class="provider-text">
+            <span class="provider-name">
+              {{ item.label }}
+              @if (isActive(item.id)) {
+                <span class="pill pill-active">{{
+                  'settings.connections.linkShortener.activePill' | transloco
+                }}</span>
+              } @else if (connected(item.id)) {
+                <span class="pill">{{
+                  'settings.connections.linkShortener.connectedPill' | transloco
+                }}</span>
+              }
+            </span>
+            <span class="provider-pitch muted small">{{ item.pitch }}</span>
+            <span class="provider-tier muted small">{{ item.freeTier }}</span>
+          </span>
+        </button>
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="setup">
+  <h2 class="section-title">{{ entry().emoji }} {{ entry().label }}</h2>
+
+  <!-- is.gd has no account and no API settings page, so the setup steps would
+       point at nothing. Its explanation is the paragraph below instead. -->
+  @if (entry().keyPolicy !== 'none') {
+    <ol class="setup-steps muted small">
+      <li>
+        {{ 'settings.connections.linkShortener.signInToBefore' | transloco }}
+        <a [href]="entry().homepage" target="_blank" rel="noopener noreferrer">{{
+          entry().label
+        }}</a>
+        {{ 'settings.connections.linkShortener.signInToAnd' | transloco }}
+        <a [href]="entry().keyUrl" target="_blank" rel="noopener noreferrer">{{
+          'settings.connections.linkShortener.apiSettingsLink' | transloco
+        }}</a
+        >.
+      </li>
+      <li>
+        {{
+          'settings.connections.linkShortener.createKey' | transloco: { keyLabel: entry().keyLabel }
+        }}
+      </li>
+      @if (entry().domainRequired) {
+        <li>
+          {{
+            'settings.connections.linkShortener.domainNeeded' | transloco: { label: entry().label }
+          }}
+        </li>
+      }
+      <li>{{ 'settings.connections.linkShortener.pasteBelow' | transloco }}</li>
+    </ol>
+  }
+
+  @if (entry().keyPolicy === 'none') {
+    <p class="muted small">
+      {{
+        'settings.connections.linkShortener.noAccountNeeded' | transloco: { label: entry().label }
+      }}
+    </p>
+  } @else if (entry().keyPolicy === 'optional') {
+    <p class="muted small">
+      {{
+        'settings.connections.linkShortener.worksWithNoSetup' | transloco: { label: entry().label }
+      }}
+      {{ entry().keyBenefit }}
+    </p>
+  }
+
+  @if (connected(entry().id)) {
+    <div class="conn-actions">
+      <span class="connection-ok">
+        {{
+          (settings.hasKey(entry().id)
+            ? 'settings.connections.linkShortener.keySaved'
+            : 'settings.connections.linkShortener.readyNoAccount'
+          ) | transloco
+        }}
+      </span>
+      @if (settings.hasKey(entry().id) || where(entry().id) === 'locked') {
+        <app-storage-badge [where]="where(entry().id)" />
+      }
+      @if (!isActive(entry().id)) {
+        <button class="btn btn-outline" type="button" (click)="activate(entry().id)">
+          {{ 'settings.connections.linkShortener.makeActive' | transloco }}
+        </button>
+      }
+      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="test()">
+        {{
+          (busy()
+            ? 'settings.connections.linkShortener.testing'
+            : 'settings.connections.linkShortener.testAgain'
+          ) | transloco
+        }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="forget(entry().id)">
+        {{ 'settings.connections.linkShortener.disconnect' | transloco }}
+      </button>
+    </div>
+    <!-- The reachability verdict. Deliberately says only what was observed: a
+         browser cannot tell CORS from DNS from offline, so no cause is claimed. -->
+    @if (lastProbe(); as probe) {
+      @if (probe.status === 'needs-proxy') {
+        <p class="muted small">
+          {{ probe.message }}
+          <a routerLink="/settings/connections/cors-proxy">{{
+            'settings.connections.linkShortener.setUpProxyLink' | transloco
+          }}</a>
+        </p>
+      } @else {
+        <p class="muted small">{{ probe.message }}</p>
+      }
+    }
+    @if (settings.hasKey(entry().id) && expiryLabel(settings.expiresAt()); as expiry) {
+      <p class="muted small">
+        {{ 'settings.connections.linkShortener.keyDeletedOn' | transloco: { date: expiry } }}
+      </p>
+    }
+    @if (hasConsent(entry().id) && proxyEntry(); as proxy) {
+      <p class="muted small consent-note">
+        {{ 'settings.connections.linkShortener.consentBefore' | transloco }}
+        <strong>{{ proxy.label }}</strong>
+        {{ 'settings.connections.linkShortener.consentAfter' | transloco }}
+        <button class="linkish" type="button" (click)="revokeConsent(entry().id)">
+          {{ 'settings.connections.linkShortener.withdraw' | transloco }}
+        </button>
+      </p>
+    }
+  }
+
+  <form class="shortener-form" (ngSubmit)="save()">
+    <!-- is.gd has one fixed domain and no workspaces; the field would do nothing. -->
+    @if (entry().domainHint) {
+      <label class="field">
+        <span class="field-label">
+          {{
+            (entry().id === 'rebrandly'
+              ? 'settings.connections.linkShortener.workspaceLabel'
+              : 'settings.connections.linkShortener.shortDomainLabel'
+            ) | transloco
+          }}
+          @if (!entry().domainRequired) {
+            <span class="muted small">{{
+              'settings.connections.linkShortener.optional' | transloco
+            }}</span>
+          }
+        </span>
+        <input
+          type="text"
+          name="shortenerDomain"
+          autocomplete="off"
+          [placeholder]="
+            (entry().id === 'rebrandly'
+              ? 'settings.connections.linkShortener.workspaceIdPlaceholder'
+              : 'settings.connections.linkShortener.shortDomainPlaceholder'
+            ) | transloco
+          "
+          [ngModel]="domainDraft()"
+          (ngModelChange)="domainDraft.set($event)"
+        />
+        <span class="muted small">{{ entry().domainHint }}</span>
+      </label>
+    }
+
+    @if (entry().keyPolicy !== 'none') {
+      <label class="field">
+        <span class="field-label">
+          {{ entry().keyLabel }}
+          @if (entry().keyPolicy === 'optional') {
+            <span class="muted small">{{
+              'settings.connections.linkShortener.optional' | transloco
+            }}</span>
+          }
+        </span>
+        <input
+          type="password"
+          name="shortenerKey"
+          autocomplete="off"
+          [placeholder]="
+            'settings.connections.linkShortener.keyPlaceholder'
+              | transloco: { label: entry().label, keyLabel: entry().keyLabel }
+          "
+          [ngModel]="keyDraft()"
+          (ngModelChange)="keyDraft.set($event)"
+        />
+        @if (entry().keyBenefit) {
+          <span class="muted small">{{ entry().keyBenefit }}</span>
+        }
+      </label>
+    }
+
+    <button class="btn" type="submit" [disabled]="busy() || !canSubmit()">
+      @if (busy()) {
+        {{ 'settings.connections.linkShortener.testing' | transloco }}
+      } @else if (entry().keyPolicy === 'required') {
+        {{ 'settings.connections.linkShortener.saveAndTest' | transloco }}
+      } @else {
+        {{ 'settings.connections.linkShortener.use' | transloco: { label: entry().label } }}
+      }
+    </button>
+  </form>
+
+  <p class="muted small">
+    {{
+      'settings.connections.linkShortener.readPrivacyBefore' | transloco: { label: entry().label }
+    }}
+    <a [href]="entry().privacyUrl" target="_blank" rel="noopener noreferrer">{{
+      'settings.connections.linkShortener.privacyPolicyLink' | transloco
+    }}</a>
+    {{ 'settings.connections.linkShortener.readPrivacyAfter' | transloco }}
+  </p>
+</section>
+
+@if (notice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (error(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}
+
+@if (consentPrompt(); as prompt) {
+  <app-proxy-consent-dialog
+    [shortener]="prompt.shortener"
+    [proxy]="prompt.proxy"
+    [carriesCredential]="prompt.carriesCredential"
+    (accepted)="acceptConsent()"
+    (cancelled)="declineConsent()"
+  />
+}

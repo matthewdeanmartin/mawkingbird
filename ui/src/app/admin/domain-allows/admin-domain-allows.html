@@ -1,0 +1,27 @@
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="newDomain()"
+    (ngModelChange)="newDomain.set($event)"
+    (keyup.enter)="add()"
+    [placeholder]="'adminDomainAllows.placeholder' | transloco"
+  />
+  <button class="btn" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
+    {{ 'adminDomainAllows.allow' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminDomainAllows.loading' | transloco }}</p>
+} @else if (!allows().length) {
+  <p class="muted center">{{ 'adminDomainAllows.empty' | transloco }}</p>
+} @else {
+  @for (a of allows(); track a.id) {
+    <div class="block-row">
+      <strong>{{ a.domain }}</strong>
+      <button class="op warn" (click)="remove(a)">
+        {{ 'adminDomainAllows.remove' | transloco }}
+      </button>
+    </div>
+  }
+}

@@ -1,0 +1,263 @@
+<div class="overlay" role="presentation" tabindex="-1" (click)="close()" (keyup.escape)="close()">
+  <div
+    class="dialog friend-feeds-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="friend-feeds-title"
+    appFocusTrap
+    (dismissed)="close()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="friend-feeds-title">{{ 'friendFeeds.title' | transloco }}</h3>
+
+    @if (!supporter.isSupporter()) {
+      <!-- The upsell, not a locked door: someone who cannot use this should
+           still learn what it does, because that is what makes it worth
+           paying for. -->
+      <p class="lead">{{ 'friendFeeds.lead' | transloco }}</p>
+      <div class="plus-gate">
+        <strong>{{ 'friendFeeds.plusTitle' | transloco }}</strong>
+        <p class="muted small">{{ 'friendFeeds.plusWhy' | transloco }}</p>
+        <a class="btn" routerLink="/plans" (click)="forceClose()">
+          {{ 'friendFeeds.plusSeePlans' | transloco }}
+        </a>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-outline" type="button" (click)="forceClose()">
+          {{ 'friendFeeds.close' | transloco }}
+        </button>
+      </div>
+    } @else if (asking()) {
+      <p class="lead">{{ 'friendFeeds.lead' | transloco }}</p>
+
+      @if (!signedIn()) {
+        <p class="muted small">{{ 'friendFeeds.signedOut' | transloco }}</p>
+      } @else if (!available()) {
+        <p class="muted small">{{ 'friendFeeds.noProxy' | transloco }}</p>
+      } @else {
+        <label class="budget">
+          <span>{{ 'friendFeeds.budgetLabel' | transloco }}</span>
+          <select [value]="cap()" (change)="setCap($any($event.target).value)">
+            @for (option of caps; track option) {
+              <option [value]="option">
+                {{ 'friendFeeds.budgetSites' | transloco: { count: option } }}
+              </option>
+            }
+          </select>
+        </label>
+        <!-- The only place the cost is named before it is spent. -->
+        <p class="muted small" [innerHTML]="'friendFeeds.cost' | transloco: { count: cap() }"></p>
+      }
+
+      <div class="dialog-actions">
+        <button class="btn btn-outline" type="button" (click)="forceClose()">
+          {{ 'friendFeeds.cancel' | transloco }}
+        </button>
+        <button
+          class="btn"
+          type="button"
+          [disabled]="!signedIn() || !available()"
+          (click)="start()"
+        >
+          {{ 'friendFeeds.start' | transloco }}
+        </button>
+      </div>
+    } @else if (running()) {
+      @if (progress(); as p) {
+        <p class="lead">
+          @if (p.phase === 'walking') {
+            {{ 'friendFeeds.walking' | transloco }}
+          } @else {
+            {{
+              'friendFeeds.probing'
+                | transloco: { done: p.probed, total: p.probeTarget, found: p.found }
+            }}
+          }
+        </p>
+
+        <div
+          class="bar-track"
+          role="progressbar"
+          [attr.aria-valuenow]="((percent() ?? 0) * 100).toFixed(0)"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div class="bar-fill" [style.width.%]="(percent() ?? 0) * 100"></div>
+        </div>
+
+        @if (p.phase === 'walking') {
+          <!-- The count alone was the whole problem: "2,938 accounts read" with
+               no total and no found-count looks identical to a hang. -->
+          <p class="muted small">
+            @if (p.accountsTotal > 0) {
+              {{
+                'friendFeeds.walkingCount'
+                  | transloco
+                    : {
+                        count: p.accountsWalked,
+                        total: p.accountsTotal,
+                        links: p.linksFound,
+                      }
+              }}
+            } @else {
+              {{
+                'friendFeeds.walkingCountUnknown'
+                  | transloco: { count: p.accountsWalked, links: p.linksFound }
+              }}
+            }
+          </p>
+          <p class="muted small">{{ 'friendFeeds.walkingSlow' | transloco }}</p>
+        }
+        <!-- Five seconds of a still progress bar reads as a hang unless the
+             pause is named. -->
+        @if (p.waitingOnRateLimit) {
+          <p class="muted small">{{ 'friendFeeds.rateLimited' | transloco }}</p>
+        }
+        <!-- What the cache saved, stated while it is being saved: this is the
+             number that makes a second run feel different from the first. -->
+        @if (p.fromCache > 0) {
+          <p class="muted small">
+            {{
+              (p.fromCache === 1 ? 'friendFeeds.reusedOne' : 'friendFeeds.reusedOther')
+                | transloco: { count: p.fromCache }
+            }}
+          </p>
+        }
+
+        <p class="muted small">{{ 'friendFeeds.runningHint' | transloco }}</p>
+
+        <div class="dialog-actions">
+          <button class="btn btn-outline" type="button" (click)="stop()">
+            {{ 'friendFeeds.stop' | transloco }}
+          </button>
+        </div>
+      }
+    } @else if (failed()) {
+      <p class="error-text">{{ 'friendFeeds.failed' | transloco }}</p>
+      <div class="dialog-actions">
+        <button class="btn btn-outline" type="button" (click)="forceClose()">
+          {{ 'friendFeeds.close' | transloco }}
+        </button>
+        <button class="btn" type="button" (click)="rescan()">
+          {{ 'friendFeeds.rescan' | transloco }}
+        </button>
+      </div>
+    } @else if (result(); as r) {
+      @if (r.feeds.length === 0) {
+        <!-- Nothing found is a real answer, and it is one line. Listing the
+             friends who had no links would be hundreds of rows saying nothing. -->
+        <p class="lead">{{ 'friendFeeds.resultNone' | transloco }}</p>
+      } @else {
+        <p class="lead">
+          <span
+            [innerHTML]="
+              (r.feeds.length === 1
+                ? 'friendFeeds.resultCount.one'
+                : 'friendFeeds.resultCount.other'
+              ) | transloco: { count: r.feeds.length }
+            "
+          ></span>
+          <span class="muted"
+            >· {{ 'friendFeeds.checked' | transloco: { count: r.checkedCount } }}</span
+          >
+        </p>
+
+        @if (r.partial) {
+          <p class="muted small">{{ 'friendFeeds.partial' | transloco }}</p>
+        }
+
+        <ul class="feed-list">
+          @for (feed of r.feeds; track feed.url) {
+            <li class="feed-row">
+              <div class="feed-copy">
+                <span class="feed-title">{{ feed.title }}</span>
+                <span class="muted small">
+                  {{ 'friendFeeds.via' | transloco: { handle: feed.via } }}
+                </span>
+              </div>
+              @if (isFollowing(feed)) {
+                <span class="muted small feed-followed">
+                  {{ 'friendFeeds.following' | transloco }}
+                </span>
+              } @else {
+                <button
+                  class="btn btn-small"
+                  type="button"
+                  [disabled]="busy() === feed.url || followingAll()"
+                  (click)="follow(feed)"
+                >
+                  {{
+                    (busy() === feed.url ? 'friendFeeds.checking' : 'friendFeeds.follow')
+                      | transloco
+                  }}
+                </button>
+              }
+            </li>
+          }
+        </ul>
+
+        @if (addError(); as message) {
+          <p class="error-text small">{{ message }}</p>
+        }
+        @if (capOverflow(); as over) {
+          <!-- Raising the cap belongs here, not on another page: this is the
+               moment the number is proven wrong, and sending the reader away
+               would lose this screen and its results. -->
+          <p class="error-text small">
+            {{
+              'friendFeeds.capReached'
+                | transloco: { added: over.added, left: over.left, limit: over.limit }
+            }}
+          </p>
+          <button
+            class="btn btn-small"
+            type="button"
+            [disabled]="followingAll()"
+            (click)="raiseLimitAndContinue()"
+          >
+            {{ 'friendFeeds.raiseLimit' | transloco: { limit: limitNeeded() } }}
+          </button>
+        }
+        @if (limitRaisedTo(); as raised) {
+          <p class="muted small">
+            {{ 'friendFeeds.limitRaised' | transloco: { limit: raised } }}
+          </p>
+        }
+        @if (followFailures() > 0) {
+          <p class="muted small">
+            {{ 'friendFeeds.followFailed' | transloco: { count: followFailures() } }}
+          </p>
+        }
+      }
+
+      <p class="muted small">
+        {{ 'friendFeeds.generatedAt' | transloco: { when: r.generatedAt | date: 'medium' } }}
+      </p>
+
+      <div class="dialog-actions">
+        <button class="btn btn-outline" type="button" (click)="forceClose()">
+          {{ 'friendFeeds.close' | transloco }}
+        </button>
+        <button class="btn btn-outline" type="button" (click)="rescan()">
+          {{ 'friendFeeds.rescan' | transloco }}
+        </button>
+        @if (r.feeds.length > 0) {
+          <button class="btn btn-outline" type="button" (click)="download()">
+            {{ 'friendFeeds.download' | transloco }}
+          </button>
+          <button class="btn" type="button" [disabled]="followingAll()" (click)="followAll()">
+            @if (followingAll()) {
+              {{
+                'friendFeeds.followingAll'
+                  | transloco: { done: followProgress().done, total: followProgress().total }
+              }}
+            } @else {
+              {{ 'friendFeeds.followAll' | transloco }}
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

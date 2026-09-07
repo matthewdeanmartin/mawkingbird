@@ -1,0 +1,78 @@
+.add-block {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.add-block input {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.add-block select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 8px;
+}
+
+.block-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sev {
+  font-size: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 1px 8px;
+  margin: 0 8px;
+}
+
+.mono {
+  font-family: monospace;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.op {
+  border: 1px solid var(--border);
+  background: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.op.warn {
+  border: 1px solid #f3c0cf;
+  color: #e0245e;
+}
+
+.op.warn:hover {
+  background: #fdecf1;
+}
+
+.test-result {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.intro {
+  padding: 12px 16px 0;
+}

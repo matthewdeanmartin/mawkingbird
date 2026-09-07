@@ -1,0 +1,109 @@
+/* Same grid as the other blog connectors, but with five fields rather than two:
+   the repo coordinates are the connection here, not just a credential. */
+.hugo-form {
+  display: grid;
+  gap: 14px;
+  max-width: 620px;
+}
+
+.hugo-form > label:not(.profile-feed-option) {
+  display: grid;
+  gap: 6px;
+}
+
+.hugo-form input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-feed-option,
+.connected-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.profile-feed-option > span {
+  display: grid;
+  gap: 3px;
+}
+
+.connected-row {
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 18px 0 10px;
+}
+
+.connected-row .btn {
+  margin-left: auto;
+}
+
+.posts-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 22px 0 8px;
+}
+
+.posts-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.posts-head .btn {
+  margin-left: auto;
+}
+
+.hugo-posts {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.hugo-post {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+}
+
+.hugo-post + .hugo-post {
+  border-top: 1px solid var(--border);
+}
+
+.hugo-post-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hugo-post-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.hugo-post .btn {
+  margin-left: auto;
+  flex: none;
+}
+
+.section-head {
+  margin: 22px 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.feed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}

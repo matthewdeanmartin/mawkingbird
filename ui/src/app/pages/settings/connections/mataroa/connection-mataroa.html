@@ -1,0 +1,144 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.mataroa.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.mataroa.introBefore' | transloco }}
+    <a [routerLink]="['/settings/connections/blogger']">{{
+      'settings.connections.mataroa.bloggerLink' | transloco
+    }}</a>
+    {{ 'settings.connections.mataroa.introAfter' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<ol class="setup-steps muted small">
+  <li>{{ 'settings.connections.mataroa.step1' | transloco }}</li>
+  <li>
+    <a [routerLink]="['/settings/connections/cors-proxy']">{{
+      'settings.connections.mataroa.setUpProxyLink' | transloco
+    }}</a>
+    {{ 'settings.connections.mataroa.setUpProxyAfter' | transloco }}
+  </li>
+  <li>{{ 'settings.connections.mataroa.step3' | transloco }}</li>
+</ol>
+
+<p class="credential-warning small">
+  {{ 'settings.connections.mataroa.credentialWarning' | transloco }}
+</p>
+
+@if (settings.connected()) {
+  <div class="connected-row">
+    <span class="connection-ok">{{ 'settings.connections.mataroa.connected' | transloco }}</span>
+    <app-storage-badge [where]="where()" />
+    <a [href]="settings.blogUrl()" target="_blank" rel="noopener noreferrer">{{
+      'settings.connections.mataroa.viewBlog' | transloco
+    }}</a>
+    <button class="btn btn-outline" type="button" (click)="disconnect()">
+      {{ 'settings.connections.mataroa.disconnect' | transloco }}
+    </button>
+  </div>
+  @if (expiryLabel(settings.expiresAt()); as expiry) {
+    <p class="muted small">
+      @if (where() === 'local') {
+        {{ 'settings.connections.mataroa.keyDeletedOn' | transloco: { date: expiry } }}
+      } @else {
+        {{ 'settings.connections.mataroa.keyClearedOn' | transloco: { date: expiry } }}
+      }
+    </p>
+  }
+  <label class="profile-feed-option">
+    <input
+      type="checkbox"
+      [ngModel]="settings.includeInProfile()"
+      (ngModelChange)="setProfileFeed($event)"
+    />
+    <span>
+      <strong>{{ 'settings.connections.mataroa.includeRssLabel' | transloco }}</strong>
+      <span class="muted small">{{
+        'settings.connections.mataroa.includeRssNote' | transloco
+      }}</span>
+    </span>
+  </label>
+} @else {
+  <form class="mataroa-form" (ngSubmit)="connect()">
+    <label>
+      <span>{{ 'settings.connections.mataroa.apiKeyLabel' | transloco }}</span>
+      <input
+        type="password"
+        name="apiKey"
+        autocomplete="off"
+        [placeholder]="'settings.connections.mataroa.apiKeyPlaceholder' | transloco"
+        [ngModel]="apiKey()"
+        (ngModelChange)="apiKey.set($event)"
+      />
+    </label>
+    <label>
+      <span>{{ 'settings.connections.mataroa.blogUrlLabel' | transloco }}</span>
+      <input
+        type="url"
+        name="blogUrl"
+        [placeholder]="'settings.connections.mataroa.blogUrlPlaceholder' | transloco"
+        [ngModel]="blogUrl()"
+        (ngModelChange)="blogUrl.set($event)"
+      />
+    </label>
+    <label class="profile-feed-option">
+      <input
+        type="checkbox"
+        name="includeInProfile"
+        [ngModel]="includeInProfile()"
+        (ngModelChange)="includeInProfile.set($event)"
+      />
+      <span>{{ 'settings.connections.mataroa.includeRssCheckbox' | transloco }}</span>
+    </label>
+
+    @if (proxyEntry(); as proxy) {
+      @if (proxyReady()) {
+        <label class="proxy-consent">
+          <input
+            type="checkbox"
+            name="understandsProxy"
+            [ngModel]="understandsProxy()"
+            (ngModelChange)="understandsProxy.set($event)"
+          />
+          <span>{{
+            'settings.connections.mataroa.proxyConsent' | transloco: { proxy: proxy.label }
+          }}</span>
+        </label>
+      } @else {
+        <p class="feed-error">
+          {{
+            'settings.connections.mataroa.proxyCannotForward' | transloco: { proxy: proxy.label }
+          }}
+        </p>
+      }
+    } @else {
+      <p class="feed-error">{{ 'settings.connections.mataroa.noProxy' | transloco }}</p>
+    }
+
+    <button
+      class="btn"
+      type="submit"
+      [disabled]="
+        busy() || !apiKey().trim() || !blogUrl().trim() || !proxyReady() || !understandsProxy()
+      "
+    >
+      {{
+        (busy()
+          ? 'settings.connections.mataroa.testing'
+          : 'settings.connections.mataroa.saveAndTest'
+        ) | transloco
+      }}
+    </button>
+  </form>
+}
+
+@if (notice(); as message) {
+  <p class="connection-ok" role="status">{{ message }}</p>
+}
+@if (error(); as message) {
+  <p class="feed-error" role="alert">{{ message }}</p>
+}

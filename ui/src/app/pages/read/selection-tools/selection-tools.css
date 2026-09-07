@@ -1,0 +1,52 @@
+/* The host is a positioning context the layout should not otherwise see: the
+   popover is placed in coordinates relative to the article, so it must not add
+   a box of its own to the flow. */
+:host {
+  display: contents;
+}
+
+/* Anchored to the selection, floating over the text. `absolute` rather than
+   `fixed` so it scrolls with the passage it belongs to — a popover that stayed
+   put while the words moved would be pointing at nothing. The article body is
+   the positioned ancestor. */
+.selection-tools {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  /* Centred on the selection and lifted clear of it, so the popover does not
+     cover the words the reader is looking at. */
+  transform: translate(-50%, calc(-100% - 8px));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 18%);
+}
+
+/* The reader's own control treatment (`read-toolbar.css`), because these are
+   reader controls: no border, small radius, transparent until hovered. The
+   rounded `.btn` pill belongs to actions in the app. */
+.tool {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tool:hover {
+  background: var(--hover);
+}
+
+.tool.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}

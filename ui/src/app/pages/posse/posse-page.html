@@ -1,0 +1,141 @@
+<div class="page-head">{{ 'posse.head' | transloco }}</div>
+
+<p class="page-note">
+  {{ 'posse.note' | transloco }}
+</p>
+
+@if (!settings.connected()) {
+  <p class="page-note">
+    <strong>{{ 'posse.notConnected' | transloco }}</strong>
+    <a [routerLink]="['/settings/connections/hugo']">{{ 'posse.connectOne' | transloco }}</a>
+    {{ 'posse.toPublishThese' | transloco }}
+  </p>
+}
+
+@if (queue.isEmpty()) {
+  <div class="center muted">
+    <p>{{ 'posse.empty' | transloco }}</p>
+    <p class="small">
+      {{ 'posse.emptyHint.a' | transloco }}
+      <a [routerLink]="['/settings/connections/hugo']">{{
+        'posse.emptyHint.recordToggle' | transloco
+      }}</a>
+      {{ 'posse.emptyHint.b' | transloco }}
+    </p>
+  </div>
+} @else {
+  <div class="posse-actions">
+    <span class="posse-count">
+      {{ 'posse.waiting' | transloco: { count: queue.count() } }}
+    </span>
+    <button class="btn" type="button" (click)="publishAll()" [disabled]="!canPublish()">
+      {{ (publishing() ? 'posse.publishing' : 'posse.publishAll') | transloco }}
+    </button>
+  </div>
+
+  <ul class="posse-list">
+    @for (entry of entries(); track entry.id) {
+      <li class="posse-entry">
+        <span class="posse-icon" aria-hidden="true">{{ icon(entry) }}</span>
+        <span class="posse-body">
+          <span class="posse-what">
+            {{ label(entry) }}
+            @if (entry.targetAuthor) {
+              <strong>&#64;{{ entry.targetAuthor }}</strong>
+            }
+          </span>
+          @if (entry.targetExcerpt) {
+            <span class="muted small posse-excerpt">{{ entry.targetExcerpt }}</span>
+          }
+          @if (entry.text) {
+            <span class="posse-reply-text">{{ entry.text }}</span>
+          }
+          <span class="muted small">
+            {{ entry.queuedAt | date: 'medium' }} ·
+            <a [href]="entry.targetUrl" target="_blank" rel="noopener noreferrer">
+              {{ 'posse.original' | transloco }}
+            </a>
+          </span>
+        </span>
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          (click)="remove(entry)"
+          [disabled]="publishing()"
+          [attr.aria-label]="removeLabel(entry)"
+        >
+          {{ 'posse.remove' | transloco }}
+        </button>
+      </li>
+    }
+  </ul>
+}
+
+@if (notice(); as message) {
+  <p class="connection-ok" role="status">{{ message }}</p>
+}
+@if (error(); as message) {
+  <p class="feed-error" role="alert">{{ message }}</p>
+}
+
+@if (building()) {
+  <!-- The gap between commit and deliverable is a real wait, not a hang: a
+       webmention's source URL does not exist until Actions has rebuilt. -->
+  <p class="muted small building-note" role="status">
+    {{ 'posse.building' | transloco }}
+  </p>
+}
+@if (notifying() || deliveries().length) {
+  <div class="delivery-results">
+    <h2 class="section-head">
+      {{ 'posse.notifyHeading' | transloco }}
+      @if (notifying()) {
+        <span class="muted small">{{ 'posse.checking' | transloco }}</span>
+      }
+    </h2>
+    <p class="muted small">
+      {{ 'posse.notifyNote' | transloco }}
+    </p>
+    <ul class="delivery-list">
+      @for (report of deliveries(); track report.targetUrl) {
+        <li class="delivery-row" [class.delivery-sent]="report.state === 'delivered'">
+          <span class="delivery-state">
+            @switch (report.state) {
+              @case ('delivered') {
+                <span class="delivery-tick" aria-hidden="true">✓</span>
+                {{ 'posse.notified' | transloco }}
+              }
+              @case ('no-endpoint') {
+                <span class="muted">{{ 'posse.noEndpoint' | transloco }}</span>
+              }
+              @case ('unsupported') {
+                <span class="muted">{{ 'posse.cantSend' | transloco }}</span>
+              }
+              @default {
+                <span class="delivery-refused">{{ 'posse.refused' | transloco }}</span>
+              }
+            }
+          </span>
+          <span class="delivery-body">
+            @if (report.targetAuthor) {
+              <span class="delivery-who">&#64;{{ report.targetAuthor }}</span>
+            }
+            <span class="muted small">{{ report.message }}</span>
+            <!-- Which endpoint, and for what. Without these a refusal is
+                 unactionable: you cannot check a URL you were never shown. -->
+            <span class="muted small delivery-detail">
+              <a [href]="report.targetUrl" target="_blank" rel="noopener noreferrer">
+                {{ report.targetUrl }}
+              </a>
+            </span>
+            @if (report.endpoint) {
+              <span class="muted small delivery-detail">
+                {{ 'posse.via' | transloco }} <code>{{ report.endpoint }}</code>
+              </span>
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+}

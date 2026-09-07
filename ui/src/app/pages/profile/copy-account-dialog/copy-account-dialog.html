@@ -1,0 +1,328 @@
+<!-- A real button, not a div: clicking away must be reachable by keyboard too.
+     Escape closes as well, via the host listener. -->
+<button
+  class="cf-backdrop"
+  type="button"
+  [aria-label]="'pages.profile.copyAccount.closeAriaLabel' | transloco"
+  (click)="close()"
+></button>
+<section class="cf-dialog" role="dialog" aria-modal="true" aria-labelledby="cf-title">
+  <div class="cf-head">
+    <h2 id="cf-title">
+      {{ 'pages.profile.copyAccount.title' | transloco: { handle: handle() } }}
+    </h2>
+    <button
+      class="icon-close"
+      type="button"
+      [aria-label]="'pages.profile.copyAccount.closeAriaLabel' | transloco"
+      (click)="close()"
+    >
+      ×
+    </button>
+  </div>
+
+  @switch (phase()) {
+    @case ('loading') {
+      <p class="muted" role="status">
+        @if (sourceHost()) {
+          {{
+            'pages.profile.copyAccount.readingFrom'
+              | transloco: { handle: handle(), host: sourceHost() }
+          }}
+        } @else {
+          {{ 'pages.profile.copyAccount.reading' | transloco: { handle: handle() } }}
+        }
+        @if (pages() > 1) {
+          <span class="small">{{
+            'pages.profile.copyAccount.pageOfMax' | transloco: { page: pages(), max: maxPages }
+          }}</span>
+        }
+      </p>
+      <p class="muted small">
+        {{ 'pages.profile.copyAccount.loadingNote' | transloco }}
+      </p>
+    }
+
+    @case ('error') {
+      <p class="cf-error" role="alert">{{ error() }}</p>
+      <div class="cf-actions">
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'pages.profile.copyAccount.close' | transloco }}
+        </button>
+      </div>
+    }
+
+    <!-- hide_collections: the profile advertises follows and the API hands back an
+         empty list. That is a refusal, and calling it "nothing to follow" was the
+         bug — the list exists, we are just not allowed to see it. -->
+    @case ('hidden') {
+      <p class="cf-summary" role="status">
+        {{ 'pages.profile.copyAccount.doesntShareFollows' | transloco: { handle: handle() } }}
+      </p>
+      <p class="muted small">
+        {{
+          'pages.profile.copyAccount.hiddenExplain'
+            | transloco
+              : {
+                  count: account().following_count,
+                  host: sourceHost() || ('pages.profile.copyAccount.theirServer' | transloco),
+                }
+        }}
+      </p>
+      <div class="cf-actions">
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'pages.profile.copyAccount.close' | transloco }}
+        </button>
+      </div>
+    }
+
+    @case ('confirm') {
+      @if (selection(); as sel) {
+        <p class="cf-summary">{{ summary() }}</p>
+
+        <!-- Which server answered is load-bearing information here: a relay only
+             knows the part of the follow graph it federated, so a short list from
+             one is not evidence about the account. -->
+        @if (partial()) {
+          <p class="cf-note">
+            {{
+              'pages.profile.copyAccount.partialList'
+                | transloco: { handle: handle(), host: sourceHost() }
+            }}
+          </p>
+        } @else if (sourceHost()) {
+          <p class="muted small">
+            {{ 'pages.profile.copyAccount.readFrom' | transloco: { host: sourceHost() } }}
+          </p>
+        }
+
+        <!-- The gate, as controls rather than as four constants nobody can argue
+             with. Changing any of these re-filters the pages already read, so it
+             costs nothing; they lock while a read is in flight because a page
+             requested under the old settings must not be judged by the new ones. -->
+        <fieldset class="cf-settings" [disabled]="settingsLocked()">
+          <legend class="muted small">
+            {{ 'pages.profile.copyAccount.whatToCopy' | transloco }}
+          </legend>
+          <label class="cf-setting">
+            <span>{{ 'pages.profile.copyAccount.adoptUpTo' | transloco }}</span>
+            <input
+              type="number"
+              min="1"
+              [max]="followLimit"
+              [ngModel]="target()"
+              (ngModelChange)="target.set($event); recompute()"
+              name="cf-target"
+            />
+            <span class="muted small">{{
+              'pages.profile.copyAccount.accountsUnit' | transloco
+            }}</span>
+          </label>
+          <label class="cf-setting">
+            <span>{{ 'pages.profile.copyAccount.skipIfSilentOver' | transloco }}</span>
+            <input
+              type="number"
+              min="0"
+              [ngModel]="dormantAfterDays()"
+              (ngModelChange)="dormantAfterDays.set($event); recompute()"
+              name="cf-dormant"
+            />
+            <span class="muted small">{{ 'pages.profile.copyAccount.daysUnit' | transloco }}</span>
+          </label>
+          <label class="cf-setting">
+            <span>{{ 'pages.profile.copyAccount.skipIfFewerThan' | transloco }}</span>
+            <input
+              type="number"
+              min="0"
+              [ngModel]="minPosts()"
+              (ngModelChange)="minPosts.set($event); recompute()"
+              name="cf-minposts"
+            />
+            <span class="muted small">{{ 'pages.profile.copyAccount.postsUnit' | transloco }}</span>
+          </label>
+          @if (gateOff()) {
+            <p class="muted small cf-gate-off">
+              {{ 'pages.profile.copyAccount.noQualityFiltering' | transloco }}
+            </p>
+          }
+        </fieldset>
+
+        @if (reading()) {
+          <p class="muted small" role="status">
+            {{ 'pages.profile.copyAccount.readingAnotherPage' | transloco }}
+          </p>
+        } @else if (canReadMore()) {
+          <p class="cf-more">
+            <span class="muted small">
+              {{
+                (pages() === 1
+                  ? 'pages.profile.copyAccount.readSoFar.one'
+                  : 'pages.profile.copyAccount.readSoFar.other'
+                ) | transloco: { count: pages() }
+              }}
+            </span>
+            <button type="button" class="btn btn-outline btn-sm" (click)="readAnotherPage()">
+              {{ 'pages.profile.copyAccount.readAnotherPage' | transloco }}
+            </button>
+          </p>
+        }
+
+        @if (sel.limitedBySlots && sel.adopt.length) {
+          <p class="cf-note">
+            {{
+              'pages.profile.copyAccount.limitedBySlots'
+                | transloco
+                  : {
+                      remaining: remainingSlots(),
+                      limit: followLimit,
+                      willAdd: sel.adopt.length,
+                    }
+            }}
+          </p>
+        }
+
+        @if (sel.adopt.length) {
+          <ul class="cf-list">
+            @for (account of sel.adopt; track account.id) {
+              <li>
+                <span class="cf-name">{{ account.display_name || account.username }}</span>
+                <span class="muted small">&#64;{{ account.acct }}</span>
+              </li>
+            }
+          </ul>
+        }
+
+        <!-- The filtering is shown, not hidden: "6 of 63" invites "why only 6?", and
+             the answer should already be on screen. -->
+        @if (sel.skipped.length) {
+          <details class="cf-skipped" [open]="showSkipped()">
+            <summary (click)="showSkipped.set(!showSkipped())">
+              {{
+                (sel.skipped.length === 1
+                  ? 'pages.profile.copyAccount.skipped.one'
+                  : 'pages.profile.copyAccount.skipped.other'
+                ) | transloco: { count: sel.skipped.length }
+              }}
+            </summary>
+            <ul>
+              @for (item of sel.skipped; track item.account.id) {
+                <li>
+                  <span class="muted small">&#64;{{ item.account.acct }}</span>
+                  <span class="muted small">{{ reasonText(item.reason) }}</span>
+                </li>
+              }
+            </ul>
+          </details>
+        }
+
+        <!-- The collections half. Absent for most accounts (few publish any, and
+             servers below Mastodon 4.6 have no endpoint), which is why it is a
+             section rather than a phase — nothing to copy is not a failure.
+
+             Every list shows its own kept/skipped counts: the quality gate can
+             thin a curated collection, and a list arriving with 2 of 31 members
+             and no explanation reads as a bug. See copy-collections.ts. -->
+        @if (loadingCollections()) {
+          <p class="muted small" role="status">
+            {{ 'pages.profile.copyAccount.checkingCollections' | transloco }}
+          </p>
+        }
+        @if (collectionPlans().length) {
+          <div class="cf-collections">
+            <p class="cf-subhead">
+              {{
+                (collectionPlans().length === 1
+                  ? 'pages.profile.copyAccount.andCollections.one'
+                  : 'pages.profile.copyAccount.andCollections.other'
+                ) | transloco: { count: collectionPlans().length }
+              }}
+            </p>
+            <ul class="cf-list">
+              @for (plan of collectionPlans(); track plan.collection.id) {
+                <li>
+                  <span class="cf-name">{{ plan.title }}</span>
+                  <span class="muted small">{{ describeCollection(plan) }}</span>
+                </li>
+              }
+            </ul>
+            <p class="muted small">
+              {{ 'pages.profile.copyAccount.listMembersFollowed' | transloco }}
+            </p>
+          </div>
+        }
+
+        <div class="cf-actions">
+          @if (sel.adopt.length || collectionPlans().length) {
+            <button class="btn" type="button" [disabled]="loadingCollections()" (click)="confirm()">
+              @if (sel.adopt.length && collectionPlans().length) {
+                {{
+                  'pages.profile.copyAccount.copyFollowsAndLists'
+                    | transloco: { follows: sel.adopt.length, lists: collectionPlans().length }
+                }}
+              } @else if (collectionPlans().length) {
+                {{
+                  (collectionPlans().length === 1
+                    ? 'pages.profile.copyAccount.copyLists.one'
+                    : 'pages.profile.copyAccount.copyLists.other'
+                  ) | transloco: { count: collectionPlans().length }
+                }}
+              } @else {
+                {{
+                  'pages.profile.copyAccount.followCount' | transloco: { count: sel.adopt.length }
+                }}
+              }
+            </button>
+          }
+          <button class="btn btn-outline" type="button" (click)="close()">
+            {{ 'pages.profile.copyAccount.cancel' | transloco }}
+          </button>
+        </div>
+      }
+    }
+
+    @case ('following') {
+      <p class="muted" role="status">
+        {{
+          'pages.profile.copyAccount.followingProgress'
+            | transloco: { progress: progress(), total: selection()?.adopt?.length ?? 0 }
+        }}
+      </p>
+    }
+
+    @case ('done') {
+      <p class="cf-summary" role="status">
+        @if (listsCreated()) {
+          {{
+            (progress() === 1
+              ? listsCreated() === 1
+                ? 'pages.profile.copyAccount.doneWithLists.oneOne'
+                : 'pages.profile.copyAccount.doneWithLists.oneOther'
+              : listsCreated() === 1
+                ? 'pages.profile.copyAccount.doneWithLists.otherOne'
+                : 'pages.profile.copyAccount.doneWithLists.otherOther'
+            ) | transloco: { accounts: progress(), lists: listsCreated() }
+          }}
+        } @else {
+          {{
+            (progress() === 1
+              ? 'pages.profile.copyAccount.followedAccounts.one'
+              : 'pages.profile.copyAccount.followedAccounts.other'
+            ) | transloco: { count: progress() }
+          }}
+        }
+      </p>
+      @if (error(); as msg) {
+        <p class="cf-error" role="alert">{{ msg }}</p>
+      }
+      <p class="muted small">{{ 'pages.profile.copyAccount.homeWillRebuild' | transloco }}</p>
+      <div class="cf-actions">
+        <a class="btn" routerLink="/" (click)="close()">{{
+          'pages.profile.copyAccount.goToHome' | transloco
+        }}</a>
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'pages.profile.copyAccount.close' | transloco }}
+        </button>
+      </div>
+    }
+  }
+</section>

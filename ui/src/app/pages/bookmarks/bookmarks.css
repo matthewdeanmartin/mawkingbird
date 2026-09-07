@@ -1,0 +1,116 @@
+.provider-tabs {
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.folder-tabs {
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.conversion-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.notice {
+  margin: 0.75rem 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.5rem;
+}
+
+.notice.success {
+  background: color-mix(in srgb, #2f9e44 14%, transparent);
+}
+
+.notice.error {
+  background: color-mix(in srgb, #e03131 14%, transparent);
+}
+
+.bookmark-filter {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+}
+
+.bookmark-filter label {
+  font-weight: 600;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-controls input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  color: inherit;
+  background: inherit;
+}
+
+.raindrop-list {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.raindrop-card {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card-bg, transparent);
+}
+
+.raindrop-card img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.4rem;
+  object-fit: cover;
+}
+
+.raindrop-copy {
+  min-width: 0;
+}
+
+.raindrop-copy p {
+  margin: 0.35rem 0;
+}
+
+.raindrop-copy span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.25rem 1rem;
+}
+
+@media (max-width: 600px) {
+  .raindrop-card {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+  }
+
+  .raindrop-card img {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .raindrop-card .btn {
+    grid-column: 1 / -1;
+  }
+}

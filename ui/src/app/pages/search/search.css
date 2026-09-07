@@ -1,0 +1,677 @@
+/* Wide layout, modeled on chat's .chat-page. The search bar is a full-width
+   header; below it, post searches split into a form/facets column + a results
+   column. Everything is centered in a max-width canvas since the shell drops
+   its rails for /search. */
+.search-shell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 16px 4px;
+}
+
+.search-page {
+  margin-top: 16px;
+}
+
+.search-page.two-box {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* Bordered rounded cards like chat's panes. The full-width search bar is its
+   own card above the grid. */
+.search-bar,
+.two-box .search-form-box,
+.two-box .search-results-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.two-box .search-form-box,
+.two-box .search-results-box {
+  overflow: hidden;
+}
+
+/* The form column sticks so facets stay in view while scrolling results. */
+.two-box .search-form-box {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+}
+
+/* Keep refinement visible by default, with an accessible toggle at every width.
+   Closed details content cannot reliably be reopened with child display rules. */
+.search-form-box > summary {
+  display: flex;
+}
+
+.refine-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Says what is still narrowing the results while the panel is shut. A collapsed
+   panel that is silently filtering is worse than the wall it replaced. */
+.refine-active-count {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* Announces that the search finished, above the results themselves. Quiet by
+   design — it is a confirmation, not a headline — but it must not be missable
+   on a phone, which is the whole reason it exists. */
+.result-announcement {
+  margin: 0;
+  padding: 12px 16px 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.result-announcement:empty {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .search-page.two-box {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Keep filters discoverable above results on narrow screens. Bound their
+     height so neither a long facet list nor a long feed buries the other. */
+  .two-box .search-form-box {
+    position: static;
+    max-height: 45vh;
+  }
+
+  /* Here the `<details>` behaves like one: the summary is the control, and the
+     body follows the open state instead of being forced visible. */
+  .search-form-box > summary {
+    display: flex;
+  }
+
+  .search-form-box:not([open]) > *:not(summary) {
+    display: none;
+  }
+}
+
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.search-bar input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  font-size: 15px;
+}
+
+/* ---- Saved searches + sharing (sprint 4) ---- */
+
+.saved-menu {
+  position: relative;
+}
+
+.saved-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.saved-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.saved-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  width: 280px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 28px rgb(15 20 25 / 16%);
+}
+
+.saved-empty {
+  padding: 8px 10px;
+  margin: 0;
+}
+
+.saved-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.saved-run {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-run:hover {
+  background: var(--hover, var(--bg));
+}
+
+.saved-del {
+  flex: 0 0 auto;
+  border: none;
+  background: none;
+  color: var(--muted, #888);
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.saved-del:hover {
+  background: var(--hover, var(--bg));
+  color: #e0245e;
+}
+
+/* Recent searches: a wrapping row of chips under the search bar.
+
+   Chips rather than the dropdown "Saved" uses, because these are meant to be
+   glanced at and re-pressed without opening anything — the whole value is that
+   the query you want is already visible when you arrive at an empty box. */
+.recent-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.recent-label {
+  flex: 0 0 auto;
+}
+
+/* The chip is a pair of buttons sharing one pill, so "run" and "forget" are
+   separate targets without looking like two chips. */
+.recent-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 9999px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.recent-run {
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  /* Comfortably past the ~44px minimum touch target in height, since this row
+     exists mostly to be tapped on a phone. */
+  padding: 8px 6px 8px 12px;
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-run:hover {
+  background: var(--hover, var(--bg));
+}
+
+.recent-type {
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.recent-del {
+  border: none;
+  background: none;
+  color: var(--muted, #888);
+  cursor: pointer;
+  padding: 8px 10px 8px 4px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.recent-del:hover {
+  color: #e0245e;
+}
+
+.recent-clear {
+  border: none;
+  background: none;
+  color: var(--muted, #888);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.save-dialog {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.save-dialog input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.saved-notice {
+  margin: 8px 0 0;
+  word-break: break-all;
+}
+
+/* Why an option in the type select is greyed out. Sits directly under the bar,
+   where the reader who just tried to click it is looking. */
+.type-unavailable {
+  margin: 8px 4px 0;
+}
+
+/* Search server: full-width rows under the search bar (a host combo needs the
+   width, and the two-box layout below it has none to spare). */
+.search-server-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.search-server-toggle strong {
+  font-weight: 600;
+}
+
+.search-server-note {
+  min-width: 0;
+}
+
+.search-server-panel {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+}
+
+.search-server-panel p {
+  margin: 0 0 8px;
+}
+
+.search-server-panel p:last-child {
+  margin-bottom: 0;
+}
+
+.search-server-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.search-server-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.search-bar select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.result-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.result-account:hover {
+  background: var(--bg);
+  text-decoration: none;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: var(--border);
+  object-fit: cover;
+}
+
+.result-account .muted {
+  margin-left: 6px;
+}
+
+.result-tag {
+  display: block;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* Empty state: the find-people import/directories body fills the blank space. */
+.search-idle {
+  padding: 0 16px 16px;
+}
+
+/* Advanced search: date-operator builder. */
+.advanced-panel {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.advanced-panel p {
+  margin: 0 0 8px;
+}
+
+.advanced-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.advanced-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.advanced-fields input {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.advanced-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.result-tag .tag-uses {
+  font-weight: 400;
+  font-size: 0.85em;
+  margin-left: 8px;
+}
+
+/* ---- Client-side refinement layer (sprint 1) ---- */
+
+/* Sort-of-loaded-results dropdown, sat beside the filter/group-by controls. */
+
+/* Segmented control, matched to chat's .seg so the app reads as one system. */
+
+/* The on-demand "check activity" offer, and its in-flight/error states. */
+.enrich-offer {
+  margin: 0;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.enrich-offer.error {
+  color: var(--danger, #c0392b);
+}
+
+.enrich-offer .link-button {
+  border: 0;
+  padding: 0 4px;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---- Advanced form fields (sprint 2) ---- */
+
+.adv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.adv-field input {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.advanced-fields select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.adv-field select {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* ---- API-call budget (sprint 3) ---- */
+
+.budget-row {
+  flex-wrap: wrap;
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  padding: 14px;
+}
+
+/* ---- Active-filter chips (§10) ---- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+/* Sent-to-server chips get the accent; loaded-result chips are neutral/dashed,
+   so the two §23 categories never look like the same thing. */
+.chip-server {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.chip-loaded {
+  border-style: dashed;
+  color: var(--muted, #666);
+}
+
+/* ---- Explain panel (§9) ---- */
+
+.explain {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.explain > summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.explain-section {
+  margin-top: 10px;
+}
+
+.explain-head {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+
+.explain code {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg, rgb(0 0 0 / 4%));
+  font-size: 13px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.explain ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.explain .tag-lit {
+  font-weight: 700;
+  margin: 0 3px;
+}
+
+/* Why the result set is empty, when "No results." would be a lie. An explanation
+   of what you are looking at, so it reads as information rather than an error. */
+.search-unavailable {
+  max-width: 46em;
+  margin: 8px auto 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--hover);
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Offer to follow a hashtag that returned nothing — see search.html. */
+.tag-offer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+/* --- Flood control (author exclusion + repeat collapsing) --- */
+
+/* An excluded author stays listed (with their count) so the exclusion can be
+   undone knowingly — dimmed, not removed. */
+
+/* A button that reads as a link: used for low-weight inline actions next to
+   real controls, where a second .btn would compete with the primary one. */
+
+/* Sits under the post it stands in for, indented so the pair reads as one row. */
+
+/* The "you excluded so much there's nothing left" nudge. */
+.thin-results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.thin-results p {
+  margin: 0;
+}
+
+/* --- Curated sets matching the query -----------------------------------------
+   Above the account results because following a whole hand-picked set is a
+   better answer to "who should I follow about X" than the first individual
+   match — and because it is the answer a newcomer cannot otherwise find. */
+.kit-matches {
+  padding: 12px 16px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kit-matches-head {
+  margin: 0;
+  font-size: 14px;
+}
+
+.kit-match {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.kit-match:hover {
+  background: var(--col-hover, rgba(127, 127, 127, 0.08));
+}

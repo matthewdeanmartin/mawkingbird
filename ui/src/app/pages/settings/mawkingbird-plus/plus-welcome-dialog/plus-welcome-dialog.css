@@ -1,0 +1,97 @@
+/* Matches the copy-account dialog's geometry so the app has one modal look.
+   The difference is what is missing: the backdrop is a plain div rather than a
+   button, because clicking away must not be an escape route. */
+.pw-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgb(0 0 0 / 55%);
+}
+
+.pw-dialog {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(760px, 88vh);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+}
+
+.pw-dialog h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.pw-intro {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.pw-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pw-row {
+  border-top: 1px solid var(--border);
+}
+
+.pw-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.pw-toggle {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 11px 2px;
+  cursor: pointer;
+}
+
+.pw-toggle input {
+  margin-top: 2px;
+  flex: none;
+}
+
+.pw-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pw-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pw-detail {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Greyed, but still legible: the row is there to be read, not just to be
+   counted. */
+.pw-row-planned .pw-toggle {
+  cursor: default;
+}
+
+.pw-row-planned .pw-name,
+.pw-row-planned .pw-detail {
+  opacity: 0.6;
+}
+
+.pw-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

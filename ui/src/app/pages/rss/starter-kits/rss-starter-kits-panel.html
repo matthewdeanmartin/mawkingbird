@@ -1,0 +1,153 @@
+@if (offered().length) {
+  <div class="kits">
+    <h3>{{ 'pages.rss.kits.startWithKit' | transloco }}</h3>
+    <p class="muted small">
+      {{ 'pages.rss.kits.intro' | transloco }}
+      <a routerLink="/settings/rss">{{ 'pages.rss.manageFeeds' | transloco }}</a>
+      {{ 'pages.rss.kits.page' | transloco }}
+    </p>
+
+    <ul class="kit-list">
+      @for (kit of offered(); track kit.slug) {
+        <li class="kit">
+          <span class="kit-icon" aria-hidden="true">{{ kit.icon }}</span>
+          <span class="kit-text">
+            <span class="kit-title">{{ kit.title }}</span>
+            <span class="muted small">{{ kit.blurb }}</span>
+            <span class="muted small kit-feeds">
+              {{
+                (kit.feeds.length === 1
+                  ? 'pages.rss.kits.feedCount.one'
+                  : 'pages.rss.kits.feedCount.other'
+                ) | transloco: { count: kit.feeds.length }
+              }}:
+              {{ kitFeedNames(kit) }}
+            </span>
+          </span>
+          <button
+            class="btn"
+            type="button"
+            [disabled]="busy() || doesNotFit(kit)"
+            (click)="install(kit)"
+          >
+            @if (installing(kit)) {
+              {{
+                'pages.rss.kits.addingProgress'
+                  | transloco
+                    : { done: installer.progress()?.done, total: installer.progress()?.total }
+              }}
+            } @else {
+              {{ 'pages.rss.kits.add' | transloco }}
+            }
+          </button>
+        </li>
+      }
+    </ul>
+
+    @if (anyDoesNotFit()) {
+      <p class="muted small">
+        {{
+          'pages.rss.kits.tooLarge'
+            | transloco: { remaining: subs.remaining(), limit: subs.limit() }
+        }}
+        <button class="link-btn" type="button" (click)="raiseLimit()">
+          {{ 'pages.rss.kits.raiseLimit' | transloco: { limit: neededLimit() } }}
+        </button>
+        {{ 'pages.rss.kits.toFitAll' | transloco }}
+      </p>
+    }
+  </div>
+}
+
+<div class="kits discovery">
+  <h3>{{ 'pages.rss.kits.feedsFromFollowing' | transloco }}</h3>
+  <p class="muted small">
+    {{ 'pages.rss.kits.discoveryIntro' | transloco }}
+  </p>
+
+  @if (!discovery.available()) {
+    <p class="muted small">
+      {{ 'pages.rss.kits.needsProxy' | transloco }}
+      <a routerLink="/settings/rss">{{ 'pages.rss.article.corsProxy' | transloco }}</a>
+      {{ 'pages.rss.kits.browserFetch' | transloco }}
+    </p>
+  } @else {
+    <button class="btn" type="button" [disabled]="discovery.running()" (click)="findFriendFeeds()">
+      @if (discovery.running()) {
+        {{ 'pages.rss.kits.checkingSites' | transloco }}
+      } @else {
+        {{ 'pages.rss.kits.lookForFeeds' | transloco }}
+      }
+    </button>
+  }
+
+  @if (discovery.error(); as error) {
+    <p class="muted small">{{ error }}</p>
+  }
+
+  @if (discovery.found().length) {
+    <ul class="kit-list">
+      @for (feed of discovery.found(); track feed.url) {
+        <li class="kit">
+          <span class="kit-icon" aria-hidden="true">📡</span>
+          <span class="kit-text">
+            <span class="kit-title">{{ feed.title }}</span>
+            <span class="muted small">{{ feed.siteUrl }}</span>
+            <span class="muted small">{{
+              'pages.rss.kits.linkedBy' | transloco: { via: feed.via }
+            }}</span>
+          </span>
+          <button
+            class="btn"
+            type="button"
+            [disabled]="adding() !== null"
+            (click)="addDiscovered(feed)"
+          >
+            {{
+              (adding() === feed.url ? 'pages.rss.kits.adding' : 'pages.rss.kits.add') | transloco
+            }}
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (searched() && !discovery.running()) {
+    <p class="muted small">
+      {{
+        (discovery.checked() === 1
+          ? 'pages.rss.kits.noFeedsFound.one'
+          : 'pages.rss.kits.noFeedsFound.other'
+        ) | transloco: { count: discovery.checked() }
+      }}
+    </p>
+  }
+</div>
+
+@if (installer.report(); as report) {
+  <p class="kit-report" role="status">
+    @if (report.added) {
+      {{
+        (report.added === 1 ? 'pages.rss.kits.added.one' : 'pages.rss.kits.added.other')
+          | transloco: { count: report.added }
+      }}
+    }
+    @if (report.alreadySubscribed) {
+      {{ 'pages.rss.kits.alreadySubscribed' | transloco: { count: report.alreadySubscribed } }}
+    }
+    @if (report.skippedForLimit) {
+      {{ 'pages.rss.kits.skipped' | transloco: { count: report.skippedForLimit } }}
+      <a routerLink="/settings/rss">{{ 'pages.rss.kits.subscriptionLimit' | transloco }}</a
+      >{{ 'pages.rss.period' | transloco }}
+    }
+    @if (report.failed.length) {
+      <span class="kit-failed">
+        {{
+          'pages.rss.kits.couldntLoad'
+            | transloco: { count: report.failed.length, names: failedNames(report) }
+        }}
+        {{ 'pages.rss.kits.usuallyNeed' | transloco }}
+        <a routerLink="/settings/rss">{{ 'pages.rss.article.corsProxy' | transloco }}</a
+        >{{ 'pages.rss.period' | transloco }}
+      </span>
+    }
+  </p>
+}

@@ -1,0 +1,585 @@
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0 0;
+  box-sizing: border-box;
+}
+
+.login-card {
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 960px;
+  max-width: 94vw;
+}
+
+/* --- Server combo (shared by all three paths) --- */
+.server-row {
+  margin-bottom: 20px;
+}
+
+.server-label {
+  display: block;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.server-combo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.server-field {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.server-combo input {
+  width: 100%;
+  margin: 0;
+}
+
+/* --- Curated instance suggestions (from joinmastodon.org) --- */
+.server-suggest {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.server-suggest li {
+  margin: 0;
+}
+
+.suggest-row {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.suggest-row:hover {
+  background: var(--bg);
+}
+
+.suggest-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.suggest-domain {
+  font-weight: 700;
+}
+
+.suggest-cat {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 1px 7px;
+}
+
+.suggest-size {
+  font-size: 12px;
+}
+
+.suggest-desc {
+  font-size: 12px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.server-combo .chip {
+  width: auto;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.server-status {
+  margin: 6px 0 0;
+  min-height: 1.2em;
+}
+
+.server-warning .text-button {
+  border: 0;
+  padding: 0 3px;
+  background: none;
+  color: var(--accent);
+  font-size: inherit;
+  font-weight: 700;
+}
+
+/* --- Three ways in: columns on desktop, stacked on narrow screens --- */
+.paths {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.path {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.path h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.path-primary {
+  border-color: var(--accent);
+}
+
+.signup-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  margin: 8px 0;
+}
+
+@media (max-width: 860px) {
+  .paths {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card {
+    width: 480px;
+    padding: 20px;
+  }
+}
+
+h1 {
+  color: var(--accent);
+  margin: 0;
+}
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hero > div {
+  min-width: 0;
+}
+
+.hero-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  font-size: 13px;
+}
+
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
+.about-link {
+  font-size: 18px;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+app-app-footer {
+  display: block;
+  width: min(960px, 94vw);
+  margin-top: 8px;
+}
+
+.btn-hero {
+  font-size: 17px;
+  font-weight: 800;
+  padding: 14px;
+  margin-top: 4px;
+}
+
+.center {
+  text-align: center;
+}
+
+/* The API-token path is a power-user escape hatch: collapse it behind its heading. */
+.token-path > summary {
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.token-path > summary::marker {
+  color: var(--accent);
+}
+
+/* Keep the heading inline with the disclosure marker instead of dropping to a new line. */
+.token-path > summary h2 {
+  display: inline;
+}
+
+.account-token-path {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.account-token-path > summary {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.anonymous-option .btn {
+  margin-top: 8px;
+}
+
+.anonymous-finder-label {
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 8px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted, #888);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.agree {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin: 4px 0 12px;
+}
+
+.agree input {
+  width: auto;
+  margin: 0;
+}
+
+.switch-line {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.verify-link {
+  background: var(--accent);
+}
+
+.refresh {
+  margin-left: auto;
+  align-self: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px 0 8px;
+  font-size: 15px;
+}
+
+.error {
+  color: #e0245e;
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+}
+
+.dev {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.dev-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.link {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  padding: 0;
+}
+
+.dev-gen {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.dev-gen .btn {
+  width: auto;
+  flex: 1;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.dev-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dev-user {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 8px 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dev-user:hover {
+  background: var(--bg);
+}
+
+.dev-name {
+  font-weight: 600;
+}
+
+.dev-acct {
+  font-size: 13px;
+  margin-left: auto;
+}
+
+.badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.btn-outline.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* OAuth access-level picker (full vs read-only). */
+.access-choice {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.access-choice legend {
+  padding: 0 6px;
+}
+
+.access-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.access-option input {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.access-option > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Analytics opt-out at the foot of the login page. */
+.login-privacy {
+  /* The parent is a centred flex column, so `align-items: center` sizes this
+     to its content rather than to max-width — which collapsed the box to the
+     checkbox and wrapped "Count my page views" onto its own lines on a screen
+     with room to spare. width:100% claims the line back, max-width still caps
+     it, and `margin: auto` keeps it centred. */
+  width: 100%;
+  max-width: 640px;
+  margin: 26px auto 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* The label's text is an anonymous flex item, so it shrinks to whatever the
+   checkbox leaves it and breaks "Count my page views" over three lines even on
+   a wide screen. nowrap keeps it on one line; the checkbox is the thing that
+   must not shrink around it. */
+.login-privacy .checkline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.login-privacy .checkline input {
+  flex: none;
+  margin: 0;
+}
+
+/* --- The opening question ---------------------------------------------------
+   Deliberately the same shape as LoginChooser's `.door` rows. The two questions
+   are consecutive screens in one flow ("which network", then "what are you here
+   to do"), so they should look like one flow rather than two designs.
+   Buttons rather than links: each answer reveals part of this page instead of
+   navigating. */
+.intent-question {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.intent-doors {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+
+.intent-door {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+}
+
+.intent-door:hover {
+  background: var(--col-hover, rgba(127, 127, 127, 0.08));
+}
+
+/* The first door is the common case and is the only one that looks primary.
+   Everything else stays quiet so there is one obvious thing to press. */
+.intent-door:first-child {
+  border-color: var(--accent);
+}
+
+.intent-emoji {
+  font-size: 30px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.intent-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.intent-name {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.intent-back {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+/* One answered question means one panel, so the three-column grid has nothing
+   to lay out and the panel should not be stretched across the card. */
+.paths:has(.path:only-child) {
+  grid-template-columns: minmax(0, 520px);
+}

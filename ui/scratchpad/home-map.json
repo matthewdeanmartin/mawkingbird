@@ -1,0 +1,7 @@
+[
+  {"text": "Your timeline gets better with every follow.", "key": "pages.home.nudge.title"},
+  {"text": "Find people", "key": "pages.home.nudge.cta"},
+  {"text": "Review followed sources or retry the public API", "key": "pages.home.warnings.anonymousErrors.link"},
+  {"text": "Paused for a few minutes so it stops retrying. Saved tweets are still shown.", "key": "pages.home.warnings.twitterPaused.message"},
+  {"text": "Try again now", "key": "pages.home.warnings.twitterPaused.retry"}
+]

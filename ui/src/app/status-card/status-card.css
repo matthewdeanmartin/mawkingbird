@@ -1,0 +1,975 @@
+:host {
+  display: block;
+  border-bottom: 1px solid var(--border);
+}
+
+.boost-label {
+  font-size: 13px;
+  padding: 8px 16px 0 56px;
+}
+
+/* Inherits the label's muted colour so the attribution line stays quiet — it is
+   a link for the reader who wants it, not a second thing competing with the
+   post. Underlines on hover so it is discoverable without shouting. */
+.boost-by {
+  color: inherit;
+  text-decoration: none;
+}
+
+.boost-by:hover {
+  text-decoration: underline;
+}
+
+.status {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+/*
+ * The whole card opens the thread, so say so on hover.
+ *
+ * Only the cursor changes — no background tint. A tint would have to be
+ * suppressed again over the media, the poll and the action row, all of which
+ * decline the click, and a highlight that lies about what a click will do is
+ * worse than no highlight. The cursor is honest by construction: it reverts to
+ * the default over anything with its own cursor rule.
+ */
+.status-clickable {
+  cursor: pointer;
+}
+
+/* Text stays selectable, and selecting it must not feel like arming a link. */
+.status-clickable .content,
+.status-clickable .spoiler {
+  cursor: auto;
+}
+
+/* Keyboard focus ring for j/k navigation between posts. */
+.status:focus {
+  outline: 2px solid var(--accent, #1d9bf0);
+  outline-offset: -2px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: var(--border);
+  object-fit: cover;
+}
+
+/* Wraps an avatar or name; lingering on it fades in the account hover card. */
+.hover-anchor {
+  position: relative;
+}
+
+.avatar-anchor {
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.hover-anchor:hover app-account-hover-card {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0.45s;
+  /* Paired with content-visibility:hidden on the card, which keeps it out of
+     layout (and out of the page's horizontal overflow) until it's hovered. */
+  content-visibility: visible;
+}
+
+.action-error {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #e0245e;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Single-line header: name · @handle · time · visibility.
+   Everything shows in full when there's room. When there isn't, space is given
+   up in priority order rather than by truncating everything at once:
+   the handle collapses first, then the display name, while the short fixed-width
+   bits (time, badges) never shrink. Without min-width:0 here the unbreakable
+   @handle sets a min-content floor that widens the whole column and puts the
+   page into horizontal overflow -- which drags the fixed bottom nav off screen. */
+.meta {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+/* The hover-anchor wrapping .name is the real flex item, so the shrink
+   behaviour has to live on it as well as on the link inside. */
+.meta > .hover-anchor {
+  min-width: 0;
+  flex-shrink: 1;
+  display: flex;
+}
+
+.name {
+  font-weight: 700;
+  color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Handle yields space fastest: it's the least useful thing to read in full,
+   and it's a single unbreakable token so it's the main overflow culprit. */
+.acct {
+  font-size: 14px;
+  min-width: 0;
+  flex-shrink: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Short and fixed-length: cheaper to keep whole than to ellipsize. */
+.meta > .post-time,
+.meta > .badge,
+.meta > app-verified-badge {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Phones: the single line stops being worth defending.
+   There are five to eight items competing for ~300px, and the shrink priorities
+   above resolve that by ellipsizing nearly all of them at once — the reported
+   "J... J...9 min..Bsk.." — which is the one outcome where no item is readable.
+   Wrapping is strictly better: the two things that identify the post (name and
+   handle) get the full width of line one, and the metadata that was crowding
+   them out gets line two, at full length, where there is room for it.
+
+   `flex-wrap` alone would not do this, because the wrap point would fall
+   wherever the widths happened to land. The break is forced instead: everything
+   from the timestamp onward is pushed to a new line by a zero-width flex item
+   that is 100% wide, so the split is always name/handle | the rest. */
+@media (max-width: 720px) {
+  .meta {
+    flex-wrap: wrap;
+    row-gap: 0;
+    align-items: baseline;
+  }
+
+  /* The forced break. `::before` on the timestamp rather than a real element,
+     so the template stays a single flat row and nothing has to know about it. */
+  .meta > .post-time::before {
+    content: '';
+    display: block;
+    width: 100%;
+  }
+
+  /* The timestamp opens line two, so its leading "·" separator would dangle at
+     the start of a line instead of sitting between two things. */
+  .meta > .post-time > .sep {
+    display: none;
+  }
+
+  /* With a line to themselves, name and handle no longer need to fight: the
+     handle keeps its own line if it has to rather than ellipsizing to a stub. */
+  .meta > .hover-anchor {
+    flex-shrink: 0;
+    max-width: 100%;
+  }
+
+  .acct {
+    flex-shrink: 1;
+  }
+
+  /* Stop hanging the panel off a button that may be anywhere in the row: placed
+     against the viewport instead, so it is always fully on screen, and against
+     its bottom so it is thumb-reachable and cannot be pushed off the top of a
+     short screen by a tall menu. `inset` resets the desktop anchor in one go. */
+  .danger-menu-panel {
+    position: fixed;
+    inset: auto 12px 12px;
+    min-width: 0;
+    max-width: none;
+    max-height: 60vh;
+    overflow-y: auto;
+    border-radius: 12px;
+  }
+}
+
+.content-link,
+.content-link:hover {
+  color: var(--text);
+  text-decoration: none;
+  display: block;
+}
+
+.content {
+  margin-top: 2px;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.content :is(a) {
+  max-width: 100%;
+}
+
+.editor {
+  margin-top: 4px;
+}
+
+.editor textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.content :is(p) {
+  margin: 0 0 6px;
+}
+
+.spoiler {
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Content-warning fold: warning text left, Show more/less toggle right. */
+.cw-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.cw-toggle {
+  white-space: nowrap;
+}
+
+/* A warn-action content filter matched: the whole card collapses to this. */
+.filter-stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.media {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 4px;
+  position: relative;
+}
+
+/* Sensitive posts: blur the thumbnails until the viewer clicks through. */
+.media-sensitive .media-thumb {
+  pointer-events: none;
+}
+
+.media-sensitive .media-thumb img {
+  filter: blur(24px);
+}
+
+.sensitive-reveal {
+  position: absolute;
+  inset: 0;
+  border: none;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.sensitive-reveal span {
+  background: rgba(0, 0, 0, 0.55);
+  padding: 6px 12px;
+  border-radius: 9999px;
+}
+
+.sensitive-reveal:hover span {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.media-thumb {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+  display: block;
+  width: 100%;
+}
+
+.media img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.quote-card {
+  display: block;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.quote-card:hover {
+  border-color: var(--accent);
+}
+
+.quote-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.quote-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--border);
+  object-fit: cover;
+}
+
+.quote-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.quote-content {
+  margin-top: 4px;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.quote-content :is(p) {
+  margin: 0 0 4px;
+}
+
+.quote-unavailable {
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Placeholder shown instead of pictures when images are off / feed reader is on. */
+.media-chip {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 4px 10px;
+}
+
+.media-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Images-off mode: alt text stands in for the picture. Laid out as readable
+   prose rows rather than chips, since the description is the content here. */
+.media-alt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.media-alt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font-size: 14px;
+  text-align: left;
+}
+
+.media-alt-row:hover {
+  border-color: var(--accent);
+}
+
+.media-alt-icon {
+  flex: 0 0 auto;
+  line-height: 1.4;
+}
+
+.media-alt-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.media-alt-missing {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* The action row wraps on narrow cards, so the horizontal and vertical gaps
+   have to be set separately. One `gap: 14px` made the row-gap 14px as well, and
+   stacked under 40px-tall buttons that turned a two-line toolbar into ~94px of
+   mostly-empty space below a 13px line of text.
+
+   The row does not wrap at all any more. Wrapping was the whole problem: up to
+   27 actions can appear here, and a second line of them under a two-line post
+   left the toolbar dominating the card no matter how short each row was made.
+   A card's action row is a summary, not a menu — the thread page is where the
+   full set lives — so the overflow is now removed rather than re-flowed. */
+.actions {
+  display: flex;
+  flex-wrap: nowrap;
+  column-gap: 14px;
+  margin-top: 4px;
+  align-items: center;
+  min-width: 0;
+}
+
+.action {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+  cursor: pointer;
+  /* 2px of padding around 13px text is a ~20px target, against the ~44px a
+     fingertip actually needs — the other half of "no clues if you failed to
+     touch the tiny button". The column gap already reserves the width, so the
+     hit area grows sideways for free.
+
+     Height is the expensive direction: every row of a wrapped toolbar pays it
+     twice, once for the row and once for the gap that has to keep the targets
+     apart. So the ink stays at the height of the text and the target is claimed
+     by a transparent ::after that overhangs it, which costs no layout at all. */
+  min-height: 20px;
+  min-width: 32px;
+  justify-content: center;
+  position: relative;
+}
+
+.action::after {
+  content: '';
+  position: absolute;
+  inset: -4px -2px;
+}
+
+.action:hover {
+  color: var(--accent);
+}
+
+/* A count with no action behind it.
+   Anonymous readers see counts for things they cannot do (boosts on a post with
+   no URL to share, for one). Those render as spans, and `.action` alone gave
+   them a pointer cursor and a hover highlight — so they looked exactly like the
+   working buttons beside them and did nothing when tapped. On a phone, with no
+   hover and no cursor, that is indistinguishable from a missed tap. Anything
+   that is only a number wears this. */
+.action-static {
+  min-height: 0;
+  min-width: 0;
+  cursor: default;
+}
+
+/* Not pressable, so it must not claim the overhanging tap target either — that
+   would swallow taps aimed at the real button beside it. */
+.action-static::after {
+  content: none;
+}
+
+.action-static:hover {
+  color: var(--muted);
+}
+
+/* An action waiting on the network.
+   `[disabled]` alone was the entire feedback, and a disabled icon button is
+   pixel-identical to an idle one — so on a phone, with no hover and no cursor,
+   a tap that landed looked exactly like a tap that missed. The pulse is the
+   part a reader can actually see; it rides alongside the optimistic flip of the
+   icon itself, so a fast network shows the new state and a slow one shows this. */
+.action.working {
+  animation: action-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes action-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Respect a reader who has asked the OS for less motion: the state still has to
+   be visible, so it holds the dimmed value instead of animating to it. */
+@media (prefers-reduced-motion: reduce) {
+  .action.working {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
+/* Active state gets a rounded accent box so it's visible without hovering. */
+.action.on {
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+
+/* A short "you did this" label that appears on active boost/favourite. */
+.did {
+  font-size: 12px;
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.count-link {
+  margin-left: -10px;
+}
+
+.count-link:hover {
+  text-decoration: underline;
+}
+
+.badge {
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.translation-note {
+  margin-top: 2px;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.revoke-btn {
+  margin-top: 6px;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}
+
+/* --- poll --- */
+.poll {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.poll-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.poll-result {
+  position: relative;
+  padding: 6px 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--border);
+}
+
+.poll-bar {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  z-index: 0;
+}
+
+.poll-result.own .poll-bar {
+  background: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.poll-label,
+.poll-pct {
+  position: relative;
+  z-index: 1;
+}
+
+.poll-pct {
+  margin-left: auto;
+}
+
+.poll-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+/* --- interaction policy menu --- */
+.policy-wrap {
+  position: relative;
+}
+
+.policy-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 50;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 140px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.policy-title {
+  margin-bottom: 6px;
+}
+
+.policy-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: capitalize;
+  color: var(--text);
+}
+
+.policy-option:hover {
+  background: var(--border);
+}
+
+.policy-option.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.inline-compose {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.action-notice {
+  padding: 4px 16px 0;
+  color: #2b8a3e;
+  font-size: 13px;
+}
+
+.redraft-note {
+  font-size: 0.85em;
+  padding: 4px 16px 0;
+}
+
+.linklike {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: inherit;
+}
+
+.linklike:hover {
+  text-decoration: underline;
+}
+
+.danger-menu {
+  position: relative;
+}
+
+.danger-menu summary {
+  list-style: none;
+}
+
+.danger-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The panel hangs from the ••• button, which is `position: relative`. That is
+   only safe while the button is the last thing in the row and pinned right: put
+   it in the middle or the left and a 200px panel anchored `right: 0` reaches
+   back past the edge of the card, or off the screen entirely on a phone.
+
+   `right: auto; left: 0` would just move the problem to the other side, so the
+   panel is instead allowed to sit wherever it fits: it anchors right but clamps
+   its own width to the card, and translates back into view rather than
+   overflowing. On a phone it stops pretending to be anchored at all and becomes
+   a viewport sheet (below). */
+.danger-menu-panel {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  z-index: 50;
+  min-width: 200px;
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+}
+
+/* An open menu has to paint over the cards below it. The panel's own `z-index`
+   could not do that: it is resolved inside the card's stacking context, so a
+   panel at 50 still lost to the next sibling card that made one. Lifting the
+   whole card while its menu is open puts them in the right order. */
+:host:has(.danger-menu[open]) {
+  position: relative;
+  z-index: 60;
+}
+
+/* Phones: stop hanging the panel off a button that may be anywhere in the row.
+   Fixed positioning takes the card out of the equation entirely — the sheet is
+   placed against the viewport, so it is always fully on screen no matter where
+   the ••• that opened it sits. */
+
+/* Neutral "open original" links, distinct from the red destructive actions. */
+.danger-menu-panel a {
+  display: block;
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.danger-menu-panel a:hover {
+  background: var(--border);
+}
+
+.danger-menu-panel button {
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #e0245e;
+  text-align: left;
+  cursor: pointer;
+}
+
+.danger-menu-panel button:hover {
+  background: var(--border);
+}
+
+.danger-menu-panel .menu-note {
+  display: block;
+  padding: 4px 9px 0;
+  white-space: nowrap;
+}
+
+/* Mute-duration presets sit in one compact row, less alarming than the red actions. */
+.mute-durations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px 4px 4px;
+}
+
+.mute-durations button {
+  width: auto;
+  padding: 3px 7px;
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.source-badge {
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Foreign (RSS/Bluesky) posts: the read-only escape hatch to the source site. */
+a.open-original {
+  text-decoration: none;
+}
+
+.provider-badge {
+  white-space: nowrap;
+}
+
+/* RSS feed categories, rendered as a muted trailing tag line inside post content. */
+.content .rss-categories {
+  margin-top: 0.5em;
+}
+
+.content .rss-category {
+  color: var(--accent);
+  margin-right: 0.4em;
+  font-size: 0.92em;
+}
+
+/* AI translation. Its own block, rendered as text — never through the markdown +
+   [innerHTML] path the server's HTML uses. */
+.ai-translation {
+  margin: 6px 0 0;
+  padding: 9px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--hover);
+}
+
+.ai-translation-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.translation-error {
+  color: #b54708;
+}
+
+.link-button {
+  border: 0;
+  padding: 0 0 0 4px;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Translator chooser / OpenRouter upsell. */
+.tc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 40%);
+}
+
+.tc-dialog {
+  width: 420px;
+  max-width: 100%;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--col-bg);
+  color: var(--text);
+}
+
+.tc-dialog h3 {
+  margin: 0 0 10px;
+}
+
+.tc-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.tc-options .btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+
+.tc-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* The server-supplied link preview. Indented to match the media block so a
+   card and an image gallery occupy the same column. */
+.status-card-preview {
+  margin: 10px 0 0;
+}
+
+/* --- unified share menu (feature-flagged) --- */
+
+.share-menu-host {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Anchored to its button and lifted above neighbouring cards. Opens upward on
+   small viewports would need measurement; a bottom-anchored menu inside a
+   scrolling timeline is fine because the card scrolls with it. */
+.share-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 30;
+  min-width: 172px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+}
+
+.share-menu button {
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.share-menu button:hover:not(:disabled),
+.share-menu button:focus-visible {
+  background: var(--col-hover, rgba(127, 127, 127, 0.12));
+}
+
+.share-menu button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

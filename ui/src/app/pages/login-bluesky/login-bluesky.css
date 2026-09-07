@@ -1,0 +1,153 @@
+.bsky-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.bsky-card {
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 520px;
+  max-width: 94vw;
+  text-align: center;
+}
+
+/* --- App-password explanation: deliberately prominent, not fine print --- */
+.bsky-appword {
+  text-align: left;
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-hover, rgba(127, 127, 127, 0.06));
+}
+
+.bsky-appword p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.bsky-appword p + p {
+  margin-top: 8px;
+}
+
+.bsky-oauth-note {
+  margin: 12px auto 0;
+  max-width: 48ch;
+}
+
+.bsky-entryway {
+  width: 100%;
+}
+
+.bsky-advanced,
+.bsky-compat {
+  margin-top: 20px;
+  text-align: left;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.bsky-advanced summary,
+.bsky-compat summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.bsky-advanced .bsky-form {
+  margin-top: 14px;
+}
+
+/* --- Form --- */
+.bsky-form {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+
+.bsky-field {
+  display: grid;
+  gap: 4px;
+}
+
+.bsky-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bsky-form input {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.bsky-submit {
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.bsky-error {
+  margin: 14px 0 0;
+  color: var(--col-danger, #d33);
+}
+
+.bsky-hint {
+  margin: 8px auto 0;
+  max-width: 44ch;
+}
+
+.bsky-out {
+  margin: 22px 0 0;
+}
+
+.bsky-badge {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.bsky-title {
+  margin: 12px 0 12px;
+  font-size: 23px;
+}
+
+.bsky-body {
+  margin: 0 auto 12px;
+  max-width: 46ch;
+  line-height: 1.5;
+}
+
+.bsky-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.bsky-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+}
+
+.bsky-btn-primary {
+  background: var(--col-accent, #1d9bf0);
+  border-color: transparent;
+  color: #fff;
+}
+
+.bsky-btn:hover {
+  filter: brightness(1.08);
+}

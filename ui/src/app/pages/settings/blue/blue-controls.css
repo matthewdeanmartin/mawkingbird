@@ -1,0 +1,91 @@
+.custom-choice {
+  margin-top: 2px;
+}
+
+.terminology-custom {
+  margin-top: 8px;
+  max-width: 560px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 6%, var(--col-bg));
+}
+
+.terminology-intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.terminology-reset {
+  flex: none;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.terminology-reset:hover,
+.terminology-reset:focus-visible {
+  border-color: var(--accent);
+}
+
+.terminology-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.terminology-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.terminology-fields input[type='text'] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.terminology-preview {
+  margin-top: 13px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--col-bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.terminology-preview-label {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .terminology-intro {
+    flex-direction: column;
+  }
+
+  .terminology-fields {
+    grid-template-columns: 1fr;
+  }
+}

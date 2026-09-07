@@ -1,0 +1,126 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 400px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+h3 {
+  margin: 0 0 12px;
+}
+
+.section {
+  margin-bottom: 18px;
+}
+
+.section h4 {
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--border);
+  color: var(--col-fg-muted, inherit);
+}
+
+.tag-public {
+  background: var(--brand, #6364ff);
+  color: #fff;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.list-rows {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.list-rows li {
+  padding: 6px 0;
+}
+
+.list-rows label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* The follow-required prompt. Tinted with the accent rather than a red error
+   colour: nothing went wrong, the user just has one more decision to make. */
+.follow-gate {
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.follow-gate p {
+  margin: 0 0 6px;
+}
+
+.gate-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.list-error {
+  color: #d81b60;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.new-row {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.new-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.new-row .btn {
+  white-space: nowrap;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

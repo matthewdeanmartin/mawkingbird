@@ -1,0 +1,598 @@
+.friend-section {
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.friend-section h2,
+.server-tools-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.friend-section textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.import-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.file-btn {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.progress-track {
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--border);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.import-rows {
+  max-height: 320px;
+  margin: 10px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+.import-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.row-status {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.row-followed .row-status {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.row-failed .row-status,
+.row-not_found .row-status,
+.export-error {
+  color: var(--danger, #e0245e);
+}
+
+.server-tools-title {
+  padding: 16px 16px 4px;
+}
+
+.contact-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.call-limit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.call-limit input {
+  width: 72px;
+  padding: 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.contact-summary {
+  display: grid;
+  gap: 3px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.twitter-summary {
+  line-height: 1.45;
+}
+
+.archive-note {
+  margin: 10px 0 0;
+}
+
+.twitter-search-controls {
+  margin-top: 12px;
+}
+
+.twitter-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 16px 0 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.twitter-filters legend {
+  padding: 0 5px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.twitter-filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.twitter-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+}
+
+.contact-rows,
+.contact-matches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-rows {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.contact-row {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.contact-row-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contact-matches {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.contact-match {
+  display: flex;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.contact-match img {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.match-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.confidence {
+  width: fit-content;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.confidence-likely {
+  background: color-mix(in srgb, #22c55e 22%, transparent);
+}
+
+.confidence-confirmed {
+  background: color-mix(in srgb, #22c55e 22%, transparent);
+}
+
+.confidence-probable {
+  background: color-mix(in srgb, #eab308 22%, transparent);
+}
+
+.confidence-possible {
+  background: color-mix(in srgb, #eab308 22%, transparent);
+}
+
+.github-person {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.github-sources {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.github-source {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.github-source h3,
+.github-source p {
+  margin: 0;
+}
+
+.github-source p {
+  margin-top: 5px;
+}
+
+.github-result-controls {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.github-person img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.github-repositories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 8px;
+  padding-left: 43px;
+}
+
+.github-repositories a {
+  overflow-wrap: anywhere;
+}
+
+.github-account-bio {
+  margin-top: 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.github-account-bio :is(p) {
+  margin: 0 0 4px;
+}
+
+.github-account-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 3px;
+}
+
+.github-account-stats strong {
+  color: var(--text);
+}
+
+.github-account-badge {
+  width: max-content;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.contact-match .btn {
+  align-self: center;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.contact-misses {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.contact-misses strong {
+  font-size: 14px;
+}
+
+.contact-misses span {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* Link to /invites, sitting above the "find people" tools. */
+.invite-callout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px;
+  padding: 14px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.invite-callout:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.invite-callout-emoji {
+  flex: none;
+  font-size: 22px;
+}
+
+.invite-callout-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.invite-callout-arrow {
+  flex: none;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* --- bridge finder --- */
+
+.bridge-body {
+  /* A fieldset is the element that can disable a whole subtree at once, but it
+     brings default chrome that would box the section off from its siblings. */
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.bridge-body[disabled] {
+  opacity: 0.5;
+}
+
+.bridge-gate {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.bridge-gate p {
+  margin: 0 0 6px;
+}
+
+.bridge-gate-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bridge-gate-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bridge-have {
+  color: var(--muted, inherit);
+}
+
+.bridge-direction {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.bridge-direction .active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.bridge-summary {
+  margin: 10px 0;
+}
+
+.bridge-scan {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.bridge-budget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bridge-rows {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bridge-row {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.bridge-person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bridge-person img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.bridge-person-name {
+  font-weight: 600;
+}
+
+.bridge-matches {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0 0 0 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bridge-match {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bridge-check {
+  display: inline-flex;
+  align-items: center;
+}
+
+.bridge-match-name {
+  color: var(--text);
+}
+
+/* The match *kind*, not a score — so it reads as a label rather than a number. */
+.bridge-kind {
+  flex: none;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.confidence-exact .bridge-kind {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.confidence-weak .bridge-kind {
+  opacity: 0.7;
+}
+
+.bridge-signals {
+  flex: 1 1 100%;
+}
+
+/* The signed-out scope note. Set off from the page's other muted text because
+   it is a caveat about where the reader's follows go, not a hint they can skim
+   past. */
+.anonymous-scope-note {
+  border-left: 3px solid var(--accent, var(--border));
+  background: var(--hover);
+  padding: 10px 12px;
+  margin: 0 0 16px;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+
+/* Ranked hashtag suggestions. Multi-column because the list is short strings
+   and a single column would run off the fold for no reason. */
+.suggest-tags {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2px 12px;
+}
+
+.suggest-tags label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 0;
+  cursor: pointer;
+}
+
+.suggest-tags input {
+  flex: none;
+}
+
+/* The net-change line after a hashtag import. Only rendered when the run
+   actually established the numbers, so it reads as a result, not a guess. */
+.tag-run-summary {
+  margin: 8px 0 0;
+  font-weight: 600;
+}

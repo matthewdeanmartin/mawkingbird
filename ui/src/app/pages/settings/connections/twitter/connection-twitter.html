@@ -1,0 +1,760 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.twitter.back' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.twitter.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.twitter.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<section class="honesty">
+  <h2 class="section-title">{{ 'settings.connections.twitter.honesty.title' | transloco }}</h2>
+  <p>
+    {{ 'settings.connections.twitter.honesty.intro' | transloco }}
+  </p>
+  <ul>
+    <li>
+      <strong>{{ 'settings.connections.twitter.honesty.noFreeApi.lead' | transloco }}</strong
+      >{{ 'settings.connections.twitter.honesty.noFreeApi.body' | transloco }}
+    </li>
+    <li>
+      <strong>{{ 'settings.connections.twitter.honesty.refuseBrowsers.lead' | transloco }}</strong
+      >{{ 'settings.connections.twitter.honesty.refuseBrowsers.body' | transloco }}
+    </li>
+    <li>
+      <strong>{{ 'settings.connections.twitter.honesty.readOnly.lead' | transloco }}</strong>
+      {{ 'settings.connections.twitter.honesty.readOnly.body' | transloco }}
+    </li>
+  </ul>
+  <p class="muted small">
+    {{ 'settings.connections.twitter.honesty.followMeaning' | transloco }}
+  </p>
+</section>
+
+@if (nextStep(); as step) {
+  <p class="next-step">
+    <strong>{{ 'settings.connections.twitter.nextStep' | transloco }}</strong>
+    {{ step }}
+  </p>
+} @else {
+  <p class="connection-ok">{{ 'settings.connections.twitter.workingOk' | transloco }}</p>
+}
+
+<p class="credential-warning small">
+  {{ 'settings.connections.twitter.credentialWarning' | transloco }}
+</p>
+
+@if (sources.length > 1) {
+  <section class="picker">
+    <h2 class="section-title">{{ 'settings.connections.twitter.services' | transloco }}</h2>
+    <ul class="provider-list">
+      @for (item of sources; track item.id) {
+        <li>
+          <button
+            class="provider"
+            type="button"
+            [class.chosen]="selected() === item.id"
+            (click)="choose(item.id)"
+          >
+            <span class="provider-text">
+              <span class="provider-name">
+                {{ item.label }}
+                @if (isActive(item.id)) {
+                  <span class="pill pill-active">{{
+                    'settings.connections.twitter.active' | transloco
+                  }}</span>
+                } @else if (hasKey(item.id)) {
+                  <span class="pill">{{
+                    'settings.connections.twitter.keySaved' | transloco
+                  }}</span>
+                }
+              </span>
+              <span class="provider-pitch muted small">{{ item.pitch }}</span>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+<section class="setup">
+  <h2 class="section-title">{{ entry().label }}</h2>
+  <p class="muted small">{{ entry().pricingNote }}</p>
+  <p class="small">
+    <a [href]="entry().keyUrl" target="_blank" rel="noopener noreferrer">
+      {{ 'settings.connections.twitter.getKeyFrom' | transloco }} {{ entry().label }} ↗
+    </a>
+  </p>
+
+  <label class="field">
+    <span class="field-label">{{ 'settings.connections.twitter.apiKey' | transloco }}</span>
+    <input
+      type="password"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Paste your {{ entry().label }} key"
+      [ngModel]="keyDraft()"
+      (ngModelChange)="keyDraft.set($event)"
+    />
+    @if (hasKey(entry().id)) {
+      <app-storage-badge [where]="where(entry().id)" />
+      <span class="muted small">
+        {{ 'settings.connections.twitter.keySavedNote' | transloco }}
+        @if (expiryLabel(settings.expiresAt()); as expiry) {
+          {{ 'settings.connections.twitter.keyExpiry' | transloco }} {{ expiry }}.
+        }
+      </span>
+    }
+  </label>
+
+  <div class="actions">
+    <button class="btn" type="button" [disabled]="busy() || !keyDraft().trim()" (click)="save()">
+      {{ 'settings.connections.twitter.saveAndTest' | transloco }}
+    </button>
+    @if (hasKey(entry().id)) {
+      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="test()">
+        {{ 'settings.connections.twitter.testConnection' | transloco }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="forget(entry().id)">
+        {{ 'settings.connections.twitter.disconnect' | transloco }}
+      </button>
+    }
+  </div>
+  <p class="muted small">
+    {{ 'settings.connections.twitter.testCost.a' | transloco }} {{ entry().label }}
+    {{ 'settings.connections.twitter.testCost.b' | transloco }}
+  </p>
+
+  @if (busy()) {
+    <p class="muted small">{{ 'settings.connections.twitter.testing' | transloco }}</p>
+  }
+  @if (notice()) {
+    <p class="connection-ok">{{ notice() }}</p>
+  }
+  @if (error()) {
+    <p class="feed-error">{{ error() }}</p>
+  }
+</section>
+
+<section class="proxy-status">
+  <h2 class="section-title">{{ 'settings.connections.twitter.proxy.title' | transloco }}</h2>
+  @if (proxyEntry(); as proxy) {
+    <p>
+      {{ 'settings.connections.twitter.proxy.using' | transloco }} <strong>{{ proxy.label }}</strong
+      >.
+      @if (hasConsent()) {
+        {{ 'settings.connections.twitter.proxy.consented.a' | transloco }} {{ entry().label }}
+        {{ 'settings.connections.twitter.proxy.consented.b' | transloco }}
+      } @else {
+        {{ 'settings.connections.twitter.proxy.notConsented' | transloco }}
+      }
+    </p>
+
+    @if (proxyStripsHeaders()) {
+      <p class="feed-error">
+        {{ proxy.label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.a' | transloco }}
+        {{ entry().label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.b' | transloco }}
+        <a [routerLink]="['/settings/connections/cors-proxy']">{{
+          'settings.connections.twitter.proxy.title' | transloco
+        }}</a
+        >.
+      </p>
+    }
+
+    @if (proxyNeedsRegistration(); as allowlist) {
+      <p class="muted small">
+        {{ allowlist.note }}
+        <a [href]="allowlist.dashboardUrl" target="_blank" rel="noopener noreferrer">
+          {{ 'settings.connections.twitter.proxy.openDashboard.a' | transloco }} {{ proxy.label }}
+          {{ 'settings.connections.twitter.proxy.openDashboard.b' | transloco }}
+        </a>
+      </p>
+    }
+
+    @if (hasConsent()) {
+      <button class="btn btn-outline" type="button" (click)="revokeConsent()">
+        {{ 'settings.connections.twitter.proxy.withdraw' | transloco }}
+      </button>
+    }
+  } @else {
+    <p>
+      {{ 'settings.connections.twitter.proxy.none.a' | transloco }} {{ entry().label }}
+      {{ 'settings.connections.twitter.proxy.none.b' | transloco }}
+    </p>
+    <p class="small">
+      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.connections.twitter.proxy.setUp' | transloco
+      }}</a>
+    </p>
+  }
+</section>
+
+@if (settings.hasKey(entry().id)) {
+  <section class="spend">
+    <h2 class="section-title">{{ 'settings.connections.twitter.spend.title' | transloco }}</h2>
+    <div class="spend-figures">
+      <span class="spend-stat">
+        <strong>{{ usage.today() }}</strong>
+        <span class="muted small">{{
+          'settings.connections.twitter.spend.today' | transloco
+        }}</span>
+      </span>
+      <span class="spend-stat">
+        <strong>{{ usage.total() }}</strong>
+        <span class="muted small">{{
+          'settings.connections.twitter.spend.total' | transloco
+        }}</span>
+      </span>
+      <span class="spend-stat">
+        <strong>{{ usage.remainingToday() }}</strong>
+        <span class="muted small">{{
+          'settings.connections.twitter.spend.remaining' | transloco
+        }}</span>
+      </span>
+      <!-- The only figure here that is not this browser's own bookkeeping: it
+           comes from the service, so it also counts spending from other devices
+           and prices each request in credits rather than in calls. -->
+      @if (balance(); as credits) {
+        <span class="spend-stat">
+          <strong>{{ credits.total | number }}</strong>
+          <span class="muted small">
+            {{
+              'settings.connections.twitter.spend.creditsLeft'
+                | transloco: { count: pagesRemaining() | number }
+            }}
+          </span>
+        </span>
+      }
+    </div>
+
+    <div class="actions">
+      <button
+        class="btn btn-outline btn-small"
+        type="button"
+        [disabled]="balanceLoading()"
+        (click)="checkBalance()"
+      >
+        {{
+          balanceLoading()
+            ? ('settings.connections.twitter.checking' | transloco)
+            : ('settings.connections.twitter.checkBalance' | transloco)
+        }}
+      </button>
+      <span class="muted small">{{ 'settings.connections.twitter.balanceFree' | transloco }}</span>
+    </div>
+    @if (balanceError(); as message) {
+      <p class="feed-error">{{ message }}</p>
+    }
+
+    @if (usage.atHardLimit()) {
+      <p class="feed-error">
+        {{
+          'settings.connections.twitter.spend.hardLimit' | transloco: { count: usage.hardLimit() }
+        }}
+      </p>
+    } @else if (usage.overSoftLimit()) {
+      <p class="spend-warning">
+        {{ 'settings.connections.twitter.spend.past.a' | transloco }} {{ usage.softLimit() }}
+        {{ 'settings.connections.twitter.spend.past.b' | transloco }}
+      </p>
+    }
+
+    <details class="spend-limits">
+      <summary class="small">{{ 'settings.connections.twitter.limits.title' | transloco }}</summary>
+      <p class="muted small">
+        {{ 'settings.connections.twitter.limits.intro' | transloco }}
+      </p>
+      <div class="limit-fields">
+        <label class="field">
+          <span class="field-label small">{{
+            'settings.connections.twitter.limits.warnAt' | transloco
+          }}</span>
+          <input
+            type="number"
+            min="1"
+            [ngModel]="softDraft()"
+            (ngModelChange)="softDraft.set($event)"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label small">{{
+            'settings.connections.twitter.limits.stopAt' | transloco
+          }}</span>
+          <input
+            type="number"
+            min="1"
+            [ngModel]="hardDraft()"
+            (ngModelChange)="hardDraft.set($event)"
+          />
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn btn-outline btn-small" type="button" (click)="saveLimits()">
+          {{ 'settings.connections.twitter.limits.save' | transloco }}
+        </button>
+        <button class="btn btn-outline btn-small" type="button" (click)="resetUsage()">
+          {{ 'settings.connections.twitter.limits.reset' | transloco }}
+        </button>
+      </div>
+    </details>
+    <p class="muted small">
+      {{ 'settings.connections.twitter.limits.countedNote' | transloco }}
+    </p>
+  </section>
+}
+
+<section class="follows">
+  <h2 class="section-title">{{ 'settings.connections.twitter.follows.title' | transloco }}</h2>
+
+  @if (!canFollow()) {
+    <p class="muted">
+      {{ 'settings.connections.twitter.follows.setupFirst' | transloco }}
+    </p>
+  } @else {
+    <p class="muted small">
+      {{ 'settings.connections.twitter.follows.intro.a' | transloco }} {{ followLimit }}
+      {{ 'settings.connections.twitter.follows.intro.b' | transloco }}
+    </p>
+
+    @if (!lookupResult()) {
+      <label class="field">
+        <span class="field-label">{{
+          'settings.connections.twitter.follows.handleLabel' | transloco
+        }}</span>
+        <input
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="@NASA"
+          [ngModel]="handleDraft()"
+          (ngModelChange)="handleDraft.set($event)"
+          (keyup.enter)="lookup()"
+        />
+      </label>
+      <div class="actions">
+        <button
+          class="btn"
+          type="button"
+          [disabled]="lookingUp() || !handleDraft().trim() || follows.atLimit()"
+          (click)="lookup()"
+        >
+          {{
+            lookingUp()
+              ? ('settings.connections.twitter.follows.lookingUp' | transloco)
+              : ('settings.connections.twitter.follows.lookUp' | transloco)
+          }}
+        </button>
+      </div>
+      @if (follows.atLimit()) {
+        <p class="muted small">
+          {{ 'settings.connections.twitter.follows.atMax.a' | transloco }} {{ followLimit }}
+          {{ 'settings.connections.twitter.follows.atMax.b' | transloco }}
+        </p>
+      }
+      @if (follows.follows().length >= comfortableLimit && !follows.atLimit()) {
+        <p class="muted small">
+          {{ 'settings.connections.twitter.follows.slowRefresh.a' | transloco }}
+          {{ follows.follows().length }}
+          {{ 'settings.connections.twitter.follows.slowRefresh.b' | transloco }}
+        </p>
+      }
+    } @else {
+      <div class="lookup-preview">
+        <p class="muted small">{{ 'settings.connections.twitter.follows.confirm' | transloco }}</p>
+        <div class="preview-card">
+          @if (lookupResult()!.avatar) {
+            <img
+              class="preview-avatar"
+              [src]="lookupResult()!.avatar"
+              alt=""
+              width="48"
+              height="48"
+            />
+          }
+          <div class="preview-text">
+            <strong>{{ lookupResult()!.display_name }}</strong>
+            <span class="muted">&#64;{{ lookupResult()!.username }}</span>
+            <span class="muted small">
+              {{
+                'settings.connections.twitter.follows.accountSummary'
+                  | transloco
+                    : {
+                        followers: (lookupResult()!.followers_count | number),
+                        posts: (lookupResult()!.statuses_count | number),
+                        postsWord: words().posts,
+                      }
+              }}
+            </span>
+            <a [href]="lookupResult()!.url" target="_blank" rel="noopener noreferrer" class="small">
+              {{ 'settings.connections.twitter.follows.viewOnTwitter' | transloco }}
+            </a>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" type="button" (click)="confirmFollow()">
+            {{ 'settings.connections.twitter.follows.followHandle' | transloco
+            }}{{ lookupResult()!.username }}
+          </button>
+          <button class="btn btn-outline" type="button" (click)="cancelLookup()">
+            {{ 'settings.connections.twitter.cancel' | transloco }}
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (followError()) {
+      <p class="feed-error">{{ followError() }}</p>
+    }
+    @if (followNotice()) {
+      <p class="connection-ok">{{ followNotice() }}</p>
+    }
+
+    @if (follows.follows().length) {
+      <div class="actions">
+        <!-- Rotation: refresh the accounts that have gone longest without,
+             rather than everything. At 200 follows through a proxy that allows
+             60 requests a minute, "everything" is minutes of waiting, most of
+             it spent re-fetching accounts that were current a moment ago. -->
+        @if (rotationCost() > 0) {
+          <button
+            class="btn btn-outline btn-small"
+            type="button"
+            [disabled]="refreshing() || usage.atHardLimit()"
+            (click)="refreshStalest()"
+          >
+            @if (refreshing() === 'rotation') {
+              {{ 'settings.connections.twitter.refresh.refreshing.a' | transloco }}
+              {{ rotationBatch }}
+              {{ 'settings.connections.twitter.refresh.refreshing.b' | transloco }}
+            } @else {
+              {{
+                (rotationCost() === 1
+                  ? 'settings.connections.twitter.refreshOldest.one'
+                  : 'settings.connections.twitter.refreshOldest.other'
+                ) | transloco: { count: rotationCost(), duration: rotationDuration() }
+              }}
+            }
+          </button>
+        }
+        <button
+          class="btn btn-outline btn-small"
+          type="button"
+          [disabled]="refreshing() || usage.atHardLimit()"
+          (click)="refreshAll()"
+        >
+          @if (refreshing() === 'all') {
+            {{ 'settings.connections.twitter.refresh.busy' | transloco }}
+          } @else if (refreshCost() === 0) {
+            {{ 'settings.connections.twitter.refresh.upToDate' | transloco }}
+          } @else {
+            {{
+              (refreshCost() === 1
+                ? 'settings.connections.twitter.refreshAll.one'
+                : 'settings.connections.twitter.refreshAll.other'
+              ) | transloco: { count: refreshCost(), duration: refreshDuration() }
+            }}
+          }
+        </button>
+        <!-- Costs nothing and spends nothing: for someone who wants the stored
+             posts gone, not someone who wants newer ones. -->
+        <button
+          class="btn btn-outline btn-small"
+          type="button"
+          [disabled]="refreshing() || storedCount() === 0"
+          (click)="clearCache()"
+        >
+          @if (storedCount() === 0) {
+            {{ 'settings.connections.twitter.posts.none' | transloco }}
+          } @else {
+            {{ 'settings.connections.twitter.posts.clear' | transloco }}{{ storedCount() }})
+          }
+        </button>
+      </div>
+      <p class="muted small">
+        {{ 'settings.connections.twitter.posts.note' | transloco }}
+      </p>
+      @if (refreshResult(); as result) {
+        <p [class]="result.stopped ? 'feed-error' : 'connection-ok'">{{ result.message }}</p>
+      }
+      <ul class="follow-list">
+        @for (f of follows.follows(); track f.username) {
+          <li class="follow-row">
+            <!-- The whole identity is the link. The profile page already reads
+                 `twitter:@handle` ids, so this row was the only place in the app
+                 where a followed account couldn't be opened. -->
+            <a class="follow-link" [routerLink]="['/accounts', 'twitter:@' + f.username]">
+              @if (f.avatar) {
+                <img class="follow-avatar" [src]="f.avatar" alt="" width="32" height="32" />
+              }
+              <span class="follow-text">
+                <strong>{{ f.displayName }}</strong>
+                <span class="muted small">&#64;{{ f.username }}</span>
+              </span>
+            </a>
+            <label class="follow-toggle small">
+              <input
+                type="checkbox"
+                [checked]="f.enabled"
+                (change)="toggleFollowEnabled(f.username, !f.enabled)"
+              />
+              {{ 'settings.connections.twitter.follows.show' | transloco }}
+            </label>
+            <button class="btn btn-outline btn-small" type="button" (click)="unfollow(f.username)">
+              {{ 'settings.connections.twitter.follows.unfollow' | transloco }}
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="muted small">
+        {{ 'settings.connections.twitter.follows.empty' | transloco }}
+      </p>
+    }
+  }
+</section>
+
+@if (canFollow()) {
+  <!-- The cheap path, and for most people the right one: you already know who
+       you want. Costs nothing and needs no lookups. -->
+  <section class="import">
+    <h2 class="section-title">{{ 'settings.connections.twitter.paste.title' | transloco }}</h2>
+    <p class="muted small">
+      <span [innerHTML]="'settings.connections.twitter.paste.hint' | transloco"></span>
+    </p>
+    <label class="field">
+      <span class="field-label">{{
+        'settings.connections.twitter.paste.handles' | transloco
+      }}</span>
+      <textarea
+        rows="4"
+        placeholder="&#64;AnthropicAI, &#64;OpenAI&#10;https://x.com/NASA"
+        [ngModel]="pasteDraft()"
+        (ngModelChange)="pasteDraft.set($event)"
+      ></textarea>
+    </label>
+    @if (pastePreview().length) {
+      <p class="muted small">
+        {{
+          'settings.connections.twitter.paste.readyToFollow'
+            | transloco: { count: pastePreview().length, names: pastePreviewLabel() }
+        }}
+      </p>
+    }
+    <div class="actions">
+      <button
+        class="btn"
+        type="button"
+        [disabled]="!pastePreview().length"
+        (click)="followPasted()"
+      >
+        {{
+          (pastePreview().length === 1
+            ? 'settings.connections.twitter.followPasted.one'
+            : 'settings.connections.twitter.followPasted.other'
+          ) | transloco: { count: pastePreview().length }
+        }}
+      </button>
+    </div>
+    @if (pasteResult(); as message) {
+      <p class="connection-ok">{{ message }}</p>
+    }
+  </section>
+
+  <section class="import">
+    <h2 class="section-title">{{ 'settings.connections.twitter.importer.title' | transloco }}</h2>
+    <p class="muted small">
+      {{ 'settings.connections.twitter.importer.intro' | transloco }}
+    </p>
+
+    <div class="import-form">
+      <label class="field">
+        <span class="field-label">{{
+          'settings.connections.twitter.importer.whose' | transloco
+        }}</span>
+        <input
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="@mistersql"
+          [ngModel]="importHandle()"
+          (ngModelChange)="importHandle.set($event)"
+          [disabled]="importer.running()"
+        />
+      </label>
+      <label class="field field-narrow">
+        <span class="field-label">{{
+          'settings.connections.twitter.importer.stopAfter' | transloco
+        }}</span>
+        <input
+          type="number"
+          min="1"
+          [max]="followLimit"
+          [ngModel]="importStopAfter()"
+          (ngModelChange)="importStopAfter.set(+$event)"
+          [disabled]="importer.running()"
+        />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button
+        class="btn"
+        type="button"
+        [disabled]="importer.running() || !importHandle().trim()"
+        (click)="startImport()"
+      >
+        {{
+          importer.phase() === 'listing'
+            ? ('settings.connections.twitter.importer.fetching' | transloco)
+            : ('settings.connections.twitter.importer.fetch' | transloco)
+        }}
+      </button>
+      @if (importer.running()) {
+        <button class="btn btn-outline" type="button" (click)="importer.stop()">
+          {{ 'settings.connections.twitter.importer.stop' | transloco }}
+        </button>
+      }
+      @if (importer.candidates().length && !importer.running()) {
+        <button class="btn btn-outline" type="button" (click)="importer.reset()">
+          {{ 'settings.connections.twitter.importer.clear' | transloco }}
+        </button>
+      }
+    </div>
+
+    @if (importer.error(); as message) {
+      <p class="feed-error">{{ message }}</p>
+    }
+
+    @if (importer.candidates().length) {
+      <p class="import-summary">
+        <span
+          [innerHTML]="
+            (importer.requests() === 1
+              ? 'settings.connections.twitter.importSummary.one'
+              : 'settings.connections.twitter.importSummary.other'
+            )
+              | transloco
+                : {
+                    keeping: importer.keeping().length,
+                    skipped: importer.excluded().length,
+                    requests: importer.requests(),
+                  }
+          "
+        ></span>
+      </p>
+
+      <!-- The expensive step, priced in minutes rather than money. The service
+           allows one request every five seconds on the free tier, so this is
+           the only thing here that takes real time. -->
+      <div class="import-liveness">
+        <label class="field field-narrow">
+          <span class="field-label">{{
+            'settings.connections.twitter.importer.skipSilent' | transloco
+          }}</span>
+          <input
+            type="number"
+            min="1"
+            [ngModel]="importInactiveDays()"
+            (ngModelChange)="importInactiveDays.set(+$event)"
+            [disabled]="importer.running()"
+          />
+          <span class="muted small">{{
+            'settings.connections.twitter.importer.days' | transloco
+          }}</span>
+        </label>
+        <button
+          class="btn btn-outline"
+          type="button"
+          [disabled]="importer.running() || !importer.unchecked().length"
+          (click)="checkLiveness()"
+        >
+          @if (importer.phase() === 'checking') {
+            {{ 'settings.connections.twitter.importer.checking.a' | transloco }}
+            {{ importer.checked() }}
+            {{ 'settings.connections.twitter.importer.checking.of' | transloco }}
+            {{ importer.candidates().length }}…
+          } @else if (!importer.unchecked().length) {
+            {{ 'settings.connections.twitter.importer.allChecked' | transloco }}
+          } @else {
+            {{ 'settings.connections.twitter.importer.skipDead.a' | transloco
+            }}{{ importer.unchecked().length }}
+            {{ 'settings.connections.twitter.importer.skipDead.b' | transloco
+            }}{{ importDuration() }})
+          }
+        </button>
+      </div>
+      <p class="muted small">
+        {{ 'settings.connections.twitter.importer.checkingNote' | transloco }}
+        @if (importer.throttled()) {
+          <strong>{{ 'settings.connections.twitter.importer.throttled' | transloco }}</strong>
+        }
+      </p>
+
+      <ul class="import-list">
+        @for (c of importer.candidates(); track c.userId) {
+          <li class="import-row" [class.excluded]="c.excluded">
+            @if (c.avatar) {
+              <img class="follow-avatar" [src]="c.avatar" alt="" width="32" height="32" />
+            }
+            <span class="follow-text">
+              <strong>{{ c.displayName }}</strong>
+              <span class="muted small">&#64;{{ c.username }}</span>
+              @if (c.excluded) {
+                <span class="muted small">{{ c.excluded }}</span>
+              } @else if (c.lastPostedAt) {
+                <span class="muted small"
+                  >{{ 'settings.connections.twitter.importer.lastPosted' | transloco }}
+                  {{ c.lastPostedAt.slice(0, 10) }}</span
+                >
+              }
+            </span>
+            <button
+              class="btn btn-outline btn-small"
+              type="button"
+              (click)="importer.toggle(c.userId)"
+            >
+              {{
+                c.excluded
+                  ? ('settings.connections.twitter.importer.include' | transloco)
+                  : ('settings.connections.twitter.importer.skip' | transloco)
+              }}
+            </button>
+          </li>
+        }
+      </ul>
+
+      <div class="actions">
+        <button
+          class="btn"
+          type="button"
+          [disabled]="importer.running() || !importer.keeping().length"
+          (click)="applyImport()"
+        >
+          {{
+            (importer.keeping().length === 1
+              ? 'settings.connections.twitter.importAccounts.one'
+              : 'settings.connections.twitter.importAccounts.other'
+            ) | transloco: { count: importer.keeping().length }
+          }}
+        </button>
+      </div>
+    }
+
+    @if (importResult(); as message) {
+      <p class="connection-ok">{{ message }}</p>
+    }
+  </section>
+}
+
+@if (consentPrompt(); as prompt) {
+  <app-twitter-consent-dialog
+    [source]="prompt.source"
+    [proxy]="prompt.proxy"
+    (accepted)="acceptConsent()"
+    (cancelled)="declineConsent()"
+  />
+}

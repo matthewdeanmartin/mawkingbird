@@ -1,0 +1,76 @@
+/* Tabs match ListTimeline and the client-list page — a bundle is the same kind of
+   thing with a different feed source. */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+}
+
+.page-head {
+  padding: 16px 16px 8px;
+}
+
+.page-head h1 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.page-head p {
+  margin: 0;
+}
+
+/* The tags themselves are the bundle's definition, so they sit above the feed where
+   they can be read and edited rather than behind a settings affordance. */
+.bundle-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 10px;
+}
+
+.bundle-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  background: var(--col-bg);
+}
+
+.bundle-tag a {
+  text-decoration: none;
+}
+
+.bundle-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 16px 10px;
+}
+
+.bundle-add input {
+  flex: 1;
+  min-width: 0;
+}
+
+.bundle-note {
+  padding: 0 16px 10px;
+  margin: 0;
+}

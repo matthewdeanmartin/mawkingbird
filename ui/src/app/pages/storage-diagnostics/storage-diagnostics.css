@@ -1,0 +1,46 @@
+/* Page-specific styling. The frame — sections, tiles, tables, storage rows —
+   comes from diagnostics-shared.css, which this page and Observability both
+   pull in. */
+
+/* The largest-key tile holds a key name that can be far wider than the tile;
+   the full key is in the row below and in the tile's tooltip. */
+.tile-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- quota bar */
+.quota-bar {
+  margin-top: 12px;
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 20%, transparent);
+  overflow: hidden;
+}
+
+.quota-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+/* ------------------------------------------------------------- tier tags */
+.tier-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.tier-tag[data-tier='paid'] {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.tier-tag[data-tier='free'] {
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
+  color: var(--muted);
+}

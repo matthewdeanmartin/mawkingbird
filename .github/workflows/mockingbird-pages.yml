@@ -1,0 +1,102 @@
+# Source: mawkingbird. Custom-domain host: mastodon_mock; github.io host: mawkingbird.
+---
+name: Deploy Mawkingbird production
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to publish (branch, tag, or commit SHA)
+        required: true
+        default: main
+        type: string
+concurrency:
+  group: gh-pages-branch
+  cancel-in-progress: false
+jobs:
+  build:
+    if: ${{ vars.MAWKINGBIRD_PUBLISH_ENABLED == 'true' }}
+    name: Build and deploy production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      CUSTOM_DOMAIN: mawkingbird.com
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6.4.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - name: Configure production host deploy key
+        env:
+          PAGES_DEPLOY_KEY: ${{ secrets.MASTODON_MOCK_PAGES_DEPLOY_KEY }}
+        run: bash .github/scripts/configure-pages-key.sh
+      - name: Stamp build info
+        run: node ui/scripts/gen-build-info.mjs
+      - name: Build Mocking Bird
+        run: make mockingbird MOCKINGBIRD_BASE_HREF=/
+      - name: Stamp Bluesky OAuth metadata
+        run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/
+      - name: Add SPA 404 fallback
+        run: cp ui/dist-mockingbird/browser/404-subpath-redirect.html ui/dist-mockingbird/browser/404.html
+      - name: Add custom domain
+        run: printf '%s' "$CUSTOM_DOMAIN" > ui/dist-mockingbird/browser/CNAME
+      - name: Publish production to gh-pages
+        env:
+          PUBLISH_REMOTE: git@github.com:matthewdeanmartin/mastodon_mock.git
+        run: bash .github/scripts/publish-gh-pages.sh root ui/dist-mockingbird/browser
+
+  mirror:
+    if: ${{ vars.MAWKINGBIRD_PUBLISH_ENABLED == 'true' }}
+    name: Build and deploy github.io mirror
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pages: write
+    env:
+      MIRROR_BASE_HREF: /mawkingbird/
+      MIRROR_REPOSITORY: matthewdeanmartin/mawkingbird
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6.4.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - name: Stamp build info
+        run: node ui/scripts/gen-build-info.mjs
+      - name: Build github.io mirror
+        run: make mockingbird MOCKINGBIRD_BASE_HREF="$MIRROR_BASE_HREF"
+      - name: Stamp mirror Bluesky OAuth metadata
+        run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://matthewdeanmartin.github.io/mawkingbird/
+      - name: Add mirror SPA fallback
+        run: |
+          cp ui/dist-mockingbird/browser/404-subpath-redirect.html ui/dist-mockingbird/browser/404.html
+          sed -i "s|var SITE_BASE = '/';|var SITE_BASE = '$MIRROR_BASE_HREF';|" \
+            ui/dist-mockingbird/browser/404.html
+      - name: Verify mirror layout
+        run: |
+          grep --fixed-strings '<base href="/mawkingbird/"/>' ui/dist-mockingbird/browser/index.html
+          grep --fixed-strings "var SITE_BASE = '/mawkingbird/';" ui/dist-mockingbird/browser/404.html
+          test ! -e ui/dist-mockingbird/browser/CNAME
+      - name: Publish github.io mirror
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/publish-gh-pages.sh root ui/dist-mockingbird/browser
+      - name: Request mirror Pages build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api --method POST repos/matthewdeanmartin/mawkingbird/pages/builds

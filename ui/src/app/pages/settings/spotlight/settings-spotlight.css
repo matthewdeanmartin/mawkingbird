@@ -1,0 +1,118 @@
+.small {
+  font-size: 13px;
+}
+
+/* Visible to a screen reader only — the row's checkbox has no visible label of
+   its own, because the ad's title right next to it is the label a sighted user
+   reads. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.spotlight-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spotlight-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.spotlight-row:last-child {
+  border-bottom: 0;
+}
+
+/* Dimmed, but never dimmed *alone*: every off row also carries a text pill
+   saying so, because opacity is not a state anyone can read. */
+.spotlight-off {
+  opacity: 0.55;
+}
+
+.spotlight-switch {
+  padding-top: 3px;
+}
+
+.spotlight-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.spotlight-detail p {
+  margin: 0;
+}
+
+.spotlight-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.spotlight-url {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.spotlight-clicks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  margin: 0;
+  text-align: right;
+}
+
+.spotlight-clicks strong {
+  font-size: 17px;
+}
+
+.pill {
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill-on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.spotlight-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+@media (max-width: 700px) {
+  /* The click tally drops under the copy rather than squeezing it. */
+  .spotlight-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .spotlight-clicks {
+    grid-column: 2;
+    align-items: flex-start;
+    text-align: left;
+  }
+}

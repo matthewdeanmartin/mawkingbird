@@ -1,0 +1,178 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="closed.emit()"
+  (keyup.escape)="closed.emit()"
+>
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="add-feed-title"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="add-feed-title">{{ 'pages.rss.addFeed.pasteLink' | transloco }}</h3>
+    <p class="muted small">
+      {{ 'pages.rss.addFeed.intro' | transloco }}
+    </p>
+
+    <form (ngSubmit)="resolve()">
+      <!-- Deliberately type="text": type="url" would reject a handle
+           (@alice@example.social) and a bare domain before this ever sees them,
+           which is exactly the input this box exists to accept. -->
+      <input
+        type="text"
+        name="pasted"
+        placeholder="https://example.com"
+        autocomplete="off"
+        spellcheck="false"
+        [ngModel]="input()"
+        (ngModelChange)="input.set($event)"
+        [disabled]="busy()"
+      />
+
+      @if (error(); as msg) {
+        <p class="feed-error">{{ msg }}</p>
+      }
+
+      @if (retryable()) {
+        <p class="retry-line">
+          <button class="btn btn-outline btn-sm" type="button" (click)="retryViaProxy()">
+            {{
+              'pages.rss.addFeed.tryAgainVia' | transloco: { proxy: proxySettings.chosen()?.label }
+            }}
+          </button>
+        </p>
+      }
+
+      @if (resolution(); as result) {
+        <!-- A bare domain: offered, never fetched on the user's behalf. -->
+        @if (result.kind === 'suggestion') {
+          <p class="resolved-line">
+            {{ 'pages.rss.addFeed.didYouMean' | transloco }}
+            <button class="link-btn" type="button" (click)="acceptSuggestion(result.url)">
+              {{ result.url }}</button
+            >{{ 'pages.rss.addFeed.question' | transloco }}
+          </p>
+        }
+
+        <!-- A fediverse account. Following is the real answer here: it gets
+             replies, boosts and notifications, where the RSS feed gets public
+             posts in a reader and nothing else. RSS stays available, below,
+             because it is occasionally right — a very high-volume account you
+             want to read rather than follow, or one your server has defederated. -->
+        @if (result.kind === 'account') {
+          <div class="resolved account">
+            <img class="avatar" [src]="result.account.avatar" alt="" />
+            <div class="account-text">
+              <span class="account-name">{{
+                result.account.display_name || result.account.username
+              }}</span>
+              <span class="muted small">&#64;{{ result.account.acct }}</span>
+            </div>
+            @if (followed()) {
+              <span class="done small">{{ 'pages.rss.addFeed.followingDone' | transloco }}</span>
+            } @else if (!anonymous()) {
+              <button class="btn btn-sm" type="button" [disabled]="busy()" (click)="follow()">
+                {{
+                  (following() ? 'pages.rss.addFeed.following' : 'pages.rss.addFeed.follow')
+                    | transloco
+                }}
+              </button>
+            }
+          </div>
+
+          @if (followed()) {
+            <p class="resolved-line">
+              <button class="link-btn" type="button" (click)="viewAccount(result.account)">
+                {{ 'pages.rss.addFeed.viewProfile' | transloco }}
+              </button>
+            </p>
+          } @else if (anonymous()) {
+            <p class="muted small resolved-line">
+              {{ 'pages.rss.addFeed.followingNeedsAccount' | transloco }}
+            </p>
+            <p class="resolved-line">
+              <button
+                class="btn btn-sm"
+                type="button"
+                [disabled]="busy()"
+                (click)="subscribeToAccountRss()"
+              >
+                {{ 'pages.rss.addFeed.subscribeByRss' | transloco }}
+              </button>
+            </p>
+          } @else {
+            <p class="muted small resolved-line">
+              {{ 'pages.rss.addFeed.or' | transloco }}
+              <button
+                class="link-btn"
+                type="button"
+                [disabled]="busy()"
+                (click)="subscribeToAccountRss()"
+              >
+                {{ 'pages.rss.addFeed.subscribeByRssInstead' | transloco }}</button
+              >{{ 'pages.rss.addFeed.ifRatherRead' | transloco }}
+            </p>
+          }
+        }
+
+        <!-- Several feeds on one page — the WordPress default (main feed,
+             comments feed, per-category feeds). The best guess is pre-picked so
+             the lazy path is one click, and every alternative stays visible so a
+             wrong guess costs a click rather than a baffling subscription. -->
+        @if (result.kind === 'feeds' && result.feeds.length > 1) {
+          <fieldset class="candidates">
+            <legend class="muted small">
+              {{
+                'pages.rss.addFeed.sitePublishesFeeds' | transloco: { count: result.feeds.length }
+              }}
+            </legend>
+            @for (feed of result.feeds; track feed.url) {
+              <label class="candidate">
+                <input
+                  type="radio"
+                  name="candidate"
+                  [value]="feed.url"
+                  [checked]="pick()?.url === feed.url"
+                  (change)="choose(feed.url)"
+                />
+                <span class="candidate-text">
+                  <span class="candidate-title">{{ feed.title }}</span>
+                  <span class="muted small candidate-url">{{ feed.url }}</span>
+                </span>
+              </label>
+            }
+          </fieldset>
+        }
+      }
+
+      <div class="dialog-actions">
+        <button class="btn btn-outline" type="button" (click)="closed.emit()">
+          {{ (followed() ? 'pages.rss.done' : 'pages.rss.cancel') | transloco }}
+        </button>
+        @if (feeds().length > 1) {
+          <button class="btn" type="button" [disabled]="busy()" (click)="subscribe()">
+            {{
+              (adding() ? 'pages.rss.addFeed.checking' : 'pages.rss.addFeed.subscribe') | transloco
+            }}
+          </button>
+        } @else if (!account()) {
+          <button class="btn" type="submit" [disabled]="!input().trim() || busy()">
+            @if (resolving()) {
+              {{ 'pages.rss.addFeed.looking' | transloco }}
+            } @else if (adding()) {
+              {{ 'pages.rss.addFeed.checking' | transloco }}
+            } @else {
+              {{ 'pages.rss.addFeed.continue' | transloco }}
+            }
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>

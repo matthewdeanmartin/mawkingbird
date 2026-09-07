@@ -1,0 +1,43 @@
+.dir-blurb,
+.dir-note {
+  padding: 0 16px 8px;
+  margin: 0;
+}
+
+.dir-controls {
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+}
+
+.dir-local {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dir-more {
+  display: block;
+  margin: 16px auto;
+}

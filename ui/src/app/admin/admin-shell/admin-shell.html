@@ -1,0 +1,33 @@
+<div class="tabs">
+  <a class="tab" routerLink="/admin/accounts" routerLinkActive="active">{{
+    'adminShell.accounts' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/reports" routerLinkActive="active">{{
+    'adminShell.reports' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/domains" routerLinkActive="active">{{
+    'adminShell.domainBlocks' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/domain-allows" routerLinkActive="active">{{
+    'adminShell.domainAllows' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/email-blocks" routerLinkActive="active">{{
+    'adminShell.emailBlocks' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/canonical-blocks" routerLinkActive="active">{{
+    'adminShell.canonicalEmails' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/ip-blocks" routerLinkActive="active">{{
+    'adminShell.ipBlocks' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/announcements" routerLinkActive="active">{{
+    'adminShell.announcements' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/trends" routerLinkActive="active">{{
+    'adminShell.trends' | transloco
+  }}</a>
+  <a class="tab" routerLink="/admin/metrics" routerLinkActive="active">{{
+    'adminShell.metrics' | transloco
+  }}</a>
+</div>
+<router-outlet />

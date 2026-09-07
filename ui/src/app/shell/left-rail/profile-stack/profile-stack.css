@@ -1,0 +1,201 @@
+.stack {
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* --- peeking tabs (the part of a card that sticks out) --- */
+.peek {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  /* The extra bottom padding is the part that slides under the next card. */
+  padding: 7px 12px 14px;
+  margin-bottom: -8px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  background: var(--rail-bg, var(--col-bg));
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    transform 0.12s ease;
+}
+
+.peek:hover,
+.peek:focus-visible {
+  background: var(--hover);
+  transform: translateY(-2px);
+}
+
+.peek-badge {
+  flex: none;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.peek-avatar {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--hover);
+}
+
+.peek-name {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.peek-handle {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- the open card --- */
+.card {
+  /* Painted last, so it covers the overlapped edge of the tabs above it. */
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--rail-bg, var(--col-bg));
+  overflow: hidden;
+}
+
+.banner {
+  display: block;
+  height: 78px;
+  background: var(--accent);
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-body {
+  padding: 0 14px 12px;
+}
+
+.profile-avatar {
+  display: inline-block;
+  margin-top: -28px;
+  border: 3px solid var(--col-bg);
+  border-radius: 50%;
+  line-height: 0;
+}
+
+.profile-avatar img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--hover);
+}
+
+.profile-network {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.active-pill {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--accent-soft, var(--hover));
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.profile-name {
+  display: block;
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.profile-handle {
+  display: block;
+  font-size: 13px;
+}
+
+.profile-bio {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  /* Bios can run long; the rail is not the profile page. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.profile-stats {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.profile-stats a,
+.profile-stats .stat {
+  display: flex;
+  flex-direction: column;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.profile-stats a:hover .stat-value {
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.stat-value {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.profile-link {
+  display: block;
+  margin-top: 10px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-link:hover {
+  text-decoration: none;
+}
+
+.switch-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+}

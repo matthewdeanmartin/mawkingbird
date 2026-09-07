@@ -1,0 +1,70 @@
+<div class="tabs">
+  <button class="tab" [class.active]="!resolved()" (click)="setResolved(false)">
+    {{ 'adminReports.tabs.open' | transloco }}
+  </button>
+  <button class="tab" [class.active]="resolved()" (click)="setResolved(true)">
+    {{ 'adminReports.tabs.resolved' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminReports.loading' | transloco }}</p>
+} @else if (!reports().length) {
+  <p class="muted center">
+    {{ (resolved() ? 'adminReports.empty.resolved' : 'adminReports.empty.open') | transloco }}
+  </p>
+} @else {
+  @for (r of reports(); track r.id) {
+    <div class="report">
+      <div class="report-head">
+        <span class="cat">{{ r.category }}</span>
+        @if (r.target_account) {
+          <span>
+            {{ 'adminReports.item.against' | transloco }}
+            <a [routerLink]="['/accounts', r.target_account.id]"
+              ><strong>{{ r.target_account.username }}</strong></a
+            >
+          </span>
+        }
+        @if (r.account) {
+          <span class="muted">{{
+            'adminReports.item.by' | transloco: { username: r.account.username }
+          }}</span>
+        }
+      </div>
+      @if (r.comment) {
+        <p class="comment">{{ r.comment }}</p>
+      }
+      @if (r.statuses.length) {
+        <p class="muted small">
+          {{
+            (r.statuses.length === 1
+              ? 'adminReports.statusCount.one'
+              : 'adminReports.statusCount.other'
+            ) | transloco: { count: r.statuses.length }
+          }}
+        </p>
+      }
+      <div class="report-actions">
+        @if (r.assigned_account) {
+          <span class="muted small">{{
+            'adminReports.item.assignedTo' | transloco: { username: r.assigned_account.username }
+          }}</span>
+        } @else if (!resolved()) {
+          <button class="op" (click)="assign(r)">
+            {{ 'adminReports.actions.assignToMe' | transloco }}
+          </button>
+        }
+        @if (resolved()) {
+          <button class="op" (click)="reopen(r)">
+            {{ 'adminReports.actions.reopen' | transloco }}
+          </button>
+        } @else {
+          <button class="op" (click)="resolve(r)">
+            {{ 'adminReports.actions.resolve' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+}

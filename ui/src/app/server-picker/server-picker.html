@@ -1,0 +1,69 @@
+<div class="server-combo">
+  <div class="server-field">
+    <input
+      type="text"
+      role="combobox"
+      [attr.aria-label]="'serverPicker.instanceAria' | transloco"
+      aria-autocomplete="list"
+      aria-controls="picker-suggest-list"
+      [attr.aria-expanded]="suggestOpen() && serverSuggestions().length > 0"
+      [ngModel]="customServer()"
+      (ngModelChange)="onServerInput($event)"
+      (focus)="onServerFocus()"
+      (blur)="onServerBlur()"
+      (keyup.enter)="applyServerNow()"
+      [placeholder]="'serverPicker.instancePlaceholder' | transloco"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
+    @if (suggestOpen() && serverSuggestions().length) {
+      <ul id="picker-suggest-list" class="server-suggest" role="listbox">
+        @for (s of serverSuggestions(); track s.domain) {
+          <li role="option" [attr.aria-selected]="false">
+            <button type="button" class="suggest-row" (mousedown)="chooseSuggestion(s)">
+              <span class="suggest-top">
+                <span class="suggest-domain">{{ s.domain }}</span>
+                @if (s.category) {
+                  <span class="suggest-cat">{{ s.category }}</span>
+                }
+                @if (sizeLabel(s.users)) {
+                  <span class="muted suggest-size">· {{ sizeLabel(s.users) }}</span>
+                }
+              </span>
+              @if (s.description) {
+                <span class="muted suggest-desc">{{ s.description }}</span>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>
+<p class="server-status muted small" aria-live="polite">
+  @switch (serverStatus()) {
+    @case ('checking') {
+      {{ 'serverPicker.checking' | transloco: { server: customServer() } }}
+    }
+    @case ('ok') {
+      <strong>{{ 'serverPicker.connected' | transloco: { server: hostLabel() } }}</strong>
+      @if (serverTitle()) {
+        ({{ serverTitle() }})
+      }
+    }
+    @case ('degraded') {
+      ⚠ <strong>{{ 'serverPicker.connected' | transloco: { server: hostLabel() } }}</strong
+      ><span>{{
+        'serverPicker.mediaBlocked'
+          | transloco: { media: mediaHost() || ('serverPicker.mediaServer' | transloco) }
+      }}</span>
+      <button class="text-button" type="button" (click)="useDegradedServer()">
+        {{ 'serverPicker.useAnyway' | transloco }}
+      </button>
+    }
+    @case ('unreachable') {
+      {{ 'serverPicker.unreachable' | transloco: { server: customServer() } }}
+    }
+  }
+</p>

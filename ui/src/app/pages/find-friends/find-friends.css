@@ -1,0 +1,64 @@
+.intro {
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.doc-row:hover {
+  background: var(--bg);
+}
+
+.doc-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Section headings. The page is one long list of rows, so these need enough
+   weight to break it into "start here" and "once you know what you want". */
+.ff-heading {
+  margin: 0;
+  padding: 20px 16px 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ff-sub {
+  margin: 0;
+  padding: 0 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Interest links: a wrapped row of chips, not list rows. They are one word
+   each, and stacking twelve of them full-width would out-shout the starter
+   kits above — which are the better first move for most people. */
+.ff-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ff-interest {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ff-interest:hover {
+  background: var(--bg);
+  border-color: var(--accent, var(--border));
+}

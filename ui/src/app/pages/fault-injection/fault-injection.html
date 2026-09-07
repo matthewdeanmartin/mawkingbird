@@ -1,0 +1,133 @@
+<h1>{{ 'pages.faultInjection.title' | transloco }}</h1>
+<p class="muted">
+  {{ 'pages.faultInjection.intro' | transloco }}
+  <code>/api/v1/_mock/*</code> {{ 'pages.faultInjection.introExempt' | transloco }}
+</p>
+
+<div class="rule-form">
+  <h2>{{ 'pages.faultInjection.addRuleHeading' | transloco }}</h2>
+  <div class="row">
+    <label>
+      {{ 'pages.faultInjection.methodLabel' | transloco }}
+      <input
+        type="text"
+        [ngModel]="method()"
+        (ngModelChange)="method.set($event)"
+        [attr.placeholder]="'pages.faultInjection.methodPlaceholder' | transloco"
+      />
+    </label>
+    <label>
+      {{ 'pages.faultInjection.pathLabel' | transloco }}
+      <input
+        type="text"
+        [ngModel]="path()"
+        (ngModelChange)="path.set($event)"
+        placeholder="/api/v1/statuses"
+      />
+    </label>
+  </div>
+  <div class="row">
+    <label class="grow">
+      {{ 'pages.faultInjection.pathRegexLabel' | transloco }}
+      <input
+        type="text"
+        [ngModel]="pathRegex()"
+        (ngModelChange)="pathRegex.set($event)"
+        placeholder="^/api/v1/statuses/\d+$"
+      />
+    </label>
+  </div>
+  <div class="row">
+    <label>
+      {{ 'pages.faultInjection.effectLabel' | transloco }}
+      <select [ngModel]="effectType()" (ngModelChange)="effectType.set($event)">
+        <option value="status">{{ 'pages.faultInjection.effectStatus' | transloco }}</option>
+        <option value="ratelimit">{{ 'pages.faultInjection.effectRatelimit' | transloco }}</option>
+        <option value="latency">{{ 'pages.faultInjection.effectLatency' | transloco }}</option>
+        <option value="timeout">{{ 'pages.faultInjection.effectTimeout' | transloco }}</option>
+        <option value="malformed">{{ 'pages.faultInjection.effectMalformed' | transloco }}</option>
+      </select>
+    </label>
+    @if (needsStatus()) {
+      <label>
+        {{ 'pages.faultInjection.httpStatusLabel' | transloco }}
+        <input type="number" [ngModel]="status()" (ngModelChange)="status.set($event)" />
+      </label>
+    }
+    @if (needsDelay()) {
+      <label>
+        {{ 'pages.faultInjection.delayLabel' | transloco }}
+        <input type="number" [ngModel]="delayMs()" (ngModelChange)="delayMs.set($event)" />
+      </label>
+    }
+    <label>
+      {{ 'pages.faultInjection.fireCountLabel' | transloco }}
+      <input
+        type="number"
+        [ngModel]="count()"
+        (ngModelChange)="count.set($event)"
+        placeholder="∞"
+      />
+    </label>
+  </div>
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+  <button class="btn" [disabled]="adding()" (click)="addRule()">
+    {{ (adding() ? 'pages.faultInjection.adding' : 'pages.faultInjection.addRule') | transloco }}
+  </button>
+</div>
+
+<div class="rule-list">
+  <div class="rule-list-head">
+    <h2>{{ 'pages.faultInjection.activeRulesHeading' | transloco }}</h2>
+    @if (rules().length) {
+      <button class="link" (click)="clearAll()">
+        {{ 'pages.faultInjection.clearAll' | transloco }}
+      </button>
+    }
+  </div>
+  @if (loading()) {
+    <p class="muted center">{{ 'pages.faultInjection.loading' | transloco }}</p>
+  } @else if (!rules().length) {
+    <p class="muted center">{{ 'pages.faultInjection.noRules' | transloco }}</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>{{ 'pages.faultInjection.colId' | transloco }}</th>
+          <th>{{ 'pages.faultInjection.colMatch' | transloco }}</th>
+          <th>{{ 'pages.faultInjection.colEffect' | transloco }}</th>
+          <th>{{ 'pages.faultInjection.colRemaining' | transloco }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rules(); track r.id) {
+          <tr>
+            <td>{{ r.id }}</td>
+            <td>
+              {{ r.match.methods?.join(',') || ('pages.faultInjection.anyMethod' | transloco) }}
+              {{ r.match.path || r.match.path_regex || '*' }}
+            </td>
+            <td>
+              {{ r.effect.type }}
+              @if (r.effect.status) {
+                ({{ r.effect.status }})
+              }
+              @if (r.effect.delay_ms) {
+                {{ 'pages.faultInjection.msValue' | transloco: { ms: r.effect.delay_ms } }}
+              }
+            </td>
+            <td>{{ r.remaining ?? '∞' }}</td>
+            <td>
+              <button class="link" (click)="remove(r.id)">
+                {{ 'pages.faultInjection.remove' | transloco }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

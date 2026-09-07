@@ -1,0 +1,66 @@
+<div class="chooser-wrap">
+  <div class="chooser-card">
+    <h1 class="chooser-title">{{ 'loginChooser.title' | transloco }}</h1>
+    <!--
+      Copy has to work for someone who has never heard the word "fediverse", so
+      each door describes what the user recognises — the name of the thing they
+      signed up for — rather than the protocol underneath it.
+    -->
+    <p class="chooser-sub muted">
+      {{ 'loginChooser.subtitle' | transloco }}
+    </p>
+
+    <div class="doors">
+      <a class="door" routerLink="/login/mastodon" [queryParams]="adding ? { add: 1 } : null">
+        <span class="door-badge" aria-hidden="true">🐘</span>
+        <span class="door-body">
+          <span class="door-name">{{ 'loginChooser.mastodon' | transloco }}</span>
+          <span class="door-hint muted small">
+            {{ 'loginChooser.mastodonHint' | transloco }}
+          </span>
+        </span>
+      </a>
+
+      <a class="door" routerLink="/login/bluesky" [queryParams]="adding ? { add: 1 } : null">
+        <span class="door-badge" aria-hidden="true">🦋</span>
+        <span class="door-body">
+          <span class="door-name">{{ 'loginChooser.bluesky' | transloco }}</span>
+          <span class="door-hint muted small">
+            {{ 'loginChooser.blueskyHint' | transloco }}
+          </span>
+        </span>
+      </a>
+    </div>
+
+    <!-- For anyone who took the wrong door. Quiet, but a real way out. -->
+    <p class="chooser-out small">
+      <!-- `/anonymous`, not `/`: someone declining the login question here has
+           already been asked it. `/` would seed a preview and ask again. -->
+      {{ 'loginChooser.notSure' | transloco }}
+      <a routerLink="/anonymous">{{ 'loginChooser.anonymousLink' | transloco }}</a>
+      {{ 'loginChooser.instead' | transloco }}
+    </p>
+
+    <!--
+      Analytics opt-out. Keeps its original reasoning through two moves (login
+      page → front page → here): a visitor who has not signed in is exactly the
+      person most likely to want it, and they should not have to create an
+      account to find the switch. This is the signed-out page in the current
+      flow, so this is where it belongs.
+    -->
+    <div class="chooser-privacy">
+      <label class="checkline">
+        <input
+          type="checkbox"
+          name="analytics"
+          [ngModel]="prefs.analytics()"
+          (ngModelChange)="prefs.setAnalytics($event)"
+        />
+        {{ 'loginChooser.countViews' | transloco }}
+      </label>
+      <p class="muted small">
+        {{ 'loginChooser.privacy' | transloco }}
+      </p>
+    </div>
+  </div>
+</div>

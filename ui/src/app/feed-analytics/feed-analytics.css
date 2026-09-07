@@ -1,0 +1,369 @@
+/* Deliberately mirrors account-analytics.css: same tiles, sections, bars and
+   chart titles, so the two analytics surfaces read as one feature. */
+
+.sample-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+}
+
+.sample-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.load-more-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.load-more-btn:hover {
+  background: var(--hover);
+}
+
+.load-more-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.highlights {
+  margin: 0;
+  padding: 12px 16px 12px 34px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.highlights li {
+  margin: 2px 0;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.tile-label {
+  font-size: 12.5px;
+}
+
+.tile-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.footnote {
+  margin: 10px 0 0;
+}
+
+.chart-title {
+  margin: 16px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* --- Share rows: one labelled bar per category --- */
+
+.share-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.share-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  min-width: 0;
+}
+
+a.share-row.linked {
+  color: var(--text);
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border-radius: 8px;
+}
+
+a.share-row.linked:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.row-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+
+.share-name {
+  flex: 0 0 34%;
+  min-width: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-name small {
+  font-weight: 400;
+}
+
+.share-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--hover);
+  overflow: hidden;
+}
+
+.share-bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.share-value {
+  flex: 0 0 110px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- Label/value pairs --- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.stat-grid > span {
+  color: var(--muted, inherit);
+  opacity: 0.75;
+}
+
+/* --- Chips --- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+a.chip:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.chip small {
+  opacity: 0.7;
+}
+
+.plain-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+.plain-list li {
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+
+.plain-list small {
+  margin-left: 6px;
+}
+
+.link-btn {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- Bars (hour/day histograms) --- */
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 72px;
+}
+
+.bars.labelled {
+  height: 92px;
+}
+
+.bar-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  transition: height 0.2s ease;
+}
+
+.bar-label {
+  margin-top: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* --- Top posts --- */
+
+.top-post {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.rank {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+.top-post-card {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* --- Concentration table --- */
+
+.conc-table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.conc-table th,
+.conc-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.conc-table th {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+}
+
+.conc-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.conc-table .ellipsis {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .share-name {
+    flex-basis: 45%;
+  }
+
+  .share-value {
+    flex-basis: 84px;
+  }
+}

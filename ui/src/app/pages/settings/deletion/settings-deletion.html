@@ -1,0 +1,118 @@
+<div class="spage-head">
+  <h1>{{ 'settings.deletion.title' | transloco }}</h1>
+  <p>{{ 'settings.deletion.intro' | transloco }}</p>
+</div>
+
+<form class="spage-body" (ngSubmit)="save()">
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.deletion.section' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="enabled()"
+            (ngModelChange)="enabled.set($event)"
+            name="enabled"
+          />
+          {{ 'settings.deletion.enabled' | transloco }}
+        </label>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.deletion.age' | transloco }}</span>
+      <div class="scontrol">
+        <input
+          type="number"
+          min="1"
+          [ngModel]="minAgeDays()"
+          (ngModelChange)="minAgeDays.set($event)"
+          name="min_age_days"
+        />
+        <span class="hint">{{ 'settings.deletion.age.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.deletion.exceptions' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="keepPinned()"
+            (ngModelChange)="keepPinned.set($event)"
+            name="keep_pinned"
+          />
+          {{ 'settings.deletion.keepPinned' | transloco }}
+        </label>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="keepFavourited()"
+            (ngModelChange)="keepFavourited.set($event)"
+            name="keep_favourited"
+          />
+          {{ 'settings.deletion.keepFavourited' | transloco }}
+        </label>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="keepMedia()"
+            (ngModelChange)="keepMedia.set($event)"
+            name="keep_media"
+          />
+          {{ 'settings.deletion.keepMedia' | transloco }}
+        </label>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="keepPolls()"
+            (ngModelChange)="keepPolls.set($event)"
+            name="keep_polls"
+          />
+          {{ 'settings.deletion.keepPolls' | transloco }}
+        </label>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.deletion.minFavourites' | transloco }}</span>
+      <div class="scontrol">
+        <input
+          type="number"
+          min="0"
+          [ngModel]="minFavourites()"
+          (ngModelChange)="minFavourites.set($event)"
+          name="min_favourites"
+        />
+        <span class="hint">{{ 'settings.deletion.noThreshold' | transloco }}</span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.deletion.minReblogs' | transloco }}</span>
+      <div class="scontrol">
+        <input
+          type="number"
+          min="0"
+          [ngModel]="minReblogs()"
+          (ngModelChange)="minReblogs.set($event)"
+          name="min_reblogs"
+        />
+        <span class="hint">{{ 'settings.deletion.noThreshold' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sactions">
+    @if (saved()) {
+      <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+    }
+    <button class="btn" type="submit" [disabled]="saving()">
+      {{ (saving() ? 'common.saving' : 'common.saveChanges') | transloco }}
+    </button>
+  </div>
+</form>

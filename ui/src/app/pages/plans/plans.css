@@ -1,0 +1,66 @@
+/* Matches the comparison table on the Plus page (`.plus-benefits`) rather than
+   inventing a second table style — this page is the long form of that table and
+   should read as the same document. */
+
+.plans-body {
+  padding: 12px 16px 24px;
+  max-width: 720px;
+}
+
+.plans-body h2 {
+  font-size: 17px;
+  margin: 28px 0 8px;
+}
+
+.plans-body p {
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+/* The "you lose nothing" paragraph. Set off because it answers the question the
+   rest of the page is only evidence for. */
+.plans-lede {
+  border-left: 3px solid var(--accent, var(--border));
+  padding: 8px 12px;
+  margin: 16px 0 8px;
+  background: var(--hover);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Four columns of prose do not fit a phone. The table scrolls inside this,
+   rather than the page scrolling sideways. */
+.plans-scroll {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.plans-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.plans-table th,
+.plans-table td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.plans-table thead th {
+  background: var(--hover);
+  font-weight: 600;
+}
+
+/* The row heading names the capability; the three value cells carry the
+   comparison. Unlike the two-column table on the Plus page these are allowed to
+   wrap — "Read an article inside the app" on one line would push the three
+   plan columns off a phone entirely. */
+.plans-table tbody th {
+  font-weight: 600;
+}
+
+.plans-back {
+  margin-top: 28px;
+}

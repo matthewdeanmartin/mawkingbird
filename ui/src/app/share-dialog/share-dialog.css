@@ -1,0 +1,203 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.dialog {
+  position: relative;
+  width: 460px;
+  max-width: 100%;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--col-bg);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
+}
+
+.dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+h3,
+.dialog-heading p {
+  margin: 0;
+}
+
+.dialog-heading p {
+  margin-top: 4px;
+}
+
+.close {
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.targets {
+  margin: 18px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.targets legend {
+  padding: 0 4px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.targets label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 2px;
+  cursor: pointer;
+}
+
+.targets input {
+  margin-top: 3px;
+}
+
+.targets span,
+.targets small {
+  display: block;
+}
+
+.targets small {
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+/* Borrows the `.targets` shape so the POSSE opt-in reads as part of the same
+   form rather than a stray checkbox floating above the buttons. */
+.also-record {
+  margin: 18px 0 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.also-record input {
+  margin-top: 3px;
+}
+
+.also-record span,
+.also-record small {
+  display: block;
+}
+
+.also-record small {
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+.destinations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.destination {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface, var(--col-bg));
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.destination:hover,
+.destination:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.destination.native {
+  grid-column: 1 / -1;
+  font-weight: 700;
+}
+
+.copy-error {
+  margin: 10px 0 0;
+  color: #c01e50;
+  font-size: 13px;
+}
+
+.section {
+  margin-top: 16px;
+}
+
+.section h4 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.section p {
+  margin: 0 0 10px;
+}
+
+/* The in-app destinations are the better option wherever they appear, so they
+   read as the primary action and the hand-offs stay quiet. */
+.destination.post {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.quote {
+  margin: 0 0 4px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--col-hover, rgba(127, 127, 127, 0.08));
+  border-radius: 0 8px 8px 0;
+  font-size: 14px;
+  /* A long highlight must not push the destinations off the dialog. */
+  max-height: 6.5em;
+  overflow-y: auto;
+}
+
+.note {
+  margin: 8px 0 0;
+}
+
+.small {
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .destinations {
+    grid-template-columns: 1fr;
+  }
+
+  .destination.native {
+    grid-column: auto;
+  }
+}

@@ -1,0 +1,13 @@
+<main class="oauth-wrap">
+  <section class="oauth-card" aria-live="polite">
+    <span class="oauth-badge" aria-hidden="true">🦋</span>
+    @if (error(); as message) {
+      <h1>{{ 'blueskyOauth.errorTitle' | transloco }}</h1>
+      <p class="oauth-error" role="alert">{{ message }}</p>
+      <a class="oauth-button" routerLink="/login/bluesky">{{ 'blueskyOauth.back' | transloco }}</a>
+    } @else {
+      <h1>{{ 'blueskyOauth.finishing' | transloco }}</h1>
+      <p>{{ 'blueskyOauth.exchange' | transloco }}</p>
+    }
+  </section>
+</main>

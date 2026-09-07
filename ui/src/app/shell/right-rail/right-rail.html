@@ -1,0 +1,401 @@
+@for (ad of houseAds.visible(); track ad.id) {
+  <section class="card spotlight-card">
+    <a
+      class="spotlight-body"
+      [href]="ad.url"
+      target="_blank"
+      rel="noopener noreferrer"
+      (click)="houseAds.recordClick(ad.id)"
+    >
+      <span class="spotlight-heading">
+        <span class="spotlight-title">{{ ad.title }}</span>
+        <!-- Someone else's client or service, so say so rather than let it read
+             as one of ours. Nothing here is paid placement either way. -->
+        @if (ad.kind === 'endorsement') {
+          <span class="spotlight-kind">{{ 'shell.rail.endorsement' | transloco }}</span>
+        }
+      </span>
+      <span class="spotlight-text">{{ ad.text }}</span>
+      <span class="spotlight-cta">{{ ad.cta }}</span>
+    </a>
+    <p class="spotlight-disclosure muted">
+      <a routerLink="/settings/spotlight">{{ 'shell.rail.houseEndorsement' | transloco }}</a>
+      <!-- Outside the link above, or dismissing would open the advertiser. -->
+      <button
+        type="button"
+        class="spotlight-dismiss"
+        [attr.aria-label]="'shell.toast.dismiss' | transloco"
+        [attr.title]="'shell.rail.hideAd' | transloco"
+        (click)="houseAds.dismiss(ad.id)"
+      >
+        ✕
+      </button>
+    </p>
+  </section>
+}
+
+<!-- Just My Server narrows Home to one Mastodon instance. Bluesky has no
+     instances to narrow to, so for a Bluesky-primary account without a Mastodon
+     connector this is not merely empty, it is meaningless — and it calls
+     Mastodon list APIs there may be no token for. -->
+@if (auth.isAuthenticated && usableMastodon()) {
+  <section class="card server-mode-card">
+    <div class="server-mode-heading">
+      <div>
+        <span class="server-mode-kicker">{{ 'shell.rail.singleServerMode' | transloco }}</span>
+        <h2 class="card-title server-mode-title">{{ 'shell.rail.justMyServer' | transloco }}</h2>
+      </div>
+      <label
+        class="server-mode-switch"
+        [class.disabled]="!justMyServer.ready() && !justMyServer.enabled()"
+      >
+        <input
+          type="checkbox"
+          [checked]="justMyServer.enabled()"
+          [disabled]="(!justMyServer.ready() && !justMyServer.enabled()) || justMyServer.updating()"
+          (change)="justMyServer.requestEnabled($any($event.target).checked)"
+          [attr.aria-label]="'shell.rail.justMyServerAria' | transloco"
+        />
+        <span aria-hidden="true"></span>
+      </label>
+    </div>
+    <p class="muted server-mode-copy">
+      {{
+        'shell.rail.homeOnly'
+          | transloco: { server: justMyServer.homeHost() || ('shell.dead.thisServer' | transloco) }
+      }}
+    </p>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm server-mode-update"
+      [disabled]="justMyServer.preparing() || justMyServer.updating()"
+      (click)="justMyServer.prepareUpdate()"
+    >
+      {{
+        (justMyServer.preparing() ? 'shell.rail.checkingFriends' : 'shell.rail.updateMyServer')
+          | transloco
+      }}
+    </button>
+    @if (justMyServer.checking()) {
+      <p class="muted small server-mode-status">{{ 'shell.rail.checkingGenerated' | transloco }}</p>
+    } @else if (!justMyServer.ready() && !justMyServer.error()) {
+      <p class="muted small server-mode-status">
+        {{ 'shell.rail.updateBeforeEnable' | transloco }}
+      </p>
+    }
+    @if (justMyServer.result(); as result) {
+      <p class="small server-mode-status ok">
+        {{ 'shell.rail.updateResult' | transloco: result }}
+      </p>
+    }
+    @if (justMyServer.error()) {
+      <p class="small server-mode-status fail">{{ justMyServer.error() }}</p>
+    }
+  </section>
+}
+
+<!-- The counterpart to the Mastodon server-info card below, deliberately without
+     a donate block: Bluesky has no per-instance donation model and no instance
+     to fund, so that block does not exist here rather than being translated. -->
+@if (usableBluesky() && bskyService(); as svc) {
+  <section class="card bsky-service-card">
+    <h2 class="card-title">{{ 'shell.rail.yourBluesky' | transloco }}</h2>
+    <p class="bsky-handle">&#64;{{ svc.handle }}</p>
+    <p class="muted server-line">
+      {{ svc.host }} &middot;
+      {{ (svc.entryway ? 'shell.rail.entryway' : 'shell.rail.selfHosted') | transloco }}
+    </p>
+  </section>
+}
+
+<!-- Bluesky trends are *topics* linking to generated feeds, not hashtags linking
+     to tag timelines. Separate card, separate service, absolute bsky.app links —
+     forcing them into the Mastodon tag UI would produce dead links. Hidden
+     entirely when the unspecced endpoints refuse. -->
+@if (usableBluesky() && bskyTrends.trends().length) {
+  <section class="card">
+    <h2 class="card-title">{{ 'shell.rail.trendingBluesky' | transloco }}</h2>
+    @for (trend of bskyTrends.trends(); track trend.url) {
+      <a
+        class="rail-link bsky-trend"
+        [href]="trend.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        [title]="trend.description || trend.displayName"
+      >
+        <span class="bsky-trend-name">{{ trend.displayName }}</span>
+        @if (trend.postCount) {
+          <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
+        }
+      </a>
+    }
+  </section>
+}
+
+@if (usableMastodon()) {
+  <section class="card">
+    <h2 class="card-title">{{ 'shell.rail.fediverse' | transloco }}</h2>
+
+    <!-- Trends are not universal: some instances serve no trending links at all,
+       and a rail row leading to an error page reads as our bug. Hidden only
+       once the server has actually refused the endpoint. -->
+    @if (feedCaps.shows('trending-links')) {
+      <a class="rail-link" routerLink="/feeds/news">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m15.5 8.5-2 5-5 2 2-5z" />
+        </svg>
+        <span>{{ 'shell.rail.news' | transloco }}</span>
+      </a>
+    }
+    @if (feedCaps.shows('trending-statuses')) {
+      <a class="rail-link" routerLink="/feeds/trending">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 17l6-6 4 4 7-7M14 8h6v6" />
+        </svg>
+        <span>{{ 'shell.rail.trendingPosts' | transloco }}</span>
+      </a>
+    }
+    <a class="rail-link" routerLink="/feeds">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+      </svg>
+      <span>{{ 'shell.rail.allFeeds' | transloco }}</span>
+    </a>
+
+    <div class="donate-block">
+      <p class="donate-head muted">{{ 'shell.rail.keepNetworkRunning' | transloco }}</p>
+      <a class="donate-link" [href]="donateServerUrl()" target="_blank" rel="noopener noreferrer">
+        {{
+          'shell.rail.donateTo'
+            | transloco: { server: homeHost() || ('shell.dead.thisServer' | transloco) }
+        }}
+      </a>
+      @if (showSearchServerDonate()) {
+        <a
+          class="donate-link search-server-donate"
+          [href]="searchServer.donateUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ 'shell.rail.donateSearch' | transloco: { server: searchServer.host() } }}
+          <span class="muted small">{{ 'shell.rail.yourSearchServer' | transloco }}</span>
+        </a>
+      }
+      <a
+        class="donate-link"
+        href="https://joinmastodon.org/sponsors"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ 'shell.rail.donateMastodon' | transloco }}
+      </a>
+    </div>
+
+    @if (instance() || homeHost()) {
+      <div class="server-info">
+        @if (instance(); as info) {
+          <p class="server-title">{{ info.title }}</p>
+          <p class="muted server-line">{{ info.domain }} &middot; v{{ info.version }}</p>
+          <p class="muted server-line">
+            {{ 'shell.rail.activeThisMonth' | transloco: { count: info.usage.users.active_month } }}
+          </p>
+        }
+
+        <!-- Two servers are in play, so the card names two rather than one.
+             Without this the rail states a single server as *the* server while
+             every search silently goes somewhere else — and "why are my search
+             results from a different place" has no answer anywhere in the UI.
+             Roles rather than bare hostnames: which server does what is the
+             fact worth reading, and it is not inferable from a domain. -->
+        @if (searchServer.active()) {
+          <div class="server-roles">
+            <span
+              class="server-role"
+              [title]="
+                'shell.rail.feedsPostingTitle'
+                  | transloco: { server: homeHost() || ('shell.dead.thisServer' | transloco) }
+              "
+            >
+              <span class="server-role-what">{{ 'shell.rail.feedsPosting' | transloco }}</span>
+              <span class="server-role-host">{{
+                homeHost() || ('shell.dead.thisServer' | transloco)
+              }}</span>
+            </span>
+            <span
+              class="server-role"
+              [title]="'shell.rail.searchRunsOn' | transloco: { server: searchServer.host() }"
+            >
+              <span class="server-role-what">{{ 'shell.rail.search' | transloco }}</span>
+              <span class="server-role-host">{{ searchServer.host() }}</span>
+            </span>
+          </div>
+        }
+        <!-- The server's own announcements, counted here because this card is
+             where "what is this server" already lives. The callout fires only
+             on something the server marks unread — every live announcement is
+             "published", so keying on that would shout forever. -->
+        @if (announcements.total()) {
+          <a
+            class="server-announcements"
+            [class.has-unread]="announcements.hasUnread()"
+            routerLink="/server"
+          >
+            <span>{{ 'shell.rail.announcements' | transloco }}</span>
+            <span class="announcement-count">
+              @if (announcements.activeCount()) {
+                {{ announcements.activeCount() }}
+                @if (announcements.hasUnread()) {
+                  <span class="announcement-new">{{ 'shell.rail.new' | transloco }}</span>
+                }
+              } @else {
+                {{ 'shell.rail.allRead' | transloco }}
+              }
+            </span>
+          </a>
+          @if (announcements.activeCount()) {
+            <button
+              type="button"
+              class="btn btn-outline btn-sm dismiss-all"
+              (click)="announcements.dismissAll()"
+            >
+              {{ 'shell.rail.dismissAll' | transloco }}
+            </button>
+          }
+        }
+        <button
+          type="button"
+          class="btn btn-outline btn-sm share-server"
+          (click)="openShare()"
+          [attr.title]="'shell.rail.copyShareTitle' | transloco"
+        >
+          {{ 'shell.rail.shareServer' | transloco }}
+        </button>
+      </div>
+    }
+  </section>
+}
+
+@if (shareOpen()) {
+  <div
+    class="overlay"
+    role="presentation"
+    tabindex="-1"
+    (click)="closeShare()"
+    (keyup.escape)="closeShare()"
+  >
+    <div
+      class="dialog"
+      role="dialog"
+      aria-labelledby="share-server-title"
+      (click)="$event.stopPropagation()"
+      (keyup)="$event.stopPropagation()"
+    >
+      <h3 id="share-server-title">{{ 'shell.rail.shareServer' | transloco }}</h3>
+      <p class="muted small">
+        {{ 'shell.rail.shareDescription' | transloco: { server: homeHost() } }}
+      </p>
+      <div class="share-url-row">
+        <input
+          class="share-url"
+          type="text"
+          readonly
+          [value]="anonymousShareAbsoluteUrl()"
+          [attr.aria-label]="'shell.rail.shareLinkAria' | transloco"
+          (focus)="$any($event.target).select()"
+        />
+        <button class="btn" type="button" (click)="copyShareUrl()">
+          {{ 'shell.rail.copy' | transloco }}
+        </button>
+      </div>
+      @if (copyState() === 'copied') {
+        <p class="share-copy-note ok small">{{ 'shell.rail.copied' | transloco }}</p>
+      } @else if (copyState() === 'failed') {
+        <p class="share-copy-note fail small">
+          {{ 'shell.rail.copyFailed' | transloco }}
+        </p>
+      }
+      <div class="share-actions">
+        <button class="btn btn-outline" type="button" (click)="closeShare()">
+          {{ 'shell.rail.close' | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (justMyServer.dialogOpen()) {
+  <div
+    class="overlay"
+    role="presentation"
+    tabindex="-1"
+    (click)="justMyServer.closeDialog()"
+    (keyup.escape)="justMyServer.closeDialog()"
+  >
+    <div
+      class="dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="server-list-update-title"
+      (click)="$event.stopPropagation()"
+      (keyup)="$event.stopPropagation()"
+    >
+      <h3 id="server-list-update-title">{{ 'shell.rail.updateTitle' | transloco }}</h3>
+      @if (justMyServer.plan(); as plan) {
+        <p>
+          {{
+            'shell.rail.updatePrompt'
+              | transloco
+                : {
+                    addCount: plan.addIds.length,
+                    addWord:
+                      (plan.addIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
+                      | transloco,
+                    removeCount: plan.removeIds.length,
+                    removeWord:
+                      (plan.removeIds.length === 1
+                        ? 'shell.rail.user.one'
+                        : 'shell.rail.user.other'
+                      ) | transloco,
+                    server: justMyServer.homeHost(),
+                  }
+          }}
+        </p>
+        <p class="muted small">
+          <span
+            [innerHTML]="
+              'shell.rail.alreadyPresent'
+                | transloco: { count: plan.alreadyPresent, title: justMyServer.listTitle() }
+            "
+          ></span>
+        </p>
+      }
+      @if (justMyServer.updating()) {
+        <div class="server-mode-progress" role="status">
+          <progress [value]="justMyServer.completed()" [max]="justMyServer.total() || 1"></progress>
+          <span>{{ justMyServer.progressLabel() }}</span>
+        </div>
+      }
+      <div class="share-actions">
+        <button
+          class="btn btn-outline"
+          type="button"
+          [disabled]="justMyServer.updating()"
+          (click)="justMyServer.closeDialog()"
+        >
+          {{ 'shell.rail.cancel' | transloco }}
+        </button>
+        <button
+          class="btn"
+          type="button"
+          [disabled]="justMyServer.updating()"
+          (click)="justMyServer.confirmUpdate()"
+        >
+          {{
+            (justMyServer.updating() ? 'shell.rail.updating' : 'shell.rail.updateList') | transloco
+          }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,125 @@
+.posse-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.posse-count {
+  font-weight: 700;
+}
+
+.posse-actions .btn {
+  margin-left: auto;
+}
+
+.posse-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.posse-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.posse-icon {
+  flex: none;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.posse-body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.posse-excerpt,
+.posse-reply-text {
+  overflow-wrap: anywhere;
+}
+
+.posse-reply-text {
+  border-left: 2px solid var(--border);
+  padding-left: 8px;
+}
+
+.posse-entry .btn {
+  margin-left: auto;
+  flex: none;
+}
+
+/* Webmention delivery results.
+
+   Deliberately unemphatic. "No endpoint" is the *expected* outcome for
+   Mastodon, Bluesky, RSS and Twitter targets — every one of them. Styling it
+   as an error would put a red mark next to nearly every row and train the user
+   to ignore the whole section within a day. Only a genuine refusal is marked,
+   and only a genuine delivery is celebrated. */
+.delivery-results {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.delivery-results .section-head {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.delivery-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.delivery-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.delivery-state {
+  flex: none;
+  min-width: 92px;
+}
+
+.delivery-body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.delivery-who {
+  font-weight: 600;
+}
+
+.delivery-tick {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.delivery-refused {
+  color: var(--danger, #d33);
+}
+
+.building-note {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.delivery-detail {
+  overflow-wrap: anywhere;
+}
+
+.delivery-detail code {
+  font-size: 11.5px;
+}

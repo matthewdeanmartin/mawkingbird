@@ -1,0 +1,383 @@
+<div class="spage-head">
+  <h1>{{ 'settings.config.title' | transloco }}</h1>
+  <p>{{ 'settings.config.intro' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  <!--
+    Mawkingbird Plus sync, first because it is the one that needs no setup: the
+    URL-based sync below is still the right answer for publishing a setup or
+    driving a fleet of machines from one file you edit by hand.
+  -->
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.config.sync' | transloco }}</span>
+      <div class="scontrol">
+        <!-- Never asked, and entitled. The one-time offer. -->
+        @if (offersSync()) {
+          <p>
+            {{ 'settings.config.sync.offer' | transloco }}
+          </p>
+          <span class="hint">
+            {{ 'settings.config.sync.offer.hint.before' | transloco }}
+            <strong>{{ 'settings.config.sync.thisBrowser' | transloco }}</strong>
+            {{ 'settings.config.sync.offer.hint.after' | transloco }}
+          </span>
+          <div class="config-actions">
+            <button type="button" class="btn" (click)="enableSync()" [disabled]="profile.busy()">
+              {{ 'settings.config.sync.turnOn' | transloco }}
+            </button>
+            <button type="button" class="btn btn-outline" (click)="previewSyncUpload()">
+              {{ 'settings.config.sync.showUpload' | transloco }}
+            </button>
+            <button type="button" class="btn btn-outline" (click)="declineSync()">
+              {{ 'settings.config.sync.noThanks' | transloco }}
+            </button>
+          </div>
+          @if (syncPreview(); as keys) {
+            <div class="export-preview">
+              <p>{{ 'settings.config.sync.wouldSave' | transloco }}</p>
+              <ul>
+                @for (change of keys; track change.key) {
+                  <li>{{ configKeyLabelKey(change.key) | transloco }}</li>
+                }
+              </ul>
+              <button type="button" class="btn btn-outline" (click)="cancelSyncPreview()">
+                {{ 'common.close' | transloco }}
+              </button>
+            </div>
+          }
+        } @else if (offersRemote()) {
+          <!--
+            Settings exist on the account but this browser is not syncing — they
+            turned it on somewhere else. Neither silently pulling (settings
+            changing on their own is alarming) nor silently ignoring (they turned
+            it on for a reason) is honest, so it gets its own offer.
+          -->
+          <p>{{ 'settings.config.sync.remoteExists' | transloco }}</p>
+          <div class="config-actions">
+            <button type="button" class="btn" (click)="adoptRemote()" [disabled]="profile.busy()">
+              {{ 'settings.config.sync.useRemote' | transloco }}
+            </button>
+            <button type="button" class="btn btn-outline" (click)="declineSync()">
+              {{ 'settings.config.sync.notHere' | transloco }}
+            </button>
+          </div>
+        } @else if (offersResume()) {
+          <!--
+            Stopped here, or declined once. Previously this fell into the branch
+            below and rendered a status line with no controls whatsoever — an
+            off switch that could not be switched back on, which is the bug this
+            branch exists to fix. Not a prompt: a control on a page the user
+            navigated to on purpose.
+          -->
+          <span class="hint">{{ syncSummaryLine() }}</span>
+          <div class="config-actions">
+            <button type="button" class="btn" (click)="resumeSync()" [disabled]="profile.busy()">
+              {{
+                (profile.busy() ? 'settings.config.sync.turningOn' : 'settings.config.sync.resume')
+                  | transloco
+              }}
+            </button>
+          </div>
+          <span class="hint">
+            {{ 'settings.config.sync.resume.hint' | transloco }}
+          </span>
+        } @else {
+          <span class="hint">{{ syncSummaryLine() }}</span>
+          @if (profile.syncing()) {
+            <div class="config-actions">
+              <button
+                type="button"
+                class="btn btn-outline"
+                (click)="syncNow()"
+                [disabled]="profile.busy()"
+              >
+                {{
+                  (profile.busy() ? 'settings.config.sync.syncing' : 'settings.config.sync.syncNow')
+                    | transloco
+                }}
+              </button>
+              <button type="button" class="btn btn-outline" (click)="disableSync()">
+                {{ 'settings.config.sync.stop' | transloco }}
+              </button>
+            </div>
+            <span class="hint">
+              {{ 'settings.config.sync.stop.hint' | transloco }}
+            </span>
+          }
+        }
+
+        <!--
+          The one case that must ask: the remote moved AND this browser has
+          edits that were never saved. Either answer loses something, so it is
+          not ours to choose.
+        -->
+        @if (syncDecision(); as decision) {
+          <div
+            class="export-preview"
+            role="alertdialog"
+            [attr.aria-label]="'settings.config.conflict.aria' | transloco"
+          >
+            <p>
+              {{ 'settings.config.conflict' | transloco }}
+            </p>
+            @if (decision.changes.length) {
+              <p>{{ 'settings.config.conflict.differ' | transloco }}</p>
+              <ul>
+                @for (change of decision.changes; track change.key) {
+                  <li>
+                    <strong>{{ configChangeKey(change.action) | transloco }}:</strong>
+                    {{ configKeyLabelKey(change.key) | transloco }}
+                  </li>
+                }
+              </ul>
+            }
+            <div class="config-actions">
+              <button type="button" class="btn" (click)="useRemote()">
+                {{ 'settings.config.conflict.useOther' | transloco }}
+              </button>
+              <button type="button" class="btn btn-outline" (click)="keepLocal()">
+                {{ 'settings.config.conflict.keepLocal' | transloco }}
+              </button>
+              <button type="button" class="btn btn-outline" (click)="dismissDecision()">
+                {{ 'settings.config.conflict.later' | transloco }}
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (profile.readOnly()) {
+          <!--
+            `profile.readOnly()` is 402-driven and cross-checked against
+            `isSupporter()`, so this one really is an entitlement statement —
+            but it covers "never subscribed" as well as "lapsed", and saying
+            "lapsed" to someone who never subscribed accuses them of letting
+            something run out.
+          -->
+          <span class="hint">
+            {{ 'settings.config.readOnly' | transloco }}
+          </span>
+        }
+        @if (syncMessage()) {
+          <span class="export-status" role="status" aria-live="polite">{{ syncMessage() }}</span>
+        }
+        <!--
+          One error slot, not two. A failure gets `role="alert"` and the error
+          style, never the status style — that separation is how a failed upload
+          stopped being announced as "Saved this browser's settings." But the
+          component's own error and the service's were both rendered here, so a
+          402 seen by both showed the same sentence twice, stacked.
+        -->
+        @if (syncFailure(); as failure) {
+          <p class="config-error" role="alert">{{ failure }}</p>
+        }
+        @if (syncUploaded(); as uploaded) {
+          <div class="export-preview">
+            <p class="hint">{{ 'settings.config.savedFrom' | transloco }}</p>
+            <ul>
+              @for (preference of uploaded; track preference.key) {
+                <li>{{ preference.key | transloco }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.config.export' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="includePrivate()"
+            (ngModelChange)="includePrivate.set($event)"
+            name="includePrivate"
+          />
+          {{ 'settings.config.includePrivate' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.config.includePrivate.hint' | transloco }}
+        </span>
+        <div class="config-actions">
+          <button type="button" class="btn btn-outline" (click)="previewExport()">
+            {{ 'settings.config.previewJson' | transloco }}
+          </button>
+          <button type="button" class="btn" (click)="download()">
+            {{ 'settings.config.downloadJson' | transloco }}
+          </button>
+          <button type="button" class="btn btn-outline" (click)="copy()">
+            {{ 'settings.config.copyJson' | transloco }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="previewExport(true)"
+            [disabled]="busy()"
+          >
+            {{ 'settings.config.previewPublish' | transloco }}
+          </button>
+        </div>
+        @if (exportMessage()) {
+          <span class="export-status" role="status" aria-live="polite">{{
+            'settings.config.ok' | transloco: { message: exportMessage() }
+          }}</span>
+        }
+        <span class="hint">
+          {{ 'settings.config.export.hint' | transloco }}
+        </span>
+        @if (publishedUrl()) {
+          <span class="published-config">
+            <a [href]="publishedUrl()" target="_blank" rel="noopener">{{
+              'settings.config.openPublished' | transloco
+            }}</a>
+            · <a routerLink="/pastes">{{ 'settings.config.managePastes' | transloco }}</a>
+          </span>
+        }
+
+        @if (exportPreview()) {
+          <div class="export-preview">
+            <div class="preview-head">
+              <strong>{{
+                (publishPrepared()
+                  ? 'settings.config.publishPreview'
+                  : 'settings.config.exportPreview'
+                ) | transloco
+              }}</strong>
+              <button type="button" class="link" (click)="closeExportPreview()">
+                {{ 'settings.config.closeLower' | transloco }}
+              </button>
+            </div>
+            <textarea
+              rows="12"
+              readonly
+              [attr.aria-label]="'settings.config.jsonPreview.aria' | transloco"
+              [value]="exportPreview()"
+            ></textarea>
+            @if (publishPrepared()) {
+              <p class="hint">
+                {{ 'settings.config.publish.hint' | transloco }}
+              </p>
+              <button type="button" class="btn" (click)="publish()" [disabled]="busy()">
+                {{
+                  (busy() ? 'settings.config.publishing' : 'settings.config.publishNow') | transloco
+                }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.config.importFile' | transloco }}</span>
+      <div class="scontrol">
+        <input type="file" accept=".json,application/json" (change)="onFile($event)" />
+        <textarea
+          rows="7"
+          [attr.placeholder]="'settings.config.pastePlaceholder' | transloco"
+          [ngModel]="importText()"
+          (ngModelChange)="importText.set($event)"
+          name="configJson"
+        ></textarea>
+        <button type="button" class="btn btn-outline config-fit" (click)="previewPasted()">
+          {{ 'settings.config.previewPasted' | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.config.remoteUrl' | transloco }}</span>
+      <div class="scontrol">
+        <input
+          type="text"
+          inputmode="url"
+          [attr.placeholder]="'settings.config.remoteUrlPlaceholder' | transloco"
+          [ngModel]="remoteUrl()"
+          (ngModelChange)="remoteUrl.set($event)"
+          name="remoteUrl"
+        />
+        <div class="config-actions">
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="loadUrl()"
+            [disabled]="busy() || !remoteUrl().trim()"
+          >
+            {{ (busy() ? 'settings.config.checking' : 'settings.config.checkNow') | transloco }}
+          </button>
+          <select [ngModel]="frequency()" (ngModelChange)="frequency.set($event)" name="frequency">
+            <option value="manual">{{ 'settings.config.freq.manual' | transloco }}</option>
+            <option value="daily">{{ 'settings.config.freq.daily' | transloco }}</option>
+            <option value="weekly">{{ 'settings.config.freq.weekly' | transloco }}</option>
+          </select>
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="saveSource()"
+            [disabled]="!remoteResult()"
+          >
+            {{ 'settings.config.saveSource' | transloco }}
+          </button>
+          @if (sync.settings()) {
+            <button type="button" class="link" (click)="clearSource()">
+              {{ 'settings.config.removeSource' | transloco }}
+            </button>
+          }
+        </div>
+        <span class="hint">
+          {{ syncSummary() }} {{ 'settings.config.remote.hint' | transloco }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  @if (preview(); as config) {
+    <div class="ssection config-preview">
+      <h2>{{ 'settings.config.importPreview' | transloco }}</h2>
+      <p class="hint">
+        {{
+          'settings.config.schemaLine'
+            | transloco
+              : {
+                  schema: config.schemaVersion,
+                  privacy:
+                    (config.privacy === 'private'
+                      ? 'settings.config.privacy.private'
+                      : 'settings.config.privacy.standard'
+                    ) | transloco,
+                  exported: config.exportedAt,
+                }
+        }}
+      </p>
+      @if (changes().length) {
+        <ul>
+          @for (change of changes(); track change.key) {
+            <li>
+              <strong>{{ change.action }}</strong> <code>{{ change.key }}</code>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p>{{ 'settings.config.noChanges' | transloco }}</p>
+      }
+      <button type="button" class="btn" (click)="apply()" [disabled]="!changes().length">
+        {{ 'settings.config.importReload' | transloco }}
+      </button>
+    </div>
+  }
+
+  @if (message()) {
+    <p class="config-message" aria-live="polite">{{ message() }}</p>
+  }
+  @if (error()) {
+    <p class="config-error" role="alert">{{ error() }}</p>
+  }
+</div>

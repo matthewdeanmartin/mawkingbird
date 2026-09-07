@@ -1,0 +1,289 @@
+/* The refinement layer's styles, shared by BOTH search panels.
+   ------------------------------------------------------------------
+   Listed in `styleUrls` by `search.ts` and `bluesky-search-panel.ts` rather
+   than copied into each. Angular's emulated encapsulation rewrites this file
+   once per component, so each gets its own correctly-scoped copy of the same
+   rules — which is the only way two sibling components can share a class
+   vocabulary without one reaching into the other's DOM.
+
+   Why a file instead of a copy: the Bluesky panel *was* a hand-copy of these
+   rules under `bsky-` names, and it drifted — filters ended up above the
+   results instead of beside them, facets became chip-buttons instead of
+   checkboxes, and the two networks stopped looking like one product. A shared
+   file makes that class of drift impossible: change a rule here and both
+   panels move together.
+
+   What belongs here: anything rendered by both panels' refine layer. What does
+   not: page chrome (the search bar, saved-search menu, search-server row) which
+   only `search.css` renders, and anything genuinely specific to one network. */
+
+/* --- Refine bar: filter box, group-by, sort --- */
+
+.refine-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.refine-filter {
+  flex: 1;
+  min-width: 160px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.group-by {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-by {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-by select {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: inherit;
+  font-size: 13px;
+}
+
+/* Segmented control, matched to chat's .seg so the app reads as one system. */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.seg button {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 13px;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seg button + button {
+  border-left: 1px solid var(--border);
+}
+
+.seg button.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  font-weight: 700;
+}
+
+/* --- Facets --- */
+
+.refine-facets {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.refine-facets > summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.facet {
+  margin-top: 10px;
+}
+
+.facet-label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.facet-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.facet-count {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+/* Counts sit in a column, so they must not jitter as digits change width. */
+.facet-value .facet-count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Flood control (author exclusion + repeat collapsing) --- */
+
+.flood-control {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.exclude-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exclude-row .facet-value {
+  flex: 1;
+  min-width: 0;
+}
+
+/* An excluded author stays listed (with their count) so the exclusion can be
+   undone knowingly — dimmed, not removed. */
+.exclude-row.excluded .facet-value span:not(.facet-count) {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.muted-flag {
+  flex: none;
+  font-style: italic;
+}
+
+/* A button that reads as a link: used for low-weight inline actions next to
+   real controls, where a second .btn would compete with the primary one. */
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--accent, #1d9bf0);
+  cursor: pointer;
+  white-space: nowrap;
+  flex: none;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.collapse-note {
+  margin: 2px 0 0 26px;
+}
+
+/* Sits under the post it stands in for, indented so the pair reads as one row. */
+.repeat-note {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0 8px 16px;
+  border-left: 2px solid var(--border);
+  margin-left: 8px;
+}
+
+.repeat-list {
+  margin-left: 8px;
+  border-left: 2px solid var(--border);
+}
+
+/* --- Result counters and grouping headers --- */
+
+.result-status {
+  padding: 10px 16px;
+}
+
+.group-head {
+  padding: 12px 16px 4px;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted, #777);
+  border-top: 1px solid var(--border);
+}
+
+/* --- API-call budget --- */
+
+.budget-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.budget-row select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+/* Numeric account facets (followers / following / posts min–max). */
+.num-facet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 6px 0 4px;
+}
+
+.num-facet {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.num-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.num-range input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+/* Heading that separates network-specific facets from the shared ones, so it is
+   never ambiguous which controls exist on both networks and which don't. */
+.facet-group-label {
+  margin: 14px 0 2px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Advanced-panel fields that filter loaded results rather than being sent to the
+   server. Set apart because the rest of the panel only takes effect on
+   "Apply & search", and these take effect as you type. */
+.client-side-fields {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+.client-side-fields .facet-label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}

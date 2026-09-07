@@ -1,0 +1,61 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/dist-mockingbird
+/dist-admin
+/dist-migration
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/.test-results
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+/mockingbird_handdrawn.zip
+
+# Translation work orders: regenerated on demand by `make i18n-todo L=xx`.
+# The context and stamps beside them ARE committed; only the todo is disposable.
+i18n-context/todo-*.md
+
+# Agent translation drafts, work orders, source snapshots and review scratch.
+/.i18n-work/
+# Catch legacy scratch paths too; new work belongs in .i18n-work/<locale>/.
+/tmp_zh_*
+/tmp_uk_*
+/fix_one_tmp.cjs
+/fix_syntax_tmp.cjs

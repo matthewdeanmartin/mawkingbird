@@ -1,0 +1,114 @@
+/* Matches the list-timeline members tab, so "members" looks the same whether
+   the feed has a real roster or an emergent one. */
+
+.sample-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+}
+
+.sample-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.sample-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.sample-btn:hover {
+  background: var(--hover);
+}
+
+.sample-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.member-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.member-row .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.acct {
+  font-size: 13px;
+}
+
+.bot-tag,
+.follow-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.follow-tag {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.share {
+  white-space: nowrap;
+  font-size: 13px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.share small {
+  display: block;
+  opacity: 0.7;
+}

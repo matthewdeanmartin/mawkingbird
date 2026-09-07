@@ -1,0 +1,92 @@
+.bulk-progress {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  background: var(--col-bg);
+}
+
+/* Amber while the server is holding us off, so a stalled-looking job reads as
+   "waiting on purpose" at a glance rather than "broken". */
+.bulk-progress.is-paused {
+  border-color: #d97706;
+}
+
+.bp-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bp-actions {
+  flex: none;
+}
+
+.progress-track {
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--border);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.is-paused .progress-fill {
+  background: #d97706;
+}
+
+/* No total yet: sweep a partial bar instead of implying a percentage. */
+.progress-track.indeterminate .progress-fill {
+  width: 35% !important;
+  animation: bp-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes bp-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(285%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-track.indeterminate .progress-fill {
+    animation: none;
+    width: 100% !important;
+    opacity: 0.4;
+  }
+}
+
+.bp-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin: 8px 0 0;
+}
+
+.bp-pct {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-paused {
+  color: #d97706;
+  font-weight: 600;
+}
+
+.bp-failed {
+  color: #e0245e;
+}
+
+.bp-target {
+  margin-left: 6px;
+}

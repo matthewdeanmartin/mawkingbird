@@ -1,0 +1,255 @@
+<div class="spage-head">
+  <h1>{{ 'pages.links.title' | transloco }}</h1>
+  <p>{{ 'pages.links.intro' | transloco }}</p>
+</div>
+
+@if (blocked(); as reason) {
+  <section class="setup-callout">
+    <p>{{ reason }}</p>
+    <a class="btn" [routerLink]="['/settings/connections/link-shortener']">
+      {{ 'pages.links.setup' | transloco }}
+    </a>
+    <p class="muted small">{{ 'pages.links.setupProviders' | transloco }}</p>
+  </section>
+} @else if (entry(); as service) {
+  <form class="create-form" (ngSubmit)="create()">
+    <h2 class="section-title">
+      {{ 'pages.links.newWith' | transloco: { service: service.label } }}
+    </h2>
+
+    <label class="field">
+      <span class="field-label">{{ 'pages.links.destination' | transloco }}</span>
+      <input
+        type="url"
+        name="destination"
+        autocomplete="off"
+        [placeholder]="'pages.links.destinationPlaceholder' | transloco"
+        [ngModel]="destination()"
+        (ngModelChange)="destination.set($event)"
+      />
+    </label>
+
+    @if (capabilities(); as caps) {
+      <div class="field-row">
+        @if (caps.customSlug) {
+          <label class="field">
+            <span class="field-label"
+              >{{ 'pages.links.customBackHalf' | transloco }}
+              <span class="muted small">{{ 'pages.links.optional' | transloco }}</span></span
+            >
+            <input
+              type="text"
+              name="slug"
+              autocomplete="off"
+              [placeholder]="'pages.links.slugPlaceholder' | transloco"
+              [ngModel]="slug()"
+              (ngModelChange)="slug.set($event)"
+            />
+          </label>
+        }
+        @if (caps.title) {
+          <label class="field">
+            <span class="field-label"
+              >{{ 'pages.links.titleLabel' | transloco }}
+              <span class="muted small">{{ 'pages.links.optional' | transloco }}</span></span
+            >
+            <input
+              type="text"
+              name="title"
+              autocomplete="off"
+              [ngModel]="title()"
+              (ngModelChange)="title.set($event)"
+            />
+          </label>
+        }
+        @if (caps.description) {
+          <label class="field">
+            <span class="field-label"
+              >{{ 'pages.links.description' | transloco }}
+              <span class="muted small">{{ 'pages.links.optional' | transloco }}</span></span
+            >
+            <input
+              type="text"
+              name="description"
+              autocomplete="off"
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+            />
+          </label>
+        }
+      </div>
+    }
+
+    <button class="btn" type="submit" [disabled]="creating() || !destination().trim()">
+      {{ (creating() ? 'pages.links.shortening' : 'pages.links.shorten') | transloco }}
+    </button>
+  </form>
+}
+
+<section class="list-head">
+  <h2 class="section-title">{{ 'pages.links.yourLinks' | transloco }}</h2>
+  <form class="search-form" (ngSubmit)="reload()">
+    <input
+      type="search"
+      name="linkSearch"
+      [placeholder]="'pages.links.searchPlaceholder' | transloco"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+    <button class="btn btn-outline" type="submit" [disabled]="loading()">
+      {{ (loading() ? 'pages.links.loading' : 'pages.links.search') | transloco }}
+    </button>
+  </form>
+</section>
+
+@if (notice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (error(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}
+
+@if (!loading() && !links().length) {
+  <p class="muted empty">{{ 'pages.links.empty' | transloco }}</p>
+}
+
+<ul class="link-list">
+  @for (record of links(); track key(record)) {
+    <li class="link-row" [class.busy]="busyRow() === key(record)">
+      @if (editing() === key(record)) {
+        <form class="edit-form" (ngSubmit)="saveEdit(record)">
+          <label class="field">
+            <span class="field-label">{{ 'pages.links.destination' | transloco }}</span>
+            <input
+              type="url"
+              name="editDestination"
+              [ngModel]="editDestination()"
+              (ngModelChange)="editDestination.set($event)"
+            />
+          </label>
+          @if (capabilities()?.title) {
+            <label class="field">
+              <span class="field-label">{{ 'pages.links.titleLabel' | transloco }}</span>
+              <input
+                type="text"
+                name="editTitle"
+                [ngModel]="editTitle()"
+                (ngModelChange)="editTitle.set($event)"
+              />
+            </label>
+          }
+          @if (capabilities()?.customSlug) {
+            <label class="field">
+              <span class="field-label">{{ 'pages.links.backHalf' | transloco }}</span>
+              <input
+                type="text"
+                name="editSlug"
+                [ngModel]="editSlug()"
+                (ngModelChange)="editSlug.set($event)"
+              />
+            </label>
+          }
+          <div class="row-actions">
+            <button class="btn" type="submit" [disabled]="busyRow() === key(record)">
+              {{ 'pages.links.save' | transloco }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="cancelEdit()">
+              {{ 'pages.links.cancel' | transloco }}
+            </button>
+          </div>
+        </form>
+      } @else {
+        <div class="link-main">
+          <a class="short-url" [href]="record.shortUrl" target="_blank" rel="noopener noreferrer">
+            {{ record.shortUrl }}
+          </a>
+          @if (record.title) {
+            <span class="link-title">{{ record.title }}</span>
+          }
+          @if (isMessage(record)) {
+            <!-- A message link's "destination" is the post body encoded into a
+                 query string. Showing it raw would be a wall of percent-escapes,
+                 so the row says what the link is instead. -->
+            <span class="destination muted small">
+              {{ 'pages.links.messageDestination' | transloco }}
+            </span>
+          } @else {
+            <a
+              class="destination muted small"
+              [href]="record.destinationUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ record.destinationUrl }}</a
+            >
+          }
+          <span class="meta muted small">
+            <span class="origin">{{ record.provider }}</span>
+            @if (isMessage(record)) {
+              <span aria-hidden="true">·</span>
+              <span class="kind-tag">{{ 'pages.links.message' | transloco }}</span>
+            }
+            <span aria-hidden="true">·</span>
+            <span>{{ record.recordedAt | humanTime }}</span>
+            @if (record.expiresAt) {
+              <span aria-hidden="true">·</span>
+              <span>
+                {{ 'pages.links.expires' | transloco: { time: record.expiresAt | humanTime } }}
+              </span>
+            }
+          </span>
+        </div>
+
+        <div class="row-actions">
+          @if (readOnly(record)) {
+            <span class="muted small">
+              @if (isMessage(record)) {
+                {{ 'pages.links.readOnly.message' | transloco }}
+              } @else if (record.readOnly) {
+                {{ 'pages.links.readOnly.anonymous' | transloco }}
+              } @else if (record.provider !== settings.activeId()) {
+                {{
+                  'pages.links.readOnly.switchProvider' | transloco: { provider: record.provider }
+                }}
+              } @else {
+                {{ 'pages.links.readOnly.unsupported' | transloco }}
+              }
+            </span>
+          } @else if (confirmingDelete() === key(record)) {
+            <span class="muted small">{{ 'pages.links.deleteConfirm' | transloco }}</span>
+            <button class="btn btn-danger" type="button" (click)="remove(record)">
+              {{ 'pages.links.delete' | transloco }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="confirmingDelete.set(null)">
+              {{ 'pages.links.keep' | transloco }}
+            </button>
+          } @else {
+            @if (canEdit(record)) {
+              <button class="btn btn-outline" type="button" (click)="startEdit(record)">
+                {{ 'pages.links.edit' | transloco }}
+              </button>
+            }
+            @if (canDelete(record)) {
+              <button
+                class="btn btn-outline"
+                type="button"
+                (click)="confirmingDelete.set(key(record))"
+              >
+                {{ 'pages.links.delete' | transloco }}
+              </button>
+            }
+          }
+        </div>
+      }
+    </li>
+  }
+</ul>
+
+@if (consentPrompt(); as prompt) {
+  <app-proxy-consent-dialog
+    [shortener]="prompt.shortener"
+    [proxy]="prompt.proxy"
+    [carriesCredential]="prompt.carriesCredential"
+    (accepted)="acceptConsent()"
+    (cancelled)="declineConsent()"
+  />
+}

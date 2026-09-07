@@ -1,0 +1,56 @@
+<div class="wb-wrap">
+  <div class="wb-card">
+    <p class="eyebrow muted">{{ 'pagesWelcomeBack.eyebrow' | transloco }}</p>
+    <h1 [innerHTML]="'pagesWelcomeBack.heading' | transloco: { server: serverHost() }"></h1>
+
+    <p class="lead" [innerHTML]="'pagesWelcomeBack.lead' | transloco: { server: serverHost() }"></p>
+
+    <ol class="steps">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h2>{{ 'pagesWelcomeBack.step1.title' | transloco }}</h2>
+          <!-- A phone has no Ctrl + D. Telling someone to press it as step one of
+               two is not merely useless: it stalls the whole sign-up. -->
+          @if (touchOnly) {
+            <p class="muted">{{ 'pagesWelcomeBack.step1.bodyTouch' | transloco }}</p>
+          } @else {
+            <p
+              class="muted"
+              [innerHTML]="'pagesWelcomeBack.step1.body' | transloco: { hint: bookmarkHint }"
+            ></p>
+          }
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h2>{{ 'pagesWelcomeBack.step2.title' | transloco: { server: serverHost() } }}</h2>
+          <p class="muted">
+            {{ 'pagesWelcomeBack.step2.body' | transloco }}
+          </p>
+          @if (signupUrl(); as url) {
+            <a class="btn btn-outline" [href]="url" target="_blank" rel="noopener">
+              {{ 'pagesWelcomeBack.step2.open' | transloco: { server: serverHost() } }}
+            </a>
+          }
+        </div>
+      </li>
+    </ol>
+
+    <div class="done">
+      <p>{{ 'pagesWelcomeBack.done.prompt' | transloco }}</p>
+      <button class="btn btn-hero" (click)="goSignIn()">
+        {{ 'pagesWelcomeBack.done.signIn' | transloco }}
+      </button>
+    </div>
+
+    <p class="muted small helper">
+      {{ 'pagesWelcomeBack.helper.stillChoosing' | transloco }}
+      <a href="https://joinmastodon.org/servers" target="_blank" rel="noopener">
+        {{ 'pagesWelcomeBack.helper.browse' | transloco }}
+      </a>
+    </p>
+  </div>
+  <app-app-footer />
+</div>

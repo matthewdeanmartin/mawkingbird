@@ -1,0 +1,35 @@
+.github-form,
+.github-linked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.github-form input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.github-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.github-linked .names {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.github-proof {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid rgb(43 138 62 / 35%);
+  border-radius: 6px;
+  background: rgb(43 138 62 / 8%);
+  font-size: 13px;
+}

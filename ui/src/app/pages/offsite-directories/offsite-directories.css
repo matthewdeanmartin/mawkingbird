@@ -1,0 +1,108 @@
+.page-title {
+  margin: 0 0 4px;
+}
+
+.card {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--col-bg);
+  overflow: hidden;
+}
+
+.starter-pack-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background: var(--accent-soft, var(--col-bg));
+  color: var(--text);
+  text-decoration: none;
+}
+
+.starter-pack-card:hover {
+  background: var(--hover);
+  color: var(--accent);
+}
+
+.starter-pack-card > span:nth-child(2) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.starter-pack-avatar {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.starter-pack-arrow {
+  flex: none;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.card-title {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 17px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-body {
+  padding: 12px 14px;
+}
+
+.dir-link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  color: var(--text);
+}
+
+.dir-link:hover {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.invite-people-link {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0 4px;
+  padding: 11px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 11px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.invite-people-link > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+}
+
+.invite-people-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.small {
+  font-size: 13px;
+}

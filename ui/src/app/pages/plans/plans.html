@@ -1,0 +1,175 @@
+<div class="page-head">{{ 'pages.plans.title' | transloco }}</div>
+
+<div class="plans-body">
+  <p>
+    {{ 'pages.plans.intro.a' | transloco }}
+    <strong [innerHTML]="'pages.plans.intro.price' | transloco: { price: priceUsd }"></strong>
+    {{ 'pages.plans.intro.b' | transloco }}
+  </p>
+
+  <!--
+    Stated before the table rather than after it. Someone arriving here from the
+    upgrade page is deciding whether to pay, and "you lose nothing by not paying"
+    is the single most important fact on the page — it should not be discovered
+    in a footnote below three screens of limits.
+  -->
+  <p class="plans-lede">
+    {{ 'pages.plans.lede' | transloco }}
+  </p>
+
+  <h2>{{ 'pages.plans.reading.title' | transloco }}</h2>
+  <p>
+    {{ 'pages.plans.reading.intro.a' | transloco }}
+    <em>{{ 'pages.plans.reading.intro.b' | transloco }}</em>
+    {{ 'pages.plans.reading.intro.c' | transloco }}
+  </p>
+  <div class="plans-scroll">
+    <table class="plans-table">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'pages.plans.table.what' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedOut' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedInFree' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.plus' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{ 'pages.plans.reading.row.openTab' | transloco }}</th>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.reading.row.readInApp' | transloco }}</th>
+          <td [innerHTML]="'pages.plans.perDay' | transloco: { count: freeArticles }"></td>
+          <td [innerHTML]="'pages.plans.perDay' | transloco: { count: freeArticles }"></td>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.reading.row.reopen' | transloco }}</th>
+          <td>{{ 'pages.plans.table.freeNoCount' | transloco }}</td>
+          <td>{{ 'pages.plans.table.freeNoCount' | transloco }}</td>
+          <td>{{ 'pages.plans.table.freeNoCount' | transloco }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">
+    {{ 'pages.plans.reading.footnote' | transloco }}
+  </p>
+
+  <h2>{{ 'pages.plans.connecting.title' | transloco }}</h2>
+  <p>
+    {{ 'pages.plans.connecting.intro' | transloco }}
+  </p>
+  <div class="plans-scroll">
+    <table class="plans-table">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'pages.plans.table.what' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedOut' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedInFree' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.plus' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{ 'pages.plans.connecting.row.requests' | transloco }}</th>
+          <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyFreeRate }"></td>
+          <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyFreeRate }"></td>
+          <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyPlusRate }"></td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.connecting.row.countedAgainst' | transloco }}</th>
+          <td>{{ 'pages.plans.connecting.networkAddress' | transloco }}</td>
+          <td>{{ 'pages.plans.connecting.networkAddress' | transloco }}</td>
+          <td>{{ 'pages.plans.connecting.yourAccount' | transloco }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!--
+    This paragraph exists because the table above has two identical columns and
+    a reader is entitled to ask why signing in is on it at all. Saying "signing
+    in raises your limit" would have been the easy copy and it is false: the
+    relay is anonymous on both deployments by design, and only the subscription
+    changes the tier.
+  -->
+  <p class="muted small">
+    {{ 'pages.plans.connecting.footnote1' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'pages.plans.connecting.footnote2' | transloco }}
+  </p>
+
+  <h2>{{ 'pages.plans.devices.title' | transloco }}</h2>
+  <p>
+    {{ 'pages.plans.devices.intro' | transloco }}
+  </p>
+  <div class="plans-scroll">
+    <table class="plans-table">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'pages.plans.table.what' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedOut' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.signedInFree' | transloco }}</th>
+          <th scope="col">{{ 'pages.plans.table.plus' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.feeds' | transloco }}</th>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.everyDevice' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.lists' | transloco }}</th>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.everyDevice' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.accounts' | transloco }}</th>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.everyDevice' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.settings' | transloco }}</th>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.thisBrowser' | transloco }}</td>
+          <td>{{ 'pages.plans.devices.everyDevice' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.howMany' | transloco }}</th>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+          <td>{{ 'pages.plans.table.unlimited' | transloco }}</td>
+        </tr>
+        <tr>
+          <th scope="row">{{ 'pages.plans.devices.row.moveByFile' | transloco }}</th>
+          <td>{{ 'pages.plans.table.yes' | transloco }}</td>
+          <td>{{ 'pages.plans.table.yes' | transloco }}</td>
+          <td>{{ 'pages.plans.table.yes' | transloco }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">
+    {{ 'pages.plans.devices.footnote1' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'pages.plans.devices.footnote2' | transloco }}
+  </p>
+
+  <h2>{{ 'pages.plans.stop.title' | transloco }}</h2>
+  <p>
+    {{ 'pages.plans.stop.body' | transloco }}
+  </p>
+
+  <p class="plans-back">
+    <a routerLink="/settings/mawkingbird-plus">{{ 'pages.plans.backLink' | transloco }}</a>
+  </p>
+</div>

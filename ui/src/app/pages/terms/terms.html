@@ -1,0 +1,16 @@
+<header class="page-head">
+  <h1>{{ 'terms.title' | transloco }}</h1>
+  @if (host(); as searchHost) {
+    <p>{{ 'terms.bySearch' | transloco: { host: searchHost } }}</p>
+  } @else {
+    <p>{{ 'terms.byMastodon' | transloco }}</p>
+  }
+</header>
+
+@if (loading()) {
+  <p class="empty muted">{{ 'terms.loading' | transloco }}</p>
+} @else if (terms(); as terms) {
+  <article class="terms-content" [innerHTML]="terms.content"></article>
+} @else {
+  <p class="empty muted">{{ 'terms.empty' | transloco }}</p>
+}

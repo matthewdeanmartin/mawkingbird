@@ -1,0 +1,51 @@
+.kw-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.kw-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kw-row input[type='text'] {
+  flex: 1;
+  max-width: 360px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.kw-row input[type='text']:disabled {
+  background: var(--hover);
+  color: var(--muted);
+}
+
+.kw-whole {
+  flex: none;
+  font-size: 13px;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 0.85em;
+}
+
+.form-error {
+  margin: 10px 0 0;
+  color: #e0245e;
+  font-weight: 600;
+}
+
+.sactions .btn-outline:hover {
+  text-decoration: none;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12.5px;
+}

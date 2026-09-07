@@ -1,0 +1,38 @@
+@if (word()) {
+  <div
+    class="selection-tools"
+    role="toolbar"
+    [attr.aria-label]="'reader.selection.label' | transloco"
+    [style.left.px]="at().x"
+    [style.top.px]="at().y"
+  >
+    @if (isWord()) {
+      <button
+        class="tool"
+        type="button"
+        [title]="'reader.selection.defineTitle' | transloco: { word: word() }"
+        (click)="define.emit(word())"
+      >
+        {{ 'reader.selection.define' | transloco }}
+      </button>
+    } @else {
+      <button
+        class="tool"
+        type="button"
+        [class.active]="alreadyHighlighted()"
+        (click)="highlight.emit()"
+      >
+        {{
+          (alreadyHighlighted() ? 'reader.selection.removeHighlight' : 'reader.selection.highlight')
+            | transloco
+        }}
+      </button>
+      <button class="tool" type="button" (click)="note.emit()">
+        {{ 'reader.selection.note' | transloco }}
+      </button>
+      <button class="tool" type="button" (click)="share.emit()">
+        {{ 'reader.selection.share' | transloco }}
+      </button>
+    }
+  </div>
+}

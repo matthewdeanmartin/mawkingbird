@@ -1,0 +1,69 @@
+<div class="page-head">{{ 'pages.directory.heading' | transloco }}</div>
+<p class="muted small dir-blurb">
+  {{ 'pages.directory.blurb' | transloco: { host: host() } }}
+</p>
+
+<div class="dir-controls">
+  <div class="tabs">
+    <button class="tab" [class.active]="order() === 'active'" (click)="setOrder('active')">
+      {{ 'pages.directory.tabs.active' | transloco }}
+    </button>
+    <button class="tab" [class.active]="order() === 'new'" (click)="setOrder('new')">
+      {{ 'pages.directory.tabs.new' | transloco }}
+    </button>
+  </div>
+
+  <label class="dir-local">
+    <input type="checkbox" [checked]="local()" (change)="toggleLocal()" />
+    <span>{{ 'pages.directory.thisServerOnly' | transloco }}</span>
+  </label>
+</div>
+
+@if (!local()) {
+  <p class="muted small dir-note">
+    {{ 'pages.directory.remoteNote' | transloco: { host: host() } }}
+  </p>
+}
+
+@if (error()) {
+  <p class="muted center" role="status">{{ error() }}</p>
+  <p class="muted center small">
+    {{ 'pages.directory.searchFallback.a' | transloco }}
+    <a routerLink="/search">{{ 'pages.directory.searchFallback.b' | transloco }}</a>
+    {{ 'pages.directory.searchFallback.c' | transloco }}
+  </p>
+} @else if (loading()) {
+  <p class="muted center">{{ 'pages.directory.loading' | transloco }}</p>
+} @else if (!accounts().length) {
+  <p class="muted center">
+    {{
+      (local() ? 'pages.directory.noAccountsListed.local' : 'pages.directory.noAccountsListed.any')
+        | transloco
+    }}
+    @if (local()) {
+      {{ 'pages.directory.tryUnchecking' | transloco }}
+    }
+  </p>
+} @else {
+  @for (item of items(); track item.account.id) {
+    <app-account-result-card
+      [item]="item"
+      [relationship]="relationshipFor(item.account.id)"
+      [profileLink]="accountLink(item.account)"
+      [expanded]="isExpanded(item.account.id)"
+      [followBusy]="isFollowBusy(item.account.id)"
+      [anonymous]="capabilities.active"
+      (follow)="onFollow($event)"
+      (unfollow)="onUnfollow($event)"
+      (toggleExpand)="toggleExpand(item.account.id)"
+    />
+  }
+
+  @if (!exhausted()) {
+    <button class="btn btn-outline dir-more" [disabled]="loadingMore()" (click)="loadMore()">
+      {{ (loadingMore() ? 'pages.directory.loading' : 'pages.directory.loadMore') | transloco }}
+    </button>
+  } @else {
+    <p class="muted center small">{{ 'pages.directory.everyoneListed' | transloco }}</p>
+  }
+}

@@ -1,0 +1,229 @@
+<div class="spage-head">
+  <h1>{{ 'settings.writing.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.writing.intro' | transloco }}
+  </p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <h2>{{ 'settings.writing.whereStarts' | transloco }}</h2>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.writing.onHome' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.autoShowMiniComposer()"
+            (ngModelChange)="prefs.setAutoShowMiniComposer($event)"
+            name="auto_show_mini_composer"
+          />
+          {{ 'settings.writing.miniComposer' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.writing.miniComposer.hint.a' | transloco }}
+          <strong>{{ 'settings.writing.writeButton' | transloco }}</strong>
+          {{ 'settings.writing.miniComposer.hint.b' | transloco }}
+          <strong>{{ 'settings.writing.quickPostButton' | transloco }}</strong>
+          {{ 'settings.writing.miniComposer.hint.c' | transloco }}
+        </span>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.thoughtfulPosting()"
+            (ngModelChange)="prefs.setThoughtfulPosting($event)"
+            name="thoughtful_posting"
+          />
+          {{ 'settings.writing.thoughtful' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.writing.thoughtful.hint' | transloco }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Posting defaults live on the server; the browser-local Anonymous account
+       has none to read or write, so the whole section stands down. -->
+  @if (!auth.isAnonymous) {
+    <div class="ssection">
+      <h2>{{ 'settings.writing.askedAtPublish' | transloco }}</h2>
+      <p class="hint">
+        {{ 'settings.writing.alsoOn.before' | transloco }}
+        <a routerLink="/settings/privacy">{{ 'settings.writing.alsoOn.link' | transloco }}</a
+        >{{ 'settings.writing.alsoOn.after' | transloco }}
+      </p>
+
+      <form (ngSubmit)="savePosting()">
+        <div class="srow">
+          <span class="slabel">{{ 'settings.writing.postingPrivacy' | transloco }}</span>
+          <div class="scontrol">
+            <select [ngModel]="privacy()" (ngModelChange)="privacy.set($event)" name="privacy">
+              <option value="public">{{ 'settings.privacy.visibility.public' | transloco }}</option>
+              <option value="unlisted">
+                {{ 'settings.privacy.visibility.unlisted' | transloco }}
+              </option>
+              <option value="private">
+                {{ 'settings.privacy.visibility.private' | transloco }}
+              </option>
+            </select>
+            <span class="hint">{{ 'settings.privacy.visibility.hint' | transloco }}</span>
+          </div>
+        </div>
+
+        <div class="srow">
+          <span class="slabel">{{ 'settings.privacy.media' | transloco }}</span>
+          <div class="scontrol">
+            <label class="checkline">
+              <input
+                type="checkbox"
+                [ngModel]="sensitive()"
+                (ngModelChange)="sensitive.set($event)"
+                name="sensitive"
+              />
+              {{ 'settings.privacy.sensitive' | transloco }}
+            </label>
+            <label class="checkline">
+              <input
+                type="checkbox"
+                [ngModel]="prefs.requireAltText()"
+                (ngModelChange)="prefs.setRequireAltText($event)"
+                name="require_alt_text"
+              />
+              {{ 'settings.writing.requireAlt' | transloco }}
+            </label>
+          </div>
+        </div>
+
+        <div class="srow">
+          <span class="slabel">{{ 'settings.i18n.postingLang' | transloco }}</span>
+          <div class="scontrol">
+            <select [ngModel]="language()" (ngModelChange)="language.set($event)" name="language">
+              <option value="">{{ 'settings.i18n.notSpecified' | transloco }}</option>
+              @for (option of postingLanguageOptions; track option.code) {
+                <option [value]="option.code">{{ option.name }}</option>
+              }
+            </select>
+            <span class="hint">{{ 'settings.privacy.language.hint' | transloco }}</span>
+          </div>
+        </div>
+
+        <div class="sactions">
+          @if (postingSaved()) {
+            <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+          }
+          <button class="btn" type="submit" [disabled]="postingSaving()">
+            {{
+              (postingSaving() ? 'common.saving' : 'settings.writing.savePostingDefaults')
+                | transloco
+            }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <div class="ssection">
+    <h2>{{ 'settings.writing.wizard' | transloco }}</h2>
+    <p class="hint">
+      {{ 'settings.writing.wizard.hint.before' | transloco }}
+      <a routerLink="/write">{{ 'settings.writing.writeButton' | transloco }}</a>
+      {{ 'settings.writing.wizard.hint.after' | transloco }}
+    </p>
+
+    @for (step of wizardSteps; track step) {
+      <label class="pkm-toggle">
+        <input
+          type="checkbox"
+          [ngModel]="stepOn(step)"
+          (ngModelChange)="toggleStep(step, $event)"
+          [attr.name]="'wizard-' + step"
+        />
+        <span>{{ stepTitleKey(step) | transloco }}</span>
+      </label>
+    }
+
+    @if (wizardOff()) {
+      <p class="hint" role="status">
+        {{ 'settings.writing.wizard.allOff' | transloco }}
+      </p>
+    }
+
+    <label class="pkm-toggle">
+      <input
+        type="checkbox"
+        [ngModel]="prefs.warnOnPkmPublish()"
+        (ngModelChange)="toggleWarn($event)"
+        name="warnOnPkmPublish"
+      />
+      <span>
+        {{ 'settings.writing.warnPkm' | transloco }}
+        <span class="hint">{{ 'settings.writing.warnPkm.hint' | transloco }}</span>
+      </span>
+    </label>
+  </div>
+
+  <div class="ssection">
+    <h2>{{ 'settings.writing.notes' | transloco }}</h2>
+    <p class="hint">
+      {{ 'settings.writing.notes.hint.a' | transloco }} <code>#NOTE</code>
+      {{ 'settings.writing.notes.or' | transloco }} <code>#TODO</code>
+      {{ 'settings.writing.notes.hint.b' | transloco }}
+      <a routerLink="/write">{{ 'settings.writing.writeButton' | transloco }}</a
+      >{{ 'settings.writing.notes.hint.c' | transloco }}
+    </p>
+
+    <h3>{{ 'settings.writing.yourWords' | transloco }}</h3>
+    <p class="hint">
+      <code>#TODO</code> {{ 'settings.writing.yourWords.hint.a' | transloco }} <code>#TODO</code>
+      {{ 'settings.writing.yourWords.and' | transloco }} <code>#todo</code>
+      {{ 'settings.writing.yourWords.hint.b' | transloco }} <code>#todos</code>
+      {{ 'settings.writing.yourWords.hint.c' | transloco }}
+    </p>
+
+    @for (kind of kinds; track kind) {
+      <label class="pkm-field">
+        <span class="pkm-field-label">{{
+          'settings.writing.wordsThatMean' | transloco: { noun: noun(kind) | transloco }
+        }}</span>
+        <input
+          type="text"
+          [ngModel]="fields()[kind]"
+          (ngModelChange)="setField(kind, $event)"
+          [attr.placeholder]="defaultsFor(kind)"
+          [attr.name]="'pkm-' + kind"
+        />
+      </label>
+    }
+
+    @if (disabledKinds().length) {
+      <p class="hint" role="status">
+        {{ 'settings.writing.switchedOff' | transloco }}
+        @for (kind of disabledKinds(); track kind) {
+          <strong>{{ noun(kind) | transloco }}</strong>
+          @if (!$last) {
+            ,
+          }
+        }
+        {{
+          (disabledKinds().length === 1
+            ? 'settings.writing.switchedOff.afterOne'
+            : 'settings.writing.switchedOff.afterOther'
+          ) | transloco
+        }}
+      </p>
+    }
+
+    <div class="pkm-actions">
+      <button class="btn" type="button" (click)="save()">
+        {{ 'settings.writing.saveWords' | transloco }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="reset()">
+        {{ 'settings.writing.restoreDefaults' | transloco }}
+      </button>
+      @if (saved()) {
+        <span class="hint" role="status">{{ 'settings.writing.savedTick' | transloco }}</span>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+/**
+ * Styles specific to the CORS proxy page. Shared connection-page furniture
+ * (back link, credential warning, ok/error lines) comes from
+ * `../connection-page.css`.
+ */
+
+.section-heading {
+  font-size: 16px;
+  margin: 24px 0 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.proxy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+
+/* Each option is a whole clickable card rather than a bare radio: the pitch and
+   the limits are the part people actually choose on, so they have to be inside
+   the hit target. */
+.proxy-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.proxy-option:hover {
+  background: var(--hover);
+}
+
+.proxy-option.chosen {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.proxy-option input[type='radio'] {
+  margin-top: 3px;
+  flex: none;
+}
+
+.proxy-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.proxy-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Caveat badge. Deliberately quiet — these mark a limitation, not an error, and
+   a red pill on half the list would read as "everything is broken". */
+.proxy-tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.custom-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 14px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.field > span:first-child {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.field input {
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.checkbox-field {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.checkbox-field input {
+  margin-top: 3px;
+  flex: none;
+}
+
+.checkbox-field span span {
+  display: block;
+}
+
+.key-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+
+.btn-small {
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+.preview {
+  margin: 12px 0;
+}
+
+/* A long proxy URL must not push the page sideways. */
+.preview-url {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.proxy-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0 10px;
+}

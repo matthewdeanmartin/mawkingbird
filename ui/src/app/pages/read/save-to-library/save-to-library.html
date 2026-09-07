@@ -1,0 +1,15 @@
+@if (eligible()) {
+  <button
+    class="save-to-library"
+    type="button"
+    [class.on]="saved()"
+    [attr.aria-pressed]="saved()"
+    [title]="(saved() ? 'reader.saveToLibrary.remove' : 'reader.saveToLibrary.save') | transloco"
+    [attr.aria-label]="
+      (saved() ? 'reader.saveToLibrary.remove' : 'reader.saveToLibrary.save') | transloco
+    "
+    (click)="toggle($event)"
+  >
+    <span aria-hidden="true">{{ saved() ? '📖' : '📕' }}</span>
+  </button>
+}

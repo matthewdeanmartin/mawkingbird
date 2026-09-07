@@ -1,0 +1,90 @@
+<div class="spage-head">
+  <h1>{{ 'settings.accounts.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.accounts.intro' | transloco }}
+  </p>
+</div>
+
+<div class="settings-page">
+  @if (notice()) {
+    <p class="accounts-notice ok small">{{ notice() }}</p>
+  }
+
+  <div class="accounts-list">
+    @for (row of accounts(); track row.key) {
+      <div class="account-row" [class.is-active]="row.active">
+        <div class="account-identity">
+          @if (row.account?.avatar_static || row.account?.avatar; as avatar) {
+            <img class="avatar" [src]="avatar" alt="" decoding="async" />
+          } @else {
+            <span class="avatar avatar-blank" aria-hidden="true">?</span>
+          }
+          <span class="names">
+            <span class="name">
+              {{ label(row) }}
+              @if (row.active) {
+                <span class="badge">{{ 'settings.accounts.signedIn' | transloco }}</span>
+              }
+              @if (row.kind === 'anonymous') {
+                <span class="badge badge-quiet">{{
+                  'settings.accounts.localOnly' | transloco
+                }}</span>
+              }
+            </span>
+            <span class="acct muted small">{{ handle(row) }}</span>
+            <span class="usage muted small">
+              {{
+                (row.keyCount === 1 ? 'settings.accounts.keys.one' : 'settings.accounts.keys.other')
+                  | transloco: { count: row.keyCount }
+              }}
+              · {{ formatBytes(row.bytes) }}
+            </span>
+          </span>
+        </div>
+
+        <div class="account-actions">
+          @if (canModify(row)) {
+            <button
+              class="btn btn-outline btn-sm danger"
+              type="button"
+              [disabled]="!row.keyCount"
+              (click)="askDeleteData(row)"
+            >
+              {{ 'settings.accounts.deleteData' | transloco }}
+            </button>
+            <button
+              class="btn btn-outline btn-sm danger"
+              type="button"
+              (click)="askDeleteDataAndLogout(row)"
+            >
+              {{
+                (row.kind === 'anonymous'
+                  ? 'settings.accounts.deleteAndLeave'
+                  : 'settings.accounts.deleteAndLogout'
+                ) | transloco
+              }}
+            </button>
+          } @else {
+            <span class="muted small blocked">{{ blockedReason(row) }}</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <p class="muted small footnote">
+    {{ 'settings.accounts.footnote.before' | transloco }}
+    <span class="nowrap">{{ 'settings.accounts.footnote.link' | transloco }}</span
+    >{{ 'settings.accounts.footnote.after' | transloco }}
+  </p>
+</div>
+
+@if (pending()) {
+  <app-confirm-dialog
+    [title]="dialogTitle()"
+    [message]="dialogMessage()"
+    [confirmLabel]="'common.delete' | transloco"
+    (confirmed)="confirm()"
+    (cancelled)="cancel()"
+  />
+}

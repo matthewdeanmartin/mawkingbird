@@ -1,0 +1,51 @@
+<header class="bf-header">
+  <a class="muted small" routerLink="/feeds/lists">{{ 'blueskyFeed.back' | transloco }}</a>
+  <h2>{{ title() }}</h2>
+  @if (entry(); as e) {
+    <p class="muted small">
+      🦋 {{ (e.kind === 'list' ? 'blueskyFeed.kind.list' : 'blueskyFeed.kind.feed') | transloco }}
+      {{ 'blueskyFeed.by' | transloco: { handle: e.creatorHandle } }}
+      @if (e.kind === 'list' && e.memberCount !== null) {
+        ·
+        {{
+          (e.memberCount === 1 ? 'blueskyFeed.members.one' : 'blueskyFeed.members.other')
+            | transloco: { count: e.memberCount }
+        }}
+      }
+      @if (e.pinned) {
+        {{ 'blueskyFeed.pinned' | transloco }}
+      }
+    </p>
+    @if (e.description) {
+      <p class="bf-description">{{ e.description }}</p>
+    }
+    @if (e.kind === 'feed') {
+      <!-- Whose algorithm this is, said plainly. A custom feed is run by a
+           third party, not by Bluesky and not by us. -->
+      <p class="muted small">
+        {{ 'blueskyFeed.algorithm' | transloco: { handle: e.creatorHandle } }}
+      </p>
+    }
+  }
+</header>
+
+@if (loading()) {
+  <p class="muted center">{{ 'blueskyFeed.loading' | transloco }}</p>
+} @else if (error(); as message) {
+  <p class="muted center bf-error" role="alert">{{ message }}</p>
+} @else if (!statuses().length) {
+  <p class="muted center">{{ 'blueskyFeed.empty' | transloco }}</p>
+} @else {
+  @for (status of statuses(); track status.id) {
+    <app-status-card [status]="status" [showSource]="true" />
+  }
+  @if (!exhausted()) {
+    <div class="center bf-more">
+      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+        {{
+          loadingMore() ? ('blueskyFeed.loading' | transloco) : ('blueskyFeed.loadMore' | transloco)
+        }}
+      </button>
+    </div>
+  }
+}

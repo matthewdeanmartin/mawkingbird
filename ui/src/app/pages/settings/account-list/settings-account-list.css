@@ -1,0 +1,164 @@
+.account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.restriction-tabs .tab {
+  cursor: pointer;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-row:last-child {
+  border-bottom: 0;
+}
+
+.account-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.account-link .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}
+
+/* Four buttons per row on a phone need to wrap rather than squeeze the name. */
+.row-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: none;
+}
+
+.badge.following-badge,
+.badge.also {
+  font-size: 0.75em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------- pager */
+.pager {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px 4px;
+}
+
+.pager-status {
+  min-width: 9ch;
+  text-align: center;
+}
+
+.pager-status .range {
+  margin-left: 4px;
+}
+
+/* --------------------------------------------------------------- amnesty */
+.amnesty-bar {
+  padding: 0 22px;
+}
+
+.amnesty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid color-mix(in srgb, #e0245e 40%, var(--border));
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.amnesty-row p {
+  margin: 0;
+}
+
+.amnesty-row .btn {
+  flex: none;
+}
+
+.btn.danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: #e0245e;
+  color: #fff;
+}
+
+/* --- Domains tab --- */
+
+/* Adding is the primary action on this tab (there is no "block domain" button
+   on a profile), so the form sits above the list rather than under it. */
+.domain-add {
+  margin-bottom: 16px;
+}
+
+.domain-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.domain-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.domain-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.domain-add p {
+  margin: 6px 0 0;
+}
+
+.domain-error {
+  color: #e0245e;
+}
+
+/* No avatar to align to, so the row is just the name and its action. */
+.domain-list .account-row {
+  align-items: center;
+}
+
+.domain-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

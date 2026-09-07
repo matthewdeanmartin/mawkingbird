@@ -1,0 +1,28 @@
+.invite-table-wrap {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.invite-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.invite-table th,
+.invite-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border, #e0e0e0);
+  white-space: nowrap;
+}
+
+.invite-table .invite-url {
+  font-family: monospace;
+  word-break: break-all;
+  white-space: normal;
+}
+
+.invite-table tr.revoked td {
+  opacity: 0.55;
+}

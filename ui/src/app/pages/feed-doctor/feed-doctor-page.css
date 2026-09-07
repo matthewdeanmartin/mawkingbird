@@ -1,0 +1,66 @@
+.fd-page {
+  padding: 12px 14px 32px;
+}
+
+.fd-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fd-head h1 {
+  margin: 0 0 2px;
+  font-size: 21px;
+}
+
+.fd-note {
+  margin: 0 0 14px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.fd-verdict {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* A clean result is one line, not a card competing for attention with the
+   problems. Otherwise the page trains people to skim past the warnings too. */
+.fd-verdict.fd-ok {
+  padding: 8px 14px;
+  opacity: 0.75;
+}
+
+.fd-verdict h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.fd-verdict h2.fd-warn {
+  color: #e0245e;
+}
+
+.fd-detail {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.fd-detail li {
+  padding: 2px 0;
+}
+
+.fd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+}

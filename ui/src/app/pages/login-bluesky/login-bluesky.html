@@ -1,0 +1,118 @@
+<div class="bsky-wrap">
+  <div class="bsky-card">
+    <span class="bsky-badge" aria-hidden="true">🦋</span>
+    <h1 class="bsky-title">{{ 'pages.loginBluesky.title' | transloco }}</h1>
+    <p class="bsky-body muted">
+      {{ 'pages.loginBluesky.intro' | transloco: { brand: brand } }}
+    </p>
+
+    <button
+      class="bsky-btn bsky-btn-primary bsky-submit bsky-entryway"
+      type="button"
+      [disabled]="working()"
+      (click)="submitBluesky()"
+    >
+      {{
+        (working() ? 'pages.loginBluesky.openingBluesky' : 'pages.loginBluesky.continueWithBluesky')
+          | transloco
+      }}
+    </button>
+
+    <p class="bsky-oauth-note muted small">
+      {{ 'pages.loginBluesky.oauthNote' | transloco: { brand: brand } }}
+    </p>
+
+    <details class="bsky-advanced">
+      <summary>{{ 'pages.loginBluesky.advancedSummary' | transloco }}</summary>
+      <form class="bsky-form" (ngSubmit)="submit()">
+        <label class="bsky-field">
+          <span class="bsky-label">{{ 'pages.loginBluesky.handleLabel' | transloco }}</span>
+          <input
+            type="text"
+            name="bskyHandle"
+            [placeholder]="'pages.loginBluesky.handlePlaceholder' | transloco"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            [ngModel]="handle()"
+            (ngModelChange)="handle.set($event)"
+            [disabled]="working()"
+          />
+        </label>
+
+        <button
+          class="bsky-btn bsky-submit"
+          type="submit"
+          [disabled]="!handle().trim() || working()"
+        >
+          {{
+            (working()
+              ? 'pages.loginBluesky.openingProvider'
+              : 'pages.loginBluesky.continueWithAccount'
+            ) | transloco
+          }}
+        </button>
+      </form>
+    </details>
+
+    @if (error(); as msg) {
+      <p class="bsky-error" role="alert">{{ msg }}</p>
+    }
+    @if (selfHostedHint()) {
+      <!-- The one failure that looks like a wrong password but isn't: bsky.social
+           is an entryway and cannot authenticate an account on someone else's PDS. -->
+      <p class="bsky-hint muted small">
+        {{ 'pages.loginBluesky.selfHostedHint' | transloco }}
+      </p>
+    }
+
+    <details class="bsky-compat">
+      <summary>{{ 'pages.loginBluesky.compatSummary' | transloco }}</summary>
+      <!-- App passwords are retained only as an explicit compatibility path. -->
+      <div class="bsky-appword">
+        <p>
+          {{ 'pages.loginBluesky.appPasswordIntro' | transloco }}
+          <a
+            href="https://bsky.app/settings/app-passwords"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ 'pages.loginBluesky.appPasswordLinkText' | transloco }}</a
+          >.
+        </p>
+        <p class="muted small" [innerHTML]="'pages.loginBluesky.dmTickHint' | transloco"></p>
+      </div>
+      <form class="bsky-form" (ngSubmit)="submitAppPassword()">
+        <label class="bsky-field">
+          <span class="bsky-label">{{ 'pages.loginBluesky.appPasswordLabel' | transloco }}</span>
+          <input
+            type="password"
+            name="bskyAppPassword"
+            [placeholder]="'pages.loginBluesky.appPasswordPlaceholder' | transloco"
+            autocomplete="off"
+            [ngModel]="appPassword()"
+            (ngModelChange)="appPassword.set($event)"
+            [disabled]="working()"
+          />
+        </label>
+        <button
+          class="bsky-btn bsky-submit"
+          type="submit"
+          [disabled]="!handle().trim() || !appPassword() || working()"
+        >
+          {{
+            (working() ? 'pages.loginBluesky.signingIn' : 'pages.loginBluesky.useAppPassword')
+              | transloco
+          }}
+        </button>
+      </form>
+    </details>
+
+    <p class="bsky-out small">
+      <a routerLink="/login">{{ 'pages.loginBluesky.useDifferentNetwork' | transloco }}</a> ·
+      <!-- `/anonymous`, not `/`: this visitor has already been asked whether they
+           want to sign in and is answering "no" right now. `/` would seed the
+           preview and ask them the same question over again. -->
+      <a routerLink="/anonymous">{{ 'pages.loginBluesky.lookAround' | transloco }}</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,236 @@
+<div class="spage-head">
+  <h1>{{ 'settings.accountList.title' | transloco }}</h1>
+  <p>{{ subtitleKey | transloco }}</p>
+</div>
+
+<div
+  class="tabs restriction-tabs"
+  role="tablist"
+  [attr.aria-label]="'settings.accountList.tabs' | transloco"
+>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [class.active]="kind() === 'mutes'"
+    [attr.aria-selected]="kind() === 'mutes'"
+    (click)="show('mutes')"
+  >
+    {{ 'settings.accountList.tab.mutes' | transloco }}
+  </button>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [class.active]="kind() === 'blocks'"
+    [attr.aria-selected]="kind() === 'blocks'"
+    (click)="show('blocks')"
+  >
+    {{ 'settings.accountList.tab.blocks' | transloco }}
+  </button>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [class.active]="kind() === 'domains'"
+    [attr.aria-selected]="kind() === 'domains'"
+    (click)="show('domains')"
+  >
+    {{ 'settings.accountList.tab.domains' | transloco }}
+  </button>
+</div>
+
+<!-- Amnesty: clear the whole list at once. Offered here as well as on the Bulk
+     actions tab, because this page is where wanting it occurs to people.
+     Not on Domains — see canAmnesty. -->
+<div class="amnesty-bar">
+  <app-bulk-progress />
+  @if (canAmnesty() && (accounts().length || amnestyRunning())) {
+    <div class="amnesty-row">
+      <p class="muted small">
+        {{
+          'settings.accountList.amnesty.hint' | transloco: { action: amnestyLabelKey() | transloco }
+        }}
+      </p>
+      <button
+        class="btn btn-outline btn-sm danger"
+        type="button"
+        [disabled]="amnestyRunning()"
+        (click)="askAmnesty()"
+      >
+        {{ amnestyRunning() ? ('common.running' | transloco) : (amnestyLabelKey() | transloco) }}
+      </button>
+    </div>
+  }
+</div>
+
+@if (asking()) {
+  <app-bulk-actions-dialog
+    [action]="amnestyAction()"
+    (confirmed)="confirmAmnesty()"
+    (cancelled)="cancelAmnesty()"
+  />
+}
+
+@if (isDomains()) {
+  <!-- Adding is the primary action here, unlike the account tabs where rows
+       arrive by blocking someone from their profile. -->
+  <form class="domain-add" (ngSubmit)="blockDomain()">
+    <label class="domain-label" for="domain-input">{{
+      'settings.accountList.blockDomain' | transloco
+    }}</label>
+    <div class="domain-row">
+      <input
+        id="domain-input"
+        type="text"
+        inputmode="url"
+        autocomplete="off"
+        placeholder="example.social"
+        [ngModel]="domainInput()"
+        (ngModelChange)="domainInput.set($event)"
+        name="domain"
+      />
+      <button class="btn btn-sm danger" type="submit" [disabled]="!canBlockDomain()">
+        {{ 'settings.accountList.tab.blocks' | transloco }}
+      </button>
+    </div>
+    <p class="muted small">
+      {{ 'settings.accountList.domain.hint.before' | transloco }}
+      <code>&#64;someone&#64;example.social</code>
+      {{ 'settings.accountList.domain.hint.after' | transloco }}
+    </p>
+    @if (domainError()) {
+      <p class="domain-error small" role="alert">{{ domainError() }}</p>
+    }
+  </form>
+
+  @if (loading()) {
+    <p class="muted center">{{ 'common.loading' | transloco }}</p>
+  } @else if (!domains().length) {
+    <p class="muted center">{{ 'settings.accountList.noDomains' | transloco }}</p>
+  } @else {
+    <ul class="account-list domain-list">
+      @for (d of domains(); track d) {
+        <li class="account-row">
+          <span class="domain-name">{{ d }}</span>
+          <div class="row-actions">
+            <button
+              class="btn btn-outline btn-sm"
+              type="button"
+              [disabled]="isDomainBusy(d)"
+              (click)="unblockDomain(d)"
+            >
+              {{ 'settings.accountList.unblock' | transloco }}
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+} @else if (loading()) {
+  <p class="muted center">{{ 'common.loading' | transloco }}</p>
+} @else if (!accounts().length) {
+  <p class="muted center">{{ 'settings.accountList.empty' | transloco }}</p>
+} @else {
+  <ul class="account-list">
+    @for (a of accounts(); track a.id) {
+      <li class="account-row">
+        <a class="account-link" [routerLink]="['/accounts', a.id]">
+          <img
+            class="avatar"
+            [src]="a.avatar_static || a.avatar"
+            [alt]="a.username"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="names">
+            <span class="name">{{ a.display_name || a.username }}</span>
+            <span class="acct muted">&#64;{{ a.acct }}</span>
+          </span>
+        </a>
+        <div class="row-actions">
+          @if (isAlsoOther(a.id)) {
+            <span class="badge also" [title]="otherAlsoKey | transloco">
+              {{ otherAlsoKey | transloco }}
+            </span>
+          }
+          <!-- Muting doesn't unfollow, so plenty of these are people you still
+               follow. Unfollow only — following someone from your mute list is
+               not a thing anyone comes here to do. -->
+          @if (canUnfollow(a.id)) {
+            <span
+              class="badge following-badge"
+              [title]="'settings.accountList.following.title' | transloco"
+            >
+              {{ 'settings.accountList.following' | transloco }}
+            </span>
+            <button
+              class="btn btn-outline btn-sm"
+              [disabled]="isBusy(a.id)"
+              (click)="unfollow(a)"
+              [title]="'settings.accountList.unfollow.title' | transloco"
+            >
+              {{ 'settings.accountList.unfollow' | transloco }}
+            </button>
+          }
+          <button class="btn btn-outline btn-sm" (click)="undo(a)">
+            {{
+              (kind() === 'mutes' ? 'settings.accountList.unmute' : 'settings.accountList.unblock')
+                | transloco
+            }}
+          </button>
+          <!-- Two separate escalations: keep this restriction and add the other,
+               or trade this one for the other. -->
+          @if (!isAlsoOther(a.id)) {
+            <button
+              class="btn btn-outline btn-sm"
+              [disabled]="isBusy(a.id)"
+              (click)="alsoApply(a)"
+              [title]="otherAlsoApplyKey | transloco"
+            >
+              {{ otherVerbKey | transloco }}
+            </button>
+          }
+          <button
+            class="btn btn-outline btn-sm"
+            [disabled]="isBusy(a.id)"
+            (click)="convert(a)"
+            [title]="otherConvertTitleKey | transloco"
+          >
+            {{ otherConvertKey | transloco }}
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+}
+
+<!-- Link-header pagination, shared by all three lists: no random access, so
+     "Last" walks forward and caches what it passes. Pages already seen come
+     back without a request. Hidden on a single-page list, which is the normal
+     case for domains. -->
+@if (showPager()) {
+  <nav class="pager" [attr.aria-label]="'settings.accountList.pages' | transloco">
+    <button class="btn btn-outline btn-sm" [disabled]="!canPrev()" (click)="first()">
+      {{ 'settings.accountList.first' | transloco }}
+    </button>
+    <button class="btn btn-outline btn-sm" [disabled]="!canPrev()" (click)="prev()">
+      {{ 'settings.accountList.previous' | transloco }}
+    </button>
+    <span class="pager-status muted small">
+      {{ 'settings.accountList.page' | transloco: { page: page() + 1 } }}
+      @if (lastPage() !== null) {
+        {{ 'settings.accountList.pageOf' | transloco: { total: lastPage()! + 1 } }}
+      }
+      @if (rangeLabel()) {
+        <span class="range">({{ rangeLabel() }})</span>
+      }
+    </span>
+    <button class="btn btn-outline btn-sm" [disabled]="!canNext()" (click)="next()">
+      {{ 'settings.accountList.next' | transloco }}
+    </button>
+    <button class="btn btn-outline btn-sm" [disabled]="!canNext()" (click)="last()">
+      {{ 'settings.accountList.last' | transloco }}
+    </button>
+  </nav>
+}

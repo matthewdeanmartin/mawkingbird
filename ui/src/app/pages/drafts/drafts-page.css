@@ -1,0 +1,291 @@
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-head h2 {
+  margin: 0;
+}
+
+.center {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.draft-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.chip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* A kind with nothing in it stays put rather than shifting the row of chips. */
+.chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.chip-count {
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+.draft-warning {
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9em;
+}
+
+/* Same quiet register as .page-note: this explains the four mechanisms once,
+   to someone who has nothing in the list yet. It is not a headline either. */
+.draft-empty {
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.draft-empty ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.draft-empty li {
+  margin-bottom: 4px;
+}
+
+.draft-kind {
+  white-space: nowrap;
+}
+
+.draft-notice {
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9em;
+  color: var(--accent);
+}
+
+/* --- per-row conversion menu ---
+   Same native <details> disclosure the status-card menu uses: keyboard and
+   screen-reader behaviour for free, no focus-trap code. Opens downward here
+   because these rows sit at the top of the page, not the bottom of a card. */
+.row-menu {
+  position: relative;
+}
+
+.row-menu-summary {
+  list-style: none;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+}
+
+.row-menu-summary::-webkit-details-marker {
+  display: none;
+}
+
+.row-menu-summary:hover {
+  background: var(--hover);
+}
+
+.row-menu-panel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 50;
+  min-width: 210px;
+  margin-top: 4px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+}
+
+.row-menu-panel button {
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  font: inherit;
+}
+
+.row-menu-panel button:hover {
+  background: var(--border);
+}
+
+/* The one entry that removes its source, separated from the copies above it. */
+.row-menu-panel .menu-move {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.row-menu-panel .menu-note {
+  display: block;
+  padding: 6px 9px 2px;
+  font-size: 0.8em;
+}
+
+/* --- conversion dialogs --- */
+.convert-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(0 0 0 / 40%);
+}
+
+.convert-dialog {
+  position: fixed;
+  z-index: 101;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
+}
+
+.convert-dialog h3 {
+  margin: 0 0 6px;
+}
+
+.convert-dialog p {
+  margin: 0 0 12px;
+  font-size: 0.9em;
+}
+
+.convert-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.convert-field select,
+.convert-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.convert-warn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--hover);
+  font-size: 0.85em;
+}
+
+.convert-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.small {
+  font-size: 0.85em;
+}
+
+.draft-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.draft-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.draft-text {
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.draft-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+
+.draft-badge {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 6px;
+}
+
+.draft-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.scheduled-head {
+  margin-top: 16px;
+}
+
+/* The save-only writing surface at the top of the list. */
+.write-here {
+  border-bottom: 1px solid var(--border);
+}
+
+.write-here .write-btn {
+  margin: 12px 16px;
+}
+
+.write-close {
+  margin: 0 16px 12px;
+}

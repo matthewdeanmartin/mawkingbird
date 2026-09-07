@@ -1,0 +1,222 @@
+/**
+ * Layout shared by the two diagnostics pages: Observability and Storage
+ * Diagnostics.
+ *
+ * These two were one page until Storage Diagnostics was split out, so the
+ * frame — page padding, section rules, stat tiles, the table shell and the
+ * storage-key rows — was already common to both. It lives here rather than
+ * being duplicated so the pages cannot drift into looking like they belong to
+ * different apps, which is exactly what a reader would read as a bug.
+ *
+ * Component-specific styling (the charts, the endpoint table's method chips)
+ * stays in the component's own stylesheet.
+ */
+
+.obs-page {
+  padding: 16px;
+  max-width: 100%;
+}
+
+.obs-head h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.obs-head p {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.obs-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --------------------------------------------------------------- stat tiles */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--col-bg);
+}
+
+.tile-value {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.tile-value .unit {
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 2px;
+  color: var(--muted);
+}
+
+.tile-label {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+/* -------------------------------------------------------------------- tables */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.obs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.obs-table th,
+.obs-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.obs-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.obs-table th {
+  font-weight: 700;
+  color: var(--muted);
+  position: sticky;
+  top: 0;
+  background: var(--col-bg);
+}
+
+.obs-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.obs-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.obs-table th.sortable:hover {
+  color: var(--text);
+}
+
+.obs-table th.on {
+  color: var(--accent);
+}
+
+.obs-table td.endpoint code {
+  font-size: 13px;
+}
+
+.obs-table td.err {
+  color: #e0245e;
+  font-weight: 700;
+}
+
+.row-bad {
+  background: color-mix(in srgb, #e0245e 7%, transparent);
+}
+
+/* --------------------------------------------------------- storage inspector */
+.storage-key {
+  max-width: 380px;
+}
+
+.storage-key code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.key-note {
+  margin-left: 8px;
+}
+
+.actions-col {
+  text-align: right;
+  width: 1%;
+}
+
+.btn.danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+.btn.danger:hover {
+  background: #e0245e;
+  color: #fff;
+}
+
+/* ------------------------------------------------------------- explanatory */
+/* A short "what am I looking at" line under a section heading. */
+.section-note {
+  margin: -2px 0 12px;
+  max-width: 76ch;
+  line-height: 1.5;
+}
+
+.obs-table td.endpoint {
+  max-width: 320px;
+}
+
+/* ---------------------------------------------------------------- page menu */
+/* The cross-link between the two diagnostics pages. Styled as a row of quiet
+   links rather than tabs: these are two pages that reference each other, not
+   two views of one thing, and a tab bar would promise that switching keeps
+   your place. */
+.page-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.page-menu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--accent);
+  background: var(--col-bg);
+}
+
+.page-menu-link:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  text-decoration: none;
+}

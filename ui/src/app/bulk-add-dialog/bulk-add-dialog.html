@@ -1,0 +1,70 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="closed.emit()"
+  (keyup.escape)="closed.emit()"
+>
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'bulkAdd.dialogAria' | transloco"
+    tabindex="-1"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3>
+      @if (targetName()) {
+        {{
+          (targetKind() === 'list' ? 'bulkAdd.heading.list' : 'bulkAdd.heading.collection')
+            | transloco: { name: targetName() }
+        }}
+      } @else {
+        {{
+          targetKind() === 'list'
+            ? ('bulkAdd.heading.listNoName' | transloco)
+            : ('bulkAdd.heading.collectionNoName' | transloco)
+        }}
+      }
+    </h3>
+    <p class="muted small">{{ 'bulkAdd.instructions' | transloco }}</p>
+
+    <textarea
+      class="bulk-handles"
+      rows="4"
+      [ngModel]="handles()"
+      (ngModelChange)="handles.set($event)"
+      placeholder="&#64;alice, &#64;bob@example.social&#10;&#64;carol"
+    ></textarea>
+
+    <div class="dialog-actions">
+      <button class="btn btn-outline" (click)="closed.emit()">
+        {{ (results().length ? 'bulkAdd.done' : 'bulkAdd.cancel') | transloco }}
+      </button>
+      <button class="btn" [disabled]="busy() || !count()" (click)="add()">
+        @if (busy()) {
+          {{ 'bulkAdd.adding' | transloco }}
+        } @else {
+          {{
+            (count() === 1 ? 'bulkAdd.addCount.one' : 'bulkAdd.addCount.other')
+              | transloco: { count: count() }
+          }}
+        }
+      </button>
+    </div>
+
+    @if (results().length) {
+      <ul class="bulk-results small">
+        @for (r of results(); track $index) {
+          <li [class]="'result-' + r.status">
+            <span class="result-handle">{{ r.handle }}</span>
+            <span class="result-status">{{ statusLabel(r.status) }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

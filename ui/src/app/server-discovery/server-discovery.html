@@ -1,0 +1,93 @@
+<div class="discovery" aria-live="polite">
+  @switch (state()) {
+    @case ('idle') {
+      <button class="btn btn-outline" type="button" (click)="startSearch()">
+        {{ startText() }}
+      </button>
+    }
+    @case ('searching') {
+      <div class="searching-row">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>
+          {{ 'serverDiscovery.searching.label' | transloco }}
+          <span class="muted small">{{
+            'serverDiscovery.searching.tried' | transloco: { count: tried() }
+          }}</span>
+        </span>
+        <button class="text-button" type="button" (click)="cancel()">
+          {{ 'serverDiscovery.searching.cancel' | transloco }}
+        </button>
+      </div>
+      @if (directorySource() === 'bundled') {
+        <p class="muted small source-note">
+          {{ 'serverDiscovery.searching.bundledNote' | transloco }}
+        </p>
+      }
+    }
+    @case ('found') {
+      @if (candidate(); as server) {
+        <div class="candidate">
+          <strong>
+            {{
+              (server.degraded
+                ? 'serverDiscovery.candidate.availableDegraded'
+                : 'serverDiscovery.candidate.available'
+              ) | transloco: { domain: server.domain }
+            }}
+          </strong>
+          @if (server.degraded) {
+            <span class="degraded small">
+              {{
+                'serverDiscovery.candidate.degradedNote'
+                  | transloco
+                    : {
+                        mediaHost:
+                          server.mediaHost ||
+                          ('serverDiscovery.candidate.itsMediaServer' | transloco),
+                      }
+              }}
+            </span>
+          }
+          <span class="muted small">
+            @if (server.category) {
+              {{ server.category }}
+            }
+            @if (sizeLabel(server.users)) {
+              · {{ sizeLabel(server.users) }}
+            }
+          </span>
+          @if (server.title !== server.domain) {
+            <span class="muted small">{{ server.title }}</span>
+          }
+          @if (server.description) {
+            <p>{{ server.description }}</p>
+          }
+          <div class="candidate-actions">
+            <button class="btn" type="button" (click)="useCandidate()">
+              {{ 'serverDiscovery.candidate.use' | transloco }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="startSearch(false)">
+              {{ 'serverDiscovery.candidate.keepLooking' | transloco }}
+            </button>
+          </div>
+        </div>
+      }
+    }
+    @case ('exhausted') {
+      <p class="muted small">
+        {{ 'serverDiscovery.exhausted.note' | transloco }}
+      </p>
+      <button class="btn btn-outline" type="button" (click)="startSearch()">
+        {{ 'serverDiscovery.exhausted.retry' | transloco }}
+      </button>
+    }
+  }
+  <label class="degraded-option small">
+    <input
+      type="checkbox"
+      [checked]="acceptDegraded()"
+      (change)="acceptDegraded.set($any($event.target).checked)"
+    />
+    {{ 'serverDiscovery.acceptDegraded.label' | transloco }}
+  </label>
+</div>

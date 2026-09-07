@@ -1,0 +1,186 @@
+.or-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.or-section {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.or-section h2 {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+.or-credits {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 6px 0;
+}
+
+/* An unreadable balance is information, not an alarm — it must not look like
+   the red error lines elsewhere on the page. */
+.or-credits-unknown {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.or-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.or-search {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 8px;
+  flex-wrap: wrap;
+}
+
+.or-search input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.or-filter {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.or-filter input {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.or-models {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.or-model {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.or-model-active {
+  font-weight: 600;
+}
+
+.or-model-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.or-model-name {
+  font-size: 15px;
+}
+
+.pill {
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill-on {
+  border-color: rgb(43 138 62 / 45%);
+  background: rgb(43 138 62 / 10%);
+  color: #2b8a3e;
+}
+
+.or-prompt {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.or-prompt-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.or-prompt-head h3 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.or-prompt p code {
+  margin-right: 6px;
+}
+
+.or-prompt-text {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.or-prompt-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.or-translate-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.or-translate-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.or-translate-option.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.or-translate-option span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.or-translate-option input {
+  margin-top: 3px;
+  cursor: pointer;
+}

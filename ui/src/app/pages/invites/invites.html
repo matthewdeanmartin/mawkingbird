@@ -1,0 +1,343 @@
+<div class="page-head invite-page-head">
+  <h1>{{ 'pages.invites.title' | transloco }}</h1>
+  <p class="muted">
+    {{ 'pages.invites.intro' | transloco }}
+  </p>
+</div>
+
+@if (!signedIn) {
+  <div class="anonymous-note">
+    <strong [innerHTML]="'pages.invites.anon.title' | transloco: { host: homeHost() }"></strong>
+    <span>
+      {{ 'pages.invites.anon.body.a' | transloco }}
+      <a routerLink="/login">{{ 'pages.invites.anon.signIn' | transloco }}</a>
+      {{ 'pages.invites.anon.body.b' | transloco }}
+      <code>/invites?{{ homeHost() }}</code>
+      {{ 'pages.invites.anon.body.c' | transloco }}
+    </span>
+  </div>
+}
+
+<div
+  class="mode-switch"
+  role="group"
+  [attr.aria-label]="'pages.invites.mode.ariaLabel' | transloco"
+>
+  <button
+    type="button"
+    [class.active]="mode() === 'simple'"
+    [attr.aria-pressed]="mode() === 'simple'"
+    (click)="setMode('simple')"
+  >
+    <strong>{{ 'pages.invites.mode.simple.title' | transloco }}</strong>
+    <span>{{
+      (network() === 'mastodon'
+        ? 'pages.invites.mode.simple.four'
+        : 'pages.invites.mode.simple.two'
+      ) | transloco
+    }}</span>
+  </button>
+  <button
+    type="button"
+    [class.active]="mode() === 'advanced'"
+    [attr.aria-pressed]="mode() === 'advanced'"
+    (click)="setMode('advanced')"
+  >
+    <strong>{{ 'pages.invites.mode.advanced.title' | transloco }}</strong>
+    <span>{{ 'pages.invites.mode.advanced.subtitle' | transloco }}</span>
+  </button>
+</div>
+
+<div
+  class="tabs"
+  role="tablist"
+  [attr.aria-label]="'pages.invites.tabs.ariaLabel' | transloco: { post: words().post }"
+>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [attr.aria-selected]="network() === 'x'"
+    [class.active]="network() === 'x'"
+    (click)="setNetwork('x')"
+  >
+    {{ 'pages.invites.network.twitter' | transloco }}
+  </button>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [attr.aria-selected]="network() === 'bluesky'"
+    [class.active]="network() === 'bluesky'"
+    (click)="setNetwork('bluesky')"
+  >
+    {{ 'pages.invites.network.bluesky' | transloco }}
+  </button>
+  <button
+    class="tab"
+    type="button"
+    role="tab"
+    [attr.aria-selected]="network() === 'mastodon'"
+    [class.active]="network() === 'mastodon'"
+    (click)="setNetwork('mastodon')"
+  >
+    {{ 'pages.invites.network.mastodonRally' | transloco }}
+  </button>
+</div>
+
+<section class="platform-intro" aria-live="polite">
+  @if (network() === 'x') {
+    <strong>{{ 'pages.invites.platformIntro.x.title' | transloco }}</strong>
+    <span class="muted small">{{ 'pages.invites.platformIntro.x.subtitle' | transloco }}</span>
+  } @else if (network() === 'bluesky') {
+    <strong>{{ 'pages.invites.platformIntro.bluesky.title' | transloco }}</strong>
+    <span class="muted small">{{
+      'pages.invites.platformIntro.bluesky.subtitle' | transloco
+    }}</span>
+  } @else {
+    <strong>{{ 'pages.invites.platformIntro.mastodon.title' | transloco }}</strong>
+    <span class="muted small">
+      {{ 'pages.invites.platformIntro.mastodon.subtitle' | transloco }}
+    </span>
+  }
+</section>
+
+@if (mode() === 'advanced') {
+  <details class="advanced-options" open>
+    <summary>{{ 'pages.invites.advanced.summary' | transloco }}</summary>
+    <div class="advanced-body">
+      @if (network() !== 'mastodon') {
+        <label class="field-label" for="promotion-target">{{
+          'pages.invites.advanced.startLabel' | transloco
+        }}</label>
+        <select
+          id="promotion-target"
+          [value]="promotion()"
+          (change)="setPromotion($any($event.target).value)"
+        >
+          <option value="join-mastodon">
+            {{ 'pages.invites.advanced.promoteJoinMastodon' | transloco }}
+          </option>
+          <option value="home-server">
+            {{ 'pages.invites.advanced.promoteHomeServer' | transloco: { host: homeHost() } }}
+          </option>
+        </select>
+        <p class="muted small">
+          @if (promotion() === 'home-server') {
+            <span
+              [innerHTML]="
+                'pages.invites.advanced.linksTo.homeServer' | transloco: { url: linkUrl() }
+              "
+            ></span>
+          } @else {
+            {{ 'pages.invites.advanced.linksTo.joinMastodon' | transloco }}
+          }
+        </p>
+      }
+
+      <label class="option-toggle">
+        <input
+          type="checkbox"
+          [checked]="includeLink()"
+          (change)="toggleLink($any($event.target).checked)"
+        />
+        <span>
+          {{
+            network() === 'mastodon'
+              ? ('pages.invites.advanced.includeLink.builder' | transloco)
+              : ('pages.invites.advanced.includeLink.whereToStart' | transloco)
+          }}
+        </span>
+      </label>
+
+      @if (network() !== 'mastodon') {
+        <label class="option-toggle">
+          <input
+            type="checkbox"
+            [checked]="naming()"
+            [disabled]="!hasProfile()"
+            (change)="toggleProfile($any($event.target).checked)"
+          />
+          <span>
+            {{ 'pages.invites.advanced.includeProfile' | transloco }}
+            @if (hasProfile()) {
+              <span class="muted small">— {{ profileUrl() }}</span>
+            } @else {
+              <span class="muted small">
+                —
+                <a routerLink="/login">{{ 'pages.invites.advanced.signInToAdd' | transloco }}</a>
+                {{ 'pages.invites.advanced.toAddOne' | transloco }}
+              </span>
+            }
+          </span>
+        </label>
+      }
+
+      <label class="option-toggle">
+        <input
+          type="checkbox"
+          [checked]="shorten()"
+          [disabled]="!shortenerReady() || shortening() || !includeLink()"
+          (change)="toggleShorten($any($event.target).checked)"
+        />
+        <span
+          [innerHTML]="
+            'pages.invites.advanced.shortenWith' | transloco: { shortener: shortenerLabel() }
+          "
+        ></span>
+        @if (!shortenerReady()) {
+          <span class="muted small">
+            —
+            @if (!signedIn) {
+              <a routerLink="/login">{{ 'pages.invites.advanced.shortener.signIn' | transloco }}</a>
+              {{ 'pages.invites.advanced.shortener.thenConnect' | transloco }}
+            } @else {
+              <a routerLink="/settings/connections/link-shortener">{{
+                'pages.invites.advanced.shortener.connect' | transloco
+              }}</a>
+              {{ 'pages.invites.advanced.shortener.toTrack' | transloco }}
+            }
+          </span>
+        } @else if (shortening()) {
+          <span class="muted small">{{ 'pages.invites.advanced.shortening' | transloco }}</span>
+        } @else if (shorten()) {
+          <span class="muted small">— {{ linkUrl() }}</span>
+        }
+      </label>
+
+      @if (shorten() && shortenerReady()) {
+        <label class="option-toggle nested-toggle">
+          <input
+            type="checkbox"
+            [checked]="trackCampaign()"
+            [disabled]="shortening()"
+            (change)="toggleTracking($any($event.target).checked)"
+          />
+          <span>
+            {{ 'pages.invites.advanced.campaignTags' | transloco }}
+            <span class="muted small">{{
+              'pages.invites.advanced.campaignTagsHint' | transloco
+            }}</span>
+          </span>
+        </label>
+      }
+
+      @if (shortenError(); as msg) {
+        <p class="feed-error" role="alert">{{ msg }}</p>
+      }
+    </div>
+  </details>
+}
+
+<div class="message-toolbar">
+  <span class="muted small">
+    {{
+      (cards().length === 1
+        ? 'pages.invites.toolbar.count.one'
+        : 'pages.invites.toolbar.count.other'
+      ) | transloco: { count: cards().length, network: networkLabel() }
+    }}
+  </span>
+  <button class="btn btn-outline btn-sm" type="button" (click)="shuffle()">
+    {{ 'pages.invites.toolbar.shuffle' | transloco }}
+  </button>
+</div>
+
+<ul class="invite-list">
+  @for (card of cards(); track card.variation.id) {
+    <li class="invite-card">
+      <div class="invite-head">
+        <h2>{{ card.variation.title }}</h2>
+        <span class="count" [class.over]="card.overLimit">
+          @if (card.overLimit) {
+            ⚠
+          }
+          {{ card.length }}/{{ limits[network()] }}
+        </span>
+      </div>
+
+      <label class="sr-only" [attr.for]="'invite-text-' + card.variation.id">
+        {{ 'pages.invites.card.editableLabel' | transloco: { title: card.variation.title } }}
+      </label>
+      <textarea
+        class="invite-text"
+        rows="7"
+        [id]="'invite-text-' + card.variation.id"
+        [value]="card.text"
+        (input)="onEdit(card.variation.id, $any($event.target).value)"
+      ></textarea>
+
+      @if (card.overLimit) {
+        <p class="warn small">
+          {{ 'pages.invites.card.overLimit' | transloco: { network: networkLabel() } }}
+        </p>
+      }
+
+      <div class="invite-actions">
+        <a
+          class="btn"
+          [href]="card.intentUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="actionLabel(card)"
+          (click)="onIntentOpen(card)"
+        >
+          {{
+            network() === 'mastodon'
+              ? ('pages.invites.card.rally' | transloco)
+              : ('pages.invites.card.postOn' | transloco: { network: networkLabel() })
+          }}
+          ↗
+        </a>
+        <button class="btn btn-outline" type="button" (click)="copy(card)">
+          {{ 'pages.invites.card.copyText' | transloco }}
+        </button>
+        @if (card.edited) {
+          <button class="link" type="button" (click)="reset(card.variation.id)">
+            {{ 'pages.invites.card.reset' | transloco }}
+          </button>
+        }
+        @if (copied() === card.variation.id) {
+          <span class="copy-note" role="status">{{ 'pages.invites.card.copied' | transloco }}</span>
+        }
+        @if (copyFailed() === card.variation.id) {
+          <span class="copy-note warn" role="status">{{
+            'pages.invites.card.copyFailed' | transloco
+          }}</span>
+        }
+      </div>
+    </li>
+  }
+</ul>
+
+<p class="muted small footnote">
+  {{ 'pages.invites.footnote.question' | transloco }}
+  <a routerLink="/settings/invites">{{ 'pages.invites.footnote.link' | transloco }}</a
+  >.
+</p>
+
+@if (fallbackText(); as text) {
+  <div
+    class="overlay"
+    role="presentation"
+    tabindex="-1"
+    (click)="closeFallback()"
+    (keyup.escape)="closeFallback()"
+  >
+    <div
+      class="dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="invite-copy-fallback-title"
+      (click)="$event.stopPropagation()"
+      (keyup)="$event.stopPropagation()"
+    >
+      <h2 id="invite-copy-fallback-title">{{ 'pages.invites.fallback.title' | transloco }}</h2>
+      <p class="muted small">{{ 'pages.invites.fallback.instructions' | transloco }}</p>
+      <textarea class="invite-text" rows="9" readonly>{{ text }}</textarea>
+      <button class="btn" type="button" (click)="closeFallback()">
+        {{ 'pages.invites.fallback.done' | transloco }}
+      </button>
+    </div>
+  </div>
+}

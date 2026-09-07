@@ -1,0 +1,107 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.gist.back' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.gist.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.gist.intro.a' | transloco }}
+    <a [routerLink]="['/drafts']">{{ 'settings.connections.gist.drafts' | transloco }}</a>
+    {{ 'settings.connections.gist.intro.b' | transloco }}
+    <a [routerLink]="['/write']">{{ 'settings.connections.gist.write' | transloco }}</a>
+    {{ 'settings.connections.gist.intro.c' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<ol class="setup-steps muted small">
+  <li>
+    {{ 'settings.connections.gist.step1.open' | transloco }}
+    <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">
+      {{ 'settings.connections.gist.step1.link' | transloco }}
+    </a>
+    {{ 'settings.connections.gist.step1.after' | transloco }}
+  </li>
+  <li>
+    {{ 'settings.connections.gist.step2.tick' | transloco }}
+    <strong>{{ 'settings.connections.gist.step2.scope' | transloco }}</strong
+    >{{ 'settings.connections.gist.step2.rest' | transloco }}
+  </li>
+  <li>{{ 'settings.connections.gist.step3' | transloco }}</li>
+</ol>
+
+<p class="credential-warning small">
+  {{ 'settings.connections.gist.warning.a' | transloco }}
+  <a [routerLink]="['/settings/connections/github']">{{
+    'settings.connections.gist.githubConnector' | transloco
+  }}</a>
+  {{ 'settings.connections.gist.warning.b' | transloco }}
+  <a [routerLink]="['/settings/connections/hugo']">{{
+    'settings.connections.gist.hugo' | transloco
+  }}</a>
+  {{ 'settings.connections.gist.warning.c' | transloco }}
+</p>
+
+@if (settings.connected()) {
+  <div class="connected-row">
+    <span class="connection-ok">{{ 'settings.connections.gist.connected' | transloco }}</span>
+    <app-storage-badge [where]="where()" />
+    @if (settings.profile()?.login; as login) {
+      <a [href]="'https://gist.github.com/' + login" target="_blank" rel="noopener noreferrer">
+        {{ 'settings.connections.gist.viewGists' | transloco }}
+      </a>
+    }
+    <button class="btn btn-outline" type="button" (click)="disconnect()">
+      {{ 'settings.connections.gist.disconnect' | transloco }}
+    </button>
+  </div>
+  @if (expiryLabel(settings.expiresAt()); as expiry) {
+    <p class="muted small">
+      {{ 'settings.connections.gist.deletedOn' | transloco: { date: expiry } }}
+    </p>
+  }
+} @else {
+  <div class="connect-form">
+    <label for="gist-token">{{ 'settings.connections.gist.tokenLabel' | transloco }}</label>
+    <input
+      id="gist-token"
+      type="password"
+      autocomplete="off"
+      [placeholder]="'settings.connections.gist.tokenPlaceholder' | transloco"
+      [ngModel]="token()"
+      (ngModelChange)="token.set($event)"
+      name="gistToken"
+    />
+    <button class="btn" type="button" [disabled]="busy()" (click)="connect()">
+      {{
+        busy()
+          ? ('settings.connections.gist.checking' | transloco)
+          : ('settings.connections.gist.connect' | transloco)
+      }}
+    </button>
+  </div>
+}
+
+@if (error()) {
+  <p class="conn-error" role="alert">{{ error() }}</p>
+}
+@if (notice()) {
+  <p class="conn-notice" role="status">{{ notice() }}</p>
+}
+
+<h2>{{ 'settings.connections.gist.whatIsTitle' | transloco }}</h2>
+<ul class="muted small">
+  <li>
+    <strong>{{ 'settings.connections.gist.public' | transloco }}</strong>
+    {{ 'settings.connections.gist.publicDesc' | transloco }}
+    <strong>{{ 'settings.connections.gist.unlisted' | transloco }}</strong>
+    {{ 'settings.connections.gist.unlistedDesc' | transloco }}
+  </li>
+  <li>{{ 'settings.connections.gist.noExpiry' | transloco }}</li>
+  <li>
+    {{ 'settings.connections.gist.editingWorks' | transloco }}
+  </li>
+  <li>
+    {{ 'settings.connections.gist.singleFileOnly' | transloco }}
+  </li>
+</ul>

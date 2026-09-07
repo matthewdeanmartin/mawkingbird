@@ -1,0 +1,140 @@
+.settings-page {
+  padding: 24px;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.page-head p {
+  margin: 0;
+}
+
+.accounts-notice {
+  margin: 14px 0 0;
+}
+
+.accounts-list {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-row:last-child {
+  border-bottom: 0;
+}
+
+/* The signed-in row is the constrained one; tint it so the disabled actions read
+   as "this is you" rather than as an unexplained dead end. */
+.account-row.is-active {
+  background: var(--bg);
+}
+
+.account-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  object-fit: cover;
+}
+
+.avatar-blank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--border);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  padding: 1px 8px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-quiet {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.acct,
+.usage {
+  overflow-wrap: anywhere;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.blocked {
+  max-width: 220px;
+  text-align: right;
+}
+
+.danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+.footnote {
+  margin: 16px 0 0;
+}
+
+.nowrap {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .account-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .blocked {
+    max-width: none;
+    text-align: left;
+  }
+}

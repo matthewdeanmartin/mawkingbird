@@ -1,0 +1,206 @@
+.add-feed {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.add-feed input {
+  flex: 1;
+  min-width: 0;
+}
+
+.feed-error {
+  color: #d63b3b;
+  font-size: 13px;
+}
+
+.feed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.feed-toggle .names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.feed-toggle .names span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cache-controls {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.cache-ttl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cache-ttl select {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.cache-controls p {
+  margin: 8px 0 0;
+}
+
+.cache-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.proxy-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.retry-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+
+.feed-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.proxy-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* Marks a feed whose traffic goes through a third party. Quiet, but always
+   present — an invisible proxy hop is the thing this feature must not have. */
+.proxy-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+/* --- OPML import / export --- */
+
+.opml {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.opml h2 {
+  margin: 0 0 6px;
+  font-size: 1.05em;
+}
+
+.feed-limit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+
+.feed-limit input {
+  width: 90px;
+}
+
+.opml-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+
+/* A file input styled as a button: the native control cannot be, so the real
+   input is hidden inside the label that triggers it. */
+.opml-import {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.opml-import input[type='file'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.opml-import.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.import-report ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}
+
+.failed-feeds {
+  margin-top: 6px;
+}
+
+.failed-feeds summary {
+  cursor: pointer;
+}
+
+.failed-url {
+  display: block;
+  word-break: break-all;
+}
+
+.failed-reason {
+  display: block;
+  opacity: 0.8;
+}

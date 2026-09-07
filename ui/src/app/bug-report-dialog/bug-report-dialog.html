@@ -1,0 +1,76 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="closed.emit()"
+  (keyup.escape)="closed.emit()"
+>
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bug-title"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="bug-title">{{ 'bugReport.title' | transloco }}</h3>
+    <p class="muted intro">{{ 'bugReport.intro' | transloco }}</p>
+
+    <label class="field-label" for="bug-desc">{{ 'bugReport.whatHappened' | transloco }}</label>
+    <textarea
+      id="bug-desc"
+      rows="4"
+      placeholder="{{ 'bugReport.descriptionPlaceholder' | transloco }}"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+    ></textarea>
+
+    @if (hasErrors()) {
+      <label class="check">
+        <input
+          type="checkbox"
+          [ngModel]="includeErrors()"
+          (ngModelChange)="includeErrors.set($event)"
+        />
+        {{
+          (errorLog.entries().length === 1
+            ? 'bugReport.includeErrors.one'
+            : 'bugReport.includeErrors.other'
+          ) | transloco: { count: errorLog.entries().length }
+        }}
+      </label>
+    }
+
+    @if (hasDiagnostics()) {
+      <label class="check">
+        <input
+          type="checkbox"
+          [ngModel]="includeDiagnostics()"
+          (ngModelChange)="includeDiagnostics.set($event)"
+        />
+        {{ 'bugReport.includeDiagnostics' | transloco }}
+      </label>
+    }
+
+    <button class="link-btn" type="button" (click)="showDetails.set(!showDetails())">
+      {{ (showDetails() ? 'bugReport.toggle.hide' : 'bugReport.toggle.show') | transloco }}
+    </button>
+    @if (showDetails()) {
+      <pre class="preview">{{ preview() }}</pre>
+    }
+
+    <div class="actions">
+      <button class="btn btn-outline" type="button" (click)="closed.emit()">
+        {{ 'bugReport.close' | transloco }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="copy()">
+        {{ (copied() ? 'bugReport.copied' : 'bugReport.copyReport') | transloco }}
+      </button>
+      <button class="btn" type="button" (click)="openGithub()">
+        {{ 'bugReport.openGithubIssue' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

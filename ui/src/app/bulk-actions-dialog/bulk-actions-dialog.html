@@ -1,0 +1,143 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="cancelled.emit()"
+  (keyup.escape)="cancelled.emit()"
+>
+  <div
+    class="dialog bulk-dialog"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="bulk-dialog-title"
+    appFocusTrap
+    (dismissed)="cancelled.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="bulk-dialog-title">{{ title() }}</h3>
+    <!-- Which list or collection, named. The job can be started from the list
+         page, a collection page, or Settings, so "this list" alone is not
+         enough to act on. -->
+    @if (target(); as t) {
+      <p class="bulk-target">
+        {{ sourceNoun() === 'collection' ? 'Collection' : 'List' }}:
+        <strong>{{ t.listTitle }}</strong>
+      </p>
+    }
+
+    @if (loading()) {
+      <!-- Counting can take minutes and hundreds of requests. Show the numbers
+           moving: a static "checking…" is indistinguishable from a hang, and
+           the only place this work was visible used to be the network tab. -->
+      <p class="muted">
+        @if (planning(); as progress) {
+          {{
+            (progress.stage === 'reading' ? 'bulk.plan.reading' : 'bulk.plan.checking') | transloco
+          }}
+        } @else {
+          {{ 'bulk.plan.counting' | transloco }}
+        }
+      </p>
+      @if (planning(); as progress) {
+        <p class="plan-progress small muted" role="status" aria-live="polite">
+          {{
+            (progress.accounts === 1 ? 'bulk.plan.readOne' : 'bulk.plan.readOther')
+              | transloco: { count: progress.accounts.toLocaleString() }
+          }}
+          ·
+          {{
+            (progress.apiCalls === 1 ? 'bulk.plan.requestOne' : 'bulk.plan.requestOther')
+              | transloco: { count: progress.apiCalls.toLocaleString() }
+          }}
+        </p>
+      }
+    } @else if (planCancelled()) {
+      <p class="bulk-summary">{{ 'bulk.stopped' | transloco }}</p>
+      <p class="muted small">
+        {{ 'bulk.stopped.hint' | transloco }}
+      </p>
+    } @else if (preview()?.error; as error) {
+      <p class="bulk-error">{{ 'bulk.checkFailed' | transloco: { error: error } }}</p>
+      <p class="muted small">{{ 'bulk.nothingChanged' | transloco }}</p>
+    } @else {
+      <p class="bulk-summary">{{ summary() }}</p>
+
+      @if (!noWork()) {
+        <ul class="bulk-effects">
+          @for (effect of spec().effectKeys; track effect) {
+            <li>{{ effect | transloco }}</li>
+          }
+        </ul>
+
+        @if (spec().backup) {
+          <div class="bulk-backup">
+            @if (backup(); as saved) {
+              <p class="small backup-done">
+                {{
+                  (saved.count === 1 ? 'bulk.backup.savedOne' : 'bulk.backup.savedOther')
+                    | transloco: { count: saved.count.toLocaleString() }
+                }}
+              </p>
+            } @else {
+              <p class="small muted">
+                {{ 'bulk.backup.hint' | transloco }}
+              </p>
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                [disabled]="backupBusy()"
+                (click)="downloadBackup()"
+              >
+                {{ (backupBusy() ? 'bulk.backup.preparing' : 'bulk.backup.download') | transloco }}
+              </button>
+            }
+            @if (backupError()) {
+              <p class="small bulk-error">{{ backupError() }}</p>
+            }
+          </div>
+        }
+      }
+    }
+
+    <div class="confirm-actions">
+      @if (loading()) {
+        <!-- The counting pass had no controls at all: no way out short of
+             reloading the page, which is a poor answer for someone with 50,000
+             friends who has changed their mind. -->
+        <button class="btn btn-outline" type="button" (click)="stopCounting()">
+          {{ 'bulk.stopCounting' | transloco }}
+        </button>
+      } @else if (planCancelled()) {
+        <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+          {{ 'common.close' | transloco }}
+        </button>
+        <button class="btn" type="button" (click)="load()">
+          {{ 'bulk.countAgain' | transloco }}
+        </button>
+      } @else if (noWork() || preview()?.error) {
+        <button class="btn" type="button" (click)="cancelled.emit()">
+          {{ 'common.close' | transloco }}
+        </button>
+        @if (preview()?.error) {
+          <button class="btn btn-outline" type="button" (click)="load()">
+            {{ 'bulk.tryAgain' | transloco }}
+          </button>
+        }
+      } @else {
+        <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+          {{ 'common.cancel' | transloco }}
+        </button>
+        <button
+          class="btn"
+          [class.btn-danger]="spec().danger"
+          type="button"
+          [disabled]="loading()"
+          (click)="confirmed.emit()"
+        >
+          {{ spec().confirmLabelKey | transloco }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

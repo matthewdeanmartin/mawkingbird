@@ -1,0 +1,66 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.raindrop.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.raindrop.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<ol class="setup-steps muted small">
+  <li>{{ 'settings.connections.raindrop.step1' | transloco }}</li>
+  <li>
+    {{ 'settings.connections.raindrop.copyThe' | transloco }}
+    <strong>{{ 'settings.connections.raindrop.testToken' | transloco }}</strong>
+    {{ 'settings.connections.raindrop.shownInSettings' | transloco }}
+  </li>
+  <li>{{ 'settings.connections.raindrop.step3' | transloco }}</li>
+</ol>
+<p class="muted small">
+  {{ 'settings.connections.raindrop.oauthNote' | transloco }}
+</p>
+<p class="credential-warning small">
+  {{ 'settings.connections.raindrop.credentialWarning' | transloco }}
+</p>
+
+@if (raindrop.connected()) {
+  <div class="raindrop-actions">
+    <span class="connection-ok">{{ 'settings.connections.raindrop.connected' | transloco }}</span>
+    <app-storage-badge [where]="where()" />
+    <button class="btn btn-outline" type="button" (click)="disconnectRaindrop()">
+      {{ 'settings.connections.raindrop.disconnect' | transloco }}
+    </button>
+  </div>
+  @if (expiryLabel(raindrop.expiresAt()); as expiry) {
+    <p class="muted small">
+      @if (where() === 'local') {
+        {{ 'settings.connections.raindrop.tokenDeletedOn' | transloco: { date: expiry } }}
+      } @else {
+        {{ 'settings.connections.raindrop.tokenClearedOn' | transloco: { date: expiry } }}
+      }
+    </p>
+  }
+} @else {
+  <form class="raindrop-form" (ngSubmit)="connectRaindrop()">
+    <input
+      type="password"
+      name="raindropToken"
+      [placeholder]="'settings.connections.raindrop.tokenPlaceholder' | transloco"
+      autocomplete="off"
+      [ngModel]="raindropToken()"
+      (ngModelChange)="raindropToken.set($event)"
+    />
+    <button class="btn" type="submit" [disabled]="!raindropToken().trim()">
+      {{ 'settings.connections.raindrop.save' | transloco }}
+    </button>
+  </form>
+}
+@if (raindropNotice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (raindropError(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}

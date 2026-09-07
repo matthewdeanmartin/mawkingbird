@@ -1,0 +1,85 @@
+<section [attr.lang]="copyLanguage()">
+  <div class="page-head">{{ 'bundledStarterKits.title' | packText: copyLanguage() }}</div>
+
+  <p class="intro muted small">
+    {{ 'bundledStarterKits.intro' | packText: copyLanguage() }}
+  </p>
+
+  <label class="kit-filter">
+    <span>{{ 'bundledStarterKits.languages' | packText: copyLanguage() }}</span>
+    <select [value]="language()" (change)="language.set($any($event.target).value)">
+      <option value="known">
+        {{ 'bundledStarterKits.myLanguages' | packText: copyLanguage() }}
+      </option>
+      <option value="all">
+        {{ 'bundledStarterKits.allLanguages' | packText: copyLanguage() }}
+      </option>
+      @for (lang of languages; track lang.code) {
+        <option [value]="lang.code">{{ lang.name }}</option>
+      }
+    </select>
+  </label>
+  <p class="muted small">{{ 'bundledStarterKits.languageNote' | packText: copyLanguage() }}</p>
+
+  <!-- The merged list is longer than either of the two it replaced, and this is
+     the page a newcomer is sent to with no idea what is on it. One box, no
+     modes: it narrows what is already visible rather than searching anything. -->
+  <label class="kit-filter">
+    <span class="muted small">{{
+      'bundledStarterKits.filter.label' | packText: copyLanguage()
+    }}</span>
+    <input
+      type="text"
+      [value]="filter()"
+      (input)="filter.set($any($event.target).value)"
+      [placeholder]="'bundledStarterKits.filter.placeholder' | packText: copyLanguage()"
+      autocomplete="off"
+    />
+  </label>
+
+  @for (set of visible(); track set.key) {
+    <a class="kit-row" [attr.lang]="set.lang" [routerLink]="set.link">
+      <div class="kit-icon" aria-hidden="true">M</div>
+      <div class="kit-body">
+        <strong>{{ set.title }}</strong>
+        @if (set.lang) {
+          <span class="muted small"> · {{ set.lang }}</span>
+        }
+        <p class="muted small">{{ set.blurb }}</p>
+        <span class="muted small">
+          {{
+            (set.accountCount === 1
+              ? 'bundledStarterKits.account.one'
+              : 'bundledStarterKits.account.other'
+            ) | packText: set.lang ?? copyLanguage() : { count: set.accountCount }
+          }}
+          <!-- Provenance, kept quiet. It is a real difference and worth stating,
+             but it is our distinction rather than the reader's, so it reads as
+             a credit on the card instead of a choice before the cards. -->
+          ·
+          @if (set.curator; as curator) {
+            {{ 'bundledStarterKits.byThem' | packText: set.lang ?? copyLanguage() : { curator } }}
+          } @else {
+            {{ 'bundledStarterKits.byUs' | packText: set.lang ?? copyLanguage() }}
+          }
+          {{ 'bundledStarterKits.open' | packText: set.lang ?? copyLanguage() }}
+        </span>
+      </div>
+    </a>
+  } @empty {
+    <p class="muted small kit-none">
+      {{ 'bundledStarterKits.filter.none' | packText: copyLanguage() : { query: filter() } }}
+    </p>
+  }
+
+  <!-- The power-user door, at the foot rather than the front. Someone who already
+     has a timeline and wants more people, tags, imports or directories wants the
+     hub; someone arriving here for the first time wants faces. -->
+  <p class="kit-more muted small">
+    {{ 'bundledStarterKits.updated' | packText: copyLanguage() : { date: updated } }} ·
+    {{ 'bundledStarterKits.moreWays' | packText: copyLanguage() }}
+    <a routerLink="/find-friends">{{
+      'bundledStarterKits.moreWaysLink' | packText: copyLanguage()
+    }}</a>
+  </p>
+</section>

@@ -1,0 +1,128 @@
+<aside class="library" [attr.aria-label]="'reader.library.title' | transloco">
+  <div class="library-head">
+    <h2>{{ 'reader.library.title' | transloco }}</h2>
+    <button class="tool" type="button" (click)="closed.emit()">
+      {{ 'reader.library.close' | transloco }}
+    </button>
+  </div>
+
+  <nav class="library-body">
+    @if (!total()) {
+      <p class="muted library-empty">{{ 'reader.library.empty' | transloco }}</p>
+    } @else {
+      @for (shelf of shelves(); track shelf.id) {
+        <button
+          class="rail-row rail-folder"
+          type="button"
+          [attr.aria-expanded]="!shelf.collapsed"
+          (click)="toggleShelf(shelf.id)"
+        >
+          <span class="name">
+            <span aria-hidden="true">{{ shelf.collapsed ? '▸' : '▾' }}</span>
+            {{ shelf.labelKey | transloco }}
+          </span>
+          <span class="muted small">{{ shelf.rows.length }}</span>
+        </button>
+
+        @if (!shelf.collapsed) {
+          @for (row of shelf.rows; track row.id) {
+            <div class="row-wrap" [class.active]="row.id === currentId()">
+              <!-- `replaceUrl`: opening a document from the library is moving
+                   *within* the reader, not travelling to a new place. Pushing
+                   would put every document opened this session into history, so
+                   Exit (and the browser's Back) would walk back through them one
+                   at a time instead of leaving — which is what the operator hit.
+                   One reader entry, whatever you read. -->
+              <a
+                class="rail-row rail-feed nested"
+                [routerLink]="['/read', row.id]"
+                replaceUrl
+                [attr.aria-current]="row.id === currentId() ? 'true' : null"
+              >
+                <span class="names">
+                  <span class="name">{{ row.title }}</span>
+                  <span class="muted small">
+                    @if (row.id === currentId()) {
+                      {{ 'reader.library.currentDocument' | transloco }} ·
+                    }
+                    {{ row.siteName || row.url }}
+                    @if (row.pinnedShelf) {
+                      · {{ 'reader.library.pinnedHint' | transloco }}
+                    }
+                  </span>
+                </span>
+                <span class="muted small progress">
+                  {{ 'reader.library.percent' | transloco: { percent: percent(row) } }}
+                </span>
+              </a>
+
+              <button
+                class="tool row-menu-btn"
+                type="button"
+                [attr.aria-label]="'reader.library.rowMenu' | transloco: { title: row.title }"
+                [attr.aria-expanded]="openMenu() === row.id"
+                (click)="toggleMenu(row.id)"
+              >
+                <span aria-hidden="true">⋯</span>
+              </button>
+
+              @if (openMenu() === row.id) {
+                <div class="row-menu">
+                  <span class="muted small menu-label">
+                    {{ 'reader.library.moveTo' | transloco }}
+                  </span>
+                  @for (target of otherShelves(row.shelf); track target.id) {
+                    <button class="tool" type="button" (click)="moveTo(row.id, target.id)">
+                      {{ target.labelKey | transloco }}
+                    </button>
+                  }
+                  @if (row.pinnedShelf) {
+                    <button class="tool" type="button" (click)="unpin(row.id, row.shelf)">
+                      {{ 'reader.library.automatic' | transloco }}
+                    </button>
+                  }
+                  <button class="tool danger" type="button" (click)="remove(row.id)">
+                    {{ 'reader.library.remove' | transloco }}
+                  </button>
+                </div>
+              }
+            </div>
+          } @empty {
+            <p class="muted small library-empty nested">
+              {{ 'reader.library.emptyShelf' | transloco }}
+            </p>
+          }
+        }
+      }
+    }
+  </nav>
+
+  <!-- Only when there is something to clear, and never as a bare button: the
+       second press is the confirmation, so a stray tap costs nothing. -->
+  @if (total()) {
+    <div class="library-foot">
+      @if (confirmingClear()) {
+        <!-- Announced: the prompt replaces the button in place, which a screen
+             reader would otherwise pass over in silence. -->
+        <span class="muted small" role="status">
+          {{ 'reader.library.clearAllConfirm' | transloco: { count: total() } }}
+        </span>
+        <button class="tool danger" type="button" (click)="clearAll()">
+          {{ 'reader.library.clearAll' | transloco }}
+        </button>
+        <button class="tool" type="button" (click)="cancelClearAll()">
+          {{ 'reader.library.clearAllCancel' | transloco }}
+        </button>
+      } @else {
+        <button
+          class="tool"
+          type="button"
+          [title]="'reader.library.clearAllTitle' | transloco"
+          (click)="askClearAll()"
+        >
+          {{ 'reader.library.clearAll' | transloco }}
+        </button>
+      }
+    </div>
+  }
+</aside>

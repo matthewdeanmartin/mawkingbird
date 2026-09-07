@@ -1,0 +1,145 @@
+.card {
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--rail-bg, var(--col-bg));
+  overflow: hidden;
+}
+
+.card-title {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 17px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+}
+
+/* --- who to follow --- */
+
+/* The hover cards hang outside the card's box; clipping them defeats the point. */
+.suggest-card {
+  overflow: visible;
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Lingering on an avatar or name fades in the account hover card (status-card pattern). */
+.hover-anchor {
+  position: relative;
+}
+
+.suggestion-name-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.hover-anchor:hover app-account-hover-card {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0.45s;
+  /* Pairs with content-visibility:hidden on the card (see account-hover-card). */
+  content-visibility: visible;
+}
+
+.suggestion:last-of-type {
+  border-bottom: none;
+}
+
+.suggestion-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--hover);
+  display: block;
+}
+
+.suggestion-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.suggestion-name:hover {
+  text-decoration: none;
+}
+
+.suggestion-name:hover .suggestion-display {
+  color: var(--accent);
+}
+
+.suggestion-display,
+.suggestion-name .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-name .muted {
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.follow-btn {
+  flex: none;
+  padding: 5px 14px;
+  font-size: 13px;
+}
+
+.card-hint {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+
+.trend {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.trend:last-of-type {
+  border-bottom: none;
+}
+
+.trend:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.trend-name {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.trend-count {
+  font-size: 12px;
+}
+
+.find-people-link {
+  display: block;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.find-people-link:hover {
+  background: var(--hover);
+  text-decoration: none;
+}

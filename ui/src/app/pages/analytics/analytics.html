@@ -1,0 +1,9 @@
+<div class="analytics">
+  <header class="page-head">{{ 'analytics.title' | transloco }}</header>
+
+  @if (me(); as acc) {
+    <app-account-analytics [account]="acc" />
+  } @else {
+    <p class="muted center">{{ 'analytics.login' | transloco }}</p>
+  }
+</div>

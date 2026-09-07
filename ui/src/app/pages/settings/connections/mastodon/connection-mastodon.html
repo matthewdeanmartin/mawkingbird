@@ -1,0 +1,140 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.mastodon.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.mastodon.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+@if (!applicable()) {
+  <!-- Reachable by deep link even though the catalog greys the card. Say which
+       situation the reader is in rather than just refusing. -->
+  <p class="muted">
+    @if (auth.isAnonymous) {
+      {{ 'settings.connections.mastodon.anonymousActiveBefore' | transloco }}
+      <a [routerLink]="['/settings/anonymous']">{{
+        'settings.connections.mastodon.anonymousSettingsLink' | transloco
+      }}</a
+      >.
+    } @else {
+      {{ 'settings.connections.mastodon.alreadySignedIn' | transloco }}
+    }
+  </p>
+} @else if (state() === 'absent') {
+  <p class="muted">
+    {{ 'settings.connections.mastodon.nothingConnected' | transloco }}
+  </p>
+  <p>
+    <button class="btn" (click)="enableAnonymous()">
+      {{
+        'settings.connections.mastodon.readWithoutAccount'
+          | transloco: { server: defaultServer.replace('https://', '') }
+      }}
+    </button>
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.mastodon.noAccountNeeded' | transloco }}
+  </p>
+} @else {
+  <div class="conn-state">
+    <p>
+      @if (state() === 'signed-in') {
+        {{ 'settings.connections.mastodon.signedInToBefore' | transloco }}
+        <strong>{{ serverLabel() }}</strong
+        >{{ 'settings.connections.mastodon.signedInToAfter' | transloco }}
+      } @else {
+        {{ 'settings.connections.mastodon.readingAnonymouslyBefore' | transloco }}
+        <strong>{{ serverLabel() }}</strong>
+        {{ 'settings.connections.mastodon.readingAnonymouslyAfter' | transloco }}
+      }
+    </p>
+    @if (state() === 'anonymous') {
+      <p class="muted small">
+        {{ 'settings.connections.mastodon.anonymousReadingNote' | transloco }}
+      </p>
+    } @else {
+      <p class="muted small">
+        {{ 'settings.connections.mastodon.signedInMergeNote' | transloco }}
+      </p>
+    }
+  </div>
+
+  @if (state() === 'anonymous') {
+    <h2>{{ 'settings.connections.mastodon.signInHeading' | transloco }}</h2>
+    <p class="muted">
+      {{ 'settings.connections.mastodon.pasteTokenFor' | transloco }}
+      <strong>{{ serverLabel() }}</strong
+      >{{ 'settings.connections.mastodon.pasteTokenAfter' | transloco }}
+    </p>
+    <form class="conn-form" (ngSubmit)="signIn()">
+      <input
+        type="password"
+        name="mastodonToken"
+        [placeholder]="'settings.connections.mastodon.tokenPlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="token()"
+        (ngModelChange)="token.set($event)"
+        [disabled]="signingIn()"
+      />
+      <button class="btn" type="submit" [disabled]="!token().trim() || signingIn()">
+        {{
+          (signingIn()
+            ? 'settings.connections.mastodon.checking'
+            : 'settings.connections.mastodon.signIn'
+          ) | transloco
+        }}
+      </button>
+    </form>
+    @if (error(); as msg) {
+      <p class="feed-error">{{ msg }}</p>
+    }
+  } @else {
+    <p>
+      <button class="btn btn-outline btn-sm" (click)="signOut()">
+        {{ 'settings.connections.mastodon.signOut' | transloco }}
+      </button>
+    </p>
+    <p class="muted small">
+      {{
+        'settings.connections.mastodon.signOutKeepsReading' | transloco: { server: serverLabel() }
+      }}
+    </p>
+  }
+
+  <h2>{{ 'settings.connections.mastodon.serverHeading' | transloco }}</h2>
+  @if (changingServer()) {
+    <app-server-discovery
+      [currentServer]="connector.server() ?? ''"
+      [startLabel]="'settings.connections.mastodon.findAServer' | transloco"
+      (selected)="chooseServer($event)"
+    />
+    <p>
+      <button class="btn btn-outline btn-sm" (click)="changingServer.set(false)">
+        {{ 'settings.connections.mastodon.cancel' | transloco }}
+      </button>
+    </p>
+  } @else {
+    <p>
+      <button class="btn btn-outline btn-sm" (click)="changingServer.set(true)">
+        {{ 'settings.connections.mastodon.changeServer' | transloco }}
+      </button>
+    </p>
+    <p class="muted small">
+      {{ 'settings.connections.mastodon.changeServerNote' | transloco }}
+    </p>
+  }
+
+  <h2>{{ 'settings.connections.mastodon.turnOffHeading' | transloco }}</h2>
+  <p>
+    <button class="btn btn-outline btn-sm" (click)="disable()">
+      {{ 'settings.connections.mastodon.disconnect' | transloco }}
+    </button>
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.mastodon.disconnectNote' | transloco }}
+  </p>
+}

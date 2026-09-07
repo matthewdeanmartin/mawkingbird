@@ -1,0 +1,37 @@
+/* Tabs match ListTimeline's, because a client list is the same kind of thing wearing a
+   different feed source — see sprint/lists-0-overview.md. Duplicated rather than shared
+   because both are component-scoped; extracting them is a wider refactor than this
+   sprint. */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+}
+
+.page-head {
+  padding: 16px 16px 8px;
+}
+
+.page-head h1 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.page-head p {
+  margin: 0;
+}

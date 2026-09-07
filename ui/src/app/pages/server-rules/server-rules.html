@@ -1,0 +1,25 @@
+<header class="page-head">
+  <h1>{{ 'serverRules.title' | transloco }}</h1>
+  @if (host(); as searchHost) {
+    <p>{{ 'serverRules.bySearch' | transloco: { host: searchHost } }}</p>
+  } @else {
+    <p>{{ 'serverRules.byMastodon' | transloco }}</p>
+  }
+</header>
+
+@if (loading()) {
+  <p class="empty muted">{{ 'serverRules.loading' | transloco }}</p>
+} @else if (!(rules() ?? []).length) {
+  <p class="empty muted">{{ 'serverRules.empty' | transloco }}</p>
+} @else {
+  <ol class="rules">
+    @for (rule of rules() ?? []; track rule.id) {
+      <li>
+        <strong>{{ rule.text }}</strong>
+        @if (rule.hint) {
+          <span class="muted">{{ rule.hint }}</span>
+        }
+      </li>
+    }
+  </ol>
+}

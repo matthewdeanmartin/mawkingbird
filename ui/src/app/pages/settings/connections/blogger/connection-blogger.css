@@ -1,0 +1,92 @@
+.connected-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+}
+
+/* Advanced, and genuinely optional — collapsed unless already in use, so the
+   ordinary path is not buried under Google Cloud instructions. */
+.own-project {
+  margin-top: 26px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.own-project summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.own-project-field {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.own-project-field input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+/* The redirect URI has to be copied character-exact, so give it room to wrap
+   rather than truncating it. */
+.callback-url {
+  display: inline-block;
+  margin-top: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.profile-feed-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.profile-feed-option > span {
+  display: grid;
+  gap: 3px;
+}
+
+.section-title {
+  margin: 22px 0 6px;
+  font-size: 16px;
+}
+
+/* One row per blog: the name is the button (choosing is the action), with the
+   public address beside it so two similarly-named blogs are tellable apart. */
+.blog-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.blog-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.blog-list .btn:disabled {
+  /* The chosen blog: not a dimmed dead control, but the current selection. */
+  opacity: 1;
+  border-color: var(--accent);
+  color: var(--accent);
+  cursor: default;
+}

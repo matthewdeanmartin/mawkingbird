@@ -1,0 +1,59 @@
+<div
+  class="search-dialog"
+  role="dialog"
+  [attr.aria-label]="'reader.search.label' | transloco"
+  (keydown)="onKeydown($event)"
+>
+  <div class="search-head">
+    <input
+      #field
+      type="search"
+      class="search-field"
+      [placeholder]="'reader.search.placeholder' | transloco"
+      [attr.aria-label]="'reader.search.label' | transloco"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+    />
+    <button class="tool" type="button" (click)="closed.emit()">
+      {{ 'reader.search.close' | transloco }}
+    </button>
+  </div>
+
+  <!-- Announced, because the count is the answer to what was just typed. -->
+  <p class="muted small search-count" role="status">
+    @if (searched()) {
+      @if (matches().length === 0) {
+        {{ 'reader.search.none' | transloco }}
+      } @else if (matches().length === 1) {
+        {{ 'reader.search.countOne' | transloco }}
+      } @else {
+        {{ 'reader.search.count' | transloco: { count: matches().length } }}
+      }
+    } @else {
+      {{ 'reader.search.hint' | transloco }}
+    }
+  </p>
+
+  @if (rows().length) {
+    <ul class="search-results">
+      @for (row of rows(); track $index) {
+        <li>
+          <button
+            class="search-result"
+            [class.on-this-page]="row.match.page === currentPage()"
+            type="button"
+            (click)="goTo.emit(row.match)"
+          >
+            <span class="search-context">
+              {{ row.before }}<mark>{{ row.hit }}</mark
+              >{{ row.after }}
+            </span>
+            <span class="muted small search-page">
+              {{ 'reader.search.onPage' | transloco: { page: row.match.page } }}
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

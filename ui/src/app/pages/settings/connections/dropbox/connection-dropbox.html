@@ -1,0 +1,84 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.dropbox.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.dropbox.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+@if (!dropbox.configured) {
+  <p class="feed-error">
+    {{ 'settings.connections.dropbox.notConfigured' | transloco }}
+  </p>
+} @else if (dropbox.connected()) {
+  <div class="dropbox-actions">
+    <button class="btn" type="button" (click)="listDropbox()" [disabled]="dropboxBusy()">
+      {{
+        (dropboxBusy()
+          ? 'settings.connections.dropbox.listing'
+          : 'settings.connections.dropbox.list'
+        ) | transloco
+      }}
+    </button>
+    <button class="btn btn-outline" type="button" (click)="disconnectDropbox()">
+      {{ 'settings.connections.dropbox.disconnect' | transloco }}
+    </button>
+  </div>
+  <p class="muted small">
+    {{ 'settings.connections.dropbox.sessionOnly' | transloco }}
+  </p>
+} @else {
+  <button class="btn" type="button" (click)="connectDropbox()">
+    {{ 'settings.connections.dropbox.connect' | transloco }}
+  </button>
+}
+@if (dropboxNotice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (dropboxError(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}
+
+@if (dropboxEntries(); as entries) {
+  <div class="dropbox-modal-backdrop">
+    <section
+      class="dropbox-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dropbox-list-title"
+    >
+      <div class="dropbox-modal-head">
+        <h2 id="dropbox-list-title">{{ 'settings.connections.dropbox.modalTitle' | transloco }}</h2>
+        <button
+          class="icon-close"
+          type="button"
+          [aria-label]="'settings.connections.dropbox.closeAriaLabel' | transloco"
+          (click)="dropboxEntries.set(null)"
+        >
+          ×
+        </button>
+      </div>
+      @if (entries.length) {
+        <ul class="dropbox-list">
+          @for (entry of entries; track entry.id || entry.path_display || entry.name) {
+            <li>
+              <span aria-hidden="true">{{ entry['.tag'] === 'folder' ? '📁' : '📄' }}</span>
+              <span>{{ entry.name }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted">{{ 'settings.connections.dropbox.empty' | transloco }}</p>
+      }
+      <div class="dropbox-modal-foot">
+        <button class="btn" type="button" (click)="dropboxEntries.set(null)">
+          {{ 'settings.connections.dropbox.close' | transloco }}
+        </button>
+      </div>
+    </section>
+  </div>
+}

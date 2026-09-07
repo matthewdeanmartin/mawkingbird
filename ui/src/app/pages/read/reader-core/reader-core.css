@@ -1,0 +1,496 @@
+/* The document itself.
+
+   Carried over from `pages/thread/thread.css`'s reader block — same rules, same
+   reasons — plus the measure, which the thread page never needed because its
+   column was already narrow. */
+
+:host {
+  display: block;
+  /* The toolbar's own height (6px padding + control + 6px padding + its rule).
+     Declared here rather than inside the toolbar because the progress hairline
+     is a sibling of it, not a child, and a custom property set on the
+     toolbar's :host would not reach across. Both read this one name, so the
+     two cannot drift apart silently. */
+  --reader-toolbar-height: 34px;
+}
+
+.reader {
+  /* The measure: ~68 characters, which is where prose stays comfortable. The
+     toolbar deliberately does NOT respect this — see read-toolbar.css. */
+  max-width: var(--reader-measure, 68ch);
+  margin: 0 auto;
+  padding: 32px 24px 96px;
+
+  /* Article-only paper colour: --reader-bg/--reader-fg are set by ClientPrefs
+     and absent on the "Match app" default, so the app theme shows through. */
+  color: var(--reader-fg, inherit);
+  font-family: var(--reader-font-family, Georgia, serif);
+  font-size: var(--reader-font-size, 18px);
+  font-weight: var(--reader-font-weight, 400);
+  line-height: var(--reader-line-height, 1.65);
+  letter-spacing: var(--reader-letter-spacing, 0);
+  word-spacing: var(--reader-word-spacing, 0);
+  text-align: var(--reader-text-align, left);
+}
+
+/* In the pane the padding belongs to the pane, but the measure still applies:
+   the pane can be 900px on a wide screen, and a 900px line is hard to track
+   back from. Left-aligned rather than centred, so the article stays flush with
+   the headline row it opened from. */
+.reader[data-layout='pane'] {
+  margin: 0;
+  padding: 0;
+}
+
+/* When a paper colour is in force, the article's own muted text and rules must
+   be derived from the article's foreground — the app's --muted/--border are
+   tuned for the app background and disappear against sepia or solarized. */
+.reader:not([data-paper='app']) .muted {
+  color: color-mix(in srgb, var(--reader-fg, currentColor) 62%, transparent);
+}
+
+.reader:not([data-paper='app']) .reader-head,
+.reader:not([data-paper='app']) .reader-article {
+  border-color: color-mix(in srgb, var(--reader-fg, currentColor) 22%, transparent);
+}
+
+.reader-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--app-font-family);
+}
+
+.reader-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.reader-author {
+  font-weight: 700;
+}
+
+.reader-posts {
+  position: relative;
+}
+
+.reader-post {
+  margin-bottom: 1em;
+}
+
+.reader-media {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 0 1em;
+}
+
+/* ---- Article expansion ---- */
+
+.reader-expand {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 20px;
+  /* The controls are app chrome sitting inside a reading column: they must not
+     inherit the article's serif, size or letter-spacing. */
+  font-family: var(--app-font-family);
+  font-size: 14px;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.reader-expand-note {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--border);
+  font-size: 0.9em;
+  opacity: 0.85;
+  /* Information, not error: these pages are refusing us for ordinary reasons
+     and the reader still has a card and a link. Red would overstate it. */
+  background: var(--bg-subtle, transparent);
+}
+
+.reader-expand-quota {
+  font-size: 0.85em;
+}
+
+.reader-article {
+  position: relative;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+
+.reader-article-title {
+  margin: 0 0 4px;
+  line-height: 1.25;
+}
+
+.reader-article-meta {
+  margin: 0 0 20px;
+  font-size: 0.88em;
+}
+
+.reader-article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+  font-family: var(--app-font-family);
+  font-size: 14px;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.reader-expand-debug {
+  flex-basis: 100%;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.reader-expand-debug summary {
+  cursor: pointer;
+  /* A quiet affordance: this is for the reader who wants it and must not
+     compete with the message above it. */
+  user-select: none;
+}
+
+.reader-expand-debug ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.reader-expand-debug li {
+  margin: 2px 0;
+  /* Long URLs must wrap rather than widening the article column. */
+  overflow-wrap: anywhere;
+}
+
+/* The compact button treatment, matching the toolbar. Repeated here rather than
+   shared because view encapsulation puts these in a different scope, and the
+   alternative — a global `.tool` — would leak a very short class name into
+   every page in the app. */
+.tool {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--bg-subtle, rgba(127, 127, 127, 0.12));
+  color: inherit;
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tool:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.tool:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* "Read it at the source", for a document that lives elsewhere. Above the text
+   rather than below it: on an RSS teaser the useful link should not be at the
+   bottom of the part the publisher deliberately truncated. */
+.reader-source {
+  margin: 0 0 20px;
+  font-family: var(--app-font-family);
+  font-size: 14px;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+/* Said once, quietly, at the top of a resumed document. */
+.resume-note {
+  margin: 0 0 16px;
+  font-family: var(--app-font-family);
+  font-size: 13px;
+  letter-spacing: normal;
+  word-spacing: normal;
+  opacity: 0.75;
+}
+
+/* The toolbar and anything that hangs off it (in-document search). Positioned
+   so the dialog can anchor under the bar rather than float over the text the
+   reader is trying to search. */
+.reader-bar {
+  position: relative;
+}
+
+/* The reading column and the notes rail, side by side. The column keeps its
+   measure; the rail takes what it needs beside it and nothing from it. */
+.reader-with-rail {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  justify-content: center;
+}
+
+.reader-with-rail > .reader-viewport {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.reader-viewport {
+  max-width: var(--reader-measure, 68ch);
+  width: 100%;
+  align-self: center;
+  font-family: var(--reader-font-family, Georgia, serif);
+  font-size: var(--reader-font-size, 18px);
+}
+
+/* The toolbar owns its row. Columns receive exactly the remaining height. */
+:host.reader-paged {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: calc(var(--reader-viewport-height, 100dvh) - var(--reader-outer-chrome, 0px));
+  min-height: 0;
+}
+
+:host.reader-paged .reader-with-rail {
+  position: relative;
+  min-height: 0;
+  padding: 16px 24px 24px;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+:host.reader-paged .reader-viewport {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  overflow-anchor: none;
+  touch-action: pan-y pinch-zoom;
+}
+
+.reader-touch-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: 14px var(--app-font-family);
+}
+
+.reader-touch-nav button {
+  flex: 1;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-subtle);
+  color: inherit;
+  font: inherit;
+}
+
+.reader-touch-nav button:disabled {
+  opacity: 0.4;
+}
+
+:host.reader-paged .reader {
+  height: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  column-count: 1;
+  column-gap: 48px;
+  column-fill: auto;
+  overflow-wrap: anywhere;
+  orphans: 1;
+  widows: 1;
+}
+
+:host.reader-paged .reader-head,
+:host.reader-paged .reader-expand,
+:host.reader-paged .reader-article-actions {
+  break-inside: avoid-column;
+}
+
+:host.reader-paged app-notes-rail {
+  display: block;
+  overflow: auto;
+  min-height: 0;
+  max-height: 25%;
+}
+
+@media (min-width: 1101px) {
+  :host.reader-paged app-notes-rail {
+    max-height: 100%;
+  }
+}
+
+/* Below the width where both fit, the rail goes under the text — see
+   `notes-rail.css`, which makes the same call from its side. */
+@media (max-width: 1100px) {
+  .reader-with-rail {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* The article body is the positioning context for the selection popover, which
+   is anchored in coordinates relative to it. */
+.reader-article-body {
+  position: relative;
+}
+
+/* A marked passage. Deliberately a wash rather than a block of colour: the
+   point is to find the sentence again, not to make it hard to read. */
+.reader-highlight {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* The search hit reads differently from a highlight, because it means something
+   different: one is a mark the reader made, the other is where they just
+   landed. */
+.reader-search-hit {
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  outline: 2px solid var(--accent);
+}
+
+.note-composer {
+  position: absolute;
+  z-index: 6;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  max-height: 60%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.note-composer textarea {
+  width: 100%;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.note-composer-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.note-composer .tool {
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.note-composer .tool:hover {
+  background: var(--hover);
+}
+
+/* Said before the button, so the reader decides with it in view rather than
+   discovering it after spending a fetch. */
+.fetch-warning {
+  margin: 0 0 6px;
+}
+
+/* Page turning from the page itself.
+
+   The toolbar arrows are small and sit far from where the eyes are; someone
+   reading with a mouse should be able to turn the page without travelling to
+   the top of the screen, the way a touch reader taps the edge. Wide targets
+   down each side, invisible until pointed at so they cost the reading nothing.
+
+   Confined to the reader's side gutters so they cannot cover article links. */
+.page-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--reader-fg, inherit);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 4;
+}
+
+.page-edge.prev {
+  left: 0;
+}
+
+.page-edge.next {
+  right: 0;
+}
+
+/* Shown on hover, and always on keyboard focus — a focus ring nobody can see is
+   not a focus ring. */
+.page-edge:hover:not(:disabled),
+.page-edge:focus-visible {
+  opacity: 0.75;
+  background: linear-gradient(
+    to var(--page-edge-direction, right),
+    color-mix(in srgb, currentColor 10%, transparent),
+    transparent
+  );
+}
+
+.page-edge.next:hover:not(:disabled),
+.page-edge.next:focus-visible {
+  --page-edge-direction: left;
+}
+
+/* At the ends of the document there is nothing to turn to. Kept in the layout
+   rather than removed, so the other edge does not jump sideways. */
+.page-edge:disabled {
+  opacity: 0;
+  cursor: default;
+}
+
+/* A touch screen has no hover to reveal them with, and a permanently visible
+   grey band down each side of the text is worse than the toolbar arrows. Taps
+   near the edge are the platform convention there instead. */
+@media (hover: none) {
+  .page-edge {
+    display: none;
+  }
+}

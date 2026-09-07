@@ -1,0 +1,21 @@
+.empty {
+  padding: 24px 16px;
+}
+.rules {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rules li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.rules strong {
+  font-size: 15px;
+}
+.rules .muted {
+  font-size: 13px;
+}

@@ -1,0 +1,185 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.blogger.back' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.blogger.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.blogger.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+@if (!session.configured) {
+  <!-- No client id anywhere. Say why, and point at the way out. -->
+  <p class="muted">
+    {{ 'settings.connections.blogger.notConfigured' | transloco }}
+  </p>
+} @else {
+  <!-- Google's own words are alarming and appear mid-flow. Saying so first
+       means the interstitial reads as expected, not as this app misbehaving. -->
+  <p class="muted small">
+    <span [innerHTML]="'settings.connections.blogger.unverified' | transloco"></span>
+  </p>
+
+  <p class="credential-warning small">
+    {{ 'settings.connections.blogger.permissionNote' | transloco }}
+  </p>
+
+  @if (session.connected()) {
+    <div class="connected-row">
+      <span class="connection-ok">{{ 'settings.connections.blogger.signedIn' | transloco }}</span>
+      <button class="btn btn-outline" type="button" (click)="disconnect()">
+        {{ 'settings.connections.blogger.signOut' | transloco }}
+      </button>
+    </div>
+
+    <h2 class="section-title">{{ 'settings.connections.blogger.publishTo' | transloco }}</h2>
+    @if (session.blogName(); as name) {
+      <p>
+        {{ 'settings.connections.blogger.postsGoTo.a' | transloco }} <strong>{{ name }}</strong
+        >{{ 'settings.connections.blogger.postsGoTo.b' | transloco }}
+      </p>
+    } @else {
+      <p class="muted">{{ 'settings.connections.blogger.chooseBlog' | transloco }}</p>
+    }
+
+    <div class="connected-row">
+      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="loadBlogs()">
+        {{
+          busy()
+            ? ('settings.connections.blogger.loading' | transloco)
+            : ('settings.connections.blogger.refreshBlogs' | transloco)
+        }}
+      </button>
+    </div>
+
+    @if (blogs().length) {
+      <ul class="blog-list">
+        @for (blog of blogs(); track blog.id) {
+          <li>
+            <button
+              class="btn btn-outline"
+              type="button"
+              [disabled]="blog.id === session.blogId()"
+              (click)="choose(blog)"
+            >
+              {{ blog.id === session.blogId() ? '✓ ' : '' }}{{ blog.name }}
+            </button>
+            <a class="muted small" [href]="blog.url" target="_blank" rel="noopener noreferrer">
+              {{ blog.url }} ↗
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  } @else {
+    <ol class="setup-steps muted small">
+      <li>{{ 'settings.connections.blogger.step.signIn' | transloco }}</li>
+      <li>{{ 'settings.connections.blogger.step.choose' | transloco }}</li>
+      <li>{{ 'settings.connections.blogger.step.post' | transloco }}</li>
+    </ol>
+    <button class="btn" type="button" (click)="connect()">
+      {{ 'settings.connections.blogger.signInWithGoogle' | transloco }}
+    </button>
+
+    @if (session.blogName(); as name) {
+      <!-- Signed out, but the blog is remembered. Worth saying, because the
+           profile feed keeps working and that would otherwise look like a bug. -->
+      <p class="muted small">
+        <strong>{{ name }}</strong> {{ 'settings.connections.blogger.stillRemembered' | transloco }}
+      </p>
+    }
+  }
+
+  @if (session.blogName()) {
+    <h2 class="section-title">{{ 'settings.connections.blogger.profile.title' | transloco }}</h2>
+    <!-- Reading a public feed needs no Google session, so this is offered
+         whenever a blog is known — including to an anonymous browser. -->
+    <label class="profile-feed-option">
+      <input
+        type="checkbox"
+        [checked]="session.includeInProfile()"
+        (change)="toggleIncludeInProfile($any($event.target).checked)"
+      />
+      <span>
+        <strong>{{ 'settings.connections.blogger.profile.include' | transloco }}</strong>
+        <span class="muted small">
+          {{ 'settings.connections.blogger.profile.hint.a' | transloco }}
+          <a [routerLink]="['/settings/connections/cors-proxy']">{{
+            'settings.connections.blogger.profile.corsProxy' | transloco
+          }}</a
+          >{{ 'settings.connections.blogger.profile.hint.b' | transloco }}
+        </span>
+      </span>
+    </label>
+
+    <div class="connected-row">
+      <button class="btn btn-outline danger" type="button" (click)="forget()">
+        {{ 'settings.connections.blogger.forget' | transloco }}
+      </button>
+    </div>
+  }
+}
+
+<details class="own-project" [open]="showAdvanced()">
+  <summary>{{ 'settings.connections.blogger.own.title' | transloco }}</summary>
+
+  <p class="muted small">
+    {{ 'settings.connections.blogger.own.intro' | transloco }}
+  </p>
+
+  <ol class="setup-steps muted small">
+    <li>
+      {{ 'settings.connections.blogger.own.step1.a' | transloco }}
+      <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">{{
+        'settings.connections.blogger.own.console' | transloco
+      }}</a
+      >{{ 'settings.connections.blogger.own.step1.b' | transloco }}
+      <strong>{{ 'settings.connections.blogger.own.bloggerApi' | transloco }}</strong
+      >.
+    </li>
+    <li>
+      {{ 'settings.connections.blogger.own.step2.a' | transloco }}
+      <strong>{{ 'settings.connections.blogger.own.webApplication' | transloco }}</strong
+      >.
+    </li>
+    <li>
+      {{ 'settings.connections.blogger.own.step3.a' | transloco }}
+      <strong>{{ 'settings.connections.blogger.own.redirectUris' | transloco }}</strong
+      >:
+      <code class="callback-url">{{ callbackUrl }}</code>
+    </li>
+    <li>{{ 'settings.connections.blogger.own.step4' | transloco }}</li>
+  </ol>
+
+  <label class="own-project-field">
+    <span class="muted small">{{
+      'settings.connections.blogger.own.clientIdLabel' | transloco
+    }}</span>
+    <input
+      type="text"
+      spellcheck="false"
+      autocomplete="off"
+      placeholder="000000000000-xxxxxxxx.apps.googleusercontent.com"
+      [value]="clientIdDraft()"
+      (input)="clientIdDraft.set($any($event.target).value)"
+    />
+  </label>
+
+  <div class="connected-row">
+    <button class="btn" type="button" (click)="saveClientId()">
+      {{ 'settings.connections.blogger.save' | transloco }}
+    </button>
+    @if (session.ownClientId()) {
+      <span class="muted small">{{ 'settings.connections.blogger.own.inUse' | transloco }}</span>
+    }
+  </div>
+</details>
+
+@if (notice(); as message) {
+  <p class="connection-ok" role="status">{{ message }}</p>
+}
+@if (error(); as message) {
+  <p class="feed-error" role="alert">{{ message }}</p>
+}

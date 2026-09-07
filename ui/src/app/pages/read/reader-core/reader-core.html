@@ -1,0 +1,348 @@
+<div class="reader-bar">
+  <app-read-toolbar
+    [page]="pageNumber()"
+    [pageCount]="pageCount()"
+    [minutesLeft]="minutesLeft()"
+    [canExit]="layout() === 'page'"
+    [libraryEnabled]="layout() === 'page'"
+    [libraryOpen]="libraryOpen()"
+    [canSearch]="canSearch()"
+    [searchOpen]="tools.searchOpen()"
+    (previousPage)="prevPage()"
+    (nextPage)="nextPage()"
+    (findInDocument)="toggleSearch()"
+    (toggleLibrary)="toggleLibrary.emit()"
+    (exit)="exit.emit()"
+  />
+
+  @if (tools.searchOpen()) {
+    <app-document-search-dialog
+      [pages]="pages()"
+      [continuous]="true"
+      [currentPage]="pageNumber()"
+      (goTo)="goToMatch($event)"
+      (closed)="tools.searchOpen.set(false)"
+    />
+  }
+</div>
+
+<div class="reader-with-rail">
+  <div
+    #pageViewport
+    class="reader-viewport"
+    (scroll)="onColumnScroll()"
+    (pointerdown)="onPagePointerDown($event)"
+    (pointerup)="onPagePointerUp($event)"
+    (pointercancel)="onPagePointerCancel()"
+  >
+    <article
+      #columns
+      class="reader"
+      [attr.data-paper]="prefs.readerTheme()"
+      [attr.data-layout]="layout()"
+    >
+      <!-- Said plainly rather than restored silently: a reader who cannot trust
+       the resume will stop using it. -->
+      @if (approximateResume()) {
+        <p class="resume-note" role="status">
+          {{ 'reader.core.resumedApproximately' | transloco }}
+        </p>
+      }
+      @if (root(); as post) {
+        @if (!expansion.result()?.article) {
+          @if (post.account; as author) {
+            <header class="reader-head">
+              <img
+                class="reader-avatar"
+                [src]="author.avatar_static || author.avatar"
+                [alt]="author.username"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <div class="reader-author">{{ author.display_name || author.username }}</div>
+                <div class="muted">
+                  &#64;{{ author.acct }} · {{ post.created_at | humanTime }}
+                  @if (!isRss() && chain().length > 1) {
+                    · {{ 'reader.core.postCount' | transloco: { count: chain().length } }}
+                  }
+                </div>
+              </div>
+            </header>
+          }
+
+          <!-- Article expansion. The post that links out stays above, because it is
+         the reader's context for why they are reading this at all — someone's
+         "here is my new piece" is part of the article, not noise before it. -->
+          @if (canExpand()) {
+            <section class="reader-expand">
+              <!-- Checked first: this is about whether a fetch is possible at all, so
+             it must not sit behind "has a fetch already happened". -->
+              @if (expansion.blocker(); as blocker) {
+                <p class="reader-expand-note">{{ blocker }}</p>
+                <button class="tool" type="button" routerLink="/settings/connections/cors-proxy">
+                  {{ 'reader.article.chooseProxy' | transloco }}
+                </button>
+              } @else if (expansion.result(); as result) {
+                @if (expansion.note(); as note) {
+                  <p class="reader-expand-note" role="status">{{ note }}</p>
+                }
+                <!-- The why, in the page rather than only in the console. Folded away
+               so it costs nothing to ignore, and available without devtools so
+               the people most likely to report a problem can say what happened. -->
+                @if (expansion.debug().length) {
+                  <details class="reader-expand-debug">
+                    <summary>{{ 'reader.article.whatWentWrong' | transloco }}</summary>
+                    <ul>
+                      @for (line of expansion.debug(); track line) {
+                        <li>{{ line }}</li>
+                      }
+                    </ul>
+                  </details>
+                }
+                <!-- The fallback ladder, and it must never end in nothing: a card
+               when metadata survived, a plain labelled link when it did not,
+               and a way to try again either way. A message with no way forward
+               is the dead end this feature promised to avoid. -->
+                @if (!result.article) {
+                  @if (result.card) {
+                    <app-preview-card [card]="result.card" />
+                  } @else {
+                    <a
+                      class="tool"
+                      [href]="result.finalUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      ↗ {{ 'reader.article.openHost' | transloco: { host: expansion.host() } }}
+                    </a>
+                  }
+                  <!-- Disabled at zero quota rather than silently doing nothing: the
+                 failure spent nothing, but a retry is still a fetch. -->
+                  @if (expansion.retriesLeft() > 0) {
+                    <button
+                      class="tool"
+                      type="button"
+                      [disabled]="expansion.expanding() || !expansion.quota.allowed()"
+                      (click)="expandArticle(true)"
+                    >
+                      {{ 'reader.article.tryAgain' | transloco }}
+                    </button>
+                  }
+                }
+              } @else {
+                <!-- A hint, never a block. It says what is likely and lets the reader
+               spend the fetch anyway — a wrong guess here should cost a click
+               rather than the feature. The two sources behind it (the shipped
+               host list and what this device has seen) read identically on
+               purpose. -->
+                @if (fetchWarning(); as warning) {
+                  <p class="muted small fetch-warning">
+                    {{ warning.note }}
+                  </p>
+                }
+                <button
+                  class="tool"
+                  type="button"
+                  [disabled]="
+                    restoringArticle() ||
+                    expansion.expanding() ||
+                    !expansion.quota.allowed() ||
+                    !fetchWorthTrying()
+                  "
+                  (click)="expandArticle()"
+                >
+                  @if (expansion.expanding()) {
+                    {{ 'reader.article.fetching' | transloco }}
+                  } @else if (fetchWarning()) {
+                    📄 {{ 'reader.article.tryAnyway' | transloco }}
+                  } @else if (expandsRssTeaser()) {
+                    📄 {{ 'reader.article.fetchRest' | transloco }}
+                  } @else {
+                    📄 {{ 'reader.article.fetch' | transloco }}
+                  }
+                </button>
+                <!-- Fetching a third-party page takes seconds. Without this a
+               screen-reader user hears nothing between pressing the button and
+               the article arriving, which reads as "nothing happened". -->
+                <span class="sr-only" role="status">
+                  @if (expansion.expanding()) {
+                    {{ 'reader.article.fetchingWait' | transloco }}
+                  }
+                </span>
+                <!-- Said plainly and without a countdown badge. The limit exists so
+               someone can find out whether this works before paying for it, not
+               to nag; the number is only worth showing once it is nearly spent. -->
+                @if (!expansion.quota.allowed()) {
+                  <span class="muted reader-expand-quota">
+                    {{ 'reader.article.quotaExhausted' | transloco }}
+                  </span>
+                } @else if (!expansion.quota.unlimited() && expansion.quota.remaining() === 1) {
+                  <span class="muted reader-expand-quota">
+                    {{ 'reader.article.quotaOneLeft' | transloco }}
+                  </span>
+                }
+              }
+            </section>
+          }
+
+          <!-- Where the thing actually lives, when it does not live here. -->
+          @if (originalLink(); as original) {
+            <p class="reader-source">
+              <a class="tool" [href]="original.url" target="_blank" rel="noopener noreferrer">
+                ↗ {{ original.label }}
+              </a>
+            </p>
+          }
+
+          <!-- One continuous document. Images follow their post and participate
+             in the browser's page layout, including media-only posts. -->
+          <div #postBody class="reader-posts">
+            @for (post of chain(); track $index) {
+              <section class="reader-post" [innerHTML]="post.content"></section>
+              @for (m of post.media_attachments; track m.id) {
+                <img
+                  class="reader-media"
+                  [src]="m.preview_url || m.url"
+                  [alt]="m.description || ''"
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+            }
+          </div>
+        }
+      }
+
+      <!-- A fetched article replaces its teaser with one continuous document. -->
+      @if (expansion.result()?.article; as article) {
+        <section
+          #expandedArticle
+          class="reader-article"
+          [attr.aria-label]="'reader.article.expandedLabel' | transloco: { title: article.title }"
+          tabindex="-1"
+        >
+          <h2 class="reader-article-title">{{ article.title }}</h2>
+          @if (expansion.note(); as note) {
+            <p class="muted small">{{ note }}</p>
+          }
+          <!-- Attribution, not decoration: the reader is looking at someone else's
+           writing reformatted by us, and should be able to see whose and from
+           where without hunting for the link. -->
+          <p class="muted reader-article-meta">
+            @if (article.byline) {
+              {{ 'reader.core.by' | transloco: { author: article.byline } }} ·
+            }
+            {{ 'reader.article.from' | transloco: { host: expansion.host() } }}
+            @if (article.metrics.wordCount) {
+              · {{ 'reader.article.wordCount' | transloco: { count: article.metrics.wordCount } }}
+            }
+          </p>
+          <!-- Safe by construction rather than by trust: this HTML came from a
+           markdown renderer whose vocabulary has no script, no event handler,
+           and no attribute beyond a scheme-checked href/src. Highlights are
+           added by wrapping nodes in that output (`mark-passages.ts`), never by
+           building markup from the reader's own text. -->
+          <div #articleBody class="reader-article-body" [innerHTML]="pageHtml()"></div>
+
+          <div class="reader-article-actions">
+            <a
+              class="tool"
+              [href]="expansion.result()!.finalUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ↗ {{ 'reader.article.readOriginal' | transloco }}
+            </a>
+          </div>
+        </section>
+      }
+      <!-- Page turning you can click.
+         The toolbar arrows are small and far from where the eyes are; a
+         mouse reader should be able to turn the page from the page, the way
+         a touch reader taps its edge. Wide, quiet targets down each side —
+         invisible until hovered, so they cost the reading nothing. -->
+    </article>
+  </div>
+  <!-- Selection controls live outside the columns so the viewport cannot clip them. -->
+  <app-selection-tools
+    [selection]="tools.selection()"
+    [at]="tools.selectionAt()"
+    [alreadyHighlighted]="tools.selectionIsHighlighted()"
+    (define)="define($event)"
+    (highlight)="tools.toggleHighlight()"
+    (note)="tools.startNote()"
+    (share)="shareSelection()"
+  />
+
+  @if (tools.editing()) {
+    <!-- Editing a note must not repaginate the document underneath it. -->
+    <div class="note-composer">
+      <label class="sr-only" for="reader-note">
+        {{ 'reader.note.label' | transloco }}
+      </label>
+      <textarea
+        id="reader-note"
+        rows="3"
+        [placeholder]="'reader.note.placeholder' | transloco"
+        [ngModel]="tools.draftNote()"
+        (ngModelChange)="tools.draftNote.set($event)"
+      ></textarea>
+      <div class="note-composer-actions">
+        <button class="tool" type="button" (click)="tools.saveNote()">
+          {{ 'reader.note.save' | transloco }}
+        </button>
+        <button class="tool" type="button" (click)="tools.cancelNote()">
+          {{ 'reader.note.cancel' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (paging()) {
+    <button
+      class="page-edge prev"
+      type="button"
+      [disabled]="pageNumber() <= 1"
+      [attr.aria-label]="'reader.toolbar.previousPage' | transloco"
+      (click)="prevPage()"
+    >
+      <span aria-hidden="true">‹</span>
+    </button>
+    <button
+      class="page-edge next"
+      type="button"
+      [disabled]="pageNumber() >= pageCount()"
+      [attr.aria-label]="'reader.toolbar.nextPage' | transloco"
+      (click)="nextPage()"
+    >
+      <span aria-hidden="true">›</span>
+    </button>
+  }
+
+  <!-- Present only when the document has a note written on it. An empty rail on
+       every article is a permanent tax on the measure, which is the point of
+       the page. -->
+  @if (tools.hasNotes()) {
+    <app-notes-rail
+      [notes]="railNotes()"
+      [currentPage]="pageNumber()"
+      (goTo)="goToNote($event)"
+      (edit)="tools.editNote($event.annotation.id, $event.annotation.note)"
+      (share)="shareNote($event)"
+      (remove)="tools.removeNote($event.annotation.id)"
+    />
+  }
+</div>
+
+@if (paging()) {
+  <nav class="reader-touch-nav" [attr.aria-label]="'reader.core.pageNavigation' | transloco">
+    <button type="button" [disabled]="pageNumber() <= 1" (click)="prevPage()">
+      ‹ {{ 'reader.toolbar.previousPage' | transloco }}
+    </button>
+    <span>{{ pageNumber() }} / {{ pageCount() }}</span>
+    <button type="button" [disabled]="pageNumber() >= pageCount()" (click)="nextPage()">
+      {{ 'reader.toolbar.nextPage' | transloco }} ›
+    </button>
+  </nav>
+}

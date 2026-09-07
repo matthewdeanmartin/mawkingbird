@@ -1,0 +1,525 @@
+/**
+ * Responses captured from the live TwitterAPI.io API on 2026-07-31, pruned to
+ * the fields this app reads and to a representative slice of post variants
+ * (retweet, photo, video, plain, link card).
+ *
+ * Real rather than invented, deliberately: the written spec this integration
+ * started from guessed several field names wrong, and fixtures built from the
+ * same guesses would have made the tests agree with the bug. Typed as the wire
+ * types so a change to those is caught here rather than at runtime.
+ *
+ * Contains only public data about public accounts. No keys, no private content
+ * (spec 18.2).
+ */
+import { WireTweet, WireUser } from '../twitterapi-io/wire-types';
+
+/** `/twitter/user/info?userName=jack` */
+export const USER_FIXTURE: WireUser = {
+  id: '12',
+  userName: 'jack',
+  name: 'jack',
+  description: 'no state is the best state',
+  location: '',
+  url: 'https://t.co/ZEpOg6rn5L',
+  profilePicture: 'https://pbs.twimg.com/profile_images/1661201415899951105/azNjKOSH_normal.jpg',
+  coverPicture: 'https://pbs.twimg.com/profile_banners/12/1742427520',
+  followers: 10705468,
+  following: 3,
+  statusesCount: 30825,
+  mediaCount: 2973,
+  favouritesCount: 40018,
+  createdAt: '2006-03-21T20:50:14.000000Z',
+  protected: false,
+  isVerified: false,
+  isBlueVerified: true,
+  verifiedType: null,
+  canDm: true,
+  pinnedTweetIds: ['1833951636005552366'],
+  entities: {
+    description: {},
+    url: {
+      urls: [
+        {
+          display_url: 'primal.net/jack',
+          expanded_url: 'http://primal.net/jack',
+          indices: [0, 23],
+          url: 'https://t.co/ZEpOg6rn5L',
+        },
+      ],
+    },
+  },
+};
+
+/** `/twitter/user/last_tweets?userName=nasa`, five representative posts. */
+export const TIMELINE_FIXTURE: WireTweet[] = [
+  {
+    id: '2083317461269598348',
+    url: 'https://x.com/NASA/status/2083317461269598348',
+    twitterUrl: 'https://twitter.com/NASA/status/2083317461269598348',
+    text: "RT @NASALangley: New @NASA wind tunnel alert 🚨✈️🚀\n \nCheck out some highlights from the opening of NASA Langley's Flight Dynamics Research F…",
+    source: 'Twitter for iPhone',
+    lang: 'en',
+    createdAt: 'Fri Jul 31 22:22:43 +0000 2026',
+    type: 'tweet',
+    isReply: false,
+    conversationId: '2083317461269598348',
+    displayTextRange: [0, 140],
+    isLimitedReply: false,
+    replyCount: 11,
+    retweetCount: 34,
+    likeCount: 244,
+    quoteCount: 1,
+    viewCount: 77172,
+    bookmarkCount: 8,
+    author: {
+      id: '11348282',
+      userName: 'NASA',
+      name: 'NASA',
+      description: '',
+      location: 'Pale Blue Dot',
+      url: 'https://x.com/NASA',
+      profilePicture:
+        'https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg',
+      coverPicture: 'https://pbs.twimg.com/profile_banners/11348282/1775567134',
+      followers: 92227605,
+      following: 119,
+      statusesCount: 74283,
+      mediaCount: 28057,
+      createdAt: 'Wed Dec 19 20:20:32 +0000 2007',
+      isVerified: false,
+      isBlueVerified: true,
+      verifiedType: 'Government',
+      isAutomated: false,
+    },
+    entities: {
+      user_mentions: [
+        {
+          id_str: '18194898',
+          indices: [3, 15],
+          name: 'NASA Langley Research Center',
+          screen_name: 'NASALangley',
+        },
+        {
+          id_str: '11348282',
+          indices: [21, 26],
+          name: 'NASA',
+          screen_name: 'NASA',
+        },
+      ],
+    },
+    retweeted_tweet: {
+      id: '2083281738525028863',
+      url: 'https://x.com/NASALangley/status/2083281738525028863',
+      twitterUrl: 'https://twitter.com/NASALangley/status/2083281738525028863',
+      text: "New @NASA wind tunnel alert 🚨✈️🚀\n \nCheck out some highlights from the opening of NASA Langley's Flight Dynamics Research Facility! \n \nUsing four massive eight-bladed fans powered by 750-horsepower motors, this facility can generate wind speeds two times faster than its predecessors. The research and testing done here will help us design spacecraft and aircraft — and help improve your future flights.  \n \nLeaders gathered at Langley today for the wind tunnel's ribbon-cutting ceremony. Learn more:https://t.co/UcAPRWK6iK",
+      source: 'Twitter for iPhone',
+      lang: 'en',
+      createdAt: 'Fri Jul 31 20:00:46 +0000 2026',
+      type: 'tweet',
+      isReply: false,
+      conversationId: '2083281738525028863',
+      displayTextRange: [0, 269],
+      isLimitedReply: false,
+      replyCount: 11,
+      retweetCount: 34,
+      likeCount: 244,
+      quoteCount: 1,
+      viewCount: 77172,
+      bookmarkCount: 8,
+      author: {
+        id: '18194898',
+        userName: 'NASALangley',
+        name: 'NASA Langley Research Center',
+        description: '',
+        location: 'Hampton, VA, USA',
+        url: 'https://x.com/NASALangley',
+        profilePicture:
+          'https://pbs.twimg.com/profile_images/1963570895462539264/ljPW4crw_normal.jpg',
+        coverPicture: 'https://pbs.twimg.com/profile_banners/18194898/1642785123',
+        followers: 485810,
+        following: 141,
+        statusesCount: 12825,
+        mediaCount: 3764,
+        createdAt: 'Wed Dec 17 18:04:44 +0000 2008',
+        isVerified: false,
+        isBlueVerified: true,
+        verifiedType: 'Government',
+        isAutomated: false,
+      },
+      entities: {
+        urls: [
+          {
+            display_url: 'go.nasa.gov/4xe1iKT',
+            expanded_url: 'http://go.nasa.gov/4xe1iKT',
+            indices: [499, 522],
+            url: 'https://t.co/UcAPRWK6iK',
+          },
+        ],
+        user_mentions: [
+          {
+            id_str: '11348282',
+            indices: [4, 9],
+            name: 'NASA',
+            screen_name: 'NASA',
+          },
+        ],
+      },
+      extendedEntities: {
+        media: [
+          {
+            type: 'video',
+            media_url_https: 'https://pbs.twimg.com/media/HOlNsyVXoAA1GxR.jpg',
+            url: 'https://t.co/ejgvBnxC2l',
+            expanded_url: 'https://x.com/NASALangley/status/2083281738525028863/video/1',
+            display_url: 'pic.x.com/ejgvBnxC2l',
+            original_info: {
+              focus_rects: [],
+              height: 480,
+              width: 720,
+            },
+            video_info: {
+              duration_millis: 68868,
+              variants: [
+                {
+                  content_type: 'application/x-mpegURL',
+                  url: 'https://video.twimg.com/amplify_video/2083281633990340608/pl/otoLFGyT-WxdTL5W.m3u8?tag=14&v=9ac',
+                },
+                {
+                  bitrate: 288000,
+                  content_type: 'video/mp4',
+                  url: 'https://video.twimg.com/amplify_video/2083281633990340608/vid/avc1/480x270/iM7aHd-IbLtKLkVc.mp4?tag=14',
+                },
+                {
+                  bitrate: 832000,
+                  content_type: 'video/mp4',
+                  url: 'https://video.twimg.com/amplify_video/2083281633990340608/vid/avc1/640x360/EA3TSnv00epet0_d.mp4?tag=14',
+                },
+                {
+                  bitrate: 2176000,
+                  content_type: 'video/mp4',
+                  url: 'https://video.twimg.com/amplify_video/2083281633990340608/vid/avc1/1280x720/6CMiqJfdSJrw5irq.mp4?tag=14',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: '2083302981907140799',
+    url: 'https://x.com/NASA/status/2083302981907140799',
+    twitterUrl: 'https://twitter.com/NASA/status/2083302981907140799',
+    text: "Later this year, we'll be holding an event at @NASAKennedy to showcase American leadership in aviation, space exploration, and emerging technologies. Join us for a sneak preview on Friday, Aug. 14: https://t.co/XVQAapIx2y https://t.co/qZDAUCA0B8",
+    source: 'Twitter for iPhone',
+    lang: 'en',
+    createdAt: 'Fri Jul 31 21:25:11 +0000 2026',
+    type: 'tweet',
+    isReply: false,
+    conversationId: '2083302981907140799',
+    displayTextRange: [0, 221],
+    isLimitedReply: false,
+    replyCount: 61,
+    retweetCount: 63,
+    likeCount: 486,
+    quoteCount: 3,
+    viewCount: 167586,
+    bookmarkCount: 19,
+    author: {
+      id: '11348282',
+      userName: 'NASA',
+      name: 'NASA',
+      description: '',
+      location: 'Pale Blue Dot',
+      url: 'https://x.com/NASA',
+      profilePicture:
+        'https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg',
+      coverPicture: 'https://pbs.twimg.com/profile_banners/11348282/1775567134',
+      followers: 92227605,
+      following: 119,
+      statusesCount: 74283,
+      mediaCount: 28057,
+      createdAt: 'Wed Dec 19 20:20:32 +0000 2007',
+      isVerified: false,
+      isBlueVerified: true,
+      verifiedType: 'Government',
+      isAutomated: false,
+    },
+    entities: {
+      urls: [
+        {
+          display_url: 'go.nasa.gov/4fznPfi',
+          expanded_url: 'https://go.nasa.gov/4fznPfi',
+          indices: [198, 221],
+          url: 'https://t.co/XVQAapIx2y',
+        },
+      ],
+      user_mentions: [
+        {
+          id_str: '16580226',
+          indices: [46, 58],
+          name: "NASA's Kennedy Space Center",
+          screen_name: 'NASAKennedy',
+        },
+      ],
+    },
+    extendedEntities: {
+      media: [
+        {
+          type: 'photo',
+          media_url_https: 'https://pbs.twimg.com/media/HOlhBC3XEAAX5eh.jpg',
+          url: 'https://t.co/qZDAUCA0B8',
+          expanded_url: 'https://x.com/NASA/status/2083302981907140799/photo/1',
+          display_url: 'pic.x.com/qZDAUCA0B8',
+          ext_alt_text:
+            "The top of NASA's Space Launch System rocket is seen at the launch pad, with an American flag waving in the foreground to the left of it. Credit: NASA/Joel Kowsky",
+          original_info: {
+            focus_rects: [
+              {
+                h: 3690,
+                w: 6590,
+                x: 0,
+                y: 0,
+              },
+              {
+                h: 4690,
+                w: 4690,
+                x: 781,
+                y: 0,
+              },
+              {
+                h: 4690,
+                w: 4114,
+                x: 1069,
+                y: 0,
+              },
+              {
+                h: 4690,
+                w: 2345,
+                x: 1954,
+                y: 0,
+              },
+              {
+                h: 4690,
+                w: 6590,
+                x: 0,
+                y: 0,
+              },
+            ],
+            height: 4690,
+            width: 6590,
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: '2083296052283613303',
+    url: 'https://x.com/NASA/status/2083296052283613303',
+    twitterUrl: 'https://twitter.com/NASA/status/2083296052283613303',
+    text: 'The sky is full of excitement this month! You can look forward to seeing:\n- A lunar and solar eclipse\n- The Perseid meteor shower\n- Venus at its brightest\n\nLearn more about how to catch August’s celestial sights. https://t.co/4Tk2sQgUD1',
+    source: 'Twitter for iPhone',
+    lang: 'en',
+    createdAt: 'Fri Jul 31 20:57:39 +0000 2026',
+    type: 'tweet',
+    isReply: false,
+    conversationId: '2083296052283613303',
+    displayTextRange: [0, 212],
+    isLimitedReply: false,
+    replyCount: 58,
+    retweetCount: 254,
+    likeCount: 1066,
+    quoteCount: 18,
+    viewCount: 261440,
+    bookmarkCount: 116,
+    author: {
+      id: '11348282',
+      userName: 'NASA',
+      name: 'NASA',
+      description: '',
+      location: 'Pale Blue Dot',
+      url: 'https://x.com/NASA',
+      profilePicture:
+        'https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg',
+      coverPicture: 'https://pbs.twimg.com/profile_banners/11348282/1775567134',
+      followers: 92227605,
+      following: 119,
+      statusesCount: 74283,
+      mediaCount: 28057,
+      createdAt: 'Wed Dec 19 20:20:32 +0000 2007',
+      isVerified: false,
+      isBlueVerified: true,
+      verifiedType: 'Government',
+      isAutomated: false,
+    },
+    extendedEntities: {
+      media: [
+        {
+          type: 'video',
+          media_url_https: 'https://pbs.twimg.com/media/HOlauDTWsAAYldS.jpg',
+          url: 'https://t.co/4Tk2sQgUD1',
+          expanded_url: 'https://x.com/NASA/status/2083296052283613303/video/1',
+          display_url: 'pic.x.com/4Tk2sQgUD1',
+          original_info: {
+            focus_rects: [],
+            height: 405,
+            width: 720,
+          },
+          video_info: {
+            duration_millis: 163346,
+            variants: [
+              {
+                content_type: 'application/x-mpegURL',
+                url: 'https://video.twimg.com/amplify_video/2083295759718334465/pl/UGYSRMirFal4qkYm.m3u8?tag=14&v=8a0',
+              },
+              {
+                bitrate: 288000,
+                content_type: 'video/mp4',
+                url: 'https://video.twimg.com/amplify_video/2083295759718334465/vid/avc1/480x270/IDfSw9ZlC7z3W_LF.mp4?tag=14',
+              },
+              {
+                bitrate: 832000,
+                content_type: 'video/mp4',
+                url: 'https://video.twimg.com/amplify_video/2083295759718334465/vid/avc1/640x360/g0tdqfDOIyE1Nvvl.mp4?tag=14',
+              },
+              {
+                bitrate: 2176000,
+                content_type: 'video/mp4',
+                url: 'https://video.twimg.com/amplify_video/2083295759718334465/vid/avc1/1280x720/D3xjHdrPFC88lCbZ.mp4?tag=14',
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: '2082933000442957836',
+    url: 'https://x.com/NASA/status/2082933000442957836',
+    twitterUrl: 'https://twitter.com/NASA/status/2082933000442957836',
+    text: 'We’re about to see the bigger picture. 🌌\n\nOn Aug. 30, @NASARoman will lift off to join @NASAHubble and @NASAWebb in surveying the cosmos. With its wide field of view and specialized vision, it’ll help seek answers to the universe’s greatest mysteries.',
+    source: 'Twitter for iPhone',
+    lang: 'en',
+    createdAt: 'Thu Jul 30 20:55:00 +0000 2026',
+    type: 'tweet',
+    isReply: false,
+    conversationId: '2082933000442957836',
+    displayTextRange: [0, 251],
+    isLimitedReply: false,
+    replyCount: 129,
+    retweetCount: 327,
+    likeCount: 2545,
+    quoteCount: 16,
+    viewCount: 2873193,
+    bookmarkCount: 122,
+    author: {
+      id: '11348282',
+      userName: 'NASA',
+      name: 'NASA',
+      description: '',
+      location: 'Pale Blue Dot',
+      url: 'https://x.com/NASA',
+      profilePicture:
+        'https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg',
+      coverPicture: 'https://pbs.twimg.com/profile_banners/11348282/1775567134',
+      followers: 92227605,
+      following: 119,
+      statusesCount: 74283,
+      mediaCount: 28057,
+      createdAt: 'Wed Dec 19 20:20:32 +0000 2007',
+      isVerified: false,
+      isBlueVerified: true,
+      verifiedType: 'Government',
+      isAutomated: false,
+    },
+    entities: {
+      user_mentions: [
+        {
+          id_str: '1854812412',
+          indices: [54, 64],
+          name: 'Nancy Grace Roman Space Telescope',
+          screen_name: 'NASARoman',
+        },
+        {
+          id_str: '14091091',
+          indices: [87, 98],
+          name: 'Hubble',
+          screen_name: 'NASAHubble',
+        },
+        {
+          id_str: '29472803',
+          indices: [103, 112],
+          name: 'NASA Webb Telescope',
+          screen_name: 'NASAWebb',
+        },
+      ],
+    },
+  },
+  {
+    id: '2082890387786441073',
+    url: 'https://x.com/NASA/status/2082890387786441073',
+    twitterUrl: 'https://twitter.com/NASA/status/2082890387786441073',
+    text: 'LIVE: Tune in as our flight directors provide a preview of three spacewalks taking place outside the @Space_Station in August. https://t.co/O15tssOyGq',
+    source: 'Twitter for iPhone',
+    lang: 'en',
+    createdAt: 'Thu Jul 30 18:05:41 +0000 2026',
+    type: 'tweet',
+    isReply: false,
+    conversationId: '2082890387786441073',
+    displayTextRange: [0, 150],
+    isLimitedReply: false,
+    replyCount: 115,
+    retweetCount: 205,
+    likeCount: 1134,
+    quoteCount: 12,
+    viewCount: 738102,
+    bookmarkCount: 61,
+    author: {
+      id: '11348282',
+      userName: 'NASA',
+      name: 'NASA',
+      description: '',
+      location: 'Pale Blue Dot',
+      url: 'https://x.com/NASA',
+      profilePicture:
+        'https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg',
+      coverPicture: 'https://pbs.twimg.com/profile_banners/11348282/1775567134',
+      followers: 92227605,
+      following: 119,
+      statusesCount: 74283,
+      mediaCount: 28057,
+      createdAt: 'Wed Dec 19 20:20:32 +0000 2007',
+      isVerified: false,
+      isBlueVerified: true,
+      verifiedType: 'Government',
+      isAutomated: false,
+    },
+    entities: {
+      urls: [
+        {
+          display_url: 'x.com/i/broadcasts/1…',
+          expanded_url: 'https://x.com/i/broadcasts/1lJQRRDLrBqxE',
+          indices: [127, 150],
+          url: 'https://t.co/O15tssOyGq',
+        },
+      ],
+      user_mentions: [
+        {
+          id_str: '1451773004',
+          indices: [101, 115],
+          name: 'International Space Station',
+          screen_name: 'Space_Station',
+        },
+      ],
+    },
+    card: {
+      url: 'https://t.co/O15tssOyGq',
+    },
+  },
+];
+
+/** Top-level pagination fields, which sit beside `data` and not inside it. */
+export const TIMELINE_ENVELOPE = {
+  has_next_page: true,
+  next_cursor: 'DAADDAABCgABHOluMXFX0IwKAAIc4_EEMdZQpQAI...',
+};

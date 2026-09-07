@@ -1,0 +1,125 @@
+<div class="fail-whale" role="alertdialog" aria-labelledby="fail-whale-title">
+  <img
+    class="whale-img"
+    [src]="whale().src"
+    alt=""
+    [width]="whale().width"
+    [height]="whale().height"
+    [style.--whale-ratio]="whale().width + ' / ' + whale().height"
+    loading="eager"
+    fetchpriority="high"
+  />
+  @if (status.currentDomain(); as domain) {
+    <h1 id="fail-whale-title">
+      {{ 'failWhale.domainUnavailable' | transloco: { domain: domain } }}
+    </h1>
+  } @else {
+    <h1 id="fail-whale-title">{{ 'failWhale.cantReachServer' | transloco }}</h1>
+  }
+  <!-- Only ever shown for a request that got no response at all (status 0), so
+       this can speak plainly about reachability rather than hedging about
+       errors in general. A server that answers with an error is not this. -->
+  <p class="muted">
+    {{ 'failWhale.noReply' | transloco }}
+  </p>
+  <div class="actions">
+    @if (status.statusLink(); as link) {
+      <a class="btn" [href]="link.url" target="_blank" rel="noopener noreferrer">
+        {{ link.label }}
+      </a>
+    }
+    <button class="btn" type="button" [disabled]="health.checking()" (click)="retry()">
+      {{ (health.checking() ? 'failWhale.checking' : 'failWhale.tryAgain') | transloco }}
+    </button>
+    <button class="btn" type="button" (click)="reporting.set(true)">
+      {{ 'failWhale.reportThis' | transloco }}
+    </button>
+  </div>
+
+  @if (offline()) {
+    <!-- Reframes the page entirely: nothing is wrong with the instance. -->
+    <p class="offline-note" [innerHTML]="'failWhale.offlineNote' | transloco"></p>
+  }
+
+  @if (canChangeServer) {
+    <!-- Anonymous browsing isn't bound to one instance: if the chosen server is
+         what's down, let the user hop to another without leaving the app. -->
+    <div class="change-server">
+      <p class="muted small">{{ 'failWhale.orBrowse' | transloco }}</p>
+      <app-server-picker (picked)="onServerPicked($event)" />
+    </div>
+  }
+
+  <!-- Under everything else: what actually failed. No one else is going to read
+       a log for the user, so the evidence lives here where they can act on it. -->
+  <details
+    class="diagnostics"
+    [open]="detailsOpen()"
+    (toggle)="detailsOpen.set($any($event.target).open)"
+  >
+    <summary>{{ 'failWhale.whatWentWrong' | transloco }}</summary>
+
+    @if (health.failure(); as failure) {
+      <dl class="detail-grid">
+        <dt>{{ 'failWhale.error' | transloco }}</dt>
+        <dd class="detail-message">{{ failure.message }}</dd>
+
+        <dt>{{ 'failWhale.status' | transloco }}</dt>
+        <dd>
+          @if (failure.status === 0) {
+            <span [innerHTML]="'failWhale.statusZero' | transloco"></span>
+          } @else {
+            <code>{{ failure.status }}</code>
+          }
+        </dd>
+
+        <dt>{{ 'failWhale.request' | transloco }}</dt>
+        <dd>
+          <code>{{ failure.url }}</code>
+        </dd>
+
+        <dt>{{ 'failWhale.server' | transloco }}</dt>
+        <dd>
+          <code>{{ status.currentDomain() || ('failWhale.unknown' | transloco) }}</code>
+        </dd>
+
+        <dt>{{ 'failWhale.time' | transloco }}</dt>
+        <dd>{{ failure.at.toLocaleTimeString() }}</dd>
+
+        <dt>{{ 'failWhale.network' | transloco }}</dt>
+        <dd>
+          {{
+            (failure.online ? 'failWhale.reportedOnline' : 'failWhale.reportedOffline') | transloco
+          }}
+        </dd>
+
+        @if (build.commit) {
+          <dt>{{ 'failWhale.build' | transloco }}</dt>
+          <dd>
+            <code>{{ build.commit.slice(0, 8) }}</code>
+          </dd>
+        }
+      </dl>
+    } @else {
+      <p class="muted small">
+        {{ 'failWhale.noDetails' | transloco }}
+      </p>
+    }
+
+    <p class="muted small">
+      {{ 'failWhale.notServerHint' | transloco }}
+    </p>
+
+    <div class="detail-actions">
+      <a class="btn" routerLink="/settings/connections/doctor">{{
+        'failWhale.openDoctor' | transloco
+      }}</a>
+      <button class="btn btn-outline" type="button" (click)="copyDiagnostics()">
+        {{ (copied() ? 'failWhale.copied' : 'failWhale.copyDetails') | transloco }}
+      </button>
+    </div>
+  </details>
+</div>
+@if (reporting()) {
+  <app-bug-report-dialog (closed)="reporting.set(false)" />
+}

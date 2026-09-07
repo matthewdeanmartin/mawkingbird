@@ -1,0 +1,87 @@
+.bulk-body {
+  padding: 0 22px 22px;
+}
+
+.bulk-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bulk-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+/* The two irreversible ones read differently from the two reversible ones. */
+.bulk-card.danger {
+  border-color: color-mix(in srgb, #e0245e 45%, var(--border));
+}
+
+.bulk-card-text {
+  min-width: 0;
+}
+
+.bulk-card h3 {
+  font-size: 15px;
+  margin: 0 0 2px;
+}
+
+/* Group heading: quieter than the page title, louder than a card. */
+.group-head {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 22px 0 10px;
+}
+
+.group-head:first-of-type {
+  margin-top: 0;
+}
+
+.list-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.list-picker select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.bulk-card p {
+  margin: 0;
+}
+
+.bulk-card .btn {
+  flex: none;
+}
+
+.btn.danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: #e0245e;
+  color: #fff;
+}
+
+.footnote {
+  margin-top: 16px;
+}

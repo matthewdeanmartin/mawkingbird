@@ -1,0 +1,242 @@
+/*
+ * Everything that opens over the workspace: zen mode, the unsaved-work dialog,
+ * the publish wizard, and the board panel.
+ *
+ * See write-workspace.css for how these three stylesheets divide up.
+ */
+
+/* --- writing zen --- */
+
+/* Fixed and full-viewport: the shell has already dropped the header, footer and
+   rails, and this covers whatever is left so there is genuinely nothing to
+   look at but the text. */
+.zen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--col-bg);
+}
+
+.zen-box {
+  flex: 1;
+  width: min(100%, 46rem);
+  margin: 0 auto;
+  padding: 6vh 4px 2vh;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 19px;
+  line-height: 1.75;
+  resize: none;
+}
+
+.zen-box:focus {
+  outline: none;
+}
+
+.zen-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.zen-count {
+  font-size: 12px;
+  margin-right: auto;
+}
+
+/* --- unsaved-work dialog --- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 420px;
+  max-width: 100%;
+}
+
+.dialog h3,
+.preview-body p {
+  margin: 0 0 8px;
+}
+
+.dialog p {
+  margin: 0 0 16px;
+}
+
+.unsaved-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+/* --- publish wizard --- */
+
+.wizard {
+  width: 620px;
+}
+
+.wizard-step {
+  margin: 0 0 2px;
+}
+
+.wizard h3:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wizard-body {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.wizard-targets {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wizard-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.wizard-target > span {
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-target:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wizard-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-post {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.preview-post.over {
+  border-color: #e0245e;
+}
+
+.preview-num {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.preview-body {
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.preview-body p:last-child {
+  margin-bottom: 0;
+}
+
+.wizard-findings {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.finding {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.finding-samples {
+  display: block;
+  margin-top: 3px;
+}
+
+.finding-samples code {
+  margin-right: 6px;
+}
+
+.proofread-consent {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.proofread-consent h4 {
+  margin: 0 0 6px;
+}
+
+.proofread-prompt {
+  max-height: 220px;
+  margin: 6px 0 12px;
+  padding: 10px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-radius: 8px;
+  background: var(--hover);
+  font-size: 12px;
+}
+
+.wizard-when {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* --- board panel ---
+   Wide and top-aligned rather than the centred dialog box the other overlays
+   use: the board is a working surface, not a question. */
+.board-overlay {
+  align-items: flex-start;
+  padding: 4vh 16px;
+}
+
+.board-panel {
+  width: min(1200px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 16px;
+}

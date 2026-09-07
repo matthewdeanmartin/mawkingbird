@@ -1,0 +1,206 @@
+@if (loading()) {
+  <p class="muted center">{{ 'pages.thread.loading' | transloco }}</p>
+} @else if (status(); as s) {
+  <div class="reader-bar">
+    <a
+      class="btn btn-outline"
+      [class.active]="threadReader()"
+      [routerLink]="['/statuses', currentId()]"
+      [queryParams]="{ reader: 'thread' }"
+    >
+      📖
+      {{
+        chain().length > 1
+          ? ('pages.thread.reader.withCount'
+            | transloco: { count: chain().length, posts: words().posts })
+          : ('pages.thread.reader.reader' | transloco)
+      }}
+    </a>
+    <a class="btn btn-outline" [routerLink]="['/read', currentId()]">
+      📄 {{ 'reader.open.longText' | transloco }}
+    </a>
+    @if (threadReader()) {
+      <a
+        class="btn btn-outline"
+        [routerLink]="['/statuses', currentId()]"
+        [queryParams]="{ reader: '0' }"
+      >
+        {{ 'pages.thread.reader.conversation' | transloco }}
+      </a>
+    }
+
+    @if (isRss()) {
+      <a
+        class="btn btn-outline"
+        [routerLink]="['/rss']"
+        [queryParams]="rssFeedUrl() ? { feed: rssFeedUrl() } : {}"
+      >
+        {{ 'pages.thread.rss.return' | transloco }}
+      </a>
+    }
+
+    <!-- Open this thread as a 1:1 chat. Enabled only when the whole thread is
+         exactly you and one other person — group threads stay disabled (chat's
+         multi-person experience isn't ready, and we'd rather not tempt anyone
+         into it), and shown that way with an explanation: a signed-in Mastodon
+         reader in a growing group thread can plausibly wonder why the button
+         went away. A read-only post (RSS, Bluesky, anonymous, Twitter) never
+         has a Mastodon DM to open at all — chatPartner() returns null on every
+         single view of one, not just sometimes — so there the disabled button
+         is not a state to explain, only permanent noise. Omitted entirely
+         there rather than rendered inert. -->
+    @if (!readOnlyPost()) {
+      @if (chatQueryParams(); as params) {
+        <a
+          class="btn btn-outline"
+          [routerLink]="['/conversations']"
+          [queryParams]="params"
+          [title]="'pages.thread.chat.continueTitle' | transloco"
+        >
+          💬 {{ 'pages.thread.chat.open' | transloco }}
+        </a>
+      } @else {
+        <button
+          class="btn btn-outline"
+          disabled
+          [title]="'pages.thread.chat.unavailableTitle' | transloco"
+        >
+          💬 {{ 'pages.thread.chat.open' | transloco }}
+        </button>
+      }
+    }
+  </div>
+
+  @if (isAnonymousPublic() && publicContextUnavailable()) {
+    <p class="muted center">
+      {{ 'pages.thread.anonymous.contextUnavailable' | transloco }}
+      @if (publicOriginalUrl(); as originalUrl) {
+        <a [href]="originalUrl" target="_blank" rel="noopener noreferrer">
+          {{ 'pages.thread.anonymous.openOriginal' | transloco }} </a
+        >.
+      }
+    </p>
+  }
+  @if (threadReader()) {
+    <app-reader-toolbar />
+    <article class="reader classic-thread-reader" [attr.data-paper]="prefs.readerTheme()">
+      <header class="reader-head">
+        <img
+          class="reader-avatar"
+          [src]="chain()[0].account.avatar_static || chain()[0].account.avatar"
+          [alt]="chain()[0].account.username"
+        />
+        <div>
+          <div class="reader-author">
+            {{ chain()[0].account.display_name || chain()[0].account.username }}
+          </div>
+          <div class="muted">
+            &#64;{{ chain()[0].account.acct }} · {{ chain()[0].created_at | humanTime }}
+          </div>
+        </div>
+      </header>
+      @for (post of chain(); track post.id) {
+        @if (post.spoiler_text) {
+          <p class="reader-author">{{ post.spoiler_text }}</p>
+        }
+        <section class="reader-post" [innerHTML]="post.content"></section>
+        @for (media of post.media_attachments; track media.id) {
+          <img
+            class="reader-media"
+            [src]="media.preview_url || media.url"
+            [alt]="media.description || ''"
+            loading="lazy"
+          />
+        }
+      }
+    </article>
+    @if (comments().length) {
+      <h2 class="reader-comments-heading">{{ 'pages.thread.reader.comments' | transloco }}</h2>
+    }
+  } @else {
+    @for (a of ancestors(); track a.id) {
+      <app-status-card
+        [status]="a"
+        filterContext="thread"
+        [showSource]="true"
+        (changed)="onContextChanged($event)"
+        (deleted)="onContextDeleted($event)"
+        (replied)="onReply($event)"
+      />
+    }
+    <app-status-card
+      [status]="s"
+      filterContext="thread"
+      [showSource]="true"
+      (changed)="onChanged($event)"
+      (deleted)="onFocusedDeleted()"
+      (replied)="onReply($event)"
+    />
+  }
+  @if (isBluesky(s)) {
+    <app-bsky-reply [replyTo]="s" (posted)="onReply($event)" />
+  } @else if (isLocal(s)) {
+    <app-local-compose [inReplyTo]="s.id" (posted)="onReply($event)" />
+  } @else if (isTwitter()) {
+    <!-- No composer: replying on Twitter needs an authenticated Twitter account, which
+         this app never asks for. Ancestors are not fetched either (one
+         request per level, unknown depth), so the mirror is how a reader reaches
+         the rest of the conversation — and it costs nothing. -->
+    @if (twitterError(); as error) {
+      <p class="muted center">{{ error }}</p>
+    }
+    @if (nitterThreadUrl(); as url) {
+      <p class="muted center">
+        {{ 'pages.thread.twitter.repliesOnly' | transloco }}
+        <a [href]="url" target="_blank" rel="noopener noreferrer">
+          {{ 'pages.thread.twitter.readConversation' | transloco: { host: nitterLabel } }} ↗
+        </a>
+      </p>
+    }
+  } @else if (!isRss() && !isAnonymousPublic() && !isMessageStatus()) {
+    <app-compose
+      [inReplyToId]="s.id"
+      [replyToHandle]="s.account.acct"
+      [compact]="true"
+      [placeholder]="'pages.thread.reply.placeholder' | transloco"
+      (posted)="onReply($event)"
+    />
+  }
+  @for (d of threadReader() ? comments() : descendants(); track d.id) {
+    <app-status-card
+      [status]="d"
+      filterContext="thread"
+      [showSource]="true"
+      (changed)="onContextChanged($event)"
+      (deleted)="onContextDeleted($event)"
+      (replied)="onReply($event)"
+    />
+  }
+} @else if (loadError(); as error) {
+  <!-- A post id only means something on the server that issued it, and unlike
+       an account there is nothing portable to re-resolve it by. So: explain,
+       offer the original if we happen to have its URL, and otherwise send the
+       reader somewhere that definitely works. -->
+  <div class="thread-error">
+    <p class="thread-error-msg">{{ error }}</p>
+    <div class="thread-error-actions">
+      @if (publicOriginalUrl(); as originalUrl) {
+        <a class="btn" [href]="originalUrl" target="_blank" rel="noopener noreferrer">
+          {{ 'pages.thread.error.openOriginal' | transloco }}
+        </a>
+      }
+      <a class="btn btn-outline" routerLink="/home">
+        {{ 'pages.thread.error.home' | transloco }}
+      </a>
+    </div>
+  </div>
+} @else {
+  <p class="muted center">
+    {{ 'pages.thread.error.notFound' | transloco }}
+    @if (publicOriginalUrl(); as originalUrl) {
+      <a [href]="originalUrl" target="_blank" rel="noopener noreferrer">
+        {{ 'pages.thread.error.openOriginal' | transloco }} </a
+      >.
+    }
+  </p>
+}

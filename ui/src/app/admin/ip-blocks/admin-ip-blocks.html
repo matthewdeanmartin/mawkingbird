@@ -1,0 +1,42 @@
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="newIp()"
+    (ngModelChange)="newIp.set($event)"
+    [placeholder]="'adminIpBlocks.ipPlaceholder' | transloco"
+  />
+  <select [ngModel]="severity()" (ngModelChange)="severity.set($event)">
+    @for (s of severities; track s) {
+      <option [value]="s">{{ s }}</option>
+    }
+  </select>
+  <input
+    type="text"
+    [ngModel]="comment()"
+    (ngModelChange)="comment.set($event)"
+    (keyup.enter)="add()"
+    [placeholder]="'adminIpBlocks.commentPlaceholder' | transloco"
+  />
+  <button class="btn" [disabled]="!newIp().trim() || submitting()" (click)="add()">
+    {{ 'adminIpBlocks.block' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminIpBlocks.loading' | transloco }}</p>
+} @else if (!blocks().length) {
+  <p class="muted center">{{ 'adminIpBlocks.empty' | transloco }}</p>
+} @else {
+  @for (b of blocks(); track b.id) {
+    <div class="block-row">
+      <div>
+        <span class="mono">{{ b.ip }}</span>
+        <span class="sev">{{ b.severity }}</span>
+        @if (b.comment) {
+          <span class="muted small">{{ b.comment }}</span>
+        }
+      </div>
+      <button class="op warn" (click)="remove(b)">{{ 'adminIpBlocks.remove' | transloco }}</button>
+    </div>
+  }
+}

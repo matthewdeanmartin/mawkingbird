@@ -1,0 +1,106 @@
+<!-- A real button, not a div: clicking away must also be reachable by keyboard.
+     Escape closes too, via the host listener. -->
+<button
+  class="sh-backdrop"
+  type="button"
+  [attr.aria-label]="'pages.search.helper.close' | transloco"
+  (click)="close()"
+></button>
+<section class="sh-dialog" role="dialog" aria-modal="true" aria-labelledby="sh-title">
+  <div class="sh-head">
+    <h2 id="sh-title">{{ 'pages.search.helper.title' | transloco }}</h2>
+    <button
+      class="icon-close"
+      type="button"
+      [attr.aria-label]="'pages.search.helper.close' | transloco"
+      (click)="close()"
+    >
+      ×
+    </button>
+  </div>
+
+  <p class="muted">{{ 'pages.search.helper.intro' | transloco }}</p>
+
+  <form class="sh-ask" (ngSubmit)="ask()">
+    <textarea
+      rows="3"
+      name="request"
+      [attr.aria-label]="'pages.search.helper.whatAreYouLookingFor' | transloco"
+      [ngModel]="request()"
+      (ngModelChange)="request.set($event)"
+      [disabled]="busy()"
+    ></textarea>
+    <!-- Cancel sits here as well as below the results: the dialog is dismissable
+         before a request, during one, and after it — not only once it happens
+         to have produced something. -->
+    <div class="sh-actions">
+      <button class="btn" type="submit" [disabled]="!request().trim() || busy()">
+        {{
+          (busy() ? 'pages.search.helper.thinking' : 'pages.search.helper.suggestQueries')
+            | transloco
+        }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="close()">
+        {{ 'pages.search.helper.cancel' | transloco }}
+      </button>
+    </div>
+  </form>
+
+  @if (busy()) {
+    <p class="muted small" role="status">{{ 'pages.search.helper.busyStatus' | transloco }}</p>
+  }
+
+  @if (error(); as msg) {
+    <p class="sh-error" role="alert">{{ msg }}</p>
+  }
+
+  @if (result(); as res) {
+    <!-- The model's own objection: the request named another service, or asked
+         for something the search syntax cannot express. Shown as a note rather
+         than an error, because nothing went wrong. -->
+    @if (res.problem; as problem) {
+      <p class="sh-problem" role="status">{{ problem }}</p>
+    }
+
+    @if (res.queries.length) {
+      <p class="sh-summary" role="status">{{ summary(res) }}</p>
+
+      <ul class="sh-attempts">
+        @for (query of res.queries; track query) {
+          @let attempt = attemptFor(res, query);
+          <li
+            class="sh-attempt"
+            [class.sh-attempt-win]="query === res.winner"
+            [class.sh-attempt-dead]="attempt && attempt.count === 0"
+            [class.sh-attempt-untried]="!attempt"
+          >
+            <button type="button" class="sh-attempt-query" (click)="pick(query)">
+              <code>{{ query }}</code>
+            </button>
+            <span class="muted small">{{ outcomeLabel(attempt) }}</span>
+          </li>
+        }
+      </ul>
+      <p class="muted small">{{ 'pages.search.helper.tryInOrderNote' | transloco }}</p>
+
+      <label class="sh-edit">
+        <span>{{ 'pages.search.helper.yourQuery' | transloco }}</span>
+        <textarea
+          rows="2"
+          name="draft"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+        ></textarea>
+      </label>
+
+      <div class="sh-actions">
+        <button class="btn" type="button" (click)="use()" [disabled]="!draft().trim()">
+          {{ 'pages.search.helper.useSearch' | transloco }}
+        </button>
+        <button class="btn btn-outline" type="button" (click)="close()">
+          {{ 'pages.search.helper.cancel' | transloco }}
+        </button>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,13 @@
+.raindrop-form,
+.raindrop-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.raindrop-form input {
+  flex: 1;
+  min-width: 180px;
+}

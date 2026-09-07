@@ -1,0 +1,169 @@
+.section-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.setup-callout {
+  margin: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.create-form,
+.edit-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.edit-form {
+  border-bottom: 0;
+  padding: 0;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+}
+
+.field-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.field input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.create-form .btn {
+  justify-self: start;
+}
+
+.list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px 16px 8px;
+}
+
+.list-head .section-title {
+  margin: 0;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
+}
+
+.search-form input {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+}
+
+.empty {
+  padding: 24px 16px;
+}
+
+.link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.link-row.busy {
+  opacity: 0.6;
+}
+
+.link-main {
+  display: grid;
+  gap: 2px;
+  /* The destination is often a very long URL. Let the column shrink and clip
+     rather than pushing the action buttons off the row. */
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.short-url {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.link-title {
+  font-size: 14px;
+}
+
+.destination {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.origin {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Marks a row as a message-in-a-URL rather than a shortened link. Deliberately
+   visible: the two look identical otherwise and behave completely differently. */
+.kind-tag {
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 11px;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-danger {
+  color: #e0245e;
+  border-color: #e0245e;
+}

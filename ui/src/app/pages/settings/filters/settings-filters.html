@@ -1,0 +1,49 @@
+<div class="spage-head">
+  <h1>{{ 'settings.filters.title' | transloco }}</h1>
+  <p>{{ 'settings.filters.intro' | transloco }}</p>
+</div>
+
+<div class="filters-toolbar">
+  <a class="btn" routerLink="/settings/filters/new">{{ 'settings.filters.addNew' | transloco }}</a>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'common.loading' | transloco }}</p>
+} @else if (!filters().length) {
+  <p class="muted center">
+    {{ 'settings.filters.empty' | transloco }}
+  </p>
+} @else {
+  <ul class="filter-list">
+    @for (f of filters(); track f.id) {
+      <li class="filter-row">
+        <a class="filter-main" [routerLink]="['/settings/filters', f.id]">
+          <span class="filter-title">
+            {{ f.title || ('settings.filters.untitled' | transloco) }}
+            <span class="filter-action" [class.hide]="f.filter_action === 'hide'">
+              {{
+                (f.filter_action === 'hide'
+                  ? 'settings.filters.hideCompletely'
+                  : 'settings.filters.hideWarning'
+                ) | transloco
+              }}
+            </span>
+          </span>
+          <span class="filter-keywords muted">{{ keywordSummary(f) }}</span>
+          <span class="filter-meta muted">
+            {{ f.context.join(', ') || ('settings.filters.noContexts' | transloco) }} ·
+            {{ expirySummary(f) }}
+          </span>
+        </a>
+        <span class="filter-actions">
+          <a class="btn btn-outline btn-sm" [routerLink]="['/settings/filters', f.id]">{{
+            'common.edit' | transloco
+          }}</a>
+          <button class="btn btn-outline btn-sm danger" (click)="remove(f)">
+            {{ 'common.delete' | transloco }}
+          </button>
+        </span>
+      </li>
+    }
+  </ul>
+}

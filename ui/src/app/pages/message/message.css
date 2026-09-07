@@ -1,0 +1,35 @@
+.message-page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.message-header {
+  margin-bottom: 1.25rem;
+}
+
+.message-header .eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted, #6b7280);
+}
+
+.message-header h1 {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+}
+
+.message-status {
+  padding: 1rem;
+  color: var(--muted, #6b7280);
+}
+
+.message-error {
+  color: var(--danger, #b91c1c);
+}
+
+.message-back {
+  margin-top: 1.5rem;
+}

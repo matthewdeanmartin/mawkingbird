@@ -1,0 +1,141 @@
+<div class="spage-head">
+  <h1>{{ 'settings.profile.title' | transloco }}</h1>
+  @if (auth.isAnonymous) {
+    <p>{{ 'settings.profile.intro.anonymous' | transloco: { server: anonymous.server() } }}</p>
+  } @else if (auth.isBlueskyPrimary) {
+    <p>{{ 'settings.profile.intro.bluesky' | transloco }}</p>
+  } @else {
+    <p>{{ 'settings.profile.intro' | transloco }}</p>
+  }
+</div>
+
+<form class="spage-body" (ngSubmit)="saveProfile()">
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.profile.displayName' | transloco }}</span>
+      <div class="scontrol">
+        <input
+          type="text"
+          [ngModel]="displayName()"
+          (ngModelChange)="displayName.set($event)"
+          name="display_name"
+          [maxlength]="auth.isBlueskyPrimary ? 64 : 30"
+        />
+      </div>
+    </div>
+
+    @if (auth.isAnonymous) {
+      <div class="srow">
+        <span class="slabel">{{ 'settings.profile.localHandle' | transloco }}</span>
+        <div class="scontrol">
+          <input
+            type="text"
+            [ngModel]="username()"
+            (ngModelChange)="username.set($event)"
+            name="username"
+            maxlength="64"
+          />
+          <span class="hint">{{ 'settings.profile.localHandle.hint' | transloco }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.profile.bio' | transloco }}</span>
+      <div class="scontrol">
+        <textarea
+          rows="3"
+          [ngModel]="note()"
+          (ngModelChange)="note.set($event)"
+          name="note"
+          [maxlength]="auth.isBlueskyPrimary ? 256 : null"
+        ></textarea>
+        <span class="hint">{{ 'settings.profile.bio.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  @if (!auth.isBlueskyPrimary) {
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.profile.metadata' | transloco }}</span>
+        <div class="scontrol">
+          @for (f of fields(); track $index; let i = $index) {
+            <div class="meta-row" [class.meta-verified]="verifiedAt()[f.name]">
+              <input
+                type="text"
+                [attr.placeholder]="'settings.profile.field.label' | transloco"
+                [ngModel]="f.name"
+                (ngModelChange)="setField(i, 'name', $event)"
+                [name]="'field_name_' + i"
+              />
+              <input
+                type="text"
+                [attr.placeholder]="'settings.profile.field.content' | transloco"
+                [ngModel]="f.value"
+                (ngModelChange)="setField(i, 'value', $event)"
+                [name]="'field_value_' + i"
+              />
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                (click)="removeField(i)"
+                [attr.aria-label]="'settings.profile.field.remove' | transloco"
+              >
+                ✕
+              </button>
+              @if (verifiedAt()[f.name]; as when) {
+                <span
+                  class="meta-verified-badge"
+                  [title]="
+                    'settings.profile.verified.title'
+                      | transloco: { date: when | date: 'mediumDate' }
+                  "
+                  >{{ 'settings.profile.verified' | transloco }}</span
+                >
+              }
+            </div>
+          }
+          @if (fields().length < 4) {
+            <button type="button" class="btn btn-outline btn-sm add-field" (click)="addField()">
+              {{ 'settings.profile.addField' | transloco }}
+            </button>
+          }
+          <span class="hint">{{ 'settings.profile.metadata.hint' | transloco }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.profile.avatar' | transloco }}</span>
+      <div class="scontrol">
+        <input type="file" accept="image/*" (change)="onAvatar($event)" />
+      </div>
+    </div>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.profile.header' | transloco }}</span>
+      <div class="scontrol">
+        <input type="file" accept="image/*" (change)="onHeader($event)" />
+      </div>
+    </div>
+  </div>
+
+  <div class="sactions">
+    @if (saveError(); as error) {
+      <span class="error">{{ error }}</span>
+    }
+    @if (saved()) {
+      <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+    }
+    @if (auth.isAnonymous) {
+      <button class="btn btn-outline" type="button" (click)="resetAnonymousProfile()">
+        {{ 'settings.profile.resetLocal' | transloco }}
+      </button>
+    }
+    <button class="btn" type="submit" [disabled]="saving()">
+      {{ (saving() ? 'common.saving' : 'common.saveChanges') | transloco }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,85 @@
+@if (selected(); as card) {
+  <section class="stack">
+    @for (peek of peeks(); track peek.key) {
+      <button
+        type="button"
+        class="peek"
+        (click)="select(peek.key)"
+        [attr.aria-label]="
+          'shell.profile.show' | transloco: { network: peek.network, name: peek.displayName }
+        "
+      >
+        <span class="peek-badge" aria-hidden="true">{{ peek.badge }}</span>
+        @if (peek.avatar) {
+          <img class="peek-avatar" [src]="peek.avatar" alt="" loading="lazy" decoding="async" />
+        }
+        <span class="peek-name">{{ peek.displayName }}</span>
+        <span class="peek-handle muted">&#64;{{ peek.handle }}</span>
+      </button>
+    }
+
+    <article class="card profile-card">
+      <div class="banner">
+        @if (card.header) {
+          <img [src]="card.header" alt="" decoding="async" />
+        }
+      </div>
+      <div class="profile-body">
+        <div class="profile-avatar">
+          @if (card.avatar) {
+            <img [src]="card.avatar" alt="" decoding="async" />
+          }
+        </div>
+        <span class="profile-network muted">
+          <span aria-hidden="true">{{ card.badge }}</span> {{ card.network }}
+          @if (card.active) {
+            <span class="active-pill">{{ 'shell.profile.active' | transloco }}</span>
+          }
+        </span>
+        <span class="profile-name">
+          {{ card.displayName }}
+          @if (card.account) {
+            <app-verified-badge [account]="card.account" />
+          }
+        </span>
+        <span class="profile-handle muted">&#64;{{ card.handle }}</span>
+        @if (card.bioHtml) {
+          <div class="profile-bio" [innerHTML]="card.bioHtml"></div>
+        } @else if (card.bioText) {
+          <p class="profile-bio">{{ card.bioText }}</p>
+        }
+        @if (card.stats.length) {
+          <div class="profile-stats" [style.grid-template-columns]="statColumns(card)">
+            @for (stat of card.stats; track stat.label) {
+              @if (stat.link) {
+                <a [routerLink]="stat.link">
+                  <span class="stat-label">{{ stat.label }}</span>
+                  <span class="stat-value">{{ stat.value | humanCount }}</span>
+                </a>
+              } @else {
+                <span class="stat">
+                  <span class="stat-label">{{ stat.label }}</span>
+                  <span class="stat-value">{{ stat.value | humanCount }}</span>
+                </span>
+              }
+            }
+          </div>
+        }
+        @if (card.link) {
+          <a class="profile-link" [routerLink]="card.link">{{
+            'shell.profile.viewProfile' | transloco
+          }}</a>
+        } @else if (card.href) {
+          <a class="profile-link" [href]="card.href" target="_blank" rel="noopener">
+            {{ 'shell.profile.viewOn' | transloco: { network: card.network } }}
+          </a>
+        }
+        @if (card.switchTo) {
+          <button type="button" class="btn btn-outline switch-btn" (click)="switchToLocal()">
+            {{ 'shell.profile.switch' | transloco }}
+          </button>
+        }
+      </div>
+    </article>
+  </section>
+}

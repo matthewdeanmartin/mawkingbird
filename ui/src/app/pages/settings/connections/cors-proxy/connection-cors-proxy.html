@@ -1,0 +1,235 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.corsProxy.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.corsProxy.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<p class="credential-warning small">
+  {{ 'settings.connections.corsProxy.credentialWarning' | transloco }}
+</p>
+
+@if (droppedSelection()) {
+  <p class="feed-error" role="alert">
+    {{ 'settings.connections.corsProxy.droppedSelection' | transloco }}
+  </p>
+}
+
+<h2 class="section-heading">{{ 'settings.connections.corsProxy.chooseHeading' | transloco }}</h2>
+
+@if (!isDevOrigin) {
+  <p
+    class="muted small"
+    [innerHTML]="'settings.connections.corsProxy.devOnlyHidden' | transloco"
+  ></p>
+}
+
+<div class="proxy-list">
+  @for (proxy of proxies; track proxy.id) {
+    <label class="proxy-option" [class.chosen]="selectedId() === proxy.id">
+      <input
+        type="radio"
+        name="corsProxy"
+        [value]="proxy.id"
+        [checked]="selectedId() === proxy.id"
+        (change)="choose(proxy.id)"
+      />
+      <span class="proxy-body">
+        <span class="proxy-title">
+          {{ proxy.label }}
+          @if (proxy.devOnly) {
+            <span class="proxy-tag">{{
+              'settings.connections.corsProxy.devOnlyTag' | transloco
+            }}</span>
+          }
+          @if (proxy.keyRequired) {
+            <span class="proxy-tag">{{
+              'settings.connections.corsProxy.keyRequiredTag' | transloco
+            }}</span>
+          }
+        </span>
+        <span class="muted small">{{ proxy.pitch }}</span>
+        <!--
+          The supporter tier is not a separate option in this list; it is a
+          property of the account. Someone entitled to it is already on it, so
+          this says so rather than asking them to pick it.
+        -->
+        @if (proxy.id === 'mawkingbird' && onSupporterTier()) {
+          <span class="proxy-tag">{{
+            'settings.connections.corsProxy.supporterTag' | transloco
+          }}</span>
+        }
+        <span class="muted small">{{ proxy.limits }}</span>
+        <a class="small" [href]="proxy.homepage" target="_blank" rel="noopener noreferrer">
+          {{ 'settings.connections.corsProxy.proxyWebsite' | transloco: { label: proxy.label } }}
+        </a>
+      </span>
+    </label>
+  }
+</div>
+
+@if (isCustom()) {
+  <div class="custom-fields">
+    <label class="field">
+      <span>{{ 'settings.connections.corsProxy.proxyUrlLabel' | transloco }}</span>
+      <input
+        type="url"
+        name="customTemplate"
+        [placeholder]="'settings.connections.corsProxy.proxyUrlPlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="customTemplate()"
+        (ngModelChange)="customTemplate.set($event)"
+      />
+      <span
+        class="muted small"
+        [innerHTML]="'settings.connections.corsProxy.putUrlPlaceholder' | transloco"
+      >
+      </span>
+    </label>
+
+    <label class="checkbox-field">
+      <input
+        type="checkbox"
+        [ngModel]="customEncode()"
+        (ngModelChange)="customEncode.set($event)"
+        name="customEncode"
+      />
+      <span>
+        {{ 'settings.connections.corsProxy.percentEncodeLabel' | transloco }}
+        <span class="muted small">
+          {{ 'settings.connections.corsProxy.percentEncodeNote' | transloco }}
+        </span>
+      </span>
+    </label>
+
+    <label class="field">
+      <span>{{ 'settings.connections.corsProxy.headerNameLabel' | transloco }}</span>
+      <input
+        type="text"
+        name="customHeader"
+        [placeholder]="'settings.connections.corsProxy.headerNamePlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="customHeader()"
+        (ngModelChange)="customHeader.set($event)"
+      />
+      <span class="muted small">{{
+        'settings.connections.corsProxy.headerNameNote' | transloco
+      }}</span>
+    </label>
+  </div>
+}
+
+@if (takesKey()) {
+  <label class="field">
+    <span
+      >{{ 'settings.connections.corsProxy.apiKeyLabel' | transloco }}
+      @if (!selected()?.keyRequired) {
+        <span class="muted small">{{ 'settings.connections.corsProxy.optional' | transloco }}</span>
+      }
+    </span>
+    <input
+      type="password"
+      name="corsApiKey"
+      [placeholder]="
+        (settings.hasKey()
+          ? 'settings.connections.corsProxy.keySavedPlaceholder'
+          : 'settings.connections.corsProxy.pasteKeyPlaceholder'
+        ) | transloco
+      "
+      autocomplete="off"
+      [ngModel]="apiKey()"
+      (ngModelChange)="apiKey.set($event)"
+    />
+    @if (selected()?.keyNote; as note) {
+      <span class="muted small">{{ note }}</span>
+    }
+  </label>
+
+  @if (settings.hasKey()) {
+    <p class="key-state">
+      <span class="connection-ok">{{ 'settings.connections.corsProxy.keySaved' | transloco }}</span>
+      <app-storage-badge [where]="where()" />
+      <button class="btn btn-outline btn-small" type="button" (click)="clearKey()">
+        {{ 'settings.connections.corsProxy.removeKey' | transloco }}
+      </button>
+    </p>
+    @if (expiryLabel(settings.expiresAt()); as expiry) {
+      <p class="muted small">
+        {{ 'settings.connections.corsProxy.keyDeletedOn' | transloco: { date: expiry } }}
+      </p>
+    }
+  }
+}
+
+@if (preview(); as previewUrl) {
+  <p class="muted small preview">
+    {{ 'settings.connections.corsProxy.testFetchesBefore' | transloco }}
+    <code>{{ testFeedUrl }}</code
+    >{{ 'settings.connections.corsProxy.testFetchesSentAs' | transloco }}<br />
+    <code class="preview-url">{{ previewUrl }}</code>
+  </p>
+}
+
+<div class="proxy-actions">
+  <button class="btn" type="button" [disabled]="!selectedId()" (click)="save()">
+    {{ 'settings.connections.corsProxy.saveProxy' | transloco }}
+  </button>
+  <button
+    class="btn btn-outline"
+    type="button"
+    [disabled]="!settings.usable() || pendingSelection() || test().status === 'running'"
+    (click)="runTest()"
+  >
+    {{
+      (test().status === 'running'
+        ? 'settings.connections.corsProxy.testing'
+        : 'settings.connections.corsProxy.testProxy'
+      ) | transloco
+    }}
+  </button>
+  @if (settings.currentId()) {
+    <button class="btn btn-outline" type="button" (click)="disconnect()">
+      {{ 'settings.connections.corsProxy.stopUsing' | transloco }}
+    </button>
+  }
+</div>
+
+@if (pendingSelection()) {
+  <p class="muted small" role="status">
+    {{
+      'settings.connections.corsProxy.pendingSelection'
+        | transloco: { selected: selected()?.label, current: currentProxyLabel() }
+    }}
+  </p>
+}
+
+@if (test(); as result) {
+  @switch (result.status) {
+    @case ('ok') {
+      <p class="connection-ok" role="status">
+        {{ 'settings.connections.corsProxy.testWorked' | transloco: { ms: result.ms } }}
+        @if (result.ms > 4000) {
+          <span class="muted"> {{ 'settings.connections.corsProxy.testSlow' | transloco }}</span>
+        }
+      </p>
+    }
+    @case ('failed') {
+      <p class="feed-error" role="alert">{{ result.message }}</p>
+    }
+  }
+}
+
+@if (notice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (error(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}
+
+<h2 class="section-heading">{{ 'settings.connections.corsProxy.runningYourOwn' | transloco }}</h2>
+<p class="muted small" [innerHTML]="'settings.connections.corsProxy.ownProxyNote' | transloco"></p>

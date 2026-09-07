@@ -1,0 +1,186 @@
+.live-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* A status light, not a control: the switch lives in Blue → Auto-refresh
+   timeline, and clicking through goes there to turn it off. */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent, #1d9bf0);
+  background: color-mix(in srgb, var(--accent, #1d9bf0) 12%, transparent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.live-badge:hover {
+  background: color-mix(in srgb, var(--accent, #1d9bf0) 20%, transparent);
+}
+
+.notif-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.view-seg {
+  margin-right: 4px;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.seg button {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seg button + button {
+  border-left: 1px solid var(--border);
+}
+
+.seg button.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  font-weight: 700;
+}
+
+.type-select {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font-size: 12px;
+}
+
+.new-account-list {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.new-account-error {
+  margin: 10px 16px;
+  color: var(--danger, #c62828);
+}
+
+.notif {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notif-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.notif-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Grouped rows: overlapping avatar stack for the first few actors. */
+.group-avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.group-avatars a + a {
+  margin-left: -14px;
+}
+
+.group-avatars .notif-avatar {
+  border: 2px solid var(--col-bg);
+}
+
+.others-link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.others-link:hover {
+  text-decoration: underline;
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+.mention-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* The action buttons are anchors; keep them from picking up link underlines. */
+.mention-actions .btn {
+  text-decoration: none;
+}
+
+.who {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.what {
+  margin-left: 4px;
+}
+
+.excerpt {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* The excerpt is one big link; underlining an entire post on hover is obnoxious. */
+.excerpt:hover,
+.excerpt:hover * {
+  text-decoration: none;
+}
+
+.excerpt:hover .excerpt-content {
+  color: var(--text);
+}
+
+.excerpt-media {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.excerpt-media img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}

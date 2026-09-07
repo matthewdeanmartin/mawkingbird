@@ -1,0 +1,97 @@
+.ld-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  border: 0;
+  background: rgb(0 0 0 / 45%);
+  cursor: pointer;
+}
+
+.ld-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 201;
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 18px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
+}
+
+.ld-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ld-head h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.icon-close {
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Each option is a full-height target with its consequence attached, rather than a
+   row of same-looking buttons where the destructive one is a coin flip. */
+.ld-options {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.ld-option {
+  display: grid;
+  gap: 3px;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ld-option:hover {
+  background: var(--border);
+}
+
+.ld-option-title {
+  font-weight: 600;
+}
+
+/* The shared-machine option. Emphasised because it is the one most people want and
+   the only destructive choice that is also recoverable-ish — saved accounts survive. */
+.ld-option-primary {
+  border-color: var(--accent, #1d9bf0);
+  border-width: 2px;
+}
+
+.ld-option-danger .ld-option-title {
+  color: #e0245e;
+}
+
+.ld-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ld-error {
+  margin: 8px 0;
+  color: #e0245e;
+  font-size: 13px;
+}

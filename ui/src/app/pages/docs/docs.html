@@ -1,0 +1,58 @@
+<div class="page-head">{{ 'docs.head' | transloco }}</div>
+
+<a class="doc-row" routerLink="/about">
+  <span class="doc-title">{{ 'docs.design.title' | transloco }}</span>
+  <span class="muted small">{{ 'docs.design.detail' | transloco }}</span>
+</a>
+
+<!-- Hidden with the Plus flag: the page it opens is now guarded, so an
+     ungated row here would be a dead link to a price list. -->
+@if (featureFlags.enabled('mawkingbird-plus')) {
+  <a class="doc-row" routerLink="/plans">
+    <span class="doc-title">{{ 'docs.plans.title' | transloco }}</span>
+    <span class="muted small">
+      {{ 'docs.plans.detail' | transloco }}
+    </span>
+  </a>
+}
+
+<a class="doc-row" routerLink="/funding">
+  <span class="doc-title">{{ 'docs.funding.title' | transloco }}</span>
+  <span class="muted small">{{ 'docs.funding.detail' | transloco }}</span>
+</a>
+
+<a class="doc-row" routerLink="/credits">
+  <span class="doc-title">{{ 'docs.credits.title' | transloco }}</span>
+  <span class="muted small">{{ 'docs.credits.detail' | transloco }}</span>
+</a>
+
+@let searchHost = searchServer.host();
+
+@if (serverAbout.hasRules()) {
+  <a class="doc-row" routerLink="/server-rules">
+    <span class="doc-title">{{ 'docs.serverRules.title' | transloco }}</span>
+    <span class="muted small">{{ 'docs.serverRules.detail' | transloco }}</span>
+  </a>
+}
+
+@if (serverAbout.hasTerms()) {
+  <a class="doc-row" routerLink="/terms">
+    <span class="doc-title">{{ 'docs.terms.title' | transloco }}</span>
+    <span class="muted small">{{ 'docs.terms.detail' | transloco }}</span>
+  </a>
+}
+
+<!-- With a separate search server in play, its rules and terms apply to you too. -->
+@if (searchServerAbout.hasRules()) {
+  <a class="doc-row" routerLink="/server-rules" [queryParams]="{ server: 'search' }">
+    <span class="doc-title">{{ 'docs.serverRulesFor' | transloco: { host: searchHost } }}</span>
+    <span class="muted small">{{ 'docs.searchServerRules.detail' | transloco }}</span>
+  </a>
+}
+
+@if (searchServerAbout.hasTerms()) {
+  <a class="doc-row" routerLink="/terms" [queryParams]="{ server: 'search' }">
+    <span class="doc-title">{{ 'docs.termsOfServiceFor' | transloco: { host: searchHost } }}</span>
+    <span class="muted small">{{ 'docs.searchServerTerms.detail' | transloco }}</span>
+  </a>
+}

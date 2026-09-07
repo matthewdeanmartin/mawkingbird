@@ -1,0 +1,149 @@
+.settings-wrap {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 16px 4px;
+}
+
+.settings-side {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Profile card above the nav, like 2018 Twitter. */
+.side-profile {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: inherit;
+}
+
+.side-profile:hover {
+  text-decoration: none;
+}
+
+.side-header {
+  height: 72px;
+  background: var(--accent-soft) center / cover no-repeat;
+}
+
+.side-identity {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 0 12px 12px;
+}
+
+.side-avatar {
+  width: 56px;
+  height: 56px;
+  margin-top: -24px;
+  border: 3px solid var(--col-bg);
+  border-radius: 50%;
+  background: var(--hover);
+  object-fit: cover;
+}
+
+.side-names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
+.side-name {
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-acct {
+  font-size: 13px;
+}
+
+.settings-nav {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.settings-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Was `a:last-child`, which stopped meaning "the last row" once headings began
+   interleaving with the links. The row before a heading gets its divider from
+   the heading's own top border instead. */
+.settings-nav > a:last-child {
+  border-bottom: 0;
+}
+
+.settings-nav-heading {
+  margin: 0;
+  padding: 10px 14px 6px;
+  border-top: 1px solid var(--border);
+  background: var(--hover);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-nav-heading:first-child {
+  border-top: 0;
+}
+
+.settings-nav a:hover {
+  background: var(--hover);
+  text-decoration: none;
+}
+
+.settings-nav a.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.settings-nav a.active .chev {
+  color: #fff;
+}
+
+.chev {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.settings-content {
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+@media (max-width: 860px) {
+  .settings-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 8px;
+  }
+
+  .settings-side {
+    position: static;
+  }
+}

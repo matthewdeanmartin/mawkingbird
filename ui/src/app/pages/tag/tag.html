@@ -1,0 +1,153 @@
+<div class="page-head tag-head">
+  <span>#{{ tag() }}</span>
+  @if (tagInfo(); as info) {
+    <span class="tag-actions">
+      <!-- Both act as toggles: filled (accent) when on, outline when off. -->
+      <button class="btn btn-sm" [class.btn-outline]="!info.following" (click)="toggleFollow()">
+        {{ (info.following ? 'pages.tag.following' : 'pages.tag.follow') | transloco }}
+      </button>
+      @if (!auth.isAnonymous) {
+        <button class="btn btn-sm" [class.btn-outline]="!info.featuring" (click)="toggleFeature()">
+          {{ (info.featuring ? 'pages.tag.featured' : 'pages.tag.feature') | transloco }}
+        </button>
+      }
+    </span>
+  }
+</div>
+
+@if (followError(); as error) {
+  <p class="muted center" role="alert">{{ error }}</p>
+}
+
+<!-- Bundling is client-side, so unlike Follow above it needs no tagInfo and no account.
+     Following a tag pushes it into Home forever; a bundle is a feed you open. -->
+<div class="bundle-bar">
+  <button
+    type="button"
+    class="btn btn-sm btn-outline"
+    (click)="bundlePickerOpen.set(!bundlePickerOpen())"
+    [attr.aria-expanded]="bundlePickerOpen()"
+  >
+    @if (bundlesWithTag().length) {
+      {{
+        (bundlesWithTag().length === 1 ? 'pages.tag.inBundles.one' : 'pages.tag.inBundles.other')
+          | transloco: { count: bundlesWithTag().length }
+      }}
+    } @else {
+      {{ 'pages.tag.addToBundle' | transloco }}
+    }
+  </button>
+
+  @if (bundlePickerOpen()) {
+    <div class="bundle-picker">
+      @for (b of bundles.bundles(); track b.id) {
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [checked]="bundles.hasTag(b.id, tag())"
+            [disabled]="!bundles.hasTag(b.id, tag()) && bundles.isFull(b.id)"
+            (change)="toggleBundle(b.id, $any($event.target).checked)"
+          />
+          {{ b.title }}
+          <span class="muted small">· {{ b.tags.length }}/{{ bundles.maxTags }}</span>
+          @if (!bundles.hasTag(b.id, tag()) && bundles.isFull(b.id)) {
+            <span class="muted small">{{ 'pages.tag.full' | transloco }}</span>
+          }
+        </label>
+      } @empty {
+        <p class="muted small">{{ 'pages.tag.noBundlesYet' | transloco }}</p>
+      }
+
+      <div class="bundle-new">
+        <input
+          type="text"
+          [ngModel]="newBundleTitle()"
+          (ngModelChange)="newBundleTitle.set($event)"
+          (keyup.enter)="createBundleWithTag()"
+          [placeholder]="'pages.tag.newBundleName' | transloco"
+        />
+        <button
+          class="btn btn-sm"
+          [disabled]="!newBundleTitle().trim()"
+          (click)="createBundleWithTag()"
+        >
+          {{ 'pages.tag.createAndAdd' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="tabs">
+  <button class="tab" [class.active]="tab() === 'posts'" (click)="setTab('posts')">
+    {{ 'pages.tag.tabs.feed' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
+    {{ 'pages.tag.tabs.members' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
+    {{ 'pages.tag.tabs.analytics' | transloco }}
+  </button>
+</div>
+
+<!-- Mounting either component starts its own collection, so both stay off the
+     Feed tab until opened. -->
+@if (tab() === 'members') {
+  <app-feed-members [source]="feedSource()" />
+} @else if (tab() === 'analytics') {
+  <app-feed-analytics [source]="feedSource()" />
+} @else if (loading()) {
+  <p class="muted center">{{ 'pages.tag.loading' | transloco }}</p>
+} @else if (!statuses().length) {
+  <p class="muted center">{{ 'pages.tag.noStatuses' | transloco: { tag: tag() } }}</p>
+} @else {
+  @if (canFilterMine()) {
+    <div class="tag-filter">
+      <button
+        class="btn btn-sm"
+        [class.btn-outline]="!mineOnly()"
+        type="button"
+        [attr.aria-pressed]="mineOnly()"
+        (click)="toggleMine()"
+      >
+        {{ 'pages.tag.myPosts' | transloco: { posts: words().posts } }}
+      </button>
+      @if (mineOnly()) {
+        <!-- Says what was actually searched. This filters the posts already
+             loaded, not the whole history of the tag, and implying otherwise
+             would make an empty result look like proof. -->
+        <span class="muted small">
+          {{
+            'pages.tag.mine.summary'
+              | transloco
+                : {
+                    visible: visibleStatuses().length,
+                    total: statuses().length,
+                    posts: words().posts,
+                  }
+          }}
+        </span>
+      }
+    </div>
+  }
+
+  @if (mineOnly() && !visibleStatuses().length) {
+    <p class="muted center">
+      {{ 'pages.tag.mine.none' | transloco: { total: statuses().length, posts: words().posts } }}
+    </p>
+  }
+
+  @for (s of visibleStatuses(); track s.id) {
+    <app-status-card
+      [status]="s"
+      filterContext="public"
+      (changed)="onChanged($event)"
+      (deleted)="onDeleted($event)"
+    />
+  }
+  @if (!exhausted()) {
+    <button class="btn btn-outline more" [disabled]="loadingMore()" (click)="loadMore()">
+      {{ (loadingMore() ? 'pages.tag.loading' : 'pages.tag.loadMore') | transloco }}
+    </button>
+  }
+}

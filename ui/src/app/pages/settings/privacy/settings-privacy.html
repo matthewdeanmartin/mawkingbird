@@ -1,0 +1,182 @@
+<div class="spage-head">
+  <h1>{{ 'settings.privacy.title' | transloco }}</h1>
+  <p>{{ 'settings.privacy.intro' | transloco }}</p>
+  <p class="hint">{{ 'settings.privacy.applyNote' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <h2>{{ 'settings.privacy.whoSees' | transloco }}</h2>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.reach' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="locked()"
+            (ngModelChange)="commit('locked', $event)"
+            [disabled]="saving() === 'locked'"
+            name="locked"
+          />
+          {{ 'settings.privacy.locked' | transloco }}
+          @if (saved() === 'locked') {
+            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+          }
+        </label>
+        <span class="hint">{{ 'settings.privacy.locked.hint' | transloco }}</span>
+        @if (errorFor('locked'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="discoverable()"
+            (ngModelChange)="commit('discoverable', $event)"
+            [disabled]="saving() === 'discoverable'"
+            name="discoverable"
+          />
+          {{ 'settings.privacy.discoverable' | transloco }}
+          @if (saved() === 'discoverable') {
+            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+          }
+        </label>
+        @if (errorFor('discoverable'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.automation' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="bot()"
+            (ngModelChange)="commit('bot', $event)"
+            [disabled]="saving() === 'bot'"
+            name="bot"
+          />
+          {{ 'settings.privacy.bot' | transloco }}
+          @if (saved() === 'bot') {
+            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+          }
+        </label>
+        <span class="hint">{{ 'settings.privacy.bot.hint' | transloco }}</span>
+        @if (errorFor('bot'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <h2>{{ 'settings.privacy.whoSeesPosts' | transloco }}</h2>
+    <p class="hint">
+      {{ 'settings.privacy.crosslink.before' | transloco }}
+      <a routerLink="/settings/writing">{{ 'settings.privacy.crosslink.link' | transloco }}</a
+      >{{ 'settings.privacy.crosslink.after' | transloco }}
+    </p>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.visibility' | transloco }}</span>
+      <div class="scontrol">
+        <select
+          [ngModel]="privacy()"
+          (ngModelChange)="commit('privacy', $event)"
+          [disabled]="saving() === 'privacy'"
+          name="privacy"
+        >
+          <option value="public">{{ 'settings.privacy.visibility.public' | transloco }}</option>
+          <option value="unlisted">{{ 'settings.privacy.visibility.unlisted' | transloco }}</option>
+          <option value="private">{{ 'settings.privacy.visibility.private' | transloco }}</option>
+        </select>
+        @if (saved() === 'privacy') {
+          <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+        }
+        <span class="hint">{{ 'settings.privacy.visibility.hint' | transloco }}</span>
+        @if (errorFor('privacy'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.media' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="sensitive()"
+            (ngModelChange)="commit('sensitive', $event)"
+            [disabled]="saving() === 'sensitive'"
+            name="sensitive"
+          />
+          {{ 'settings.privacy.sensitive' | transloco }}
+          @if (saved() === 'sensitive') {
+            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+          }
+        </label>
+        @if (errorFor('sensitive'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.language' | transloco }}</span>
+      <div class="scontrol">
+        <select
+          [ngModel]="language()"
+          (ngModelChange)="commit('language', $event)"
+          [disabled]="saving() === 'language'"
+          name="language"
+        >
+          <option value="">{{ 'settings.privacy.language.unset' | transloco }}</option>
+          @for (option of postingLanguageOptions; track option.code) {
+            <option [value]="option.code">{{ option.name }}</option>
+          }
+        </select>
+        @if (saved() === 'language') {
+          <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+        }
+        <span class="hint">{{ 'settings.privacy.language.hint' | transloco }}</span>
+        @if (errorFor('language'); as message) {
+          <span class="save-error" role="alert">{{
+            'common.errorPrefix' | transloco: { message: message }
+          }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <h2>{{ 'settings.privacy.counts' | transloco }}</h2>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.privacy.analytics' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.analytics()"
+            (ngModelChange)="prefs.setAnalytics($event)"
+            name="analytics"
+          />
+          {{ 'settings.privacy.analytics.label' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.privacy.analytics.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+</div>

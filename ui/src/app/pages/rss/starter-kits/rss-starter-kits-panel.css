@@ -1,0 +1,111 @@
+.kits {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.kits h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+
+.kit-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.kit-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.kit-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.kit-title {
+  font-weight: 600;
+}
+
+/* The publisher list is reassurance, not the headline — it should not compete
+   with the kit's own name, and it is the first thing to give up space. */
+.kit-feeds {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kit button {
+  flex-shrink: 0;
+}
+
+.kit-report {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  padding: 10px 12px;
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.kit-failed {
+  display: block;
+  margin-top: 4px;
+}
+
+/* A button that reads as a link: the action is inline in a sentence, and a
+   second real button here would compete with the kits' own Add buttons. */
+.link-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.small {
+  font-size: 13px;
+}
+
+@media (max-width: 560px) {
+  .kit {
+    flex-wrap: wrap;
+  }
+
+  .kit-feeds {
+    white-space: normal;
+  }
+}
+
+/* Discovery reuses the kit card layout — a suggested feed and an offered kit
+   are the same shape of thing (an icon, a name, a source, one Add button), and
+   inventing a second row style for them would be noise. */
+.discovery {
+  margin-top: 16px;
+}

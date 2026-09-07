@@ -1,0 +1,201 @@
+<div class="algo-bar">
+  <div
+    class="algo-chips"
+    role="group"
+    [attr.aria-label]="'pages.algo.filter.ariaLabel' | transloco"
+  >
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="prefs.algoAudience() === 'all'"
+      (click)="setAudience('all')"
+    >
+      {{ 'pages.algo.filter.all' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="prefs.algoAudience() === 'friends'"
+      (click)="setAudience('friends')"
+      [title]="
+        'pages.algo.filter.friendsTitle'
+          | transloco: { posts: words().posts, boosts: words().boosts }
+      "
+    >
+      {{ 'pages.algo.filter.friends' | transloco }}
+    </button>
+    @if (prefs.algoAudience() === 'all') {
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        [class.active]="prefs.algoTags()"
+        (click)="toggleTags()"
+        [title]="'pages.algo.filter.tagsTitle' | transloco: { posts: words().posts }"
+      >
+        {{ 'pages.algo.filter.tags' | transloco }}
+      </button>
+    }
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="prefs.algoCalm()"
+      (click)="toggleCalm()"
+      [title]="'pages.algo.filter.calmTitle' | transloco: { posts: words().posts }"
+    >
+      {{ 'pages.algo.filter.calm' | transloco }}
+    </button>
+    <app-feed-language-picker />
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      [class.active]="linksView()"
+      [attr.aria-pressed]="linksView()"
+      (click)="toggleLinks()"
+      [title]="'pages.algo.filter.linksTitle' | transloco: { posts: words().posts }"
+    >
+      {{ 'pages.algo.filter.links' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      (click)="shuffle()"
+      [disabled]="feed.loading()"
+      [title]="'pages.algo.filter.shuffleTitle' | transloco: { posts: words().posts }"
+    >
+      {{ 'pages.algo.filter.shuffle' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline btn-sm"
+      (click)="refresh()"
+      [disabled]="feed.loading()"
+      [title]="'pages.algo.filter.refreshTitle' | transloco"
+    >
+      {{ 'pages.algo.filter.refresh' | transloco }}
+    </button>
+  </div>
+  @if (feed.builtAt() !== null) {
+    <p class="algo-meta muted small">
+      {{
+        'pages.algo.meta.summary'
+          | transloco
+            : {
+                count: feed.posts().length,
+                posts: words().posts,
+                calls: feed.callsUsed(),
+                callsLabel:
+                  (auth.isAnonymous
+                    ? 'pages.algo.meta.publicSourceLoads'
+                    : 'pages.algo.meta.apiCalls'
+                  ) | transloco,
+              }
+      }}
+      @if (feed.hashtag(); as tag) {
+        {{ 'pages.algo.meta.sampledHashtag' | transloco: { tag: tag } }}
+      }
+      @if (calmHidden(); as hidden) {
+        {{ 'pages.algo.meta.calmHidden' | transloco: { count: hidden } }}
+      }
+    </p>
+  }
+</div>
+
+@if (feed.loading()) {
+  <!-- A build is a dozen-odd sequential requests. Without a number moving under
+       it, a first-time reader cannot tell this apart from a frozen page. -->
+  <p class="muted center">
+    {{ 'pages.algo.loading.gathering' | transloco }}
+    @if (feed.callsUsed()) {
+      <br />
+      <span class="small">
+        {{
+          'pages.algo.loading.progress' | transloco: { calls: feed.callsUsed(), maxCalls: maxCalls }
+        }}
+      </span>
+    }
+  </p>
+} @else if (feed.error()) {
+  <p class="muted center">{{ 'pages.algo.error.build' | transloco }}</p>
+} @else if (!visible().length) {
+  <div class="muted center">
+    <p>{{ 'pages.algo.empty.follow' | transloco }}</p>
+    @if (auth.isAnonymous) {
+      <p class="small">{{ 'pages.algo.empty.anonymous' | transloco }}</p>
+    }
+  </div>
+} @else if (linksView()) {
+  @if (!links().length) {
+    <div class="muted center">
+      <p>{{ 'pages.algo.links.empty' | transloco }}</p>
+      <p class="small">{{ 'pages.algo.links.widen' | transloco }}</p>
+    </div>
+  } @else {
+    <div class="algo-links" [attr.aria-label]="'pages.algo.links.ariaLabel' | transloco">
+      @for (link of links(); track link.status.id) {
+        <article class="algo-link-card">
+          <a
+            class="algo-link-main"
+            [href]="link.card.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @if (link.card.image) {
+              <img
+                class="algo-link-image"
+                [src]="link.card.image"
+                [alt]="''"
+                loading="lazy"
+                decoding="async"
+              />
+            }
+            <span class="algo-link-body">
+              @if (link.card.provider_name) {
+                <span class="algo-link-provider muted small">{{ link.card.provider_name }}</span>
+              }
+              <span class="algo-link-title">{{ link.card.title || link.card.url }}</span>
+              @if (link.card.description) {
+                <span class="algo-link-description muted">{{ link.card.description }}</span>
+              }
+            </span>
+          </a>
+          <footer class="algo-link-meta muted small">
+            <span
+              >{{ sourceLabelKey(link.post) | transloco }} · &#64;{{
+                link.status.account.acct
+              }}</span
+            >
+            <span class="algo-link-engagement">
+              <span
+                [attr.aria-label]="
+                  'pages.algo.engagement.favourites'
+                    | transloco: { count: link.status.favourites_count }
+                "
+              >
+                ♥ {{ link.status.favourites_count }}
+              </span>
+              <span
+                [attr.aria-label]="
+                  'pages.algo.engagement.boosts'
+                    | transloco: { count: link.status.reblogs_count, boosts: words().boosts }
+                "
+              >
+                ↻ {{ link.status.reblogs_count }}
+              </span>
+            </span>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+} @else {
+  @for (p of visible(); track p.status.id) {
+    <div class="algo-item">
+      <p class="algo-source muted small">{{ sourceLabelKey(p) | transloco }}</p>
+      <app-status-card
+        [status]="p.status"
+        (changed)="onChanged(p, $event)"
+        (deleted)="onDeleted($event)"
+      />
+    </div>
+  }
+}

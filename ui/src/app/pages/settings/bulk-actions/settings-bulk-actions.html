@@ -1,0 +1,101 @@
+<div class="spage-head">
+  <h1>{{ 'settings.bulk.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.bulk.intro' | transloco }}
+  </p>
+</div>
+
+<div class="bulk-body">
+  <app-bulk-progress />
+
+  <h2 class="group-head">{{ 'settings.bulk.groupAccounts' | transloco }}</h2>
+  <div class="bulk-cards">
+    @for (action of accountActions; track action.id) {
+      <div class="bulk-card" [class.danger]="action.danger">
+        <div class="bulk-card-text">
+          <h3>{{ action.labelKey | transloco }}</h3>
+          <p class="muted small">{{ action.blurbKey | transloco }}</p>
+        </div>
+        <button
+          class="btn btn-outline btn-sm"
+          [class.danger]="action.danger"
+          type="button"
+          [disabled]="running()"
+          (click)="ask(action.id)"
+        >
+          @if (running() && activeAction() === action.id) {
+            {{ 'common.running' | transloco }}
+          } @else {
+            {{ 'settings.bulk.review' | transloco }}
+          }
+        </button>
+      </div>
+    }
+  </div>
+
+  <h2 class="group-head">{{ 'settings.bulk.groupLists' | transloco }}</h2>
+  @if (listsLoading()) {
+    <p class="muted small">{{ 'settings.bulk.loadingLists' | transloco }}</p>
+  } @else if (!lists().length) {
+    <p class="muted small">
+      {{ 'settings.bulk.noLists' | transloco }}
+    </p>
+  } @else {
+    <!-- One picker for both list actions: repeating it per card would imply
+         they could run against different lists at the same time. -->
+    <div class="list-picker">
+      <label for="bulk-list">{{ 'settings.bulk.applyToList' | transloco }}</label>
+      <select
+        id="bulk-list"
+        [value]="selectedListId()"
+        [disabled]="running()"
+        (change)="selectList($any($event.target).value)"
+      >
+        @for (list of lists(); track list.id) {
+          <option [value]="list.id">{{ list.title }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="bulk-cards">
+      @for (action of listActions; track action.id) {
+        <div class="bulk-card" [class.danger]="action.danger">
+          <div class="bulk-card-text">
+            <h3>{{ action.labelKey | transloco }}</h3>
+            <p class="muted small">{{ action.blurbKey | transloco }}</p>
+          </div>
+          <button
+            class="btn btn-outline btn-sm"
+            [class.danger]="action.danger"
+            type="button"
+            [disabled]="running() || !target()"
+            (click)="ask(action.id)"
+          >
+            @if (running() && activeAction() === action.id) {
+              {{ 'common.running' | transloco }}
+            } @else {
+              {{ 'settings.bulk.review' | transloco }}
+            }
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <p class="muted small footnote">
+    {{ 'settings.bulk.footnote' | transloco }}
+  </p>
+</div>
+
+@if (pending(); as id) {
+  <!-- The target is passed only to the actions that consume one. The
+       account-wide actions ("retweets for all friends") operate on your follow
+       list, and handing them the list picker's selection made the dialog look
+       list-scoped when it never was. -->
+  <app-bulk-actions-dialog
+    [action]="id"
+    [target]="needsList(id) ? target() : undefined"
+    (confirmed)="confirm()"
+    (cancelled)="cancel()"
+  />
+}

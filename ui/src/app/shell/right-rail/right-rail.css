@@ -1,0 +1,458 @@
+.card {
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--rail-bg, var(--col-bg));
+  overflow: hidden;
+}
+
+.card-title {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 17px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+}
+
+.server-mode-card {
+  padding: 13px 14px;
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+}
+
+.server-mode-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.server-mode-kicker {
+  display: block;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.server-mode-title {
+  padding: 1px 0 0;
+  border: 0;
+}
+
+.server-mode-copy {
+  margin: 8px 0 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.server-mode-update {
+  width: 100%;
+}
+
+.server-mode-status {
+  margin: 8px 0 0;
+  line-height: 1.35;
+}
+
+.server-mode-status.ok {
+  color: var(--accent);
+}
+
+.server-mode-status.fail {
+  color: #e0245e;
+}
+
+.server-mode-switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: none;
+  cursor: pointer;
+}
+
+.server-mode-switch input {
+  position: absolute;
+  opacity: 0;
+}
+
+.server-mode-switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--border);
+  transition: background 120ms ease;
+}
+
+.server-mode-switch span::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  transition: transform 120ms ease;
+}
+
+.server-mode-switch input:checked + span {
+  background: var(--accent);
+}
+
+.server-mode-switch input:checked + span::after {
+  transform: translateX(18px);
+}
+
+.server-mode-switch input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.server-mode-switch.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.server-mode-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.server-mode-progress progress {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.rail-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.rail-link:hover {
+  background: var(--hover);
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.rail-link svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.donate-block {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.donate-head {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.donate-link {
+  display: block;
+  padding: 5px 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.donate-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Badge for the second (search) server: same row style, with a subordinate
+   caption so it reads as "and also this one", not a duplicate home server. */
+.search-server-donate span {
+  display: block;
+  font-weight: 400;
+}
+
+.server-info {
+  padding: 10px 14px 12px;
+}
+
+.server-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* The Bluesky service card: the server-info card's counterpart, so it borrows
+   .server-line for the host row and only needs a handle style of its own. */
+.bsky-service-card {
+  padding: 12px 14px;
+}
+
+.bsky-handle {
+  margin: 0;
+  font-weight: 800;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+/* A trend is a phrase, not a hashtag, so it wraps rather than truncating —
+   "Games that didn't click for players" is a normal length here. */
+.bsky-trend {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.bsky-trend-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.server-line {
+  margin: 2px 0 0;
+  font-size: 12px;
+}
+
+/* Which server does what, when a separate search server is configured. Stacked
+   rather than side by side: two hostnames on one narrow rail line is where
+   truncation starts, and a truncated hostname answers nothing. */
+.server-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.server-role {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.server-role-what {
+  font-weight: 700;
+}
+
+/* A hostname is one long unbreakable token; let it break anywhere rather than
+   widen the rail or spill out of it. */
+.server-role-host {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.share-server {
+  display: inline-flex;
+  width: auto;
+  margin-top: 9px;
+  text-decoration: none;
+}
+
+/*
+ * House-ad cards. Deliberately NOT named .ad-anything: EasyList-style ad-blocker
+ * cosmetic filters hide elements with generic ad classes (.ad-card, .ad-body,
+ * .ad-title, …), which made these invisible for anyone running uBlock/AdBlock.
+ * The visible "House ad" text label stays — filters match selectors, not text.
+ */
+.spotlight-card {
+  border-color: var(--accent);
+}
+
+.spotlight-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px 6px;
+  color: var(--text);
+}
+
+.spotlight-body:hover {
+  background: var(--accent-soft);
+  text-decoration: none;
+}
+
+.spotlight-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.spotlight-title {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* Badge for ads pointing at other people's projects. `white-space: nowrap` keeps
+   the longer "endorsement" label on one line; the title wraps instead. */
+.spotlight-kind {
+  flex: none;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.spotlight-text {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.spotlight-cta {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.spotlight-disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 14px 10px;
+  font-size: 11px;
+}
+
+.spotlight-disclosure a {
+  color: inherit;
+}
+
+/* Small, but not smaller than a comfortable target: 24px box around a 11px
+   glyph, so it is hittable on a phone without shouting on a desktop. */
+.spotlight-dismiss {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin: -6px -6px -6px 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.spotlight-dismiss:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* Share-this-server dialog */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 420px;
+  max-width: 100%;
+}
+
+.dialog h3 {
+  margin: 0 0 8px;
+}
+
+.share-url-row {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+
+.share-url {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.share-copy-note {
+  margin: 4px 0 0;
+}
+
+.share-copy-note.ok {
+  color: var(--accent);
+}
+
+.share-copy-note.fail {
+  color: #e0245e;
+}
+
+.share-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Server announcements: count on the server card, callout when unread. */
+.server-announcements {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.server-announcements:hover {
+  color: var(--accent);
+}
+
+.announcement-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.server-announcements.has-unread .announcement-count {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.announcement-new {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 1px 6px;
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+.dismiss-all {
+  margin-bottom: 6px;
+}

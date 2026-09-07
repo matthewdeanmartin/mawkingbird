@@ -1,0 +1,172 @@
+.fail-whale {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: var(--bg, #fff);
+  color: var(--text, #111);
+  /* The diagnostics box expands on demand and can outgrow a short viewport.
+     justify-content:center would then clip it off both ends with no way to
+     reach it, so let the overlay scroll instead. */
+  overflow-y: auto;
+}
+
+.whale-img {
+  /* Size it medium-big off the width; height follows, so it never squishes.
+     When vertical room is tight, clamp by height with width:auto so the ratio
+     still holds. The ratio itself is set inline from the chosen illustration —
+     the two whales are different shapes (4:3 generated, 640×451 hand-drawn) —
+     with 4/3 as the fallback if that binding is ever absent. */
+  width: min(460px, 80vw);
+  height: auto;
+  max-height: 50vh;
+  aspect-ratio: var(--whale-ratio, 4 / 3);
+  object-fit: contain;
+  /* This is a flex *column*, so the main axis is vertical and the default
+     flex-shrink:1 lets the box compress the image's height whenever the
+     content is taller than the viewport — squashing a wide whale into a tall
+     one. aspect-ratio does not save it, because the flex height wins. */
+  flex-shrink: 0;
+}
+
+/* Short viewports: drive the size off height instead so the ratio is preserved
+   rather than the width clamp fighting the height clamp. */
+@media (max-height: 620px) {
+  .whale-img {
+    width: auto;
+    height: min(50vh, 360px);
+  }
+}
+
+.fail-whale h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.fail-whale p {
+  margin: 0;
+  max-width: 420px;
+}
+
+.fail-whale .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Anonymous "browse a different instance" picker. Constrained and left-aligned
+   so the combo + its dropdown read cleanly inside the centered overlay. */
+.change-server {
+  width: min(420px, 90vw);
+  margin-top: 8px;
+  text-align: left;
+}
+
+.change-server > p {
+  margin: 0 0 6px;
+}
+
+.change-server input {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font-size: 14px;
+}
+
+/* "You are offline" — louder than the body copy because it changes the
+   diagnosis completely. */
+.offline-note {
+  max-width: 420px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  font-size: 14px;
+}
+
+/* Diagnostics: deliberately last, quiet, and collapsed. */
+.diagnostics {
+  width: min(520px, 92vw);
+  margin-top: 8px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.diagnostics summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.diagnostics[open] summary {
+  margin-bottom: 10px;
+  color: inherit;
+}
+
+.diagnostics p {
+  max-width: none;
+  margin: 10px 0 0;
+}
+
+/* Label/value pairs. Two columns on comfortable widths, stacked when narrow so
+   long URLs and error sentences keep a usable line length. */
+.detail-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.detail-grid dt {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.detail-grid dd {
+  margin: 0;
+  /* Failed URLs and raw error text are long and unbreakable; wrap rather than
+     forcing the whole overlay to scroll sideways. */
+  overflow-wrap: anywhere;
+}
+
+.detail-message {
+  white-space: pre-wrap;
+}
+
+.diagnostics code {
+  font-size: 12px;
+  background: var(--hover);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+@media (max-width: 420px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .detail-grid dd {
+    margin-bottom: 6px;
+  }
+}

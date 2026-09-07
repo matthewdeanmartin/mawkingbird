@@ -1,0 +1,132 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Wide enough that a feed title and its "from @handle" attribution sit on one
+   line at the default size — the pair is the row's whole meaning. */
+.friend-feeds-dialog {
+  width: 520px;
+}
+
+h3 {
+  margin: 0 0 10px;
+}
+
+.lead {
+  margin: 0 0 14px;
+}
+
+/* --- the Plus upsell --- */
+
+.plus-gate {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.plus-gate p {
+  margin: 6px 0 12px;
+}
+
+/* --- consent --- */
+
+.budget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.budget select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--col-bg);
+  color: inherit;
+}
+
+/* --- progress --- */
+
+.bar-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--accent, #1d9bf0);
+  transition: width 0.2s linear;
+}
+
+/* --- results --- */
+
+.feed-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  /* Capped rather than unbounded: a good scan can turn up dozens of feeds, and
+     a dialog that grows past the viewport puts its own buttons off-screen. */
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.feed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-row:last-child {
+  border-bottom: none;
+}
+
+.feed-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* Lets the title ellipsize instead of shoving the Follow button out of the
+     row: a flex item will not shrink below its content without this. */
+  min-width: 0;
+}
+
+.feed-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Reserves the button's width so rows do not jump left as each is followed. */
+.feed-followed {
+  flex: none;
+}
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}

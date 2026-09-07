@@ -1,0 +1,257 @@
+.acct-card {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  /* The whole card opens the profile, so it says so. The bio used to be inert
+     text under a ~40px avatar, which read as "this profile is unavailable". */
+  cursor: pointer;
+}
+
+/* The nested "matched on" posts are their own cards with their own destination,
+   so the profile cursor must not follow the reader into them. */
+.acct-card .acct-matches {
+  cursor: auto;
+}
+
+.acct-main {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.acct-avatar-link {
+  flex: 0 0 auto;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: var(--border);
+  object-fit: cover;
+}
+
+.acct-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.acct-headline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.acct-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text);
+}
+
+.acct-name:hover {
+  text-decoration: underline;
+}
+
+.acct-handle {
+  overflow-wrap: anywhere;
+}
+
+.badge-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.badge-pill.soft {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.acct-bio {
+  margin: 4px 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  /* Keep the collapsed card compact: clamp the bio, full text on the profile. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.acct-bio :is(p) {
+  margin: 0 0 4px;
+}
+
+.acct-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 4px;
+}
+
+.acct-reason {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 2px;
+  font-weight: 700;
+}
+
+.acct-reason a {
+  font-weight: 600;
+}
+
+.acct-stats strong {
+  color: var(--text);
+}
+
+/* Activity is the "is this account still alive" signal, so a long silence is
+   worth seeing at a glance rather than reading. Not red: a dormant account is
+   a fact about the result, not an error in it. */
+.acct-activity.stale {
+  color: var(--warn, #b26b00);
+}
+
+.acct-activity.unknown {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.acct-fields {
+  margin: 6px 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  font-size: 0.82rem;
+}
+
+.acct-field {
+  display: contents;
+}
+
+.acct-field dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.acct-field dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.acct-field.verified dd {
+  color: var(--good, #3d9970);
+}
+
+.acct-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.follow-btn {
+  min-width: 92px;
+}
+
+.acct-danger-menu {
+  position: relative;
+}
+
+.acct-danger-menu summary {
+  min-width: 38px;
+  list-style: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.acct-danger-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.acct-danger-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 170px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+}
+
+.acct-danger-panel button {
+  display: block;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.acct-danger-panel button:hover {
+  background: var(--bg);
+}
+
+.acct-danger-panel .danger-action {
+  color: var(--danger, #c62828);
+}
+
+.acct-danger-panel .menu-note {
+  padding: 4px 8px 2px;
+}
+
+/* A followed/mutual button reads as an outlined "done" state, not a call to
+   action — hover reveals it's clickable to unfollow. */
+.follow-btn.following {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.follow-btn.mutual {
+  border-color: var(--accent, #6364ff);
+  color: var(--accent, #6364ff);
+}
+
+.acct-matches {
+  margin-top: 10px;
+  margin-left: 60px;
+  border-left: 2px solid var(--border);
+  padding-left: 12px;
+}
+
+.acct-matches-head {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.acct-more-posts {
+  display: inline-block;
+  margin-top: 4px;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .acct-matches {
+    margin-left: 0;
+  }
+}

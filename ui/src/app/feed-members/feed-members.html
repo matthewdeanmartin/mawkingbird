@@ -1,0 +1,92 @@
+@if (loading()) {
+  <p class="muted center">{{ 'feedMembers.loading' | transloco }}</p>
+} @else if (error()) {
+  <p class="muted center">{{ 'feedMembers.error' | transloco }}</p>
+} @else if (!authors().length) {
+  <p class="muted center">{{ 'feedMembers.empty' | transloco }}</p>
+} @else {
+  <div class="sample-note muted">
+    <span>
+      <!-- Emergent membership, not a roster: say so plainly. -->
+      {{
+        (authors().length === 1 ? 'feedMembers.summary.one' : 'feedMembers.summary.other')
+          | transloco
+            : {
+                accountCount: authors().length,
+                postCount: posts().length,
+                posts: words().posts,
+              }
+      }}
+    </span>
+    @if (paged()) {
+      <span
+        class="sample-controls"
+        role="group"
+        [attr.aria-label]="'feedMembers.sample.sizeAria' | transloco"
+      >
+        <span>{{ 'feedMembers.sample.label' | transloco }}</span>
+        @for (n of sampleChoices; track n) {
+          <button
+            type="button"
+            class="sample-btn"
+            [class.active]="sampleSize() === n"
+            [title]="
+              'feedMembers.sample.optionTitle' | transloco: { count: n, posts: words().posts }
+            "
+            (click)="setSampleSize(n)"
+          >
+            {{ n }}
+          </button>
+        }
+        <button
+          type="button"
+          class="sample-btn"
+          [title]="'feedMembers.sample.refresh' | transloco"
+          (click)="refresh()"
+          [attr.aria-label]="'feedMembers.sample.refresh' | transloco"
+        >
+          <span aria-hidden="true">↻</span>
+        </button>
+      </span>
+    }
+  </div>
+
+  @for (row of authors(); track row.account.id) {
+    <div class="member-row">
+      <a class="member-link" [routerLink]="['/accounts', row.account.id]">
+        <img
+          class="avatar"
+          [src]="row.account.avatar_static || row.account.avatar"
+          [alt]="row.account.username"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="names">
+          <span class="name">
+            {{ row.account.display_name || row.account.username }}
+            @if (row.account.bot) {
+              <span class="bot-tag" [title]="'feedMembers.botTag.title' | transloco">{{
+                'feedMembers.botTag.label' | transloco
+              }}</span>
+            }
+          </span>
+          <span class="acct muted">&#64;{{ row.account.acct }}</span>
+        </span>
+      </a>
+      <span
+        class="share muted"
+        [title]="'feedMembers.share.title' | transloco: { pct: pct(row.share) }"
+      >
+        {{
+          (row.count === 1 ? 'feedMembers.postCount.one' : 'feedMembers.postCount.other')
+            | transloco: { count: row.count, posts: row.count === 1 ? words().post : words().posts }
+        }}
+        <small>{{ pct(row.share) }}%</small>
+      </span>
+      <!-- This list used to resolve follow state and then do nothing with it
+           but print the word "following". Seeing who is in a feed and being
+           unable to follow them is the wrong half of the feature. -->
+      <app-follow-button [accountId]="row.account.id" [handle]="'@' + row.account.acct" />
+    </div>
+  }
+}

@@ -1,0 +1,292 @@
+<div class="spage-head">
+  <h1>{{ 'settings.rss.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.rss.intro' | transloco }}
+  </p>
+  <p class="muted">
+    {{ 'settings.rss.cors' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.rss.saved' | transloco: { count: subs.feeds().length, limit: subs.limit() } }}
+  </p>
+</div>
+
+<div class="spage-body">
+  <p class="proxy-summary muted small">
+    @if (proxyLabel(); as label) {
+      {{ 'settings.rss.proxy.before' | transloco }} <strong>{{ label }}</strong
+      >{{ 'settings.rss.proxy.after' | transloco }}
+    } @else if (proxyIncomplete()) {
+      {{ 'settings.rss.proxy.incomplete' | transloco }}
+    } @else {
+      {{ 'settings.rss.proxy.none' | transloco }}
+    }
+    <a [routerLink]="['/settings/connections/cors-proxy']">
+      {{ (proxyLabel() ? 'settings.rss.proxy.change' : 'settings.rss.proxy.setUp') | transloco }}
+    </a>
+  </p>
+
+  <div class="reading-controls">
+    <label class="check">
+      <input
+        type="checkbox"
+        [checked]="prefs.rssScrollMarksRead()"
+        (change)="setScrollMarksRead($event)"
+        name="rssScrollMarksRead"
+      />
+      <span>{{ 'settings.rss.scrollRead' | transloco }}</span>
+    </label>
+    <p class="muted small">
+      {{ 'settings.rss.scrollRead.hint' | transloco }}
+    </p>
+    @if (readState.readCount() || readState.starredCount()) {
+      <p class="muted small">
+        {{
+          (readState.readCount() === 1 ? 'settings.rss.readOne' : 'settings.rss.readOther')
+            | transloco: { count: readState.readCount(), starred: readState.starredCount() }
+        }}
+        <button class="btn btn-outline btn-sm" type="button" (click)="clearReadState()">
+          {{ 'settings.rss.clearHistory' | transloco }}
+        </button>
+      </p>
+    }
+  </div>
+
+  <div class="cache-controls">
+    <label class="cache-ttl">
+      <span>{{ 'settings.rss.reuseFor' | transloco }}</span>
+      <!-- Plain string values rather than [ngValue]: the stored preference is a
+         number, but a string-valued <option> is what both the DOM and anyone
+         scripting this page expect. setTtl coerces. -->
+      <select
+        [ngModel]="prefs.rssCacheTtlHours().toString()"
+        (ngModelChange)="setTtl($event)"
+        name="rssCacheTtl"
+      >
+        @for (option of ttlOptions; track option.hours) {
+          <option [value]="option.hours.toString()">{{ option.key | transloco }}</option>
+        }
+      </select>
+    </label>
+    <p class="muted small">
+      {{ 'settings.rss.cache.hint' | transloco }}
+    </p>
+    @if (cacheSummary(); as summary) {
+      <p class="cache-summary muted small">
+        {{ summary }}
+        <button class="btn btn-outline btn-sm" type="button" (click)="clearCache()">
+          {{ 'settings.rss.clearCache' | transloco }}
+        </button>
+      </p>
+    }
+  </div>
+
+  <form class="add-feed" (ngSubmit)="addFeed()">
+    <input
+      type="url"
+      name="feedUrl"
+      [attr.placeholder]="'settings.rss.feedUrlPlaceholder' | transloco"
+      [ngModel]="feedUrl()"
+      (ngModelChange)="feedUrl.set($event)"
+      [disabled]="adding()"
+    />
+    <button class="btn" type="submit" [disabled]="!feedUrl().trim() || adding()">
+      {{ (adding() ? 'settings.rss.checking' : 'settings.rss.addFeed') | transloco }}
+    </button>
+  </form>
+  @if (error(); as msg) {
+    <p class="feed-error">{{ msg }}</p>
+  }
+  @if (retryable()) {
+    <p class="retry-line">
+      <button class="btn btn-outline btn-sm" type="button" (click)="retryViaProxy()">
+        {{ 'settings.rss.retryVia' | transloco: { proxy: proxyLabel() } }}
+      </button>
+      <span class="muted small">{{ 'settings.rss.proxyWarning' | transloco }}</span>
+    </p>
+  }
+
+  <section class="opml">
+    <h2>{{ 'settings.rss.opml' | transloco }}</h2>
+    <p class="muted small">
+      {{ 'settings.rss.opml.hint' | transloco }}
+    </p>
+
+    <label class="feed-limit">
+      <span>{{ 'settings.rss.maxFeeds' | transloco }}</span>
+      <input
+        type="number"
+        name="feedLimit"
+        min="1"
+        [max]="maxLimit"
+        [ngModel]="limitDraft()"
+        (ngModelChange)="limitDraft.set($event)"
+        (blur)="setLimit()"
+      />
+      <button class="btn btn-outline btn-sm" type="button" (click)="setLimit()">
+        {{ 'settings.rss.save' | transloco }}
+      </button>
+    </label>
+    <p class="muted small">
+      {{ 'settings.rss.maxFeeds.hint' | transloco: { recommended: recommendedLimit } }}
+    </p>
+
+    <div class="opml-actions">
+      <button
+        class="btn btn-outline"
+        type="button"
+        (click)="exportOpml()"
+        [disabled]="!subs.feeds().length"
+      >
+        {{ 'settings.rss.exportOpml' | transloco }}
+      </button>
+      <label class="btn btn-outline opml-import" [class.disabled]="importProgress()">
+        {{ (importProgress() ? 'settings.rss.importing' : 'settings.rss.importOpml') | transloco }}
+        <input
+          type="file"
+          accept=".opml,.xml,text/xml,application/xml"
+          (change)="importOpml($event)"
+          [disabled]="!!importProgress()"
+        />
+      </label>
+      <!-- Sits with import/export because it produces the same artefact: an
+           OPML file. The difference is where it comes from — your friends'
+           profiles rather than another reader. -->
+      <button class="btn btn-outline" type="button" (click)="openFriendFeeds()">
+        {{ 'settings.rss.friendFeeds' | transloco }}
+      </button>
+    </div>
+
+    @if (importProgress(); as progress) {
+      <p class="muted small">
+        {{
+          'settings.rss.import.progress'
+            | transloco: { done: progress.done + 1, total: progress.total }
+        }}
+      </p>
+    }
+
+    @if (importError(); as msg) {
+      <p class="feed-error">{{ msg }}</p>
+    }
+
+    <!-- Every bucket named separately: each one has a different fix. -->
+    @if (importReport(); as report) {
+      <div class="import-report">
+        <p>
+          <strong>{{
+            'settings.rss.import.added' | transloco: { added: report.added, total: report.total }
+          }}</strong>
+        </p>
+        <ul class="muted small">
+          @if (report.alreadySubscribed) {
+            <li>
+              {{ 'settings.rss.import.already' | transloco: { count: report.alreadySubscribed } }}
+            </li>
+          }
+          @if (report.skippedForLimit) {
+            <li>
+              {{
+                'settings.rss.import.overLimit'
+                  | transloco: { count: report.skippedForLimit, limit: subs.limit() }
+              }}
+            </li>
+          }
+          @if (report.failed.length) {
+            <li>
+              {{ 'settings.rss.import.failed' | transloco: { count: report.failed.length } }}
+              @if (!proxyLabel()) {
+                {{ 'settings.rss.import.corsHint.before' | transloco }}
+                <a [routerLink]="['/settings/connections/cors-proxy']">{{
+                  'settings.rss.import.corsHint.link' | transloco
+                }}</a
+                >{{ 'settings.rss.import.corsHint.after' | transloco }}
+              }
+            </li>
+          }
+        </ul>
+        @if (report.failed.length) {
+          <details class="failed-feeds">
+            <summary class="muted small">
+              {{ 'settings.rss.import.whichFailed' | transloco }}
+            </summary>
+            <ul class="muted small">
+              @for (failure of report.failed; track failure.url) {
+                <li>
+                  <span class="failed-url">{{ failure.url }}</span>
+                  <span class="failed-reason">{{ failure.reason }}</span>
+                </li>
+              }
+            </ul>
+          </details>
+        }
+      </div>
+    }
+  </section>
+
+  @if (subs.feeds().length) {
+    <ul class="feed-list">
+      @for (f of subs.feeds(); track f.url) {
+        <li class="feed-row">
+          <label class="feed-toggle">
+            <input type="checkbox" [checked]="f.enabled" (change)="toggle(f)" />
+            <span class="names">
+              <span class="name">
+                {{ f.title || f.url }}
+                @if (f.useProxy) {
+                  <span class="proxy-badge" [title]="'settings.rss.viaProxy.title' | transloco">{{
+                    'settings.rss.viaProxy' | transloco
+                  }}</span>
+                }
+              </span>
+              <span class="muted small">{{ f.url }}</span>
+            </span>
+          </label>
+          <span class="feed-actions">
+            @if (proxyLabel()) {
+              <label
+                class="proxy-switch muted small"
+                [title]="'settings.rss.fetchThrough' | transloco: { proxy: proxyLabel() }"
+              >
+                <input type="checkbox" [checked]="f.useProxy === true" (change)="toggleProxy(f)" />
+                <span>{{ 'settings.rss.proxy' | transloco }}</span>
+              </label>
+            }
+            <!-- The way into the feed's profile page. Without this, a subscribed
+               feed can only be reached by finding one of its posts in the home
+               timeline, which makes the whole feature hard to discover. -->
+            <a
+              class="btn btn-outline btn-sm"
+              [routerLink]="['/accounts', 'rss:' + f.url]"
+              [title]="'settings.rss.open.title' | transloco"
+              >{{ 'settings.rss.open' | transloco }}</a
+            >
+            <!-- Bypasses the cache for this one feed. Without it a cached feed
+               cannot be updated before its TTL expires, which matters when you
+               have just published something and want to see it. -->
+            <button
+              class="btn btn-outline btn-sm"
+              [disabled]="refreshing() === f.url"
+              (click)="refresh(f)"
+              [title]="'settings.rss.refresh.title' | transloco"
+            >
+              {{
+                (refreshing() === f.url ? 'settings.rss.refreshing' : 'settings.rss.refresh')
+                  | transloco
+              }}
+            </button>
+            <button class="btn btn-outline btn-sm" (click)="remove(f)">
+              {{ 'settings.rss.remove' | transloco }}
+            </button>
+          </span>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="muted">{{ 'settings.rss.noFeeds' | transloco }}</p>
+  }
+</div>
+
+@if (showFriendFeeds()) {
+  <app-friend-feeds-dialog (closed)="showFriendFeeds.set(false)" />
+}

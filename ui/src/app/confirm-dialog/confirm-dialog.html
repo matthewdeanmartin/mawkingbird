@@ -1,0 +1,31 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="cancelled.emit()"
+  (keyup.escape)="cancelled.emit()"
+>
+  <div
+    class="dialog"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="confirm-title"
+    appFocusTrap
+    (dismissed)="cancelled.emit()"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    <h3 id="confirm-title">{{ title() }}</h3>
+    @if (message()) {
+      <p>{{ message() }}</p>
+    }
+    <div class="confirm-actions">
+      <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+        {{ 'confirm.cancel' | transloco }}
+      </button>
+      <button class="btn" [class.btn-danger]="danger()" type="button" (click)="confirmed.emit()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+</div>

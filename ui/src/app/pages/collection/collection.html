@@ -1,0 +1,349 @@
+@if (loading()) {
+  <div class="page-head">{{ 'pages.collection.title' | transloco }}</div>
+  <p class="muted center">{{ 'pages.collection.loading' | transloco }}</p>
+} @else if (error()) {
+  <div class="page-head">{{ 'pages.collection.title' | transloco }}</div>
+  <p class="muted center">{{ error() }}</p>
+} @else if (data(); as d) {
+  <div class="page-head page-head-actions">
+    <span>{{ d.collection.name }}</span>
+    @if (!shipped()) {
+      <button class="btn btn-outline btn-sm" [disabled]="converting()" (click)="convertToList()">
+        {{
+          (converting() ? 'pages.collection.converting' : 'pages.collection.convertToList')
+            | transloco
+        }}
+      </button>
+    }
+  </div>
+  @if (conversionMessage()) {
+    <p class="conversion-message muted" role="status">{{ conversionMessage() }}</p>
+  }
+
+  <div class="coll-head">
+    @if (d.collection.description) {
+      <p class="description">{{ d.collection.description }}</p>
+    }
+    <p class="muted small">
+      @if (curator(); as c) {
+        {{ 'pages.collection.curatedBy' | transloco }}
+        <a [routerLink]="['/accounts', c.id]">{{ c.display_name || c.username }}</a>
+        ·
+      }
+      {{
+        (d.collection.item_count === 1
+          ? 'pages.collection.memberCount.one'
+          : 'pages.collection.memberCount.other'
+        ) | transloco: { count: d.collection.item_count }
+      }}
+    </p>
+    @if (shipped(); as kit) {
+      <a class="muted small" [href]="kit.url" target="_blank" rel="noopener">
+        {{ 'pages.collection.openOriginal' | transloco }}
+      </a>
+    }
+    <div class="coll-actions">
+      <!-- The obvious thing to want from a curated set of people, and until now
+           the one thing the page would not do. Counts first: the dialog says
+           how many are new before anything is written. -->
+      <!-- Not offered for shipped kits: the bulk runner follows by id, and a
+           kit's ids are foreign. Those rows follow one at a time, each
+           resolving itself first. -->
+      @if (canFollow() && !shipped() && members().length) {
+        <button class="btn btn-outline" [disabled]="bulk.running()" (click)="askFollowAll()">
+          {{
+            (bulk.running()
+              ? 'pages.collection.workingFollowAll'
+              : 'pages.collection.followEveryone'
+            ) | transloco
+          }}
+        </button>
+      }
+      <!-- Shipped kits follow through the importer instead: their ids are
+           foreign, so each member is resolved (or, anonymously, taken straight
+           from the snapshot) rather than followed by id. Offered to anonymous
+           visitors too — the follow is a browser-local row. -->
+      @if (canFollowKit()) {
+        <button
+          class="btn btn-outline"
+          [disabled]="importer.running() || kitFollowDone() === members().length"
+          (click)="followAllShipped()"
+        >
+          @if (importer.running()) {
+            {{
+              'pages.collection.followingProgress'
+                | transloco: { done: kitFollowDone(), total: members().length }
+            }}
+          } @else if (kitFollowDone() === members().length) {
+            {{
+              'pages.collection.followedSummary'
+                | transloco: { followed: kitFollowed(), total: members().length }
+            }}
+          } @else {
+            {{ 'pages.collection.followEveryone' | transloco }}
+          }
+        </button>
+      }
+      @if (isOwner()) {
+        <button class="btn btn-outline" (click)="showBulk.set(true)">
+          {{ 'pages.collection.addPeopleByName' | transloco }}
+        </button>
+        <button class="btn btn-outline danger" (click)="showDeleteConfirm.set(true)">
+          {{ 'pages.collection.deleteCollection' | transloco }}
+        </button>
+      } @else if (myItem()) {
+        <button class="btn btn-outline danger" (click)="revokeSelf()">
+          {{ 'pages.collection.removeMe' | transloco }}
+        </button>
+      }
+    </div>
+    @if (kitFollowError(); as message) {
+      <p class="muted small" role="status">{{ message }}</p>
+    }
+  </div>
+
+  @if (!shipped()) {
+    <div class="tabs">
+      <button class="tab" [class.active]="tab() === 'feed'" (click)="setTab('feed')">
+        {{ 'pages.collection.tabFeed' | transloco }}
+      </button>
+      <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
+        {{ 'pages.collection.tabMembers' | transloco }}
+      </button>
+    </div>
+  } @else {
+    <div
+      class="tabs"
+      role="tablist"
+      [attr.aria-label]="'pages.collection.bundledSectionsAriaLabel' | transloco"
+    >
+      <button
+        class="tab"
+        type="button"
+        role="tab"
+        [class.active]="tab() === 'members'"
+        [attr.aria-selected]="tab() === 'members'"
+        (click)="setTab('members')"
+      >
+        {{ 'pages.collection.tabCollection' | transloco }}
+      </button>
+      <button
+        class="tab"
+        type="button"
+        role="tab"
+        [class.active]="tab() === 'feed'"
+        [attr.aria-selected]="tab() === 'feed'"
+        (click)="setTab('feed')"
+      >
+        {{ 'pages.collection.tabPosts' | transloco }}
+      </button>
+    </div>
+
+    @if (tab() === 'feed') {
+      <!-- A list of names says little about whether you want these people in your
+           timeline. Sampling costs one request per member, so the size is the
+           reader's choice and nothing loads until they ask. -->
+      <div class="sample-box">
+        <label class="sample-field">
+          {{ 'pages.collection.sampleOf' | transloco }}
+          <select
+            [attr.aria-label]="'pages.collection.sampleSizeAriaLabel' | transloco"
+            [value]="sampleSize()"
+            (change)="setSampleSize($any($event.target).value)"
+          >
+            @for (n of sampleSizes; track n) {
+              <option [value]="n">{{ n }}</option>
+            }
+          </select>
+          {{ 'pages.collection.membersSuffix' | transloco }}
+        </label>
+        <button class="btn btn-outline btn-sm" [disabled]="feedLoading()" (click)="loadSample()">
+          {{
+            (feedLoading()
+              ? 'pages.collection.loading'
+              : sampled()
+                ? 'pages.collection.sampleAgain'
+                : 'pages.collection.showMePosts'
+            ) | transloco
+          }}
+        </button>
+        <span class="muted small">{{ 'pages.collection.sampleHint' | transloco }}</span>
+      </div>
+
+      @if (feedLoading()) {
+        <p class="muted center">{{ 'pages.collection.loadingPosts' | transloco }}</p>
+      } @else if (sampled()) {
+        @if (!feed().length) {
+          <p class="muted center">{{ 'pages.collection.noSampledPosts' | transloco }}</p>
+        } @else {
+          @for (s of feed(); track s.id; let i = $index) {
+            <app-status-card
+              [status]="s"
+              (changed)="onChanged(i, $event)"
+              (deleted)="onDeleted($event)"
+            />
+          }
+          <div class="sample-rule muted small">
+            {{ 'pages.collection.endOfSample' | transloco }}
+          </div>
+        }
+      }
+    }
+  }
+
+  @if (tab() === 'feed' && !shipped()) {
+    @if (feedLoading()) {
+      <p class="muted center">{{ 'pages.collection.loadingFeed' | transloco }}</p>
+    } @else if (!feed().length) {
+      <p class="muted center">{{ 'pages.collection.noMemberPosts' | transloco }}</p>
+    } @else {
+      @for (s of feed(); track s.id; let i = $index) {
+        <app-status-card
+          [status]="s"
+          (changed)="onChanged(i, $event)"
+          (deleted)="onDeleted($event)"
+        />
+      }
+    }
+  } @else if (tab() === 'members') {
+    @if (isOwner()) {
+      <div class="add-member">
+        <input
+          type="text"
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+          (keyup.enter)="search()"
+          [attr.placeholder]="'pages.collection.searchAccountsPlaceholder' | transloco"
+        />
+        <button class="btn" [disabled]="!query().trim() || searching()" (click)="search()">
+          {{ 'pages.collection.search' | transloco }}
+        </button>
+      </div>
+      @for (a of results(); track a.id) {
+        <div class="member-row">
+          <a class="member-link" [routerLink]="['/accounts', a.id]">
+            <img
+              class="avatar"
+              [src]="a.avatar_static || a.avatar"
+              [alt]="a.username"
+              [appAvatarFallback]="a.display_name || a.acct"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="names">
+              <span class="name">{{ a.display_name || a.username }}</span>
+              <span class="acct muted">&#64;{{ a.acct }}</span>
+            </span>
+          </a>
+          <button class="btn btn-outline" (click)="addMember(a)">
+            {{ 'pages.collection.add' | transloco }}
+          </button>
+        </div>
+      }
+    }
+
+    @if (!members().length) {
+      <p class="muted center">{{ 'pages.collection.noMembersYet' | transloco }}</p>
+    } @else {
+      @for (m of members(); track m.itemId) {
+        <div class="member-row">
+          <!-- Even in a shipped collection the member stays in-app: their
+               profile renders here through an anonymous route ref, the same way
+               the collection widget on Home resolves them. Sending people to
+               the origin instance dropped them out of Mawkingbird entirely. -->
+          <a class="member-link" [routerLink]="memberLink(m.account)">
+            <ng-container *ngTemplateOutlet="memberIdentity; context: { $implicit: m.account }" />
+          </a>
+          @if (m.state === 'pending') {
+            <span class="muted small">{{ 'pages.collection.pending' | transloco }}</span>
+          }
+          <!-- The point of a collection is that these are people worth
+               following, so the follow control belongs on the row. Absent for
+               shipped kits, whose members live on other instances and whose ids
+               the home server cannot act on. -->
+          @if (canFollow()) {
+            <app-follow-button
+              [accountId]="m.account.id"
+              [foreign]="foreignMember(m.account)"
+              [handle]="'@' + m.account.acct"
+            />
+          }
+          @if (isOwner()) {
+            <button
+              class="del"
+              [attr.title]="'pages.collection.removeFromCollection' | transloco"
+              (click)="memberToRemove.set(m)"
+              [attr.aria-label]="'pages.collection.removeFromCollection' | transloco"
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
+          }
+        </div>
+      }
+    }
+  }
+
+  <!-- Shared with the Settings bulk tab, so a follow-everyone job survives
+       navigating away from this page and reports itself wherever you land. -->
+  <app-bulk-progress />
+
+  @if (followAllOpen()) {
+    <app-bulk-actions-dialog
+      action="list-follow"
+      [target]="followAllTarget()"
+      (confirmed)="confirmFollowAll()"
+      (cancelled)="followAllOpen.set(false)"
+    />
+  }
+
+  @if (showBulk() && isOwner()) {
+    <app-bulk-add-dialog
+      [targetId]="d.collection.id"
+      targetKind="collection"
+      [targetName]="d.collection.name"
+      (added)="onBulkAdded()"
+      (closed)="showBulk.set(false)"
+    />
+  }
+  @if (showDeleteConfirm()) {
+    <app-confirm-dialog
+      [title]="'pages.collection.deleteCollectionConfirmTitle' | transloco"
+      [message]="
+        'pages.collection.deleteCollectionConfirmMessage' | transloco: { name: d.collection.name }
+      "
+      [confirmLabel]="'pages.collection.deleteCollection' | transloco"
+      (confirmed)="remove()"
+      (cancelled)="showDeleteConfirm.set(false)"
+    />
+  }
+  @if (memberToRemove(); as m) {
+    <app-confirm-dialog
+      [title]="'pages.collection.removeFromCollectionConfirmTitle' | transloco"
+      [message]="
+        'pages.collection.removeFromCollectionConfirmMessage'
+          | transloco: { acct: m.account.acct, name: d.collection.name }
+      "
+      [confirmLabel]="'pages.collection.remove' | transloco"
+      (confirmed)="removeMember(m)"
+      (cancelled)="memberToRemove.set(null)"
+    />
+  }
+}
+
+<ng-template #memberIdentity let-account>
+  <!-- A shipped collection's avatars are absolute CDN URLs frozen into the
+       snapshot; when files.mastodon.social is blocked, every one of them breaks
+       at once. Initials keep the member list legible. -->
+  <img
+    class="avatar"
+    [src]="account.avatar_static || account.avatar"
+    [alt]="account.username"
+    [appAvatarFallback]="account.display_name || account.acct"
+    loading="lazy"
+    decoding="async"
+  />
+  <span class="names">
+    <span class="name">{{ account.display_name || account.username }}</span>
+    <span class="acct muted">&#64;{{ account.acct }}</span>
+  </span>
+</ng-template>

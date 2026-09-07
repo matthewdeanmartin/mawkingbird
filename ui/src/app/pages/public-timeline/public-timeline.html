@@ -1,0 +1,25 @@
+<div class="tabs">
+  <button class="tab" [class.active]="!local()" (click)="setLocal(false)">
+    {{ 'publicTimeline.all' | transloco }}
+  </button>
+  <button class="tab" [class.active]="local()" (click)="setLocal(true)">
+    {{ 'publicTimeline.local' | transloco }}
+  </button>
+</div>
+
+<app-command-bar [showRefresh]="!live()" (refresh)="load()" />
+
+@if (loading()) {
+  <p class="muted center">{{ 'publicTimeline.loading' | transloco }}</p>
+} @else if (!statuses().length) {
+  <p class="muted center">{{ 'publicTimeline.empty' | transloco }}</p>
+} @else {
+  @for (s of statuses(); track s.id; let i = $index) {
+    <app-status-card
+      [status]="s"
+      filterContext="public"
+      (changed)="onChanged(i, $event)"
+      (deleted)="onDeleted($event)"
+    />
+  }
+}

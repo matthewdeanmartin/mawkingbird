@@ -1,0 +1,129 @@
+.people-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.person-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.person-avatar {
+  flex: none;
+}
+
+.person-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  object-fit: cover;
+  background: var(--border);
+  display: block;
+}
+
+.person-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.person-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.person-name {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-name-row:hover .person-name {
+  text-decoration: underline;
+}
+
+.person-acct {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-note {
+  margin-top: 4px;
+  font-size: 14px;
+  /* Keep bios to a couple of lines so cards stay a uniform height. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.person-note :is(p) {
+  margin: 0;
+}
+
+.person-stats {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+}
+
+.follow-btn {
+  flex: none;
+  align-self: center;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  min-width: 92px;
+  text-align: center;
+}
+
+.follow-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+/* Already-following: outline style, turning red on hover to signal "unfollow". */
+.follow-btn.following {
+  background: transparent;
+  color: var(--accent);
+}
+
+.follow-btn.following:hover:not(:disabled) {
+  border-color: #e0245e;
+  color: #e0245e;
+  background: transparent;
+}
+
+.follow-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.follow-btn.is-self {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.people-more {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}

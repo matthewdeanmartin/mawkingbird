@@ -1,0 +1,777 @@
+<!-- The same two boxes the Mastodon side uses, with the same class names: the
+     sticky left column holds the form and every refinement control, the right
+     column holds results. The page supplies the query box, the selects, Search,
+     Advanced, Syntax, the AI helper, Save and Share above this. -->
+<div class="search-form-box" [hidden]="empty() && !advancedOpen()">
+  <!-- How many pages to pull eagerly, so faceting has a corpus to work with.
+       Same control, same place and same bargain as the Mastodon side — one
+       Bluesky request per page for either target, so pages and calls are the
+       same number here. -->
+  <div class="budget-row">
+    <label class="muted small" for="bsky-api-budget">
+      {{ 'pages.search.bluesky.maximumApiCalls' | transloco }}
+    </label>
+    <select
+      id="bsky-api-budget"
+      [ngModel]="apiBudget()"
+      (ngModelChange)="setBudget($event)"
+      [attr.aria-label]="'pages.search.bluesky.maximumApiCalls' | transloco"
+    >
+      @for (b of budgetOptions; track b.value) {
+        <option [value]="b.value">
+          {{ b.label | transloco: { count: b.value, items: b.value * 25 } }}
+        </option>
+      }
+    </select>
+  </div>
+
+  @if (advancedOpen() && target() === 'statuses') {
+    <div class="advanced-panel">
+      <p
+        class="muted small"
+        [innerHTML]="'pages.search.bluesky.advancedPostsDescription' | transloco"
+      ></p>
+
+      <label class="adv-field">
+        <span class="muted small">{{ 'pages.search.bluesky.postedBy' | transloco }}</span>
+        <input
+          type="text"
+          [ngModel]="criteria().author"
+          (ngModelChange)="set('author', $event)"
+          [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
+        />
+      </label>
+
+      <label class="adv-field">
+        <span class="muted small">{{ 'pages.search.bluesky.mentioning' | transloco }}</span>
+        <input
+          type="text"
+          [ngModel]="criteria().mentions"
+          (ngModelChange)="set('mentions', $event)"
+          [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
+        />
+      </label>
+
+      <label class="adv-field">
+        <span class="muted small">{{ 'pages.search.bluesky.hashtags' | transloco }}</span>
+        <input
+          type="text"
+          [ngModel]="tagInput()"
+          (ngModelChange)="tagInput.set($event)"
+          [placeholder]="'pages.search.bluesky.hashtagPlaceholder' | transloco"
+        />
+        <!-- Say "all", because the server ANDs them and readers assume OR. -->
+        <small
+          class="muted"
+          [innerHTML]="'pages.search.bluesky.postsWithAllTags' | transloco"
+        ></small>
+      </label>
+
+      <label class="adv-field">
+        <span class="muted small">{{ 'pages.search.bluesky.linksToDomain' | transloco }}</span>
+        <input
+          type="text"
+          [ngModel]="criteria().domain"
+          (ngModelChange)="set('domain', $event)"
+          [placeholder]="'pages.search.bluesky.domainPlaceholder' | transloco"
+        />
+      </label>
+
+      <label class="adv-field">
+        <span class="muted small">{{ 'pages.search.bluesky.linksToUrl' | transloco }}</span>
+        <input
+          type="url"
+          [ngModel]="criteria().url"
+          (ngModelChange)="set('url', $event)"
+          [placeholder]="'pages.search.bluesky.urlPlaceholder' | transloco"
+        />
+      </label>
+
+      <div class="advanced-fields">
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.postedAfter' | transloco }}</span>
+          <input type="date" [ngModel]="criteria().after" (ngModelChange)="set('after', $event)" />
+        </label>
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.postedBefore' | transloco }}</span>
+          <input
+            type="date"
+            [ngModel]="criteria().before"
+            (ngModelChange)="set('before', $event)"
+          />
+        </label>
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.language' | transloco }}</span>
+          <input
+            type="text"
+            class="lang-input"
+            [ngModel]="criteria().language"
+            (ngModelChange)="set('language', $event)"
+            placeholder="en"
+          />
+        </label>
+      </div>
+
+      <div class="advanced-fields">
+        <label>
+          <!-- Ranking is a server-side choice, unlike the in-memory Sort in the
+               refine bar below — so it belongs with the criteria, not with them. -->
+          <span class="muted small">{{ 'pages.search.bluesky.ranking' | transloco }}</span>
+          <select [ngModel]="criteria().sort" (ngModelChange)="set('sort', $event)">
+            <option value="latest">{{ 'pages.search.bluesky.latest' | transloco }}</option>
+            <option value="top">{{ 'pages.search.bluesky.top' | transloco }}</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Everything above is sent to Bluesky; these are not. `searchPosts` has
+           no engagement parameters, so this gates the posts already loaded —
+           which is why it sits below a divider and takes effect immediately
+           instead of waiting for "Apply & search". -->
+      <div class="client-side-fields">
+        <div class="facet-label muted small">
+          {{ 'pages.search.bluesky.minimumEngagement' | transloco }}
+          <span class="muted small">
+            {{
+              'pages.search.bluesky.loadedPostsNoNewSearch' | transloco: { postType: words().posts }
+            }}
+          </span>
+        </div>
+        <div class="advanced-fields">
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.likes' | transloco }}</span>
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.any' | transloco"
+              [ngModel]="engagementBounds().minLikes ?? null"
+              (ngModelChange)="setEngagementBound('minLikes', $event)"
+              [attr.aria-label]="'pages.search.bluesky.minimumLikes' | transloco"
+            />
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.reposts' | transloco }}</span>
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.any' | transloco"
+              [ngModel]="engagementBounds().minReposts ?? null"
+              (ngModelChange)="setEngagementBound('minReposts', $event)"
+              [attr.aria-label]="
+                'pages.search.bluesky.minimumBoosts' | transloco: { boostType: words().boosts }
+              "
+            />
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.replies' | transloco }}</span>
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.any' | transloco"
+              [ngModel]="engagementBounds().minReplies ?? null"
+              (ngModelChange)="setEngagementBound('minReplies', $event)"
+              [attr.aria-label]="'pages.search.bluesky.minimumReplies' | transloco"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="advanced-actions">
+        <button class="btn btn-sm" (click)="applyAdvanced()">
+          {{ 'pages.search.bluesky.applyAndSearch' | transloco }}
+        </button>
+        @if (hasFilters()) {
+          <button class="btn btn-outline btn-sm" (click)="reset()">
+            {{ 'pages.search.bluesky.clear' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (advancedOpen() && target() === 'accounts') {
+    <div class="advanced-panel">
+      <p
+        class="muted small"
+        [innerHTML]="'pages.search.bluesky.advancedAccountsDescription' | transloco"
+      ></p>
+      <!-- The precise counterpart to the clickable follower/post buckets below,
+           mirroring the Mastodon page's numeric bounds grid. -->
+      <div class="num-facet-grid">
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.followers' | transloco }}</span>
+          <span class="num-range">
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.min' | transloco"
+              [ngModel]="accountBound('followers', 'min')"
+              (ngModelChange)="setAccountBound('followers', 'min', $event)"
+              [attr.aria-label]="'pages.search.bluesky.minimumFollowers' | transloco"
+            />
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.max' | transloco"
+              [ngModel]="accountBound('followers', 'max')"
+              (ngModelChange)="setAccountBound('followers', 'max', $event)"
+              [attr.aria-label]="'pages.search.bluesky.maximumFollowers' | transloco"
+            />
+          </span>
+        </label>
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.following' | transloco }}</span>
+          <span class="num-range">
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.min' | transloco"
+              [ngModel]="accountBound('following', 'min')"
+              (ngModelChange)="setAccountBound('following', 'min', $event)"
+              [attr.aria-label]="'pages.search.bluesky.minimumFollowing' | transloco"
+            />
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.max' | transloco"
+              [ngModel]="accountBound('following', 'max')"
+              (ngModelChange)="setAccountBound('following', 'max', $event)"
+              [attr.aria-label]="'pages.search.bluesky.maximumFollowing' | transloco"
+            />
+          </span>
+        </label>
+        <label>
+          <span class="muted small">{{ 'pages.search.bluesky.posts' | transloco }}</span>
+          <span class="num-range">
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.min' | transloco"
+              [ngModel]="accountBound('posts', 'min')"
+              (ngModelChange)="setAccountBound('posts', 'min', $event)"
+              [attr.aria-label]="
+                'pages.search.bluesky.minimumPosts' | transloco: { postType: words().posts }
+              "
+            />
+            <input
+              type="number"
+              min="0"
+              [placeholder]="'pages.search.bluesky.max' | transloco"
+              [ngModel]="accountBound('posts', 'max')"
+              (ngModelChange)="setAccountBound('posts', 'max', $event)"
+              [attr.aria-label]="
+                'pages.search.bluesky.maximumPosts' | transloco: { postType: words().posts }
+              "
+            />
+          </span>
+        </label>
+      </div>
+    </div>
+  }
+
+  <!-- Active-filter chips, the same shape as the Mastodon side's. Everything a
+       Bluesky search sends is server-side, so they are all `chip-server`. -->
+  @if (ran() && activeFilters().length) {
+    <div class="chips">
+      @for (filter of activeFilters(); track filter) {
+        <span
+          class="chip chip-server"
+          [attr.title]="'pages.search.bluesky.sentToBluesky' | transloco"
+        >
+          {{ filter }}
+        </span>
+      }
+    </div>
+  }
+
+  <!-- Refinement runs on already-loaded results — no API calls — exactly as on
+       the Mastodon side, because it is literally the same functions. -->
+  @if (ran() && !empty()) {
+    <div class="refine-bar">
+      <input
+        type="search"
+        class="refine-filter"
+        [ngModel]="loadedFilter()"
+        (ngModelChange)="loadedFilter.set($event)"
+        [placeholder]="
+          (target() === 'accounts'
+            ? 'pages.search.bluesky.filterThesePeople'
+            : 'pages.search.bluesky.filterTheseResults'
+          ) | transloco
+        "
+        [attr.aria-label]="'pages.search.bluesky.filterLoadedResults' | transloco"
+      />
+      <!-- One label per branch rather than one label around the branch: a
+           `<label>` whose only control sits inside an `@if` reads as an empty
+           label to the linter, and to a screen reader in the branch that is not
+           taken. -->
+      @if (target() === 'accounts') {
+        <label class="sort-by">
+          <span class="muted small">{{ 'pages.search.bluesky.sort' | transloco }}</span>
+          <select
+            [ngModel]="accountSort()"
+            (ngModelChange)="accountSort.set($event)"
+            [attr.aria-label]="'pages.search.bluesky.sortPeople' | transloco"
+          >
+            @for (s of accountSorts; track s.value) {
+              <option [value]="s.value">{{ s.label | transloco }}</option>
+            }
+          </select>
+        </label>
+      } @else {
+        <div
+          class="group-by"
+          role="group"
+          [attr.aria-label]="'pages.search.bluesky.groupBy' | transloco"
+        >
+          <span class="muted small">{{ 'pages.search.bluesky.groupBy' | transloco }}</span>
+          <div class="seg">
+            <button [class.active]="grouping() === 'none'" (click)="grouping.set('none')">
+              {{ 'pages.search.bluesky.none' | transloco }}
+            </button>
+            <button [class.active]="grouping() === 'author'" (click)="grouping.set('author')">
+              {{ 'pages.search.bluesky.author' | transloco }}
+            </button>
+            <button [class.active]="grouping() === 'date'" (click)="grouping.set('date')">
+              {{ 'pages.search.bluesky.date' | transloco }}
+            </button>
+          </div>
+        </div>
+        <label class="sort-by">
+          <span class="muted small">{{ 'pages.search.bluesky.sort' | transloco }}</span>
+          <select
+            [ngModel]="statusSort()"
+            (ngModelChange)="statusSort.set($event)"
+            [attr.aria-label]="
+              'pages.search.bluesky.sortPosts' | transloco: { postType: words().posts }
+            "
+          >
+            @for (s of statusSorts; track s.value) {
+              <option [value]="s.value">{{ s.label | transloco }}</option>
+            }
+          </select>
+        </label>
+      }
+    </div>
+
+    @if (target() === 'statuses') {
+      <!-- Checkbox facets with counts, matching the Mastodon panel. These used
+           to be chip-buttons, which made the same idea look like a different
+           feature depending on which network you were on. -->
+      <details class="refine-facets" [open]="refineOpen()">
+        <summary (click)="$event.preventDefault(); refineOpen.set(!refineOpen())">
+          {{ 'pages.search.bluesky.refineLoadedResults' | transloco }}
+          <span class="muted small">
+            {{
+              'pages.search.bluesky.basedOnLoadedPosts'
+                | transloco: { count: statuses().length, postType: words().posts }
+            }}
+          </span>
+        </summary>
+        @for (facet of facets(); track facet.kind) {
+          <div class="facet">
+            <div class="facet-label muted small">{{ facet.labelKey | transloco }}</div>
+            @for (v of facet.values.slice(0, 5); track v.value) {
+              <label class="facet-value">
+                <input
+                  type="checkbox"
+                  [checked]="isFacetSelected(facet.kind, v.value)"
+                  (change)="toggleFacet(facet.kind, v.value)"
+                />
+                <span>{{ v.labelKey ? (v.labelKey | transloco) : v.text }}</span>
+                <span class="muted facet-count">{{ v.count }}</span>
+              </label>
+            }
+          </div>
+        }
+
+        <!-- Flood control. A handful of accounts posting the same thing
+             repeatedly can be the whole result set, and Bluesky has no
+             negative `from:` operator any more than Mastodon does — so this is
+             the only place to undo it. -->
+        @if (authorFacet(); as authors) {
+          <div class="facet flood-control">
+            <div class="facet-label muted small">
+              {{ 'pages.search.bluesky.excludeAuthor' | transloco }}
+            </div>
+            @for (a of authors.values.slice(0, 8); track a.value) {
+              <div class="exclude-row" [class.excluded]="isAuthorExcluded(a.value)">
+                <label class="facet-value">
+                  <input
+                    type="checkbox"
+                    [checked]="isAuthorExcluded(a.value)"
+                    (change)="toggleExcludedAuthor(a.value)"
+                  />
+                  <span>{{ a.labelKey ? (a.labelKey | transloco) : a.text }}</span>
+                  <span class="muted facet-count">{{ a.count }}</span>
+                </label>
+                <!-- Escalation: excluding is scoped to this query, muting is
+                     forever and everywhere. -->
+                @if (isAuthorMuted(a.value)) {
+                  <span class="muted small muted-flag">
+                    {{ 'pages.search.bluesky.muted' | transloco }}
+                  </span>
+                } @else {
+                  <button
+                    type="button"
+                    class="link-btn"
+                    (click)="muteAuthorEverywhere(a.value)"
+                    [attr.title]="'pages.search.bluesky.muteEverywhereTitle' | transloco"
+                  >
+                    {{ 'pages.search.bluesky.muteEverywhere' | transloco }}
+                  </button>
+                }
+              </div>
+            }
+            @if (excludedAuthors().size) {
+              <button class="btn btn-outline btn-sm" (click)="clearExcludedAuthors()">
+                {{ 'pages.search.bluesky.showExcludedAuthors' | transloco }}
+              </button>
+            }
+          </div>
+        }
+
+        <div class="facet">
+          <label class="facet-value">
+            <input
+              type="checkbox"
+              [checked]="collapseRepeats()"
+              (change)="collapseRepeats.set(!collapseRepeats())"
+            />
+            <span>
+              {{ 'pages.search.bluesky.collapseRepeated' | transloco: { postType: words().posts } }}
+            </span>
+          </label>
+          <p class="muted small collapse-note">
+            {{ 'pages.search.bluesky.collapseNote' | transloco: { postType: words().posts } }}
+          </p>
+        </div>
+
+        <!-- Facets Bluesky can offer that Mastodon's search cannot: engagement
+             counts arrive on every result, embeds name what is linked, and the
+             record says how deep in a thread a post sits. Grouped under their
+             own heading so it stays clear which controls are network-specific
+             rather than silently interleaved with the shared ones. -->
+        @if (postFacets().length) {
+          <div class="facet-group-label muted small">
+            {{ 'pages.search.bluesky.blueskyOnly' | transloco }}
+          </div>
+          @for (facet of postFacets(); track facet.kind) {
+            <div class="facet">
+              <div class="facet-label muted small">{{ facet.labelKey | transloco }}</div>
+              @for (v of facet.values.slice(0, 5); track v.value) {
+                <label class="facet-value">
+                  <input
+                    type="checkbox"
+                    [checked]="isPostFacetSelected(facet.kind, v.value)"
+                    (change)="togglePostFacet(facet.kind, v.value)"
+                  />
+                  <span>{{ v.labelKey ? (v.labelKey | transloco) : v.text }}</span>
+                  <span class="muted facet-count">{{ v.count }}</span>
+                </label>
+              }
+              @if (facet.hint) {
+                <p class="muted small collapse-note">{{ facet.hint | transloco }}</p>
+              }
+            </div>
+          }
+        }
+
+        @if (hasRefinements()) {
+          <button class="btn btn-outline btn-sm" (click)="clearRefinements()">
+            {{ 'pages.search.bluesky.clearFilters' | transloco }}
+          </button>
+        }
+      </details>
+    }
+
+    @if (target() === 'accounts' && (accountFacets().length || canScanActivity())) {
+      <details class="refine-facets" [open]="refineOpen()">
+        <summary (click)="$event.preventDefault(); refineOpen.set(!refineOpen())">
+          {{ 'pages.search.bluesky.refineLoadedResults' | transloco }}
+          <span class="muted small">
+            {{
+              'pages.search.bluesky.basedOnLoadedAccounts' | transloco: { count: accounts().length }
+            }}
+          </span>
+        </summary>
+
+        @for (facet of accountFacets(); track facet.kind) {
+          <div class="facet">
+            <div class="facet-label muted small">{{ facet.labelKey | transloco }}</div>
+            @for (v of facet.showAll ? facet.values : facet.values.slice(0, 5); track v.value) {
+              <label class="facet-value">
+                <input
+                  type="checkbox"
+                  [checked]="isAccountFacetSelected(facet.kind, v.value)"
+                  (change)="toggleAccountFacet(facet.kind, v.value)"
+                />
+                <span>{{ v.labelKey ? (v.labelKey | transloco) : v.text }}</span>
+                <span class="muted facet-count">{{ v.count }}</span>
+              </label>
+            }
+            @if (facet.hint) {
+              <p class="muted small collapse-note">{{ facet.hint | transloco }}</p>
+            }
+          </div>
+        }
+
+        <!-- Bluesky profiles carry no last-post date, so the activity ladder has
+             to be bought: one request per account. Hence a button, with the cost
+             stated on it. -->
+        @if (canScanActivity()) {
+          <div class="facet">
+            <!-- No heading of its own once the ladder exists: after a partial
+                 scan this sits directly under the real "Last active" facet, and
+                 a second identical heading would read as a second facet. -->
+            @if (!hasActivityFacet()) {
+              <div class="facet-label muted small">
+                {{ 'pages.search.bluesky.lastActive' | transloco }}
+              </div>
+            }
+            <p
+              class="muted small collapse-note"
+              [innerHTML]="'pages.search.bluesky.activityNote' | transloco"
+            ></p>
+            <button class="btn btn-outline btn-sm" (click)="scanActivity()">
+              {{
+                'pages.search.bluesky.checkActivity'
+                  | transloco
+                    : {
+                        count: activityScanSize(),
+                        accountWord:
+                          activityScanSize() === 1
+                            ? ('pages.search.bluesky.account' | transloco)
+                            : ('pages.search.bluesky.accounts' | transloco),
+                      }
+              }}
+            </button>
+          </div>
+        }
+        @if (scanningActivity()) {
+          <p class="muted small collapse-note">
+            {{ 'pages.search.bluesky.checkingActivity' | transloco }}
+          </p>
+        }
+        @if (scanError(); as err) {
+          <p class="muted small collapse-note">{{ err }}</p>
+        }
+
+        @if (hasRefinements()) {
+          <button class="btn btn-outline btn-sm" (click)="clearRefinements()">
+            {{ 'pages.search.bluesky.clearFilters' | transloco }}
+          </button>
+        }
+      </details>
+    }
+
+    <div class="result-status muted small">
+      @if (target() === 'accounts') {
+        {{
+          'pages.search.bluesky.showingAccounts'
+            | transloco: { visible: visibleAccounts().length, loaded: accounts().length }
+        }}<br />
+      } @else {
+        {{
+          'pages.search.bluesky.showingPosts'
+            | transloco
+              : {
+                  visible: visible().length,
+                  loaded: statuses().length,
+                  postType: words().posts,
+                }
+        }}<br />
+        @if (excludedCount()) {
+          {{
+            'pages.search.bluesky.hiddenExcludedAccounts'
+              | transloco
+                : {
+                    hidden: excludedCount(),
+                    excluded: excludedAuthors().size,
+                    accountWord:
+                      excludedAuthors().size === 1
+                        ? ('pages.search.bluesky.account' | transloco)
+                        : ('pages.search.bluesky.accounts' | transloco),
+                  }
+          }}<br />
+        }
+        @if (repeatsHidden()) {
+          {{
+            'pages.search.bluesky.collapsedRepeats'
+              | transloco: { count: repeatsHidden(), postType: words().posts }
+          }}<br />
+        }
+        @if (hitsTotal(); as total) {
+          <!-- "may be rounded or incomplete" per the lexicon, and a real query
+               returned exactly 10000 — a ceiling, not a count. Hedged wording. -->
+          {{ 'pages.search.bluesky.aboutMatches' | transloco: { count: total } }}<br />
+        }
+      }
+      {{
+        'pages.search.bluesky.apiCallsUsed' | transloco: { used: callsUsed(), maximum: apiBudget() }
+      }}
+      <!-- The scan is not paging, so it is reported as its own spend rather than
+           counted against a budget measured in pages. -->
+      @if (scanCallsUsed()) {
+        <br />
+        {{ 'pages.search.bluesky.moreActivityCalls' | transloco: { count: scanCallsUsed() } }}
+      }
+    </div>
+  }
+</div>
+
+<div class="search-results-box">
+  @if (searching()) {
+    <p class="muted center">{{ 'pages.search.bluesky.searching' | transloco }}</p>
+  } @else if (error(); as message) {
+    <p class="search-error center" role="alert">{{ message }}</p>
+  } @else if (!ran()) {
+    <!-- Nothing searched yet: answer the question an empty box poses, which is
+         "what can I type here?" — the same thing the Mastodon side does with its
+         embedded syntax help. -->
+    <div class="search-idle">
+      <div class="page-head">{{ 'pages.search.bluesky.searchingTitle' | transloco }}</div>
+      @if (target() === 'accounts') {
+        <p
+          class="muted small"
+          [innerHTML]="'pages.search.bluesky.accountSearchIntro' | transloco"
+        ></p>
+      } @else {
+        <p class="muted small" [innerHTML]="'pages.search.bluesky.postSearchIntro' | transloco"></p>
+      }
+    </div>
+  } @else if (empty()) {
+    <p class="muted center">
+      {{
+        (target() === 'accounts'
+          ? 'pages.search.bluesky.noAccountsMatched'
+          : 'pages.search.bluesky.noPostsMatched'
+        ) | transloco: { postType: words().posts }
+      }}
+    </p>
+  } @else if (target() === 'accounts') {
+    <div class="page-head">{{ 'pages.search.bluesky.people' | transloco }}</div>
+
+    @if (followUnavailable()) {
+      <!-- No session and no local store to write to: the server sends no viewer
+           block, so follow state is genuinely unknown rather than "not
+           following". Say so instead of showing a Follow button that might
+           duplicate an existing follow. -->
+      <p class="muted small bsky-anon-note">
+        {{ 'pages.search.bluesky.followUnavailable' | transloco }}
+      </p>
+    } @else if (!session.linked()) {
+      <!-- Anonymous, though: following works and is exact. It is stored in this
+           browser and feeds the anonymous Home timeline — no account required. -->
+      <p class="muted small bsky-anon-note">
+        {{ 'pages.search.bluesky.anonymousFollowing' | transloco }}
+      </p>
+    }
+
+    @for (result of visibleAccounts(); track result.account.id) {
+      <app-account-result-card
+        [item]="asItem(result)"
+        [relationship]="relationshipFor(result)"
+        [profileLink]="profileLink(result.account)"
+        [followBusy]="isFollowBusy(result.account)"
+        [anonymous]="followUnavailable()"
+        (follow)="toggleFollow($event, false)"
+        (unfollow)="toggleFollow($event, true)"
+      />
+    }
+    @if (!visibleAccounts().length) {
+      <p class="muted center">{{ 'pages.search.bluesky.noLoadedPeople' | transloco }}</p>
+    }
+
+    <div class="load-more-row">
+      @if (canLoadMore()) {
+        <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+          {{
+            (loadingMore() ? 'pages.search.bluesky.loading' : 'pages.search.bluesky.loadMore')
+              | transloco
+          }}
+        </button>
+      } @else if (exhausted()) {
+        <p class="muted small center">
+          {{
+            'pages.search.bluesky.loadedAccounts'
+              | transloco: { count: accounts().length, calls: callsUsed() }
+          }}
+        </p>
+      }
+    </div>
+  } @else {
+    <div class="page-head">{{ words().Posts }}</div>
+    @for (group of groups(); track group.key) {
+      @if (group.label) {
+        <div class="group-head">
+          {{ group.labelIsKey ? (group.label | transloco) : group.label }}
+        </div>
+      }
+      @for (s of group.statuses; track s.id) {
+        <app-status-card [status]="s" [showSource]="true" />
+        <!-- Repeats this row stands in for. The count is the point:
+             "+36 near-identical" is the evidence of flooding. -->
+        @if (duplicatesOf(s.id); as dupes) {
+          @if (dupes.length) {
+            <div class="repeat-note muted small">
+              <span>
+                {{
+                  'pages.search.bluesky.repeatNote'
+                    | transloco: { count: dupes.length, postType: words().posts }
+                }}
+              </span>
+              <button type="button" class="link-btn" (click)="toggleRepeat(s.id)">
+                {{
+                  (isRepeatExpanded(s.id)
+                    ? 'pages.search.bluesky.hide'
+                    : 'pages.search.bluesky.show'
+                  ) | transloco
+                }}
+              </button>
+            </div>
+            @if (isRepeatExpanded(s.id)) {
+              <div class="repeat-list">
+                @for (d of dupes; track d.id) {
+                  <app-status-card [status]="d" [showSource]="true" />
+                }
+              </div>
+            }
+          }
+        }
+      }
+    }
+    @if (!visible().length) {
+      <p class="muted center">
+        {{ 'pages.search.bluesky.noLoadedPosts' | transloco: { postType: words().posts } }}
+      </p>
+    }
+
+    <div class="load-more-row">
+      @if (canLoadMore()) {
+        <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+          {{
+            (loadingMore() ? 'pages.search.bluesky.loading' : 'pages.search.bluesky.loadMore')
+              | transloco
+          }}
+        </button>
+      } @else if (exhausted()) {
+        <p class="muted small center">
+          {{
+            'pages.search.bluesky.loadedPosts'
+              | transloco
+                : {
+                    count: statuses().length,
+                    postType: words().posts,
+                    calls: callsUsed(),
+                  }
+          }}
+        </p>
+      } @else {
+        <p class="muted small center">
+          {{ 'pages.search.bluesky.stoppedAfter' | transloco: { calls: callsUsed() } }}
+        </p>
+      }
+    </div>
+  }
+</div>

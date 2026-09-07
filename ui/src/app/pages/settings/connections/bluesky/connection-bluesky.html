@@ -1,0 +1,83 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.bluesky.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.bluesky.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+<!-- Worth saying out loud: this is the one connector that works without a
+     Mastodon account at all, and anonymous is the mode people try first. -->
+@if (capabilities.active) {
+  <p class="muted small">
+    {{ 'settings.connections.bluesky.anonymousNote' | transloco }}
+  </p>
+}
+
+@if (bsky.session(); as session) {
+  <p><app-storage-badge [where]="'local'" /></p>
+  <div class="bsky-linked">
+    <img class="bsky-avatar" [src]="session.avatar || ''" alt="" decoding="async" />
+    <span class="names">
+      <span class="name">{{ session.displayName || session.handle }}</span>
+      <span class="muted small">&#64;{{ session.handle }}</span>
+    </span>
+    <button class="btn btn-outline btn-sm" (click)="unlinkBluesky()">
+      {{ 'settings.connections.bluesky.unlink' | transloco }}
+    </button>
+  </div>
+  <p class="muted small">
+    {{ 'settings.connections.bluesky.unlinkNote' | transloco }}
+  </p>
+  @if (expiryLabel(bsky.expiresAt()); as expiry) {
+    <p class="muted small">
+      {{ 'settings.connections.bluesky.expiresOn' | transloco: { date: expiry } }}
+    </p>
+  }
+} @else {
+  <p class="muted">
+    {{ 'settings.connections.bluesky.linkHint.a' | transloco }}
+    <strong>{{ 'settings.connections.bluesky.linkHint.appPassword' | transloco }}</strong>
+    {{ 'settings.connections.bluesky.linkHint.b' | transloco }}
+    <em>{{ 'settings.connections.bluesky.linkHint.allowDms' | transloco }}</em>
+    {{ 'settings.connections.bluesky.linkHint.c' | transloco }}
+  </p>
+  <form class="bsky-form" (ngSubmit)="linkBluesky()">
+    <input
+      type="text"
+      name="bskyHandle"
+      [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
+      [ngModel]="bskyHandle()"
+      (ngModelChange)="bskyHandle.set($event)"
+      [disabled]="bskyLinking()"
+    />
+    <input
+      type="password"
+      name="bskyPassword"
+      [placeholder]="'settings.connections.bluesky.passwordPlaceholder' | transloco"
+      autocomplete="off"
+      [ngModel]="bskyPassword()"
+      (ngModelChange)="bskyPassword.set($event)"
+      [disabled]="bskyLinking()"
+    />
+    <button
+      class="btn"
+      type="submit"
+      [disabled]="!bskyHandle().trim() || !bskyPassword() || bskyLinking()"
+    >
+      {{
+        (bskyLinking()
+          ? 'settings.connections.bluesky.linking'
+          : 'settings.connections.bluesky.link'
+        ) | transloco
+      }}
+    </button>
+  </form>
+  @if (bskyError(); as msg) {
+    <p class="feed-error">{{ msg }}</p>
+  }
+}

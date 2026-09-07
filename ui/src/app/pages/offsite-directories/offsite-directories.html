@@ -1,0 +1,97 @@
+@if (!embedded()) {
+  <h1 class="page-title">{{ 'pages.offsiteDirectories.title' | transloco }}</h1>
+}
+<p class="muted">
+  {{ 'pages.offsiteDirectories.intro.a' | transloco }}
+  <a routerLink="/search">{{ 'pages.offsiteDirectories.searchLink' | transloco }}</a>
+  {{ 'pages.offsiteDirectories.intro.b' | transloco }}
+  <a routerLink="/settings/import-export">{{
+    'pages.offsiteDirectories.importLink' | transloco
+  }}</a>
+  {{ 'pages.offsiteDirectories.intro.c' | transloco }}
+</p>
+
+<section class="card">
+  <h2 class="card-title">{{ 'pages.offsiteDirectories.browseTitle' | transloco }}</h2>
+  <div class="card-body">
+    <!-- Your own server's directory first: it's the one that needs no new tab and
+         whose accounts you can follow without leaving the page. -->
+    <a class="dir-link" routerLink="/directory">
+      <strong>{{ 'pages.offsiteDirectories.thisServer.name' | transloco }}</strong>
+      <span class="muted small">
+        {{ 'pages.offsiteDirectories.thisServer.desc' | transloco }}
+      </span>
+    </a>
+    <a class="dir-link" href="https://fedi.directory/" target="_blank" rel="noopener noreferrer">
+      <strong>{{ 'pages.offsiteDirectories.fediDirectory.name' | transloco }}</strong>
+      <span class="muted small">{{
+        'pages.offsiteDirectories.fediDirectory.desc' | transloco
+      }}</span>
+    </a>
+    <a
+      class="dir-link"
+      href="https://fediverse.info/explore/people"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <strong>{{ 'pages.offsiteDirectories.fediverseInfo.name' | transloco }}</strong>
+      <span class="muted small">{{
+        'pages.offsiteDirectories.fediverseInfo.desc' | transloco
+      }}</span>
+    </a>
+    <a
+      class="dir-link"
+      href="https://followgraph.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <strong>{{ 'pages.offsiteDirectories.followgraph.name' | transloco }}</strong>
+      <span class="muted small">
+        {{ 'pages.offsiteDirectories.followgraph.desc' | transloco }}
+      </span>
+    </a>
+    <a class="dir-link" href="https://fedidevs.com/" target="_blank" rel="noopener noreferrer">
+      <strong>{{ 'pages.offsiteDirectories.fediDevs.name' | transloco }}</strong>
+      <span class="muted small">
+        {{ 'pages.offsiteDirectories.fediDevs.desc' | transloco }}
+      </span>
+    </a>
+    <a
+      class="dir-link"
+      href="https://matthewdeanmartin.github.io/youtuberfinder/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <strong>{{ 'pages.offsiteDirectories.youtuberFinder.name' | transloco }}</strong>
+      <span class="muted small">{{
+        'pages.offsiteDirectories.youtuberFinder.desc' | transloco
+      }}</span>
+    </a>
+    <!-- Trunk last: it is the oldest of these and the most uneven, so it is the
+         one to try after the others have not turned anything up. -->
+    <a
+      class="dir-link"
+      href="https://communitywiki.org/trunk"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <strong>{{ 'pages.offsiteDirectories.trunk.name' | transloco }}</strong>
+      <span class="muted small">{{ 'pages.offsiteDirectories.trunk.desc' | transloco }}</span>
+    </a>
+    @if (embedded()) {
+      <a class="invite-people-link" routerLink="/invites">
+        <span aria-hidden="true">📣</span>
+        <span>
+          <strong>{{ 'pages.offsiteDirectories.cantFindTitle' | transloco }}</strong>
+          <span class="muted small">{{ 'pages.offsiteDirectories.cantFindDesc' | transloco }}</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+    }
+    <p class="muted small">
+      {{ 'pages.offsiteDirectories.alsoTry.a' | transloco }}
+      <a routerLink="/search">{{ 'pages.offsiteDirectories.searchLink' | transloco }}</a>
+      {{ 'pages.offsiteDirectories.alsoTry.b' | transloco }}
+    </p>
+  </div>
+</section>

@@ -1,0 +1,71 @@
+<div class="spage-head">
+  <h1>{{ 'settings.follows.title' | transloco }}</h1>
+  @if (auth.isAnonymous) {
+    <p>{{ 'settings.follows.intro.anonymous' | transloco }}</p>
+  } @else {
+    <p>{{ 'settings.follows.intro' | transloco }}</p>
+  }
+</div>
+
+@if (!auth.isAnonymous) {
+  <!-- This page is about incoming requests, but "follows" is where people look
+       for anything to do with who they follow — including the boost switches,
+       which live on the Bulk actions page. Point rather than duplicate. -->
+  <p class="follows-crosslink muted small">
+    {{ 'settings.follows.crosslink.before' | transloco }}
+    <a routerLink="/settings/bulk-actions">{{ 'settings.follows.crosslink.link' | transloco }}</a>
+    {{ 'settings.follows.crosslink.after' | transloco }}
+  </p>
+}
+
+@if (loading()) {
+  <p class="muted center">{{ 'common.loading' | transloco }}</p>
+} @else if (!requests().length) {
+  <p class="muted center">
+    {{
+      (auth.isAnonymous ? 'settings.follows.empty.anonymous' : 'settings.follows.empty') | transloco
+    }}
+  </p>
+} @else {
+  <ul class="account-list">
+    @for (a of requests(); track a.id) {
+      <li class="account-row">
+        <a class="account-link" [routerLink]="accountLink(a)">
+          <img
+            class="avatar"
+            [src]="a.avatar_static || a.avatar"
+            [alt]="a.username"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="names">
+            <span class="name">{{ a.display_name || a.username }}</span>
+            <span class="acct muted">&#64;{{ a.acct }}</span>
+          </span>
+        </a>
+        @if (auth.isAnonymous && followFor(a); as follow) {
+          <span class="req-actions">
+            <span class="muted small">{{ sourceStatus(follow) }}</span>
+            @if (anonymousFollows.hasBackoff(follow)) {
+              <button class="btn btn-outline btn-sm" (click)="retry(follow)">
+                {{ 'settings.follows.retry' | transloco }}
+              </button>
+            }
+            <button class="btn btn-outline btn-sm" (click)="unfollow(follow)">
+              {{ 'settings.follows.unfollow' | transloco }}
+            </button>
+          </span>
+        } @else {
+          <span class="req-actions">
+            <button class="btn btn-sm" (click)="authorize(a)">
+              {{ 'settings.follows.accept' | transloco }}
+            </button>
+            <button class="btn btn-outline btn-sm" (click)="reject(a)">
+              {{ 'settings.follows.reject' | transloco }}
+            </button>
+          </span>
+        }
+      </li>
+    }
+  </ul>
+}

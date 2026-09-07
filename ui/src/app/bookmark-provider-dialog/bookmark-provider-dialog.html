@@ -1,0 +1,59 @@
+<div class="bookmark-dialog-backdrop">
+  <section
+    class="bookmark-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bookmark-provider-title"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+  >
+    <div class="bookmark-dialog-head">
+      <h2 id="bookmark-provider-title">{{ 'bookmarkProvider.title' | transloco }}</h2>
+      <button
+        type="button"
+        class="icon-close"
+        [attr.aria-label]="'bookmarkProvider.close' | transloco"
+        (click)="closed.emit()"
+      >
+        ×
+      </button>
+    </div>
+
+    <button type="button" class="provider-choice" (click)="chosen.emit('mastodon')">
+      <span class="choice-icon" aria-hidden="true">🐘</span>
+      <span>
+        <strong>{{
+          anonymous() ? ('bookmarkProvider.browser' | transloco) : nativeLabel()
+        }}</strong>
+        <small>{{
+          nativeBookmarked()
+            ? ('bookmarkProvider.removeNative' | transloco)
+            : ('bookmarkProvider.saveNative' | transloco)
+        }}</small>
+      </span>
+    </button>
+
+    <div class="raindrop-group">
+      <div class="raindrop-label">
+        <span aria-hidden="true">💧</span>
+        <strong>{{ 'bookmarkProvider.raindrop' | transloco }}</strong>
+      </div>
+      <button type="button" class="provider-choice nested" (click)="chosen.emit('raindrop-post')">
+        <span
+          ><strong>{{ 'bookmarkProvider.savePost' | transloco }}</strong
+          ><small>{{ 'bookmarkProvider.publicUrl' | transloco }}</small></span
+        >
+      </button>
+      @if (externalUrl(); as url) {
+        <button type="button" class="provider-choice nested" (click)="chosen.emit('raindrop-link')">
+          <span
+            ><strong>{{ 'bookmarkProvider.unwrap' | transloco }}</strong
+            ><small>{{ hostname(url) }}</small></span
+          >
+        </button>
+      } @else {
+        <p class="no-link">{{ 'bookmarkProvider.noLink' | transloco }}</p>
+      }
+    </div>
+  </section>
+</div>

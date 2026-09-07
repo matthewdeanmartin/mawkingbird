@@ -1,0 +1,64 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 420px;
+  max-width: 100%;
+}
+
+h3 {
+  margin: 0 0 8px;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.field {
+  display: block;
+  margin: 14px 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.field select,
+.field textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 400;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.report-error {
+  color: var(--danger, #c0392b);
+  font-size: 13px;
+}
+
+.btn.warn {
+  background: #e0245e;
+}
+
+.btn.warn:hover {
+  background: #c01e50;
+}

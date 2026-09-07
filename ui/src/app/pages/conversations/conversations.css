@@ -1,0 +1,566 @@
+/* Full-width IM layout (the shell drops its rails on /conversations). */
+.chat-page {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 4px;
+  /* `dvh` tracks the viewport as mobile browsers retract the URL bar; `vh` is
+     the largest it ever gets, so a fixed subtraction from it permanently spends
+     space the page does not have. The vh line is the fallback for browsers
+     without dvh, and must come first. */
+  height: calc(100vh - 100px);
+  height: calc(100dvh - 100px);
+}
+
+/* Desktop shows both panes, so there is nothing to toggle. */
+.chat-list-toggle {
+  display: none;
+}
+
+.chat-list {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  overflow-y: auto;
+}
+
+.chat-list-head {
+  padding: 14px 16px;
+  font-size: 18px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.seg button {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seg button + button {
+  border-left: 1px solid var(--border);
+}
+
+.seg button.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  font-weight: 700;
+}
+
+.conv-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 12px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.conv-row:hover {
+  background: var(--border);
+}
+
+.chat-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+.conv-row.active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.conv-row.unread .conv-title {
+  font-weight: 700;
+}
+
+.conv-avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.conv-avatars img,
+.avatar-fallback {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conv-avatars img + img {
+  margin-left: -12px;
+  outline: 2px solid var(--col-bg);
+}
+
+.conv-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.conv-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.conv-names {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Badge lives on the title row so it never overlaps the preview text. */
+.conv-title .kind-badge {
+  margin-left: auto;
+}
+
+.unread-dot {
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.conv-preview {
+  font-size: 13px;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conv-preview :is(p) {
+  margin: 0;
+  display: inline;
+}
+
+/* Loud kind badges: nobody should mistake a public thread for a DM. */
+.kind-badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.kind-private {
+  border: 1px solid var(--border);
+  color: var(--muted, #777);
+}
+
+.kind-public {
+  background: #ffb300;
+  color: #402c00;
+}
+
+.kind-bsky {
+  background: #1185fe;
+  color: #fff;
+}
+
+.bsky-scope-hint {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ------------------------------------------------------------------ thread */
+
+.chat-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  overflow: hidden;
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.head-avatars {
+  display: flex;
+}
+
+.head-avatars img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.head-avatars a + a img {
+  margin-left: -14px;
+  outline: 2px solid var(--col-bg);
+}
+
+.head-identity {
+  min-width: 0;
+  flex: 1;
+}
+
+.head-title {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.head-accts {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.danger-menu {
+  position: relative;
+}
+
+.danger-menu summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.danger-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.danger-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  min-width: 200px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+}
+
+.menu-account {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.menu-account-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-account button {
+  border: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.menu-account button:hover {
+  background: var(--border);
+}
+
+/* The BIG HONKING public warning. */
+.public-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: repeating-linear-gradient(-45deg, #ffb300, #ffb300 14px, #ffc94d 14px, #ffc94d 28px);
+  color: #402c00;
+  font-size: 15px;
+  border-bottom: 2px solid #b37c00;
+}
+
+.public-banner-icon {
+  font-size: 26px;
+}
+
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 78%;
+}
+
+.bubble-row.mine {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.bubble-avatar img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bubble {
+  padding: 8px 12px;
+  border-radius: 16px 16px 16px 4px;
+  border: 1px solid var(--border);
+  background: var(--col-bg);
+  min-width: 0;
+}
+
+.bubble-mine {
+  border-radius: 16px 16px 4px 16px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--col-bg));
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+.bubble-author {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.bubble-content :is(p) {
+  margin: 0 0 4px;
+}
+
+.bubble-content :is(p):last-child {
+  margin-bottom: 0;
+}
+
+.bubble-media {
+  display: block;
+  max-width: 240px;
+  max-height: 200px;
+  border-radius: 8px;
+  margin-top: 6px;
+  object-fit: cover;
+}
+
+.bubble-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.bubble-actions {
+  display: inline-flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.bubble:hover .bubble-actions,
+.bubble-actions:focus-within {
+  opacity: 1;
+}
+
+.bubble-action {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 3px;
+  color: inherit;
+  text-decoration: none;
+  filter: grayscale(1);
+}
+
+.bubble-action.on,
+.bubble-action:hover {
+  filter: none;
+}
+
+.group-hint {
+  padding: 6px 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.chat-compose {
+  border-top: 1px solid var(--border);
+  padding: 8px 12px;
+}
+
+.compose-public {
+  border-top: 3px solid #ffb300;
+}
+
+.bsky-compose {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.bsky-compose textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+}
+
+.chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.small {
+  font-size: 12px;
+}
+
+@media (max-width: 800px) {
+  /* One column, and the transcript gets all of it. The list used to sit above
+     the thread at 40vh, which — stacked with the header, composer, footer and
+     bottom nav — left the conversation itself a minority of the screen. */
+  .chat-page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
+  }
+
+  .chat-list-toggle {
+    display: block;
+    justify-self: start;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--col-bg);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  /* Collapsed by default: the transcript is what you came for. */
+  .chat-list {
+    display: none;
+  }
+
+  .chat-page.list-open .chat-list {
+    display: block;
+    /* Nearly the whole screen while open, because picking from a list is the
+       only thing you are doing at that moment. */
+    max-height: calc(100dvh - 160px);
+  }
+
+  /* Only one pane at a time on mobile — a half-covered transcript behind an
+     open list reads as a rendering bug. */
+  .chat-page.list-open .chat-pane {
+    display: none;
+  }
+}
+
+/* --- Bot conversations (Eliza, OpenRouter) --- */
+
+.kind-bot {
+  background: #2a7d8c;
+  color: #fff;
+}
+
+/* The conversation picker and "new" button. Above the transcript because this
+   row changes which transcript you are looking at. */
+.bot-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bot-picker {
+  flex: 1;
+  min-width: 0;
+}
+
+.bot-picker select {
+  width: 100%;
+  max-width: 380px;
+}
+
+.bot-note {
+  margin: 0;
+  padding: 6px 12px;
+}
+
+.bot-compose {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.bot-compose textarea {
+  flex: 1;
+  resize: vertical;
+}
+
+.bubble-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* A partial answer is worth keeping and worth labelling. Quiet enough not to
+   shout, distinct enough that nobody mistakes it for the whole reply. */
+.bubble-incomplete {
+  margin-top: 4px;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+.chat-error {
+  margin: 8px 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgb(209 66 92 / 40%);
+  background: rgb(209 66 92 / 10%);
+}

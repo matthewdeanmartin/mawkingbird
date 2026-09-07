@@ -1,0 +1,108 @@
+@if (!bundle()) {
+  <p class="muted center small">
+    {{ 'tagBundle.notFound' | transloco }}
+    <a routerLink="/feeds">{{ 'tagBundle.backToFeeds' | transloco }}</a>
+  </p>
+} @else {
+  <div class="page-head">
+    <h1>{{ bundle()!.title }}</h1>
+    <p class="muted small">
+      {{ 'tagBundle.headerPrefix' | transloco }}
+      {{ 'tagBundle.tagCount' | transloco: { count: bundle()!.tags.length, max: maxTags } }}
+    </p>
+  </div>
+
+  <div class="bundle-tags">
+    @for (t of bundle()!.tags; track t) {
+      <span class="bundle-tag">
+        <a [routerLink]="['/tags', t]">#{{ t }}</a>
+        <button
+          type="button"
+          class="chip-x"
+          (click)="removeTag(t)"
+          [attr.aria-label]="'tagBundle.removeTag' | transloco: { tag: t }"
+        >
+          ×
+        </button>
+      </span>
+    } @empty {
+      <p class="muted small">{{ 'tagBundle.noTagsYet' | transloco }}</p>
+    }
+  </div>
+
+  <div class="bundle-add">
+    <input
+      type="text"
+      [ngModel]="newTag()"
+      (ngModelChange)="newTag.set($event)"
+      (keyup.enter)="addTag()"
+      [placeholder]="'tagBundle.addPlaceholder' | transloco"
+      [disabled]="store.isFull(bundle()!.id)"
+    />
+    <button
+      class="btn"
+      (click)="addTag()"
+      [disabled]="!newTag().trim() || store.isFull(bundle()!.id)"
+    >
+      {{ 'tagBundle.add' | transloco }}
+    </button>
+  </div>
+
+  @if (store.isFull(bundle()!.id)) {
+    <p class="muted small bundle-note">
+      {{ 'tagBundle.fullAt' | transloco: { max: maxTags } }}
+    </p>
+  }
+
+  @if (addError(); as message) {
+    <p class="list-error" role="alert">{{ message }}</p>
+  }
+
+  <div class="tabs">
+    <button type="button" class="tab" [class.active]="tab() === 'posts'" (click)="tab.set('posts')">
+      {{ 'tagBundle.tabPosts' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="tab"
+      [class.active]="tab() === 'members'"
+      (click)="tab.set('members')"
+    >
+      {{ 'tagBundle.tabPeople' | transloco }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p class="muted center small">{{ 'tagBundle.loading' | transloco }}</p>
+  } @else if (tab() === 'posts') {
+    @if (!statuses().length) {
+      <p class="muted center small">
+        @if (!bundle()!.tags.length) {
+          {{ 'tagBundle.addATag' | transloco }}
+        } @else {
+          {{ 'tagBundle.noRecentPosts' | transloco }}
+        }
+      </p>
+    } @else {
+      @for (s of statuses(); track s.id) {
+        <app-status-card [status]="s" />
+      }
+    }
+  } @else {
+    <p class="muted small bundle-note">
+      {{ 'tagBundle.membersNote' | transloco }}
+    </p>
+    @if (!members().length) {
+      <p class="muted center small">{{ 'tagBundle.nobodyYet' | transloco }}</p>
+    } @else {
+      @for (m of members(); track m.id) {
+        <a class="list-row" [routerLink]="['/accounts', m.id]">
+          <span>
+            {{ m.display_name || m.username }}
+            <span class="muted small">· &#64;{{ m.acct }}</span>
+          </span>
+        </a>
+      }
+    }
+  }
+}

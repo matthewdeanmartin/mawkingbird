@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "us-journalists",
+    "title": "US Journalists",
+    "blurb": "Reporting on technology, media, science, public policy, and accountability.",
+    "handles": ["Julia@journa.host", "taylorlorenz@mastodon.social", "jhpot@mastodon.social", "9brandon@mastodon.social", "jilleduffy@mastodon.social", "kimzetter@infosec.exchange", "mmasnick@mastodon.social", "dangillmor@mastodon.social", "jeffjarvis@mastodon.social", "cwarzel@mastodon.social", "robpegoraro@journa.host", "jwarminsky@journa.host"]
+  },
+  {
+    "slug": "retro-computing",
+    "title": "Retro Computing",
+    "blurb": "Vintage hardware, software, preservation, restoration, and computing history.",
+    "handles": ["retrocomputing@mastodon.social", "livingcomputers@mastodon.sdf.org", "oldvcr@oldbytes.space", "clifford@retro.social", "foone@digipres.club", "textfiles@mastodon.social", "museumofcomputing@mastodon.social", "computerhistory@mastodon.social", "retrorewind@retrorewind.social", "sdf@mastodon.sdf.org", "heliomass@cosocial.ca", "jjdavis@infosec.exchange", "RobeeShepherd@mastodon.art"]
+  },
+  {
+    "slug": "comics",
+    "title": "Comics",
+    "blurb": "Cartoonists, webcomics, independent comics, illustration, and comics journalism.",
+    "handles": ["neilhimself@mastodon.social", "tomgauld@mastodon.social", "sarahtaylorgibson@comics.town", "lukemckinney@comics.town", "fionamakes@comics.town", "boulet@mastodon.social", "webcomicname@mastodon.social", "ohjoysextoy@mastodon.art", "ironspike@mastodon.social", "comicsbeat@mastodon.social", "cabtastic@mastodon.art", "beyondtheend@comics.town", "noo@comics.town", "art_of_goulwenr@mastodon.art", "otterlove@mastodon.art", "Azurewhitewind@comics.town", "inarticulatequilter@mastodon.art", "tanzanitesky@mastodon.art"]
+  },
+  {
+    "slug": "visual-arts",
+    "title": "Visual Arts",
+    "blurb": "Digital painting, illustration, photography, comics, and creative-community discovery.",
+    "handles": ["curator@mastodon.art", "dansup@mastodon.social", "mastoart@mastodon.art", "stillill@mastodon.art", "blindscribe@mastodon.art", "davidrevoy@framapiaf.org", "peppercarrot@framapiaf.org", "seafrog@mastodon.art", "fionamakes@comics.town", "vernissage@mastodon.social", "Ailantd@mastodon.art", "Ulisu@mastodon.art", "humanum@mastodon.art"]
+  },
+  {
+    "slug": "infosec",
+    "title": "InfoSec",
+    "blurb": "Threat intelligence, malware, incident response, vulnerabilities, and security journalism.",
+    "handles": ["kimzetter@infosec.exchange", "likethecoins@infosec.exchange", "JohnHultquist@infosec.exchange", "jags@infosec.exchange", "k8em0@infosec.exchange", "malwaretech@infosec.exchange", "hacks4pancakes@infosec.exchange", "SwiftOnSecurity@infosec.exchange", "briankrebs@infosec.exchange", "troyhunt@infosec.exchange", "CTI_FYI@infosec.exchange", "codinghorror@infosec.exchange", "patrickcmiller@infosec.exchange", "catsalad@infosec.exchange", "iagox86@infosec.exchange"]
+  },
+  {
+    "slug": "sci-fi",
+    "title": "Sci-Fi",
+    "blurb": "Science-fiction and fantasy authors, editors, magazines, criticism, and very short fiction.",
+    "handles": ["microsff@mastodon.social", "scalzi@mastodon.social", "charliejane@wandering.shop", "cstross@wandering.shop", "neilhimself@mastodon.social", "marthawells@wandering.shop", "maryrobinette@wandering.shop", "annaleen@wandering.shop", "clarkesworld@mastodon.social", "locusmag@mastodon.social", "GavinChait@wandering.shop", "rubyjones@wandering.shop", "Rhube@wandering.shop", "jwilker@wandering.shop", "ScottEdelman@wandering.shop"]
+  },
+  {
+    "slug": "canadian-politics",
+    "title": "Canadian Politics",
+    "blurb": "Canadian politics, elections, constitutional issues, journalism, defence, and public policy.",
+    "handles": ["EmmettMacfarlane@mastodon.social", "smaideman@mastodon.social", "jahfer@mastodon.social", "TaylorOwen@mastodon.social", "DavidAkin@mastodon.social", "acoyne@mastodon.social", "punditsguide@mastodon.social", "susan_delacourt@mastodon.social", "ottawacarl@mastodon.social", "pressprogress@mastodon.social", "timbray@cosocial.ca", "PapyrusBrigade@cosocial.ca", "RandomCanuck@cosocial.ca", "heliomass@cosocial.ca", "PaulBusch@cosocial.ca", "mpjgregoire@cosocial.ca"]
+  },
+  {
+    "slug": "books",
+    "title": "Books",
+    "blurb": "Authors, literary publications, libraries, book news, criticism, and publishing.",
+    "handles": ["neilhimself@mastodon.social", "scalzi@mastodon.social", "bookriot@mastodon.social", "lithub@mastodon.social", "publicbooks@mastodon.social", "internetarchive@mastodon.archive.org", "openlibrary@mastodon.archive.org", "torbooks@mastodon.social", "locusmag@mastodon.social", "clarkesworld@mastodon.social", "ElyseMGrasso@wandering.shop", "SusannaShore@wandering.shop", "johnpettigrew@wandering.shop", "KitAuthor@wandering.shop", "GavinChait@wandering.shop", "kmherkes@wandering.shop", "ScottEdelman@wandering.shop", "shanaqui@wandering.shop", "Rhube@wandering.shop", "jwilker@wandering.shop"]
+  },
+  {
+    "slug": "mastodon-activitypub",
+    "title": "Mastodon and ActivityPub",
+    "blurb": "Mastodon, ActivityPub, Fediverse engineering, infrastructure, governance, and help.",
+    "handles": ["Mastodon@mastodon.social", "Gargron@mastodon.social", "feditips@mstdn.social", "dansup@mastodon.social", "evan@cosocial.ca", "andypiper@macaw.social", "renchap@oisaur.com", "hrefna@hachyderm.io", "fedidb@mastodon.social", "activitypub@w3c.social"]
+  },
+  {
+    "slug": "war-in-ukraine",
+    "title": "War in Ukraine",
+    "blurb": "Journalism, verification, human rights, humanitarian reporting, and conflict analysis.",
+    "handles": ["bellingcat@mastodon.social", "kyivindependent@mastodon.social", "EuromaidanPress@mastodon.social", "meduza@mastodon.social", "occrp@mastodon.social", "hrw@mastodon.social", "amnesty@mastodon.social", "ICRC@mastodon.social", "criticalthreats@mastodon.social", "RFERL@mastodon.social", "nikolas@journa.host", "occrp@journa.host", "theintercept@journa.host"]
+  }
+]

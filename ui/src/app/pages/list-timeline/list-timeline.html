@@ -1,0 +1,151 @@
+<div class="page-head page-head-actions">
+  <span>{{ title() || ('listTimeline.fallbackTitle' | transloco) }}</span>
+  @if (!auth.isAnonymous) {
+    <button
+      class="btn btn-outline btn-sm"
+      [disabled]="converting()"
+      (click)="convertToCollection()"
+    >
+      {{
+        (converting() ? 'listTimeline.converting' : 'listTimeline.convertToCollection') | transloco
+      }}
+    </button>
+  }
+</div>
+@if (conversionMessage()) {
+  <p class="conversion-message muted" role="status">{{ conversionMessage() }}</p>
+}
+@if (warnings().length) {
+  <aside class="muted" role="status">
+    @for (warning of warnings(); track warning) {
+      <div>{{ warning }}</div>
+    }
+  </aside>
+}
+
+<div class="tabs">
+  <button class="tab" [class.active]="tab() === 'posts'" (click)="setTab('posts')">
+    {{ 'listTimeline.tabs.posts' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
+    {{ 'listTimeline.tabs.members' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
+    {{ 'listTimeline.tabs.analytics' | transloco }}
+  </button>
+</div>
+
+@if (tab() === 'analytics') {
+  <!-- Mounting the component starts collection, so it stays off the other tabs. -->
+  <app-feed-analytics [source]="feedSource()" />
+} @else if (tab() === 'posts') {
+  @if (loading()) {
+    <p class="muted center">{{ 'listTimeline.loading' | transloco }}</p>
+  } @else if (!displayedStatuses().length) {
+    <p class="muted center">{{ 'listTimeline.noStatuses' | transloco }}</p>
+  } @else {
+    @for (s of displayedStatuses(); track s.id) {
+      <app-status-card
+        [status]="s"
+        (changed)="onChanged(s, $event)"
+        (deleted)="onDeleted($event)"
+      />
+    }
+    @if (!exhausted()) {
+      <button class="btn btn-outline more" [disabled]="loadingMore()" (click)="loadMore()">
+        {{ (loadingMore() ? 'listTimeline.loading' : 'listTimeline.loadMore') | transloco }}
+      </button>
+    }
+  }
+} @else {
+  <div class="members-actions">
+    <button class="btn btn-outline" (click)="showBulk.set(true)">
+      {{ 'listTimeline.addPeopleByName' | transloco }}
+    </button>
+    <!-- Whole-list follow changes. Signed-in only: an Anonymous list is a local
+         set of follows, with no server relationships to change.
+
+         There is deliberately no "Follow everyone" button here. Adding someone
+         to a list already requires following them, so the only accounts it
+         could act on are ones you followed, added, and have since *deliberately
+         unfollowed* — re-following those in bulk is the opposite of what the
+         user asked for. Unfollowing everyone stays: a list can outlive the
+         interest that created it. -->
+    @if (!auth.isAnonymous) {
+      <button
+        class="btn btn-outline danger"
+        type="button"
+        [disabled]="bulkRunning() || !members().length"
+        (click)="askBulk('list-unfollow')"
+      >
+        {{ 'listTimeline.unfollowEveryone' | transloco }}
+      </button>
+    }
+  </div>
+  <app-bulk-progress />
+  @if (memberError(); as message) {
+    <p class="member-error" role="alert">{{ message }}</p>
+  }
+  @if (membersLoading()) {
+    <p class="muted center">{{ 'listTimeline.loading' | transloco }}</p>
+  } @else if (!members().length) {
+    <p class="muted center">
+      {{ 'listTimeline.noMembers' | transloco }}
+    </p>
+  } @else {
+    @for (a of members(); track a.id) {
+      <div class="member-row">
+        <a class="member-link" [routerLink]="memberLink(a)">
+          <img
+            class="avatar"
+            [src]="a.avatar_static || a.avatar"
+            [alt]="a.username"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="names">
+            <span class="name">{{ a.display_name || a.username }}</span>
+            <span class="acct muted">&#64;{{ a.acct }}</span>
+          </span>
+        </a>
+        <button
+          class="del"
+          [title]="'listTimeline.removeFromList' | transloco"
+          (click)="memberToRemove.set(a)"
+          [attr.aria-label]="'listTimeline.removeFromList' | transloco"
+        >
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+    }
+  }
+}
+
+@if (showBulk()) {
+  <app-bulk-add-dialog
+    [targetId]="listId()"
+    targetKind="list"
+    [targetName]="title()"
+    (added)="onBulkAdded()"
+    (closed)="showBulk.set(false)"
+  />
+}
+@if (memberToRemove(); as a) {
+  <app-confirm-dialog
+    [title]="'listTimeline.removeFromListConfirmTitle' | transloco"
+    [message]="
+      'listTimeline.removeFromListConfirmMessage' | transloco: { acct: a.acct, title: title() }
+    "
+    [confirmLabel]="'listTimeline.remove' | transloco"
+    (confirmed)="removeMember(a)"
+    (cancelled)="memberToRemove.set(null)"
+  />
+}
+@if (pendingBulk(); as action) {
+  <app-bulk-actions-dialog
+    [action]="action"
+    [target]="bulkTarget()"
+    (confirmed)="confirmBulk()"
+    (cancelled)="cancelBulk()"
+  />
+}

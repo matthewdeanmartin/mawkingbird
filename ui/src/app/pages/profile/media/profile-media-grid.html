@@ -1,0 +1,69 @@
+@if (error()) {
+  <p class="muted center media-note">{{ error() }}</p>
+}
+
+@if (loading() && !visible().length) {
+  <p class="muted center">{{ 'pages.profile.media.loadingPictures' | transloco }}</p>
+} @else if (!visible().length) {
+  <p class="muted center media-empty">
+    @if (error()) {
+      {{ 'pages.profile.media.nothingToShow' | transloco }}
+    } @else {
+      {{ 'pages.profile.media.noPicturesYet' | transloco }}
+    }
+  </p>
+} @else {
+  <div class="media-grid" role="list">
+    @for (item of visible(); track item.key) {
+      <button
+        type="button"
+        class="media-tile"
+        role="listitem"
+        [class.blurred]="blurred(item)"
+        [attr.aria-label]="
+          blurred(item)
+            ? ('pages.profile.media.sensitiveImageReveal' | transloco)
+            : item.description || ('pages.profile.media.openPicture' | transloco)
+        "
+        (click)="blurred(item) ? reveal($event, item) : open(item)"
+      >
+        <img
+          class="media-thumb"
+          [src]="item.previewUrl"
+          [alt]="item.description || ''"
+          loading="lazy"
+          decoding="async"
+          (load)="onLoaded($event, item)"
+          (error)="onError(item)"
+        />
+        @if (item.type !== 'image') {
+          <span class="media-badge play" aria-hidden="true">▶</span>
+        }
+        @if (blurred(item)) {
+          <span class="media-sensitive">{{
+            'pages.profile.media.sensitiveBadge' | transloco
+          }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- Explicitly a button, never scroll-triggered: the reader decides each time
+       whether to keep going further back through someone's pictures. -->
+  @if (!exhausted()) {
+    <div class="media-more">
+      <button
+        type="button"
+        class="btn btn-outline"
+        [disabled]="loadingMore()"
+        (click)="more.emit()"
+      >
+        {{
+          loadingMore()
+            ? ('pages.profile.media.loading' | transloco)
+            : ('pages.profile.media.more' | transloco)
+        }}
+      </button>
+    </div>
+  }
+}

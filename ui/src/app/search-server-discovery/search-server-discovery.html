@@ -1,0 +1,107 @@
+<div class="sdiscovery" aria-live="polite">
+  @switch (state()) {
+    @case ('idle') {
+      <button class="btn btn-outline" type="button" (click)="startSearch()">
+        {{ startText() }}
+      </button>
+      <p class="muted small sd-note">
+        {{ 'searchServerDiscovery.idle.note' | transloco }}
+      </p>
+    }
+    @case ('searching') {
+      <div class="sd-searching">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>
+          {{ 'searchServerDiscovery.searching.label' | transloco }}
+          <span class="muted small">{{
+            'searchServerDiscovery.searching.tried' | transloco: { count: tried() }
+          }}</span>
+        </span>
+        <button class="text-button" type="button" (click)="cancel()">
+          {{ 'searchServerDiscovery.searching.cancel' | transloco }}
+        </button>
+      </div>
+      @if (directorySource() === 'bundled') {
+        <p class="muted small sd-note">
+          {{ 'searchServerDiscovery.searching.bundledNote' | transloco }}
+        </p>
+      }
+    }
+    @case ('found') {
+      @if (candidate(); as server) {
+        <div class="sd-candidate">
+          <strong>
+            {{
+              'searchServerDiscovery.candidate.allowsSearch' | transloco: { domain: server.domain }
+            }}
+          </strong>
+          <span class="muted small">
+            {{
+              'searchServerDiscovery.candidate.found'
+                | transloco
+                  : {
+                      accounts: server.accounts,
+                      statuses: server.statuses,
+                      posts: words().posts,
+                    }
+            }}
+          </span>
+          <span class="muted small">
+            @if (server.category) {
+              {{ server.category }}
+            }
+            @if (sizeLabel(server.users)) {
+              · {{ sizeLabel(server.users) }}
+            }
+          </span>
+          @if (server.description) {
+            <p>{{ server.description }}</p>
+          }
+          <div class="sd-actions">
+            <button class="btn" type="button" (click)="useCandidate()">
+              {{ 'searchServerDiscovery.candidate.use' | transloco }}
+            </button>
+            <button class="btn btn-outline" type="button" (click)="startSearch(false)">
+              {{ 'searchServerDiscovery.candidate.keepLooking' | transloco }}
+            </button>
+          </div>
+        </div>
+      }
+    }
+    @case ('exhausted') {
+      <p class="muted small">
+        {{ 'searchServerDiscovery.exhausted.note' | transloco }}
+      </p>
+      <button class="btn btn-outline" type="button" (click)="startSearch()">
+        {{ 'searchServerDiscovery.exhausted.retry' | transloco }}
+      </button>
+    }
+  }
+
+  <!-- The hunt shows its work. Fifty silent probes look broken; a list of hosts and
+       why each was skipped looks like progress, and it is. -->
+  @if (attempts().length) {
+    <ul class="sd-attempts">
+      @for (attempt of attempts(); track attempt.domain) {
+        <li>
+          <code>{{ attempt.domain }}</code>
+          <span class="muted small">{{ attempt.reason }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (rejectCount()) {
+    <p class="muted small sd-rejects">
+      {{
+        (rejectCount() === 1
+          ? 'searchServerDiscovery.rejects.skipping.one'
+          : 'searchServerDiscovery.rejects.skipping.other'
+        ) | transloco: { count: rejectCount() }
+      }}
+      <button class="text-button" type="button" (click)="forgetRejects()">
+        {{ 'searchServerDiscovery.rejects.forget' | transloco }}
+      </button>
+    </p>
+  }
+</div>

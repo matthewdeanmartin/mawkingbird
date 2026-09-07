@@ -1,0 +1,105 @@
+<section [attr.lang]="copyLanguage">
+  @if (kit) {
+    <div class="page-head">
+      {{ text().title }}
+      @if (kit.lang) {
+        · {{ kit.lang }}
+      }
+    </div>
+
+    <section class="intro">
+      <div>
+        <h1>{{ 'starterCollection.heading' | packText: copyLanguage }}</h1>
+        <p class="muted">{{ text().blurb }}</p>
+      </div>
+      <button
+        class="btn"
+        [disabled]="importer.running() || completed() === accounts.length"
+        (click)="followAll()"
+      >
+        @if (importer.running()) {
+          {{
+            'starterCollection.followingProgress'
+              | packText: copyLanguage : { completed: completed(), total: accounts.length }
+          }}
+        } @else if (completed() === accounts.length) {
+          {{
+            (followed() === 1
+              ? 'starterCollection.followed.one'
+              : 'starterCollection.followed.other'
+            ) | packText: copyLanguage : { count: followed() }
+          }}
+        } @else {
+          {{ 'starterCollection.followAll' | packText: copyLanguage : { count: accounts.length } }}
+        }
+      </button>
+    </section>
+
+    <div
+      class="members"
+      [attr.aria-label]="
+        'starterCollection.membersAria' | packText: copyLanguage : { title: text().title }
+      "
+    >
+      @for (item of accounts; track item.handle) {
+        <div class="member">
+          <button
+            type="button"
+            class="member-link"
+            [disabled]="opening() !== null"
+            (click)="openAccount(item)"
+          >
+            <strong>{{ item.name }}</strong>
+            <span class="muted">&#64;{{ item.handle }}</span>
+          </button>
+          @if (opening() === item.handle) {
+            <span class="muted small">{{
+              'starterCollection.opening' | packText: copyLanguage
+            }}</span>
+          } @else {
+            @switch (status(item.handle)) {
+              @case ('resolving') {
+                <span class="muted small">{{
+                  'starterCollection.lookingUp' | packText: copyLanguage
+                }}</span>
+              }
+              @case ('following') {
+                <span class="muted small">{{
+                  'starterCollection.followingRow' | packText: copyLanguage
+                }}</span>
+              }
+              @case ('followed') {
+                <span class="success small">{{
+                  'starterCollection.followingDone' | packText: copyLanguage
+                }}</span>
+              }
+              @case ('not_found') {
+                <span class="muted small">{{
+                  'starterCollection.notFound' | packText: copyLanguage
+                }}</span>
+              }
+              @case ('failed') {
+                <span class="muted small">{{
+                  'starterCollection.couldNotFollow' | packText: copyLanguage
+                }}</span>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <p class="muted small note">
+      {{ 'starterCollection.note' | packText: copyLanguage }}
+      <a routerLink="/find-friends">{{
+        'starterCollection.findFriends' | packText: copyLanguage
+      }}</a
+      >.
+    </p>
+  } @else {
+    <p>{{ 'starterCollection.unavailable' | packText: copyLanguage }}</p>
+    <a routerLink="/bundled-starter-kits">{{
+      'starterCollection.browse' | packText: copyLanguage
+    }}</a>
+  }
+</section>

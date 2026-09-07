@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.reader-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.reader-item {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  padding: 5px 7px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.reader-item:hover {
+  background: var(--hover);
+}
+
+.reader-size {
+  min-width: 36px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.reader-select {
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 4px 6px;
+  font-size: 13px;
+}

@@ -1,0 +1,109 @@
+/* The row and the star are siblings (see HeadlineRow.toggleStar), laid out on
+   one line here rather than nesting one button inside the other. */
+:host {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+:host(.expanded) {
+  border-bottom: none;
+}
+
+.row {
+  display: grid;
+  /* dot · title · source · time. The title is the only column that flexes, so
+     the metadata stays put down the list and the eye can scan one edge. */
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 7px 4px 7px 10px;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: var(--bg);
+}
+
+/* Unread is carried by weight as well as by the dot: colour alone would leave
+   the distinction invisible to anyone who cannot see the dot. */
+:host(.unread) .title {
+  font-weight: 700;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.dot.on {
+  background: var(--accent);
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source,
+.time {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* The source is the first thing to go when the row is tight — the title is what
+   the row is for, and the timestamp is shorter and more often useful. */
+.source {
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.time {
+  min-width: 4ch;
+  text-align: right;
+}
+
+.star {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.star:hover {
+  color: var(--accent);
+}
+
+.star.on {
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+@media (max-width: 620px) {
+  /* Drop the source rather than let it squeeze the title to nothing. */
+  .source {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+}

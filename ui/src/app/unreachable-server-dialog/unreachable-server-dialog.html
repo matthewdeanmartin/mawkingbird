@@ -1,0 +1,37 @@
+<div class="overlay" role="presentation" tabindex="-1">
+  <!--
+    No click-outside-to-dismiss and no Escape (`[dismissOnEscape]="false"`):
+    there is nothing behind this dialog to go back to. It appears precisely
+    because the app has no reachable server, so an accidental dismissal drops
+    the visitor onto the fail whale this exists to prevent. Leaving is still
+    possible, but has to be chosen.
+  -->
+  <div
+    class="dialog"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="unreachable-title"
+    appFocusTrap
+    [appFocusTrapCloseOnEscape]="false"
+  >
+    <h3 id="unreachable-title">
+      {{ 'unreachableServer.title' | transloco: { server: attemptedHost() } }}
+    </h3>
+    <p class="muted small">
+      {{ 'unreachableServer.explanation' | transloco }}
+    </p>
+
+    <app-server-discovery
+      [autoStart]="true"
+      [currentServer]="attemptedServer()"
+      [startLabel]="'unreachableServer.findAServerICanRead' | transloco"
+      (selected)="selected.emit($event)"
+    />
+
+    <div class="unreachable-actions">
+      <button class="text-button" type="button" (click)="cancelled.emit()">
+        {{ 'unreachableServer.skip' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

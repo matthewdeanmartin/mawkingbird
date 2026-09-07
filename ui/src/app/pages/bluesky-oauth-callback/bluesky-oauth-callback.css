@@ -1,0 +1,36 @@
+.oauth-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.oauth-card {
+  width: min(480px, 94vw);
+  padding: 32px;
+  text-align: center;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.oauth-badge {
+  font-size: 40px;
+}
+
+.oauth-error {
+  color: var(--col-danger, #d33);
+}
+
+.oauth-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  padding: 0 20px;
+  color: white;
+  background: var(--col-accent, #1d9bf0);
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}

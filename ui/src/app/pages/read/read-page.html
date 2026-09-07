@@ -1,0 +1,65 @@
+<div class="read-page" [attr.data-paper]="prefs.readerTheme()">
+  @if (loader.loading() && !chain().length) {
+    <p class="muted center">{{ 'reader.page.loading' | transloco }}</p>
+  } @else {
+    <div class="read-body" [class.with-library]="libraryOpen()">
+      <!-- The library is on the LEFT, matching /rss, where the list of things
+           to read is the left rail and what you are reading is the right pane.
+           Two reading surfaces in one app should not mirror each other. -->
+      @if (libraryOpen()) {
+        <app-library-panel [currentId]="displayedId()" (closed)="toggleLibrary()" />
+      }
+      <div class="read-document" [attr.aria-busy]="loader.loading()">
+        @if (loader.loading()) {
+          <p class="document-loading muted" role="status">
+            {{ 'reader.page.loading' | transloco }}
+          </p>
+        }
+        @if (chain().length) {
+          <app-reader-core
+            [chain]="chain()"
+            [routeId]="displayedId()"
+            layout="page"
+            (shareQuote)="shareSelection($event)"
+            [libraryOpen]="libraryOpen()"
+            (toggleLibrary)="toggleLibrary()"
+            (exit)="exit()"
+          />
+        } @else {
+          <!-- Never a bare dead end: a document that would not open still leaves the
+               thread view and, for a feed item, the list it came from. -->
+          <div class="read-empty">
+            <p class="muted">{{ loader.loadError() ?? ('reader.page.notFound' | transloco) }}</p>
+            <p>
+              <a
+                class="tool"
+                [routerLink]="['/statuses', currentId()]"
+                [queryParams]="{ reader: '0' }"
+              >
+                {{ 'reader.page.viewThread' | transloco }}
+              </a>
+              @if (loader.isRss()) {
+                <a
+                  class="tool"
+                  [routerLink]="['/rss']"
+                  [queryParams]="loader.rssFeedUrl() ? { feed: loader.rssFeedUrl() } : {}"
+                >
+                  {{ 'reader.page.backToRss' | transloco }}
+                </a>
+              }
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+@if (showShare() && loader.status(); as shared) {
+  <app-share-dialog
+    [status]="shared"
+    [quote]="shareQuote()"
+    (compose)="composeShare($event)"
+    (closed)="showShare.set(false)"
+  />
+}

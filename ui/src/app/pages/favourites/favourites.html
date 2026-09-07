@@ -1,0 +1,20 @@
+@if (loading()) {
+  <p class="muted center">{{ 'favourites.loading' | transloco }}</p>
+} @else if (error()) {
+  <p class="notice error" role="alert">{{ error() }}</p>
+} @else if (!statuses().length) {
+  <p class="muted center">{{ 'favourites.empty' | transloco }}</p>
+} @else {
+  @for (s of statuses(); track s.id; let i = $index) {
+    <app-status-card [status]="s" (changed)="onChanged(i, $event)" (deleted)="onDeleted($event)" />
+  }
+  @if (auth.isBlueskyPrimary && cursor()) {
+    <div class="center">
+      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+        {{
+          loadingMore() ? ('favourites.loading' | transloco) : ('favourites.loadMore' | transloco)
+        }}
+      </button>
+    </div>
+  }
+}

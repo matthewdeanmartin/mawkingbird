@@ -1,0 +1,281 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.doctor.back' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.doctor.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.doctor.intro.a' | transloco }}
+    <em>{{ 'settings.connections.doctor.intro.before' | transloco }}</em>
+    {{ 'settings.connections.doctor.intro.b' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.noCredentials' | transloco }}
+  </p>
+</div>
+
+<section class="doc-run">
+  <button type="button" class="btn" (click)="run()" [disabled]="doctor.running()">
+    {{
+      doctor.running()
+        ? ('settings.connections.doctor.checking' | transloco)
+        : hasRun()
+          ? ('settings.connections.doctor.checkAgain' | transloco)
+          : ('settings.connections.doctor.checkAll' | transloco)
+    }}
+  </button>
+  @if (hasRun() && !doctor.running()) {
+    <!-- Counted by usability, matching the rows. "Working" includes hosts
+         reached through a proxy, because they work. -->
+    <p class="muted small doc-summary">
+      {{ 'settings.connections.doctor.summary.working' | transloco: { count: workingCount() }
+      }}{{
+        needsSetupCount()
+          ? ', ' +
+            ('settings.connections.doctor.summary.needsSetup'
+              | transloco: { count: needsSetupCount() })
+          : ''
+      }}{{
+        blockedCount()
+          ? ', ' +
+            ('settings.connections.doctor.summary.blocked' | transloco: { count: blockedCount() })
+          : ''
+      }}.
+    </p>
+  }
+</section>
+
+@if (controlFailed()) {
+  <p class="doc-control-warning">
+    {{ 'settings.connections.doctor.controlFailed' | transloco }}
+  </p>
+}
+
+@for (group of groups(); track group.category) {
+  <section class="doc-group">
+    <h2 class="section-title">{{ group.label }}</h2>
+    <ul class="doc-rows">
+      @for (row of group.rows; track row.target.id) {
+        <!--
+          One colour per row, driven by `outcome` — "can I use this?" — rather
+          than by three sub-signals each colouring itself. A host that works
+          through a configured proxy used to render amber (CORS blocked) beside
+          green (proxy works), which scans as a problem when the answer is
+          simply yes.
+        -->
+        <li
+          class="doc-row"
+          [class.doc-row-bad]="row.outcome === 'unusable'"
+          [class.doc-row-warn]="row.outcome === 'needs-setup'"
+        >
+          <div class="doc-row-head">
+            <span class="doc-host">
+              <span class="doc-label">{{ row.target.label }}</span>
+              <span class="muted small doc-hostname">{{ row.target.host }}</span>
+            </span>
+            <span class="doc-verdict-wrap">
+              @if (row.timing) {
+                <span class="muted small doc-timing">{{ row.timing }}</span>
+              }
+              <span
+                class="doc-verdict"
+                [class.doc-ok]="row.outcome === 'usable'"
+                [class.doc-warn]="row.outcome === 'needs-setup'"
+                [class.doc-bad]="row.outcome === 'unusable'"
+              >
+                {{ row.outcomeLabel }}
+              </span>
+            </span>
+          </div>
+          <p class="muted small doc-matters">{{ row.target.matters }}</p>
+
+          <!--
+            Explanations, not verdicts. These only carry colour when they are
+            still an open problem: once the row is `usable`, how the bytes got
+            there is detail, and colouring it amber would contradict the green
+            headline directly above.
+          -->
+          @if (row.corsHint; as hint) {
+            <p
+              class="small doc-cors"
+              [class.doc-cors-blocked]="row.corsBlocked && row.outcome !== 'usable'"
+            >
+              {{ hint }}
+            </p>
+          }
+          @if (row.proxyHint; as hint) {
+            <p class="small doc-proxy" [class.doc-cors-blocked]="row.proxyRefused">{{ hint }}</p>
+          }
+          @if (row.timingHint; as hint) {
+            <p class="muted small doc-timing-hint">{{ hint }}</p>
+          }
+
+          @if (row.target.status; as status) {
+            <p class="muted small doc-status">
+              <a [href]="status.url" target="_blank" rel="noopener noreferrer">{{
+                status.label
+              }}</a>
+              @if (!status.official) {
+                <span class="doc-status-third">{{
+                  'settings.connections.doctor.thirdParty' | transloco
+                }}</span>
+              }
+            </p>
+          }
+
+          <!-- Gated on outcome, not the raw verdict: a host the browser cannot
+               reach directly but the proxy does reach is working, and asking the
+               user to go diagnose it in a tab would be busywork about a problem
+               they do not have. -->
+          @if (
+            row.outcome === 'unusable' && (row.verdict === 'failed' || row.verdict === 'timeout')
+          ) {
+            <div class="doc-followup">
+              <p class="small">
+                {{ 'settings.connections.doctor.followup.explain' | transloco }}
+              </p>
+              <button type="button" class="btn btn-outline btn-sm" (click)="openInTab(row)">
+                {{ 'settings.connections.doctor.followup.openLabel' | transloco }}
+                {{ row.target.host }}
+                {{ 'settings.connections.doctor.followup.openSuffix' | transloco }}
+              </button>
+              @if (row.target.status; as status) {
+                <p class="muted small doc-followup-status">
+                  {{ 'settings.connections.doctor.followup.statusIntro' | transloco }}
+                  <a [href]="status.url" target="_blank" rel="noopener noreferrer">{{
+                    status.label
+                  }}</a>
+                  @if (!status.official) {
+                    <span class="doc-status-third">{{
+                      'settings.connections.doctor.thirdParty' | transloco
+                    }}</span>
+                  }
+                </p>
+              } @else {
+                <p class="muted small doc-followup-status">
+                  {{ 'settings.connections.doctor.followup.noStatus' | transloco }}
+                </p>
+              }
+            </div>
+          }
+
+          @if (isExpanded(row.target.id)) {
+            <fieldset class="doc-report">
+              <legend class="small">
+                {{ 'settings.connections.doctor.report.legend' | transloco }}
+              </legend>
+              @for (option of reportedOptions; track option.value) {
+                <label class="doc-report-option">
+                  <input
+                    type="radio"
+                    [name]="'report-' + row.target.id"
+                    [value]="option.value"
+                    [checked]="row.reported === option.value"
+                    (change)="report(row.target.id, option.value)"
+                  />
+                  <span class="small">{{ option.label }}</span>
+                </label>
+              }
+            </fieldset>
+          }
+
+          @if (row.interpretation; as reading) {
+            <p class="doc-interpretation small">{{ reading }}</p>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+@if (hasRun() && corsBlockedRows().length) {
+  <section class="doc-group">
+    <h2 class="section-title">{{ 'settings.connections.doctor.corsSection.title' | transloco }}</h2>
+    <p class="muted small">
+      {{ 'settings.connections.doctor.corsSection.intro' | transloco }}
+    </p>
+    <ul class="doc-cors-list">
+      @for (row of corsBlockedRows(); track row.target.id) {
+        <li class="small">
+          <strong>{{ row.target.host }}</strong> — {{ row.target.label }}
+        </li>
+      }
+    </ul>
+    <p class="muted small">
+      {{ 'settings.connections.doctor.corsSection.badTrade' | transloco }}
+    </p>
+    <p class="muted small">
+      {{ 'settings.connections.doctor.corsSection.whitelist.a' | transloco }}
+      <em>{{ 'settings.connections.doctor.corsSection.hosts' | transloco }}</em>
+      {{ 'settings.connections.doctor.corsSection.whitelist.b' | transloco }}
+      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.connections.doctor.corsProxyLink' | transloco
+      }}</a>
+      {{ 'settings.connections.doctor.corsSection.whitelist.c' | transloco }}
+    </p>
+    @if (!hasProxy()) {
+      <p class="muted small">
+        {{ 'settings.connections.doctor.corsSection.noProxy.a' | transloco }}
+        <a [routerLink]="['/settings/connections/cors-proxy']">{{
+          'settings.connections.doctor.setOneUp' | transloco
+        }}</a>
+        {{ 'settings.connections.doctor.corsSection.noProxy.b' | transloco }}
+      </p>
+    }
+  </section>
+}
+
+@if (hasRun() && proxyRefusedRows().length) {
+  <section class="doc-group">
+    <h2 class="section-title">
+      {{ 'settings.connections.doctor.proxyRefused.title' | transloco }}
+    </h2>
+    <p class="muted small">
+      {{
+        'settings.connections.doctor.proxyRefused.intro'
+          | transloco
+            : { proxy: proxyLabel() ?? ('settings.connections.doctor.yourCorsProxy' | transloco) }
+      }}
+    </p>
+    <ul class="doc-cors-list">
+      @for (row of proxyRefusedRows(); track row.target.id) {
+        <li class="small">
+          <strong>{{ row.target.host }}</strong> — {{ row.target.label }}
+        </li>
+      }
+    </ul>
+    <p class="muted small">
+      {{ 'settings.connections.doctor.proxyRefused.fix.a' | transloco }}
+      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.connections.doctor.differentProxyLink' | transloco
+      }}</a>
+      {{ 'settings.connections.doctor.proxyRefused.fix.b' | transloco }}
+    </p>
+  </section>
+}
+
+<section class="doc-group">
+  <h2 class="section-title">{{ 'settings.connections.doctor.explain.title' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p1' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p2' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p3' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p4a' | transloco }}
+    <em>{{ 'settings.connections.doctor.first' | transloco }}</em>
+    {{ 'settings.connections.doctor.explain.p4b' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p5a' | transloco }}
+    <em>{{ 'settings.connections.doctor.here' | transloco }}</em
+    >{{ 'settings.connections.doctor.explain.p5b' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.doctor.explain.p6' | transloco }}
+  </p>
+</section>

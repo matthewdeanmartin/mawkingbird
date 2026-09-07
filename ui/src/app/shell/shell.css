@@ -1,0 +1,672 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--col-bg) 95%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  /* Mirror the body .layout grid exactly (same width, columns, gap, padding,
+     centering) so the header's three regions sit directly above the three body
+     columns: brand over the left rail, the tab nav over the center column, and
+     the more/account actions over the right rail. */
+  width: min(1460px, 100%);
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns:
+    var(--rail-left-width) minmax(0, var(--col-width))
+    var(--rail-right-width);
+  justify-content: center;
+  align-items: center;
+  gap: var(--layout-gap);
+}
+
+.brand-lockup {
+  grid-column: 1;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.brand:hover,
+.primary-nav a:hover,
+.account-pill:hover,
+.menu-panel a:hover {
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.primary-nav {
+  grid-column: 2;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.primary-nav a {
+  position: relative;
+  min-width: 60px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.primary-nav a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.primary-nav a::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  left: 14px;
+  height: 4px;
+  border-radius: 999px 999px 0 0;
+  background: transparent;
+}
+
+.primary-nav a.active {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.primary-nav a.active::after {
+  background: var(--accent);
+}
+
+.nav-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.primary-nav svg,
+.more-menu summary svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.header-actions {
+  grid-column: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.more-menu {
+  position: relative;
+}
+
+.more-menu summary {
+  height: 40px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.more-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.more-menu summary:hover,
+.more-menu[open] summary {
+  background: var(--hover);
+}
+
+.more-menu[open] summary::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.menu-panel {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 210px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--col-bg);
+  box-shadow: 0 8px 28px rgb(15 20 25 / 16%);
+}
+
+.menu-panel a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.menu-panel a:hover {
+  background: var(--hover);
+}
+
+.menu-panel a.admin-link {
+  color: #e0245e;
+}
+
+.menu-divider {
+  height: 1px;
+  margin: 6px 4px;
+  background: var(--border);
+}
+
+.account-menu {
+  position: relative;
+}
+
+.account-pill {
+  max-width: 190px;
+  height: 40px;
+  padding: 4px 10px 4px 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.account-pill::-webkit-details-marker {
+  display: none;
+}
+
+.account-pill:hover,
+.account-menu[open] .account-pill {
+  background: var(--hover);
+}
+
+.account-pill .caret {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.account-menu[open] .account-pill::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.account-panel {
+  width: 260px;
+}
+
+.menu-label {
+  margin: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted, #888);
+}
+
+.menu-current,
+.switch-row,
+.menu-action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-current:hover,
+.switch-row:hover,
+.menu-action:hover {
+  background: var(--hover);
+}
+
+.menu-current img,
+.switch-row img {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--hover);
+}
+
+.menu-current-name,
+.switch-name {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.menu-current-name small,
+.switch-name small {
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.menu-action.danger {
+  color: #e0245e;
+}
+
+.account-pill img {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--hover);
+}
+
+.account-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-button {
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--text);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.logout-button:hover {
+  border-color: #3f4549;
+  background: #3f4549;
+}
+
+.layout {
+  width: min(1460px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns:
+    var(--rail-left-width) minmax(0, var(--col-width))
+    var(--rail-right-width);
+  justify-content: center;
+  align-items: start;
+  gap: var(--layout-gap);
+  padding: 0 16px;
+}
+
+.rail {
+  position: sticky;
+  top: 76px;
+  padding-top: 12px;
+  max-height: calc(100vh - 76px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Profile hover cards in the left rail must paint over the center column. */
+.rail-left {
+  z-index: 2;
+}
+
+.rail-left:has(.hover-anchor:hover) {
+  overflow: visible;
+}
+
+.column {
+  min-height: calc(100vh - 65px);
+  border-right: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  background: var(--col-bg);
+  /* Hard containment boundary for the feed. A grid item defaults to
+     min-width:auto, so one wide post (unbreakable handle, long URL, embed)
+     would widen this track past the viewport and put the whole page into
+     horizontal scroll -- which is what pulled the fixed bottom nav off screen
+     on phones. Nothing inside may size this column. */
+  min-width: 0;
+}
+
+/* Full-width mode (settings, search, chat, /rss): one column, no rails,
+   page-background canvas.
+
+   Capped at `--layout-width` rather than left as a bare `1fr`. The container is
+   `min(1460px, 100%)`, but the three-track grid only *uses* 1242px of it and
+   centres that — so an uncapped single track ran ~186px wider than the page it
+   sits beside, and a rails-off page came out visibly broader than /home at the
+   same viewport. The cap is the rail-to-rail width itself, so these pages end
+   exactly where the right rail ends and begin where the left rail begins. */
+.layout.layout-wide {
+  grid-template-columns: minmax(0, var(--layout-width));
+}
+
+.layout-wide .column {
+  border: 0;
+  background: transparent;
+}
+
+/* Zen mode: no rails, but the feed stays a centered column. */
+.layout.layout-zen {
+  grid-template-columns: minmax(0, var(--col-width));
+}
+
+/* Writing zen: the header is gone as well as the rails, so the column has the
+   whole viewport rather than the viewport minus a topbar that isn't there. */
+.layout.layout-writing-zen {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.layout-writing-zen .column {
+  min-height: 100vh;
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 1240px) {
+  /* `--layout-width` narrows to match at this breakpoint — see styles.css,
+     which owns it because component styles are scoped and cannot reach :root. */
+  .layout {
+    grid-template-columns: var(--rail-left-width) minmax(0, var(--col-width));
+  }
+
+  .rail-right {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, var(--col-width));
+    padding: 0;
+  }
+
+  .rail-left {
+    display: none;
+  }
+}
+
+/* ≤1240: body drops the right rail (290 | center). Keep brand over the rail and
+   the tab nav over the center column; actions collapse to the far right. */
+@media (max-width: 1240px) {
+  .topbar-inner {
+    grid-template-columns: var(--rail-left-width) minmax(0, var(--col-width)) max-content;
+  }
+}
+
+/* ≤1000: body is a single centered column (no rails). Fall back to the original
+   flexible header so the tab nav stays centered over that lone column. */
+@media (max-width: 1000px) {
+  .topbar-inner {
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+    justify-content: stretch;
+  }
+}
+
+/* Independent of the column layout: below this the labels crowd, so drop them. */
+@media (max-width: 1320px) {
+  .deployment-label,
+  .account-pill > span,
+  .account-pill .caret,
+  .more-menu summary span {
+    display: none;
+  }
+
+  .primary-nav a {
+    min-width: 56px;
+    padding-inline: 8px;
+  }
+
+  .account-pill {
+    padding-right: 4px;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar-inner {
+    min-height: 56px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .primary-nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    height: 58px;
+    justify-content: space-around;
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--col-bg) 97%, transparent);
+    /* Belt and braces: even if something downstream reintroduces horizontal
+       overflow, pin the bar to the viewport rather than the (wider) document,
+       so the last tab can never drift off the right edge. */
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .primary-nav a {
+    min-width: 0;
+    flex: 1;
+    padding: 0;
+  }
+
+  .primary-nav a span,
+  .account-pill > span,
+  .account-pill .caret {
+    display: none;
+  }
+
+  .primary-nav a::after {
+    right: 28%;
+    bottom: auto;
+    left: 28%;
+    top: 0;
+    border-radius: 0 0 999px 999px;
+  }
+
+  .logout-button {
+    height: 36px;
+    padding-inline: 14px;
+  }
+
+  .column {
+    min-height: calc(100vh - 115px);
+    margin-bottom: 58px;
+    border: 0;
+  }
+}
+
+/* Non-blocking notice (e.g. a failed account switch). Bottom-center, auto-dismisses. */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: min(90vw, 460px);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--text, #14171a);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 25%);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.toast-close {
+  flex: none;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.toast-close::before {
+  content: '×';
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+/* --- Rejected-session dialog -------------------------------------------------
+   Modal rather than a toast on purpose: the two ways out (reauthenticate,
+   remove) are the only things that resolve it, and the broken account is not
+   active, so the account menu can't reach it. */
+.dead-session-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgb(0 0 0 / 45%);
+}
+
+.dead-session {
+  position: fixed;
+  z-index: 61;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 440px);
+  padding: 20px 22px;
+  background: var(--bg, #fff);
+  color: var(--text, #14171a);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgb(0 0 0 / 30%);
+}
+
+.dead-session h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.dead-session p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.dead-session-note {
+  color: var(--muted);
+}
+
+.dead-session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dead-session-actions .danger {
+  border-color: #e0245e;
+  color: #e0245e;
+}
+
+/* Pending count on the "Waiting to publish" row (the POSSE queue). The only
+   badge in this menu — see the note above about notification badges — so it
+   stays small and unemphatic rather than demanding attention. */
+.nav-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  vertical-align: middle;
+}
+.has-activity svg {
+  stroke-width: 3;
+}
+.has-activity {
+  font-weight: 700;
+}
+.activity-dot {
+  font-size: 0.6rem;
+}

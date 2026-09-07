@@ -1,0 +1,16 @@
+<main class="message-page">
+  <header class="message-header">
+    <p class="eyebrow">{{ 'message.shared' | transloco }}</p>
+    <h1>{{ 'message.subtitle' | transloco }}</h1>
+  </header>
+
+  @if (status(); as s) {
+    <app-status-card [status]="s" filterContext="thread" />
+  } @else {
+    <p class="message-status">{{ 'message.unreadable' | transloco }}</p>
+  }
+
+  <p class="message-back">
+    <a routerLink="/">{{ 'message.back' | transloco }}</a>
+  </p>
+</main>

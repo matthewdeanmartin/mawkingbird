@@ -1,0 +1,58 @@
+/**
+ * Styles every connection child page shares: the back link, the setup-step
+ * list, the credential warning, and the ok/error message lines.
+ *
+ * Pulled in via `styleUrls: ['../connection-page.css', './connection-<id>.css']`
+ * so a connector's own file only holds what is genuinely its own. There are a
+ * dozen more connectors coming; each one re-declaring `.feed-error` is how a
+ * stylesheet rots.
+ */
+
+/* Every other settings page wraps its content in .spage-body for the 22px
+   gutter. These eight never did, so their text sat flush against the rounded
+   panel edge. Padding the host gives all of them the gutter at once, rather
+   than adding a wrapper div to eight templates that would then have to be
+   remembered for every connector still to come.
+   .spage-head brings its own padding, so it is pulled back out to the edge —
+   its bottom border is meant to span the full panel width. */
+:host {
+  display: block;
+  padding: 0 22px 22px;
+}
+
+:host .spage-head {
+  margin: 0 -22px;
+}
+
+/* Sits above .spage-head and outside its padding, so it brings its own to line
+   up with the heading beneath it rather than hugging the panel edge. */
+.conn-back {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding-top: 14px;
+  font-size: 13px;
+}
+
+.feed-error {
+  color: #d63b3b;
+  font-size: 13px;
+}
+
+.connection-ok {
+  color: #2b8a3e;
+  font-size: 13px;
+}
+
+.setup-steps {
+  padding-left: 20px;
+}
+
+.setup-steps li + li {
+  margin-top: 5px;
+}
+
+.credential-warning {
+  padding: 9px 11px;
+  border-left: 3px solid #d08a00;
+  background: rgb(208 138 0 / 9%);
+}

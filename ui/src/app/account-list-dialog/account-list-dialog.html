@@ -1,0 +1,45 @@
+<div class="overlay" role="presentation" (click)="closed.emit()">
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="account-list-title"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+    (click)="$event.stopPropagation()"
+  >
+    <h3 id="account-list-title">{{ title }}</h3>
+
+    @if (loading()) {
+      <p class="muted small">{{ 'accountList.loading' | transloco }}</p>
+    } @else if (!accounts().length) {
+      <p class="muted small">{{ 'accountList.empty' | transloco }}</p>
+    } @else {
+      <ul class="account-list">
+        @for (a of accounts(); track a.id) {
+          <li>
+            <a class="account-row" [routerLink]="['/accounts', a.id]" (click)="closed.emit()">
+              <img
+                class="avatar"
+                [src]="a.avatar_static || a.avatar"
+                [alt]="a.username"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="names">
+                <span class="name">{{ a.display_name || a.username }}</span>
+                <span class="acct muted">&#64;{{ a.acct }}</span>
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="dialog-actions">
+      <button class="btn btn-outline" (click)="closed.emit()">
+        {{ 'accountList.close' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

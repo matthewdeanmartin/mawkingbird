@@ -1,0 +1,107 @@
+.config-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-fit {
+  align-self: flex-start;
+}
+
+.export-status {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.published-config {
+  font-size: 13px;
+}
+
+.export-preview {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.export-preview textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.export-preview .btn {
+  justify-self: start;
+}
+
+.config-preview ul {
+  max-height: 240px;
+  overflow: auto;
+  padding-left: 22px;
+  font-size: 13px;
+}
+
+.config-preview li {
+  margin: 4px 0;
+}
+
+.config-message,
+.config-error {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.config-message {
+  background: var(--accent-soft);
+}
+
+/*
+ * Readable in both themes, measured rather than eyeballed.
+ *
+ * Was `color: #b3261e` — a *dark* red — over a background mixed with
+ * `--col-bg`. In light mode that is dark-on-pale and fine. In dark mode
+ * `--col-bg` is `#15202b`, so the mix is a dark maroon and dark red text all
+ * but vanishes into it: contrast 2.34:1, well under the 4.5:1 needed for body
+ * text. Reported as red on red, correctly.
+ *
+ * One red cannot serve both: a foreground light enough for the dark tint is
+ * washed out on white, and vice versa. So the colour flips with the theme while
+ * the tint stays translucent and adapts to whatever is behind it.
+ *
+ * Measured against the tint each sits on:
+ *   light  #a5140c on #fdedf2 = 6.9:1
+ *   dark   #ff9aa2 on #25202f = 6.7:1
+ *
+ * The left border carries the severity too, so the message does not rely on
+ * colour alone to read as an error.
+ */
+.config-error {
+  border-left: 4px solid #e0245e;
+  background: rgba(224, 36, 94, 0.08);
+  color: #a5140c;
+}
+
+:root[data-theme='dark'] .config-error {
+  background: rgba(255, 154, 162, 0.12);
+  color: #ff9aa2;
+}

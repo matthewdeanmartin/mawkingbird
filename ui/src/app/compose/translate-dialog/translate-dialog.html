@@ -1,0 +1,89 @@
+<!-- A real button, not a div: clicking away must be reachable by keyboard too. -->
+<button
+  class="tr-backdrop"
+  type="button"
+  [aria-label]="'compose.translateDialog.close' | transloco"
+  (click)="close()"
+></button>
+<section class="tr-dialog" role="dialog" aria-modal="true" aria-labelledby="tr-title">
+  <div class="tr-head">
+    <h2 id="tr-title">{{ 'compose.translateDialog.title' | transloco }}</h2>
+    <button
+      class="icon-close"
+      type="button"
+      [aria-label]="'compose.translateDialog.close' | transloco"
+      (click)="close()"
+    >
+      ×
+    </button>
+  </div>
+
+  <p class="muted">
+    {{ 'compose.translateDialog.intro' | transloco }}
+  </p>
+
+  <label class="tr-target">
+    <span>{{ 'compose.translateDialog.into' | transloco }}</span>
+    <select [value]="target()" (change)="target.set($any($event.target).value)" [disabled]="busy()">
+      @for (option of options(); track option.code) {
+        <option [value]="option.code">{{ option.name }}</option>
+      }
+    </select>
+  </label>
+
+  @if (!draft() && !busy()) {
+    <button class="btn" type="button" (click)="run()" [disabled]="!post().trim()">
+      {{ 'compose.translateDialog.toButton' | transloco }} {{ targetName() }}
+    </button>
+    @if (!post().trim()) {
+      <p class="muted small">{{ 'compose.translateDialog.writeFirst' | transloco }}</p>
+    }
+  }
+
+  @if (busy()) {
+    <p class="muted small" role="status">
+      {{ 'compose.translateDialog.translatingInto' | transloco }} {{ targetName() }}…
+    </p>
+  }
+
+  @if (error(); as msg) {
+    <p class="tr-error" role="alert">{{ msg }}</p>
+  }
+
+  @if (draft()) {
+    <label class="tr-edit">
+      <span>{{ targetName() }}</span>
+      <textarea
+        rows="5"
+        [value]="draft()"
+        (input)="draft.set($any($event.target).value)"
+      ></textarea>
+    </label>
+
+    @if (model(); as id) {
+      <p class="muted small">{{ 'compose.translateDialog.translatedBy' | transloco }} {{ id }}.</p>
+    }
+
+    <div class="tr-actions">
+      <!-- Replace is the "I meant to write it in that language" case; append is
+           the bilingual post, where both versions ship together. -->
+      <button class="btn" type="button" (click)="apply('replace')" [disabled]="!draft().trim()">
+        {{ 'compose.translateDialog.replace' | transloco }}
+      </button>
+      <button
+        class="btn btn-outline"
+        type="button"
+        (click)="apply('append')"
+        [disabled]="!draft().trim()"
+      >
+        {{ 'compose.translateDialog.append' | transloco }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="run()" [disabled]="busy()">
+        {{ 'compose.translateDialog.retry' | transloco }}
+      </button>
+      <button class="btn btn-outline" type="button" (click)="close()">
+        {{ 'compose.translateDialog.cancel' | transloco }}
+      </button>
+    </div>
+  }
+</section>

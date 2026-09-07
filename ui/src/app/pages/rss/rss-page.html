@@ -1,0 +1,270 @@
+<div class="rss-page">
+  <aside class="rss-rail" [attr.aria-label]="'pages.rss.subscriptions' | transloco">
+    <div class="rss-rail-head">
+      <h1>{{ 'pages.rss.title' | transloco }}</h1>
+      <span class="head-actions">
+        <button class="btn btn-small" type="button" (click)="openAddDialog()">
+          {{ 'pages.rss.pasteLink' | transloco }}
+        </button>
+        <button
+          class="btn btn-small btn-outline"
+          type="button"
+          [class.active]="showKits()"
+          [attr.aria-pressed]="showKits()"
+          (click)="toggleKits()"
+        >
+          {{ (showKits() ? 'pages.rss.done' : 'pages.rss.starterKits') | transloco }}
+        </button>
+        <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
+          {{ 'pages.rss.friendFeeds' | transloco }}
+        </button>
+      </span>
+    </div>
+
+    <nav class="rss-rail-body">
+      <button
+        class="rail-row rail-all"
+        type="button"
+        [class.active]="isAllActive()"
+        [attr.aria-current]="isAllActive() ? 'true' : null"
+        (click)="selectAll()"
+      >
+        <span class="name">{{ 'pages.rss.allItems' | transloco }}</span>
+      </button>
+
+      @for (group of groups(); track group.name) {
+        @if (group.name !== null || hasFolders()) {
+          <button
+            class="rail-row rail-folder"
+            type="button"
+            [class.active]="isFolderActive(group.name)"
+            [attr.aria-current]="isFolderActive(group.name) ? 'true' : null"
+            (click)="selectFolder(group.name)"
+          >
+            <span class="name">{{ group.name ?? ('pages.rss.unsorted' | transloco) }}</span>
+            <span class="muted small">{{ group.feeds.length }}</span>
+          </button>
+        }
+
+        @for (f of group.feeds; track f.url) {
+          <button
+            class="rail-row rail-feed"
+            type="button"
+            [class.nested]="group.name !== null || hasFolders()"
+            [class.off]="!f.enabled"
+            [class.active]="isFeedActive(f.url)"
+            [attr.aria-current]="isFeedActive(f.url) ? 'true' : null"
+            (click)="selectFeed(f.url)"
+          >
+            <span class="names">
+              <span class="name">
+                {{ f.title || f.url }}
+                @if (!f.enabled) {
+                  <span class="muted small">{{ 'pages.rss.feedOff' | transloco }}</span>
+                }
+              </span>
+              <span class="muted small">
+                {{ rssHost(f.url) }}
+                @if (f.itemCount !== undefined) {
+                  {{
+                    (f.itemCount === 1 ? 'pages.rss.itemCount.one' : 'pages.rss.itemCount.other')
+                      | transloco: { count: f.itemCount }
+                  }}
+                }
+              </span>
+            </span>
+          </button>
+        }
+      } @empty {
+        <p class="muted rail-empty">
+          {{ 'pages.rss.noFeedsYet' | transloco }}
+          <button class="link-btn" type="button" (click)="toggleKits()">
+            {{ 'pages.rss.starterKit' | transloco }}</button
+          >{{ 'pages.rss.noFeedsAdd' | transloco }}
+          <a routerLink="/settings/rss">{{ 'pages.rss.importOpml' | transloco }}</a
+          >{{ 'pages.rss.period' | transloco }}
+        </p>
+      }
+    </nav>
+
+    <p class="muted small rail-foot">
+      {{ 'pages.rss.manageHint' | transloco }}
+      <a routerLink="/settings/rss">{{ 'pages.rss.manageFeeds' | transloco }}</a
+      >{{ 'pages.rss.period' | transloco }}
+    </p>
+  </aside>
+
+  <section class="rss-pane" aria-live="polite">
+    <div class="rss-pane-head">
+      <h2>{{ paneTitle() }}</h2>
+      @if (selectedFeedUrl(); as feedUrl) {
+        <a class="muted small" [routerLink]="['/accounts', 'rss:' + feedUrl]">{{
+          'pages.rss.openAsProfile' | transloco
+        }}</a>
+      }
+    </div>
+
+    @if (statuses().length && !showKits()) {
+      <div class="pane-tools">
+        <span class="seg" role="group" [attr.aria-label]="'pages.rss.filter' | transloco">
+          <button
+            type="button"
+            [class.active]="filter() === 'all'"
+            [attr.aria-pressed]="filter() === 'all'"
+            (click)="setFilter('all')"
+          >
+            {{ 'pages.rss.all' | transloco }}
+          </button>
+          <!-- "Read later", not "Starred". Same store, same gesture, plainer
+               name: a star is a symbol whose meaning every app defines
+               differently, while "read later" says what the list is for. The
+               internal id stays `starred` — renaming the persisted key would
+               throw away everybody's saved items for a copy change. -->
+          <button
+            type="button"
+            [class.active]="filter() === 'starred'"
+            [attr.aria-pressed]="filter() === 'starred'"
+            (click)="setFilter('starred')"
+          >
+            {{ 'pages.rss.readLater' | transloco }}
+          </button>
+        </span>
+
+        <span class="seg" role="group" [attr.aria-label]="'pages.rss.density' | transloco">
+          <button
+            type="button"
+            [class.active]="prefs.rssDensity() === 'full'"
+            [attr.aria-pressed]="prefs.rssDensity() === 'full'"
+            (click)="setDensity('full')"
+          >
+            {{ 'pages.rss.full' | transloco }}
+          </button>
+          <button
+            type="button"
+            [class.active]="prefs.rssDensity() === 'headlines'"
+            [attr.aria-pressed]="prefs.rssDensity() === 'headlines'"
+            (click)="setDensity('headlines')"
+          >
+            {{ 'pages.rss.headlines' | transloco }}
+          </button>
+        </span>
+
+        <!-- Hidden while filtering: "mark all as read" means this pane's items,
+             not the subset currently on screen, and offering it next to a
+             Starred filter invites exactly that misreading. -->
+        @if (filter() === 'all' && unreadCount()) {
+          <button class="link-btn mark-all" type="button" (click)="markAllRead()">
+            {{ 'pages.rss.markReadCount' | transloco: { count: unreadCount() } }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (failed().length) {
+      <p class="pane-warning">
+        @if (failed().length === 1) {
+          {{ 'pages.rss.couldntLoadFeed' | transloco: { feed: feedTitle(failed()[0]) } }}
+        } @else {
+          {{ 'pages.rss.couldntLoadFeeds' | transloco: { count: failed().length } }}
+        }
+        <a routerLink="/settings/rss">{{ 'pages.rss.checkInSettings' | transloco }}</a>
+        {{ 'pages.rss.corsWarning' | transloco }}
+      </p>
+    }
+
+    <!-- The pane shows one thing at a time: the kits, or what you are reading.
+         Toggled from the rail so browsing kits never costs you your place, and
+         so the offer is reachable later rather than only while the list is
+         empty. -->
+    @if (showKits()) {
+      <app-rss-starter-kits-panel />
+    } @else if (loading()) {
+      <p class="muted center">{{ 'pages.rss.loadingItems' | transloco }}</p>
+    } @else {
+      @for (s of visibleStatuses(); track s.id) {
+        @if (prefs.rssDensity() === 'headlines') {
+          <app-headline-row
+            [status]="s"
+            [expanded]="expandedId() === s.id"
+            [appSeenWhenScrolled]="prefs.rssScrollMarksRead()"
+            (seen)="onSeen(s)"
+            (opened)="toggleExpanded(s)"
+          />
+          @if (expandedId() === s.id) {
+            <div class="expanded-item">
+              <app-status-card [status]="s" filterContext="account" />
+              <div class="item-tools">
+                <a
+                  class="link-btn"
+                  [routerLink]="['/statuses', s.id]"
+                  [queryParams]="{ reader: 'thread' }"
+                >
+                  📖 {{ 'reader.open.thread' | transloco }}
+                </a>
+                <a class="link-btn read-in-reader" [routerLink]="['/read', s.id]">
+                  📖 {{ 'pages.rss.readInReader' | transloco }}
+                </a>
+              </div>
+            </div>
+          }
+        } @else {
+          <div
+            class="full-item"
+            [class.read]="readState.isRead(s.id)"
+            [appSeenWhenScrolled]="prefs.rssScrollMarksRead()"
+            (seen)="onSeen(s)"
+          >
+            <app-status-card [status]="s" filterContext="account" />
+            <!-- Full mode gets the same two controls headline rows carry, so
+                 switching density never costs you an affordance. -->
+            <div class="item-tools">
+              <button
+                class="link-btn"
+                type="button"
+                [attr.aria-pressed]="readState.isStarred(s.id)"
+                (click)="readState.toggleStarred(s.id)"
+              >
+                {{
+                  (readState.isStarred(s.id) ? 'pages.rss.saved' : 'pages.rss.readLater')
+                    | transloco
+                }}
+              </button>
+              <button class="link-btn" type="button" (click)="toggleRead(s)">
+                {{
+                  (readState.isRead(s.id) ? 'pages.rss.markUnread' : 'pages.rss.markRead')
+                    | transloco
+                }}
+              </button>
+              <a
+                class="link-btn"
+                [routerLink]="['/statuses', s.id]"
+                [queryParams]="{ reader: 'thread' }"
+              >
+                📖 {{ 'reader.open.thread' | transloco }}
+              </a>
+              <a class="link-btn read-in-reader" [routerLink]="['/read', s.id]">
+                📖 {{ 'pages.rss.readInReader' | transloco }}
+              </a>
+            </div>
+          </div>
+        }
+      } @empty {
+        @if (filter() === 'starred') {
+          <p class="muted center">{{ 'pages.rss.nothingSaved' | transloco }}</p>
+        } @else if (subs.feeds().length) {
+          <p class="muted center">{{ 'pages.rss.nothingToRead' | transloco }}</p>
+        } @else if (!isAllActive()) {
+          <p class="muted center">{{ 'pages.rss.subscribeToRead' | transloco }}</p>
+        }
+      }
+    }
+  </section>
+</div>
+
+@if (showAddDialog()) {
+  <app-add-feed-dialog (closed)="closeAddDialog()" />
+}
+
+@if (showFriendFeeds()) {
+  <app-friend-feeds-dialog (closed)="showFriendFeeds.set(false)" />
+}

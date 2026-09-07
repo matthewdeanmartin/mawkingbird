@@ -1,0 +1,766 @@
+<div class="obs-page">
+  <div class="obs-head">
+    <h1>{{ 'pages.observability.title' | transloco }}</h1>
+    <p class="muted">
+      {{ 'pages.observability.intro' | transloco }}
+    </p>
+    <div class="obs-scope">
+      <label for="obs-scope-select" class="muted small">{{
+        'pages.observability.scope.server' | transloco
+      }}</label>
+      <select id="obs-scope-select" (change)="onScopeChange($event)">
+        <option [value]="allScopes" [selected]="merged()">
+          {{ 'pages.observability.scope.allServers' | transloco }}
+        </option>
+        @for (s of scopes(); track s) {
+          <option [value]="s" [selected]="scope() === s">{{ scopeLabel(s) }}</option>
+        }
+      </select>
+      @if (merged()) {
+        <span class="muted small">
+          {{
+            (scopes().length === 1
+              ? 'pages.observability.scope.combined.one'
+              : 'pages.observability.scope.combined.other'
+            ) | transloco: { count: scopes().length, server: scopeLabel(serverLabel()) }
+          }}
+        </span>
+      }
+    </div>
+    <nav class="page-menu">
+      <a class="page-menu-link" routerLink="/storage-diagnostics">{{
+        'pages.observability.storageDiagnostics' | transloco
+      }}</a>
+    </nav>
+  </div>
+
+  <!-- ============================= API metrics ============================ -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.api.title' | transloco }}</h2>
+      <button class="btn btn-outline btn-sm" (click)="resetMetrics()">
+        {{ 'pages.observability.api.reset' | transloco }}
+      </button>
+    </div>
+
+    <div class="tiles">
+      <div class="tile">
+        <div class="tile-value">{{ totals().count.toLocaleString() }}</div>
+        <div class="tile-label muted">{{ 'pages.observability.stats.totalCalls' | transloco }}</div>
+      </div>
+      <div class="tile">
+        <div class="tile-value">{{ totals().endpoints }}</div>
+        <div class="tile-label muted">{{ 'pages.observability.stats.endpoints' | transloco }}</div>
+      </div>
+      <div class="tile">
+        <div class="tile-value">
+          {{ totals().avgMs
+          }}<span class="unit">{{ 'pages.observability.chart.unitMs' | transloco }}</span>
+        </div>
+        <div class="tile-label muted">
+          {{ 'pages.observability.stats.avgResponse' | transloco }}
+        </div>
+      </div>
+      <div class="tile" [class.tile-bad]="totals().errors > 0">
+        <div class="tile-value">{{ totals().errors.toLocaleString() }}</div>
+        <div class="tile-label muted">
+          {{ 'pages.observability.stats.errors' | transloco: { percent: pct(totals().errorRate) } }}
+        </div>
+      </div>
+    </div>
+
+    @if (highlights(); as h) {
+      <div class="highlights">
+        <div class="hl">
+          <span class="hl-tag muted">{{
+            'pages.observability.highlight.busiest' | transloco
+          }}</span>
+          <code>{{ h.busiest.key }}</code>
+          <span class="muted small">{{
+            (h.busiest.count === 1
+              ? 'pages.observability.highlight.calls.one'
+              : 'pages.observability.highlight.calls.other'
+            ) | transloco: { count: h.busiest.count.toLocaleString() }
+          }}</span>
+        </div>
+        <div class="hl">
+          <span class="hl-tag muted">{{
+            'pages.observability.highlight.slowest' | transloco
+          }}</span>
+          <code>{{ h.slowest.key }}</code>
+          <span class="muted small"
+            >{{ round(mean(h.slowest)) }} {{ 'pages.observability.chart.unitMs' | transloco }}</span
+          >
+        </div>
+        <div class="hl">
+          <span class="hl-tag muted">{{
+            'pages.observability.highlight.fastest' | transloco
+          }}</span>
+          <code>{{ h.fastest.key }}</code>
+          <span class="muted small"
+            >{{ round(mean(h.fastest)) }} {{ 'pages.observability.chart.unitMs' | transloco }}</span
+          >
+        </div>
+        @if (h.worst.errors > 0) {
+          <div class="hl">
+            <span class="hl-tag muted">{{
+              'pages.observability.highlight.mostErrors' | transloco
+            }}</span>
+            <code>{{ h.worst.key }}</code>
+            <span class="muted small">{{ h.worst.errors }} / {{ h.worst.count }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Daily call volume. Bars, because a count over an interval is not a
+         point on a line; the old minute-resolution line chart drew one and
+         looked like noise as a result. -->
+    @if (volumeChart(); as v) {
+      <figure class="chart-figure">
+        <figcaption class="muted small">
+          {{
+            (v.bars.length === 1
+              ? 'pages.observability.chart.volume.one'
+              : 'pages.observability.chart.volume.other'
+            ) | transloco: { count: v.bars.length }
+          }}
+          @if (v.bars.length) {
+            {{ 'pages.observability.chart.peak' | transloco: { count: v.max.toLocaleString() } }}
+          }
+        </figcaption>
+        <svg
+          class="volume-chart"
+          [attr.viewBox]="'0 0 ' + chartW + ' ' + volumeH"
+          preserveAspectRatio="none"
+          role="img"
+          [attr.aria-label]="'pages.observability.chart.callsPerDayAria' | transloco"
+        >
+          <line
+            class="axis"
+            [attr.x1]="0"
+            [attr.x2]="chartW"
+            [attr.y1]="v.baseline"
+            [attr.y2]="v.baseline"
+          />
+          @for (b of v.bars; track b.day.t) {
+            <g>
+              <rect
+                class="bar"
+                [attr.x]="b.x"
+                [attr.y]="b.y"
+                [attr.width]="b.w"
+                [attr.height]="b.h"
+              >
+                <title>{{ volumeLabel(b.day) }}</title>
+              </rect>
+              @if (b.errH > 0) {
+                <rect
+                  class="bar-err"
+                  [attr.x]="b.x"
+                  [attr.y]="b.errY"
+                  [attr.width]="b.w"
+                  [attr.height]="b.errH"
+                >
+                  <title>{{ volumeLabel(b.day) }}</title>
+                </rect>
+              }
+            </g>
+          }
+        </svg>
+        <div class="chart-axis small muted">
+          <span>{{ dayLabel(v.bars[0].day.t) }}</span>
+          <span>{{ dayLabel(v.bars[v.bars.length - 1].day.t) }}</span>
+        </div>
+      </figure>
+    } @else {
+      <p class="muted small">{{ 'pages.observability.chart.noTraffic' | transloco }}</p>
+    }
+
+    <!-- Response time, in its own box below the volume chart rather than
+         overlaid on it: the two share an x-axis but nothing else, and drawing
+         milliseconds against a call count on one pair of axes compares
+         quantities that have no relationship. -->
+    @if (latencyChart(); as l) {
+      <figure class="chart-figure">
+        <figcaption class="muted small">
+          {{ 'pages.observability.chart.responseCaption' | transloco }}
+          <span class="legend">
+            <span class="key key-fast"></span>
+            {{ 'pages.observability.chart.normalCalls' | transloco }}
+            <span class="key key-slow"></span>
+            {{ 'pages.observability.chart.searchMedia' | transloco }}
+          </span>
+        </figcaption>
+        <svg
+          class="latency-chart"
+          [attr.viewBox]="'0 0 ' + chartW + ' ' + latencyH"
+          preserveAspectRatio="none"
+          role="img"
+          [attr.aria-label]="'pages.observability.chart.responseAria' | transloco"
+        >
+          @for (t of latencyTicks(); track t.ms) {
+            <g>
+              <line class="grid" x1="0" [attr.x2]="chartW" [attr.y1]="t.y" [attr.y2]="t.y" />
+              <text class="tick" x="4" [attr.y]="t.labelY">{{ t.label }}</text>
+            </g>
+          }
+          @for (band of l.fast.band; track $index) {
+            <polygon class="band band-fast" [attr.points]="band" />
+          }
+          @for (band of l.slow.band; track $index) {
+            <polygon class="band band-slow" [attr.points]="band" />
+          }
+          @for (seg of l.fast.segments; track $index) {
+            <polyline class="median median-fast" [attr.points]="seg" />
+          }
+          @for (seg of l.slow.segments; track $index) {
+            <polyline class="median median-slow" [attr.points]="seg" />
+          }
+          @for (p of l.fast.points; track p.point.t) {
+            @if (p.y !== null) {
+              <circle class="pt pt-fast" [attr.cx]="p.x" [attr.cy]="p.y" r="2.5">
+                <title>{{ latencyLabel(p.point, 'fast') }}</title>
+              </circle>
+            }
+          }
+          @for (p of l.slow.points; track p.point.t) {
+            @if (p.y !== null) {
+              <circle class="pt pt-slow" [attr.cx]="p.x" [attr.cy]="p.y" r="2.5">
+                <title>{{ latencyLabel(p.point, 'slow') }}</title>
+              </circle>
+            }
+          }
+        </svg>
+        <p class="muted small section-note">
+          {{ 'pages.observability.chart.responseNote' | transloco }}
+        </p>
+      </figure>
+    } @else {
+      <p class="muted small">
+        {{ 'pages.observability.chart.notEnoughResponse' | transloco }}
+      </p>
+    }
+
+    <!-- Per-endpoint table -->
+    @if (rows().length) {
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'pages.observability.table.endpoint' | transloco }}</th>
+              <th
+                class="num sortable"
+                (click)="setSort('count')"
+                [class.on]="sortKey() === 'count'"
+              >
+                {{ 'pages.observability.table.calls' | transloco }}
+              </th>
+              <th class="num sortable" (click)="setSort('avg')" [class.on]="sortKey() === 'avg'">
+                {{ 'pages.observability.table.avg' | transloco }}
+              </th>
+              <th class="num">{{ 'pages.observability.table.sd' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.table.min' | transloco }}</th>
+              <th class="num sortable" (click)="setSort('max')" [class.on]="sortKey() === 'max'">
+                {{ 'pages.observability.table.max' | transloco }}
+              </th>
+              <th
+                class="num sortable"
+                (click)="setSort('errors')"
+                [class.on]="sortKey() === 'errors'"
+              >
+                {{ 'pages.observability.table.errors' | transloco }}
+              </th>
+              <th class="num">{{ 'pages.observability.table.last' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of rows(); track s.key) {
+              <tr [class.row-bad]="s.errors > 0">
+                <td class="endpoint">
+                  <span class="method" [attr.data-method]="method(s.key)">{{ method(s.key) }}</span>
+                  <code>{{ endpoint(s.key) }}</code>
+                  <!-- Straight to the anchor for this operation on
+                       docs.joinmastodon.org; dimmed when we could only place
+                       the call in a section rather than match it exactly. -->
+                  @if (doc(s.key); as d) {
+                    <a
+                      class="doc-link"
+                      [class.approx]="d.match === 'section'"
+                      [href]="d.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      [title]="docTitle(s.key)"
+                      [attr.aria-label]="
+                        'pages.observability.docs.documentationFor' | transloco: { key: s.key }
+                      "
+                      >?</a
+                    >
+                    @if (d.summary) {
+                      <span class="doc-summary muted small">{{ d.summary }}</span>
+                    }
+                  }
+                </td>
+                <td class="num">{{ s.count.toLocaleString() }}</td>
+                <td class="num">
+                  {{ round(mean(s)) }} {{ 'pages.observability.chart.unitMs' | transloco }}
+                </td>
+                <td class="num muted">{{ round(stddev(s)) }}</td>
+                <td class="num muted">{{ s.minMs }}</td>
+                <td class="num">{{ s.maxMs }}</td>
+                <td class="num" [class.err]="s.errors > 0">{{ s.errors }}</td>
+                <td class="num muted">{{ s.lastStatus }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.table.noCalls' | transloco }}</p>
+    }
+  </section>
+
+  <!-- ============================== Error log ============================= -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.errors.title' | transloco }}</h2>
+      <span class="muted small">{{
+        'pages.observability.errors.logged' | transloco: { count: errors().length }
+      }}</span>
+    </div>
+    @if (errors().length) {
+      <ul class="error-list">
+        @for (e of errors(); track e.at) {
+          <li class="error-row" [title]="errorDetail(e)">
+            <span class="err-status" [class.net]="e.status === 0">
+              {{ e.status === 0 ? ('pages.observability.errors.network' | transloco) : e.status }}
+            </span>
+            <span class="method" [attr.data-method]="e.method">{{ e.method }}</span>
+            <code class="err-endpoint">{{ e.endpoint }}</code>
+            @if (doc(e.method + ' ' + e.endpoint); as d) {
+              <a
+                class="doc-link"
+                [class.approx]="d.match === 'section'"
+                [href]="d.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                [title]="docTitle(e.method + ' ' + e.endpoint)"
+                [attr.aria-label]="
+                  'pages.observability.docs.documentationFor'
+                    | transloco: { key: e.method + ' ' + e.endpoint }
+                "
+                >?</a
+              >
+            }
+            <span class="err-msg muted">{{ e.message }}</span>
+            <span class="err-time muted small">{{ time(e.at) }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.errors.none' | transloco }}</p>
+    }
+  </section>
+
+  <!-- ======================== Diagnostic timeline ======================= -->
+  <section class="obs-section">
+    <div class="section-head">
+      <div>
+        <h2>{{ 'pages.observability.diagnostics.title' | transloco }}</h2>
+        <span class="muted small">
+          {{
+            'pages.observability.diagnostics.retained'
+              | transloco: { count: diagnostics().length.toLocaleString() }
+          }}
+          @if (diagnostics().length > diagnosticRows().length) {
+            {{
+              'pages.observability.diagnostics.latest'
+                | transloco: { count: diagnosticRows().length }
+            }}
+          }
+        </span>
+      </div>
+      <div class="section-actions">
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          [disabled]="!diagnostics().length"
+          (click)="copyDiagnostics()"
+        >
+          {{ 'pages.observability.diagnostics.copy' | transloco }}
+        </button>
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          [disabled]="!diagnostics().length"
+          (click)="downloadDiagnostics()"
+        >
+          {{ 'pages.observability.diagnostics.download' | transloco }}
+        </button>
+        <button
+          class="btn btn-outline btn-sm danger"
+          type="button"
+          [disabled]="!diagnostics().length"
+          (click)="clearDiagnostics()"
+        >
+          {{ 'pages.observability.diagnostics.clear' | transloco }}
+        </button>
+      </div>
+    </div>
+    <p class="muted small section-note">
+      {{ 'pages.observability.diagnostics.note' | transloco }}
+    </p>
+    @if (diagnosticNotice()) {
+      <p class="diagnostic-notice small" role="status">{{ diagnosticNotice() }}</p>
+    }
+    @if (diagnosticRows().length) {
+      <ol class="diagnostic-list">
+        @for (entry of diagnosticRows(); track $index) {
+          <li
+            class="diagnostic-row"
+            [class.warn]="entry.level === 'warn'"
+            [class.error]="entry.level === 'error'"
+            [title]="diagnosticDetail(entry)"
+          >
+            <span class="diagnostic-level">{{ entry.level }}</span>
+            <span class="diagnostic-event">
+              <span class="diagnostic-area">[{{ entry.area }}]</span>
+              {{ entry.event }}
+            </span>
+            <code class="diagnostic-details">{{ entry.details }}</code>
+            <span class="diagnostic-time muted small">{{ stamp(entry.at) }}</span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.diagnostics.none' | transloco }}</p>
+    }
+  </section>
+
+  <!-- =========================== Client errors =========================== -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.clientErrors.title' | transloco }}</h2>
+      <span class="muted small">
+        {{
+          (clientErrorTotals().occurrences === 1
+            ? 'pages.observability.clientErrors.occurrence.one'
+            : 'pages.observability.clientErrors.occurrence.other'
+          ) | transloco: { count: clientErrorTotals().occurrences.toLocaleString() }
+        }}
+        ·
+        {{
+          (clientErrorTotals().kinds === 1
+            ? 'pages.observability.clientErrors.kind.one'
+            : 'pages.observability.clientErrors.kind.other'
+          ) | transloco: { count: clientErrorTotals().kinds }
+        }}
+      </span>
+    </div>
+    <p class="muted small section-note">
+      {{ 'pages.observability.clientErrors.note' | transloco }}
+    </p>
+    @if (clientErrors().length) {
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'pages.observability.clientErrors.error' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.clientErrors.count' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.clientErrors.first' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.clientErrors.last' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (g of clientErrors(); track g.type + g.message) {
+              <tr class="row-bad" [title]="clientErrorDetail(g)">
+                <td class="client-error">
+                  <span class="cerr-type">{{ g.type }}</span>
+                  <span class="cerr-msg">{{ g.message }}</span>
+                  @if (g.where) {
+                    <code class="cerr-where muted small">{{ g.where }}</code>
+                  }
+                </td>
+                <td class="num err">{{ g.count.toLocaleString() }}</td>
+                <td class="num muted small">{{ stamp(g.firstAt) }}</td>
+                <td class="num muted small">{{ stamp(g.lastAt) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.clientErrors.none' | transloco }}</p>
+    }
+  </section>
+
+  <!-- =========================== CORS proxy ============================== -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.cors.title' | transloco }}</h2>
+      @if (proxyLabel(); as label) {
+        <span class="muted small">{{ label }}</span>
+      }
+    </div>
+    <p class="muted small section-note">
+      {{ 'pages.observability.cors.note' | transloco }}
+    </p>
+    @if (proxyUsage().requests) {
+      <div class="tiles">
+        <div class="tile">
+          <div class="tile-value">{{ proxyUsage().requests.toLocaleString() }}</div>
+          <div class="tile-label muted">{{ 'pages.observability.cors.requests' | transloco }}</div>
+        </div>
+        <div class="tile" [class.tile-bad]="proxyUsage().failures > 0">
+          <div class="tile-value">{{ proxyUsage().failures.toLocaleString() }}</div>
+          <div class="tile-label muted">{{ 'pages.observability.cors.failed' | transloco }}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ proxiedFeedCount() }}</div>
+          <div class="tile-label muted">{{ 'pages.observability.cors.feeds' | transloco }}</div>
+        </div>
+      </div>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" type="button" (click)="resetProxyUsage()">
+          {{ 'pages.observability.cors.reset' | transloco }}
+        </button>
+      </div>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.cors.none' | transloco }}</p>
+    }
+  </section>
+
+  <!-- ============================ Twitter spend ================================= -->
+  <!-- The only connector in this app whose requests cost money, so it is the
+       only one whose request count is worth a section of its own. -->
+  @if (twitterUsage.total()) {
+    <section class="obs-section">
+      <div class="section-head">
+        <h2>{{ 'pages.observability.twitter.title' | transloco }}</h2>
+        <span class="muted small">{{ 'pages.observability.twitter.billed' | transloco }}</span>
+      </div>
+      <p class="muted small section-note">
+        {{ 'pages.observability.twitter.note' | transloco }}
+      </p>
+      <div class="tiles">
+        <div class="tile" [class.tile-bad]="twitterUsage.atHardLimit()">
+          <div class="tile-value">{{ twitterUsage.today().toLocaleString() }}</div>
+          <div class="tile-label muted">{{ 'pages.observability.twitter.today' | transloco }}</div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ twitterUsage.total().toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{ 'pages.observability.twitter.sinceConnecting' | transloco }}
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ twitterUsage.remainingToday().toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{ 'pages.observability.twitter.remaining' | transloco }}
+          </div>
+        </div>
+      </div>
+      @if (twitterUsage.atHardLimit()) {
+        <p class="muted small">
+          {{
+            'pages.observability.twitter.limitReached'
+              | transloco: { limit: twitterUsage.hardLimit() }
+          }}
+          <a routerLink="/settings/connections/twitter">{{
+            'pages.observability.twitter.connector' | transloco
+          }}</a
+          >.
+        </p>
+      }
+    </section>
+  }
+
+  <!-- ============================ Mawkingbird =========================== -->
+  <!-- Mawkingbird's own services, kept out of the endpoint table above: that
+       table describes a Mastodon instance, and these are a different API whose
+       rows no Mastodon documentation covers. The split that matters here is
+       not per-endpoint timing but who paid. -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.mawkingbird.title' | transloco }}</h2>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" (click)="resetMawkingbird()">
+          {{ 'pages.observability.mawkingbird.reset' | transloco }}
+        </button>
+      </div>
+    </div>
+    <p class="muted small section-note">
+      {{ 'pages.observability.mawkingbird.note' | transloco }}
+    </p>
+
+    @if (mawkingbirdTotals().calls) {
+      <div class="tiles">
+        <div class="tile">
+          <div class="tile-value">{{ mawkingbirdTotals().calls.toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{ 'pages.observability.mawkingbird.totalCalls' | transloco }}
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ mawkingbirdTotals().paid.toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{ 'pages.observability.mawkingbird.paid' | transloco }}
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-value">{{ mawkingbirdTotals().free.toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{ 'pages.observability.mawkingbird.free' | transloco }}
+          </div>
+        </div>
+        <div class="tile" [class.tile-bad]="mawkingbirdTotals().errors > 0">
+          <div class="tile-value">{{ mawkingbirdTotals().errors.toLocaleString() }}</div>
+          <div class="tile-label muted">
+            {{
+              'pages.observability.mawkingbird.errors'
+                | transloco: { percent: pct(mawkingbirdTotals().errorRate) }
+            }}
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'pages.observability.mawkingbird.service' | transloco }}</th>
+              <th>{{ 'pages.observability.mawkingbird.tier' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.mawkingbird.calls' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.mawkingbird.avg' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.mawkingbird.errorsHeader' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.mawkingbird.last' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of mawkingbirdRows(); track s.service + s.tier) {
+              <tr [class.row-bad]="s.errors > 0">
+                <td>{{ serviceLabel(s.service) }}</td>
+                <td>
+                  <span class="tier-tag" [attr.data-tier]="s.tier">{{ s.tier }}</span>
+                </td>
+                <td class="num">{{ s.calls.toLocaleString() }}</td>
+                <td class="num">
+                  {{ round(mawkingbirdMean(s)) }}
+                  {{ 'pages.observability.chart.unitMs' | transloco }}
+                </td>
+                <td class="num">{{ s.errors ? s.errors.toLocaleString() : '—' }}</td>
+                <td class="num muted" [title]="when(s.lastAt)">{{ stamp(s.lastAt) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted center">
+        {{ 'pages.observability.mawkingbird.none' | transloco }}
+      </p>
+    }
+  </section>
+
+  <!-- ======================= Storage summary ============================= -->
+  <!-- The detail moved to its own page; this keeps the number in the overview
+       so "how much is this app storing" is still answerable from here. -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.storage.title' | transloco }}</h2>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" (click)="refreshStorage()">
+          {{ 'pages.observability.storage.refresh' | transloco }}
+        </button>
+      </div>
+    </div>
+    <a class="storage-summary" routerLink="/storage-diagnostics">
+      <span class="storage-summary-value">
+        {{ formatBytes(storage().totalBytes) }}
+        <span class="muted">{{
+          (storage().entries.length === 1
+            ? 'pages.observability.storage.entries.one'
+            : 'pages.observability.storage.entries.other'
+          ) | transloco: { count: storage().entries.length }
+        }}</span>
+      </span>
+      <span class="muted small">{{ 'pages.observability.storageDiagnostics' | transloco }}</span>
+    </a>
+  </section>
+
+  <!-- ============================= Route log ============================= -->
+  <section class="obs-section">
+    <div class="section-head">
+      <h2>{{ 'pages.observability.route.title' | transloco }}</h2>
+      <div class="section-actions">
+        <span class="muted small">
+          {{
+            'pages.observability.route.summary'
+              | transloco
+                : {
+                    visits: routeTotals().visits.toLocaleString(),
+                    total: formatDuration(routeTotals().totalMs),
+                    routes: routeTotals().routes,
+                  }
+          }}
+        </span>
+        <button class="btn btn-outline btn-sm" (click)="refreshRoutes()">
+          {{ 'pages.observability.route.refresh' | transloco }}
+        </button>
+        <button class="btn btn-outline btn-sm danger" (click)="resetRoutes()">
+          {{ 'pages.observability.route.reset' | transloco }}
+        </button>
+      </div>
+    </div>
+    <p class="muted small section-note">
+      {{ 'pages.observability.route.noteA' | transloco }}<code>/accounts/:id</code
+      >{{ 'pages.observability.route.noteB' | transloco }}
+    </p>
+    @if (routeRows().length) {
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'pages.observability.route.route' | transloco }}</th>
+              <th
+                class="num sortable"
+                (click)="setRouteSort('visits')"
+                [class.on]="routeSortKey() === 'visits'"
+              >
+                {{ 'pages.observability.route.visits' | transloco }}
+              </th>
+              <th
+                class="num sortable"
+                (click)="setRouteSort('time')"
+                [class.on]="routeSortKey() === 'time'"
+              >
+                {{ 'pages.observability.route.time' | transloco }}
+              </th>
+              <th class="num">{{ 'pages.observability.route.avg' | transloco }}</th>
+              <th class="num">{{ 'pages.observability.route.last' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of routeRows(); track r.path) {
+              <tr
+                [title]="
+                  'pages.observability.route.lastVisited' | transloco: { time: when(r.lastAt) }
+                "
+              >
+                <td class="endpoint">
+                  <code>{{ r.path }}</code>
+                </td>
+                <td class="num">{{ r.visits.toLocaleString() }}</td>
+                <td class="num">{{ formatDuration(r.totalMs) }}</td>
+                <td class="num muted">{{ formatDuration(avgDwell(r)) }}</td>
+                <td class="num muted small">{{ stamp(r.lastAt) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted center">{{ 'pages.observability.route.none' | transloco }}</p>
+    }
+  </section>
+</div>

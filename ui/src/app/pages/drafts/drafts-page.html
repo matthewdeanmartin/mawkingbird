@@ -1,0 +1,455 @@
+<div class="page-head">
+  <h2>{{ 'pages.drafts.title' | transloco }}</h2>
+  @if (featureFlags.enabled('write')) {
+    <a class="btn btn-outline btn-sm" routerLink="/write">{{
+      'pages.drafts.openWrite' | transloco
+    }}</a>
+  }
+</div>
+<p class="page-note">
+  {{ 'pages.drafts.intro' | transloco }}
+</p>
+
+<!-- Thoughtful posting's writing surface. Saves only: the post itself happens
+     later from a row below, which is the gap the whole feature is for. -->
+@if (prefs.thoughtfulPosting()) {
+  <div class="write-here">
+    @if (writing()) {
+      <app-compose [gateable]="true" (posted)="closeWriter()" />
+      <button class="btn btn-outline btn-sm write-close" type="button" (click)="closeWriter()">
+        {{ 'pages.drafts.write.close' | transloco }}
+      </button>
+    } @else {
+      <button class="btn write-btn" type="button" (click)="openWriter()">
+        {{ 'pages.drafts.write.button' | transloco }}
+      </button>
+    }
+  </div>
+}
+
+<div
+  class="draft-chips"
+  role="group"
+  [attr.aria-label]="'pages.drafts.filter.ariaLabel' | transloco"
+>
+  @for (chip of chips; track chip.id) {
+    <button
+      class="chip"
+      type="button"
+      [class.on]="filter() === chip.id"
+      [disabled]="!count(chip.id)"
+      [attr.aria-pressed]="filter() === chip.id"
+      (click)="select(chip.id)"
+    >
+      {{ chip.labelKey | transloco }}
+      <span class="chip-count">{{ count(chip.id) }}</span>
+    </button>
+  }
+</div>
+
+@for (error of sources.sourceErrors(); track error.kind) {
+  <p class="draft-warning" role="status">⚠ {{ error.message }}</p>
+}
+
+@if (removeError()) {
+  <p class="draft-warning" role="alert">⚠ {{ removeError() }}</p>
+}
+
+@if (actionError()) {
+  <p class="draft-warning" role="alert">⚠ {{ actionError() }}</p>
+}
+
+@if (notice()) {
+  <p class="draft-notice" role="status">✓ {{ notice() }}</p>
+}
+
+@if (sources.loading() && !sources.items().length) {
+  <p class="muted center">{{ 'pages.drafts.loading' | transloco }}</p>
+} @else if (!sources.items().length) {
+  <div class="draft-empty muted">
+    <p>{{ 'pages.drafts.empty.intro' | transloco }}</p>
+    <ul>
+      <li>
+        <strong>{{ 'pages.drafts.chip.local' | transloco }}</strong> —
+        {{ 'pages.drafts.empty.local' | transloco }}
+      </li>
+      <li>
+        <strong>{{ 'pages.drafts.chip.parked' | transloco }}</strong> —
+        {{ 'pages.drafts.empty.parked' | transloco }}
+      </li>
+      <li>
+        <strong>{{ 'pages.drafts.chip.self' | transloco }}</strong> —
+        {{ 'pages.drafts.empty.self' | transloco }}
+      </li>
+      <li>
+        <strong>{{ 'pages.drafts.chip.paste' | transloco }}</strong> —
+        {{ 'pages.drafts.empty.paste' | transloco }}
+      </li>
+    </ul>
+    <p>{{ 'pages.drafts.empty.tip' | transloco }}</p>
+  </div>
+} @else if (!visible().length) {
+  <p class="muted center">{{ 'pages.drafts.empty.noneOfKind' | transloco }}</p>
+} @else {
+  @for (item of visible(); track item.key) {
+    <div class="draft-row">
+      <div class="draft-main">
+        <div class="draft-text">{{ previewText(item) }}</div>
+        <div class="draft-meta muted">
+          @switch (item.kind) {
+            @case ('local') {
+              <span class="draft-kind" [title]="'pages.drafts.meta.localTitle' | transloco">{{
+                'pages.drafts.meta.local' | transloco
+              }}</span>
+              <span>{{ item.at | humanTime }}</span>
+            }
+            @case ('scheduled') {
+              <span
+                class="draft-kind"
+                [title]="'pages.drafts.meta.scheduledTitle' | transloco: { post: words().post }"
+                >{{ 'pages.drafts.meta.parked' | transloco }}</span
+              >
+              <span>{{ 'pages.drafts.meta.until' | transloco: { date: parkedWhen(item) } }}</span>
+            }
+            @case ('self') {
+              <span
+                class="draft-kind"
+                [title]="'pages.drafts.meta.selfTitle' | transloco: { post: words().post }"
+                >{{ 'pages.drafts.chip.self' | transloco }}</span
+              >
+              <span>{{ item.at | humanTime }}</span>
+            }
+            @case ('paste') {
+              <span class="draft-kind" [title]="'pages.drafts.meta.pasteTitle' | transloco">{{
+                'pages.drafts.chip.paste' | transloco
+              }}</span>
+              <span>{{ item.at | humanTime }}</span>
+            }
+          }
+          @if (item.visibility) {
+            <span class="draft-visibility">· {{ item.visibility }}</span>
+          }
+          @for (b of item.badges; track b) {
+            <span class="draft-badge">{{ badgeText(b) }}</span>
+          }
+        </div>
+      </div>
+      <div class="draft-actions">
+        <button
+          class="btn btn-sm"
+          type="button"
+          [disabled]="blockedByFlag(item)"
+          [title]="
+            (blockedByFlag(item) ? 'pages.drafts.edit.blocked' : 'pages.drafts.edit.title')
+              | transloco
+          "
+          (click)="editForPost(item)"
+        >
+          {{
+            (item.kind === 'local' ? 'pages.drafts.edit.continue' : 'pages.drafts.edit.forPost')
+              | transloco
+          }}
+        </button>
+        <!-- Conversions live behind ••• : four of them would not fit inline
+             beside the preview. Same disclosure idiom as the status-card menu. -->
+        <details class="row-menu">
+          <summary
+            class="row-menu-summary"
+            [attr.aria-label]="'pages.drafts.convert.ariaLabel' | transloco"
+          >
+            •••
+          </summary>
+          <div class="row-menu-panel">
+            @if (item.kind !== 'local') {
+              <button type="button" (click)="convertToLocal(item)">
+                {{ 'pages.drafts.convert.local' | transloco }}
+              </button>
+            }
+            @if (item.kind !== 'paste' && featureFlags.enabled('pastebin')) {
+              <button type="button" (click)="askConvertToPaste(item)">
+                {{ 'pages.drafts.convert.paste' | transloco }}
+              </button>
+            }
+            @if (item.kind !== 'scheduled' && !auth.isAnonymous) {
+              <button type="button" (click)="askConvertToSchedule(item)">
+                {{ 'pages.drafts.convert.schedule' | transloco }}
+              </button>
+            }
+            @if (item.kind === 'scheduled') {
+              <!-- The one action here that removes its source, so it is asked
+                   about and kept visually apart from the copies above it. -->
+              <button type="button" class="menu-move" (click)="askUnpark(item)">
+                {{ 'pages.drafts.convert.unpark' | transloco }}
+              </button>
+            }
+            <span class="menu-note muted">
+              {{ 'pages.drafts.convert.note' | transloco }}
+            </span>
+          </div>
+        </details>
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          [title]="
+            (item.kind === 'paste' ? 'pages.drafts.remove.fromList' : 'pages.drafts.remove.draft')
+              | transloco
+          "
+          (click)="askRemove(item)"
+          [attr.aria-label]="
+            (item.kind === 'paste' ? 'pages.drafts.remove.fromList' : 'pages.drafts.remove.draft')
+              | transloco
+          "
+        >
+          <span aria-hidden="true">🗑</span>
+        </button>
+      </div>
+    </div>
+  }
+}
+
+@if (!auth.isAnonymous && sources.upcomingScheduled().length) {
+  <div class="page-head scheduled-head">
+    <h2>{{ 'pages.drafts.scheduled.title' | transloco }}</h2>
+  </div>
+  <p class="page-note">
+    {{ 'pages.drafts.scheduled.note' | transloco }}
+  </p>
+
+  @for (s of sources.upcomingScheduled(); track s.id) {
+    <div class="draft-row">
+      <div class="draft-main">
+        <div class="draft-text">{{ scheduledPreview(s) }}</div>
+        <div class="draft-meta muted">
+          <span>🕒 {{ scheduledWhen(s) }}</span>
+          @if (s.params.visibility) {
+            <span class="draft-visibility">· {{ s.params.visibility }}</span>
+          }
+          @if (s.params.spoiler_text) {
+            <span class="draft-badge">{{ 'pages.drafts.badges.cw' | transloco }}</span>
+          }
+          @if (s.params.poll) {
+            <span class="draft-badge">{{ 'pages.drafts.badges.poll' | transloco }}</span>
+          }
+          @if (s.media_attachments.length) {
+            <span class="draft-badge">{{
+              'pages.drafts.badges.attachments' | transloco: { count: s.media_attachments.length }
+            }}</span>
+          }
+        </div>
+      </div>
+      <div class="draft-actions">
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          (click)="pendingCancel.set(s)"
+          [title]="'pages.drafts.scheduled.cancelTitle' | transloco: { post: words().post }"
+        >
+          {{ 'pages.drafts.cancel' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+}
+
+@if (pendingCancel()) {
+  <app-confirm-dialog
+    [title]="'pages.drafts.scheduled.cancelDialog.title' | transloco: { post: words().post }"
+    [message]="'pages.drafts.scheduled.cancelDialog.message' | transloco"
+    [confirmLabel]="'pages.drafts.scheduled.cancelDialog.confirm' | transloco"
+    (confirmed)="confirmCancel()"
+    (cancelled)="pendingCancel.set(null)"
+  />
+}
+
+@if (pendingRemoval(); as pending) {
+  <app-confirm-dialog
+    [title]="pending.title"
+    [message]="pending.message"
+    [confirmLabel]="pending.confirmLabel"
+    (confirmed)="confirmRemove()"
+    (cancelled)="pendingRemoval.set(null)"
+  />
+}
+
+<!-- Provider picker. None of this metadata can be inferred from a draft, which
+     is exactly why converting to a paste needs a dialog rather than a button. -->
+@if (pendingPaste(); as pending) {
+  <div
+    class="convert-backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="pendingPaste.set(null)"
+    (keyup.escape)="pendingPaste.set(null)"
+  ></div>
+  <div
+    class="convert-dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'pages.drafts.pasteDialog.title' | transloco"
+  >
+    <h3>{{ 'pages.drafts.pasteDialog.title' | transloco }}</h3>
+    <p class="muted">
+      {{
+        'pages.drafts.pasteDialog.description' | transloco: { kind: kindLabel(pending.item.kind) }
+      }}
+    </p>
+
+    <label class="convert-field">
+      <span>{{ 'pages.drafts.pasteDialog.service' | transloco }}</span>
+      <select
+        [ngModel]="pending.providerId"
+        (ngModelChange)="onPasteProviderPick($event)"
+        name="provider"
+      >
+        @for (provider of pasteProviders.available(); track provider.id) {
+          <option [value]="provider.id">{{ provider.label }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="convert-field">
+      <span>{{ 'pages.drafts.pasteDialog.language' | transloco }}</span>
+      <select
+        [ngModel]="pending.language"
+        (ngModelChange)="setPasteField('language', $event)"
+        name="language"
+      >
+        @for (language of pasteProvider(pending).languages; track language.value) {
+          <option [value]="language.value">{{ language.label }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="convert-field">
+      <span>{{ 'pages.drafts.pasteDialog.expiry' | transloco }}</span>
+      <select
+        [ngModel]="pending.expiry"
+        (ngModelChange)="setPasteField('expiry', $event)"
+        name="expiry"
+      >
+        @for (expiry of pasteProvider(pending).expiries; track expiry.value) {
+          <option [value]="expiry.value">{{ expiry.label }}</option>
+        }
+      </select>
+    </label>
+
+    @if (pasteProvider(pending).immutable) {
+      <p class="convert-warn">
+        ⚠
+        {{
+          'pages.drafts.pasteDialog.immutable'
+            | transloco: { provider: pasteProvider(pending).label }
+        }}
+      </p>
+    }
+
+    <div class="convert-actions">
+      <button class="btn btn-outline btn-sm" type="button" (click)="pendingPaste.set(null)">
+        {{ 'pages.drafts.cancel' | transloco }}
+      </button>
+      <button
+        class="btn btn-sm"
+        type="button"
+        [disabled]="busy()"
+        (click)="confirmConvertToPaste()"
+      >
+        {{
+          (busy() ? 'pages.drafts.pasteDialog.pasting' : 'pages.drafts.pasteDialog.create')
+            | transloco
+        }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Park dialog. The date is editable because "never" isn't a real Mastodon
+     concept — a park is just a schedule nobody intends to let fire. -->
+@if (pendingPark(); as pending) {
+  <div
+    class="convert-backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="pendingPark.set(null)"
+    (keyup.escape)="pendingPark.set(null)"
+  ></div>
+  <div
+    class="convert-dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'pages.drafts.parkDialog.title' | transloco"
+  >
+    <h3>{{ 'pages.drafts.parkDialog.title' | transloco }}</h3>
+    <p class="muted">
+      {{
+        'pages.drafts.parkDialog.description' | transloco: { kind: kindLabel(pending.item.kind) }
+      }}
+    </p>
+
+    <label class="convert-field">
+      <span>{{ 'pages.drafts.parkDialog.publishAt' | transloco }}</span>
+      <input
+        type="datetime-local"
+        [ngModel]="pending.at"
+        (ngModelChange)="setParkAt($event)"
+        name="parkAt"
+      />
+    </label>
+    <p class="muted small">
+      {{ 'pages.drafts.parkDialog.hint' | transloco }}
+    </p>
+
+    <div class="convert-actions">
+      <button class="btn btn-outline btn-sm" type="button" (click)="pendingPark.set(null)">
+        {{ 'pages.drafts.cancel' | transloco }}
+      </button>
+      <button
+        class="btn btn-sm"
+        type="button"
+        [disabled]="busy()"
+        (click)="confirmConvertToSchedule()"
+      >
+        {{
+          (busy() ? 'pages.drafts.parkDialog.parking' : 'pages.drafts.parkDialog.park') | transloco
+        }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Unpark dialog. The only conversion on this page that removes its source,
+     so it says plainly what stops happening as well as what starts. -->
+@if (pendingUnpark(); as pending) {
+  <div
+    class="convert-backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="cancelUnpark()"
+    (keyup.escape)="cancelUnpark()"
+  ></div>
+  <div
+    class="convert-dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'pages.drafts.unparkDialog.title' | transloco"
+  >
+    <h3>{{ 'pages.drafts.unparkDialog.title' | transloco }}</h3>
+    <p class="muted">
+      {{ 'pages.drafts.unparkDialog.description' | transloco }}
+    </p>
+    <p class="muted small">
+      {{ 'pages.drafts.unparkDialog.note' | transloco }}
+    </p>
+
+    <div class="convert-actions">
+      <button class="btn btn-outline btn-sm" type="button" (click)="cancelUnpark()">
+        {{ 'pages.drafts.cancel' | transloco }}
+      </button>
+      <button class="btn btn-sm" type="button" [disabled]="busy()" (click)="confirmUnpark()">
+        {{
+          (busy() ? 'pages.drafts.unparkDialog.unparking' : 'pages.drafts.unparkDialog.unpark')
+            | transloco
+        }}
+      </button>
+    </div>
+  </div>
+}

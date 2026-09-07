@@ -1,0 +1,43 @@
+<div class="settings-wrap">
+  <aside class="settings-side">
+    @if (auth.account(); as acc) {
+      <a class="side-profile" [routerLink]="['/accounts', acc.id]">
+        <div class="side-header" [style.background-image]="'url(' + acc.header + ')'"></div>
+        <div class="side-identity">
+          <img
+            class="side-avatar"
+            [src]="acc.avatar_static || acc.avatar"
+            alt=""
+            decoding="async"
+          />
+          <div class="side-names">
+            <span class="side-name">{{ acc.display_name || acc.username }}</span>
+            <span class="side-acct muted">&#64;{{ acc.acct }}</span>
+          </div>
+        </div>
+      </a>
+    }
+
+    <nav class="settings-nav" [attr.aria-label]="'settings.sectionsAriaLabel' | transloco">
+      @for (group of groups; track group.titleKey) {
+        <h2 class="settings-nav-heading">{{ group.titleKey | transloco }}</h2>
+        <!-- Tracked by path *within* a group: a page filed under two headings
+             appears twice, so path alone is not unique across the whole nav. -->
+        @for (item of group.items; track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.exact }"
+          >
+            <span>{{ item.labelKey | transloco }}</span>
+            <span class="chev" aria-hidden="true">›</span>
+          </a>
+        }
+      }
+    </nav>
+  </aside>
+
+  <section class="settings-content">
+    <router-outlet />
+  </section>
+</div>

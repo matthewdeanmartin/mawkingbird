@@ -1,0 +1,16 @@
+.anonymous-setting {
+  max-width: 620px;
+}
+
+.anonymous-setting label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.anonymous-setting p {
+  margin: 0 0 10px;
+}
+
+.anonymous-setting select {
+  min-width: 180px;
+}

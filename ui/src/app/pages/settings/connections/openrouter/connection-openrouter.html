@@ -1,0 +1,266 @@
+<a class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.openrouter.back' | transloco
+}}</a>
+
+<div class="spage-head">
+  <h1>{{ 'settings.connections.openrouter.title' | transloco }}</h1>
+  <p>
+    {{ 'settings.connections.openrouter.intro' | transloco }}
+  </p>
+  <p class="muted small">{{ scopeDetail | transloco }}</p>
+</div>
+
+@if (openrouter.connected()) {
+  <div class="or-actions">
+    <span class="connection-ok">{{ 'settings.connections.openrouter.connected' | transloco }}</span>
+    <app-storage-badge [where]="where()" />
+    <button class="btn btn-outline" type="button" (click)="disconnect()">
+      {{ 'settings.connections.openrouter.disconnect' | transloco }}
+    </button>
+  </div>
+  @if (expiryLabel(openrouter.expiresAt()); as expiry) {
+    <p class="muted small">
+      @if (where() === 'local') {
+        {{ 'settings.connections.openrouter.expiry.deleted.a' | transloco }} {{ expiry
+        }}{{ 'settings.connections.openrouter.expiry.deleted.b' | transloco }}
+      } @else {
+        <!-- Deleted is the wrong word once a stored copy exists: the plaintext
+             leaves this browser and the connection stays. Saying "deleted" here
+             sends people to reconnect something that never disconnected. -->
+        {{ 'settings.connections.openrouter.expiry.cleared.a' | transloco }} {{ expiry
+        }}{{ 'settings.connections.openrouter.expiry.cleared.b' | transloco }}
+      }
+    </p>
+  }
+
+  <section class="or-section">
+    <h2>{{ 'settings.connections.openrouter.credits' | transloco }}</h2>
+    @if (creditsState(); as state) {
+      <p class="or-credits" [class.or-credits-unknown]="state.kind === 'unknown'">
+        {{ describeCredits(state) }}
+      </p>
+      @if (state.kind === 'uncapped') {
+        <p class="muted small">
+          {{ 'settings.connections.openrouter.credits.capNote' | transloco }}
+        </p>
+      }
+    } @else {
+      <p class="muted">
+        {{
+          creditsBusy()
+            ? ('settings.connections.openrouter.checking' | transloco)
+            : ('settings.connections.openrouter.notChecked' | transloco)
+        }}
+      </p>
+    }
+    <button
+      class="btn btn-outline btn-sm"
+      type="button"
+      (click)="refreshCredits()"
+      [disabled]="creditsBusy()"
+    >
+      {{
+        creditsBusy()
+          ? ('settings.connections.openrouter.checking' | transloco)
+          : ('settings.connections.openrouter.refresh' | transloco)
+      }}
+    </button>
+  </section>
+} @else {
+  <p class="credential-warning small">
+    {{ 'settings.connections.openrouter.keyWarning.a' | transloco }} <code>openrouter.ai</code
+    >{{ 'settings.connections.openrouter.keyWarning.b' | transloco }}
+  </p>
+  <button class="btn" type="button" (click)="connect()">
+    {{ 'settings.connections.openrouter.connect' | transloco }}
+  </button>
+}
+@if (notice(); as msg) {
+  <p class="connection-ok" role="status">{{ msg }}</p>
+}
+@if (error(); as msg) {
+  <p class="feed-error" role="alert">{{ msg }}</p>
+}
+
+<section class="or-section">
+  <h2>{{ 'settings.connections.openrouter.model' | transloco }}</h2>
+  <p class="muted">
+    {{ 'settings.connections.openrouter.model.default.a' | transloco }}
+    <code>{{ defaultModelId }}</code>
+    {{ 'settings.connections.openrouter.model.default.b' | transloco }}
+  </p>
+  <p class="or-current">
+    {{ 'settings.connections.openrouter.model.using' | transloco }}
+    <code>{{ choice.modelId() }}</code>
+    @if (!choice.isDefault()) {
+      <button class="btn btn-outline btn-sm" type="button" (click)="choice.reset()">
+        {{ 'settings.connections.openrouter.resetToDefault' | transloco }}
+      </button>
+    }
+  </p>
+
+  <form class="or-search" (ngSubmit)="runSearch()">
+    <input
+      type="search"
+      name="modelQuery"
+      [placeholder]="'settings.connections.openrouter.model.searchPlaceholder' | transloco"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+    />
+    <button class="btn" type="submit" [disabled]="models.searching()">
+      {{
+        models.searching()
+          ? ('settings.connections.openrouter.searching' | transloco)
+          : ('settings.connections.openrouter.search' | transloco)
+      }}
+    </button>
+  </form>
+  <label class="or-filter">
+    <input
+      type="checkbox"
+      [checked]="structuredOnly()"
+      (change)="toggleStructuredOnly(!structuredOnly())"
+    />
+    <span>
+      {{ 'settings.connections.openrouter.model.structuredOnly' | transloco }}
+      <span class="muted small">
+        {{ 'settings.connections.openrouter.model.structuredOnly.hint.a' | transloco }}
+        <code>:free</code>
+        {{ 'settings.connections.openrouter.model.structuredOnly.hint.b' | transloco }}
+      </span>
+    </span>
+  </label>
+  <p class="muted small">
+    {{ 'settings.connections.openrouter.model.searchNote' | transloco }}
+  </p>
+
+  @if (searchError(); as msg) {
+    <p class="feed-error" role="alert">{{ msg }}</p>
+  }
+  @if (results(); as models) {
+    @if (models.length) {
+      <ul class="or-models">
+        @for (model of models; track model.id) {
+          <li class="or-model" [class.or-model-active]="model.id === choice.modelId()">
+            <span class="or-model-body">
+              <span class="or-model-name">{{ model.name }}</span>
+              <code class="muted small">{{ model.id }}</code>
+              <span class="muted small">
+                @if (model.contextLength) {
+                  {{ model.contextLength | number }}
+                  {{ 'settings.connections.openrouter.model.tokenContext' | transloco }}
+                }
+                @if (perMillionTokens(model.promptPrice); as price) {
+                  {{ 'settings.connections.openrouter.model.in' | transloco }} {{ price }}
+                }
+                @if (perMillionTokens(model.completionPrice); as price) {
+                  {{ 'settings.connections.openrouter.model.out' | transloco }} {{ price }}
+                }
+              </span>
+            </span>
+            @if (model.id === choice.modelId()) {
+              <span class="pill pill-on">{{
+                'settings.connections.openrouter.model.inUse' | transloco
+              }}</span>
+            } @else {
+              <button class="btn btn-outline btn-sm" type="button" (click)="choose(model)">
+                {{ 'settings.connections.openrouter.model.useThis' | transloco }}
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="muted">{{ 'settings.connections.openrouter.model.noMatches' | transloco }}</p>
+    }
+  }
+</section>
+
+<section class="or-section">
+  <h2>{{ 'settings.connections.openrouter.translation' | transloco }}</h2>
+  <p class="muted">
+    {{ 'settings.connections.openrouter.translation.intro' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.openrouter.translation.anonNote' | transloco }}
+  </p>
+  <div class="or-translate-options">
+    @for (option of translatePref.options; track option.value) {
+      <label class="or-translate-option" [class.on]="translatePref.choice() === option.value">
+        <input
+          type="radio"
+          name="translator"
+          [value]="option.value"
+          [checked]="translatePref.choice() === option.value"
+          (change)="translatePref.set(option.value)"
+        />
+        <span>
+          <strong>{{ option.label }}</strong>
+          <span class="muted small">{{ option.hint }}</span>
+        </span>
+      </label>
+    }
+  </div>
+</section>
+
+<section class="or-section">
+  <h2>{{ 'settings.connections.openrouter.prompts' | transloco }}</h2>
+  <p class="muted">
+    {{ 'settings.connections.openrouter.prompts.intro.a' | transloco }}
+    <code>{{ braced('feedback') }}</code>
+    {{ 'settings.connections.openrouter.prompts.intro.b' | transloco }}
+  </p>
+  <p class="muted small">
+    {{ 'settings.connections.openrouter.prompts.placeholderNote.a' | transloco }}
+    <code>{{ braced('plcaeholder') }}</code>
+    {{ 'settings.connections.openrouter.prompts.placeholderNote.b' | transloco }}
+  </p>
+
+  @for (template of prompts.templates; track template.id) {
+    <div class="or-prompt">
+      <div class="or-prompt-head">
+        <h3>{{ template.label }}</h3>
+        @if (prompts.isCustom(template.id)) {
+          <span class="pill">{{
+            'settings.connections.openrouter.prompts.customised' | transloco
+          }}</span>
+        }
+      </div>
+      <p class="muted small">{{ template.description }}</p>
+      <p class="muted small">
+        {{ 'settings.connections.openrouter.prompts.placeholders' | transloco }}
+        @for (name of template.placeholders; track name) {
+          <code>{{ braced(name) }}</code>
+        }
+      </p>
+      <textarea
+        class="or-prompt-text"
+        rows="12"
+        spellcheck="false"
+        [attr.aria-label]="template.label + ' prompt'"
+        [value]="promptDraft(template.id)"
+        (input)="editPrompt(template.id, $any($event.target).value)"
+      ></textarea>
+      <div class="or-prompt-actions">
+        <button
+          class="btn"
+          type="button"
+          (click)="savePrompt(template.id)"
+          [disabled]="!promptDirty(template.id)"
+        >
+          {{ 'settings.connections.openrouter.save' | transloco }}
+        </button>
+        @if (promptDirty(template.id)) {
+          <button class="btn btn-outline" type="button" (click)="revertPrompt(template.id)">
+            {{ 'settings.connections.openrouter.cancel' | transloco }}
+          </button>
+        }
+        @if (prompts.isCustom(template.id)) {
+          <button class="btn btn-outline" type="button" (click)="resetPrompt(template.id)">
+            {{ 'settings.connections.openrouter.resetToDefault' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>

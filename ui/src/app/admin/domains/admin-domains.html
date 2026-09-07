@@ -1,0 +1,36 @@
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="newDomain()"
+    (ngModelChange)="newDomain.set($event)"
+    (keyup.enter)="add()"
+    [placeholder]="'adminDomains.placeholder' | transloco"
+  />
+  <select [ngModel]="severity()" (ngModelChange)="severity.set($event)">
+    <option value="silence">{{ 'adminDomains.silence' | transloco }}</option>
+    <option value="suspend">{{ 'adminDomains.suspend' | transloco }}</option>
+    <option value="noop">{{ 'adminDomains.noop' | transloco }}</option>
+  </select>
+  <button class="btn" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
+    {{ 'adminDomains.block' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminDomains.loading' | transloco }}</p>
+} @else if (!blocks().length) {
+  <p class="muted center">{{ 'adminDomains.empty' | transloco }}</p>
+} @else {
+  @for (b of blocks(); track b.id) {
+    <div class="block-row">
+      <div>
+        <strong>{{ b.domain }}</strong>
+        <span class="sev">{{ b.severity }}</span>
+        @if (b.public_comment) {
+          <span class="muted small">{{ b.public_comment }}</span>
+        }
+      </div>
+      <button class="op warn" (click)="remove(b)">{{ 'adminDomains.remove' | transloco }}</button>
+    </div>
+  }
+}

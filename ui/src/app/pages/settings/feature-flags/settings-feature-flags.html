@@ -1,0 +1,99 @@
+<div class="spage-head">
+  <h1>{{ 'settings.flags.title' | transloco }}</h1>
+  <p>{{ 'settings.flags.intro' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <h2>{{ 'settings.flags.features' | transloco }}</h2>
+    @for (flag of featureFlags; track flag.id) {
+      <div class="srow">
+        <span class="slabel">{{ flag.labelKey | transloco }}</span>
+        <div class="scontrol">
+          <select
+            [ngModel]="state(flag)"
+            (ngModelChange)="setState(flag, $event)"
+            [attr.aria-label]="
+              'settings.flags.rollout' | transloco: { flag: flag.labelKey | transloco }
+            "
+          >
+            <option value="production">{{ 'settings.flags.state.production' | transloco }}</option>
+            <option value="canary">{{ 'settings.flags.state.canary' | transloco }}</option>
+            <option value="test">{{ 'settings.flags.state.test' | transloco }}</option>
+            <option value="off">{{ 'settings.flags.state.off' | transloco }}</option>
+          </select>
+          <span class="hint">{{ flag.descriptionKey | transloco }}</span>
+          <span class="hint">{{ defaultHintKey | transloco: defaultHintParams(flag) }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="ssection" id="connectors">
+    <h2>{{ 'settings.flags.connectors' | transloco }}</h2>
+    <p class="hint">
+      {{ 'settings.flags.connectors.hint.before' | transloco }}
+      <a [routerLink]="['/settings/connections']">{{
+        'settings.flags.connectors.link' | transloco
+      }}</a
+      >{{ 'settings.flags.connectors.hint.after' | transloco }}
+    </p>
+    @for (flag of connectorFlags; track flag.id) {
+      <div class="srow">
+        <span class="slabel">{{ flag.labelKey | transloco }}</span>
+        <div class="scontrol">
+          <select
+            [ngModel]="state(flag)"
+            (ngModelChange)="setState(flag, $event)"
+            [attr.aria-label]="
+              'settings.flags.rollout' | transloco: { flag: flag.labelKey | transloco }
+            "
+          >
+            <option value="production">{{ 'settings.flags.state.production' | transloco }}</option>
+            <option value="canary">{{ 'settings.flags.state.canary' | transloco }}</option>
+            <option value="test">{{ 'settings.flags.state.test' | transloco }}</option>
+            <option value="off">{{ 'settings.flags.state.off' | transloco }}</option>
+          </select>
+          <span class="hint">{{ flag.descriptionKey | transloco }}</span>
+          <span class="hint">{{ defaultHintKey | transloco: defaultHintParams(flag) }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="ssection" id="proxies">
+    <h2>{{ 'settings.flags.proxies' | transloco }}</h2>
+    <p class="hint">
+      {{ 'settings.flags.proxies.hint.before' | transloco }}
+      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.flags.proxies.link' | transloco
+      }}</a
+      >{{ 'settings.flags.proxies.hint.after' | transloco }}
+    </p>
+    @for (flag of proxyFlags; track flag.id) {
+      <div class="srow">
+        <span class="slabel">{{ flag.labelKey | transloco }}</span>
+        <div class="scontrol">
+          <select
+            [ngModel]="state(flag)"
+            (ngModelChange)="setState(flag, $event)"
+            [attr.aria-label]="
+              'settings.flags.rollout' | transloco: { flag: flag.labelKey | transloco }
+            "
+          >
+            <option value="production">{{ 'settings.flags.state.production' | transloco }}</option>
+            <option value="canary">{{ 'settings.flags.state.canary' | transloco }}</option>
+            <option value="test">{{ 'settings.flags.state.test' | transloco }}</option>
+            <option value="off">{{ 'settings.flags.state.off' | transloco }}</option>
+          </select>
+          <span class="hint">{{ flag.descriptionKey | transloco }}</span>
+          <span class="hint">{{ defaultHintKey | transloco: defaultHintParams(flag) }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <p class="hint">
+    {{ 'settings.flags.overrides' | transloco }}
+  </p>
+</div>

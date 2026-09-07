@@ -1,0 +1,157 @@
+/* Sits inside .page-head, which is 18px/800 — a button back that inherited
+   those would read as a second title. Reset both explicitly, plus the usual
+   <button> resets (border/background/font) since this is a button styled to
+   read as a text link, not a link. No float: unlike the old .section-picker
+   this replaced, it is .page-head's only content in this branch, not
+   something sitting beside a title — a float here pulled it out of flow
+   while .page-head's border-bottom (normal flow) stayed put, drawing a line
+   straight through the button. */
+.feeds-back {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.feeds-back:hover {
+  text-decoration: underline;
+}
+
+/* The drill-down landing list: one row per FeedSection, so reaching any one
+   costs a single click and zero scrolling past the rest. Built on the shared
+   .list-row (styles.css) — block row, hover background — with its own flex
+   layout for the label + async count. Rows are <button>s (they narrow this
+   page rather than navigate), so the usual button resets apply too. */
+.feed-category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feed-category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.new-list {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* A create/delete that failed. Sits under the create box, where the action was. */
+.list-error {
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: #e0245e;
+  font-size: 13px;
+}
+
+.new-list input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.section-head {
+  padding: 14px 16px 6px;
+  font-size: 16px;
+  font-weight: 800;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+
+/* Compact empty states: an empty section should be about one row tall, not a
+   tall centred block (the global .center adds 32px of vertical padding). Keep
+   these terse and left-aligned so an empty Feeds page reads as a tight list. */
+p.muted.center.small {
+  padding: 8px 16px;
+  margin: 0;
+  text-align: left;
+  font-size: 13px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.del {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.del:hover {
+  color: #e0245e;
+  background: var(--bg);
+}
+
+/* "Look at a hashtag first" — a view action, not a follow one. */
+.tag-peek {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.tag-peek input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Bulk import/export door, below the followed-tag list. */
+.tag-bulk-link {
+  padding: 4px 12px 8px;
+}
+
+/* tags.pub relay follows, under the followed-tag list. */
+.tags-pub {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tags-pub-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+
+.tags-pub-error {
+  color: var(--danger, #e0245e);
+}
+
+.tags-pub-rows {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.tags-pub-rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+}

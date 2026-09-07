@@ -1,0 +1,36 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 16px;
+}
+
+.dialog {
+  background: var(--col-bg);
+  border-radius: 16px;
+  padding: 24px;
+  /* Wider than the confirm dialog: the discovery panel inside carries a
+     candidate server's name, category and description. */
+  width: 440px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+h3 {
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 16px;
+}
+
+.unreachable-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

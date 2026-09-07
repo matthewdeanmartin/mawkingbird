@@ -1,0 +1,103 @@
+<div class="page-head">{{ title() }}</div>
+@if (showServerFriendsShortcut()) {
+  <div class="feed-shortcuts">
+    <a class="btn btn-outline btn-sm" routerLink="/home">{{
+      'pagesServerFeed.shortcuts.serverFriends' | transloco
+    }}</a>
+  </div>
+}
+@if (def(); as d) {
+  <p class="muted small feed-blurb">{{ d.blurb }}</p>
+}
+
+@if (notice()) {
+  <p class="muted center" role="status">{{ notice() }}</p>
+}
+
+@if (isLinks()) {
+  <!-- News: trending preview cards, no members. -->
+  @if (loading()) {
+    <p class="muted center">{{ 'pagesServerFeed.loading' | transloco }}</p>
+  } @else if (!links().length) {
+    @if (!notice()) {
+      <p class="muted center">{{ 'pagesServerFeed.news.empty' | transloco }}</p>
+    }
+  } @else {
+    @for (link of links(); track link.url) {
+      <a class="news-card" [href]="link.url" target="_blank" rel="noopener noreferrer">
+        <span class="news-title">{{ link.title }}</span>
+        @if (link.description) {
+          <span class="news-desc muted">{{ link.description }}</span>
+        }
+        @if (link.provider_name) {
+          <span class="news-provider muted small">{{ link.provider_name }}</span>
+        }
+      </a>
+    }
+  }
+} @else {
+  <div class="tabs">
+    <button class="tab" [class.active]="tab() === 'posts'" (click)="setTab('posts')">
+      {{ 'pagesServerFeed.tabs.posts' | transloco }}
+    </button>
+    <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
+      {{ 'pagesServerFeed.tabs.members' | transloco }}
+    </button>
+  </div>
+
+  @if (tab() === 'posts') {
+    @if (loading()) {
+      <p class="muted center">{{ 'pagesServerFeed.loading' | transloco }}</p>
+    } @else if (!statuses().length) {
+      @if (!notice()) {
+        <p class="muted center">{{ 'pagesServerFeed.posts.empty' | transloco }}</p>
+      }
+    } @else {
+      @for (s of statuses(); track s.id; let i = $index) {
+        <app-status-card
+          [status]="s"
+          (changed)="onChanged(i, $event)"
+          (deleted)="onDeleted($event)"
+        />
+      }
+      @if (!exhausted()) {
+        <button class="btn btn-outline more" [disabled]="loadingMore()" (click)="loadMore()">
+          {{
+            (loadingMore() ? 'pagesServerFeed.posts.loading' : 'pagesServerFeed.posts.loadMore')
+              | transloco
+          }}
+        </button>
+      }
+    }
+  } @else {
+    <p class="muted small feed-blurb">
+      {{
+        (members().length === 1
+          ? 'pagesServerFeed.members.summary.one'
+          : 'pagesServerFeed.members.summary.other'
+        ) | transloco: { count: members().length }
+      }}
+    </p>
+    @if (!members().length) {
+      <p class="muted center">{{ 'pagesServerFeed.members.empty' | transloco }}</p>
+    } @else {
+      @for (a of members(); track a.id) {
+        <div class="member-row">
+          <a class="member-link" [routerLink]="['/accounts', a.id]">
+            <img
+              class="avatar"
+              [src]="a.avatar_static || a.avatar"
+              [alt]="a.username"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="names">
+              <span class="name">{{ a.display_name || a.username }}</span>
+              <span class="acct muted">&#64;{{ a.acct }}</span>
+            </span>
+          </a>
+        </div>
+      }
+    }
+  }
+}

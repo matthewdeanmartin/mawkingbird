@@ -1,0 +1,61 @@
+<div
+  class="lightbox-overlay"
+  (click)="onOverlayClick($event)"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+  (keydown.escape)="close()"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="'lightbox.viewer' | transloco"
+  tabindex="-1"
+  appFocusTrap
+  [appFocusTrapCloseOnEscape]="false"
+>
+  <button
+    class="lightbox-close"
+    type="button"
+    (click)="close()"
+    [attr.aria-label]="'lightbox.close' | transloco"
+  >
+    ✕
+  </button>
+
+  @if (hasMultiple()) {
+    <button
+      class="lightbox-nav prev"
+      type="button"
+      (click)="prev($event)"
+      [attr.aria-label]="'lightbox.previous' | transloco"
+    >
+      ‹
+    </button>
+  }
+
+  @if (current(); as m) {
+    <figure class="lightbox-figure">
+      <img
+        class="lightbox-img"
+        [src]="m.url || m.preview_url"
+        [alt]="m.description || ''"
+        decoding="async"
+      />
+      @if (m.description) {
+        <figcaption class="lightbox-caption">{{ m.description }}</figcaption>
+      }
+      @if (hasMultiple()) {
+        <div class="lightbox-counter">{{ index() + 1 }} / {{ items().length }}</div>
+      }
+    </figure>
+  }
+
+  @if (hasMultiple()) {
+    <button
+      class="lightbox-nav next"
+      type="button"
+      (click)="next($event)"
+      [attr.aria-label]="'lightbox.next' | transloco"
+    >
+      ›
+    </button>
+  }
+</div>

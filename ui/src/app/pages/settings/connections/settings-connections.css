@@ -1,0 +1,157 @@
+/* Retention policy sits below the catalog: the question "what can I connect?"
+   comes before "how long are credentials kept?". */
+.conn-section {
+  margin: 28px 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.conn-section h2 {
+  font-size: 17px;
+  margin: 0 0 6px;
+}
+
+/* The .btn rule is written for <button>, so an anchor wearing it needs the
+   bits an anchor does not inherit. */
+.doctor-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* Credential retention policy picker. */
+.lifetime-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin: 12px 0 4px;
+}
+
+.lifetime-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.lifetime-option input {
+  cursor: pointer;
+}
+
+.lifetime-warning {
+  margin-top: 8px;
+}
+
+/* The catalog. */
+.catalog {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.catalog-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.catalog-card:hover,
+.catalog-card:focus-visible {
+  border-color: var(--accent, #1d9bf0);
+  background: rgb(125 125 125 / 6%);
+}
+
+.catalog-card.unavailable {
+  opacity: 0.6;
+}
+
+.catalog-emoji {
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.catalog-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.catalog-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.catalog-label {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.catalog-pitch,
+.catalog-reason {
+  display: block;
+}
+
+/* Sits under the greyed card, and is deliberately not greyed itself — it is the
+   one thing on a turned-off entry that still does something. */
+.catalog-flag-link {
+  margin: 4px 0 0;
+  padding-left: 46px;
+}
+
+.catalog-enables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.enable {
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.pill {
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pill-on {
+  border-color: rgb(43 138 62 / 45%);
+  background: rgb(43 138 62 / 10%);
+  color: #2b8a3e;
+}
+
+/* Who the connection belongs to. Neutral by design — it is information, not a
+   status, and must not compete with the connected/not-connected pill. */
+.pill-scope {
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.pill-off {
+  border-color: rgb(208 138 0 / 45%);
+  background: rgb(208 138 0 / 10%);
+  color: #a06a00;
+}
+
+.catalog-card .chev {
+  align-self: center;
+  font-size: 20px;
+  opacity: 0.5;
+}

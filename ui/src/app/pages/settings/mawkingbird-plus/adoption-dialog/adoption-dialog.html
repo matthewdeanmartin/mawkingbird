@@ -1,0 +1,77 @@
+<!-- Cancellable, unlike the welcome dialog: there is a real third answer here
+     (leave it off and decide later), and forcing an irreversible data decision
+     on the spot is how people lose things. -->
+<button
+  class="ad-backdrop"
+  type="button"
+  [aria-label]="'settings.plus.adoption.cancel' | transloco"
+  (click)="cancel()"
+></button>
+<section class="ad-dialog" role="dialog" aria-modal="true" aria-labelledby="ad-title">
+  <!--
+    Names both places, in the user's terms, in the heading.
+
+    It used to read "Your feed subscriptions are in two places", which raises
+    three questions and answers none: which two, is that bad, and what am I
+    being asked. A reader who cannot tell whether they are looking at a problem
+    or a routine choice assumes the worst and cancels.
+  -->
+  <h2 id="ad-title">{{ titleKey() | transloco }}</h2>
+
+  <p
+    class="ad-summary"
+    [innerHTML]="
+      'settings.plus.adoption.summaryCounts'
+        | transloco: { localCount: localCount(), remoteCount: remoteCount() }
+    "
+  ></p>
+  <!-- Says plainly that nothing is wrong. This dialog appears at a moment the
+       user chose, doing something ordinary, and should not read like an alert. -->
+  <p class="ad-summary muted small">
+    {{ 'settings.plus.adoption.reassure' | transloco }}
+  </p>
+
+  <div class="ad-choices">
+    <div class="ad-choice">
+      <button class="btn" type="button" [disabled]="busy()" (click)="choose('merge')">
+        {{
+          'settings.plus.adoption.keepAllCount' | transloco: { count: localCount() + remoteCount() }
+        }}
+      </button>
+      <p class="ad-detail">
+        {{ 'settings.plus.adoption.keepAll.hint' | transloco }}
+      </p>
+    </div>
+
+    <div class="ad-choice">
+      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="choose('replace')">
+        {{ 'settings.plus.adoption.justTheCount' | transloco: { count: remoteCount() } }}
+      </button>
+      <p class="ad-detail">
+        {{ 'settings.plus.adoption.justTheHintCount' | transloco: { count: localCount() } }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Said out loud rather than left to be discovered. Someone looking for
+       "upload mine and overwrite theirs" should find out here that it does not
+       exist, and why. -->
+  <p class="ad-note">
+    {{ 'settings.plus.adoption.noReplace' | transloco }}
+  </p>
+
+  <div class="ad-actions">
+    <!--
+      "Not now" told the user nothing about what declining costs them. It reads
+      as postponing a chore, when what it actually does is leave the feature off
+      — so the line beneath says exactly that, and the button names the outcome
+      rather than the timing.
+    -->
+    <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="cancel()">
+      {{ 'settings.plus.adoption.leaveOff' | transloco }}
+    </button>
+    <p class="muted small">
+      {{ 'settings.plus.adoption.leaveOffHintCount' | transloco: { count: localCount() } }}
+    </p>
+  </div>
+</section>

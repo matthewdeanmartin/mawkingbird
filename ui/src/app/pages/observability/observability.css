@@ -1,0 +1,505 @@
+.tile-bad .tile-value {
+  color: #e0245e;
+}
+
+/* --------------------------------------------------------------- highlights */
+.highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.hl {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.hl-tag {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex: none;
+}
+
+.hl code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.hl .small {
+  flex: none;
+  margin-left: auto;
+}
+
+/* ------------------------------------------------------------- server picker */
+.obs-scope {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.obs-scope select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: inherit;
+  font: inherit;
+  max-width: 260px;
+}
+
+/* --------------------------------------------------------- volume + latency */
+.volume-chart,
+.latency-chart {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  overflow: visible;
+}
+
+.volume-chart {
+  height: 150px;
+}
+
+.latency-chart {
+  height: 130px;
+}
+
+.volume-chart .bar {
+  fill: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.volume-chart .bar:hover {
+  fill: var(--accent);
+}
+
+.volume-chart .bar-err {
+  fill: #e0245e;
+}
+
+.volume-chart .axis {
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.latency-chart .grid {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The viewBox is stretched horizontally by preserveAspectRatio="none", which
+   would stretch glyphs with it; the axis labels opt out of that scaling. */
+.latency-chart .tick {
+  fill: var(--muted);
+  font-size: 9px;
+  vector-effect: non-scaling-stroke;
+}
+
+.latency-chart .band {
+  stroke: none;
+}
+
+.latency-chart .band-fast {
+  fill: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.latency-chart .band-slow {
+  fill: color-mix(in srgb, #b46be0 18%, transparent);
+}
+
+.latency-chart .median {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.latency-chart .median-fast {
+  stroke: var(--accent);
+}
+
+.latency-chart .median-slow {
+  stroke: #b46be0;
+}
+
+.latency-chart .pt-fast {
+  fill: var(--accent);
+}
+
+.latency-chart .pt-slow {
+  fill: #b46be0;
+}
+
+.legend {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.legend .key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin: 0 3px 0 8px;
+  vertical-align: -1px;
+}
+
+.legend .key-fast {
+  background: var(--accent);
+}
+
+.legend .key-slow {
+  background: #b46be0;
+}
+
+/* -------------------------------------------------------------- calls chart */
+.chart-figure {
+  margin: 16px 0 4px;
+}
+
+.chart-figure figcaption {
+  margin-bottom: 6px;
+}
+
+.calls-chart {
+  width: 100%;
+  height: 160px;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--col-bg);
+  overflow: visible;
+}
+
+.calls-chart .area {
+  fill: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.calls-chart .line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.calls-chart .err-line {
+  fill: none;
+  stroke: #e0245e;
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.calls-chart .crosshair {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.calls-chart .dot {
+  fill: var(--accent);
+  stroke: var(--col-bg);
+  stroke-width: 1.5;
+}
+
+.chart-tip {
+  margin-top: 6px;
+  min-height: 18px;
+}
+
+/* HTTP method chips. */
+.method {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-right: 6px;
+  background: var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+.method[data-method='GET'] {
+  background: color-mix(in srgb, #1da1f2 22%, transparent);
+}
+
+.method[data-method='POST'],
+.method[data-method='PUT'] {
+  background: color-mix(in srgb, #00ba7c 24%, transparent);
+}
+
+.method[data-method='DELETE'] {
+  background: color-mix(in srgb, #e0245e 22%, transparent);
+}
+
+/* --------------------------------------------------------------- error list */
+.error-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.error-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.error-row:last-child {
+  border-bottom: none;
+}
+
+.err-status {
+  flex: none;
+  font-weight: 800;
+  font-size: 12px;
+  color: #e0245e;
+  min-width: 34px;
+}
+
+.err-status.net {
+  color: #d97706;
+}
+
+/* ------------------------------------------------------- diagnostic timeline */
+.diagnostic-notice {
+  color: var(--accent);
+  margin: 8px 0;
+}
+
+.diagnostic-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.diagnostic-row {
+  display: grid;
+  grid-template-columns: 52px minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.diagnostic-row:last-child {
+  border-bottom: none;
+}
+
+.diagnostic-level {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.diagnostic-row.warn .diagnostic-level {
+  color: #d97706;
+}
+
+.diagnostic-row.error .diagnostic-level {
+  color: #e0245e;
+}
+
+.diagnostic-event,
+.diagnostic-details {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diagnostic-area {
+  color: var(--muted);
+}
+
+.diagnostic-details {
+  font-size: 11px;
+}
+
+.diagnostic-time {
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .diagnostic-row {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+  }
+
+  .diagnostic-details {
+    grid-column: 2 / -1;
+  }
+}
+
+.err-endpoint {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.err-msg {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.err-time {
+  flex: none;
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------------- doc links */
+/* The "?" that opens docs.joinmastodon.org for an endpoint. Small and quiet
+   until hovered: it sits in a dense table and must not compete with the data. */
+.doc-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.doc-link:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Section-level match only — we know the family, not the operation. */
+.doc-link.approx {
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+/* The operation's plain-English summary — the answer to "what even is this
+   endpoint", which is the whole point of the docs link.
+ *
+ * On its own line under the path, not beside it: the endpoint column sits in a
+ * fixed-width centre column between two sidebars, so anything added
+ * horizontally pushes the timing numbers out of view. Vertically it costs a
+ * line of height and nothing else. */
+.doc-summary {
+  display: block;
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------ client errors */
+/* Wraps (against the table's default nowrap) and stays narrow, so the
+   first/last timestamps — which tell you whether a bug is historic or happening
+   right now — keep their place on screen. */
+.client-error {
+  max-width: 300px;
+  white-space: normal;
+}
+
+.cerr-type {
+  font-weight: 700;
+  color: #e0245e;
+  margin-right: 6px;
+}
+
+.cerr-msg {
+  overflow-wrap: anywhere;
+}
+
+.cerr-where {
+  display: block;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------- storage summary row */
+.storage-summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  text-decoration: none;
+  color: inherit;
+}
+
+.storage-summary:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.storage-summary-value {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.storage-summary-value .muted {
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+/* ------------------------------------------------------------- tier tags */
+.tier-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.tier-tag[data-tier='paid'] {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.tier-tag[data-tier='free'] {
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
+  color: var(--muted);
+}

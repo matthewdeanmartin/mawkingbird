@@ -1,0 +1,213 @@
+/* Shared with the other connector pages via connection-page.css; this file
+   holds only what the doctor's result list needs. */
+
+.section-title {
+  margin: 24px 0 8px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.doc-run {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 18px 0 4px;
+}
+
+.doc-summary {
+  margin: 0;
+}
+
+/* Loud on purpose: when the control host fails, every other verdict on the
+   page is meaningless and the reader needs to know that before reading them. */
+.doc-control-warning {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border: 1px solid rgb(214 59 59 / 45%);
+  border-radius: 8px;
+  background: rgb(214 59 59 / 8%);
+  font-size: 14px;
+}
+
+.doc-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.doc-row {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.doc-row-bad {
+  border-color: rgb(214 59 59 / 35%);
+}
+
+/* Reachable, unreadable, and fixable from here. A different state from both
+   "working" and "blocked": nothing is broken, but something must be set up. */
+.doc-row-warn {
+  border-color: rgb(160 106 0 / 35%);
+}
+
+.doc-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.doc-host {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.doc-label {
+  font-weight: 700;
+}
+
+.doc-hostname {
+  /* Long hostnames must wrap rather than push the verdict off the row. */
+  overflow-wrap: anywhere;
+}
+
+.doc-verdict {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.doc-ok {
+  color: #2b8a3e;
+}
+
+.doc-bad {
+  color: #d63b3b;
+}
+
+.doc-warn {
+  color: #a06a00;
+}
+
+.doc-verdict-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Secondary to the verdict it sits beside: the number is evidence for the
+   hint below, not a headline of its own. */
+.doc-timing {
+  font-variant-numeric: tabular-nums;
+}
+
+.doc-matters {
+  margin: 4px 0 0;
+}
+
+.doc-cors,
+.doc-proxy,
+.doc-timing-hint {
+  margin: 6px 0 0;
+}
+
+/* A working proxy no longer colours its own line green: it now decides the
+   row's headline instead, which says "Working (via proxy)". Two green things
+   saying the same thing was redundant, and it was the half of the amber/green
+   pair that made a solved row look unresolved. */
+
+/* Marks a genuinely open CORS problem — but in the neutral warning colour, not
+   the red used for unreachable. Applied only while the row is not yet usable;
+   once a proxy has rescued it, the line stays but loses the colour. */
+.doc-cors-blocked {
+  color: #a06a00;
+}
+
+/* Reference material rather than a finding, so it sits quietly under the row. */
+.doc-status {
+  margin: 6px 0 0;
+}
+
+.doc-followup-status {
+  margin: 8px 0 0;
+}
+
+/* An aggregator's guess must not read like the vendor's own word. */
+.doc-status-third {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.doc-cors-list {
+  margin: 6px 0 10px;
+  padding-left: 22px;
+}
+
+.doc-cors-list li {
+  margin: 2px 0;
+}
+
+.doc-followup {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.doc-followup p {
+  margin: 0 0 8px;
+}
+
+.doc-report {
+  margin: 10px 0 0;
+  padding: 8px 12px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.doc-report legend {
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.doc-report-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.doc-report-option input {
+  cursor: pointer;
+}
+
+/* The payoff line: the one place the page names a likely cause, so it is the
+   one thing on the row that should catch the eye. */
+.doc-interpretation {
+  margin: 10px 0 0;
+  padding: 9px 12px;
+  border-left: 3px solid var(--accent);
+  background: rgb(125 125 125 / 8%);
+  border-radius: 0 6px 6px 0;
+}
+
+.small {
+  font-size: 13px;
+}

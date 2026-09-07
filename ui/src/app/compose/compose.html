@@ -1,0 +1,845 @@
+<div
+  class="compose"
+  [class.compose-compact]="compact()"
+  [class.drag-over]="dragOver()"
+  (dragenter)="onDragEnter($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  @if (hugoEdit.current(); as edit) {
+    <!-- Unmistakable, because the failure mode is someone thinking they are
+         writing something new and instead overwriting a published post. -->
+    <div class="hugo-editing" role="status">
+      <span class="hugo-editing-what">
+        {{ 'compose.editing' | transloco }} <strong>{{ edit.originalTitle || edit.path }}</strong>
+        <span class="muted small">{{ edit.path }}</span>
+      </span>
+      <button class="btn btn-outline btn-sm" type="button" (click)="cancelHugoEdit()">
+        {{ 'compose.cancelEdit' | transloco }}
+      </button>
+    </div>
+  }
+  @if (deployWatch.current(); as deploy) {
+    <!-- "Published" alone was the lie this fixes: GitHub accepting the commit
+         is not the post being live. A failed build must read as "your writing
+         is safe, the build isn't" — never as a lost post. -->
+    <div
+      class="hugo-deploy"
+      [class.deploy-live]="deploy.kind === 'live'"
+      [class.deploy-failed]="deploy.kind === 'failed'"
+      role="status"
+    >
+      <span class="hugo-deploy-text">{{ deployMessage() }}</span>
+      @if (deploy.kind === 'building' || deploy.kind === 'queued') {
+        <span class="hugo-deploy-spinner" aria-hidden="true">⏳</span>
+      }
+      @if (deploy.kind === 'live' || deploy.kind === 'failed') {
+        <a [href]="deploy.runUrl" target="_blank" rel="noopener noreferrer">
+          {{
+            (deploy.kind === 'failed' ? 'compose.seeWhatFailed' : 'compose.buildLink') | transloco
+          }}
+        </a>
+      }
+      <button
+        class="hugo-deploy-close"
+        type="button"
+        [attr.aria-label]="'compose.dismissBuildStatus' | transloco"
+        (click)="deployWatch.stop()"
+      >
+        ×
+      </button>
+    </div>
+  }
+  @if (cwOpen() || targetIncludesBlog()) {
+    <input
+      class="cw-input"
+      type="text"
+      [ngModel]="spoilerText()"
+      (ngModelChange)="spoilerText.set($event)"
+      [placeholder]="
+        targetIncludesBlog()
+          ? 'Blog post title'
+          : targetIncludesPaste()
+            ? 'Paste title'
+            : 'Content warning'
+      "
+      [attr.maxlength]="targetIncludesPaste() ? 120 : null"
+    />
+  }
+
+  <textarea
+    [ngModel]="text()"
+    (ngModelChange)="text.set($event)"
+    [placeholder]="placeholderText()"
+    [rows]="compact() ? 2 : 3"
+    (focus)="onBoxFocus(0, $event)"
+    (keydown)="onBoxKeydown($event)"
+    (paste)="onPaste($event)"
+  ></textarea>
+  @if (showReplyMentionHint()) {
+    <p class="reply-mention-hint muted" [innerHTML]="'compose.replyMentionHint' | transloco"></p>
+  }
+  @if (
+    !targetIncludesPaste() &&
+    !targetIncludesBlog() &&
+    (thread().length || charCount() > effectiveMax() - 50)
+  ) {
+    <!-- The limit follows the target: 500 on Fedi, 300 graphemes on Bluesky, and
+         the lower of the two for "both", where one body goes to each. Naming the
+         source explains a number that would otherwise look wrong to someone
+         looking at a Mastodon composer. -->
+    <div class="seg-count muted" [class.over-limit]="charCount() > effectiveMax()">
+      {{ charCount() }}/{{ effectiveMax() }}
+      @if (limitSource(); as who) {
+        <span class="limit-source">({{ who }})</span>
+      }
+    </div>
+  }
+
+  <!-- Links are counted as 23 characters by the server however long they are, so
+       this never claims shortening will save budget — it says what the link
+       costs, and offers to tidy it up. -->
+  @if (!targetIncludesPaste() && !targetIncludesBlog() && longLinks().length; as linkCount) {
+    <div class="link-note muted">
+      <span class="link-note-text">
+        {{
+          (linkCount === 1 ? 'pages.write.linkCost.one' : 'pages.write.linkCost.other')
+            | transloco: { count: linkCount, chars: linkCount * 23 }
+        }}
+        @if (shortenerReady()) {
+          <span>{{
+            (linkCount === 1
+              ? 'pages.write.shorteningHelps.one'
+              : 'pages.write.shorteningHelps.other'
+            ) | transloco
+          }}</span>
+        }
+      </span>
+      @if (shortenerReady()) {
+        <button
+          class="btn btn-outline btn-sm"
+          type="button"
+          [disabled]="shortening()"
+          (click)="shortenLinks()"
+        >
+          {{
+            shortening()
+              ? ('pages.write.shortening' | transloco)
+              : ('pages.write.shortenWith' | transloco: { name: shortenerName() })
+          }}
+        </button>
+      } @else {
+        <a class="link-note-setup" routerLink="/settings/connections/link-shortener">
+          {{ 'pages.write.setUpShortener' | transloco }}
+        </a>
+      }
+    </div>
+    @if (shortenError(); as msg) {
+      <p class="feed-error" role="alert">{{ msg }}</p>
+    }
+  }
+
+  @for (t of thread(); track $index; let i = $index) {
+    <div class="thread-box">
+      <div class="thread-box-rail" aria-hidden="true"></div>
+      <div class="thread-box-body">
+        <textarea
+          [ngModel]="t"
+          (ngModelChange)="setThreadText(i, $event)"
+          [placeholder]="'compose.threadPostPlaceholder' | transloco: { index: i + 2 }"
+          rows="2"
+          (focus)="onBoxFocus(i + 1, $event)"
+          (keydown)="onBoxKeydown($event)"
+          (paste)="onPaste($event)"
+        ></textarea>
+        <div class="thread-box-meta">
+          <span class="muted" [class.over-limit]="countOf(t) > effectiveMax()"
+            >{{ countOf(t) }}/{{ effectiveMax() }}</span
+          >
+          <button
+            class="btn btn-outline btn-sm"
+            type="button"
+            (click)="removeThreadBox(i)"
+            [title]="'compose.removeFromThread' | transloco: { noun: words().post }"
+            [aria-label]="'compose.removeFromThread' | transloco: { noun: words().post }"
+          >
+            <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (media().length) {
+    <div class="media-previews">
+      @for (m of media(); track m.media.id; let i = $index) {
+        <div class="media-preview">
+          <img
+            [src]="m.media.preview_url || m.media.url"
+            [alt]="m.description"
+            loading="lazy"
+            decoding="async"
+          />
+          <input
+            type="text"
+            class="alt-input"
+            [ngModel]="m.description"
+            (ngModelChange)="setMediaDescription(i, $event)"
+            [placeholder]="'compose.altPlaceholder' | transloco"
+          />
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="removeMedia(i)"
+            [title]="'compose.remove' | transloco"
+            [aria-label]="'compose.remove' | transloco"
+          >
+            <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+      }
+    </div>
+    @if (altTextNote(); as note) {
+      <div class="alt-required muted small" [class.advisory]="!altTextMissing()" role="status">
+        {{ note }}
+      </div>
+    }
+  }
+
+  @if (pollOpen()) {
+    <div class="poll-builder">
+      @for (opt of pollOptions(); track $index; let i = $index) {
+        <div class="poll-option-row">
+          <input
+            type="text"
+            [ngModel]="opt"
+            (ngModelChange)="setPollOption(i, $event)"
+            [placeholder]="'compose.choicePlaceholder' | transloco: { index: i + 1 }"
+          />
+          @if (pollOptions().length > 2) {
+            <button
+              class="btn btn-outline btn-sm"
+              (click)="removePollOption(i)"
+              [title]="'compose.removeChoice' | transloco"
+              [aria-label]="'compose.removeChoice' | transloco"
+            >
+              <span aria-hidden="true">✕</span>
+            </button>
+          }
+        </div>
+      }
+      <div class="poll-controls">
+        @if (pollOptions().length < 4) {
+          <button class="btn btn-outline btn-sm" (click)="addPollOption()">
+            {{ 'compose.addChoice' | transloco }}
+          </button>
+        }
+        <label class="poll-multiple">
+          <input
+            type="checkbox"
+            [ngModel]="pollMultiple()"
+            (ngModelChange)="pollMultiple.set($event)"
+          />
+          {{ 'compose.allowMultiple' | transloco }}
+        </label>
+        <select [ngModel]="pollExpiresIn()" (ngModelChange)="pollExpiresIn.set(+$event)">
+          @for (e of pollExpiry; track e.seconds) {
+            <option [value]="e.seconds">{{ e.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  }
+
+  @if (previewVisible()) {
+    <div class="preview">
+      <div class="preview-label muted">{{ 'compose.previewHeading' | transloco }}</div>
+      @for (html of previewHtml(); track $index; let i = $index) {
+        <div class="preview-card">
+          @if (cwOpen() && spoilerText().trim() && i === 0) {
+            <div class="spoiler">
+              {{
+                targetIncludesPaste() || targetIncludesBlog()
+                  ? ('compose.titlePrefix' | transloco)
+                  : ''
+              }}{{ spoilerText() }}
+            </div>
+          }
+          @if (html) {
+            <div class="content" [innerHTML]="html"></div>
+          } @else {
+            <div class="content muted preview-empty">{{ 'compose.previewEmpty' | transloco }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (scheduleOpen()) {
+    <div class="schedule-row">
+      <label class="muted small" for="schedule-at">{{ 'compose.publishAt' | transloco }}</label>
+      <input
+        id="schedule-at"
+        type="datetime-local"
+        [min]="scheduleMin()"
+        [ngModel]="scheduleAt()"
+        (ngModelChange)="scheduleAt.set($event)"
+      />
+      @if (scheduleAt()) {
+        <button class="btn btn-outline btn-sm" type="button" (click)="scheduleAt.set('')">
+          {{ 'compose.clear' | transloco }}
+        </button>
+      }
+    </div>
+  }
+
+  <div class="compose-bottom">
+    <div class="compose-selects">
+      @if (showTargetPicker()) {
+        <select
+          class="target-select"
+          [ngModel]="target()"
+          (ngModelChange)="onTargetChange($event)"
+          [title]="'compose.postTo' | transloco: { noun: words().Post }"
+        >
+          <!-- Only Fedi needs a Mastodon token. Bluesky and the blog each carry
+               their own credential and post straight to their own service, so an
+               anonymous session that has linked one can post to it — that is the
+               whole pitch to people who are Bluesky-first and haven't signed up
+               for a Mastodon account yet. "Both" is the exception: it includes a
+               Fedi post, so it needs the token too. -->
+          @if (!auth.isAnonymous) {
+            <option value="fedi">{{ 'compose.target.fedi' | transloco }}</option>
+          }
+          @if (bskySession.linked()) {
+            <option value="bsky">{{ 'compose.target.bluesky' | transloco }}</option>
+            @if (!auth.isAnonymous) {
+              <option value="both">{{ 'compose.target.both' | transloco }}</option>
+            }
+          }
+          <!-- Three blogs can be connected at once, so they are separate
+               options rather than one "Blog". Blogger needs a chosen blog, not
+               just a session, and Hugo needs its write token as well as its
+               repo, or the post would have nowhere to go. -->
+          @if (mataroa.connected() && featureFlags.enabled('connector-mataroa')) {
+            <option value="blog">{{ 'compose.target.mataroa' | transloco }}</option>
+          }
+          @if (blogger.ready() && featureFlags.enabled('connector-blogger')) {
+            <option value="blogger">✍️ {{ blogger.blogName() || 'Blogger' }}</option>
+          }
+          @if (hugo.connected() && featureFlags.enabled('connector-hugo')) {
+            <option value="hugo">✍️ {{ hugo.slug() || 'Hugo' }}</option>
+          }
+          @if (featureFlags.enabled('pastebin')) {
+            <option value="paste">{{ 'compose.target.paste' | transloco }}</option>
+          }
+        </select>
+      }
+      @if (targetIsBlogger() || targetIsHugo()) {
+        <!-- Blogger and Hugo both have a native draft state; Mataroa publishes
+             immediately and has none. A Hugo draft is still committed to the
+             repo — it is just not built into the site. -->
+        <label
+          class="blog-draft"
+          [title]="
+            targetIsHugo()
+              ? 'Commit with draft = true, so Hugo leaves it out of the built site'
+              : 'Save to Blogger as a draft instead of publishing it'
+          "
+        >
+          <input
+            type="checkbox"
+            [checked]="blogDraft()"
+            (change)="blogDraft.set($any($event.target).checked)"
+          />
+          {{ 'compose.blogDraft' | transloco }}
+        </label>
+      }
+      @if (targetIncludesPaste()) {
+        <select
+          class="target-select"
+          [ngModel]="pasteProviderId()"
+          (ngModelChange)="onPasteProviderChange($event)"
+          [title]="'compose.pasteService' | transloco"
+        >
+          @for (provider of pasteProviders.available(); track provider.id) {
+            <option [value]="provider.id">{{ provider.label }}</option>
+          }
+        </select>
+        @if (selectedPasteProvider().languages.length > 1) {
+          <select
+            class="target-select"
+            [ngModel]="pasteLanguage()"
+            (ngModelChange)="pasteLanguage.set($event)"
+            [title]="'compose.syntaxLanguage' | transloco"
+          >
+            @for (language of selectedPasteProvider().languages; track language.value) {
+              <option [value]="language.value">{{ language.label }}</option>
+            }
+          </select>
+        }
+        @if (selectedPasteProvider().expiries.length > 1) {
+          <select
+            class="target-select"
+            [ngModel]="pasteExpiry()"
+            (ngModelChange)="onPasteExpiryChange($event)"
+            [title]="'compose.pasteExpiry' | transloco"
+          >
+            @for (expiry of selectedPasteProvider().expiries; track expiry.value) {
+              <option [value]="expiry.value">{{ expiry.label }}</option>
+            }
+          </select>
+        }
+      }
+      @if (
+        targetIncludesBlog() ||
+        lockVisibility() ||
+        (targetIncludesPaste() && selectedPasteProvider().visibilities.length === 1)
+      ) {
+        <span class="visibility-locked" [title]="'compose.visibilityFixed' | transloco"
+          >🔒 {{ targetIncludesBlog() ? 'public' : visibility() }}</span
+        >
+      } @else {
+        <select
+          class="visibility-select"
+          [ngModel]="visibility()"
+          (ngModelChange)="onVisibilityChange($event)"
+          [title]="'compose.visibility' | transloco"
+        >
+          @if (targetIncludesPaste()) {
+            @for (v of selectedPasteProvider().visibilities; track v) {
+              <option [value]="v">{{ v }}</option>
+            }
+          } @else {
+            @for (v of visibilities; track v) {
+              <option [value]="v">{{ v }}</option>
+            }
+          }
+        </select>
+      }
+
+      @if (targetIncludesBsky()) {
+        <p class="compose-warning" role="status">{{ 'compose.bskyAudience' | transloco }}</p>
+      }
+
+      @if (!targetIncludesPaste() && !targetIncludesBlog() && !targetIncludesBsky()) {
+        <select
+          class="visibility-select"
+          [ngModel]="postLanguage()"
+          (ngModelChange)="onLanguageChange($event)"
+          [title]="'compose.postLanguage' | transloco: { noun: words().Post }"
+        >
+          <option value="">{{ 'pages.write.languageNotSpecified' | transloco }}</option>
+          @for (l of languageOptions(); track l.code) {
+            <option [value]="l.code">{{ l.name }}</option>
+          }
+        </select>
+      }
+
+      @if ((!compact() || draftsOpen()) && (savedDrafts().length || hasDraftContent())) {
+        <select
+          class="drafts-select"
+          (change)="onDraftSelect($any($event.target))"
+          [title]="'compose.drafts' | transloco"
+        >
+          <option value="" selected>{{ 'compose.draftsTab' | transloco }}</option>
+          @if (hasDraftContent()) {
+            <option value="save">{{ 'compose.saveAsDraft' | transloco }}</option>
+          }
+          @for (d of savedDrafts(); track d.id) {
+            <option [value]="d.id">{{ draftLabel(d) }}</option>
+          }
+        </select>
+      }
+    </div>
+
+    <div class="compose-actions">
+      <div class="compose-tools">
+        @if (!targetIncludesPaste() && !targetIncludesBlog()) {
+          <label
+            class="tool-btn"
+            [class.disabled]="!canAttachMedia()"
+            [title]="'compose.attachMedia' | transloco"
+          >
+            📎
+            <input
+              type="file"
+              multiple
+              hidden
+              [disabled]="!canAttachMedia()"
+              (change)="onFilesSelected($event)"
+            />
+          </label>
+
+          <button
+            class="tool-btn"
+            [class.on]="pollOpen()"
+            [disabled]="!canAddPoll()"
+            (click)="togglePoll()"
+            [title]="'compose.addPoll' | transloco"
+            [aria-label]="'compose.addPoll' | transloco"
+          >
+            <span aria-hidden="true">📊</span>
+          </button>
+
+          <!-- Scheduling is a way to publish without deciding now, which is the
+               one thing a gated composer must not offer. -->
+          @if (!inReplyToId() && !quotedStatusId() && !gated()) {
+            <button
+              class="tool-btn"
+              [class.on]="scheduleOpen()"
+              (click)="toggleSchedule()"
+              [title]="'compose.scheduleThis' | transloco: { noun: words().post }"
+              [aria-label]="'compose.scheduleThis' | transloco: { noun: words().post }"
+            >
+              <span aria-hidden="true">🕒</span>
+            </button>
+          }
+        }
+
+        @if (!targetIncludesBlog()) {
+          <button
+            class="tool-btn"
+            [class.on]="cwOpen()"
+            (click)="toggleCw()"
+            [title]="
+              (targetIncludesPaste() ? 'compose.addATitle' : 'compose.contentWarning') | transloco
+            "
+          >
+            {{ (targetIncludesPaste() ? 'compose.titleShort' : 'pages.write.cwShort') | transloco }}
+          </button>
+        }
+
+        @if (!targetIncludesPaste() && !targetIncludesBlog()) {
+          <button
+            class="tool-btn"
+            [class.on]="sensitive()"
+            (click)="sensitive.set(!sensitive())"
+            [title]="'compose.markSensitive' | transloco"
+            [aria-label]="'compose.markSensitive' | transloco"
+          >
+            <span aria-hidden="true">⚠️</span>
+          </button>
+        }
+
+        <span class="emoji-anchor">
+          <button
+            class="tool-btn"
+            [class.on]="emojiOpen()"
+            (click)="toggleEmoji()"
+            [title]="'compose.insertEmoji' | transloco"
+            [aria-label]="'compose.insertEmoji' | transloco"
+          >
+            <span aria-hidden="true">🙂</span>
+          </button>
+          @if (emojiOpen()) {
+            <div class="emoji-popover">
+              <app-emoji-picker (picked)="insertEmoji($event)" />
+            </div>
+          }
+        </span>
+
+        @if (canUseTagHelper()) {
+          <button
+            class="tool-btn"
+            type="button"
+            (click)="tagHelperOpen.set(true)"
+            [title]="'compose.suggestHashtagsFor' | transloco: { noun: words().post }"
+          >
+            🤖#️⃣
+          </button>
+        }
+
+        @if (canTranslate()) {
+          <button
+            class="tool-btn"
+            type="button"
+            (click)="translateOpen.set(true)"
+            [title]="'compose.translateThis' | transloco: { noun: words().post }"
+            [aria-label]="'compose.translateThis' | transloco: { noun: words().post }"
+          >
+            <span aria-hidden="true">🤖🌐</span>
+          </button>
+        }
+
+        @if (!targetIncludesPaste() && !targetIncludesBlog()) {
+          <button
+            class="tool-btn thread-btn"
+            (click)="addThreadBox()"
+            [title]="'compose.addAnotherPost' | transloco: { noun: words().post }"
+            [aria-label]="'compose.addAnotherPost' | transloco: { noun: words().post }"
+          >
+            <span aria-hidden="true">➕🧵</span>
+          </button>
+        }
+
+        @if (compact()) {
+          <button
+            class="tool-btn drafts-toggle"
+            [class.on]="draftsOpen()"
+            (click)="draftsOpen.set(!draftsOpen())"
+            [title]="'compose.showDrafts' | transloco"
+            [aria-label]="'compose.showDrafts' | transloco"
+          >
+            <span aria-hidden="true">📝</span>
+          </button>
+          <button
+            class="tool-btn preview-toggle"
+            [class.on]="previewOn()"
+            (click)="previewOn.set(!previewOn())"
+            [title]="'compose.togglePreview' | transloco"
+            [aria-label]="'compose.togglePreview' | transloco"
+          >
+            <span aria-hidden="true">👁</span>
+          </button>
+        }
+      </div>
+
+      @if (targetIncludesBsky()) {
+        <span
+          class="muted bsky-count"
+          [class.over-limit]="bskyRemaining() < 0"
+          [title]="'compose.blueskyLimit' | transloco"
+        >
+          🦋 {{ bskyRemaining() }}
+        </span>
+      }
+      <span class="muted" [class.over-limit]="overLimit()">
+        @if (targetIncludesPaste()) {
+          {{ 'compose.byteCount' | transloco: { count: pasteBytes() } }}
+        } @else {
+          {{ text().length }}
+        }
+      </span>
+      <!-- Thoughtful posting: this composer saves, it does not publish. The
+           post happens later from /drafts, which is the entire point. -->
+      <button
+        class="btn"
+        [disabled]="!canSubmit()"
+        [title]="gated() ? ('compose.savesToDraftsHint' | transloco) : ''"
+        (click)="submit()"
+      >
+        @if (submitLabelKey(); as key) {
+          {{ key | transloco }}
+        } @else {
+          {{ thread().length ? words().PostAll : words().Post }}
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (langMismatch(); as mismatch) {
+    <div class="lang-mismatch">
+      <p>
+        <span
+          [innerHTML]="
+            'compose.langMismatch'
+              | transloco
+                : {
+                    picked: languageName(mismatch.picked),
+                    detected: languageName(mismatch.detected),
+                  }
+          "
+        ></span>
+      </p>
+      <div class="lang-mismatch-actions">
+        <button class="btn btn-outline" (click)="useDetectedLanguage()">
+          {{ 'compose.switchTo' | transloco: { language: languageName(mismatch.detected) } }}
+        </button>
+        <button class="btn" (click)="confirmLanguageAndSend()">
+          {{ 'compose.postAs' | transloco: { language: languageName(mismatch.picked) } }}
+        </button>
+        <button class="btn btn-outline" (click)="dismissLangMismatch()">
+          {{ 'compose.keepEditing' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+  <!-- A note to yourself and a post to your followers look identical in the box
+       above. This is the one thing standing between them. "Keep editing" is
+       first and is the expected outcome. -->
+  @if (pkmWarning()) {
+    <div class="lang-mismatch" role="alert">
+      <p>
+        <span [innerHTML]="'compose.pkmWarning' | transloco: { label: pkmWarningLabel() }"></span>
+      </p>
+      <div class="lang-mismatch-actions">
+        <button class="btn" (click)="dismissPkmWarning()">
+          {{ 'compose.keepEditing' | transloco }}
+        </button>
+        <button class="btn btn-outline" (click)="confirmPkmAndSend()">
+          {{ 'compose.publishAnyway' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+  @if (postError(); as err) {
+    <div class="post-error" role="alert">
+      <span class="post-error-label">{{ 'compose.notPosted' | transloco }}</span>
+      <div class="post-error-body">
+        <span class="post-error-text">{{ err.message }}</span>
+        <!-- Anything else the server said, rendered generically so a rule this
+             client has never heard of still explains itself. -->
+        @if (err.details.length) {
+          <dl class="post-error-details">
+            @for (d of err.details; track d.label) {
+              <div class="post-error-detail">
+                <dt>{{ d.label }}</dt>
+                <dd>{{ d.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+      </div>
+      <button
+        class="post-error-dismiss"
+        type="button"
+        [title]="'compose.dismiss' | transloco"
+        (click)="dismissPostError()"
+        [aria-label]="'compose.dismiss' | transloco"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  }
+  @if (crossPostError(); as err) {
+    <div class="cross-post-error">{{ err }}</div>
+  }
+  @if (pasteDisabledTarget()) {
+    <div class="cross-post-error">
+      {{ 'compose.warn.pasteDisabled' | transloco }}
+    </div>
+  }
+
+  @if (draftSaved()) {
+    <div class="thread-hint muted">{{ 'compose.savedToDrafts' | transloco }}</div>
+  }
+  @if (draftSaveFailed()) {
+    <div class="post-error" role="alert">
+      <span class="post-error-text">{{ 'compose.draftUnsaved' | transloco }}</span>
+      <button class="btn btn-outline btn-sm" type="button" (click)="downloadDraft()">
+        {{ 'compose.downloadDraft' | transloco }}
+      </button>
+    </div>
+  }
+
+  <!-- Publish-then-offer, never delete-then-publish: the private copy only goes
+       away once a real post exists. -->
+  @if (pendingSelfCleanup()) {
+    <app-confirm-dialog
+      [title]="'compose.deleteDraftCopy' | transloco"
+      message="Your post is published. The private note you drafted it from is still in your messages as a duplicate."
+      confirmLabel="Delete"
+      (confirmed)="deleteSelfDraftCopy()"
+      (cancelled)="pendingSelfCleanup.set(null)"
+    />
+  }
+
+  @if (selfCleanupError()) {
+    <div class="post-error" role="alert">
+      <span class="post-error-text">{{ selfCleanupError() }}</span>
+    </div>
+  }
+
+  @if (scheduledFlash(); as flash) {
+    <div class="thread-hint muted">{{ flash }}</div>
+  }
+  @if (scheduleTooSoon()) {
+    <div class="thread-hint muted">
+      {{ 'compose.warn.scheduleTooSoon' | transloco }}
+    </div>
+  }
+  @if (scheduleActive() && thread().length) {
+    <div class="thread-hint muted">{{ 'compose.warn.threadsNoSchedule' | transloco }}</div>
+  }
+  @if (scheduleActive() && targetIncludesBsky()) {
+    <div class="thread-hint muted">{{ 'compose.warn.scheduleFediOnly' | transloco }}</div>
+  }
+
+  <!-- Attached to the act of picking, not ambient page text: this is what the
+       reader sees when an image was refused or trimmed, right after they chose
+       it. See `mediaNotice`. -->
+  @if (mediaNotice(); as notice) {
+    <div class="thread-hint muted" role="status">{{ notice }}</div>
+  }
+
+  @if (target() === 'bsky' && pollOpen()) {
+    <!-- Images post to Bluesky now; polls still cannot, because the protocol has
+         no poll record to write. -->
+    <div class="thread-hint muted">{{ 'compose.warn.bskyNoPolls' | transloco }}</div>
+  } @else if (target() === 'both' && (pollOpen() || cwOpen())) {
+    <div class="thread-hint muted">{{ 'compose.warn.pollsCwFediOnly' | transloco }}</div>
+  }
+  @if (targetIncludesBsky() && thread().length) {
+    <div class="thread-hint muted">
+      {{ 'compose.warn.bskyThreads' | transloco }}
+    </div>
+  }
+  @if (
+    targetIncludesPaste() && (media().length || pollOpen() || thread().length || scheduleActive())
+  ) {
+    <div class="thread-hint muted">
+      {{ 'compose.warn.pasteOneDoc' | transloco }}
+    </div>
+  }
+  @if (
+    targetIncludesBlog() && (media().length || pollOpen() || thread().length || scheduleActive())
+  ) {
+    <div class="thread-hint muted">
+      {{ 'compose.warn.blogOneDoc' | transloco }}
+    </div>
+  }
+
+  @if (overLimit()) {
+    <div class="thread-hint over-limit">
+      @if (targetIncludesPaste()) {
+        {{ 'compose.warn.pasteTooBig' | transloco }}
+      } @else {
+        {{ 'compose.warn.overLimit.a' | transloco }} {{ maxChars }}
+        {{ 'compose.warn.overLimit.b' | transloco }}
+      }
+    </div>
+  } @else if (thread().length) {
+    <div class="thread-hint muted">
+      {{ 'compose.threadSummary' | transloco: { count: segments().length } }}
+    </div>
+  }
+
+  @if (countdown() !== null) {
+    <div class="undo-banner">
+      <span>{{ 'compose.postingIn' | transloco }} {{ countdown() }}s…</span>
+      <button class="btn btn-sm" type="button" (click)="publishNow()">
+        {{ 'compose.publishNow' | transloco }}
+      </button>
+      <button class="btn btn-outline btn-sm" type="button" (click)="cancelSend()">
+        {{ 'compose.cancel' | transloco }}
+      </button>
+    </div>
+  }
+</div>
+
+@if (tagHelperOpen()) {
+  <app-tag-helper-dialog
+    [post]="text()"
+    (useTags)="useSuggestedTags($event)"
+    (closed)="tagHelperOpen.set(false)"
+  />
+}
+
+@if (translateOpen()) {
+  <app-translate-dialog
+    [post]="text()"
+    (applied)="useTranslation($event)"
+    (closed)="translateOpen.set(false)"
+  />
+}
+
+@if (shortenerConsentPrompt(); as prompt) {
+  <app-proxy-consent-dialog
+    [shortener]="prompt.shortener"
+    [proxy]="prompt.proxy"
+    [carriesCredential]="prompt.carriesCredential"
+    (accepted)="acceptShortenerConsent()"
+    (cancelled)="declineShortenerConsent()"
+  />
+}

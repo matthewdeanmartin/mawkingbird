@@ -1,0 +1,90 @@
+@if (loading()) {
+  <p class="muted center">{{ 'peopleBrowser.loading' | transloco }}</p>
+} @else if (error()) {
+  <p class="muted center">{{ 'peopleBrowser.loadError' | transloco }}</p>
+} @else if (!accounts().length) {
+  <p class="muted center">{{ emptyLabel() }}</p>
+} @else {
+  <div class="people-grid">
+    @for (a of accounts(); track a.id) {
+      <div class="person-card">
+        <a class="person-avatar" [routerLink]="accountLink(a)" [attr.aria-label]="a.acct">
+          <img
+            [src]="a.avatar_static || a.avatar"
+            [alt]="a.username"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+        <div class="person-body">
+          <a class="person-name-row" [routerLink]="accountLink(a)">
+            <span class="person-name">{{ a.display_name || a.username }}</span>
+            <app-verified-badge [account]="a" />
+          </a>
+          <div class="person-acct muted">&#64;{{ a.acct }}</div>
+          @if (a.note) {
+            <div class="person-note" appRenderedHtmlLinks [innerHTML]="a.note"></div>
+          }
+          <div class="person-stats muted small">
+            <span>{{
+              (a.followers_count === 1
+                ? 'peopleBrowser.followers.one'
+                : 'peopleBrowser.followers.other'
+              ) | transloco: { count: a.followers_count.toLocaleString() }
+            }}</span>
+            <span>·</span>
+            <span>{{
+              (a.following_count === 1
+                ? 'peopleBrowser.following.one'
+                : 'peopleBrowser.following.other'
+              ) | transloco: { count: a.following_count.toLocaleString() }
+            }}</span>
+          </div>
+        </div>
+        <!-- No button when the source cannot write follows — an anonymous
+             Bluesky view reads fine but has no session to follow with, so a
+             button here could only fail on click. -->
+        @if (!isSelf(a) && canFollow()) {
+          <button
+            class="follow-btn"
+            [class.following]="isFollowing(a)"
+            [disabled]="isBusy(a)"
+            (click)="toggleFollow(a)"
+            [attr.aria-pressed]="isFollowing(a)"
+          >
+            {{ isBusy(a) ? '…' : followLabel(a) }}
+          </button>
+        } @else if (isSelf(a)) {
+          <span class="follow-btn is-self muted">{{ 'peopleBrowser.you' | transloco }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="people-more">
+    @if (exhausted()) {
+      <!-- "End of the list" is a claim, and it is wrong in the one case that
+           matters most: the server's paging cursor never reached us and the
+           walk stopped short of a list the profile says has thousands in it.
+           Say which of the two happened. -->
+      @if (shortOfReported()) {
+        <span class="muted small">
+          {{
+            'peopleBrowser.stoppedAt'
+              | transloco: { count: accounts().length, total: reportedCount() }
+          }}
+        </span>
+      } @else if (approximate()) {
+        <span class="muted small">{{ 'peopleBrowser.endApproximate' | transloco }}</span>
+      } @else {
+        <span class="muted small">{{ 'peopleBrowser.end' | transloco }}</span>
+      }
+    } @else {
+      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+        {{
+          loadingMore() ? ('peopleBrowser.loading' | transloco) : ('peopleBrowser.more' | transloco)
+        }}
+      </button>
+    }
+  </div>
+}

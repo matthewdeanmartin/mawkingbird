@@ -1,0 +1,79 @@
+@if (!list()) {
+  <p class="muted center small">
+    {{ 'pagesClientList.notFound.note' | transloco }}
+    <a routerLink="/feeds">{{ 'pagesClientList.notFound.back' | transloco }}</a>
+  </p>
+} @else {
+  <div class="page-head">
+    <h1>{{ list()!.title }}</h1>
+    <p class="muted small">
+      {{
+        (list()!.memberHandles.length === 1
+          ? 'pagesClientList.header.member.one'
+          : 'pagesClientList.header.member.other'
+        ) | transloco: { count: list()!.memberHandles.length }
+      }}
+    </p>
+  </div>
+
+  <div class="tabs">
+    <button type="button" class="tab" [class.active]="tab() === 'posts'" (click)="tab.set('posts')">
+      {{ 'pagesClientList.tabs.posts' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="tab"
+      [class.active]="tab() === 'members'"
+      (click)="tab.set('members')"
+    >
+      {{ 'pagesClientList.tabs.members' | transloco }}
+    </button>
+  </div>
+
+  @if (capped()) {
+    <p class="muted small center">
+      {{
+        'pagesClientList.capped.note'
+          | transloco: { shown: memberCap, total: list()!.memberHandles.length }
+      }}
+    </p>
+  }
+
+  @if (unresolved().length) {
+    <p class="muted small center">
+      {{
+        'pagesClientList.unresolved.note'
+          | transloco: { count: unresolved().length, handles: unresolved().join(', ') }
+      }}
+    </p>
+  }
+
+  @if (loading()) {
+    <p class="muted center small">{{ 'pagesClientList.loading' | transloco }}</p>
+  } @else if (tab() === 'posts') {
+    @if (!list()!.memberHandles.length) {
+      <p class="muted center small">
+        {{ 'pagesClientList.members.empty' | transloco }}
+      </p>
+    } @else if (!statuses().length) {
+      <p class="muted center small">{{ 'pagesClientList.posts.empty' | transloco }}</p>
+    } @else {
+      @for (s of statuses(); track s.id) {
+        <app-status-card [status]="s" />
+      }
+    }
+  } @else {
+    @if (!members().length) {
+      <p class="muted center small">{{ 'pagesClientList.members.unresolved' | transloco }}</p>
+    } @else {
+      @for (m of members(); track m.id) {
+        <a class="list-row" [routerLink]="['/accounts', m.id]">
+          <span>
+            {{ m.display_name || m.username }}
+            <span class="muted small">· &#64;{{ m.acct }}</span>
+          </span>
+        </a>
+      }
+    }
+  }
+}

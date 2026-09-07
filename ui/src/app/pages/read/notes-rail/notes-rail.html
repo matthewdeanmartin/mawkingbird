@@ -1,0 +1,52 @@
+@if (notes().length) {
+  <aside class="notes-rail" [attr.aria-label]="'reader.notes.title' | transloco">
+    <h2 class="notes-title">{{ 'reader.notes.title' | transloco }}</h2>
+
+    <ul class="notes-list">
+      @for (note of notes(); track note.annotation.id) {
+        <li
+          class="note"
+          [class.current]="note.page !== null && note.page === currentPage()"
+          [class.moved]="note.moved"
+        >
+          @if (note.moved) {
+            <!-- Said plainly rather than hidden: the reader's own words are
+                 still here, and the only thing lost is where they pointed. -->
+            <p class="note-moved">
+              <strong>{{ 'reader.notes.moved' | transloco }}</strong>
+              <span class="muted small">{{ 'reader.notes.movedHint' | transloco }}</span>
+            </p>
+          }
+
+          <blockquote class="note-quote">{{ note.annotation.anchor.quote }}</blockquote>
+
+          @if (note.annotation.note) {
+            <p class="note-body">{{ note.annotation.note }}</p>
+          }
+
+          <div class="note-actions">
+            @if (!note.moved && note.page !== null) {
+              <button
+                class="tool"
+                type="button"
+                [title]="'reader.notes.goTo' | transloco"
+                (click)="goTo.emit(note)"
+              >
+                {{ 'reader.notes.onPage' | transloco: { page: note.page } }}
+              </button>
+            }
+            <button class="tool" type="button" (click)="edit.emit(note)">
+              {{ 'reader.notes.edit' | transloco }}
+            </button>
+            <button class="tool" type="button" (click)="share.emit(note)">
+              {{ 'reader.notes.share' | transloco }}
+            </button>
+            <button class="tool danger" type="button" (click)="remove.emit(note)">
+              {{ 'reader.notes.remove' | transloco }}
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  </aside>
+}

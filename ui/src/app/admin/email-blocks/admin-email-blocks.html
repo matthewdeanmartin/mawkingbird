@@ -1,0 +1,27 @@
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="newDomain()"
+    (ngModelChange)="newDomain.set($event)"
+    (keyup.enter)="add()"
+    [placeholder]="'adminEmailBlocks.placeholder' | transloco"
+  />
+  <button class="btn" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
+    {{ 'adminEmailBlocks.block' | transloco }}
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminEmailBlocks.loading' | transloco }}</p>
+} @else if (!blocks().length) {
+  <p class="muted center">{{ 'adminEmailBlocks.empty' | transloco }}</p>
+} @else {
+  @for (b of blocks(); track b.id) {
+    <div class="block-row">
+      <strong>{{ b.domain }}</strong>
+      <button class="op warn" (click)="remove(b)">
+        {{ 'adminEmailBlocks.remove' | transloco }}
+      </button>
+    </div>
+  }
+}

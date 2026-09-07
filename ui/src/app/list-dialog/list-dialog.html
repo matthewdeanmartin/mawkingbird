@@ -1,0 +1,188 @@
+<div class="overlay" role="presentation" (click)="closed.emit()">
+  <div
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="list-dialog-title"
+    appFocusTrap
+    (dismissed)="closed.emit()"
+    (click)="$event.stopPropagation()"
+  >
+    <h3 id="list-dialog-title">
+      {{
+        (auth.isAnonymous ? 'listDialog.titleLocal' : 'listDialog.titleFull')
+          | transloco: { username: username() }
+      }}
+    </h3>
+
+    @if (loading()) {
+      <p class="muted">{{ 'listDialog.loading' | transloco }}</p>
+    } @else {
+      <!-- Lists (private) -->
+      <section class="section">
+        <h4>
+          {{ 'listDialog.lists' | transloco }}
+          <span class="tag">{{ 'listDialog.private' | transloco }}</span>
+        </h4>
+        @if (rows().length) {
+          <ul class="list-rows">
+            @for (row of rows(); track row.list.id) {
+              <li>
+                <label>
+                  <input type="checkbox" [checked]="row.member" (change)="toggle(row)" />
+                  {{ row.list.title }}
+                </label>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted small">{{ 'listDialog.noListsYet' | transloco }}</p>
+        }
+
+        @if (followGate(); as gate) {
+          <!-- Mastodon refuses list membership for accounts you don't follow.
+               Following is a visible act, so it needs an explicit yes. -->
+          <div class="follow-gate" role="alert">
+            <p
+              [innerHTML]="
+                'listDialog.followGateMessage'
+                  | transloco: { username: username(), listTitle: gate.listTitle }
+              "
+            ></p>
+            <p class="muted small">{{ 'listDialog.followIsPublic' | transloco }}</p>
+            <div class="gate-actions">
+              <button class="btn" type="button" [disabled]="following()" (click)="confirmFollow()">
+                {{ (following() ? 'listDialog.following' : 'listDialog.followAndAdd') | transloco }}
+              </button>
+              <button
+                class="btn btn-outline"
+                type="button"
+                [disabled]="following()"
+                (click)="dismissFollowGate()"
+              >
+                {{ 'listDialog.cancel' | transloco }}
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (listError(); as message) {
+          <p class="list-error" role="alert">{{ message }}</p>
+        }
+
+        <div class="new-row">
+          <input
+            type="text"
+            [ngModel]="newTitle()"
+            (ngModelChange)="newTitle.set($event)"
+            (keyup.enter)="createAndAdd()"
+            [placeholder]="'listDialog.newListPlaceholder' | transloco"
+          />
+          <button class="btn" [disabled]="!newTitle().trim()" (click)="createAndAdd()">
+            {{ 'listDialog.createAndAdd' | transloco }}
+          </button>
+        </div>
+      </section>
+
+      <!-- Client lists: this browser only, and no follow required — which is exactly
+           what the server's lists above will not do. -->
+      <section class="section">
+        <h4>
+          {{ 'listDialog.clientLists' | transloco }}
+          <span class="tag">{{ 'listDialog.thisBrowser' | transloco }}</span>
+        </h4>
+        <p class="muted small">{{ 'listDialog.clientListsHint' | transloco }}</p>
+
+        @if (!clientLists.count()) {
+          <p class="muted small">{{ 'listDialog.noClientListsYet' | transloco }}</p>
+        } @else {
+          @for (l of clientLists.lists(); track l.id) {
+            <div class="row">
+              <label class="checkline">
+                <input
+                  type="checkbox"
+                  [checked]="inClientList(l.id)"
+                  (change)="toggleClientList(l.id, $any($event.target).checked)"
+                />
+                {{ l.title }}
+              </label>
+            </div>
+          }
+        }
+
+        <div class="new-row">
+          <input
+            type="text"
+            [ngModel]="newClientListTitle()"
+            (ngModelChange)="newClientListTitle.set($event)"
+            (keyup.enter)="createClientList()"
+            [placeholder]="'listDialog.newClientListPlaceholder' | transloco"
+          />
+          <button
+            class="btn"
+            [disabled]="!newClientListTitle().trim()"
+            (click)="createClientList()"
+          >
+            {{ 'listDialog.createAndAdd' | transloco }}
+          </button>
+        </div>
+      </section>
+
+      <!-- Collections (public) are a signed-in Mastodon feature. -->
+      @if (!auth.isAnonymous) {
+        <section class="section">
+          <h4>
+            {{ 'listDialog.collections' | transloco }}
+            <span class="tag tag-public">{{ 'listDialog.public' | transloco }}</span>
+          </h4>
+          @if (!collectionsSupported()) {
+            <p class="muted small">{{ 'listDialog.collectionsUnsupported' | transloco }}</p>
+          } @else {
+            @if (collectionRows().length) {
+              <ul class="list-rows">
+                @for (row of collectionRows(); track row.collection.id) {
+                  <li>
+                    <label>
+                      <input
+                        type="checkbox"
+                        [checked]="row.member"
+                        [disabled]="row.busy"
+                        (change)="toggleCollection(row)"
+                      />
+                      {{ row.collection.name }}
+                    </label>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="muted small">{{ 'listDialog.noCollectionsYet' | transloco }}</p>
+            }
+
+            <div class="new-row">
+              <input
+                type="text"
+                [ngModel]="newCollectionName()"
+                (ngModelChange)="newCollectionName.set($event)"
+                (keyup.enter)="createCollectionAndAdd()"
+                [placeholder]="'listDialog.newCollectionPlaceholder' | transloco"
+              />
+              <button
+                class="btn"
+                [disabled]="!newCollectionName().trim()"
+                (click)="createCollectionAndAdd()"
+              >
+                {{ 'listDialog.createAndAdd' | transloco }}
+              </button>
+            </div>
+          }
+        </section>
+      }
+    }
+
+    <div class="dialog-actions">
+      <button class="btn btn-outline" (click)="closed.emit()">
+        {{ 'listDialog.done' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

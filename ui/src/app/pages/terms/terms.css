@@ -1,0 +1,11 @@
+.empty {
+  padding: 24px 16px;
+}
+.terms-content {
+  padding: 16px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.terms-content :is(p, ul, ol) {
+  margin: 0 0 14px;
+}

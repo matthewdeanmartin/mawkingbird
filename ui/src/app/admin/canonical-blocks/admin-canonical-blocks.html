@@ -1,0 +1,50 @@
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="newEmail()"
+    (ngModelChange)="newEmail.set($event)"
+    (keyup.enter)="add()"
+    [placeholder]="'adminCanonical.placeholder' | transloco"
+  />
+  <button class="btn" [disabled]="!newEmail().trim() || submitting()" (click)="add()">
+    {{ 'adminCanonical.block' | transloco }}
+  </button>
+</div>
+
+<div class="add-block">
+  <input
+    type="text"
+    [ngModel]="testEmail()"
+    (ngModelChange)="testEmail.set($event)"
+    (keyup.enter)="test()"
+    [placeholder]="'adminCanonical.testPlaceholder' | transloco"
+  />
+  <button class="btn btn-outline" [disabled]="!testEmail().trim()" (click)="test()">
+    {{ 'adminCanonical.testMatch' | transloco }}
+  </button>
+</div>
+@if (testResult(); as result) {
+  <div class="test-result">
+    @if (result.length) {
+      {{
+        (result.length === 1 ? 'adminCanonical.matches.one' : 'adminCanonical.matches.other')
+          | transloco: { count: result.length }
+      }}
+    } @else {
+      {{ 'adminCanonical.noMatch' | transloco }}
+    }
+  </div>
+}
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminCanonical.loading' | transloco }}</p>
+} @else if (!blocks().length) {
+  <p class="muted center">{{ 'adminCanonical.empty' | transloco }}</p>
+} @else {
+  @for (b of blocks(); track b.id) {
+    <div class="block-row">
+      <span class="mono">{{ b.canonical_email_hash }}</span>
+      <button class="op warn" (click)="remove(b)">{{ 'adminCanonical.remove' | transloco }}</button>
+    </div>
+  }
+}

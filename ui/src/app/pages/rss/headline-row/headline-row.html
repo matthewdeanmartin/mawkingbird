@@ -1,0 +1,22 @@
+<button class="row" type="button" [attr.aria-expanded]="expanded()" (click)="opened.emit()">
+  <span class="dot" [class.on]="!read()" aria-hidden="true"></span>
+  <span class="title">{{ title() }}</span>
+  <span class="source muted">{{ source() }}</span>
+  <span class="time muted" [title]="status().created_at">
+    {{ status().created_at | humanTime }}
+  </span>
+</button>
+
+<button
+  class="star"
+  type="button"
+  [class.on]="starred()"
+  [attr.aria-pressed]="starred()"
+  [attr.aria-label]="
+    (starred() ? 'pages.rss.headline.removeFromReadLater' : 'pages.rss.headline.saveToReadLater')
+      | transloco: { title: title() }
+  "
+  (click)="toggleStar()"
+>
+  {{ starred() ? '★' : '☆' }}
+</button>

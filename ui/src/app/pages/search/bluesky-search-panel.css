@@ -1,0 +1,195 @@
+/* The page puts `class="search-page two-box"` on this component's host tag, and
+   under emulated encapsulation the *grid* rules in search.css do reach it — a
+   host element carries the parent's content attribute. What they cannot reach is
+   anything inside this template: `.two-box .search-form-box` is a descendant
+   selector, and the boxes below carry this component's attribute, not the
+   page's. So the two box rules are restated here, deliberately identical to
+   search.css's, and `:host` re-declares the grid so the columns exist even if
+   the page's copy is ever scoped differently.
+
+   The rest of this file is what renders *inside* the boxes. It is short on
+   purpose: the previous version was a hand-copy of search.css under `bsky-`
+   names, and copies drift — that is exactly how the two networks ended up with
+   different filter placement, different facet controls and different spacing.
+   Anything both networks share belongs in search.css. */
+
+:host {
+  display: block;
+}
+
+:host(.two-box) {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.search-form-box,
+.search-results-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  overflow: hidden;
+}
+
+/* Only in the grid: on a single-column layout a bordered box around each half
+   reads as two unrelated cards stacked up. */
+:host(:not(.two-box)) .search-form-box:empty {
+  display: none;
+}
+
+/* The form column sticks so facets stay in view while scrolling results. */
+:host(.two-box) .search-form-box {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+}
+
+@media (max-width: 800px) {
+  :host(.two-box) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host(.two-box) .search-form-box {
+    position: static;
+    max-height: 45vh;
+  }
+}
+
+/* --- Advanced panel: same rules as search.css's, applied to our fields. --- */
+
+.advanced-panel {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.advanced-panel p {
+  margin: 0 0 8px;
+}
+
+.advanced-panel code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95em;
+}
+
+.adv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.adv-field input {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.advanced-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.advanced-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.advanced-fields input,
+.advanced-fields select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* A two-letter code needs a field the size of a two-letter code. */
+.lang-input {
+  width: 6ch;
+}
+
+.advanced-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* --- Active-filter chips. --- */
+/* Everything below the chips — the refine bar, facets, flood control, result
+   counters, budget row — comes from the shared search-refine.css that this
+   component and the Mastodon panel both list in `styleUrls`. */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.chip-server {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* --- Results column. --- */
+
+.page-head {
+  padding: 12px 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-idle {
+  padding: 0 16px 16px;
+}
+
+.search-idle code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.search-error {
+  padding: 16px;
+  color: var(--danger, #c0392b);
+}
+
+.bsky-anon-note {
+  padding: 8px 16px 0;
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  padding: 12px 16px;
+}
+
+.center {
+  text-align: center;
+  padding: 12px 0;
+}

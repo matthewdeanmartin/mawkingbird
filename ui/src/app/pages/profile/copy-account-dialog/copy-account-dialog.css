@@ -1,0 +1,186 @@
+.cf-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: rgb(0 0 0 / 55%);
+  cursor: default;
+}
+
+.cf-dialog {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(760px, 88vh);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+}
+
+.cf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cf-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.icon-close {
+  border: 0;
+  padding: 0 5px;
+  background: transparent;
+  color: inherit;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.cf-summary {
+  margin: 12px 0 8px;
+  font-weight: 600;
+}
+
+/* Slot pressure is a fact about the user's account, not a warning about their
+   choice — bordered, not coloured. */
+.cf-note {
+  margin: 8px 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--hover);
+  font-size: 13px;
+}
+
+.cf-error {
+  color: #d63b3b;
+  font-size: 13px;
+}
+
+.cf-list {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.cf-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cf-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cf-skipped {
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.cf-skipped summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.cf-skipped ul {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.cf-skipped li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* The collections half, set apart from the follows list above it so the two
+   halves of "Copy account" read as two things rather than one long list. */
+.cf-collections {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.cf-subhead {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+/* --- Tunable gate ---------------------------------------------------------
+   The thresholds that decide who gets skipped, as controls. Disabled while a
+   read is in flight, so a page fetched under one setting is never judged by
+   another. */
+.cf-settings {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem 0.75rem;
+  margin: 0 0 0.75rem;
+}
+
+.cf-settings legend {
+  padding: 0 0.35rem;
+}
+
+.cf-settings:disabled {
+  opacity: 0.55;
+}
+
+.cf-setting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+/* Fixed width so the three rows' inputs line up into a column. */
+.cf-setting > span:first-child {
+  flex: none;
+  min-width: 10.5rem;
+}
+
+.cf-setting input {
+  width: 5rem;
+  flex: none;
+}
+
+.cf-gate-off {
+  margin: 0.5rem 0 0;
+}
+
+.cf-more {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0 0 0.75rem;
+}

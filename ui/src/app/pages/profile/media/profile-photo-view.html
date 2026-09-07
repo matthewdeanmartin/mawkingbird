@@ -1,0 +1,348 @@
+@if (current(); as item) {
+  <div
+    class="photo-overlay"
+    role="dialog"
+    aria-modal="true"
+    [aria-label]="'pages.profile.media.viewerAriaLabel' | transloco"
+    tabindex="-1"
+    appFocusTrap
+    [appFocusTrapCloseOnEscape]="false"
+    (click)="onOverlayClick($event)"
+    (keydown.escape)="close()"
+  >
+    <button
+      type="button"
+      class="photo-close"
+      (click)="close()"
+      [aria-label]="'pages.profile.media.closeViewer' | transloco"
+    >
+      ✕
+    </button>
+
+    <div class="photo-layout">
+      <!-- The picture is the point: it gets the room, and the conversation
+           sits beside it rather than under it. -->
+      <div class="photo-stage">
+        @if (hasPrev()) {
+          <button
+            type="button"
+            class="photo-arrow prev"
+            (click)="go(-1)"
+            [aria-label]="'pages.profile.media.previousPicture' | transloco"
+          >
+            ‹
+          </button>
+        }
+
+        <figure class="photo-figure">
+          @if (blurred()) {
+            <button type="button" class="photo-sensitive" (click)="reveal()">
+              <span class="photo-sensitive-label">{{
+                'pages.profile.media.sensitiveImage' | transloco
+              }}</span>
+              <span class="muted">{{ 'pages.profile.media.clickToView' | transloco }}</span>
+            </button>
+          } @else if (item.type === 'image') {
+            <img class="photo-image" [src]="item.url" [alt]="item.description || ''" />
+          } @else {
+            <!-- Video support across the app is thin; a native player with
+                 controls is the honest amount of support to claim here. -->
+            <video class="photo-image" [src]="item.url" controls playsinline preload="metadata">
+              {{ 'pages.profile.media.videoUnsupported' | transloco }}
+            </video>
+          }
+          @if (item.description && !blurred()) {
+            <figcaption class="photo-alt muted">{{ item.description }}</figcaption>
+          }
+        </figure>
+
+        @if (hasNext()) {
+          <button
+            type="button"
+            class="photo-arrow next"
+            (click)="go(1)"
+            [aria-label]="'pages.profile.media.nextPicture' | transloco"
+          >
+            ›
+          </button>
+        }
+
+        <div class="photo-counter muted">
+          {{
+            'pages.profile.media.positionOfTotal'
+              | transloco: { position: position(), total: total() }
+          }}
+          <span class="photo-hint">{{ 'pages.profile.media.keyboardHint' | transloco }}</span>
+        </div>
+      </div>
+
+      <!-- The comment column: caption on top, thread in the middle, reply at
+           the bottom where a reader expects to type. -->
+      <aside class="photo-side">
+        <header class="photo-author">
+          <a class="photo-author-link" [routerLink]="authorLink()" (click)="close()">
+            <img
+              class="photo-avatar"
+              [src]="item.status.account.avatar_static || item.status.account.avatar"
+              [alt]="item.status.account.username"
+              width="40"
+              height="40"
+            />
+            <span class="photo-names">
+              <strong>{{
+                item.status.account.display_name || item.status.account.username
+              }}</strong>
+              <span class="acct muted">&#64;{{ item.status.account.acct }}</span>
+            </span>
+          </a>
+          <time class="muted photo-time" [attr.datetime]="item.status.created_at">
+            {{ item.status.created_at | humanTime }}
+          </time>
+        </header>
+
+        @if (item.status.spoiler_text) {
+          <p class="photo-cw">
+            <strong>{{ 'pages.profile.media.cwLabel' | transloco }}</strong>
+            {{ item.status.spoiler_text }}
+          </p>
+        }
+
+        <!-- Server-sanitized HTML, same as the timeline renders. Clamped because
+             a caption can run to thousands of characters, and on a phone that
+             would push the comments entirely off the panel. -->
+        <div class="photo-caption-wrap">
+          <div
+            class="photo-caption"
+            [class.clamped]="!captionExpanded()"
+            appRenderedHtmlLinks
+            [innerHTML]="item.status.content"
+          ></div>
+          @if (item.status.content && item.status.content.length > 220) {
+            <button type="button" class="photo-more-text" (click)="toggleCaption()">
+              {{
+                captionExpanded()
+                  ? ('pages.profile.media.showLess' | transloco)
+                  : ('pages.profile.media.showMore' | transloco)
+              }}
+            </button>
+          }
+        </div>
+
+        @if (post(); as p) {
+          <div class="photo-actions">
+            @if (caps().favourite) {
+              <button
+                type="button"
+                class="photo-action"
+                [class.on]="p.favourited"
+                [disabled]="actionBusy()"
+                (click)="toggleFavourite()"
+                [attr.aria-pressed]="p.favourited"
+                [title]="
+                  p.favourited
+                    ? ('pages.profile.media.undoLike' | transloco)
+                    : ('pages.profile.media.like' | transloco)
+                "
+              >
+                {{ p.favourited ? '♥' : '♡' }}
+                @if (p.favourites_count) {
+                  <span class="photo-count">{{ p.favourites_count | humanCount }}</span>
+                }
+              </button>
+            }
+            @if (caps().reblog) {
+              <button
+                type="button"
+                class="photo-action"
+                [class.on]="p.reblogged"
+                [disabled]="actionBusy()"
+                (click)="toggleReblog()"
+                [attr.aria-pressed]="p.reblogged"
+                [title]="
+                  p.reblogged
+                    ? ('pages.profile.media.undoBoost' | transloco)
+                    : ('pages.profile.media.boost' | transloco)
+                "
+              >
+                ↺
+                @if (p.reblogs_count) {
+                  <span class="photo-count">{{ p.reblogs_count | humanCount }}</span>
+                }
+              </button>
+            }
+            @if (canReply()) {
+              <button
+                type="button"
+                class="photo-action"
+                (click)="startReply(p)"
+                [title]="'pages.profile.media.replyToThis' | transloco: { term: words().post }"
+              >
+                ↩
+                @if (p.replies_count) {
+                  <span class="photo-count">{{ p.replies_count | humanCount }}</span>
+                }
+              </button>
+            }
+
+            <div class="photo-menu-wrap">
+              <button
+                type="button"
+                class="photo-action"
+                (click)="menuOpen.set(!menuOpen())"
+                [attr.aria-expanded]="menuOpen()"
+                aria-haspopup="menu"
+                [title]="'pages.profile.media.moreActions' | transloco"
+              >
+                ···
+              </button>
+              @if (menuOpen()) {
+                <div class="photo-menu" role="menu">
+                  @if (threadLink()) {
+                    <button type="button" role="menuitem" (click)="openThread()">
+                      {{ 'pages.profile.media.openThread' | transloco }}
+                    </button>
+                  }
+                  @if (!auth.isAnonymous) {
+                    <button type="button" role="menuitem" (click)="toggleBookmark()">
+                      {{
+                        p.bookmarked
+                          ? ('pages.profile.media.removeBookmark' | transloco)
+                          : ('pages.profile.media.bookmark' | transloco)
+                      }}
+                    </button>
+                  }
+                  @if (p.url) {
+                    <button type="button" role="menuitem" (click)="copyPostLink()">
+                      {{ 'pages.profile.media.copyLinkToPost' | transloco }}
+                    </button>
+                  }
+                  <button type="button" role="menuitem" (click)="copyImageAddress()">
+                    {{ 'pages.profile.media.copyImageAddress' | transloco }}
+                  </button>
+                  <button type="button" role="menuitem" (click)="openImageInNewTab()">
+                    {{ 'pages.profile.media.openImageInNewTab' | transloco }}
+                  </button>
+                  @if (isOwnPost()) {
+                    <button type="button" role="menuitem" class="danger" (click)="deletePost()">
+                      {{ 'pages.profile.media.deletePost' | transloco }}
+                    </button>
+                  } @else {
+                    <button type="button" role="menuitem" (click)="reportPost()">
+                      {{ 'pages.profile.media.report' | transloco }}
+                    </button>
+                    <button type="button" role="menuitem" (click)="muteAuthor()">
+                      {{
+                        'pages.profile.media.muteHandle' | transloco: { handle: p.account.username }
+                      }}
+                    </button>
+                    <button type="button" role="menuitem" class="danger" (click)="blockAuthor()">
+                      {{
+                        'pages.profile.media.blockHandle'
+                          | transloco: { handle: p.account.username }
+                      }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          @if (actionError()) {
+            <p class="photo-action-error">{{ actionError() }}</p>
+          }
+          @if (notice()) {
+            <p class="photo-notice muted">{{ notice() }}</p>
+          }
+
+          <!-- Replying to the picture itself: the composer opens here, above the
+               thread, rather than living permanently at the bottom. -->
+          @if (isReplyingTo(p)) {
+            <div class="photo-inline-compose">
+              <app-compose
+                [inReplyToId]="p.id"
+                [replyToHandle]="replyToHandle()"
+                [compact]="true"
+                [placeholder]="'pages.profile.media.addCommentPlaceholder' | transloco"
+                (posted)="onReplied($event)"
+              />
+              <button type="button" class="photo-cancel" (click)="cancelReply()">
+                {{ 'pages.profile.media.cancel' | transloco }}
+              </button>
+            </div>
+          }
+        }
+
+        <div class="photo-thread">
+          @if (repliesLoading()) {
+            <p class="muted">{{ 'pages.profile.media.loadingComments' | transloco }}</p>
+          } @else if (repliesError()) {
+            <p class="muted">{{ repliesError() }}</p>
+          } @else if (!replies().length) {
+            <p class="muted photo-nocomments">{{ 'pages.profile.media.noComments' | transloco }}</p>
+          } @else {
+            @for (reply of replies(); track reply.id) {
+              <article class="photo-comment">
+                <a class="photo-comment-author" [routerLink]="authorLink()" (click)="close()">
+                  <img
+                    class="photo-comment-avatar"
+                    [src]="reply.account.avatar_static || reply.account.avatar"
+                    [alt]="reply.account.username"
+                    width="24"
+                    height="24"
+                  />
+                </a>
+                <div class="photo-comment-body">
+                  <span class="photo-comment-name">
+                    <strong>{{ reply.account.display_name || reply.account.username }}</strong>
+                    <time class="muted" [attr.datetime]="reply.created_at">{{
+                      reply.created_at | humanTime
+                    }}</time>
+                    @if (canReply()) {
+                      <!-- Replies to a comment thread under that comment, the
+                           same as the home feed does. -->
+                      <button
+                        type="button"
+                        class="photo-comment-reply"
+                        (click)="startReply(reply)"
+                        [title]="
+                          'pages.profile.media.replyToHandle'
+                            | transloco: { handle: reply.account.username }
+                        "
+                      >
+                        ↩
+                      </button>
+                    }
+                  </span>
+                  <div
+                    class="photo-comment-text"
+                    appRenderedHtmlLinks
+                    [innerHTML]="reply.content"
+                  ></div>
+
+                  @if (isReplyingTo(reply)) {
+                    <div class="photo-inline-compose">
+                      <app-compose
+                        [inReplyToId]="reply.id"
+                        [replyToHandle]="replyToHandle()"
+                        [compact]="true"
+                        [placeholder]="'pages.profile.media.addCommentPlaceholder' | transloco"
+                        (posted)="onReplied($event)"
+                      />
+                      <button type="button" class="photo-cancel" (click)="cancelReply()">
+                        {{ 'pages.profile.media.cancel' | transloco }}
+                      </button>
+                    </div>
+                  }
+                </div>
+              </article>
+            }
+          }
+
+          @if (!canReply()) {
+            <p class="muted photo-noreply">{{ replyUnavailableReason() }}</p>
+          }
+        </div>
+      </aside>
+    </div>
+  </div>
+}

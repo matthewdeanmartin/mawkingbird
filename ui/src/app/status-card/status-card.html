@@ -1,0 +1,1380 @@
+@if (mutedLocally()) {
+  <!-- "Mute this post": the viewer asked to never see this one again. -->
+} @else if (filterCollapsed()) {
+  <!-- A warn-action content filter matched: collapse to a stub, Mastodon-style. -->
+  <div class="filter-stub">
+    <span class="muted">{{ 'statusCard.filtered' | transloco: { titles: filterTitles() } }}</span>
+    <button type="button" class="btn btn-outline btn-sm" (click)="showFiltered($event)">
+      {{ 'statusCard.showAnyway' | transloco }}
+    </button>
+  </div>
+} @else if (!hiddenByFilter()) {
+  @if (boostedBy) {
+    <!-- The booster's name is a link: without one, "turn off this person's
+         boosts" or even "who is this" meant leaving the feed and searching them
+         by hand. Falls back to plain text where there is no profile to open. -->
+    <div class="boost-label muted">
+      <span aria-hidden="true">🔁</span>
+      @if (boosterLink; as link) {
+        <a class="boost-by" [routerLink]="link" (click)="$event.stopPropagation()">{{
+          boostedBy
+        }}</a>
+      } @else {
+        {{ boostedBy }}
+      }
+      {{ words().boosted }}
+    </div>
+  }
+  <!-- The click handler makes the card's whitespace open the thread; see
+       onCardClick for why it is a decline-list rather than a target list. No
+       role or tabindex goes with it: the card is not a button, every
+       destination it offers is already reachable by keyboard through the
+       anchors inside it and onCardKeydown, and announcing the whole article as
+       one clickable control would make it *harder* to use, not easier. -->
+  <article
+    class="status"
+    [class.status-clickable]="threadLink"
+    tabindex="-1"
+    (mousedown)="onCardMouseDown()"
+    (click)="onCardClick($event)"
+    (keydown)="onCardKeydown($event)"
+    (mouseenter)="onCardHover()"
+  >
+    <span class="hover-anchor avatar-anchor">
+      <!-- alt="" and aria-hidden: the display-name link immediately below is
+           the same destination with the same name, so a described avatar makes
+           every post announce its author twice. -->
+      <a class="avatar-link" [routerLink]="accountLink" tabindex="-1" aria-hidden="true">
+        @if (avatarSrc(display.account); as avatar) {
+          @if (avatar.optimizable) {
+            <img class="avatar" [ngSrc]="avatar.url" alt="" width="48" height="48" />
+          } @else {
+            <!-- A data: URI (an RSS feed's inline icon). NgOptimizedImage
+                 refuses these outright — see `avatarSrc`. -->
+            <img
+              class="avatar"
+              [src]="avatar.url"
+              alt=""
+              width="48"
+              height="48"
+              loading="lazy"
+              decoding="async"
+            />
+          }
+        }
+      </a>
+      <app-account-hover-card [account]="display.account" />
+    </span>
+    <div class="body">
+      <div class="meta">
+        <span class="hover-anchor">
+          <a class="name" [routerLink]="accountLink">{{
+            display.account.display_name || display.account.username
+          }}</a>
+          <app-account-hover-card [account]="display.account" />
+        </span>
+        <app-verified-badge [account]="display.account" />
+        <span class="acct muted">&#64;{{ display.account.acct }}</span>
+        @if (foreign && !threadable && display.url) {
+          <!-- Same guard as the ↗ link below: `[href]` bound to a null url
+               renders `href=""`, which navigates to the current page. -->
+          <a
+            class="post-time muted"
+            [href]="display.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            [title]="display.created_at"
+          >
+            <span class="sep" aria-hidden="true">·</span> {{ display.created_at | humanTime }}
+          </a>
+        } @else {
+          <a class="post-time muted" [routerLink]="threadLink" [title]="display.created_at">
+            <span class="sep" aria-hidden="true">·</span> {{ display.created_at | humanTime }}
+          </a>
+        }
+        @if (display.pinned) {
+          <span class="badge" [title]="'statusCard.pinned' | transloco"
+            ><span aria-hidden="true">📌</span
+            ><span class="sr-only">{{ 'statusCard.pinned' | transloco }}</span></span
+          >
+        }
+        @if (display.visibility === 'private') {
+          <span
+            class="badge"
+            [title]="'statusCard.followersOnly' | transloco: { post: words().post }"
+            ><span aria-hidden="true">🔒</span
+            ><span class="sr-only">{{
+              'statusCard.followersOnly' | transloco: { post: words().post }
+            }}</span></span
+          >
+        }
+        @if (providerBadge; as badge) {
+          <span class="badge muted provider-badge" [title]="'statusCard.source' | transloco">{{
+            badge
+          }}</span>
+        } @else {
+          <span class="badge muted" [title]="'statusCard.visibility' | transloco">{{
+            display.visibility
+          }}</span>
+        }
+        @if (showSource() && display.application; as app) {
+          @if (app.website) {
+            <a
+              class="badge muted source-badge"
+              [href]="app.website"
+              target="_blank"
+              rel="noopener noreferrer"
+              [title]="'statusCard.postedVia' | transloco: { name: app.name }"
+              (click)="$event.stopPropagation()"
+              >{{ 'statusCard.postedVia' | transloco: { name: app.name } }}</a
+            >
+          } @else {
+            <span
+              class="badge muted source-badge"
+              [title]="'statusCard.postedVia' | transloco: { name: app.name }"
+              >{{ 'statusCard.postedVia' | transloco: { name: app.name } }}</span
+            >
+          }
+        }
+      </div>
+      @if (editing()) {
+        <div class="editor">
+          <textarea
+            rows="3"
+            [ngModel]="editText()"
+            (ngModelChange)="editText.set($event)"
+          ></textarea>
+          <div class="editor-actions">
+            <button class="btn btn-outline" (click)="cancelEdit()">
+              {{ 'statusCard.cancel' | transloco }}
+            </button>
+            <button class="btn" [disabled]="!editText().trim() || saving()" (click)="saveEdit()">
+              {{ (saving() ? 'statusCard.saving' : 'statusCard.save') | transloco }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        @if (spoilerText()) {
+          <div class="cw-row">
+            <span class="spoiler">{{ spoilerText() }}</span>
+            <button
+              type="button"
+              class="btn btn-outline btn-sm cw-toggle"
+              [attr.aria-expanded]="!cwCollapsed()"
+              (click)="toggleCw($event)"
+            >
+              {{ (cwCollapsed() ? 'statusCard.showMore' : 'statusCard.showLess') | transloco }}
+            </button>
+          </div>
+        }
+        @if (!cwCollapsed()) {
+          <!-- In append (learner) mode the original stays put and the translation is
+               added below it. Every other case swaps the translation in, which is what
+               renderedContent() already does. -->
+          <!-- Deliberately not a link. The post text used to be wrapped in its own
+               routerLink, which made selecting it a fight: a click navigated
+               immediately, and the first click of a double-click navigated before
+               the second was known about. The card's own `onCardClick` already
+               opens the thread from anywhere that is not interactive, already
+               declines modified clicks, and already snapshots the selection on
+               mousedown — so the anchor was a second, worse navigation path over
+               the top of a working one. `onContentClick` stays: it routes
+               hashtags, mentions and profile links inside the rendered HTML, and
+               that job was never the anchor's. -->
+          <div class="content-link" (click)="onContentClick($event)">
+            <div
+              class="content"
+              [innerHTML]="appendMode() ? originalContent() : renderedContent()"
+            ></div>
+          </div>
+
+          @if (appendMode() && translation(); as t) {
+            <div class="learner-translation">
+              <div class="content" [innerHTML]="md(t.content)"></div>
+            </div>
+          }
+
+          @if (translation()) {
+            <div class="translation-note muted small">
+              {{
+                (autoTranslated()
+                  ? 'statusCard.translatedViaAutomatic'
+                  : 'statusCard.translatedVia'
+                ) | transloco: { provider: translation()!.provider }
+              }}
+            </div>
+          }
+
+          <!-- AI translation renders as TEXT, in its own block, deliberately not
+               through renderedContent(). That path is applyMinimalMarkdown into
+               [innerHTML], which is safe only because the server sanitized the HTML
+               first. Model output has been sanitized by nobody. -->
+          @if (aiTranslation(); as ai) {
+            <div class="ai-translation" (click)="$event.stopPropagation()">
+              <p class="ai-translation-text">{{ ai.text }}</p>
+              <div class="translation-note muted small">
+                {{
+                  'statusCard.aiTranslationNote' | transloco: { target: ai.target, model: ai.model }
+                }}
+              </div>
+            </div>
+          }
+
+          @if (aiTranslating()) {
+            <div class="translation-note muted small" role="status">
+              {{ 'statusCard.translating' | transloco }}
+            </div>
+          }
+
+          @if (translateError(); as msg) {
+            <div class="translation-note translation-error small" role="alert">
+              {{ msg }}
+              @if (msg.includes('AI translation')) {
+                <button class="link-button" type="button" (click)="onAiTranslateClick($event)">
+                  {{ 'statusCard.useAiTranslation' | transloco }}
+                </button>
+              }
+            </div>
+          }
+        }
+      }
+
+      @if (!cwCollapsed() && poll(); as p) {
+        <div class="poll" (click)="$event.stopPropagation()">
+          @for (opt of p.options; track $index) {
+            @if (pollClosed()) {
+              <div class="poll-result" [class.own]="pollOwnVote(p, $index)">
+                <div class="poll-bar" [style.width.%]="pollPercent(opt)"></div>
+                <span class="poll-label">{{ opt.title }}</span>
+                <span class="poll-pct muted">{{
+                  'statusCard.pollResult'
+                    | transloco: { percent: pollPercent(opt), count: opt.votes_count }
+                }}</span>
+              </div>
+            } @else {
+              <label class="poll-choice">
+                <input
+                  [type]="p.multiple ? 'checkbox' : 'radio'"
+                  [checked]="pollSelection().includes($index)"
+                  (change)="toggleChoice($index)"
+                />
+                {{ opt.title }}
+              </label>
+            }
+          }
+          <div class="poll-footer muted small">
+            <span>{{ 'statusCard.votes' | transloco: { count: p.votes_count } }}</span>
+            @if (p.expired) {
+              <span>· {{ 'statusCard.closed' | transloco }}</span>
+            }
+            @if (!pollClosed()) {
+              <button
+                class="btn btn-sm"
+                [disabled]="!pollSelection().length"
+                (click)="submitVote($event)"
+              >
+                {{ 'statusCard.vote' | transloco }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (!cwCollapsed() && quotedStatus(); as q) {
+        <a class="quote-card" [routerLink]="quoteThreadLink(q)" (click)="$event.stopPropagation()">
+          <div class="quote-meta">
+            @if (avatarSrc(q.account); as avatar) {
+              @if (avatar.optimizable) {
+                <img
+                  class="quote-avatar"
+                  [ngSrc]="avatar.url"
+                  [alt]="q.account.username"
+                  width="20"
+                  height="20"
+                />
+              } @else {
+                <img
+                  class="quote-avatar"
+                  [src]="avatar.url"
+                  [alt]="q.account.username"
+                  width="20"
+                  height="20"
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+            }
+            <span class="quote-name">{{ q.account.display_name || q.account.username }}</span>
+            <span class="acct muted">&#64;{{ q.account.acct }}</span>
+          </div>
+          <div class="quote-content" [innerHTML]="q.content"></div>
+        </a>
+        @if (canRevokeQuote()) {
+          <button class="btn btn-outline btn-sm revoke-btn" (click)="revokeQuote($event)">
+            {{ 'statusCard.revokeQuotePermission' | transloco }}
+          </button>
+        }
+      } @else if (!cwCollapsed() && quoteUnavailable()) {
+        <div class="quote-card quote-unavailable muted">
+          {{ 'statusCard.quotedPostUnavailable' | transloco }}
+        </div>
+      }
+      @if (!cwCollapsed() && display.media_attachments.length) {
+        @if (imagesVisible()) {
+          <div class="media" [class.media-sensitive]="mediaBlurred()">
+            @for (m of display.media_attachments; track m.id; let i = $index) {
+              <button
+                type="button"
+                class="media-thumb"
+                (click)="openLightbox(i, $event)"
+                [attr.aria-label]="
+                  'statusCard.viewImage'
+                    | transloco: { description: m.description ? ': ' + m.description : '' }
+                "
+              >
+                <img
+                  [src]="m.preview_url || m.url"
+                  [alt]="m.description || ''"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </button>
+            }
+            @if (mediaBlurred()) {
+              <button
+                type="button"
+                class="sensitive-reveal"
+                (click)="revealSensitive($event)"
+                [attr.aria-label]="'statusCard.showSensitiveContent' | transloco"
+              >
+                <span>{{ 'statusCard.sensitiveContent' | transloco }}</span>
+              </button>
+            }
+          </div>
+        } @else {
+          <!-- Images off: one row per attachment, each an icon plus its alt text.
+               The alt text is the *point* of this mode — it's what the author wrote
+               to describe the picture, so a reader who turned images off still gets
+               the content rather than an opaque "3 images" count. Attachments with
+               no description say so, which quietly surfaces missing alt text. -->
+          <div class="media-alt-list">
+            @for (m of display.media_attachments; track m.id; let i = $index) {
+              <button
+                type="button"
+                class="media-alt-row"
+                (click)="openLightbox(i, $event)"
+                [attr.aria-label]="
+                  m.description
+                    ? ('statusCard.viewImage' | transloco: { description: ': ' + m.description })
+                    : ('statusCard.viewImageNoDescription' | transloco: { number: i + 1 })
+                "
+              >
+                <span class="media-alt-icon" aria-hidden="true">{{ mediaIcon(m) }}</span>
+                @if (m.description) {
+                  <span class="media-alt-text">{{ m.description }}</span>
+                } @else {
+                  <span class="media-alt-text media-alt-missing">{{
+                    'statusCard.noDescriptionProvided' | transloco
+                  }}</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      }
+
+      <!-- The link preview the server already sent us and this app has ignored
+           since the Mastodon shapes were written. Shown only when there is no
+           media: an image attachment and a card image side by side is two
+           pictures competing for the same glance, and the author's own upload
+           wins that. Behind the images pref like every other picture here. -->
+      @if (!cwCollapsed() && !display.media_attachments.length && display.card; as card) {
+        <div class="status-card-preview" (click)="$event.stopPropagation()">
+          <app-preview-card [card]="card" [showImage]="imagesVisible()" />
+        </div>
+      }
+
+      <div class="actions">
+        @if (canReply) {
+          <button
+            class="action"
+            [class.on]="replying()"
+            (click)="toggleReply($event)"
+            [title]="'statusCard.reply' | transloco"
+            [attr.aria-label]="'statusCard.reply' | transloco"
+          >
+            <span aria-hidden="true">💬</span>
+            <span>{{
+              'statusCard.countLabel'
+                | transloco
+                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+            }}</span>
+          </button>
+        } @else if (auth.isAnonymous && threadLink) {
+          <!-- 💬 is what everyone taps to reach the comments, and for an
+               anonymous reader it used to be an inert span: the tap did nothing,
+               and the post looked like it had no thread. Reading replies never
+               needed an account — only writing one does — so this goes to the
+               thread. The sign-in prompt belongs on the reply composer there,
+               not on the way in. -->
+          <a
+            class="action"
+            [routerLink]="threadLink"
+            (click)="$event.stopPropagation()"
+            [title]="'statusCard.repliesTitle' | transloco"
+            ><span aria-hidden="true">💬</span>
+            <span>{{
+              'statusCard.countLabel'
+                | transloco
+                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+            }}</span></a
+          >
+        } @else if (auth.isAnonymous || readOnlyStats) {
+          <span class="action action-static" [title]="'statusCard.repliesTitle' | transloco"
+            ><span aria-hidden="true">💬</span>
+            <span>{{
+              'statusCard.countLabel'
+                | transloco
+                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+            }}</span></span
+          >
+        }
+        <!-- Reader entry points, parked rather than deleted.
+             These carry the two longest labels in the row ("Thread reader",
+             "Long text reader") and the action row has nowhere near the space
+             for them: they were the main reason it wrapped to a second line.
+             They are also the most redundant thing here, because clicking the
+             post opens the thread page, which offers both readers itself
+             (see pages/thread/thread.html). Restore by uncommenting.
+
+        @if (
+          threadable &&
+          (display.replies_count > 0 ||
+            display.in_reply_to_id ||
+            display.provider === 'rss' ||
+            display.content.length > 600)
+        ) {
+          <a
+            class="action"
+            [routerLink]="threadLink"
+            [queryParams]="{ reader: 'thread' }"
+            (click)="$event.stopPropagation()"
+            [title]="'reader.open.thread' | transloco"
+          >
+            <span aria-hidden="true">📖</span> {{ 'reader.open.thread' | transloco }}
+          </a>
+          <a
+            class="action"
+            [routerLink]="longTextLink"
+            (click)="$event.stopPropagation()"
+            [title]="'reader.open.longText' | transloco"
+          >
+            <span aria-hidden="true">📄</span> {{ 'reader.open.longText' | transloco }}
+          </a>
+        }
+        -->
+        @if (display.provider === 'rss' && threadable) {
+          <a
+            class="action"
+            [routerLink]="threadLink"
+            [queryParams]="{ reader: '0' }"
+            (click)="$event.stopPropagation()"
+            [title]="'statusCard.readArticleAndComments' | transloco"
+          >
+            📖 <span>{{ 'statusCard.viewThread' | transloco }}</span>
+          </a>
+        }
+        @if (unifiedShare()) {
+          <!-- One control instead of three. The bar is already out of horizontal
+               space and wraps on narrow screens, so Boost/Quote/Share collapse
+               into a menu rather than Share becoming a sixth icon. Boost stays
+               one press: the menu opens with it focused.
+
+               ...but only when there is something to choose between. See
+               `shareMenuIsUseful`: with one action left the popup is pure
+               middleman, so the button just does the thing. -->
+          <div class="share-menu-host">
+            <button
+              class="action"
+              type="button"
+              [class.on]="
+                display.reblogged || (soleShareAction() === 'posse' && posseQueued(repostKind))
+              "
+              [class.working]="busyWith('reblog')"
+              [disabled]="actionBusy()"
+              [attr.aria-expanded]="shareMenuIsUseful() ? shareMenuOpen() : null"
+              [attr.aria-haspopup]="shareMenuIsUseful() ? 'menu' : 'dialog'"
+              [attr.aria-pressed]="soleShareAction() === 'posse' ? posseQueued(repostKind) : null"
+              [title]="shareButtonLabel()"
+              [attr.aria-label]="shareButtonLabel()"
+              (click)="shareMenuIsUseful() ? toggleShareMenu($event) : runSoleShareAction($event)"
+            >
+              <span aria-hidden="true">🔁</span>
+              @if (display.reblogged) {
+                <span class="did" aria-hidden="true">{{ words().Boosted }}</span>
+              } @else if (soleShareAction() === 'posse' && posseQueued(repostKind)) {
+                <span class="did" aria-hidden="true">{{ 'statusCard.recorded' | transloco }}</span>
+              }
+            </button>
+            @if (shareMenuIsUseful() && shareMenuOpen()) {
+              <!-- Focus moves to the first item on open (see focusShareMenu) so
+                   Boost stays one press for keyboard users. Done in code rather
+                   than with `autofocus`, which the a11y lint rightly rejects. -->
+              <div class="share-menu" role="menu" (click)="$event.stopPropagation()">
+                @for (action of shareMenuActions(); track action) {
+                  @switch (action) {
+                    @case ('boost') {
+                      <button
+                        type="button"
+                        role="menuitem"
+                        [disabled]="actionBusy()"
+                        (click)="shareMenuOpen.set(false); toggleReblog($event)"
+                      >
+                        {{ display.reblogged ? words().UndoBoost : words().Boost }}
+                      </button>
+                    }
+                    @case ('quote') {
+                      <button
+                        type="button"
+                        role="menuitem"
+                        (click)="shareMenuOpen.set(false); toggleQuote($event)"
+                      >
+                        {{ 'statusCard.quote' | transloco }}
+                      </button>
+                    }
+                    @case ('posse') {
+                      <!-- Says "my blog" out loud. The old bare 🔁 beside another
+                           bare 🔁 gave the reader no way to tell which recycle
+                           symbol went to the network and which to their site. -->
+                      <button
+                        type="button"
+                        role="menuitem"
+                        (click)="shareMenuOpen.set(false); togglePosseOnly(repostKind, $event)"
+                      >
+                        {{
+                          posseQueued(repostKind)
+                            ? ('statusCard.boostFromBlog' | transloco)
+                            : ('statusCard.recordBoostOnBlog' | transloco)
+                        }}
+                      </button>
+                    }
+                    @case ('share') {
+                      <button type="button" role="menuitem" (click)="openShare($event)">
+                        {{ 'statusCard.shareElsewhereEllipsis' | transloco }}
+                      </button>
+                    }
+                  }
+                }
+              </div>
+            }
+          </div>
+        } @else if (caps.reblog) {
+          <button
+            class="action"
+            [class.on]="display.reblogged"
+            [class.working]="busyWith('reblog')"
+            [disabled]="busyWith('reblog')"
+            (click)="toggleReblog($event)"
+            [title]="display.reblogged ? words().UndoBoost : words().Boost"
+            [attr.aria-pressed]="display.reblogged"
+            [attr.aria-label]="display.reblogged ? words().UndoBoost : words().Boost"
+          >
+            <span aria-hidden="true">🔁</span>
+            @if (display.reblogged) {
+              <span class="did" aria-hidden="true">{{ words().Boosted }}</span>
+            }
+          </button>
+        }
+        @if (unifiedShare()) {
+          <!-- The menu above already carries boost, quote and share; the
+               per-audience branches below would duplicate all three. -->
+        } @else if (auth.isAnonymous) {
+          @if (display.url) {
+            <button
+              type="button"
+              class="action"
+              [title]="'statusCard.shareElsewhere' | transloco"
+              [attr.aria-label]="'statusCard.shareElsewhere' | transloco"
+              (click)="openShare($event)"
+            >
+              <span aria-hidden="true">🔁</span>
+              <span>{{
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
+              }}</span>
+            </button>
+          } @else {
+            <!-- No URL to share and no network to boost on: a number, not a
+                 control. `.action-static` keeps the row's spacing without the
+                 pointer cursor that made this look tappable. -->
+            <span class="action action-static" [title]="words().Boosts"
+              ><span aria-hidden="true">🔁</span>
+              <span>{{
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
+              }}</span></span
+            >
+          }
+        } @else if (!foreign && capabilities.canCompose) {
+          <button
+            class="action"
+            [class.on]="quoting()"
+            (click)="toggleQuote($event)"
+            [title]="'statusCard.quote' | transloco"
+            [attr.aria-label]="'statusCard.quote' | transloco"
+          >
+            <span aria-hidden="true">❝</span>
+          </button>
+          @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
+            <button
+              class="action count-link"
+              (click)="openAccountList('reblogged_by', $event)"
+              [title]="countWords().BoostedBy"
+              [attr.aria-label]="
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().BoostedBy }
+              "
+            >
+              {{
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
+              }}
+            </button>
+          } @else {
+            <span class="action action-static">{{
+              'statusCard.countLabel'
+                | transloco: { count: display.reblogs_count, label: countWords().boosts }
+            }}</span>
+          }
+        } @else if (!caps.reblog && readOnlyStats) {
+          <!-- Read-only providers (Twitter) report real counts with no button to
+               attach them to. When `caps.reblog` already rendered a button above,
+               this fallback would be a second 🔁 on the same row — the case a
+               signed-in viewer hits on every Bluesky post. -->
+          <span class="action action-static" [title]="words().Boosts"
+            ><span aria-hidden="true">🔁</span>
+            {{
+              'statusCard.countLabel'
+                | transloco: { count: display.reblogs_count, label: countWords().boosts }
+            }}</span
+          >
+        }
+        @if (caps.favourite) {
+          <button
+            class="action"
+            [class.on]="display.favourited"
+            [class.working]="busyWith('favourite')"
+            [disabled]="busyWith('favourite')"
+            (click)="toggleFavourite($event)"
+            [title]="
+              (display.favourited ? 'statusCard.undoFavourite' : 'statusCard.favourite') | transloco
+            "
+            [attr.aria-pressed]="display.favourited"
+            [attr.aria-label]="
+              (display.favourited ? 'statusCard.undoFavourite' : 'statusCard.favourite') | transloco
+            "
+          >
+            <span aria-hidden="true">{{ favIcon() }}</span>
+            @if (display.favourited) {
+              <span class="did" aria-hidden="true">{{ 'statusCard.favourited' | transloco }}</span>
+            }
+          </button>
+        }
+        @if (posseOnly()) {
+          <!-- Record-only: this provider has no network to like on (an RSS feed
+               has no endpoint), so these write to the reader's own site and make
+               no request at all. State comes from the queue, not from a server
+               flag that does not exist here. -->
+          @if (!unifiedShare()) {
+            <!-- Without the unified control this is the only boost affordance
+                 there is. With it, "Record a boost on my blog" is a named item
+                 in that menu instead: a second bare 🔁 next to the first one
+                 asked the reader to tell two identical recycle symbols apart. -->
+            <button
+              class="action"
+              [class.on]="posseQueued(repostKind)"
+              (click)="togglePosseOnly(repostKind, $event)"
+              [title]="
+                posseQueued(repostKind)
+                  ? ('statusCard.boostFromBlogRecord' | transloco)
+                  : ('statusCard.recordBoostOnBlog' | transloco)
+              "
+              [attr.aria-pressed]="posseQueued(repostKind)"
+            >
+              🔁
+              @if (posseQueued(repostKind)) {
+                <span class="did">{{ 'statusCard.recorded' | transloco }}</span>
+              }
+            </button>
+          }
+          <button
+            class="action"
+            [class.on]="posseQueued('like')"
+            (click)="togglePosseOnly('like', $event)"
+            [title]="
+              posseQueued('like')
+                ? ('statusCard.likeFromBlogRecord' | transloco)
+                : ('statusCard.recordLikeOnBlog' | transloco)
+            "
+            [attr.aria-pressed]="posseQueued('like')"
+          >
+            {{ favIcon() }}
+            @if (posseQueued('like')) {
+              <span class="did">{{ 'statusCard.recorded' | transloco }}</span>
+            }
+          </button>
+        }
+        @if (auth.isAnonymous) {
+          <!-- Liking needs an identity on the post's own server, so this cannot
+               act. It used to be an inert span wearing `.action`, which gave it a
+               pointer cursor and a hover highlight — a control in every visible
+               respect that ignored the tap. Now it answers: it says what liking
+               costs and offers the way there. -->
+          <button
+            class="action"
+            type="button"
+            (click)="promptSignIn('like', $event)"
+            [title]="'statusCard.favouritesTitle' | transloco"
+          >
+            <span aria-hidden="true">{{ favIcon() }}</span>
+            <span>{{
+              'statusCard.countLabel'
+                | transloco
+                  : {
+                      count: display.favourites_count,
+                      label: ('statusCard.favourites' | transloco),
+                    }
+            }}</span>
+          </button>
+        } @else if (!foreign) {
+          @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
+            <button
+              class="action count-link"
+              (click)="openAccountList('favourited_by', $event)"
+              [title]="'statusCard.favouritedBy' | transloco"
+              [attr.aria-label]="
+                'statusCard.favouritedByCount' | transloco: { count: display.favourites_count }
+              "
+            >
+              {{
+                'statusCard.countLabel'
+                  | transloco
+                    : {
+                        count: display.favourites_count,
+                        label: ('statusCard.favourites' | transloco),
+                      }
+              }}
+            </button>
+          } @else {
+            <span class="action action-static">{{
+              'statusCard.countLabel'
+                | transloco
+                  : {
+                      count: display.favourites_count,
+                      label: ('statusCard.favourites' | transloco),
+                    }
+            }}</span>
+          }
+        } @else if (!caps.favourite && readOnlyStats) {
+          <!-- Same pairing as the boost fallback above: only stand in for the
+               button when there is no button. -->
+          <span class="action action-static" [title]="'statusCard.likesTitle' | transloco"
+            ><span aria-hidden="true">⭐</span>
+            {{
+              'statusCard.countLabel'
+                | transloco
+                  : { count: display.favourites_count, label: ('statusCard.likes' | transloco) }
+            }}</span
+          >
+        }
+        @if (foreign) {
+          @if (nitterLink; as nitter) {
+            <!-- tweets point at a mirror rather than x.com: no trackers, no
+                 login wall, and clicking through to Twitter is the habit this
+                 connector exists to avoid. The instance is configurable because
+                 the mirror ecosystem is unstable, so the label names the host
+                 actually configured rather than hardcoding one that may not be
+                 where the link goes. -->
+            <a
+              class="action open-original"
+              [href]="nitter"
+              target="_blank"
+              rel="noopener noreferrer"
+              [title]="'statusCard.openOnNitter' | transloco: { host: nitterLabel }"
+            >
+              ↗ {{ nitterLabel }}
+            </a>
+          } @else if (display.url) {
+            <!-- Guarded on the url. Bound straight to `display.url`, a post
+                 without one rendered `href=""` — which is not an inert link, it
+                 is a link to the current page, so clicking it silently reloaded
+                 the route and threw the reader back to the top of the feed. -->
+            <a
+              class="action open-original"
+              [href]="display.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              [title]="'statusCard.openOriginalTitle' | transloco"
+            >
+              {{ 'statusCard.openOriginal' | transloco }}
+            </a>
+          }
+        }
+        <!-- `readOnlyStats` joins the anonymous case here so a signed-in reader
+             gets the same client-side tools on a tweet that an anonymous one
+             already got: bookmark, translate, and the ••• menu with local
+             block/mute. None of these touch the origin server, so "this post is
+             foreign" was never the right reason to withhold them. -->
+        @if (!foreign || display.provider === 'bluesky' || auth.isAnonymous || readOnlyStats) {
+          @if (capabilities.canBookmark) {
+            <button
+              class="action"
+              [class.on]="bookmarkActive()"
+              [class.working]="busyWith('bookmark')"
+              (click)="toggleBookmark($event)"
+              [disabled]="busyWith('bookmark')"
+              [title]="
+                (bookmarkActive() ? 'statusCard.removeBookmark' : 'statusCard.bookmark') | transloco
+              "
+              [attr.aria-pressed]="bookmarkActive()"
+              [attr.aria-label]="
+                (bookmarkActive() ? 'statusCard.removeBookmark' : 'statusCard.bookmark') | transloco
+              "
+            >
+              <span aria-hidden="true">🔖</span>
+            </button>
+          }
+          <!-- The reading shelf, beside the bookmark rather than instead of it:
+               a bookmark is a record on your Mastodon account and holds posts,
+               while the library holds documents from every source and knows how
+               far through each one you are. Renders itself away on anything
+               that is not a document, which is most posts. -->
+          <app-save-to-library [status]="display" />
+          <!-- Server translation needs a status the server actually has. For a
+               read-only provider it could only 404 on an id it cannot resolve,
+               so those posts get the AI button below instead. -->
+          @if (
+            capabilities.canUseServerActions &&
+            display.provider !== 'bluesky' &&
+            !serverCannotTranslate
+          ) {
+            <button
+              class="action"
+              [class.on]="!!translation()"
+              [disabled]="translating()"
+              (click)="translateByPreference($event)"
+              [title]="'statusCard.translate' | transloco"
+              [attr.aria-label]="'statusCard.translate' | transloco"
+            >
+              <span aria-hidden="true">🌐</span>
+            </button>
+          }
+          <!-- Always present for anonymous readers, connected or not: they have no
+               other translate button, so hiding this one would make the capability
+               invisible rather than merely unavailable. See sprint 3 decision 8. -->
+          @if (
+            showAiTranslate() &&
+            (capabilities.active || serverCannotTranslate || translatePref.choice() === 'ai')
+          ) {
+            <button
+              class="action"
+              [class.on]="!!aiTranslation()"
+              [disabled]="aiTranslating()"
+              (click)="onAiTranslateClick($event)"
+              [title]="'statusCard.translateWithAi' | transloco"
+              [attr.aria-label]="'statusCard.translateWithAi' | transloco"
+            >
+              🤖🌐
+            </button>
+          }
+          @if (capabilities.canUseServerActions) {
+            @if (display.edited_at) {
+              <button
+                class="action"
+                (click)="openHistory($event)"
+                [title]="'statusCard.editHistory' | transloco"
+                [attr.aria-label]="'statusCard.editHistory' | transloco"
+              >
+                <span aria-hidden="true">🕘</span>
+              </button>
+            }
+            @if (isOwn()) {
+              @if (display.provider !== 'bluesky') {
+                <button
+                  class="action"
+                  [class.on]="display.pinned"
+                  (click)="togglePin($event)"
+                  [title]="'statusCard.pin' | transloco"
+                  [attr.aria-label]="'statusCard.pin' | transloco"
+                >
+                  <span aria-hidden="true">📌</span>
+                </button>
+                <button
+                  class="action"
+                  [class.on]="display.muted"
+                  (click)="toggleMute($event)"
+                  [title]="'statusCard.muteThread' | transloco"
+                  [attr.aria-label]="'statusCard.muteThread' | transloco"
+                >
+                  <span aria-hidden="true">🔕</span>
+                </button>
+                <div class="policy-wrap">
+                  <button
+                    class="action"
+                    (click)="togglePolicyMenu($event)"
+                    [title]="'statusCard.whoCanQuote' | transloco"
+                    [attr.aria-label]="'statusCard.whoCanQuote' | transloco"
+                  >
+                    <span aria-hidden="true">💬🔒</span>
+                  </button>
+                  @if (showPolicyMenu()) {
+                    <div class="policy-menu" (click)="$event.stopPropagation()">
+                      <div class="policy-title muted small">
+                        {{ 'statusCard.whoCanQuote' | transloco }}
+                      </div>
+                      @for (p of quotePolicies; track p) {
+                        <button
+                          class="policy-option"
+                          [class.active]="display.quote_approval_policy === p"
+                          (click)="setPolicy(p)"
+                        >
+                          {{ quotePolicyLabel(p) }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+                <button
+                  class="action"
+                  (click)="startEdit($event)"
+                  [title]="'statusCard.edit' | transloco"
+                  [attr.aria-label]="'statusCard.edit' | transloco"
+                >
+                  <span aria-hidden="true">✏️</span>
+                </button>
+              }
+              <button
+                class="action"
+                (click)="remove($event)"
+                [title]="'statusCard.delete' | transloco"
+                [attr.aria-label]="'statusCard.delete' | transloco"
+              >
+                <span aria-hidden="true">🗑️</span>
+              </button>
+              @if (display.provider !== 'bluesky') {
+                <button
+                  class="action"
+                  (click)="deleteAndRedraft($event)"
+                  [title]="'statusCard.deleteAndBoost' | transloco: { boost: words().boost }"
+                  [attr.aria-label]="
+                    'statusCard.deleteAndBoost' | transloco: { boost: words().boost }
+                  "
+                >
+                  <span aria-hidden="true">♻️</span>
+                </button>
+              }
+              @if (display.url || display.account.url) {
+                <details class="danger-menu" (click)="$event.stopPropagation()">
+                  <summary
+                    class="action"
+                    [attr.aria-label]="'statusCard.moreActions' | transloco: { post: words().post }"
+                  >
+                    •••
+                  </summary>
+                  <div class="danger-menu-panel">
+                    <!-- "Reply to this later." Parks a local draft; publishes
+                       nothing, so it works anonymously too. -->
+                    @if (todosEnabled()) {
+                      <button type="button" (click)="saveAsTodo($event)">
+                        {{ 'statusCard.saveAsTodo' | transloco }}
+                      </button>
+                    }
+                    @if (display.url) {
+                      <a
+                        [href]="display.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        (click)="$event.stopPropagation()"
+                      >
+                        {{ 'statusCard.openPostOriginal' | transloco }}
+                      </a>
+                    }
+                    @if (display.account.url) {
+                      <a
+                        [href]="display.account.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        (click)="$event.stopPropagation()"
+                      >
+                        {{ 'statusCard.openProfileOriginal' | transloco }}
+                      </a>
+                    }
+                  </div>
+                </details>
+              }
+            } @else if (reported()) {
+              <span class="action reported" [title]="'statusCard.reportedTitle' | transloco">{{
+                'statusCard.reported' | transloco
+              }}</span>
+            } @else {
+              <details class="danger-menu" (click)="$event.stopPropagation()">
+                <summary
+                  class="action"
+                  [attr.aria-label]="'statusCard.moreActions' | transloco: { post: words().post }"
+                >
+                  •••
+                </summary>
+                <div class="danger-menu-panel">
+                  <!-- "Reply to this later." Parks a local draft; publishes
+                       nothing, so it works anonymously too. -->
+                  @if (todosEnabled()) {
+                    <button type="button" (click)="saveAsTodo($event)">
+                      {{ 'statusCard.saveAsTodo' | transloco }}
+                    </button>
+                  }
+                  @if (display.url) {
+                    <a
+                      [href]="display.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      (click)="$event.stopPropagation()"
+                    >
+                      {{ 'statusCard.openPostOriginal' | transloco }}
+                    </a>
+                  }
+                  @if (display.account.url) {
+                    <a
+                      [href]="display.account.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      (click)="$event.stopPropagation()"
+                    >
+                      {{ 'statusCard.openProfileOriginal' | transloco }}
+                    </a>
+                  }
+                  <button
+                    type="button"
+                    (click)="mutePost($event)"
+                    [title]="'Hide this ' + words().post + ' for 30 days'"
+                  >
+                    {{ 'statusCard.muteThisPost' | transloco }}
+                  </button>
+                  <!-- Client-side mute/block: works for every provider (incl.
+                       read-only Anonymous), stored locally with timed expiry. -->
+                  @if (authorBlockedLocally() || authorMutedLocally()) {
+                    <button type="button" (click)="unsuppressAuthorLocally($event)">
+                      {{
+                        (authorBlockedLocally() ? 'statusCard.unblock' : 'statusCard.unmute')
+                          | transloco
+                      }}
+                      &#64;{{ display.account.acct }}
+                    </button>
+                  } @else {
+                    <div class="menu-note muted small">
+                      {{ 'statusCard.muteAccountFor' | transloco: { acct: display.account.acct } }}
+                    </div>
+                    <div class="mute-durations">
+                      @for (d of muteDurations; track d.label) {
+                        <button type="button" (click)="muteAuthorLocally($event, d.seconds)">
+                          {{ d.label | transloco }}
+                        </button>
+                      }
+                    </div>
+                    <button type="button" (click)="blockAuthorLocally($event)">
+                      {{ 'statusCard.blockAccount' | transloco: { acct: display.account.acct } }}
+                    </button>
+                  }
+                  @if (canReport) {
+                    <button type="button" (click)="openReport($event)">
+                      {{ 'statusCard.reportPost' | transloco }}
+                    </button>
+                  }
+                </div>
+              </details>
+            }
+          } @else if (!isOwn()) {
+            <!-- Providers without server actions (Anonymous, foreign feeds) still
+                 get a ••• menu for client-side mute/block + open-original. -->
+            @if (canViewPublicHistory) {
+              <button
+                class="action"
+                (click)="openHistory($event)"
+                [title]="'statusCard.editHistory' | transloco"
+                [attr.aria-label]="'statusCard.editHistory' | transloco"
+              >
+                <span aria-hidden="true">🕘</span>
+              </button>
+            }
+            <details class="danger-menu" (click)="$event.stopPropagation()">
+              <summary
+                class="action"
+                [attr.aria-label]="'statusCard.moreActions' | transloco: { post: words().post }"
+              >
+                •••
+              </summary>
+              <div class="danger-menu-panel">
+                <!-- "Reply to this later." Parks a local draft; publishes
+                       nothing, so it works anonymously too. -->
+                @if (todosEnabled()) {
+                  <button type="button" (click)="saveAsTodo($event)">
+                    {{ 'statusCard.saveAsTodo' | transloco }}
+                  </button>
+                }
+                @if (display.url) {
+                  <a
+                    [href]="display.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    (click)="$event.stopPropagation()"
+                  >
+                    {{ 'statusCard.openPostOriginal' | transloco }}
+                  </a>
+                }
+                @if (display.account.url) {
+                  <a
+                    [href]="display.account.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    (click)="$event.stopPropagation()"
+                  >
+                    {{ 'statusCard.openProfileOriginal' | transloco }}
+                  </a>
+                }
+                <button
+                  type="button"
+                  (click)="mutePost($event)"
+                  [title]="'Hide this ' + words().post + ' for 30 days'"
+                >
+                  {{ 'statusCard.muteThisPost' | transloco }}
+                </button>
+                @if (authorBlockedLocally() || authorMutedLocally()) {
+                  <button type="button" (click)="unsuppressAuthorLocally($event)">
+                    {{
+                      (authorBlockedLocally() ? 'statusCard.unblock' : 'statusCard.unmute')
+                        | transloco
+                    }}
+                    &#64;{{ display.account.acct }}
+                  </button>
+                } @else {
+                  <div class="menu-note muted small">
+                    {{ 'statusCard.muteAccountFor' | transloco: { acct: display.account.acct } }}
+                  </div>
+                  <div class="mute-durations">
+                    @for (d of muteDurations; track d.label) {
+                      <button type="button" (click)="muteAuthorLocally($event, d.seconds)">
+                        {{ d.label | transloco }}
+                      </button>
+                    }
+                  </div>
+                  <button type="button" (click)="blockAuthorLocally($event)">
+                    {{ 'statusCard.blockAccount' | transloco: { acct: display.account.acct } }}
+                  </button>
+                }
+                @if (canReport) {
+                  <button type="button" (click)="openReport($event)">
+                    {{ 'statusCard.reportPost' | transloco }}
+                  </button>
+                }
+              </div>
+            </details>
+          }
+        }
+      </div>
+
+      @if (actionError(); as err) {
+        <div class="action-error">{{ err }}</div>
+      }
+      @if (actionNotice(); as notice) {
+        <div class="action-notice" role="status">{{ notice }}</div>
+      }
+
+      @if (redrafting()) {
+        <div class="inline-compose redraft" (click)="$event.stopPropagation()">
+          <div class="redraft-note muted">
+            {{ 'statusCard.postDeletedDiscard' | transloco }}
+            <button type="button" class="linklike" (click)="cancelRedraft()">
+              {{ 'statusCard.discard' | transloco }}</button
+            >.
+          </div>
+          <app-compose
+            [initialText]="redraftText()"
+            [initialVisibility]="display.visibility"
+            [inReplyToId]="display.in_reply_to_id ?? undefined"
+            [compact]="true"
+            [placeholder]="'statusCard.editAndRepost' | transloco"
+            (posted)="onRedrafted($event)"
+          />
+        </div>
+      }
+
+      @if (replying()) {
+        <div class="inline-compose" (click)="$event.stopPropagation()">
+          @if (isLocalPractice) {
+            <app-local-compose [inReplyTo]="display.id" (posted)="onReplied($event)" />
+          } @else if (display.provider === 'bluesky') {
+            <app-bsky-reply [replyTo]="display" (posted)="onReplied($event)" />
+          } @else {
+            <app-compose
+              [inReplyToId]="display.id"
+              [replyToHandle]="display.account.acct"
+              [compact]="true"
+              [placeholder]="'statusCard.postYourReply' | transloco"
+              (posted)="onReplied($event)"
+            />
+          }
+        </div>
+      }
+
+      @if (quoting()) {
+        <div class="inline-compose" (click)="$event.stopPropagation()">
+          <!-- A quote is a fresh statement to your own audience, not a reply to
+               a conversation, so it goes through Drafts like any other post. -->
+          <app-compose
+            [quotedStatusId]="display.id"
+            [gateable]="true"
+            [compact]="true"
+            [placeholder]="'statusCard.addComment' | transloco"
+            (posted)="onQuoted($event)"
+          />
+        </div>
+      }
+
+      @if (shareCompose(); as request) {
+        <div class="inline-compose" (click)="$event.stopPropagation()">
+          <!-- The share dialog prefills text and names a target, but never posts:
+               the user sees what is about to go out and presses Post themselves. -->
+          <app-compose
+            [initialText]="request.text"
+            [initialTarget]="request.target"
+            [gateable]="true"
+            [placeholder]="'statusCard.addComment' | transloco"
+            (posted)="shareCompose.set(null)"
+          />
+        </div>
+      }
+
+      <ng-content select="[status-footer]" />
+    </div>
+  </article>
+
+  @if (showReport()) {
+    <app-report-dialog
+      [username]="display.account.username"
+      [accountId]="display.account.id"
+      [statusId]="display.id"
+      [provider]="display.provider"
+      [statusRef]="display.provider === 'bluesky' ? $any(display.providerRef) : null"
+      (closed)="showReport.set(false)"
+      (submitted)="onReported()"
+    />
+  }
+
+  @if (accountListMode(); as mode) {
+    <app-account-list-dialog
+      [statusId]="display.id"
+      [mode]="mode"
+      (closed)="accountListMode.set(null)"
+    />
+  }
+
+  @if (showHistory()) {
+    <app-history-dialog
+      [statusId]="historyStatusId"
+      [server]="historyServer"
+      (closed)="showHistory.set(false)"
+    />
+  }
+
+  @if (lightboxIndex() !== null) {
+    <app-lightbox
+      [items]="display.media_attachments"
+      [startIndex]="lightboxIndex()!"
+      (closed)="lightboxIndex.set(null)"
+    />
+  }
+
+  @if (signInFor()) {
+    <app-sign-in-prompt [action]="signInAction()" (dismissed)="signInFor.set(null)" />
+  }
+
+  @if (showShare()) {
+    <app-share-dialog
+      [status]="display"
+      [quote]="shareQuote()"
+      (compose)="onShareCompose($event)"
+      (closed)="showShare.set(false)"
+    />
+  }
+
+  @if (showBookmarkProviders()) {
+    <app-bookmark-provider-dialog
+      [nativeBookmarked]="bookmarkActive()"
+      [anonymous]="auth.isAnonymous"
+      [nativeLabel]="display.provider === 'bluesky' ? 'Bluesky' : 'Mastodon'"
+      [externalUrl]="externalBookmarkUrl()"
+      (chosen)="chooseBookmark($event)"
+      (closed)="showBookmarkProviders.set(false)"
+    />
+  }
+
+  @if (translateChoiceOpen()) {
+    <div
+      class="tc-overlay"
+      role="presentation"
+      tabindex="-1"
+      (click)="translateChoiceOpen.set(false)"
+      (keyup.escape)="translateChoiceOpen.set(false)"
+    >
+      <div
+        class="tc-dialog"
+        role="dialog"
+        aria-labelledby="tc-title"
+        (click)="$event.stopPropagation()"
+        (keyup)="$event.stopPropagation()"
+      >
+        @if (openrouterConnected()) {
+          <h3 id="tc-title">{{ 'statusCard.translateWith' | transloco }}</h3>
+          <div class="tc-options">
+            <button
+              class="btn btn-outline"
+              type="button"
+              (click)="chooseTranslator('server', $event)"
+            >
+              {{ 'statusCard.yourServer' | transloco }}
+              <span class="muted small">{{ 'statusCard.freeAlreadySetUp' | transloco }}</span>
+            </button>
+            <button class="btn btn-outline" type="button" (click)="chooseTranslator('ai', $event)">
+              {{ 'statusCard.aiTranslation' | transloco }}
+              <span class="muted small">{{
+                'statusCard.spendsOpenrouterCredits' | transloco
+              }}</span>
+            </button>
+          </div>
+          <label class="tc-remember">
+            <input
+              type="checkbox"
+              [checked]="rememberChoice()"
+              (change)="rememberChoice.set($any($event.target).checked)"
+            />
+            {{ 'statusCard.alwaysUseThis' | transloco }}
+          </label>
+        } @else {
+          <!-- The one upsell in the app, and only for readers who have no other
+               translate button at all. One paragraph, no drip campaign. -->
+          <h3 id="tc-title">{{ 'statusCard.aiTranslation' | transloco }}</h3>
+          <p class="muted">
+            {{ 'statusCard.aiTranslationDescription' | transloco }}
+          </p>
+          <div class="tc-options">
+            <a class="btn" routerLink="/settings/connections/openrouter">{{
+              'statusCard.connectOpenrouter' | transloco
+            }}</a>
+            <button class="btn btn-outline" type="button" (click)="translateChoiceOpen.set(false)">
+              {{ 'statusCard.notNow' | transloco }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+}

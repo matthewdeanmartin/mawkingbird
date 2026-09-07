@@ -1,0 +1,195 @@
+@if (raindrop.connected()) {
+  <nav class="tabs provider-tabs" [aria-label]="'pages.bookmarks.provider' | transloco">
+    <button class="tab" [class.active]="provider() === 'native'" (click)="selectProvider('native')">
+      {{ 'pages.bookmarks.native' | transloco }}
+    </button>
+    <button
+      class="tab"
+      [class.active]="provider() === 'raindrop'"
+      (click)="selectProvider('raindrop')"
+    >
+      {{ 'pages.bookmarks.raindrop' | transloco }}
+    </button>
+  </nav>
+}
+
+@if (message()) {
+  <p class="notice success" role="status">{{ message() }}</p>
+}
+@if (error()) {
+  <p class="notice error" role="alert">{{ error() }}</p>
+}
+
+<form class="bookmark-filter" role="search" (submit)="applyFilter($event)">
+  <label for="bookmark-filter-input">{{ 'pages.bookmarks.filterLabel' | transloco }}</label>
+  <div class="filter-controls">
+    <input
+      id="bookmark-filter-input"
+      type="search"
+      [value]="filterDraft()"
+      [placeholder]="
+        provider() === 'native'
+          ? ('pages.bookmarks.placeholder.native' | transloco)
+          : ('pages.bookmarks.placeholder.raindrop' | transloco)
+      "
+      (input)="filterDraft.set($any($event.target).value)"
+    />
+    <button class="btn" type="submit" [disabled]="provider() === 'raindrop' && raindropLoading()">
+      {{ 'pages.bookmarks.filter' | transloco }}
+    </button>
+    @if (filterDraft() || (provider() === 'native' ? nativeFilter() : raindropFilter())) {
+      <button class="btn btn-outline" type="button" (click)="clearFilter()">
+        {{ 'pages.bookmarks.clear' | transloco }}
+      </button>
+    }
+  </div>
+  <span class="muted small">
+    @if (provider() === 'native') {
+      {{ 'pages.bookmarks.filterHint.native' | transloco: { count: statuses().length } }}
+    } @else {
+      {{ 'pages.bookmarks.filterHint.raindrop' | transloco }}
+    }
+  </span>
+</form>
+
+@if (provider() === 'native') {
+  @if (loading()) {
+    <p class="muted center">{{ 'pages.bookmarks.loading' | transloco }}</p>
+  } @else {
+    <nav class="tabs folder-tabs" [aria-label]="'pages.bookmarks.nativeFolders' | transloco">
+      @for (v of views; track v.id) {
+        <button class="tab" [class.active]="view() === v.id" (click)="view.set(v.id)">
+          {{ v.label }}
+        </button>
+      }
+    </nav>
+
+    @if (!statuses().length) {
+      <p class="muted center">{{ 'pages.bookmarks.emptyNative' | transloco }}</p>
+    } @else if (!filteredStatuses().length) {
+      <p class="muted center">{{ 'pages.bookmarks.noFilterMatch' | transloco }}</p>
+    } @else {
+      @for (group of groups(); track group.label) {
+        @if (group.label && view() !== 'all') {
+          <h3 class="page-head">
+            {{
+              'pages.bookmarks.groupHeading'
+                | transloco: { label: group.label, count: group.statuses.length }
+            }}
+          </h3>
+        }
+        @if (!group.statuses.length) {
+          <p class="muted center">{{ 'pages.bookmarks.emptyGroup' | transloco }}</p>
+        }
+        @for (s of group.statuses; track s.id) {
+          <app-status-card [status]="s" (changed)="onChanged($event)" (deleted)="onDeleted($event)">
+            @if (raindrop.connected()) {
+              <div status-footer class="conversion-row">
+                <button
+                  class="btn btn-outline"
+                  [disabled]="busy() !== null"
+                  (click)="moveNativeToRaindrop(s)"
+                >
+                  {{
+                    (busy() === 'native:' + s.id
+                      ? 'pages.bookmarks.moving'
+                      : 'pages.bookmarks.moveToRaindrop'
+                    ) | transloco
+                  }}
+                </button>
+              </div>
+            }
+          </app-status-card>
+        }
+      }
+    }
+  }
+} @else {
+  <nav class="tabs folder-tabs" [aria-label]="'pages.bookmarks.raindropFolders' | transloco">
+    <button
+      class="tab"
+      [class.active]="raindropCollection() === 0"
+      (click)="selectRaindropCollection(0)"
+    >
+      {{ 'pages.bookmarks.all' | transloco }}
+    </button>
+    @for (collection of collections(); track collection._id) {
+      <button
+        class="tab"
+        [class.active]="raindropCollection() === collection._id"
+        (click)="selectRaindropCollection(collection._id)"
+      >
+        {{ collection.title }}
+      </button>
+    }
+  </nav>
+
+  @if (raindropLoading()) {
+    <p class="muted center">{{ 'pages.bookmarks.loading' | transloco }}</p>
+  } @else if (!raindropBookmarks().length) {
+    <p class="muted center">{{ 'pages.bookmarks.emptyRaindrop' | transloco }}</p>
+  } @else {
+    <div class="raindrop-list">
+      @for (bookmark of raindropBookmarks(); track bookmark._id) {
+        <article class="raindrop-card">
+          @if (bookmark.cover) {
+            <img [src]="bookmark.cover" alt="" loading="lazy" referrerpolicy="no-referrer" />
+          }
+          <div class="raindrop-copy">
+            <a [href]="bookmark.link" target="_blank" rel="noopener noreferrer">
+              <strong>{{ bookmark.title || bookmark.link }}</strong>
+            </a>
+            @if (bookmark.excerpt) {
+              <p>{{ bookmark.excerpt }}</p>
+            }
+            <span class="muted small">{{ bookmark.link }}</span>
+          </div>
+          <button
+            class="btn btn-outline"
+            [disabled]="busy() !== null"
+            (click)="moveRaindropToNative(bookmark)"
+          >
+            {{
+              (busy() === 'raindrop:' + bookmark._id
+                ? 'pages.bookmarks.moving'
+                : 'pages.bookmarks.moveToNative'
+              ) | transloco
+            }}
+          </button>
+        </article>
+      }
+    </div>
+  }
+}
+
+@if (!loading() && (provider() === 'native' || !raindropLoading())) {
+  <nav class="pager" [aria-label]="'pages.bookmarks.pagesNav' | transloco">
+    <button
+      class="btn btn-outline"
+      [disabled]="provider() === 'native' ? nativePage() === 0 : raindropPage() === 0"
+      (click)="firstPage()"
+    >
+      {{ 'pages.bookmarks.first' | transloco }}
+    </button>
+    <button
+      class="btn btn-outline"
+      [disabled]="provider() === 'native' ? nativePage() === 0 : raindropPage() === 0"
+      (click)="previousPage()"
+    >
+      {{ 'pages.bookmarks.previous' | transloco }}
+    </button>
+    <span class="muted small">
+      {{
+        'pages.bookmarks.pageNumber'
+          | transloco: { page: (provider() === 'native' ? nativePage() : raindropPage()) + 1 }
+      }}
+    </span>
+    <button
+      class="btn btn-outline"
+      [disabled]="loadingMore() || (provider() === 'native' ? exhausted() : !raindropHasNext())"
+      (click)="nextPage()"
+    >
+      {{ (loadingMore() ? 'pages.bookmarks.loading' : 'pages.bookmarks.next') | transloco }}
+    </button>
+  </nav>
+}

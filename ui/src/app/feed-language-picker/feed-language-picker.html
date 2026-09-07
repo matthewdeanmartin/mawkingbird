@@ -1,0 +1,61 @@
+<button
+  type="button"
+  class="btn btn-outline btn-sm feed-filter lang-button"
+  [class.active]="!showingAll()"
+  [attr.aria-expanded]="open()"
+  aria-haspopup="menu"
+  (click)="toggleOpen()"
+  [title]="'feedLanguagePicker.description' | transloco: { posts: words().Posts }"
+  [attr.aria-label]="'feedLanguagePicker.description' | transloco: { posts: words().Posts }"
+>
+  <span aria-hidden="true">🌐</span> {{ label() }}
+</button>
+
+@if (open()) {
+  <div class="lang-menu" role="menu">
+    <button
+      type="button"
+      role="menuitemradio"
+      class="lang-row"
+      [attr.aria-checked]="showingAll()"
+      (click)="chooseAll()"
+    >
+      <span class="tick">{{ showingAll() ? '✓' : '' }}</span>
+      {{ 'feedLanguagePicker.allLanguages' | transloco }}
+    </button>
+
+    <button
+      type="button"
+      role="menuitemradio"
+      class="lang-row"
+      [attr.aria-checked]="!showingAll() && !selected().size"
+      (click)="chooseKnown()"
+    >
+      <span class="tick">{{ !showingAll() && !selected().size ? '✓' : '' }}</span>
+      {{ 'feedLanguagePicker.everyKnown' | transloco }}
+    </button>
+
+    <hr />
+
+    <!-- The named languages. Checkboxes rather than radios: picking two is the
+         common bilingual case, and the cap is what stops it becoming "all". -->
+    @for (option of options(); track option.code) {
+      <button
+        type="button"
+        role="menuitemcheckbox"
+        class="lang-row"
+        [attr.aria-checked]="selected().has(option.code)"
+        [disabled]="atCap(option.code)"
+        [title]="atCap(option.code) ? ('feedLanguagePicker.cap' | transloco: { count: max }) : ''"
+        (click)="toggleLanguage(option.code)"
+      >
+        <span class="tick">{{ selected().has(option.code) ? '✓' : '' }}</span>
+        {{ option.name }}
+      </button>
+    }
+
+    <p class="lang-note muted">
+      {{ 'feedLanguagePicker.note' | transloco: { count: max } }}
+    </p>
+  </div>
+}

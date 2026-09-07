@@ -1,0 +1,56 @@
+<div class="spage-head">
+  <h1>{{ 'settings.development.title' | transloco }}</h1>
+  <p>{{ 'settings.development.intro' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    @if (!loading() && !apps().length) {
+      <p class="hint">{{ 'settings.development.none' | transloco }}</p>
+    }
+    @for (app of apps(); track app.id) {
+      <div class="srow">
+        <span class="slabel"
+          ><strong>{{ app.name }}</strong></span
+        >
+        <div class="scontrol">
+          @if (app.website) {
+            <a [href]="app.website" target="_blank" rel="noopener">{{ app.website }}</a>
+          }
+          <div class="scope-chips">
+            @for (scope of app.scopes; track scope) {
+              <code>{{ scope }}</code>
+            }
+          </div>
+          <span class="hint">{{
+            'settings.development.lastUsed' | transloco: { date: formatDate(app.last_used_at) }
+          }}</span>
+        </div>
+      </div>
+    }
+    <div class="srow">
+      <span class="slabel"></span>
+      <div class="scontrol">
+        <span class="hint">{{ 'settings.development.register' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel"
+        ><strong>{{ 'settings.development.reportBug' | transloco }}</strong></span
+      >
+      <div class="scontrol">
+        <button class="btn btn-outline" type="button" (click)="reporting.set(true)">
+          {{ 'settings.development.reportBug' | transloco }}
+        </button>
+        <span class="hint">{{ 'settings.development.reportBug.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (reporting()) {
+  <app-bug-report-dialog (closed)="reporting.set(false)" />
+}

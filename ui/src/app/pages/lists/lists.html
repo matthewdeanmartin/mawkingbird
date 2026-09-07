@@ -1,0 +1,810 @@
+<div class="page-head">
+  @if (filter === 'lists') {
+    {{ 'pages.lists.title.lists' | transloco }}
+  } @else if (filter === 'tags') {
+    {{ 'pages.lists.title.tags' | transloco }}
+  } @else if (showSectionPicker && section() !== 'landing') {
+    <!-- Drilled into one category: a way back to the landing list, not just
+         "Feeds" as an inert label. A <button>, not a link — it changes what
+         this page shows rather than navigating anywhere. -->
+    <button class="feeds-back" type="button" (click)="setSection('landing')">
+      {{ 'pages.lists.title.backToFeeds' | transloco }}
+    </button>
+  } @else {
+    {{ 'pages.lists.title.feeds' | transloco }}
+  }
+</div>
+
+@if (showSectionPicker && section() === 'landing') {
+  <!-- The drill-down landing list: every category as its own row, so reaching
+       one costs a single click and zero scrolling past the rest. Counts fill
+       in as each section's own data resolves (see sectionCount) rather than
+       blocking this list on anything. Rows are buttons, not links — they
+       narrow this page rather than navigating to a URL. -->
+  <ul class="feed-category-list">
+    <li>
+      <button class="list-row feed-category-row" type="button" (click)="setSection('all')">
+        <span>{{ 'pages.lists.landing.allFeeds' | transloco }}</span>
+        <span class="muted small">{{ 'pages.lists.landing.allFeedsHint' | transloco }}</span>
+      </button>
+    </li>
+    @for (opt of sectionOptions; track opt.id) {
+      <li>
+        <button class="list-row feed-category-row" type="button" (click)="setSection(opt.id)">
+          <span>{{ opt.key | transloco }}</span>
+          @if (sectionCount(opt.id); as count) {
+            <span class="muted small">{{ count }}</span>
+          }
+        </button>
+      </li>
+    }
+  </ul>
+}
+
+@if (!showSectionPicker || section() !== 'landing') {
+  @if (shows('lists') && showsSection('lists')) {
+    <div class="new-list">
+      <input
+        type="text"
+        [ngModel]="newTitle()"
+        (ngModelChange)="newTitle.set($event)"
+        (keyup.enter)="create()"
+        [placeholder]="'pages.lists.serverList.newNamePlaceholder' | transloco"
+      />
+      <button class="btn" [disabled]="!newTitle().trim()" (click)="create()">
+        {{ 'pages.lists.create' | transloco }}
+      </button>
+    </div>
+
+    @if (listError(); as message) {
+      <p class="list-error" role="alert">{{ message }}</p>
+    }
+
+    @if (loading()) {
+      <p class="muted center small">{{ 'pages.lists.loading' | transloco }}</p>
+    } @else if (!lists().length) {
+      <p class="muted center small">{{ 'pages.lists.serverList.empty' | transloco }}</p>
+    } @else {
+      @for (l of lists(); track l.id) {
+        <a class="list-row" [routerLink]="['/lists', l.id]">
+          <span>{{ l.title }}</span>
+          <button
+            class="del"
+            (click)="askDeleteList(l, $event)"
+            [title]="'pages.lists.serverList.deleteTitle' | transloco"
+          >
+            ✕
+          </button>
+        </a>
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('client-lists')) {
+    <div class="section-head">{{ 'pages.lists.clientList.heading' | transloco }}</div>
+    <p class="muted small section-note">
+      {{ 'pages.lists.clientList.hint' | transloco }}
+    </p>
+
+    <div class="new-list">
+      <input
+        type="text"
+        [ngModel]="newClientListTitle()"
+        (ngModelChange)="newClientListTitle.set($event)"
+        (keyup.enter)="createClientList()"
+        [placeholder]="'pages.lists.clientList.newNamePlaceholder' | transloco"
+      />
+      <button class="btn" [disabled]="!newClientListTitle().trim()" (click)="createClientList()">
+        {{ 'pages.lists.create' | transloco }}
+      </button>
+    </div>
+
+    @if (!clientLists.count()) {
+      <p class="muted center small">{{ 'pages.lists.emptyCreateAbove' | transloco }}</p>
+    } @else {
+      @for (l of clientLists.lists(); track l.id) {
+        <a class="list-row" [routerLink]="['/client-lists', l.id]">
+          <span>
+            {{ l.title }}
+            <span class="muted small">
+              ·
+              {{
+                (l.memberHandles.length === 1
+                  ? 'pages.lists.clientList.members.one'
+                  : 'pages.lists.clientList.members.other'
+                ) | transloco: { count: l.memberHandles.length }
+              }}
+            </span>
+          </span>
+          <button
+            class="del"
+            (click)="askDeleteClientList(l, $event)"
+            [title]="'pages.lists.serverList.deleteTitle' | transloco"
+          >
+            ✕
+          </button>
+        </a>
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('client-lists') && showsProfileLists()) {
+    <div class="section-head">{{ 'pages.lists.profileList.heading' | transloco }}</div>
+    <p class="muted small section-note">
+      {{ 'pages.lists.profileList.hint' | transloco }}
+    </p>
+
+    @if (copyOffer(); as offer) {
+      <div class="new-list copy-offer">
+        <p class="small">
+          {{
+            (offer.lists === 1
+              ? 'pages.lists.copyOffer.summary.one'
+              : 'pages.lists.copyOffer.summary.other'
+            ) | transloco: { lists: offer.lists, accounts: offer.accounts }
+          }}
+        </p>
+        <p class="muted small">{{ 'pages.lists.copyOffer.keepsCopies' | transloco }}</p>
+        <div class="config-actions">
+          <button class="btn" [disabled]="listCopy.busy()" (click)="copyClientListsToProfile()">
+            {{
+              (listCopy.busy()
+                ? 'pages.lists.copyOffer.copying'
+                : 'pages.lists.copyOffer.copyToAccount'
+              ) | transloco
+            }}
+          </button>
+          <button class="btn btn-outline" (click)="declineCopyOffer()">
+            {{ 'pages.lists.copyOffer.noThanks' | transloco }}
+          </button>
+        </div>
+      </div>
+    }
+    @if (listCopy.message(); as copied) {
+      <p class="muted small section-note" role="status" aria-live="polite">{{ copied }}</p>
+    }
+
+    @if (profileLists.canWrite()) {
+      <div class="new-list">
+        <input
+          type="text"
+          [ngModel]="newProfileListTitle()"
+          (ngModelChange)="newProfileListTitle.set($event)"
+          (keyup.enter)="createProfileList()"
+          [placeholder]="'pages.lists.profileList.newNamePlaceholder' | transloco"
+        />
+        <button
+          class="btn"
+          [disabled]="!newProfileListTitle().trim()"
+          (click)="createProfileList()"
+        >
+          {{ 'pages.lists.create' | transloco }}
+        </button>
+      </div>
+    } @else {
+      <p class="muted small section-note">
+        {{ listWriteBlockMessage() ?? ('pages.lists.profileList.readOnly' | transloco) }}
+      </p>
+    }
+
+    @if (profileLists.error(); as message) {
+      <p class="muted small section-note" role="alert">{{ message }}</p>
+    }
+
+    <!--
+    `loaded()` rather than `count()`: this collection arrives over the network,
+    so "none yet" before it lands would be telling the user their lists are gone.
+  -->
+    @if (!profileLists.loaded()) {
+      <p class="muted center small">{{ 'pages.lists.loading' | transloco }}</p>
+    } @else if (!profileLists.count()) {
+      <p class="muted center small">
+        {{ 'pages.lists.emptyCreateAbove' | transloco }}
+        @if (listCopy.preview() && !copyOffer()) {
+          <button class="link" (click)="showCopyOffer()">
+            {{ 'pages.lists.copyOffer.showPrompt' | transloco }}
+          </button>
+        }
+      </p>
+    } @else {
+      @for (l of profileLists.lists(); track l.id) {
+        <a class="list-row" [routerLink]="['/client-lists', l.id]">
+          <span>
+            {{ l.title }}
+            <span class="muted small">
+              ·
+              {{
+                (l.memberHandles.length === 1
+                  ? 'pages.lists.clientList.members.one'
+                  : 'pages.lists.clientList.members.other'
+                ) | transloco: { count: l.memberHandles.length }
+              }}
+            </span>
+          </span>
+          @if (profileLists.canWrite()) {
+            <button
+              class="del"
+              (click)="askDeleteProfileList(l, $event)"
+              [title]="'pages.lists.serverList.deleteTitle' | transloco"
+            >
+              ✕
+            </button>
+          }
+        </a>
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('searches')) {
+    <div class="section-head">{{ 'pages.lists.savedSearches.heading' | transloco }}</div>
+    @if (!saved.count()) {
+      <p class="muted center small">
+        {{ 'pages.lists.savedSearches.emptyPrefix' | transloco }}
+        <a routerLink="/search">{{ 'pages.lists.savedSearches.emptyLink' | transloco }}</a
+        >.
+      </p>
+    } @else {
+      @for (s of saved.all(); track s.id) {
+        <a class="list-row" [routerLink]="['/search']" [queryParams]="{ saved: s.id }">
+          <span>
+            {{ s.name }}
+            <span class="muted small">{{ 'pages.lists.savedSearches.badge' | transloco }}</span>
+            @if (!s.authenticated) {
+              <span class="muted small">{{
+                'pages.lists.savedSearches.anonBadge' | transloco
+              }}</span>
+            }
+          </span>
+        </a>
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('server')) {
+    <div class="section-head">{{ 'pages.lists.serverFeeds.heading' | transloco }}</div>
+    @if (hasDirectory()) {
+      <a class="list-row" routerLink="/directory">
+        <span>
+          {{ 'pages.lists.serverFeeds.directoryTitle' | transloco }}
+          <span class="muted small">{{ 'pages.lists.serverFeeds.directoryHint' | transloco }}</span>
+        </span>
+      </a>
+    }
+    @for (f of serverFeeds(); track f.feed) {
+      <a class="list-row" [routerLink]="['/feeds', f.feed]">
+        <span>
+          {{ f.title }}
+          <span class="muted small">· {{ f.blurb }}</span>
+        </span>
+      </a>
+    }
+  }
+
+  @if (shows('tags') && showsSection('tags')) {
+    <div class="section-head">{{ 'pages.lists.tags.heading' | transloco }}</div>
+
+    <!-- Deliberately "look at it", not "follow it". Following a tag folds it into
+       Home permanently, and this page said so about bundles below while
+       offering no way to see what a tag actually returns first. The tag page
+       has the posts and the Follow button; this is the way in. -->
+    <form class="tag-peek" (ngSubmit)="viewTag()">
+      <input
+        type="text"
+        [ngModel]="tagQuery()"
+        (ngModelChange)="tagQuery.set($event)"
+        name="tag-peek"
+        [placeholder]="'pages.lists.tags.peekPlaceholder' | transloco"
+        [aria-label]="'pages.lists.tags.peekAriaLabel' | transloco"
+      />
+      <button class="btn btn-outline btn-sm" type="submit" [disabled]="!normalizedTagQuery()">
+        {{ 'pages.lists.tags.viewPosts' | transloco }}
+      </button>
+    </form>
+
+    @if (!followedTags().length) {
+      <p class="muted center small">{{ 'pages.lists.tags.empty' | transloco }}</p>
+    } @else {
+      @for (t of followedTags(); track t.name) {
+        <a class="list-row" [routerLink]="['/tags', t.name]">
+          <span>#{{ t.name }}</span>
+          <button
+            class="del"
+            (click)="askUnfollowTag(t, $event)"
+            [title]="'pages.lists.tags.unfollowTitle' | transloco"
+          >
+            ✕
+          </button>
+        </a>
+      }
+    }
+
+    <!-- tags.pub: one relay account per hashtag, boosting posts from across the
+         network. Following a tag only surfaces what your own server already
+         has, which on a small instance is a fraction — this fills the gap.
+         Checking costs a resolve per tag, so it runs on request, never on
+         load. -->
+    @if (followedTags().length && !auth.isAnonymous) {
+      <div class="tags-pub">
+        <p class="muted small">
+          {{ 'pages.lists.tagsPub.prompt' | transloco }}
+          <strong>{{ 'pages.lists.tagsPub.name' | transloco }}</strong>
+          {{ 'pages.lists.tagsPub.hint' | transloco }}
+        </p>
+        <div class="tags-pub-actions">
+          <button
+            type="button"
+            class="btn btn-outline btn-sm"
+            [disabled]="tagsPub.checking() || tagsPub.following()"
+            (click)="checkTagsPub()"
+          >
+            {{
+              tagsPub.checking()
+                ? ('pages.lists.tagsPub.checking' | transloco)
+                : ('pages.lists.tagsPub.check' | transloco)
+            }}
+          </button>
+          @if (tagsPub.pending().length && !tagsPub.checking()) {
+            <button
+              type="button"
+              class="btn btn-sm"
+              [disabled]="tagsPub.following()"
+              (click)="tagsPub.followAll()"
+            >
+              {{
+                (tagsPub.pending().length === 1
+                  ? 'pages.lists.tagsPub.followRelays.one'
+                  : 'pages.lists.tagsPub.followRelays.other'
+                ) | transloco: { count: tagsPub.pending().length }
+              }}
+            </button>
+          }
+          @if (tagsPub.following()) {
+            <button type="button" class="btn btn-outline btn-sm" (click)="tagsPub.stop()">
+              {{ 'pages.lists.tagsPub.stop' | transloco }}
+            </button>
+          }
+        </div>
+        @if (tagsPub.error(); as error) {
+          <p class="small tags-pub-error" role="alert">{{ error }}</p>
+        }
+        @if (tagsPub.rows().length) {
+          <ul class="tags-pub-rows">
+            @for (row of tagsPub.rows(); track row.handle) {
+              <li>
+                <span>#{{ row.tag }}</span>
+                <span class="muted small">{{ relayLabel(row.status) }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    <!-- The bulk door, kept as a link rather than a paste box inline: this
+       section's whole argument above is "look at one before you follow it",
+       and a textarea that follows fifty at once sitting under that would
+       contradict it. Arriving with a list from elsewhere is a different job,
+       and it has a page. -->
+    <p class="muted center small tag-bulk-link">
+      {{ 'pages.lists.tags.bulkPrompt' | transloco }}
+      <a routerLink="/settings/import-export" fragment="import-tags">
+        {{ 'pages.lists.tags.bulkLink' | transloco }}
+      </a>
+    </p>
+  }
+
+  @if (shows('tags') && showsSection('tag-bundles')) {
+    <div class="section-head">{{ 'pages.lists.tagBundles.heading' | transloco }}</div>
+    <p class="muted small section-note">
+      {{ 'pages.lists.tagBundles.hint' | transloco: { maxTags: tagBundles.maxTags } }}
+    </p>
+
+    <div class="new-list">
+      <input
+        type="text"
+        [ngModel]="newBundleTitle()"
+        (ngModelChange)="newBundleTitle.set($event)"
+        (keyup.enter)="createTagBundle()"
+        [placeholder]="'pages.lists.tagBundles.newNamePlaceholder' | transloco"
+      />
+      <button class="btn" [disabled]="!newBundleTitle().trim()" (click)="createTagBundle()">
+        {{ 'pages.lists.create' | transloco }}
+      </button>
+    </div>
+
+    @if (!tagBundles.count()) {
+      <p class="muted center small">{{ 'pages.lists.tagBundles.empty' | transloco }}</p>
+    } @else {
+      @for (b of tagBundles.bundles(); track b.id) {
+        <a class="list-row" [routerLink]="['/tag-bundles', b.id]">
+          <span>
+            {{ b.title }}
+            @if (b.tags.length) {
+              <span class="muted small">
+                ·
+                @for (t of b.tags; track t; let last = $last) {
+                  #{{ t }}{{ last ? '' : ', ' }}
+                }
+              </span>
+            } @else {
+              <span class="muted small">{{ 'pages.lists.tagBundles.noTagsYet' | transloco }}</span>
+            }
+          </span>
+          <button
+            class="del"
+            (click)="askDeleteBundle(b, $event)"
+            [title]="'pages.lists.tagBundles.deleteTitle' | transloco"
+          >
+            ✕
+          </button>
+        </a>
+      }
+    }
+  }
+
+  @if (shows('tags') && showsSection('featured-tags')) {
+    @if (!auth.isAnonymous) {
+      <div class="section-head">{{ 'pages.lists.featuredTags.heading' | transloco }}</div>
+      @if (!featuredTags().length) {
+        <p class="muted center small">{{ 'pages.lists.featuredTags.empty' | transloco }}</p>
+      } @else {
+        @for (t of featuredTags(); track t.id) {
+          <a class="list-row" [routerLink]="['/tags', t.name]">
+            <span>
+              #{{ t.name }}
+              <span class="muted small">· {{ t.statuses_count }} {{ words().posts }}</span>
+            </span>
+          </a>
+        }
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('collections')) {
+    @if (auth.isAnonymous) {
+      @if (showStarterCollection()) {
+        <div class="section-head">{{ 'pages.lists.collections.heading' | transloco }}</div>
+        <a class="list-row" routerLink="/collections/starter">
+          <span>
+            {{ 'pages.lists.collections.starterTitle' | transloco }}
+            <span class="muted small">{{ 'pages.lists.collections.starterHint' | transloco }}</span>
+          </span>
+        </a>
+      }
+    } @else {
+      <div class="section-head">{{ 'pages.lists.collections.heading' | transloco }}</div>
+
+      @if (!collectionsSupported()) {
+        <p class="muted center small">{{ 'pages.lists.collections.unsupported' | transloco }}</p>
+      } @else {
+        <div class="new-list">
+          <input
+            type="text"
+            [ngModel]="newCollectionName()"
+            (ngModelChange)="newCollectionName.set($event)"
+            (keyup.enter)="createCollection()"
+            [placeholder]="'pages.lists.collections.newNamePlaceholder' | transloco"
+          />
+          <button class="btn" [disabled]="!newCollectionName().trim()" (click)="createCollection()">
+            {{ 'pages.lists.create' | transloco }}
+          </button>
+        </div>
+
+        @if (collectionsLoading()) {
+          <p class="muted center small">{{ 'pages.lists.loading' | transloco }}</p>
+        } @else if (!collections().length) {
+          @if (showStarterCollection()) {
+            <a class="list-row" routerLink="/collections/starter">
+              <span>
+                {{ 'pages.lists.collections.starterTitle' | transloco }}
+                <span class="muted small">{{
+                  'pages.lists.collections.starterHint' | transloco
+                }}</span>
+              </span>
+            </a>
+          } @else {
+            <p class="muted center small">
+              {{ 'pages.lists.collections.empty' | transloco }}
+            </p>
+          }
+        } @else {
+          @for (c of collections(); track c.id) {
+            <a class="list-row" [routerLink]="['/collections', c.id]">
+              <span>
+                {{ c.name }}
+                <span class="muted small">
+                  ·
+                  {{
+                    (c.item_count === 1
+                      ? 'pages.lists.collections.members.one'
+                      : 'pages.lists.collections.members.other'
+                    ) | transloco: { count: c.item_count }
+                  }}
+                </span>
+              </span>
+              <button
+                class="del"
+                (click)="askDeleteCollection(c, $event)"
+                [title]="'pages.lists.collections.deleteTitle' | transloco"
+              >
+                ✕
+              </button>
+            </a>
+          }
+        }
+
+        @if (inCollections().length) {
+          <div class="section-head">{{ 'pages.lists.collections.featuringMe' | transloco }}</div>
+          @for (c of inCollections(); track c.id) {
+            <a class="list-row" [routerLink]="['/collections', c.id]">
+              <span>{{ c.name }}</span>
+            </a>
+          }
+        }
+      }
+    }
+  }
+
+  @if (shows('lists') && showsSection('endorsements')) {
+    @if (!auth.isAnonymous) {
+      <div class="section-head">{{ 'pages.lists.endorsements.heading' | transloco }}</div>
+      @if (myEndorsedCount()) {
+        <a class="list-row" [routerLink]="['/endorsed', auth.account()?.id]">
+          <span>
+            {{ 'pages.lists.endorsements.accountsYouEndorse' | transloco }}
+            <span class="muted small">
+              ·
+              {{
+                (myEndorsedCount() === 1
+                  ? 'pages.lists.endorsements.membersMergedFeed.one'
+                  : 'pages.lists.endorsements.membersMergedFeed.other'
+                ) | transloco: { count: myEndorsedCount() }
+              }}
+            </span>
+          </span>
+        </a>
+      } @else {
+        <p class="muted center small">
+          {{ 'pages.lists.endorsements.empty' | transloco }}
+        </p>
+      }
+    }
+  }
+
+  <!-- Last section on the page. RSS feeds are the one kind of feed here that
+     lives entirely in this browser rather than on the server, so they sit
+     after everything the instance provides. -->
+  @if (shows('lists') && showsSection('rss')) {
+    <div class="section-head">{{ 'pages.lists.rss.heading' | transloco }}</div>
+    @if (!rssFeeds().length) {
+      <p class="muted center small">
+        {{ 'pages.lists.rss.emptyPrefix' | transloco }}
+        <a routerLink="/settings/rss">{{ 'pages.lists.rss.settingsLink' | transloco }}</a
+        >.
+      </p>
+    } @else {
+      @for (f of rssFeeds(); track f.url) {
+        <a class="list-row" [routerLink]="['/accounts', 'rss:' + f.url]">
+          <span>
+            {{ f.title || f.url }}
+            <span class="muted small">
+              @if (rssHost(f.url); as host) {
+                · {{ host }}
+              }
+              @if (f.itemCount !== undefined) {
+                ·
+                {{
+                  (f.itemCount === 1 ? 'pages.lists.rss.items.one' : 'pages.lists.rss.items.other')
+                    | transloco: { count: f.itemCount }
+                }}
+                <!-- Said here rather than in the timeline: a feed that publishes
+                   its whole archive is normal, and Home quietly taking the
+                   newest slice is the right behaviour — but it should be
+                   discoverable somewhere, and this page is where feeds explain
+                   themselves. Clicking through shows the feed in full. -->
+                @if (f.itemCount > perFeedCap) {
+                  {{ 'pages.lists.rss.newestPrefix' | transloco }} {{ perFeedCap }}
+                  {{ 'pages.lists.rss.inHomeSuffix' | transloco }}
+                }
+              }
+              @if (f.useProxy) {
+                {{ 'pages.lists.rss.viaProxy' | transloco }}
+              }
+              @if (!f.enabled) {
+                {{ 'pages.lists.rss.off' | transloco }}
+              }
+            </span>
+          </span>
+          <button
+            class="del"
+            (click)="askUnsubscribeRss(f, $event)"
+            [title]="'pages.lists.rss.unsubscribeTitle' | transloco"
+          >
+            ✕
+          </button>
+        </a>
+      }
+      <p class="muted center small">
+        {{ 'pages.lists.rss.manageFeedsPrefix' | transloco }}
+        <a routerLink="/settings/rss">{{ 'pages.lists.rss.settingsLink' | transloco }}</a
+        >.
+      </p>
+    }
+  }
+
+  <!-- Twitter accounts, like RSS, live entirely in this browser. Shown only once the
+     connector is set up: an empty section advertising a connector that needs an
+     API key and a CORS proxy would be noise on everyone else's Feeds page. -->
+  @if (shows('lists') && twitterFollows().length && showsSection('twitter')) {
+    <div class="section-head">{{ 'pages.lists.twitter.heading' | transloco }}</div>
+    @for (f of twitterFollows(); track f.username) {
+      <a class="list-row" [routerLink]="['/accounts', 'twitter:@' + f.username]">
+        <span>
+          {{ f.displayName || f.username }}
+          <span class="muted small">
+            · &#64;{{ f.username }}
+            @if (!f.enabled) {
+              {{ 'pages.lists.twitter.off' | transloco }}
+            }
+          </span>
+        </span>
+      </a>
+    }
+    <p class="muted center small">
+      {{ 'pages.lists.twitter.manageHint.a' | transloco }}
+      <a routerLink="/settings/connections/twitter">{{
+        'pages.lists.twitter.settingsLink' | transloco
+      }}</a
+      >{{ 'pages.lists.twitter.manageHint.b' | transloco }}
+    </p>
+  }
+
+  <!-- Bluesky's saved feeds and lists. Three sections, because "pinned" is a
+     grouping the way "endorsed" is: an entry is in Pinned or under its kind,
+     never both. Feeds are algorithms run by other people, lists are curated
+     sets of accounts, so they stay apart — they differ in whether they have
+     members at all. -->
+  @if (bskySession.linked() && shows('lists')) {
+    @if (bskyError(); as error) {
+      <div class="section-head">{{ 'pages.lists.bsky.heading' | transloco }}</div>
+      <p class="muted center small">{{ error }}</p>
+    } @else if (bskyLoading()) {
+      <div class="section-head">{{ 'pages.lists.bsky.heading' | transloco }}</div>
+      <p class="muted center small">{{ 'pages.lists.bsky.loading' | transloco }}</p>
+    } @else {
+      @if (bskyPinned().length && showsSection('bsky-pinned')) {
+        <div class="section-head">{{ 'pages.lists.bsky.pinnedHeading' | transloco }}</div>
+        @for (entry of bskyPinned(); track entry.uri) {
+          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+            <span>
+              {{ entry.displayName }}
+              <span class="muted small">
+                ·
+                {{
+                  (entry.kind === 'list' ? 'pages.lists.bsky.byList' : 'pages.lists.bsky.byFeed')
+                    | transloco: { handle: entry.creatorHandle }
+                }}
+              </span>
+            </span>
+          </a>
+        }
+      }
+
+      @if (bskyUnpinnedFeeds().length && showsSection('bsky-feeds')) {
+        <div class="section-head">{{ 'pages.lists.bsky.feedsHeading' | transloco }}</div>
+        @for (entry of bskyUnpinnedFeeds(); track entry.uri) {
+          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+            <span>
+              {{ entry.displayName }}
+              <span class="muted small">{{
+                'pages.lists.bsky.byHandle' | transloco: { handle: entry.creatorHandle }
+              }}</span>
+            </span>
+          </a>
+        }
+      }
+
+      @if (bskyUnpinnedLists().length && showsSection('bsky-lists')) {
+        <div class="section-head">{{ 'pages.lists.bsky.listsHeading' | transloco }}</div>
+        @for (entry of bskyUnpinnedLists(); track entry.uri) {
+          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+            <span>
+              {{ entry.displayName }}
+              <span class="muted small">
+                {{
+                  (entry.memberCount === 1
+                    ? 'pages.lists.bsky.membersByHandle.one'
+                    : 'pages.lists.bsky.membersByHandle.other'
+                  ) | transloco: { count: entry.memberCount, handle: entry.creatorHandle }
+                }}
+              </span>
+            </span>
+          </a>
+        }
+      }
+
+      @if (bskyPinned().length || bskyUnpinnedFeeds().length || bskyUnpinnedLists().length) {
+        <p class="muted center small">
+          {{ 'pages.lists.bsky.savedHint' | transloco }}
+        </p>
+      }
+    }
+  }
+
+  <!-- Popular feeds across Bluesky. Outside the `linked()` guard above on purpose:
+     this endpoint is anonymous, so it is browsable content for every account
+     kind, not just Bluesky ones. Custom algorithmic feeds have no Mastodon
+     counterpart at all, which is exactly why they are worth surfacing here.
+     Hidden when the unspecced endpoint refuses. -->
+  @if (shows('lists') && bskyPopular().length && showsSection('bsky-popular')) {
+    <div class="section-head">{{ 'pages.lists.bsky.popularHeading' | transloco }}</div>
+    @for (entry of bskyPopular(); track entry.uri) {
+      <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+        <span>
+          {{ entry.displayName }}
+          <span class="muted small">{{
+            'pages.lists.bsky.byHandle' | transloco: { handle: entry.creatorHandle }
+          }}</span>
+        </span>
+      </a>
+    }
+    <p class="muted center small">
+      {{ 'pages.lists.bsky.popularHint' | transloco }}
+    </p>
+  }
+}
+
+@if (listToDelete(); as l) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.deleteList.title' | transloco"
+    [message]="'pages.lists.confirm.deleteList.message' | transloco: { name: l.title }"
+    [confirmLabel]="'pages.lists.confirm.deleteList.confirm' | transloco"
+    (confirmed)="remove(l)"
+    (cancelled)="listToDelete.set(null)"
+  />
+}
+@if (bundleToDelete(); as b) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.deleteBundle.title' | transloco"
+    [message]="'pages.lists.confirm.deleteBundle.message' | transloco: { name: b.title }"
+    [confirmLabel]="'pages.lists.confirm.deleteBundle.confirm' | transloco"
+    (confirmed)="removeTagBundle(b)"
+    (cancelled)="bundleToDelete.set(null)"
+  />
+}
+@if (clientListToDelete(); as l) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.deleteClientList.title' | transloco"
+    [message]="'pages.lists.confirm.deleteClientList.message' | transloco: { name: l.title }"
+    [confirmLabel]="'pages.lists.confirm.deleteClientList.confirm' | transloco"
+    (confirmed)="removeClientList(l)"
+    (cancelled)="clientListToDelete.set(null)"
+  />
+}
+@if (profileListToDelete(); as l) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.deleteProfileList.title' | transloco"
+    [message]="'pages.lists.confirm.deleteProfileList.message' | transloco: { name: l.title }"
+    [confirmLabel]="'pages.lists.confirm.deleteProfileList.confirm' | transloco"
+    (confirmed)="removeProfileList(l)"
+    (cancelled)="profileListToDelete.set(null)"
+  />
+}
+@if (rssToRemove(); as f) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.unsubscribeRss.title' | transloco"
+    [message]="'pages.lists.confirm.unsubscribeRss.message' | transloco: { name: f.title || f.url }"
+    [confirmLabel]="'pages.lists.confirm.unsubscribeRss.confirm' | transloco"
+    (confirmed)="removeRss(f)"
+    (cancelled)="rssToRemove.set(null)"
+  />
+}
+@if (collectionToDelete(); as c) {
+  <app-confirm-dialog
+    [title]="'pages.lists.confirm.deleteCollection.title' | transloco"
+    [message]="'pages.lists.confirm.deleteCollection.message' | transloco: { name: c.name }"
+    [confirmLabel]="'pages.lists.confirm.deleteCollection.confirm' | transloco"
+    (confirmed)="removeCollection(c)"
+    (cancelled)="collectionToDelete.set(null)"
+  />
+}

@@ -1,0 +1,16 @@
+<p class="muted small intro">
+  {{ 'adminMetrics.intro' | transloco }}
+</p>
+
+@if (loading()) {
+  <p class="muted center">{{ 'adminMetrics.loading' | transloco }}</p>
+} @else if (!measures().length) {
+  <p class="muted center">{{ 'adminMetrics.empty' | transloco }}</p>
+} @else {
+  @for (m of measures(); track m.key) {
+    <div class="block-row">
+      <span>{{ m.key }}</span>
+      <strong>{{ m.human_value }}</strong>
+    </div>
+  }
+}

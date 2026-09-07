@@ -1,0 +1,116 @@
+/* The reader page: a book, not a screen with a book on it.
+
+   The chrome is gone (a `full` reading-zen hold), so this element is what the
+   viewer actually sees edge to edge. That is why the paper colour lives here
+   rather than on `.reader` inside the core: a sepia column floating on the app's
+   dark background is a strip of paper on a desk, not a page. */
+
+/* The paper colour belongs to the *text*, not to the page.
+
+   It used to be set here, so opening the library painted a 290px column of
+   sepia behind a panel that is app furniture — the operator's "ugly beige
+   column". The reading surface gets the paper; everything else gets the site
+   theme, which is what the reader chose for the app. */
+.read-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+/* With no library open the reading surface is the whole page, so the paper
+   should reach the edges rather than sitting in a strip down the middle. */
+.read-body:not(.with-library) {
+  background: var(--reader-bg, var(--bg));
+  color: var(--reader-fg, inherit);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* With it open, only the reading column is papered. */
+.read-body.with-library app-reader-core {
+  background: var(--reader-bg, var(--bg));
+  color: var(--reader-fg, inherit);
+  min-height: 0;
+}
+
+.center {
+  text-align: center;
+  padding: 48px 16px;
+}
+
+.read-empty {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.read-empty p {
+  margin: 0 0 16px;
+}
+
+.read-document {
+  position: relative;
+  min-width: 0;
+}
+
+/* Keep the current page in place while another library document loads. */
+.document-loading {
+  position: fixed;
+  top: 44px;
+  right: 16px;
+  z-index: 5;
+  margin: 0;
+  padding: 5px 9px;
+  border-radius: 5px;
+  background: var(--bg);
+  font-family: var(--app-font-family);
+  font-size: 13px;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 4px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--bg-subtle, rgba(127, 127, 127, 0.12));
+  color: inherit;
+  padding: 6px 10px;
+  font-size: 13px;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tool:hover {
+  background: var(--hover);
+}
+
+/* The reading column, and the library beside it when it is open.
+
+   Grid rather than flex so the panel's 290px is a track the text cannot eat
+   into: the measure is the point of this page, and a library that squeezed the
+   prose to make room for itself would be trading the feature for the furniture. */
+.read-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.read-body.with-library {
+  /* Library first, then the text — the same order as /rss. */
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 16px;
+  padding-left: 16px;
+  align-items: start;
+}
+
+/* Below this the two do not fit side by side. The panel drops underneath rather
+   than narrowing the column — see library-panel.css for the matching rule. */
+@media (max-width: 1100px) {
+  .read-body.with-library {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 0;
+  }
+}

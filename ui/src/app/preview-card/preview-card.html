@@ -1,0 +1,18 @@
+<!-- The whole card is the link: a card with separately clickable parts invites
+     the reader to hunt for the target. `noreferrer` because someone reading
+     privately should not announce where they came from. -->
+<a class="preview-card" [href]="card().url" target="_blank" rel="noopener noreferrer">
+  @if (image(); as src) {
+    <img class="preview-card-image" [src]="src" alt="" loading="lazy" />
+  }
+  <div class="preview-card-body">
+    <div class="preview-card-source">{{ source() }}</div>
+    <div class="preview-card-title">{{ card().title }}</div>
+    @if (card().description) {
+      <p class="preview-card-description">{{ card().description }}</p>
+    }
+    @if (card().author_name) {
+      <div class="preview-card-author muted">{{ card().author_name }}</div>
+    }
+  </div>
+</a>

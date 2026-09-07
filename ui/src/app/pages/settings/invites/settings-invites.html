@@ -1,0 +1,82 @@
+<div class="spage-head">
+  <h1>{{ 'settings.invites.title' | transloco }}</h1>
+  <p>{{ 'settings.invites.intro' | transloco }}</p>
+</div>
+
+<form class="spage-body" (ngSubmit)="generate()">
+  <div class="ssection">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.invites.maxUses' | transloco }}</span>
+      <div class="scontrol">
+        <select [ngModel]="maxUses()" (ngModelChange)="maxUses.set($event)" name="max_uses">
+          <option [ngValue]="null">{{ 'settings.invites.uses.none' | transloco }}</option>
+          <option [ngValue]="1">{{ 'settings.invites.uses.1' | transloco }}</option>
+          <option [ngValue]="5">{{ 'settings.invites.uses.5' | transloco }}</option>
+          <option [ngValue]="10">{{ 'settings.invites.uses.10' | transloco }}</option>
+          <option [ngValue]="25">{{ 'settings.invites.uses.25' | transloco }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.invites.expire' | transloco }}</span>
+      <div class="scontrol">
+        <select [ngModel]="expiresIn()" (ngModelChange)="expiresIn.set($event)" name="expires_in">
+          <option [ngValue]="null">{{ 'settings.invites.expire.never' | transloco }}</option>
+          <option [ngValue]="1800">{{ 'settings.invites.expire.min30' | transloco }}</option>
+          <option [ngValue]="3600">{{ 'settings.invites.expire.hour1' | transloco }}</option>
+          <option [ngValue]="86400">{{ 'settings.invites.expire.day1' | transloco }}</option>
+          <option [ngValue]="604800">{{ 'settings.invites.expire.week1' | transloco }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="sactions">
+    <button class="btn" type="submit" [disabled]="creating()">
+      {{ (creating() ? 'settings.invites.generating' : 'settings.invites.generate') | transloco }}
+    </button>
+  </div>
+
+  @if (invites().length) {
+    <div class="invite-table-wrap">
+      <table class="invite-table">
+        <thead>
+          <tr>
+            <th>{{ 'settings.invites.col.link' | transloco }}</th>
+            <th>{{ 'settings.invites.col.uses' | transloco }}</th>
+            <th>{{ 'settings.invites.col.expires' | transloco }}</th>
+            <th>{{ 'settings.invites.col.created' | transloco }}</th>
+            <th>{{ 'settings.invites.col.status' | transloco }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invite of invites(); track invite.id) {
+            <tr [class.revoked]="invite.revoked">
+              <td class="invite-url">{{ invite.url }}</td>
+              <td>{{ invite.uses }} / {{ invite.max_uses ?? '∞' }}</td>
+              <td>{{ formatDate(invite.expires_at) }}</td>
+              <td>{{ formatDate(invite.created_at) }}</td>
+              <td>
+                {{
+                  (invite.revoked ? 'settings.invites.revoked' : 'settings.invites.active')
+                    | transloco
+                }}
+              </td>
+              <td>
+                @if (!invite.revoked) {
+                  <button type="button" class="btn btn-outline btn-sm" (click)="revoke(invite)">
+                    {{ 'settings.invites.revoke' | transloco }}
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="hint">{{ 'settings.invites.none' | transloco }}</p>
+  }
+</form>

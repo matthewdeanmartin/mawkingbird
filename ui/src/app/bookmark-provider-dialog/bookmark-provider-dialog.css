@@ -1,0 +1,98 @@
+.bookmark-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 55%);
+}
+
+.bookmark-dialog {
+  width: min(460px, 100%);
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 35%);
+}
+
+.bookmark-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.bookmark-dialog-head h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.icon-close {
+  border: 0;
+  padding: 0 5px;
+  background: transparent;
+  color: inherit;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.provider-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 7px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.provider-choice:hover,
+.provider-choice:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.provider-choice span:not(.choice-icon) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.provider-choice small,
+.no-link {
+  color: var(--muted);
+}
+
+.choice-icon {
+  font-size: 23px;
+}
+
+.raindrop-group {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.raindrop-label {
+  margin-bottom: 7px;
+}
+
+.provider-choice.nested {
+  margin-left: 26px;
+  width: calc(100% - 26px);
+}
+
+.no-link {
+  margin: 8px 0 0 38px;
+  font-size: 13px;
+}

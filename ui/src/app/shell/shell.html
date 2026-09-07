@@ -1,0 +1,559 @@
+<!-- The test-deployment marker, deliberately OUTSIDE the writing-zen block: zen
+     hides the chrome, and "which deployment am I on" is not chrome. It is the
+     one thing that must be true on every screen of this build, because the
+     answer changes what every other thing on the page means. -->
+@if (isTest) {
+  <div class="test-build-banner" role="status">
+    {{ 'shell.testDeployment' | transloco }}
+    <a href="https://mawkingbird.com/">mawkingbird.com</a>.
+  </div>
+}
+
+<!-- Writing zen hides the universal chrome as well as the rails — the header and
+     footer live here, outside the outlet, so /write cannot hide them itself.
+     This is deliberately a superset of the global zen preference: with both on,
+     the result is indistinguishable from writing zen alone. -->
+@if (!chromeHidden()) {
+  <a class="skip-link" href="#main" (click)="skipToMain($event)">{{
+    'shell.skipToMain' | transloco
+  }}</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-lockup">
+        <a
+          class="brand"
+          routerLink="/home"
+          [attr.aria-label]="'shell.brandHome' | transloco: { brand: brand }"
+        >
+          <img
+            class="brand-mark"
+            [src]="logoSrc()"
+            alt=""
+            aria-hidden="true"
+            width="36"
+            height="36"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <span class="brand-name">{{ brand }}</span>
+        </a>
+
+        @if (deploymentLabel; as deployment) {
+          <span class="deployment-label">{{
+            (deployment === 'Canary' ? 'shell.deployment.canary' : 'shell.deployment.test')
+              | transloco
+          }}</span>
+        }
+
+        <!-- Gated on the same flag as the page it leads to. The badge is a
+             sales pitch ending in a priced call to action, and the Plus route
+             is guarded, so showing it where the flag is off advertised a
+             subscription that could not be bought and a link that went
+             nowhere. Off means absent, not disabled: there is nothing here for
+             a reader to act on. -->
+        @if (featureFlags.enabled('mawkingbird-plus')) {
+          <div class="plan-badge-wrap" #planWrap>
+            <button
+              #planTrigger
+              class="plan-badge"
+              type="button"
+              [class.plan-badge-plus]="plusBadge.state() === 'plus'"
+              [class.plan-badge-unavailable]="plusBadge.state() === 'unavailable'"
+              [class.plan-badge-open]="planOpen()"
+              [attr.aria-expanded]="planOpen()"
+              aria-controls="plan-card"
+              [attr.aria-label]="
+                (plusBadge.state() === 'plus'
+                  ? 'shell.plan.badgePlusAria'
+                  : plusBadge.state() === 'checking'
+                    ? 'shell.plan.badgeCheckingAria'
+                    : plusBadge.state() === 'unavailable'
+                      ? 'shell.plan.badgeUnavailableAria'
+                      : 'shell.plan.badgeFreeAria'
+                ) | transloco
+              "
+              (click)="togglePlanCard()"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  class="plan-rosette"
+                  d="M12 3.5 14.4 6l3.4-.2.2 3.4 2.5 2.3-2.5 2.3-.2 3.4-3.4-.2-2.4 2.5-2.4-2.5-3.4.2-.2-3.4-2.5-2.3L6 9.2l.2-3.4 3.4.2Z"
+                />
+                <path d="M12 8.5v7M8.5 12h7" />
+              </svg>
+              <span>
+                @switch (plusBadge.state()) {
+                  @case ('checking') {
+                    {{ 'shell.plan.state.checking' | transloco }}
+                  }
+                  @case ('plus') {
+                    {{ 'shell.plan.state.plus' | transloco }}
+                  }
+                  @case ('unavailable') {
+                    {{ 'shell.plan.state.unavailable' | transloco }}
+                  }
+                  @default {
+                    {{ 'shell.plan.state.free' | transloco }}
+                  }
+                }
+              </span>
+              <svg class="plan-caret" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 10 5 5 5-5" />
+              </svg>
+            </button>
+
+            <section
+              id="plan-card"
+              class="plan-popover"
+              [class.plan-popover-open]="planOpen()"
+              [attr.inert]="planOpen() ? null : ''"
+              [attr.aria-label]="'shell.plan.ariaBenefits' | transloco"
+            >
+              <header>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    class="plan-rosette"
+                    d="M12 3.5 14.4 6l3.4-.2.2 3.4 2.5 2.3-2.5 2.3-.2 3.4-3.4-.2-2.4 2.5-2.4-2.5-3.4.2-.2-3.4-2.5-2.3L6 9.2l.2-3.4 3.4.2Z"
+                  />
+                  <path d="M12 8.5v7M8.5 12h7" />
+                </svg>
+                <div>
+                  <strong>
+                    {{
+                      (plusBadge.state() === 'plus'
+                        ? 'shell.plan.activeName'
+                        : 'shell.plan.freeName'
+                      ) | transloco
+                    }}
+                  </strong>
+                  <span>
+                    @if (plusBadge.state() === 'plus') {
+                      {{ 'shell.plan.activeDescription' | transloco }}
+                    } @else if (plusBadge.state() === 'checking') {
+                      {{ 'shell.plan.checkingDescription' | transloco }}
+                    } @else if (plusBadge.state() === 'unavailable') {
+                      {{ 'shell.plan.unavailableDescription' | transloco }}
+                    } @else {
+                      {{ 'shell.plan.freeDescription' | transloco }}
+                    }
+                  </span>
+                </div>
+                <button
+                  class="plan-close"
+                  type="button"
+                  [attr.aria-label]="'shell.plan.close' | transloco"
+                  (click)="closePlanCard(true)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 6 12 12M18 6 6 18" />
+                  </svg>
+                </button>
+              </header>
+
+              <div class="plan-benefits">
+                @for (benefit of plusBenefits(); track benefit.id) {
+                  <div class="plan-benefit">
+                    <strong>{{ benefitText(benefit, 'label') }}</strong>
+                    @if (plusBadge.state() === 'plus') {
+                      <span>{{ benefitText(benefit, 'plus') }}</span>
+                    } @else {
+                      <span
+                        ><b>{{ 'shell.plan.freeLabel' | transloco }}</b>
+                        {{ benefitText(benefit, 'free') }}</span
+                      >
+                      <span class="plan-benefit-upgrade"
+                        ><b>{{ 'shell.plan.plusLabel' | transloco }}</b>
+                        {{ benefitText(benefit, 'plus') }}</span
+                      >
+                    }
+                  </div>
+                }
+              </div>
+
+              <footer>
+                <!-- The card is now the only way to the Plus page from the header,
+                   so the link that used to be the badge itself lives here as a
+                   real, clickable target that no pointer travel can take away. -->
+                <a
+                  class="plan-cta"
+                  routerLink="/settings/mawkingbird-plus"
+                  (click)="closePlanCard()"
+                >
+                  @if (plusBadge.state() === 'plus') {
+                    {{ 'shell.plan.subscriptionDetails' | transloco }}
+                  } @else {
+                    {{ 'shell.plan.seePlus' | transloco: { price: plusPriceUsd } }}
+                  }
+                </a>
+              </footer>
+            </section>
+          </div>
+        }
+      </div>
+
+      <nav class="primary-nav" [attr.aria-label]="'shell.nav.primary' | transloco">
+        <a routerLink="/home" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
+          </svg>
+          <span>{{ 'shell.nav.home' | transloco }}</span>
+        </a>
+        <a routerLink="/algo" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M11 4l1.8 4.7L17.5 10.5l-4.7 1.8L11 17l-1.8-4.7L4.5 10.5l4.7-1.8zM18.5 14l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"
+            />
+          </svg>
+          <span>{{ 'shell.nav.algo' | transloco }}</span>
+        </a>
+        @if (!auth.isAnonymous) {
+          <a
+            routerLink="/notifications"
+            routerLinkActive="active"
+            [class.has-activity]="indicators.ordinary()"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9.5 21h5" />
+            </svg>
+            <span>{{ 'shell.nav.inbox' | transloco }}</span>
+            @if (indicators.ordinary()) {
+              <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                >●</span
+              >
+            }
+          </a>
+          <a
+            routerLink="/conversations"
+            routerLinkActive="active"
+            [class.has-activity]="indicators.chat()"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v12H8l-4 4z" />
+            </svg>
+            <span>{{ 'shell.nav.chat' | transloco }}</span>
+            @if (indicators.chat()) {
+              <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                >●</span
+              >
+            }
+          </a>
+        }
+        <!-- Anonymous visitors get Chat too, and it is the same page signed-in
+           users see. There is no notification badge any more: Eliza no longer
+           generates notifications, which is the point of removing her inbox. -->
+        @if (auth.isAnonymous && hasLocalChat()) {
+          <a routerLink="/conversations" routerLinkActive="active">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v12H8l-4 4z" />
+            </svg>
+            <span>{{ 'shell.nav.chat' | transloco }}</span>
+          </a>
+        }
+        <a routerLink="/search" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m15.5 15.5 5 5" />
+          </svg>
+          <span>{{ 'shell.nav.search' | transloco }}</span>
+        </a>
+        <a routerLink="/feeds" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
+          </svg>
+          <span>{{ 'shell.nav.feeds' | transloco }}</span>
+        </a>
+        <a routerLink="/rss" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4a16 16 0 0 1 16 16M4 4v6a10 10 0 0 1 10 10h6A16 16 0 0 0 4 4Z" />
+            <circle cx="6.5" cy="17.5" r="2" />
+          </svg>
+          <span>{{ 'shell.nav.rss' | transloco }}</span>
+        </a>
+        @if (auth.shouldOfferLogin) {
+          <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
+            </svg>
+            <span>{{ 'shell.nav.login' | transloco }}</span>
+          </a>
+        }
+      </nav>
+
+      <div class="header-actions">
+        <details class="more-menu" (toggle)="onMoreToggle($event)">
+          <summary [attr.aria-label]="'shell.nav.moreAria' | transloco">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="19" cy="12" r="1.5" />
+            </svg>
+            <span>{{ 'shell.nav.more' | transloco }}</span>
+          </summary>
+          <div class="menu-panel">
+            <!-- "Meet Eliza" used to sit here. She is an easter egg, not a
+               headline feature, and this menu is short on room — she is found
+               in Chat, or at /eliza by anyone who goes looking. -->
+
+            <a routerLink="/settings">{{ 'shell.menu.settings' | transloco }}</a>
+
+            <!-- Feed-likes -->
+            <div class="menu-divider"></div>
+            @if (!auth.isAnonymous) {
+              <a routerLink="/favourites">{{ 'shell.menu.likes' | transloco }}</a>
+            }
+            <a routerLink="/bookmarks">{{ 'shell.menu.bookmarks' | transloco }}</a>
+            <!-- Lists and Tags moved to the Feeds landing page's drill-down
+                 category list (2 clicks: Feeds -> Lists / Feeds -> Tags) — this
+                 menu had no room left. Their routes (/feeds/lists, /feeds/tags)
+                 are unchanged, only this shortcut row is gone. -->
+            <!-- RSS reading moved to its own primary-nav destination (/rss).
+                 This row is feed *management* only — add/remove, OPML, proxy. -->
+            <a routerLink="/settings/rss">{{ 'shell.menu.manageRss' | transloco }}</a>
+
+            <!-- Write / draft-likes -->
+            <div class="menu-divider"></div>
+            @if (featureFlags.enabled('write')) {
+              <a routerLink="/write">{{ 'shell.menu.write' | transloco }}</a>
+            }
+            <a routerLink="/drafts">{{ 'shell.menu.drafts' | transloco }}</a>
+            @if (posse.count(); as pending) {
+              <!-- Only rendered while something is actually waiting: a queue you
+                 have emptied should not leave a row behind advertising itself. -->
+              <a routerLink="/posse">
+                {{ 'shell.menu.waitingToPublish' | transloco }}
+                <span class="nav-count">{{ pending }}</span>
+              </a>
+            }
+            @if (featureFlags.enabled('pastebin')) {
+              <a routerLink="/pastes">{{ 'shell.menu.pastes' | transloco }}</a>
+            }
+            @if (featureFlags.enabled('links')) {
+              <a routerLink="/links">{{ 'shell.menu.links' | transloco }}</a>
+            }
+
+            <!-- Find people to follow. Starter Kits and "Find my friends" used to
+               sit here as separate rows; both are now on the Find Friends hub,
+               along with search, the directory and the people browser. -->
+            <div class="menu-divider"></div>
+            <a routerLink="/find-friends">{{ 'shell.menu.findFriends' | transloco }}</a>
+            <a routerLink="/invites">{{ 'shell.menu.invites' | transloco }}</a>
+
+            <!-- Analytics (of self + the client) -->
+            <div class="menu-divider"></div>
+            @if (!auth.isAnonymous) {
+              <a routerLink="/analytics">{{ 'shell.menu.analytics' | transloco }}</a>
+            }
+            <!-- Feed Doctor is deliberately *not* here. This menu is full, and a
+               diagnostic nobody can find is a diagnostic nobody runs — it belongs
+               where the symptom appears: the feed's own button bar, and the
+               end-of-feed line. See sprint/anon-office-3-feed-doctor.md. -->
+            <!-- Storage Diagnostics has no row of its own here any more — this
+                 menu had no room left, and /observability already links to it
+                 prominently (page-menu-link, and the storage-summary card). -->
+            <a routerLink="/observability">{{ 'shell.menu.observability' | transloco }}</a>
+
+            <!-- Docs & grab-bag -->
+            <div class="menu-divider"></div>
+            <a routerLink="/blog">{{ 'shell.menu.docs' | transloco }}</a>
+            @if (!isCanary) {
+              <!-- Relative to <base href>: /canary/ on the custom domain and
+                 /mawkingbird/canary/ on the github.io fallback. -->
+              <a href="canary/" target="_blank" rel="noopener noreferrer">{{
+                'shell.menu.canary' | transloco
+              }}</a>
+            }
+
+            @if (mockTooling || isStaff()) {
+              <div class="menu-divider"></div>
+              @if (mockTooling) {
+                <a routerLink="/dev/faults">{{ 'shell.menu.faults' | transloco }}</a>
+                <a href="/docs" target="_blank" rel="noopener">{{
+                  'shell.menu.apiDocs' | transloco
+                }}</a>
+              }
+              @if (isStaff()) {
+                <a routerLink="/admin" class="admin-link">{{ 'shell.menu.admin' | transloco }}</a>
+              }
+            }
+          </div>
+        </details>
+
+        @if (auth.account(); as acc) {
+          <details class="account-menu">
+            <summary
+              class="account-pill"
+              [attr.aria-label]="'shell.account.menuFor' | transloco: { name: acc.display_name }"
+            >
+              <img
+                [ngSrc]="acc.avatar_static || acc.avatar || 'favicon-32x32.png'"
+                alt=""
+                width="32"
+                height="32"
+              />
+              <span>{{ acc.display_name }}</span>
+              <svg class="caret" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </summary>
+            <div class="menu-panel account-panel">
+              <a [routerLink]="['/accounts', acc.id]" class="menu-current">
+                <img
+                  [ngSrc]="acc.avatar_static || acc.avatar || 'favicon-32x32.png'"
+                  alt=""
+                  width="36"
+                  height="36"
+                />
+                <span class="menu-current-name">
+                  {{ acc.display_name }}
+                  <small class="muted">&#64;{{ acc.username }}</small>
+                </span>
+              </a>
+
+              @if (auth.otherSessions().length) {
+                <div class="menu-divider"></div>
+                <p class="menu-label">{{ 'shell.account.switch' | transloco }}</p>
+                @for (s of auth.otherSessions(); track s.key) {
+                  <button type="button" class="switch-row" (click)="switchTo(s)">
+                    <img
+                      [src]="s.account?.avatar_static || s.account?.avatar || ''"
+                      alt=""
+                      width="36"
+                      height="36"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span class="switch-name">
+                      {{
+                        s.account?.display_name ||
+                          (s.kind === 'anonymous'
+                            ? ('shell.account.anonymous' | transloco)
+                            : ('shell.account.saved' | transloco))
+                      }}
+                      @if (s.account?.username) {
+                        <small class="muted">&#64;{{ s.account?.username }}</small>
+                      }
+                    </span>
+                  </button>
+                }
+              }
+
+              <div class="menu-divider"></div>
+              @if (!auth.isAnonymous || auth.shouldOfferLogin) {
+                <button type="button" class="menu-action" (click)="addMastodonAccount()">
+                  {{ 'shell.account.addMastodon' | transloco }}
+                </button>
+                <button type="button" class="menu-action" (click)="addBlueskyAccount()">
+                  {{ 'shell.account.addBluesky' | transloco }}
+                </button>
+              }
+              <!-- "Log out" is right for a Bluesky-primary identity: it is a real
+                   account with real credentials, not the browser-local session
+                   "Exit anonymous" describes. -->
+              <button type="button" class="menu-action danger" (click)="logout()">
+                {{
+                  (auth.isAnonymous ? 'shell.account.exitAnonymous' : 'shell.account.logout')
+                    | transloco
+                }}
+              </button>
+            </div>
+          </details>
+        } @else {
+          <button class="logout-button" type="button" (click)="logout()">
+            {{ 'shell.account.logout' | transloco }}
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+}
+
+<div
+  class="layout"
+  [class.layout-wide]="wide()"
+  [class.layout-zen]="!wide() && railsHidden()"
+  [class.layout-writing-zen]="chromeHidden()"
+>
+  @if (!wide() && !railsHidden() && !chromeHidden()) {
+    <aside class="rail rail-left">
+      <app-left-rail />
+    </aside>
+  }
+  <main class="column" id="main" tabindex="-1" #mainColumn>
+    <router-outlet />
+    @if (!chromeHidden()) {
+      <app-app-footer />
+    }
+  </main>
+  @if (!wide() && !railsHidden() && !chromeHidden()) {
+    <aside class="rail rail-right">
+      <app-right-rail />
+    </aside>
+  }
+</div>
+
+@if (hotkeys.helpOpen()) {
+  <app-shortcut-help (closed)="hotkeys.helpOpen.set(false)" />
+}
+
+@if (toast(); as message) {
+  <div class="toast" role="alert">
+    <span>{{ message }}</span>
+    <button
+      type="button"
+      class="toast-close"
+      [attr.aria-label]="'shell.toast.dismiss' | transloco"
+      (click)="dismissToast()"
+    ></button>
+  </div>
+}
+
+@if (deadSession()) {
+  <!-- Inert: dismissal is via Cancel or Escape, so the backdrop needs no handler
+       (a click-only div is unreachable by keyboard). -->
+  <div class="dead-session-backdrop"></div>
+  <div
+    class="dead-session"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="dead-session-title"
+    (keydown.escape)="dismissDeadSession()"
+  >
+    <h2 id="dead-session-title">
+      {{
+        'shell.dead.title'
+          | transloco: { name: deadSessionName() || ('shell.dead.thatAccount' | transloco) }
+      }}
+    </h2>
+    <p>
+      {{
+        'shell.dead.description'
+          | transloco: { server: deadSessionServer() || ('shell.dead.thisServer' | transloco) }
+      }}
+    </p>
+    <p class="dead-session-note">{{ 'shell.dead.note' | transloco }}</p>
+    <div class="dead-session-actions">
+      <button type="button" class="btn" (click)="reauthenticate()">
+        {{ 'shell.dead.reauthenticate' | transloco }}
+      </button>
+      <button type="button" class="btn btn-outline danger" (click)="forgetDeadSession()">
+        {{ 'shell.dead.remove' | transloco }}
+      </button>
+      <button type="button" class="btn btn-outline" (click)="dismissDeadSession()">
+        {{ 'shell.dead.cancel' | transloco }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Leaving asks first, and offers to take the browser data with it. Owns the
+     teardown itself; the shell only handles where to go afterwards. -->
+@if (showLeave()) {
+  <app-leave-dialog (closed)="showLeave.set(false)" (chose)="finishLeave($event)" />
+}
+
+<!-- The first-run question, asked over a running app with real posts behind it.
+     Blocking: the two buttons are its only exits. -->
+@if (firstRun()) {
+  <app-first-run-modal (choose)="answerFirstRun($event)" />
+}

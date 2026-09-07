@@ -1,0 +1,136 @@
+<div
+  class="overlay"
+  role="presentation"
+  tabindex="-1"
+  (click)="cancelled.emit()"
+  (keyup.escape)="cancelled.emit()"
+>
+  <div
+    class="dialog"
+    role="alertdialog"
+    aria-labelledby="consent-title"
+    aria-describedby="consent-body"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+  >
+    @if (!carriesCredential()) {
+      <h3 id="consent-title">
+        {{ 'shortener.proxyConsent.titleNoCredential' | transloco: { proxy: proxy().label } }}
+      </h3>
+    } @else if (selfHosted()) {
+      <h3 id="consent-title">
+        {{ 'shortener.proxyConsent.titleSelfHosted' | transloco: { shortener: shortener().label } }}
+      </h3>
+    } @else {
+      <h3 id="consent-title" class="warn">
+        {{
+          'shortener.proxyConsent.titleWarn'
+            | transloco: { proxy: proxy().label, shortener: shortener().label }
+        }}
+      </h3>
+    }
+
+    <div id="consent-body">
+      @if (carriesCredential()) {
+        <p>
+          {{
+            'shortener.proxyConsent.bodyCarriesCredential'
+              | transloco: { shortener: shortener().label, keyLabel: shortener().keyLabel }
+          }}
+        </p>
+      } @else {
+        <p>
+          {{
+            'shortener.proxyConsent.bodyNoCredential'
+              | transloco: { shortener: shortener().label, proxy: proxy().label }
+          }}
+        </p>
+        <p class="links">
+          <a [href]="proxy().homepage" target="_blank" rel="noopener noreferrer">
+            {{ 'shortener.proxyConsent.aboutProxy' | transloco: { proxy: proxy().label } }}
+          </a>
+          <span aria-hidden="true">·</span>
+          <a [href]="shortener().privacyUrl" target="_blank" rel="noopener noreferrer">
+            {{
+              'shortener.proxyConsent.shortenerPrivacyPolicy'
+                | transloco: { shortener: shortener().label }
+            }}
+          </a>
+        </p>
+      }
+
+      @if (carriesCredential() && selfHosted()) {
+        <p [innerHTML]="'shortener.proxyConsent.selfHostedBody' | transloco"></p>
+      } @else if (carriesCredential()) {
+        <section class="who">
+          <h4>{{ 'shortener.proxyConsent.whoHeading' | transloco }}</h4>
+          <p class="operator">{{ proxy().label }}</p>
+          <p class="pitch">{{ proxy().pitch }}</p>
+          <p class="links">
+            <a [href]="proxy().homepage" target="_blank" rel="noopener noreferrer">
+              {{ 'shortener.proxyConsent.theirWebsite' | transloco }}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a [href]="shortener().privacyUrl" target="_blank" rel="noopener noreferrer">
+              {{
+                'shortener.proxyConsent.shortenerPrivacyPolicy'
+                  | transloco: { shortener: shortener().label }
+              }}
+            </a>
+          </p>
+          <p class="hint">{{ 'shortener.proxyConsent.readTermsHint' | transloco }}</p>
+        </section>
+
+        <section class="risk">
+          <h4>{{ 'shortener.proxyConsent.riskHeading' | transloco }}</h4>
+          <p>{{ 'shortener.proxyConsent.riskIntro' | transloco: { proxy: proxy().label } }}</p>
+          <ul>
+            <li>
+              {{
+                'shortener.proxyConsent.riskCreateLinks'
+                  | transloco: { shortener: shortener().label }
+              }}
+            </li>
+            <li>{{ 'shortener.proxyConsent.riskDeleteLinks' | transloco }}</li>
+            <li>{{ 'shortener.proxyConsent.riskReadLinks' | transloco }}</li>
+          </ul>
+          <p>{{ 'shortener.proxyConsent.riskReputation' | transloco }}</p>
+        </section>
+
+        <section class="scope">
+          <h4>{{ 'shortener.proxyConsent.scopeHeading' | transloco }}</h4>
+          <p>
+            {{ 'shortener.proxyConsent.scopeIntro' | transloco: { shortener: shortener().label } }}
+            <a
+              href="https://developers.cloudflare.com/workers/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ 'shortener.proxyConsent.runYourOwnProxy' | transloco }}</a
+            >
+            {{ 'shortener.proxyConsent.scopeOutro' | transloco }}
+          </p>
+        </section>
+      }
+    </div>
+
+    <div class="consent-actions">
+      <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+        {{ 'shortener.proxyConsent.decline' | transloco }}
+      </button>
+      <button
+        class="btn"
+        [class.btn-danger]="carriesCredential() && !selfHosted()"
+        type="button"
+        (click)="accepted.emit()"
+      >
+        @if (!carriesCredential()) {
+          {{ 'shortener.proxyConsent.useProxy' | transloco: { proxy: proxy().label } }}
+        } @else if (selfHosted()) {
+          {{ 'shortener.proxyConsent.useMyProxy' | transloco }}
+        } @else {
+          {{ 'shortener.proxyConsent.acceptRisk' | transloco }}
+        }
+      </button>
+    </div>
+  </div>
+</div>
