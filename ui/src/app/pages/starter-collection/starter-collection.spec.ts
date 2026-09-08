@@ -109,6 +109,15 @@ describe('StarterCollection', () => {
     expect(TestBed.inject(ImportFollows).rows()).toEqual([]);
   });
 
+  it('keeps Traditional Chinese controls on removed script-specific links', () => {
+    routeStub.snapshot.paramMap = convertToParamMap({ slug: 'catalog-zh-Hant-removed' });
+    const fixture = TestBed.createComponent(StarterCollection);
+    fixture.detectChanges();
+    expect(fixture.componentInstance['copyLanguage']).toBe('zh-Hant');
+    expect(fixture.nativeElement.textContent).toContain('此推薦跟隨名單已無法使用');
+    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+  });
+
   it('opens and follows a Russian pack in Russian without switching the app language', async () => {
     routeStub.snapshot.paramMap = convertToParamMap({ slug: 'catalog-ru-technology' });
     const fixture = TestBed.createComponent(StarterCollection);

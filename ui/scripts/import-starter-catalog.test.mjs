@@ -25,7 +25,7 @@ test('imports current profiles only, keeps language identities, rejects corrupt 
     version: 1,
     generatedAt: '2026-09-05T00:00:00Z',
     profileShards: ['a'],
-    packs: ['de', 'en'].map((lang) => ({
+    packs: ['de', 'en', 'zh-Hant'].map((lang) => ({
       slug: 'technology',
       lang,
       size: 2,
@@ -43,10 +43,10 @@ test('imports current profiles only, keeps language identities, rejects corrupt 
         members: [member, { acct: 'removed@example.social', id: '456' }],
       });
     const catalog = importCatalog(root);
-    assert.equal(catalog.packs.length, 2);
+    assert.equal(catalog.packs.length, 3);
     assert.deepEqual(
       catalog.packs.map((pack) => pack.lang),
-      ['de', 'en'],
+      ['de', 'en', 'zh-Hant'],
     );
     assert.deepEqual(
       catalog.packs[0].accounts.map((account) => account.acct),
@@ -54,6 +54,14 @@ test('imports current profiles only, keeps language identities, rejects corrupt 
     );
     assert.equal(catalog.packs[0].accounts[0].id, '123');
     assert.throws(() => validateCatalog({ ...catalog, version: 2 }), /version/);
+    for (const lang of ['../en', 'zh/../../en', 'zh-Hant/..', '']) {
+      assert.throws(
+        () => validateCatalog({ ...catalog, packs: [{ ...catalog.packs[0], lang }] }),
+        /Invalid pack identity/,
+      );
+      write('index.json', { ...index, packs: [{ ...index.packs[0], lang }] });
+      assert.throws(() => importCatalog(root), /Invalid index entry/);
+    }
     assert.throws(
       () => validateCatalog({ ...catalog, packs: [catalog.packs[0], catalog.packs[0]] }),
       /Duplicate pack/,

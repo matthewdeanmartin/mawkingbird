@@ -15,6 +15,9 @@ const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
 const safeName = (value) => typeof value === 'string' && /^[a-z0-9_-]+$/.test(value);
+// Canonical language tags used by the catalogue, including explicit scripts.
+const safeLanguage = (value) =>
+  typeof value === 'string' && /^[a-z]{2,3}(?:-[A-Z][a-z]{3})?$/.test(value);
 const https = (value) => {
   try {
     return new URL(value).protocol === 'https:';
@@ -35,7 +38,7 @@ export function validateCatalog(catalog) {
   assert(Array.isArray(catalog.packs) && catalog.packs.length > 0, 'Empty catalogue');
   const ids = new Set();
   for (const pack of catalog.packs) {
-    assert(safeName(pack.slug) && /^[a-z]{2,3}$/.test(pack.lang), 'Invalid pack identity');
+    assert(safeName(pack.slug) && safeLanguage(pack.lang), 'Invalid pack identity');
     const id = `${pack.lang}/${pack.slug}`;
     assert(!ids.has(id), `Duplicate pack: ${id}`);
     ids.add(id);
@@ -81,7 +84,7 @@ export function importCatalog(directory) {
   }
   const packs = index.packs
     .map((entry) => {
-      assert(safeName(entry.slug) && /^[a-z]{2,3}$/.test(entry.lang), 'Invalid index entry');
+      assert(safeName(entry.slug) && safeLanguage(entry.lang), 'Invalid index entry');
       assert(entry.path === `packs/${entry.lang}/${entry.slug}.json`, 'Unexpected pack path');
       const pack = read(entry.path);
       assert(pack.slug === entry.slug && pack.lang === entry.lang, 'Pack/index identity mismatch');

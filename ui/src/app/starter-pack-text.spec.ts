@@ -18,11 +18,11 @@ describe('starter-pack translations', () => {
     }
     for (const pack of catalog.packs) {
       expect(
-        (pack.title as Record<string, string>)[pack.lang],
+        (pack.title as Partial<Record<string, string>>)[pack.lang],
         `${pack.lang}/${pack.slug} title`,
       ).toBeTruthy();
       expect(
-        (pack.blurb as Record<string, string>)[pack.lang],
+        (pack.blurb as Partial<Record<string, string>>)[pack.lang],
         `${pack.lang}/${pack.slug} blurb`,
       ).toBeTruthy();
     }
@@ -33,5 +33,16 @@ describe('starter-pack translations', () => {
       starterPackText('starterCollection.followingProgress', 'ru-RU', { completed: 2, total: 9 }),
     ).toBe('Подписываемся… 2/9');
     expect(starterPackText('starterCollection.followAll', 'xx', { count: 9 })).toBe('Follow all 9');
+  });
+
+  it('preserves Traditional Chinese scripts and regional variants', () => {
+    for (const language of ['zh-Hant', 'zh-hant-TW', 'zh_TW', 'zh-HK']) {
+      expect(starterPackText('starterCollection.browse', language)).toBe(
+        messages['zh-Hant']['starterCollection.browse'],
+      );
+    }
+    expect(starterPackText('starterCollection.browse', 'zh-CN')).toBe(
+      messages.zh['starterCollection.browse'],
+    );
   });
 });

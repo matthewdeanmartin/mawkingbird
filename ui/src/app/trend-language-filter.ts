@@ -58,7 +58,7 @@ export class KnownLanguages {
    * us they read German, and trending tags should follow immediately.
    */
   readonly codes: Signal<Set<string>> = computed(() => {
-    const set = new Set<string>([this.uiLocale.active(), ...this.browserLangs]);
+    const set = new Set<string>([bare(this.uiLocale.active()), ...this.browserLangs]);
     for (const c of this.prefs.knownLanguages()) {
       set.add(bare(c));
     }

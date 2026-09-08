@@ -5,6 +5,12 @@ import catalog from './starter-catalog.generated.json';
 // The starter roster evolves — accounts come and go. These tests assert the
 // invariants that must always hold, not a frozen count or a specific line-up.
 describe('STARTER_COLLECTION', () => {
+  it('uses a pack’s script-specific copy independently of the interface language', () => {
+    const kit = starterKit('catalog-zh-Hant-technology')!;
+    expect(starterKitText(kit, 'en').title).toBe(kit.titles!['zh-Hant']);
+    expect(starterKitText(kit, 'en').blurb).toBe(kit.blurbs!['zh-Hant']);
+    expect(starterKitText(kit, 'en').blurb).not.toBe(kit.blurbs!['zh']);
+  });
   it('ships a non-empty set of well-formed accounts', () => {
     expect(STARTER_COLLECTION.length).toBeGreaterThan(0);
     for (const account of STARTER_COLLECTION) {

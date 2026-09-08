@@ -4,10 +4,13 @@ MAKEFLAGS += --no-print-directory
 .PHONY: starter-catalog-update starter-catalog-check
 starter-catalog-update:
 	npm run starter-catalog:update $(if $(CATALOG),-- "$(CATALOG)",)
+	npm run starter-locales:report -- --write
 
 starter-catalog-check:
 	npm run starter-catalog:check
 	node --test scripts/import-starter-catalog.test.mjs
+	node --test scripts/starter-locale-coverage.test.mjs
+	npm run starter-locales:report -- --check
 
 .PHONY: help install format format-check lint storage subpaths i18n i18n-extract i18n-todo i18n-batch i18n-merge i18n-traps test test-ci build build-admin build-mockingbird security check check-ci
 

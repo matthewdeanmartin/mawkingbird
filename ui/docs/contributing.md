@@ -3,6 +3,11 @@
 For repository setup, testing, documentation changes, and publishing, start with
 [Contributing to Mawkingbird](../../docs/contributing.md).
 
+For starter updates, follow [Bundled starter catalogue](starter-catalog.md),
+including the translation ownership and language reconciliation steps. The
+generated [locale coverage report](starter-locale-coverage.md) tracks starter
+languages without UI localization and UI locales without starter packs.
+
 This guide covers design rules for people changing the Mawkingbird UI. Everything here is a rule we
 arrived at by getting it wrong first; each section says what the rule is and
 what breaking it looked like.

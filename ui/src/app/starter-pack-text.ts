@@ -6,7 +6,15 @@ import messages from './starter-pack-ui.json';
 const dictionaries: Readonly<Record<string, Readonly<Record<string, string>>>> = messages;
 
 export function packLanguage(code: string): string {
-  return code.toLowerCase().split(/[-_]/)[0];
+  try {
+    const locale = new Intl.Locale(code.replaceAll('_', '-'));
+    // Keep Traditional Chinese distinct from the catalogue's generic Chinese.
+    const script =
+      locale.script ?? (locale.language === 'zh' ? locale.maximize().script : undefined);
+    return script ? `${locale.language}-${script}` : locale.language;
+  } catch {
+    return code.toLowerCase().split(/[-_]/)[0];
+  }
 }
 
 export function starterPackText(
@@ -14,7 +22,12 @@ export function starterPackText(
   language: string,
   params: Record<string, unknown> = {},
 ): string {
-  const template = dictionaries[packLanguage(language)]?.[key] ?? dictionaries['en'][key] ?? key;
+  const normalized = packLanguage(language);
+  const template =
+    dictionaries[normalized]?.[key] ??
+    dictionaries[normalized.split('-')[0]]?.[key] ??
+    dictionaries['en'][key] ??
+    key;
   return template.replace(/{{\s*(\w+)\s*}}/g, (match, name: string) =>
     params[name] === undefined ? match : String(params[name]),
   );

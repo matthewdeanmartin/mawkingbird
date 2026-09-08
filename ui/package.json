@@ -37,6 +37,7 @@
     "starter-kits:update": "node scripts/update-bundled-starter-kits.mjs",
     "starter-catalog:update": "node scripts/import-starter-catalog.mjs",
     "starter-catalog:check": "node scripts/import-starter-catalog.mjs --check",
+    "starter-locales:report": "node scripts/starter-locale-coverage.mjs",
     "starter-kits:check": "node scripts/update-bundled-starter-kits.mjs --check",
     "check:subpaths": "node scripts/check-subpath-deployments.mjs",
     "check:mock-leakage": "node scripts/check-mock-leakage.mjs"

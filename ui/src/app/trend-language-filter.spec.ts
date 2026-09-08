@@ -78,6 +78,12 @@ describe('TrendLanguageFilter', () => {
     expect(known.knows(UI_LANGUAGE)).toBe(true);
   });
 
+  it('recognizes script-tagged packs when Traditional Chinese is the UI language', () => {
+    prefs.uiLocale.set('zh-Hant');
+    expect(known.knows('zh-Hant')).toBe(true);
+    expect(known.knows('zh')).toBe(true);
+  });
+
   it('hides a confidently-foreign-script tag when the language is unknown', () => {
     prefs.setKnownLanguages(['en']);
     prefs.setExcludeUnknownLangTrends(true);

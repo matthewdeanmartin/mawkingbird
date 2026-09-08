@@ -43,7 +43,9 @@ export class StarterCollection implements OnInit {
   protected kit = starterKit(this.route.snapshot.paramMap.get('slug') ?? 'starter');
   protected copyLanguage =
     this.kit?.lang ??
-    /^catalog-([a-z]{2,3})-/.exec(this.route.snapshot.paramMap.get('slug') ?? '')?.[1];
+    /^catalog-([a-z]{2,3}(?:-[A-Z][a-z]{3})?)-/.exec(
+      this.route.snapshot.paramMap.get('slug') ?? '',
+    )?.[1];
   protected accounts = this.kit?.accounts ?? [];
   private locale = inject(UiLocale);
   protected text = computed(() =>

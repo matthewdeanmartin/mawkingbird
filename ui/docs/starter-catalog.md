@@ -56,3 +56,45 @@ an unavailable message in the language encoded in the link.
   identifies the language/key that needs a one-time addition. Membership refreshes
   require no translation work. Existing translations are reused across all packs
   in the same category or language.
+
+## Required refresh and reconciliation workflow
+
+Use Git Bash on Windows. Import the source checkout's current catalogue, including
+intentional uncommitted changes; do not reset it or recrawl just to update UI data.
+
+1. In `mawkingbird/ui`, run `make starter-catalog-update`. This replaces the bundle
+   and regenerates [the locale coverage report](starter-locale-coverage.md).
+2. Review both directions in that report: packs without an app-wide UI dictionary,
+   and production/in-progress UI locales without packs. Also review missing pack
+   copy and controls. A pack language is independent of the interface language.
+3. Fill missing pack titles/descriptions in the sibling
+   `mawkingbird_starters/data/taxonomy.json`. For copy-only changes, run
+   `python scripts/refresh_catalog_copy.py` from that repository root, then import
+   again. This refreshes generated pack copy offline while preserving the snapshot
+   date, membership, ranks and profiles. `--check` detects stale copy without writing.
+   For membership changes use the source repository's normal catalogue assembly.
+4. Fill missing starter controls in `src/app/starter-pack-ui.json`, preserving all
+   `{{placeholders}}`. Existing global UI translations can be copied once when
+   applicable; subsequent catalogue updates do not overwrite this dictionary.
+   Preserve `zh-Hant` throughout import, copy lookup, filtering and removed links.
+5. Run `npm run starter-locales:report -- --write` after any translation or locale
+   registration changes, then `make starter-catalog-check`, targeted starter specs,
+   `make i18n`, and the required full `make test` gate. Build the UI before release.
+   The catalogue check is offline and rejects stale reports, missing content-language
+   copy, missing controls, placeholder drift and registered locales without files.
+6. Review and commit taxonomy/generated copy changes in the source repository,
+   and the generated bundle, controls, report and code changes in Mawkingbird.
+   Publishing follows the normal release process; importing does not deploy.
+
+App-wide UI gaps are a translation backlog, not a reason to hide valid packs or
+advertise an untranslated interface. To add one, follow the existing UI i18n work
+orders and merge validation, add its dictionary under `public/i18n/`, register it
+in `IN_PROGRESS_LOCALES` with an endonym in `src/app/i18n/locale.ts`, and review it
+on test/canary before production promotion. Do not create an English-filled locale
+file just to clear the report. Locales without packs need consent-checked source
+curation; never relabel another language's pack to fill the row.
+
+For example, the September 2026 refresh supplies Catalan (`ca`) pack titles,
+descriptions and controls, while Catalan remains an app-wide UI localization gap.
+The report keeps Simplified/generic Chinese (`zh`) distinct from Traditional
+Chinese (`zh-Hant`), and separates preview languages from production languages.

@@ -1,6 +1,7 @@
 import { Account } from './models';
 import { BUNDLED_STARTER_KITS } from './bundled-starter-kits.generated';
 import catalog from './starter-catalog.generated.json';
+import { packLanguage } from './starter-pack-text';
 
 /** A code-shipped account snapshot used to make Anonymous follows instant and offline-first. */
 export interface StarterAccount {
@@ -124,10 +125,11 @@ export const STARTER_CATALOG_UPDATED_AT = catalog.generatedAt;
 
 export function starterKitText(kit: StarterKit, locale: string): { title: string; blurb: string } {
   // A pack's content language wins even when the app's chrome is in English.
-  const language = (kit.lang ?? locale).toLowerCase().split(/[-_]/)[0];
+  const language = packLanguage(kit.lang ?? locale);
+  const base = language.split('-')[0];
   return {
-    title: kit.titles?.[language] ?? kit.title,
-    blurb: kit.blurbs?.[language] ?? kit.blurb,
+    title: kit.titles?.[language] ?? kit.titles?.[base] ?? kit.title,
+    blurb: kit.blurbs?.[language] ?? kit.blurbs?.[base] ?? kit.blurb,
   };
 }
 
