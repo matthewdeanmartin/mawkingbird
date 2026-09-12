@@ -680,11 +680,18 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which translator the 🌐 button uses: your server, AI via OpenRouter, or ask each time. Absent means the default (your server).',
   },
   {
+    base: 'mockingbird_pseudonymity',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Account-local pseudonymity flag and posting reminder. Never part of global configuration or Mawkingbird Plus settings sync.',
+  },
+  {
     base: 'mockingbird_client_lists',
     storage: 'local',
     suffix: 'account',
-    sensitivity: 'setting',
-    note: 'Browser-local lists of accounts, stored as handles. Works signed out, and unlike server lists does not require following anyone. Treated as cache: a version bump discards it.',
+    sensitivity: 'private',
+    note: 'Browser-local private lists of accounts, stored as handles. Works signed out, and unlike server lists does not require following anyone. Treated as cache: a version bump discards it.',
   },
   {
     base: 'mockingbird_tag_bundles',

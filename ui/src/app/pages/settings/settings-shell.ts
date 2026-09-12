@@ -49,6 +49,7 @@ interface SettingsNavGroup {
 // i18n settings.groups.content: Content
 // i18n settings.groups.people: People
 // i18n settings.groups.advanced: Advanced
+// i18n settings.nav.pseudonymity: Pseudonymity
 // i18n settings.groups.rss: RSS
 // i18n settings.nav.publicProfile: Public profile
 // i18n settings.nav.server: Server
@@ -112,7 +113,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
   },
   {
     titleKey: 'settings.groups.advanced',
-    paths: ['storage', 'feature-flags', 'development', 'config', 'deletion'],
+    paths: ['pseudonymity', 'storage', 'feature-flags', 'development', 'config', 'deletion'],
   },
 ];
 
@@ -191,6 +192,7 @@ export class SettingsShell {
         exact: true,
         mockOnly: true,
       },
+      { labelKey: 'settings.nav.pseudonymity', path: 'pseudonymity', exact: true },
       { labelKey: 'settings.nav.approveFollowRequests', path: 'follows', exact: true },
       { labelKey: 'settings.nav.mutedBlocked', path: 'moderation', exact: true },
       // The flipside of the line above — accounts you want *without* a doorway in

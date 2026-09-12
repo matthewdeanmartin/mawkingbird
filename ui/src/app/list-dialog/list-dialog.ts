@@ -89,11 +89,11 @@ interface CollectionRow {
 // i18n listDialog.cancel: Cancel
 // i18n listDialog.newListPlaceholder: New list name
 // i18n listDialog.createAndAdd: Create &amp; add
-// i18n listDialog.clientLists: Client lists
+// i18n listDialog.clientLists: Private lists
 // i18n listDialog.thisBrowser: this browser
 // i18n listDialog.clientListsHint: No need to follow them, and it works signed out.
 // i18n listDialog.noClientListsYet: None yet — name one below to start.
-// i18n listDialog.newClientListPlaceholder: New client list name
+// i18n listDialog.newClientListPlaceholder: New private list name
 // i18n listDialog.collections: Collections
 // i18n listDialog.public: public
 // i18n listDialog.collectionsUnsupported: This server does not support collections.

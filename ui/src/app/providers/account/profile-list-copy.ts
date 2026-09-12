@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ClientLists } from '../../lists/client-lists';
+import { Pseudonymity } from '../../pseudonymity';
 import { ProfileLists } from './profile-lists';
 
 /**
@@ -64,6 +65,7 @@ export interface CopyPreview {
 @Injectable({ providedIn: 'root' })
 export class ProfileListCopy {
   private local = inject(ClientLists);
+  private pseudonymity = inject(Pseudonymity);
   private profile = inject(ProfileLists);
 
   private askedFor = signal<string[]>(readRecord().asked);
@@ -80,6 +82,7 @@ export class ProfileListCopy {
    * should render nothing at all rather than an empty offer.
    */
   preview(): CopyPreview | null {
+    if (this.pseudonymity.enabled()) return null;
     const lists = this.local.lists();
     if (lists.length === 0) {
       return null;
@@ -125,6 +128,7 @@ export class ProfileListCopy {
    * The local lists are untouched — see rule 2 in the class comment.
    */
   async copy(accountKey: string | null): Promise<boolean> {
+    if (this.pseudonymity.enabled()) return false;
     const lists = this.local.lists();
     if (lists.length === 0) {
       return false;

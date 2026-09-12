@@ -10,6 +10,7 @@ import { TrustedAccounts } from '../../trusted-accounts';
 import { ProfileLists } from './profile-lists';
 import type { ProfileList } from './profile-lists';
 import { ClientLists } from '../../lists/client-lists';
+import { Pseudonymity } from '../../pseudonymity';
 
 /**
  * Switching a collection's sync on for the first time.
@@ -114,6 +115,18 @@ describe('CollectionAdoptionRunner', () => {
   });
 
   describe('inspect', () => {
+    it('does not upload PA lists when Plus list sync is enabled', async () => {
+      localStorage.setItem('mastodon_mock_token', 'pa-lists');
+      TestBed.inject(Pseudonymity).setEnabled(true);
+      localLists.create('Private interests');
+      const result = await runner.inspect('lists');
+      expect(result.error).toContain('pseudonymity');
+      expect(await runner.apply('lists', 'merge')).toBe(false);
+      expect(remoteLists.load).not.toHaveBeenCalled();
+      expect(remoteLists.written).toBeNull();
+      expect(remoteLists.copiedIn).toBeNull();
+      expect(localLists.count()).toBe(1);
+    });
     it('asks when both sides hold something', async () => {
       localTrust.trust({ acct: 'a@x.social', url: '', id: '1' });
       remoteTrust.entriesValue = [{ key: 'b@x.social', acct: 'b@x.social', since: 1 }];

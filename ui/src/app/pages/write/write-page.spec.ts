@@ -8,6 +8,7 @@ import { WritePublication } from './write-publication';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
+import { Pseudonymity } from '../../pseudonymity';
 import { DraftMedia, Drafts } from '../../drafts';
 import { Account, ScheduledStatus, Status } from '../../models';
 import { PostTarget } from '../../compose/compose';
@@ -553,6 +554,30 @@ describe('WritePage', () => {
   });
 
   // ---------------------------------------------------------------- publishing
+
+  it('honors the PA reminder in Write before publishing and keeps cancelled text', async () => {
+    TestBed.inject(Auth).setToken('pa-write');
+    signIn();
+    TestBed.inject(Pseudonymity).setEnabled(true);
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('Check my personal details');
+    page.setWizardTarget('bsky');
+    const publish = vi
+      .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+      .mockResolvedValue();
+    const dialog = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    await page.wizardFinish();
+    expect(publish).not.toHaveBeenCalled();
+    expect(page.body()).toBe('Check my personal details');
+    expect(dialog.mock.calls[0][0]).toContain('Pseudonymity mode is on for me');
+    dialog.mockReturnValue(true);
+    await page.wizardFinish();
+    expect(publish).toHaveBeenCalledTimes(1);
+    expect(dialog).toHaveBeenCalledTimes(2);
+    dialog.mockRestore();
+  });
 
   it('publishes Bluesky in Write despite a language selection, without a composer handoff', async () => {
     const fixture = setUp();

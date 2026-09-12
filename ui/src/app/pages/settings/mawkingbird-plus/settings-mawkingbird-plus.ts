@@ -861,7 +861,7 @@ interface CollectionReconciliation {
 const FEATURE_LABELS: Record<PlusFeature, string> = {
   corsProxy: 'Mawkingbird CORS proxy',
   trustSync: 'Trusted accounts',
-  listsSync: 'Client lists',
+  listsSync: 'Private lists',
   feedsSync: 'RSS subscription list',
   apiKeys: 'Encrypted connection keys',
 };
@@ -882,7 +882,7 @@ const FEATURE_FOR: Record<AdoptableCollection, PlusFeature> = {
 const COLLECTION_LABELS: Record<AdoptableCollection, string> = {
   trust: 'trusted accounts',
   feeds: 'RSS subscriptions',
-  lists: 'client lists',
+  lists: 'private lists',
 };
 
 const VAULT_CONNECTOR_LABELS: Record<string, string> = {

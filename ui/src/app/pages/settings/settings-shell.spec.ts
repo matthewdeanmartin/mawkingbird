@@ -43,6 +43,19 @@ describe('SettingsShell', () => {
     expect(labels).toContain('Invite links');
   });
 
+  it('places Pseudonymity only under Advanced for signed-in accounts', () => {
+    TestBed.inject(Auth).setToken('signed-in-token');
+    const fixture = TestBed.createComponent(SettingsShell);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const links = el.querySelectorAll('a[href="/pseudonymity"]');
+    expect(links).toHaveLength(1);
+    let previous = links[0].previousElementSibling;
+    while (previous && !previous.classList.contains('settings-nav-heading'))
+      previous = previous.previousElementSibling;
+    expect(previous?.textContent?.trim()).toBe('Advanced');
+  });
+
   it('shows only browser-local settings in Anonymous', () => {
     TestBed.inject(Auth).enterAnonymous();
     const fixture = TestBed.createComponent(SettingsShell);

@@ -84,6 +84,7 @@ import {
 import { WriteWorkspace } from './write-workspace';
 import { BlueskyPublication, blueskyThreadError } from './bluesky-publication';
 import { WritePublication } from './write-publication';
+import { PostConfirmation } from '../../post-confirmation';
 import { Terminology } from '../../terminology';
 
 type DraftFilter = 'all' | DraftKind;
@@ -298,6 +299,7 @@ export interface Notice {
 })
 export class WritePage implements OnInit, OnDestroy {
   protected publication = inject(WritePublication);
+  private postConfirmation = inject(PostConfirmation);
   protected publishedHere = signal(false);
   protected scheduledHere = signal(false);
   /** post/tweet/florp vocabulary, per the Blue setting. */
@@ -1506,6 +1508,7 @@ export class WritePage implements OnInit, OnDestroy {
       this.wizardError.set('A poll needs at least two choices.');
       return;
     }
+    if (!this.postConfirmation.confirm(this.auth.account()?.acct)) return;
     this.wizardBusy.set(true);
     this.wizardError.set(null);
     try {

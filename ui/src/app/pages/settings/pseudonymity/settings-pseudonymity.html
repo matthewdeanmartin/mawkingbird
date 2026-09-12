@@ -1,0 +1,55 @@
+<div class="spage-head">
+  <h1>{{ 'settings.pseudonymity.title' | transloco }}</h1>
+  <p>{{ 'settings.pseudonymity.intro' | transloco }}</p>
+</div>
+<div class="spage-body">
+  <div class="ssection">
+    @if (auth.account(); as account) {
+      <p>
+        <strong>{{ account.acct }}</strong>
+      </p>
+    }
+    <label class="checkline">
+      <input
+        type="checkbox"
+        name="pseudonymity"
+        [ngModel]="pseudonymity.enabled()"
+        (ngModelChange)="setEnabled($event)"
+      />
+      {{ 'settings.pseudonymity.enabled' | transloco }}
+    </label>
+    @if (pseudonymity.enabled()) {
+      <label class="checkline">
+        <input
+          type="checkbox"
+          name="pseudonymity-reminder"
+          [ngModel]="pseudonymity.reminder()"
+          (ngModelChange)="setReminder($event)"
+        />
+        {{ 'settings.pseudonymity.reminder' | transloco }}
+      </label>
+      <p class="hint">{{ 'settings.pseudonymity.reminderHint' | transloco }}</p>
+    }
+    @if (saveFailed()) {
+      <p role="alert">{{ 'settings.pseudonymity.saveFailed' | transloco }}</p>
+    }
+    <p class="hint">{{ 'settings.pseudonymity.local' | transloco }}</p>
+    <p class="hint">{{ 'settings.pseudonymity.limits' | transloco }}</p>
+  </div>
+  <div class="ssection">
+    <h2>{{ 'settings.pseudonymity.privateLists' | transloco }}</h2>
+    <p>{{ 'settings.pseudonymity.listCount' | transloco: { count: lists.count() } }}</p>
+    <p class="hint">{{ 'settings.pseudonymity.listHint' | transloco }}</p>
+    <a routerLink="/feeds" [queryParams]="{ section: 'client-lists' }">{{
+      'settings.pseudonymity.manageLists' | transloco
+    }}</a>
+  </div>
+  <div class="ssection">
+    <h2>{{ 'settings.pseudonymity.privateFollows' | transloco }}</h2>
+    <p class="hint">{{ 'settings.pseudonymity.followsPending' | transloco }}</p>
+  </div>
+  <div class="ssection">
+    <h2>{{ 'settings.pseudonymity.privateLikes' | transloco }}</h2>
+    <p class="hint">{{ 'settings.pseudonymity.likesPending' | transloco }}</p>
+  </div>
+</div>

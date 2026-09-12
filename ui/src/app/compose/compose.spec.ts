@@ -5,6 +5,7 @@ import { Signal, WritableSignal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../client-prefs';
+import { Pseudonymity } from '../pseudonymity';
 import { Drafts } from '../drafts';
 import { Status } from '../models';
 import { Auth } from '../auth';
@@ -918,6 +919,19 @@ describe('Compose', () => {
     expect(confirmSpy).toHaveBeenCalled();
     expect(internals(f).countdown()).toBeNull();
     httpMock.expectOne('/api/v1/statuses').flush({ id: '1' });
+  });
+
+  it('cancelling the PA reminder keeps the reply draft and sends no post', () => {
+    TestBed.inject(Auth).setToken('pa-composer');
+    TestBed.inject(Pseudonymity).setEnabled(true);
+    const dialog = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const f = setUp();
+    internals(f).text.set('Potential personal information');
+    internals(f).submit();
+    expect(dialog).toHaveBeenCalledTimes(1);
+    expect(dialog.mock.calls[0][0]).toContain('Pseudonymity mode is on');
+    expect(internals(f).text()).toBe('Potential personal information');
+    httpMock.expectNone('/api/v1/statuses');
   });
 
   it('delay-only (no confirm) starts the countdown without asking', () => {

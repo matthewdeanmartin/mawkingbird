@@ -122,7 +122,7 @@ describe('SettingsMawkingbirdPlus collection sync', () => {
       'lists',
     ]);
     expect(component['syncMessage']()).toContain(
-      'Synced trusted accounts, RSS subscriptions, client lists.',
+      'Synced trusted accounts, RSS subscriptions, private lists.',
     );
     expect(diagnostics.load).toHaveBeenCalledOnce();
   });

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientLists } from '../../lists/client-lists';
+import { Pseudonymity } from '../../pseudonymity';
 import { ProfileListCopy } from './profile-list-copy';
 import { ProfileLists } from './profile-lists';
 import type { CopyOutcome, ProfileList } from './profile-lists';
@@ -78,6 +79,16 @@ describe('ProfileListCopy', () => {
   });
 
   describe('the preview', () => {
+    it('refuses an explicit copy as well as the offer while PA mode is on', async () => {
+      localStorage.setItem('mastodon_mock_token', 'pa-list-owner');
+      TestBed.inject(Pseudonymity).setEnabled(true);
+      local.set([list('private', ['pizza@example.social'])]);
+      expect(copy.preview()).toBeNull();
+      expect(copy.shouldOffer(ACCOUNT)).toBe(false);
+      expect(await copy.copy(ACCOUNT)).toBe(false);
+      expect(profile.copyIn).not.toHaveBeenCalled();
+      expect(local.count()).toBe(1);
+    });
     it('counts lists and the distinct accounts across them', () => {
       local.set([list('a', ['x@h', 'y@h']), list('b', ['y@h', 'z@h'])]);
       // Distinct: `y@h` is in both lists and must not be counted twice, or the
@@ -185,9 +196,8 @@ describe('ProfileListCopy', () => {
 
     it('surfaces a refusal instead of claiming success', async () => {
       local.set([list('a')]);
-      profile.copyIn = vi.fn(
-        (): Promise<CopyOutcome> =>
-          Promise.resolve({ kind: 'payment-required', message: 'Plus required' }),
+      profile.copyIn = vi.fn((): Promise<CopyOutcome> =>
+        Promise.resolve({ kind: 'payment-required', message: 'Plus required' }),
       );
 
       const copied = await copy.copy(ACCOUNT);

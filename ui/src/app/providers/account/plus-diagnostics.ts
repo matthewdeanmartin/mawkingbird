@@ -87,7 +87,7 @@ export type LoadState = 'idle' | 'loading' | 'ready' | 'failed';
 const COLLECTION_LABELS: Record<AdoptableCollection, string> = {
   trust: 'Trusted accounts',
   feeds: 'RSS subscriptions',
-  lists: 'Client lists',
+  lists: 'Private lists',
 };
 
 @Injectable({ providedIn: 'root' })

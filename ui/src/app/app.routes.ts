@@ -349,6 +349,16 @@ export const routes: Routes = [
               import('./pages/settings/rss/settings-rss').then((m) => m.SettingsRss),
           },
           {
+            path: 'pseudonymity',
+            title: 'Pseudonymity',
+            canActivate: [anonymousUnavailableGuard],
+            data: { anonymousFeature: 'Pseudonymity settings', preloadSettings: true },
+            loadComponent: () =>
+              import('./pages/settings/pseudonymity/settings-pseudonymity').then(
+                (m) => m.SettingsPseudonymity,
+              ),
+          },
+          {
             path: 'privacy',
             title: 'Privacy',
             canActivate: [anonymousUnavailableGuard],

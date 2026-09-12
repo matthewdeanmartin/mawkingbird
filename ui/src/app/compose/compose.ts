@@ -19,6 +19,7 @@ import { PageDiagnostics } from '../page-diagnostics';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { PostConfirmation } from '../post-confirmation';
 import { VisibilityState, VISIBILITIES } from './visibility-state';
 import { altTextMessage, mediaTypeOf, undescribedIndexes } from './alt-text';
 import { LinkShortening } from './link-shortening';
@@ -487,6 +488,7 @@ export class Compose implements OnDestroy {
   private transloco = inject(TranslocoService);
   protected auth = inject(Auth);
   private prefs = inject(ClientPrefs);
+  private postConfirmation = inject(PostConfirmation);
   private linkShortening = inject(LinkShortening);
   private bskyApi = inject(BlueskyApi);
   protected bskySession = inject(BlueskySession);
@@ -2059,7 +2061,7 @@ export class Compose implements OnDestroy {
         return;
       }
     }
-    if (this.prefs.confirmBeforePost() && !confirm('Do you really want to post that?')) {
+    if (!this.postConfirmation.confirm(this.auth.account()?.acct)) {
       return;
     }
     if (this.prefs.delayedSend()) {

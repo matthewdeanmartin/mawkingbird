@@ -106,17 +106,17 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.serverList.newNamePlaceholder: New list name
 // i18n pages.lists.serverList.deleteTitle: Delete list
 // i18n pages.lists.serverList.empty: No lists yet — create one above.
-// i18n pages.lists.clientList.heading: Client lists
+// i18n pages.lists.clientList.heading: Private lists
 // i18n pages.lists.clientList.hint: Kept in this browser, so anyone can go in one — you don't have to follow them, and it works signed out. Server lists (above) only accept accounts you follow.
-// i18n pages.lists.clientList.newNamePlaceholder: New client list name
+// i18n pages.lists.clientList.newNamePlaceholder: New private list name
 // i18n pages.lists.clientList.members.one: {{count}} member
 // i18n pages.lists.clientList.members.other: {{count}} members
 // i18n pages.lists.profileList.heading: Mawkingbird lists
-// i18n pages.lists.profileList.hint: Kept on your Mawkingbird account, so they follow you to your other browsers. Client lists (above) stay in this browser. A list lives in one place — nothing is copied between them unless you ask.
+// i18n pages.lists.profileList.hint: Kept on your Mawkingbird account, so they follow you to your other browsers. Private lists (above) stay in this browser. A list lives in one place — nothing is copied between them unless you ask.
 // i18n pages.lists.profileList.newNamePlaceholder: New Mawkingbird list name
 // i18n pages.lists.profileList.readOnly: These are read-only right now.
-// i18n pages.lists.copyOffer.summary.one: This browser has {{lists}} client list ({{accounts}} account). Copy it to your Mawkingbird account?
-// i18n pages.lists.copyOffer.summary.other: This browser has {{lists}} client lists ({{accounts}} accounts). Copy them to your Mawkingbird account?
+// i18n pages.lists.copyOffer.summary.one: This browser has {{lists}} private list ({{accounts}} account). Copy it to your Mawkingbird account?
+// i18n pages.lists.copyOffer.summary.other: This browser has {{lists}} private lists ({{accounts}} accounts). Copy them to your Mawkingbird account?
 // i18n pages.lists.copyOffer.keepsCopies: Your browser keeps its own copies — nothing is moved or deleted.
 // i18n pages.lists.copyOffer.copying: Copying…
 // i18n pages.lists.copyOffer.copyToAccount: Copy to my account

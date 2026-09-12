@@ -6,6 +6,7 @@ import type { ProfileTrustEntry } from './profile-trust';
 import { ProfileLists } from './profile-lists';
 import type { ProfileList } from './profile-lists';
 import { ClientLists } from '../../lists/client-lists';
+import { Pseudonymity } from '../../pseudonymity';
 import { RssSubscriptions } from '../rss/rss-subscriptions';
 import { TrustedAccounts } from '../../trusted-accounts';
 import type { Entry } from '../../trusted-accounts';
@@ -56,6 +57,7 @@ export class CollectionAdoptionRunner {
   private localFeeds = inject(RssSubscriptions);
   private profileLists = inject(ProfileLists);
   private localLists = inject(ClientLists);
+  private pseudonymity = inject(Pseudonymity);
   private diagnostics = inject(PageDiagnostics);
 
   /**
@@ -67,6 +69,15 @@ export class CollectionAdoptionRunner {
    * click through the ones that matter.
    */
   async inspect(collection: AdoptableCollection): Promise<AdoptionInspection> {
+    if (collection === 'lists' && this.pseudonymity.enabled()) {
+      return {
+        collection,
+        localCount: this.localLists.count(),
+        remoteCount: 0,
+        needsChoice: false,
+        error: 'Private lists stay in this browser while pseudonymity mode is on.',
+      };
+    }
     const remote = this.remoteFor(collection);
     await remote.load();
     const failure = remote.error();
@@ -105,6 +116,7 @@ export class CollectionAdoptionRunner {
 
   /** Perform a choice. */
   async apply(collection: AdoptableCollection, choice: AdoptionChoice): Promise<boolean> {
+    if (collection === 'lists' && this.pseudonymity.enabled()) return false;
     const applied = await this.applyFor(collection, choice);
     this.diagnostics.info('CollectionAdoption', 'adopt', { collection, choice, ok: applied });
     return applied;
@@ -148,6 +160,7 @@ export class CollectionAdoptionRunner {
    * write a second object for a list the account already has.
    */
   private async applyLists(choice: AdoptionChoice): Promise<boolean> {
+    if (this.pseudonymity.enabled()) return false;
     const local = this.localLists.lists();
     const plan = planAdoption(
       local,
