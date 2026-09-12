@@ -416,6 +416,11 @@
     "title": "People to follow",
     "updated": "Catalogue updated {{date}}"
   },
+  "commandBar": {
+    "textFocus.label": "Text-focus",
+    "textFocus.turnOff": "Turn off text-focus and show images",
+    "textFocus.turnOn": "Turn on text-focus: show image icons and alt text"
+  },
   "common": {
     "cancel": "Cancel",
     "close": "Close",
