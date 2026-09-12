@@ -4,6 +4,12 @@ import { DiagnosticLog } from './diagnostic-log';
 
 const PREFIX = '[Mockingbird Home]';
 
+/** XRPC error identifiers are useful diagnostics; arbitrary response text is not. */
+export function httpErrorCode(error: unknown): string | null {
+  const code = error instanceof HttpErrorResponse ? error.error?.error : null;
+  return typeof code === 'string' && /^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(code) ? code : null;
+}
+
 /** Token-safe browser-console diagnostics for the Home feed pipeline. */
 @Injectable({ providedIn: 'root' })
 export class HomeDiagnostics {
@@ -22,11 +28,12 @@ export class HomeDiagnostics {
     this.log.write('error', PREFIX.slice(1, -1), event, payload);
   }
 
-  /** Never include response bodies, request headers, tokens, account data, or post content. */
+  /** Include only the protocol error identifier from bodies, never credentials or content. */
   private describeFailure(error: unknown): Record<string, unknown> {
     if (error instanceof HttpErrorResponse) {
       return {
         kind: 'http',
+        code: httpErrorCode(error),
         status: error.status,
         statusText: error.statusText,
         url: error.url,
@@ -34,7 +41,13 @@ export class HomeDiagnostics {
       };
     }
     if (error instanceof Error) {
-      return { kind: error.name, message: error.message };
+      return {
+        kind: error.name,
+        message: error.message,
+        ...(error.cause instanceof Error
+          ? { cause: { kind: error.cause.name, message: error.cause.message } }
+          : {}),
+      };
     }
     return { kind: typeof error, message: String(error) };
   }

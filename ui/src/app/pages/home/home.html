@@ -467,10 +467,41 @@
   @if (blueskyFeedFailed()) {
     <aside class="muted feed-warning" role="alert">
       <p>{{ 'pages.home.warnings.blueskyError' | transloco }}</p>
-      <a routerLink="/settings/connections">{{
-        'pages.home.warnings.blueskyError.link' | transloco
-      }}</a>
+      @for (detail of blueskyFeedErrors(); track $index) {
+        <p>{{ detail }}</p>
+      }
+      <button type="button" class="btn btn-outline" [disabled]="loading()" (click)="load(true)">
+        {{ 'pages.home.warnings.blueskyError.retry' | transloco }}
+      </button>
+      @if (auth.isBlueskyPrimary) {
+        <button
+          type="button"
+          class="btn btn-outline"
+          [disabled]="blueskyReauthWorking()"
+          (click)="showBlueskyReauth.set(true)"
+        >
+          {{ 'pages.home.warnings.blueskyError.primaryLink' | transloco }}
+        </button>
+      } @else {
+        <a routerLink="/settings/connections/bluesky">{{
+          'pages.home.warnings.blueskyError.link' | transloco
+        }}</a>
+      }
+      @if (blueskyReauthError()) {
+        <p>{{ 'pages.home.warnings.blueskyError.signInFailed' | transloco }}</p>
+      }
     </aside>
+  }
+
+  @if (showBlueskyReauth()) {
+    <app-confirm-dialog
+      [title]="'pages.home.warnings.blueskyError.dialogTitle' | transloco"
+      [message]="'pages.home.warnings.blueskyError.dialogMessage' | transloco"
+      [confirmLabel]="'pages.home.warnings.blueskyError.primaryLink' | transloco"
+      [danger]="false"
+      (confirmed)="reauthenticateBluesky()"
+      (cancelled)="showBlueskyReauth.set(false)"
+    />
   }
 
   <!-- Twitter posts are shown from the saved copy, so Home never spends on its

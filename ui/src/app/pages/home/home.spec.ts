@@ -19,6 +19,7 @@ import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
 import { TwitterProvider } from '../../providers/twitter/twitter-provider';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { of } from 'rxjs';
 import { SERVER_ROLE } from '../../server-role';
 import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
@@ -132,6 +133,92 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+
+  it.each(['bluesky', 'mastodon'] as const)(
+    'offers usable Bluesky recovery for a %s primary account',
+    (kind) => {
+      const fixture = setUp();
+      vi.spyOn(TestBed.inject(BlueskyApi), 'getFollows').mockReturnValue(
+        of({ subject: { did: 'did:plc:me', handle: 'me.bsky.social' }, follows: [] }),
+      );
+      TestBed.inject(Auth).kind.set(kind);
+      TestBed.inject(BlueskySession).session.set({
+        did: 'did:plc:me',
+        handle: 'me.bsky.social',
+        service: 'https://bsky.social',
+        accessJwt: 'access',
+        refreshJwt: 'refresh',
+      });
+      TestBed.inject(BlueskyProvider).errors.set([
+        'Bluesky session refresh failed (HTTP 401; ExpiredToken).',
+      ]);
+      fixture.detectChanges();
+      const warning = fixture.nativeElement.querySelector('[role="alert"]') as HTMLElement;
+      expect(warning.textContent).toContain('ExpiredToken');
+      if (kind === 'bluesky') {
+        expect(warning.querySelector('a')).toBeNull();
+        expect(warning.textContent).toContain('Sign in to Bluesky again');
+      } else {
+        expect(warning.querySelector('a')?.getAttribute('href')).toBe(
+          '/settings/connections/bluesky',
+        );
+      }
+      expect(fixture.nativeElement.querySelector('[role="alertdialog"]')).toBeNull();
+      const load = vi.spyOn(fixture.componentInstance, 'load').mockImplementation(() => undefined);
+      warning.querySelector('button')!.click();
+      expect(load).toHaveBeenCalledWith(true);
+    },
+  );
+
+  it('prompts once for a missing OAuth session, permits cancel, and reauthenticates the same DID without logout', async () => {
+    const fixture = setUp();
+    vi.spyOn(TestBed.inject(BlueskyApi), 'getFollows').mockReturnValue(
+      of({ subject: { did: 'did:plc:me', handle: 'me.bsky.social' }, follows: [] }),
+    );
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('bluesky');
+    const bsky = TestBed.inject(BlueskySession);
+    bsky.session.set({
+      did: 'did:plc:me',
+      handle: 'me.bsky.social',
+      service: 'https://pds.example',
+      authMethod: 'oauth',
+    });
+    const provider = TestBed.inject(BlueskyProvider);
+    provider.errors.set(['The saved Bluesky session is missing.']);
+    provider.authenticationFailed.set(true);
+    const signIn = vi
+      .spyOn(bsky, 'beginOAuthIdentity')
+      .mockRejectedValue(new TypeError('Failed to fetch'));
+    const logout = vi.spyOn(auth, 'logout');
+    fixture.detectChanges();
+    const buttons = () =>
+      [
+        ...fixture.nativeElement.querySelectorAll('[role="alertdialog"] button'),
+      ] as HTMLButtonElement[];
+    expect(buttons()).toHaveLength(2);
+    buttons()
+      .find((b) => b.textContent?.trim() === 'Cancel')!
+      .click();
+    fixture.detectChanges();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="alertdialog"]')).toBeNull();
+    expect(auth.kind()).toBe('bluesky');
+    expect(signIn).not.toHaveBeenCalled();
+    const recovery = [
+      ...fixture.nativeElement.querySelectorAll('[role="alert"] button'),
+    ] as HTMLButtonElement[];
+    recovery.find((b) => b.textContent?.includes('Sign in to Bluesky again'))!.click();
+    fixture.detectChanges();
+    buttons()
+      .find((b) => b.textContent?.includes('Sign in to Bluesky again'))!
+      .click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(signIn).toHaveBeenCalledWith('did:plc:me', true);
+    expect(logout).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.textContent).toContain('Could not open Bluesky sign-in');
+  });
 
   /**
    * Turn streaming on and flush the fresh-snapshot refetch it triggers.

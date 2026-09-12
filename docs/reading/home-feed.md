@@ -50,7 +50,11 @@ If you do follow people but expected more posts:
 2. Choose **Load more** or **Load older posts** at the end of the feed when offered.
 3. Use **Feed Doctor** when Mawkingbird offers it at the end of the feed.
 
-If Bluesky fails to load, Home shows a connection warning. Refresh to retry, or check **Settings → Connections → Bluesky**. A failed request does not mean that nobody has posted.
+If Bluesky fails to load, Home shows the failure details and a retry button. A failed request does not mean that nobody has posted.
+
+If Bluesky is your primary account and its saved session is missing or no longer valid, Home offers **Sign in to Bluesky again** or **Cancel**. Confirming starts OAuth for the same account without logging out. You can cancel and reopen the dialog from the feed warning. App-password accounts use the Bluesky sign-in form without the logout detour. For Bluesky linked under another primary account, the warning instead points to **Settings → Connections → Bluesky**.
+
+The diagnostic message “The session was deleted by another process” comes from Bluesky's OAuth library when its saved session is unavailable. The account's profile can still be listed even though its OAuth credentials are gone. Signing in again restores those credentials; the message alone does not identify what removed the session.
 
 ## Notifications from connected networks
 

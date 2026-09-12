@@ -56,6 +56,8 @@ import { PreviewCardComponent } from '../../preview-card/preview-card';
 import { DiscoveryCard } from '../../discovery-card/discovery-card';
 import { discoveryCardAfter } from '../../discovery-ways';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
+import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
+import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 
 /** Below this many follows, nudge toward /find-friends (few follows = empty-feeling feed). */
 const FOLLOW_NUDGE_THRESHOLD = 5;
@@ -124,8 +126,13 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.feedEnd.checkDoctor: Check the Feed Doctor.
 // i18n pages.home.warnings.anonymousErrors.link: Review followed sources or retry the public API
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
-// i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Try refreshing, or check your Bluesky connection in Settings.
+// i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Retry the request. If your session has expired or access was revoked, sign in again.
 // i18n pages.home.warnings.blueskyError.link: Check Bluesky connection
+// i18n pages.home.warnings.blueskyError.primaryLink: Sign in to Bluesky again
+// i18n pages.home.warnings.blueskyError.retry: Retry Bluesky feed
+// i18n pages.home.warnings.blueskyError.dialogTitle: Sign in to Bluesky again?
+// i18n pages.home.warnings.blueskyError.dialogMessage: Your saved Bluesky session could not be used. Sign in again to restore access to your account. You do not need to log out.
+// i18n pages.home.warnings.blueskyError.signInFailed: Could not open Bluesky sign-in. Please try again.
 // i18n pages.home.twitterUnloaded.summary.other: {{count}} followed Twitter accounts have nothing saved yet, so they are not in this feed.
 // i18n pages.home.twitterUnloaded.loadLink.one: Load it on the Twitter connector ({{count}} request)
 // i18n pages.home.twitterUnloaded.loadLink.other: Load them on the Twitter connector ({{count}} requests)
@@ -138,6 +145,7 @@ const ARTICLE_TARGET = 10;
   selector: 'app-home',
   imports: [
     FormsModule,
+    ConfirmDialog,
     DiscoveryCard,
     CommandBar,
     Compose,
@@ -213,12 +221,53 @@ export class Home implements OnInit, OnDestroy {
     ),
   );
   private registry = inject(ProviderRegistry);
+  protected blueskyFeedErrors = computed(
+    () =>
+      this.registry
+        .linked()
+        .find((provider) => provider.id === 'bluesky')
+        ?.errors() ?? [],
+  );
   protected blueskyFeedFailed = computed(() =>
     this.registry
       .linked()
       .some((provider) => provider.id === 'bluesky' && provider.errors().length > 0),
   );
   private bsky = inject(BlueskySession);
+  private bskyProvider = inject(BlueskyProvider);
+  protected showBlueskyReauth = signal(false);
+  protected blueskyReauthWorking = signal(false);
+  protected blueskyReauthError = signal(false);
+  private blueskyReauthPrompted = false;
+  private blueskyReauthPrompt = effect(() => {
+    if (
+      this.auth.isBlueskyPrimary &&
+      this.bskyProvider.authenticationFailed() &&
+      !this.blueskyReauthPrompted
+    ) {
+      this.blueskyReauthPrompted = true;
+      this.showBlueskyReauth.set(true);
+    }
+  });
+
+  protected async reauthenticateBluesky(): Promise<void> {
+    if (this.blueskyReauthWorking()) return;
+    this.showBlueskyReauth.set(false);
+    this.blueskyReauthError.set(false);
+    const session = this.bsky.session();
+    if (session?.authMethod !== 'oauth') {
+      await this.router.navigate(['/login/bluesky'], { queryParams: { add: 1 } });
+      return;
+    }
+    this.blueskyReauthWorking.set(true);
+    try {
+      await this.bsky.beginOAuthIdentity(session.did, true);
+    } catch (error: unknown) {
+      this.blueskyReauthWorking.set(false);
+      this.blueskyReauthError.set(true);
+      this.diagnostics.error('bluesky:reauth-start-error', error);
+    }
+  }
   private bskyApi = inject(BlueskyApi);
   private server = inject(Server);
   private anonymousCorpus = inject(AnonymousFeedCorpus);
@@ -1331,6 +1380,7 @@ export class Home implements OnInit, OnDestroy {
   /** A quiet or filtered feed is different from having no followed sources. */
   protected readonly nothingFollowed = computed(
     () =>
+      !this.blueskyFeedFailed() &&
       this.noLoadedPosts() &&
       this.noLocalSources() &&
       (!this.bsky.session() || this.bskyHasFollows() === false) &&

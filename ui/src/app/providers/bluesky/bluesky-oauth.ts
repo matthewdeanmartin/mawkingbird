@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BlueskySignInRequiredError } from './bluesky-auth-error';
 import type { BrowserOAuthClient, OAuthSession } from '@atproto/oauth-client-browser';
 import {
   blueskyOAuthClientMetadata,
@@ -68,8 +69,23 @@ export class BlueskyOAuth {
 
   /** Make a DPoP-bound request; token refresh is handled inside the SDK. */
   async fetch(did: string, pathname: string, init?: RequestInit): Promise<Response> {
-    const session = await this.restore(did);
-    return session.fetchHandler(pathname, init);
+    try {
+      const session = await this.restore(did);
+      return await session.fetchHandler(pathname, init);
+    } catch (error: unknown) {
+      const { TokenRefreshError, TokenRevokedError, TokenInvalidError } =
+        await import('@atproto/oauth-client-browser');
+      if (
+        error instanceof TokenRefreshError ||
+        error instanceof TokenRevokedError ||
+        error instanceof TokenInvalidError ||
+        // Errors sent between tabs can lose their SDK subclass during cloning.
+        (error instanceof Error && error.message === 'The session was deleted by another process')
+      ) {
+        throw new BlueskySignInRequiredError(error);
+      }
+      throw error;
+    }
   }
 
   /** Revoke and remove one SDK-owned session. */
