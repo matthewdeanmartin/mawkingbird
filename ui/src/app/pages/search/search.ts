@@ -1,3 +1,4 @@
+import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
   DestroyRef,
@@ -1301,9 +1302,9 @@ export class Search implements OnInit, OnDestroy {
   protected readonly accountSorts = ACCOUNT_SORTS;
   protected statusSort = signal<StatusSortKey>('relevance');
   protected accountSort = signal<AccountSortKey>('relevance');
-  // Facets open by default — collapsed, the "Refine loaded results" section is
-  // easy to miss entirely.
-  protected refineOpen = signal(true);
+  // The initial state follows the viewport; native details keeps later choices.
+  protected readonly formOpen = searchPanelOpenByDefault();
+  protected refineOpen = signal(searchPanelOpenByDefault());
   /**
    * How many refinements are currently narrowing the results.
    *

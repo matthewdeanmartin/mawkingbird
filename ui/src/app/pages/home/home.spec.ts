@@ -17,10 +17,15 @@ import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-m
 import { JustMyServer } from '../../just-my-server';
 import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
 import { TwitterProvider } from '../../providers/twitter/twitter-provider';
+import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
+import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { of } from 'rxjs';
+import { SERVER_ROLE } from '../../server-role';
+import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
 
 /** Exposes Home's protected signals for white-box testing. */
 interface HomeInternals {
-  statuses: Signal<Status[]>;
+  statuses: WritableSignal<Status[]>;
   visible: Signal<Status[]>;
   live: WritableSignal<boolean>;
   autoLoading: Signal<boolean>;
@@ -831,6 +836,88 @@ describe('Home', () => {
     expect(internals(fixture).view()).toBe('feed');
   });
 
+  it('inserts discovery cards every twenty displayed posts and dismisses only the selected card', () => {
+    const fixture = setUp();
+    internals(fixture).statuses.set(Array.from({ length: 40 }, (_, i) => makeStatus(String(i))));
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const items = [...root.querySelectorAll('app-status-card, app-discovery-card')];
+    expect(items).toHaveLength(42);
+    expect(items[20].tagName).toBe('APP-DISCOVERY-CARD');
+    expect(items[41].tagName).toBe('APP-DISCOVERY-CARD');
+    expect(items[20].textContent).toContain('Starter packs');
+    expect(items[41].textContent).toContain('Collections');
+    items[20].querySelector<HTMLButtonElement>('button')!.click();
+    fixture.detectChanges();
+    expect(root.querySelectorAll('app-discovery-card')).toHaveLength(1);
+    expect(root.querySelector('app-discovery-card')?.textContent).toContain('Collections');
+    internals(fixture).statuses.update((posts) => [
+      ...posts,
+      ...Array.from({ length: 20 }, (_, i) => makeStatus(`more-${i}`)),
+    ]);
+    fixture.detectChanges();
+    expect(root.querySelectorAll('app-discovery-card')).toHaveLength(2);
+    expect(
+      [...root.querySelectorAll('app-discovery-card')].map((card) =>
+        card.querySelector('h2')?.textContent?.trim(),
+      ),
+    ).toEqual(['Collections', 'Invite your friends']);
+    expect(internals(fixture).statuses()).toHaveLength(60);
+    httpMock.expectNone((request) => request.url.includes('search'));
+  });
+
+  it('does not insert discovery cards into a short feed or the Media layout', () => {
+    const fixture = setUp();
+    internals(fixture).statuses.set(Array.from({ length: 19 }, (_, i) => makeStatus(String(i))));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-discovery-card')).toBeNull();
+    internals(fixture).statuses.set(Array.from({ length: 40 }, (_, i) => makeStatus(String(i))));
+    internals(fixture).view.set('media');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-discovery-card')).toBeNull();
+  });
+
+  it('checks hashtags once before hiding tools for a signed-in user with no sources', () => {
+    TestBed.inject(Auth).account.set({ ...makeStatus('self').account, following_count: 0 });
+    const fixture = setUp();
+    fixture.detectChanges();
+    const check = httpMock.expectOne('/api/v1/followed_tags?limit=1');
+    expect(check.request.context.get(SERVER_ROLE)).toBe('background');
+    check.flush([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-command-bar')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.home-empty')).not.toBeNull();
+    fixture.detectChanges();
+    httpMock.expectNone((request) => request.url === '/api/v1/followed_tags');
+    internals(fixture).statuses.set([makeStatus('own-post')]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-command-bar')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.home-empty')).toBeNull();
+  });
+
+  it('keeps tools for quiet followed hashtags and never treats a failed check as no follows', () => {
+    TestBed.inject(Auth).account.set({ ...makeStatus('self').account, following_count: 0 });
+    const fixture = setUp();
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/followed_tags?limit=1').flush([{ name: 'birds' }]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-command-bar')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.home-empty')).toBeNull();
+  });
+
+  it('keeps tools when the followed-source check fails without retrying', () => {
+    TestBed.inject(Auth).account.set({ ...makeStatus('self').account, following_count: 0 });
+    const fixture = setUp();
+    fixture.detectChanges();
+    httpMock
+      .expectOne('/api/v1/followed_tags?limit=1')
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-command-bar')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.home-empty')).toBeNull();
+    httpMock.expectNone((request) => request.url === '/api/v1/followed_tags');
+  });
+
   it('puts the compact presentation filters beside Retweets, Replies, and Today', () => {
     const fixture = setUp();
     fixture.detectChanges();
@@ -1360,10 +1447,13 @@ describe('Home, first run', () => {
 
     // Every control in that bar narrows a feed, and there is nothing to narrow.
     expect(root.querySelector('.home-filters')).toBeNull();
+    expect(root.querySelector('app-command-bar')).toBeNull();
+    expect(root.querySelector('app-reader-toolbar')).toBeNull();
+    expect(root.querySelector('app-pinned-server-feeds')).toBeNull();
 
     const empty = root.querySelector('.home-empty');
     expect(empty).not.toBeNull();
-    expect(empty?.textContent).toContain("you're not following anyone yet");
+    expect(empty?.textContent).toContain('Follow people or topics');
     expect(empty?.querySelector('a')?.getAttribute('href')).toBe('/find-friends');
   });
 
@@ -1375,6 +1465,32 @@ describe('Home, first run', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.home-filters')).not.toBeNull();
     expect((fixture.nativeElement as HTMLElement).querySelector('.home-empty')).toBeNull();
   });
+
+  it('keeps controls available for a followed RSS feed before any posts arrive', () => {
+    const fixture = render();
+    TestBed.inject(RssSubscriptions).add('https://example.test/rss', 'Example');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-command-bar')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.home-empty')).toBeNull();
+  });
+
+  for (const hasFollows of [false, true]) {
+    it(`checks a linked Bluesky account once before showing an empty-source invitation: follows=${hasFollows}`, () => {
+      const fixture = render();
+      const profile = { did: 'did:plc:test', handle: 'test.bsky.social' };
+      const check = vi
+        .spyOn(TestBed.inject(BlueskyApi), 'getFollows')
+        .mockReturnValue(of({ subject: profile, follows: hasFollows ? [profile] : [] }));
+      TestBed.inject(BlueskySession).session.set({ ...profile, service: 'https://bsky.social' });
+      fixture.detectChanges();
+      expect(check).toHaveBeenCalledExactlyOnceWith(profile.did, null, 1);
+      expect(fixture.nativeElement.querySelector('.home-empty') !== null).toBe(!hasFollows);
+      expect(fixture.nativeElement.querySelector('app-command-bar') !== null).toBe(hasFollows);
+      fixture.detectChanges();
+      expect(check).toHaveBeenCalledTimes(1);
+      check.mockRestore();
+    });
+  }
 
   it('reloads the feed when the preview follows are cleared underneath it', () => {
     // The first-run preview follows three accounts so a stranger sees a working

@@ -266,6 +266,36 @@ describe('Search', () => {
    */
   describe('refinement summary', () => {
     for (const type of ['accounts', 'statuses'] as const) {
+      it(`starts ${type} filters collapsed on phones and keeps them manually expandable`, () => {
+        const width = vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(390);
+        try {
+          const fixture = setUp();
+          const state = internals(fixture);
+          state.type.set(type);
+          if (type === 'accounts') {
+            state.accountItems.set([{ account: makeAccount(), matchingPosts: [] }]);
+          } else {
+            state.results.set(makeResults([makeStatus('phone')]));
+          }
+          fixture.detectChanges();
+          const panel = (fixture.nativeElement as HTMLElement).querySelector<HTMLDetailsElement>(
+            '.search-page > .search-form-box',
+          )!;
+          expect(panel.hidden).toBe(false);
+          expect(panel.open).toBe(false);
+          expect(panel.querySelector<HTMLDetailsElement>('.refine-facets')?.open).toBe(false);
+          panel.querySelector<HTMLElement>('summary')!.click();
+          fixture.detectChanges();
+          expect(panel.open).toBe(true);
+          fixture.detectChanges();
+          expect(panel.open).toBe(true);
+        } finally {
+          width.mockRestore();
+        }
+      });
+    }
+
+    for (const type of ['accounts', 'statuses'] as const) {
       it(`shows the ${type} rail only when there are loaded results`, () => {
         const fixture = setUp();
         const state = internals(fixture);

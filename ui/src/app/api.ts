@@ -919,17 +919,24 @@ export class Api {
   followedTagsPage(
     maxId?: string,
     limit = 100,
+    background = false,
   ): Observable<{ tags: Tag[]; nextMaxId: string | null }> {
     let params = new HttpParams().set('limit', String(limit));
     if (maxId) {
       params = params.set('max_id', maxId);
     }
-    return this.http.get<Tag[]>('/api/v1/followed_tags', { params, observe: 'response' }).pipe(
-      map((response) => ({
-        tags: response.body ?? [],
-        nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
-      })),
-    );
+    return this.http
+      .get<Tag[]>('/api/v1/followed_tags', {
+        params,
+        observe: 'response',
+        context: serverRole(background ? 'background' : 'home'),
+      })
+      .pipe(
+        map((response) => ({
+          tags: response.body ?? [],
+          nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
+        })),
+      );
   }
 
   featuredTags(): Observable<FeaturedTag[]> {

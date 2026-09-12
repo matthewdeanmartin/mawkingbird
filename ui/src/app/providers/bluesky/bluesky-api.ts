@@ -297,8 +297,11 @@ export class BlueskyApi {
    * `getFollowers`. Swapping them would mislabel both tabs in a way that looks
    * plausible on screen.
    */
-  getFollows(actor: string, cursor: string | null): Observable<BskyFollows> {
-    return this.publicGet<BskyFollows>('app.bsky.graph.getFollows', peoplePage(actor, cursor));
+  getFollows(actor: string, cursor: string | null, limit = 50): Observable<BskyFollows> {
+    return this.publicGet<BskyFollows>(
+      'app.bsky.graph.getFollows',
+      peoplePage(actor, cursor).set('limit', String(limit)),
+    );
   }
 
   /** Block an actor; returns the block record's at-uri (delete it to unblock). */

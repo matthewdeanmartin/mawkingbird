@@ -936,7 +936,6 @@
     "home.articles.ariaLabel": "Статьи из загруженной ленты",
     "home.articles.empty": "В загруженных постах нет ссылок на статьи.",
     "home.empty.cta": "Найти людей для подписки",
-    "home.empty.lead": "Ваша лента пуста: вы пока ни на кого не подписаны.",
     "home.feedCap.endRule": "—— пока это конец вашей ленты ——",
     "home.feedCap.fromBookmarks": "Из ваших закладок",
     "home.feedCap.message": "На сегодня хватит. Отдохните.",

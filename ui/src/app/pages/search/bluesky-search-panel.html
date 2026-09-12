@@ -2,7 +2,18 @@
      sticky left column holds the form and every refinement control, the right
      column holds results. The page supplies the query box, the selects, Search,
      Advanced, Syntax, the AI helper, Save and Share above this. -->
-<div class="search-form-box" [hidden]="empty() && !advancedOpen()">
+<details class="search-form-box" [hidden]="empty() && !advancedOpen()" [open]="formOpen">
+  <summary class="refine-summary">
+    <span>{{ 'pages.search.refine.summary' | transloco }}</span>
+    @if (activeRefinementCount(); as count) {
+      <span class="refine-active-count">{{
+        (count === 1
+          ? 'pages.search.refine.activeCount.one'
+          : 'pages.search.refine.activeCount.other'
+        ) | transloco: { count }
+      }}</span>
+    }
+  </summary>
   <!-- How many pages to pull eagerly, so faceting has a corpus to work with.
        Same control, same place and same bargain as the Mastodon side — one
        Bluesky request per page for either target, so pages and calls are the
@@ -618,7 +629,7 @@
       }
     </div>
   }
-</div>
+</details>
 
 <div class="search-results-box">
   @if (searching()) {

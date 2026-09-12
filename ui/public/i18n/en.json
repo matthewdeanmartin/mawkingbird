@@ -568,6 +568,18 @@
   "credits": {
     "title": "Credits &amp; Privacy"
   },
+  "discovery": {
+    "card.actions": "Discovery card actions",
+    "card.dismiss": "Dismiss this card",
+    "card.explore": "Explore",
+    "card.heading": "Find more people to follow",
+    "collections.description": "Discover groups of accounts curated by other people.",
+    "collections.title": "Collections",
+    "invites.description": "Bring the people you already enjoy talking with into your feed.",
+    "invites.title": "Invite your friends",
+    "starterPacks.description": "Pick an interest and meet a ready-made group of people to follow.",
+    "starterPacks.title": "Starter packs"
+  },
   "docs": {
     "credits.detail": "The software this client ships, and how it handles data.",
     "credits.title": "Credits &amp; Privacy",
@@ -1446,6 +1458,7 @@
     "faultInjection.title": "Fault injection",
     "findFriends.advancedHeading": "Advanced",
     "findFriends.advancedSub": "Useful once you know who you're looking for, or you're bringing follows from somewhere else.",
+    "findFriends.basic": "Basic",
     "findFriends.contacts.descPicker": "Pick people from your phone's contacts and see who has an account. Distinctive names work best; common ones will need a second look.",
     "findFriends.contacts.descUpload": "Upload a contacts export and see who has an account. Distinctive names work best; common ones will need a second look.",
     "findFriends.contacts.title": "Look for your contacts",
@@ -1465,6 +1478,7 @@
     "findFriends.searchAnything.title": "Search posts for anything else",
     "findFriends.searchByName.desc": "Find accounts by name, bio or the things they post about.",
     "findFriends.searchByName.title": "Search for people by name",
+    "findFriends.sections": "Ways to find people",
     "findFriends.starterKits.desc": "Follow a whole set of accounts at once — the fastest way to get a timeline worth reading. Sets we assembled, and real collections curated by other people.",
     "findFriends.starterKits.title": "Ready-made sets of people",
     "home.allHidden.languagePicker": "The language picker at the top of the feed is what is holding them back.",
@@ -1477,7 +1491,7 @@
     "home.articles.ariaLabel": "Articles from the loaded feed",
     "home.articles.empty": "No article links in the posts currently loaded.",
     "home.empty.cta": "Find people to follow",
-    "home.empty.lead": "Your timeline is empty — you're not following anyone yet.",
+    "home.empty.sourcesLead": "Follow people or topics to start filling your timeline.",
     "home.feedCap.endRule": "—— that’s the end of your feed for now ——",
     "home.feedCap.fromBookmarks": "From your bookmarks",
     "home.feedCap.message": "You’ve had enough for now, bub. Take it easy.",

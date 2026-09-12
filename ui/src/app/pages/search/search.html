@@ -405,13 +405,8 @@
     />
   } @else {
     <div class="search-page" [class.two-box]="twoBox">
-      <!--
-        A `<details>` rather than a signal-driven block, and open by default.
-
-        The controls start visible at every width. Readers can collapse them
-        using the summary; on phones the controls stay above the results.
-      -->
-      <details class="search-form-box" [hidden]="!twoBox && !advancedOpen()" open>
+      <!-- Phones start collapsed; native details preserves the reader’s choice. -->
+      <details class="search-form-box" [hidden]="!twoBox && !advancedOpen()" [open]="formOpen">
         <summary class="refine-summary">
           <span>{{ 'pages.search.refine.summary' | transloco }}</span>
           @if (activeRefinementCount(); as active) {

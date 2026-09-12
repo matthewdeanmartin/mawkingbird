@@ -1,35 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Auth } from '../../auth';
+import { DISCOVERY_WAYS } from '../../discovery-ways';
 import { contactPickerAvailable } from '../settings/import-export/contact-picker';
 
-/**
- * Find Friends: a hub for every route in the app that ends in "…and now you
- * follow someone".
- *
- * Pure navigation, in the same shape as {@link Docs} — a list of rows, each a
- * link with one line saying what it is for. It exists because those routes had
- * spread across the More menu (Starter Kits), Settings (import a follow list),
- * and the search page, with nothing connecting them. Someone new does not know
- * which of those they want; they know they want people to follow.
- *
- * Collapsing them into one entry also bought back a slot in the More menu, which
- * is the practical reason this landed now.
- *
- * Anonymous accounts see a reduced set: importing a follow list and sending
- * invites both need a real account on an instance, so those rows would be dead
- * ends. Search and the people browser work for everyone.
- *
- * ## Ordering
- *
- * Rows are ordered by how well each works for someone who has been here five
- * minutes, and the ones that need prior knowledge sit under an **Advanced**
- * heading. Starter kits lead: they are the only option that needs no name, no
- * typing and no leaving the site. Off-site directories are the clearest case
- * for demotion — following someone found there means reading a handle
- * elsewhere, coming back, and searching for it by hand.
- */
+/** Discovery starts with curated groups; search and import tools are opt-in. */
+// i18n pages.findFriends.basic: Basic
+// i18n pages.findFriends.sections: Ways to find people
 // i18n pages.findFriends.heading: Find Friends
 // i18n pages.findFriends.intro: Every way this app can help you find people to follow, in one place.
 // i18n pages.findFriends.starterKits.title: Ready-made sets of people
@@ -60,7 +37,8 @@ import { contactPickerAvailable } from '../settings/import-export/contact-picker
   styleUrl: './find-friends.css',
 })
 export class FindFriends {
-  protected auth = inject(Auth);
+  protected readonly level = signal<'basic' | 'advanced'>('basic');
+  protected readonly ways = DISCOVERY_WAYS;
 
   /**
    * Whether this device can offer the phone's own contact picker.

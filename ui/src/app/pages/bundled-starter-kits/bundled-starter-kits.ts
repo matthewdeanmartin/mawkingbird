@@ -1,6 +1,8 @@
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, inject, signal } from '@angular/core';
 import { StarterPackTextPipe } from '../../starter-pack-text';
-import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { STARTER_KITS, STARTER_CATALOG_UPDATED_AT, starterKitText } from '../../starter-collection';
 import { SHIPPED_STARTER_KITS } from '../../starter-kits';
 import { KnownLanguages } from '../../trend-language-filter';
@@ -70,11 +72,16 @@ interface DiscoverySet {
  */
 @Component({
   selector: 'app-bundled-starter-kits',
-  imports: [RouterLink, StarterPackTextPipe],
+  imports: [RouterLink, StarterPackTextPipe, TranslocoPipe],
   templateUrl: './bundled-starter-kits.html',
   styleUrl: './bundled-starter-kits.css',
 })
 export class BundledStarterKits {
+  private readonly route = inject(ActivatedRoute);
+  private readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+  protected readonly kind = computed(() => this.queryParams().get('kind'));
   private readonly known = inject(KnownLanguages);
   private readonly locale = inject(UiLocale);
   protected readonly language = signal('known');
@@ -128,10 +135,19 @@ export class BundledStarterKits {
         language === 'all' ||
         (language === 'known' ? this.known.knows(set.lang) : set.lang === language),
     );
-    return sets.filter(
-      (set) =>
-        set.title.toLowerCase().includes(needle) ||
-        (set.blurb ?? '').toLowerCase().includes(needle),
-    );
+    const kind = this.kind();
+    return sets
+      .filter((set) =>
+        kind === 'packs'
+          ? set.key.startsWith('kit:')
+          : kind === 'collections'
+            ? set.key.startsWith('collection:')
+            : true,
+      )
+      .filter(
+        (set) =>
+          set.title.toLowerCase().includes(needle) ||
+          (set.blurb ?? '').toLowerCase().includes(needle),
+      );
   });
 }

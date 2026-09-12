@@ -1,3 +1,4 @@
+import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
   computed,
@@ -654,8 +655,9 @@ export class BlueskySearchPanel {
   // Client-side refinement over what is already loaded. Identical in behaviour
   // to the Mastodon side because it is literally the same functions.
   protected loadedFilter = signal('');
-  /** Facets start open, matching the Mastodon panel's `refineOpen`. */
-  protected refineOpen = signal(true);
+  /** Use the same responsive initial state as Mastodon search. */
+  protected readonly formOpen = searchPanelOpenByDefault();
+  protected refineOpen = signal(searchPanelOpenByDefault());
   protected statusSort = signal<StatusSortKey>('relevance');
   /** None / author / date, the same three the Mastodon panel offers. */
   protected grouping = signal<ResultGrouping>('none');
@@ -974,6 +976,19 @@ export class BlueskySearchPanel {
   protected accountBound(key: keyof BlueskyAccountBounds, end: 'min' | 'max'): number | null {
     return this.accountBounds()[key]?.[end] ?? null;
   }
+
+  protected activeRefinementCount = computed(() =>
+    this.target() === 'accounts'
+      ? this.selectedAccountFacets().length +
+        Object.keys(this.accountBounds()).length +
+        Number(!!this.loadedFilter().trim())
+      : this.selectedFacets().length +
+        this.selectedPostFacets().length +
+        Object.keys(this.engagementBounds()).length +
+        this.excludedAuthors().size +
+        Number(!!this.loadedFilter().trim()) +
+        Number(this.collapseRepeats()),
+  );
 
   /** True when anything is narrowing the loaded results, for the Clear button. */
   protected hasRefinements = computed(

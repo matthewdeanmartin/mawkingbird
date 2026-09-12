@@ -4,6 +4,25 @@
   border-bottom: 1px solid var(--border);
 }
 
+.discovery-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.discovery-tabs button {
+  flex: 1;
+  padding: 14px 16px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.discovery-tabs button.active {
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
 .doc-row {
   display: flex;
   flex-direction: column;

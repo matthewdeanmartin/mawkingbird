@@ -1,114 +1,47 @@
 <div class="page-head">{{ 'pages.findFriends.heading' | transloco }}</div>
-
-<p class="intro muted small">
-  {{ 'pages.findFriends.intro' | transloco }}
-</p>
-
-<!--
-  Ordered by how well each one serves someone in their first five minutes.
-
-  Ready-made sets lead because they are the only option that works with no prior
-  knowledge and no leaving: press one thing, get a working timeline. What used
-  to lead was "Search for people", which asks the visitor to already know a
-  name — and the off-site directories below it are worse on a first run, since
-  finding a handle elsewhere means coming back here and searching for it by
-  hand. That is a fine tool for someone who knows what they are doing and a
-  dead end for someone who does not, so it moved under Advanced.
-
-  This used to be two rows — our starter kits, and snapshots of other people's
-  collections. Both still exist and both are on the page it links to; what is
-  gone is being asked to choose between two words before seeing a single face.
--->
-<a class="doc-row" routerLink="/bundled-starter-kits">
-  <span class="doc-title">{{ 'pages.findFriends.starterKits.title' | transloco }}</span>
-  <span class="muted small">
-    {{ 'pages.findFriends.starterKits.desc' | transloco }}
-  </span>
-</a>
-
-<!--
-  Interest links, not a search box.
-
-  These are ordinary links into /search with the mode preset — no new search UI
-  and no second code path to keep working. Their whole job is to answer "what
-  would I even type", which is the question that stops people at an empty
-  search field.
--->
-<h2 class="ff-heading">{{ 'pages.findFriends.interestsHeading' | transloco }}</h2>
-<p class="muted small ff-sub">
-  {{ 'pages.findFriends.interestsSub' | transloco }}
-</p>
-
-<div class="ff-interests">
-  @for (interest of interests; track interest) {
-    <a class="ff-interest" routerLink="/search" [queryParams]="{ type: 'statuses', q: interest }">
-      {{ interest }}
+<p class="intro muted small">{{ 'pages.findFriends.intro' | transloco }}</p>
+<nav class="discovery-tabs" [attr.aria-label]="'pages.findFriends.sections' | transloco">
+  <button
+    type="button"
+    [class.active]="level() === 'basic'"
+    [attr.aria-pressed]="level() === 'basic'"
+    (click)="level.set('basic')"
+  >
+    {{ 'pages.findFriends.basic' | transloco }}
+  </button>
+  <button
+    type="button"
+    [class.active]="level() === 'advanced'"
+    [attr.aria-pressed]="level() === 'advanced'"
+    (click)="level.set('advanced')"
+  >
+    {{ 'pages.findFriends.advancedHeading' | transloco }}
+  </button>
+</nav>
+@for (way of ways; track way.id) {
+  @if (way.level === level()) {
+    <a class="doc-row" [routerLink]="way.route" [queryParams]="way.query" [fragment]="way.fragment">
+      <span class="doc-title">{{ way.title | transloco }}</span>
+      <span class="muted small">{{
+        (way.id === 'contacts' && canPickContacts
+          ? 'pages.findFriends.contacts.descPicker'
+          : way.description
+        ) | transloco
+      }}</span>
     </a>
   }
-</div>
-
-<a class="doc-row" routerLink="/search" [queryParams]="{ type: 'statuses' }">
-  <span class="doc-title">{{ 'pages.findFriends.searchAnything.title' | transloco }}</span>
-  <span class="muted small">{{ 'pages.findFriends.searchAnything.desc' | transloco }}</span>
-</a>
-
-<!--
-  Everything below needs the visitor to already know a name, or to leave the
-  site and come back with one. Grouped and labelled rather than hidden: it is
-  the right set of tools for someone who knows what they want, and a wall for
-  someone who does not.
--->
-<h2 class="ff-heading">{{ 'pages.findFriends.advancedHeading' | transloco }}</h2>
-<p class="muted small ff-sub">
-  {{ 'pages.findFriends.advancedSub' | transloco }}
-</p>
-
-<a class="doc-row" routerLink="/search">
-  <span class="doc-title">{{ 'pages.findFriends.searchByName.title' | transloco }}</span>
-  <span class="muted small">{{ 'pages.findFriends.searchByName.desc' | transloco }}</span>
-</a>
-
-<a class="doc-row" routerLink="/directory">
-  <span class="doc-title">{{ 'pages.findFriends.profileDirectory.title' | transloco }}</span>
-  <span class="muted small">
-    {{ 'pages.findFriends.profileDirectory.desc' | transloco }}
-  </span>
-</a>
-
-<a class="doc-row" routerLink="/offsite-directories">
-  <span class="doc-title">{{ 'pages.findFriends.offsiteDirectories.title' | transloco }}</span>
-  <span class="muted small">
-    {{ 'pages.findFriends.offsiteDirectories.desc' | transloco }}
-  </span>
-</a>
-
-<!--
-  Not gated on sign-in. Account search works anonymously and anonymous follows
-  are kept in this browser, so contact matching works for a visitor who has just
-  declined to log in — which is precisely the person with an empty timeline and
-  the most to gain from it.
--->
-<a class="doc-row" routerLink="/settings/import-export" fragment="contacts">
-  <span class="doc-title">{{ 'pages.findFriends.contacts.title' | transloco }}</span>
-  <span class="muted small">
-    @if (canPickContacts) {
-      {{ 'pages.findFriends.contacts.descPicker' | transloco }}
-    } @else {
-      {{ 'pages.findFriends.contacts.descUpload' | transloco }}
+}
+@if (level() === 'advanced') {
+  <h2 class="ff-heading">{{ 'pages.findFriends.interestsHeading' | transloco }}</h2>
+  <p class="muted small ff-sub">{{ 'pages.findFriends.interestsSub' | transloco }}</p>
+  <div class="ff-interests">
+    @for (interest of interests; track interest) {
+      <a
+        class="ff-interest"
+        routerLink="/search"
+        [queryParams]="{ type: 'statuses', q: interest }"
+        >{{ interest }}</a
+      >
     }
-  </span>
-</a>
-
-<a class="doc-row" routerLink="/settings/import-export">
-  <span class="doc-title">{{ 'pages.findFriends.importFollowList.title' | transloco }}</span>
-  <span class="muted small">
-    {{ 'pages.findFriends.importFollowList.desc' | transloco }}
-  </span>
-</a>
-
-<a class="doc-row" routerLink="/invites">
-  <span class="doc-title">{{ 'pages.findFriends.invite.title' | transloco }}</span>
-  <span class="muted small">
-    {{ 'pages.findFriends.invite.desc' | transloco }}
-  </span>
-</a>
+  </div>
+}

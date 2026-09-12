@@ -14,11 +14,17 @@ Mastodon badges now subscribe to notification-only and direct-conversation push 
 - Restore a visible, reversible Text-focus toggle alongside Media. Preserve saved preferences.
 - Run targeted specs and the complete `cd ui && make test` gate before review.
 
-## Sprint 2: discovery and empty feeds
+## Sprint 2: discovery and empty feeds — complete, awaiting owner review
+
+Validation: 241 targeted tests passed; the complete `cd ui && make test` run passed all 6,305 runtime tests with zero protected identities missing. Changed-file ESLint, i18n, storage registry, starter catalogue checks, and diff whitespace checks passed. The locale coverage report was regenerated and remained unchanged. The obsolete account-only empty-state sentence was removed from all app dictionaries; new copy uses the normal English fallback where translations are not yet present.
+
+Home inserts a discovery card after each twentieth displayed post, cycling through all nine discovery methods. Each occurrence has its own dismiss action, retained while loading more posts during that Home visit. Cards do not enter the post data or the Media layout and make no discovery requests. Basic discovery links select distinct starter-pack and collection catalogue views through query parameters; existing routes and the combined catalogue still work.
+
+Empty-source detection includes local follows, hashtags, RSS/paste feeds, connected providers, and actual loaded posts. Only an otherwise empty feed may trigger one one-item source check per relevant network per Home visit, with no retries or pagination. Failed checks remain unknown and do not trigger the empty-source state. Both Mastodon and Bluesky search initially collapse their complete refinement panels on viewports up to 800px, preserving manual expansion and visible active-filter counts.
 
 - Empty means no followed sources and no feed posts, including accounts, tags, feeds, and future hashtag bundles.
 - Hide the complete feed toolbar in that empty state and prioritize following something.
-- Add feed invitation cards with their own toolbar and a dismiss-this-card action.
+- Add feed invitation cards about once per 20 posts, one variant per discovery method, with their own toolbar and a dismiss-this-card action.
 - Find Accounts: Basic | Advanced. Basic defaults to Starter packs, Collections, Invite your friends, Offsite directories, in that order. Put all search, including canned searches, in Advanced.
 - Search filters initially collapsed on phones and expanded on desktop, with active-filter visibility.
 

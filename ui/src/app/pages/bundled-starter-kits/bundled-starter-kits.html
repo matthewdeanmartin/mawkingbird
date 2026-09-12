@@ -1,5 +1,13 @@
 <section [attr.lang]="copyLanguage()">
-  <div class="page-head">{{ 'bundledStarterKits.title' | packText: copyLanguage() }}</div>
+  <div class="page-head">
+    @if (kind() === 'packs') {
+      {{ 'discovery.starterPacks.title' | transloco }}
+    } @else if (kind() === 'collections') {
+      {{ 'discovery.collections.title' | transloco }}
+    } @else {
+      {{ 'bundledStarterKits.title' | packText: copyLanguage() }}
+    }
+  </div>
 
   <p class="intro muted small">
     {{ 'bundledStarterKits.intro' | packText: copyLanguage() }}

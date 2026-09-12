@@ -17,6 +17,17 @@
   display: block;
 }
 
+.refine-summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  font-weight: 600;
+}
+.refine-active-count {
+  margin-inline-start: 8px;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
 :host(.two-box) {
   display: grid;
   grid-template-columns: 360px minmax(0, 1fr);

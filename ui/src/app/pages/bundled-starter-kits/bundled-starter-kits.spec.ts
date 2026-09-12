@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { STARTER_COLLECTION, STARTER_KITS } from '../../starter-collection';
 import { SHIPPED_STARTER_KITS } from '../../starter-kits';
@@ -46,6 +46,26 @@ describe('BundledStarterKits', () => {
       STARTER_KITS.filter((kit) => !kit.lang || TestBed.inject(KnownLanguages).knows(kit.lang))
         .length + SHIPPED_STARTER_KITS.length,
     );
+  });
+
+  it('offers distinct starter-pack and collection destinations without changing existing routes', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigate([], { queryParams: { kind: 'packs' } });
+    fixture.detectChanges();
+    expect(el().querySelector('.page-head')?.textContent).toContain('Starter packs');
+    expect(el().querySelectorAll('.kit-row')).toHaveLength(
+      STARTER_KITS.filter((kit) => !kit.lang || TestBed.inject(KnownLanguages).knows(kit.lang))
+        .length,
+    );
+    expect(
+      [...el().querySelectorAll('.kit-row')].every((row) =>
+        row.getAttribute('href')?.startsWith('/collections/starter'),
+      ),
+    ).toBe(true);
+    await router.navigate([], { queryParams: { kind: 'collections' } });
+    fixture.detectChanges();
+    expect(el().querySelector('.page-head')?.textContent).toContain('Collections');
+    expect(el().querySelectorAll('.kit-row')).toHaveLength(SHIPPED_STARTER_KITS.length);
   });
 
   /**

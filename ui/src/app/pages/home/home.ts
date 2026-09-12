@@ -35,6 +35,8 @@ import {
 import { AnonymousBookmarks } from '../../providers/anonymous/anonymous-bookmarks';
 import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-mastodon-provider';
 import { TwitterProvider } from '../../providers/twitter/twitter-provider';
+import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { AnonymousHomeFeedCache } from '../../providers/anonymous/anonymous-home-feed-cache';
 import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
 import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
@@ -51,6 +53,8 @@ import { ProfileMediaGrid } from '../profile/media/profile-media-grid';
 import { ProfilePhotoView } from '../profile/media/profile-photo-view';
 import { buildMediaItems, ProfileMediaItem } from '../profile/media/profile-media-item';
 import { PreviewCardComponent } from '../../preview-card/preview-card';
+import { DiscoveryCard } from '../../discovery-card/discovery-card';
+import { discoveryCardAfter } from '../../discovery-ways';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 
 /** Below this many follows, nudge toward /find-friends (few follows = empty-feeling feed). */
@@ -90,7 +94,7 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.articles.empty: No article links in the posts currently loaded.
 // i18n pages.home.loading.preparingServer: Preparing Just My Server…
 // i18n pages.home.loading.generic: Loading…
-// i18n pages.home.empty.lead: Your timeline is empty — you're not following anyone yet.
+// i18n pages.home.empty.sourcesLead: Follow people or topics to start filling your timeline.
 // i18n pages.home.empty.cta: Find people to follow
 // i18n pages.home.allHidden.loaded.one: {{count}} post loaded, and your filters are hiding it.
 // i18n pages.home.allHidden.loaded.other: {{count}} posts loaded, and your filters are hiding them all.
@@ -132,6 +136,7 @@ const ARTICLE_TARGET = 10;
   selector: 'app-home',
   imports: [
     FormsModule,
+    DiscoveryCard,
     CommandBar,
     Compose,
     StatusCard,
@@ -206,6 +211,8 @@ export class Home implements OnInit, OnDestroy {
     ),
   );
   private registry = inject(ProviderRegistry);
+  private bsky = inject(BlueskySession);
+  private bskyApi = inject(BlueskyApi);
   private server = inject(Server);
   private anonymousCorpus = inject(AnonymousFeedCorpus);
   private anonymousBookmarks = inject(AnonymousBookmarks);
@@ -679,6 +686,8 @@ export class Home implements OnInit, OnDestroy {
     this.liveSub?.unsubscribe();
     this.pageSub?.unsubscribe();
     this.bookmarkSub?.unsubscribe();
+    this.tagCheck?.unsubscribe();
+    this.bskyFollowCheck?.unsubscribe();
     if (this.clock) {
       clearInterval(this.clock);
     }
@@ -1243,32 +1252,76 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * True when an anonymous visitor has chosen nothing at all.
-   *
-   * Drives hiding the filter bar. Every control in it — retweets, replies, calm
-   * mode, images, the date window, the language picker — narrows a feed, and
-   * narrowing nothing is nothing. On a first run that bar is a row of six
-   * controls above an empty column, none of which can do anything, and the one
-   * thing the visitor actually needs is a single link to go find someone.
-   *
-   * Deliberately anonymous-only. A signed-in account with a quiet timeline still
-   * has real follows, and its filters still mean something the moment a post
-   * arrives; hiding them there would be hiding working controls over a temporary
-   * emptiness.
-   *
-   * Checks the same three sources as {@link anonymousSourceKey}, plus Eliza —
-   * she is browser-local and so never appears in that key, but following her
-   * fills the timeline with her posts, and an empty state above a feed full of
-   * posts would be plainly wrong.
-   */
-  protected readonly nothingFollowed = computed(
+  private readonly dismissedDiscoverySlots = signal<ReadonlySet<number>>(new Set());
+
+  protected discoveryAfter(index: number) {
+    return this.dismissedDiscoverySlots().has(index) ? null : discoveryCardAfter(index);
+  }
+
+  protected dismissDiscovery(index: number): void {
+    this.dismissedDiscoverySlots.update((slots) => new Set([...slots, index]));
+  }
+
+  private readonly noLocalSources = computed(
     () =>
-      this.auth.isAnonymous &&
       this.anonymousFollows.follows().length === 0 &&
       this.anonymousTags.tags().length === 0 &&
       this.pasteFeeds.enabledFeeds().length === 0 &&
+      this.registry.all.every((provider) => provider.id === 'bluesky' || !provider.linked()) &&
       !this.eliza.following(),
+  );
+
+  private readonly noLoadedPosts = computed(
+    () => this.statuses().length === 0 && this.localPosts.posts().length === 0,
+  );
+  private readonly serverHasTags = signal<boolean | null>(null);
+  private tagsChecked = false;
+  private tagCheck: Subscription | null = null;
+  private readonly bskyHasFollows = signal<boolean | null>(null);
+  private bskyChecked = false;
+  private bskyFollowCheck: Subscription | null = null;
+
+  // One bounded check only for an empty account-based feed. A failed check is
+  // unknown, never proof that the user follows nothing. No paging or polling.
+  private readonly checkEmptySources = effect(() => {
+    if (this.loading() || !this.noLocalSources() || !this.noLoadedPosts()) return;
+    if (
+      !this.auth.isAnonymous &&
+      !this.auth.isBlueskyPrimary &&
+      this.auth.account()?.following_count === 0 &&
+      !this.tagsChecked
+    ) {
+      this.tagsChecked = true;
+      this.tagCheck = this.api.followedTagsPage(undefined, 1, true).subscribe({
+        next: (page) => this.serverHasTags.set(page.tags.length > 0),
+        error: () => {
+          /* Keep source state unknown until the next visit. */
+        },
+      });
+    }
+    const session = this.bsky.session();
+    if (session && !this.bskyChecked) {
+      this.bskyChecked = true;
+      this.bskyFollowCheck = this.bskyApi.getFollows(session.did, null, 1).subscribe({
+        next: (page) => this.bskyHasFollows.set(page.follows.length > 0),
+        error: () => {
+          /* Keep source state unknown until the next visit. */
+        },
+      });
+    }
+  });
+
+  /** A quiet or filtered feed is different from having no followed sources. */
+  protected readonly nothingFollowed = computed(
+    () =>
+      this.noLoadedPosts() &&
+      this.noLocalSources() &&
+      (!this.bsky.session() || this.bskyHasFollows() === false) &&
+      (this.auth.isAnonymous ||
+        this.auth.isBlueskyPrimary ||
+        (!this.auth.isBlueskyPrimary &&
+          this.auth.account()?.following_count === 0 &&
+          this.serverHasTags() === false)),
   );
 
   private anonymousSourceKey(): string {

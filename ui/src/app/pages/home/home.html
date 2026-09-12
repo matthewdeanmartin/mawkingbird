@@ -1,3 +1,10 @@
+@if (nothingFollowed()) {
+  <div class="home-empty">
+    <p class="home-empty-lead">{{ 'pages.home.empty.sourcesLead' | transloco }}</p>
+    <a class="btn" routerLink="/find-friends">{{ 'pages.home.empty.cta' | transloco }}</a>
+  </div>
+}
+
 @if (writingError()) {
   <p role="alert">{{ 'drafts.saveFailed' | transloco }}</p>
 }
@@ -6,7 +13,7 @@
   <app-announcements />
 }
 
-@if (showFollowNudge()) {
+@if (showFollowNudge() && !nothingFollowed()) {
   <aside class="follow-nudge">
     <div class="nudge-copy">
       <strong>{{ 'pages.home.nudge.title' | transloco }}</strong>
@@ -87,89 +94,93 @@
   <app-local-compose (posted)="onLocalPosted()" />
 }
 
-<app-command-bar
-  [providerChips]="!justMyServer.effectiveEnabled()"
-  [showImages]="true"
-  [showReaderControls]="false"
-  [showRefresh]="!live()"
-  [showFeedViews]="true"
-  [showFeedDoctor]="true"
-  [view]="view()"
-  (refresh)="load(true)"
-  (providerVisibilityChanged)="load()"
-  (viewChange)="setView($event)"
->
-</app-command-bar>
+@if (!nothingFollowed()) {
+  <app-command-bar
+    [providerChips]="!justMyServer.effectiveEnabled()"
+    [showImages]="true"
+    [showReaderControls]="false"
+    [showRefresh]="!live()"
+    [showFeedViews]="true"
+    [showFeedDoctor]="true"
+    [view]="view()"
+    (refresh)="load(true)"
+    (providerVisibilityChanged)="load()"
+    (viewChange)="setView($event)"
+  >
+  </app-command-bar>
 
-<!-- Was a lone "Local Feed" link projected into the command bar above, which
+  <!-- Was a lone "Local Feed" link projected into the command bar above, which
      lacked the bar's `command-item` class and so shrank and scrolled out of
      sight under the right rail. Now a row of its own, with the server's other
      feeds alongside it. -->
-@if (justMyServer.effectiveEnabled()) {
-  <app-pinned-server-feeds />
-}
+  @if (justMyServer.effectiveEnabled()) {
+    <app-pinned-server-feeds />
+  }
 
-<!-- FILTER: content narrowing for every presentation above. Like WHAT and HOW,
+  <!-- FILTER: content narrowing for every presentation above. Like WHAT and HOW,
      this name stays in source rather than becoming another visible label. -->
-@if (!nothingFollowed()) {
-  <div
-    class="home-filters"
-    role="group"
-    [attr.aria-label]="'pages.home.filters.ariaLabel' | transloco"
-  >
-    <button
-      type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="showBoosts()"
-      [attr.aria-pressed]="showBoosts()"
-      (click)="toggleBoosts()"
+  @if (!nothingFollowed()) {
+    <div
+      class="home-filters"
+      role="group"
+      [attr.aria-label]="'pages.home.filters.ariaLabel' | transloco"
     >
-      🔁 {{ 'pages.home.filters.retweets' | transloco }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="showReplies()"
-      [attr.aria-pressed]="showReplies()"
-      (click)="toggleReplies()"
-    >
-      💬 {{ 'pages.home.filters.replies' | transloco }}
-    </button>
-    <label class="home-window">
-      📅
-      <select
-        [ngModel]="prefs.homeWindow()"
-        (ngModelChange)="setHomeWindow($event)"
-        [attr.aria-label]="'pages.home.filters.windowAriaLabel' | transloco"
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        [class.active]="showBoosts()"
+        [attr.aria-pressed]="showBoosts()"
+        (click)="toggleBoosts()"
       >
-        <option value="today">{{ 'pages.home.filters.window.today' | transloco }}</option>
-        <option value="week">{{ 'pages.home.filters.window.week' | transloco }}</option>
-        <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
-      </select>
-    </label>
-    <button
-      type="button"
-      class="btn btn-outline btn-sm feed-filter"
-      [class.active]="prefs.algoCalm()"
-      [attr.aria-pressed]="prefs.algoCalm()"
-      (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
-      [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
-    >
-      😌 {{ 'pages.home.filters.calm.label' | transloco }}
-    </button>
-    <app-feed-language-picker />
-  </div>
-}
+        🔁 {{ 'pages.home.filters.retweets' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        [class.active]="showReplies()"
+        [attr.aria-pressed]="showReplies()"
+        (click)="toggleReplies()"
+      >
+        💬 {{ 'pages.home.filters.replies' | transloco }}
+      </button>
+      <label class="home-window">
+        📅
+        <select
+          [ngModel]="prefs.homeWindow()"
+          (ngModelChange)="setHomeWindow($event)"
+          [attr.aria-label]="'pages.home.filters.windowAriaLabel' | transloco"
+        >
+          <option value="today">{{ 'pages.home.filters.window.today' | transloco }}</option>
+          <option value="week">{{ 'pages.home.filters.window.week' | transloco }}</option>
+          <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
+        </select>
+      </label>
+      <button
+        type="button"
+        class="btn btn-outline btn-sm feed-filter"
+        [class.active]="prefs.algoCalm()"
+        [attr.aria-pressed]="prefs.algoCalm()"
+        (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
+        [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
+      >
+        😌 {{ 'pages.home.filters.calm.label' | transloco }}
+      </button>
+      <app-feed-language-picker />
+    </div>
+  }
 
-<!-- READER: the full long-form control set gets its own fourth row. Keeping it
+  <!-- READER: the full long-form control set gets its own fourth row. Keeping it
      out of HOW prevents these controls from starting beyond the visible edge. -->
-@if (prefs.feedReader()) {
-  <app-reader-toolbar />
+  @if (prefs.feedReader()) {
+    <app-reader-toolbar />
+  }
 }
 
 <!-- Members and Analytics are views *of the loaded feed*, so they replace the
      timeline rather than navigating away — the command bar toggles back. -->
-@if (view() === 'members') {
+@if (nothingFollowed()) {
+  <!-- The invitation is above all other Home content. -->
+} @else if (view() === 'members') {
   <app-feed-members [source]="feedSource()" />
 } @else if (view() === 'analytics') {
   <app-feed-analytics [source]="feedSource()" />
@@ -227,11 +238,7 @@
        Rule for this region: nothing above the list may appear or resize after
        first paint. Anything reactive goes below the list. -->
 
-  <!-- The feed used to seed itself with an Eliza invite, the universal starter
-       kit, and every shipped starter-kit post whenever the timeline was thin.
-       Well meant, but it put the same handful of collections in front of the
-       same person on every fresh browser, forever. One link to the hub is the
-       better trade: ten ways to jump-start a feed, chosen rather than served. -->
+  <!-- Discovery invitations follow every twentieth displayed post. -->
   @if (loading()) {
     <p class="muted center">
       {{
@@ -241,20 +248,6 @@
         ) | transloco
       }}
     </p>
-  } @else if (nothingFollowed()) {
-    <!--
-      The first-run destination, once the preview posts are gone.
-
-      One heading and one button, because at this moment the visitor has
-      exactly one useful move and every additional choice competes with it.
-      Kept distinct from the empty state below: "you have not followed anyone
-      yet" and "the people you follow have not posted" are different facts and
-      want different answers.
-    -->
-    <div class="home-empty">
-      <p class="home-empty-lead">{{ 'pages.home.empty.lead' | transloco }}</p>
-      <a class="btn" routerLink="/find-friends">{{ 'pages.home.empty.cta' | transloco }}</a>
-    </div>
   } @else if (!visible().length && allHiddenByFilters()) {
     <!-- Posts arrived and the filters hid every one of them. "Find friends to
          follow" is the worst possible answer here: it blames the reader's
@@ -289,13 +282,16 @@
       <a routerLink="/find-friends">{{ 'pages.home.noneVisible.findFriends' | transloco }}</a>
     </p>
   } @else {
-    @for (s of visible(); track s.id) {
+    @for (s of visible(); track s.id; let index = $index) {
       <app-status-card
         [status]="s"
         (changed)="onChanged(s, $event)"
         (deleted)="onDeleted($event)"
         (replied)="onPosted($event)"
       />
+      @if (discoveryAfter(index); as way) {
+        <app-discovery-card [way]="way" (dismissed)="dismissDiscovery(index)" />
+      }
     }
 
     <!-- Bookmarks the reader asked for, below the feed and above the buttons.

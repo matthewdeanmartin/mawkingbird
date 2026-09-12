@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status } from '../../models';
 import { BlueskySearchPanel } from './bluesky-search-panel';
 import { BlueskySearch, BlueskySearchPage } from '../../providers/bluesky/bluesky-search';
@@ -230,6 +230,36 @@ describe('BlueskySearchPanel', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it('collapses the complete phone filter panel while preserving access to active filters', () => {
+    const width = vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(390);
+    try {
+      const fixture = setUp();
+      fixture.componentRef.setInput('advancedOpen', true);
+      fixture.detectChanges();
+      const panel = (fixture.nativeElement as HTMLElement).querySelector<HTMLDetailsElement>(
+        'details.search-form-box',
+      )!;
+      expect(panel.hidden).toBe(false);
+      expect(panel.open).toBe(false);
+      internals(fixture).loadedFilter.set('birds');
+      fixture.detectChanges();
+      expect(panel.querySelector('summary')?.textContent).toContain('1 filter');
+      panel.querySelector<HTMLElement>('summary')!.click();
+      fixture.detectChanges();
+      expect(panel.open).toBe(true);
+    } finally {
+      width.mockRestore();
+    }
+  });
+
+  it('starts the complete desktop filter panel expanded', () => {
+    const fixture = setUp();
+    const panel = (fixture.nativeElement as HTMLElement).querySelector<HTMLDetailsElement>(
+      'details.search-form-box',
+    )!;
+    expect(panel.open).toBe(true);
+  });
 
   /** One page of N posts, with a cursor unless it is the last. */
   function page(ids: string[], cursor: string | null, acct?: string): BlueskySearchPage {

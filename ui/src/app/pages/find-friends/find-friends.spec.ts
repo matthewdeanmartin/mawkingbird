@@ -44,41 +44,62 @@ describe('FindFriends', () => {
     anonymous = true;
   });
 
+  function advanced(fixture: ComponentFixture<FindFriends>): ComponentFixture<FindFriends> {
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (el) => el.textContent?.trim() === 'Advanced',
+    )!;
+    button.click();
+    fixture.detectChanges();
+    return fixture;
+  }
+
   it('leads with ready-made sets, not with search', () => {
-    // Ready-made sets are the only option that works with no name in mind and
-    // no leaving the site. "Search for people" led before, which asks a
-    // brand-new visitor to already know who they are looking for.
-    //
-    // One row, not two: our starter kits and snapshots of other people's
-    // collections list together on the page this links to. The distinction is
-    // real but it is ours, and it was being put to a newcomer before they had
-    // seen a single face.
-    expect(rowTitles(setUp())[0]).toBe('Ready-made sets of people');
+    const fixture = setUp();
+    expect(rowTitles(fixture)).toEqual([
+      'Starter packs',
+      'Collections',
+      'Invite your friends',
+      'Offsite directories',
+    ]);
+    const links = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.doc-row')].map(
+      (el) => el.getAttribute('href'),
+    );
+    expect(links).toEqual([
+      '/bundled-starter-kits?kind=packs',
+      '/bundled-starter-kits?kind=collections',
+      '/invites',
+      '/offsite-directories',
+    ]);
   });
 
   it('puts everything needing prior knowledge under Advanced', () => {
     const fixture = setUp();
-    const headings = [
-      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.ff-heading'),
-    ].map((el) => el.textContent?.trim());
-    expect(headings).toContain('Advanced');
-
-    // Off-site directories are the clearest case: following someone found there
-    // means reading a handle elsewhere, coming back, and searching by hand.
-    const titles = rowTitles(fixture);
-    const advancedStart = titles.indexOf('Search for people by name');
-    expect(advancedStart).toBeGreaterThan(0);
-    expect(titles.indexOf('Offsite directories')).toBeGreaterThan(advancedStart);
-    // ...and starter kits stay above all of it.
-    expect(titles.indexOf('Starter kits')).toBeLessThan(advancedStart);
+    expect((fixture.nativeElement as HTMLElement).querySelector('.ff-interests')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('a[href^="/search"]')).toBeNull();
+    advanced(fixture);
+    expect(rowTitles(fixture)).toEqual([
+      'Search for people by name',
+      'Search posts for anything else',
+      'Profile directory',
+      'Look for your contacts',
+      'Import a follow list',
+    ]);
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('.discovery-tabs button.active')
+        ?.textContent?.trim(),
+    ).toBe('Advanced');
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLButtonElement>('.discovery-tabs button')!
+      .click();
+    fixture.detectChanges();
+    expect(rowTitles(fixture)).toHaveLength(4);
+    expect((fixture.nativeElement as HTMLElement).querySelector('.ff-interests')).toBeNull();
   });
 
   it('offers interest links that run a post search', () => {
-    // These answer "what would I even type", which is the question that stops
-    // people at an empty search box. Plain links into /search, so there is no
-    // second search implementation to keep working.
-    const chips = [...(setUp().nativeElement as HTMLElement).querySelectorAll('.ff-interest')];
-
+    const fixture = advanced(setUp());
+    const chips = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.ff-interest')];
     expect(chips.length).toBeGreaterThan(4);
     const href = chips[0]?.getAttribute('href') ?? '';
     expect(href).toContain('/search');
@@ -86,19 +107,14 @@ describe('FindFriends', () => {
   });
 
   it('offers contacts and follow-list import to anonymous visitors too', () => {
-    // These used to be hidden while signed out, on the assumption that both
-    // needed a server account. Neither does: account search works anonymously
-    // and anonymous follows are kept in this browser. Hiding them put the two
-    // tools that build a timeline out of reach of the one person with an empty
-    // one — someone who just chose "continue without logging in".
-    const titles = rowTitles(setUp());
-    expect(titles).toContain('Look for your contacts');
-    expect(titles).toContain('Import a follow list');
+    expect(rowTitles(advanced(setUp()))).toEqual(
+      expect.arrayContaining(['Look for your contacts', 'Import a follow list']),
+    );
   });
 
   it('warns a signed-out visitor that follows stay in this browser', () => {
-    // The honest caveat that makes offering it correct: nothing is written to a
-    // server account, because there is no server account.
-    expect((setUp().nativeElement as HTMLElement).textContent).toContain('kept in this browser');
+    expect((advanced(setUp()).nativeElement as HTMLElement).textContent).toContain(
+      'kept in this browser',
+    );
   });
 });
