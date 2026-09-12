@@ -1,7 +1,9 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DiscoveryWay } from '../discovery-ways';
+import { brandLogoSrc } from '../build-flavor';
+import { ClientPrefs } from '../client-prefs';
 
 // i18n discovery.card.heading: Find more people to follow
 // i18n discovery.card.explore: Explore
@@ -12,7 +14,7 @@ import { DiscoveryWay } from '../discovery-ways';
   imports: [RouterLink, TranslocoPipe],
   template: `
     <aside class="discovery-card" [attr.aria-label]="'discovery.card.heading' | transloco">
-      <img class="avatar" src="/canary_logo_104.png" width="48" height="48" alt="" />
+      <img class="avatar" [src]="logoSrc()" width="48" height="48" alt="" />
       <div class="body">
         <div class="meta">
           <strong>{{ way().title | transloco }}</strong>
@@ -100,6 +102,8 @@ import { DiscoveryWay } from '../discovery-ways';
   `,
 })
 export class DiscoveryCard {
+  private readonly prefs = inject(ClientPrefs);
+  protected readonly logoSrc = computed(() => brandLogoSrc(this.prefs.artStyle()));
   readonly way = input.required<DiscoveryWay>();
   readonly dismissed = output<void>();
 }

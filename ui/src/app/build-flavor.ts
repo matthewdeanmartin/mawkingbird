@@ -81,17 +81,18 @@ export function corsProxyOrigin(baseUri: string = document.baseURI): string {
 }
 
 /**
- * Brand-mark image (104px @2x): the canary logo on canary, else the normal one,
+ * Brand-mark image (104px @2x): the canary logo on canary/test, else the normal one,
  * in whichever illustration set the reader prefers (see {@link ArtStyle}).
  *
  * The two dimensions are independent — canary still has to look like canary
  * whichever art is on — so both files exist for both flavors.
  */
 export function brandLogoSrc(style: ArtStyle = 'hand', baseUri: string = document.baseURI): string {
+  const preview = isCanaryBuild(baseUri) || isTestBuild(baseUri);
   if (style === 'ai') {
-    return isCanaryBuild(baseUri) ? 'canary_logo_104.png' : 'mockigbird_logo_104.png';
+    return preview ? 'canary_logo_104.png' : 'mockigbird_logo_104.png';
   }
-  return isCanaryBuild(baseUri) ? 'canary_hand_104.png' : 'mockingbird_hand_104.png';
+  return preview ? 'canary_hand_104.png' : 'mockingbird_hand_104.png';
 }
 
 /**
