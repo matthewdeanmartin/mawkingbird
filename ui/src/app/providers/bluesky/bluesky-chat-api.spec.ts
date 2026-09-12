@@ -6,6 +6,7 @@ import { BlueskyChatApi } from './bluesky-chat-api';
 import { BlueskySession, BskySession } from './bluesky-session';
 import { BskyConvoList, BskyMessageView } from './bluesky-types';
 import { seedBskySession } from '../../testing/seed-storage';
+import { IndicatorEvents, IndicatorEvent } from '../../indicator-events';
 
 const SERVICE = 'https://bsky.social';
 /** Chat calls go to the account's real PDS, never the entryway (it 501s). */
@@ -73,6 +74,36 @@ describe('BlueskyChatApi', () => {
     // Second call goes straight to the PDS — no directory lookup.
     chat.getLog().subscribe();
     httpMock.expectOne((r) => r.url === `${PDS}/xrpc/chat.bsky.convo.getLog`).flush({ logs: [] });
+  });
+
+  it('shares existing conversation results while excluding muted, read, and outgoing messages', () => {
+    const chat = seed();
+    const observed: IndicatorEvent[] = [];
+    const sub = TestBed.inject(IndicatorEvents).received.subscribe((event) => observed.push(event));
+    httpMock.expectNone((r) => r.url.includes('listConvos'));
+    chat.listConvos().subscribe();
+    const incoming = {
+      id: 'message',
+      sender: { did: 'did:plc:friend' },
+      sentAt: new Date().toISOString(),
+    };
+    httpMock
+      .expectOne((r) => r.url === `${PDS}/xrpc/chat.bsky.convo.listConvos`)
+      .flush({
+        convos: [
+          { id: 'new', unreadCount: 1, lastMessage: incoming },
+          { id: 'muted', unreadCount: 1, muted: true, lastMessage: incoming },
+          { id: 'read', unreadCount: 0, lastMessage: incoming },
+          {
+            id: 'outgoing',
+            unreadCount: 1,
+            lastMessage: { ...incoming, sender: { did: 'did:plc:me' } },
+          },
+        ],
+      });
+    expect(observed.map((event) => event.unread)).toEqual([true, false, false, false]);
+    expect(observed[0].group).toBe('bsky-conversation:did:plc:me:new');
+    sub.unsubscribe();
   });
 
   it('getMessages passes the convoId', () => {

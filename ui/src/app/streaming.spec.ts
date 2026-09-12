@@ -94,6 +94,12 @@ describe('Streaming', () => {
     sub.unsubscribe();
   });
 
+  it('supports notification-only push without subscribing to home posts', async () => {
+    const sub = await open({ stream: 'user:notification' });
+    expect(new URL(lastSocket().url).searchParams.get('stream')).toBe('user:notification');
+    sub.unsubscribe();
+  });
+
   it('discovers the streaming host from /api/v2/instance for real instances', async () => {
     TestBed.inject(Server).setBaseUrl('https://mastodon.social');
     const sub = streaming.open({ stream: 'user' }).subscribe();

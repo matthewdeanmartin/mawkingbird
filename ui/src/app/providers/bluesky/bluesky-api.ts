@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, from, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, from, Observable, of, switchMap, throwError, tap } from 'rxjs';
+import { IndicatorEvents } from '../../indicator-events';
 import { externalFetch } from '../external-fetch';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPostSearch } from './bluesky-post-search';
@@ -123,6 +124,7 @@ function isExpiredToken(err: unknown): boolean {
  */
 @Injectable({ providedIn: 'root' })
 export class BlueskyApi {
+  private indicatorEvents = inject(IndicatorEvents);
   private http = inject(HttpClient);
   private session = inject(BlueskySession);
 
@@ -363,7 +365,21 @@ export class BlueskyApi {
     if (cursor) {
       params = params.set('cursor', cursor);
     }
-    return this.get<BskyNotificationPage>('app.bsky.notification.listNotifications', params);
+    const did = this.session.session()?.did;
+    return this.get<BskyNotificationPage>('app.bsky.notification.listNotifications', params).pipe(
+      tap((page) => {
+        if (!did || did !== this.session.session()?.did) return;
+        for (const row of page.notifications) {
+          this.indicatorEvents.received.next({
+            did,
+            id: `bsky:${did}:${row.uri}:${row.reason}`,
+            lane: row.reason === 'reply' ? 'chat' : 'ordinary',
+            at: row.indexedAt,
+            unread: !row.isRead,
+          });
+        }
+      }),
+    );
   }
 
   /** How many notifications have arrived since `updateSeen`. */

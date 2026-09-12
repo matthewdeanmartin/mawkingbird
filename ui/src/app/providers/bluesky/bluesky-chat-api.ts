@@ -6,6 +6,7 @@ import { BlueskyApi } from './bluesky-api';
 import { detectFacets } from './bluesky-facets';
 import { BlueskySession } from './bluesky-session';
 import { BskyChatLogEntry, BskyConvoList, BskyMessageView } from './bluesky-types';
+import { IndicatorEvents } from '../../indicator-events';
 
 /**
  * Bluesky DMs live on a central chat service, not the PDS: requests go to the
@@ -33,6 +34,7 @@ interface DidDocument {
 /** DM client: `chat.bsky.convo.*` proxied through the linked account's PDS. */
 @Injectable({ providedIn: 'root' })
 export class BlueskyChatApi {
+  private indicatorEvents = inject(IndicatorEvents);
   private http = inject(HttpClient);
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
@@ -42,7 +44,23 @@ export class BlueskyChatApi {
     if (cursor) {
       params = params.set('cursor', cursor);
     }
-    return this.chatGet<BskyConvoList>('chat.bsky.convo.listConvos', params);
+    const did = this.session.session()?.did;
+    return this.chatGet<BskyConvoList>('chat.bsky.convo.listConvos', params).pipe(
+      tap((page) => {
+        if (!did || did !== this.session.session()?.did) return;
+        for (const row of page.convos) {
+          if (!row.lastMessage) continue;
+          this.indicatorEvents.received.next({
+            did,
+            id: `bsky-dm:${did}:${row.id}:${row.lastMessage.id}`,
+            group: `bsky-conversation:${did}:${row.id}`,
+            lane: 'chat',
+            at: row.lastMessage.sentAt,
+            unread: !!row.unreadCount && !row.muted && row.lastMessage.sender.did !== did,
+          });
+        }
+      }),
+    );
   }
 
   /** Newest-first page of messages; callers reverse for chat order. */

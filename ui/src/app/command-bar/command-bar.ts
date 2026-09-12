@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
 import { ProviderId } from '../models';
@@ -7,6 +8,10 @@ import { ProviderRegistry } from '../providers/provider-registry';
 
 /** What the host page is showing in place of its timeline. */
 export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
+
+// i18n commandBar.textFocus.label: Text-focus
+// i18n commandBar.textFocus.turnOff: Turn off text-focus and show images
+// i18n commandBar.textFocus.turnOn: Turn on text-focus: show image icons and alt text
 
 /**
  * The timeline command bar: Go Live (owned by the host page), plus the global
@@ -16,7 +21,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
  */
 @Component({
   selector: 'app-command-bar',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslocoPipe],
   template: `
     <div class="command-bar" role="toolbar" aria-label="Feed controls">
       @if (providerChips() && hasSourceControls()) {
@@ -82,10 +87,14 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           <button
             class="btn command-item"
             [class.active]="imagesHidden()"
+            [attr.aria-pressed]="imagesHidden()"
             (click)="toggleImages()"
-            [title]="imagesHidden() ? 'Show images' : 'Hide images (show 🖼️ chips instead)'"
+            [title]="
+              (imagesHidden() ? 'commandBar.textFocus.turnOff' : 'commandBar.textFocus.turnOn')
+                | transloco
+            "
           >
-            🖼️ {{ imagesHidden() ? 'No images' : 'Images' }}
+            Aa {{ 'commandBar.textFocus.label' | transloco }}
           </button>
         }
         @if (showFeedViews()) {
@@ -258,7 +267,7 @@ export class CommandBar {
   readonly showRefresh = input(false);
   /** Whether this page merges foreign providers (home) — shows the filter chips. */
   readonly providerChips = input(false);
-  /** Images live in Home's compact filter row; other feeds keep them here. */
+  /** Show the text-focus toggle independently of the Media layout. */
   readonly showImages = input(true);
   /** Home owns a fourth, full Reader row; compact feed bars retain these buttons. */
   readonly showReaderControls = input(true);

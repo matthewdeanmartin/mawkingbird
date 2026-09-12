@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BlueskyNotifications, BlueskyNotificationPage } from './bluesky-notifications';
 import { seedBskySession } from '../../testing/seed-storage';
+import { IndicatorEvents, IndicatorEvent } from '../../indicator-events';
 
 const SERVICE = 'https://bsky.social';
 const LIST = `${SERVICE}/xrpc/app.bsky.notification.listNotifications`;
@@ -104,6 +105,27 @@ describe('BlueskyNotifications', () => {
 
     httpMock.expectNone((r) => r.url === GET_POSTS);
     expect(page!.notifications[0].status?.content).toBe('<p>a reply</p>');
+  });
+
+  it('shares read state from the existing request without fetching for indicators', () => {
+    const observed: IndicatorEvent[] = [];
+    const sub = TestBed.inject(IndicatorEvents).received.subscribe((event) => observed.push(event));
+    httpMock.expectNone((r) => r.url === LIST);
+    service.page(null).subscribe();
+    httpMock
+      .expectOne((r) => r.url === LIST)
+      .flush({
+        notifications: [
+          { ...reply('at://x/post/read'), isRead: true },
+          reply('at://x/post/unread'),
+        ],
+      });
+    expect(observed.map((event) => [event.did, event.lane, event.unread])).toEqual([
+      ['did:plc:me', 'chat', false],
+      ['did:plc:me', 'chat', true],
+    ]);
+    httpMock.expectNone((r) => r.url === LIST);
+    sub.unsubscribe();
   });
 
   it('renders rows whose subject getPosts did not return', () => {

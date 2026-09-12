@@ -838,7 +838,7 @@ describe('Home', () => {
     const commandBar = el.querySelector('.command-bar')?.textContent ?? '';
     const filters = el.querySelector('.home-filters')?.textContent ?? '';
 
-    expect(commandBar).not.toContain('Images');
+    expect(commandBar).toContain('Text-focus');
     expect(commandBar).not.toContain('All languages');
     expect(commandBar).not.toContain('Calm');
     expect(filters).toContain('Retweets');

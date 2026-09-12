@@ -13,6 +13,7 @@ export interface StreamEvent {
 
 export type StreamKind =
   | { stream: 'user' }
+  | { stream: 'user:notification' }
   | { stream: 'public'; local?: boolean }
   | { stream: 'hashtag'; tag: string; local?: boolean }
   | { stream: 'list'; list: string }
@@ -160,6 +161,8 @@ export class Streaming {
     switch (kind.stream) {
       case 'user':
         return 'user';
+      case 'user:notification':
+        return 'user:notification';
       case 'public':
         return kind.local ? 'public:local' : 'public';
       case 'hashtag':

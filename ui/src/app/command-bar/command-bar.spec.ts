@@ -44,7 +44,7 @@ describe('CommandBar', () => {
 
     expect(el.textContent).not.toContain('A+');
     const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Images'),
+      b.textContent?.includes('Text-focus'),
     )!;
     imagesBtn.click();
     fixture.detectChanges();
@@ -61,13 +61,13 @@ describe('CommandBar', () => {
     const prefs = TestBed.inject(ClientPrefs);
     const el = fixture.nativeElement as HTMLElement;
 
-    // Reader mode on: images are effectively hidden, button reads "No images".
+    // Reader mode also hides images, so Text-focus is pressed.
     prefs.setFeedReader(true);
     fixture.detectChanges();
     const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('images'),
+      b.textContent?.includes('Text-focus'),
     )!;
-    expect(imagesBtn.textContent).toContain('No images');
+    expect(imagesBtn.getAttribute('aria-pressed')).toBe('true');
     expect(imagesBtn.hasAttribute('disabled')).toBe(false);
 
     // One click brings images back AND leaves reader mode — always recoverable.
@@ -88,6 +88,31 @@ describe('CommandBar', () => {
     el = setUp(true).nativeElement as HTMLElement;
     expect(el.textContent).toContain('🦣 Fedi');
     expect(el.textContent).toContain('📡 RSS');
+  });
+
+  it('keeps text-focus reversible and independent of the Media view', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.detectChanges();
+    const prefs = TestBed.inject(ClientPrefs);
+    const buttons = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')];
+    const textFocus = buttons.find((button) => button.textContent?.includes('Text-focus'))!;
+    const media = buttons.find((button) => button.textContent?.includes('Media'))!;
+    const viewChanged = vi.fn();
+    fixture.componentInstance.viewChange.subscribe(viewChanged);
+    expect(textFocus.getAttribute('aria-pressed')).toBe('false');
+    textFocus.click();
+    fixture.detectChanges();
+    expect(textFocus.getAttribute('aria-pressed')).toBe('true');
+    expect(prefs.showImages()).toBe(false);
+    expect(viewChanged).not.toHaveBeenCalled();
+    textFocus.click();
+    fixture.detectChanges();
+    expect(prefs.showImages()).toBe(true);
+    expect(textFocus.getAttribute('aria-pressed')).toBe('false');
+    media.click();
+    expect(viewChanged).toHaveBeenCalledWith('media');
+    expect(prefs.showImages()).toBe(true);
   });
 
   it('keeps the authenticated Fedi control available when no foreign provider is linked', () => {
