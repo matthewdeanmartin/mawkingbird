@@ -9,6 +9,7 @@ import { provideRouter, Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
+import { Server } from '../server';
 import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
 import { StatusCard } from './status-card';
@@ -625,6 +626,23 @@ describe('StatusCard', () => {
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush([]);
+  });
+
+  it('does not send a foreign private-follow post id to the signed-in home server', () => {
+    TestBed.inject(Server).setBaseUrl('https://home.example');
+    const fixture = setUp(
+      makeStatus({
+        id: 'anonymous-mastodon:other.example:100',
+        provider: 'anonymous-mastodon',
+        privateFollow: true,
+        providerRef: { server: 'https://other.example', statusId: '100', accountId: '7' },
+      }),
+    );
+    fixture.componentInstance.toggleFavourite(fakeEvent());
+    fixture.componentInstance.toggleReblog(fakeEvent());
+    httpMock.expectNone((r) => r.method !== 'GET');
+    const card = fixture.componentInstance as unknown as { caps: { reply: boolean } };
+    expect(card.caps.reply).toBe(false);
   });
 
   it('links Anonymous Mastodon avatars and posts to public in-app routes', () => {

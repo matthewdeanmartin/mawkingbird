@@ -8,6 +8,8 @@ import { Account, Relationship, Status } from '../../models';
 import { Profile } from './profile';
 import { Auth } from '../../auth';
 import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
+import { PrivateFollows } from '../../private-follows';
+import { Pseudonymity } from '../../pseudonymity';
 import { anonymousAccountRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { ClientPrefs } from '../../client-prefs';
 import { RssProvider } from '../../providers/rss/rss-provider';
@@ -102,6 +104,48 @@ describe('Profile block/unblock', () => {
     req.flush({ id: '900', blocking: true } as Relationship);
 
     expect(cmp.relationship().blocking).toBe(true);
+  });
+
+  it('offers private follow in the profile menu without changing the public relationship', () => {
+    const fixture = setUp();
+    localStorage.setItem('mastodon_mock_token', 'profile-test-token');
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const button = Array.from(el.querySelectorAll('.account-danger-panel button')).find(
+      (b) => b.textContent?.trim() === 'Private follow',
+    ) as HTMLButtonElement;
+    expect(button).toBeDefined();
+    const before = (fixture.componentInstance as any).relationship();
+    button.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(PrivateFollows).current()!.count()).toBe(1);
+    expect((fixture.componentInstance as any).relationship()).toEqual(before);
+    expect(button.textContent?.trim()).toBe('Remove private follow');
+    button.click();
+    expect(TestBed.inject(PrivateFollows).current()!.count()).toBe(0);
+    httpMock.expectNone((r) => r.method !== 'GET');
+  });
+
+  it('offers private follow for a Bluesky profile without requiring a Bluesky connection', () => {
+    const fixture = setUp();
+    localStorage.setItem('mastodon_mock_token', 'profile-test-token');
+    TestBed.inject(Pseudonymity).setEnabled(true);
+    (fixture.componentInstance as any).account.set({
+      id: 'bsky:did:plc:other',
+      username: 'other',
+      acct: 'other.bsky.social',
+      fields: [],
+    });
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const button = Array.from(el.querySelectorAll('.account-danger-panel button')).find(
+      (b) => b.textContent?.trim() === 'Private follow',
+    ) as HTMLButtonElement;
+    expect(button).toBeDefined();
+    button.click();
+    expect(TestBed.inject(PrivateFollows).current()!.follows()[0].network).toBe('bluesky');
+    expect(el.textContent).toContain('without following on the network');
+    httpMock.expectNone((r) => r.method !== 'GET');
   });
 
   /**

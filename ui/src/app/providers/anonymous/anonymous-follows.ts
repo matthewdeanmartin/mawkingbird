@@ -150,10 +150,10 @@ function relationship(id: string, following: boolean): Relationship {
   };
 }
 
-function loadState(): AnonymousFollowState {
+function loadState(storageKey: string): AnonymousFollowState {
   try {
     const parsed = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) ?? 'null',
+      localStorage.getItem(storageKey) ?? 'null',
     ) as Partial<AnonymousFollowState> | null;
     // v2 and v3 share a row shape apart from `network`, so v2 is migrated
     // rather than dropped — losing these would silently empty a user's Home.
@@ -193,11 +193,17 @@ function loadState(): AnonymousFollowState {
   }
 }
 
-/** Owns Anonymous Mastodon relationships; no server mutation ever leaves this service. */
-@Injectable({ providedIn: 'root' })
-export class AnonymousFollows {
-  private state = signal(loadState());
-  private homeFeedCache = inject(AnonymousHomeFeedCache);
+/** Shared bounded local relationships. The owning session supplies its storage key. */
+export class LocalFollowStore {
+  private state;
+
+  constructor(
+    private readonly storageKey: string,
+    private readonly invalidate: () => void = () => undefined,
+    private readonly limitMessage = `Anonymous accounts can follow up to ${ANONYMOUS_FOLLOW_LIMIT} accounts.`,
+  ) {
+    this.state = signal(loadState(storageKey));
+  }
 
   readonly follows = computed(() => this.state().follows);
   readonly count = computed(() => this.follows().length);
@@ -266,7 +272,7 @@ export class AnonymousFollows {
       return {
         ok: false,
         relationship: relationship(account.id, false),
-        error: `Anonymous accounts can follow up to ${ANONYMOUS_FOLLOW_LIMIT} accounts.`,
+        error: this.limitMessage,
       };
     }
     // Bluesky: no instance, no RSS fallback, no route backoff to negotiate —
@@ -285,7 +291,7 @@ export class AnonymousFollows {
         readRef: { server: '', accountId: did },
         routeRetryAfter: emptyRetryState(),
       };
-      this.homeFeedCache.invalidate();
+      this.invalidate();
       this.persist([...this.follows(), bskyFollow]);
       return { ok: true, relationship: relationship(account.id, true) };
     }
@@ -303,7 +309,7 @@ export class AnonymousFollows {
       readRef: { server: readServer, accountId: account.id },
       routeRetryAfter: emptyRetryState(),
     };
-    this.homeFeedCache.invalidate();
+    this.invalidate();
     this.persist([...this.follows(), follow]);
     return { ok: true, relationship: relationship(account.id, true) };
   }
@@ -330,18 +336,27 @@ export class AnonymousFollows {
 
   unfollow(account: Account, fallbackServer: string): Relationship {
     const key = keyFor(account, fallbackServer);
-    if (this.follows().some((follow) => follow.key === key)) this.homeFeedCache.invalidate();
+    if (this.follows().some((follow) => follow.key === key)) this.invalidate();
     this.persist(this.follows().filter((follow) => follow.key !== key));
     return relationship(account.id, false);
   }
 
   private persist(follows: AnonymousFollow[]): void {
     const state: AnonymousFollowState = { version: STATE_VERSION, follows };
+    localStorage.setItem(this.storageKey, JSON.stringify(state));
     this.state.set(state);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
   private updateFollow(key: string, update: (follow: AnonymousFollow) => AnonymousFollow): void {
     this.persist(this.follows().map((follow) => (follow.key === key ? update(follow) : follow)));
+  }
+}
+
+/** Preserves the signed-out session's original key and cache invalidation. */
+@Injectable({ providedIn: 'root' })
+export class AnonymousFollows extends LocalFollowStore {
+  constructor() {
+    const cache = inject(AnonymousHomeFeedCache);
+    super(STORAGE_KEY, () => cache.invalidate());
   }
 }

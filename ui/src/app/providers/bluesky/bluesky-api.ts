@@ -148,10 +148,19 @@ export class BlueskyApi {
     actor: string,
     cursor: string | null,
     filter: BskyAuthorFeedFilter = 'posts_and_author_threads',
+    publicOnly = false,
   ): Observable<BskyTimeline> {
     let params = new HttpParams().set('actor', actor).set('limit', '20').set('filter', filter);
     if (cursor) {
       params = params.set('cursor', cursor);
+    }
+    // Private follows must not attach the linked account's credentials. Other
+    // callers retain viewer context through publicGet's authenticated path.
+    if (publicOnly) {
+      return this.http.get<BskyTimeline>(`${PUBLIC_APPVIEW}/xrpc/app.bsky.feed.getAuthorFeed`, {
+        params,
+        context: externalFetch(),
+      });
     }
     // `publicGet`, so this also works with no account at all: the public AppView
     // answers an unauthenticated author feed 200 (measured 2026-08-13). That is

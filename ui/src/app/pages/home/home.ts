@@ -26,6 +26,8 @@ import { HomeTimelineFeed } from '../../home-timeline-feed';
 import { HomeDiagnostics } from '../../home-diagnostics';
 import { FormsModule } from '@angular/forms';
 import { FeedAggregator } from '../../providers/feed-aggregator';
+import { withoutPrivateFollowDuplicates } from '../../providers/private-follow-feeds';
+import { PrivateFollows } from '../../private-follows';
 import { ProviderRegistry } from '../../providers/provider-registry';
 import { Server } from '../../server';
 import {
@@ -182,6 +184,7 @@ export class Home implements OnInit, OnDestroy {
   private homeTimelineFeed = inject(HomeTimelineFeed);
   private diagnostics = inject(HomeDiagnostics);
   private aggregator = inject(FeedAggregator);
+  private privateFollows = inject(PrivateFollows);
   protected justMyServer = inject(JustMyServer);
 
   /**
@@ -405,7 +408,13 @@ export class Home implements OnInit, OnDestroy {
     const serverOnly = this.justMyServer.effectiveEnabled();
     const feed = serverOnly
       ? this.statuses()
-      : this.statuses().filter((s) => this.prefs.isProviderVisible(s.provider ?? 'mastodon'));
+      : this.statuses().filter((s) =>
+          this.prefs.isProviderVisible(
+            s.privateFollow && s.provider === 'anonymous-mastodon'
+              ? 'mastodon'
+              : (s.provider ?? 'mastodon'),
+          ),
+        );
     if (serverOnly) return this.applyTimelineFilters(feed);
     const injected: Status[] = [...this.localPosts.posts()];
     if (this.eliza.following()) {
@@ -1161,7 +1170,7 @@ export class Home implements OnInit, OnDestroy {
   /** Remove the inclusive boundary item some timeline sources repeat on page N+1. */
   private dedupeExact(statuses: Status[]): Status[] {
     const seen = new Set<string>();
-    return statuses.filter((status) => {
+    return withoutPrivateFollowDuplicates(statuses).filter((status) => {
       const key = `${status.provider ?? 'mastodon'}:${status.id}`;
       if (seen.has(key)) return false;
       seen.add(key);
@@ -1330,6 +1339,7 @@ export class Home implements OnInit, OnDestroy {
 
   private readonly noLocalSources = computed(
     () =>
+      (this.privateFollows.current()?.count() ?? 0) === 0 &&
       this.anonymousFollows.follows().length === 0 &&
       this.anonymousTags.tags().length === 0 &&
       this.pasteFeeds.enabledFeeds().length === 0 &&

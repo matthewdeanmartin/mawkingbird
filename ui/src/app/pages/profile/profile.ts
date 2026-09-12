@@ -1,8 +1,14 @@
 import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
+// i18n pages.profile.privateFollow.add: Private follow
+// i18n pages.profile.privateFollow.remove: Remove private follow
+// i18n pages.profile.privateFollow.hint: Adds public posts to Home without following on the network. Kept in this browser only.
+// i18n pages.profile.privateFollow.failed: Could not save this change. Private follows are limited to 50 accounts; check the limit and your browser storage in Pseudonymity settings.
 import { Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Location, NgOptimizedImage } from '@angular/common';
+import { Location, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { PrivateFollows } from '../../private-follows';
+import { Pseudonymity } from '../../pseudonymity';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom, map, of, Subscription, switchMap, tap } from 'rxjs';
@@ -198,6 +204,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    NgTemplateOutlet,
     TranslocoPipe,
     FormsModule,
     RouterLink,
@@ -231,6 +238,46 @@ export class Profile implements OnInit, OnDestroy {
   private anonymous = inject(AnonymousAccount);
   private anonymousPublic = inject(AnonymousPublicApi);
   protected anonymousFollows = inject(AnonymousFollows);
+  protected privateFollows = inject(PrivateFollows);
+  protected pseudonymity = inject(Pseudonymity);
+  protected privateFollowError = signal(false);
+
+  protected canPrivateFollow(): boolean {
+    return (
+      !!this.privateFollows.current() &&
+      !this.isSelf() &&
+      !this.isRss() &&
+      !this.isTwitter() &&
+      !this.isEliza()
+    );
+  }
+
+  protected privatelyFollowing(): boolean {
+    const account = this.account();
+    return (
+      !!account && !!this.privateFollows.current()?.isFollowing(account, this.privateReadServer())
+    );
+  }
+
+  private privateReadServer(): string {
+    return this.publicProfileRef?.server ?? (this.server.baseUrl() || location.origin);
+  }
+
+  protected togglePrivateFollow(): void {
+    const account = this.account();
+    const store = this.privateFollows.current();
+    if (!account || !store || !this.canPrivateFollow()) return;
+    try {
+      if (this.privatelyFollowing()) store.unfollow(account, this.privateReadServer());
+      else if (!store.follow(account, this.privateReadServer()).ok) {
+        this.privateFollowError.set(true);
+        return;
+      }
+      this.privateFollowError.set(false);
+    } catch {
+      this.privateFollowError.set(true);
+    }
+  }
   protected eliza = inject(ElizaService);
   private ai = inject(AiAvailability);
   private openRouter = inject(OpenRouterSession);

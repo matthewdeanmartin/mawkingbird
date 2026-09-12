@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
+import { PrivateFollows } from '../private-follows';
+import { FeatureFlags } from '../feature-flags';
 import { ProviderId } from '../models';
 import { ProviderRegistry } from '../providers/provider-registry';
 
@@ -131,7 +133,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
             <!-- WHAT: networks included in this feed. The label is intentionally a
              code comment rather than visible toolbar furniture. -->
             <div class="provider-group" role="group" aria-label="Feed sources">
-              @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
+              @if ((!auth.isAnonymous && !auth.isBlueskyPrimary) || privateFedi()) {
                 <button
                   class="btn command-item"
                   [class.active]="prefs.isProviderVisible('mastodon')"
@@ -234,16 +236,37 @@ export class CommandBar {
   protected readonly registry = inject(ProviderRegistry);
 
   /** WHAT row in its deliberate network order; utility providers are not feed networks. */
+  private privateFollows = inject(PrivateFollows);
+  private flags = inject(FeatureFlags);
+  protected readonly privateFedi = computed(
+    () =>
+      this.privateFollows
+        .current()
+        ?.follows()
+        .some((follow) => follow.network === 'mastodon') ?? false,
+  );
+
   protected readonly sourceProviders = computed(() => {
     const order = new Map<ProviderId, number>([
       ['bluesky', 0],
       ['rss', 1],
       ['twitter', 2],
     ]);
-    return this.registry
+    const providers: { id: ProviderId; label: string; badge: string }[] = this.registry
       .linked()
       .filter((provider) => order.has(provider.id))
       .sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99));
+    if (
+      !providers.some((provider) => provider.id === 'bluesky') &&
+      this.flags.enabled('connector-bluesky') &&
+      this.privateFollows
+        .current()
+        ?.follows()
+        .some((follow) => follow.network === 'bluesky')
+    ) {
+      providers.unshift({ id: 'bluesky', label: 'Bluesky', badge: '🦋 Bsky' });
+    }
+    return providers;
   });
 
   /** Anonymous Mastodon is the Fedi network too; only the storage id differs. */
@@ -255,6 +278,7 @@ export class CommandBar {
     () =>
       (!this.auth.isAnonymous && !this.auth.isBlueskyPrimary) ||
       this.anonymousFedi() ||
+      this.privateFedi() ||
       this.sourceProviders().length > 0,
   );
 

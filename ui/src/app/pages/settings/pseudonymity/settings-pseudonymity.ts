@@ -5,6 +5,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../../../auth';
 import { ClientLists } from '../../../lists/client-lists';
 import { Pseudonymity } from '../../../pseudonymity';
+import { PrivateFollows } from '../../../private-follows';
+import {
+  AnonymousFollow,
+  ANONYMOUS_FOLLOW_LIMIT,
+} from '../../../providers/anonymous/anonymous-follows';
 
 // i18n settings.pseudonymity.title: Pseudonymity
 // i18n settings.pseudonymity.intro: Reduce accidental links between this account and your personal identity. These settings apply only to this account in this browser.
@@ -18,7 +23,10 @@ import { Pseudonymity } from '../../../pseudonymity';
 // i18n settings.pseudonymity.listHint: Read accounts without publicly following them. While pseudonymity is on, these lists cannot be copied to Mawkingbird Plus. Existing account lists on Plus remain separate.
 // i18n settings.pseudonymity.manageLists: Manage private lists
 // i18n settings.pseudonymity.privateFollows: Private follows
-// i18n settings.pseudonymity.followsPending: Private follows currently work in the signed-out Anonymous account. Support for logged-in accounts and their Home feeds is coming next. Your public follows are unchanged.
+// i18n settings.pseudonymity.followsHint: Use Private follow in a profile's menu to add its public posts to Home. No network follow or notification is sent. These follows stay in this browser and are not synced with Mawkingbird Plus.
+// i18n settings.pseudonymity.followCount: Private follows: {{count}} of {{limit}}
+// i18n settings.pseudonymity.followsEmpty: No private follows yet.
+// i18n settings.pseudonymity.removeFollow: Remove private follow for {{handle}}
 // i18n settings.pseudonymity.privateLikes: Private likes
 // i18n settings.pseudonymity.likesPending: Separate browser-only likes are not available for this account yet. Existing Likes are network actions, not private saves.
 // i18n settings.pseudonymity.saveFailed: This setting could not be saved in your browser. Free some local storage and try again.
@@ -31,6 +39,8 @@ export class SettingsPseudonymity {
   protected auth = inject(Auth);
   protected pseudonymity = inject(Pseudonymity);
   protected lists = inject(ClientLists);
+  protected follows = inject(PrivateFollows);
+  protected followLimit = ANONYMOUS_FOLLOW_LIMIT;
   protected saveFailed = signal(false);
 
   protected setEnabled(enabled: boolean): void {
@@ -39,6 +49,10 @@ export class SettingsPseudonymity {
 
   protected setReminder(reminder: boolean): void {
     this.save(() => this.pseudonymity.setReminder(reminder));
+  }
+
+  protected removeFollow(follow: AnonymousFollow): void {
+    this.save(() => this.follows.current()?.unfollow(follow.account, follow.readRef.server));
   }
 
   private save(change: () => void): void {

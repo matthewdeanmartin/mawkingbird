@@ -1,3 +1,26 @@
+<ng-template #privateFollowMenu>
+  @if (canPrivateFollow()) {
+    <button
+      type="button"
+      [class.menu-trust]="pseudonymity.enabled()"
+      [attr.aria-pressed]="privatelyFollowing()"
+      (click)="togglePrivateFollow()"
+    >
+      {{
+        (privatelyFollowing()
+          ? 'pages.profile.privateFollow.remove'
+          : 'pages.profile.privateFollow.add'
+        ) | transloco
+      }}
+    </button>
+    @if (pseudonymity.enabled()) {
+      <p class="menu-note muted small">{{ 'pages.profile.privateFollow.hint' | transloco }}</p>
+    }
+    @if (privateFollowError()) {
+      <p class="menu-note" role="alert">{{ 'pages.profile.privateFollow.failed' | transloco }}</p>
+    }
+  }
+</ng-template>
 @if (loading()) {
   <!-- Recovery is a second round trip after a 404, so name it rather than
        leaving the same "Loading…" up for twice as long with no explanation. -->
@@ -123,6 +146,7 @@
                   }}</a>
                   <hr class="menu-rule" />
                 }
+                <ng-container [ngTemplateOutlet]="privateFollowMenu" />
                 <button class="menu-trust" type="button" (click)="toggleTrust()">
                   {{
                     (isTrusted()
@@ -163,6 +187,18 @@
                     ) | transloco
                   }}
                 </button>
+              </div>
+            </details>
+          } @else if (canPrivateFollow()) {
+            <details class="account-danger-menu">
+              <summary
+                class="btn btn-outline"
+                [attr.aria-label]="'pages.profile.actions.moreAccountActions' | transloco"
+              >
+                •••
+              </summary>
+              <div class="account-danger-panel">
+                <ng-container [ngTemplateOutlet]="privateFollowMenu" />
               </div>
             </details>
           }
@@ -255,6 +291,7 @@
               <hr class="menu-rule" />
               <!-- The flipside of the two below: block and mute hide someone,
                    trust stops their own warnings from hiding them from you. -->
+              <ng-container [ngTemplateOutlet]="privateFollowMenu" />
               <button class="menu-trust" type="button" (click)="toggleTrust()">
                 {{
                   (isTrusted()

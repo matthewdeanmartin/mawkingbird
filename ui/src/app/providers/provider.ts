@@ -152,6 +152,8 @@ export function capabilitiesFor(
  * `reset()` then repeated `fetchPage()` until `[]` (exhausted).
  */
 export interface FeedProvider {
+  /** Independent author queues can return newer posts after an older page. */
+  readonly unorderedPages?: boolean;
   readonly id: ProviderId;
   readonly label: string;
   /** Short badge shown on status cards and filter chips, e.g. "📡 RSS". */

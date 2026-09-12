@@ -6,6 +6,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../../auth';
 import { ClientLists } from '../../../lists/client-lists';
 import { Pseudonymity } from '../../../pseudonymity';
+import { PrivateFollows } from '../../../private-follows';
+import { Account } from '../../../models';
 import { SettingsPseudonymity } from './settings-pseudonymity';
 
 describe('SettingsPseudonymity', () => {
@@ -44,5 +46,30 @@ describe('SettingsPseudonymity', () => {
     fixture.detectChanges();
     expect(TestBed.inject(Pseudonymity).enabled()).toBe(true);
     expect(TestBed.inject(Pseudonymity).reminder()).toBe(false);
+  });
+
+  it('manages private follows and updates the limit count without enabling PA', () => {
+    const store = TestBed.inject(PrivateFollows).current()!;
+    store.follow(
+      {
+        id: '12',
+        username: 'pizza',
+        acct: 'pizza@social.example',
+        url: 'https://social.example/@pizza',
+      } as Account,
+      'https://social.example',
+    );
+    const fixture = TestBed.createComponent(SettingsPseudonymity);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.textContent).toContain('Private follows: 1 of 50');
+    const remove = el.querySelector(
+      'button[aria-label="Remove private follow for pizza@social.example"]',
+    ) as HTMLButtonElement;
+    remove.click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Private follows: 0 of 50');
+    expect(store.count()).toBe(0);
+    expect(TestBed.inject(Pseudonymity).enabled()).toBe(false);
   });
 });

@@ -6,13 +6,7 @@
  * shapes and tag it, so the rest of the app renders everything identically.
  */
 export type ProviderId =
-  | 'mastodon'
-  | 'anonymous-mastodon'
-  | 'bluesky'
-  | 'rss'
-  | 'paste'
-  | 'blog'
-  | 'twitter';
+  'mastodon' | 'anonymous-mastodon' | 'bluesky' | 'rss' | 'paste' | 'blog' | 'twitter';
 
 export interface Role {
   id: string;
@@ -132,6 +126,8 @@ export interface PreviewCard {
 }
 
 export interface Status {
+  /** Read from a browser-local follow; never serialized into a published post. */
+  privateFollow?: boolean;
   /** Absent = Mastodon. Foreign statuses use namespaced ids (e.g. "rss:…"). */
   provider?: ProviderId;
   /** Opaque handle the owning provider needs for interactions (uri/cid etc.). */

@@ -5,6 +5,8 @@ import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
+import { PrivateFollows } from '../private-follows';
+import { Account } from '../models';
 import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
@@ -38,6 +40,24 @@ describe('CommandBar', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it('offers a Bluesky source filter for private follows without a linked Bluesky account', () => {
+    TestBed.inject(Auth).setToken('private-reader');
+    TestBed.inject(PrivateFollows)
+      .current()!
+      .follow(
+        { id: 'bsky:did:plc:reader', username: 'reader', acct: 'reader.bsky.social' } as Account,
+        '',
+      );
+    const fixture = setUp(true);
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.provider-group button'),
+    );
+    const bluesky = buttons.filter((button) => button.textContent?.includes('Bsky'));
+    expect(bluesky).toHaveLength(1);
+    (bluesky[0] as HTMLButtonElement).click();
+    expect(TestBed.inject(ClientPrefs).isProviderVisible('bluesky')).toBe(false);
+  });
 
   it('toggles feed reader mode via ClientPrefs (stamped on <html>)', () => {
     const fixture = setUp();

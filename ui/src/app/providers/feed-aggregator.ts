@@ -20,6 +20,8 @@ import { byNewestFirst } from '../status-sort';
 import { MastodonConnector } from './mastodon/mastodon-connector';
 import { FeedProvider } from './provider';
 import { ProviderRegistry } from './provider-registry';
+import { PrivateFollowFeeds, withoutPrivateFollowDuplicates } from './private-follow-feeds';
+import { FeatureFlags } from '../feature-flags';
 
 /** Each active source earns at least this many posts in one loading round. */
 const SOURCE_PAGE_SIZE = 20;
@@ -86,6 +88,8 @@ export class FeedAggregator {
   private registry = inject(ProviderRegistry);
   private connector = inject(MastodonConnector);
   private diagnostics = inject(HomeDiagnostics);
+  private privateFeeds = inject(PrivateFollowFeeds);
+  private flags = inject(FeatureFlags);
 
   private mastodonMaxId: string | undefined;
   private mastodonExhausted = false;
@@ -191,6 +195,12 @@ export class FeedAggregator {
       this.mastodonExhausted = false;
       this.diagnostics.warn('aggregator:all-sources-hidden-fallback');
     }
+    for (const provider of this.privateFeeds.sources()) {
+      if (!this.prefs.isProviderVisible(provider.id)) continue;
+      if (provider.id === 'bluesky' && !this.flags.enabled('connector-bluesky')) continue;
+      provider.reset();
+      this.foreign.push({ provider, exhausted: false });
+    }
     this.diagnostics.info('aggregator:reset', {
       mode: this.auth.mode() ?? 'unauthenticated',
       mastodonVisible: this.prefs.isProviderVisible('mastodon'),
@@ -261,7 +271,7 @@ export class FeedAggregator {
       return of([]);
     }
     return forkJoin(sourcePages).pipe(
-      map((pages) => pages.flat().sort(byNewestFirst)),
+      map((pages) => withoutPrivateFollowDuplicates(pages.flat()).sort(byNewestFirst)),
       tap((items) =>
         this.diagnostics.info('aggregator:round-success', {
           posts: items.length,
@@ -372,7 +382,7 @@ export class FeedAggregator {
         const fresh = items.filter((item) => this.withinWindow(item));
         if (fresh.length < items.length) {
           this.droppedByWindow.update((n) => n + (items.length - fresh.length));
-          source.exhausted = true;
+          if (!source.provider.unorderedPages) source.exhausted = true;
         }
         return this.fetchForeignPage(source, [...collected, ...fresh], deadline);
       }),

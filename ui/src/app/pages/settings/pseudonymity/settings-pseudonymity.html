@@ -46,7 +46,30 @@
   </div>
   <div class="ssection">
     <h2>{{ 'settings.pseudonymity.privateFollows' | transloco }}</h2>
-    <p class="hint">{{ 'settings.pseudonymity.followsPending' | transloco }}</p>
+    <p>
+      {{
+        'settings.pseudonymity.followCount'
+          | transloco: { count: follows.current()?.count() ?? 0, limit: followLimit }
+      }}
+    </p>
+    <p class="hint">{{ 'settings.pseudonymity.followsHint' | transloco }}</p>
+    @for (follow of follows.current()?.follows() ?? []; track follow.key) {
+      <div class="srow">
+        <span class="slabel">{{ follow.handle }}</span>
+        <button
+          class="btn btn-outline"
+          type="button"
+          (click)="removeFollow(follow)"
+          [attr.aria-label]="
+            'settings.pseudonymity.removeFollow' | transloco: { handle: follow.handle }
+          "
+        >
+          {{ 'pages.profile.privateFollow.remove' | transloco }}
+        </button>
+      </div>
+    } @empty {
+      <p class="hint">{{ 'settings.pseudonymity.followsEmpty' | transloco }}</p>
+    }
   </div>
   <div class="ssection">
     <h2>{{ 'settings.pseudonymity.privateLikes' | transloco }}</h2>

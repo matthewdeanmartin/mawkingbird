@@ -837,6 +837,7 @@ export class StatusCard {
   }
 
   protected get canUsePostOwnerActions(): boolean {
+    if (this.privateFollowReadOnly) return false;
     return this.display.provider === 'bluesky'
       ? this.blueskySession.linked()
       : this.capabilities.canUseServerActions;
@@ -1450,7 +1451,22 @@ export class StatusCard {
 
   /** Which interactions this post's network supports (buttons hide per provider). */
   protected get caps(): ProviderCapabilities {
+    if (this.privateFollowReadOnly) return { reply: false, favourite: false, reblog: false };
     return this.capabilities.statusCaps(this.display.provider ?? 'mastodon');
+  }
+
+  /** Public ids from another instance must never become writes against our home server. */
+  private get privateFollowReadOnly(): boolean {
+    if (!this.status().privateFollow || this.display.provider !== 'anonymous-mastodon')
+      return false;
+    try {
+      return (
+        new URL(this.anonymousRef?.server ?? '').origin !==
+        new URL(this.server.baseUrl() || location.origin).origin
+      );
+    } catch {
+      return true;
+    }
   }
 
   /** A browser-local practice post — the viewer's own (`local:`) or one of
