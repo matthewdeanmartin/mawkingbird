@@ -21,6 +21,10 @@ jobs:
     permissions:
       contents: write
       pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
     env:
       CUSTOM_DOMAIN: mawkingbird.com
     steps:
@@ -54,7 +58,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash .github/scripts/publish-gh-pages.sh root ui/dist-mockingbird/browser
-      - name: Request Pages build
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api --method POST repos/matthewdeanmartin/mawkingbird/pages/builds
+      # Production changes the root while preserving the preview subtrees.
+      - name: Check out assembled site
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: gh-pages
+          path: .pages-site
+          persist-credentials: false
+      - name: Verify complete site
+        run: |
+          test -f .pages-site/canary/index.html
+          test -f .pages-site/test/index.html
+          grep --fixed-strings '<base href="/"/>' .pages-site/index.html
+          test "$(cat .pages-site/CNAME)" = "$CUSTOM_DOMAIN"
+      - name: Upload complete Pages site
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: .pages-site
+      - name: Deploy Pages
+        id: pages
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
