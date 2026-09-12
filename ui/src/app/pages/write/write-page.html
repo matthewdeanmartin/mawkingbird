@@ -1,3 +1,6 @@
+@if (pseudonymity.enabled()) {
+  <p class="hint" role="note">{{ 'pseudonymity.postingHint' | transloco }}</p>
+}
 @if (zen.active()) {
   <!-- Writing zen. Everything is gone: the rails, the header, the footer, both
        side panes. What's left is the text and the way out — which stays on

@@ -21,6 +21,8 @@ import { AiTranslate } from '../ai-translate';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
 import { TranslationPreference } from '../translation-preference';
 import { AnonymousBookmarks } from '../providers/anonymous/anonymous-bookmarks';
+import { Pseudonymity } from '../pseudonymity';
+import { PrivateLikes } from '../private-likes';
 import { HugoSettings } from '../providers/hugo/hugo-settings';
 import { PosseQueue } from '../providers/hugo/posse-queue';
 import { seedBskyIdentity, seedBskySession } from '../testing/seed-storage';
@@ -118,6 +120,25 @@ describe('StatusCard', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('keeps private likes in the post menu and out of the toolbar with PA both off and on', () => {
+    localStorage.setItem('mastodon_mock_token', 'private-like-test');
+    const pa = TestBed.inject(Pseudonymity);
+    for (const enabled of [false, true]) {
+      pa.setEnabled(enabled);
+      const fixture = setUp(makeStatus({ url: 'https://social.example/@pizza/1' }));
+      const el = fixture.nativeElement as HTMLElement;
+      const controls = Array.from(el.querySelectorAll('app-private-like-button'));
+      expect(controls).toHaveLength(1);
+      expect(controls[0].closest('.danger-menu-panel')).not.toBeNull();
+      const button = controls[0].querySelector('button')!;
+      button.click();
+      fixture.detectChanges();
+      expect(TestBed.inject(PrivateLikes).current()!.likes()).toHaveLength(enabled ? 0 : 1);
+      httpMock.expectNone((request) => request.method === 'POST');
+      fixture.destroy();
+    }
   });
 
   /** Creates a fixture, sets the required `status` input, and runs the first CD cycle. */

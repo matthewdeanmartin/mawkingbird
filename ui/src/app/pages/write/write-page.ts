@@ -1,3 +1,4 @@
+import { Pseudonymity } from '../../pseudonymity';
 import { PosseQueue } from '../../providers/hugo/posse-queue';
 import {
   Component,
@@ -298,6 +299,7 @@ export interface Notice {
   providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication],
 })
 export class WritePage implements OnInit, OnDestroy {
+  protected pseudonymity = inject(Pseudonymity);
   protected publication = inject(WritePublication);
   private postConfirmation = inject(PostConfirmation);
   protected publishedHere = signal(false);

@@ -5,6 +5,8 @@ const STORAGE_BASE = 'mockingbird_pseudonymity';
 interface PseudonymityState {
   enabled: boolean;
   reminder: boolean;
+  cleanLinks: boolean;
+  cleanMedia: boolean;
 }
 
 /** Local to a social identity. Never included in the global settings sync document. */
@@ -22,22 +24,47 @@ export class Pseudonymity {
 
   setEnabled(enabled: boolean): void {
     const current = this.read();
-    this.write({ enabled, reminder: enabled && !current.enabled ? true : current.reminder });
+    this.write({
+      ...current,
+      enabled,
+      reminder: enabled && !current.enabled ? true : current.reminder,
+    });
   }
 
   setReminder(reminder: boolean): void {
     this.write({ ...this.read(), reminder });
   }
 
+  cleanLinks(): boolean {
+    const state = this.read();
+    return state.enabled && state.cleanLinks;
+  }
+  cleanMedia(): boolean {
+    const state = this.read();
+    return state.enabled && state.cleanMedia;
+  }
+  setCleanLinks(cleanLinks: boolean): void {
+    this.write({ ...this.read(), cleanLinks });
+  }
+  setCleanMedia(cleanMedia: boolean): void {
+    this.write({ ...this.read(), cleanMedia });
+  }
+
   private read(): PseudonymityState {
     this.revision();
     const scope = accountScopeSuffix();
-    if (!scope || scope === ANONYMOUS_SCOPE_SUFFIX) return { enabled: false, reminder: true };
+    if (!scope || scope === ANONYMOUS_SCOPE_SUFFIX)
+      return { enabled: false, reminder: true, cleanLinks: true, cleanMedia: true };
     try {
       const value = JSON.parse(localStorage.getItem(scopedKey(STORAGE_BASE)) ?? 'null');
-      return { enabled: value?.enabled === true, reminder: value?.reminder !== false };
+      return {
+        enabled: value?.enabled === true,
+        reminder: value?.reminder !== false,
+        cleanLinks: value?.cleanLinks !== false,
+        cleanMedia: value?.cleanMedia !== false,
+      };
     } catch {
-      return { enabled: false, reminder: true };
+      return { enabled: false, reminder: true, cleanLinks: true, cleanMedia: true };
     }
   }
 

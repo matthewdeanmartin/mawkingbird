@@ -10,6 +10,7 @@ import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account
 import { PageDiagnostics } from '../../../page-diagnostics';
 import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
 import { prepareImageForBluesky } from '../../../providers/bluesky/bluesky-image';
+import { Pseudonymity } from '../../../pseudonymity';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
 import { BskyBlobRef, BskyProfile } from '../../../providers/bluesky/bluesky-types';
 
@@ -42,6 +43,7 @@ import { BskyBlobRef, BskyProfile } from '../../../providers/bluesky/bluesky-typ
   styleUrl: './settings-profile.css',
 })
 export class SettingsProfile implements OnInit {
+  private pseudonymity = inject(Pseudonymity);
   private api = inject(Api);
   protected auth = inject(Auth);
   protected anonymous = inject(AnonymousAccount);
@@ -208,7 +210,7 @@ export class SettingsProfile implements OnInit {
 
   private async uploadBlueskyImage(file: File | null): Promise<BskyBlobRef | null> {
     if (!file) return null;
-    const prepared = await prepareImageForBluesky(file);
+    const prepared = await prepareImageForBluesky(file, this.pseudonymity.cleanMedia());
     if (!prepared) throw new Error('The selected image could not be prepared for Bluesky.');
     return (await firstValueFrom(this.blueskyApi.uploadBlob(prepared.blob, prepared.mimeType)))
       .blob;

@@ -1,6 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
+import { PrivateMedia } from './private-media';
+import { Pseudonymity } from './pseudonymity';
+import { cleanPostLinks } from './post-link-cleaning';
 import { SearchServer, searchServerRequest } from './search-server';
 import { SERVER_ROLE, serverRole } from './server-role';
 import {
@@ -74,6 +77,8 @@ export interface AccountStatusesOptions {
  */
 @Injectable({ providedIn: 'root' })
 export class Api {
+  private privateMedia = inject(PrivateMedia);
+  private pseudonymity = inject(Pseudonymity);
   private http = inject(HttpClient);
   private trendLangFilter = inject(TrendLanguageFilter);
   private searchServer = inject(SearchServer);
@@ -329,7 +334,9 @@ export class Api {
   ): Observable<Status> {
     // The backend accepts JSON for statuses, including a nested poll object and a
     // media_ids array, so a plain JSON body suffices (no `key[]` form encoding).
-    const body: Record<string, unknown> = { status };
+    const body: Record<string, unknown> = {
+      status: this.pseudonymity.cleanLinks() ? cleanPostLinks(status).text : status,
+    };
     if (options.inReplyToId) {
       body['in_reply_to_id'] = options.inReplyToId;
     }
@@ -380,12 +387,16 @@ export class Api {
 
   // --- media ---
   uploadMedia(file: File, description?: string): Observable<MediaAttachment> {
-    const form = new FormData();
-    form.append('file', file);
-    if (description?.trim()) {
-      form.append('description', description.trim());
-    }
-    return this.http.post<MediaAttachment>('/api/v2/media', form);
+    return this.privateMedia.prepare(file).pipe(
+      switchMap((prepared) => {
+        const form = new FormData();
+        form.append('file', prepared, prepared instanceof File ? prepared.name : 'photo');
+        if (description?.trim()) {
+          form.append('description', description.trim());
+        }
+        return this.http.post<MediaAttachment>('/api/v2/media', form);
+      }),
+    );
   }
 
   updateMedia(id: string, description: string): Observable<MediaAttachment> {
@@ -406,7 +417,9 @@ export class Api {
   }
 
   editStatus(id: string, status: string, spoilerText?: string): Observable<Status> {
-    const body: Record<string, string> = { status };
+    const body: Record<string, string> = {
+      status: this.pseudonymity.cleanLinks() ? cleanPostLinks(status).text : status,
+    };
     if (spoilerText !== undefined) {
       body['spoiler_text'] = spoilerText;
     }

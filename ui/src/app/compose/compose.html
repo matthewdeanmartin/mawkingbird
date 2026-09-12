@@ -1,3 +1,6 @@
+@if (pseudonymity.enabled()) {
+  <p class="hint" role="note">{{ 'pseudonymity.postingHint' | transloco }}</p>
+}
 <div
   class="compose"
   [class.compose-compact]="compact()"

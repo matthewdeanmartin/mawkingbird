@@ -1,3 +1,5 @@
+import { cleanPhoto, photoFromEncodedPixels } from '../../private-media';
+
 /**
  * Fitting a phone photo into Bluesky's blob limit.
  *
@@ -113,9 +115,13 @@ async function encode(
  * silently dropped, because an attachment that vanishes between picking it and
  * posting is the failure this whole feature exists to end.
  */
-export async function prepareImageForBluesky(file: File): Promise<PreparedImage | null> {
+export async function prepareImageForBluesky(
+  file: File,
+  cleanMetadata = false,
+): Promise<PreparedImage | null> {
   let bitmap: ImageBitmap;
   try {
+    if (cleanMetadata) file = await cleanPhoto(file);
     bitmap = await decode(file);
   } catch {
     return null;
@@ -139,7 +145,7 @@ export async function prepareImageForBluesky(file: File): Promise<PreparedImage 
         }
         if (blob.size <= TARGET_BYTES) {
           return {
-            blob,
+            blob: cleanMetadata ? photoFromEncodedPixels(blob) : blob,
             mimeType: 'image/jpeg',
             width: size.width,
             height: size.height,

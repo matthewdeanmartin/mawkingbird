@@ -1,6 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { PrivateLikes } from '../../../private-likes';
+import { Status } from '../../../models';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../../auth';
@@ -11,6 +13,26 @@ import { Account } from '../../../models';
 import { SettingsPseudonymity } from './settings-pseudonymity';
 
 describe('SettingsPseudonymity', () => {
+  it('lists and removes private likes without enabling PA', () => {
+    const likes = TestBed.inject(PrivateLikes).current()!;
+    likes.toggle({
+      id: '1',
+      url: 'https://social.example/1',
+      content: '<p>Pizza</p>',
+      account: { acct: 'pizza' },
+    } as Status);
+    const fixture = TestBed.createComponent(SettingsPseudonymity);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Private likes: 1 of 200');
+    expect(el.querySelector('a[href="https://social.example/1"]')?.textContent).toContain('Pizza');
+    (
+      el.querySelector('button[aria-label="Remove private like for pizza"]') as HTMLButtonElement
+    ).click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('No private likes yet.');
+    expect(likes.likes()).toHaveLength(0);
+  });
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
@@ -19,7 +41,7 @@ describe('SettingsPseudonymity', () => {
     TestBed.inject(Auth).setToken('settings-account');
   });
 
-  it('shows existing private lists and accurately distinguishes unavailable private actions', () => {
+  it('shows existing private collections and browser-only action descriptions', () => {
     TestBed.inject(ClientLists).create('Pizza');
     const fixture = TestBed.createComponent(SettingsPseudonymity);
     fixture.detectChanges();
@@ -27,7 +49,8 @@ describe('SettingsPseudonymity', () => {
     expect(el.textContent).toContain('1 lists in this browser');
     expect(el.textContent).toContain('Private follows');
     expect(el.textContent).toContain('Private likes');
-    expect(el.textContent).toContain('not available for this account yet');
+    expect(el.textContent).toContain('No private likes yet.');
+    expect(el.textContent).toContain('No network like or notification is sent.');
     expect(el.querySelector('a')?.getAttribute('href')).toBe('/feeds?section=client-lists');
     expect(el.querySelector('input[name="pseudonymity-reminder"]')).toBeNull();
   });

@@ -1,3 +1,4 @@
+import { Pseudonymity } from '../pseudonymity';
 import {
   Component,
   computed,
@@ -483,6 +484,7 @@ function dragHasFiles(event: DragEvent): boolean {
   providers: [VisibilityState, LinkShortening],
 })
 export class Compose implements OnDestroy {
+  protected pseudonymity = inject(Pseudonymity);
   private api = inject(Api);
   private server = inject(Server);
   private transloco = inject(TranslocoService);
@@ -1745,7 +1747,14 @@ export class Compose implements OnDestroy {
           this.media.update((list) => [...list, { media, description: '', file }]);
           this.settleUpload();
         },
-        error: () => this.settleUpload(),
+        error: (error: unknown) => {
+          this.mediaNotice.set(
+            error instanceof Error
+              ? error.message
+              : this.transloco.translate('pseudonymity.mediaFailed'),
+          );
+          this.settleUpload();
+        },
       });
     }
   }
@@ -2642,7 +2651,7 @@ export class Compose implements OnDestroy {
   private async uploadBskyImages(items: PendingMedia[]): Promise<BskyImagesEmbed | null> {
     const images: BskyImagesEmbed['images'] = [];
     for (const item of items) {
-      const prepared = await prepareImageForBluesky(item.file!);
+      const prepared = await prepareImageForBluesky(item.file!, this.pseudonymity.cleanMedia());
       if (!prepared) {
         return null;
       }

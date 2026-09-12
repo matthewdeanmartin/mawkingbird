@@ -10,6 +10,27 @@ import {
 } from './providers/bluesky/bluesky-identity-store';
 
 describe('Pseudonymity', () => {
+  it('defaults cleaning on in PA and persists separate opt-outs without affecting normal accounts', () => {
+    const settings = TestBed.inject(Pseudonymity);
+    expect(settings.cleanLinks()).toBe(false);
+    expect(settings.cleanMedia()).toBe(false);
+    settings.setEnabled(true);
+    expect(settings.cleanLinks()).toBe(true);
+    expect(settings.cleanMedia()).toBe(true);
+    settings.setCleanLinks(false);
+    settings.setCleanMedia(false);
+    settings.setReminder(false);
+    settings.setEnabled(false);
+    settings.setEnabled(true);
+    expect(settings.cleanLinks()).toBe(false);
+    expect(settings.cleanMedia()).toBe(false);
+    expect(settings.reminder()).toBe(true);
+    localStorage.setItem('mastodon_mock_token', 'another-account');
+    expect(settings.enabled()).toBe(false);
+    settings.setEnabled(true);
+    expect(settings.cleanLinks()).toBe(true);
+    expect(settings.cleanMedia()).toBe(true);
+  });
   beforeEach(() => {
     localStorage.clear();
     localStorage.setItem('mastodon_mock_token', 'alice-token');

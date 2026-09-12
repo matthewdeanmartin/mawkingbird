@@ -64,6 +64,7 @@ import { BskyRef } from '../providers/bluesky/bluesky-types';
 import { SignInPrompt } from '../sign-in-prompt/sign-in-prompt';
 import { AnonymousCapabilities } from '../providers/anonymous/anonymous-capabilities';
 import { AnonymousBookmarks } from '../providers/anonymous/anonymous-bookmarks';
+import { PrivateLikeButton } from '../private-like-button';
 import { nitterHost, toNitterUrl } from '../providers/twitter/nitter';
 import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
@@ -311,6 +312,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    PrivateLikeButton,
     RouterLink,
     AccountHoverCard,
     ReportDialog,

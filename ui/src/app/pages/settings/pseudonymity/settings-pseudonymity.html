@@ -29,6 +29,26 @@
         {{ 'settings.pseudonymity.reminder' | transloco }}
       </label>
       <p class="hint">{{ 'settings.pseudonymity.reminderHint' | transloco }}</p>
+      <label class="checkline">
+        <input
+          type="checkbox"
+          name="pseudonymity-links"
+          [ngModel]="pseudonymity.cleanLinks()"
+          (ngModelChange)="setCleanLinks($event)"
+        />
+        {{ 'settings.pseudonymity.cleanLinks' | transloco }}
+      </label>
+      <p class="hint">{{ 'settings.pseudonymity.linksHint' | transloco }}</p>
+      <label class="checkline">
+        <input
+          type="checkbox"
+          name="pseudonymity-media"
+          [ngModel]="pseudonymity.cleanMedia()"
+          (ngModelChange)="setCleanMedia($event)"
+        />
+        {{ 'settings.pseudonymity.cleanMedia' | transloco }}
+      </label>
+      <p class="hint">{{ 'settings.pseudonymity.mediaHint' | transloco }}</p>
     }
     @if (saveFailed()) {
       <p role="alert">{{ 'settings.pseudonymity.saveFailed' | transloco }}</p>
@@ -73,6 +93,31 @@
   </div>
   <div class="ssection">
     <h2>{{ 'settings.pseudonymity.privateLikes' | transloco }}</h2>
-    <p class="hint">{{ 'settings.pseudonymity.likesPending' | transloco }}</p>
+    <p>
+      {{
+        'settings.pseudonymity.likeCount'
+          | transloco: { count: likes.current()?.likes()?.length ?? 0, limit: likeLimit }
+      }}
+    </p>
+    <p class="hint">{{ 'settings.pseudonymity.likesHint' | transloco }}</p>
+    @for (like of likes.current()?.likes() ?? []; track like.url) {
+      <div class="srow">
+        <a [href]="like.url" target="_blank" rel="noopener noreferrer"
+          >{{ like.author }}: {{ like.text }}</a
+        >
+        <button
+          class="btn btn-outline"
+          type="button"
+          (click)="removeLike(like.url)"
+          [attr.aria-label]="
+            'settings.pseudonymity.removeLike' | transloco: { author: like.author }
+          "
+        >
+          {{ 'statusCard.privateLike.remove' | transloco }}
+        </button>
+      </div>
+    } @empty {
+      <p class="hint">{{ 'settings.pseudonymity.likesEmpty' | transloco }}</p>
+    }
   </div>
 </div>

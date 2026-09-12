@@ -982,6 +982,7 @@
                     •••
                   </summary>
                   <div class="danger-menu-panel">
+                    <app-private-like-button [status]="display" />
                     <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
                     @if (todosEnabled()) {
@@ -1025,6 +1026,7 @@
                   •••
                 </summary>
                 <div class="danger-menu-panel">
+                  <app-private-like-button [status]="display" />
                   <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
                   @if (todosEnabled()) {
@@ -1113,6 +1115,7 @@
                 •••
               </summary>
               <div class="danger-menu-panel">
+                <app-private-like-button [status]="display" />
                 <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
                 @if (todosEnabled()) {

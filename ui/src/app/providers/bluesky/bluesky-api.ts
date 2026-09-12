@@ -2,6 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { catchError, from, Observable, of, switchMap, throwError, tap } from 'rxjs';
 import { IndicatorEvents } from '../../indicator-events';
+import { PrivateMedia } from '../../private-media';
+import { Pseudonymity } from '../../pseudonymity';
+import { cleanPostLinks } from '../../post-link-cleaning';
 import { externalFetch } from '../external-fetch';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPostSearch } from './bluesky-post-search';
@@ -124,6 +127,8 @@ function isExpiredToken(err: unknown): boolean {
  */
 @Injectable({ providedIn: 'root' })
 export class BlueskyApi {
+  private privateMedia = inject(PrivateMedia);
+  private pseudonymity = inject(Pseudonymity);
   private indicatorEvents = inject(IndicatorEvents);
   private http = inject(HttpClient);
   private session = inject(BlueskySession);
@@ -525,6 +530,7 @@ export class BlueskyApi {
       $type: 'app.bsky.feed.post',
       createdAt: identity?.createdAt ?? new Date().toISOString(),
       ...record,
+      ...(this.pseudonymity.cleanLinks() ? cleanPostLinks(record.text, record.facets) : {}),
     };
     if (!identity) {
       return this.createRecord('app.bsky.feed.post', value);
@@ -570,9 +576,20 @@ export class BlueskyApi {
    * `prepareImageForBluesky`, which is what makes a phone photo fit.
    */
   uploadBlob(blob: Blob, mimeType: string): Observable<BlobUploadResponse> {
-    return this.request<BlobUploadResponse>('com.atproto.repo.uploadBlob', blob, {
-      'Content-Type': mimeType,
-    });
+    return this.privateMedia.prepare(blob).pipe(
+      switchMap((prepared) => {
+        if (prepared !== blob && prepared.size > 1_000_000)
+          return throwError(
+            () =>
+              new Error(
+                'The cleaned photo is too large for Bluesky. Resize it and attach it again.',
+              ),
+          );
+        return this.request<BlobUploadResponse>('com.atproto.repo.uploadBlob', prepared, {
+          'Content-Type': prepared === blob ? mimeType : prepared.type,
+        });
+      }),
+    );
   }
 
   /** Delete any owned record (a like, a repost, a post) by its at-uri. */

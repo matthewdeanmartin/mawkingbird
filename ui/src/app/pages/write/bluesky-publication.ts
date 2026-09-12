@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { DraftMedia } from '../../drafts';
+import { Pseudonymity } from '../../pseudonymity';
 import { BlueskyApi, tidFromSeed } from '../../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { detectFacets, graphemeLength } from '../../providers/bluesky/bluesky-facets';
@@ -21,6 +22,7 @@ export function blueskyThreadError(parts: string[]): string | null {
 /** A writing-page publication survives edits to unfinished segments and wizard cancellation. */
 @Injectable()
 export class BlueskyPublication {
+  private pseudonymity = inject(Pseudonymity);
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
   private operation: {
@@ -70,7 +72,7 @@ export class BlueskyPublication {
         const images: BskyImagesEmbed['images'] = [];
         for (const item of media) {
           if (!item.file) throw new Error('Attach the original image again.');
-          const image = await prepareImageForBluesky(item.file);
+          const image = await prepareImageForBluesky(item.file, this.pseudonymity.cleanMedia());
           if (!image) throw new Error('This image could not be prepared.');
           const uploaded = await firstValueFrom(this.api.uploadBlob(image.blob, image.mimeType));
           images.push({

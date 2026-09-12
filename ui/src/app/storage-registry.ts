@@ -680,6 +680,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which translator the 🌐 button uses: your server, AI via OpenRouter, or ask each time. Absent means the default (your server).',
   },
   {
+    base: 'mockingbird_private_likes',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Up to 200 browser-only private post references per social account. Never included in settings sync or shareable exports.',
+  },
+  {
     base: 'mockingbird_private_follows',
     storage: 'local',
     suffix: 'account',
