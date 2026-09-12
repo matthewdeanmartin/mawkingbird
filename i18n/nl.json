@@ -1463,7 +1463,6 @@
     "home.articles.ariaLabel": "Artikelen uit de geladen feed",
     "home.articles.empty": "Geen links naar artikelen in de momenteel geladen berichten.",
     "home.empty.cta": "Mensen zoeken om te volgen",
-    "home.empty.lead": "Je tijdlijn is leeg — je volgt nog niemand.",
     "home.feedCap.endRule": "—— dit is voorlopig het einde van je feed ——",
     "home.feedCap.fromBookmarks": "Uit je bladwijzers",
     "home.feedCap.message": "Voor nu heb je genoeg gehad, vriend. Doe rustig aan.",
@@ -5778,7 +5777,6 @@
     "heading": "Een tijdlijn met één klik",
     "lookingUp": "Opzoeken…",
     "membersAria": "Accounts van {{title}}",
-    "note": "Bij anoniem volgen wordt onmiddellijk de ingebouwde momentopname van accounts in de collectie gebruikt. Bij ingelogd volgen worden accounts door je server opgezocht voordat het echte volgverzoek wordt verzonden.",
     "notFound": "Niet gevonden",
     "opening": "Openen…",
     "unavailable": "Dit starterspakket is niet meer beschikbaar. Bekijk de huidige pakketten om mensen te vinden die je kunt volgen."

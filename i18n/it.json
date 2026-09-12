@@ -1463,7 +1463,6 @@
     "home.articles.ariaLabel": "Articoli dal feed caricato",
     "home.articles.empty": "Nessun link ad articoli nei post attualmente caricati.",
     "home.empty.cta": "Trova persone da seguire",
-    "home.empty.lead": "La tua timeline è vuota: non segui ancora nessuno.",
     "home.feedCap.endRule": "—— per ora il tuo feed finisce qui ——",
     "home.feedCap.fromBookmarks": "Dai tuoi segnalibri",
     "home.feedCap.message": "Per ora basta così. Prenditela comoda.",
@@ -5778,7 +5777,6 @@
     "heading": "Una timeline con un clic",
     "lookingUp": "Ricerca…",
     "membersAria": "Account di {{title}}",
-    "note": "Gli account seguiti in modalità anonima usano subito l’istantanea integrata della raccolta. Con l’accesso effettuato, gli account vengono risolti dal server prima dell’invio della vera richiesta di follow.",
     "notFound": "Non trovato",
     "opening": "Apertura…",
     "unavailable": "Questa raccolta iniziale non è più disponibile. Esplora quelle attuali per trovare persone da seguire."

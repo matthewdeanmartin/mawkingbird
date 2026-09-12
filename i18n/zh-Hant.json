@@ -2302,7 +2302,6 @@
     "home.articles.ariaLabel": "已載入動態消息中的文章",
     "home.articles.empty": "目前載入的嘟文中沒有文章連結。",
     "home.empty.cta": "尋找要跟隨的人",
-    "home.empty.lead": "您的時間軸是空的；您還沒有跟隨任何人。",
     "home.feedCap.endRule": "—— 目前動態消息到此為止 ——",
     "home.feedCap.fromBookmarks": "來自您的書籤",
     "home.feedCap.message": "今天先看到這裡吧，慢慢來。",
@@ -5778,7 +5777,6 @@
     "heading": "一鍵取得時間軸",
     "lookingUp": "查詢中…",
     "membersAria": "{{title}} 的帳號",
-    "note": "匿名跟隨會立即使用名單內建的帳號快照。登入後的跟隨會先由您的伺服器解析，再送出實際的跟隨請求。",
     "notFound": "找不到",
     "opening": "開啟中…",
     "unavailable": "此推薦跟隨名單已無法使用。瀏覽目前名單以尋找可跟隨的使用者。"

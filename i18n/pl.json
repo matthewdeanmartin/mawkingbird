@@ -1463,7 +1463,6 @@
     "home.articles.ariaLabel": "Artykuły z wczytanego kanału",
     "home.articles.empty": "Brak linków do artykułów w obecnie wczytanych wpisach.",
     "home.empty.cta": "Znajdź osoby do obserwowania",
-    "home.empty.lead": "Oś czasu jest pusta — nie obserwujesz jeszcze nikogo.",
     "home.feedCap.endRule": "—— to na razie koniec kanału ——",
     "home.feedCap.fromBookmarks": "Z twoich zakładek",
     "home.feedCap.message": "Na razie wystarczy. Odpocznij trochę.",
@@ -5778,7 +5777,6 @@
     "heading": "Oś czasu jednym kliknięciem",
     "lookingUp": "Wyszukiwanie…",
     "membersAria": "Konta w {{title}}",
-    "note": "Anonimowe obserwowanie od razu używa wbudowanej migawki kont kolekcji. Po zalogowaniu serwer rozpoznaje konta przed wysłaniem właściwego żądania obserwowania.",
     "notFound": "Nie znaleziono",
     "opening": "Otwieranie…",
     "unavailable": "Ten zestaw startowy nie jest już dostępny. Przejrzyj aktualne zestawy, aby znaleźć osoby do obserwowania."

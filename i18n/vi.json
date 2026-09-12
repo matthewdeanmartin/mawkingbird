@@ -1463,7 +1463,6 @@
     "home.articles.ariaLabel": "Bài viết từ bảng tin đã tải",
     "home.articles.empty": "Không có liên kết bài viết trong các bài đăng hiện đã tải.",
     "home.empty.cta": "Tìm người để theo dõi",
-    "home.empty.lead": "Dòng thời gian của bạn đang trống — bạn chưa theo dõi ai.",
     "home.feedCap.endRule": "—— tạm thời đã hết bảng tin ——",
     "home.feedCap.fromBookmarks": "Từ dấu trang của bạn",
     "home.feedCap.message": "Tạm đủ rồi nhé. Nghỉ ngơi thôi.",
@@ -5746,7 +5745,6 @@
     "heading": "Dòng thời gian chỉ với một lần nhấp",
     "lookingUp": "Đang tra cứu…",
     "membersAria": "Tài khoản trong {{title}}",
-    "note": "Theo dõi ẩn danh dùng ngay ảnh chụp tài khoản có sẵn. Khi đăng nhập, máy chủ sẽ phân giải trước khi gửi yêu cầu theo dõi thật.",
     "notFound": "Không tìm thấy",
     "opening": "Đang mở…",
     "unavailable": "Bộ gợi ý này không còn khả dụng. Hãy duyệt các bộ hiện tại."

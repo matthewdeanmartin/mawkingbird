@@ -841,7 +841,6 @@
     "home.articles.ariaLabel": "Artikel aus dem geladenen Feed",
     "home.articles.empty": "Die aktuell geladenen Beiträge enthalten keine Artikellinks.",
     "home.empty.cta": "Personen finden, denen du folgen kannst",
-    "home.empty.lead": "Deine Timeline ist leer – du folgst noch niemandem.",
     "home.feedCap.endRule": "—— das ist vorerst das Ende deines Feeds ——",
     "home.feedCap.fromBookmarks": "Aus deinen Lesezeichen",
     "home.feedCap.message": "Das reicht erst einmal. Gönn dir eine Pause.",
@@ -5802,7 +5801,6 @@
     "heading": "Eine Timeline mit nur einem Klick",
     "lookingUp": "Wird gesucht…",
     "membersAria": "Konten in {{title}}",
-    "note": "Beim anonymen Folgen wird sofort die in der Sammlung enthaltene Konto-Momentaufnahme verwendet. Wenn du angemeldet bist, löst dein Server die Konten auf, bevor die eigentliche Folgeanfrage gesendet wird.",
     "notFound": "Nicht gefunden",
     "opening": "Wird geöffnet…",
     "unavailable": "Dieses Starter-Kit ist nicht mehr verfügbar. Stöbere durch die aktuellen Kits, um Leute zum Folgen zu finden."

@@ -537,7 +537,6 @@
     "home.articles.ariaLabel": "Artikel dari feed yang dimuat",
     "home.articles.empty": "Tidak ada tautan artikel di postingan yang sedang dimuat.",
     "home.empty.cta": "Cari orang untuk diikuti",
-    "home.empty.lead": "Linimasamu kosong — kamu belum mengikuti siapa pun.",
     "home.feedCap.endRule": "—— sampai di sini dulu feed-mu ——",
     "home.feedCap.fromBookmarks": "Dari markahmu",
     "home.feedCap.message": "Sudah cukup dulu, ya. Santai saja.",
@@ -5304,7 +5303,6 @@
     "heading": "Linimasa dalam satu klik",
     "lookingUp": "Mencari…",
     "membersAria": "Akun {{title}}",
-    "note": "Mengikuti secara anonim langsung memakai snapshot akun bawaan kumpulan ini. Mengikuti saat sudah masuk diproses dulu oleh servermu sebelum permintaan ikuti sungguhan dikirim.",
     "notFound": "Tidak ditemukan",
     "opening": "Membuka…",
     "unavailable": "Paket awal ini sudah tidak tersedia lagi. Jelajahi paket yang ada sekarang untuk menemukan orang yang bisa diikuti."

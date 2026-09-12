@@ -379,7 +379,6 @@
     "home.articles.ariaLabel": "Artiklar från det inlästa flödet",
     "home.articles.empty": "Inga artikellänkar i de inlägg som just nu är inlästa.",
     "home.empty.cta": "Hitta personer att följa",
-    "home.empty.lead": "Din tidslinje är tom — du följer ingen ännu.",
     "home.feedCap.endRule": "—— det är slutet på ditt flöde för tillfället ——",
     "home.feedCap.fromBookmarks": "Från dina bokmärken",
     "home.feedCap.message": "Du har fått nog för nu, kompis. Ta det lugnt.",
@@ -5778,7 +5777,6 @@
     "heading": "En tidslinje med ett klick",
     "lookingUp": "Slår upp…",
     "membersAria": "{{title}}-konton",
-    "note": "Anonyma följningar använder samlingens inbyggda kontokopia direkt. Inloggade följningar matchas av din server innan den riktiga följförfrågan skickas.",
     "notFound": "Hittades inte",
     "opening": "Öppnar…",
     "unavailable": "Startpaketet är inte längre tillgängligt. Bläddra bland aktuella paket för att hitta personer att följa."
