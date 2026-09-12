@@ -397,6 +397,10 @@
     "status.error": "error",
     "status.notfound": "notfound"
   },
+  "bulkFollow": {
+    "confirm": "Follow {{count}} accounts or topics? Accounts may receive follow notifications or follow requests.",
+    "feeds": "Follow {{count}} feeds?"
+  },
   "bundledStarterKits": {
     "account.one": "{{count}} account",
     "account.other": "{{count}} accounts",
@@ -1270,6 +1274,7 @@
     "conversations.openAs": "Open as {{term}}",
     "conversations.publicBanner.body": "Every message here is visible to anyone on the internet — this is a reply thread, not a private DM.",
     "conversations.publicBanner.title": "Public conversation",
+    "conversations.refreshBluesky": "Refresh Bluesky chats",
     "conversations.replyPrivately": "Reply privately…",
     "conversations.replyPublicly": "Reply publicly…",
     "conversations.report": "Report",
@@ -2008,6 +2013,7 @@
     "observability.mawkingbird.tier": "Tier",
     "observability.mawkingbird.title": "Mawkingbird services",
     "observability.mawkingbird.totalCalls": "total calls",
+    "observability.myAnalytics": "My Profile's Analytics",
     "observability.notice.cleared": "Cleared diagnostics.",
     "observability.notice.clipboardFailed": "Clipboard access failed. Use Download instead.",
     "observability.notice.copied": "Copied diagnostics.",
@@ -5858,8 +5864,14 @@
     "lookingUp": "Looking up…",
     "membersAria": "{{title}} accounts",
     "notFound": "Not found",
-    "note": "Anonymous follows use the collection’s built-in account snapshot immediately. Signed-in follows are resolved by your server before the real follow request is sent.",
     "opening": "Opening…",
+    "posts.empty": "No public posts found in this sample.",
+    "posts.errors": "Some accounts could not be reached.",
+    "posts.loading": "Loading posts…",
+    "posts.more": "Load more posts",
+    "tabs.analytics": "Analytics",
+    "tabs.members": "Members",
+    "tabs.posts": "Posts",
     "unavailable": "This starter kit is no longer available. Browse the current kits to find people to follow."
   },
   "starterKitPost": {
