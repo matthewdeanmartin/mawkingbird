@@ -158,6 +158,18 @@ export class FeedAggregator {
         provider.reset();
         return { provider, exhausted: false };
       });
+    // The same recovery as Mastodon: a primary Bluesky identity must not be
+    // stranded by filters hiding every source. Never enable a Mastodon call
+    // as a substitute for the reader's own network.
+    if (this.auth.isBlueskyPrimary && this.mastodonExhausted && !this.foreign.length) {
+      const primary = this.registry.linked().find((provider) => provider.id === 'bluesky');
+      if (primary) {
+        if (!this.prefs.isProviderVisible('bluesky')) this.prefs.toggleProvider('bluesky');
+        primary.reset();
+        this.foreign = [{ provider: primary, exhausted: false }];
+        this.diagnostics.warn('aggregator:all-sources-hidden-fallback', { provider: 'bluesky' });
+      }
+    }
     // Safety net: an authenticated reader whose persisted filters hide *every*
     // source (e.g. mastodon + all linked providers toggled off, from a shared
     // localStorage prefs blob) would otherwise get a permanently empty home
@@ -175,6 +187,7 @@ export class FeedAggregator {
       this.mastodonExhausted &&
       !this.foreign.length
     ) {
+      if (!this.prefs.isProviderVisible('mastodon')) this.prefs.toggleProvider('mastodon');
       this.mastodonExhausted = false;
       this.diagnostics.warn('aggregator:all-sources-hidden-fallback');
     }
@@ -326,6 +339,12 @@ export class FeedAggregator {
         if (rawItems === null) {
           return of(collected);
         }
+        this.diagnostics.info('foreign:page-success', {
+          provider: source.provider.id,
+          received: rawItems.length,
+          withinWindow: rawItems.filter((item) => this.withinWindow(item)).length,
+          elapsedMs: Date.now() - startedAt,
+        });
         if (!rawItems.length) {
           source.exhausted = true;
           return of(collected);

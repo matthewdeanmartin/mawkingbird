@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../auth';
 import { AnonymousCapabilities } from './anonymous-capabilities';
+import { seedBskyIdentity } from '../../testing/seed-storage';
 
 describe('AnonymousCapabilities', () => {
   beforeEach(() => {
@@ -40,5 +41,24 @@ describe('AnonymousCapabilities', () => {
       favourite: false,
       reblog: false,
     });
+  });
+
+  it('separates Bluesky interactions from Mastodon credentials and follows connector changes', () => {
+    seedBskyIdentity({ did: 'did:plc:me', handle: 'me.bsky.social' });
+    const auth = TestBed.inject(Auth);
+    auth.enterBluesky();
+    const capabilities = TestBed.inject(AnonymousCapabilities);
+    expect(capabilities.canCompose).toBe(true);
+    expect(capabilities.canUseServerActions).toBe(false);
+    expect(capabilities.statusCaps('mastodon').favourite).toBe(false);
+    expect(capabilities.statusCaps('anonymous-mastodon').reply).toBe(false);
+    expect(capabilities.statusCaps('bluesky').favourite).toBe(true);
+    auth.connectMastodon('connector-token');
+    expect(auth.lacksMastodonToken).toBe(false);
+    expect(capabilities.canUseServerActions).toBe(true);
+    expect(capabilities.statusCaps('mastodon').favourite).toBe(true);
+    auth.disconnectMastodon();
+    expect(capabilities.canUseServerActions).toBe(false);
+    expect(capabilities.statusCaps('bluesky').reply).toBe(true);
   });
 });

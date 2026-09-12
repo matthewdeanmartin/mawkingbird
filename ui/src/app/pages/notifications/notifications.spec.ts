@@ -1,9 +1,12 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Signal, WritableSignal } from '@angular/core';
+import { signal, Signal, WritableSignal } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { of, Subject, throwError } from 'rxjs';
+import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { BlueskyNotifications } from '../../providers/bluesky/bluesky-notifications';
 import { Account, MastodonNotification, Relationship, Status } from '../../models';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
@@ -14,7 +17,9 @@ import { accountsNewToMe, groupNotifications, isSameAccount, Notifications } fro
 interface NotificationsInternals {
   items: Signal<MastodonNotification[]>;
   live: WritableSignal<boolean>;
-  setSource(source: 'mastodon' | 'bluesky'): void;
+  source: Signal<'all' | 'mastodon' | 'bluesky'>;
+  exhausted: Signal<boolean>;
+  setSource(source: 'all' | 'mastodon' | 'bluesky'): void;
   chatKey(n: MastodonNotification): string;
 }
 
@@ -68,6 +73,218 @@ function relationship(id: string, over: Partial<Relationship> = {}): Relationshi
   };
 }
 
+describe('Notifications across primary networks', () => {
+  let http: HttpTestingController;
+  let linked: WritableSignal<boolean>;
+  let page: ReturnType<typeof vi.fn>;
+  let stream: FakeStreaming;
+
+  beforeEach(() => {
+    localStorage.clear();
+    linked = signal(true);
+    page = vi.fn().mockReturnValue(of({ notifications: [], cursor: null }));
+    stream = new FakeStreaming();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: BlueskySession, useValue: { linked } },
+        { provide: BlueskyNotifications, useValue: { page, markSeen: () => of(undefined) } },
+        { provide: Streaming, useValue: stream },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+  });
+  afterEach(() => http.verify());
+
+  function notification(id: string, date: string): MastodonNotification {
+    const n = makeNotification(id, 'follow');
+    return { ...n, created_at: date, account: { ...makeAccount(id), id } };
+  }
+
+  it('defaults to Bluesky alone without a Mastodon token or stream', () => {
+    TestBed.inject(Auth).kind.set('bluesky');
+    TestBed.inject(ClientPrefs).setAutoRefreshTimeline(true);
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    expect(internals(fixture).source()).toBe('bluesky');
+    expect(page).toHaveBeenCalledWith(null);
+    http.expectNone('/api/v1/notifications');
+    expect(stream.lastKind).toBeNull();
+    const buttons = fixture.nativeElement.querySelectorAll('.source-seg button');
+    expect(buttons.length).toBe(1);
+    expect(buttons[0].textContent).toContain('Bluesky');
+    fixture.destroy();
+  });
+
+  it('offers only Mastodon when no Bluesky session is configured', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    linked.set(false);
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([]);
+    expect(internals(fixture).source()).toBe('mastodon');
+    expect(page).not.toHaveBeenCalled();
+    const buttons = fixture.nativeElement.querySelectorAll('.source-seg button');
+    expect(buttons.length).toBe(1);
+    expect(buttons[0].textContent).toContain('Mastodon');
+    fixture.destroy();
+  });
+
+  it('defaults both primary kinds to a merged list and pages each network independently', () => {
+    TestBed.inject(Auth).kind.set('bluesky');
+    TestBed.inject(Auth).connectMastodon('connector-token');
+    page
+      .mockReturnValueOnce(
+        of({
+          notifications: [notification('bsky:n1', '2026-09-10T10:00:00Z')],
+          cursor: 'b-cursor',
+        }),
+      )
+      .mockReturnValueOnce(
+        of({ notifications: [notification('bsky:n2', '2026-09-08T10:00:00Z')], cursor: null }),
+      );
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([notification('20', '2026-09-09T10:00:00Z')]);
+    fixture.detectChanges();
+    expect(internals(fixture).source()).toBe('all');
+    expect(fixture.nativeElement.querySelectorAll('.source-seg button').length).toBe(3);
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['bsky:n1', '20']);
+    fixture.componentInstance.loadMore();
+    http.expectOne('/api/v1/notifications?max_id=20').flush([]);
+    expect(page).toHaveBeenLastCalledWith('b-cursor');
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['bsky:n1', '20', 'bsky:n2']);
+    expect(internals(fixture).exhausted()).toBe(true);
+    fixture.destroy();
+  });
+
+  it('shows Mastodon results and a recoverable error when Bluesky fails', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    page.mockReturnValue(throwError(() => new Error('expired session')));
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([notification('20', '2026-09-09T10:00:00Z')]);
+    fixture.detectChanges();
+    expect(internals(fixture).source()).toBe('all');
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['20']);
+    expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('Bluesky');
+    expect(fixture.nativeElement.querySelectorAll('.notif').length).toBe(1);
+    fixture.destroy();
+  });
+
+  it('keeps Bluesky results when Mastodon fails', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    page.mockReturnValue(
+      of({ notifications: [notification('bsky:n1', '2026-09-10T10:00:00Z')], cursor: null }),
+    );
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush({}, { status: 401, statusText: 'Unauthorized' });
+    fixture.detectChanges();
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['bsky:n1']);
+    expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('Mastodon');
+    expect(fixture.nativeElement.querySelector('.load-more-row .muted')).toBeNull();
+    fixture.destroy();
+  });
+
+  it('discards an old in-flight page when switching networks', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    const pending = new Subject<{ notifications: MastodonNotification[]; cursor: null }>();
+    page.mockReturnValue(pending);
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const old = http.expectOne('/api/v1/notifications');
+    fixture.componentInstance.setSource('mastodon');
+    expect(old.cancelled).toBe(true);
+    http.expectOne('/api/v1/notifications').flush([notification('20', '2026-09-09T10:00:00Z')]);
+    pending.next({
+      notifications: [notification('bsky:stale', '2026-09-10T10:00:00Z')],
+      cursor: null,
+    });
+    pending.complete();
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['20']);
+    fixture.destroy();
+  });
+
+  it('keeps Bluesky mentions and grouped likes out of Mastodon-only actions in Both', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    const status = {
+      id: 'bsky:post',
+      provider: 'bluesky',
+      content: '<p>Bluesky reply</p>',
+      media_attachments: [],
+    } as unknown as Status;
+    const mention = {
+      ...notification('bsky:mention', '2026-09-10T10:00:00Z'),
+      type: 'mention',
+      status,
+    };
+    const likes = Array.from({ length: 4 }, (_, i) => ({
+      ...notification(`bsky:like${i}`, '2026-09-09T10:00:00Z'),
+      type: 'favourite',
+      status,
+    }));
+    page.mockReturnValue(of({ notifications: [mention, ...likes], cursor: null }));
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.notif-group')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.others-link')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.mention-actions')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.view-seg')).toBeNull();
+    expect(fixture.nativeElement.querySelector('a.excerpt').getAttribute('href')).toContain(
+      '/statuses/',
+    );
+    http.expectNone((r) => r.url.includes('/relationships'));
+    fixture.destroy();
+  });
+
+  it('merges live Mastodon notifications into Both without duplicates', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    TestBed.inject(ClientPrefs).setAutoRefreshTimeline(true);
+    page.mockReturnValue(
+      of({ notifications: [notification('bsky:n1', '2026-09-10T10:00:00Z')], cursor: null }),
+    );
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([]);
+    fixture.detectChanges();
+    const incoming = notification('30', '2026-09-11T10:00:00Z');
+    stream.emit({ event: 'notification', payload: incoming });
+    stream.emit({ event: 'notification', payload: incoming });
+    expect(
+      internals(fixture)
+        .items()
+        .map((n) => n.id),
+    ).toEqual(['30', 'bsky:n1']);
+    expect(internals(fixture).live()).toBe(true);
+    fixture.destroy();
+  });
+});
+
 describe('Notifications', () => {
   let httpMock: HttpTestingController;
   let fakeStreaming: FakeStreaming;
@@ -83,6 +300,8 @@ describe('Notifications', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    // Notifications requires a configured network; model a signed-in Mastodon reader.
+    TestBed.inject(Auth).setToken('notifications-test-token');
   });
 
   afterEach(() => {

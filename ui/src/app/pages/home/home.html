@@ -464,6 +464,15 @@
     </aside>
   }
 
+  @if (blueskyFeedFailed()) {
+    <aside class="muted feed-warning" role="alert">
+      <p>{{ 'pages.home.warnings.blueskyError' | transloco }}</p>
+      <a routerLink="/settings/connections">{{
+        'pages.home.warnings.blueskyError.link' | transloco
+      }}</a>
+    </aside>
+  }
+
   <!-- Twitter posts are shown from the saved copy, so Home never spends on its
        own. When some followed accounts have nothing saved yet, say so and price
        the fix rather than quietly leaving them out of the feed. -->

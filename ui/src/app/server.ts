@@ -1,6 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../environments/environment';
 import { normalizeHostUrl } from './host-url';
+import { blueskyIsPrimaryKind } from './providers/bluesky/bluesky-identity-store';
+import { mastodonConnectorServer } from './providers/mastodon/mastodon-connector';
 
 const SERVER_KEY = 'mastodon_mock_server';
 
@@ -23,7 +25,15 @@ export const SERVER_PRESETS: ServerPreset[] = [
 /** Holds the chosen instance base URL, persisted across reloads. */
 @Injectable({ providedIn: 'root' })
 export class Server {
-  readonly baseUrl = signal<string>(this.normalize(localStorage.getItem(SERVER_KEY) ?? ''));
+  // Resolve before serverInterceptor constructs the first request URL: Auth
+  // may not have been instantiated yet on a cold load.
+  readonly baseUrl = signal<string>(
+    this.normalize(
+      blueskyIsPrimaryKind()
+        ? (mastodonConnectorServer() ?? '')
+        : (localStorage.getItem(SERVER_KEY) ?? ''),
+    ),
+  );
 
   /**
    * True when the build is allowed to target its own origin (the mock-embedded UI).

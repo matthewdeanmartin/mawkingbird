@@ -836,6 +836,12 @@ export class StatusCard {
       : this.capabilities.canManageRelationships && !this.foreign;
   }
 
+  protected get canUsePostOwnerActions(): boolean {
+    return this.display.provider === 'bluesky'
+      ? this.blueskySession.linked()
+      : this.capabilities.canUseServerActions;
+  }
+
   onReported(): void {
     this.showReport.set(false);
     this.reported.set(true);

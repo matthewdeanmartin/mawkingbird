@@ -1,20 +1,27 @@
 <div class="live-toggle">
   <div class="notif-filters">
-    <!-- Which network. Shown only when there is a choice to make: with no
-         Bluesky account linked this is a switch between one thing and an error
-         message. -->
-    @if (bskySession.linked()) {
+    <!-- Only configured networks are offered; two networks start on Both. -->
+    @if (mastodonAvailable() || bskySession.linked()) {
       <div
         class="seg source-seg"
         role="group"
         [attr.aria-label]="'pages.notifications.sourceAriaLabel' | transloco"
       >
-        <button [class.active]="source() === 'mastodon'" (click)="setSource('mastodon')">
-          {{ 'pages.notifications.source.mastodon' | transloco }}
-        </button>
-        <button [class.active]="source() === 'bluesky'" (click)="setSource('bluesky')">
-          {{ 'pages.notifications.source.bluesky' | transloco }}
-        </button>
+        @if (mastodonAvailable() && bskySession.linked()) {
+          <button [class.active]="source() === 'all'" (click)="setSource('all')">
+            {{ 'pages.notifications.source.all' | transloco }}
+          </button>
+        }
+        @if (mastodonAvailable()) {
+          <button [class.active]="source() === 'mastodon'" (click)="setSource('mastodon')">
+            {{ 'pages.notifications.source.mastodon' | transloco }}
+          </button>
+        }
+        @if (bskySession.linked()) {
+          <button [class.active]="source() === 'bluesky'" (click)="setSource('bluesky')">
+            {{ 'pages.notifications.source.bluesky' | transloco }}
+          </button>
+        }
       </div>
     }
     <!-- Accounts New to Me reads relationships from the Mastodon server, so it
@@ -73,7 +80,7 @@
        rather than a button here, so one setting covers every live surface. What
        is left is a status light. Bluesky has no notification stream — it is
        polled — so that side gets an honest Refresh instead. -->
-  @if (source() === 'mastodon') {
+  @if (source() !== 'bluesky') {
     @if (live()) {
       <a
         class="live-badge"
@@ -83,26 +90,29 @@
         {{ 'pages.notifications.live.label' | transloco }}
       </a>
     }
-  } @else {
-    <button
-      class="btn btn-outline"
-      [disabled]="loading()"
-      (click)="refresh()"
-      [title]="'pages.notifications.refresh.title' | transloco"
-    >
-      {{ 'pages.notifications.refresh.label' | transloco }}
-    </button>
   }
+  <button
+    class="btn btn-outline"
+    [disabled]="loading()"
+    (click)="refresh()"
+    [title]="'pages.notifications.refresh.title' | transloco"
+  >
+    {{ 'pages.notifications.refresh.label' | transloco }}
+  </button>
 </div>
 
+@if (mastodonError(); as error) {
+  <p class="muted center" role="alert">{{ error }}</p>
+}
+@if (bskyError(); as error) {
+  <p class="muted center" role="alert">{{ error }}</p>
+}
 @if (loading()) {
   <p class="muted center">{{ 'pages.notifications.loading' | transloco }}</p>
-} @else if (bskyError(); as error) {
-  <!-- A reason beats "No notifications yet", which would be a different and
-       wrong claim when the fetch is what failed. -->
-  <p class="muted center">{{ error }}</p>
 } @else if (!items().length) {
-  <p class="muted center">{{ 'pages.notifications.empty' | transloco }}</p>
+  @if (!mastodonError() && !bskyError()) {
+    <p class="muted center">{{ 'pages.notifications.empty' | transloco }}</p>
+  }
 } @else if (view() === 'new-accounts') {
   @if (accountActionError(); as error) {
     <p class="new-account-error" role="alert">{{ error }}</p>
@@ -158,7 +168,7 @@
               }}</a
               >{{ last ? '' : ', ' }}
             }
-            @if (listMode(row.type)) {
+            @if (listMode(row.type, row.status)) {
               <button
                 class="others-link"
                 (click)="openGroupList(row)"
@@ -211,7 +221,7 @@
                  "open in chat" means the Mastodon DM tab and `chatKey` builds a
                  key from a Mastodon acct. A bsky reply goes to its thread, which
                  is where the reply actually is. -->
-            @if (row.notif.type === 'mention' && source() === 'mastodon') {
+            @if (row.notif.type === 'mention' && !row.notif.account.id.startsWith('bsky:')) {
               <!-- Mentions open as a chat: click the body to jump into the DM
                    tab's public chat with this person (we nudge chat over thread). -->
               <a
@@ -272,7 +282,9 @@
 @if (!loading() && items().length) {
   <div class="load-more-row">
     @if (exhausted()) {
-      <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
+      @if (!mastodonError() && !bskyError()) {
+        <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
+      }
     } @else {
       <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
         {{

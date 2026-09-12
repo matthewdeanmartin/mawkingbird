@@ -55,6 +55,7 @@ describe('Profile block/unblock', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
 
@@ -497,6 +498,7 @@ describe('Profile block/unblock', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
     const cmp = fixture.componentInstance as any;
@@ -849,6 +851,7 @@ describe('Profile Mataroa RSS inclusion', () => {
         { provide: RssProvider, useValue: { getFeed } },
       ],
     });
+    TestBed.inject(Auth).token.set('profile-test-token');
     TestBed.inject(Auth).setAccount(account);
     TestBed.inject(MataroaSettings).connect('key', 'https://writer.mataroa.blog/', true);
 
@@ -922,6 +925,7 @@ describe('Profile Mataroa RSS inclusion', () => {
         { provide: RssProvider, useValue: { getFeed } },
       ],
     });
+    TestBed.inject(Auth).token.set('profile-test-token');
     TestBed.inject(Auth).setAccount(account);
     TestBed.inject(MataroaSettings).connect('key', 'https://writer.mataroa.blog/', true);
     const blogger = TestBed.inject(BloggerSession);
@@ -999,6 +1003,7 @@ describe('Profile Mataroa RSS inclusion', () => {
         { provide: RssProvider, useValue: { getFeed } },
       ],
     });
+    TestBed.inject(Auth).token.set('profile-test-token');
     TestBed.inject(Auth).setAccount(account);
     const hugo = TestBed.inject(HugoSettings);
     hugo.connect('tok', {
@@ -1071,6 +1076,7 @@ describe('Profile Mataroa RSS inclusion', () => {
         { provide: RssProvider, useValue: { getFeed } },
       ],
     });
+    TestBed.inject(Auth).token.set('profile-test-token');
     TestBed.inject(Auth).setAccount(account);
     const blogger = TestBed.inject(BloggerSession);
     blogger.adoptToken('tok', 3600);
@@ -1143,6 +1149,7 @@ describe('Profile cross-server recovery', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
     return fixture;
@@ -1265,6 +1272,7 @@ describe('Profile handle-in-path route', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
     return fixture;
@@ -1369,6 +1377,7 @@ describe('Profile account search', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
 

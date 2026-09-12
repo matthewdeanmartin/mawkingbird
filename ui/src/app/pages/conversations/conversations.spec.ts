@@ -161,6 +161,7 @@ describe('Conversations', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).setToken('mastodon-chat-test-token');
     TestBed.inject(Auth).account.set(ME);
   });
 

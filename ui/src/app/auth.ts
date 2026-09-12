@@ -16,6 +16,7 @@ import { BlueskyOAuth } from './providers/bluesky/bluesky-oauth';
 import {
   clearMastodonConnectorTokenForDid,
   mastodonConnectorToken,
+  mastodonConnectorServer,
 } from './providers/mastodon/mastodon-connector';
 import { Server } from './server';
 import { SessionDiagnostics } from './session-diagnostics';
@@ -363,12 +364,12 @@ export class Auth {
   /**
    * Meaning A: no Mastodon bearer token is available for API calls.
    *
-   * True for Anonymous, for Bluesky-primary, and when signed out. Gate
-   * authenticated Mastodon work on this — streaming, `verify_credentials`, the
+   * True without a token, including Bluesky-primary without a signed-in connector.
+   * Gate authenticated Mastodon work on this — streaming, `verify_credentials`, the
    * home timeline, anything that would 401 without a token.
    */
   get lacksMastodonToken(): boolean {
-    return this.kind() !== 'mastodon';
+    return !this.token();
   }
 
   /** Bluesky owns this account's identity; Mastodon is a connector, if present. */
@@ -615,6 +616,8 @@ export class Auth {
     // the connector is stored under a scope suffix derived from the DID, so the
     // mode key above must already be written or this reads the wrong namespace
     // (or none) and the connector appears to have been forgotten by a switch.
+    this.token.set(null);
+    this.server.setBaseUrl(mastodonConnectorServer() ?? '');
     this.token.set(mastodonConnectorToken());
     // Same reasoning as enter-anonymous: this must never cost a saved account,
     // and the console is the only place that can prove it did not.

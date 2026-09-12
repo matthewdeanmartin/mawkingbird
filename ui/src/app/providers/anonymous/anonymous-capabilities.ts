@@ -23,7 +23,7 @@ export class AnonymousCapabilities {
   }
 
   get canManageRelationships(): boolean {
-    return !this.active;
+    return this.canUseServerActions;
   }
 
   /** Follow/Unfollow has a complete browser-local implementation in Anonymous. */
@@ -31,7 +31,7 @@ export class AnonymousCapabilities {
   readonly canManageLists = true;
 
   get canUseServerActions(): boolean {
-    return !this.active;
+    return !this.active && !this.auth.lacksMastodonToken;
   }
 
   readonly canBookmark = true;
@@ -52,11 +52,11 @@ export class AnonymousCapabilities {
   /**
    * What the viewer can do to a post from `provider`.
    *
-   * `this.active` means Anonymous mode: no token at all, reads go out through
-   * `externalFetch()`, and every write would be a 401. That is the only case that
-   * takes the buttons away.
+   * Mastodon writes require its own token, either primary or connector.
+   * Bluesky keeps its separate provider/session checks: a Bluesky identity
+   * must not lose its interactions merely because Mastodon is disconnected.
    *
-   * It takes them away for *every* provider, not just `anonymous-mastodon`: a
+   * The Mastodon check covers `anonymous-mastodon` too: a
    * status still tagged `mastodon` (or carrying no provider) is just as
    * unwritable without a token.
    *
@@ -69,6 +69,7 @@ export class AnonymousCapabilities {
    * `!caps.favourite`, so the click produced no request and no error to show.
    */
   statusCaps(provider: ProviderId): ProviderCapabilities {
-    return capabilitiesFor(provider, !this.active);
+    const mastodon = provider === 'mastodon' || provider === 'anonymous-mastodon';
+    return capabilitiesFor(provider, mastodon ? this.canUseServerActions : !this.active);
   }
 }

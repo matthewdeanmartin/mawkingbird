@@ -887,8 +887,8 @@
               🤖🌐
             </button>
           }
-          @if (capabilities.canUseServerActions) {
-            @if (display.edited_at) {
+          @if (canUsePostOwnerActions) {
+            @if (display.provider !== 'bluesky' && display.edited_at) {
               <button
                 class="action"
                 (click)="openHistory($event)"

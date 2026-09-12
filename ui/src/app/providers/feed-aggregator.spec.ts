@@ -272,6 +272,7 @@ describe('FeedAggregator', () => {
     expect(fakeRss.fetchPage).not.toHaveBeenCalled();
     expect(fakeBluesky.fetchPage).not.toHaveBeenCalled();
     expect(diagnostics.warn).toHaveBeenCalledWith('aggregator:all-sources-hidden-fallback');
+    expect(prefs.isProviderVisible('mastodon')).toBe(true);
   });
 
   /**
@@ -302,6 +303,21 @@ describe('FeedAggregator', () => {
 
     expect(homeTimeline).not.toHaveBeenCalled();
     expect(page.map((status) => status.id)).toEqual(['b1']);
+  });
+
+  it('restores Bluesky visibility when every source is hidden for a Bluesky identity', async () => {
+    const auth = TestBed.inject(Auth);
+    seedBskyIdentity({ did: 'did:plc:me', handle: 'me.bsky.social' });
+    auth.enterBluesky();
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.toggleProvider('bluesky');
+    fakeBluesky.linked.set(true);
+    fakeBluesky.pages = [[blueskyStatus('b1', '2026-07-14T10:00:00.000Z')]];
+    const aggregator = TestBed.inject(FeedAggregator);
+    aggregator.reset();
+    expect((await firstValueFrom(aggregator.nextPage())).map((s) => s.id)).toEqual(['b1']);
+    expect(prefs.isProviderVisible('bluesky')).toBe(true);
+    expect(homeTimeline).not.toHaveBeenCalled();
   });
 
   /**

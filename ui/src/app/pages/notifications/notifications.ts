@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, Subscription, timeout } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { Api } from '../../api';
 import { ClientPrefs } from '../../client-prefs';
@@ -19,17 +19,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 type NotifAudience = 'all' | 'friends' | 'followers';
 type NotificationView = 'notifications' | 'new-accounts';
 
-/**
- * Which network's notifications are showing.
- *
- * Deliberately a switch rather than one merged stream. Half this page's
- * controls cannot cross the boundary: the audience filter batches
- * `api.relationships()` over account ids the Mastodon server issued, the
- * account actions are Mastodon writes, and the live toggle is a Mastodon
- * WebSocket. Bluesky has no notification stream at all — it is polled. Showing
- * those controls over Bluesky rows would mean four features that silently fail.
- */
-export type NotificationSource = 'mastodon' | 'bluesky';
+/** Each network keeps its own cursor; rows can be merged by creation time. */
+export type NotificationSource = 'all' | 'mastodon' | 'bluesky';
 
 export interface NewAccountCandidate {
   account: Account;
@@ -42,6 +33,8 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.sourceAriaLabel: Notification source
 // i18n pages.notifications.source.mastodon: 🐘 Mastodon
 // i18n pages.notifications.source.bluesky: 🦋 Bluesky
+// i18n pages.notifications.source.all: Both
+// i18n pages.notifications.mastodonLoadFailed: Could not load Mastodon notifications. Try refreshing.
 // i18n pages.notifications.viewAriaLabel: Notification view
 // i18n pages.notifications.notifications: Notifications
 // i18n pages.notifications.newAccounts: Accounts New to Me
@@ -53,7 +46,7 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.type.all: All types
 // i18n pages.notifications.live.title: Live: new notifications stream in as they arrive. Turn off in Blue → Auto-refresh timeline.
 // i18n pages.notifications.live.label: ● Live
-// i18n pages.notifications.refresh.title: Check Bluesky for new notifications
+// i18n pages.notifications.refresh.title: Check for new notifications
 // i18n pages.notifications.refresh.label: ↻ Refresh
 // i18n pages.notifications.loading: Loading…
 // i18n pages.notifications.empty: No notifications yet.
@@ -264,6 +257,7 @@ export class Notifications implements OnInit, OnDestroy {
   private bskyNotifications = inject(BlueskyNotifications);
   protected bskySession = inject(BlueskySession);
   private transloco = inject(TranslocoService);
+  protected mastodonAvailable = computed(() => !!this.auth.token());
 
   /** Media thumbnails respect the feed-wide images on/off preference. */
   protected showImages = this.prefs.showImages;
@@ -271,6 +265,11 @@ export class Notifications implements OnInit, OnDestroy {
   protected source = signal<NotificationSource>('mastodon');
   /** Bluesky's opaque paging cursor; null before the first page or once done. */
   private bskyCursor: string | null = null;
+  private mastodonCursor: string | undefined;
+  private mastodonDone = false;
+  private bskyDone = false;
+  private pageSub: Subscription | null = null;
+  protected mastodonError = signal<string | null>(null);
   /** Why the Bluesky list is empty, when it is empty for a reason. */
   protected bskyError = signal<string | null>(null);
 
@@ -331,7 +330,7 @@ export class Notifications implements OnInit, OnDestroy {
       // /api/v1/accounts/relationships can only 400. The controls that need
       // relationships are hidden for Bluesky anyway; this stops the effect
       // firing at all.
-      if (this.source() === 'bluesky') {
+      if (this.source() !== 'mastodon') {
         return;
       }
       if (this.audience() === 'all' && this.view() !== 'new-accounts') {
@@ -384,32 +383,31 @@ export class Notifications implements OnInit, OnDestroy {
   private readonly liveEffect = effect(() => this.syncLive());
 
   ngOnInit(): void {
-    this.diagnostics.info('Notifications', 'page:open');
+    this.source.set(
+      this.bskySession.linked() ? (this.mastodonAvailable() ? 'all' : 'bluesky') : 'mastodon',
+    );
+    this.diagnostics.info('Notifications', 'page:open', {
+      source: this.source(),
+      mastodonConfigured: this.mastodonAvailable(),
+      blueskyConfigured: this.bskySession.linked(),
+    });
     this.load();
   }
 
   /** Load the first page of whichever source is selected. */
   private load(): void {
+    this.pageSub?.unsubscribe();
     this.loading.set(true);
+    this.loadingMore.set(false);
     this.items.set([]);
     this.exhausted.set(false);
     this.bskyError.set(null);
+    this.mastodonError.set(null);
     this.bskyCursor = null;
-    if (this.source() === 'bluesky') {
-      this.loadBluesky();
-      return;
-    }
-    this.api.notifications().subscribe({
-      next: (n) => {
-        this.items.set(n);
-        this.loading.set(false);
-        this.diagnostics.info('Notifications', 'load:success', { notifications: n.length });
-      },
-      error: (error: unknown) => {
-        this.loading.set(false);
-        this.diagnostics.error('Notifications', 'load:error', error);
-      },
-    });
+    this.mastodonCursor = undefined;
+    this.mastodonDone = this.source() === 'bluesky' || !this.mastodonAvailable();
+    this.bskyDone = this.source() === 'mastodon' || !this.bskySession.linked();
+    this.loadRound();
   }
 
   /**
@@ -438,79 +436,81 @@ export class Notifications implements OnInit, OnDestroy {
     this.load();
   }
 
-  /** One page of Bluesky notifications, appended to whatever is already shown. */
-  private loadBluesky(): void {
-    if (!this.bskySession.linked()) {
-      this.loading.set(false);
-      this.exhausted.set(true);
-      this.bskyError.set(this.transloco.translate<string>('pages.notifications.bskyNotLinked'));
-      return;
+  /** Failures are isolated so a healthy network's notifications remain usable. */
+  private loadRound(): void {
+    const pages: Observable<MastodonNotification[]>[] = [];
+    if (!this.mastodonDone) {
+      pages.push(
+        this.api.notifications(this.mastodonCursor).pipe(
+          timeout(15_000),
+          map((batch) => {
+            const cursor = batch.at(-1)?.id;
+            this.mastodonDone = !cursor || cursor === this.mastodonCursor;
+            this.mastodonCursor = cursor ?? this.mastodonCursor;
+            this.diagnostics.info('Notifications', 'load:success', { notifications: batch.length });
+            return batch;
+          }),
+          catchError((error: unknown) => {
+            this.mastodonDone = true;
+            this.mastodonError.set(
+              this.transloco.translate<string>('pages.notifications.mastodonLoadFailed'),
+            );
+            this.diagnostics.error('Notifications', 'load:error', error);
+            return of([]);
+          }),
+        ),
+      );
     }
-    const cursor = this.bskyCursor;
-    this.bskyNotifications.page(cursor).subscribe({
-      next: (page) => {
-        this.bskyCursor = page.cursor;
-        const seen = new Set(this.items().map((n) => n.id));
-        this.items.update((list) => [
-          ...list,
-          ...page.notifications.filter((n) => !seen.has(n.id)),
-        ]);
-        this.exhausted.set(!page.cursor || page.notifications.length === 0);
-        this.loading.set(false);
-        this.loadingMore.set(false);
-        this.diagnostics.info('Notifications', 'load:bsky-success', {
-          notifications: page.notifications.length,
-        });
-        // Clearing the badge is best-effort: failing to mark seen must not make
-        // the page look broken when the notifications themselves arrived.
-        if (!cursor) {
-          this.bskyNotifications.markSeen().subscribe({ error: () => undefined });
-        }
-      },
-      error: (error: unknown) => {
-        this.loading.set(false);
-        this.loadingMore.set(false);
-        this.exhausted.set(true);
-        this.diagnostics.error('Notifications', 'load:bsky-error', error);
-        this.bskyError.set(
-          error instanceof Error
-            ? error.message
-            : this.transloco.translate<string>('pages.notifications.bskyLoadFailed'),
-        );
-      },
+    if (!this.bskyDone) {
+      const cursor = this.bskyCursor;
+      pages.push(
+        this.bskyNotifications.page(cursor).pipe(
+          timeout(15_000),
+          map((page) => {
+            this.bskyCursor = page.cursor;
+            this.bskyDone = !page.cursor || page.cursor === cursor;
+            this.diagnostics.info('Notifications', 'load:bsky-success', {
+              notifications: page.notifications.length,
+            });
+            if (!cursor) this.bskyNotifications.markSeen().subscribe({ error: () => undefined });
+            return page.notifications;
+          }),
+          catchError((error: unknown) => {
+            this.bskyDone = true;
+            this.bskyError.set(
+              this.transloco.translate<string>('pages.notifications.bskyLoadFailed'),
+            );
+            this.diagnostics.error('Notifications', 'load:bsky-error', error);
+            return of([]);
+          }),
+        ),
+      );
+    }
+    this.pageSub = (pages.length ? forkJoin(pages) : of([])).subscribe((batches) => {
+      this.mergeItems(batches.flat());
+      this.loading.set(false);
+      this.loadingMore.set(false);
+      this.exhausted.set(this.mastodonDone && this.bskyDone);
     });
   }
 
+  private mergeItems(batch: MastodonNotification[]): void {
+    this.items.update((list) =>
+      [...new Map([...list, ...batch].map((n) => [n.id, n])).values()].sort(
+        (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at),
+      ),
+    );
+  }
+
   ngOnDestroy(): void {
+    this.pageSub?.unsubscribe();
     this.liveSub?.unsubscribe();
   }
 
   loadMore(): void {
-    if (this.source() === 'bluesky') {
-      if (this.loadingMore() || this.exhausted() || !this.bskyCursor) {
-        return;
-      }
-      this.loadingMore.set(true);
-      this.loadBluesky();
-      return;
-    }
-    const last = this.items().at(-1);
-    if (!last || this.loadingMore() || this.exhausted()) {
-      return;
-    }
+    if (this.loading() || this.loadingMore() || this.exhausted()) return;
     this.loadingMore.set(true);
-    this.api.notifications(last.id).subscribe({
-      next: (batch) => {
-        this.loadingMore.set(false);
-        if (!batch.length) {
-          this.exhausted.set(true);
-          return;
-        }
-        const seen = new Set(this.items().map((n) => n.id));
-        this.items.update((list) => [...list, ...batch.filter((n) => !seen.has(n.id))]);
-      },
-      error: () => this.loadingMore.set(false),
-    });
+    this.loadRound();
   }
 
   private stopLive(): void {
@@ -529,7 +529,8 @@ export class Notifications implements OnInit, OnDestroy {
    * shut while that source is selected no matter what the preference says.
    */
   private syncLive(): void {
-    const wanted = this.prefs.autoRefreshTimeline() && this.source() === 'mastodon';
+    const wanted =
+      this.prefs.autoRefreshTimeline() && this.mastodonAvailable() && this.source() !== 'bluesky';
     if (wanted === this.live()) {
       return;
     }
@@ -540,7 +541,7 @@ export class Notifications implements OnInit, OnDestroy {
     this.live.set(true);
     this.liveSub = this.streaming.open({ stream: 'user' }).subscribe(({ event, payload }) => {
       if (event === 'notification') {
-        this.items.update((list) => [payload as MastodonNotification, ...list]);
+        this.mergeItems([payload as MastodonNotification]);
       }
     });
   }
@@ -686,8 +687,12 @@ export class Notifications implements OnInit, OnDestroy {
    * (`getLikes` / `getRepostedBy`) exist and could back this later; until then
    * the count renders as plain text rather than a button that 404s.
    */
-  listMode(type: string): AccountListMode | null {
-    if (this.source() === 'bluesky') {
+  listMode(type: string, status?: Status): AccountListMode | null {
+    if (
+      status?.provider === 'bluesky' ||
+      status?.id.startsWith('bsky:') ||
+      this.source() === 'bluesky'
+    ) {
       return null;
     }
     return type === 'favourite' ? 'favourited_by' : type === 'reblog' ? 'reblogged_by' : null;
@@ -702,7 +707,7 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   openGroupList(row: NotifRow & { kind: 'group' }): void {
-    const mode = this.listMode(row.type);
+    const mode = this.listMode(row.type, row.status);
     if (mode) {
       this.listTarget.set({ statusId: row.status.id, mode });
     }

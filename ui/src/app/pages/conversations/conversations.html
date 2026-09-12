@@ -44,13 +44,15 @@
         >
           {{ 'pages.conversations.filters.all' | transloco }}
         </button>
-        <button
-          [class.active]="prefs.chatAudience() === 'mutuals'"
-          (click)="prefs.setChatAudience('mutuals')"
-          [title]="'pages.conversations.filters.mutualsTitle' | transloco"
-        >
-          {{ 'pages.conversations.filters.mutuals' | transloco }}
-        </button>
+        @if (mastodonAvailable()) {
+          <button
+            [class.active]="prefs.chatAudience() === 'mutuals'"
+            (click)="prefs.setChatAudience('mutuals')"
+            [title]="'pages.conversations.filters.mutualsTitle' | transloco"
+          >
+            {{ 'pages.conversations.filters.mutuals' | transloco }}
+          </button>
+        }
         <!-- Only with somewhere to lead: without a bot correspondent this
              filter can only ever produce an empty list. -->
         @if (bots.peers().length) {
@@ -71,20 +73,22 @@
         <button [class.active]="prefs.chatKind() === 'all'" (click)="prefs.setChatKind('all')">
           {{ 'pages.conversations.filters.all' | transloco }}
         </button>
-        <button
-          [class.active]="prefs.chatKind() === 'private'"
-          (click)="prefs.setChatKind('private')"
-          [title]="'pages.conversations.filters.privateTitle' | transloco"
-        >
-          {{ 'pages.conversations.badge.private' | transloco }}
-        </button>
-        <button
-          [class.active]="prefs.chatKind() === 'public'"
-          (click)="prefs.setChatKind('public')"
-          [title]="'pages.conversations.filters.publicTitle' | transloco"
-        >
-          {{ 'pages.conversations.badge.public' | transloco }}
-        </button>
+        @if (mastodonAvailable()) {
+          <button
+            [class.active]="prefs.chatKind() === 'private'"
+            (click)="prefs.setChatKind('private')"
+            [title]="'pages.conversations.filters.privateTitle' | transloco"
+          >
+            {{ 'pages.conversations.badge.private' | transloco }}
+          </button>
+          <button
+            [class.active]="prefs.chatKind() === 'public'"
+            (click)="prefs.setChatKind('public')"
+            [title]="'pages.conversations.filters.publicTitle' | transloco"
+          >
+            {{ 'pages.conversations.badge.public' | transloco }}
+          </button>
+        }
         @if (bsky.linked()) {
           <button
             [class.active]="prefs.chatKind() === 'bsky'"
@@ -96,6 +100,19 @@
         }
       </div>
     </div>
+    @if (mastodonLoadError()) {
+      <p class="muted small" role="alert">
+        {{ 'pages.conversations.loadError.mastodon' | transloco }}
+      </p>
+      <button class="btn btn-outline" [disabled]="loading()" (click)="load()">
+        {{ 'pages.conversations.retry' | transloco }}
+      </button>
+    }
+    @if (bskyLoadError() && !bskyScopeError()) {
+      <p class="muted small" role="alert">
+        {{ 'pages.conversations.loadError.bluesky' | transloco }}
+      </p>
+    }
     @if (bskyScopeError()) {
       <p class="muted small bsky-scope-hint">
         {{ 'pages.conversations.bskyScopeHint.a' | transloco }}
@@ -107,11 +124,11 @@
     }
     @if (loading()) {
       <p class="muted center">{{ 'pages.conversations.loading' | transloco }}</p>
-    } @else if (!chats().length) {
+    } @else if (!chats().length && !mastodonLoadError() && !bskyLoadError()) {
       <p class="muted center small">
         {{ 'pages.conversations.emptyChats' | transloco }}
       </p>
-    } @else if (!visibleChats().length) {
+    } @else if (chats().length && !visibleChats().length) {
       <p class="muted center small">{{ 'pages.conversations.noMatch' | transloco }}</p>
     }
     @for (c of visibleChats(); track c.key) {
@@ -181,7 +198,7 @@
     <!-- Only when there is Mastodon history to page through. A bot row is not
          that: "Load more" fetches older mentions, and an anonymous visitor whose
          only chat is Eliza has none to fetch. -->
-    @if (!loading() && hasServerChats()) {
+    @if (mastodonAvailable() && !loading() && hasServerChats()) {
       <div class="chat-load-more">
         @if (chatsExhausted()) {
           <span class="muted small">{{ 'pages.conversations.noOlderMessages' | transloco }}</span>
@@ -335,6 +352,14 @@
       }
 
       <div class="chat-scroll" #scroller>
+        @if (threadError() === 'bluesky') {
+          <p class="muted" role="alert">
+            {{ 'pages.conversations.threadError.bluesky' | transloco }}
+          </p>
+          <button class="btn btn-outline" (click)="retryThread()">
+            {{ 'pages.conversations.retry' | transloco }}
+          </button>
+        }
         @if (threadLoading()) {
           <p class="muted center small">{{ 'pages.conversations.loadingThread' | transloco }}</p>
         }
@@ -507,6 +532,11 @@
           </button>
         </div>
       } @else if (chat.kind === 'bsky') {
+        @if (bskySendError()) {
+          <p class="muted" role="alert">
+            {{ 'pages.conversations.sendError.bluesky' | transloco }}
+          </p>
+        }
         <div class="chat-compose bsky-compose">
           <textarea
             rows="2"

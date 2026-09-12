@@ -143,6 +143,12 @@ export function mastodonConnectorToken(): string | null {
   return loadConnector().state === 'signed-in' ? storedToken() : null;
 }
 
+/** Selected identity's opted-in server, including an anonymous connector. */
+export function mastodonConnectorServer(): string | null {
+  const connector = loadConnector();
+  return connector.state === 'absent' ? null : connector.server;
+}
+
 /**
  * Forget a connector's credentials from outside the service.
  *

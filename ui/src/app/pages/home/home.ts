@@ -124,6 +124,8 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.feedEnd.checkDoctor: Check the Feed Doctor.
 // i18n pages.home.warnings.anonymousErrors.link: Review followed sources or retry the public API
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
+// i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Try refreshing, or check your Bluesky connection in Settings.
+// i18n pages.home.warnings.blueskyError.link: Check Bluesky connection
 // i18n pages.home.twitterUnloaded.summary.other: {{count}} followed Twitter accounts have nothing saved yet, so they are not in this feed.
 // i18n pages.home.twitterUnloaded.loadLink.one: Load it on the Twitter connector ({{count}} request)
 // i18n pages.home.twitterUnloaded.loadLink.other: Load them on the Twitter connector ({{count}} requests)
@@ -211,6 +213,11 @@ export class Home implements OnInit, OnDestroy {
     ),
   );
   private registry = inject(ProviderRegistry);
+  protected blueskyFeedFailed = computed(() =>
+    this.registry
+      .linked()
+      .some((provider) => provider.id === 'bluesky' && provider.errors().length > 0),
+  );
   private bsky = inject(BlueskySession);
   private bskyApi = inject(BlueskyApi);
   private server = inject(Server);

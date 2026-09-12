@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, timeout } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -38,6 +38,7 @@ import {
 } from '../../providers/bluesky/bluesky-types';
 import { Terminology } from '../../terminology';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { PageDiagnostics } from '../../page-diagnostics';
 
 /** localStorage map of chat key → ISO timestamp of the newest message seen there. */
 const READ_KEY = 'mockingbird_chat_read';
@@ -190,6 +191,14 @@ export class Conversations implements OnInit, OnDestroy {
 
   private api = inject(Api);
   private auth = inject(Auth);
+  private diagnostics = inject(PageDiagnostics);
+  protected mastodonAvailable = computed(() => !this.auth.lacksMastodonToken);
+  protected mastodonLoadError = signal(false);
+  protected bskyLoadError = signal(false);
+  protected bskySendError = signal(false);
+  protected threadError = signal<'bluesky' | null>(null);
+  private loadSub = new Subscription();
+  private threadSub: Subscription | null = null;
   private streaming = inject(Streaming);
   private bskyChat = inject(BlueskyChatApi);
   private route = inject(ActivatedRoute);
@@ -322,7 +331,7 @@ export class Conversations implements OnInit, OnDestroy {
       }
     });
     effect(() => {
-      if (this.prefs.chatAudience() !== 'mutuals') {
+      if (!this.mastodonAvailable() || this.prefs.chatAudience() !== 'mutuals') {
         return;
       }
       const missing = new Set<string>();
@@ -665,7 +674,15 @@ export class Conversations implements OnInit, OnDestroy {
     }
     this.pendingWith.set(this.route.snapshot.queryParamMap.get('with'));
     this.pendingContext.set(this.route.snapshot.queryParamMap.get('context'));
+    // Account-scoped preferences can still contain an unavailable old filter.
+    if (!this.mastodonAvailable()) {
+      if (['private', 'public'].includes(this.prefs.chatKind())) this.prefs.setChatKind('all');
+      if (this.prefs.chatAudience() === 'mutuals') this.prefs.setChatAudience('all');
+    } else if (!this.bsky.linked() && this.prefs.chatKind() === 'bsky') {
+      this.prefs.setChatKind('all');
+    }
     this.load();
+    if (!this.mastodonAvailable()) return;
     // The IM feel: streams are live while this page is open, closed on leave.
     this.subs.push(
       this.streaming.open({ stream: 'direct' }).subscribe(({ event, payload }) => {
@@ -689,46 +706,75 @@ export class Conversations implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.loadSub.unsubscribe();
+    this.threadSub?.unsubscribe();
     for (const sub of this.subs) {
       sub.unsubscribe();
     }
   }
 
   load(): void {
+    this.loadSub.unsubscribe();
+    this.loadSub = new Subscription();
+    this.mastodonLoadError.set(false);
+    this.bskyLoadError.set(false);
+    this.bskyScopeError.set(false);
     this.loading.set(true);
-    let pending = this.bsky.linked() ? 3 : 2;
+    let pending = (this.bsky.linked() ? 1 : 0) + (this.mastodonAvailable() ? 2 : 0);
+    if (!pending) this.loading.set(false);
     const done = () => {
       if (--pending === 0) {
         this.loading.set(false);
       }
     };
     if (this.bsky.linked()) {
-      this.bskyChat.listConvos().subscribe({
-        next: (list) => {
-          this.bskyConvos.set(list.convos);
-          this.bskyScopeError.set(false);
-          done();
-        },
-        error: (err: unknown) => {
-          this.bskyScopeError.set(isChatScopeError(err));
-          done();
-        },
-      });
+      this.loadSub.add(
+        this.bskyChat
+          .listConvos()
+          .pipe(timeout(15_000))
+          .subscribe({
+            next: (list) => {
+              this.bskyConvos.set(list.convos);
+              this.bskyScopeError.set(false);
+              done();
+            },
+            error: (err: unknown) => {
+              this.blueskyLoadFailed(err);
+              done();
+            },
+          }),
+      );
     }
-    this.api.conversations().subscribe({
-      next: (convs) => {
-        this.privateConvs.set(convs);
-        done();
-      },
-      error: done,
-    });
-    this.api.notifications().subscribe({
-      next: (notifs) => {
-        this.ingestNotifPage(notifs);
-        done();
-      },
-      error: done,
-    });
+    if (!this.mastodonAvailable()) return;
+    const failed = (error: unknown) => {
+      this.mastodonLoadError.set(true);
+      this.diagnostics.error('Conversations', 'load:mastodon-error', error);
+      done();
+    };
+    this.loadSub.add(
+      this.api
+        .conversations()
+        .pipe(timeout(15_000))
+        .subscribe({
+          next: (convs) => {
+            this.privateConvs.set(convs);
+            done();
+          },
+          error: failed,
+        }),
+    );
+    this.loadSub.add(
+      this.api
+        .notifications()
+        .pipe(timeout(15_000))
+        .subscribe({
+          next: (notifs) => {
+            this.ingestNotifPage(notifs);
+            done();
+          },
+          error: failed,
+        }),
+    );
   }
 
   /**
@@ -753,7 +799,12 @@ export class Conversations implements OnInit, OnDestroy {
    * fill out — the first page alone shows only a sliver of a busy history.
    */
   loadMoreChats(): void {
-    if (!this.oldestNotifId || this.loadingMoreChats() || this.chatsExhausted()) {
+    if (
+      !this.mastodonAvailable() ||
+      !this.oldestNotifId ||
+      this.loadingMoreChats() ||
+      this.chatsExhausted()
+    ) {
       return;
     }
     this.loadingMoreChats.set(true);
@@ -771,6 +822,10 @@ export class Conversations implements OnInit, OnDestroy {
   }
 
   select(chat: Chat, anchor: Status | null = chat.lastStatus): void {
+    this.threadSub?.unsubscribe();
+    this.threadLoading.set(false);
+    this.threadError.set(null);
+    this.bskySendError.set(false);
     this.selectedKey.set(chat.key);
     // Narrow screens show the chat list as a drawer over the transcript; once a
     // chat is chosen the list has done its job and the conversation should have
@@ -798,6 +853,10 @@ export class Conversations implements OnInit, OnDestroy {
    * the status request then replaces the blank transcript with useful context.
    */
   private selectWithContext(chat: Chat, contextId: string | null): void {
+    if (!this.mastodonAvailable() || contextId?.startsWith('bsky:')) {
+      this.select(chat);
+      return;
+    }
     if (!contextId) {
       this.select(chat);
       return;
@@ -825,6 +884,7 @@ export class Conversations implements OnInit, OnDestroy {
    * and `chats()`).
    */
   private draftFor(key: string, withId: string, contextId: string | null): void {
+    if (!this.mastodonAvailable() || withId.startsWith('bsky:')) return;
     this.api.getAccount(withId).subscribe({
       next: (account) => {
         // Guard the race: a real row for this key may have arrived while the
@@ -889,6 +949,7 @@ export class Conversations implements OnInit, OnDestroy {
   // ---------------------------------------------------------------- thread
 
   private loadThread(chat: Chat, anchor: Status | null = chat.lastStatus): void {
+    if (!this.mastodonAvailable()) return;
     // Merged private chats span several threads; their last statuses at least
     // belong in the history even though only the anchor's context is fetched.
     const known =
@@ -965,25 +1026,36 @@ export class Conversations implements OnInit, OnDestroy {
       return;
     }
     this.threadLoading.set(true);
+    this.threadError.set(null);
+    this.threadSub?.unsubscribe();
     this.bskyMessages.set([]);
-    this.bskyChat.getMessages(chat.convoId).subscribe({
-      next: ({ messages }) => {
-        // Newest-first from the API; deleted messages arrive without text.
-        const chronological = messages.filter((m) => m.text !== undefined).reverse();
-        this.bskyMessages.set(chronological);
-        this.threadLoading.set(false);
-        this.scrollToBottom();
-        const newest = chronological.at(-1);
-        if (newest) {
-          // Best-effort: a failed read-receipt shouldn't surface anywhere.
-          this.bskyChat.updateRead(chat.convoId!, newest.id).subscribe({ error: () => undefined });
-        }
-        this.bskyConvos.update((list) =>
-          list.map((c) => (c.id === chat.convoId ? { ...c, unreadCount: 0 } : c)),
-        );
-      },
-      error: () => this.threadLoading.set(false),
-    });
+    this.threadSub = this.bskyChat
+      .getMessages(chat.convoId)
+      .pipe(timeout(15_000))
+      .subscribe({
+        next: ({ messages }) => {
+          // Newest-first from the API; deleted messages arrive without text.
+          const chronological = messages.filter((m) => m.text !== undefined).reverse();
+          this.bskyMessages.set(chronological);
+          this.threadLoading.set(false);
+          this.scrollToBottom();
+          const newest = chronological.at(-1);
+          if (newest) {
+            // Best-effort: a failed read-receipt shouldn't surface anywhere.
+            this.bskyChat
+              .updateRead(chat.convoId!, newest.id)
+              .subscribe({ error: () => undefined });
+          }
+          this.bskyConvos.update((list) =>
+            list.map((c) => (c.id === chat.convoId ? { ...c, unreadCount: 0 } : c)),
+          );
+        },
+        error: (error: unknown) => {
+          this.threadLoading.set(false);
+          this.threadError.set('bluesky');
+          this.diagnostics.error('Conversations', 'thread:bluesky-error', error);
+        },
+      });
   }
 
   sendBskyMessage(): void {
@@ -993,48 +1065,81 @@ export class Conversations implements OnInit, OnDestroy {
       return;
     }
     this.bskySending.set(true);
-    this.bskyChat.sendMessage(chat.convoId, text).subscribe({
-      next: (message) => {
-        this.bskySending.set(false);
-        this.bskyDraft.set('');
-        this.bskyMessages.update((list) => [...list, message]);
-        this.bskyConvos.update((list) =>
-          list.map((c) => (c.id === chat.convoId ? { ...c, lastMessage: message } : c)),
-        );
-        this.scrollToBottom();
-      },
-      error: () => this.bskySending.set(false),
-    });
+    this.bskySendError.set(false);
+    this.subs.push(
+      this.bskyChat
+        .sendMessage(chat.convoId, text)
+        .pipe(timeout(15_000))
+        .subscribe({
+          next: (message) => {
+            this.bskySending.set(false);
+            if (this.selectedKey() !== chat.key) return;
+            if (this.bskyDraft().trim() === text) this.bskyDraft.set('');
+            this.bskyMessages.update((list) => [...list, message]);
+            this.bskyConvos.update((list) =>
+              list.map((c) => (c.id === chat.convoId ? { ...c, lastMessage: message } : c)),
+            );
+            this.scrollToBottom();
+          },
+          error: (error: unknown) => {
+            this.bskySending.set(false);
+            if (this.selectedKey() === chat.key) this.bskySendError.set(true);
+            this.diagnostics.error('Conversations', 'send:bluesky-error', error);
+          },
+        }),
+    );
   }
 
   // i18n pages.conversations.refreshBluesky: Refresh Bluesky chats
   protected refreshBskyConvos(): void {
     if (this.bskyRefreshing() || this.loading() || !this.bsky.linked()) return;
     this.bskyRefreshing.set(true);
+    this.bskyLoadError.set(false);
+    this.bskyScopeError.set(false);
     this.subs.push(
-      this.bskyChat.listConvos().subscribe({
-        next: (list) => {
-          this.bskyRefreshing.set(false);
-          const before = this.bskyConvos();
-          this.bskyConvos.set(list.convos);
-          const chat = this.selected();
-          if (chat?.kind !== 'bsky' || !chat.convoId) {
-            return;
-          }
-          // Reload the open thread only when its convo actually advanced.
-          const prev = before.find((c) => c.id === chat.convoId);
-          const next = list.convos.find((c) => c.id === chat.convoId);
-          if (next && next.rev !== prev?.rev) {
-            this.loadBskyThread(chat);
-          }
-        },
-        error: (error: unknown) => {
-          this.bskyRefreshing.set(false);
-          this.bskyScopeError.set(isChatScopeError(error));
-        },
-      }),
+      this.bskyChat
+        .listConvos()
+        .pipe(timeout(15_000))
+        .subscribe({
+          next: (list) => {
+            this.bskyRefreshing.set(false);
+            const before = this.bskyConvos();
+            this.bskyConvos.set(list.convos);
+            const chat = this.selected();
+            if (chat?.kind !== 'bsky' || !chat.convoId) {
+              return;
+            }
+            // Reload the open thread only when its convo actually advanced.
+            const prev = before.find((c) => c.id === chat.convoId);
+            const next = list.convos.find((c) => c.id === chat.convoId);
+            if (next && next.rev !== prev?.rev) {
+              this.loadBskyThread(chat);
+            }
+          },
+          error: (error: unknown) => {
+            this.bskyRefreshing.set(false);
+            this.blueskyLoadFailed(error);
+          },
+        }),
     );
   }
+
+  private blueskyLoadFailed(error: unknown): void {
+    this.bskyScopeError.set(this.bsky.session()?.authMethod !== 'oauth' && isChatScopeError(error));
+    this.bskyLoadError.set(true);
+    this.diagnostics.error('Conversations', 'load:bluesky-error', error);
+  }
+
+  protected retryThread(): void {
+    const chat = this.selected();
+    if (chat?.kind === 'bsky') this.loadBskyThread(chat);
+  }
+
+  // i18n pages.conversations.loadError.mastodon: Could not load all Mastodon conversations. Try again.
+  // i18n pages.conversations.loadError.bluesky: Could not load Bluesky conversations. Try again.
+  // i18n pages.conversations.threadError.bluesky: Could not load Bluesky messages.
+  // i18n pages.conversations.sendError.bluesky: Could not send your Bluesky message. Your draft is still here; check the conversation before retrying.
+  // i18n pages.conversations.retry: Retry
 
   // ---------------------------------------------------------------- read state
 

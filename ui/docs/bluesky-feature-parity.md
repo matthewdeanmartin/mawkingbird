@@ -2,6 +2,11 @@
 
 Status: product/code audit, 2026-08-24
 
+Current reassessment: [2026-09-12 parity audit](bluesky-parity-audit-2026-09-12.md).
+The matrix below is historical: its August 27 progress notes supersede several
+earlier rows, and the September audit records further completed work and remaining
+account-routing defects. Do not treat every **No** below as an open issue.
+
 ## Purpose
 
 Mawkingbird began with a Mastodon-shaped application model and later added Bluesky as both a connector and a primary identity. The identity work is now real: a person can start with Bluesky, add Bluesky alts, switch among them, and attach Mastodon to a Bluesky-primary account. The next problem is no longer login. It is making a Bluesky-primary account feel like a first-class account throughout the product.

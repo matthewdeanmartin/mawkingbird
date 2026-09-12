@@ -6,6 +6,8 @@ Your Home feed is a stream of posts gathered from the people and sources you cho
 
 For a signed-in account, Home normally includes posts from people that account follows. Mawkingbird can also combine posts from connected networks and other sources.
 
+A Bluesky-primary account reads its Bluesky timeline without requiring a Mastodon login. Connecting a signed-in Mastodon account adds its Home timeline. A Mastodon-primary account can likewise add a Bluesky connection.
+
 For an Anonymous visitor, follows are kept in the current browser. The feed may start with a small preview, then change as you choose people yourself.
 
 ## Read a post
@@ -47,5 +49,13 @@ If you do follow people but expected more posts:
 1. Check whether replies, reposts, Calm, languages, or the time range are hiding them.
 2. Choose **Load more** or **Load older posts** at the end of the feed when offered.
 3. Use **Feed Doctor** when Mawkingbird offers it at the end of the feed.
+
+If Bluesky fails to load, Home shows a connection warning. Refresh to retry, or check **Settings → Connections → Bluesky**. A failed request does not mean that nobody has posted.
+
+## Notifications from connected networks
+
+Notifications offers only the networks you have signed in to. With both Mastodon and Bluesky configured, it starts on **Both**, combining loaded notifications newest-first. Choose either network to narrow the list; **Load more** pages each selected network independently.
+
+The friends/followers filters and **Accounts New to Me** are available in the Mastodon-only view. Mastodon can receive live notifications when auto-refresh is enabled; use **Refresh** to check Bluesky. If one network fails, the other network's notifications remain visible alongside an error message.
 
 Next: [Find people to follow](../finding-people/find-people.md).

@@ -111,6 +111,8 @@ describe('StatusCard', () => {
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    // Mastodon actions require a signed-in account, not just a non-anonymous kind.
+    TestBed.inject(Auth).token.set('status-card-test-token');
   });
 
   afterEach(() => {

@@ -4,6 +4,8 @@ import { Auth } from './auth';
 import { EXTERNAL_FETCH } from './providers/external-fetch';
 import { SEARCH_SERVER_REQUEST, SearchServer } from './search-server';
 import { Server } from './server';
+import { mastodonConnectorServer } from './providers/mastodon/mastodon-connector';
+import { normalizeHostUrl } from './host-url';
 
 /** Attach the Mastodon token only to the selected instance's API. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -38,7 +40,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   } catch {
     return next(req);
   }
-  const token = inject(Auth).token();
+  const auth = inject(Auth);
+  // A connector credential belongs to its recorded server, even if a caller
+  // temporarily changes the global server selection without switching identity.
+  if (
+    auth.isBlueskyPrimary &&
+    normalizeHostUrl(mastodonConnectorServer() ?? '') !== server.baseUrl()
+  ) {
+    return next(req);
+  }
+  const token = auth.token();
   if (token) {
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }
