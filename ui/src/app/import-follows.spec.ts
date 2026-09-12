@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from './api';
 import { ImportFollows, normalizeHandle, parseHandles } from './import-follows';
 import { Account } from './models';
@@ -13,6 +13,10 @@ import { AnonymousPublicApi } from './providers/anonymous/anonymous-public-api';
 function acct(id: string, acctName: string): Account {
   return { id, acct: acctName, username: acctName.split('@')[0] } as Account;
 }
+
+beforeEach(() => {
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
 
 describe('parseHandles', () => {
   it('parses a Mastodon following_accounts.csv export', () => {
@@ -56,6 +60,19 @@ describe('normalizeHandle', () => {
 });
 
 describe('ImportFollows', () => {
+  it('cancels before resolving or following any authenticated account', async () => {
+    vi.mocked(window.confirm).mockReturnValue(false);
+    const search = vi.fn();
+    const follow = vi.fn();
+    const importer = setUp({ search, follow });
+    importer.load(['alice@social.example', 'bob@social.example']);
+    await importer.start();
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(search).not.toHaveBeenCalled();
+    expect(follow).not.toHaveBeenCalled();
+    expect(importer.rows().every((r) => r.status === 'pending')).toBe(true);
+    expect(importer.running()).toBe(false);
+  });
   function setUp(api: Partial<Api>) {
     TestBed.configureTestingModule({ providers: [{ provide: Api, useValue: api }] });
     const importer = TestBed.inject(ImportFollows);

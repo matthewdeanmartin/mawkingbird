@@ -96,6 +96,7 @@
 
 @if (!nothingFollowed()) {
   <app-command-bar
+    [showFilters]="true"
     [providerChips]="!justMyServer.effectiveEnabled()"
     [showImages]="true"
     [showReaderControls]="false"
@@ -107,19 +108,6 @@
     (providerVisibilityChanged)="load()"
     (viewChange)="setView($event)"
   >
-  </app-command-bar>
-
-  <!-- Was a lone "Local Feed" link projected into the command bar above, which
-     lacked the bar's `command-item` class and so shrank and scrolled out of
-     sight under the right rail. Now a row of its own, with the server's other
-     feeds alongside it. -->
-  @if (justMyServer.effectiveEnabled()) {
-    <app-pinned-server-feeds />
-  }
-
-  <!-- FILTER: content narrowing for every presentation above. Like WHAT and HOW,
-     this name stays in source rather than becoming another visible label. -->
-  @if (!nothingFollowed()) {
     <div
       class="home-filters"
       role="group"
@@ -167,6 +155,14 @@
       </button>
       <app-feed-language-picker />
     </div>
+  </app-command-bar>
+
+  <!-- Was a lone "Local Feed" link projected into the command bar above, which
+     lacked the bar's `command-item` class and so shrank and scrolled out of
+     sight under the right rail. Now a row of its own, with the server's other
+     feeds alongside it. -->
+  @if (justMyServer.effectiveEnabled()) {
+    <app-pinned-server-feeds />
   }
 
   <!-- READER: the full long-form control set gets its own fourth row. Keeping it

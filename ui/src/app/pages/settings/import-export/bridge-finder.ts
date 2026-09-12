@@ -1,3 +1,4 @@
+import { BulkFollowConfirmation } from '../../../bulk-follow-confirmation';
 /**
  * The bridge finder: *"who that I follow over there is also over here?"*
  *
@@ -81,6 +82,7 @@ export class BridgeFinder {
   private api = inject(Api);
   private bsky = inject(BlueskyApi);
   private graph = inject(BlueskyGraph);
+  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private auth = inject(Auth);
   private stopRequested = false;
 
@@ -206,6 +208,13 @@ export class BridgeFinder {
    * Without this, that click is a silent no-op.
    */
   async followAll(accounts: readonly Account[]): Promise<void> {
+    if (
+      !this.followConfirmation.allow(
+        accounts.filter((account) => !this.isFollowing(account)).length,
+        this.auth.isAnonymous,
+      )
+    )
+      return;
     this.stopRequested = false;
     for (const account of accounts) {
       if (this.stopRequested) break;

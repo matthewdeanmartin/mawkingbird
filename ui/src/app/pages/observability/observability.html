@@ -28,6 +28,11 @@
       }
     </div>
     <nav class="page-menu">
+      @if (!auth.isAnonymous) {
+        <a class="page-menu-link" routerLink="/analytics">{{
+          'pages.observability.myAnalytics' | transloco
+        }}</a>
+      }
       <a class="page-menu-link" routerLink="/storage-diagnostics">{{
         'pages.observability.storageDiagnostics' | transloco
       }}</a>

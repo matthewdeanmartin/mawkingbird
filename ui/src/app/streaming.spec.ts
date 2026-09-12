@@ -40,6 +40,41 @@ function frame(event: string, payload: string): string {
 }
 
 describe('Streaming', () => {
+  it('backs off even when the server repeatedly accepts then immediately closes the socket', async () => {
+    vi.useFakeTimers();
+    try {
+      const sub = await open({ stream: 'user:notification' });
+      lastSocket().onopen?.();
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(FakeWebSocket.instances).toHaveLength(2);
+      lastSocket().onopen?.();
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(FakeWebSocket.instances).toHaveLength(2);
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(FakeWebSocket.instances).toHaveLength(3);
+      sub.unsubscribe();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('shares a failed instance lookup across reconnects during the cooldown', async () => {
+    vi.useFakeTimers();
+    try {
+      TestBed.inject(Server).setBaseUrl('https://social.example');
+      const sub = streaming.open({ stream: 'user' }).subscribe();
+      httpMock.expectOne('/api/v2/instance').flush({}, { status: 503, statusText: 'Unavailable' });
+      await settle();
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(1000);
+      httpMock.expectNone('/api/v2/instance');
+      sub.unsubscribe();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   let streaming: Streaming;
   let auth: Auth;
   let httpMock: HttpTestingController;

@@ -1,3 +1,4 @@
+import { PosseQueue } from '../../providers/hugo/posse-queue';
 import {
   Component,
   ElementRef,
@@ -308,6 +309,7 @@ export class WritePage implements OnInit, OnDestroy {
   protected workspace = inject(WriteWorkspace);
   protected zen = inject(WritingZen);
   protected auth = inject(Auth);
+  protected readonly posse = inject(PosseQueue);
   private drafts = inject(Drafts).forCurrentAccount();
   protected prefs = inject(ClientPrefs);
   private api = inject(Api);

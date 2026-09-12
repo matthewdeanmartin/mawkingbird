@@ -52,6 +52,11 @@
   <div class="write">
     <div class="write-head">
       <h2>{{ 'pages.write.heading' | transloco }}</h2>
+      @if (posse.count(); as pending) {
+        <a class="btn btn-outline" routerLink="/posse"
+          >{{ 'shell.menu.waitingToPublish' | transloco }} ({{ pending }})</a
+        >
+      }
       <div
         class="write-tabs"
         role="tablist"

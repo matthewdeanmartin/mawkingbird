@@ -259,10 +259,14 @@ export class FeedAnalytics {
     if (this.auth.isAnonymous || !posts.length) {
       return;
     }
-    const ids = [...new Set(posts.map((p) => (p.reblog ?? p).account.id))].slice(
-      0,
-      RELATIONSHIP_BATCH,
-    );
+    const ids = [
+      ...new Set(
+        posts
+          .filter((p) => !p.provider || p.provider === 'mastodon')
+          .map((p) => (p.reblog ?? p).account.id),
+      ),
+    ].slice(0, RELATIONSHIP_BATCH);
+    if (!ids.length) return;
     this.api.relationships(ids).subscribe({
       next: (rels) => {
         this.apiCalls.update((n) => n + 1);

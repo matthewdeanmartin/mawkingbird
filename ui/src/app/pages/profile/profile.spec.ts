@@ -34,6 +34,10 @@ function makeStatuses(n: number, base: number): Status[] {
  * We drive the component's toggleBlock() and assert it hits the right endpoint based on the
  * current relationship, then reflects the server's updated relationship.
  */
+beforeEach(() => {
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
+
 describe('Profile block/unblock', () => {
   let httpMock: HttpTestingController;
 
@@ -214,8 +218,7 @@ describe('Profile block/unblock', () => {
     const followButton = [
       ...fixture.nativeElement.querySelectorAll('.profile-buttons button'),
     ].find((button: HTMLButtonElement) => button.textContent.includes('Requested')) as
-      | HTMLButtonElement
-      | undefined;
+      HTMLButtonElement | undefined;
     expect(followButton?.textContent).toContain('Requested');
     expect(followButton?.disabled).toBe(true);
   });

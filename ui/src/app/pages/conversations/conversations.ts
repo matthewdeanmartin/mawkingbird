@@ -242,7 +242,7 @@ export class Conversations implements OnInit, OnDestroy {
   protected bskyMessages = signal<BskyMessageView[]>([]);
   protected bskyDraft = signal('');
   protected bskySending = signal(false);
-  private bskyPoll: ReturnType<typeof setInterval> | null = null;
+  protected readonly bskyRefreshing = signal(false);
   /** Statuses known per public chat key (from notifications + streaming). */
   private publicStatuses = signal<Map<string, Status[]>>(new Map());
   /** Full accounts observed per public chat key. */
@@ -686,19 +686,11 @@ export class Conversations implements OnInit, OnDestroy {
         }
       }),
     );
-    // Bluesky chat has no client-reachable stream; poll the convo list gently —
-    // once every 10 minutes, to keep third-party API traffic light.
-    if (this.bsky.linked()) {
-      this.bskyPoll = setInterval(() => this.refreshBskyConvos(), 10 * 60_000);
-    }
   }
 
   ngOnDestroy(): void {
     for (const sub of this.subs) {
       sub.unsubscribe();
-    }
-    if (this.bskyPoll) {
-      clearInterval(this.bskyPoll);
     }
   }
 
@@ -1015,24 +1007,33 @@ export class Conversations implements OnInit, OnDestroy {
     });
   }
 
-  private refreshBskyConvos(): void {
-    this.bskyChat.listConvos().subscribe({
-      next: (list) => {
-        const before = this.bskyConvos();
-        this.bskyConvos.set(list.convos);
-        const chat = this.selected();
-        if (chat?.kind !== 'bsky' || !chat.convoId) {
-          return;
-        }
-        // Reload the open thread only when its convo actually advanced.
-        const prev = before.find((c) => c.id === chat.convoId);
-        const next = list.convos.find((c) => c.id === chat.convoId);
-        if (next && next.rev !== prev?.rev) {
-          this.loadBskyThread(chat);
-        }
-      },
-      error: () => undefined, // polling silently tolerates a flaky network
-    });
+  // i18n pages.conversations.refreshBluesky: Refresh Bluesky chats
+  protected refreshBskyConvos(): void {
+    if (this.bskyRefreshing() || this.loading() || !this.bsky.linked()) return;
+    this.bskyRefreshing.set(true);
+    this.subs.push(
+      this.bskyChat.listConvos().subscribe({
+        next: (list) => {
+          this.bskyRefreshing.set(false);
+          const before = this.bskyConvos();
+          this.bskyConvos.set(list.convos);
+          const chat = this.selected();
+          if (chat?.kind !== 'bsky' || !chat.convoId) {
+            return;
+          }
+          // Reload the open thread only when its convo actually advanced.
+          const prev = before.find((c) => c.id === chat.convoId);
+          const next = list.convos.find((c) => c.id === chat.convoId);
+          if (next && next.rev !== prev?.rev) {
+            this.loadBskyThread(chat);
+          }
+        },
+        error: (error: unknown) => {
+          this.bskyRefreshing.set(false);
+          this.bskyScopeError.set(isChatScopeError(error));
+        },
+      }),
+    );
   }
 
   // ---------------------------------------------------------------- read state

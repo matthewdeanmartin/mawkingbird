@@ -1,3 +1,4 @@
+import { BulkFollowConfirmation } from './bulk-follow-confirmation';
 import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from './api';
@@ -43,6 +44,7 @@ const RESOLVE_BATCH = 20;
  */
 @Injectable({ providedIn: 'root' })
 export class TagsPub {
+  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private api = inject(Api);
 
   readonly rows = signal<RelayRow[]>([]);
@@ -141,6 +143,7 @@ export class TagsPub {
     if (this.following()) {
       return;
     }
+    if (!this.followConfirmation.allow(this.pending().length)) return;
     this.stopRequested = false;
     this.following.set(true);
     this.error.set(null);

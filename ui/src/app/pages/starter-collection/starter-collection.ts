@@ -1,11 +1,15 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StarterPackTextPipe } from '../../starter-pack-text';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription, from, concatMap, catchError, of, finalize } from 'rxjs';
+import { FeedAnalytics } from '../../feed-analytics/feed-analytics';
+import { FeedSource } from '../../feed-sample';
+import { StatusCard } from '../../status-card/status-card';
+import { FollowButton } from '../../follow-button/follow-button';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { ImportFollows } from '../../import-follows';
-import { Account } from '../../models';
+import { Account, Status } from '../../models';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { anonymousAccountRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { starterKit, StarterAccount, starterKitText } from '../../starter-collection';
@@ -23,17 +27,23 @@ import { UiLocale } from '../../i18n/locale';
 // i18n starterCollection.followingDone: Following ✓
 // i18n starterCollection.notFound: Not found
 // i18n starterCollection.couldNotFollow: Could not follow
-// i18n starterCollection.note: Anonymous follows use the collection’s built-in account snapshot immediately. Signed-in follows are resolved by your server before the real follow request is sent.
+// i18n starterCollection.tabs.members: Members
+// i18n starterCollection.tabs.posts: Posts
+// i18n starterCollection.tabs.analytics: Analytics
+// i18n starterCollection.posts.more: Load more posts
+// i18n starterCollection.posts.loading: Loading posts…
+// i18n starterCollection.posts.empty: No public posts found in this sample.
+// i18n starterCollection.posts.errors: Some accounts could not be reached.
 // i18n starterCollection.findFriends: Find friends another way
 // i18n starterCollection.unavailable: This starter kit is no longer available. Browse the current kits to find people to follow.
 // i18n starterCollection.browse: Browse starter kits
 @Component({
   selector: 'app-starter-collection',
-  imports: [RouterLink, StarterPackTextPipe],
+  imports: [RouterLink, StarterPackTextPipe, FeedAnalytics, StatusCard, FollowButton],
   templateUrl: './starter-collection.html',
   styleUrl: './starter-collection.css',
 })
-export class StarterCollection implements OnInit {
+export class StarterCollection implements OnInit, OnDestroy {
   protected importer = inject(ImportFollows);
   private api = inject(Api);
   private auth = inject(Auth);
@@ -52,6 +62,58 @@ export class StarterCollection implements OnInit {
     this.kit ? starterKitText(this.kit, this.locale.active()) : { title: '', blurb: '' },
   );
   protected opening = signal<string | null>(null);
+  protected readonly view = signal<'members' | 'posts' | 'analytics'>('members');
+  protected readonly posts = signal<Status[]>([]);
+  protected readonly postsLoading = signal(false);
+  protected readonly postsError = signal(false);
+  protected readonly sampled = signal(0);
+  private sampleRequest?: Subscription;
+  protected readonly feedSource = computed<FeedSource>(() => ({
+    type: 'starter pack',
+    query: this.text().title,
+    posts: this.posts(),
+  }));
+
+  setView(view: 'members' | 'posts' | 'analytics'): void {
+    this.view.set(view);
+    if (view !== 'members' && this.sampled() === 0) this.loadPosts();
+  }
+
+  loadPosts(): void {
+    if (this.postsLoading() || this.sampled() >= this.accounts.length) return;
+    const batch = this.accounts.slice(this.sampled(), this.sampled() + 5);
+    this.sampled.update((count) => count + batch.length);
+    this.postsLoading.set(true);
+    this.postsError.set(false);
+    this.sampleRequest = from(batch)
+      .pipe(
+        concatMap((item) =>
+          this.anonymousPublic
+            .getAccountStatuses(
+              { server: this.serverFor(item.handle), id: item.account.id },
+              { limit: 3 },
+            )
+            .pipe(
+              catchError(() => {
+                this.postsError.set(true);
+                return of([] as Status[]);
+              }),
+            ),
+        ),
+        finalize(() => this.postsLoading.set(false)),
+      )
+      .subscribe((rows) => {
+        this.posts.update((posts) =>
+          [...new Map([...posts, ...rows].map((post) => [post.id, post])).values()].sort(
+            (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at),
+          ),
+        );
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.sampleRequest?.unsubscribe();
+  }
   protected completed = computed(
     () =>
       this.importer

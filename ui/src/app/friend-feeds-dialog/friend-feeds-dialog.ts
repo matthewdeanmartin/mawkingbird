@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../a11y/focus-trap';
 import { Auth } from '../auth';
+import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 import { PageDiagnostics } from '../page-diagnostics';
 import { ProfileAccountKey } from '../providers/account/profile-account-key';
 import { SupporterStatus } from '../providers/account/supporter-status';
@@ -97,6 +98,7 @@ export class FriendFeedsDialog {
   private proxySettings = inject(CorsProxySettings);
   private accountKey = inject(ProfileAccountKey);
   private auth = inject(Auth);
+  private readonly bulkConfirmation = inject(BulkFollowConfirmation);
   private diagnostics = inject(PageDiagnostics);
   protected supporter = inject(SupporterStatus);
 
@@ -312,6 +314,7 @@ export class FriendFeedsDialog {
       return;
     }
     const feeds = (this.result()?.feeds ?? []).filter((feed) => !this.isFollowing(feed));
+    if (!this.bulkConfirmation.allow(feeds.length, this.auth.isAnonymous, 'feeds')) return;
     const added = new Set(this.justAdded());
     let count = 0;
     let blockedByLimit = 0;

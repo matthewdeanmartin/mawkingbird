@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../../auth';
 import { Account } from '../../../models';
 import { BridgeFinder } from './bridge-finder';
@@ -28,6 +28,10 @@ function account(username: string, changes: Partial<Account> = {}): Account {
     ...changes,
   };
 }
+
+beforeEach(() => {
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
 
 describe('BridgeFinder', () => {
   let httpMock: HttpTestingController;

@@ -433,26 +433,21 @@
   font-style: italic;
 }
 
-/* The action row wraps on narrow cards, so the horizontal and vertical gaps
-   have to be set separately. One `gap: 14px` made the row-gap 14px as well, and
-   stacked under 40px-tall buttons that turned a two-line toolbar into ~94px of
-   mostly-empty space below a 13px line of text.
-
-   The row does not wrap at all any more. Wrapping was the whole problem: up to
-   27 actions can appear here, and a second line of them under a two-line post
-   left the toolbar dominating the card no matter how short each row was made.
-   A card's action row is a summary, not a menu — the thread page is where the
-   full set lives — so the overflow is now removed rather than re-flowed. */
+/* Keep controls reachable on narrow cards without widening the entire feed.
+   Separate row spacing preserves the compact under-post action styling. */
 .actions {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   column-gap: 14px;
+  row-gap: 4px;
   margin-top: 4px;
   align-items: center;
   min-width: 0;
 }
 
 .action {
+  flex: 0 1 auto;
+  max-width: 100%;
   border: none;
   background: none;
   color: var(--muted);

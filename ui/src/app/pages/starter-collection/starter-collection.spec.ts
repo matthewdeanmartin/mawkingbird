@@ -10,6 +10,37 @@ import { starterKit } from '../../starter-collection';
 import { UiLocale } from '../../i18n/locale';
 
 describe('StarterCollection', () => {
+  it('opens on rich Members without profile or post requests', () => {
+    const fixture = TestBed.createComponent(StarterCollection);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const tabs = [...el.querySelectorAll('.pack-tabs button')];
+    expect(tabs.map((tab) => tab.textContent?.trim())).toEqual(['Members', 'Posts', 'Analytics']);
+    expect(tabs[0].getAttribute('aria-pressed')).toBe('true');
+    expect(el.querySelectorAll('.member')).toHaveLength(8);
+    expect(el.querySelector('.member-bio')?.innerHTML).toBeTruthy();
+    httpMock.expectNone((r) => r.url.includes('/api/'));
+  });
+
+  it('samples at most five accounts sequentially only after opening Posts and reuses the sample', () => {
+    const fixture = TestBed.createComponent(StarterCollection);
+    fixture.detectChanges();
+    fixture.componentInstance.setView('posts');
+    for (let i = 0; i < 5; i++) {
+      const request = httpMock.expectOne((r) => r.url.includes('/statuses'));
+      expect(request.request.params.get('limit')).toBe('3');
+      request.flush([]);
+    }
+    fixture.componentInstance.setView('analytics');
+    fixture.componentInstance.setView('members');
+    fixture.componentInstance.setView('posts');
+    httpMock.expectNone((r) => r.url.includes('/api/'));
+    fixture.componentInstance.loadPosts();
+    const pending = httpMock.expectOne((r) => r.url.includes('/statuses'));
+    fixture.destroy();
+    expect(pending.cancelled).toBe(true);
+    httpMock.expectNone((r) => r.url.includes('/api/'));
+  });
   let httpMock: HttpTestingController;
   let routeStub: { snapshot: { paramMap: ReturnType<typeof convertToParamMap> } };
 

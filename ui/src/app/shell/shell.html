@@ -317,14 +317,6 @@
               <a routerLink="/write">{{ 'shell.menu.write' | transloco }}</a>
             }
             <a routerLink="/drafts">{{ 'shell.menu.drafts' | transloco }}</a>
-            @if (posse.count(); as pending) {
-              <!-- Only rendered while something is actually waiting: a queue you
-                 have emptied should not leave a row behind advertising itself. -->
-              <a routerLink="/posse">
-                {{ 'shell.menu.waitingToPublish' | transloco }}
-                <span class="nav-count">{{ pending }}</span>
-              </a>
-            }
             @if (featureFlags.enabled('pastebin')) {
               <a routerLink="/pastes">{{ 'shell.menu.pastes' | transloco }}</a>
             }
@@ -341,9 +333,6 @@
 
             <!-- Analytics (of self + the client) -->
             <div class="menu-divider"></div>
-            @if (!auth.isAnonymous) {
-              <a routerLink="/analytics">{{ 'shell.menu.analytics' | transloco }}</a>
-            }
             <!-- Feed Doctor is deliberately *not* here. This menu is full, and a
                diagnostic nobody can find is a diagnostic nobody runs — it belongs
                where the symptom appears: the feed's own button bar, and the

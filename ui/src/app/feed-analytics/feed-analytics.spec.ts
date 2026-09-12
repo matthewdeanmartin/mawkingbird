@@ -75,6 +75,18 @@ function internals(fixture: ComponentFixture<FeedAnalytics>): Internals {
 }
 
 describe('FeedAnalytics', () => {
+  it('does not look up foreign sample account IDs on the signed-in server', () => {
+    anonymous = false;
+    const fixture = TestBed.createComponent(FeedAnalytics);
+    fixture.componentRef.setInput('source', {
+      type: 'starter pack',
+      query: 'test',
+      posts: [makeStatus('foreign', { provider: 'anonymous-mastodon' })],
+    });
+    fixture.detectChanges();
+    http.expectNone((r) => r.url.includes('/relationships'));
+    expect(internals(fixture).posts()).toHaveLength(1);
+  });
   let http: HttpTestingController;
   let anonymous: boolean;
 

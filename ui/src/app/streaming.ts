@@ -23,7 +23,8 @@ export type StreamKind =
 const FORWARDED = new Set(['update', 'status_update', 'delete', 'notification', 'conversation']);
 
 const INITIAL_RETRY_MS = 1_000;
-const MAX_RETRY_MS = 30_000;
+const MAX_RETRY_MS = 5 * 60_000;
+const STABLE_CONNECTION_MS = 60_000;
 
 /** One WS frame of Mastodon's multiplexed stream; `payload` is a JSON-encoded string. */
 interface WsFrame {
@@ -51,6 +52,7 @@ export class Streaming {
 
   /** Resolved wss:// base per instance, so `/api/v2/instance` is fetched at most once. */
   private baseCache = new Map<string, Promise<string>>();
+  private baseRetryAt = new Map<string, number>();
 
   open(kind: StreamKind): Observable<StreamEvent> {
     return new Observable<StreamEvent>((subscriber) => {
@@ -58,6 +60,7 @@ export class Streaming {
       let retryTimer: ReturnType<typeof setTimeout> | null = null;
       let retryMs = INITIAL_RETRY_MS;
       let closed = false;
+      let openedAt: number | null = null;
 
       const connect = async () => {
         const base = await this.streamingBase();
@@ -65,8 +68,9 @@ export class Streaming {
           return;
         }
         socket = new WebSocket(this.buildUrl(base, kind));
+        openedAt = null;
         socket.onopen = () => {
-          retryMs = INITIAL_RETRY_MS;
+          openedAt = Date.now();
         };
         socket.onmessage = (ev: MessageEvent<string>) => {
           const frame = JSON.parse(ev.data) as WsFrame;
@@ -83,6 +87,10 @@ export class Streaming {
         socket.onclose = () => {
           if (closed) {
             return;
+          }
+          // A handshake followed by immediate rejection is still a failure.
+          if (openedAt !== null && Date.now() - openedAt >= STABLE_CONNECTION_MS) {
+            retryMs = INITIAL_RETRY_MS;
           }
           retryTimer = setTimeout(() => void connect(), retryMs);
           retryMs = Math.min(retryMs * 2, MAX_RETRY_MS);
@@ -107,13 +115,18 @@ export class Streaming {
    */
   private streamingBase(): Promise<string> {
     const instance = this.server.baseUrl();
+    if ((this.baseRetryAt.get(instance) ?? 0) <= Date.now() && this.baseRetryAt.has(instance)) {
+      this.baseCache.delete(instance);
+      this.baseRetryAt.delete(instance);
+    }
     const cached = this.baseCache.get(instance);
     if (cached) {
       return cached;
     }
     const resolved = this.resolveBase(instance).catch(() => {
-      // Don't pin a transient failure; fall back to the API host for this attempt.
-      this.baseCache.delete(instance);
+      // Reconnects share the fallback during an outage instead of rediscovering
+      // the instance on every attempt. Retry discovery after the cooldown.
+      this.baseRetryAt.set(instance, Date.now() + MAX_RETRY_MS);
       return toWs(instance || location.origin);
     });
     this.baseCache.set(instance, resolved);

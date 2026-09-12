@@ -13,6 +13,10 @@ function rel(id: string, following: boolean): Relationship {
   return { id, following } as Relationship;
 }
 
+beforeEach(() => {
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
+
 describe('TagsPub', () => {
   function setUp(api: Partial<Api>): TagsPub {
     TestBed.configureTestingModule({ providers: [{ provide: Api, useValue: api }] });

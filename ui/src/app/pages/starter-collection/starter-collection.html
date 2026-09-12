@@ -35,62 +35,136 @@
       </button>
     </section>
 
-    <div
-      class="members"
-      [attr.aria-label]="
-        'starterCollection.membersAria' | packText: copyLanguage : { title: text().title }
-      "
-    >
-      @for (item of accounts; track item.handle) {
-        <div class="member">
-          <button
-            type="button"
-            class="member-link"
-            [disabled]="opening() !== null"
-            (click)="openAccount(item)"
-          >
-            <strong>{{ item.name }}</strong>
-            <span class="muted">&#64;{{ item.handle }}</span>
-          </button>
-          @if (opening() === item.handle) {
-            <span class="muted small">{{
-              'starterCollection.opening' | packText: copyLanguage
-            }}</span>
-          } @else {
-            @switch (status(item.handle)) {
-              @case ('resolving') {
-                <span class="muted small">{{
-                  'starterCollection.lookingUp' | packText: copyLanguage
-                }}</span>
+    <nav class="pack-tabs" [attr.aria-label]="text().title">
+      <button
+        type="button"
+        [class.active]="view() === 'members'"
+        [attr.aria-pressed]="view() === 'members'"
+        (click)="setView('members')"
+      >
+        {{ 'starterCollection.tabs.members' | packText: copyLanguage }}
+      </button>
+      <button
+        type="button"
+        [class.active]="view() === 'posts'"
+        [attr.aria-pressed]="view() === 'posts'"
+        (click)="setView('posts')"
+      >
+        {{ 'starterCollection.tabs.posts' | packText: copyLanguage }}
+      </button>
+      <button
+        type="button"
+        [class.active]="view() === 'analytics'"
+        [attr.aria-pressed]="view() === 'analytics'"
+        (click)="setView('analytics')"
+      >
+        {{ 'starterCollection.tabs.analytics' | packText: copyLanguage }}
+      </button>
+    </nav>
+    @if (view() === 'members') {
+      <div
+        class="members"
+        [attr.aria-label]="
+          'starterCollection.membersAria' | packText: copyLanguage : { title: text().title }
+        "
+      >
+        @for (item of accounts; track item.handle) {
+          <div class="member">
+            <div class="member-profile">
+              <button
+                type="button"
+                class="member-link"
+                [disabled]="opening() !== null"
+                (click)="openAccount(item)"
+              >
+                @if (item.account.avatar_static || item.account.avatar) {
+                  <img
+                    class="avatar"
+                    [src]="item.account.avatar_static || item.account.avatar"
+                    alt=""
+                    loading="lazy"
+                    width="48"
+                    height="48"
+                  />
+                }
+                <span class="identity">
+                  <strong>{{ item.account.display_name || item.name }}</strong>
+                  <span class="muted">&#64;{{ item.handle }}</span>
+                </span>
+              </button>
+              @if (item.account.note) {
+                <div class="member-bio" [innerHTML]="item.account.note"></div>
               }
-              @case ('following') {
-                <span class="muted small">{{
-                  'starterCollection.followingRow' | packText: copyLanguage
-                }}</span>
-              }
-              @case ('followed') {
-                <span class="success small">{{
-                  'starterCollection.followingDone' | packText: copyLanguage
-                }}</span>
-              }
-              @case ('not_found') {
-                <span class="muted small">{{
-                  'starterCollection.notFound' | packText: copyLanguage
-                }}</span>
-              }
-              @case ('failed') {
-                <span class="muted small">{{
-                  'starterCollection.couldNotFollow' | packText: copyLanguage
-                }}</span>
+            </div>
+            <app-follow-button
+              [accountId]="item.account.id"
+              [foreign]="item.account"
+              [handle]="item.handle"
+            />
+            @if (opening() === item.handle) {
+              <span class="muted small">{{
+                'starterCollection.opening' | packText: copyLanguage
+              }}</span>
+            } @else {
+              @switch (status(item.handle)) {
+                @case ('resolving') {
+                  <span class="muted small">{{
+                    'starterCollection.lookingUp' | packText: copyLanguage
+                  }}</span>
+                }
+                @case ('following') {
+                  <span class="muted small">{{
+                    'starterCollection.followingRow' | packText: copyLanguage
+                  }}</span>
+                }
+                @case ('followed') {
+                  <span class="success small">{{
+                    'starterCollection.followingDone' | packText: copyLanguage
+                  }}</span>
+                }
+                @case ('not_found') {
+                  <span class="muted small">{{
+                    'starterCollection.notFound' | packText: copyLanguage
+                  }}</span>
+                }
+                @case ('failed') {
+                  <span class="muted small">{{
+                    'starterCollection.couldNotFollow' | packText: copyLanguage
+                  }}</span>
+                }
               }
             }
-          }
-        </div>
+          </div>
+        }
+      </div>
+    } @else {
+      @if (view() === 'analytics') {
+        <app-feed-analytics [source]="feedSource()" />
+      } @else {
+        @for (post of posts(); track post.id) {
+          <app-status-card [status]="post" />
+        }
       }
-    </div>
-
+      @if (postsLoading()) {
+        <p role="status">{{ 'starterCollection.posts.loading' | packText: copyLanguage }}</p>
+      } @else if (!posts().length) {
+        <p>{{ 'starterCollection.posts.empty' | packText: copyLanguage }}</p>
+      }
+      @if (postsError()) {
+        <p role="status">{{ 'starterCollection.posts.errors' | packText: copyLanguage }}</p>
+      }
+      @if (sampled() < accounts.length) {
+        <button
+          class="btn btn-outline"
+          type="button"
+          [disabled]="postsLoading()"
+          (click)="loadPosts()"
+        >
+          {{ 'starterCollection.posts.more' | packText: copyLanguage }}
+        </button>
+      }
+    }
     <p class="muted small note">
-      {{ 'starterCollection.note' | packText: copyLanguage }}
       <a routerLink="/find-friends">{{
         'starterCollection.findFriends' | packText: copyLanguage
       }}</a

@@ -1,3 +1,5 @@
+import { Auth } from '../../auth';
+// i18n pages.observability.myAnalytics: My Profile's Analytics
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
@@ -314,6 +316,7 @@ type RouteSortKey = 'visits' | 'time';
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })
 export class Observability {
+  protected readonly auth = inject(Auth);
   private transloco = inject(TranslocoService);
   private metrics = inject(ApiMetrics);
   private routeLog = inject(RouteLog);

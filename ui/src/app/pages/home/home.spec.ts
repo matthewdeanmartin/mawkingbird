@@ -78,6 +78,18 @@ function makeStatus(id: string): Status {
 }
 
 describe('Home', () => {
+  it('stops automatic filling when a full server page only repeats loaded posts', () => {
+    TestBed.inject(ClientPrefs).setFeedMin(100);
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    const page = Array.from({ length: 20 }, (_, i) => makeStatus(String(100 - i)));
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page);
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    httpMock.expectOne((r) => r.url.includes('/timelines/home')).flush(page);
+    expect(internals(fixture).autoLoading()).toBe(false);
+    expect(internals(fixture).statuses()).toHaveLength(20);
+    httpMock.expectNone((r) => r.url.includes('/timelines/home'));
+  });
   let httpMock: HttpTestingController;
   let fakeStreaming: FakeStreaming;
   let diagnostics: Pick<HomeDiagnostics, 'info' | 'warn' | 'error'>;
@@ -859,7 +871,7 @@ describe('Home', () => {
     expect(root.querySelectorAll('app-discovery-card')).toHaveLength(2);
     expect(
       [...root.querySelectorAll('app-discovery-card')].map((card) =>
-        card.querySelector('h2')?.textContent?.trim(),
+        card.querySelector('.meta strong')?.textContent?.trim(),
       ),
     ).toEqual(['Collections', 'Invite your friends']);
     expect(internals(fixture).statuses()).toHaveLength(60);
@@ -922,7 +934,7 @@ describe('Home', () => {
     const fixture = setUp();
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    const commandBar = el.querySelector('.command-bar')?.textContent ?? '';
+    const commandBar = el.querySelector('.presentation-row')?.textContent ?? '';
     const filters = el.querySelector('.home-filters')?.textContent ?? '';
 
     expect(commandBar).toContain('Text-focus');
@@ -935,7 +947,7 @@ describe('Home', () => {
     expect(filters).toContain('Calm');
     expect(filters).toContain('Everything');
     expect(filters).not.toContain('Local Feed');
-    expect(el.querySelectorAll('.command-bar .command-row')).toHaveLength(2);
+    expect(el.querySelectorAll('.command-bar .command-row')).toHaveLength(3);
   });
 
   it('puts the complete Reader controls in a dedicated fourth toolbar row', () => {
@@ -945,7 +957,7 @@ describe('Home', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    const rows = [...el.querySelectorAll('.command-row, .home-filters, .reader-toolbar')];
+    const rows = [...el.querySelectorAll('.command-row, .reader-toolbar')];
     const reader = el.querySelector<HTMLElement>('.reader-toolbar');
 
     expect(rows).toHaveLength(4);

@@ -1,5 +1,5 @@
 import { Observable, of, throwError } from 'rxjs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Status } from './models';
 import { FeedSample, FeedSource, MAX_PAGES, isSupplied, sampleFeed } from './feed-sample';
 
@@ -65,6 +65,24 @@ describe('sampleFeed — supplied sources', () => {
 });
 
 describe('sampleFeed — paged sources', () => {
+  it('stops when a server repeats a full page without making progress', () => {
+    const page = fullPage('same');
+    const { source, calls } = paged([page, page, page]);
+    expect(collect(source, 1000).posts).toHaveLength(40);
+    expect(calls()).toBe(2);
+  });
+  it('cancels the active request when the viewer leaves the sample', () => {
+    const cancel = vi.fn();
+    const source: FeedSource = {
+      type: 'list',
+      query: 'test',
+      pageSize: 40,
+      fetch: () => new Observable<Status[]>(() => cancel),
+    };
+    const sub = sampleFeed(source, 100).subscribe();
+    sub.unsubscribe();
+    expect(cancel).toHaveBeenCalledOnce();
+  });
   it('pages until the sample size is reached, then trims', () => {
     const { source, cursors, calls } = paged([fullPage('a'), fullPage('b'), fullPage('c')]);
     const sample = collect(source, 100);

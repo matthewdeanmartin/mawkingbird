@@ -26,7 +26,6 @@ import { LeftRail } from './left-rail/left-rail';
 import { RightRail } from './right-rail/right-rail';
 import { ServerAbout } from '../server-about';
 import { FeatureFlags } from '../feature-flags';
-import { PosseQueue } from '../providers/hugo/posse-queue';
 import { LeaveChoice, LeaveDialog } from '../leave-dialog/leave-dialog';
 import { WritingZen } from '../writing-zen';
 import { ReadingZen } from '../reading-zen';
@@ -202,8 +201,6 @@ export class Shell implements OnInit {
   );
   protected serverAbout = inject(ServerAbout);
   protected featureFlags = inject(FeatureFlags);
-  /** POSSE queue depth, for the "Waiting to publish" row and its count. */
-  protected posse = inject(PosseQueue);
 
   /** Build flavor: drives the brand and whether mock-only nav links are shown. */
   protected mockTooling = environment.mockTooling;

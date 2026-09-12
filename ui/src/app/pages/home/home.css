@@ -368,3 +368,7 @@ a.eliza-invite:hover {
   font-weight: 600;
   line-height: 1.25;
 }
+
+.home-filters {
+  display: contents;
+}

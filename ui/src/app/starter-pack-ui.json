@@ -30,9 +30,15 @@
     "starterCollection.lookingUp": "Looking up…",
     "starterCollection.membersAria": "{{title}} accounts",
     "starterCollection.notFound": "Not found",
-    "starterCollection.note": "Anonymous follows use the collection’s built-in account snapshot immediately. Signed-in follows are resolved by your server before the real follow request is sent.",
     "starterCollection.opening": "Opening…",
-    "starterCollection.unavailable": "This starter kit is no longer available. Browse the current kits to find people to follow."
+    "starterCollection.unavailable": "This starter kit is no longer available. Browse the current kits to find people to follow.",
+    "starterCollection.tabs.members": "Members",
+    "starterCollection.tabs.posts": "Posts",
+    "starterCollection.tabs.analytics": "Analytics",
+    "starterCollection.posts.more": "Load more posts",
+    "starterCollection.posts.loading": "Loading posts…",
+    "starterCollection.posts.empty": "No public posts found in this sample.",
+    "starterCollection.posts.errors": "Some accounts could not be reached."
   },
   "de": {
     "bundledStarterKits.account.one": "{{count}} Konto",
@@ -65,9 +71,15 @@
     "starterCollection.lookingUp": "Wird gesucht…",
     "starterCollection.membersAria": "Konten in {{title}}",
     "starterCollection.notFound": "Nicht gefunden",
-    "starterCollection.note": "Beim anonymen Folgen wird sofort die in der Sammlung enthaltene Konto-Momentaufnahme verwendet. Wenn du angemeldet bist, löst dein Server die Konten auf, bevor die eigentliche Folgeanfrage gesendet wird.",
     "starterCollection.opening": "Wird geöffnet…",
-    "starterCollection.unavailable": "Diese Sammlung ist nicht mehr verfügbar. Schau dir die aktuellen Sammlungen an."
+    "starterCollection.unavailable": "Diese Sammlung ist nicht mehr verfügbar. Schau dir die aktuellen Sammlungen an.",
+    "starterCollection.tabs.members": "Mitglieder",
+    "starterCollection.tabs.posts": "Beiträge",
+    "starterCollection.tabs.analytics": "Auswertung",
+    "starterCollection.posts.more": "Weitere Beiträge laden",
+    "starterCollection.posts.loading": "Beiträge werden geladen…",
+    "starterCollection.posts.empty": "Keine öffentlichen Beiträge in dieser Stichprobe gefunden.",
+    "starterCollection.posts.errors": "Einige Konten waren nicht erreichbar."
   },
   "fr": {
     "bundledStarterKits.account.one": "{{count}} compte",
@@ -100,9 +112,15 @@
     "starterCollection.lookingUp": "Recherche…",
     "starterCollection.membersAria": "Comptes de {{title}}",
     "starterCollection.notFound": "Introuvable",
-    "starterCollection.note": "Les abonnements anonymes utilisent immédiatement l’instantané de comptes intégré à la collection. Les abonnements connectés sont résolus par ton serveur avant l’envoi de la vraie demande d’abonnement.",
     "starterCollection.opening": "Ouverture…",
-    "starterCollection.unavailable": "Cette sélection n’est plus disponible. Parcourez les sélections actuelles."
+    "starterCollection.unavailable": "Cette sélection n’est plus disponible. Parcourez les sélections actuelles.",
+    "starterCollection.tabs.members": "Membres",
+    "starterCollection.tabs.posts": "Messages",
+    "starterCollection.tabs.analytics": "Statistiques",
+    "starterCollection.posts.more": "Charger plus de publications",
+    "starterCollection.posts.loading": "Chargement des publications…",
+    "starterCollection.posts.empty": "Aucune publication publique dans cet échantillon.",
+    "starterCollection.posts.errors": "Certains comptes sont inaccessibles."
   },
   "ja": {
     "bundledStarterKits.account.one": "アカウント数：{{count}}",
@@ -135,9 +153,15 @@
     "starterCollection.lookingUp": "検索中…",
     "starterCollection.membersAria": "{{title}}のアカウント",
     "starterCollection.notFound": "見つかりません",
-    "starterCollection.note": "匿名モードでは、セットに含まれるアカウント情報をすぐに使います。ログインしている場合は、サーバーが各アカウントを検索してからフォローのリクエストを送信します。",
     "starterCollection.opening": "開いています…",
-    "starterCollection.unavailable": "このセットは利用できなくなりました。現在のセットをご覧ください。"
+    "starterCollection.unavailable": "このセットは利用できなくなりました。現在のセットをご覧ください。",
+    "starterCollection.tabs.members": "メンバー",
+    "starterCollection.tabs.posts": "投稿",
+    "starterCollection.tabs.analytics": "分析",
+    "starterCollection.posts.more": "投稿をさらに読み込む",
+    "starterCollection.posts.loading": "投稿を読み込み中…",
+    "starterCollection.posts.empty": "このサンプルには公開投稿がありません。",
+    "starterCollection.posts.errors": "一部のアカウントに接続できませんでした。"
   },
   "ru": {
     "bundledStarterKits.title": "Кого читать",
@@ -167,12 +191,18 @@
     "starterCollection.followingDone": "Вы подписаны ✓",
     "starterCollection.notFound": "Не найдено",
     "starterCollection.couldNotFollow": "Не удалось подписаться",
-    "starterCollection.note": "В анонимном режиме подписки сразу используют данные из подборки. После входа в аккаунт ваш сервер сначала находит каждый аккаунт, затем отправляет запрос на подписку.",
     "starterCollection.findFriends": "Найти людей другим способом",
     "starterCollection.unavailable": "Эта подборка больше недоступна. Посмотрите другие подборки.",
     "starterCollection.browse": "Посмотреть подборки",
     "bundledStarterKits.account.one": "Аккаунты: {{count}}",
-    "starterCollection.followed.one": "Оформлено подписок: {{count}}"
+    "starterCollection.followed.one": "Оформлено подписок: {{count}}",
+    "starterCollection.tabs.members": "Участники",
+    "starterCollection.tabs.posts": "Посты",
+    "starterCollection.tabs.analytics": "Аналитика",
+    "starterCollection.posts.more": "Загрузить ещё публикации",
+    "starterCollection.posts.loading": "Загрузка публикаций…",
+    "starterCollection.posts.empty": "В этой выборке нет публичных публикаций.",
+    "starterCollection.posts.errors": "Некоторые аккаунты недоступны."
   },
   "es": {
     "bundledStarterKits.title": "A quién seguir",
@@ -202,12 +232,18 @@
     "starterCollection.followingDone": "Siguiendo ✓",
     "starterCollection.notFound": "No se encontró",
     "starterCollection.couldNotFollow": "No se pudo seguir",
-    "starterCollection.note": "En modo anónimo se usan inmediatamente los datos incluidos en el conjunto. Si has iniciado sesión, tu servidor busca cada cuenta antes de enviar la solicitud para seguirla.",
     "starterCollection.findFriends": "Encontrar personas de otra forma",
     "starterCollection.unavailable": "Este conjunto ya no está disponible. Explora los conjuntos actuales.",
     "starterCollection.browse": "Explorar conjuntos",
     "bundledStarterKits.account.one": "Cuentas: {{count}}",
-    "starterCollection.followed.one": "Cuentas seguidas: {{count}}"
+    "starterCollection.followed.one": "Cuentas seguidas: {{count}}",
+    "starterCollection.tabs.members": "Miembros",
+    "starterCollection.tabs.posts": "Publicaciones",
+    "starterCollection.tabs.analytics": "Análisis",
+    "starterCollection.posts.more": "Cargar más publicaciones",
+    "starterCollection.posts.loading": "Cargando publicaciones…",
+    "starterCollection.posts.empty": "No se encontraron publicaciones públicas en esta muestra.",
+    "starterCollection.posts.errors": "No se pudo acceder a algunas cuentas."
   },
   "it": {
     "bundledStarterKits.title": "Persone da seguire",
@@ -237,12 +273,18 @@
     "starterCollection.followingDone": "Seguito ✓",
     "starterCollection.notFound": "Non trovato",
     "starterCollection.couldNotFollow": "Impossibile seguire",
-    "starterCollection.note": "In modalità anonima vengono usati subito i dati inclusi nella raccolta. Dopo l’accesso, il tuo server trova ogni account prima di inviare la richiesta per seguirlo.",
     "starterCollection.findFriends": "Trova persone in un altro modo",
     "starterCollection.unavailable": "Questa raccolta non è più disponibile. Esplora le raccolte attuali.",
     "starterCollection.browse": "Esplora le raccolte",
     "bundledStarterKits.account.one": "Account: {{count}}",
-    "starterCollection.followed.one": "Account seguiti: {{count}}"
+    "starterCollection.followed.one": "Account seguiti: {{count}}",
+    "starterCollection.tabs.members": "Membri",
+    "starterCollection.tabs.posts": "Post",
+    "starterCollection.tabs.analytics": "Analisi",
+    "starterCollection.posts.more": "Carica altri post",
+    "starterCollection.posts.loading": "Caricamento dei post…",
+    "starterCollection.posts.empty": "Nessun post pubblico trovato in questo campione.",
+    "starterCollection.posts.errors": "Alcuni account non sono raggiungibili."
   },
   "nl": {
     "bundledStarterKits.title": "Mensen om te volgen",
@@ -272,12 +314,18 @@
     "starterCollection.followingDone": "Je volgt dit account ✓",
     "starterCollection.notFound": "Niet gevonden",
     "starterCollection.couldNotFollow": "Volgen is mislukt",
-    "starterCollection.note": "In de anonieme modus worden de meegeleverde accountgegevens meteen gebruikt. Als je bent ingelogd, zoekt je server elk account op voordat het volgverzoek wordt verstuurd.",
     "starterCollection.findFriends": "Vind mensen op een andere manier",
     "starterCollection.unavailable": "Deze verzameling is niet meer beschikbaar. Bekijk de huidige verzamelingen.",
     "starterCollection.browse": "Verzamelingen bekijken",
     "bundledStarterKits.account.one": "Accounts: {{count}}",
-    "starterCollection.followed.one": "Gevolgde accounts: {{count}}"
+    "starterCollection.followed.one": "Gevolgde accounts: {{count}}",
+    "starterCollection.tabs.members": "Leden",
+    "starterCollection.tabs.posts": "Berichten",
+    "starterCollection.tabs.analytics": "Analyse",
+    "starterCollection.posts.more": "Meer berichten laden",
+    "starterCollection.posts.loading": "Berichten laden…",
+    "starterCollection.posts.empty": "Geen openbare berichten gevonden in deze steekproef.",
+    "starterCollection.posts.errors": "Sommige accounts waren niet bereikbaar."
   },
   "pl": {
     "bundledStarterKits.title": "Kogo obserwować",
@@ -307,12 +355,18 @@
     "starterCollection.followingDone": "Obserwujesz ✓",
     "starterCollection.notFound": "Nie znaleziono",
     "starterCollection.couldNotFollow": "Nie udało się rozpocząć obserwowania",
-    "starterCollection.note": "W trybie anonimowym od razu używane są dane kont dołączone do zestawu. Po zalogowaniu Twój serwer najpierw wyszukuje każde konto, a następnie wysyła prośbę o obserwowanie.",
     "starterCollection.findFriends": "Znajdź osoby w inny sposób",
     "starterCollection.unavailable": "Ten zestaw nie jest już dostępny. Przejrzyj aktualne zestawy.",
     "starterCollection.browse": "Przeglądaj zestawy",
     "bundledStarterKits.account.one": "Liczba kont: {{count}}",
-    "starterCollection.followed.one": "Liczba obserwowanych kont: {{count}}"
+    "starterCollection.followed.one": "Liczba obserwowanych kont: {{count}}",
+    "starterCollection.tabs.members": "Członkowie",
+    "starterCollection.tabs.posts": "Wpisy",
+    "starterCollection.tabs.analytics": "Statystyki",
+    "starterCollection.posts.more": "Wczytaj więcej wpisów",
+    "starterCollection.posts.loading": "Wczytywanie wpisów…",
+    "starterCollection.posts.empty": "Brak publicznych wpisów w tej próbce.",
+    "starterCollection.posts.errors": "Niektóre konta są niedostępne."
   },
   "pt": {
     "bundledStarterKits.title": "Pessoas para seguir",
@@ -342,12 +396,18 @@
     "starterCollection.followingDone": "Seguindo ✓",
     "starterCollection.notFound": "Não encontrado",
     "starterCollection.couldNotFollow": "Não foi possível seguir",
-    "starterCollection.note": "No modo anônimo, os dados incluídos no conjunto são usados imediatamente. Após entrar na conta, seu servidor encontra cada conta antes de enviar a solicitação para segui-la.",
     "starterCollection.findFriends": "Encontrar pessoas de outra forma",
     "starterCollection.unavailable": "Este conjunto não está mais disponível. Explore os conjuntos atuais.",
     "starterCollection.browse": "Explorar conjuntos",
     "bundledStarterKits.account.one": "Contas: {{count}}",
-    "starterCollection.followed.one": "Contas seguidas: {{count}}"
+    "starterCollection.followed.one": "Contas seguidas: {{count}}",
+    "starterCollection.tabs.members": "Membros",
+    "starterCollection.tabs.posts": "Publicações",
+    "starterCollection.tabs.analytics": "Análises",
+    "starterCollection.posts.more": "Carregar mais publicações",
+    "starterCollection.posts.loading": "A carregar publicações…",
+    "starterCollection.posts.empty": "Não foram encontradas publicações públicas nesta amostra.",
+    "starterCollection.posts.errors": "Não foi possível aceder a algumas contas."
   },
   "sv": {
     "bundledStarterKits.title": "Personer att följa",
@@ -377,12 +437,18 @@
     "starterCollection.followingDone": "Följer ✓",
     "starterCollection.notFound": "Hittades inte",
     "starterCollection.couldNotFollow": "Kunde inte följa",
-    "starterCollection.note": "I anonymt läge används de medföljande kontouppgifterna direkt. När du är inloggad hittar din server varje konto innan begäran om att följa skickas.",
     "starterCollection.findFriends": "Hitta personer på ett annat sätt",
     "starterCollection.unavailable": "Den här samlingen finns inte längre. Bläddra bland de aktuella samlingarna.",
     "starterCollection.browse": "Bläddra bland samlingar",
     "bundledStarterKits.account.one": "Konton: {{count}}",
-    "starterCollection.followed.one": "Konton du följer: {{count}}"
+    "starterCollection.followed.one": "Konton du följer: {{count}}",
+    "starterCollection.tabs.members": "Medlemmar",
+    "starterCollection.tabs.posts": "Inlägg",
+    "starterCollection.tabs.analytics": "Analys",
+    "starterCollection.posts.more": "Ladda fler inlägg",
+    "starterCollection.posts.loading": "Laddar inlägg…",
+    "starterCollection.posts.empty": "Inga offentliga inlägg hittades i detta urval.",
+    "starterCollection.posts.errors": "Vissa konton kunde inte nås."
   },
   "zh": {
     "bundledStarterKits.title": "值得关注的人",
@@ -412,12 +478,18 @@
     "starterCollection.followingDone": "已关注 ✓",
     "starterCollection.notFound": "未找到",
     "starterCollection.couldNotFollow": "无法关注",
-    "starterCollection.note": "匿名模式会立即使用合集内置的账号信息。登录后，你的服务器会先查找每个账号，再发送关注请求。",
     "starterCollection.findFriends": "通过其他方式发现用户",
     "starterCollection.unavailable": "此合集已不可用。请浏览当前的合集。",
     "starterCollection.browse": "浏览合集",
     "bundledStarterKits.account.one": "账号数：{{count}}",
-    "starterCollection.followed.one": "已关注账号数：{{count}}"
+    "starterCollection.followed.one": "已关注账号数：{{count}}",
+    "starterCollection.tabs.members": "成员",
+    "starterCollection.tabs.posts": "帖子",
+    "starterCollection.tabs.analytics": "统计",
+    "starterCollection.posts.more": "加载更多帖子",
+    "starterCollection.posts.loading": "正在加载帖子…",
+    "starterCollection.posts.empty": "此样本中未找到公开帖子。",
+    "starterCollection.posts.errors": "无法访问部分账号。"
   },
   "ko": {
     "bundledStarterKits.account.one": "계정 {{count}}개",
@@ -450,9 +522,15 @@
     "starterCollection.lookingUp": "조회 중…",
     "starterCollection.membersAria": "{{title}} 계정",
     "starterCollection.notFound": "찾을 수 없음",
-    "starterCollection.note": "익명 팔로우는 컬렉션에 내장된 계정 스냅샷을 즉시 사용합니다. 로그인한 팔로우는 실제 팔로우 요청을 보내기 전에 서버에서 확인됩니다.",
     "starterCollection.opening": "여는 중…",
-    "starterCollection.unavailable": "이 스타터 키트는 더 이상 사용할 수 없습니다. 현재 키트를 둘러보고 팔로우할 사람을 찾으세요."
+    "starterCollection.unavailable": "이 스타터 키트는 더 이상 사용할 수 없습니다. 현재 키트를 둘러보고 팔로우할 사람을 찾으세요.",
+    "starterCollection.tabs.members": "구성원",
+    "starterCollection.tabs.posts": "게시물",
+    "starterCollection.tabs.analytics": "분석",
+    "starterCollection.posts.more": "게시물 더 불러오기",
+    "starterCollection.posts.loading": "게시물 불러오는 중…",
+    "starterCollection.posts.empty": "이 표본에 공개 게시물이 없습니다.",
+    "starterCollection.posts.errors": "일부 계정에 연결할 수 없습니다."
   },
   "tr": {
     "bundledStarterKits.account.one": "{{count}} hesap",
@@ -485,9 +563,15 @@
     "starterCollection.lookingUp": "Aranıyor…",
     "starterCollection.membersAria": "{{title}} hesapları",
     "starterCollection.notFound": "Bulunamadı",
-    "starterCollection.note": "Anonim takipler koleksiyonun yerleşik hesap anlık görüntüsünü hemen kullanır. Oturum açıkken gerçek takip isteği gönderilmeden önce hesaplar sunucunuzca çözümlenir.",
     "starterCollection.opening": "Açılıyor…",
-    "starterCollection.unavailable": "Bu başlangıç paketi artık kullanılamıyor. Takip edilecek kişiler bulmak için geçerli paketlere göz atın."
+    "starterCollection.unavailable": "Bu başlangıç paketi artık kullanılamıyor. Takip edilecek kişiler bulmak için geçerli paketlere göz atın.",
+    "starterCollection.tabs.members": "Üyeler",
+    "starterCollection.tabs.posts": "Gönderiler",
+    "starterCollection.tabs.analytics": "Çözümleme",
+    "starterCollection.posts.more": "Daha fazla gönderi yükle",
+    "starterCollection.posts.loading": "Gönderiler yükleniyor…",
+    "starterCollection.posts.empty": "Bu örnekte herkese açık gönderi bulunamadı.",
+    "starterCollection.posts.errors": "Bazı hesaplara ulaşılamadı."
   },
   "uk": {
     "bundledStarterKits.account.one": "Облікові записи: {{count}}",
@@ -520,9 +604,15 @@
     "starterCollection.lookingUp": "Пошук…",
     "starterCollection.membersAria": "Облікові записи {{title}}",
     "starterCollection.notFound": "Не знайдено",
-    "starterCollection.note": "Анонімні підписки одразу використовують вбудований знімок облікових записів добірки. Підписки після входу спочатку визначаються вашим сервером, а потім надсилається справжній запит на стеження.",
     "starterCollection.opening": "Відкриття…",
-    "starterCollection.unavailable": "Ця добірка для початку більше недоступна. Перегляньте поточні добірки, щоб знайти людей для стеження."
+    "starterCollection.unavailable": "Ця добірка для початку більше недоступна. Перегляньте поточні добірки, щоб знайти людей для стеження.",
+    "starterCollection.tabs.members": "Учасники",
+    "starterCollection.tabs.posts": "Дописи",
+    "starterCollection.tabs.analytics": "Аналітика",
+    "starterCollection.posts.more": "Завантажити ще дописи",
+    "starterCollection.posts.loading": "Завантаження дописів…",
+    "starterCollection.posts.empty": "У цій вибірці немає публічних дописів.",
+    "starterCollection.posts.errors": "Деякі облікові записи недоступні."
   },
   "zh-Hant": {
     "bundledStarterKits.account.one": "{{count}} 個帳號",
@@ -555,9 +645,15 @@
     "starterCollection.lookingUp": "查詢中…",
     "starterCollection.membersAria": "{{title}} 的帳號",
     "starterCollection.notFound": "找不到",
-    "starterCollection.note": "匿名跟隨會立即使用名單內建的帳號快照。登入後的跟隨會先由您的伺服器解析，再送出實際的跟隨請求。",
     "starterCollection.opening": "開啟中…",
-    "starterCollection.unavailable": "此推薦跟隨名單已無法使用。瀏覽目前名單以尋找可跟隨的使用者。"
+    "starterCollection.unavailable": "此推薦跟隨名單已無法使用。瀏覽目前名單以尋找可跟隨的使用者。",
+    "starterCollection.tabs.members": "成員",
+    "starterCollection.tabs.posts": "嘟文",
+    "starterCollection.tabs.analytics": "分析",
+    "starterCollection.posts.more": "載入更多貼文",
+    "starterCollection.posts.loading": "正在載入貼文…",
+    "starterCollection.posts.empty": "此樣本中找不到公開貼文。",
+    "starterCollection.posts.errors": "無法存取部分帳號。"
   },
   "ca": {
     "bundledStarterKits.account.one": "{{count}} compte",
@@ -590,9 +686,15 @@
     "starterCollection.lookingUp": "Cercant…",
     "starterCollection.membersAria": "Comptes de {{title}}",
     "starterCollection.notFound": "No s’ha trobat",
-    "starterCollection.note": "Els seguiments anònims fan servir immediatament la còpia dels comptes inclosa a la selecció. Si has iniciat la sessió, el teu servidor resol els comptes abans d’enviar la petició de seguiment.",
     "starterCollection.opening": "Obrint…",
-    "starterCollection.unavailable": "Aquesta selecció inicial ja no està disponible. Explora les seleccions actuals per trobar gent per seguir."
+    "starterCollection.unavailable": "Aquesta selecció inicial ja no està disponible. Explora les seleccions actuals per trobar gent per seguir.",
+    "starterCollection.tabs.members": "Membres",
+    "starterCollection.tabs.posts": "Publicacions",
+    "starterCollection.tabs.analytics": "Estadístiques",
+    "starterCollection.posts.more": "Carrega més publicacions",
+    "starterCollection.posts.loading": "S’estan carregant les publicacions…",
+    "starterCollection.posts.empty": "No s’han trobat publicacions públiques en aquesta mostra.",
+    "starterCollection.posts.errors": "No s’ha pogut accedir a alguns comptes."
   },
   "cs": {
     "bundledStarterKits.account.one": "{{count}} účet",
@@ -625,9 +727,15 @@
     "starterCollection.lookingUp": "Vyhledávání…",
     "starterCollection.membersAria": "Účty ve výběru {{title}}",
     "starterCollection.notFound": "Nenalezeno",
-    "starterCollection.note": "Anonymní sledování okamžitě používá uloženou kopii účtů ve výběru. Po přihlášení váš server účty vyhledá, než odešle skutečný požadavek na sledování.",
     "starterCollection.opening": "Otevírání…",
-    "starterCollection.unavailable": "Tento výběr už není dostupný. Projděte si aktuální výběry a najděte lidi ke sledování."
+    "starterCollection.unavailable": "Tento výběr už není dostupný. Projděte si aktuální výběry a najděte lidi ke sledování.",
+    "starterCollection.tabs.members": "Členové",
+    "starterCollection.tabs.posts": "Příspěvky",
+    "starterCollection.tabs.analytics": "Statistiky",
+    "starterCollection.posts.more": "Načíst další příspěvky",
+    "starterCollection.posts.loading": "Načítání příspěvků…",
+    "starterCollection.posts.empty": "V tomto vzorku nebyly nalezeny žádné veřejné příspěvky.",
+    "starterCollection.posts.errors": "Některé účty nejsou dostupné."
   },
   "fi": {
     "bundledStarterKits.account.one": "{{count}} tili",
@@ -660,9 +768,15 @@
     "starterCollection.lookingUp": "Etsitään…",
     "starterCollection.membersAria": "Kokoelman {{title}} tilit",
     "starterCollection.notFound": "Ei löytynyt",
-    "starterCollection.note": "Anonyymi seuraaminen käyttää heti kokoelmaan tallennettuja tilitietoja. Kun olet kirjautunut sisään, palvelimesi etsii tilit ennen varsinaisen seurantapyynnön lähettämistä.",
     "starterCollection.opening": "Avataan…",
-    "starterCollection.unavailable": "Tämä aloituskokoelma ei ole enää saatavilla. Selaa nykyisiä kokoelmia löytääksesi seurattavia ihmisiä."
+    "starterCollection.unavailable": "Tämä aloituskokoelma ei ole enää saatavilla. Selaa nykyisiä kokoelmia löytääksesi seurattavia ihmisiä.",
+    "starterCollection.tabs.members": "Jäsenet",
+    "starterCollection.tabs.posts": "Julkaisut",
+    "starterCollection.tabs.analytics": "Tilastot",
+    "starterCollection.posts.more": "Lataa lisää julkaisuja",
+    "starterCollection.posts.loading": "Ladataan julkaisuja…",
+    "starterCollection.posts.empty": "Tästä otoksesta ei löytynyt julkisia julkaisuja.",
+    "starterCollection.posts.errors": "Joitakin tilejä ei tavoitettu."
   },
   "no": {
     "bundledStarterKits.account.one": "{{count}} konto",
@@ -695,9 +809,15 @@
     "starterCollection.lookingUp": "Søker…",
     "starterCollection.membersAria": "Kontoer i {{title}}",
     "starterCollection.notFound": "Ikke funnet",
-    "starterCollection.note": "Anonym følging bruker straks kontokopien som følger med samlingen. Når du er innlogget, slår serveren din opp kontoene før den sender den faktiske følgeforespørselen.",
     "starterCollection.opening": "Åpner…",
-    "starterCollection.unavailable": "Denne startpakken er ikke lenger tilgjengelig. Se gjennom de gjeldende pakkene for å finne folk å følge."
+    "starterCollection.unavailable": "Denne startpakken er ikke lenger tilgjengelig. Se gjennom de gjeldende pakkene for å finne folk å følge.",
+    "starterCollection.tabs.members": "Medlemmer",
+    "starterCollection.tabs.posts": "Innlegg",
+    "starterCollection.tabs.analytics": "Statistikk",
+    "starterCollection.posts.more": "Last inn flere innlegg",
+    "starterCollection.posts.loading": "Laster innlegg…",
+    "starterCollection.posts.empty": "Ingen offentlige innlegg funnet i dette utvalget.",
+    "starterCollection.posts.errors": "Noen kontoer kunne ikke nås."
   },
   "ar": {
     "bundledStarterKits.account.one": "حساب واحد ({{count}})",
@@ -730,8 +850,14 @@
     "starterCollection.lookingUp": "جارٍ البحث…",
     "starterCollection.membersAria": "حسابات {{title}}",
     "starterCollection.notFound": "لم يُعثر عليه",
-    "starterCollection.note": "تستخدم المتابعة المجهولة فورًا نسخة الحسابات المضمنة في المجموعة. عند تسجيل الدخول، يبحث خادمك عن الحسابات قبل إرسال طلب المتابعة الفعلي.",
     "starterCollection.opening": "جارٍ الفتح…",
-    "starterCollection.unavailable": "لم تعد مجموعة البداية هذه متاحة. تصفح المجموعات الحالية للعثور على أشخاص لمتابعتهم."
+    "starterCollection.unavailable": "لم تعد مجموعة البداية هذه متاحة. تصفح المجموعات الحالية للعثور على أشخاص لمتابعتهم.",
+    "starterCollection.tabs.members": "الأعضاء",
+    "starterCollection.tabs.posts": "المنشورات",
+    "starterCollection.tabs.analytics": "الإحصاءات",
+    "starterCollection.posts.more": "تحميل المزيد من المنشورات",
+    "starterCollection.posts.loading": "جارٍ تحميل المنشورات…",
+    "starterCollection.posts.empty": "لم يُعثر على منشورات عامة في هذه العينة.",
+    "starterCollection.posts.errors": "تعذّر الوصول إلى بعض الحسابات."
   }
 }

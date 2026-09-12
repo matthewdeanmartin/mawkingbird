@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 import { Status } from './models';
 
 /**
@@ -79,6 +79,7 @@ export function sampleFeed(source: FeedSource, size: number): Observable<FeedSam
     }
 
     let cancelled = false;
+    const requests = new Subscription();
     let apiCalls = 0;
 
     const done = (posts: Status[], failed: boolean) => {
@@ -90,28 +91,46 @@ export function sampleFeed(source: FeedSource, size: number): Observable<FeedSam
     };
 
     const page = (acc: Status[], pages: number) => {
-      source.fetch(acc.at(-1) ?? null).subscribe({
-        next: (batch) => {
-          if (cancelled) {
-            return;
-          }
-          apiCalls += 1;
-          const seen = new Set(acc.map((s) => s.id));
-          const all = [...acc, ...batch.filter((s) => !seen.has(s.id))];
-          const exhausted = batch.length < source.pageSize;
-          if (exhausted || all.length >= size || pages + 1 >= MAX_PAGES) {
-            done(all, false);
-            return;
-          }
-          page(all, pages + 1);
-        },
-        error: () => done(acc, acc.length === 0),
-      });
+      requests.add(
+        source
+          .fetch(acc.at(-1) ?? null)
+          .pipe(take(1))
+          .subscribe({
+            next: (batch) => {
+              if (cancelled) {
+                return;
+              }
+              apiCalls += 1;
+              const seen = new Set(acc.map((s) => s.id));
+              const all = [
+                ...acc,
+                ...batch.filter((s) => {
+                  if (seen.has(s.id)) return false;
+                  seen.add(s.id);
+                  return true;
+                }),
+              ];
+              const exhausted = batch.length < source.pageSize;
+              if (
+                exhausted ||
+                all.length === acc.length ||
+                all.length >= size ||
+                pages + 1 >= MAX_PAGES
+              ) {
+                done(all, false);
+                return;
+              }
+              page(all, pages + 1);
+            },
+            error: () => done(acc, acc.length === 0),
+          }),
+      );
     };
 
     page([], 0);
     return () => {
       cancelled = true;
+      requests.unsubscribe();
     };
   });
 }

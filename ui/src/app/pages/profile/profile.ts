@@ -1,3 +1,4 @@
+import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
 import { Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -218,6 +219,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 })
 export class Profile implements OnInit, OnDestroy {
   private transloco = inject(TranslocoService);
+  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private api = inject(Api);
   private route = inject(ActivatedRoute);
   private diagnostics = inject(PageDiagnostics);
@@ -1207,15 +1209,13 @@ export class Profile implements OnInit, OnDestroy {
     const known: Observable<TwitterFollow> = follow
       ? of(follow)
       : this.twitterApi.getProfile(handle).pipe(
-          map(
-            (account): TwitterFollow => ({
-              username: account.username,
-              displayName: account.display_name,
-              avatar: account.avatar,
-              addedAt: Date.now(),
-              enabled: true,
-            }),
-          ),
+          map((account): TwitterFollow => ({
+            username: account.username,
+            displayName: account.display_name,
+            avatar: account.avatar,
+            addedAt: Date.now(),
+            enabled: true,
+          })),
           tap((resolved: TwitterFollow) => {
             if (seq === this.loadSeq) {
               this.account.set(twitterPlaceholderAccount(resolved));
@@ -1961,6 +1961,8 @@ export class Profile implements OnInit, OnDestroy {
     if (this.featuredBusy()) {
       return;
     }
+    if (!this.followConfirmation.allow(this.featuredToFollow().length, this.auth.isAnonymous))
+      return;
     this.featuredBusy.set(true);
     try {
       for (const target of this.featuredToFollow()) {

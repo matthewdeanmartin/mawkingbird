@@ -944,6 +944,7 @@ export class Home implements OnInit, OnDestroy {
       return;
     }
     this.autoLoading.set(true);
+    const before = this.statuses().length;
     this.pageSub = this.nextFeedPage().subscribe({
       next: (more) => {
         this.mergeStatuses(more);
@@ -954,6 +955,10 @@ export class Home implements OnInit, OnDestroy {
         });
         this.publishMastodon(more);
         this.cacheAnonymousHome();
+        if (this.statuses().length <= before) {
+          this.autoLoading.set(false);
+          return;
+        }
         this.fillToMinimum();
       },
       error: (error: unknown) => {
@@ -998,6 +1003,7 @@ export class Home implements OnInit, OnDestroy {
       return;
     }
     this.autoLoading.set(true);
+    const before = this.statuses().length;
     this.pageSub = this.nextFeedPage().subscribe({
       next: (more) => {
         this.mergeStatuses(more);
@@ -1007,6 +1013,10 @@ export class Home implements OnInit, OnDestroy {
         });
         this.publishMastodon(more);
         this.cacheAnonymousHome();
+        if (this.statuses().length <= before) {
+          this.autoLoading.set(false);
+          return;
+        }
         this.fillArticles();
       },
       error: (error: unknown) => {

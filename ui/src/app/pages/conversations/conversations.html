@@ -17,6 +17,16 @@
 
   <aside class="chat-list" id="chat-list">
     <div class="chat-list-head">{{ 'pages.conversations.chatListHeading' | transloco }}</div>
+    @if (bsky.linked()) {
+      <button
+        type="button"
+        class="btn btn-outline"
+        [disabled]="loading() || bskyRefreshing()"
+        (click)="refreshBskyConvos()"
+      >
+        {{ 'pages.conversations.refreshBluesky' | transloco }}
+      </button>
+    }
     <div class="chat-filters">
       <!-- "All" means all *people*. Bots are the odd one out — a chat with Eliza
            or a language model is a different kind of thing from a chat with a

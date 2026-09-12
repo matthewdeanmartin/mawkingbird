@@ -24,48 +24,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
   imports: [RouterLink, TranslocoPipe],
   template: `
     <div class="command-bar" role="toolbar" aria-label="Feed controls">
-      @if (providerChips() && hasSourceControls()) {
-        <!-- WHAT: networks included in this feed. The label is intentionally a
-             code comment rather than visible toolbar furniture. -->
-        <div class="command-row provider-group" role="group" aria-label="Feed sources">
-          @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
-            <button
-              class="btn command-item"
-              [class.active]="prefs.isProviderVisible('mastodon')"
-              (click)="toggleProvider('mastodon')"
-              title="Show or hide Mastodon posts"
-            >
-              🦣 Fedi
-            </button>
-          }
-          @if (anonymousFedi()) {
-            <button
-              class="btn command-item"
-              [class.active]="prefs.isProviderVisible('anonymous-mastodon')"
-              (click)="toggleProvider('anonymous-mastodon')"
-              title="Show or hide Fediverse posts"
-            >
-              🦣 Fedi
-            </button>
-          }
-          @for (p of sourceProviders(); track p.id) {
-            <button
-              class="btn command-item"
-              [class.active]="prefs.isProviderVisible(p.id)"
-              (click)="toggleProvider(p.id)"
-              [title]="'Show or hide ' + p.label + ' posts'"
-            >
-              {{ p.badge }}
-            </button>
-          }
-        </div>
-      }
-
-      <!-- HOW: ways to load or present the same feed. The row name stays in
-           source only; the controls themselves are the visible explanation. -->
-      <div class="command-row action-row">
-        <!-- "Go live" used to sit here. It is now Blue → "Auto-refresh timeline",
-             opt-in and off by default. Home reads the pref directly. -->
+      <div class="command-row action-row" role="group" aria-label="Feed actions">
         @if (showRefresh()) {
           <button
             class="btn command-item"
@@ -75,6 +34,36 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
             🔄 More
           </button>
         }
+        @if (showFeedViews()) {
+          <button
+            class="btn command-item"
+            [class.active]="view() === 'members'"
+            [attr.aria-pressed]="view() === 'members'"
+            (click)="setView('members')"
+            title="Who is in this feed — the accounts whose posts are loaded"
+          >
+            👥 Members</button
+          ><button
+            class="btn command-item"
+            [class.active]="view() === 'analytics'"
+            [attr.aria-pressed]="view() === 'analytics'"
+            (click)="setView('analytics')"
+            title="Analytics for the posts currently loaded in this feed"
+          >
+            📊 Analytics
+          </button>
+        }
+        @if (showFeedDoctor()) {
+          <a
+            class="btn command-item"
+            routerLink="/feed-doctor"
+            title="Why is this feed like this — who is flooding it, and why it ended"
+          >
+            🩺 Feed Doctor
+          </a>
+        }
+      </div>
+      <div class="command-row presentation-row" role="group" aria-label="Feed presentation">
         <button
           class="btn command-item"
           [class.active]="prefs.feedReader()"
@@ -98,62 +87,24 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           </button>
         }
         @if (showFeedViews()) {
-          <!-- Views over the feed the page already has, not navigation: they swap
-             what the timeline area shows, so they read as toggles like the rest
-             of the bar. -->
-          <span class="command-group" role="group" aria-label="Feed views">
-            <button
-              class="btn command-item"
-              [class.active]="view() === 'members'"
-              [attr.aria-pressed]="view() === 'members'"
-              (click)="setView('members')"
-              title="Who is in this feed — the accounts whose posts are loaded"
-            >
-              👥 Members
-            </button>
-            <button
-              class="btn command-item"
-              [class.active]="view() === 'analytics'"
-              [attr.aria-pressed]="view() === 'analytics'"
-              (click)="setView('analytics')"
-              title="Analytics for the posts currently loaded in this feed"
-            >
-              📊 Analytics
-            </button>
-            <button
-              class="btn command-item"
-              [class.active]="view() === 'media'"
-              [attr.aria-pressed]="view() === 'media'"
-              (click)="setView('media')"
-              title="Pictures and videos from the posts currently loaded"
-            >
-              🖼️ Media
-            </button>
-            <button
-              class="btn command-item"
-              [class.active]="view() === 'articles'"
-              [attr.aria-pressed]="view() === 'articles'"
-              (click)="setView('articles')"
-              title="Article links from the posts currently loaded"
-            >
-              🔗 Articles
-            </button>
-            <!-- A link, not a view toggle like its two neighbours: the Doctor
-               re-samples the feed itself so it works the same whether you arrive
-               from here, from the end-of-feed line, or by typing the URL. One
-               page, one implementation. -->
-            @if (showFeedDoctor()) {
-              <a
-                class="btn command-item"
-                routerLink="/feed-doctor"
-                title="Why is this feed like this — who is flooding it, and why it ended"
-              >
-                🩺 Feed Doctor
-              </a>
-            }
-          </span>
+          <button
+            class="btn command-item"
+            [class.active]="view() === 'media'"
+            [attr.aria-pressed]="view() === 'media'"
+            (click)="setView('media')"
+            title="Pictures and videos from the posts currently loaded"
+          >
+            🖼️ Media</button
+          ><button
+            class="btn command-item"
+            [class.active]="view() === 'articles'"
+            [attr.aria-pressed]="view() === 'articles'"
+            (click)="setView('articles')"
+            title="Article links from the posts currently loaded"
+          >
+            🔗 Articles
+          </button>
         }
-        <ng-content />
         @if (prefs.feedReader() && showReaderControls()) {
           <span class="font-controls">
             <button
@@ -173,6 +124,47 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           </span>
         }
       </div>
+      @if (providerChips() || showFilters()) {
+        <div class="command-row filter-row" role="group" aria-label="Feed filters">
+          <ng-content />
+          @if (providerChips() && hasSourceControls()) {
+            <!-- WHAT: networks included in this feed. The label is intentionally a
+             code comment rather than visible toolbar furniture. -->
+            <div class="provider-group" role="group" aria-label="Feed sources">
+              @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
+                <button
+                  class="btn command-item"
+                  [class.active]="prefs.isProviderVisible('mastodon')"
+                  (click)="toggleProvider('mastodon')"
+                  title="Show or hide Mastodon posts"
+                >
+                  🦣 Fedi
+                </button>
+              }
+              @if (anonymousFedi()) {
+                <button
+                  class="btn command-item"
+                  [class.active]="prefs.isProviderVisible('anonymous-mastodon')"
+                  (click)="toggleProvider('anonymous-mastodon')"
+                  title="Show or hide Fediverse posts"
+                >
+                  🦣 Fedi
+                </button>
+              }
+              @for (p of sourceProviders(); track p.id) {
+                <button
+                  class="btn command-item"
+                  [class.active]="prefs.isProviderVisible(p.id)"
+                  (click)="toggleProvider(p.id)"
+                  [title]="'Show or hide ' + p.label + ' posts'"
+                >
+                  {{ p.badge }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
   `,
   styles: `
@@ -185,16 +177,21 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
       gap: 2px;
       min-width: 0;
       padding: 5px 10px;
-      overflow-x: auto;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
     }
     .provider-group {
-      flex-wrap: nowrap;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
       border-bottom: 1px solid var(--border);
     }
     .action-row {
-      flex-wrap: nowrap;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
     }
-    .action-row .command-item {
+    .command-row .command-item {
       padding: 5px 4px;
       font-size: 13px;
     }
@@ -204,13 +201,15 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
       gap: 2px;
     }
     .command-item {
-      flex: 0 0 auto;
+      flex: 0 1 auto;
+      max-width: 100%;
+      overflow-wrap: anywhere;
       border: 0;
       border-radius: 5px;
       background: transparent;
       color: var(--text);
       padding: 6px 8px;
-      white-space: nowrap;
+      white-space: normal;
     }
     .command-item:hover {
       background: var(--hover);
@@ -267,6 +266,7 @@ export class CommandBar {
   readonly showRefresh = input(false);
   /** Whether this page merges foreign providers (home) — shows the filter chips. */
   readonly providerChips = input(false);
+  readonly showFilters = input(false);
   /** Show the text-focus toggle independently of the Media layout. */
   readonly showImages = input(true);
   /** Home owns a fourth, full Reader row; compact feed bars retain these buttons. */

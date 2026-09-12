@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
@@ -8,6 +9,21 @@ import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
 describe('CommandBar', () => {
+  it('separates actions, presentation and filters in that order', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = setUp(true);
+    for (const key of ['showRefresh', 'showFeedViews', 'showFeedDoctor']) {
+      fixture.componentRef.setInput(key, true);
+    }
+    fixture.detectChanges();
+    const rows = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.command-row')];
+    const labels = (row: Element) =>
+      [...row.querySelectorAll('button, a')].map((b) => b.textContent?.trim());
+    expect(rows).toHaveLength(3);
+    expect(labels(rows[0])).toEqual(['🔄 More', '👥 Members', '📊 Analytics', '🩺 Feed Doctor']);
+    expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text-focus', '🖼️ Media', '🔗 Articles']);
+    expect(labels(rows[2])).toEqual(['🦣 Fedi']);
+  });
   beforeEach(() => {
     localStorage.clear();
     // The provider registry (filter chips) reaches HttpClient via RssFetch.

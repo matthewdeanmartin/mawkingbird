@@ -30,7 +30,7 @@
 
 .member-link {
   display: flex;
-  flex-direction: column;
+  gap: 12px;
   align-items: flex-start;
   min-width: 0;
   padding: 0;
@@ -40,6 +40,44 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+.member-profile {
+  flex: 1;
+  min-width: 0;
+}
+.member-link img {
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.member-bio {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+.pack-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.pack-tabs button {
+  flex: 1;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.pack-tabs button[aria-pressed='true'] {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .member-link:hover strong {

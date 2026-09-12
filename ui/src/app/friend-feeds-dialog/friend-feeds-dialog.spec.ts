@@ -54,6 +54,7 @@ describe('FriendFeedsDialog', () => {
   let proxyAvailable: boolean;
 
   beforeEach(() => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     localStorage.clear();
     TestBed.resetTestingModule();
     proxyAvailable = true;

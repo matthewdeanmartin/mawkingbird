@@ -1,3 +1,4 @@
+import { BulkFollowConfirmation } from './bulk-follow-confirmation';
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -110,6 +111,7 @@ export function followedTagsCsv(tags: readonly string[]): string {
  */
 @Injectable({ providedIn: 'root' })
 export class ImportTags {
+  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private api = inject(Api);
   private auth = inject(Auth);
   private anonymousTags = inject(AnonymousTags);
@@ -153,6 +155,13 @@ export class ImportTags {
     if (this.running()) {
       return;
     }
+    if (
+      !this.followConfirmation.allow(
+        this.rows().filter((row) => row.status === 'pending').length,
+        this.auth.isAnonymous,
+      )
+    )
+      return;
     this.stopRequested = false;
     this.running.set(true);
     try {
@@ -296,6 +305,7 @@ export class ImportTags {
           throw err;
         }
         await sleep(this.rateLimitWaitMs(err as HttpErrorResponse, attempt));
+        if (this.stopRequested) throw err;
       }
     }
   }

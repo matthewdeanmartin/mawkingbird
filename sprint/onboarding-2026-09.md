@@ -28,7 +28,32 @@ Empty-source detection includes local follows, hashtags, RSS/paste feeds, connec
 - Find Accounts: Basic | Advanced. Basic defaults to Starter packs, Collections, Invite your friends, Offsite directories, in that order. Put all search, including canned searches, in Advanced.
 - Search filters initially collapsed on phones and expanded on desktop, with active-filter visibility.
 
-## Sprint 3: navigation, starter packs, and final traffic audit
+## Sprint 3: navigation, starter packs, and final traffic audit — complete, awaiting owner review
+
+Validation: the final complete `cd ui && make test` passed all 6,317 runtime
+tests, with zero protected identities missing. Targeted tests, changed-file
+ESLint/Prettier, starter catalogue and locale coverage checks, i18n, storage, and
+diff whitespace checks passed. Local browser measurements at 320, 390, 800, and
+1280px found no horizontal page overflow; CTA/post text columns and action font,
+size, padding, and color matched. All browser API/WebSocket traffic was mocked.
+The preview production build completed with existing dependency/budget warnings.
+No branch, commit, push, or deployment was performed.
+
+The feed toolbar now groups More/Members/Analytics/Feed Doctor, then
+Reader/Text-focus/Media/Articles, then content and provider filters. Rows wrap.
+Discovery cards use a circular canary avatar, the same text column as posts, and
+the same 13px action typography. Browser checks also caught ordinary post actions
+widening the feed; these now wrap with compact vertical spacing.
+
+Waiting to publish is on Write. My Profile's Analytics sits beside Storage
+Diagnostics. Direct authenticated account/topic/feed batches confirm before
+starting; existing bulk-action dialogs remain the confirmation for their flows.
+Starter packs open on rich Members, with Posts and Analytics loading a bounded
+sample only on demand. Pack controls retain their independent language, and the
+implementation explanation is removed from both dictionary families.
+
+See [the final traffic audit](onboarding-traffic-audit-2026-09.md) for fixed loops
+and the other request paths inspected. No public-server load testing was used.
 
 - Move Waiting to publish (n) from More to Write.
 - Move Analytics from More beside Storage Diagnostics, labeled My Profile's Analytics.

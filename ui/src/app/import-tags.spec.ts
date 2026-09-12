@@ -1,12 +1,16 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from './api';
 import { Auth } from './auth';
 import { followedTagsCsv, ImportTags, normalizeTag, parseTags } from './import-tags';
 import { Tag } from './models';
 import { AnonymousTags } from './providers/anonymous/anonymous-tags';
+
+beforeEach(() => {
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
 
 describe('parseTags', () => {
   it('parses one tag per line, with or without the hash', () => {
