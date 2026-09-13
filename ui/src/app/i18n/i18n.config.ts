@@ -31,6 +31,18 @@ import {
 import { Observable } from 'rxjs';
 import { FALLBACK_LOCALE, SUPPORTED_LOCALES, TranslocoLocaleSync } from './locale';
 import { externalFetch } from '../providers/external-fetch';
+import { BUILD_INFO } from '../build-info';
+
+/** Dictionaries and JS must belong to the same release, including on canary. */
+export function translationUrl(
+  lang: string,
+  base: string,
+  version: string | null = BUILD_INFO.commit ?? BUILD_INFO.builtAt,
+): string {
+  const url = new URL(`i18n/${lang}.json`, base);
+  if (version) url.searchParams.set('v', version);
+  return url.toString();
+}
 
 /**
  * Loads `i18n/{lang}.json` from the deployment's own base.
@@ -48,7 +60,7 @@ export class HttpTranslocoLoader implements TranslocoLoader {
   private http = inject(HttpClient);
 
   getTranslation(lang: string): Observable<Translation> {
-    const url = new URL(`i18n/${lang}.json`, document.baseURI).toString();
+    const url = translationUrl(lang, document.baseURI);
     return this.http.get<Translation>(url, { context: externalFetch() });
   }
 }

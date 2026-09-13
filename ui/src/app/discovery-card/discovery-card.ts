@@ -6,7 +6,7 @@ import { brandLogoSrc } from '../build-flavor';
 import { PlusPrice } from '../providers/account/plus-price';
 import { ClientPrefs } from '../client-prefs';
 
-// i18n discovery.card.featureHeading: Explore Mawkingbird
+// i18n discovery.card.featureHeading: Explore Mawkingbird's Features
 // i18n discovery.card.plusHeading: Mawkingbird Plus
 // i18n discovery.card.heading: Find more people to follow
 // i18n discovery.card.explore: Explore
@@ -24,13 +24,15 @@ import { ClientPrefs } from '../client-prefs';
     >
       <img class="avatar" [src]="logoSrc()" width="48" height="48" alt="" />
       <div class="body">
-        @if (plus()) {
-          <small>{{ 'discovery.card.plusHeading' | transloco }}</small>
-        }
-        <div class="meta">
-          <strong>{{ way().title | transloco }}</strong>
-        </div>
-        <p class="content">{{ way().description | transloco }}</p>
+        <h2 class="card-heading">
+          {{
+            (plus() ? 'discovery.card.plusHeading' : 'discovery.card.featureHeading') | transloco
+          }}
+        </h2>
+        <p class="content meta">
+          <strong>{{ way().title | transloco }}:</strong>
+          {{ way().description | transloco }}
+        </p>
         @if (plus()) {
           <app-plus-price />
         }
@@ -83,8 +85,13 @@ import { ClientPrefs } from '../client-prefs';
       flex: 1;
       min-width: 0;
     }
+    .card-heading {
+      font-size: 1rem;
+      line-height: 1.4;
+      margin: 0 0 8px;
+    }
     .content {
-      margin: 2px 0 0;
+      margin: 0;
       overflow-wrap: anywhere;
     }
     .card-actions {

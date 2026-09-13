@@ -1,5 +1,5 @@
 {
-  "testCount": 6456,
+  "testCount": 6460,
   "tests": [
     "src/app/a11y/focus-trap.spec.ts :: FocusTrap cycles backwards from the first control to the last",
     "src/app/a11y/focus-trap.spec.ts :: FocusTrap cycles from the last control back to the first",
@@ -717,6 +717,8 @@
     "src/app/diagnostic-log.spec.ts :: DiagnosticLog mirrors the existing console format and retains a structured entry",
     "src/app/diagnostic-log.spec.ts :: DiagnosticLog persists warnings immediately and clear removes the session copy",
     "src/app/diagnostic-log.spec.ts :: DiagnosticLog redacts secret-shaped fields and URL credentials and queries",
+    "src/app/discovery-card/discovery-card.spec.ts :: Discovery cards inserted after runtime translation loading renders the complete inventory with a visible heading when Load More inserts cards",
+    "src/app/discovery-card/discovery-card.spec.ts :: Discovery cards inserted after runtime translation loading uses English for new feature keys missing from the selected language on later cards",
     "src/app/discovery-card/discovery-card.spec.ts :: DiscoveryCard branding uses the / bird and reacts to art preference changes",
     "src/app/discovery-card/discovery-card.spec.ts :: DiscoveryCard branding uses the /canary/ bird and reacts to art preference changes",
     "src/app/discovery-card/discovery-card.spec.ts :: DiscoveryCard branding uses the /test/ bird and reacts to art preference changes",
@@ -1120,6 +1122,8 @@
     "src/app/human-time.pipe.spec.ts :: HumanTimePipe shows month + day (no year) for older posts this year",
     "src/app/human-time.pipe.spec.ts :: HumanTimePipe shows month + day + year for previous years (not a clock time)",
     "src/app/human-time.pipe.spec.ts :: HumanTimePipe shows seconds ago under a minute",
+    "src/app/i18n/i18n.config.spec.ts :: Runtime translation URLs loads through the release-aware URL helper using the actual deployment base",
+    "src/app/i18n/i18n.config.spec.ts :: Runtime translation URLs separates releases without crossing deployment roots for either active or fallback languages",
     "src/app/i18n/locale.spec.ts :: TranslocoLocaleSync updates the document language on bootstrap and on live locale changes",
     "src/app/i18n/locale.spec.ts :: UiLocale choose(null) hands the decision back to the browser",
     "src/app/i18n/locale.spec.ts :: UiLocale does not persist a negotiated locale",

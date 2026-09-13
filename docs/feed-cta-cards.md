@@ -45,3 +45,25 @@ the Plus flag must be enabled, the account must resolve as free, ads must be on,
 and Plus recommendations must not have been dismissed. Proxy and connection
 vault cards additionally respect their own capability rollout boundaries.
 General feature cards honor any corresponding feature flag.
+
+
+## Presentation and runtime translations
+
+General cards show a visible **Explore Mawkingbird's Features** heading, followed
+by a single **Feature title:** description paragraph. Plus cards use a visible
+**Mawkingbird Plus** heading. The label is not only an accessibility attribute.
+
+Dictionary requests include the build commit as a query parameter (or build
+timestamp when no commit is available), preserving each deployment's own base
+path. This prevents a new canary bundle from requesting the same cache entry
+as an older English or translated dictionary. Unstamped local builds retain
+their ordinary URLs.
+
+Load More itself does not load translations: it inserts cards that use
+Transloco's current dictionary. The English source contains every CTA key.
+An older cached dictionary is consistent with old discovery cards translating
+while newer CTA keys appear raw; a read-only live canary check returned HTTP
+403, so the exact dictionary served to the reported browser was not verified.
+Regression coverage uses the production HTTP loader, delayed dictionary
+responses, all 30 cards inserted after the initial load, and a partial
+non-English locale that must load English fallback for new keys.
