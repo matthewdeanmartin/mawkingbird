@@ -1,3 +1,5 @@
+import { PlusCatalogue } from './plus-catalogue';
+import { catalogueOffer } from '../../testing/plus-catalogue';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -346,6 +348,9 @@ describe('PlusSession', () => {
   });
 
   describe('checkout', () => {
+    beforeEach(() => {
+      TestBed.inject(PlusCatalogue).offer.set(catalogueOffer);
+    });
     it('asks for a session and navigates to it', async () => {
       const assign = vi.fn();
       // jsdom refuses `vi.spyOn(location, 'assign')`. Stubbing the whole object

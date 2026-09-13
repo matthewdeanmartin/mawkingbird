@@ -1,3 +1,4 @@
+import { ProxyActivity } from '../../../../providers/cors-proxy/proxy-activity';
 import { inject, Injectable, signal } from '@angular/core';
 import { buildProxiedUrl } from '../../../../providers/cors-proxy/cors-proxy';
 import { CorsProxySettings } from '../../../../providers/cors-proxy/cors-proxy-settings';
@@ -51,6 +52,7 @@ import { CorsReadable, ProbeResult, ProbeTarget, ProxyVerdict } from './connecti
  */
 @Injectable({ providedIn: 'root' })
 export class ConnectionDoctor {
+  private activity = inject(ProxyActivity);
   private proxySettings = inject(CorsProxySettings);
 
   /** Result per target id. Absent means never run. */
@@ -158,6 +160,11 @@ export class ConnectionDoctor {
     target: ProbeTarget,
     timeoutMs: number,
   ): Promise<{ proxy: ProxyVerdict; proxyMs: number | null }> {
+    try {
+      this.activity.assertAllowed();
+    } catch {
+      return { proxy: 'none', proxyMs: null };
+    }
     const config = this.proxySettings.resolve();
     if (!config) {
       return { proxy: 'none', proxyMs: null };

@@ -1,3 +1,4 @@
+import { proxyLimitInterceptor } from './providers/cors-proxy/proxy-limit.interceptor';
 import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
 import {
   provideRouter,
@@ -64,6 +65,7 @@ export const appConfig: ApplicationConfig = {
         // Last, so it sees the final URL: `serverInterceptor` may still have
         // been rewriting it earlier in the chain.
         plusTokenInterceptor,
+        proxyLimitInterceptor,
       ]),
     ),
   ],

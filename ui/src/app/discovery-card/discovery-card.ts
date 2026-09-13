@@ -3,35 +3,56 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DiscoveryWay } from '../discovery-ways';
 import { brandLogoSrc } from '../build-flavor';
+import { PlusPrice } from '../providers/account/plus-price';
 import { ClientPrefs } from '../client-prefs';
 
+// i18n discovery.card.featureHeading: Explore Mawkingbird
+// i18n discovery.card.plusHeading: Mawkingbird Plus
 // i18n discovery.card.heading: Find more people to follow
 // i18n discovery.card.explore: Explore
 // i18n discovery.card.dismiss: Dismiss this card
 // i18n discovery.card.actions: Discovery card actions
 @Component({
   selector: 'app-discovery-card',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, TranslocoPipe, PlusPrice],
   template: `
-    <aside class="discovery-card" [attr.aria-label]="'discovery.card.heading' | transloco">
+    <aside
+      class="discovery-card"
+      [attr.aria-label]="
+        (plus() ? 'discovery.card.plusHeading' : 'discovery.card.featureHeading') | transloco
+      "
+    >
       <img class="avatar" [src]="logoSrc()" width="48" height="48" alt="" />
       <div class="body">
+        @if (plus()) {
+          <small>{{ 'discovery.card.plusHeading' | transloco }}</small>
+        }
         <div class="meta">
           <strong>{{ way().title | transloco }}</strong>
         </div>
         <p class="content">{{ way().description | transloco }}</p>
+        @if (plus()) {
+          <app-plus-price />
+        }
         <div
           class="card-actions"
           role="group"
           [attr.aria-label]="'discovery.card.actions' | transloco"
         >
-          <a
-            class="action"
-            [routerLink]="way().route"
-            [queryParams]="way().query"
-            [fragment]="way().fragment"
-            >{{ 'discovery.card.explore' | transloco }}</a
-          >
+          @if (way().action) {
+            <button type="button" class="action" (click)="opened.emit()">
+              {{ 'discovery.card.explore' | transloco }}
+            </button>
+          } @else {
+            <a
+              class="action"
+              [routerLink]="way().route"
+              [queryParams]="way().query"
+              [fragment]="way().fragment"
+              (click)="opened.emit()"
+              >{{ 'discovery.card.explore' | transloco }}</a
+            >
+          }
           <button type="button" class="action" (click)="dismissed.emit()">
             {{ 'discovery.card.dismiss' | transloco }}
           </button>
@@ -106,4 +127,6 @@ export class DiscoveryCard {
   protected readonly logoSrc = computed(() => brandLogoSrc(this.prefs.artStyle()));
   readonly way = input.required<DiscoveryWay>();
   readonly dismissed = output<void>();
+  readonly opened = output<void>();
+  readonly plus = input(false);
 }

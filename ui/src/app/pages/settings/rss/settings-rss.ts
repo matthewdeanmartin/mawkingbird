@@ -1,3 +1,4 @@
+import { FeedSyncButton } from '../../../providers/account/feed-sync-button';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -108,7 +109,7 @@ interface ImportReport {
 // i18n settings.rss.noFeeds: No feeds yet.
 @Component({
   selector: 'app-settings-rss',
-  imports: [FormsModule, FriendFeedsDialog, RouterLink, TranslocoPipe],
+  imports: [FeedSyncButton, FormsModule, FriendFeedsDialog, RouterLink, TranslocoPipe],
   templateUrl: './settings-rss.html',
   styleUrl: './settings-rss.css',
 })

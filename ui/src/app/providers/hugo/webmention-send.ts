@@ -118,6 +118,7 @@ export class WebmentionSend {
     const response = await fetch(proxied.url, {
       headers: toHeaderRecord(proxied.headers),
     });
+    this.proxy.observeResponse(response, proxied.url);
     if (!response.ok) {
       this.diagnostics.warn('POSSE', 'webmention:unreadable', {
         target: targetUrl,
@@ -171,6 +172,7 @@ export class WebmentionSend {
         },
         body: body.toString(),
       });
+      this.proxy.observeResponse(response, proxied.url);
     } catch {
       // A proxy that will not forward a POST at all — AllOrigins, for one — is
       // a configuration limit, not the target refusing. Reporting it as

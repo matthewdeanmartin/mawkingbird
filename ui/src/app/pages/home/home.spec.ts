@@ -1,3 +1,4 @@
+import { FEED_CTA_INTERVAL } from '../../feed-ctas';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -935,42 +936,51 @@ describe('Home', () => {
     expect(internals(fixture).view()).toBe('feed');
   });
 
-  it('inserts discovery cards every twenty displayed posts and dismisses only the selected card', () => {
+  it('inserts mixed CTA cards every fifteen displayed posts and dismisses only the selected card', () => {
     const fixture = setUp();
-    internals(fixture).statuses.set(Array.from({ length: 40 }, (_, i) => makeStatus(String(i))));
+    internals(fixture).statuses.set(
+      Array.from({ length: FEED_CTA_INTERVAL * 2 }, (_, i) => makeStatus(String(i))),
+    );
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
     const items = [...root.querySelectorAll('app-status-card, app-discovery-card')];
-    expect(items).toHaveLength(42);
-    expect(items[20].tagName).toBe('APP-DISCOVERY-CARD');
-    expect(items[41].tagName).toBe('APP-DISCOVERY-CARD');
-    expect(items[20].textContent).toContain('Starter packs');
-    expect(items[41].textContent).toContain('Collections');
-    items[20].querySelector<HTMLButtonElement>('button')!.click();
+    expect(items).toHaveLength(FEED_CTA_INTERVAL * 2 + 2);
+    expect(items[FEED_CTA_INTERVAL].tagName).toBe('APP-DISCOVERY-CARD');
+    expect(items[FEED_CTA_INTERVAL * 2 + 1].tagName).toBe('APP-DISCOVERY-CARD');
+    const title = (card: Element) => card.querySelector('.meta strong')?.textContent?.trim();
+    const first = title(items[FEED_CTA_INTERVAL]);
+    const second = title(items[FEED_CTA_INTERVAL * 2 + 1]);
+    expect(first).toBeTruthy();
+    expect(first).not.toBe(second);
+    const buttons = items[FEED_CTA_INTERVAL].querySelectorAll<HTMLButtonElement>('button');
+    buttons[buttons.length - 1].click();
     fixture.detectChanges();
     expect(root.querySelectorAll('app-discovery-card')).toHaveLength(1);
-    expect(root.querySelector('app-discovery-card')?.textContent).toContain('Collections');
+    expect(title(root.querySelector('app-discovery-card')!)).toBe(second);
     internals(fixture).statuses.update((posts) => [
       ...posts,
-      ...Array.from({ length: 20 }, (_, i) => makeStatus(`more-${i}`)),
+      ...Array.from({ length: FEED_CTA_INTERVAL * 2 }, (_, i) => makeStatus(`more-${i}`)),
     ]);
     fixture.detectChanges();
-    expect(root.querySelectorAll('app-discovery-card')).toHaveLength(2);
-    expect(
-      [...root.querySelectorAll('app-discovery-card')].map((card) =>
-        card.querySelector('.meta strong')?.textContent?.trim(),
-      ),
-    ).toEqual(['Collections', 'Invite your friends']);
-    expect(internals(fixture).statuses()).toHaveLength(60);
+    const titles = [...root.querySelectorAll('app-discovery-card')].map(title);
+    expect(titles).toHaveLength(3);
+    expect(titles[0]).toBe(second);
+    expect(titles).not.toContain(first);
+    expect(new Set(titles).size).toBe(3);
+    expect(internals(fixture).statuses()).toHaveLength(FEED_CTA_INTERVAL * 4);
     httpMock.expectNone((request) => request.url.includes('search'));
   });
 
   it('does not insert discovery cards into a short feed or the Media layout', () => {
     const fixture = setUp();
-    internals(fixture).statuses.set(Array.from({ length: 19 }, (_, i) => makeStatus(String(i))));
+    internals(fixture).statuses.set(
+      Array.from({ length: FEED_CTA_INTERVAL - 1 }, (_, i) => makeStatus(String(i))),
+    );
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-discovery-card')).toBeNull();
-    internals(fixture).statuses.set(Array.from({ length: 40 }, (_, i) => makeStatus(String(i))));
+    internals(fixture).statuses.set(
+      Array.from({ length: FEED_CTA_INTERVAL * 2 }, (_, i) => makeStatus(String(i))),
+    );
     internals(fixture).view.set('media');
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-discovery-card')).toBeNull();

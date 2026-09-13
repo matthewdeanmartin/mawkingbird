@@ -3,7 +3,7 @@
 <div class="plans-body">
   <p>
     {{ 'pages.plans.intro.a' | transloco }}
-    <strong [innerHTML]="'pages.plans.intro.price' | transloco: { price: priceUsd }"></strong>
+    <app-plus-price />
     {{ 'pages.plans.intro.b' | transloco }}
   </p>
 
@@ -166,7 +166,7 @@
 
   <h2>{{ 'pages.plans.stop.title' | transloco }}</h2>
   <p>
-    {{ 'pages.plans.stop.body' | transloco }}
+    {{ 'plus.billing.cancelled' | transloco }}
   </p>
 
   <p class="plans-back">

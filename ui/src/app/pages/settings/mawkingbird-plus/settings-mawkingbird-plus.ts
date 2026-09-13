@@ -1,3 +1,5 @@
+import { PlusCatalogue } from '../../../providers/account/plus-catalogue';
+import { PlusPrice } from '../../../providers/account/plus-price';
 import { Component, computed, inject, Injector, OnInit, signal } from '@angular/core';
 import { DatePipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -23,7 +25,7 @@ import { VaultService } from '../../../providers/vault/vault-service';
 import { VaultPreference } from '../../../providers/vault/vault-preference';
 import { VaultAdoption } from '../../../providers/vault/vault-adoption';
 import { FeatureFlags } from '../../../feature-flags';
-import { PLUS_PRICE_USD_PER_YEAR, visiblePlusBenefits } from '../../../plus-benefits';
+import { visiblePlusBenefits } from '../../../plus-benefits';
 import { ArticleQuota, FREE_DAILY_ARTICLES } from '../../../providers/article/article-quota';
 import { ArticleReadingTally } from '../../../providers/article/article-reading-tally';
 
@@ -196,6 +198,7 @@ import { ArticleReadingTally } from '../../../providers/article/article-reading-
 @Component({
   selector: 'app-settings-mawkingbird-plus',
   imports: [
+    PlusPrice,
     DatePipe,
     DecimalPipe,
     NgTemplateOutlet,
@@ -239,7 +242,7 @@ export class SettingsMawkingbirdPlus implements OnInit {
   protected readonly benefits = computed(() =>
     visiblePlusBenefits((flag) => this.flags.enabled(flag)),
   );
-  protected readonly priceUsd = PLUS_PRICE_USD_PER_YEAR;
+  protected readonly catalogue = inject(PlusCatalogue);
   protected readonly freeDailyArticles = FREE_DAILY_ARTICLES;
 
   protected readonly proxyUsage = this.proxyUsageStore.usage;
@@ -907,3 +910,8 @@ const VAULT_POLICIES: Record<
   'absolute-365': { kind: 'absolute', days: 365 },
   never: { kind: 'never' },
 };
+
+// i18n plus.wall.return: Return to your task
+
+// i18n plus.billing.manage: Manage or cancel your subscription from the receipt email Stripe sent you. Cancelling stops renewal; you keep Plus until the end of the billing period you paid for.
+// i18n plus.billing.stripe: Payment is handled by Stripe. This browser never sees your card details. Your account records your subscription status and when the current billing period ends.

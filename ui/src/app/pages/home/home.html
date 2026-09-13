@@ -285,8 +285,13 @@
         (deleted)="onDeleted($event)"
         (replied)="onPosted($event)"
       />
-      @if (discoveryAfter(index); as way) {
-        <app-discovery-card [way]="way" (dismissed)="dismissDiscovery(index)" />
+      @if (ctas.after(index); as card) {
+        <app-discovery-card
+          [way]="card"
+          [plus]="!!card.plus"
+          (opened)="openCta(card)"
+          (dismissed)="ctas.dismiss(card)"
+        />
       }
     }
 

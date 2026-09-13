@@ -1,3 +1,4 @@
+import { FeedSyncButton } from '../../providers/account/feed-sync-button';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -113,6 +114,7 @@ interface RailGroup {
 @Component({
   selector: 'app-rss-page',
   imports: [
+    FeedSyncButton,
     RouterLink,
     AddFeedDialog,
     FriendFeedsDialog,

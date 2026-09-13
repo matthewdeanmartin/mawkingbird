@@ -27,7 +27,11 @@ const REGISTRY = join(APP_DIR, 'storage-registry.ts');
  * Keys that no longer exist in the source but stay classified so that data
  * lingering in a real browser is still recognised (and still excluded).
  */
-const LEGACY_KEYS = new Set(['mockingbird_raindrop_credentials']);
+const LEGACY_KEYS = new Set([
+  'mockingbird_raindrop_credentials',
+  // Retired when checkout return-to-task handling was removed.
+  'mockingbird_plus_return',
+]);
 
 /** Every non-spec .ts file under src/app. */
 function sourceFiles(dir) {

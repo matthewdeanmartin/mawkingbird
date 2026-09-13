@@ -243,10 +243,8 @@ export class CollectionAdoptionRunner {
     const local = this.localFeeds.feeds().map((feed) => ({
       url: feed.url,
       title: feed.title,
-      // The local store has no folders yet; the OPML parser reads them and the
-      // collection carries them, so this is where they will arrive from once the
-      // UI grows folders.
-      folders: [] as string[],
+      // Preserve the OPML folder path along with the subscription.
+      folders: feed.folder ? feed.folder.split(' / ') : [],
     }));
     const plan = planAdoption(local, this.profileFeeds.feeds(), choice, (feed) => feed.url);
 

@@ -104,6 +104,35 @@ export interface StorageKeySpec {
  * so an unclassified key can never quietly reach an export.
  */
 export const STORAGE_KEYS: readonly StorageKeySpec[] = [
+  {
+    base: 'mockingbird_feature_use',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'cache',
+    note: 'Local-only feature-discovery history; never exported or synced.',
+  },
+  {
+    base: 'mockingbird_plus_return',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Retired return-to-task route; retain classification for existing tabs.',
+  },
+  {
+    base: 'mockingbird_proxy_prompt',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Whether this tab has shown its one proxy exhaustion popup.',
+  },
+  {
+    base: 'mockingbird_proxy_paused',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Device-local suspension of proxy-dependent activity. Credentials are preserved.',
+  },
+
   // ---- secret: credentials, never exported ----
   {
     base: 'mastodon_mock_token',
@@ -1169,13 +1198,17 @@ export function isKeyExportable(key: string, profile: ExportProfile): boolean {
 export function isExportable(base: string, profile: ExportProfile): boolean {
   const spec = specForKey(base);
   return (
-    spec !== null && (EXPORT_PROFILES[profile] as readonly Sensitivity[]).includes(spec.sensitivity)
+    spec !== null &&
+    spec.storage === 'local' &&
+    (EXPORT_PROFILES[profile] as readonly Sensitivity[]).includes(spec.sensitivity)
   );
 }
 
 /** Every key base an export of this profile should collect. */
 export function exportableKeys(profile: ExportProfile): StorageKeySpec[] {
-  return STORAGE_KEYS.filter((spec) =>
-    (EXPORT_PROFILES[profile] as readonly Sensitivity[]).includes(spec.sensitivity),
+  return STORAGE_KEYS.filter(
+    (spec) =>
+      spec.storage === 'local' &&
+      (EXPORT_PROFILES[profile] as readonly Sensitivity[]).includes(spec.sensitivity),
   );
 }

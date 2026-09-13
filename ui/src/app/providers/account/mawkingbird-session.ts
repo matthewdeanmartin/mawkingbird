@@ -346,6 +346,7 @@ export class MawkingbirdSession {
     const signedIn = await this.post({ grant: 'cookie' });
     if (signedIn) {
       authDebug('mint:signed-in', { auth: signedIn.auth, tier: signedIn.tier });
+      this.error.set(null);
       this.held = signedIn;
       this.user.set({ auth: signedIn.auth, tier: signedIn.tier });
       return signedIn;
@@ -371,6 +372,7 @@ export class MawkingbirdSession {
     // mint failed, the service is unreachable and the page would otherwise show
     // a bare "Not signed in" for what is actually an outage — which is exactly
     // the confusion this whole debugging session was made of.
+    if (anonymous) this.error.set(null);
     if (!anonymous) {
       this.error.set(
         'Could not reach the Mawkingbird account service. Signing in will not work until it is back.',

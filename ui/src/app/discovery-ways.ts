@@ -6,6 +6,7 @@ export interface DiscoveryWay {
   route: string;
   query?: Record<string, string>;
   fragment?: string;
+  action?: 'analytics';
 }
 
 // i18n discovery.starterPacks.title: Starter packs
@@ -86,10 +87,3 @@ export const DISCOVERY_WAYS: readonly DiscoveryWay[] = [
     route: '/settings/import-export',
   },
 ];
-
-export const DISCOVERY_CARD_INTERVAL = 20;
-
-export function discoveryCardAfter(postIndex: number): DiscoveryWay | null {
-  if ((postIndex + 1) % DISCOVERY_CARD_INTERVAL !== 0) return null;
-  return DISCOVERY_WAYS[((postIndex + 1) / DISCOVERY_CARD_INTERVAL - 1) % DISCOVERY_WAYS.length];
-}

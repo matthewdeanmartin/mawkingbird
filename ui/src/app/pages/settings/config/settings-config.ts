@@ -1,3 +1,5 @@
+import { DestroyRef } from '@angular/core';
+import { PlusPaywall } from '../../../providers/account/plus-paywall';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -101,6 +103,15 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './settings-config.css',
 })
 export class SettingsConfig {
+  protected readonly paywall = inject(PlusPaywall);
+  private readonly lifetime = inject(DestroyRef);
+  constructor() {
+    void this.paywall.require('settings', () => !this.lifetime.destroyed);
+    this.lifetime.onDestroy(() => {
+      if (this.paywall.state()?.feature === 'settings') this.paywall.dismiss();
+    });
+  }
+
   protected readonly sync = inject(ConfigSync);
   private readonly pasteHistory = inject(PasteHistory);
 

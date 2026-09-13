@@ -1,3 +1,4 @@
+import { PlusPaywall } from '../../../providers/account/plus-paywall';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -129,5 +130,28 @@ describe('SettingsConfig', () => {
     expect(text).not.toContain('mockingbird_');
     expect(text).not.toContain('revision 9');
     expect(text).not.toContain('setting(s)');
+  });
+});
+
+describe('SettingsConfig paywall entry', () => {
+  it('opens once on entry and never on rerender, then opens on a new visit', () => {
+    const require = vi.fn().mockResolvedValue(false);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: PlusPaywall, useValue: { require, state: () => null, available: () => true } },
+      ],
+    });
+    const first = TestBed.createComponent(SettingsConfig);
+    first.detectChanges();
+    first.detectChanges();
+    expect(require).toHaveBeenCalledTimes(1);
+    expect(require).toHaveBeenCalledWith('settings', expect.any(Function));
+    first.destroy();
+    const second = TestBed.createComponent(SettingsConfig);
+    second.detectChanges();
+    expect(require).toHaveBeenCalledTimes(2);
   });
 });

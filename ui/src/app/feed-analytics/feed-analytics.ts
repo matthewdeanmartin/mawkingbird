@@ -1,3 +1,4 @@
+import { FeatureUseHistory } from '../feature-use-history';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -221,6 +222,7 @@ export class FeedAnalytics {
   } as const;
 
   constructor() {
+    inject(FeatureUseHistory).mark('analytics');
     // Collection is driven by the two things that define a sample: which feed
     // and how many posts. `untracked` keeps the fetch itself from registering
     // any further dependencies.

@@ -11,6 +11,7 @@
 </div>
 
 <div class="spage-body">
+  <app-connection-sync-button />
   @if (vaultInventoryNeedsAttention()) {
     <p class="muted small">
       {{ 'settings.connections.vaultClosed' | transloco }}

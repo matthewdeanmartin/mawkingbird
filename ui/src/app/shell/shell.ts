@@ -1,3 +1,6 @@
+import { FeatureUseHistory } from '../feature-use-history';
+import { PlusPrice } from '../providers/account/plus-price';
+import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
 import {
   Component,
   computed,
@@ -32,7 +35,7 @@ import { ReadingZen } from '../reading-zen';
 import { FirstRunChoice, FirstRunModal } from '../first-run/first-run-modal';
 import { PreviewSeed } from '../first-run/preview-seed';
 import { PlusBadgeEntitlement } from '../providers/account/plus-badge-entitlement';
-import { PLUS_PRICE_USD_PER_YEAR, visiblePlusBenefits } from '../plus-benefits';
+import { visiblePlusBenefits } from '../plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
@@ -133,6 +136,8 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    PlusPrice,
+    PlusPaywallDialog,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -149,6 +154,7 @@ function isWideUrl(url: string): boolean {
   styleUrl: './shell.css',
 })
 export class Shell implements OnInit {
+  private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);
   protected auth = inject(Auth);
   private transloco = inject(TranslocoService);
@@ -224,7 +230,6 @@ export class Shell implements OnInit {
   protected plusBenefits = computed(() =>
     visiblePlusBenefits((flag) => this.featureFlags.enabled(flag)),
   );
-  protected readonly plusPriceUsd = PLUS_PRICE_USD_PER_YEAR;
 
   protected benefitText(benefit: { id: string }, field: 'label' | 'free' | 'plus'): string {
     const benefitKey = benefit.id.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());

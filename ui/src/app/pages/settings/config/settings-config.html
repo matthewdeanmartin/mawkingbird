@@ -1,3 +1,10 @@
+@if (paywall.available()) {
+  <p>
+    <button class="btn btn-outline" type="button" (click)="paywall.require('settings')">
+      {{ 'plus.wall.settings' | transloco }}
+    </button>
+  </p>
+}
 <div class="spage-head">
   <h1>{{ 'settings.config.title' | transloco }}</h1>
   <p>{{ 'settings.config.intro' | transloco }}</p>

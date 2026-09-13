@@ -1,3 +1,4 @@
+import { ProxyActivity } from '../../../../providers/cors-proxy/proxy-activity';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -128,6 +129,7 @@ type TestState =
   styleUrls: ['../connection-page.css', './connection-cors-proxy.css'],
 })
 export class ConnectionCorsProxy implements OnInit {
+  protected readonly activity = inject(ProxyActivity);
   protected settings = inject(CorsProxySettings);
   private bridge = inject(VaultBridge);
   private http = inject(HttpClient);
@@ -455,3 +457,5 @@ export class ConnectionCorsProxy implements OnInit {
       : this.transloco.translate<string>('settings.connections.corsProxy.unknownFailure');
   }
 }
+
+// i18n plus.proxy.resume: Re-enable proxy features

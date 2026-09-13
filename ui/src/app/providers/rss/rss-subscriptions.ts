@@ -239,7 +239,7 @@ export class RssSubscriptions {
    * decision to route a request through a third party and must never be turned
    * on by machinery the user did not ask for.
    */
-  adoptAll(feeds: { url: string; title: string }[]): void {
+  adoptAll(feeds: { url: string; title: string; folders?: string[] }[]): void {
     const existing = new Map(this.feeds().map((feed) => [feed.url, feed]));
     this.persist(
       feeds.slice(0, this.limit()).map((feed) => {
@@ -248,7 +248,11 @@ export class RssSubscriptions {
           url: feed.url,
           title: feed.title,
           enabled: previous?.enabled ?? true,
-          ...(previous?.folder ? { folder: previous.folder } : {}),
+          ...(feed.folders
+            ? { folder: folderPathToName(feed.folders) }
+            : previous?.folder
+              ? { folder: previous.folder }
+              : {}),
           ...(previous?.useProxy ? { useProxy: true } : {}),
           ...(previous?.itemCount === undefined ? {} : { itemCount: previous.itemCount }),
         };

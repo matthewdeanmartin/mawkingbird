@@ -1,3 +1,5 @@
+import { PlusCatalogue } from '../providers/account/plus-catalogue';
+import { fakePlusCatalogue } from '../testing/plus-catalogue';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
@@ -43,6 +45,7 @@ describe('Shell account switching', () => {
         provideHttpClient(withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
+        { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
         { provide: PlusBadgeEntitlement, useValue: new FakePlusBadgeEntitlement() },
         { provide: MenuIndicators, useFactory: fakeIndicators },
       ],
@@ -298,7 +301,7 @@ describe('Shell account switching', () => {
     // plain sentence. They live on /plans.
     expect(popover.textContent).toContain('A couple of full articles a day');
     expect(popover.textContent).toContain('Open as many as you like');
-    expect(popover.textContent).toContain('$30 a year');
+    expect(popover.textContent).toContain('$42.00 / 1 year');
 
     // The card is a disclosure, not a hover popover: it opens on click and
     // survives the pointer leaving the badge, which is the whole point of the
@@ -376,6 +379,7 @@ describe('Shell zen modes', () => {
         provideHttpClient(withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
+        { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
         { provide: PlusBadgeEntitlement, useValue: new FakePlusBadgeEntitlement() },
         { provide: MenuIndicators, useFactory: fakeIndicators },
       ],

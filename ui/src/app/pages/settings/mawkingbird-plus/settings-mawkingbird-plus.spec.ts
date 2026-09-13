@@ -1,3 +1,5 @@
+import { PlusCatalogue } from '../../../providers/account/plus-catalogue';
+import { fakePlusCatalogue } from '../../../testing/plus-catalogue';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -8,7 +10,7 @@ import { MawkingbirdSession } from '../../../providers/account/mawkingbird-sessi
 import { VaultService } from '../../../providers/vault/vault-service';
 import { VAULT_TEST_ROLLOUT } from '../../../providers/vault/vault-preference';
 import { PlusFeatures } from '../../../providers/account/plus-features';
-import { PLUS_BENEFITS, PLUS_PRICE_USD_PER_YEAR } from '../../../plus-benefits';
+import { PLUS_BENEFITS } from '../../../plus-benefits';
 import { ArticleQuota } from '../../../providers/article/article-quota';
 
 /**
@@ -65,6 +67,7 @@ describe('SettingsMawkingbirdPlus', () => {
         // The page links to /plans for the numbers its pitch deliberately
         // leaves out, so rendering it needs a router.
         provideRouter([]),
+        { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
         { provide: MawkingbirdSession, useValue: session },
         { provide: PlusSession, useValue: plus },
       ],
@@ -145,7 +148,7 @@ describe('SettingsMawkingbirdPlus', () => {
     const text = render();
 
     expect(text).toContain('Support Mawkingbird');
-    expect(text).toContain(`$${PLUS_PRICE_USD_PER_YEAR}`);
+    expect(text).toContain('$42.00 / 1 year');
     // Honest framing: the app stays usable without paying. Asserted on the
     // narrower claim that is actually true, because the copy this replaced said
     // "everything in it works exactly the same whether you pay or not" while
@@ -191,7 +194,7 @@ describe('SettingsMawkingbirdPlus', () => {
     render();
 
     const button = Array.from(fixture.nativeElement.querySelectorAll('button')).find((element) =>
-      (element as HTMLButtonElement).textContent?.includes(`$${PLUS_PRICE_USD_PER_YEAR}/year`),
+      (element as HTMLButtonElement).textContent?.includes('Get Plus'),
     ) as HTMLButtonElement | undefined;
     button?.click();
 
@@ -500,6 +503,7 @@ describe('SettingsMawkingbirdPlus test vault rollout', () => {
       imports: [SettingsMawkingbirdPlus],
       providers: [
         provideRouter([]),
+        { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
         { provide: MawkingbirdSession, useValue: session },
         { provide: PlusSession, useValue: plus },
         { provide: VaultService, useValue: vault },

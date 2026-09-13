@@ -1,3 +1,6 @@
+import { corsProxyOrigin } from '../../build-flavor';
+import { SupporterStatus } from '../account/supporter-status';
+import { ProxyActivity } from './proxy-activity';
 import { inject, Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Server } from '../../server';
@@ -109,6 +112,18 @@ export interface ProxiedBatchRequest {
 
 @Injectable({ providedIn: 'root' })
 export class CorsProxy {
+  private activity = inject(ProxyActivity);
+  private supporter = inject(SupporterStatus);
+  observeResponse(response: Response, url: string): void {
+    if (
+      new URL(url).origin === corsProxyOrigin() &&
+      response.status === 429 &&
+      response.headers.get('X-Proxy-Source') === 'proxy'
+    ) {
+      this.activity.exhausted(response.headers.get('Retry-After'), !this.supporter.isSupporter());
+    }
+  }
+
   private settings = inject(CorsProxySettings);
   private server = inject(Server);
 
@@ -129,6 +144,7 @@ export class CorsProxy {
    * target through one would disclose a secret.
    */
   proxyRequest(targetUrl: string, route: CorsProxyRoute = 'feeds'): ProxiedRequest {
+    this.activity.assertAllowed();
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');
@@ -180,6 +196,7 @@ export class CorsProxy {
     route: CorsProxyRoute,
     credentialed: boolean,
   ): ProxiedBatchRequest {
+    this.activity.assertAllowed();
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');
@@ -253,6 +270,7 @@ export class CorsProxy {
         'Refusing to send an API key through a CORS proxy without your explicit consent.',
       );
     }
+    this.activity.assertAllowed();
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');

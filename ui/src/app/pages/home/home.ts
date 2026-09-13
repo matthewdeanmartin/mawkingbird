@@ -1,3 +1,5 @@
+import { FeedCtaStore } from '../../feed-cta-store';
+import { FeedCta } from '../../feed-ctas';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -56,7 +58,6 @@ import { ProfilePhotoView } from '../profile/media/profile-photo-view';
 import { buildMediaItems, ProfileMediaItem } from '../profile/media/profile-media-item';
 import { PreviewCardComponent } from '../../preview-card/preview-card';
 import { DiscoveryCard } from '../../discovery-card/discovery-card';
-import { discoveryCardAfter } from '../../discovery-ways';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
@@ -1327,14 +1328,11 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
-  private readonly dismissedDiscoverySlots = signal<ReadonlySet<number>>(new Set());
+  protected readonly ctas = inject(FeedCtaStore);
 
-  protected discoveryAfter(index: number) {
-    return this.dismissedDiscoverySlots().has(index) ? null : discoveryCardAfter(index);
-  }
-
-  protected dismissDiscovery(index: number): void {
-    this.dismissedDiscoverySlots.update((slots) => new Set([...slots, index]));
+  protected openCta(card: FeedCta): void {
+    this.ctas.opened(card);
+    if (card.action === 'analytics') this.setView('analytics');
   }
 
   private readonly noLocalSources = computed(

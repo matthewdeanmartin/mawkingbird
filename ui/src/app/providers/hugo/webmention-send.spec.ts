@@ -11,6 +11,7 @@ const MASTODON = 'https://mastodon.social/@alice/109876';
 function passthroughProxy(): void {
   TestBed.overrideProvider(CorsProxy, {
     useValue: {
+      observeResponse: vi.fn(),
       proxyRequest: (url: string) => ({ url, headers: { keys: () => [], get: () => null } }),
     },
   });
@@ -20,6 +21,7 @@ function passthroughProxy(): void {
 function refusingProxy(): void {
   TestBed.overrideProvider(CorsProxy, {
     useValue: {
+      observeResponse: vi.fn(),
       proxyRequest: () => {
         throw new CorsProxyRefusal('No CORS proxy is configured.');
       },

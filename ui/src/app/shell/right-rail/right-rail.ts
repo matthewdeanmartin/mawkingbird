@@ -1,3 +1,4 @@
+import { PlusPromotion } from '../../providers/account/plus-promotion';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../terminology';
@@ -75,7 +76,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
  */
 @Component({
   selector: 'app-right-rail',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, TranslocoPipe, PlusPromotion],
   templateUrl: './right-rail.html',
   styleUrl: './right-rail.css',
 })

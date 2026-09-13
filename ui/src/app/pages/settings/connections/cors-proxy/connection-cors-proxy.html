@@ -1,3 +1,9 @@
+@if (activity.paused()) {
+  <p role="status">{{ 'plus.wall.paused' | transloco }}</p>
+  <button class="btn" type="button" (click)="activity.setPaused(false)">
+    {{ 'plus.proxy.resume' | transloco }}
+  </button>
+}
 <a class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.backLink' | transloco
 }}</a>

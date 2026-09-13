@@ -1,3 +1,4 @@
+import { PlusCatalogue } from './plus-catalogue';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -124,6 +125,7 @@ export function checkoutErrorMessage(error: unknown): string {
 
 @Injectable({ providedIn: 'root' })
 export class PlusSession {
+  private catalogue = inject(PlusCatalogue);
   private http = inject(HttpClient);
   private session = inject(MawkingbirdSession);
   // Published separately so `CorsProxySettings` can offer the supporter tier
@@ -211,10 +213,10 @@ export class PlusSession {
    * out — but {@link mint} refuses to publish a result once it has been
    * superseded, so its stale answer lands nowhere.
    */
-  async refresh(): Promise<void> {
+  async refresh(): Promise<string | null> {
     this.held = null;
     this.minting = this.startMint();
-    await this.minting;
+    return await this.minting;
   }
 
   /** Forget everything. Called on sign-out. */
@@ -241,6 +243,11 @@ export class PlusSession {
    * before handing it to Stripe.
    */
   async startCheckout(): Promise<void> {
+    const offer = this.catalogue.offer();
+    if (!offer) {
+      this.error.set('Pricing is temporarily unavailable. Please retry.');
+      return;
+    }
     authDebug('checkout:start');
     const accessToken = await this.session.token();
     authDebug('checkout:have-access-token', { present: accessToken !== null });
@@ -256,7 +263,7 @@ export class PlusSession {
       const response = await firstValueFrom(
         this.http.post<CheckoutResponse>(
           `${PROXY_BASE}/plus/checkout`,
-          { returnTo: accountPageUrl() },
+          { returnTo: accountPageUrl(), expectedOfferVersion: offer.version },
           {
             headers: { Authorization: `Bearer ${accessToken}` },
             context: externalFetch(),
@@ -270,9 +277,14 @@ export class PlusSession {
       // Logged just before leaving: `returnTo` is what Stripe will send the
       // browser back to, and a mismatch with the WorkOS redirect URI is one of
       // the few ways to come back to a page that cannot restore the session.
-      authDebug('checkout:leaving', { returnTo: accountPageUrl() });
+      authDebug('checkout:leaving', {
+        returnTo: accountPageUrl(),
+        expectedOfferVersion: offer.version,
+      });
       location.assign(response.url);
     } catch (error: unknown) {
+      if (error instanceof HttpErrorResponse && error.status === 409)
+        await this.catalogue.load(true);
       this.error.set(checkoutErrorMessage(error));
     } finally {
       this.startingCheckout.set(false);

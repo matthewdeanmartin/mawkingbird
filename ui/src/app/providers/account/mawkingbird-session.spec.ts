@@ -136,4 +136,17 @@ describe('MawkingbirdSession token lifecycle', () => {
     await session.refresh();
     expect(session.canOwnStorage()).toBe(true);
   });
+  it('clears an account-service failure after anonymous minting recovers', async () => {
+    fetchMock
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockRejectedValueOnce(new Error('offline'));
+    await session.ensureReady();
+    expect(session.error()).toContain('Could not reach');
+    fetchMock
+      .mockResolvedValueOnce(new Response('', { status: 401 }))
+      .mockResolvedValueOnce(minted('anonymous', 'free', 3600, 'anon'));
+    await session.ensureReady();
+    expect(session.error()).toBeNull();
+    expect(session.user()).toBeNull();
+  });
 });

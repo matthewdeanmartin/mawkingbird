@@ -1,3 +1,4 @@
+<app-plus-paywall-dialog />
 <!-- The test-deployment marker, deliberately OUTSIDE the writing-zen block: zen
      hides the chrome, and "which deployment am I on" is not chrome. It is the
      one thing that must be true on every screen of this build, because the
@@ -172,6 +173,9 @@
               </div>
 
               <footer>
+                @if (plusBadge.state() !== 'plus') {
+                  <app-plus-price />
+                }
                 <!-- The card is now the only way to the Plus page from the header,
                    so the link that used to be the badge itself lives here as a
                    real, clickable target that no pointer travel can take away. -->
@@ -183,7 +187,7 @@
                   @if (plusBadge.state() === 'plus') {
                     {{ 'shell.plan.subscriptionDetails' | transloco }}
                   } @else {
-                    {{ 'shell.plan.seePlus' | transloco: { price: plusPriceUsd } }}
+                    {{ 'plus.wall.get' | transloco }}
                   }
                 </a>
               </footer>

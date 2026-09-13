@@ -7,6 +7,7 @@
     whole page untrustworthy.
   -->
   @if (!plus.isSupporter()) {
+    <app-plus-price />
     <p>
       {{ 'settings.plus.intro.free' | transloco }}
     </p>
@@ -68,7 +69,7 @@
       </dl>
       @if (plus.isSupporter()) {
         <p class="muted small">
-          {{ 'settings.plus.account.manageNote' | transloco }}
+          {{ 'plus.billing.manage' | transloco }}
         </p>
       }
       <p class="muted small">
@@ -737,7 +738,6 @@
       <section class="plus-offer">
         <h2>{{ 'settings.plus.offer.title' | transloco }}</h2>
         <p>
-          <strong>${{ priceUsd }} {{ 'settings.plus.offer.aYear' | transloco }}</strong>
           {{ 'settings.plus.offer.staysFree' | transloco }}
         </p>
         <p>
@@ -785,13 +785,13 @@
           <button
             class="btn"
             type="button"
-            [disabled]="plus.startingCheckout()"
+            [disabled]="plus.startingCheckout() || !catalogue.offer()"
             (click)="plus.startCheckout()"
           >
             {{
               plus.startingCheckout()
                 ? ('settings.plus.checkout.starting' | transloco)
-                : ('settings.plus.checkout.cta' | transloco: { price: priceUsd })
+                : ('plus.wall.get' | transloco)
             }}
           </button>
         </div>
@@ -804,7 +804,7 @@
           <p class="feed-error" role="alert">{{ message }}</p>
         }
         <p class="muted small">
-          {{ 'settings.plus.offer.stripeNote' | transloco }}
+          {{ 'plus.billing.stripe' | transloco }}
         </p>
       </section>
     }

@@ -50,9 +50,6 @@ import { PlusFeature } from './providers/account/plus-features';
 export const PROXY_RATE_FREE_PER_MINUTE = 60;
 export const PROXY_RATE_PLUS_PER_MINUTE = 300;
 
-/** The subscription price, in whole US dollars per year. */
-export const PLUS_PRICE_USD_PER_YEAR = 30;
-
 export interface PlusBenefit {
   /** Stable id, for tests and for tracking a row across copy edits. */
   id: string;

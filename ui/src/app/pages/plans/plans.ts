@@ -1,11 +1,8 @@
+import { PlusPrice } from '../../providers/account/plus-price';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import {
-  PLUS_PRICE_USD_PER_YEAR,
-  PROXY_RATE_FREE_PER_MINUTE,
-  PROXY_RATE_PLUS_PER_MINUTE,
-} from '../../plus-benefits';
+import { PROXY_RATE_FREE_PER_MINUTE, PROXY_RATE_PLUS_PER_MINUTE } from '../../plus-benefits';
 import { FREE_DAILY_ARTICLES } from '../../providers/article/article-quota';
 
 // i18n pages.plans.title: What each plan includes
@@ -89,13 +86,14 @@ import { FREE_DAILY_ARTICLES } from '../../providers/article/article-quota';
  */
 @Component({
   selector: 'app-plans',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [PlusPrice, RouterLink, TranslocoPipe],
   templateUrl: './plans.html',
   styleUrl: './plans.css',
 })
 export class Plans {
-  protected readonly priceUsd = PLUS_PRICE_USD_PER_YEAR;
   protected readonly freeArticles = FREE_DAILY_ARTICLES;
   protected readonly proxyFreeRate = PROXY_RATE_FREE_PER_MINUTE;
   protected readonly proxyPlusRate = PROXY_RATE_PLUS_PER_MINUTE;
 }
+
+// i18n plus.billing.cancelled: A cancelled subscription runs to the end of the billing period you paid for. After that, your account copies stay readable and exportable, and everything in this browser is untouched. The app returns to keeping things locally.

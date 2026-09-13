@@ -1,3 +1,4 @@
+import { ConnectionSyncButton } from '../../../providers/account/connection-sync-button';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -91,7 +92,7 @@ export interface ConnectionCatalogRow {
 // i18n settings.connections.dropboxNotConfigured: Not configured for this build — the Dropbox app key is missing.
 @Component({
   selector: 'app-settings-connections',
-  imports: [RouterLink, StorageBadge, TranslocoPipe],
+  imports: [ConnectionSyncButton, RouterLink, StorageBadge, TranslocoPipe],
   templateUrl: './settings-connections.html',
   styleUrl: './settings-connections.css',
 })
