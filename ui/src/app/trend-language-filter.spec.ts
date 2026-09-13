@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ClientPrefs } from './client-prefs';
 import { Status, Tag } from './models';
+import corpus from './language-detect.corpus.json';
+import { confidentLanguage, detectLanguage } from './language-detect';
+import { DISCRIMINATING_WORDS, LangCode, STOP_WORDS } from '../language-detection';
 import {
   AutoTranslateEligibility,
   FeedLanguageFilter,
@@ -9,6 +12,78 @@ import {
   TrendLanguageFilter,
   UI_LANGUAGE,
 } from './trend-language-filter';
+
+// Every ordered pair matters: English → German and German → English are
+// different failure modes. Use the original requested list, including the
+// Traditional Chinese example, not whatever languages happen to have rules.
+const PAIR_LANGUAGES =
+  'en ja de fr es pt it nl pl ko zh ru tr uk sv fi cs ca no id hi vi ar bn ta te fa he th ro'.split(
+    ' ',
+  ) as LangCode[];
+const LANGUAGE_PAIRS = PAIR_LANGUAGES.flatMap((source) =>
+  PAIR_LANGUAGES.filter((target) => target !== source).map((target) => ({ source, target })),
+);
+
+describe('requested language pair matrix', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({});
+  });
+
+  function example(language: LangCode): string {
+    const entry = corpus.find(({ lang }) => lang === language);
+    if (!entry) throw new Error(`Missing language-pair fixture: ${language}`);
+    return entry.text;
+  }
+
+  it('contains all 30 × 29 ordered pairs, without duplicates or self-pairs', () => {
+    expect(PAIR_LANGUAGES).toHaveLength(30);
+    expect(new Set(PAIR_LANGUAGES).size).toBe(30);
+    expect(LANGUAGE_PAIRS).toHaveLength(870);
+    expect(new Set(LANGUAGE_PAIRS.map(({ source, target }) => `${source}:${target}`)).size).toBe(
+      870,
+    );
+    expect(LANGUAGE_PAIRS.every(({ source, target }) => source !== target)).toBe(true);
+    expect(example('zh')).toContain('繁體中文');
+  });
+
+  it.each(LANGUAGE_PAIRS)(
+    '$source → $target: wrong metadata never blocks a genuine translation',
+    ({ source, target }) => {
+      const text = example(source);
+      expect(confidentLanguage(text)).toBe(source);
+      // Incorrect metadata must not relabel otherwise clear source prose.
+      expect(detectLanguage(text, target)).toEqual([{ lang: source, share: 1 }]);
+      const eligibility = TestBed.inject(AutoTranslateEligibility);
+      expect(eligibility.isAlreadyTargetLanguage(post(text, target), target)).toBe(false);
+      expect(eligibility.isAlreadyTargetLanguage(post(text, null), target)).toBe(false);
+      // Shared function words provide no evidence for either member of the pair.
+      const targetWords = new Set(STOP_WORDS[target] ?? []);
+      for (const word of STOP_WORDS[source] ?? []) {
+        if (targetWords.has(word)) expect(DISCRIMINATING_WORDS.has(word), word).toBe(false);
+      }
+      const filter = TestBed.inject(FeedLanguageFilter);
+      const labelled = filter.languageAssessment(
+        post(`<p>${text}</p><a href="https://example.test">${example(target)}</a>`, target),
+      );
+      expect(labelled.prose.language).toBe(source);
+      expect(labelled.language).toBe(source);
+      const quotedPost = post(`<p>${text}</p><blockquote>${example(target)}</blockquote>`);
+      const mixed = filter.languageAssessment(quotedPost);
+      expect(mixed.language).toBeNull();
+      expect(mixed.candidates).toEqual([source, target].sort());
+      expect(mixed.candidatesComplete).toBe(true);
+      const prefs = TestBed.inject(ClientPrefs);
+      prefs.setKnownLanguages([source, target]);
+      expect(filter.languageAssessment(quotedPost).userKnowsLanguage).toBe(true);
+    },
+  );
+
+  it.each(PAIR_LANGUAGES)('%s: corroborated same-language prose still offers the check', (lang) => {
+    const eligibility = TestBed.inject(AutoTranslateEligibility);
+    expect(eligibility.isAlreadyTargetLanguage(post(example(lang), null), lang)).toBe(true);
+  });
+});
 
 function tag(name: string): Tag {
   return {
@@ -262,8 +337,14 @@ describe('FeedLanguageFilter', () => {
     expect(prefs.feedLanguages()).toEqual(['en', 'eo', 'fr']);
   });
 
-  it('flags misrepresentation: declared en, text confidently French', () => {
+  it('keeps readable French despite incorrect English metadata', () => {
     prefs.setKnownLanguages(['en', 'fr']); // knows both, so not "foreign"
+    prefs.setHideForeignLangPosts(true);
+    expect(filter.hideReason(post(FRENCH, 'en'))).toBeNull();
+  });
+
+  it('still flags misrepresentation when the reader does not know the actual language', () => {
+    prefs.setKnownLanguages(['en']);
     prefs.setHideForeignLangPosts(true);
     expect(filter.hideReason(post(FRENCH, 'en'))).toBe('misrepresented');
   });
@@ -532,13 +613,19 @@ describe('AutoTranslateEligibility.isAlreadyTargetLanguage', () => {
     expect(prefs.skipSameLanguageTranslation()).toBe(true);
   });
 
-  it('refuses when the post declares the target language', () => {
-    expect(eligibility.isAlreadyTargetLanguage(post('anything at all', 'en'), 'en')).toBe(true);
+  it('allows uncertain text even when the post declares the target language', () => {
+    expect(eligibility.isAlreadyTargetLanguage(post('anything at all', 'en'), 'en')).toBe(false);
   });
 
   it('refuses when undeclared text confidently reads as the target', () => {
     // The case that prompted this: clicking translate-to-English on obvious English.
     expect(eligibility.isAlreadyTargetLanguage(post(ENGLISH, null), 'en')).toBe(true);
+  });
+
+  it('translates the reported German marketing post despite English metadata', () => {
+    const text =
+      '7 von 10 Unternehmen scheitern an KI-Integration – weil Insellösungen Ziele blockieren.\n\nSouveräne Unternehmens-KI braucht *Rollen statt Tool-Sammlung* und nachvollziehbaren Proof: Bei Ascensus Vertex definieren wir Prozesse von Datensammlung bis Analyse so, dass Entscheidungen direkt an Ihren Zielen andocken.\n\nWelche Rolle fehlt in Ihrem KI-Prozess, um Insellösungen zu vermeiden?';
+    expect(eligibility.isAlreadyTargetLanguage(post(text, 'en'), 'en')).toBe(false);
   });
 
   it('allows a genuine translation', () => {
@@ -563,9 +650,9 @@ describe('AutoTranslateEligibility.isAlreadyTargetLanguage', () => {
     expect(eligibility.isAlreadyTargetLanguage(post(GERMAN, 'en'), 'en')).toBe(false);
   });
 
-  it('still trusts a declaration the detector cannot second-guess', () => {
-    // Too short to detect: the declaration stands, exactly as before.
-    expect(eligibility.isAlreadyTargetLanguage(post('ok', 'en'), 'en')).toBe(true);
+  it('allows a translation when only the declaration claims the target', () => {
+    // Too short to detect: a declaration cannot turn uncertainty into English.
+    expect(eligibility.isAlreadyTargetLanguage(post('ok', 'en'), 'en')).toBe(false);
   });
 
   it('keeps refusing when the text agrees with the declaration', () => {
@@ -579,7 +666,7 @@ describe('AutoTranslateEligibility.isAlreadyTargetLanguage', () => {
   });
 
   it('matches regioned codes against the bare target', () => {
-    expect(eligibility.isAlreadyTargetLanguage(post('anything', 'en-GB'), 'en')).toBe(true);
+    expect(eligibility.isAlreadyTargetLanguage(post(ENGLISH, 'en-GB'), 'en-US')).toBe(true);
   });
 
   it('uses the boost target, not the booster', () => {

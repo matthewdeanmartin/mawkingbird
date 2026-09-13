@@ -209,7 +209,8 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.raindropBookmarkFailed: Raindrop.io couldn't save that bookmark.
 // i18n statusCard.serverTranslateFailedWithAi: Your server couldn't translate this. Try AI translation instead.
 // i18n statusCard.serverTranslateFailed: Your server couldn't translate this post.
-// i18n statusCard.sameLanguage: This post already looks like {{target}}, so translating it would return the same text. You can turn this check off in Settings → Internationalization.
+// i18n statusCard.translateAnyway: Translate anyway?
+// i18n statusCard.sameLanguageNotice: This post appears to be in {{target}}.
 // i18n statusCard.translationLimit: You've used today's {{engine}} translation limit ({{limit}}). It resets at midnight, or you can raise it in Settings → Internationalization.
 // i18n statusCard.modelTranslateFailed: The model couldn't translate this.
 
@@ -1937,7 +1938,7 @@ export class StatusCard {
   }
 
   // --- translation ---
-  toggleTranslate(event: Event): void {
+  toggleTranslate(event: Event, force = false): void {
     event.stopPropagation();
     if (this.translation()) {
       this.translation.set(null);
@@ -1945,10 +1946,12 @@ export class StatusCard {
     }
     // Already in your language: the call would hand back the post you are reading, so
     // it is refused before it costs a request or a slot in the daily budget.
-    if (this.alreadyInTargetLanguage()) {
+    if (!force && this.alreadyInTargetLanguage()) {
+      this.sameLanguageEngine.set('server');
       this.translateError.set(this.sameLanguageMessage());
       return;
     }
+    this.sameLanguageEngine.set(null);
     // Metered against the instance's own budget, which is separate from OpenRouter's
     // (see TranslationUsage). Checked before the call, not after: a limit that only
     // notices once the request is in flight has not limited anything.
@@ -1987,6 +1990,16 @@ export class StatusCard {
   /** Untrusted model output. Rendered as text; never near the `[innerHTML]` path. */
   protected aiTranslation = signal<AiTranslation | null>(null);
   protected aiTranslating = signal(false);
+  protected sameLanguageEngine = signal<'server' | 'ai' | null>(null);
+
+  async translateAnyway(event: Event): Promise<void> {
+    event.stopPropagation();
+    const engine = this.sameLanguageEngine();
+    this.sameLanguageEngine.set(null);
+    if (engine === 'ai') await this.runAiTranslate(true);
+    else if (engine === 'server') this.toggleTranslate(event, true);
+  }
+
   protected translateError = signal<string | null>(null);
   protected translateChoiceOpen = signal(false);
   protected rememberChoice = signal(false);
@@ -2017,7 +2030,7 @@ export class StatusCard {
   /** Explains a refusal, and says how to override it — never a dead end. */
   private sameLanguageMessage(): string {
     const target = languageName(this.aiTranslate.targetLanguage());
-    return this.transloco.translate('statusCard.sameLanguage', { target });
+    return this.transloco.translate('statusCard.sameLanguageNotice', { target });
   }
 
   private limitMessage(engine: TranslationEngine): string {
@@ -2101,7 +2114,7 @@ export class StatusCard {
    * Unconnected is not an error state — it is a thing the user hasn't set up yet, so
    * it gets a sentence and a link rather than red text.
    */
-  async runAiTranslate(): Promise<void> {
+  async runAiTranslate(force = false): Promise<void> {
     if (this.aiTranslation()) {
       this.aiTranslation.set(null);
       return;
@@ -2110,10 +2123,12 @@ export class StatusCard {
       this.translateChoiceOpen.set(true);
       return;
     }
-    if (this.alreadyInTargetLanguage()) {
+    if (!force && this.alreadyInTargetLanguage()) {
+      this.sameLanguageEngine.set('ai');
       this.translateError.set(this.sameLanguageMessage());
       return;
     }
+    this.sameLanguageEngine.set(null);
     // OpenRouter's budget is its own. Spending here must never be blocked by, or
     // consume, the instance endpoint's allowance — the two engines fail independently.
     if (!this.usage.canSpend('openrouter')) {

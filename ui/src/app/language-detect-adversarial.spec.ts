@@ -1,3 +1,4 @@
+import { STOP_WORDS, HOMOGRAPHS, DISCRIMINATING_WORDS } from '../language-detection';
 import { describe, expect, it } from 'vitest';
 import corpus from './language-detect.corpus.json';
 import { confidentLanguage, detectLanguage, detectScriptCandidates } from './language-detect';
@@ -79,5 +80,54 @@ describe('conservative language detection', () => {
     'هذا كتاب جديد ونحن نقرأ هذه القصة في المكتبة اليوم این است',
   ])('abstains when an injected cue conflicts with established script evidence: %s', (text) => {
     expect(confidentLanguage(text)).toBeNull();
+  });
+});
+
+describe('exclusive language evidence', () => {
+  it('contains positive prose examples for every requested language', () => {
+    const covered = new Set(corpus.map(({ lang }) => lang));
+    for (const lang of 'en ja de fr es pt it nl pl ko zh ru tr uk sv fi cs ca no id hi vi ar bn ta te fa he th ro'.split(
+      ' ',
+    )) {
+      expect(covered.has(lang), lang).toBe(true);
+    }
+  });
+
+  it('never uses any overlapping table word or reviewed homograph as lexical evidence', () => {
+    const owners = new Map<string, Set<string>>();
+    for (const [lang, list] of Object.entries(STOP_WORDS)) {
+      for (const word of list) {
+        const languages = owners.get(word) ?? new Set<string>();
+        languages.add(lang);
+        owners.set(word, languages);
+      }
+    }
+    const excluded = new Set([
+      ...HOMOGRAPHS,
+      ...[...owners].filter(([, langs]) => langs.size > 1).map(([word]) => word),
+    ]);
+    expect(excluded.size).toBeGreaterThan(50);
+    for (const word of excluded) expect(DISCRIMINATING_WORDS.has(word), word).toBe(false);
+    // Shared words must not supply a missing third clue or a competing clue.
+    for (const word of excluded) {
+      if (/^[a-z]+$/.test(word)) {
+        expect(confidentLanguage('because which ' + word), word).toBeNull();
+        expect(confidentLanguage('because which these ' + word), word).toBe('en');
+      }
+    }
+  });
+
+  it('uses umlauts to veto English without pretending they uniquely identify German', () => {
+    for (const text of ['ä ö ü', 'This is the story that we share with Müller.', 'Öl für uns']) {
+      expect(confidentLanguage(text)).not.toBe('en');
+      expect(confidentLanguage(text.normalize('NFD'))).not.toBe('en');
+    }
+    expect(confidentLanguage('ä ö ü')).toBeNull();
+    expect(confidentLanguage('ἄνθρωπος')).toBe('el');
+  });
+
+  it('abstains on conflicting exclusive words regardless of their frequency or margin', () => {
+    expect(confidentLanguage('because which these those their und')).toBeNull();
+    expect(confidentLanguage('because '.repeat(100) + 'und')).toBeNull();
   });
 });

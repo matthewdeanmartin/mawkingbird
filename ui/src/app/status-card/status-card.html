@@ -229,6 +229,11 @@
           @if (translateError(); as msg) {
             <div class="translation-note translation-error small" role="alert">
               {{ msg }}
+              @if (sameLanguageEngine()) {
+                <button class="link-button" type="button" (click)="translateAnyway($event)">
+                  {{ 'statusCard.translateAnyway' | transloco }}
+                </button>
+              }
               @if (msg.includes('AI translation')) {
                 <button class="link-button" type="button" (click)="onAiTranslateClick($event)">
                   {{ 'statusCard.useAiTranslation' | transloco }}

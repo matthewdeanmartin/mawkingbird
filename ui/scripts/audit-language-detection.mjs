@@ -5,16 +5,25 @@ import { fileURLToPath } from 'node:url';
 import { transform } from 'esbuild';
 
 const root = new URL('../', import.meta.url);
-const source = readFileSync(new URL('src/app/language-detect.ts', root), 'utf8');
+const source = readFileSync(new URL('src/language-detection/index.ts', root), 'utf8');
 const { code } = await transform(source, { loader: 'ts', format: 'esm' });
-const { detectLanguage } = await import(
+const { detectLanguage, analyzeLanguage } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
 );
 const corpus = JSON.parse(
   readFileSync(new URL('src/app/language-detect.corpus.json', root), 'utf8'),
 );
 let failures = 0;
+const unknownReasons = {};
 for (const { lang, text } of corpus) {
+  const analysis = analyzeLanguage(text);
+  if (!analysis.language) {
+    for (const reason of analysis.reasons) unknownReasons[reason] = (unknownReasons[reason] ?? 0) + 1;
+    if (process.argv.includes('--explain')) {
+      console.log(JSON.stringify({ text, candidates: analysis.candidates, candidatesComplete: analysis.candidatesComplete,
+        reasons: analysis.reasons, evidence: analysis.evidence }));
+    }
+  }
   const variants = lang === 'und' ? [text] : [text, text.normalize('NFD'), text.toUpperCase()];
   for (const variant of variants) {
     const got = detectLanguage(variant);
@@ -54,6 +63,7 @@ console.log(
       corpus: fileURLToPath(new URL('src/app/language-detect.corpus.json', root)),
       cases: corpus.length,
       failures,
+      unknownReasons,
       englishSample: { count: english.length, ...englishCounts },
       timingMs: {
         p50: timings[1500],

@@ -70,6 +70,8 @@ export class PlusPromotions {
       display: block;
     }
     .plus-recommendation {
+      position: relative;
+      isolation: isolate;
       padding: 16px;
       border-bottom: 1px solid var(--border);
       background: var(--accent-soft, var(--bg));
@@ -98,6 +100,8 @@ export class PlusPromotions {
       align-items: center;
     }
     button {
+      position: relative;
+      z-index: 2;
       font: inherit;
       color: var(--muted);
       background: transparent;
@@ -106,6 +110,17 @@ export class PlusPromotions {
       padding: 0;
       cursor: pointer;
       text-decoration: underline;
+    }
+    .actions a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .actions a:focus-visible::after {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-radius: inherit;
     }
   `,
 })

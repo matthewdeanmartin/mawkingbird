@@ -82,7 +82,7 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.addLearning: Add a language you're learning…
 // i18n settings.i18n.dontWaste: Don't waste calls
 // i18n settings.i18n.skipSame: Don't translate a post that's already in my language
-// i18n settings.i18n.skipSame.hint: Skips the request when a post declares your language, or clearly reads as it — translating it would hand back the same text and still spend a call. Posts whose language can't be determined are always translated when you ask.
+// i18n settings.i18n.skipSame.hint: Skips the request when the text clearly reads as your language — translating it would hand back the same text and still spend a call. Uncertain posts are translated when you ask. You can also choose “Translate anyway?” on an individual post.
 // i18n settings.i18n.autoTranslate: Translate automatically
 // i18n settings.i18n.auto.off: Off — translate only when I press 🌐
 // i18n settings.i18n.auto.view: When a post scrolls into view

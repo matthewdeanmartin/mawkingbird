@@ -116,8 +116,8 @@ export function checkoutErrorMessage(error: unknown): string {
 
   if (error.status === 503) {
     return relayed
-      ? `${relayed} This is a problem with the service, not with you — nothing was charged.`
-      : 'Subscriptions are unavailable on this deployment right now. Nothing was charged.';
+      ? `${relayed} Billing status could not be confirmed. Check your existing subscription before trying again.`
+      : 'Subscriptions are unavailable right now. Billing status could not be confirmed.';
   }
 
   return relayed || `${fallback} (HTTP ${error.status})`;
@@ -144,6 +144,39 @@ export class PlusSession {
 
   /** True while a checkout is being started. */
   readonly startingCheckout = signal(false);
+  readonly openingPortal = signal(false);
+
+  async openBillingPortal(): Promise<void> {
+    if (this.openingPortal()) return;
+    this.openingPortal.set(true);
+    this.error.set(null);
+    try {
+      const token = await this.session.token();
+      if (!token) {
+        this.error.set('Sign in to manage billing.');
+        return;
+      }
+      const response = await firstValueFrom(
+        this.http.post<CheckoutResponse>(
+          `${PROXY_BASE}/plus/portal`,
+          { returnTo: accountPageUrl() },
+          { headers: { Authorization: `Bearer ${token}` }, context: externalFetch() },
+        ),
+      );
+      const url = new URL(response.url);
+      if (url.protocol !== 'https:' || url.hostname !== 'billing.stripe.com')
+        throw new Error('Invalid billing URL');
+      location.assign(url.toString());
+    } catch (error: unknown) {
+      this.error.set(
+        error instanceof HttpErrorResponse
+          ? checkoutErrorMessage(error)
+          : 'Could not open billing. Please try again.',
+      );
+    } finally {
+      this.openingPortal.set(false);
+    }
+  }
 
   /** Whether this account currently gets supporter benefits. */
   readonly isSupporter = computed(() => this.tier() === 'plus');

@@ -136,5 +136,9 @@
   { "lang": "und", "text": "हे मराठी पुस्तक आहे आणि आम्ही ते वाचतो" },
   { "lang": "und", "text": "यो नेपाली किताब हो र यो धेरै राम्रो छ" },
   { "lang": "und", "text": "Jeg er her og vi er ikke alene" },
-  { "lang": "und", "text": "the und avec porque sono" }
+  { "lang": "und", "text": "the und avec porque sono" },
+  {
+    "lang": "de",
+    "text": "7 von 10 Unternehmen scheitern an KI-Integration – weil Insellösungen Ziele blockieren.\n\nSouveräne Unternehmens-KI braucht *Rollen statt Tool-Sammlung* und nachvollziehbaren Proof: Bei Ascensus Vertex definieren wir Prozesse von Datensammlung bis Analyse so, dass Entscheidungen direkt an Ihren Zielen andocken.\n\nWelche Rolle fehlt in Ihrem KI-Prozess, um Insellösungen zu vermeiden?"
+  }
 ]

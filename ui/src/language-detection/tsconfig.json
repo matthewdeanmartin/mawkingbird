@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022"],
+    "types": [],
+    "strict": true,
+    "declaration": true,
+    "outDir": "../../.test-results/language-detection"
+  },
+  "files": ["index.ts"]
+}

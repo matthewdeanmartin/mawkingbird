@@ -913,5 +913,6 @@ const VAULT_POLICIES: Record<
 
 // i18n plus.wall.return: Return to your task
 
+// i18n plus.billing.portal: Manage billing
 // i18n plus.billing.manage: Manage or cancel your subscription from the receipt email Stripe sent you. Cancelling stops renewal; you keep Plus until the end of the billing period you paid for.
 // i18n plus.billing.stripe: Payment is handled by Stripe. This browser never sees your card details. Your account records your subscription status and when the current billing period ends.

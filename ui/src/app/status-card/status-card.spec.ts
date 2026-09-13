@@ -19,6 +19,7 @@ import {
 } from '../providers/anonymous/anonymous-route-ref';
 import { AiTranslate } from '../ai-translate';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
+import { TranslationUsage } from '../translation-usage';
 import { TranslationPreference } from '../translation-preference';
 import { AnonymousBookmarks } from '../providers/anonymous/anonymous-bookmarks';
 import { Pseudonymity } from '../pseudonymity';
@@ -1479,6 +1480,30 @@ describe('StatusCard', () => {
 
   // ---------------------------------------------------------------- toggleTranslate
 
+  it('offers a one-request server override while preserving the setting and budget', async () => {
+    vi.spyOn(TestBed.inject(AiTranslate), 'targetLanguage').mockReturnValue('en');
+    const f = setUp(
+      makeStatus({ id: '11', content: '<p>This is the book that we read with our friends.</p>' }),
+    );
+    f.componentInstance.toggleTranslate(fakeEvent());
+    f.detectChanges();
+    httpMock.expectNone('/api/v1/statuses/11/translate');
+    const button = [...(f.nativeElement as HTMLElement).querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Translate anyway?'),
+    );
+    expect(button).toBeDefined();
+    expect(f.nativeElement.textContent).not.toContain('turn this check off');
+    button!.click();
+    httpMock.expectOne('/api/v1/statuses/11/translate').flush({ content: '<p>Translated</p>' });
+    expect(TestBed.inject(ClientPrefs).skipSameLanguageTranslation()).toBe(true);
+    f.componentInstance.toggleTranslate(fakeEvent());
+    f.componentInstance.toggleTranslate(fakeEvent());
+    const budget = vi.spyOn(TestBed.inject(TranslationUsage), 'canSpend').mockReturnValue(false);
+    await f.componentInstance.translateAnyway(fakeEvent());
+    expect(budget).toHaveBeenCalledWith('mastodon');
+    httpMock.expectNone('/api/v1/statuses/11/translate');
+  });
+
   it('toggleTranslate: calls /translate and stores result', () => {
     const f = setUp(makeStatus({ id: '11' }));
     f.componentInstance.toggleTranslate(fakeEvent());
@@ -2405,6 +2430,32 @@ describe('StatusCard — AI translation', () => {
     // The tag is literal text in the DOM, not an element.
     expect(block.textContent).toContain('<img src=x onerror=alert(1)>');
     expect(block.querySelector('img')).toBeNull();
+  });
+
+  it('offers an AI override once and still enforces its budget', async () => {
+    TestBed.inject(Auth).enterAnonymous();
+    connected = true;
+    translateHtml.mockResolvedValue({ text: 'Translated', model: 'm', target: 'English' });
+    const fixture = setUp(
+      makeStatus({ content: '<p>This is the book that we read with our friends.</p>' }),
+    );
+    await fixture.componentInstance.runAiTranslate();
+    fixture.detectChanges();
+    expect(translateHtml).not.toHaveBeenCalled();
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('Translate anyway?'),
+    );
+    expect(button).toBeDefined();
+    button!.click();
+    await fixture.whenStable();
+    expect(translateHtml).toHaveBeenCalledTimes(1);
+    expect(TestBed.inject(ClientPrefs).skipSameLanguageTranslation()).toBe(true);
+    await fixture.componentInstance.runAiTranslate();
+    await fixture.componentInstance.runAiTranslate();
+    const budget = vi.spyOn(TestBed.inject(TranslationUsage), 'canSpend').mockReturnValue(false);
+    await fixture.componentInstance.translateAnyway(fakeEvent());
+    expect(budget).toHaveBeenCalledWith('openrouter');
+    expect(translateHtml).toHaveBeenCalledTimes(1);
   });
 
   it('names the model that produced the translation', async () => {

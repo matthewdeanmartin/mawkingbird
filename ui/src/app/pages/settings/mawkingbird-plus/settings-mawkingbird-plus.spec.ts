@@ -40,6 +40,8 @@ class FakePlusSession {
   subscription = signal<{ renewsAt: number; cancelAtPeriodEnd: boolean } | null>(null);
   error = signal<string | null>(null);
   startingCheckout = signal(false);
+  openingPortal = signal(false);
+  openBillingPortal = vi.fn().mockResolvedValue(undefined);
   isSupporter = () => this.tier() === 'plus';
   refresh = vi.fn().mockResolvedValue(undefined);
   clear = vi.fn();

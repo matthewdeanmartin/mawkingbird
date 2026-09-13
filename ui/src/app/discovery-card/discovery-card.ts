@@ -42,12 +42,12 @@ import { ClientPrefs } from '../client-prefs';
           [attr.aria-label]="'discovery.card.actions' | transloco"
         >
           @if (way().action) {
-            <button type="button" class="action" (click)="opened.emit()">
+            <button type="button" class="action card-explore" (click)="opened.emit()">
               {{ 'discovery.card.explore' | transloco }}
             </button>
           } @else {
             <a
-              class="action"
+              class="action card-explore"
               [routerLink]="way().route"
               [queryParams]="way().query"
               [fragment]="way().fragment"
@@ -67,6 +67,8 @@ import { ClientPrefs } from '../client-prefs';
       display: block;
     }
     .discovery-card {
+      position: relative;
+      isolation: isolate;
       display: flex;
       gap: 12px;
       padding: 12px 16px;
@@ -126,6 +128,22 @@ import { ClientPrefs } from '../client-prefs';
     }
     .action:hover {
       color: var(--accent);
+    }
+    /* Extend the native Explore link/button over the card. This preserves
+       keyboard and modified-click behavior without a second click handler. */
+    .card-explore {
+      position: static;
+    }
+    .card-explore::after {
+      inset: 0;
+      z-index: 1;
+    }
+    .card-explore:focus-visible::after {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+    .action:not(.card-explore) {
+      z-index: 2;
     }
   `,
 })

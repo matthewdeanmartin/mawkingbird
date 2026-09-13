@@ -67,6 +67,14 @@
           }
         </dd>
       </dl>
+      <button
+        class="btn btn-outline"
+        type="button"
+        [disabled]="plus.openingPortal()"
+        (click)="plus.openBillingPortal()"
+      >
+        {{ 'plus.billing.portal' | transloco }}
+      </button>
       @if (plus.isSupporter()) {
         <p class="muted small">
           {{ 'plus.billing.manage' | transloco }}

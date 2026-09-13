@@ -348,6 +348,27 @@ describe('PlusSession', () => {
   });
 
   describe('checkout', () => {
+    it('opens billing for the signed-in account without taking a customer ID from the browser', async () => {
+      const opening = plus.openBillingPortal();
+      await settle();
+      const request = httpMock.expectOne('https://cors.mawkingbird.com/plus/portal');
+      expect(request.request.headers.get('Authorization')).toBe('Bearer mawkingbird-token');
+      expect(request.request.body.customer).toBeUndefined();
+      request.flush({ url: 'https://billing.stripe.com/p/session' });
+      await opening;
+      expect(plus.error()).toBeNull();
+      expect(plus.openingPortal()).toBe(false);
+    });
+
+    it('refuses an unexpected portal redirect host', async () => {
+      const opening = plus.openBillingPortal();
+      await settle();
+      httpMock
+        .expectOne('https://cors.mawkingbird.com/plus/portal')
+        .flush({ url: 'https://evil.example/' });
+      await opening;
+      expect(plus.error()).toContain('Could not open billing');
+    });
     beforeEach(() => {
       TestBed.inject(PlusCatalogue).offer.set(catalogueOffer);
     });
@@ -404,7 +425,7 @@ describe('PlusSession', () => {
       expect(assign).not.toHaveBeenCalled();
     });
 
-    it('reassures that nothing was charged when the service is misconfigured', async () => {
+    it('does not claim a payment outcome when billing storage is unavailable', async () => {
       vi.stubGlobal('location', { ...location, assign: vi.fn() });
 
       const pending = plus.startCheckout();
@@ -414,7 +435,7 @@ describe('PlusSession', () => {
         .flush({ error: 'Subscriptions are not configured.' }, { status: 503, statusText: 'x' });
       await pending;
 
-      expect(plus.error()).toContain('nothing was charged');
+      expect(plus.error()).toContain('Billing status could not be confirmed');
     });
 
     it('explains an unreachable service rather than blaming the user', async () => {

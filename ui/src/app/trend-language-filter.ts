@@ -1,9 +1,9 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import { ClientPrefs } from './client-prefs';
-import { confidentLanguage, detectScriptCandidates } from './language-detect';
+import { detectScriptCandidates, LanguageAnalysis, LanguageDecision } from './language-detect';
 import { Status, Tag } from './models';
 import { UiLocale } from './i18n/locale';
-import { stripHtml } from './sentiment';
+import { analyzeStatusLanguage } from './status-language';
 
 /**
  * The interface language the app ships in **when nothing else is known**.
@@ -68,6 +68,20 @@ export class KnownLanguages {
   knows(code: string): boolean {
     return this.codes().has(bare(code));
   }
+
+  /** Knowing every established possibility is enough; a partial clue list is not. */
+  understands(result: LanguageDecision): boolean {
+    return (
+      result.candidatesComplete &&
+      result.candidates.length > 0 &&
+      result.candidates.every((lang) => this.knows(lang))
+    );
+  }
+}
+
+export interface ReaderLanguageAssessment extends LanguageAnalysis {
+  /** A live reader-specific conclusion, never persisted in the detector's cache. */
+  userKnowsLanguage: boolean;
 }
 
 /**
@@ -112,68 +126,28 @@ export class TrendLanguageFilter {
   }
 }
 
-/**
- * Minimum characters of stripped text before we trust content-based detection
- * of a post's language. Below this, a post is "too short to tell" and we defer
- * entirely to its declared language.
- */
-const MIN_TEXT_FOR_DETECTION = 20;
-
 /** Why a post was hidden (for diagnostics / tests). */
 export type HideReason = 'foreign' | 'misrepresented';
 
 /**
- * Removes feed posts by language, for Home and Algo. The product rule, stated
- * precisely and matching the "language toggle" the user asked for:
- *
- *   Anything goes, EXCEPT posts we can identify *for sure* as either
- *     (a) **foreign** — a language the user has said they don't know, or
- *     (b) **misrepresented** — the post declares one language but its text is
- *         confidently a different one (the classic "tagged en, actually es").
- *
- * The overriding constraint: **never hide a post we're unsure about.** Language
- * ID is hard; when it's hard, we don't guess on the user's behalf. Concretely:
- *   - No declared language and text too short/ambiguous to detect → keep.
- *   - Declared language the user knows → keep (we don't police honesty upward).
- *   - Confident detection only counts when the text is long enough and one
- *     language clearly dominates ({@link confidentLanguage}).
+ * Feed policy consumes text evidence separately from the post's declaration.
+ * Keep content when all established possibilities are allowed, including
+ * readable posts with incorrect metadata. Unknown text remains visible unless
+ * a declaration supplies a foreign language. Explicit feed narrowing and
+ * learning-language exemptions remain independent of the knowledge flag.
  */
 @Injectable({ providedIn: 'root' })
 export class FeedLanguageFilter {
   private prefs = inject(ClientPrefs);
   private known = inject(KnownLanguages);
 
-  /**
-   * Detected language per status id — the expensive half of {@link hideReason},
-   * remembered so a feed recompute does not re-run it.
-   *
-   * ## Why this is needed
-   *
-   * `Home.visible()` reads a `now()` signal that a 30-second interval writes to,
-   * so the whole loaded feed is re-filtered twice a minute for as long as the tab
-   * is open. Before this, every one of those passes re-ran `stripHtml` plus the
-   * full lexical detector — a per-character script loop, diacritic regexes and a
-   * stop-word tokenizer — for every post. Measured at ~75ms per pass over 400
-   * posts, paid forever, to recompute an answer that cannot have changed.
-   *
-   * ## Why only the detection is cached
-   *
-   * `hideReason` mixes a pure function of the post's text with live policy: the
-   * `hideForeignLangPosts` toggle, `isLearning`, and the allowed-language set.
-   * Those are prefs the user changes and expects to see take effect immediately,
-   * so caching the *verdict* would leave the feed showing a stale answer until
-   * reload. Caching the detection alone is safe because a post's text is fixed
-   * for a given id: same input, same output, forever.
-   *
-   * `null` is a real cached value ("looked, and could not tell confidently"), so
-   * presence is tested with `has` rather than a truthiness check — otherwise the
-   * undetectable posts, which are the ones that ran the detector for nothing,
-   * would be exactly the ones that never get cached.
-   *
-   * In memory only, like {@link CalmVerdicts}: a persisted verdict would outlive
-   * the post text that justified it, and an edited post must be re-read.
+  /** Cache pure analysis only; preferences must take effect immediately.
+   * Content and warning text are checked as well as id, so edits invalidate it.
    */
-  private detected = new Map<string, string | null>();
+  private detected = new Map<
+    string,
+    { content: string; spoiler: string; analysis: LanguageAnalysis }
+  >();
 
   /**
    * The languages a post is allowed to be in: the explicit narrowed set when
@@ -189,37 +163,21 @@ export class FeedLanguageFilter {
     return chosen.length ? new Set(chosen.map(bare)) : this.known.codes();
   }
 
-  /**
-   * A *confident* single language for a post's text, or null when the text is
-   * too short or too mixed to be sure. Uses the full lexical detector (posts,
-   * unlike tags, carry enough words for the stop-word tier).
-   */
-  private confidentTextLanguage(text: string): string | null {
-    if (text.length < MIN_TEXT_FOR_DETECTION) {
-      return null;
-    }
-    return confidentLanguage(text);
+  /** Analyze the boosted original's structure without flattening quotes or links. */
+  private analysisFor(target: Status): LanguageAnalysis {
+    const spoiler = target.spoiler_text ?? '';
+    const cached = this.detected.get(target.id);
+    if (cached && cached.content === target.content && cached.spoiler === spoiler)
+      return cached.analysis;
+    const analysis = analyzeStatusLanguage(target.content, spoiler);
+    this.detected.set(target.id, { content: target.content, spoiler, analysis });
+    return analysis;
   }
 
-  /**
-   * {@link confidentTextLanguage} for a post, answered from {@link detected}
-   * after the first look.
-   *
-   * Keyed on the *target* status — the reblogged post when there is one — because
-   * that is whose text was detected. Keying on the boosting wrapper would give
-   * the same original post a different answer depending on who boosted it, and
-   * would miss the cache every time.
-   */
-  private detectedLanguageFor(target: Status): string | null {
-    // `has`, not a truthiness test: `null` is a real answer meaning "looked and
-    // could not tell", and it is the answer for the posts that ran the detector
-    // for nothing — precisely the ones most worth not repeating.
-    if (this.detected.has(target.id)) {
-      return this.detected.get(target.id) ?? null;
-    }
-    const language = this.confidentTextLanguage(stripHtml(target.content));
-    this.detected.set(target.id, language);
-    return language;
+  /** Pure detection is cached; known-language preferences are evaluated on every read. */
+  languageAssessment(status: Status): ReaderLanguageAssessment {
+    const analysis = this.analysisFor(status.reblog ?? status);
+    return { ...analysis, userKnowsLanguage: this.known.understands(analysis) };
   }
 
   /**
@@ -243,7 +201,8 @@ export class FeedLanguageFilter {
     }
     const target = status.reblog ?? status;
     const declared = target.language?.toLowerCase().split(/[-_]/)[0] || null;
-    const detected = this.detectedLanguageFor(target);
+    const analysis = this.analysisFor(target);
+    const detected = analysis.language;
 
     // A language you are *learning* is never hidden, whatever the toggle says.
     //
@@ -263,6 +222,16 @@ export class FeedLanguageFilter {
     ) {
       return null;
     }
+
+    // A reader can know all possibilities without the detector selecting one.
+    // Respect explicit feed narrowing separately from the reader's knowledge.
+    // This also prevents bad metadata from hiding text they demonstrably read.
+    if (
+      analysis.candidatesComplete &&
+      analysis.candidates.length &&
+      analysis.candidates.every((lang) => this.allowed().has(bare(lang)))
+    )
+      return null;
 
     // (b) Misrepresentation: declares one language, text is confidently another.
     if (declared && detected && declared !== detected) {
@@ -291,20 +260,14 @@ export class FeedLanguageFilter {
     return statuses.filter((s) => this.shouldShow(s));
   }
 
-  /**
-   * The language a post is effectively in, or null when we aren't sure.
-   *
-   * Same derivation {@link hideReason} uses — declared language first, confident
-   * detection second, null when neither commits. Shared so that "which posts get
-   * hidden" and "which posts get translated" can never drift apart in their idea of
-   * what language a post is in.
+  /** Legacy metadata-first language for automatic translation preferences.
+   * Use languageAssessment for readability, candidates and diagnostic evidence.
    */
   effectiveLanguage(status: Status): string | null {
     const target = status.reblog ?? status;
     const declared = target.language?.toLowerCase().split(/[-_]/)[0] || null;
-    // Shares `hideReason`'s cache, which is the point: these two must agree on
-    // what language a post is in, and now they cannot even disagree by accident.
-    return declared ?? this.detectedLanguageFor(target);
+    // Reuse the same pure analysis while retaining this accessor's metadata policy.
+    return declared ?? this.analysisFor(target).language;
   }
 
   /**
@@ -318,7 +281,7 @@ export class FeedLanguageFilter {
    * a German post was refusing the translation outright.
    */
   detectedLanguage(status: Status): string | null {
-    return this.detectedLanguageFor(status.reblog ?? status);
+    return this.analysisFor(status.reblog ?? status).language;
   }
 }
 
@@ -326,7 +289,7 @@ export class FeedLanguageFilter {
 export type SkipReason =
   /** Automatic translation is switched off entirely. */
   | 'mode-off'
-  /** We can't tell what language it's in — so it's probably English. */
+  /** We cannot determine the language from the available evidence. */
   | 'undetermined'
   /** The reader already reads this language. */
   | 'known'
@@ -343,13 +306,13 @@ export type SkipReason =
  * The rules, in the order they are checked:
  *
  *   1. **Mode off** ⇒ never. The default, and the only state that costs nothing.
- *   2. **Undetermined** ⇒ never. `FeedLanguageFilter` already refuses to guess below
- *      its confidence threshold, and this inherits that refusal. An undetermined post
- *      is overwhelmingly likely to be English, and translating English into English is
- *      a call spent to change nothing.
- *   3. **Known** ⇒ never. You already read it.
+ *   2. **All possibilities known** ⇒ never, unless a candidate is being learned.
+ *   3. **Undetermined** ⇒ never. `FeedLanguageFilter` already refuses to guess below
+ *      its evidence requirements, and this inherits that refusal. Unknown is
+ *      never assumed to be English.
  *   4. **Learning** ⇒ yes. The point of the feature.
- *   5. Anything else ⇒ only when the `$$$` translate-all switch is on.
+ *   5. **Known** ⇒ never. You already read it.
+ *   6. Anything else ⇒ only when the `$$$` translate-all switch is on.
  */
 @Injectable({ providedIn: 'root' })
 export class AutoTranslateEligibility {
@@ -362,6 +325,12 @@ export class AutoTranslateEligibility {
     if (this.prefs.autoTranslateMode() === 'off') {
       return 'mode-off';
     }
+    const assessment = this.filter.languageAssessment(status);
+    if (
+      assessment.userKnowsLanguage &&
+      !assessment.candidates.some((lang) => this.prefs.isLearning(lang))
+    )
+      return 'known';
     const language = this.filter.effectiveLanguage(status);
     if (!language) {
       return 'undetermined';
@@ -401,32 +370,10 @@ export class AutoTranslateEligibility {
     if (!wanted) {
       return false;
     }
-    // Declared language first, confident detection second, null when neither commits —
-    // the same derivation hiding uses, so the two can never disagree about what
-    // language a post is in.
-    const effective = this.filter.effectiveLanguage(status);
-    if (!effective || bare(effective) !== wanted) {
-      return false;
-    }
-    // ...but a declaration this app can *see* is wrong does not get to refuse the
-    // translation.
-    //
-    // `effectiveLanguage` trusts `status.language` unconditionally and only detects
-    // when nothing was declared. That is right for hiding — a reader who hides a
-    // language is acting on what the post claims — and wrong here, because the cost
-    // is asymmetric: wrongly spending one request is a rounding error, and wrongly
-    // refusing tells someone their plainly German post "already looks like English"
-    // and offers them a settings page. Which is exactly what a post declaring `en`
-    // over "Die Nutzung der Musik war ihm doch verboten worden?" did.
-    //
-    // Mis-declared language is common and usually nobody's fault: clients default
-    // the field to the composer's UI locale, so anyone posting in a second language
-    // ships the wrong tag. So when the detector is *confident* and disagrees with the
-    // declaration, the declaration loses and the translation goes ahead. When the
-    // detector is unsure it says nothing and the declaration stands, unchanged from
-    // before.
+    // A declaration is not evidence. Unknown text must remain translatable,
+    // including posts whose clients silently declared the composer's UI locale.
     const detected = this.filter.detectedLanguage(status);
-    return !detected || bare(detected) === wanted;
+    return !!detected && bare(detected) === wanted;
   }
 
   /**
