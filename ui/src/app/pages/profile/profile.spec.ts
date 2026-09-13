@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Relationship, Status } from '../../models';
 import { Profile } from './profile';
@@ -16,6 +16,11 @@ import { RssProvider } from '../../providers/rss/rss-provider';
 import { MataroaSettings } from '../../providers/mataroa/mataroa-settings';
 import { BloggerSession } from '../../providers/blogger/blogger-session';
 import { HugoSettings } from '../../providers/hugo/hugo-settings';
+import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
+import { AnonymousHomeFeedCache } from '../../providers/anonymous/anonymous-home-feed-cache';
+import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
+import { TwitterFollows } from '../../providers/twitter/twitter-follows';
+import { scopedKey } from '../../account-scope';
 
 /** n bare statuses with descending ids starting at s<base> (timeline order). */
 function makeStatuses(n: number, base: number): Status[] {
@@ -38,6 +43,138 @@ function makeStatuses(n: number, base: number): Status[] {
  */
 beforeEach(() => {
   vi.spyOn(window, 'confirm').mockReturnValue(true);
+});
+
+describe('self profile local actions', () => {
+  const friend = {
+    id: '42',
+    username: 'friend',
+    acct: 'friend@example.social',
+    url: 'https://example.social/@friend',
+    fields: [],
+  } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: EMPTY } },
+      ],
+    });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+    localStorage.clear();
+  });
+
+  function setUp(anonymous: boolean) {
+    const auth = TestBed.inject(Auth);
+    if (anonymous) auth.enterAnonymous();
+    else {
+      auth.setToken('local-actions-token');
+      auth.account.set({ ...friend, id: '301226', username: 'me' });
+    }
+    const fixture = TestBed.createComponent(Profile);
+    fixture.componentInstance['account'].set(auth.account());
+    fixture.componentInstance['loading'].set(false);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('offers four actions on the anonymous self profile and capitalized navigation labels', () => {
+    const fixture = setUp(true);
+    const el = fixture.nativeElement as HTMLElement;
+    const menu = el.querySelector('.account-danger-panel')!;
+    expect(menu.querySelector('a')?.textContent).toContain('Edit local profile');
+    expect(menu.querySelectorAll('button')).toHaveLength(3);
+    expect([...menu.querySelectorAll('button')].every((button) => button.disabled)).toBe(true);
+    expect(el.querySelector('[aria-label="Profile sections"]')?.textContent).toContain('Following');
+  });
+
+  it('clears anonymous friends, tags and RSS independently, persists and invalidates the feed', () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    const tags = TestBed.inject(AnonymousTags);
+    const rss = TestBed.inject(RssSubscriptions);
+    const twitter = TestBed.inject(TwitterFollows);
+    follows.follow(friend, 'https://example.social');
+    tags.follow('birds');
+    rss.add('https://example.com/feed', 'Feed');
+    twitter.add({ username: 'friend', displayName: 'Friend' });
+    const invalidate = vi.spyOn(TestBed.inject(AnonymousHomeFeedCache), 'invalidate');
+    fixture.detectChanges();
+    const buttons = fixture.nativeElement.querySelectorAll('.account-danger-panel button');
+    buttons[0].click();
+    expect(follows.count()).toBe(0);
+    expect(twitter.follows()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_follows')!).follows).toEqual([]);
+    expect(tags.count()).toBe(1);
+    expect(rss.feeds()).toHaveLength(1);
+    expect(invalidate).toHaveBeenCalled();
+    buttons[1].click();
+    expect(tags.count()).toBe(0);
+    expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_tags')!).tags).toEqual([]);
+    expect(rss.feeds()).toHaveLength(1);
+    buttons[2].click();
+    expect(rss.feeds()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(scopedKey('mockingbird_rss_feeds'))!)).toEqual([]);
+    TestBed.inject(HttpTestingController).expectNone(() => true);
+  });
+
+  it('clears only the signed-in account local follows, preserving anonymous and other account data', () => {
+    const fixture = setUp(false);
+    const anonymous = TestBed.inject(AnonymousFollows);
+    const tags = TestBed.inject(AnonymousTags);
+    const privateStore = TestBed.inject(PrivateFollows).current()!;
+    anonymous.follow(friend, 'https://example.social');
+    tags.follow('birds');
+    privateStore.follow(friend, 'https://example.social');
+    const otherKey = 'mockingbird_private_follows_other-account';
+    localStorage.setItem(otherKey, 'untouched');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('a[href="/settings/profile"]')?.textContent).toContain('Edit profile');
+    const buttons = el.querySelectorAll<HTMLButtonElement>('.account-danger-panel button');
+    expect(buttons[1].disabled).toBe(true);
+    buttons[0].click();
+    expect(privateStore.count()).toBe(0);
+    expect(anonymous.count()).toBe(1);
+    expect(tags.count()).toBe(1);
+    expect(localStorage.getItem(otherKey)).toBe('untouched');
+    TestBed.inject(HttpTestingController).expectNone(() => true);
+  });
+
+  it('preserves follows when cancelled and cannot clear from another profile', () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    follows.follow(friend, 'https://example.social');
+    vi.mocked(window.confirm).mockReturnValue(false);
+    fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    vi.mocked(window.confirm).mockReturnValue(true);
+    fixture.componentInstance['account'].set(friend);
+    fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Local profile actions');
+  });
+
+  it('reports storage failures and retains the local list', () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    follows.follow(friend, 'https://example.social');
+    const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Quota');
+    });
+    fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    expect(fixture.componentInstance['localActionError']()).toBe(true);
+    write.mockRestore();
+  });
 });
 
 describe('Profile block/unblock', () => {

@@ -264,6 +264,10 @@ export class RssSubscriptions {
     this.persist(this.feeds().filter((f) => f.url !== url));
   }
 
+  clear(): void {
+    this.persist([]);
+  }
+
   setEnabled(url: string, enabled: boolean): void {
     this.persist(this.feeds().map((f) => (f.url === url ? { ...f, enabled } : f)));
   }
@@ -373,7 +377,7 @@ export class RssSubscriptions {
   }
 
   private persist(feeds: RssFeedSub[]): void {
-    this.feeds.set(feeds);
     localStorage.setItem(this.storageKey, JSON.stringify(feeds));
+    this.feeds.set(feeds);
   }
 }

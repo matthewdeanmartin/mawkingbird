@@ -10,6 +10,7 @@ import { ReadingZen } from '../../reading-zen';
 import { ClientPrefs } from '../../client-prefs';
 import { Status } from '../../models';
 import { ReaderLibrary } from '../../providers/read/reader-library';
+import { RssProvider, RssItemView } from '../../providers/rss/rss-provider';
 
 /**
  * The real `ReaderCore` is used, not a stub.
@@ -66,6 +67,35 @@ describe('ReadPage', () => {
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).querySelector('app-reader-core')).not.toBeNull();
+  });
+
+  it('announces loading throughout a slow RSS request and clears it on success', () => {
+    const response = new Subject<RssItemView>();
+    TestBed.overrideProvider(RssProvider, { useValue: { getFeedItem: () => response } });
+    const fixture = setUp('rss:https://github.blog/feed/::article');
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.reader-loading[role="status"]')?.textContent).toContain(
+      'Loading',
+    );
+    expect(element.querySelector('.read-page')?.getAttribute('aria-busy')).toBe('true');
+    expect(element.textContent).not.toContain('not found');
+    const status = makeStatus('rss:https://github.blog/feed/::article');
+    response.next({ status, account: status.account, commentsFeedUrl: null, commentCount: null });
+    response.complete();
+    fixture.detectChanges();
+    expect(element.querySelector('.reader-loading')).toBeNull();
+    expect(element.querySelector('.read-page')?.getAttribute('aria-busy')).toBe('false');
+    expect(element.querySelector('app-reader-core')).not.toBeNull();
+  });
+
+  it('clears the RSS loading indicator on failure and offers a way back', () => {
+    const response = new Subject<RssItemView>();
+    TestBed.overrideProvider(RssProvider, { useValue: { getFeedItem: () => response } });
+    const fixture = setUp('rss:https://github.blog/feed/::article');
+    response.error(new Error('Feed unavailable'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.reader-loading')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.read-empty a[href^="/rss"]')).not.toBeNull();
   });
 
   it('keeps the library and current document mounted while another document loads', () => {

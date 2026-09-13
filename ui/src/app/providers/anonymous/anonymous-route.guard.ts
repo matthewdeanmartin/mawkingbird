@@ -2,6 +2,13 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../../auth';
 import { BotPeers } from '../../chat/bot-peers';
+import { shippedStarterKit } from '../../starter-kits';
+
+/** Bundled collections read source-controlled snapshots and follow locally. */
+export const anonymousCollectionGuard: CanActivateFn = (route, state) => {
+  if (shippedStarterKit(route.paramMap.get('id') ?? '')) return true;
+  return anonymousUnavailableGuard(route, state);
+};
 
 /** Redirect authenticated-only pages before their components can issue API calls. */
 export const anonymousUnavailableGuard: CanActivateFn = (route) => {

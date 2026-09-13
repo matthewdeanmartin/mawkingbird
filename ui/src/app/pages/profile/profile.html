@@ -54,7 +54,58 @@
         height="80"
         loading="eager"
       />
-      @if (isRss()) {
+      @if (isSelf()) {
+        <div class="profile-buttons">
+          <details class="account-danger-menu">
+            <summary class="btn btn-outline">
+              {{ 'pages.profile.actions.localActions' | transloco }}
+            </summary>
+            <div class="account-danger-panel">
+              <a routerLink="/settings/profile">{{
+                (auth.isAnonymous
+                  ? 'pages.profile.actions.editLocalProfile'
+                  : 'pages.profile.actions.editProfile'
+                ) | transloco
+              }}</a>
+              <p class="menu-note muted small">
+                {{ 'pages.profile.actions.localOnly' | transloco }}
+              </p>
+              <button
+                type="button"
+                [disabled]="!localFollowCount('friends')"
+                (click)="clearLocalFollows('friends')"
+              >
+                {{ 'pages.profile.actions.unfollowLocalFriends' | transloco }} ({{
+                  localFollowCount('friends')
+                }})
+              </button>
+              <button
+                type="button"
+                [disabled]="!localFollowCount('tags')"
+                (click)="clearLocalFollows('tags')"
+              >
+                {{ 'pages.profile.actions.unfollowLocalTags' | transloco }} ({{
+                  localFollowCount('tags')
+                }})
+              </button>
+              <button
+                type="button"
+                [disabled]="!localFollowCount('rss')"
+                (click)="clearLocalFollows('rss')"
+              >
+                {{ 'pages.profile.actions.unfollowLocalRss' | transloco }} ({{
+                  localFollowCount('rss')
+                }})
+              </button>
+              @if (localActionError()) {
+                <p class="menu-note" role="alert">
+                  {{ 'pages.profile.actions.localFailed' | transloco }}
+                </p>
+              }
+            </div>
+          </details>
+        </div>
+      } @else if (isRss()) {
         <div class="profile-buttons">
           @if (a.url) {
             <a class="btn btn-outline" [href]="a.url" target="_blank" rel="noopener noreferrer">
@@ -216,12 +267,6 @@
           </a>
           <a class="btn btn-outline" routerLink="/settings/connections/openrouter">{{
             'pages.profile.actions.settings' | transloco
-          }}</a>
-        </div>
-      } @else if (isSelf() && auth.isAnonymous) {
-        <div class="profile-buttons">
-          <a class="btn btn-outline" routerLink="/settings/profile">{{
-            'pages.profile.actions.editLocalProfile' | transloco
           }}</a>
         </div>
       } @else if (!isSelf()) {
@@ -632,7 +677,7 @@
         [class.active]="tab() === 'following'"
         (click)="setTab('following')"
       >
-        {{ 'pages.profile.stats.following' | transloco }}
+        {{ 'pages.profile.navigation.following' | transloco }}
       </button>
       @if (!auth.isAnonymous || !isSelf()) {
         <button
@@ -641,7 +686,7 @@
           [class.active]="tab() === 'followers'"
           (click)="setTab('followers')"
         >
-          {{ 'pages.profile.stats.followers' | transloco }}
+          {{ 'pages.profile.navigation.followers' | transloco }}
         </button>
       }
       @if (collections().length > 0) {

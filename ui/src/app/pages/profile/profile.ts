@@ -55,6 +55,7 @@ import { BskyAuthorFeedFilter } from '../../providers/bluesky/bluesky-types';
 import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { AnonymousCapabilities } from '../../providers/anonymous/anonymous-capabilities';
 import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
+import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import {
   AnonymousPublicRef,
@@ -94,6 +95,14 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.actions.message: 💬 Message
 // i18n pages.profile.actions.settings: Settings
 // i18n pages.profile.actions.editLocalProfile: Edit local profile
+// i18n pages.profile.actions.editProfile: Edit profile
+// i18n pages.profile.actions.localActions: Local profile actions
+// i18n pages.profile.actions.unfollowLocalFriends: Unfollow local friends
+// i18n pages.profile.actions.unfollowLocalTags: Unfollow local tags
+// i18n pages.profile.actions.unfollowLocalRss: Unfollow local RSS feeds
+// i18n pages.profile.actions.localOnly: Applies only to follows saved in this browser. Server-side relationships are kept.
+// i18n pages.profile.actions.confirmLocal: {{action}}? This removes all follows in this category saved in this browser. Server-side relationships are kept.
+// i18n pages.profile.actions.localFailed: Could not save all changes. Check browser storage and try again.
 // i18n pages.profile.actions.copyAccount: Copy account…
 // i18n pages.profile.actions.show: Show
 // i18n pages.profile.actions.hide: Hide
@@ -143,6 +152,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.featured.viewFeed: View as feed →
 // i18n pages.profile.navigation.profileSections: Profile sections
 // i18n pages.profile.navigation.media: Media
+// i18n pages.profile.navigation.following: Following
+// i18n pages.profile.navigation.followers: Followers
 // i18n pages.profile.navigation.collections: Collections
 // i18n pages.profile.navigation.analytics: Analytics
 // i18n pages.profile.navigation.timelineFilters: Timeline filters
@@ -238,6 +249,47 @@ export class Profile implements OnInit, OnDestroy {
   private anonymous = inject(AnonymousAccount);
   private anonymousPublic = inject(AnonymousPublicApi);
   protected anonymousFollows = inject(AnonymousFollows);
+  private anonymousTags = inject(AnonymousTags);
+  protected localActionError = signal(false);
+
+  protected localFollowCount(kind: 'friends' | 'tags' | 'rss'): number {
+    if (kind === 'rss') return this.rssSubs.feeds().length;
+    if (kind === 'tags') return this.auth.isAnonymous ? this.anonymousTags.count() : 0;
+    return (
+      (this.auth.isAnonymous
+        ? this.anonymousFollows.count()
+        : (this.privateFollows.current()?.count() ?? 0)) + this.twitterFollows.follows().length
+    );
+  }
+
+  protected clearLocalFollows(kind: 'friends' | 'tags' | 'rss'): void {
+    if (!this.isSelf() || !this.localFollowCount(kind)) return;
+    const key = {
+      friends: 'pages.profile.actions.unfollowLocalFriends',
+      tags: 'pages.profile.actions.unfollowLocalTags',
+      rss: 'pages.profile.actions.unfollowLocalRss',
+    }[kind];
+    if (
+      !window.confirm(
+        this.transloco.translate('pages.profile.actions.confirmLocal', {
+          action: this.transloco.translate(key),
+        }),
+      )
+    )
+      return;
+    this.localActionError.set(false);
+    try {
+      if (kind === 'rss') this.rssSubs.clear();
+      else if (kind === 'tags' && this.auth.isAnonymous) this.anonymousTags.clear();
+      else if (kind === 'friends') {
+        const store = this.auth.isAnonymous ? this.anonymousFollows : this.privateFollows.current();
+        store?.clear();
+        this.twitterFollows.clear();
+      }
+    } catch {
+      this.localActionError.set(true);
+    }
+  }
   protected privateFollows = inject(PrivateFollows);
   protected pseudonymity = inject(Pseudonymity);
   protected privateFollowError = signal(false);

@@ -1,6 +1,9 @@
-<div class="read-page" [attr.data-paper]="prefs.readerTheme()">
+<div class="read-page" [attr.data-paper]="prefs.readerTheme()" [attr.aria-busy]="loader.loading()">
   @if (loader.loading() && !chain().length) {
-    <p class="muted center">{{ 'reader.page.loading' | transloco }}</p>
+    <div class="reader-loading" role="status" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <p>{{ 'pages.profile.loading.loading' | transloco }}</p>
+    </div>
   } @else {
     <div class="read-body" [class.with-library]="libraryOpen()">
       <!-- The library is on the LEFT, matching /rss, where the list of things
@@ -11,7 +14,8 @@
       }
       <div class="read-document" [attr.aria-busy]="loader.loading()">
         @if (loader.loading()) {
-          <p class="document-loading muted" role="status">
+          <p class="document-loading" role="status">
+            <span class="loading-spinner" aria-hidden="true"></span>
             {{ 'reader.page.loading' | transloco }}
           </p>
         }

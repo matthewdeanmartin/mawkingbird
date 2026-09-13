@@ -22,6 +22,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n pages.rss.title: 📡 RSS
 // i18n pages.rss.pasteLink: Paste a link
 // i18n pages.rss.done: Done
+// i18n pages.rss.readerView: Reader View
 // i18n pages.rss.starterKits: Starter kits
 // i18n pages.rss.friendFeeds: Friends’ blogs
 // i18n pages.rss.allItems: All items

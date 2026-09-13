@@ -1,13 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
+  convertToParamMap,
   provideRouter,
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../auth';
-import { anonymousChatGuard, anonymousUnavailableGuard } from './anonymous-route.guard';
+import {
+  anonymousChatGuard,
+  anonymousCollectionGuard,
+  anonymousUnavailableGuard,
+} from './anonymous-route.guard';
+import { SHIPPED_STARTER_KITS } from '../../starter-kits';
+import { routes } from '../../app.routes';
 import { ClientPrefs } from '../../client-prefs';
 
 describe('anonymousUnavailableGuard', () => {
@@ -36,6 +43,45 @@ describe('anonymousUnavailableGuard', () => {
     expect(TestBed.inject(Router).serializeUrl(result as ReturnType<Router['createUrlTree']>)).toBe(
       '/unavailable?feature=Messages',
     );
+  });
+});
+
+describe('anonymousCollectionGuard', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.inject(Auth).enterAnonymous();
+  });
+
+  function run(id: string) {
+    return TestBed.runInInjectionContext(() =>
+      anonymousCollectionGuard(
+        {
+          paramMap: convertToParamMap({ id }),
+          data: { anonymousFeature: 'Collections' },
+        } as unknown as ActivatedRouteSnapshot,
+        {} as RouterStateSnapshot,
+      ),
+    );
+  }
+
+  it('opens every bundled collection from its normal route anonymously', () => {
+    const shell = routes.find((route) => route.path === '' && route.children);
+    expect(shell?.children?.find((route) => route.path === 'collections/:id')?.canActivate).toEqual(
+      [anonymousCollectionGuard],
+    );
+    expect(SHIPPED_STARTER_KITS.length).toBeGreaterThan(0);
+    for (const kit of SHIPPED_STARTER_KITS) expect(run(kit.id)).toBe(true);
+  });
+
+  it('keeps server-only collections protected', () => {
+    expect(
+      TestBed.inject(Router).serializeUrl(
+        run('server-only') as ReturnType<Router['createUrlTree']>,
+      ),
+    ).toBe('/unavailable?feature=Collections');
+    TestBed.inject(Auth).setToken('token');
+    expect(run('server-only')).toBe(true);
   });
 });
 

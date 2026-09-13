@@ -38,6 +38,41 @@
   padding: 48px 16px;
 }
 
+.reader-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 50vh;
+  padding: 32px;
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.loading-spinner {
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: reader-loading-spin 1s linear infinite;
+}
+
+@keyframes reader-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+}
+
 .read-empty {
   max-width: 40rem;
   margin: 0 auto;
@@ -56,16 +91,20 @@
 
 /* Keep the current page in place while another library document loads. */
 .document-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   position: fixed;
   top: 44px;
   right: 16px;
   z-index: 5;
   margin: 0;
-  padding: 5px 9px;
+  padding: 12px 16px;
+  border: 1px solid var(--accent);
   border-radius: 5px;
   background: var(--bg);
   font-family: var(--app-font-family);
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .tool {

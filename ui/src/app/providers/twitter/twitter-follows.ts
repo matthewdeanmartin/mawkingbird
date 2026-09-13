@@ -152,6 +152,11 @@ export class TwitterFollows {
     this.persist(this.follows().filter((f) => f.username.toLowerCase() !== needle));
   }
 
+  clear(): void {
+    localStorage.setItem(this.storageKey, JSON.stringify([]));
+    this.follows.set([]);
+  }
+
   setEnabled(username: string, enabled: boolean): void {
     const needle = username.toLowerCase();
     this.persist(

@@ -445,6 +445,7 @@ describe('RssPage', () => {
       const fixture = setUp();
       expect(fixture.componentInstance['showKits']()).toBe(true);
       expect(textOf(fixture)).toContain('Start with a kit');
+      expect(textOf(fixture)).toContain('Reader View');
     });
 
     it('opens showing the reading list once feeds exist', async () => {

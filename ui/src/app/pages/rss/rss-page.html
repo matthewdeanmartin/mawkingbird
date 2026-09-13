@@ -14,7 +14,7 @@
           [attr.aria-pressed]="showKits()"
           (click)="toggleKits()"
         >
-          {{ (showKits() ? 'pages.rss.done' : 'pages.rss.starterKits') | transloco }}
+          {{ (showKits() ? 'pages.rss.readerView' : 'pages.rss.starterKits') | transloco }}
         </button>
         <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
           {{ 'pages.rss.friendFeeds' | transloco }}

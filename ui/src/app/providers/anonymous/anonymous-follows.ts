@@ -347,6 +347,11 @@ export class LocalFollowStore {
     this.state.set(state);
   }
 
+  clear(): void {
+    this.persist([]);
+    this.invalidate();
+  }
+
   private updateFollow(key: string, update: (follow: AnonymousFollow) => AnonymousFollow): void {
     this.persist(this.follows().map((follow) => (follow.key === key ? update(follow) : follow)));
   }

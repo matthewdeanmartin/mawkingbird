@@ -70,7 +70,12 @@ export class AnonymousTags {
 
   private persist(tags: string[]): void {
     const state: AnonymousTagState = { version: STATE_VERSION, tags };
-    this.state.set(state);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    this.state.set(state);
+  }
+
+  clear(): void {
+    this.persist([]);
+    this.homeFeedCache.invalidate();
   }
 }

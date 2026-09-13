@@ -3,6 +3,7 @@ import { authGuard } from './auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
   anonymousChatGuard,
+  anonymousCollectionGuard,
   anonymousUnavailableGuard,
 } from './providers/anonymous/anonymous-route.guard';
 import { anonymousOnlyGuard } from './providers/anonymous/anonymous-only.guard';
@@ -845,7 +846,7 @@ export const routes: Routes = [
       {
         path: 'collections/:id',
         title: 'Collection',
-        canActivate: [anonymousUnavailableGuard],
+        canActivate: [anonymousCollectionGuard],
         data: { anonymousFeature: 'Collections' },
         loadComponent: () => import('./pages/collection/collection').then((m) => m.CollectionPage),
       },
