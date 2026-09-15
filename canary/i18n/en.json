@@ -3584,6 +3584,17 @@
     "via": "via",
     "waiting": "{{count}} waiting"
   },
+  "proxy": {
+    "limit.body": "A temporary request limit was reached. Your saved content is still available.",
+    "limit.dismiss": "Dismiss",
+    "limit.explore": "Explore Plus",
+    "limit.networkBody": "Your network has temporarily reached its shared free request limit. Plus provides a higher allowance for your account.",
+    "limit.notNow": "Not now",
+    "limit.offerBody": "You’ve temporarily reached the free request limit. Mawkingbird Plus provides a higher allowance.",
+    "limit.offerTitle": "Get a higher allowance with Plus",
+    "limit.retry": "Try again in about {{seconds}} seconds.",
+    "limit.title": "Some updates are paused"
+  },
   "pseudonymity": {
     "currentAccount": "this account",
     "mediaFailed": "Photo metadata could not be removed. Nothing was uploaded. Use a still JPEG or PNG under 20 MB and 40 megapixels, or change photo cleaning in Pseudonymity settings.",
