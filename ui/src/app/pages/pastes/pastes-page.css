@@ -136,16 +136,6 @@
   margin: 0 0 0.75rem;
 }
 
-.pastepile-key {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.pastepile-key h4 {
-  margin: 0 0 0.25rem;
-}
-
 @media (max-width: 600px) {
   .feed-row,
   .paste-card-head {

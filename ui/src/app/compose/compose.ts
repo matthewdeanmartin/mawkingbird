@@ -1378,13 +1378,8 @@ export class Compose implements OnDestroy {
     }
   }
 
-  /**
-   * What the selected provider allows, tightened to `unlisted` only for
-   * burn-after-reading — a burn link that is also listed publicly defeats the
-   * point of burning it.
-   */
   private pasteVisibilities(): readonly string[] {
-    return this.pasteExpiry() === 'burn' ? ['unlisted'] : this.selectedPasteProvider().visibilities;
+    return this.selectedPasteProvider().visibilities;
   }
 
   onPasteProviderChange(providerId: string): void {
@@ -1409,16 +1404,7 @@ export class Compose implements OnDestroy {
   }
 
   onPasteExpiryChange(expiry: PasteExpiry): void {
-    const wasBurn = this.pasteExpiry() === 'burn';
     this.pasteExpiry.set(expiry);
-    if (expiry === 'burn') {
-      this.clampVisibilityForPaste(['unlisted']);
-    } else if (wasBurn) {
-      // Leaving burn widens the options again; give back what burn narrowed,
-      // then re-clamp in case the provider itself doesn't allow it.
-      this.restoreVisibility();
-      this.clampVisibilityForPaste(this.pasteVisibilities());
-    }
   }
 
   // --- links ---
@@ -2378,12 +2364,11 @@ export class Compose implements OnDestroy {
 
   private sendToPaste(): void {
     const provider = this.selectedPasteProvider();
-    const visibility =
-      this.pasteExpiry() !== 'burn' && provider.visibilities.includes('public')
-        ? this.visibility() === 'public'
-          ? 'public'
-          : 'unlisted'
-        : 'unlisted';
+    const visibility = provider.visibilities.includes('public')
+      ? this.visibility() === 'public'
+        ? 'public'
+        : 'unlisted'
+      : 'unlisted';
     const input = {
       title: this.cwOpen() ? this.spoilerText().trim() : '',
       content: this.text().trim(),

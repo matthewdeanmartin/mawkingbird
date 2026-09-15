@@ -219,14 +219,6 @@
           <button type="button" class="btn btn-outline" (click)="copy()">
             {{ 'settings.config.copyJson' | transloco }}
           </button>
-          <button
-            type="button"
-            class="btn btn-outline"
-            (click)="previewExport(true)"
-            [disabled]="busy()"
-          >
-            {{ 'settings.config.previewPublish' | transloco }}
-          </button>
         </div>
         @if (exportMessage()) {
           <span class="export-status" role="status" aria-live="polite">{{
@@ -236,24 +228,11 @@
         <span class="hint">
           {{ 'settings.config.export.hint' | transloco }}
         </span>
-        @if (publishedUrl()) {
-          <span class="published-config">
-            <a [href]="publishedUrl()" target="_blank" rel="noopener">{{
-              'settings.config.openPublished' | transloco
-            }}</a>
-            · <a routerLink="/pastes">{{ 'settings.config.managePastes' | transloco }}</a>
-          </span>
-        }
 
         @if (exportPreview()) {
           <div class="export-preview">
             <div class="preview-head">
-              <strong>{{
-                (publishPrepared()
-                  ? 'settings.config.publishPreview'
-                  : 'settings.config.exportPreview'
-                ) | transloco
-              }}</strong>
+              <strong>{{ 'settings.config.exportPreview' | transloco }}</strong>
               <button type="button" class="link" (click)="closeExportPreview()">
                 {{ 'settings.config.closeLower' | transloco }}
               </button>
@@ -264,16 +243,6 @@
               [attr.aria-label]="'settings.config.jsonPreview.aria' | transloco"
               [value]="exportPreview()"
             ></textarea>
-            @if (publishPrepared()) {
-              <p class="hint">
-                {{ 'settings.config.publish.hint' | transloco }}
-              </p>
-              <button type="button" class="btn" (click)="publish()" [disabled]="busy()">
-                {{
-                  (busy() ? 'settings.config.publishing' : 'settings.config.publishNow') | transloco
-                }}
-              </button>
-            }
           </div>
         }
       </div>

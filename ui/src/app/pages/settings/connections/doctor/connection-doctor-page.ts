@@ -24,6 +24,8 @@ import {
 
 // i18n settings.connections.doctor.back: ‹ All connections
 // i18n settings.connections.doctor.title: 🩺 Connection doctor
+// i18n settings.connections.doctor.readable: Readable response
+// i18n settings.connections.doctor.readableViaProxy: Readable response via proxy
 // i18n settings.connections.doctor.intro.a: Some networks — offices, schools, hotels, some countries — block whole categories of site. This checks every service Mawkingbird can talk to and tells you which ones this network will let your browser reach, so you find out
 // i18n settings.connections.doctor.intro.before: before
 // i18n settings.connections.doctor.intro.b: making an account and paying for an API key, rather than after.
@@ -177,7 +179,14 @@ export class ConnectionDoctorPage {
         target,
         verdict,
         outcome,
-        outcomeLabel: outcomeLabel(outcome, result, this.translate),
+        outcomeLabel:
+          (target.category === 'paste' || target.category === 'shortener') && outcome === 'usable'
+            ? this.translate(
+                result.cors === 'readable'
+                  ? 'settings.connections.doctor.readable'
+                  : 'settings.connections.doctor.readableViaProxy',
+              )
+            : outcomeLabel(outcome, result, this.translate),
         timing: result.ms !== null && verdict !== 'checking' ? formatDuration(result.ms) : null,
         timingHint: timingHint(result, this.translate),
         corsHint: corsHint(result, this.translate),

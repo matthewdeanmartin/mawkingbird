@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, computed, inject } from '@angular/core';
 import { Observable, map, throwError } from 'rxjs';
 import { Account, Status } from '../../models';
-import { externalFetch } from '../external-fetch';
+import { publishingFetch } from '../../observability/publishing-metrics';
 import { GistSettings } from './gist-settings';
 import { PasteCreateInput, PasteCreated, PasteProvider, PasteRecentItem } from './paste-provider';
 
@@ -163,7 +163,7 @@ export class GistProvider implements PasteProvider {
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': API_VERSION,
       }),
-      context: externalFetch(),
+      context: publishingFetch('gist'),
     });
   }
 
@@ -188,7 +188,7 @@ export class GistProvider implements PasteProvider {
           public: input.visibility === 'public',
           files: { [filename]: { content: input.content } },
         },
-        { headers, context: externalFetch() },
+        { headers, context: publishingFetch('gist') },
       )
       .pipe(map((gist) => this.created(gist, filename)));
   }
@@ -213,7 +213,7 @@ export class GistProvider implements PasteProvider {
           description: input.title.trim(),
           files: { [filename]: { filename, content: input.content } },
         },
-        { headers, context: externalFetch() },
+        { headers, context: publishingFetch('gist') },
       )
       .pipe(map(() => undefined));
   }
@@ -226,7 +226,7 @@ export class GistProvider implements PasteProvider {
     return this.http
       .delete<void>(`${API_ROOT}/gists/${encodeURIComponent(slug)}`, {
         headers,
-        context: externalFetch(),
+        context: publishingFetch('gist'),
       })
       .pipe(map(() => undefined));
   }
@@ -246,7 +246,7 @@ export class GistProvider implements PasteProvider {
     return this.http
       .get<GistResponse[]>(`${API_ROOT}/gists?per_page=30`, {
         headers,
-        context: externalFetch(),
+        context: publishingFetch('gist'),
       })
       .pipe(
         map((gists) =>

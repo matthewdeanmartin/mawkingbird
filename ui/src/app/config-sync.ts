@@ -1,11 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { externalFetch } from './providers/external-fetch';
+import { Injectable } from '@angular/core';
 import { importPortableConfig, parsePortableConfig, PortableConfig } from './portable-config';
 
 const SYNC_KEY = 'mockingbird_config_sync';
-const PASTEPILE_API = 'https://www.pastepile.com/api/public/pastes';
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
 
@@ -25,13 +21,6 @@ export interface RemoteConfigResult {
   hash: string;
   stable: boolean;
   warning?: string;
-}
-
-interface PastepileCreateResponse {
-  slug: string;
-  raw_url: string;
-  url: string;
-  edit_key: string;
 }
 
 function readSettings(): ConfigSyncSettings | null {
@@ -62,10 +51,9 @@ async function sha256(text: string): Promise<string> {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-/** Remote portable-config checks and the deliberately keyless permanent Pastepile publisher. */
+/** Remote portable-config checks. */
 @Injectable({ providedIn: 'root' })
 export class ConfigSync {
-  private readonly http = inject(HttpClient);
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   settings(): ConfigSyncSettings | null {
@@ -122,31 +110,6 @@ export class ConfigSync {
           'Mockingbird could not refetch this URL reliably. It can only be updated on demand.',
       };
     }
-  }
-
-  /** Create an anonymous, unlisted, never-expiring paste even when this browser has a Pastepile key. */
-  async publishPermanent(
-    content: string,
-  ): Promise<{ slug: string; url: string; rawUrl: string; editKey: string }> {
-    const created = await firstValueFrom(
-      this.http.post<PastepileCreateResponse>(
-        PASTEPILE_API,
-        {
-          title: 'Mockingbird client configuration',
-          content,
-          language: 'json',
-          expiry: 'never',
-          visibility: 'unlisted',
-        },
-        { context: externalFetch() },
-      ),
-    );
-    return {
-      slug: created.slug,
-      url: created.url,
-      rawUrl: created.raw_url,
-      editKey: created.edit_key,
-    };
   }
 
   start(): void {

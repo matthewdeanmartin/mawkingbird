@@ -75,8 +75,7 @@ export class VisibilityState {
   /**
    * The visibility from before a target-driven clamp overwrote it.
    *
-   * Paste services only understand `public`/`unlisted` (and burn-after-reading
-   * only `unlisted`), so selecting Paste has to narrow whatever the user had.
+   * Paste services only understand `public`/`unlisted`, so selecting Paste has to narrow whatever the user had.
    * Without this, switching Fedi → Paste → Fedi silently left the post on
    * `unlisted` — a real downgrade of a deliberate choice, and the reason this
    * exists. Null means "nothing to put back": either no clamp has happened, or

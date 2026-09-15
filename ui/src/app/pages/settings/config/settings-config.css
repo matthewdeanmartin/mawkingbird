@@ -15,10 +15,6 @@
   font-weight: 600;
 }
 
-.published-config {
-  font-size: 13px;
-}
-
 .export-preview {
   display: grid;
   gap: 10px;

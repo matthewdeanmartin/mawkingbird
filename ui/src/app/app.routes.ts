@@ -282,6 +282,14 @@ export const routes: Routes = [
                   ),
               },
               {
+                path: 'pastes',
+                title: 'Paste services',
+                loadComponent: () =>
+                  import('./pages/settings/connections/pastes/connection-pastes').then(
+                    (m) => m.ConnectionPastes,
+                  ),
+              },
+              {
                 path: 'link-shortener',
                 title: 'Link shortener',
                 loadComponent: () =>

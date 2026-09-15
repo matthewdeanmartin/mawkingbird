@@ -1,8 +1,8 @@
 import { computed, inject, Injectable } from '@angular/core';
+import { PasteSettings } from './paste-settings';
+import { PASTE_SERVICES } from '../publishing-services';
 import { GistProvider } from './gist-provider';
 import { FeedPasteProvider, PasteProvider } from './paste-provider';
-import { PastepileMineProvider } from './pastepile-mine-provider';
-import { PastepileProvider } from './pastepile-provider';
 import { RentryProvider } from './rentry-provider';
 import { ShortenerPasteProvider } from './shortener-paste-provider';
 import { TinyurlProvider } from './tinyurl-provider';
@@ -34,8 +34,7 @@ import { TinyurlProvider } from './tinyurl-provider';
  */
 @Injectable({ providedIn: 'root' })
 export class PasteProviderRegistry {
-  private pastepile = inject(PastepileProvider);
-  private pastepileMine = inject(PastepileMineProvider);
+  private settings = inject(PasteSettings);
   private rentry = inject(RentryProvider);
   private tinyurl = inject(TinyurlProvider);
   private shortener = inject(ShortenerPasteProvider);
@@ -48,21 +47,17 @@ export class PasteProviderRegistry {
    * draft or a history entry created through the user's shortener must still
    * resolve after they disconnect it, or the record becomes unreadable.
    */
-  readonly all: readonly PasteProvider[] = [
-    this.rentry,
-    this.tinyurl,
-    this.pastepile,
-    this.shortener,
-    this.gist,
-  ];
+  readonly all: readonly PasteProvider[] = PASTE_SERVICES.map((entry) => {
+    const providers = [this.rentry, this.tinyurl, this.shortener, this.gist];
+    return providers.find((provider) => provider.id === entry.id)!;
+  });
 
   /**
    * What the composer offers right now.
    *
    * Two conditional entries, for the same reason: the shortener needs a
    * connected service and Gist needs a token, and offering either to someone
-   * who has not set one up is an option that can only fail. Rentry, TinyURL and
-   * Pastepile cover that case with no setup at all, which is why they stay
+   * who has not set one up is an option that can only fail. Rentry and TinyURL cover that case with no setup at all, which is why they stay
    * unconditional.
    */
   readonly available = computed<readonly PasteProvider[]>(() =>
@@ -77,24 +72,16 @@ export class PasteProviderRegistry {
     }),
   );
 
-  /**
-   * Feeds to subscribe to. Both are Pastepile, and that is the point.
-   *
-   * Pastepile qualifies precisely because you can post to it and watch your own
-   * paste land in a feed. It was demoted once for "returning a CORS-less 308" —
-   * right about the symptom, wrong about the cause: the apex host redirects to
-   * `www`, and it is the *redirect* that carries no CORS header. Addressed at
-   * `www` it has always been CORS-clean.
-   *
-   * "My pastes" is a separate row rather than a mode of the first, because
-   * wanting your own pastes in the timeline and wanting the public firehose are
-   * different wishes and plenty of people have only the second.
-   */
-  readonly feeds: readonly FeedPasteProvider[] = [this.pastepile, this.pastepileMine];
+  /** Public feed connectors available in this build. */
+  readonly feeds: readonly FeedPasteProvider[] = [];
 
   // Typed as the interface (not RentryProvider) so callers keep the full
   // visibility union; narrowing to one provider's literal types breaks them.
-  readonly default: PasteProvider = this.rentry;
+  get default(): PasteProvider {
+    return (
+      this.available().find((provider) => provider.id === this.settings.selected()) ?? this.rentry
+    );
+  }
 
   get(id: string): PasteProvider | undefined {
     return this.all.find((provider) => provider.id === id);

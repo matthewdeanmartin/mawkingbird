@@ -10,8 +10,8 @@ function storedEditKeys(): Record<string, string> {
 function created(slug: string) {
   return {
     slug,
-    url: `https://pastepile.com/p/${slug}`,
-    rawUrl: `https://pastepile.com/raw/${slug}`,
+    url: `https://paste.example/p/${slug}`,
+    rawUrl: `https://paste.example/raw/${slug}`,
     editKey: `key-${slug}`,
   };
 }
@@ -37,8 +37,8 @@ describe('PasteHistory', () => {
   it('persists links and edit keys for the browser', () => {
     const history = TestBed.inject(PasteHistory);
     history.add(
-      'pastepile',
-      'Pastepile',
+      'example-paste',
+      'Example paste',
       {
         title: 'Test',
         content: 'hello',
@@ -48,14 +48,14 @@ describe('PasteHistory', () => {
       },
       {
         slug: 'abc',
-        url: 'https://pastepile.com/p/abc',
-        rawUrl: 'https://pastepile.com/raw/abc',
+        url: 'https://paste.example/p/abc',
+        rawUrl: 'https://paste.example/raw/abc',
         editKey: 'secret',
       },
     );
 
     const stored = JSON.parse(localStorage.getItem('mockingbird_pastes') ?? '[]');
-    expect(stored[0].providerId).toBe('pastepile');
+    expect(stored[0].providerId).toBe('example-paste');
     // The edit code is a capability, so it must NOT be in the record blob.
     expect(stored[0].editKey).toBeUndefined();
     expect(storedEditKeys()['abc']).toBe('secret');
@@ -64,8 +64,8 @@ describe('PasteHistory', () => {
   it('updates and forgets a record', () => {
     const history = TestBed.inject(PasteHistory);
     history.add(
-      'pastepile',
-      'Pastepile',
+      'example-paste',
+      'Example paste',
       {
         title: '',
         content: 'old',
@@ -75,8 +75,8 @@ describe('PasteHistory', () => {
       },
       {
         slug: 'abc',
-        url: 'https://pastepile.com/p/abc',
-        rawUrl: 'https://pastepile.com/raw/abc',
+        url: 'https://paste.example/p/abc',
+        rawUrl: 'https://paste.example/raw/abc',
         editKey: 'secret',
       },
     );

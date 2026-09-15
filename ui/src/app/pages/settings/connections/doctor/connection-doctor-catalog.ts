@@ -62,7 +62,11 @@ export type Translate = (key: string, params?: Record<string, unknown>) => strin
 // i18n settings.connections.doctor.category.control: Control
 
 /** Groups the probe list so a blocked *category* is visible at a glance. */
-export type ProbeCategory = 'core' | 'connector' | 'proxy' | 'shortener' | 'control';
+// i18n settings.connections.doctor.category.paste: Paste services
+// i18n settings.connections.doctor.publishingScope: Tests a read-only URL without your credentials. A readable reply does not verify authentication, quota or publishing support; a homepage may have different CORS rules from its API.
+import { PUBLISHING_ENDPOINTS } from '../../../../providers/publishing-services';
+
+export type ProbeCategory = 'paste' | 'core' | 'connector' | 'proxy' | 'shortener' | 'control';
 
 export interface ProbeTarget {
   /** Stable identity, and the key results are stored under. */
@@ -436,92 +440,6 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
     },
   },
   {
-    id: 'dub',
-    host: 'api.dub.co',
-    labelKey: 'settings.connections.doctor.target.dub.label',
-    category: 'shortener',
-    // `/links` rather than the bare root: the root answers 200 with a service
-    // banner, which says nothing about the API. Measured 2026-08-14: this answers
-    // JSON 401, the expected reply to an unauthenticated probe of the endpoint
-    // the connector actually calls.
-    probeUrl: 'https://api.dub.co/links',
-    proxyRoute: 'shortener',
-    openUrl: 'https://dub.co',
-    mattersKey: 'settings.connections.doctor.target.dub.matters',
-    // Separates App, API and Link Redirects; the API component is this row.
-    status: {
-      url: 'https://status.dub.co/',
-      labelKey: 'settings.connections.doctor.status.dubStatus',
-      official: true,
-    },
-  },
-  {
-    id: 'shortio',
-    host: 'api.short.io',
-    labelKey: 'settings.connections.doctor.target.shortio.label',
-    category: 'shortener',
-    // A real API path rather than the bare root, for the same reason as Raindrop
-    // and T.LY above: a root that answers with a service banner proves the host
-    // is up but exercises none of the API surface the connector uses, and its
-    // CORS behaviour need not match. Measured 2026-08-14: this answers a clean
-    // JSON 401 — the expected reply to an unauthenticated probe, and evidence the
-    // request was received and understood.
-    probeUrl: 'https://api.short.io/api/links',
-    proxyRoute: 'shortener',
-    openUrl: 'https://short.io',
-    mattersKey: 'settings.connections.doctor.target.shortio.matters',
-    status: {
-      url: 'https://shortiostatus.com/',
-      labelKey: 'settings.connections.doctor.status.shortioStatus',
-      official: true,
-    },
-  },
-  {
-    id: 'tly',
-    host: 'api.t.ly',
-    labelKey: 'settings.connections.doctor.target.tly.label',
-    category: 'shortener',
-    // Not the bare root: `api.t.ly/` answers 301 to `t.ly/docs`, and a redirect
-    // carries no CORS headers. This endpoint answers 401 with an ACAO, which is
-    // the readable "you are unauthenticated" this probe wants.
-    probeUrl: 'https://api.t.ly/api/v1/link/list',
-    proxyRoute: 'shortener',
-    openUrl: 'https://t.ly',
-    mattersKey: 'settings.connections.doctor.target.tly.matters',
-    // No official page found, so this is an aggregator — supporting evidence,
-    // not a verdict.
-    status: {
-      url: 'https://statusgator.com/services/tly',
-      labelKey: 'settings.connections.doctor.status.tlyStatus',
-      official: false,
-    },
-  },
-  {
-    id: 'isgd',
-    host: 'is.gd',
-    labelKey: 'settings.connections.doctor.target.isgd.label',
-    category: 'shortener',
-    // The *API*, not the homepage. `https://is.gd/` answers 403 behind a
-    // bot-detection challenge, so probing it reported "blocked or unreachable"
-    // about a service that works perfectly — the doctor was testing a front door
-    // the app never knocks on.
-    //
-    // `forward.php` (look up where a short link points) rather than the
-    // `create.php` the app actually calls, because a probe must not have side
-    // effects: create is a GET that mints a real link, and a diagnostic anyone
-    // can re-run should not litter a third party's database. Both live on the
-    // same host behind the same API and answer identically for this purpose.
-    // Measured 2026-08-14: 200 with `Access-Control-Allow-Origin: *`, which is
-    // both a real reachability answer and a correct CORS one.
-    probeUrl: 'https://is.gd/forward.php?format=json&shorturl=is.gd',
-    openUrl: 'https://is.gd',
-    mattersKey: 'settings.connections.doctor.target.isgd.matters',
-    // Deliberately no link. No official page exists, and the outage aggregators
-    // that cover is.gd were observed reporting it down while it was demonstrably
-    // serving requests. A confidently wrong answer is worse than none.
-    status: null,
-  },
-  {
     id: 'control',
     host: 'example.com',
     labelKey: 'settings.connections.doctor.target.control.label',
@@ -549,7 +467,24 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
  * hostnames.
  */
 export function probeTargets(translate: Translate): readonly ProbeTarget[] {
-  return PROBE_TARGET_SPECS.map((spec) => buildTarget(spec, translate));
+  const base = PROBE_TARGET_SPECS.map((spec) => buildTarget(spec, translate));
+  const publishing: ProbeTarget[] = PUBLISHING_ENDPOINTS.map((endpoint) => ({
+    ...endpoint,
+    host: new URL(endpoint.probeUrl).host,
+    matters: translate('settings.connections.doctor.publishingScope'),
+    status: endpoint.status
+      ? {
+          url: endpoint.status.url,
+          label: translate(endpoint.status.labelKey),
+          official: endpoint.status.official,
+        }
+      : null,
+  }));
+  return [
+    ...base.filter((target) => target.category !== 'control'),
+    ...publishing,
+    ...base.filter((target) => target.category === 'control'),
+  ];
 }
 
 // i18n settings.connections.doctor.target.bskySocial.label: Bluesky (sign-in)
@@ -603,6 +538,7 @@ const CATEGORY_LABEL_KEYS: Record<ProbeCategory, string> = {
   connector: 'settings.connections.doctor.category.connector',
   proxy: 'settings.connections.doctor.category.proxy',
   shortener: 'settings.connections.doctor.category.shortener',
+  paste: 'settings.connections.doctor.category.paste',
   control: 'settings.connections.doctor.category.control',
 };
 

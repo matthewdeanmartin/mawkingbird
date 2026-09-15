@@ -2,9 +2,7 @@ import { DestroyRef } from '@angular/core';
 import { PlusPaywall } from '../../../providers/account/plus-paywall';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { ConfigSync, ConfigSyncFrequency, RemoteConfigResult } from '../../../config-sync';
-import { PasteHistory } from '../../../providers/paste/paste-history';
 import { ProfileSync } from '../../../providers/account/profile-sync';
 import type { PushOutcome } from '../../../providers/account/profile-sync';
 import { SupporterStatus } from '../../../providers/account/supporter-status';
@@ -65,18 +63,11 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n settings.config.previewJson: Preview JSON
 // i18n settings.config.downloadJson: Download JSON
 // i18n settings.config.copyJson: Copy JSON
-// i18n settings.config.previewPublish: Preview Pastepile publish
 // i18n settings.config.ok: ✓ {{message}}
-// i18n settings.config.export.hint: Every export is checked at runtime against the storage registry and the credentials currently stored in this browser. Pastepile publishing is anonymous and deliberately omits your Pastepile API key so its permanent-paste option remains available.
-// i18n settings.config.openPublished: Open published config
-// i18n settings.config.managePastes: Manage in My Pastes
-// i18n settings.config.publishPreview: Publish preview
+// i18n settings.config.export.hint: Every export is checked at runtime against the storage registry and the credentials currently stored in this browser.
 // i18n settings.config.exportPreview: Export preview
 // i18n settings.config.closeLower: close
 // i18n settings.config.jsonPreview.aria: Export JSON preview
-// i18n settings.config.publish.hint: This creates a permanent, unlisted Pastepile. Its edit password will be kept only in this browser and the paste will appear under My Pastes for later editing or deletion.
-// i18n settings.config.publishing: Publishing…
-// i18n settings.config.publishNow: Publish this preview
 // i18n settings.config.importFile: Import file
 // i18n settings.config.pastePlaceholder: …or paste Mawkingbird config JSON here
 // i18n settings.config.previewPasted: Preview pasted config
@@ -98,7 +89,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n settings.config.importReload: Import and reload
 @Component({
   selector: 'app-settings-config',
-  imports: [FormsModule, RouterLink, TranslocoPipe],
+  imports: [FormsModule, TranslocoPipe],
   templateUrl: './settings-config.html',
   styleUrl: './settings-config.css',
 })
@@ -113,7 +104,6 @@ export class SettingsConfig {
   }
 
   protected readonly sync = inject(ConfigSync);
-  private readonly pasteHistory = inject(PasteHistory);
 
   /**
    * Mawkingbird Plus settings sync.
@@ -242,9 +232,7 @@ export class SettingsConfig {
   protected readonly busy = signal(false);
   protected readonly message = signal('');
   protected readonly error = signal('');
-  protected readonly publishedUrl = signal('');
   protected readonly exportPreview = signal('');
-  protected readonly publishPrepared = signal(false);
   protected readonly exportMessage = signal('');
 
   protected exportText(): string {
@@ -279,58 +267,16 @@ export class SettingsConfig {
     }
   }
 
-  protected previewExport(forPublish = false): void {
+  protected previewExport(): void {
     this.clearNotice();
     this.exportPreview.set(this.exportText());
-    this.publishPrepared.set(forPublish);
     this.exportMessage.set(
-      forPublish
-        ? 'Review this exact JSON before creating the paste.'
-        : 'Export preview generated. Nothing was downloaded, copied, or published.',
+      'Export preview generated. Nothing was downloaded, copied, or published.',
     );
   }
 
   protected closeExportPreview(): void {
     this.exportPreview.set('');
-    this.publishPrepared.set(false);
-  }
-
-  protected async publish(): Promise<void> {
-    const content = this.exportPreview();
-    if (!this.publishPrepared() || !content) {
-      this.previewExport(true);
-      return;
-    }
-    this.clearNotice();
-    this.busy.set(true);
-    try {
-      const created = await this.sync.publishPermanent(content);
-      this.pasteHistory.add(
-        'pastepile',
-        'Pastepile',
-        {
-          title: 'Mockingbird client configuration',
-          content,
-          language: 'json',
-          expiry: 'never',
-          visibility: 'unlisted',
-        },
-        created,
-      );
-      this.publishedUrl.set(created.url);
-      this.remoteUrl.set(created.rawUrl);
-      this.exportMessage.set('Published and saved in My Pastes with its edit password.');
-      const result = await this.sync.fetchStable(created.rawUrl);
-      this.remoteResult.set(result);
-      this.previewConfig(result.config);
-      this.message.set('Permanent unlisted Pastepile created and verified.');
-      this.publishPrepared.set(false);
-    } catch (error: unknown) {
-      this.diagnostics.error('Config', 'publish:error', error);
-      this.showError(error);
-    } finally {
-      this.busy.set(false);
-    }
   }
 
   protected previewPasted(): void {

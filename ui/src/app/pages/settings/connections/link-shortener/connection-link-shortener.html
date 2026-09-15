@@ -10,6 +10,15 @@
   <p class="muted small">{{ scopeDetail | transloco }}</p>
 </div>
 
+<div class="conn-actions">
+  <a routerLink="/settings/connections/doctor">{{
+    'settings.connections.pastes.doctor' | transloco
+  }}</a>
+  <a routerLink="/settings/connections/pastes">{{
+    'settings.connections.pastes.title' | transloco
+  }}</a>
+</div>
+
 <p class="credential-warning small">
   {{ 'settings.connections.linkShortener.credentialWarning' | transloco }}
 </p>
@@ -25,6 +34,7 @@
           class="provider"
           type="button"
           [class.chosen]="selected() === item.id"
+          [attr.aria-pressed]="selected() === item.id"
           (click)="choose(item.id)"
         >
           <span class="provider-emoji" aria-hidden="true">{{ item.emoji }}</span>

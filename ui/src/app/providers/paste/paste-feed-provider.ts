@@ -14,7 +14,9 @@ export class PasteFeedProvider implements FeedProvider {
   readonly id = 'paste' as const;
   readonly label = 'Pastes';
   readonly badge = '📋 Pastes';
-  readonly linked = computed(() => this.subscriptions.enabledFeeds().length > 0);
+  readonly linked = computed(() =>
+    this.subscriptions.enabledFeeds().some((feed) => this.providers.feed(feed.providerId)),
+  );
   readonly errors = signal<string[]>([]);
 
   private exhausted = false;

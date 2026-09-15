@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Account, Status } from '../../models';
-import { externalFetch } from '../external-fetch';
+import { publishingFetch } from '../../observability/publishing-metrics';
 import { PasteCreateInput, PasteCreated, PasteProvider, PasteRecentItem } from './paste-provider';
 
 const BASE_URL = 'https://rentry.co';
@@ -83,7 +83,7 @@ export class RentryProvider implements PasteProvider {
       .post<RentryCreateResponse>(
         `${BASE_URL}/api/new`,
         form({ url: '', edit_code: '', text: rentryText(input) }),
-        { context: externalFetch() },
+        { context: publishingFetch('rentry') },
       )
       .pipe(
         map((response) => {
@@ -114,7 +114,7 @@ export class RentryProvider implements PasteProvider {
       .post<RentryResponse>(
         `${BASE_URL}/api/edit/${encodeURIComponent(slug)}`,
         form({ edit_code: editKey, text: rentryText(input) }),
-        { context: externalFetch() },
+        { context: publishingFetch('rentry') },
       )
       .pipe(
         map((response) => {
@@ -128,7 +128,7 @@ export class RentryProvider implements PasteProvider {
       .post<RentryResponse>(
         `${BASE_URL}/api/delete/${encodeURIComponent(slug)}`,
         form({ edit_code: editKey }),
-        { context: externalFetch() },
+        { context: publishingFetch('rentry') },
       )
       .pipe(
         map((response) => {

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError, timer } from 'rxjs';
 import { retry } from 'rxjs/operators';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
-import { externalFetch } from '../external-fetch';
+import { publishingFetch } from '../../observability/publishing-metrics';
 import { PageDiagnostics } from '../../page-diagnostics';
 import { ShortenerProxyConsent } from './proxy-consent';
 import {
@@ -429,7 +429,7 @@ export class ShortenerTransport {
   ): Observable<T> {
     const options = {
       headers,
-      context: externalFetch(),
+      context: publishingFetch(provider, url === spec.url ? 'direct' : 'proxy'),
       // T.LY's DELETE carries a JSON body, which `HttpClient` supports only
       // through the generic `request` overload.
       body: spec.body,

@@ -1,3 +1,4 @@
+import { PublishingMetrics } from '../../observability/publishing-metrics';
 import { Auth } from '../../auth';
 // i18n pages.observability.myAnalytics: My Profile's Analytics
 import { Component, computed, inject, signal } from '@angular/core';
@@ -344,6 +345,9 @@ export class Observability {
 
   // ------------------------------------------------------------- Mawkingbird
 
+  protected readonly publishing = inject(PublishingMetrics);
+  // i18n pages.observability.publishing.title: Paste and link services
+  // i18n pages.observability.publishing.note: HTTP attempts in this tab, including retries and proxy attempts. Timings and outcomes also appear in the console and diagnostic log. No content, destinations or credentials are recorded. A successful HTTP response does not guarantee the provider accepted the operation.
   private mawkingbirdMetrics = inject(MawkingbirdMetrics);
 
   protected readonly mawkingbirdTotals = this.mawkingbirdMetrics.totals;

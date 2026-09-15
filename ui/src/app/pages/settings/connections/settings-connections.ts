@@ -10,7 +10,6 @@ import { RaindropSession } from '../../../providers/raindrop/raindrop-session';
 import { GitHubSession } from '../../../providers/github/github-session';
 import { OpenRouterSession } from '../../../providers/openrouter/openrouter-session';
 import { CorsProxySettings } from '../../../providers/cors-proxy/cors-proxy-settings';
-import { PastepileKey } from '../../../providers/paste/pastepile-key';
 import { ShortenerSettings } from '../../../providers/shortener/shortener-settings';
 import { TwitterSettings } from '../../../providers/twitter/twitter-settings';
 import { MataroaSettings } from '../../../providers/mataroa/mataroa-settings';
@@ -112,10 +111,6 @@ export class SettingsConnections implements OnInit {
   private gist = inject(GistSettings);
   private blogger = inject(BloggerSession);
   private hugo = inject(HugoSettings);
-  // Not a catalog entry — a paste service is a list, not a one-account
-  // connector, so the key is managed on the Pastes page. Governed here anyway,
-  // because a stored secret obeys the retention policy wherever it was created.
-  private pastepileKey = inject(PastepileKey);
   protected lifetimes = inject(CredentialLifetimeStore);
   protected flags = inject(FeatureFlags);
   private vault = inject(VaultService);
@@ -257,6 +252,8 @@ export class SettingsConnections implements OnInit {
             connected: this.corsProxy.usable() || this.corsProxy.needsFetch(),
             unavailableReason: null,
           };
+        case 'pastes':
+          return { entry, connected: true, unavailableReason: null };
         case 'link-shortener':
           // Same standard as the proxy: a stored key with no short domain (which
           // Short.io requires) is configured but not usable, and the card should
@@ -417,7 +414,6 @@ export class SettingsConnections implements OnInit {
       this.mataroa,
       this.hugo,
       this.gist,
-      this.pastepileKey,
     ]);
     this.lifetimes.enforceAll();
     if (this.vaultPreference.enabled()) {

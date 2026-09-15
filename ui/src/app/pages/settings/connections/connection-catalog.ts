@@ -17,23 +17,8 @@
  * - **The route.** It is always `/settings/connections/<id>`, so storing it
  *   would just be a second place to get it wrong.
  *
- * A connection is *one account*. Anything that is a list of many things (RSS
- * feeds, paste providers) is not a connection and does not belong in this
- * catalog — it gets its own settings page.
- *
- * **Two deliberate exceptions: `cors-proxy` and `link-shortener`.** Both are
- * pickers over a catalog of services, so by the rule above they belong on their
- * own pages. They live here anyway, because what the user configures *is* one
- * thing — a single proxy, or a single active shortener — that every feature
- * routes through, and because the keys they hold are credentials that must sit
- * under the same retention policy as the tokens on this page.
- *
- * Choosing one of several vendors is not the same as maintaining a list. The
- * paste providers, where all three stay live at once and a post goes to
- * whichever you pick at the time, are the case the rule is really aimed at. The
- * shortener is the near miss that proves the distinction: it *stores* a key per
- * service, so that switching back is cheap, but only one is ever active and
- * "shorten this URL" always has exactly one answer.
+ * Connections include accounts and switchable service selectors. A selector
+ * keeps setup together while content management stays on the feature page.
  */
 
 import { FeatureFlagId } from '../../../feature-flags';
@@ -52,7 +37,8 @@ export type ConnectionId =
   | 'mataroa'
   | 'blogger'
   | 'hugo'
-  | 'gist';
+  | 'gist'
+  | 'pastes';
 
 /**
  * Who a connection belongs to — which is a question users actually ask, and
@@ -128,6 +114,7 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
   // The `pastebin` flag, not a connector flag of its own: what this turns on is
   // one more paste provider, and turning pastes off must take it with them.
   gist: 'pastebin',
+  pastes: 'pastebin',
   dropbox: 'connector-dropbox',
   'link-shortener': 'connector-link-shortener',
   'cors-proxy': 'connector-cors-proxy',
@@ -184,7 +171,7 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
 // i18n settings.connections.catalog.dropbox.pitch: An app-specific folder in your Dropbox.
 // i18n settings.connections.catalog.dropbox.enables.browse: Browse those files from Mawkingbird
 // i18n settings.connections.catalog.linkShortener.label: Link shortener
-// i18n settings.connections.catalog.linkShortener.pitch: Dub, Short.io or T.LY, for shortening the URLs you post.
+// i18n settings.connections.catalog.linkShortener.pitch: Choose a link shortener and switch services whenever you need to.
 // i18n settings.connections.catalog.linkShortener.enables.shorten: Shorten a URL as you write a post
 // i18n settings.connections.catalog.linkShortener.enables.history: Keep a list of every link you have made, and delete old ones
 // i18n settings.connections.catalog.corsProxy.label: CORS proxy
@@ -219,7 +206,22 @@ export interface ConnectionCatalogEntry {
  * (Bluesky) or your bookmarks (Raindrop) are not buried under the two that are
  * closer to curiosities.
  */
+// i18n settings.connections.catalog.pastes.label: Paste services
+// i18n settings.connections.catalog.pastes.pitch: Choose where to publish pastes and switch your default service.
+// i18n settings.connections.catalog.pastes.enables.choose: Rentry, TinyURL, your shortener, or GitHub Gist
+// i18n settings.connections.catalog.pastes.enables.manage: Configure services here; manage your writing on Pastes
 export const CONNECTION_CATALOG: readonly ConnectionCatalogEntry[] = [
+  {
+    id: 'pastes',
+    label: 'settings.connections.catalog.pastes.label',
+    emoji: '📝',
+    pitch: 'settings.connections.catalog.pastes.pitch',
+    scope: 'browser',
+    enables: [
+      'settings.connections.catalog.pastes.enables.choose',
+      'settings.connections.catalog.pastes.enables.manage',
+    ],
+  },
   {
     id: 'mastodon',
     label: 'settings.connections.catalog.mastodon.label',

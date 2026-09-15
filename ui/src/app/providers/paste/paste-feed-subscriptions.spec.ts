@@ -98,7 +98,7 @@ describe('PasteFeedSubscriptions', () => {
         LEGACY_KEY,
         JSON.stringify([
           {
-            providerId: 'pastepile',
+            providerId: 'example-paste',
             url: 'https://example.test/f.json',
             label: 'x',
             enabled: true,
@@ -109,7 +109,7 @@ describe('PasteFeedSubscriptions', () => {
 
       const alice = build();
 
-      expect(alice.has('pastepile')).toBe(true);
+      expect(alice.has('example-paste')).toBe(true);
       // Adopted, not copied: the legacy key is gone, so the next account does
       // not inherit the same list a second time.
       expect(localStorage.getItem(LEGACY_KEY)).toBeNull();
@@ -120,7 +120,7 @@ describe('PasteFeedSubscriptions', () => {
         LEGACY_KEY,
         JSON.stringify([
           {
-            providerId: 'pastepile',
+            providerId: 'example-paste',
             url: 'https://example.test/f.json',
             label: 'x',
             enabled: true,

@@ -1294,7 +1294,7 @@ describe('Compose', () => {
     internals(f).onVisibilityChange('direct');
     internals(f).onTargetChange('paste');
     internals(f).onPasteProviderChange('rentry');
-    internals(f).onPasteProviderChange('pastepile');
+    internals(f).onPasteProviderChange('tinyurl');
 
     internals(f).onTargetChange('fedi');
     expect(internals(f).visibility()).toBe('direct');
@@ -1323,19 +1323,6 @@ describe('Compose', () => {
     expect(internals(f).visibility()).toBe('private');
   });
 
-  it('leaving burn expiry gives back the visibility burn narrowed', () => {
-    const f = setUp();
-    internals(f).onTargetChange('paste');
-    internals(f).onPasteProviderChange('pastepile');
-    internals(f).onVisibilityChange('public');
-
-    internals(f).onPasteExpiryChange('burn');
-    expect(internals(f).visibility()).toBe('unlisted');
-
-    internals(f).onPasteExpiryChange('1w');
-    expect(internals(f).visibility()).toBe('public');
-  });
-
   it('a composer that never touches paste keeps its visibility', () => {
     const f = setUp();
     internals(f).onVisibilityChange('private');
@@ -1348,44 +1335,6 @@ describe('Compose', () => {
     TestBed.inject(ClientPrefs).setDefaultVisibility('unlisted');
     const f = setUp();
     expect(internals(f).visibility()).toBe('unlisted');
-  });
-
-  it('target=paste creates a Pastepile paste, stores its edit key, and emits a status', () => {
-    const f = setUp();
-    const posted: Status[] = [];
-    f.componentInstance.posted.subscribe((status) => posted.push(status));
-    internals(f).target.set('paste');
-    internals(f).onPasteProviderChange('pastepile');
-    internals(f).text.set('print("hello")');
-    internals(f).cwOpen.set(true);
-    internals(f).spoilerText.set('Example');
-    internals(f).visibility.set('unlisted');
-    internals(f).pasteLanguage.set('python');
-    internals(f).pasteExpiry.set('10m');
-
-    internals(f).submit();
-
-    const req = httpMock.expectOne('https://www.pastepile.com/api/public/pastes');
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({
-      title: 'Example',
-      content: 'print("hello")',
-      language: 'python',
-      expiry: '10m',
-      visibility: 'unlisted',
-    });
-    req.flush({
-      slug: 'abc123',
-      url: 'https://pastepile.com/p/abc123',
-      raw_url: 'https://pastepile.com/raw/abc123',
-      edit_key: 'secret',
-    });
-
-    expect(posted[0].provider).toBe('paste');
-    const stored = JSON.parse(localStorage.getItem('mockingbird_pastes') ?? '[]');
-    expect(stored[0].editKey).toBeUndefined();
-    expect(Object.values(storedEditKeys())).toContain('secret');
-    expect(internals(f).text()).toBe('');
   });
 
   it('can publish an unlisted Rentry page and stores its edit code locally', () => {
@@ -1417,8 +1366,8 @@ describe('Compose', () => {
 
   it('keeps the user-picked paste provider when the seed effect re-runs (stale autosave)', () => {
     // Reproduces the bug where selecting Rentry still posted to the previously
-    // autosaved Pastepile: the seed effect re-ran, reloaded the old autosave,
-    // and clobbered the live pick. Seed a stale pastepile autosave first.
+    // autosaved TinyURL: the seed effect re-ran, reloaded the old autosave,
+    // and clobbered the live pick. Seed a stale tinyurl autosave first.
     TestBed.inject(Drafts).autosave('new', {
       segments: ['stale draft body'],
       spoilerText: '',
@@ -1426,14 +1375,14 @@ describe('Compose', () => {
       visibility: 'unlisted',
       poll: null,
       target: 'paste',
-      pasteProviderId: 'pastepile',
+      pasteProviderId: 'tinyurl',
       pasteLanguage: 'plaintext',
       pasteExpiry: '1w',
     });
 
     const f = setUp();
-    // The stale autosave seeded pastepile…
-    expect(internals(f).pasteProviderId()).toBe('pastepile');
+    // The stale autosave seeded tinyurl…
+    expect(internals(f).pasteProviderId()).toBe('tinyurl');
 
     // …the user now picks Rentry…
     internals(f).target.set('paste');
@@ -1444,7 +1393,7 @@ describe('Compose', () => {
     f.componentRef.setInput('initialText', 'nudged');
     f.detectChanges();
 
-    // The pick must survive — not revert to the stale pastepile.
+    // The pick must survive — not revert to the stale tinyurl.
     expect(internals(f).pasteProviderId()).toBe('rentry');
 
     internals(f).submit();

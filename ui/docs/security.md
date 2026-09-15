@@ -295,7 +295,7 @@ runs.
 ## Settings export / import
 
 **See [portable_config.md](./portable_config.md)** for the implemented file
-format, global-only scope, runtime credential audit, Pastepile behavior, and
+format, global-only scope, runtime credential audit, remote URL checks, and
 hash-based remote change detection. Account-scoped values remain intentionally
 out of scope because token-derived suffixes and differing account sets cannot be
 mapped safely between browsers.

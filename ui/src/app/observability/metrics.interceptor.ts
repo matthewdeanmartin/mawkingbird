@@ -6,6 +6,7 @@ import { Server } from '../server';
 import { ApiMetrics } from './api-metrics';
 import { BillingTier, MawkingbirdMetrics, mawkingbirdService } from './mawkingbird-metrics';
 import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
+import { PUBLISHING_REQUEST, PublishingMetrics } from './publishing-metrics';
 import { DiagnosticLog } from '../diagnostic-log';
 
 /**
@@ -24,6 +25,49 @@ import { DiagnosticLog } from '../diagnostic-log';
 export const metricsInterceptor: HttpInterceptorFn = (req, next) => {
   const server = inject(Server);
   const diagnostics = inject(DiagnosticLog);
+  const publishing = req.context.get(PUBLISHING_REQUEST);
+  if (publishing) {
+    const publishingMetrics = inject(PublishingMetrics);
+    const started = performance.now();
+    // Do not pass the provider's error object into generic logging: it may
+    // echo paste text, a message URL, an edit key or a shortened destination.
+    const observed = next(req).pipe(
+      tap({
+        next: (event) => {
+          if (event instanceof HttpResponse)
+            publishingMetrics.record(
+              publishing.service,
+              publishing.route,
+              req.method,
+              event.status,
+              performance.now() - started,
+            );
+        },
+        error: (error: unknown) =>
+          publishingMetrics.record(
+            publishing.service,
+            publishing.route,
+            req.method,
+            error instanceof HttpErrorResponse ? error.status : 0,
+            performance.now() - started,
+          ),
+      }),
+    );
+    const ownService = mawkingbirdService(req.url);
+    if (!ownService) return observed;
+    const ownMetrics = inject(MawkingbirdMetrics);
+    const ownTier: BillingTier =
+      inject(CorsProxySettings).chosen()?.id === 'mawkingbird-plus' ? 'paid' : 'free';
+    return observed.pipe(
+      tap({
+        next: (event) => {
+          if (event instanceof HttpResponse)
+            ownMetrics.record(ownService, ownTier, performance.now() - started, true);
+        },
+        error: () => ownMetrics.record(ownService, ownTier, performance.now() - started, false),
+      }),
+    );
+  }
   const target = requestTarget(req.url);
   const logFailure = (error: unknown): void => {
     const status = error instanceof HttpErrorResponse ? error.status : 0;

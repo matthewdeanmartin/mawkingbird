@@ -56,7 +56,7 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
  * says what to go and do instead.
  */
 // i18n settings.connections.linkShortener.title: 🔗 Link shortener
-// i18n settings.connections.linkShortener.intro: Shorten the URLs you post, and keep track of the links you have made. Connect one or more services; the active one is used whenever you shorten something.
+// i18n settings.connections.linkShortener.intro: Shorten the URLs you post, and keep track of the links you have made. Choose one active service, as with your CORS proxy. Saved keys stay available when you switch services.
 // i18n settings.connections.linkShortener.credentialWarning: These API keys are stored in this browser's localStorage, because Mawkingbird has no server to keep them on. A key here can create and delete links in your account, so use a key scoped to link management if the service offers one, and only on a device you trust. You can revoke it on the provider's own site at any time.
 // i18n settings.connections.linkShortener.servicesHeading: Services
 // i18n settings.connections.linkShortener.activePill: Active
@@ -123,7 +123,9 @@ export class ConnectionLinkShortener {
   protected readonly expiryLabel = expiryLabel;
 
   /** Which provider's setup form is open. Defaults to the active one. */
-  protected readonly selected = signal<ShortenerId>(this.settings.activeId() ?? 'dub');
+  protected readonly selected = signal<ShortenerId>(
+    this.settings.activeId() ?? SHORTENER_CATALOG[0].id,
+  );
 
   protected readonly entry = computed<ShortenerCatalogEntry>(
     () => this.catalog.find((item) => item.id === this.selected()) ?? this.catalog[0],

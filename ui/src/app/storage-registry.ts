@@ -233,13 +233,6 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Per-paste edit codes. A bearer capability: whoever holds one can rewrite or delete that paste. Split out of mockingbird_pastes.',
   },
   {
-    base: 'mockingbird_pastepile_key',
-    storage: 'local',
-    suffix: 'none',
-    sensitivity: 'secret',
-    note: 'Optional Pastepile API key plus its revocation secret. Free and account-less; it tags created pastes so they are listable under scope=mine ("My pastes"). Unscoped: it authorises this browser to talk to a pastebin, not one persona — which feeds a persona subscribes to stays per account. Retention-governed like the other pasted tokens.',
-  },
-  {
     base: 'mockingbird_cors_proxy_key',
     storage: 'local',
     suffix: 'none',
@@ -410,6 +403,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     suffix: 'none',
     sensitivity: 'private',
     note: "Which CORS proxy is selected, and a self-hosted proxy's URL template. Not secret — the key half lives in mockingbird_cors_proxy_key — but a custom template names a host the user runs.",
+  },
+  {
+    base: 'mockingbird_paste_service',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Default paste provider for new compositions. Existing drafts retain their own provider.',
   },
   {
     base: 'mockingbird_shortener',

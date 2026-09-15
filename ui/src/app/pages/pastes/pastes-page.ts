@@ -7,15 +7,11 @@ import { Compose } from '../../compose/compose';
 import { Drafts } from '../../drafts';
 import { HumanTimePipe } from '../../human-time.pipe';
 import { toSnapshot } from '../drafts/draft-items';
-import { PasteFeedFetch } from '../../providers/paste/paste-feed-fetch';
-import { PastepileKey } from '../../providers/paste/pastepile-key';
-import { PasteFeedSubscriptions } from '../../providers/paste/paste-feed-subscriptions';
 import { PasteHistory, PasteRecord } from '../../providers/paste/paste-history';
-import { FeedPasteProvider } from '../../providers/paste/paste-provider';
 import { PasteProviderRegistry } from '../../providers/paste/paste-provider-registry';
 import { Terminology } from '../../terminology';
-import { PageDiagnostics } from '../../page-diagnostics';
 
+// i18n pages.pastes.retired: This provider is no longer supported. Your saved text is still available; remote editing and deletion are disabled.
 // i18n pages.pastes.title: Pastes
 // i18n pages.pastes.note.a: Paste links and edit keys are saved only in this browser. Clearing site data removes your ability to edit or delete them.
 // i18n pages.pastes.note.b: Short-link services (TinyURL) are permanent and public: those links cannot be edited or deleted afterwards. Your use of each service is governed by its own terms — see
@@ -31,23 +27,10 @@ import { PageDiagnostics } from '../../page-diagnostics';
 // i18n pages.pastes.feeds.viaProxy: via proxy
 // i18n pages.pastes.feeds.proxyTitle: Fetched through your CORS proxy
 // i18n pages.pastes.feeds.fetchThrough: Fetch through {{label}}
-// i18n pages.pastes.feeds.needsKey: Needs a Pastepile key — there's nothing to list until your pastes are tagged with one.
 // i18n pages.pastes.feeds.follow: Follow {{noun}}
 // i18n pages.pastes.feeds.unfollow: Unfollow {{noun}}
-// i18n pages.pastes.feeds.myPastes: my pastes
 // i18n pages.pastes.feeds.publicFeed: public feed
 // i18n pages.pastes.feeds.publicPastes: public pastes
-// i18n pages.pastes.key.heading: Pastepile API key (optional)
-// i18n pages.pastes.key.createdIntro: Pastes you create are tagged with your key
-// i18n pages.pastes.key.plan: {{plan}} plan
-// i18n pages.pastes.key.createdDetails: so they show up in “My pastes” — unlisted ones included. Shared by every account in this browser.
-// i18n pages.pastes.key.neverExpiry: A free key can't create never-expiring pastes, so that option is hidden while it's in use.
-// i18n pages.pastes.key.saved: A key is saved.
-// i18n pages.pastes.key.removing: Removing…
-// i18n pages.pastes.key.revoke: Revoke and remove key
-// i18n pages.pastes.key.anonymous: Without a key, pastes are anonymous and you can't pick your own out of the public feed. A key is free, needs no account, and makes your pastes listable under “My pastes”.
-// i18n pages.pastes.key.getting: Getting a key…
-// i18n pages.pastes.key.getFree: Get a free key
 // i18n pages.pastes.empty: Pastes created in this browser will appear here.
 // i18n pages.pastes.edit.title: Title
 // i18n pages.pastes.edit.language: Language
@@ -70,16 +53,12 @@ import { PageDiagnostics } from '../../page-diagnostics';
 // i18n pages.pastes.actions.forget: Forget link
 // i18n pages.pastes.share.description: Share the link. The paste lives at {{provider}} — the post below just points to it. Pick Mastodon or Bluesky in the composer.
 // i18n pages.pastes.share.placeholder: Say something about your paste…
-// i18n pages.pastes.notice.keyCreated: Pastepile key created. Your new pastes will appear in "My pastes".
-// i18n pages.pastes.notice.keyRevoked: Pastepile key revoked and removed.
 // i18n pages.pastes.notice.copiedToDraft: Copied to your local drafts. This paste is still here too.
-// i18n pages.pastes.error.key: Could not get a key from Pastepile.
 // i18n pages.pastes.error.update: The paste could not be updated. It may have expired.
 // i18n pages.pastes.error.delete: The provider could not delete that paste. It may already have expired.
 // i18n pages.pastes.confirm.delete: Delete this paste from the provider? This cannot be undone.
 
 /** Which top-level section is showing. "My Pastes" is the default landing tab. */
-type PasteTab = 'mine' | 'feeds';
 
 @Component({
   selector: 'app-pastes-page',
@@ -93,20 +72,13 @@ export class PastesPage {
 
   protected history = inject(PasteHistory);
   protected providers = inject(PasteProviderRegistry);
-  private feeds = inject(PasteFeedSubscriptions);
-  private feedFetch = inject(PasteFeedFetch);
-  protected pastepileKey = inject(PastepileKey);
   private drafts = inject(Drafts).forCurrentAccount();
   private prefs = inject(ClientPrefs);
   private router = inject(Router);
-  private diagnostics = inject(PageDiagnostics);
   private transloco = inject(TranslocoService);
 
   /** Transient "that worked, and your paste survived" confirmation. */
   protected notice = signal<string | null>(null);
-
-  /** Active tab; mirrors the Lists page split (My Pastes | Public Paste Feeds). */
-  protected tab = signal<PasteTab>('mine');
 
   protected editing = signal<string | null>(null);
   protected editTitle = signal('');
@@ -122,10 +94,6 @@ export class PastesPage {
    * lets the target picker choose where the link goes. One open at a time.
    */
   protected sharing = signal<string | null>(null);
-
-  selectTab(tab: PasteTab): void {
-    this.tab.set(tab);
-  }
 
   /** Open the share composer for a paste (closing any other), or toggle it shut. */
   toggleShare(record: PasteRecord): void {
@@ -143,91 +111,10 @@ export class PastesPage {
     this.sharing.set(null);
   }
 
-  isFollowing(provider: FeedPasteProvider): boolean {
-    return this.feeds.has(provider.id);
-  }
-
   /** TinyURL links can't be edited or deleted after creation. */
   isImmutable(providerId: string): boolean {
-    return !!this.providers.get(providerId)?.immutable;
-  }
-
-  toggleFeed(provider: FeedPasteProvider): void {
-    if (this.isFollowing(provider)) {
-      this.feeds.unfollow(provider.id);
-    } else {
-      this.feeds.follow(
-        provider.id,
-        provider.feedUrl,
-        `${provider.label} ${this.transloco.translate('pages.pastes.feeds.publicPastes')}`,
-      );
-    }
-  }
-
-  // --- CORS proxy, per feed ---
-  // None of these hosts send an `access-control-*` header, so their feeds are
-  // unreadable from a browser without a relay. The switch is still per feed and
-  // off by default, exactly as it is for RSS: a proxy operator sees every
-  // address and every byte, so the app never turns one on for the user.
-
-  /** The configured proxy's name, or null when none is set up. */
-  proxyLabel(): string | null {
-    return this.feedFetch.proxyLabel();
-  }
-
-  usesProxy(provider: FeedPasteProvider): boolean {
-    return this.feeds.usesProxy(provider.id);
-  }
-
-  toggleProxy(provider: FeedPasteProvider): void {
-    this.feeds.setUseProxy(provider.id, !this.usesProxy(provider));
-  }
-
-  // --- Pastepile API key ---
-  // Optional everywhere except the "My pastes" feed, which has nothing to scope
-  // by without one. Keys are free and need no account, so the affordance is a
-  // button rather than a field pointing at a signup page that doesn't exist.
-
-  /** True for a feed that cannot work until a key exists. */
-  needsKey(provider: FeedPasteProvider): boolean {
-    return provider.id === 'pastepile-mine' && !this.pastepileKey.connected();
-  }
-
-  /** "public feed" is a lie for the key-scoped one, which is nobody else's. */
-  feedNoun(provider: FeedPasteProvider): string {
-    return this.transloco.translate(
-      provider.id === 'pastepile-mine'
-        ? 'pages.pastes.feeds.myPastes'
-        : 'pages.pastes.feeds.publicFeed',
-    );
-  }
-
-  protected keyBusy = signal(false);
-
-  async generateKey(): Promise<void> {
-    this.keyBusy.set(true);
-    this.error.set(null);
-    try {
-      await this.pastepileKey.mint();
-      this.notice.set(this.transloco.translate('pages.pastes.notice.keyCreated'));
-    } catch (error: unknown) {
-      this.diagnostics.error('Pastes', 'key-mint:error', error);
-      this.error.set(
-        error instanceof Error ? error.message : this.transloco.translate('pages.pastes.error.key'),
-      );
-    } finally {
-      this.keyBusy.set(false);
-    }
-  }
-
-  async removeKey(): Promise<void> {
-    this.keyBusy.set(true);
-    try {
-      await this.pastepileKey.disconnect();
-      this.notice.set(this.transloco.translate('pages.pastes.notice.keyRevoked'));
-    } finally {
-      this.keyBusy.set(false);
-    }
+    const provider = this.providers.get(providerId);
+    return !provider || !!provider.immutable;
   }
 
   beginEdit(record: PasteRecord): void {

@@ -65,25 +65,4 @@ describe('ConfigSync', () => {
     expect(service.settings()?.frequency).toBe('manual');
     expect(service.settings()?.automaticAllowed).toBe(false);
   });
-
-  it('publishes a permanent unlisted Pastepile without an API key', async () => {
-    const pending = service.publishPermanent(configText('dark'));
-    const request = http.expectOne('https://www.pastepile.com/api/public/pastes');
-
-    expect(request.request.body).toMatchObject({ expiry: 'never', visibility: 'unlisted' });
-    expect(request.request.headers.has('X-API-Key')).toBe(false);
-    request.flush({
-      slug: 'abc',
-      url: 'https://www.pastepile.com/p/abc',
-      raw_url: 'https://www.pastepile.com/raw/abc',
-      edit_key: 'edit-secret',
-    });
-
-    await expect(pending).resolves.toEqual({
-      slug: 'abc',
-      url: 'https://www.pastepile.com/p/abc',
-      rawUrl: 'https://www.pastepile.com/raw/abc',
-      editKey: 'edit-secret',
-    });
-  });
 });

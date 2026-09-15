@@ -1,7 +1,7 @@
 # Portable client configuration
 
 Settings → Import/Export Config exports the browser-side Mockingbird setup to JSON, imports it by
-file, pasted JSON, or URL, and can publish it as a permanent unlisted Pastepile. The implementation
+file, pasted JSON, or URL. The implementation
 lives in `portable-config.ts`, `config-sync.ts`, and `pages/settings/config/`.
 
 ## File format
@@ -79,7 +79,4 @@ The saved hash describes the remote bytes, not local storage. Editing a setting 
 does not look like a remote update. A scheduled check stays quiet when the remote hash is unchanged
 and prompts only when it changed; applying it uses the normal replace-within-profile importer.
 
-Foreign fetches omit credentials. URL sources must use HTTP(S) and allow browser CORS. Pastepile
-publishing is keyless, anonymous, unlisted, and requests `expiry: never`; omitting a configured free
-Pastepile key is intentional because Pastepile exposes permanent pastes only to keyless or eligible
-paid requests.
+Foreign fetches omit credentials. URL sources must use HTTP(S) and allow browser CORS.

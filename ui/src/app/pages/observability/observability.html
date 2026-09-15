@@ -40,6 +40,37 @@
   </div>
 
   <!-- ============================= API metrics ============================ -->
+  @if (publishing.stats().length) {
+    <section class="obs-section">
+      <h2>{{ 'pages.observability.publishing.title' | transloco }}</h2>
+      <p class="muted">{{ 'pages.observability.publishing.note' | transloco }}</p>
+      <div class="table-wrap">
+        <table class="obs-table">
+          <thead>
+            <tr>
+              <th>{{ 'pages.observability.mawkingbird.service' | transloco }}</th>
+              <th>{{ 'pages.observability.mawkingbird.calls' | transloco }}</th>
+              <th>{{ 'pages.observability.mawkingbird.errorsHeader' | transloco }}</th>
+              <th>{{ 'pages.observability.mawkingbird.avg' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (stat of publishing.stats(); track stat.service) {
+              <tr>
+                <td>{{ stat.service }}</td>
+                <td>{{ stat.calls }}</td>
+                <td>{{ stat.errors }}</td>
+                <td>
+                  {{ round(stat.totalMs / stat.calls) }}
+                  {{ 'pages.observability.chart.unitMs' | transloco }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
   <section class="obs-section">
     <div class="section-head">
       <h2>{{ 'pages.observability.api.title' | transloco }}</h2>

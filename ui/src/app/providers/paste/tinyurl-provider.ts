@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, throwError } from 'rxjs';
 import { Account, Status } from '../../models';
-import { externalFetch } from '../external-fetch';
+import { publishingFetch } from '../../observability/publishing-metrics';
 import { PasteCreateInput, PasteCreated, PasteProvider, PasteRecentItem } from './paste-provider';
 import { buildMessageUrl } from './message-payload';
 
@@ -74,7 +74,7 @@ export class TinyurlProvider implements PasteProvider {
     // to agree about how many times a nested `%20`, `+`, `&`, or `=` is decoded.
     const params = new HttpParams().set('url', target);
     return this.http
-      .get(CREATE_URL, { params, responseType: 'text', context: externalFetch() })
+      .get(CREATE_URL, { params, responseType: 'text', context: publishingFetch('tinyurl') })
       .pipe(
         map((body) => {
           const shortUrl = body.trim();
