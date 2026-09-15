@@ -212,17 +212,6 @@ export interface ConnectionCatalogEntry {
 // i18n settings.connections.catalog.pastes.enables.manage: Configure services here; manage your writing on Pastes
 export const CONNECTION_CATALOG: readonly ConnectionCatalogEntry[] = [
   {
-    id: 'pastes',
-    label: 'settings.connections.catalog.pastes.label',
-    emoji: '📝',
-    pitch: 'settings.connections.catalog.pastes.pitch',
-    scope: 'browser',
-    enables: [
-      'settings.connections.catalog.pastes.enables.choose',
-      'settings.connections.catalog.pastes.enables.manage',
-    ],
-  },
-  {
     id: 'mastodon',
     label: 'settings.connections.catalog.mastodon.label',
     emoji: '🐘',
@@ -362,6 +351,17 @@ export const CONNECTION_CATALOG: readonly ConnectionCatalogEntry[] = [
       'settings.connections.catalog.gist.enables.option',
       'settings.connections.catalog.gist.enables.drafts',
       'settings.connections.catalog.gist.enables.edit',
+    ],
+  },
+  {
+    id: 'pastes',
+    label: 'settings.connections.catalog.pastes.label',
+    emoji: '📝',
+    pitch: 'settings.connections.catalog.pastes.pitch',
+    scope: 'browser',
+    enables: [
+      'settings.connections.catalog.pastes.enables.choose',
+      'settings.connections.catalog.pastes.enables.manage',
     ],
   },
   {

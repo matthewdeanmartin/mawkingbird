@@ -1,5 +1,4 @@
-import { Component, effect, ElementRef, HostListener, inject, viewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PlusPaywall } from './plus-paywall';
 import { PlusPrice } from './plus-price';
@@ -26,56 +25,43 @@ import { ProxyActivity } from '../cors-proxy/proxy-activity';
 // i18n plus.wall.connectionsLink: Connection settings
 @Component({
   selector: 'app-plus-paywall-dialog',
-  imports: [TranslocoPipe, RouterLink, PlusPrice],
-  template: ` @if (activity.notice() || activity.paused()) {
-      <p class="muted small" role="status">
-        {{ (activity.paused() ? 'plus.wall.paused' : 'plus.wall.notice') | transloco }}
-        <a routerLink="/settings/connections/cors-proxy">{{
-          'plus.wall.connectionsLink' | transloco
-        }}</a>
-        @if (wall.available()) {
-          <button type="button" class="btn btn-outline" (click)="wall.require('proxy')">
-            {{ 'plus.wall.get' | transloco }}
-          </button>
-        }
-      </p>
-    }
-    <dialog #dialog (cancel)="wall.dismiss()" aria-labelledby="plus-wall-title">
-      @if (wall.state(); as state) {
-        <h2 id="plus-wall-title">{{ titles[state.feature] | transloco }}</h2>
-        @if (state.status === 'checking') {
-          <p role="status">{{ 'plus.wall.checking' | transloco }}</p>
-        } @else if (state.status === 'unavailable') {
-          <p role="status">{{ 'plus.wall.unavailable' | transloco }}</p>
-          <button class="btn" type="button" (click)="wall.retry()">
-            {{ 'plus.price.retry' | transloco }}
-          </button>
-        } @else {
-          <p>{{ bodies[state.feature] | transloco }}</p>
-          <p><app-plus-price /></p>
-          <button
-            class="btn"
-            type="button"
-            [disabled]="!wall.catalogue.offer()"
-            (click)="wall.upgrade()"
-          >
-            {{ (state.feature === 'proxy' ? 'plus.wall.signUp' : 'plus.wall.get') | transloco }}
-          </button>
-          <button class="btn btn-outline" type="button" (click)="wall.upgrade(false)">
-            {{ 'plus.wall.already' | transloco }}
-          </button>
-          @if (state.feature === 'proxy') {
-            <p>{{ 'plus.wall.affected' | transloco }}</p>
-            <button class="btn btn-outline" type="button" (click)="disableProxy()">
-              {{ 'plus.wall.disable' | transloco }}
-            </button>
-          }
-        }
-        <button class="btn btn-outline" type="button" (click)="wall.dismiss()">
-          {{ 'plus.wall.dismiss' | transloco }}
+  imports: [TranslocoPipe, PlusPrice],
+  template: `<dialog #dialog (cancel)="wall.dismiss()" aria-labelledby="plus-wall-title">
+    @if (wall.state(); as state) {
+      <h2 id="plus-wall-title">{{ titles[state.feature] | transloco }}</h2>
+      @if (state.status === 'checking') {
+        <p role="status">{{ 'plus.wall.checking' | transloco }}</p>
+      } @else if (state.status === 'unavailable') {
+        <p role="status">{{ 'plus.wall.unavailable' | transloco }}</p>
+        <button class="btn" type="button" (click)="wall.retry()">
+          {{ 'plus.price.retry' | transloco }}
         </button>
+      } @else {
+        <p>{{ bodies[state.feature] | transloco }}</p>
+        <p><app-plus-price /></p>
+        <button
+          class="btn"
+          type="button"
+          [disabled]="!wall.catalogue.offer()"
+          (click)="wall.upgrade()"
+        >
+          {{ (state.feature === 'proxy' ? 'plus.wall.signUp' : 'plus.wall.get') | transloco }}
+        </button>
+        <button class="btn btn-outline" type="button" (click)="wall.upgrade(false)">
+          {{ 'plus.wall.already' | transloco }}
+        </button>
+        @if (state.feature === 'proxy') {
+          <p>{{ 'plus.wall.affected' | transloco }}</p>
+          <button class="btn btn-outline" type="button" (click)="disableProxy()">
+            {{ 'plus.wall.disable' | transloco }}
+          </button>
+        }
       }
-    </dialog>`,
+      <button class="btn btn-outline" type="button" (click)="wall.dismiss()">
+        {{ 'plus.wall.dismiss' | transloco }}
+      </button>
+    }
+  </dialog>`,
   styles: [
     `
       dialog {
@@ -130,16 +116,6 @@ export class PlusPaywallDialog {
         this.previous?.focus();
       }
     });
-    effect(() => {
-      this.activity.prompt();
-      this.wall.state();
-      this.offerProxy();
-    });
-  }
-  @HostListener('document:visibilitychange')
-  offerProxy(): void {
-    if (document.visibilityState === 'visible' && !this.wall.state() && this.activity.claimPrompt())
-      void this.wall.require('proxy');
   }
   disableProxy(): void {
     this.activity.setPaused(true);

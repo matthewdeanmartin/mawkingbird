@@ -1,6 +1,7 @@
 import { FeatureUseHistory } from '../feature-use-history';
 import { PlusPrice } from '../providers/account/plus-price';
 import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
+import { ProxyLimitNotice } from '../providers/cors-proxy/proxy-limit-notice';
 import {
   Component,
   computed,
@@ -138,6 +139,7 @@ function isWideUrl(url: string): boolean {
   imports: [
     PlusPrice,
     PlusPaywallDialog,
+    ProxyLimitNotice,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
