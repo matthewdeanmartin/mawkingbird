@@ -11,6 +11,10 @@ Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfi
 Run targeted specs during development, then the complete gate: cd ui && make test.
 Do not skip, focus, delete, or weaken tests; preserve the test inventory checks.
 Angular tests run locally; GitHub Actions builds and checks deployment layout.
+For UI runtime changes, also run `cd ui && npm run build:mockingbird` locally.
+Unit tests do not enforce production bundle budgets. Keep optional feature data
+out of root imports and route guards; use the build's size report to verify.
+Do not raise the 1 MB initial error budget to fix an accidental eager import.
 The separate `make test-integration` suite exercises the real client against a
 PyPI-installed mastodon-mock wheel in CI and locally. Never point this suite at
 the sibling source checkout or an editable install. See docs/contributing.md.

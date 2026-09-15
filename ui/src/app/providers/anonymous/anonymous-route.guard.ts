@@ -2,12 +2,19 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../../auth';
 import { BotPeers } from '../../chat/bot-peers';
-import { shippedStarterKit } from '../../starter-kits';
 
 /** Bundled collections read source-controlled snapshots and follow locally. */
-export const anonymousCollectionGuard: CanActivateFn = (route, state) => {
+export const anonymousCollectionGuard: CanActivateFn = async (route) => {
+  // Capture dependencies before awaiting: Angular's injection context is synchronous.
+  const auth = inject(Auth);
+  const router = inject(Router);
+  if (!auth.isAnonymous) return true;
+  // This guard is imported by the root route table. A static import here makes
+  // the entire collection snapshot part of every visitor's initial download.
+  const { shippedStarterKit } = await import('../../starter-kits');
   if (shippedStarterKit(route.paramMap.get('id') ?? '')) return true;
-  return anonymousUnavailableGuard(route, state);
+  const feature = String(route.data?.['anonymousFeature'] ?? 'This feature');
+  return router.createUrlTree(['/unavailable'], { queryParams: { feature } });
 };
 
 /** Redirect authenticated-only pages before their components can issue API calls. */

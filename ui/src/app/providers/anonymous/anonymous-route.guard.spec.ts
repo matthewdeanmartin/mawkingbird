@@ -65,23 +65,23 @@ describe('anonymousCollectionGuard', () => {
     );
   }
 
-  it('opens every bundled collection from its normal route anonymously', () => {
+  it('opens every bundled collection from its normal route anonymously', async () => {
     const shell = routes.find((route) => route.path === '' && route.children);
     expect(shell?.children?.find((route) => route.path === 'collections/:id')?.canActivate).toEqual(
       [anonymousCollectionGuard],
     );
     expect(SHIPPED_STARTER_KITS.length).toBeGreaterThan(0);
-    for (const kit of SHIPPED_STARTER_KITS) expect(run(kit.id)).toBe(true);
+    for (const kit of SHIPPED_STARTER_KITS) expect(await run(kit.id)).toBe(true);
   });
 
-  it('keeps server-only collections protected', () => {
+  it('keeps server-only collections protected', async () => {
     expect(
       TestBed.inject(Router).serializeUrl(
-        run('server-only') as ReturnType<Router['createUrlTree']>,
+        (await run('server-only')) as ReturnType<Router['createUrlTree']>,
       ),
     ).toBe('/unavailable?feature=Collections');
     TestBed.inject(Auth).setToken('token');
-    expect(run('server-only')).toBe(true);
+    expect(await run('server-only')).toBe(true);
   });
 });
 
