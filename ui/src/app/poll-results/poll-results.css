@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.poll-result {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-block: 4px;
+  border-radius: 8px;
+  background: var(--border);
+  overflow-wrap: anywhere;
+}
+.poll-result span {
+  z-index: 1;
+}
+.poll-bar {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.own .poll-bar {
+  background: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.statistics {
+  margin-block: 10px;
+  font-size: 0.875rem;
+}
+summary {
+  cursor: pointer;
+}
+p {
+  margin-block: 8px;
+}
+.estimate {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-block: 12px;
+}
+.error-track {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  background: var(--border);
+  border-radius: 4px;
+}
+.error-range {
+  position: absolute;
+  top: 4px;
+  height: 8px;
+  border: 2px solid var(--accent);
+  box-sizing: border-box;
+}
+.estimate-point {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 3px;
+  background: var(--text);
+  transform: translateX(-50%);
+}

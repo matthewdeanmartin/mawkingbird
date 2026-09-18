@@ -196,6 +196,9 @@
               </span>
             }
           </a>
+          @if (row.status.poll; as poll) {
+            <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
+          }
         </div>
       </div>
     } @else {
@@ -271,6 +274,9 @@
                   </span>
                 }
               </a>
+            }
+            @if (row.notif.status.poll; as poll) {
+              <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
             }
           }
         </div>

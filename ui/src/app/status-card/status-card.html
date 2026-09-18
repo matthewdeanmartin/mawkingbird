@@ -246,17 +246,10 @@
 
       @if (!cwCollapsed() && poll(); as p) {
         <div class="poll" (click)="$event.stopPropagation()">
-          @for (opt of p.options; track $index) {
-            @if (pollClosed()) {
-              <div class="poll-result" [class.own]="pollOwnVote(p, $index)">
-                <div class="poll-bar" [style.width.%]="pollPercent(opt)"></div>
-                <span class="poll-label">{{ opt.title }}</span>
-                <span class="poll-pct muted">{{
-                  'statusCard.pollResult'
-                    | transloco: { percent: pollPercent(opt), count: opt.votes_count }
-                }}</span>
-              </div>
-            } @else {
+          @if (pollClosed()) {
+            <app-poll-results [poll]="p" [visible]="true" />
+          } @else {
+            @for (opt of p.options; track $index) {
               <label class="poll-choice">
                 <input
                   [type]="p.multiple ? 'checkbox' : 'radio'"

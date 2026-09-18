@@ -315,6 +315,41 @@ describe('Notifications', () => {
     return fixture;
   }
 
+  it('renders poll bars in both grouped and individual notifications', () => {
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const notifications = ['favourite', 'poll', 'mention'].map((type, index) => {
+      const notification = makeNotification(`poll-${index}`, type);
+      notification.account = makeAccount('voter');
+      notification.status = {
+        id: `status-${index}`,
+        content: '<p>Choose one</p>',
+        media_attachments: [],
+        account: makeAccount('author'),
+        poll: {
+          id: `p-${index}`,
+          expired: true,
+          voted: false,
+          multiple: false,
+          votes_count: 10,
+          voters_count: 10,
+          own_votes: [],
+          options: [
+            { title: 'Yes', votes_count: 4 },
+            { title: 'No', votes_count: 6 },
+          ],
+        },
+      } as unknown as Status;
+      return notification;
+    });
+    httpMock.expectOne('/api/v1/notifications').flush(notifications);
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelectorAll('app-poll-results')).toHaveLength(3);
+    expect(element.querySelectorAll('.poll-bar')).toHaveLength(6);
+    expect(element.querySelector<HTMLElement>('.poll-bar')!.style.width).toBe('40%');
+  });
+
   /**
    * Live is driven by Blue → "Auto-refresh timeline" rather than a button on
    * this page, and the effect that follows it runs on first change detection —

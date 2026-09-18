@@ -21,6 +21,29 @@ Leave **Allow multiple** off when the choices are alternatives and each person s
 
 Turn it on when more than one answer can be true, such as “Which of these books have you read?” Make the question clear about whether several answers are allowed.
 
+## Results and voting statistics
+
+After voting or once a poll closes, results include bars and a **Voting statistics**
+section, including in notifications. Expand it for voter count, the observed lead
+over second place, and 95% confidence intervals shown as error bars. Multiple-choice
+percentages use voters, not selections, so they can sum above 100%; the section also
+shows average selections per voter.
+
+Four votes out of ten really is 40% of the recorded votes. If those ten people were
+an independent random sample, the corresponding population share is much less
+certain: its 95% Wilson interval is approximately 16.8%–68.7%. An online poll is
+usually self-selected, so these estimates cannot establish representativeness.
+
+Leader and full-ranking assessments use conservative simultaneous 95% Hoeffding
+bounds (a union bound across all options). They account for comparing several
+options, unlike simply sorting the percentages or comparing individual Wilson
+intervals. An inconclusive result does not prove a tie. Estimates apply to a fixed
+sample, not repeated looks at a live poll. Missing counts never become zero-vote
+evidence. Turnout needs an eligible-voter count, which the poll does not supply.
+
+Methods: [Wilson intervals (NIST)](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm)
+and [Hoeffding confidence bounds (UC Berkeley)](https://ucb-stat-159-s21.github.io/site/Notes/hoeffding.html).
+
 ## Limits
 
 Polls cannot be combined with media. Remove all attachments before adding the poll.

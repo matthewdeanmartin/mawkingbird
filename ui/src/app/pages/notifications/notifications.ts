@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { PollResults } from '../../poll-results/poll-results';
 import { catchError, forkJoin, map, Observable, of, Subscription, timeout } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { Api } from '../../api';
@@ -238,6 +239,7 @@ export function accountsNewToMe(
 @Component({
   selector: 'app-notifications',
   imports: [
+    PollResults,
     RouterLink,
     FormsModule,
     AccountListDialog,

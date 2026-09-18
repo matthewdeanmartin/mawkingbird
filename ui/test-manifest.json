@@ -1,5 +1,5 @@
 {
-  "testCount": 7412,
+  "testCount": 7420,
   "tests": [
     "src/app/a11y/focus-trap.spec.ts :: FocusTrap cycles backwards from the first control to the last",
     "src/app/a11y/focus-trap.spec.ts :: FocusTrap cycles from the last control back to the first",
@@ -2131,6 +2131,7 @@
     "src/app/pages/notifications/notifications.spec.ts :: Notifications prepends an incoming \"notification\" event",
     "src/app/pages/notifications/notifications.spec.ts :: Notifications removes an unfamiliar account from the view immediately after following",
     "src/app/pages/notifications/notifications.spec.ts :: Notifications renders media thumbnails inside a mention excerpt",
+    "src/app/pages/notifications/notifications.spec.ts :: Notifications renders poll bars in both grouped and individual notifications",
     "src/app/pages/notifications/notifications.spec.ts :: Notifications shows one profile row per unfamiliar account and excludes followed accounts",
     "src/app/pages/notifications/notifications.spec.ts :: Notifications turning auto-refresh off closes the stream",
     "src/app/pages/profile/clone-friends.spec.ts :: describeSelection explains an empty result caused by already following everyone",
@@ -3676,6 +3677,13 @@
     "src/app/pkm/pkm-tags.spec.ts :: withPkmTag is idempotent — tagging twice does not double the tag",
     "src/app/pkm/pkm-tags.spec.ts :: withPkmTag tags an empty body without a leading space",
     "src/app/pkm/pkm-tags.spec.ts :: withPkmTag uses the user own word",
+    "src/app/poll-results/poll-results.spec.ts :: PollResults does not expose counts or statistics before results are visible",
+    "src/app/poll-results/poll-results.spec.ts :: PollResults renders proportional bars and accessible interval text with own-vote styling",
+    "src/app/poll-results/poll-statistics.spec.ts :: poll statistics distinguishes a leader from a complete ranking",
+    "src/app/poll-results/poll-statistics.spec.ts :: poll statistics keeps a ten-voter poll inconclusive despite its observed ordering",
+    "src/app/poll-results/poll-statistics.spec.ts :: poll statistics rejects empty, hidden, inconsistent and missing counts",
+    "src/app/poll-results/poll-statistics.spec.ts :: poll statistics retains uncertainty at zero and unanimous shares",
+    "src/app/poll-results/poll-statistics.spec.ts :: poll statistics uses voters for multiple-choice proportions and selections per voter",
     "src/app/portable-config.spec.ts :: portable config adds only the approved configuration-like private values when opted in",
     "src/app/portable-config.spec.ts :: portable config exports global preferences and excludes secrets, private data, and account-scoped values",
     "src/app/portable-config.spec.ts :: portable config previews and replaces every key covered by the imported profile",

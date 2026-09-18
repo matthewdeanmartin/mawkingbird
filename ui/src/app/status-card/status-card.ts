@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
+import { PollResults } from '../poll-results/poll-results';
 import { NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../account-hover-card/account-hover-card';
@@ -313,6 +314,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    PollResults,
     PrivateLikeButton,
     RouterLink,
     AccountHoverCard,
