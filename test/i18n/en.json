@@ -3547,6 +3547,23 @@
     "wall.signUp": "Sign up for Plus",
     "wall.unavailable": "We could not check your membership. Please retry."
   },
+  "pollResults": {
+    "assumption": "Population estimates below assume independent random sampling. Online polls are usually self-selected; these intervals do not account for selection bias.",
+    "average": "Average selections per voter: {{count}}",
+    "clearLeader": "Under random sampling, the lead for “{{name}}” is distinguishable at 95% confidence.",
+    "countUnavailable": "Count unavailable",
+    "hidden": "Results are available after voting or when the poll closes.",
+    "interval": "95% interval: {{low}}–{{high}}%",
+    "lead": "Observed lead over second place: {{count}} percentage points",
+    "method": "Error bars are individual 95% Wilson confidence intervals. Ranking uses more conservative simultaneous 95% Hoeffding bounds across all options; overlapping bounds do not prove a tie. These are fixed-sample estimates, not guarantees when repeatedly checking a live poll.",
+    "multiple": "Multiple choice: percentages are shares of voters and may sum above 100%.",
+    "ranked": "The full observed ordering is supported by the simultaneous 95% bounds.",
+    "sample": "Sample: {{count}} voters",
+    "statistics": "Voting statistics",
+    "unavailable": "Statistics need complete option counts and a nonzero voter count.",
+    "unclearLeader": "Under random sampling, a distinct leader is not established at 95% confidence.",
+    "unranked": "The simultaneous 95% bounds do not establish a full ranking."
+  },
   "posse": {
     "alreadyRecorded.one": "That {{count}} interaction was already recorded.",
     "alreadyRecorded.other": "Those {{count}} interactions were already recorded.",
