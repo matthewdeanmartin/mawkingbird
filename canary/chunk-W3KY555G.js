@@ -1,0 +1,1 @@
+import{A as r,d as o}from"./chunk-EVFSVU34.js";var t=class e{isSupporter=r(!1);static \u0275fac=function(a){return new(a||e)};static \u0275prov=o({token:e,factory:e.\u0275fac,providedIn:"root"})};export{t as a};
