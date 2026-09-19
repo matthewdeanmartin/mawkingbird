@@ -338,6 +338,7 @@
    border is the separator between items, so the tools sit below it. */
 .item-tools {
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
   padding: 8px 12px 10px;
 }

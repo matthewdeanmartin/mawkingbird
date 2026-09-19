@@ -12,6 +12,8 @@ import { ClientPrefs } from '../../client-prefs';
 import { RssPage } from './rss-page';
 import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
+import { RssCache } from '../../providers/rss/rss-cache';
+import { feedToStatuses } from '../../providers/rss/rss-adapter';
 
 /**
  * Stands in for `app-status-card`, rendering just the item title.
@@ -88,6 +90,90 @@ describe('RssPage', () => {
   function textOf(fixture: ComponentFixture<RssPage>): string {
     return (fixture.nativeElement as HTMLElement).textContent ?? '';
   }
+
+  it('unsubscribes the exact feed from an unexpanded Unsorted item without reloading the other rows', async () => {
+    const wiki = 'https://example.com/feed?kind=changes';
+    const good = 'https://example.com/feed?kind=articles';
+    feeds.set(wiki, feed('Wikipedia recent changes', 'Noise', '2026-08-20T10:00:00Z'));
+    feeds.set(good, feed('Articles', 'Keep reading', '2026-08-20T09:00:00Z'));
+    const subs = TestBed.inject(RssSubscriptions);
+    subs.add(wiki, 'Wikipedia recent changes');
+    subs.add(good, 'Articles');
+    TestBed.inject(ClientPrefs).setRssDensity('headlines');
+    const fixture = setUp();
+    fixture.componentInstance['selectFolder'](null);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const rows = fixture.nativeElement.querySelectorAll('app-headline-row');
+    const survivor = rows[1];
+    const saved = fixture.componentInstance['statuses']()[0];
+    TestBed.inject(RssReadState).setStarred(saved.id, true);
+    const fetch = TestBed.inject(RssFetch).fetchFeed as ReturnType<typeof vi.fn>;
+    fetch.mockClear();
+    const first = rows[0] as HTMLElement;
+    expect(first.querySelector('.source')?.tagName).toBe('A');
+    expect(decodeURIComponent(first.querySelector('.source')!.getAttribute('href')!)).toContain(
+      'rss:' + wiki,
+    );
+    (first.querySelector('summary') as HTMLElement).click();
+    (first.querySelector('.feed-menu button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance['expandedId']()).toBeNull();
+    expect(first.textContent).toContain('Unsubscribe from Wikipedia recent changes?');
+    expect(subs.has(wiki)).toBe(true);
+    (first.querySelector('.confirm-actions .btn-outline') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(subs.has(wiki)).toBe(true);
+    (first.querySelector('.feed-menu button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    (first.querySelector('.btn-danger') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(subs.has(wiki)).toBe(false);
+    expect(subs.has(good)).toBe(true);
+    expect(fixture.nativeElement.querySelector('app-headline-row')).toBe(survivor);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toContain('unfiled=1');
+    expect(TestBed.inject(RssReadState).isStarred(saved.id)).toBe(true);
+    fixture.componentInstance['setFilter']('starred');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(textOf(fixture)).toContain('Noise');
+  });
+
+  it('restores saved articles from an unsubscribed feed without fetching it, even with no subscriptions', async () => {
+    const url = 'https://example.com/old-feed';
+    const cached = feed('Old feed', 'Saved article', '2026-08-01T00:00:00Z');
+    const item = feedToStatuses(url, cached, '2026-08-01T00:00:00Z')[0];
+    TestBed.inject(RssReadState).setStarred(item.id, true);
+    vi.spyOn(TestBed.inject(RssCache), 'entries').mockResolvedValue([
+      { url, feed: cached, fetchedAt: Date.now() },
+    ]);
+    const fixture = setUp();
+    fixture.componentInstance['setFilter']('starred');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(textOf(fixture)).toContain('Saved article');
+    expect(TestBed.inject(RssFetch).fetchFeed).not.toHaveBeenCalled();
+    expect(TestBed.inject(RssSubscriptions).has(url)).toBe(false);
+  });
+
+  it('offers feed management on full articles as well as headlines', async () => {
+    const url = 'https://example.com/feed';
+    feeds.set(url, feed('Full feed', 'An article', '2026-08-01T00:00:00Z'));
+    TestBed.inject(RssSubscriptions).add(url, 'Full feed');
+    TestBed.inject(ClientPrefs).setRssDensity('full');
+    const fixture = setUp();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const actions = fixture.nativeElement.querySelector('.full-item app-rss-feed-actions');
+    expect(actions.querySelector('summary').textContent).toContain('Feed');
+    expect(decodeURIComponent(actions.querySelector('a').getAttribute('href'))).toContain(
+      'rss:' + url,
+    );
+  });
 
   /** Every rail row's trimmed label, in order. */
   function railRows(fixture: ComponentFixture<RssPage>): string[] {

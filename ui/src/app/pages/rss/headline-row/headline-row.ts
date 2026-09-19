@@ -3,6 +3,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HumanTimePipe } from '../../../human-time.pipe';
 import { Status } from '../../../models';
 import { RssReadState } from '../../../providers/rss/rss-read-state';
+import { RouterLink } from '@angular/router';
+import { RssFeedActions } from '../feed-actions/feed-actions';
+import { rssSourceUrl } from '../../../providers/rss/rss-source';
 
 // i18n pages.rss.headline.removeFromReadLater: Remove {{title}} from Read later
 // i18n pages.rss.headline.saveToReadLater: Save {{title}} to read later
@@ -33,7 +36,7 @@ function plainText(html: string): string {
  */
 @Component({
   selector: 'app-headline-row',
-  imports: [HumanTimePipe, TranslocoPipe],
+  imports: [HumanTimePipe, TranslocoPipe, RouterLink, RssFeedActions],
   templateUrl: './headline-row.html',
   styleUrl: './headline-row.css',
   host: {
@@ -50,6 +53,8 @@ export class HeadlineRow {
 
   /** The row was activated — the pane decides whether that expands or collapses. */
   readonly opened = output<void>();
+  readonly unsubscribed = output<string>();
+  protected feedUrl = computed(() => rssSourceUrl(this.status()));
 
   protected readonly read = computed(() => this.readState.isRead(this.status().id));
   protected readonly starred = computed(() => this.readState.isStarred(this.status().id));

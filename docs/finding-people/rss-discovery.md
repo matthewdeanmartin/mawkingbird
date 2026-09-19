@@ -32,4 +32,12 @@ Nothing is subscribed until you choose Add. Some websites do not publish a feed 
 
 Choose **Paste a link** on the RSS page when you already know the website or feed address. Mawkingbird checks the address before adding the subscription.
 
+## Remove a noisy feed while reading
+
+On any RSS article, open **Feed ···** and choose **Unsubscribe from [feed name]…**. Review the feed name and confirm. This works in Unsorted and folder views, including headline rows without expanding the article.
+
+The menu also offers **View feed**, and a headline's feed name links to that same page. Its **Unsubscribe** button removes the subscription too.
+
+Unsubscribing removes the feed's articles from the regular reading pane while keeping saved articles and reading history. Saved articles from removed feeds remain available under **Read later** from the retained local cache. Clearing that cache can remove those stored copies.
+
 Next: [Understand your Home feed](../reading/home-feed.md).

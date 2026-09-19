@@ -1,5 +1,15 @@
 import { FeedSyncButton } from '../../providers/account/feed-sync-button';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+  untracked,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
@@ -17,6 +27,10 @@ import { HeadlineRow } from './headline-row/headline-row';
 import { SeenWhenScrolled } from './seen-when-scrolled';
 import { FriendFeedsDialog } from '../../friend-feeds-dialog/friend-feeds-dialog';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { RssFeedActions } from './feed-actions/feed-actions';
+import { rssSourceUrl } from '../../providers/rss/rss-source';
+import { RssCache } from '../../providers/rss/rss-cache';
+import { feedToStatuses } from '../../providers/rss/rss-adapter';
 
 // i18n pages.rss.subscriptions: Subscriptions
 // i18n pages.rss.title: 📡 RSS
@@ -124,11 +138,18 @@ interface RailGroup {
     HeadlineRow,
     SeenWhenScrolled,
     TranslocoPipe,
+    RssFeedActions,
   ],
   templateUrl: './rss-page.html',
   styleUrl: './rss-page.css',
 })
 export class RssPage {
+  private host: ElementRef<HTMLElement> = inject(ElementRef);
+  private injector = inject(Injector);
+  private cache = inject(RssCache);
+  private savedFromRemovedFeeds = signal<Status[]>([]);
+  private previousSelection = '';
+  private previousUrls: string[] = [];
   private diagnostics = inject(PageDiagnostics);
   private transloco = inject(TranslocoService);
   private route = inject(ActivatedRoute);
@@ -201,7 +222,13 @@ export class RssPage {
    */
   protected readonly visibleStatuses = computed(() =>
     this.filter() === 'starred'
-      ? this.statuses().filter((s) => this.readState.isStarred(s.id))
+      ? [
+          ...new Map(
+            [...this.statuses(), ...this.savedFromRemovedFeeds()]
+              .filter((s) => this.readState.isStarred(s.id))
+              .map((s) => [s.id, s]),
+          ).values(),
+        ]
       : this.statuses(),
   );
 
@@ -240,7 +267,7 @@ export class RssPage {
   private loadSeq = 0;
 
   constructor() {
-    this.showKits.set(this.subs.feeds().length === 0);
+    this.showKits.set(this.subs.feeds().length === 0 && !this.readState.starredCount());
 
     // The pane follows the URL *and* the subscription list, so one effect covers
     // first paint, rail clicks, back/forward, a reload on a deep link, and a
@@ -254,8 +281,85 @@ export class RssPage {
       if (this.kitInstall.progress() !== null) {
         return;
       }
-      this.load(urls);
+      const key = JSON.stringify(sel);
+      untracked(() => {
+        if (
+          key === this.previousSelection &&
+          !this.loading() &&
+          urls.every((url) => this.previousUrls.includes(url))
+        ) {
+          const removed = this.statuses().filter(
+            (status) => !urls.includes(rssSourceUrl(status) ?? ''),
+          );
+          this.savedFromRemovedFeeds.update((saved) => [
+            ...saved,
+            ...removed.filter((status) => this.readState.isStarred(status.id)),
+          ]);
+          this.statuses.update((statuses) =>
+            statuses.filter((status) => urls.includes(rssSourceUrl(status) ?? '')),
+          );
+          this.failed.update((failed) => failed.filter((url) => urls.includes(url)));
+        } else {
+          this.load(urls);
+        }
+        this.previousSelection = key;
+        this.previousUrls = urls;
+      });
     });
+    // Read later can still find saved articles after unsubscribe/reload. Read only
+    // the existing cache: this must never poll a feed the reader has removed.
+    effect((onCleanup) => {
+      if (this.filter() !== 'starred') return;
+      const ids = new Set(this.readState.starredIds());
+      const subscribed = new Set(this.subs.feeds().map((feed) => feed.url));
+      let active = true;
+      onCleanup(() => {
+        active = false;
+      });
+      void this.cache.entries().then((entries) => {
+        if (!active) return;
+        const saved = entries
+          .filter((entry) => entry.fetchedAt > 0 && !subscribed.has(entry.url))
+          .flatMap((entry) =>
+            feedToStatuses(entry.url, entry.feed, new Date(entry.fetchedAt).toISOString()),
+          )
+          .filter((status) => ids.has(status.id));
+        this.savedFromRemovedFeeds.update((current) => [
+          ...new Map([...current, ...saved].map((status) => [status.id, status])).values(),
+        ]);
+      });
+    });
+  }
+
+  protected onFeedUnsubscribed(url: string): void {
+    const survivors = new Set(
+      this.visibleStatuses()
+        .filter((status) => rssSourceUrl(status) !== url)
+        .map((status) => status.id),
+    );
+    const anchor = [
+      ...this.host.nativeElement.querySelectorAll<HTMLElement>('[data-rss-item]'),
+    ].find(
+      (element) =>
+        survivors.has(element.dataset['rssItem'] ?? '') &&
+        element.getBoundingClientRect().bottom > 0,
+    );
+    const top = anchor?.getBoundingClientRect().top;
+    if (anchor && top !== undefined) {
+      afterNextRender(
+        () => {
+          if (anchor.isConnected) {
+            const delta = anchor.getBoundingClientRect().top - top;
+            if (delta) window.scrollBy({ top: delta, behavior: 'instant' });
+            if (document.activeElement === document.body) anchor.focus({ preventScroll: true });
+          }
+        },
+        { injector: this.injector },
+      );
+    }
+    // A selected feed remains readable via its profile; the reader returns to
+    // the aggregate after removing that one subscription.
+    if (this.selectedFeedUrl() === url) this.selectAll();
   }
 
   /** Which subscriptions a selection covers. Disabled feeds are excluded. */

@@ -85,6 +85,37 @@ describe('self profile local actions', () => {
     return fixture;
   }
 
+  it('labels a disabled RSS subscription Unsubscribe and requires confirmation before removing it', () => {
+    const url = 'https://example.com/feed?type=changes';
+    const subs = TestBed.inject(RssSubscriptions);
+    subs.add(url, 'Wikipedia recent changes');
+    subs.setEnabled(url, false);
+    const fixture = setUp(true);
+    fixture.componentInstance['isRss'].set(true);
+    fixture.componentInstance['rssFeedUrl'].set(url);
+    fixture.componentInstance['account'].set({
+      ...friend,
+      id: 'rss:' + url,
+      display_name: 'Wikipedia recent changes',
+    });
+    fixture.detectChanges();
+    const unsubscribe = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (button) => (button as HTMLButtonElement).textContent?.trim() === 'Unsubscribe',
+    ) as HTMLButtonElement;
+    expect(unsubscribe).toBeDefined();
+    vi.mocked(window.confirm).mockReturnValue(false);
+    unsubscribe.click();
+    expect(window.confirm).toHaveBeenCalledWith(
+      expect.stringContaining('Wikipedia recent changes'),
+    );
+    expect(subs.has(url)).toBe(true);
+    vi.mocked(window.confirm).mockReturnValue(true);
+    unsubscribe.click();
+    fixture.detectChanges();
+    expect(subs.has(url)).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Subscribe');
+  });
+
   it('offers four actions on the anonymous self profile and capitalized navigation labels', () => {
     const fixture = setUp(true);
     const el = fixture.nativeElement as HTMLElement;

@@ -1,11 +1,16 @@
 <button class="row" type="button" [attr.aria-expanded]="expanded()" (click)="opened.emit()">
   <span class="dot" [class.on]="!read()" aria-hidden="true"></span>
   <span class="title">{{ title() }}</span>
-  <span class="source muted">{{ source() }}</span>
-  <span class="time muted" [title]="status().created_at">
-    {{ status().created_at | humanTime }}
-  </span>
 </button>
+@if (feedUrl(); as url) {
+  <a class="source muted" [routerLink]="['/accounts', 'rss:' + url]" [title]="source()">{{
+    source()
+  }}</a>
+} @else {
+  <span class="source muted">{{ source() }}</span>
+}
+<span class="time muted" [title]="status().created_at">{{ status().created_at | humanTime }}</span>
+<app-rss-feed-actions [status]="status()" (unsubscribed)="unsubscribed.emit($event)" />
 
 <button
   class="star"

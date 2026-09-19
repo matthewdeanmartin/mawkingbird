@@ -105,7 +105,7 @@
       }
     </div>
 
-    @if (statuses().length && !showKits()) {
+    @if ((statuses().length || readState.starredCount()) && !showKits()) {
       <div class="pane-tools">
         <span class="seg" role="group" [attr.aria-label]="'pages.rss.filter' | transloco">
           <button
@@ -185,11 +185,14 @@
       @for (s of visibleStatuses(); track s.id) {
         @if (prefs.rssDensity() === 'headlines') {
           <app-headline-row
+            [attr.data-rss-item]="s.id"
+            tabindex="-1"
             [status]="s"
             [expanded]="expandedId() === s.id"
             [appSeenWhenScrolled]="prefs.rssScrollMarksRead()"
             (seen)="onSeen(s)"
             (opened)="toggleExpanded(s)"
+            (unsubscribed)="onFeedUnsubscribed($event)"
           />
           @if (expandedId() === s.id) {
             <div class="expanded-item">
@@ -211,6 +214,8 @@
         } @else {
           <div
             class="full-item"
+            [attr.data-rss-item]="s.id"
+            tabindex="-1"
             [class.read]="readState.isRead(s.id)"
             [appSeenWhenScrolled]="prefs.rssScrollMarksRead()"
             (seen)="onSeen(s)"
@@ -219,6 +224,11 @@
             <!-- Full mode gets the same two controls headline rows carry, so
                  switching density never costs you an affordance. -->
             <div class="item-tools">
+              <app-rss-feed-actions
+                align="start"
+                [status]="s"
+                (unsubscribed)="onFeedUnsubscribed($event)"
+              />
               <button
                 class="link-btn"
                 type="button"

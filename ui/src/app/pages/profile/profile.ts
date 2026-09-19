@@ -113,6 +113,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.actions.cancel: Cancel
 // i18n pages.profile.actions.homeFeed: Home feed
 // i18n pages.profile.rss.subscribed: 📡 Subscribed
+// i18n pages.profile.rss.unsubscribe: Unsubscribe
+// i18n pages.profile.rss.confirmUnsubscribe: Unsubscribe from {{feed}}? Saved articles and reading history will be kept.
 // i18n pages.profile.rss.subscribe: 📡 Subscribe
 // i18n pages.profile.twitter.stopShowing: Stop showing this account on your Feeds page
 // i18n pages.profile.twitter.showOnFeeds: Show this account on your Feeds page. Not a follow on Twitter — nobody is notified.
@@ -449,7 +451,7 @@ export class Profile implements OnInit, OnDestroy {
   /** Whether the viewer is currently subscribed to this feed. */
   protected rssSubscribed = computed(() => {
     const url = this.rssFeedUrl();
-    return !!url && this.rssSubs.has(url) && this.rssSubs.enabledFeeds().some((f) => f.url === url);
+    return !!url && this.rssSubs.has(url);
   });
 
   toggleRssSubscription(): void {
@@ -459,6 +461,14 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
     if (this.rssSubs.has(url)) {
+      if (
+        !window.confirm(
+          this.transloco.translate('pages.profile.rss.confirmUnsubscribe', {
+            feed: account?.display_name || url,
+          }),
+        )
+      )
+        return;
       this.rssSubs.remove(url);
     } else {
       this.followError.set(this.rssSubs.add(url, account?.display_name || url));

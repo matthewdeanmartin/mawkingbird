@@ -2,7 +2,8 @@
    one line here rather than nesting one button inside the other. */
 :host {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto auto;
+  column-gap: 8px;
   align-items: center;
   border-bottom: 1px solid var(--border);
 }
@@ -15,7 +16,7 @@
   display: grid;
   /* dot · title · source · time. The title is the only column that flexes, so
      the metadata stays put down the list and the eye can scan one edge. */
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
   gap: 10px;
   width: 100%;
@@ -103,7 +104,7 @@
     display: none;
   }
 
-  .row {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+  :host {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
   }
 }
