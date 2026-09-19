@@ -2,7 +2,13 @@ import { FeedCtaStore } from '../../feed-cta-store';
 import { FeedCta } from '../../feed-ctas';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationSkipped,
+  NavigationSkippedCode,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map, Observable, Subscription } from 'rxjs';
 import { Api } from '../../api';
@@ -286,6 +292,7 @@ export class Home implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private drafts = inject(Drafts).forCurrentAccount();
   private router = inject(Router);
+  private homeNavigationSub?: Subscription;
   private flags = inject(FeatureFlags);
   private pasteFeeds = inject(PasteFeedSubscriptions);
 
@@ -734,6 +741,15 @@ export class Home implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.homeNavigationSub = this.router.events.subscribe((event) => {
+      if (
+        event instanceof NavigationSkipped &&
+        event.code === NavigationSkippedCode.IgnoredSameUrlNavigation &&
+        event.url.split(/[?#]/)[0] === '/home'
+      ) {
+        this.setView('feed');
+      }
+    });
     this.diagnostics.info('page:open', {
       mode: this.auth.mode() ?? 'unauthenticated',
       server: this.server.baseUrl() || 'same-origin',
@@ -749,6 +765,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.homeNavigationSub?.unsubscribe();
     this.liveSub?.unsubscribe();
     this.pageSub?.unsubscribe();
     this.bookmarkSub?.unsubscribe();

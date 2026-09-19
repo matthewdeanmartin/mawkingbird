@@ -3,7 +3,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import {
+  type Event as RouterEvent,
+  NavigationSkipped,
+  NavigationSkippedCode,
+  provideRouter,
+  Router,
+} from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../../client-prefs';
 import { Drafts, emptyDraftSnapshot } from '../../drafts';
@@ -21,7 +27,7 @@ import { TwitterProvider } from '../../providers/twitter/twitter-provider';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { SERVER_ROLE } from '../../server-role';
 import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
 
@@ -134,6 +140,16 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+
+  it('returns from analytics when Home is selected again without reloading the page', () => {
+    const fixture = setUp();
+    internals(fixture).setView('analytics');
+    const events = TestBed.inject(Router).events as Subject<RouterEvent>;
+    events.next(
+      new NavigationSkipped(1, '/home', 'Same URL', NavigationSkippedCode.IgnoredSameUrlNavigation),
+    );
+    expect(internals(fixture).view()).toBe('feed');
+  });
 
   it.each(['bluesky', 'mastodon'] as const)(
     'offers usable Bluesky recovery for a %s primary account',

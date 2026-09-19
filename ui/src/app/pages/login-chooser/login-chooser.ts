@@ -6,6 +6,7 @@ import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
 
 // i18n loginChooser.title: Where's your account?
+// i18n loginChooser.connecting: Connecting your account…
 // i18n loginChooser.subtitle: Pick the network your account is on. You can connect the other one later, and read both in the same timeline.
 // i18n loginChooser.mastodonHint: Also Fosstodon, mastodon.social, Hachyderm, or any other server that runs Mastodon.
 // i18n loginChooser.blueskyHint: A handle like yourname.bsky.social, or your own domain.
@@ -49,11 +50,13 @@ export class LoginChooser implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   protected adding = false;
+  protected redirecting = false;
 
   ngOnInit(): void {
     const params = this.route.snapshot.queryParamMap;
     // Hand OAuth callbacks straight through. `add` alone stays on the chooser.
     if (params.get('code') || params.get('state')) {
+      this.redirecting = true;
       void this.router.navigate(['/login/mastodon'], {
         queryParams: this.route.snapshot.queryParams,
         replaceUrl: true,
@@ -64,6 +67,7 @@ export class LoginChooser implements OnInit {
     // A signed-in visitor who lands here (bookmark, back button) is not asking
     // to pick a network. Same reasoning as the front page.
     if (this.auth.isAuthenticated && !this.adding) {
+      this.redirecting = true;
       void this.router.navigateByUrl('/home', { replaceUrl: true });
     }
   }

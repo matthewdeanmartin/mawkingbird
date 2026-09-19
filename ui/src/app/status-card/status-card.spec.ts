@@ -488,6 +488,14 @@ describe('StatusCard', () => {
    * foreign post without a url (a Bluesky post whose adapter had none) put one
    * of these in the action row right beside the reply count.
    */
+  it('offers signed-in readers a thread link separately from the reply composer', () => {
+    TestBed.inject(Auth).setToken('reader');
+    const fixture = setUp(makeStatus({ replies_count: 2 }));
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('a[title="Replies"]')?.getAttribute('href')).toBe('/statuses/1');
+    expect(el.querySelector('button[title="Reply"]')).not.toBeNull();
+  });
+
   it('never renders a link that navigates to the current page', () => {
     const f = setUp(makeStatus({ id: 'bsky:1', provider: 'bluesky', url: null }));
     const el = f.nativeElement as HTMLElement;

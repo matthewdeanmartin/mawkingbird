@@ -64,6 +64,34 @@ describe('Login', () => {
     httpMock.expectNone('/oauth/token');
   });
 
+  it('takes a saved session straight home without showing the login form or verifying twice', () => {
+    const fixture = setUp();
+    TestBed.inject(Auth).setToken('saved-token');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    fixture.detectChanges();
+    expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
+    httpMock.expectNone('/api/v1/accounts/verify_credentials');
+    expect(fixture.nativeElement.querySelector('input')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="status"]')).not.toBeNull();
+  });
+
+  it('keeps the form hidden through exchange, verification and navigation, then restores it on failure', () => {
+    storePendingOAuth();
+    const fixture = setUp({ code: 'code', state: PENDING_STATE });
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    expect(fixture.nativeElement.querySelector('input')).toBeNull();
+    httpMock.expectOne('/oauth/token').flush({ access_token: 'new-token' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input')).toBeNull();
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({}, { status: 401, statusText: 'Unauthorized' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="status"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('input')).not.toBeNull();
+  });
+
   it('moves HTTP login to HTTPS before registering an app or creating OAuth state', () => {
     const fixture = setUp();
     const assign = vi.fn();
@@ -239,8 +267,8 @@ describe('Login', () => {
     verifyReq.flush({ id: '1', username: 'alan', display_name: 'Alan Turing' } as never);
 
     expect(sessionStorage.getItem(OAUTH_APP_KEY)).toBeNull();
-    expect(navigateSpy).toHaveBeenCalledWith([], { queryParams: {} });
-    expect(navigateByUrlSpy).toHaveBeenCalledWith('/home');
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(navigateByUrlSpy).toHaveBeenCalledWith('/home', { replaceUrl: true });
     expect(TestBed.inject(Auth).token()).toBe('fresh-token');
   });
 

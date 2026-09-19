@@ -423,7 +423,8 @@
   "commandBar": {
     "textFocus.label": "Text-focus",
     "textFocus.turnOff": "Turn off text-focus and show images",
-    "textFocus.turnOn": "Turn on text-focus: show image icons and alt text"
+    "textFocus.turnOn": "Turn on text-focus: show image icons and alt text",
+    "tweetView": "Tweet view"
   },
   "common": {
     "cancel": "Cancel",
@@ -1145,6 +1146,7 @@
     "anonymousLink": "Look around without an account",
     "bluesky": "Bluesky",
     "blueskyHint": "A handle like yourname.bsky.social, or your own domain.",
+    "connecting": "Connecting your account…",
     "countViews": "Count my page views",
     "instead": "instead.",
     "mastodon": "Mastodon",
@@ -1731,6 +1733,8 @@
     "lists.clientList.members.other": "{{count}} members",
     "lists.clientList.newNamePlaceholder": "New private list name",
     "lists.collections.deleteTitle": "Delete collection",
+    "lists.collections.discover": "Browse starter packs",
+    "lists.collections.discoverHint": "Looking for people to follow? Browse starter packs curated by others.",
     "lists.collections.empty": "No collections yet — a public, curated set of accounts you recommend.",
     "lists.collections.featuringMe": "Collections featuring me",
     "lists.collections.heading": "Collections",
@@ -1851,6 +1855,7 @@
     "login.confirm.sentTo": "Almost there! We sent a confirmation email to",
     "login.confirm.verify": "✉ Verify email & continue",
     "login.confirm.verifying": "Verifying…",
+    "login.connecting": "Signing you in…",
     "login.intent.change": "← Something else",
     "login.intent.have": "I have a Mastodon account",
     "login.intent.haveHint": "Sign in on the server where your account lives.",

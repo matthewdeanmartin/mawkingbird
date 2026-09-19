@@ -11,6 +11,21 @@ import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
 describe('CommandBar', () => {
+  it('offers an explicit way back from analytics to tweets', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('view', 'analytics');
+    fixture.detectChanges();
+    const change = vi.fn();
+    fixture.componentInstance.viewChange.subscribe(change);
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (item) => item.textContent?.trim() === 'Tweet view',
+    )!;
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    button.click();
+    expect(change).toHaveBeenCalledWith('feed');
+  });
   it('separates actions, presentation and filters in that order', () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = setUp(true);
@@ -22,7 +37,13 @@ describe('CommandBar', () => {
     const labels = (row: Element) =>
       [...row.querySelectorAll('button, a')].map((b) => b.textContent?.trim());
     expect(rows).toHaveLength(3);
-    expect(labels(rows[0])).toEqual(['🔄 More', '👥 Members', '📊 Analytics', '🩺 Feed Doctor']);
+    expect(labels(rows[0])).toEqual([
+      '🔄 More',
+      'Tweet view',
+      '👥 Members',
+      '📊 Analytics',
+      '🩺 Feed Doctor',
+    ]);
     expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text-focus', '🖼️ Media', '🔗 Articles']);
     expect(labels(rows[2])).toEqual(['🦣 Fedi']);
   });

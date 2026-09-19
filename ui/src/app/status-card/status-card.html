@@ -413,19 +413,12 @@
             [attr.aria-label]="'statusCard.reply' | transloco"
           >
             <span aria-hidden="true">💬</span>
-            <span>{{
-              'statusCard.countLabel'
-                | transloco
-                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
-            }}</span>
+            <span>{{ 'statusCard.reply' | transloco }}</span>
           </button>
-        } @else if (auth.isAnonymous && threadLink) {
-          <!-- 💬 is what everyone taps to reach the comments, and for an
-               anonymous reader it used to be an inert span: the tap did nothing,
-               and the post looked like it had no thread. Reading replies never
-               needed an account — only writing one does — so this goes to the
-               thread. The sign-in prompt belongs on the reply composer there,
-               not on the way in. -->
+        }
+        @if (threadLink && (canReply || auth.isAnonymous || readOnlyStats)) {
+          <!-- Reading replies and writing one are separate actions. Keep the
+               count linked to the thread even when a composer is available. -->
           <a
             class="action"
             [routerLink]="threadLink"

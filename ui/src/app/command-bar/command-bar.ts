@@ -12,6 +12,7 @@ import { ProviderRegistry } from '../providers/provider-registry';
 export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
 
 // i18n commandBar.textFocus.label: Text-focus
+// i18n commandBar.tweetView: Tweet view
 // i18n commandBar.textFocus.turnOff: Turn off text-focus and show images
 // i18n commandBar.textFocus.turnOn: Turn on text-focus: show image icons and alt text
 
@@ -37,6 +38,14 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           </button>
         }
         @if (showFeedViews()) {
+          <button
+            class="btn command-item"
+            [class.active]="view() === 'feed'"
+            [attr.aria-pressed]="view() === 'feed'"
+            (click)="viewChange.emit('feed')"
+          >
+            {{ 'commandBar.tweetView' | transloco }}
+          </button>
           <button
             class="btn command-item"
             [class.active]="view() === 'members'"

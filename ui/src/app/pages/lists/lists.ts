@@ -596,6 +596,8 @@ export class Lists implements OnInit {
     this.tagBundles.remove(bundle.id);
   }
 
+  // i18n pages.lists.collections.discoverHint: Looking for people to follow? Browse starter packs curated by others.
+  // i18n pages.lists.collections.discover: Browse starter packs
   // Collections (Mastodon 4.6+). Older servers 404 → collectionsSupported=false.
   protected collections = signal<Collection[]>([]);
   protected inCollections = signal<Collection[]>([]);

@@ -99,7 +99,10 @@ describe('LoginChooser', () => {
     const router = TestBed.inject(Router);
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    TestBed.createComponent(LoginChooser).detectChanges();
+    const fixture = TestBed.createComponent(LoginChooser);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('a, input')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="status"]')).not.toBeNull();
 
     expect(navigate).toHaveBeenCalledWith(['/login/mastodon'], {
       queryParams: { code: 'auth-code-123', state: 'state-abc' },

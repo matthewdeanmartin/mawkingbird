@@ -546,6 +546,21 @@
     }
   }
 
+  @if (
+    shows('lists') &&
+    showsSection('collections') &&
+    (auth.isAnonymous ||
+      !collectionsSupported() ||
+      (!collectionsLoading() && !collections().length))
+  ) {
+    <aside class="section-note">
+      <p class="muted small">{{ 'pages.lists.collections.discoverHint' | transloco }}</p>
+      <a class="btn btn-outline" routerLink="/bundled-starter-kits">
+        {{ 'pages.lists.collections.discover' | transloco }}
+      </a>
+    </aside>
+  }
+
   @if (shows('lists') && showsSection('endorsements')) {
     @if (!auth.isAnonymous) {
       <div class="section-head">{{ 'pages.lists.endorsements.heading' | transloco }}</div>

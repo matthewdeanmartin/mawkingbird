@@ -471,7 +471,10 @@ input {
 }
 
 .access-option input {
-  margin-top: 3px;
+  width: auto;
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 3px 0 0;
   cursor: pointer;
 }
 

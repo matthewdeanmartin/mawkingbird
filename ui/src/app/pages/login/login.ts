@@ -65,6 +65,7 @@ const ACCESS_SCOPES: Record<OAuthAccess, string> = {
 };
 
 // i18n pages.login.seedFailed: Seeding failed.
+// i18n pages.login.connecting: Signing you in…
 // i18n pages.login.server.editing: Enter your server's full address. It will be checked automatically.
 // i18n pages.login.access.full.label: Full access
 // i18n pages.login.access.full.hint: Read, post, reply, follow — everything the app does.
@@ -294,6 +295,7 @@ export class Login implements OnInit, OnDestroy {
   protected token = signal('');
   protected error = signal<string | null>(null);
   protected checking = signal(false);
+  protected enteringHome = signal(false);
 
   // --- Register (mock server only: never proxy a real server's credentials) ---
   protected regUsername = signal('');
@@ -346,24 +348,15 @@ export class Login implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (redirectToSecureLogin()) return;
     // Already signed in? Landing on /login/mastodon (bookmark, stale tab, back button)
-    // shouldn't demand a fresh login cycle — verify the stored token and go straight home.
+    // should go straight home, just like the network chooser. The authenticated
+    // shell handles expired sessions; an extra verification here delays every visit.
     // An OAuth callback (?code=) and the explicit add-account flow (?add=1) still show the
-    // page; a dead token just leaves the user here.
+    // page so that a saved session cannot intercept a new sign-in.
     const params = this.route.snapshot.queryParamMap;
     if (!params.get('code') && !params.get('add') && this.auth.isAuthenticated) {
-      if (this.auth.isAnonymous) {
-        void this.router.navigateByUrl('/home');
-        return;
-      }
-      this.api.verifyCredentials().subscribe({
-        next: (acc) => {
-          this.auth.setAccount(acc);
-          void this.router.navigateByUrl('/home');
-        },
-        error: () => {
-          // Token no longer works; stay on the login page.
-        },
-      });
+      this.enteringHome.set(true);
+      void this.router.navigateByUrl('/home', { replaceUrl: true });
+      return;
     }
     // Onboarding default: Mocking Bird has no "this server", so rather than greeting
     // a new user with an empty picker, preselect the biggest general-purpose instance.
@@ -556,8 +549,9 @@ export class Login implements OnInit, OnDestroy {
         if (!this.adoptExistingSession(acc, value)) {
           this.auth.setAccount(acc);
         }
+        this.enteringHome.set(true);
         this.checking.set(false);
-        this.router.navigateByUrl('/home');
+        this.router.navigateByUrl('/home', { replaceUrl: true });
       },
       error: () => {
         this.auth.removeSession(value);
@@ -768,6 +762,7 @@ export class Login implements OnInit, OnDestroy {
     if (this.server.baseUrl() !== app.server) {
       this.server.setBaseUrl(app.server);
     }
+    this.customServer.set(app.server);
     this.oauthWorking.set(true);
     this.api
       .exchangeCode({
@@ -780,7 +775,6 @@ export class Login implements OnInit, OnDestroy {
       .subscribe({
         next: (tok) => {
           this.oauthWorking.set(false);
-          this.router.navigate([], { queryParams: {} });
           this.token.set(tok.access_token);
           this.submit();
         },

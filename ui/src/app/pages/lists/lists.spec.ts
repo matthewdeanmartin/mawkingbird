@@ -174,6 +174,16 @@ describe('Lists', () => {
     httpMock.expectOne('/api/v1/lists').flush([]);
   });
 
+  it('offers starter packs when the server does not support collections', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    internals(fixture).section.set('collections');
+    internals(fixture).collectionsSupported.set(false);
+    fixture.detectChanges();
+    const link = fixture.nativeElement.querySelector('a[href="/bundled-starter-kits"]');
+    expect(link?.textContent).toContain('Browse starter packs');
+  });
+
   it('accepts a hashtag to preview, with or without the #', () => {
     const fixture = setUp();
     httpMock.expectOne('/api/v1/lists').flush([]);
