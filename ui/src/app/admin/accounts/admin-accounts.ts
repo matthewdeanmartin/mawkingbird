@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -32,6 +33,8 @@ const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as c
   styleUrl: './admin-accounts.css',
 })
 export class AdminAccounts implements OnInit {
+  private readonly dialogs = inject(AppDialogs);
+
   private api = inject(AdminApi);
   private transloco = inject(TranslocoService);
 
@@ -91,11 +94,11 @@ export class AdminAccounts implements OnInit {
     this.api.approve(a.id).subscribe(() => this.load());
   }
 
-  reject(a: AdminAccount): void {
+  async reject(a: AdminAccount): Promise<void> {
     const message = this.transloco.translate<string>('adminAccounts.confirm.reject', {
       username: a.username,
     });
-    if (!confirm(message)) {
+    if (!(await this.dialogs.confirm(message))) {
       return;
     }
     this.api.reject(a.id).subscribe(() => this.load());
@@ -105,11 +108,11 @@ export class AdminAccounts implements OnInit {
     this.api.unsensitive(a.id).subscribe(() => this.load());
   }
 
-  remove(a: AdminAccount): void {
+  async remove(a: AdminAccount): Promise<void> {
     const message = this.transloco.translate<string>('adminAccounts.confirm.delete', {
       username: a.username,
     });
-    if (!confirm(message)) {
+    if (!(await this.dialogs.confirm(message))) {
       return;
     }
     this.api.deleteAccount(a.id).subscribe(() => this.load());

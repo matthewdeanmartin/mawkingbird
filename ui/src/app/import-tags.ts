@@ -156,10 +156,10 @@ export class ImportTags {
       return;
     }
     if (
-      !this.followConfirmation.allow(
+      !(await this.followConfirmation.allow(
         this.rows().filter((row) => row.status === 'pending').length,
         this.auth.isAnonymous,
-      )
+      ))
     )
       return;
     this.stopRequested = false;

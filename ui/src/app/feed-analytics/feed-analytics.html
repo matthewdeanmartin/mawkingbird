@@ -668,6 +668,7 @@
     <!-- Recency ----------------------------------------------------------- -->
     <section class="section">
       <h2>{{ 'feedAnalytics.timing.title' | transloco }}</h2>
+      <app-posting-calendar [posts]="posts()" />
       <p class="muted small">
         {{
           'feedAnalytics.timing.description'

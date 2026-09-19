@@ -1,3 +1,4 @@
+import { AppDialogs } from './app-dialogs';
 import { inject, Injectable } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { ClientPrefs } from './client-prefs';
@@ -10,14 +11,16 @@ import { Pseudonymity } from './pseudonymity';
 /** One confirmation per publish attempt, shared by Write and the reply composer. */
 @Injectable({ providedIn: 'root' })
 export class PostConfirmation {
+  private readonly dialogs = inject(AppDialogs);
+
   private prefs = inject(ClientPrefs);
   private pseudonymity = inject(Pseudonymity);
   private transloco = inject(TranslocoService);
 
-  confirm(account?: string): boolean {
+  confirm(account?: string): boolean | Promise<boolean> {
     const pa = this.pseudonymity.enabled();
     if (!(pa ? this.pseudonymity.reminder() : this.prefs.confirmBeforePost())) return true;
-    return window.confirm(
+    return this.dialogs.confirm(
       pa
         ? this.transloco.translate('pseudonymity.postReminder', {
             account: account || this.transloco.translate('pseudonymity.currentAccount'),

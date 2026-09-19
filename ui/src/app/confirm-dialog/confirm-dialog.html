@@ -10,6 +10,7 @@
     role="alertdialog"
     aria-modal="true"
     aria-labelledby="confirm-title"
+    [attr.aria-describedby]="message() ? 'confirm-message' : null"
     appFocusTrap
     (dismissed)="cancelled.emit()"
     (click)="$event.stopPropagation()"
@@ -17,12 +18,24 @@
   >
     <h3 id="confirm-title">{{ title() }}</h3>
     @if (message()) {
-      <p>{{ message() }}</p>
+      <p id="confirm-message">{{ message() }}</p>
+    }
+    @if (mode() === 'prompt') {
+      <label for="dialog-value">{{ inputLabel() }}</label>
+      <input
+        id="dialog-value"
+        type="text"
+        [value]="value()"
+        (input)="value.set($any($event.target).value)"
+        (keydown.enter)="confirmed.emit()"
+      />
     }
     <div class="confirm-actions">
-      <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
-        {{ 'confirm.cancel' | transloco }}
-      </button>
+      @if (mode() !== 'alert') {
+        <button class="btn btn-outline" type="button" (click)="cancelled.emit()">
+          {{ 'confirm.cancel' | transloco }}
+        </button>
+      }
       <button class="btn" [class.btn-danger]="danger()" type="button" (click)="confirmed.emit()">
         {{ confirmLabel() }}
       </button>

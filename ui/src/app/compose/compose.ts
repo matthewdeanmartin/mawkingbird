@@ -2000,7 +2000,7 @@ export class Compose implements OnDestroy {
     }
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
     if (!this.canSubmit()) {
       return;
     }
@@ -2035,7 +2035,7 @@ export class Compose implements OnDestroy {
         return;
       }
     }
-    this.finishSubmit();
+    await this.finishSubmit();
   }
 
   /**
@@ -2045,7 +2045,7 @@ export class Compose implements OnDestroy {
    * if it called `send()` directly it would skip the PKM warning below, and a
    * user who hit one warning would silently miss the other.
    */
-  private finishSubmit(): void {
+  private async finishSubmit(): Promise<void> {
     // A note to yourself and a post to your followers look identical in this
     // box. Checked here rather than in the template for the same reason the
     // gate above is: a hotkey or a future call site must not publish around it.
@@ -2056,7 +2056,8 @@ export class Compose implements OnDestroy {
         return;
       }
     }
-    if (!this.postConfirmation.confirm(this.auth.account()?.acct)) {
+    const confirmation = this.postConfirmation.confirm(this.auth.account()?.acct);
+    if (!(typeof confirmation === 'boolean' ? confirmation : await confirmation)) {
       return;
     }
     if (this.prefs.delayedSend()) {

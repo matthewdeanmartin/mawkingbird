@@ -48,6 +48,22 @@ describe('FollowState', () => {
     expect(follows.status('1')).toBe('unknown');
   });
 
+  it('refreshes profile counts without applying a late response to a switched account', () => {
+    const auth = TestBed.inject(Auth);
+    auth.setToken('first');
+    follows.refreshAccount();
+    http.expectOne('/api/v1/accounts/verify_credentials').flush({ id: 'me', following_count: 12 });
+    expect(auth.account()?.following_count).toBe(12);
+    follows.refreshAccount();
+    const pending = http.expectOne('/api/v1/accounts/verify_credentials');
+    auth.setToken('second');
+    auth.setAccount({ id: 'other', following_count: 3 } as Account);
+    pending.flush({ id: 'me', following_count: 14 });
+    expect(auth.account()?.id).toBe('other');
+    expect(auth.account()?.following_count).toBe(3);
+    http.verify();
+  });
+
   it('batches at 40, which is Mastodon’s documented cap', async () => {
     const ids = Array.from({ length: 41 }, (_, i) => String(i + 1));
     const done = follows.resolve(ids);

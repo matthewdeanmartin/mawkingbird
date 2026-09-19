@@ -537,10 +537,20 @@
         @if (inCollections().length) {
           <div class="section-head">{{ 'pages.lists.collections.featuringMe' | transloco }}</div>
           @for (c of inCollections(); track c.id) {
-            <a class="list-row" [routerLink]="['/collections', c.id]">
-              <span>{{ c.name }}</span>
-            </a>
+            <div class="list-row">
+              <a [routerLink]="['/collections', c.id]">{{ c.name }}</a>
+              <button
+                class="btn btn-outline"
+                [disabled]="leavingCollection()"
+                (click)="collectionToLeave.set(c)"
+              >
+                {{ 'pages.collection.removeMe' | transloco }}
+              </button>
+            </div>
           }
+        }
+        @if (leaveCollectionFailed()) {
+          <p class="section-note" role="alert">{{ 'pages.collection.leaveFailed' | transloco }}</p>
         }
       }
     }
@@ -822,5 +832,15 @@
     [confirmLabel]="'pages.lists.confirm.deleteCollection.confirm' | transloco"
     (confirmed)="removeCollection(c)"
     (cancelled)="collectionToDelete.set(null)"
+  />
+}
+
+@if (collectionToLeave()) {
+  <app-confirm-dialog
+    [title]="'pages.collection.removeMe' | transloco"
+    [message]="'pages.collection.leaveConfirm' | transloco"
+    [confirmLabel]="'pages.collection.removeMe' | transloco"
+    (confirmed)="leaveCollection()"
+    (cancelled)="collectionToLeave.set(null)"
   />
 }

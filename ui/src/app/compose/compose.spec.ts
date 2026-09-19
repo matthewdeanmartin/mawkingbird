@@ -1,3 +1,4 @@
+import { AppDialogs } from '../app-dialogs';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -833,14 +834,14 @@ describe('Compose', () => {
     prefs.setDelayedSend(true);
   }
 
-  it('undo-send asks for confirmation and defers the POST by 30 seconds', () => {
+  it('undo-send asks for confirmation and defers the POST by 30 seconds', async () => {
     vi.useFakeTimers();
     enableUndoSend();
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirmSpy = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 
     const f = setUp();
     internals(f).text.set('risky post');
-    internals(f).submit();
+    await internals(f).submit();
 
     expect(confirmSpy).toHaveBeenCalledWith('Do you really want to post that?');
     httpMock.expectNone('/api/v1/statuses');
@@ -857,27 +858,27 @@ describe('Compose', () => {
     expect(internals(f).countdown()).toBeNull();
   });
 
-  it('declining the confirmation aborts without posting and keeps the draft', () => {
+  it('declining the confirmation aborts without posting and keeps the draft', async () => {
     enableUndoSend();
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
 
     const f = setUp();
     internals(f).text.set('never mind');
-    internals(f).submit();
+    await internals(f).submit();
 
     httpMock.expectNone('/api/v1/statuses');
     expect(internals(f).text()).toBe('never mind');
     expect(internals(f).countdown()).toBeNull();
   });
 
-  it('cancelSend() stops the countdown and keeps the draft', () => {
+  it('cancelSend() stops the countdown and keeps the draft', async () => {
     vi.useFakeTimers();
     enableUndoSend();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 
     const f = setUp();
     internals(f).text.set('second thoughts');
-    internals(f).submit();
+    await internals(f).submit();
     vi.advanceTimersByTime(10_000);
     internals(f).cancelSend();
     vi.advanceTimersByTime(60_000);
@@ -887,14 +888,14 @@ describe('Compose', () => {
     expect(internals(f).countdown()).toBeNull();
   });
 
-  it('publishNow() during the countdown posts immediately', () => {
+  it('publishNow() during the countdown posts immediately', async () => {
     vi.useFakeTimers();
     enableUndoSend();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 
     const f = setUp();
     internals(f).text.set('impatient post');
-    internals(f).submit();
+    await internals(f).submit();
     vi.advanceTimersByTime(5_000);
     internals(f).publishNow();
 
@@ -908,40 +909,40 @@ describe('Compose', () => {
     httpMock.expectNone('/api/v1/statuses');
   });
 
-  it('confirm-only (no delay) posts immediately after an accepted confirmation', () => {
+  it('confirm-only (no delay) posts immediately after an accepted confirmation', async () => {
     TestBed.inject(ClientPrefs).setConfirmBeforePost(true);
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirmSpy = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 
     const f = setUp();
     internals(f).text.set('confirmed post');
-    internals(f).submit();
+    await internals(f).submit();
 
     expect(confirmSpy).toHaveBeenCalled();
     expect(internals(f).countdown()).toBeNull();
     httpMock.expectOne('/api/v1/statuses').flush({ id: '1' });
   });
 
-  it('cancelling the PA reminder keeps the reply draft and sends no post', () => {
+  it('cancelling the PA reminder keeps the reply draft and sends no post', async () => {
     TestBed.inject(Auth).setToken('pa-composer');
     TestBed.inject(Pseudonymity).setEnabled(true);
-    const dialog = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const dialog = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
     const f = setUp();
     internals(f).text.set('Potential personal information');
-    internals(f).submit();
+    await internals(f).submit();
     expect(dialog).toHaveBeenCalledTimes(1);
     expect(dialog.mock.calls[0][0]).toContain('Pseudonymity mode is on');
     expect(internals(f).text()).toBe('Potential personal information');
     httpMock.expectNone('/api/v1/statuses');
   });
 
-  it('delay-only (no confirm) starts the countdown without asking', () => {
+  it('delay-only (no confirm) starts the countdown without asking', async () => {
     vi.useFakeTimers();
     TestBed.inject(ClientPrefs).setDelayedSend(true);
-    const confirmSpy = vi.spyOn(window, 'confirm');
+    const confirmSpy = vi.spyOn(AppDialogs.prototype, 'confirm');
 
     const f = setUp();
     internals(f).text.set('slow post');
-    internals(f).submit();
+    await internals(f).submit();
 
     expect(confirmSpy).not.toHaveBeenCalled();
     expect(internals(f).countdown()).toBe(30);
@@ -949,11 +950,11 @@ describe('Compose', () => {
     httpMock.expectOne('/api/v1/statuses').flush({ id: '1' });
   });
 
-  it('undo-send disabled: posts immediately without confirmation', () => {
-    const confirmSpy = vi.spyOn(window, 'confirm');
+  it('undo-send disabled: posts immediately without confirmation', async () => {
+    const confirmSpy = vi.spyOn(AppDialogs.prototype, 'confirm');
     const f = setUp();
     internals(f).text.set('normal post');
-    internals(f).submit();
+    await internals(f).submit();
 
     expect(confirmSpy).not.toHaveBeenCalled();
     httpMock.expectOne('/api/v1/statuses').flush({ id: '1' });

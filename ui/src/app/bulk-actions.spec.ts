@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from './api';
 import { Auth } from './auth';
+import { FollowState } from './follow-state';
 import { BulkActions, BulkTarget, bulkAction, formatEta, needsList } from './bulk-actions';
 import { Account, Relationship } from './models';
 import en from '../../public/i18n/en.json';
@@ -117,7 +118,7 @@ describe('BulkActions', () => {
       providers: [
         BulkActions,
         { provide: Api, useValue: api },
-        { provide: Auth, useValue: { account: () => account('me') } },
+        { provide: Auth, useValue: { account: () => account('me'), token: () => null } },
       ],
     });
     bulk = TestBed.inject(BulkActions);
@@ -421,6 +422,9 @@ describe('BulkActions', () => {
   // ---------------------------------------------------------------- lists
 
   it('follows only the list members that are not already followed', async () => {
+    api.follow.mockImplementation((id) => of(follows(id, true)));
+    const state = TestBed.inject(FollowState);
+    const refresh = vi.spyOn(state, 'refreshAccount').mockImplementation(() => undefined);
     api.listAccountsPage.mockReturnValueOnce(
       of({ accounts: [account('1'), account('2'), account('3')], nextMaxId: null }),
     );
@@ -436,6 +440,9 @@ describe('BulkActions', () => {
     expect(api.follow).toHaveBeenCalledTimes(2);
     expect(api.follow).toHaveBeenCalledWith('1');
     expect(api.follow).toHaveBeenCalledWith('3');
+    expect(state.status('1')).toBe('following');
+    expect(state.status('3')).toBe('following');
+    expect(refresh).toHaveBeenCalledOnce();
     expect(bulk.job()).toMatchObject({ phase: 'done', changed: 2, skipped: 1 });
   });
 

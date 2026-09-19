@@ -99,6 +99,11 @@ describe('StarterKitPost', () => {
     expect(button).toBeDefined();
 
     button.click();
+    await vi.waitFor(() =>
+      expect(TestBed.inject(AnonymousFollows).count()).toBe(
+        Math.min(kit.accounts.length, ANONYMOUS_FOLLOW_LIMIT),
+      ),
+    );
     await vi.waitFor(() => expect(importer.running()).toBe(false));
     fixture.detectChanges();
 

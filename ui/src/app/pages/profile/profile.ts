@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
 // i18n pages.profile.privateFollow.add: Private follow
 // i18n pages.profile.privateFollow.remove: Remove private follow
@@ -238,8 +239,10 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit, OnDestroy {
-  private transloco = inject(TranslocoService);
+  private readonly dialogs = inject(AppDialogs);
+
   private readonly followConfirmation = inject(BulkFollowConfirmation);
+  private transloco = inject(TranslocoService);
   private api = inject(Api);
   private route = inject(ActivatedRoute);
   private diagnostics = inject(PageDiagnostics);
@@ -264,7 +267,7 @@ export class Profile implements OnInit, OnDestroy {
     );
   }
 
-  protected clearLocalFollows(kind: 'friends' | 'tags' | 'rss'): void {
+  protected async clearLocalFollows(kind: 'friends' | 'tags' | 'rss'): Promise<void> {
     if (!this.isSelf() || !this.localFollowCount(kind)) return;
     const key = {
       friends: 'pages.profile.actions.unfollowLocalFriends',
@@ -272,11 +275,11 @@ export class Profile implements OnInit, OnDestroy {
       rss: 'pages.profile.actions.unfollowLocalRss',
     }[kind];
     if (
-      !window.confirm(
+      !(await this.dialogs.confirm(
         this.transloco.translate('pages.profile.actions.confirmLocal', {
           action: this.transloco.translate(key),
         }),
-      )
+      ))
     )
       return;
     this.localActionError.set(false);
@@ -454,7 +457,7 @@ export class Profile implements OnInit, OnDestroy {
     return !!url && this.rssSubs.has(url);
   });
 
-  toggleRssSubscription(): void {
+  async toggleRssSubscription(): Promise<void> {
     const url = this.rssFeedUrl();
     const account = this.account();
     if (!url) {
@@ -462,11 +465,11 @@ export class Profile implements OnInit, OnDestroy {
     }
     if (this.rssSubs.has(url)) {
       if (
-        !window.confirm(
+        !(await this.dialogs.confirm(
           this.transloco.translate('pages.profile.rss.confirmUnsubscribe', {
             feed: account?.display_name || url,
           }),
-        )
+        ))
       )
         return;
       this.rssSubs.remove(url);
@@ -2070,7 +2073,9 @@ export class Profile implements OnInit, OnDestroy {
     if (this.featuredBusy()) {
       return;
     }
-    if (!this.followConfirmation.allow(this.featuredToFollow().length, this.auth.isAnonymous))
+    if (
+      !(await this.followConfirmation.allow(this.featuredToFollow().length, this.auth.isAnonymous))
+    )
       return;
     this.featuredBusy.set(true);
     try {

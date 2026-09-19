@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../../app-dialogs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { scopeSuffixForToken } from '../../../account-scope';
@@ -57,11 +58,12 @@ describe('SettingsStorage', () => {
     expect(text).not.toContain('mastodon_mock_sessions');
   });
 
-  it('deletes an individual account key', () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+  it('deletes an individual account key', async () => {
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
     (fixture.nativeElement as HTMLElement)
       .querySelector<HTMLButtonElement>('[aria-label="Delete mockingbird_anonymous_follows"]')!
       .click();
+    await Promise.resolve();
     expect(localStorage.getItem('mockingbird_anonymous_follows')).toBeNull();
     expect(localStorage.getItem('mastodon_mock_sessions')).toContain('other');
   });

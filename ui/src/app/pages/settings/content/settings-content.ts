@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../../app-dialogs';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../../api';
@@ -66,6 +67,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrl: './settings-content.css',
 })
 export class SettingsContent {
+  private readonly dialogs = inject(AppDialogs);
+
   protected trusted = inject(TrustedAccounts);
   private api = inject(Api);
   private auth = inject(Auth);
@@ -134,12 +137,12 @@ export class SettingsContent {
    * Global revocation. Confirmed first: unlike every other control here it
    * throws the named list away, and there is no undo.
    */
-  protected revokeAll(): void {
+  protected async revokeAll(): Promise<void> {
     const count = this.trusted.count();
     const detail = count
       ? `This turns off every trust setting and forgets all ${count} trusted account${count === 1 ? '' : 's'}.`
       : 'This turns off every trust setting.';
-    if (confirm(`${detail}\n\nThere is no undo. Continue?`)) {
+    if (await this.dialogs.confirm(`${detail}\n\nThere is no undo. Continue?`)) {
       this.trusted.revokeAll();
     }
   }

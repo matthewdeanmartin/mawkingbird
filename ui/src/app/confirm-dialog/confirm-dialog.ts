@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../a11y/focus-trap';
 
@@ -19,6 +19,9 @@ export class ConfirmDialog {
   readonly message = input<string>('');
   readonly confirmLabel = input<string>('Confirm');
   readonly danger = input<boolean>(true);
+  readonly mode = input<'alert' | 'confirm' | 'prompt'>('confirm');
+  readonly inputLabel = input<string>('');
+  readonly value = signal('');
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
 }

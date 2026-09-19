@@ -293,6 +293,9 @@ export class Home implements OnInit, OnDestroy {
   private drafts = inject(Drafts).forCurrentAccount();
   private router = inject(Router);
   private homeNavigationSub?: Subscription;
+  // i18n pages.home.noNewPosts: No new posts. You're up to date.
+  protected noNewPosts = signal(false);
+  private refreshBaseline: Set<string> | null = null;
   private flags = inject(FeatureFlags);
   private pasteFeeds = inject(PasteFeedSubscriptions);
 
@@ -748,6 +751,7 @@ export class Home implements OnInit, OnDestroy {
         event.url.split(/[?#]/)[0] === '/home'
       ) {
         this.setView('feed');
+        this.refreshHome();
       }
     });
     this.diagnostics.info('page:open', {
@@ -830,7 +834,24 @@ export class Home implements OnInit, OnDestroy {
     this.load(true);
   }
 
+  protected refreshHome(): void {
+    if (!this.loading() && !this.refreshBaseline) this.load(true);
+  }
+
+  private finishRefresh(): void {
+    const baseline = this.refreshBaseline;
+    if (!baseline) return;
+    this.noNewPosts.set(
+      !this.statuses().some((status) => !baseline.has(canonicalStatusKey(status))),
+    );
+    this.refreshBaseline = null;
+  }
+
   load(forceRefresh = false): void {
+    this.refreshBaseline = forceRefresh
+      ? new Set(this.statuses().map((status) => canonicalStatusKey(status)))
+      : null;
+    if (!forceRefresh) this.noNewPosts.set(false);
     this.pageSub?.unsubscribe();
     this.autoLoading.set(false);
     this.loading.set(true);
@@ -846,6 +867,7 @@ export class Home implements OnInit, OnDestroy {
     this.loadingBookmarks.set(false);
     if (this.waitingForServerList()) {
       this.statuses.set([]);
+      this.refreshBaseline = null;
       return;
     }
     if (this.justMyServer.effectiveEnabled()) {
@@ -903,6 +925,7 @@ export class Home implements OnInit, OnDestroy {
     this.pageSub = this.nextFeedPage().subscribe({
       next: (s) => {
         this.statuses.set(s);
+        this.finishRefresh();
         const details = {
           received: s.length,
           stored: this.statuses().length,
@@ -926,6 +949,8 @@ export class Home implements OnInit, OnDestroy {
           server: this.server.baseUrl() || 'same-origin',
         });
         this.loading.set(false);
+        this.refreshBaseline = null;
+        this.noNewPosts.set(false);
       },
     });
   }
@@ -935,6 +960,7 @@ export class Home implements OnInit, OnDestroy {
     this.pageSub = this.justMyServer.nextPage().subscribe({
       next: (statuses) => {
         this.statuses.set(statuses);
+        this.finishRefresh();
         this.publishMastodon(statuses);
         this.loading.set(false);
         this.fillToMinimum();
@@ -942,6 +968,8 @@ export class Home implements OnInit, OnDestroy {
       error: (error: unknown) => {
         this.diagnostics.error('load:server-list-error', error);
         this.loading.set(false);
+        this.refreshBaseline = null;
+        this.noNewPosts.set(false);
       },
     });
   }
@@ -980,10 +1008,13 @@ export class Home implements OnInit, OnDestroy {
           server: this.server.baseUrl() || 'same-origin',
         });
         this.loading.set(false);
+        this.refreshBaseline = null;
+        this.noNewPosts.set(false);
       },
       complete: () => {
         // Everything's in: sort newest-first once, cache, and top up to the min.
         this.statuses.update((list) => this.dedupeAnonymous(list));
+        this.finishRefresh();
         this.publishMastodon(this.statuses());
         this.cacheAnonymousHome();
         this.loading.set(false);

@@ -92,11 +92,18 @@
           {{ 'pages.collection.deleteCollection' | transloco }}
         </button>
       } @else if (myItem()) {
-        <button class="btn btn-outline danger" (click)="revokeSelf()">
+        <button
+          class="btn btn-outline danger"
+          [disabled]="leaving()"
+          (click)="showLeaveConfirm.set(true)"
+        >
           {{ 'pages.collection.removeMe' | transloco }}
         </button>
       }
     </div>
+    @if (leaveMessage(); as message) {
+      <p class="muted small" role="status">{{ message }}</p>
+    }
     @if (kitFollowError(); as message) {
       <p class="muted small" role="status">{{ message }}</p>
     }
@@ -347,3 +354,13 @@
     <span class="acct muted">&#64;{{ account.acct }}</span>
   </span>
 </ng-template>
+
+@if (showLeaveConfirm()) {
+  <app-confirm-dialog
+    [title]="'pages.collection.removeMe' | transloco"
+    [message]="'pages.collection.leaveConfirm' | transloco"
+    [confirmLabel]="'pages.collection.removeMe' | transloco"
+    (confirmed)="revokeSelf()"
+    (cancelled)="showLeaveConfirm.set(false)"
+  />
+}

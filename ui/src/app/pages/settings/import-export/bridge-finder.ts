@@ -79,10 +79,10 @@ const MAX_SOURCE_PAGES = 60;
 
 @Injectable({ providedIn: 'root' })
 export class BridgeFinder {
+  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private api = inject(Api);
   private bsky = inject(BlueskyApi);
   private graph = inject(BlueskyGraph);
-  private readonly followConfirmation = inject(BulkFollowConfirmation);
   private auth = inject(Auth);
   private stopRequested = false;
 
@@ -209,10 +209,10 @@ export class BridgeFinder {
    */
   async followAll(accounts: readonly Account[]): Promise<void> {
     if (
-      !this.followConfirmation.allow(
+      !(await this.followConfirmation.allow(
         accounts.filter((account) => !this.isFollowing(account)).length,
         this.auth.isAnonymous,
-      )
+      ))
     )
       return;
     this.stopRequested = false;

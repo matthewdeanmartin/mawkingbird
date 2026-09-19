@@ -1510,7 +1510,8 @@ export class WritePage implements OnInit, OnDestroy {
       this.wizardError.set('A poll needs at least two choices.');
       return;
     }
-    if (!this.postConfirmation.confirm(this.auth.account()?.acct)) return;
+    const confirmation = this.postConfirmation.confirm(this.auth.account()?.acct);
+    if (!(typeof confirmation === 'boolean' ? confirmation : await confirmation)) return;
     this.wizardBusy.set(true);
     this.wizardError.set(null);
     try {

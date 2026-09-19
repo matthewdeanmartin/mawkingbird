@@ -1,3 +1,4 @@
+import { AppDialogs } from '../app-dialogs';
 import {
   afterNextRender,
   Component,
@@ -347,6 +348,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
   styleUrl: './status-card.css',
 })
 export class StatusCard {
+  private readonly dialogs = inject(AppDialogs);
+
   private api = inject(Api);
   protected auth = inject(Auth);
   private prefs = inject(ClientPrefs);
@@ -963,14 +966,14 @@ export class StatusCard {
         return;
       }
       if (
-        !confirm(
+        !(await this.dialogs.confirm(
           this.transloco.translate('statusCard.replaceConfirm', {
             replies: Math.max(current.replyCount ?? 0, this.display.replies_count),
             reposts: Math.max(current.repostCount ?? 0, this.display.reblogs_count),
             likes: Math.max(current.likeCount ?? 0, this.display.favourites_count),
             quotes: current.quoteCount ?? 0,
           }),
-        )
+        ))
       )
         return;
       const { replaceBlueskyPost } = await import('../providers/bluesky/bluesky-replace-post');
@@ -1005,9 +1008,9 @@ export class StatusCard {
     });
   }
 
-  remove(event: Event): void {
+  async remove(event: Event): Promise<void> {
     event.stopPropagation();
-    if (!confirm(this.transloco.translate('statusCard.deletePostConfirm'))) {
+    if (!(await this.dialogs.confirm(this.transloco.translate('statusCard.deletePostConfirm')))) {
       return;
     }
     if (this.display.provider === 'bluesky') {
@@ -1068,9 +1071,11 @@ export class StatusCard {
    * Delete the post on the server, then reopen its source text in an inline
    * composer so it can be tweaked and reposted (Blue's "edit", the honest way).
    */
-  deleteAndRedraft(event: Event): void {
+  async deleteAndRedraft(event: Event): Promise<void> {
     event.stopPropagation();
-    if (!confirm(this.transloco.translate('statusCard.deleteRedraftConfirm'))) {
+    if (
+      !(await this.dialogs.confirm(this.transloco.translate('statusCard.deleteRedraftConfirm')))
+    ) {
       return;
     }
     this.api.getStatusSource(this.display.id).subscribe((src) => {

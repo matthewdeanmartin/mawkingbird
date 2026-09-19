@@ -1,3 +1,4 @@
+import { AppDialogs } from './app-dialogs';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -9,7 +10,7 @@ import { Tag } from './models';
 import { AnonymousTags } from './providers/anonymous/anonymous-tags';
 
 beforeEach(() => {
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 });
 
 describe('parseTags', () => {

@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../../app-dialogs';
 import { DestroyRef } from '@angular/core';
 import { PlusPaywall } from '../../../providers/account/plus-paywall';
 import { Component, computed, inject, signal } from '@angular/core';
@@ -94,6 +95,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './settings-config.css',
 })
 export class SettingsConfig {
+  private readonly dialogs = inject(AppDialogs);
+
   protected readonly paywall = inject(PlusPaywall);
   private readonly lifetime = inject(DestroyRef);
   constructor() {
@@ -324,16 +327,16 @@ export class SettingsConfig {
     }
   }
 
-  protected apply(): void {
+  protected async apply(): Promise<void> {
     const config = this.preview();
     if (!config) {
       return;
     }
     const count = this.changes().length;
     if (
-      !confirm(
+      !(await this.dialogs.confirm(
         `Import this configuration and reload? ${count} setting${count === 1 ? '' : 's'} will change. Missing settings covered by the file are reset.`,
-      )
+      ))
     ) {
       return;
     }

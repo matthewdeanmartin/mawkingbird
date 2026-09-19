@@ -9,6 +9,10 @@
   <p role="alert">{{ 'drafts.saveFailed' | transloco }}</p>
 }
 
+@if (noNewPosts()) {
+  <p class="muted center small" role="status">{{ 'pages.home.noNewPosts' | transloco }}</p>
+}
+
 @if (!auth.isAnonymous) {
   <app-announcements />
 }
@@ -104,7 +108,7 @@
     [showFeedViews]="true"
     [showFeedDoctor]="true"
     [view]="view()"
-    (refresh)="load(true)"
+    (refresh)="refreshHome()"
     (providerVisibilityChanged)="load()"
     (viewChange)="setView($event)"
   >

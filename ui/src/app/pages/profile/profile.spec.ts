@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -42,7 +43,7 @@ function makeStatuses(n: number, base: number): Status[] {
  * current relationship, then reflects the server's updated relationship.
  */
 beforeEach(() => {
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 });
 
 describe('self profile local actions', () => {
@@ -85,7 +86,7 @@ describe('self profile local actions', () => {
     return fixture;
   }
 
-  it('labels a disabled RSS subscription Unsubscribe and requires confirmation before removing it', () => {
+  it('labels a disabled RSS subscription Unsubscribe and requires confirmation before removing it', async () => {
     const url = 'https://example.com/feed?type=changes';
     const subs = TestBed.inject(RssSubscriptions);
     subs.add(url, 'Wikipedia recent changes');
@@ -103,14 +104,16 @@ describe('self profile local actions', () => {
       (button) => (button as HTMLButtonElement).textContent?.trim() === 'Unsubscribe',
     ) as HTMLButtonElement;
     expect(unsubscribe).toBeDefined();
-    vi.mocked(window.confirm).mockReturnValue(false);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
     unsubscribe.click();
-    expect(window.confirm).toHaveBeenCalledWith(
+    await Promise.resolve();
+    expect(AppDialogs.prototype.confirm).toHaveBeenCalledWith(
       expect.stringContaining('Wikipedia recent changes'),
     );
     expect(subs.has(url)).toBe(true);
-    vi.mocked(window.confirm).mockReturnValue(true);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(true);
     unsubscribe.click();
+    await Promise.resolve();
     fixture.detectChanges();
     expect(subs.has(url)).toBe(false);
     expect(fixture.nativeElement.textContent).toContain('Subscribe');
@@ -126,7 +129,7 @@ describe('self profile local actions', () => {
     expect(el.querySelector('[aria-label="Profile sections"]')?.textContent).toContain('Following');
   });
 
-  it('clears anonymous friends, tags and RSS independently, persists and invalidates the feed', () => {
+  it('clears anonymous friends, tags and RSS independently, persists and invalidates the feed', async () => {
     const fixture = setUp(true);
     const follows = TestBed.inject(AnonymousFollows);
     const tags = TestBed.inject(AnonymousTags);
@@ -140,6 +143,7 @@ describe('self profile local actions', () => {
     fixture.detectChanges();
     const buttons = fixture.nativeElement.querySelectorAll('.account-danger-panel button');
     buttons[0].click();
+    await Promise.resolve();
     expect(follows.count()).toBe(0);
     expect(twitter.follows()).toEqual([]);
     expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_follows')!).follows).toEqual([]);
@@ -147,16 +151,18 @@ describe('self profile local actions', () => {
     expect(rss.feeds()).toHaveLength(1);
     expect(invalidate).toHaveBeenCalled();
     buttons[1].click();
+    await Promise.resolve();
     expect(tags.count()).toBe(0);
     expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_tags')!).tags).toEqual([]);
     expect(rss.feeds()).toHaveLength(1);
     buttons[2].click();
+    await Promise.resolve();
     expect(rss.feeds()).toEqual([]);
     expect(JSON.parse(localStorage.getItem(scopedKey('mockingbird_rss_feeds'))!)).toEqual([]);
     TestBed.inject(HttpTestingController).expectNone(() => true);
   });
 
-  it('clears only the signed-in account local follows, preserving anonymous and other account data', () => {
+  it('clears only the signed-in account local follows, preserving anonymous and other account data', async () => {
     const fixture = setUp(false);
     const anonymous = TestBed.inject(AnonymousFollows);
     const tags = TestBed.inject(AnonymousTags);
@@ -172,6 +178,7 @@ describe('self profile local actions', () => {
     const buttons = el.querySelectorAll<HTMLButtonElement>('.account-danger-panel button');
     expect(buttons[1].disabled).toBe(true);
     buttons[0].click();
+    await Promise.resolve();
     expect(privateStore.count()).toBe(0);
     expect(anonymous.count()).toBe(1);
     expect(tags.count()).toBe(1);
@@ -179,29 +186,29 @@ describe('self profile local actions', () => {
     TestBed.inject(HttpTestingController).expectNone(() => true);
   });
 
-  it('preserves follows when cancelled and cannot clear from another profile', () => {
+  it('preserves follows when cancelled and cannot clear from another profile', async () => {
     const fixture = setUp(true);
     const follows = TestBed.inject(AnonymousFollows);
     follows.follow(friend, 'https://example.social');
-    vi.mocked(window.confirm).mockReturnValue(false);
-    fixture.componentInstance['clearLocalFollows']('friends');
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
+    await fixture.componentInstance['clearLocalFollows']('friends');
     expect(follows.count()).toBe(1);
-    vi.mocked(window.confirm).mockReturnValue(true);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(true);
     fixture.componentInstance['account'].set(friend);
-    fixture.componentInstance['clearLocalFollows']('friends');
+    await fixture.componentInstance['clearLocalFollows']('friends');
     expect(follows.count()).toBe(1);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).not.toContain('Local profile actions');
   });
 
-  it('reports storage failures and retains the local list', () => {
+  it('reports storage failures and retains the local list', async () => {
     const fixture = setUp(true);
     const follows = TestBed.inject(AnonymousFollows);
     follows.follow(friend, 'https://example.social');
     const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('Quota');
     });
-    fixture.componentInstance['clearLocalFollows']('friends');
+    await fixture.componentInstance['clearLocalFollows']('friends');
     expect(follows.count()).toBe(1);
     expect(fixture.componentInstance['localActionError']()).toBe(true);
     write.mockRestore();

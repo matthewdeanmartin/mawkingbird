@@ -1,4 +1,5 @@
 import { FeatureUseHistory } from '../feature-use-history';
+import { PostingCalendar } from './posting-calendar';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -178,7 +179,7 @@ const PREVIEW_ROWS = 8;
  */
 @Component({
   selector: 'app-feed-analytics',
-  imports: [RouterLink, StatusCard, HumanTimePipe, TranslocoPipe],
+  imports: [RouterLink, StatusCard, HumanTimePipe, TranslocoPipe, PostingCalendar],
   templateUrl: './feed-analytics.html',
   styleUrl: './feed-analytics.css',
 })

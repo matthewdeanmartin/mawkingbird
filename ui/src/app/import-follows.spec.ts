@@ -1,3 +1,4 @@
+import { AppDialogs } from './app-dialogs';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -6,6 +7,7 @@ import { Api } from './api';
 import { ImportFollows, normalizeHandle, parseHandles } from './import-follows';
 import { Account } from './models';
 import { Auth } from './auth';
+import { FollowState } from './follow-state';
 import { AnonymousAccount } from './providers/anonymous/anonymous-account';
 import { AnonymousFollows } from './providers/anonymous/anonymous-follows';
 import { AnonymousPublicApi } from './providers/anonymous/anonymous-public-api';
@@ -15,7 +17,7 @@ function acct(id: string, acctName: string): Account {
 }
 
 beforeEach(() => {
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 });
 
 describe('parseHandles', () => {
@@ -61,13 +63,13 @@ describe('normalizeHandle', () => {
 
 describe('ImportFollows', () => {
   it('cancels before resolving or following any authenticated account', async () => {
-    vi.mocked(window.confirm).mockReturnValue(false);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
     const search = vi.fn();
     const follow = vi.fn();
     const importer = setUp({ search, follow });
     importer.load(['alice@social.example', 'bob@social.example']);
     await importer.start();
-    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(AppDialogs.prototype.confirm).toHaveBeenCalledOnce();
     expect(search).not.toHaveBeenCalled();
     expect(follow).not.toHaveBeenCalled();
     expect(importer.rows().every((r) => r.status === 'pending')).toBe(true);
@@ -95,6 +97,7 @@ describe('ImportFollows', () => {
     await importer.start();
 
     expect(follow).toHaveBeenCalledTimes(1);
+    expect(TestBed.inject(FollowState).status('1')).toBe('following');
     expect(follow).toHaveBeenCalledWith('1');
     expect(importer.rows().map((r) => r.status)).toEqual(['followed', 'not_found']);
     expect(importer.running()).toBe(false);

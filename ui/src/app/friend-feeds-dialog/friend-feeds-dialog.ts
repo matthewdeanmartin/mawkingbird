@@ -1,10 +1,10 @@
+import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../a11y/focus-trap';
 import { Auth } from '../auth';
-import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 import { PageDiagnostics } from '../page-diagnostics';
 import { ProfileAccountKey } from '../providers/account/profile-account-key';
 import { SupporterStatus } from '../providers/account/supporter-status';
@@ -91,6 +91,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrl: './friend-feeds-dialog.css',
 })
 export class FriendFeedsDialog {
+  private readonly bulkConfirmation = inject(BulkFollowConfirmation);
   private scan = inject(FriendFeedScan);
   private subs = inject(RssSubscriptions);
   private addFeed = inject(RssAddFeed);
@@ -98,7 +99,6 @@ export class FriendFeedsDialog {
   private proxySettings = inject(CorsProxySettings);
   private accountKey = inject(ProfileAccountKey);
   private auth = inject(Auth);
-  private readonly bulkConfirmation = inject(BulkFollowConfirmation);
   private diagnostics = inject(PageDiagnostics);
   protected supporter = inject(SupporterStatus);
 
@@ -314,7 +314,7 @@ export class FriendFeedsDialog {
       return;
     }
     const feeds = (this.result()?.feeds ?? []).filter((feed) => !this.isFollowing(feed));
-    if (!this.bulkConfirmation.allow(feeds.length, this.auth.isAnonymous, 'feeds')) return;
+    if (!(await this.bulkConfirmation.allow(feeds.length, this.auth.isAnonymous, 'feeds'))) return;
     const added = new Set(this.justAdded());
     let count = 0;
     let blockedByLimit = 0;

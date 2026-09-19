@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { PublishingMetrics } from '../../observability/publishing-metrics';
 import { Auth } from '../../auth';
 // i18n pages.observability.myAnalytics: My Profile's Analytics
@@ -317,6 +318,8 @@ type RouteSortKey = 'visits' | 'time';
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })
 export class Observability {
+  private readonly dialogs = inject(AppDialogs);
+
   protected readonly auth = inject(Auth);
   private transloco = inject(TranslocoService);
   private metrics = inject(ApiMetrics);
@@ -377,8 +380,12 @@ export class Observability {
     return this.transloco.translate(key);
   }
 
-  resetMawkingbird(): void {
-    if (!confirm(this.transloco.translate('pages.observability.confirm.mawkingbird'))) {
+  async resetMawkingbird(): Promise<void> {
+    if (
+      !(await this.dialogs.confirm(
+        this.transloco.translate('pages.observability.confirm.mawkingbird'),
+      ))
+    ) {
       return;
     }
     this.mawkingbirdMetrics.reset();
@@ -610,8 +617,12 @@ export class Observability {
     }
   }
 
-  protected clearDiagnostics(): void {
-    if (!confirm(this.transloco.translate('pages.observability.confirm.diagnostics'))) {
+  protected async clearDiagnostics(): Promise<void> {
+    if (
+      !(await this.dialogs.confirm(
+        this.transloco.translate('pages.observability.confirm.diagnostics'),
+      ))
+    ) {
       return;
     }
     this.diagnosticLog.clear();
@@ -647,8 +658,10 @@ export class Observability {
     this.routeLog.refresh();
   }
 
-  resetRoutes(): void {
-    if (!confirm(this.transloco.translate('pages.observability.confirm.routes'))) {
+  async resetRoutes(): Promise<void> {
+    if (
+      !(await this.dialogs.confirm(this.transloco.translate('pages.observability.confirm.routes')))
+    ) {
       return;
     }
     this.routeLog.reset();
@@ -926,8 +939,10 @@ export class Observability {
 
   // ------------------------------------------------------------------- reset
 
-  resetMetrics(): void {
-    if (!confirm(this.transloco.translate('pages.observability.confirm.metrics'))) {
+  async resetMetrics(): Promise<void> {
+    if (
+      !(await this.dialogs.confirm(this.transloco.translate('pages.observability.confirm.metrics')))
+    ) {
       return;
     }
     this.metrics.reset();

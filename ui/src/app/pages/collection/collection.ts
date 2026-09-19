@@ -73,6 +73,9 @@ interface Member {
 // i18n pages.collection.addPeopleByName: Add people by name
 // i18n pages.collection.deleteCollection: Delete collection
 // i18n pages.collection.removeMe: Remove me from this collection
+// i18n pages.collection.leaveConfirm: Remove your account from this collection? You can still browse it afterwards.
+// i18n pages.collection.leaveFailed: Could not remove you. Your server must support collections and your sign-in must allow writing collections. You can retry or open the collection on your server.
+// i18n pages.collection.left: You have been removed from this collection.
 // i18n pages.collection.tabFeed: Feed
 // i18n pages.collection.tabMembers: Members
 // i18n pages.collection.bundledSectionsAriaLabel: Bundled collection sections
@@ -159,6 +162,9 @@ export class CollectionPage implements OnInit {
   // Dialog state
   protected showBulk = signal(false);
   protected showDeleteConfirm = signal(false);
+  protected showLeaveConfirm = signal(false);
+  protected leaving = signal(false);
+  protected leaveMessage = signal('');
   protected memberToRemove = signal<Member | null>(null);
   protected converting = signal(false);
   protected conversionMessage = signal('');
@@ -308,12 +314,7 @@ export class CollectionPage implements OnInit {
       return;
     }
     // Not awaited: the progress panel reports it, and the user is free to leave.
-    void this.bulk.start('list-follow', target).then(() => {
-      // Re-read relationships so the per-row buttons agree with what just
-      // happened, rather than showing "Follow" for people we just followed.
-      this.follows.reset();
-      this.resolveFollows();
-    });
+    void this.bulk.start('list-follow', target);
   }
 
   /**
@@ -354,12 +355,14 @@ export class CollectionPage implements OnInit {
   });
 
   /** My own item in someone else's collection, if I'm featured in it. */
-  protected myItem = computed<Member | null>(() => {
+  protected myItem = computed<{ itemId: string } | null>(() => {
     if (this.shipped()) {
       return null;
     }
     const me = this.auth.account()?.id;
-    return (this.members().find((m) => m.account.id === me) as Member | undefined) ?? null;
+    // Membership is authoritative even if the expanded account entity is absent.
+    const item = this.data()?.collection.items.find((item) => item.account_id === me);
+    return item ? { itemId: item.id } : null;
   });
 
   ngOnInit(): void {
@@ -597,10 +600,35 @@ export class CollectionPage implements OnInit {
   revokeSelf(): void {
     const d = this.data();
     const mine = this.myItem();
-    if (!d || !mine) {
+    this.showLeaveConfirm.set(false);
+    if (!d || !mine || this.leaving()) {
       return;
     }
-    this.api.revokeCollectionItem(d.collection.id, mine.itemId).subscribe(() => this.reload());
+    this.leaving.set(true);
+    this.leaveMessage.set('');
+    this.api.revokeCollectionItem(d.collection.id, mine.itemId).subscribe({
+      next: () => {
+        this.leaving.set(false);
+        this.data.update((current) =>
+          current
+            ? {
+                ...current,
+                collection: {
+                  ...current.collection,
+                  items: current.collection.items.filter((item) => item.id !== mine.itemId),
+                  item_count: Math.max(0, current.collection.item_count - 1),
+                },
+              }
+            : current,
+        );
+        this.leaveMessage.set(this.transloco.translate('pages.collection.left'));
+        this.reload();
+      },
+      error: () => {
+        this.leaving.set(false);
+        this.leaveMessage.set(this.transloco.translate('pages.collection.leaveFailed'));
+      },
+    });
   }
 
   remove(): void {

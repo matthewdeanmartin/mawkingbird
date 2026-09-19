@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -88,6 +89,8 @@ import { RemoteStorageUsage } from '../../observability/remote-storage-usage';
   styleUrls: ['../observability/diagnostics-shared.css', './storage-diagnostics.css'],
 })
 export class StorageDiagnostics {
+  private readonly dialogs = inject(AppDialogs);
+
   protected readonly formatBytes = formatBytes;
   protected readonly totalRecords = totalRecords;
 
@@ -122,11 +125,11 @@ export class StorageDiagnostics {
     return '';
   }
 
-  deleteKey(entry: StorageEntry): void {
+  async deleteKey(entry: StorageEntry): Promise<void> {
     const message = this.transloco.translate<string>('storageDiagnostics.deleteConfirm', {
       key: entry.key,
     });
-    if (!confirm(message)) {
+    if (!(await this.dialogs.confirm(message))) {
       return;
     }
     localStorage.removeItem(entry.key);

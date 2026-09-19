@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -30,7 +31,7 @@ function account(username: string, changes: Partial<Account> = {}): Account {
 }
 
 beforeEach(() => {
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 });
 
 describe('BridgeFinder', () => {

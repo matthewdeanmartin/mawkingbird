@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from './api';
 import { Auth } from './auth';
+import { FollowState } from './follow-state';
 import { Account, Relationship } from './models';
 import { RateLimitCoordinator } from './rate-limit.interceptor';
 
@@ -45,12 +46,7 @@ import { RateLimitCoordinator } from './rate-limit.interceptor';
 
 /** The operations offered. */
 export type BulkActionId =
-  | 'reblogs-off'
-  | 'reblogs-on'
-  | 'mute-amnesty'
-  | 'block-amnesty'
-  | 'list-follow'
-  | 'list-unfollow';
+  'reblogs-off' | 'reblogs-on' | 'mute-amnesty' | 'block-amnesty' | 'list-follow' | 'list-unfollow';
 
 /**
  * The list a list-scoped action applies to.
@@ -354,6 +350,7 @@ function sleep(ms: number): Promise<void> {
 export class BulkActions {
   private readonly api = inject(Api);
   private readonly auth = inject(Auth);
+  private readonly follows = inject(FollowState);
   private readonly rateLimits = inject(RateLimitCoordinator);
 
   /** The current or most recent job; null before anything has been run. */
@@ -567,6 +564,7 @@ export class BulkActions {
       this.patch({ phase: 'failed', error: describeError(error), pausedUntil: null });
     } finally {
       this.plan = null;
+      if (needsList(action) && this.job()?.changed) this.follows.refreshAccount();
     }
   }
 
@@ -708,7 +706,8 @@ export class BulkActions {
   private async write(request: () => Promise<Relationship>): Promise<void> {
     for (let attempt = 0; ; attempt++) {
       try {
-        await request();
+        const relationship = await request();
+        this.follows.write([relationship]);
         this.patch({
           done: (this.job()?.done ?? 0) + 1,
           changed: (this.job()?.changed ?? 0) + 1,

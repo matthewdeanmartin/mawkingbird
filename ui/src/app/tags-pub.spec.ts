@@ -1,3 +1,4 @@
+import { AppDialogs } from './app-dialogs';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -14,7 +15,7 @@ function rel(id: string, following: boolean): Relationship {
 }
 
 beforeEach(() => {
-  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
 });
 
 describe('TagsPub', () => {

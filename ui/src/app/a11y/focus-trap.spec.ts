@@ -23,13 +23,34 @@ import { FocusTrap } from './focus-trap';
         <button id="last" type="button">Last</button>
       </div>
     }
+    @if (childOpen()) {
+      <div role="dialog" appFocusTrap (dismissed)="childOpen.set(false)">
+        <button id="child-first" type="button">Cancel</button>
+        <button id="child-last" type="button">Confirm</button>
+      </div>
+    }
   `,
 })
 class Host {
   readonly open = signal(false);
+  readonly childOpen = signal(false);
 }
 
 describe('FocusTrap', () => {
+  it('only dismisses the top dialog and restores focus into its parent', async () => {
+    open();
+    await new Promise((resolve) => setTimeout(resolve));
+    const parentControl = el<HTMLButtonElement>('first');
+    parentControl.focus();
+    host.childOpen.set(true);
+    fixture.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(host.childOpen()).toBe(false);
+    expect(host.open()).toBe(true);
+    expect(document.activeElement).toBe(parentControl);
+  });
   let fixture: ComponentFixture<Host>;
   let host: Host;
 

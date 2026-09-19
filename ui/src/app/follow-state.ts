@@ -201,6 +201,20 @@ export class FollowState {
     }
   }
 
+  /** Refresh the profile badge once a bulk run settles, including partial success. */
+  refreshAccount(): void {
+    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    const token = this.auth.token();
+    if (!token) return;
+    this.api.verifyCredentials().subscribe({
+      next: (account) => {
+        if (this.auth.token() === token) this.auth.setAccount(account);
+      },
+      // A failed badge refresh must not turn a successful follow into a failure.
+      error: () => undefined,
+    });
+  }
+
   /** Fold in relationships someone else already fetched. */
   write(rels: Relationship[]): void {
     this.known.update((all) => {

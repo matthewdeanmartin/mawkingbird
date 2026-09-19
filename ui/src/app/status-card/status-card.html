@@ -413,12 +413,13 @@
             [attr.aria-label]="'statusCard.reply' | transloco"
           >
             <span aria-hidden="true">💬</span>
-            <span>{{ 'statusCard.reply' | transloco }}</span>
+            <span>{{
+              'statusCard.countLabel'
+                | transloco
+                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+            }}</span>
           </button>
-        }
-        @if (threadLink && (canReply || auth.isAnonymous || readOnlyStats)) {
-          <!-- Reading replies and writing one are separate actions. Keep the
-               count linked to the thread even when a composer is available. -->
+        } @else if (auth.isAnonymous && threadLink) {
           <a
             class="action"
             [routerLink]="threadLink"

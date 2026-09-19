@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -67,6 +68,8 @@ import { Terminology } from '../../terminology';
   styleUrl: './pastes-page.css',
 })
 export class PastesPage {
+  private readonly dialogs = inject(AppDialogs);
+
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 
@@ -160,8 +163,8 @@ export class PastesPage {
       });
   }
 
-  delete(record: PasteRecord): void {
-    if (!confirm(this.transloco.translate('pages.pastes.confirm.delete'))) {
+  async delete(record: PasteRecord): Promise<void> {
+    if (!(await this.dialogs.confirm(this.transloco.translate('pages.pastes.confirm.delete')))) {
       return;
     }
     const provider = this.providers.get(record.providerId);

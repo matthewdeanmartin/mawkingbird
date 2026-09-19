@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Api } from './api';
 import { Auth } from './auth';
+import { FollowState } from './follow-state';
 import { Account } from './models';
 import { AnonymousAccount } from './providers/anonymous/anonymous-account';
 import { AnonymousFollows } from './providers/anonymous/anonymous-follows';
@@ -92,6 +93,7 @@ export class ImportFollows {
   private readonly followConfirmation = inject(BulkFollowConfirmation);
   private api = inject(Api);
   private auth = inject(Auth);
+  private follows = inject(FollowState);
   private anonymous = inject(AnonymousAccount);
   private anonymousFollows = inject(AnonymousFollows);
   private anonymousPublic = inject(AnonymousPublicApi);
@@ -133,10 +135,10 @@ export class ImportFollows {
       return;
     }
     if (
-      !this.followConfirmation.allow(
+      !(await this.followConfirmation.allow(
         this.rows().filter((row) => row.status === 'pending').length,
         this.auth.isAnonymous,
-      )
+      ))
     )
       return;
     this.stopRequested = false;
@@ -156,6 +158,7 @@ export class ImportFollows {
       }
     } finally {
       this.running.set(false);
+      if (this.rows().some((row) => row.status === 'followed')) this.follows.refreshAccount();
     }
   }
 
@@ -183,7 +186,10 @@ export class ImportFollows {
         if (!result.ok) throw new Error(result.error);
       } else {
         // Following an already-followed account is a harmless no-op server-side.
-        await this.withRateLimitRetry(() => firstValueFrom(this.api.follow(account.id)));
+        const relationship = await this.withRateLimitRetry(() =>
+          firstValueFrom(this.api.follow(account.id)),
+        );
+        this.follows.write([relationship]);
       }
       this.patch(i, { status: 'followed' });
     } catch (err) {

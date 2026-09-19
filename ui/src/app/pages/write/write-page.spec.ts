@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -335,14 +336,14 @@ describe('WritePage', () => {
     expect(drafts[0].segments).toEqual(['second']);
   });
 
-  it('saves a fresh copy when the draft was deleted underneath it', () => {
+  it('saves a fresh copy when the draft was deleted underneath it', async () => {
     const id = saveLocal(['held open here']);
     const fixture = setUp();
     const page = internals(fixture);
     page.open(page.sources.items()[0]);
 
     // Deleted in another tab, or from /drafts.
-    TestBed.inject(Drafts).remove(id);
+    await TestBed.inject(Drafts).remove(id);
     page.onBodyInput('edited after the delete');
     page.save();
 
@@ -567,12 +568,12 @@ describe('WritePage', () => {
     const publish = vi
       .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
       .mockResolvedValue();
-    const dialog = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const dialog = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
     await page.wizardFinish();
     expect(publish).not.toHaveBeenCalled();
     expect(page.body()).toBe('Check my personal details');
     expect(dialog.mock.calls[0][0]).toContain('Pseudonymity mode is on for me');
-    dialog.mockReturnValue(true);
+    dialog.mockResolvedValue(true);
     await page.wizardFinish();
     expect(publish).toHaveBeenCalledTimes(1);
     expect(dialog).toHaveBeenCalledTimes(2);

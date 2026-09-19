@@ -143,7 +143,7 @@ export class TagsPub {
     if (this.following()) {
       return;
     }
-    if (!this.followConfirmation.allow(this.pending().length)) return;
+    if (!(await this.followConfirmation.allow(this.pending().length))) return;
     this.stopRequested = false;
     this.following.set(true);
     this.error.set(null);

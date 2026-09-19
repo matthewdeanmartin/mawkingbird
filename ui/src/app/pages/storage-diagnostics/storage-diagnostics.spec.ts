@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -43,16 +44,16 @@ describe('StorageDiagnostics', () => {
     expect(component.keyNote('something_else')).toBe('');
   });
 
-  it('deletes a key only after the confirmation is accepted', () => {
+  it('deletes a key only after the confirmation is accepted', async () => {
     const component = fixture.componentInstance;
     const entry = { key: 'mockingbird_rss_feeds', bytes: 10, valueChars: 10 };
 
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
-    component.deleteKey(entry);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    await component.deleteKey(entry);
     expect(localStorage.getItem('mockingbird_rss_feeds')).not.toBeNull();
 
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    component.deleteKey(entry);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    await component.deleteKey(entry);
     expect(localStorage.getItem('mockingbird_rss_feeds')).toBeNull();
   });
 

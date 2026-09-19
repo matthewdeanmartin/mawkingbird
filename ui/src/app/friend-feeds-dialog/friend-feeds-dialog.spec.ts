@@ -1,3 +1,4 @@
+import { AppDialogs } from '../app-dialogs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
@@ -54,7 +55,7 @@ describe('FriendFeedsDialog', () => {
   let proxyAvailable: boolean;
 
   beforeEach(() => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
     localStorage.clear();
     TestBed.resetTestingModule();
     proxyAvailable = true;

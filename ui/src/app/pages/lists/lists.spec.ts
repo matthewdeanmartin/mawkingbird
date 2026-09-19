@@ -6,6 +6,8 @@ import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Collection, UserList } from '../../models';
+import { Auth } from '../../auth';
+import { Account } from '../../models';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { RssFeedSub, RssSubscriptions } from '../../providers/rss/rss-subscriptions';
 import { Lists } from './lists';
@@ -17,6 +19,9 @@ interface ListsInternals {
   loading: WritableSignal<boolean>;
   newTitle: WritableSignal<string>;
   collections: WritableSignal<Collection[]>;
+  inCollections: WritableSignal<Collection[]>;
+  collectionToLeave: WritableSignal<Collection | null>;
+  leaveCollection(): Promise<void>;
   collectionsSupported: WritableSignal<boolean>;
   newCollectionName: WritableSignal<string>;
   listToDelete: WritableSignal<UserList | null>;
@@ -172,6 +177,32 @@ describe('Lists', () => {
     expect(internals(fixture).loading()).toBe(true);
     expect(internals(fixture).lists()).toEqual([]);
     httpMock.expectOne('/api/v1/lists').flush([]);
+  });
+
+  it('removes only the current user from a featured collection using its membership id', async () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    TestBed.inject(Auth).account.set({ id: 'me' } as Account);
+    const collection = makeCollection('other');
+    internals(fixture).inCollections.set([collection]);
+    internals(fixture).collectionToLeave.set(collection);
+    const leaving = internals(fixture).leaveCollection();
+    httpMock.expectOne('/api/v1/collections/other').flush({
+      collection: {
+        ...collection,
+        items: [
+          { id: 'my-item', account_id: 'me' },
+          { id: 'another-item', account_id: 'another' },
+        ],
+      },
+      accounts: [],
+    });
+    await Promise.resolve();
+    const revoke = httpMock.expectOne('/api/v1/collections/other/items/my-item/revoke');
+    expect(revoke.request.method).toBe('POST');
+    revoke.flush({});
+    await leaving;
+    expect(internals(fixture).inCollections()).toEqual([]);
   });
 
   it('offers starter packs when the server does not support collections', () => {

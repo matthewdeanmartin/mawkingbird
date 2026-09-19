@@ -40,6 +40,7 @@ const FOCUSABLE = [
   selector: '[appFocusTrap]',
 })
 export class FocusTrap implements OnDestroy {
+  private static readonly stack: FocusTrap[] = [];
   private readonly host = inject(ElementRef<HTMLElement>);
 
   /** Set false for a dialog that must be dismissed by an explicit choice. */
@@ -55,6 +56,7 @@ export class FocusTrap implements OnDestroy {
   private readonly opener = document.activeElement as HTMLElement | null;
 
   constructor() {
+    FocusTrap.stack.push(this);
     document.addEventListener('keydown', this.onKeydown, true);
     // The dialog's content is rendered by the time the directive constructs,
     // but a child component's own view may not be; defer so the first
@@ -63,6 +65,8 @@ export class FocusTrap implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    const index = FocusTrap.stack.indexOf(this);
+    if (index >= 0) FocusTrap.stack.splice(index, 1);
     document.removeEventListener('keydown', this.onKeydown, true);
     // Only restore if focus is still inside the dialog (or was lost to body).
     // If something else has deliberately taken focus — a confirm dialog that
@@ -108,6 +112,7 @@ export class FocusTrap implements OnDestroy {
   }
 
   private focusFirst(): void {
+    if (FocusTrap.stack.at(-1) !== this) return;
     const first = this.focusable()[0];
     if (first) {
       first.focus({ preventScroll: true });
@@ -126,6 +131,7 @@ export class FocusTrap implements OnDestroy {
    * that might stop propagation on its way up.
    */
   private readonly onKeydown = (event: KeyboardEvent): void => {
+    if (FocusTrap.stack.at(-1) !== this) return;
     if (event.key === 'Escape' && this.closeOnEscape()) {
       event.preventDefault();
       this.dismissed.emit();

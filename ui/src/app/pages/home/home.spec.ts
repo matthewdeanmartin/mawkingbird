@@ -48,6 +48,8 @@ interface HomeInternals {
   toggleReplies(): void;
   articles: Signal<{ status: Status; card: NonNullable<Status['card']> }[]>;
   view: WritableSignal<'feed' | 'members' | 'analytics' | 'media' | 'articles'>;
+  noNewPosts: WritableSignal<boolean>;
+  refreshHome(): void;
   setView(view: 'feed' | 'members' | 'analytics' | 'media' | 'articles'): void;
   onPosted(status: Status): void;
   startWriting(): void;
@@ -149,6 +151,21 @@ describe('Home', () => {
       new NavigationSkipped(1, '/home', 'Same URL', NavigationSkippedCode.IgnoredSameUrlNavigation),
     );
     expect(internals(fixture).view()).toBe('feed');
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([]);
+  });
+
+  it('reports no new posts, ignores repeated clicks while loading, and clears the notice when posts arrive', () => {
+    const fixture = setUp();
+    internals(fixture).statuses.set([makeStatus('old')]);
+    internals(fixture).refreshHome();
+    internals(fixture).refreshHome();
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('old')]);
+    expect(internals(fixture).noNewPosts()).toBe(true);
+    internals(fixture).refreshHome();
+    httpMock
+      .expectOne('/api/v1/timelines/home?limit=20')
+      .flush([makeStatus('new'), makeStatus('old')]);
+    expect(internals(fixture).noNewPosts()).toBe(false);
   });
 
   it.each(['bluesky', 'mastodon'] as const)(

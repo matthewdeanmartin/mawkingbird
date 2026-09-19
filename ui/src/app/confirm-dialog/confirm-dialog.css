@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 110;
+  z-index: 1000;
   padding: 16px;
 }
 
@@ -13,8 +13,12 @@
   background: var(--col-bg);
   border-radius: 16px;
   padding: 24px;
-  width: 360px;
+  width: 440px;
   max-width: 100%;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.3);
 }
 
 h3 {
@@ -23,12 +27,26 @@ h3 {
 
 p {
   margin: 0 0 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+}
+input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .confirm-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 24px;
 }
 
 .btn-danger {

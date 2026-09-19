@@ -1,3 +1,4 @@
+import { AppDialogs } from '../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -488,12 +489,16 @@ describe('StatusCard', () => {
    * foreign post without a url (a Bluesky post whose adapter had none) put one
    * of these in the action row right beside the reply count.
    */
-  it('offers signed-in readers a thread link separately from the reply composer', () => {
+  it.each([0, 2])('opens the mini composer from the signed-in reply count (%s)', (count) => {
     TestBed.inject(Auth).setToken('reader');
-    const fixture = setUp(makeStatus({ replies_count: 2 }));
+    const fixture = setUp(makeStatus({ replies_count: count }));
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('a[title="Replies"]')?.getAttribute('href')).toBe('/statuses/1');
-    expect(el.querySelector('button[title="Reply"]')).not.toBeNull();
+    expect(el.querySelector('a[title="Replies"]')).toBeNull();
+    const reply = el.querySelector<HTMLButtonElement>('button[title="Reply"]')!;
+    expect(reply.textContent).toContain(String(count));
+    reply.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-compose')).not.toBeNull();
   });
 
   it('never renders a link that navigates to the current page', () => {
@@ -1118,7 +1123,7 @@ describe('StatusCard', () => {
     };
     const getPosts = vi.spyOn(api, 'getPosts').mockReturnValue(of({ posts: [post] }));
     const request = vi.spyOn(api, 'request').mockReturnValue(of({}));
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
     const deleted = vi.fn();
     f.componentInstance.deleted.subscribe(deleted);
     f.componentInstance.startEdit(fakeEvent());
@@ -1129,7 +1134,7 @@ describe('StatusCard', () => {
     expect(confirm.mock.calls[0][0]).toContain('3 replies, 4 reposts, 5 likes and 2 quotes');
     expect(request).not.toHaveBeenCalled();
     expect(internals(f).editing()).toBe(true);
-    confirm.mockReturnValue(true);
+    confirm.mockResolvedValue(true);
     f.componentInstance.saveEdit();
     await vi.waitFor(() => expect(deleted).toHaveBeenCalled());
     expect(getPosts).toHaveBeenCalledTimes(3);
@@ -1431,7 +1436,7 @@ describe('StatusCard', () => {
     httpMock.expectNone('https://bsky.social/xrpc/app.bsky.bookmark.createBookmark');
   });
 
-  it('routes own Bluesky post deletion natively and hides Mastodon-only owner actions', () => {
+  it('routes own Bluesky post deletion natively and hides Mastodon-only owner actions', async () => {
     seedBskyIdentity({ did: 'did:plc:me', handle: 'me.bsky.social' });
     expect(TestBed.inject(Auth).enterBluesky()).toBe(true);
     const status = makeStatus({
@@ -1459,13 +1464,14 @@ describe('StatusCard', () => {
     expect(editButton).not.toBeNull();
     const startEdit = vi.spyOn(f.componentInstance, 'startEdit');
     editButton!.click();
+    await Promise.resolve();
     expect(startEdit).toHaveBeenCalled();
     httpMock.expectOne((r) => r.url.endsWith('app.bsky.feed.getPosts')).flush({ posts: [] });
 
     const deleted = vi.fn();
     f.componentInstance.deleted.subscribe(deleted);
-    const confirmDelete = vi.spyOn(window, 'confirm').mockReturnValue(true);
-    f.componentInstance.remove(fakeEvent());
+    const confirmDelete = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    await f.componentInstance.remove(fakeEvent());
     const request = httpMock.expectOne('https://bsky.social/xrpc/com.atproto.repo.deleteRecord');
     expect(request.request.body).toEqual({
       repo: 'did:plc:me',
@@ -2035,9 +2041,9 @@ describe('StatusCard', () => {
       return f.componentInstance as unknown as RedraftInternals;
     }
 
-    function startRedraft(f: ComponentFixture<StatusCard>): void {
-      vi.spyOn(window, 'confirm').mockReturnValue(true);
-      redraftInternals(f).deleteAndRedraft(fakeEvent());
+    async function startRedraft(f: ComponentFixture<StatusCard>): Promise<void> {
+      vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+      await redraftInternals(f).deleteAndRedraft(fakeEvent());
       httpMock
         .expectOne('/api/v1/statuses/1/source')
         .flush({ id: '1', text: 'original text', spoiler_text: '' });
@@ -2046,9 +2052,9 @@ describe('StatusCard', () => {
 
     afterEach(() => vi.restoreAllMocks());
 
-    it('fetches the source, deletes the post, and opens the seeded composer', () => {
+    it('fetches the source, deletes the post, and opens the seeded composer', async () => {
       const f = setUp();
-      startRedraft(f);
+      await startRedraft(f);
       f.detectChanges();
 
       expect(redraftInternals(f).redrafting()).toBe(true);
@@ -2056,22 +2062,22 @@ describe('StatusCard', () => {
       expect((f.nativeElement as HTMLElement).querySelector('.redraft app-compose')).not.toBeNull();
     });
 
-    it('does nothing when the confirmation is declined', () => {
-      vi.spyOn(window, 'confirm').mockReturnValue(false);
+    it('does nothing when the confirmation is declined', async () => {
+      vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
       const f = setUp();
-      redraftInternals(f).deleteAndRedraft(fakeEvent());
+      await redraftInternals(f).deleteAndRedraft(fakeEvent());
 
       httpMock.expectNone('/api/v1/statuses/1/source');
       expect(redraftInternals(f).redrafting()).toBe(false);
     });
 
-    it('emits changed with the reposted status so containers swap it in', () => {
+    it('emits changed with the reposted status so containers swap it in', async () => {
       const f = setUp();
       const changed: Status[] = [];
       const deleted: Status[] = [];
       f.componentInstance.changed.subscribe((s) => changed.push(s));
       f.componentInstance.deleted.subscribe((s) => deleted.push(s));
-      startRedraft(f);
+      await startRedraft(f);
 
       redraftInternals(f).onRedrafted(makeStatus({ id: '2' }));
 
@@ -2080,11 +2086,11 @@ describe('StatusCard', () => {
       expect(deleted).toHaveLength(0);
     });
 
-    it('emits deleted when the redraft is discarded (post is already gone)', () => {
+    it('emits deleted when the redraft is discarded (post is already gone)', async () => {
       const f = setUp();
       const deleted: Status[] = [];
       f.componentInstance.deleted.subscribe((s) => deleted.push(s));
-      startRedraft(f);
+      await startRedraft(f);
 
       redraftInternals(f).cancelRedraft();
 

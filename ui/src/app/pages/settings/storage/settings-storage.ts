@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../../app-dialogs';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountDataRef, inspectAccountData } from '../../../account-data';
@@ -54,6 +55,8 @@ interface StorageAccount {
   styleUrl: './settings-storage.css',
 })
 export class SettingsStorage {
+  private readonly dialogs = inject(AppDialogs);
+
   private readonly auth = inject(Auth);
   private readonly anonymous = inject(AnonymousAccount);
   private readonly diagnostics = inject(PageDiagnostics);
@@ -113,22 +116,26 @@ export class SettingsStorage {
     this.storage.set(this.inspectSelectedAccount());
   }
 
-  deleteKey(entry: StorageEntry): void {
-    if (!confirm(`Delete local storage key "${entry.key}"? This can't be undone.`)) {
+  async deleteKey(entry: StorageEntry): Promise<void> {
+    if (
+      !(await this.dialogs.confirm(
+        `Delete local storage key "${entry.key}"? This can't be undone.`,
+      ))
+    ) {
       return;
     }
     localStorage.removeItem(entry.key);
     this.storage.set(this.inspectSelectedAccount());
   }
 
-  clearAll(): void {
+  async clearAll(): Promise<void> {
     const entries = this.storage().entries;
     const account = this.selected();
     if (
       !entries.length ||
-      !confirm(
+      !(await this.dialogs.confirm(
         `Clear all local storage for ${account?.label ?? 'this account'}? This can't be undone.`,
-      )
+      ))
     ) {
       return;
     }
@@ -156,7 +163,9 @@ export class SettingsStorage {
     const label = this.storeLabel(database.name, store.name);
     if (
       !store.count ||
-      !confirm(`Delete all ${store.count} records in ${label}? This can't be undone.`)
+      !(await this.dialogs.confirm(
+        `Delete all ${store.count} records in ${label}? This can't be undone.`,
+      ))
     ) {
       return;
     }

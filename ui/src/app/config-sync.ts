@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { AppDialogs } from './app-dialogs';
 import { importPortableConfig, parsePortableConfig, PortableConfig } from './portable-config';
 
 const SYNC_KEY = 'mockingbird_config_sync';
@@ -54,6 +55,8 @@ async function sha256(text: string): Promise<string> {
 /** Remote portable-config checks. */
 @Injectable({ providedIn: 'root' })
 export class ConfigSync {
+  private readonly dialogs = inject(AppDialogs);
+
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   settings(): ConfigSyncSettings | null {
@@ -144,7 +147,7 @@ export class ConfigSync {
       const checked = { ...settings, lastCheckedAt: Date.now(), warning: undefined };
       localStorage.setItem(SYNC_KEY, JSON.stringify(checked));
       if (result.hash !== settings.lastHash) {
-        const apply = confirm(
+        const apply = await this.dialogs.confirm(
           'Your remote Mockingbird configuration changed. Import it now? This replaces the settings covered by that file.',
         );
         if (apply) {

@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Api } from '../../api';
@@ -611,6 +612,9 @@ export class Lists implements OnInit {
   // Pending deletions awaiting confirmation.
   protected listToDelete = signal<UserList | null>(null);
   protected collectionToDelete = signal<Collection | null>(null);
+  protected collectionToLeave = signal<Collection | null>(null);
+  protected leavingCollection = signal(false);
+  protected leaveCollectionFailed = signal(false);
   protected rssToRemove = signal<RssFeedSub | null>(null);
   protected showStarterCollection = computed(
     () =>
@@ -950,6 +954,27 @@ export class Lists implements OnInit {
     event.preventDefault();
     this.diagnostics.info('Lists', 'user:request-delete-collection', { id: collection.id });
     this.collectionToDelete.set(collection);
+  }
+
+  async leaveCollection(): Promise<void> {
+    const collection = this.collectionToLeave();
+    const me = this.auth.account()?.id;
+    if (!collection || !me || this.leavingCollection()) return;
+    this.collectionToLeave.set(null);
+    this.leavingCollection.set(true);
+    this.leaveCollectionFailed.set(false);
+    try {
+      const data = await firstValueFrom(this.api.getCollection(collection.id));
+      const item = data.collection.items.find((item) => item.account_id === me);
+      if (item) await firstValueFrom(this.api.revokeCollectionItem(collection.id, item.id));
+      this.inCollections.update((collections) =>
+        collections.filter((entry) => entry.id !== collection.id),
+      );
+    } catch {
+      this.leaveCollectionFailed.set(true);
+    } finally {
+      this.leavingCollection.set(false);
+    }
   }
 
   removeCollection(collection: Collection): void {

@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +24,8 @@ import { Announcement } from '../../models';
   styleUrl: './admin-announcements.css',
 })
 export class AdminAnnouncements implements OnInit {
+  private readonly dialogs = inject(AppDialogs);
+
   private api = inject(AdminApi);
 
   protected announcements = signal<Announcement[]>([]);
@@ -74,8 +77,8 @@ export class AdminAnnouncements implements OnInit {
     call.subscribe((u) => this.replace(u));
   }
 
-  remove(a: Announcement): void {
-    if (!confirm('Delete this announcement?')) {
+  async remove(a: Announcement): Promise<void> {
+    if (!(await this.dialogs.confirm('Delete this announcement?'))) {
       return;
     }
     this.api.deleteAnnouncement(a.id).subscribe(() => {

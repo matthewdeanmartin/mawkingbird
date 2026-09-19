@@ -237,6 +237,11 @@ describe('CollectionPage', () => {
     expect(button).toBeDefined();
 
     button.click();
+    await vi.waitFor(() =>
+      expect(TestBed.inject(AnonymousFollows).count()).toBe(
+        Math.min(kit.itemCount, ANONYMOUS_FOLLOW_LIMIT),
+      ),
+    );
     await vi.waitFor(() => expect(importer.running()).toBe(false));
     fixture.detectChanges();
 
@@ -503,6 +508,22 @@ describe('CollectionPage', () => {
     post.flush({});
 
     flushLoad(fixture);
+  });
+
+  it('offers removal when membership exists but the expanded account is missing, and retains it after failure', () => {
+    TestBed.inject(Auth).account.set(makeAccount(ACCEPTED));
+    const fixture = setUp();
+    const data = makeCollection();
+    data.accounts = data.accounts.filter((account) => account.id !== ACCEPTED);
+    flushLoad(fixture, data);
+    expect(internals(fixture).myItem()?.itemId).toBe('I-A');
+    internals(fixture).revokeSelf();
+    httpMock
+      .expectOne('/api/v1/collections/C1/items/I-A/revoke')
+      .flush({}, { status: 403, statusText: 'Forbidden' });
+    fixture.detectChanges();
+    expect(internals(fixture).myItem()?.itemId).toBe('I-A');
+    expect(fixture.nativeElement.textContent).toContain('Could not remove you');
   });
 
   // ---------------------------------------------------------------- add-member search
