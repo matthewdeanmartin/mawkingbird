@@ -44,4 +44,17 @@ describe('detectFacets', () => {
   it('returns no facets for plain text', async () => {
     expect(await firstValueFrom(detectFacets('just words', resolver))).toEqual([]);
   });
+
+  it('rebuilds Unicode hashtag byte offsets without tagging URL fragments or punctuation', async () => {
+    const facets = await firstValueFrom(
+      detectFacets('🦋 #日本語! https://example.com/#anchor #123', resolver),
+    );
+    const tags = facets.filter((facet) => facet.features[0].$type.endsWith('#tag'));
+    expect(tags).toEqual([
+      {
+        index: { byteStart: 5, byteEnd: 15 },
+        features: [{ $type: 'app.bsky.richtext.facet#tag', tag: '日本語' }],
+      },
+    ]);
+  });
 });

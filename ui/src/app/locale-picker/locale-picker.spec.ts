@@ -35,6 +35,7 @@ describe('LocalePicker', () => {
         available: ['en', 'de'],
         active: signal('en'),
         isAutomatic: signal(true),
+        browserPreference: 'de',
         choose,
       },
     });
@@ -43,7 +44,7 @@ describe('LocalePicker', () => {
     fixture.detectChanges();
     const select = (fixture.nativeElement as HTMLElement).querySelector('select')!;
     expect([...select.options].map((option) => option.textContent?.trim())).toEqual([
-      'Automatic (browser)',
+      'Deutsch (browser)',
       'English',
       'Deutsch',
     ]);

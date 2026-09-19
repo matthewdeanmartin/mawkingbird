@@ -61,7 +61,14 @@ import { serverKnowsStatus, ProviderCapabilities } from '../providers/provider';
 import { BskyReply } from '../providers/bluesky/bluesky-reply';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
-import { BskyRef } from '../providers/bluesky/bluesky-types';
+import { BskyRef, BskyPostView } from '../providers/bluesky/bluesky-types';
+import { firstValueFrom } from 'rxjs';
+
+// i18n statusCard.replacePost: Delete and repost
+// i18n statusCard.replaceHint: Bluesky edits replace the original with a new post. Existing links and engagement will not move to the replacement.
+// i18n statusCard.replaceConfirm: Delete the original and publish this replacement? The original has {{replies}} replies, {{reposts}} reposts, {{likes}} likes and {{quotes}} quotes. These will not move to the new post, and replies and quotes will still reference the deleted original. Continue anyway?
+// i18n statusCard.replaceFailed: Could not confirm the replacement. Your edits are still here. Refresh your profile to check whether it was published before retrying.
+// i18n statusCard.replaceTooLong: Shorten the replacement to 300 characters before reposting.
 import { SignInPrompt } from '../sign-in-prompt/sign-in-prompt';
 import { AnonymousCapabilities } from '../providers/anonymous/anonymous-capabilities';
 import { AnonymousBookmarks } from '../providers/anonymous/anonymous-bookmarks';
@@ -907,6 +914,21 @@ export class StatusCard {
 
   startEdit(event: Event): void {
     event.stopPropagation();
+    if (this.saving() || this.editing()) return;
+    if (this.display.provider === 'bluesky') {
+      const ref = this.display.providerRef as BskyRef;
+      this.blueskyApi.getPosts([ref.uri]).subscribe({
+        next: ({ posts }) => {
+          const post = posts.find((item) => item.uri === ref.uri);
+          if (!post || post.author.did !== this.blueskySession.session()?.did) return;
+          this.blueskyEdit = { post, operationId: crypto.randomUUID() };
+          this.editText.set(post.record.text);
+          this.editing.set(true);
+        },
+        error: () => this.actionError.set(this.transloco.translate('statusCard.replaceFailed')),
+      });
+      return;
+    }
     this.api.getStatusSource(this.display.id).subscribe((src) => {
       this.editText.set(src.text);
       this.editing.set(true);
@@ -914,12 +936,62 @@ export class StatusCard {
   }
 
   cancelEdit(): void {
+    if (this.saving()) return;
     this.editing.set(false);
+    this.blueskyEdit = null;
+  }
+
+  private blueskyEdit: { post: BskyPostView; operationId: string } | null = null;
+
+  private async saveBlueskyEdit(text: string): Promise<void> {
+    const edit = this.blueskyEdit;
+    if (!edit) return;
+    this.saving.set(true);
+    this.actionError.set(null);
+    try {
+      const { posts } = await firstValueFrom(this.blueskyApi.getPosts([edit.post.uri]));
+      const current = posts.find((post) => post.uri === edit.post.uri);
+      if (
+        !current ||
+        current.cid !== edit.post.cid ||
+        current.author.did !== this.blueskySession.session()?.did
+      )
+        throw new Error('Post changed');
+      const { graphemeLength } = await import('../providers/bluesky/bluesky-facets');
+      if (graphemeLength(text) > 300 || new TextEncoder().encode(text).length > 3000) {
+        this.actionError.set(this.transloco.translate('statusCard.replaceTooLong'));
+        return;
+      }
+      if (
+        !confirm(
+          this.transloco.translate('statusCard.replaceConfirm', {
+            replies: Math.max(current.replyCount ?? 0, this.display.replies_count),
+            reposts: Math.max(current.repostCount ?? 0, this.display.reblogs_count),
+            likes: Math.max(current.likeCount ?? 0, this.display.favourites_count),
+            quotes: current.quoteCount ?? 0,
+          }),
+        )
+      )
+        return;
+      const { replaceBlueskyPost } = await import('../providers/bluesky/bluesky-replace-post');
+      await replaceBlueskyPost(this.blueskyApi, current, text, edit.operationId);
+      this.editing.set(false);
+      this.blueskyEdit = null;
+      this.deleted.emit(this.status());
+    } catch {
+      this.actionError.set(this.transloco.translate('statusCard.replaceFailed'));
+    } finally {
+      this.saving.set(false);
+    }
   }
 
   saveEdit(): void {
     const text = this.editText().trim();
     if (!text || this.saving()) {
+      return;
+    }
+    if (this.display.provider === 'bluesky') {
+      void this.saveBlueskyEdit(text);
       return;
     }
     this.saving.set(true);

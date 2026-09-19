@@ -16,6 +16,7 @@ import { environment } from '../../../environments/environment';
 import { brandLogoSrc } from '../../build-flavor';
 import { AppFooter } from '../../shell/app-footer/app-footer';
 import { ServerDiscovery } from '../../server-discovery/server-discovery';
+import { redirectToSecureLogin } from '../../secure-login';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 
@@ -64,6 +65,7 @@ const ACCESS_SCOPES: Record<OAuthAccess, string> = {
 };
 
 // i18n pages.login.seedFailed: Seeding failed.
+// i18n pages.login.server.editing: Enter your server's full address. It will be checked automatically.
 // i18n pages.login.access.full.label: Full access
 // i18n pages.login.access.full.hint: Read, post, reply, follow — everything the app does.
 // i18n pages.login.access.read.label: Read only
@@ -266,7 +268,16 @@ export class Login implements OnInit, OnDestroy {
    * Mocking Bird has no "this server"; until the user picks an instance, every API call
    * would hit the static host. Gate the sign-in forms on a chosen instance.
    */
-  protected needsInstance = computed(() => !this.server.allowsThisServer && !this.server.baseUrl());
+  protected serverPending = computed(
+    () =>
+      normalizeHostUrl(this.customServer().trim()) !== this.server.baseUrl() ||
+      this.serverStatus() === 'checking' ||
+      this.serverStatus() === 'unreachable' ||
+      !!this.pendingDegradedServer(),
+  );
+  protected needsInstance = computed(
+    () => this.serverPending() || (!this.server.allowsThisServer && !this.server.baseUrl()),
+  );
 
   /** Short host name for buttons/copy: "mastodon.social" instead of the full URL. */
   protected serverHostLabel = computed(() => {
@@ -333,6 +344,7 @@ export class Login implements OnInit, OnDestroy {
   protected prefs = inject(ClientPrefs);
 
   ngOnInit(): void {
+    if (redirectToSecureLogin()) return;
     // Already signed in? Landing on /login/mastodon (bookmark, stale tab, back button)
     // shouldn't demand a fresh login cycle — verify the stored token and go straight home.
     // An OAuth callback (?code=) and the explicit add-account flow (?add=1) still show the
@@ -376,6 +388,7 @@ export class Login implements OnInit, OnDestroy {
 
   /** Enter the real application as the one browser-local Anonymous account. */
   continueAnonymously(discoveredServer?: string): void {
+    if (!discoveredServer && this.needsInstance()) return;
     const selected = discoveredServer || this.server.baseUrl() || 'https://mastodon.social';
     this.auth.enterAnonymous(selected);
     void this.router.navigateByUrl('/home');
@@ -388,6 +401,8 @@ export class Login implements OnInit, OnDestroy {
   }
 
   selectServer(baseUrl: string): void {
+    this.probeSeq += 1;
+    if (this.serverDebounce) clearTimeout(this.serverDebounce);
     this.server.setBaseUrl(baseUrl);
     this.customServer.set(baseUrl);
     this.serverStatus.set('idle');
@@ -414,9 +429,10 @@ export class Login implements OnInit, OnDestroy {
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
     }
-    if (!DOMAIN_RE.test(value.trim())) {
+    if (!DOMAIN_RE.test(value.trim().replace(/\/+$/, ''))) {
       return;
     }
+    this.serverStatus.set('checking');
     this.serverDebounce = setTimeout(() => this.probeAndApply(value), 500);
   }
 
@@ -523,6 +539,7 @@ export class Login implements OnInit, OnDestroy {
   // ---------- Sign in with a pasted token ----------
 
   submit(): void {
+    if (this.needsInstance()) return;
     const value = this.token().trim();
     if (!value) {
       return;
@@ -796,6 +813,7 @@ export class Login implements OnInit, OnDestroy {
 
   /** Register a throwaway app, then redirect through the server's account-picker. */
   startOAuth(): void {
+    if (redirectToSecureLogin() || this.needsInstance() || this.oauthWorking()) return;
     this.oauthError.set(null);
     this.oauthWorking.set(true);
     // Resolve against <base href> (the app may be served from a sub-path like /_ui/).
@@ -809,30 +827,35 @@ export class Login implements OnInit, OnDestroy {
         // PKCE: only the challenge travels to the instance; the verifier stays here.
         const state = createOAuthState();
         const codeVerifier = createCodeVerifier();
-        void codeChallengeFor(codeVerifier).then((codeChallenge) => {
-          const stored: StoredApp = {
-            clientId: app.client_id,
-            clientSecret: app.client_secret,
-            redirectUri,
-            state,
-            codeVerifier,
-            server,
-          };
-          sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
-          const params = new URLSearchParams({
-            client_id: app.client_id,
-            redirect_uri: redirectUri,
-            response_type: 'code',
-            scope: app.scopes.join(' '),
-            state,
-            code_challenge: codeChallenge,
-            code_challenge_method: 'S256',
+        void codeChallengeFor(codeVerifier)
+          .then((codeChallenge) => {
+            const stored: StoredApp = {
+              clientId: app.client_id,
+              clientSecret: app.client_secret,
+              redirectUri,
+              state,
+              codeVerifier,
+              server,
+            };
+            sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
+            const params = new URLSearchParams({
+              client_id: app.client_id,
+              redirect_uri: redirectUri,
+              response_type: 'code',
+              scope: app.scopes.join(' '),
+              state,
+              code_challenge: codeChallenge,
+              code_challenge_method: 'S256',
+            });
+            // The instance itself handles this redirect in the user's browser, so it works
+            // even when redirectUri points back at an unreachable local dev server.
+            const authorizeBase = server || window.location.origin;
+            window.location.href = `${authorizeBase}/oauth/authorize?${params.toString()}`;
+          })
+          .catch(() => {
+            this.oauthWorking.set(false);
+            this.oauthError.set('Could not start secure sign-in. Please try again.');
           });
-          // The instance itself handles this redirect in the user's browser, so it works
-          // even when redirectUri points back at an unreachable local dev server.
-          const authorizeBase = server || window.location.origin;
-          window.location.href = `${authorizeBase}/oauth/authorize?${params.toString()}`;
-        });
       },
       error: () => {
         this.oauthWorking.set(false);

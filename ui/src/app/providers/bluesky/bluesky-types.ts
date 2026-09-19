@@ -142,6 +142,7 @@ export interface BskyEmbeddedRecord {
 }
 
 export interface BskyPostView {
+  quoteCount?: number;
   uri: string;
   cid: string;
   author: BskyAuthor;
@@ -190,10 +191,7 @@ export interface BskyTimeline {
  * its toggles onto these rather than filtering client-side and paging holes.
  */
 export type BskyAuthorFeedFilter =
-  | 'posts_with_replies'
-  | 'posts_no_replies'
-  | 'posts_with_media'
-  | 'posts_and_author_threads';
+  'posts_with_replies' | 'posts_no_replies' | 'posts_with_media' | 'posts_and_author_threads';
 
 /** `app.bsky.feed.getPostThread` node; `post` is absent on notFound/blocked variants. */
 export interface BskyThreadNode {

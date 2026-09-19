@@ -27,7 +27,7 @@ function byteOffset(text: string, charIndex: number): number {
 }
 
 /**
- * Detect link + @mention facets in reply text. Mentions need a DID, so the
+ * Detect link, hashtag and @mention facets in reply text. Mentions need a DID, so the
  * caller provides a resolver (handle → did observable); handles that fail to
  * resolve are silently left as plain text — the post still goes out.
  */
@@ -47,20 +47,36 @@ export function detectFacets(
   }
 
   const mentionLookups: Observable<BskyFacet | null>[] = [];
+  for (const match of text.matchAll(/(^|\s)[#＃]([^\s#＃]+)/gu)) {
+    const tag = match[2].replace(/[\p{P}]+$/gu, '');
+    if (
+      !tag ||
+      /^\p{N}+$/u.test(tag) ||
+      graphemeLength(tag) > 64 ||
+      encoder.encode(tag).length > 640
+    )
+      continue;
+    const start = match.index + match[1].length;
+    facets.push({
+      index: {
+        byteStart: byteOffset(text, start),
+        byteEnd: byteOffset(text, start + tag.length + 1),
+      },
+      features: [{ $type: 'app.bsky.richtext.facet#tag', tag }],
+    });
+  }
   for (const match of text.matchAll(MENTION_RE)) {
     const handle = match[2];
     const start = match.index + match[1].length;
     mentionLookups.push(
       resolveHandle(handle).pipe(
-        map(
-          ({ did }): BskyFacet => ({
-            index: {
-              byteStart: byteOffset(text, start),
-              byteEnd: byteOffset(text, start + 1 + handle.length),
-            },
-            features: [{ $type: 'app.bsky.richtext.facet#mention', did }],
-          }),
-        ),
+        map(({ did }): BskyFacet => ({
+          index: {
+            byteStart: byteOffset(text, start),
+            byteEnd: byteOffset(text, start + 1 + handle.length),
+          },
+          features: [{ $type: 'app.bsky.richtext.facet#mention', did }],
+        })),
         // Unresolvable handle: not a real mention, keep it as text.
         catchError(() => of(null)),
       ),

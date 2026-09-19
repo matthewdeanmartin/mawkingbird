@@ -16,7 +16,8 @@ import { UserList } from '../models';
 import { PEOPLE_CATEGORIES } from './people-categories';
 import { PeopleLists } from './people-lists';
 
-// i18n peopleLists.title: Your people, in lists
+// i18n peopleLists.title: Autogroup your friends to lists
+// i18n peopleLists.running: In progress
 // i18n peopleLists.intro: Create lists that categorize people by interaction style
 // i18n peopleLists.generate: Generate lists of mutuals, etc.
 // i18n peopleLists.update: Update people lists
@@ -30,7 +31,7 @@ import { PeopleLists } from './people-lists';
 // i18n peopleLists.dialog.scope: Creates eleven private Mastodon lists, each prefixed “Mawkingbird:”. A person can belong to more than one category. Existing generated lists are reused and missing ones recreated.
 // i18n peopleLists.dialog.following: Only people you currently follow can belong to these server lists. Readers you do not follow are left out; nobody is automatically followed, unfollowed, muted, or notified.
 // i18n peopleLists.dialog.sample: Relationships use your complete follow list. Interactions use up to ten recent pages each of notifications, your posts, and Home, plus evidence remembered in this browser. Older interactions may be missed. Chatty and Broadcasters need at least five observed posts; nobody’s individual timeline is downloaded.
-// i18n peopleLists.dialog.snapshot: This is a snapshot, not automatic upkeep. After seven days, a changed follow count, or missing lists, we offer a refresh. You can update sooner. Closing this dialog or visiting another page keeps the job running; reloading or switching accounts stops it. Reopen Lists to see progress.
+// i18n peopleLists.dialog.snapshot: This is a snapshot, not automatic upkeep. After seven days, a changed follow count, or missing lists, we offer a refresh. You can update sooner. Closing this dialog or visiting another page keeps the job running; reloading or switching accounts stops it. Reopen this dialog to see progress.
 // i18n peopleLists.dialog.sync: A full update adds matching people and removes nonmatching members, including manual additions, from these generated lists. Other lists are untouched. If stopped halfway, changes already made stay; run Update again to finish.
 // i18n peopleLists.onlyAdd: Only add, don’t remove from lists
 // i18n peopleLists.start: Generate / update lists
@@ -51,7 +52,7 @@ import { PeopleLists } from './people-lists';
 // i18n peopleLists.step.lists: Synchronizing your server lists…
 // i18n peopleLists.progress: {{scanned}} people read · {{requests}} requests · {{completed}} of 11 lists synchronized
 // i18n peopleLists.changes: {{created}} lists created · {{added}} memberships added · {{removed}} removed
-// i18n peopleLists.done: Your people lists are ready. Open a list below to read its feed.
+// i18n peopleLists.done: Your people lists are ready. Close this dialog to read their feeds.
 // i18n peopleLists.cancelled: Stopped. Any completed changes remain. Update again to finish.
 // i18n peopleLists.failed: The update could not finish. Any completed changes remain. Update again to repair the lists.
 @Component({
@@ -85,11 +86,10 @@ export class PeopleListsPanel {
     });
   }
   protected open(): void {
-    this.onlyAdd.set(false);
+    if (!this.service.running()) this.onlyAdd.set(false);
     this.dialog.set(true);
   }
   protected start(): void {
-    this.dialog.set(false);
     void this.service.start(this.onlyAdd());
   }
 }

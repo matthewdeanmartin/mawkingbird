@@ -6,6 +6,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../auth';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { environment } from '../../../environments/environment';
+import { redirectToSecureLogin } from '../../secure-login';
 
 const BLUESKY_ENTRYWAY = 'https://bsky.social';
 
@@ -69,6 +70,7 @@ export class LoginBluesky implements OnInit {
   protected selfHostedHint = signal(false);
 
   ngOnInit(): void {
+    if (redirectToSecureLogin()) return;
     this.adding = this.route.snapshot.queryParamMap.has('add');
     // Already signed in and not explicitly adding an account: nothing to do here.
     if (this.auth.isAuthenticated && !this.adding) {

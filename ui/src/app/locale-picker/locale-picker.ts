@@ -36,6 +36,7 @@ const AUTO = 'auto';
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n localePicker.label: Interface language
 // i18n localePicker.auto: Automatic (browser)
+// i18n localePicker.browserLanguage: {{language}} (browser)
 @Component({
   selector: 'app-locale-picker',
   imports: [TranslocoPipe],
@@ -56,7 +57,9 @@ const AUTO = 'auto';
           (change)="pick($event)"
           [attr.aria-label]="'localePicker.label' | transloco"
         >
-          <option value="auto">{{ 'localePicker.auto' | transloco }}</option>
+          <option value="auto">
+            {{ 'localePicker.browserLanguage' | transloco: { language: browserLanguage } }}
+          </option>
           @for (option of options; track option.code) {
             <option [value]="option.code">{{ option.name }}</option>
           }
@@ -100,6 +103,7 @@ export class LocalePicker {
   readonly footer = input(false);
 
   protected locale = inject(UiLocale);
+  protected readonly browserLanguage = LOCALE_ENDONYMS[this.locale.browserPreference];
 
   /** Every shipped locale, labelled in its own language. */
   protected readonly options = this.locale.available.map((code) => ({
@@ -110,7 +114,7 @@ export class LocalePicker {
   /**
    * The selected option: `auto` while the browser is deciding, otherwise the
    * forced locale. Note this is *not* the active locale — under `auto` the UI
-   * may be German while the control correctly reads "Automatic".
+   * may be German while the control reads "Deutsch (browser)".
    */
   protected current = computed(() => (this.locale.isAutomatic() ? AUTO : this.locale.active()));
 

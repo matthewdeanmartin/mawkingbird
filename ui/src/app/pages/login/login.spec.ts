@@ -64,6 +64,53 @@ describe('Login', () => {
     httpMock.expectNone('/oauth/token');
   });
 
+  it('moves HTTP login to HTTPS before registering an app or creating OAuth state', () => {
+    const fixture = setUp();
+    const assign = vi.fn();
+    vi.stubGlobal('location', {
+      href: 'http://mawkingbird.com/canary/login/mastodon?add=1#section',
+    });
+    Object.defineProperty(window.location, 'href', {
+      get: () => 'http://mawkingbird.com/canary/login/mastodon?add=1#section',
+      set: assign,
+    });
+    fixture.componentInstance.ngOnInit();
+    expect(assign).toHaveBeenCalledWith(
+      'https://mawkingbird.com/canary/login/mastodon?add=1#section',
+    );
+    fixture.componentInstance.startOAuth();
+    httpMock.expectNone('/api/v1/apps');
+    expect(sessionStorage.getItem(OAUTH_APP_KEY)).toBeNull();
+  });
+
+  it('immediately removes stale server actions and automatically enables the checked address', async () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    const component = fixture.componentInstance;
+    (component as unknown as { intent: { set(v: string): void } }).intent.set('have');
+    component.selectServer('https://old.example');
+    component.onServerInput('mas');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.paths')).toBeNull();
+    component.startOAuth();
+    httpMock.expectNone((r) => r.url.endsWith('/api/v1/apps'));
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ title: 'New server' }), { status: 200 }),
+    );
+    component.onServerInput('mastodon.social/');
+    await vi.waitFor(
+      () => expect(TestBed.inject(Server).baseUrl()).toBe('https://mastodon.social'),
+      { timeout: 2000 },
+    );
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.btn-hero').textContent).toContain(
+      'mastodon.social',
+    );
+    expect(fixture.nativeElement.querySelector('.paths').textContent).not.toContain('old.example');
+    fixture.destroy();
+  });
+
   it('startOAuth registers an app, stores it, and redirects to /oauth/authorize', async () => {
     const fixture = setUp();
     fixture.detectChanges();

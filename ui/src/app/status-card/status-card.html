@@ -139,17 +139,28 @@
       </div>
       @if (editing()) {
         <div class="editor">
+          @if (display.provider === 'bluesky') {
+            <p class="muted small">{{ 'statusCard.replaceHint' | transloco }}</p>
+          }
           <textarea
             rows="3"
+            [disabled]="saving()"
             [ngModel]="editText()"
             (ngModelChange)="editText.set($event)"
           ></textarea>
           <div class="editor-actions">
-            <button class="btn btn-outline" (click)="cancelEdit()">
+            <button class="btn btn-outline" [disabled]="saving()" (click)="cancelEdit()">
               {{ 'statusCard.cancel' | transloco }}
             </button>
             <button class="btn" [disabled]="!editText().trim() || saving()" (click)="saveEdit()">
-              {{ (saving() ? 'statusCard.saving' : 'statusCard.save') | transloco }}
+              {{
+                (saving()
+                  ? 'statusCard.saving'
+                  : display.provider === 'bluesky'
+                    ? 'statusCard.replacePost'
+                    : 'statusCard.save'
+                ) | transloco
+              }}
             </button>
           </div>
         </div>
@@ -942,15 +953,15 @@
                     </div>
                   }
                 </div>
-                <button
-                  class="action"
-                  (click)="startEdit($event)"
-                  [title]="'statusCard.edit' | transloco"
-                  [attr.aria-label]="'statusCard.edit' | transloco"
-                >
-                  <span aria-hidden="true">✏️</span>
-                </button>
               }
+              <button
+                class="action"
+                (click)="startEdit($event)"
+                [title]="'statusCard.edit' | transloco"
+                [attr.aria-label]="'statusCard.edit' | transloco"
+              >
+                <span aria-hidden="true">✏️</span>
+              </button>
               <button
                 class="action"
                 (click)="remove($event)"

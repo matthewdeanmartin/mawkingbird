@@ -17,7 +17,13 @@ The countdown appears when delayed sending is enabled in your preferences.
 
 Other people may be able to view the post's edit history. Editing is not a way to erase something that was previously published.
 
-Bluesky posts do not have the same edit action in Mawkingbird. Delete the Bluesky post and publish a corrected one when necessary.
+## Correct a Bluesky post
+
+1. Choose the pencil-shaped **Edit** action on your post.
+2. Correct the text, then choose **Delete and repost**.
+3. Review the current replies, reposts, likes and quotes in the confirmation. Choose Cancel to keep the original, or confirm to publish the replacement.
+
+The replacement keeps the original attachments, languages, content labels and reply context, but has a new link. Existing engagement does not move to it; replies and quotes still reference the deleted original. The original is only deleted as part of the same transaction that publishes the replacement. If a network error makes the outcome uncertain, your edited text stays available; check your profile before retrying.
 
 ## Delete a post
 

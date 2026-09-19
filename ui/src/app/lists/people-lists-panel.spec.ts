@@ -23,6 +23,9 @@ describe('PeopleListsPanel', () => {
       ...(fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>),
     ].find((element) => element.textContent?.trim() === text)!;
   }
+  function trigger(): HTMLButtonElement {
+    return fixture.nativeElement.querySelector('.people-trigger');
+  }
   beforeEach(() => {
     service = fakeService();
     TestBed.configureTestingModule({
@@ -33,7 +36,11 @@ describe('PeopleListsPanel', () => {
     fixture.detectChanges();
   });
   it('explains all categories before starting, with full sync as the default', () => {
-    button('Generate lists of mutuals, etc.').click();
+    expect(trigger().textContent).toContain('Autogroup your friends to lists');
+    expect(trigger().classList).toContain('list-row');
+    expect(trigger().getAttribute('aria-haspopup')).toBe('dialog');
+    expect(fixture.nativeElement.querySelector('p, h2, [role="dialog"]')).toBeNull();
+    trigger().click();
     fixture.detectChanges();
     const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
     expect(dialog.getAttribute('aria-modal')).toBe('true');
@@ -47,16 +54,21 @@ describe('PeopleListsPanel', () => {
     button('Generate / update lists').click();
     fixture.detectChanges();
     expect(service.start).toHaveBeenCalledWith(false);
+    expect(fixture.nativeElement.querySelector('[role="dialog"]')).not.toBeNull();
+    button('Close').click();
+    fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
   });
   it('passes an explicit add-only selection and resets it when the dialog reopens', () => {
-    button('Generate lists of mutuals, etc.').click();
+    trigger().click();
     fixture.detectChanges();
     (fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement).click();
     button('Generate / update lists').click();
     fixture.detectChanges();
     expect(service.start).toHaveBeenCalledWith(true);
-    button('Generate lists of mutuals, etc.').click();
+    button('Close').click();
+    fixture.detectChanges();
+    trigger().click();
     fixture.detectChanges();
     expect(
       (fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement).checked,
@@ -79,6 +91,10 @@ describe('PeopleListsPanel', () => {
       created: 1,
     });
     fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.job')).toBeNull();
+    expect(trigger().textContent).toContain('In progress');
+    trigger().click();
+    fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Update will recreate them');
     button('Stop').click();
     expect(service.stop).toHaveBeenCalledOnce();
@@ -86,7 +102,36 @@ describe('PeopleListsPanel', () => {
     service.job.update((job) => ({ ...job!, phase: 'done' }));
     fixture.detectChanges();
     expect(changed).toHaveBeenCalledOnce();
-    expect(button('Update people lists')).toBeDefined();
+    expect(button('Generate / update lists')).toBeDefined();
+  });
+  it('can close and reopen running progress without stopping the job', () => {
+    service.running.set(true);
+    service.job.set({
+      phase: 'writing',
+      step: 'lists',
+      requests: 20,
+      scanned: 3,
+      completed: 4,
+      added: 2,
+      removed: 1,
+      created: 1,
+    });
+    fixture.detectChanges();
+    trigger().focus();
+    trigger().click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('progress').value).toBe(4);
+    expect(button('Generate / update lists')).toBeUndefined();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
+    expect(service.stop).not.toHaveBeenCalled();
+    expect(service.start).not.toHaveBeenCalled();
+    trigger().click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('progress').value).toBe(4);
+    button('Stop').click();
+    expect(service.stop).toHaveBeenCalledOnce();
   });
   it('does not stop a job when navigating away and hides native actions for other account kinds', () => {
     service.eligible.set(false);

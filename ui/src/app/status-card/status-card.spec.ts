@@ -13,6 +13,8 @@ import { Server } from '../server';
 import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
 import { StatusCard } from './status-card';
+import { BlueskyApi } from '../providers/bluesky/bluesky-api';
+import { of, throwError } from 'rxjs';
 import {
   parseAnonymousAccountRouteRef,
   parseAnonymousStatusRouteRef,
@@ -1082,6 +1084,87 @@ describe('StatusCard', () => {
 
   // ---------------------------------------------------------------- startEdit / cancelEdit
 
+  it('Bluesky edit checks fresh engagement and only replaces after user override', async () => {
+    seedBskySession({
+      service: 'https://bsky.social',
+      handle: 'me.bsky.social',
+      did: 'did:plc:me',
+      accessJwt: 'access',
+      refreshJwt: 'refresh',
+    });
+    const uri = 'at://did:plc:me/app.bsky.feed.post/old';
+    const f = setUp(
+      makeStatus({ provider: 'bluesky', id: `bsky:${uri}`, providerRef: { uri, cid: 'cid' } }),
+    );
+    const api = TestBed.inject(BlueskyApi);
+    const post = {
+      uri,
+      cid: 'cid',
+      author: { did: 'did:plc:me', handle: 'me.bsky.social' },
+      record: { $type: 'app.bsky.feed.post', text: 'original', createdAt: '2026-01-01' },
+      replyCount: 3,
+      repostCount: 4,
+      likeCount: 5,
+      quoteCount: 2,
+      indexedAt: '2026-01-01',
+    };
+    const getPosts = vi.spyOn(api, 'getPosts').mockReturnValue(of({ posts: [post] }));
+    const request = vi.spyOn(api, 'request').mockReturnValue(of({}));
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const deleted = vi.fn();
+    f.componentInstance.deleted.subscribe(deleted);
+    f.componentInstance.startEdit(fakeEvent());
+    expect(internals(f).editText()).toBe('original');
+    internals(f).editText.set('replacement');
+    f.componentInstance.saveEdit();
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalled());
+    expect(confirm.mock.calls[0][0]).toContain('3 replies, 4 reposts, 5 likes and 2 quotes');
+    expect(request).not.toHaveBeenCalled();
+    expect(internals(f).editing()).toBe(true);
+    confirm.mockReturnValue(true);
+    f.componentInstance.saveEdit();
+    await vi.waitFor(() => expect(deleted).toHaveBeenCalled());
+    expect(getPosts).toHaveBeenCalledTimes(3);
+    expect(request.mock.calls[0][0]).toBe('com.atproto.repo.applyWrites');
+    expect(internals(f).editing()).toBe(false);
+    httpMock.expectNone((r) => r.url.includes('/api/v1/statuses/'));
+  });
+
+  it('Bluesky edit retains text and makes no write if engagement cannot be checked', async () => {
+    seedBskySession({
+      service: 'https://bsky.social',
+      handle: 'me.bsky.social',
+      did: 'did:plc:me',
+      accessJwt: 'access',
+      refreshJwt: 'refresh',
+    });
+    const uri = 'at://did:plc:me/app.bsky.feed.post/old';
+    const f = setUp(makeStatus({ provider: 'bluesky', providerRef: { uri, cid: 'cid' } }));
+    const api = TestBed.inject(BlueskyApi);
+    const getPosts = vi.spyOn(api, 'getPosts').mockReturnValue(
+      of({
+        posts: [
+          {
+            uri,
+            cid: 'cid',
+            author: { did: 'did:plc:me', handle: 'me.bsky.social' },
+            record: { $type: 'app.bsky.feed.post', text: 'original', createdAt: '2026-01-01' },
+            indexedAt: '2026-01-01',
+          },
+        ],
+      }),
+    );
+    const request = vi.spyOn(api, 'request');
+    f.componentInstance.startEdit(fakeEvent());
+    internals(f).editText.set('replacement');
+    getPosts.mockReturnValue(throwError(() => new Error('offline')));
+    f.componentInstance.saveEdit();
+    await vi.waitFor(() => expect(internals(f).saving()).toBe(false));
+    expect(internals(f).editing()).toBe(true);
+    expect(internals(f).editText()).toBe('replacement');
+    expect(request).not.toHaveBeenCalled();
+  });
+
   it('startEdit: fetches status source and opens the edit field', () => {
     const f = setUp();
     f.componentInstance.startEdit(fakeEvent());
@@ -1364,7 +1447,12 @@ describe('StatusCard', () => {
     expect(html.querySelector('[aria-label="Delete"]')).not.toBeNull();
     expect(html.querySelector('[aria-label="Pin"]')).toBeNull();
     expect(html.querySelector('[aria-label="Mute thread"]')).toBeNull();
-    expect(html.querySelector('[aria-label="Edit"]')).toBeNull();
+    const editButton = html.querySelector<HTMLButtonElement>('[aria-label="Edit"]');
+    expect(editButton).not.toBeNull();
+    const startEdit = vi.spyOn(f.componentInstance, 'startEdit');
+    editButton!.click();
+    expect(startEdit).toHaveBeenCalled();
+    httpMock.expectOne((r) => r.url.endsWith('app.bsky.feed.getPosts')).flush({ posts: [] });
 
     const deleted = vi.fn();
     f.componentInstance.deleted.subscribe(deleted);
