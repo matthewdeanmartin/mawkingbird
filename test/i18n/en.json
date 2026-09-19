@@ -398,8 +398,10 @@
     "status.notfound": "notfound"
   },
   "bulkFollow": {
-    "confirm": "Follow {{count}} accounts or topics? Accounts may receive follow notifications or follow requests.",
-    "feeds": "Follow {{count}} feeds?"
+    "action": "Follow {{count}}",
+    "feeds": "Follow {{count}} feeds?",
+    "title": "Follow {{count}} accounts or topics?",
+    "warning": "Accounts may receive follow notifications or follow requests. Unfollowing later won't take those notifications back."
   },
   "bundledStarterKits": {
     "account.one": "{{count}} account",
@@ -617,6 +619,14 @@
     "write.body": "Open the writing workspace for something longer than a quick post.",
     "write.title": "Give an idea more room"
   },
+  "dialogs": {
+    "alertTitle": "Notice",
+    "confirmTitle": "Are you sure?",
+    "continue": "Continue",
+    "ok": "OK",
+    "promptTitle": "Enter a value",
+    "value": "Value"
+  },
   "discovery": {
     "card.actions": "Discovery card actions",
     "card.dismiss": "Dismiss this card",
@@ -763,6 +773,10 @@
     "accounts.topAuthors": "Top authors",
     "accounts.topFive": "Top 5 authors",
     "accounts.topTen": "Top 10 authors",
+    "calendar.caption": "One square per day; darker means more posts. Uses original publication dates, including for boosts. Only the loaded sample is shown, including the quiet days between posts. Load more posts to extend the calendar.",
+    "calendar.day": "{{date}}: {{count}} posts",
+    "calendar.summary": "{{posts}} posts across {{days}} days; {{active}} days with posts. Busiest day: {{peak}} posts.",
+    "calendar.title": "Posting frequency",
     "composition.description": "What kind of posts make up the sample. Categories overlap — a post can be a reply with media and a link.",
     "composition.languages": "Declared languages",
     "composition.length": "Post length averages {{average}} characters (median {{median}}).",
@@ -1245,6 +1259,9 @@
     "collection.followEveryone": "Follow everyone in this collection",
     "collection.followedSummary": "Followed {{followed}} of {{total}}",
     "collection.followingProgress": "Following… {{done}}/{{total}}",
+    "collection.leaveConfirm": "Remove your account from this collection? You can still browse it afterwards.",
+    "collection.leaveFailed": "Could not remove you. Your server must support collections and your sign-in must allow writing collections. You can retry or open the collection on your server.",
+    "collection.left": "You have been removed from this collection.",
     "collection.loading": "Loading…",
     "collection.loadingFeed": "Loading feed…",
     "collection.loadingPosts": "Loading posts…",
@@ -1579,6 +1596,7 @@
     "home.loadMore.loading": "Loading more…",
     "home.loading.generic": "Loading…",
     "home.loading.preparingServer": "Preparing Just My Server…",
+    "home.noNewPosts": "No new posts. You're up to date.",
     "home.noneVisible.findFriends": "Find friends to follow →",
     "home.nudge.cta": "Find people",
     "home.nudge.dismiss": "Dismiss",
