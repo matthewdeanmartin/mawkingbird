@@ -5,7 +5,7 @@ import { MenuIndicators } from '../../../menu-indicators';
 
 // i18n settings.indicators.title: Menu activity indicators
 // i18n settings.indicators.hint: Only the Notification and Chat menu icons change. Chat unread markers and live messages work as usual. Times use this device's timezone and round to the nearest hour.
-// i18n settings.indicators.hours: Notification delivery hours (0–23, separated by commas)
+// i18n settings.indicators.hours: Notification delivery hours (0–23, separated by commas; leave empty for immediate dots)
 // i18n settings.indicators.start: Quiet hours start
 // i18n settings.indicators.end: Quiet hours end
 // i18n settings.indicators.batch: Chat batch interval in minutes (0 for immediate)
@@ -71,6 +71,10 @@ import { MenuIndicators } from '../../../menu-indicators';
 export class MenuIndicatorControls {
   protected indicators = inject(MenuIndicators);
   protected hours(value: string): void {
+    if (!value.trim()) {
+      this.indicators.configure({ hours: [] });
+      return;
+    }
     const hours = value.split(',').map((part) => Number(part.trim()));
     if (value.trim() && hours.every((hour) => Number.isFinite(hour) && hour >= 0 && hour < 24))
       this.indicators.configure({ hours });

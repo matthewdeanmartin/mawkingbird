@@ -68,6 +68,8 @@ describe('top menu indicators', () => {
       ],
     });
     menu = TestBed.inject(MenuIndicators);
+    // These schedule regressions exercise an existing user's explicitly saved batching.
+    menu.configure({ hours: [9, 17], chatMinutes: 5 });
     events = TestBed.inject(IndicatorEvents);
     menu.start();
   });
@@ -93,6 +95,33 @@ describe('top menu indicators', () => {
       unread: !row.isRead,
     });
   }
+  it('starts only notification/chat push streams and shows new-user dots promptly without REST polling', () => {
+    localStorage.removeItem('mockingbird_menu_indicator_preferences');
+    auth.lacksMastodonToken = false;
+    const fresh = TestBed.runInInjectionContext(() => new MenuIndicators());
+    fresh.start();
+    expect([...streams.keys()].sort()).toEqual(['direct', 'user:notification']);
+    streams.get('user:notification')!.next({
+      event: 'notification',
+      payload: {
+        id: 'new-like',
+        type: 'favourite',
+        created_at: new Date().toISOString(),
+      },
+    });
+    expect(fresh.ordinary()).toBe(true);
+    streams.get('direct')!.next({
+      event: 'conversation',
+      payload: {
+        id: 'dm',
+        unread: true,
+        last_status: { id: 'dm-1', created_at: new Date().toISOString(), account: { id: 'other' } },
+      },
+    });
+    expect(fresh.chat()).toBe(true);
+    expect(fetchNotifications).not.toHaveBeenCalled();
+    expect(fetchConversations).not.toHaveBeenCalled();
+  });
   it('batches the first reply for five minutes and never lights the ordinary icon for it', () => {
     arrive('reply');
     expect(menu.chat()).toBe(false);

@@ -1,7 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Api } from '../../../api';
+import { AnonymousTags } from '../../../providers/anonymous/anonymous-tags';
 import { Auth } from '../../../auth';
 import { Account } from '../../../models';
 import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
@@ -46,6 +48,7 @@ describe('RailProfiles', () => {
 
   afterEach(() => {
     httpMock.verify();
+    vi.useRealTimers();
   });
 
   function flushFollowedTags(count = 3): void {
@@ -53,6 +56,58 @@ describe('RailProfiles', () => {
       .expectOne((req) => req.url.includes('followed_tags'))
       .flush(Array.from({ length: count }, (_, i) => ({ name: `tag${i}` })));
   }
+
+  it('refreshes after successful actions, coalesces bursts, and rejects late account responses', () => {
+    vi.useFakeTimers();
+    const auth = TestBed.inject(Auth);
+    auth.setToken('first');
+    auth.account.set(ME);
+    const api = TestBed.inject(Api);
+    const rail = TestBed.inject(RailProfiles);
+    rail.load();
+    flushFollowedTags();
+    api.follow('friend').subscribe();
+    api.postStatus('hello').subscribe();
+    httpMock.expectOne('/api/v1/accounts/friend/follow').flush({ id: 'friend', following: true });
+    httpMock.expectOne('/api/v1/statuses').flush({ id: 'new' });
+    vi.advanceTimersByTime(100);
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ ...ME, following_count: 43, statuses_count: 121 });
+    expect(rail.profiles()[0].stats.map((stat) => stat.value)).toEqual([121, 43, 300, 3]);
+    api.deleteStatus('new').subscribe();
+    httpMock.expectOne('/api/v1/statuses/new').flush({ id: 'new' });
+    vi.advanceTimersByTime(100);
+    const stale = httpMock.expectOne('/api/v1/accounts/verify_credentials');
+    auth.setToken('second');
+    auth.account.set({ ...ME, id: 'other' });
+    stale.flush({ ...ME, statuses_count: 120 });
+    expect(auth.account()?.id).toBe('other');
+  });
+
+  it('refreshes hashtag totals on follow/unfollow but leaves them intact on failed writes', () => {
+    vi.useFakeTimers();
+    TestBed.inject(Auth).account.set(ME);
+    const api = TestBed.inject(Api);
+    const rail = TestBed.inject(RailProfiles);
+    rail.load();
+    flushFollowedTags(1);
+    api.followTag('cat').subscribe();
+    httpMock.expectOne('/api/v1/tags/cat/follow').flush({ name: 'cat', following: true });
+    vi.advanceTimersByTime(100);
+    flushFollowedTags(2);
+    expect(rail.profiles()[0].stats[3].value).toBe(2);
+    api.unfollowTag('cat').subscribe();
+    httpMock.expectOne('/api/v1/tags/cat/unfollow').flush({ name: 'cat', following: false });
+    vi.advanceTimersByTime(100);
+    flushFollowedTags(1);
+    expect(rail.profiles()[0].stats[3].value).toBe(1);
+    api.followTag('bad').subscribe({ error: () => undefined });
+    httpMock.expectOne('/api/v1/tags/bad/follow').flush({}, { status: 500, statusText: 'Failed' });
+    vi.advanceTimersByTime(100);
+    httpMock.expectNone((req) => req.url.includes('followed_tags'));
+    expect(rail.profiles()[0].stats[3].value).toBe(1);
+  });
 
   it('cards the active account first, with its stats', () => {
     TestBed.inject(Auth).account.set(ME);
@@ -152,5 +207,7 @@ describe('RailProfiles', () => {
     expect(card.key).toBe('anonymous');
     expect(card.active).toBe(true);
     expect(card.badge).toBe('🎭');
+    TestBed.inject(AnonymousTags).follow('caturday');
+    expect(rail.profiles()[0].stats[3].value).toBe(1);
   });
 });

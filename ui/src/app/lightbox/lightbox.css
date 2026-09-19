@@ -45,19 +45,25 @@
   position: absolute;
   top: 16px;
   right: 20px;
-  border: none;
-  background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  border: 2px solid #fff;
+  background: #202124;
   color: #fff;
   font-size: 22px;
   line-height: 1;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 9999px;
   cursor: pointer;
 }
 
 .lightbox-close:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: #3c4043;
+}
+
+.lightbox-close:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
 }
 
 .lightbox-nav {

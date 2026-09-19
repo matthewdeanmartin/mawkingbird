@@ -9,6 +9,9 @@ import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
 import { BskyProfile } from '../../../providers/bluesky/bluesky-types';
 import { RailProfile } from './rail-profile';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY, auditTime, expand, filter, groupBy, mergeMap, reduce } from 'rxjs';
+import { accountScopeSuffix } from '../../../account-scope';
 
 /** Where the local identity's card sits when it isn't the active one. */
 const MOCKINGBIRD_BADGE = '🎭';
@@ -38,6 +41,73 @@ export class RailProfiles {
   private hashtagCount = signal(0);
   private blueskyProfile = signal<BskyProfile | null>(null);
   private loaded = false;
+  private profileRevision = 0;
+  private tagRevision = 0;
+  private blueskyRevision = 0;
+
+  constructor() {
+    this.blueskyApi.profileChanges.pipe(auditTime(100), takeUntilDestroyed()).subscribe((did) => {
+      if (this.loaded && did === this.blueskySession.session()?.did) this.loadBluesky();
+    });
+    this.api.accountChanges
+      .pipe(
+        filter((event) => event.scope === accountScopeSuffix()),
+        groupBy((event) => event.kind),
+        mergeMap((group) => group.pipe(auditTime(100))),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
+        if (!this.loaded || event.scope !== accountScopeSuffix()) return;
+        if (event.kind === 'tags') this.loadTags();
+        else this.refreshProfile();
+      });
+  }
+
+  private loadBluesky(): void {
+    const did = this.blueskySession.session()?.did;
+    const revision = ++this.blueskyRevision;
+    this.blueskyApi.getProfile().subscribe({
+      next: (profile) => {
+        if (did === this.blueskySession.session()?.did && revision === this.blueskyRevision)
+          this.blueskyProfile.set(profile);
+      },
+      error: () => undefined,
+    });
+  }
+
+  private refreshProfile(): void {
+    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    const token = this.auth.token();
+    const revision = ++this.profileRevision;
+    this.api.verifyCredentials().subscribe({
+      next: (account) => {
+        if (token === this.auth.token() && revision === this.profileRevision)
+          this.auth.setAccount(account);
+      },
+      error: () => undefined,
+    });
+  }
+
+  private loadTags(): void {
+    const token = this.auth.token();
+    const revision = ++this.tagRevision;
+    this.api
+      .followedTagsPage()
+      .pipe(
+        expand((page) => (page.nextMaxId ? this.api.followedTagsPage(page.nextMaxId) : EMPTY)),
+        reduce((tags, page) => {
+          for (const tag of page.tags) tags.add(tag.name.toLowerCase());
+          return tags;
+        }, new Set<string>()),
+      )
+      .subscribe({
+        next: (tags) => {
+          if (token === this.auth.token() && revision === this.tagRevision)
+            this.hashtagCount.set(tags.size);
+        },
+        error: () => undefined,
+      });
+  }
 
   /**
    * Stats for a Bluesky-primary active card, once `getProfile` has answered.
@@ -107,7 +177,11 @@ export class RailProfiles {
               },
               { label: 'Following', value: this.followingCount(), link: ['/accounts', active.id] },
               { label: 'Followers', value: active.followers_count, link: ['/accounts', active.id] },
-              { label: 'Hashtags', value: this.hashtagCount(), link: ['/feeds/tags'] },
+              {
+                label: 'Hashtags',
+                value: anonymousActive ? this.anonymousTags.count() : this.hashtagCount(),
+                link: ['/feeds/tags'],
+              },
             ],
         link: ['/accounts', active.id],
         account: active,
@@ -184,18 +258,10 @@ export class RailProfiles {
       // Sprint 4 attaches one.
       this.hashtagCount.set(0);
     } else {
-      this.api.followedTags().subscribe({
-        next: (tags) => this.hashtagCount.set(tags.length),
-        error: () => this.hashtagCount.set(0),
-      });
+      this.loadTags();
     }
     if (this.blueskySession.linked()) {
-      this.blueskyApi.getProfile().subscribe({
-        next: (profile) => this.blueskyProfile.set(profile),
-        error: () => {
-          // Sidebar widget: the card still renders from the stored session.
-        },
-      });
+      this.loadBluesky();
     }
   }
 }

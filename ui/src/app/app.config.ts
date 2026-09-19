@@ -5,6 +5,7 @@ import {
   TitleStrategy,
   withInMemoryScrolling,
   withPreloading,
+  withRouterConfig,
 } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -35,6 +36,9 @@ export const appConfig: ApplicationConfig = {
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     provideRouter(
       routes,
+      // A cancelled Back (zen/unsaved writing) must restore the history index,
+      // rather than replace the preceding page with the editor URL.
+      withRouterConfig({ canceledNavigationResolution: 'computed' }),
       withPreloading(SettingsPreloading),
       // Enables fragment scrolling (e.g. /credits#privacy from the footer).
       //

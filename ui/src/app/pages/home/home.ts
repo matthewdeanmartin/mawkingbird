@@ -13,7 +13,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map, Observable, Subscription } from 'rxjs';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
-import { Drafts, draftHasContent, emptyDraftSnapshot } from '../../drafts';
+import { Drafts, draftHasContent } from '../../drafts';
 import { ClientPrefs, FEED_MAX_COOLDOWN_MS, HomeWindow } from '../../client-prefs';
 import { Status } from '../../models';
 import { byNewestFirst } from '../../status-sort';
@@ -1488,15 +1488,9 @@ export class Home implements OnInit, OnDestroy {
       return;
     }
     const resumable = this.drafts.drafts().find((d) => !draftHasContent(d));
-    const saved = resumable
-      ? null
-      : this.drafts.save(emptyDraftSnapshot(this.prefs.defaultVisibility()));
-    if (saved && !saved.durable) {
-      this.writingError.set(true);
-      return;
-    }
-    const id = resumable?.id ?? saved!.id;
-    void this.router.navigate(['/write'], { queryParams: { draft: id } });
+    void this.router.navigate(['/write'], {
+      queryParams: resumable ? { draft: resumable.id } : { new: 1 },
+    });
   }
 
   onPosted(status: Status): void {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs';
 import { Status } from '../../models';
@@ -7,6 +7,7 @@ import { detectFacets, graphemeLength } from './bluesky-facets';
 import { buildLocalBskyStatus } from './bluesky-local-status';
 import { BlueskySession } from './bluesky-session';
 import { BskyFacet, BskyRef } from './bluesky-types';
+import { ReplyMentions, replyMentions } from '../../compose/reply-mentions';
 
 const MAX_GRAPHEMES = 300;
 
@@ -66,6 +67,8 @@ const MAX_GRAPHEMES = 300;
 export class BskyReply {
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
+  private mentions = inject(ReplyMentions);
+  private destroyRef = inject(DestroyRef);
 
   /** The (already unwrapped) Bluesky status being replied to. */
   readonly replyTo = input.required<Status>();
@@ -78,7 +81,7 @@ export class BskyReply {
   protected remaining = computed(() => MAX_GRAPHEMES - graphemeLength(this.text()));
   protected handle = computed(() => this.session.session()?.handle ?? '');
 
-  post(): void {
+  async post(): Promise<void> {
     const text = this.text().trim();
     if (!text || this.remaining() < 0 || this.posting()) {
       return;
@@ -86,6 +89,24 @@ export class BskyReply {
     const ref = this.replyTo().providerRef as BskyRef;
     this.posting.set(true);
     this.error.set(null);
+    const did = this.session.session()?.did;
+    const current = () =>
+      !this.destroyRef.destroyed &&
+      this.session.session()?.did === did &&
+      this.text().trim() === text;
+    const handles = replyMentions(text);
+    if (handles.length) {
+      try {
+        if (!(await this.mentions.review(handles, 'bluesky', current)) || !current()) {
+          this.posting.set(false);
+          return;
+        }
+      } catch (error) {
+        this.posting.set(false);
+        if (!this.destroyRef.destroyed) this.error.set((error as Error).message);
+        return;
+      }
+    }
     let sentFacets: BskyFacet[] = [];
     detectFacets(text, (handle) => this.api.resolveHandle(handle))
       .pipe(

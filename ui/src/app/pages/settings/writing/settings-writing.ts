@@ -78,6 +78,23 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-writing',
   imports: [FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './settings-writing.html',
+  styles: `
+    .pkm-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin-block: 1rem;
+    }
+    .pkm-toggle input {
+      flex: none;
+      width: auto;
+      margin-top: 0.2rem;
+    }
+    .pkm-toggle .hint {
+      display: block;
+      margin-top: 0.3rem;
+    }
+  `,
 })
 export class SettingsWriting implements OnInit {
   protected prefs = inject(ClientPrefs);

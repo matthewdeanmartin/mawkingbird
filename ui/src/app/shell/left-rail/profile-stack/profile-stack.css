@@ -3,6 +3,32 @@
   margin-bottom: 12px;
 }
 
+.profile-card {
+  position: relative;
+}
+.profile-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.profile-link:focus-visible::after {
+  outline: 2px solid var(--text);
+  outline-offset: -3px;
+}
+.profile-stats a,
+.profile-bio,
+.switch-btn {
+  position: relative;
+  z-index: 1;
+}
+.profile-bio {
+  pointer-events: none;
+}
+:host ::ng-deep .profile-bio a {
+  pointer-events: auto;
+}
+
 /* --- peeking tabs (the part of a card that sticks out) --- */
 .peek {
   position: relative;

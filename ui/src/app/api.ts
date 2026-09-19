@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, switchMap } from 'rxjs';
+import { Observable, Subject, defer, map, switchMap, tap } from 'rxjs';
+import { accountScopeSuffix } from './account-scope';
 import { PrivateMedia } from './private-media';
 import { Pseudonymity } from './pseudonymity';
 import { cleanPostLinks } from './post-link-cleaning';
@@ -77,6 +78,14 @@ export interface AccountStatusesOptions {
  */
 @Injectable({ providedIn: 'root' })
 export class Api {
+  readonly accountChanges = new Subject<{ scope: string; kind: 'profile' | 'tags' }>();
+
+  private accountMutation<T>(request: Observable<T>, kind: 'profile' | 'tags'): Observable<T> {
+    return defer(() => {
+      const scope = accountScopeSuffix();
+      return request.pipe(tap(() => this.accountChanges.next({ scope, kind })));
+    });
+  }
   private privateMedia = inject(PrivateMedia);
   private pseudonymity = inject(Pseudonymity);
   private http = inject(HttpClient);
@@ -102,6 +111,17 @@ export class Api {
   lookupAccount(acct: string): Observable<Account> {
     return this.http.get<Account>('/api/v1/accounts/lookup', {
       params: new HttpParams().set('acct', acct),
+    });
+  }
+
+  /** Resolve recipients on the posting server, never on an alternate search server. */
+  resolveReplyMention(handle: string): Observable<SearchResults> {
+    return this.http.get<SearchResults>('/api/v2/search', {
+      params: new HttpParams()
+        .set('q', handle)
+        .set('type', 'accounts')
+        .set('resolve', 'true')
+        .set('limit', 5),
     });
   }
 
@@ -156,7 +176,10 @@ export class Api {
   }
 
   follow(id: string, options?: { reblogs?: boolean }): Observable<Relationship> {
-    return this.http.post<Relationship>(`/api/v1/accounts/${id}/follow`, options ?? {});
+    return this.accountMutation(
+      this.http.post<Relationship>(`/api/v1/accounts/${id}/follow`, options ?? {}),
+      'profile',
+    );
   }
 
   /** Accounts this account features on its profile ("collections"; Mastodon 4.4+). */
@@ -260,7 +283,10 @@ export class Api {
   }
 
   unfollow(id: string): Observable<Relationship> {
-    return this.http.post<Relationship>(`/api/v1/accounts/${id}/unfollow`, {});
+    return this.accountMutation(
+      this.http.post<Relationship>(`/api/v1/accounts/${id}/unfollow`, {}),
+      'profile',
+    );
   }
 
   removeFollower(id: string): Observable<Relationship> {
@@ -373,7 +399,8 @@ export class Api {
     const headers = idempotencyKey
       ? new HttpHeaders().set('Idempotency-Key', idempotencyKey)
       : undefined;
-    return this.http.post<Status>('/api/v1/statuses', body, { headers });
+    const request = this.http.post<Status>('/api/v1/statuses', body, { headers });
+    return options.scheduledAt ? request : this.accountMutation(request, 'profile');
   }
 
   // --- scheduled statuses ---
@@ -409,7 +436,7 @@ export class Api {
   }
 
   deleteStatus(id: string): Observable<Status> {
-    return this.http.delete<Status>(`/api/v1/statuses/${id}`);
+    return this.accountMutation(this.http.delete<Status>(`/api/v1/statuses/${id}`), 'profile');
   }
 
   getStatusSource(id: string): Observable<StatusSource> {
@@ -901,11 +928,17 @@ export class Api {
   }
 
   followTag(name: string): Observable<Tag> {
-    return this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/follow`, {});
+    return this.accountMutation(
+      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/follow`, {}),
+      'tags',
+    );
   }
 
   unfollowTag(name: string): Observable<Tag> {
-    return this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfollow`, {});
+    return this.accountMutation(
+      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfollow`, {}),
+      'tags',
+    );
   }
 
   featureTag(name: string): Observable<Tag> {

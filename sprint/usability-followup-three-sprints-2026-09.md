@@ -1,6 +1,6 @@
 # Usability follow-up: three-sprint plan
 
-Created 2026-09-19. Planning only; implementation and verification remain outstanding.
+Created 2026-09-19. Sprint 1 implemented and validated locally, ready for user trial; Sprints 2–3 remain planned.
 
 ## Scope and sequencing
 
@@ -14,8 +14,8 @@ Keep this plan separate from `sprint/usability-2026-09.md`, which records earlie
 - `menu-indicator-policy.ts` defaults ordinary delivery to 09:00/17:00, chat delay to five minutes, and quiet hours to 23:00–07:00. `menu-indicators.ts` uses an initial timestamp baseline and authenticated streaming subscriptions; its one-second timer delivers queued signals rather than polling the server. These are findings from local source, not a diagnosis of the reported account or deployed TEST build.
 - The English catalogue contains `Credits &amp; Privacy`; the empty-draft translation also exists. Investigate both the translation lookup and why a new account has a draft instead of assuming one root cause.
 - `docs/paywalls-sprint-1.md` documents existing sync paywalls and entitlement behavior. The requested Free/Paid naming revises that presentation; it must not accidentally change access rights or activate billing.
-- Pending clarification: desired new-user dot timing. Proposed default is prompt delivery of new eligible events, with batching/quiet hours available as explicit preferences; preserve existing users' saved preferences.
-- Pending clarification: which surface “quick edit” means. Provisionally treat it as the compact post composer and recipient/mention handles. Confirm the actual entry point before changing posting validation.
+- Confirmed: new users receive notification dots through push by default, scoped to Notifications and Chats only. Preserve calming behavior (quiet hours, deduplication, one persistent dot, suppression while reading the relevant page) and existing users' saved schedules. Timeline streaming remains opt-in.
+- Confirmed: “quick edit” means the inline reply composer, as distinct from full-screen Write.
 
 ## Sprint 1 — Preserve writing and restore trust
 
@@ -34,6 +34,21 @@ Outcome: writing survives navigation, account state stays current, and new users
 Implementation order: reproduce writing/dot failures first; fix draft lifecycle before empty-draft cleanup; coordinate profile refresh with existing follow-state work. Dot investigation is timeboxed initially, with fix/retest capacity reserved within this sprint.
 
 Sprint review: start a clean account; write a draft, enter zen, press Back and recover it; receive a controlled DM; perform profile-changing actions; inspect image Close and writing settings in light mode. Draft loss blocks sprint acceptance.
+
+### Sprint 1 implementation and evidence
+
+- Write now guards route departure and browser unload. Back first leaves zen with the same editor; another departure offers Save/Discard/Cancel. Failed saves keep that decision pending, and transient attachments cannot be silently dropped by Save and continue. Router cancellation restores the history index. Local draft storage still does not persist attachment bytes: keep the editor open with attachments or explicitly discard them.
+- Home's Write action no longer creates an empty saved draft. It opens a new unsaved editor (or resumes an existing empty draft). Existing preview placeholders are translated in Write; previous empty saved rows are preserved, not silently deleted.
+- New indicator preferences deliver dots promptly from the existing Notifications/Chat streaming subscriptions. Saved delivery hours and chat delays remain intact. Quiet hours, deduplication, active-page suppression, and single persistent dots remain; timeline streaming stays off by default. Tests assert exactly the two relevant stream subscriptions and no notification/conversation REST polling by the indicator service.
+- The profile link covers the card background, identity and avatar; stat links and embedded controls retain their actions. Successful follow/unfollow, post/delete and tag follow/unfollow trigger coalesced refreshes. Hashtag totals include pagination, local tag totals stay reactive, and late refreshes cannot overwrite a newly selected account. Bluesky post/follow record changes also refresh its card. Loading your own Mastodon profile updates the shared account shown in the badge.
+- Inline Mastodon and Bluesky replies validate manually entered mentions. Mastodon resolves on the posting server, bypassing alternate search routing, and requires an exact match. Malformed/missing/unavailable handles leave the reply intact; resolved people are shown for review. A changed reply/account cancels the pending send. The already-known Mastodon reply recipient does not need an extra lookup/review.
+- Image Close uses a solid dark backing, white outline/icon, focus ring, and 44px target. Publish wizard checkboxes have separate flex rows with associated labels and help text.
+
+Validation on Node 24.18.0 using Git Bash/Make: the first targeted run passed 359 tests; focused mention/profile/provider checks passed 29 tests. The complete `cd ui && make test` gate passed with **7,506 tests**, none failed or skipped, and the protected runtime inventory intact. Lint and i18n checks pass. Final `npm run build:mockingbird` passes, including mock-leakage/lazy-data checks; initial JS/CSS is **878.66 kB** against the unchanged 1 MB error budget. `git diff --check` passes. No server contract changes were made; the separate wheel-backed integration suite was not run in this pass.
+
+Browser checks on the local production-configured preview confirmed: pristine Write has zero drafts; browser Back exits zen without losing text; a second Back offers the leave dialog; Save and continue returns to the preceding page and the saved text appears on reopening Write. Clicking the profile banner opens the profile. Image Close is visible in light mode and Escape closes it. Wizard labels remain separate at desktop and 390px phone widths.
+
+Remaining user trial: validate new-user push on TEST against a real authenticated account/server, including a controlled notification and DM, reconnect, and overnight behavior. Local tests establish the delivery defaults and state behavior; they do not establish the cause of the wife's deployed-account report. Broader dark-mode/non-English device checks also remain. Nothing was deployed by this work.
 
 ## Sprint 2 — Make tags useful for discovery
 
@@ -80,4 +95,4 @@ Sprint review: on TEST with a fresh account and no proxy, paste a blocked RSS fe
 - Sprint 1 has the highest uncertainty: navigation loss and streaming may have separate causes; prioritize both over cosmetic polish if capacity is constrained, with any move explicitly reflected in the plan.
 - Provider support may limit tag media queries, relationship fields, or bulk tag following. Confirm capabilities before implementation and provide honest fallback/error states.
 - Plus frontend clarity is in scope; new tiers, quota enforcement, billing activation, and sibling-service redesign are not implied. If existing services cannot support the requested presentation, document the concrete dependency before promising behavior.
-- Proposed sprint lengths and staffing remain open. Estimate calendar dates only once these and the two product clarifications are known.
+- Proposed sprint lengths and staffing remain open; product clarifications above are resolved.

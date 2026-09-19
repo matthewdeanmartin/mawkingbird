@@ -3,6 +3,7 @@ import { PosseQueue } from '../../providers/hugo/posse-queue';
 import {
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   OnInit,
   computed,
@@ -659,7 +660,42 @@ export class WritePage implements OnInit, OnDestroy {
 
   protected overLimitCount = computed(() => this.segments().filter((s) => s.overLimit).length);
 
-  protected hasContent = computed(() => this.body().trim() !== '');
+  protected hasContent = computed(() => draftHasContent(this.snapshot()));
+
+  private resolveLeave: ((leave: boolean) => void) | null = null;
+
+  canLeave(): boolean | Promise<boolean> {
+    if (this.zen.active()) {
+      this.exitZen();
+      return false;
+    }
+    if (this.mediaTransferred || (!this.dirty() && !this.media().length)) return true;
+    if (!draftHasContent(this.snapshot()) && !this.media().length) return true;
+    this.resolveLeave?.(false);
+    return new Promise<boolean>((resolve) => {
+      this.resolveLeave = resolve;
+      this.pendingSwitch.set({
+        run: () => {
+          this.resolveLeave = null;
+          resolve(true);
+        },
+      });
+    });
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  protectUnload(event: BeforeUnloadEvent): void {
+    if (!this.mediaTransferred && (this.media().length || (this.dirty() && this.hasContent()))) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
+  protected previewText(item: { preview: string }): string {
+    return item.preview.startsWith('pages.drafts.preview.')
+      ? this.transloco.translate(item.preview)
+      : item.preview;
+  }
 
   constructor() {
     // Prune sidecar entries for drafts that are gone. Runs off the live list
@@ -681,10 +717,13 @@ export class WritePage implements OnInit, OnDestroy {
       if (draft) {
         this.openLocal(draft);
       }
+    } else if (this.route.snapshot.queryParamMap.has('new')) {
+      this.newDraft();
     }
   }
 
   ngOnDestroy(): void {
+    this.resolveLeave?.(false);
     // A zen session must never leak into another route: the exit control only
     // exists on this page, so leaving while it is on would hide the entire
     // interface with no way back.
@@ -1573,7 +1612,7 @@ export class WritePage implements OnInit, OnDestroy {
    * body per context, so switching drafts twice would overwrite it.
    */
   private guard(action: () => void): void {
-    if (this.dirty() && draftHasContent(this.snapshot())) {
+    if ((this.dirty() && draftHasContent(this.snapshot())) || this.media().length) {
       this.pendingSwitch.set({ run: action });
       return;
     }
@@ -1598,8 +1637,9 @@ export class WritePage implements OnInit, OnDestroy {
       return;
     }
     const pending = this.pendingSwitch();
-    this.pendingSwitch.set(null);
     this.save();
+    if (this.dirty() || this.saveError()) return;
+    this.pendingSwitch.set(null);
     if (pending) {
       this.dirty.set(false);
       pending.run();
@@ -1608,6 +1648,8 @@ export class WritePage implements OnInit, OnDestroy {
 
   protected cancelSwitch(): void {
     this.pendingSwitch.set(null);
+    this.resolveLeave?.(false);
+    this.resolveLeave = null;
   }
 
   // -------------------------------------------------------------- writing zen

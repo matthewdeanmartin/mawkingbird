@@ -178,7 +178,7 @@
                 [class.current]="editing()?.key === item.key"
                 (click)="open(item)"
               >
-                <span class="draft-text">{{ item.preview }}</span>
+                <span class="draft-text">{{ previewText(item) }}</span>
                 <span class="draft-meta muted">
                   @switch (item.kind) {
                     @case ('local') {
@@ -939,7 +939,7 @@
           } @else {
             @for (item of pkmVisible(); track item.key) {
               <button class="draft-row" type="button" (click)="openNote(item)">
-                <span class="draft-text">{{ item.preview }}</span>
+                <span class="draft-text">{{ previewText(item) }}</span>
                 <span class="draft-meta muted">
                   @for (kind of item.kinds; track kind) {
                     <span class="pkm-badge">{{ pkmChipLabel(kind) }}</span>
@@ -1079,6 +1079,9 @@
         }
       </p>
       <div class="unsaved-actions">
+        @if (saveError()) {
+          <p role="alert">{{ saveError() }}</p>
+        }
         <button class="btn btn-outline" type="button" (click)="cancelSwitch()">
           {{ 'pages.write.cancel' | transloco }}
         </button>

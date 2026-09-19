@@ -394,6 +394,55 @@ describe('WritePage', () => {
 
   // ------------------------------------------------------- unsaved-work guard
 
+  it('browser Back exits zen without losing the draft, then protects route departure', async () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('keep this new writing');
+    page.enterZen();
+    expect(fixture.componentInstance.canLeave()).toBe(false);
+    expect(TestBed.inject(WritingZen).active()).toBe(false);
+    expect(page.body()).toBe('keep this new writing');
+    const leave = fixture.componentInstance.canLeave();
+    expect(page.pendingSwitch()).not.toBeNull();
+    page.saveAndContinue();
+    await expect(leave).resolves.toBe(true);
+    expect(TestBed.inject(Drafts).drafts()[0].segments).toEqual(['keep this new writing']);
+  });
+
+  it('keeps route departure pending when saving fails and lets Cancel stay in the editor', async () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('only copy');
+    const leave = fixture.componentInstance.canLeave();
+    const storage = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('full');
+    });
+    page.saveAndContinue();
+    expect(page.pendingSwitch()).not.toBeNull();
+    expect(page.dirty()).toBe(true);
+    expect(page.body()).toBe('only copy');
+    storage.mockRestore();
+    page.cancelSwitch();
+    await expect(leave).resolves.toBe(false);
+  });
+
+  it('keeps saved text with transient media on route departure and warns on reload', async () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.media.set([{ media: { id: 'local:test' } as DraftMedia['media'], description: 'photo' }]);
+    const leave = fixture.componentInstance.canLeave();
+    const unload = new Event('beforeunload', { cancelable: true });
+    fixture.componentInstance.protectUnload(unload as BeforeUnloadEvent);
+    expect(unload.defaultPrevented).toBe(true);
+    page.saveAndContinue();
+    expect(page.media()).toHaveLength(1);
+    page.cancelSwitch();
+    await expect(leave).resolves.toBe(false);
+  });
+
   it('holds up a switch while there is unsaved writing', () => {
     saveLocal(['a saved draft']);
     const fixture = setUp();

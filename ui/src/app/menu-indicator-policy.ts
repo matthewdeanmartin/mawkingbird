@@ -6,26 +6,25 @@ export interface IndicatorPreferences {
 }
 
 export const DEFAULT_INDICATOR_PREFERENCES: IndicatorPreferences = {
-  hours: [9, 17],
+  hours: [],
   quietStart: 23,
   quietEnd: 7,
-  chatMinutes: 5,
+  chatMinutes: 0,
 };
 
 export function indicatorPreferences(value: Partial<IndicatorPreferences>): IndicatorPreferences {
   const hour = (n: unknown, fallback: number): number =>
     typeof n === 'number' && Number.isFinite(n) ? ((Math.round(n) % 24) + 24) % 24 : fallback;
   return {
-    hours:
-      Array.isArray(value.hours) && value.hours.length
-        ? [...new Set(value.hours.map((n) => hour(n, 9)))].sort((a, b) => a - b)
-        : [9, 17],
+    hours: Array.isArray(value.hours)
+      ? [...new Set(value.hours.map((n) => hour(n, 9)))].sort((a, b) => a - b)
+      : [],
     quietStart: hour(value.quietStart, 23),
     quietEnd: hour(value.quietEnd, 7),
     chatMinutes:
       typeof value.chatMinutes === 'number' && Number.isFinite(value.chatMinutes)
         ? Math.max(0, Math.min(1440, Math.round(value.chatMinutes)))
-        : 5,
+        : 0,
   };
 }
 
@@ -39,6 +38,7 @@ export function inQuietHours(now: Date, prefs: IndicatorPreferences): boolean {
 /** Find a scheduled delivery after the batch began, allowing a suspended tab to catch up. */
 export function ordinaryDue(since: number, now: Date, prefs: IndicatorPreferences): boolean {
   if (inQuietHours(now, prefs)) return false;
+  if (!prefs.hours.length) return now.getTime() >= since;
   for (let days = 0; days < 2; days++) {
     for (const hour of prefs.hours) {
       const slot = new Date(now);

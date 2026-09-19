@@ -15,6 +15,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 import { Api } from '../api';
+import { ReplyMentions, replyMentions } from './reply-mentions';
 import { Server } from '../server';
 import { PageDiagnostics } from '../page-diagnostics';
 import { Auth } from '../auth';
@@ -1246,6 +1247,7 @@ export class Compose implements OnDestroy {
   );
 
   protected canSubmit = computed(() => {
+    if (this.checkingMentions()) return false;
     if (this.pasteDisabledTarget()) {
       return false;
     }
@@ -2098,7 +2100,44 @@ export class Compose implements OnDestroy {
     this.countdown.set(null);
   }
 
+  private readonly replyMentions = inject(ReplyMentions);
+  protected readonly checkingMentions = signal(false);
+  private reviewedMentions = '';
+
   private send(): void {
+    if (this.checkingMentions()) return;
+    if (this.inReplyToId() && this.targetIncludesFedi()) {
+      const handles = replyMentions(this.segments().join('\n')).filter(
+        (handle) => handle !== this.replyToHandle().replace(/^@/, '').toLowerCase(),
+      );
+      const key = JSON.stringify([handles, this.auth.token()]);
+      if (handles.length && key !== this.reviewedMentions) {
+        const fingerprint = this.postingFingerprint(this.timelineTarget());
+        const current = () =>
+          !this.destroyed &&
+          fingerprint === this.postingFingerprint(this.timelineTarget()) &&
+          key === JSON.stringify([handles, this.auth.token()]);
+        this.checkingMentions.set(true);
+        this.crossPostError.set(null);
+        void this.replyMentions
+          .review(handles, 'mastodon', current)
+          .then((accepted) => {
+            this.checkingMentions.set(false);
+            if (!current()) {
+              if (!this.destroyed)
+                this.crossPostError.set(this.transloco.translate('compose.changedBeforePublish'));
+            } else if (accepted) {
+              this.reviewedMentions = key;
+              this.send();
+            }
+          })
+          .catch((error: Error) => {
+            this.checkingMentions.set(false);
+            if (!this.destroyed) this.crossPostError.set(error.message);
+          });
+        return;
+      }
+    }
     if (this.overLimit()) {
       this.crossPostError.set(
         'A thread post is too long. Shorten it before publishing; nothing new was sent.',

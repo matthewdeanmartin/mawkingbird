@@ -1115,6 +1115,7 @@ export class Profile implements OnInit, OnDestroy {
 
   /** The ordinary path: an account id our own server knows. */
   private loadLocalAccount(id: string): void {
+    const profileToken = this.auth.token();
     this.routeLoadSub.add(
       this.api.getAccount(id).subscribe({
         next: (a) => {
@@ -1134,6 +1135,13 @@ export class Profile implements OnInit, OnDestroy {
             return;
           }
           this.account.set(a);
+          if (
+            profileToken === this.auth.token() &&
+            a.id === this.auth.account()?.id &&
+            !this.auth.isAnonymous
+          ) {
+            this.auth.setAccount({ ...this.auth.account()!, ...a });
+          }
           if (this.auth.isAnonymous) {
             this.relationship.set(this.anonymousFollows.relationship(a, this.anonymous.server()));
           }

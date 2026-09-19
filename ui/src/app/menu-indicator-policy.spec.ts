@@ -1,12 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import {
-  DEFAULT_INDICATOR_PREFERENCES as prefs,
+  DEFAULT_INDICATOR_PREFERENCES,
   indicatorPreferences,
   inQuietHours,
   ordinaryDue,
 } from './menu-indicator-policy';
 
+const prefs = { ...DEFAULT_INDICATOR_PREFERENCES, hours: [9, 17], chatMinutes: 5 };
+
 describe('menu indicator schedule', () => {
+  it('delivers new-user dots immediately outside quiet hours and preserves saved schedules', () => {
+    const defaults = indicatorPreferences({});
+    expect(defaults.chatMinutes).toBe(0);
+    expect(defaults.hours).toEqual([]);
+    const now = new Date(2026, 8, 7, 10);
+    expect(ordinaryDue(now.getTime(), now, defaults)).toBe(true);
+    expect(ordinaryDue(now.getTime(), new Date(2026, 8, 7, 23), defaults)).toBe(false);
+    expect(indicatorPreferences(prefs)).toEqual(prefs);
+  });
   it('holds both lanes from 11 pm until 7 am, including exact boundaries', () => {
     for (const hour of [23, 0, 6])
       expect(inQuietHours(new Date(2026, 8, 7, hour), prefs)).toBe(true);

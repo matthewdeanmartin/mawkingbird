@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, from, Observable, of, switchMap, throwError, tap } from 'rxjs';
+import { catchError, from, Observable, of, switchMap, throwError, tap, Subject } from 'rxjs';
 import { IndicatorEvents } from '../../indicator-events';
 import { PrivateMedia } from '../../private-media';
 import { Pseudonymity } from '../../pseudonymity';
@@ -127,6 +127,7 @@ function isExpiredToken(err: unknown): boolean {
  */
 @Injectable({ providedIn: 'root' })
 export class BlueskyApi {
+  readonly profileChanges = new Subject<string>();
   private privateMedia = inject(PrivateMedia);
   private pseudonymity = inject(Pseudonymity);
   private indicatorEvents = inject(IndicatorEvents);
@@ -560,6 +561,7 @@ export class BlueskyApi {
           .set('rkey', identity.rkey);
         return this.get<CreateRecordResponse>('com.atproto.repo.getRecord', params);
       }),
+      tap(() => this.profileChanges.next(did)),
     );
   }
 
@@ -594,7 +596,16 @@ export class BlueskyApi {
 
   /** Delete any owned record (a like, a repost, a post) by its at-uri. */
   deleteRecord(atUri: string): Observable<unknown> {
-    return this.request('com.atproto.repo.deleteRecord', parseAtUri(atUri));
+    const record = parseAtUri(atUri);
+    return this.request('com.atproto.repo.deleteRecord', record).pipe(
+      tap(() => {
+        if (
+          record.collection === 'app.bsky.feed.post' ||
+          record.collection === 'app.bsky.graph.follow'
+        )
+          this.profileChanges.next(record.repo);
+      }),
+    );
   }
 
   /**
@@ -661,7 +672,12 @@ export class BlueskyApi {
       repo: did,
       collection,
       record,
-    });
+    }).pipe(
+      tap(() => {
+        if (collection === 'app.bsky.feed.post' || collection === 'app.bsky.graph.follow')
+          this.profileChanges.next(did);
+      }),
+    );
   }
 
   /**

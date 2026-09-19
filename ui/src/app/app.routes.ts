@@ -779,6 +779,7 @@ export const routes: Routes = [
       {
         path: 'write',
         title: 'Write',
+        canDeactivate: [(page: { canLeave: () => boolean | Promise<boolean> }) => page.canLeave()],
         canActivate: [featureFlagGuard],
         data: { featureFlag: 'write' },
         loadComponent: () => import('./pages/write/write-page').then((m) => m.WritePage),

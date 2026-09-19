@@ -142,6 +142,63 @@ describe('Compose', () => {
 
   // ---------------------------------------------------------------- alt text
 
+  it('checks a manually typed reply handle before posting and keeps misspelled replies intact', async () => {
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.componentRef.setInput('replyToHandle', 'original');
+    f.detectChanges();
+    internals(f).text.set('@original @typo hello');
+    await internals(f).submit();
+    httpMock.expectNone('/api/v1/statuses');
+    httpMock
+      .expectOne((req) => req.url === '/api/v2/search' && req.params.get('q') === 'typo')
+      .flush({ accounts: [] });
+    await vi.waitFor(() => expect(internals(f).crossPostError()).toContain('No exact account'));
+    expect(internals(f).text()).toBe('@original @typo hello');
+    httpMock.expectNone('/api/v1/statuses');
+  });
+
+  it('publishes an unchanged reply only after reviewing the resolved mention', async () => {
+    vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.detectChanges();
+    internals(f).text.set('@alice hello');
+    await internals(f).submit();
+    httpMock
+      .expectOne((req) => req.url === '/api/v2/search')
+      .flush({
+        accounts: [
+          {
+            acct: 'alice',
+            username: 'alice',
+            display_name: 'Alice',
+            url: 'https://home.test/@alice',
+          },
+        ],
+      });
+    await vi.waitFor(() => expect(AppDialogs.prototype.confirm).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const sent = httpMock.expectOne('/api/v1/statuses');
+    expect(sent.request.body.status).toBe('@alice hello');
+    sent.flush({ id: 'reply' });
+  });
+
+  it('does not send edited text after a mention check started for an older reply', async () => {
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.detectChanges();
+    internals(f).text.set('@alice original');
+    await internals(f).submit();
+    internals(f).text.set('@someoneelse changed');
+    httpMock
+      .expectOne((req) => req.url === '/api/v2/search')
+      .flush({ accounts: [{ acct: 'alice', username: 'alice' }] });
+    await vi.waitFor(() => expect(internals(f).crossPostError()).toBeTruthy());
+    httpMock.expectNone('/api/v1/statuses');
+    expect(internals(f).text()).toBe('@someoneelse changed');
+  });
+
   describe('alt text', () => {
     function attach(f: ComponentFixture<Compose>, type: string, description = ''): void {
       internals(f).media.set([

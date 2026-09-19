@@ -929,9 +929,9 @@ describe('Home', () => {
 
     internals(fixture).startWriting();
 
-    expect(drafts.drafts().length).toBe(2);
+    expect(drafts.drafts().length).toBe(1);
     expect(navigate).toHaveBeenCalledWith(['/write'], {
-      queryParams: { draft: drafts.drafts()[0].id },
+      queryParams: { new: 1 },
     });
   });
 
