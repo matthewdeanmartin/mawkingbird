@@ -47,23 +47,18 @@
       </button>
     }
   </div>
+}
 
-  <!-- Explicitly a button, never scroll-triggered: the reader decides each time
+<!-- Explicitly a button, never scroll-triggered: the reader decides each time
        whether to keep going further back through someone's pictures. -->
-  @if (!exhausted()) {
-    <div class="media-more">
-      <button
-        type="button"
-        class="btn btn-outline"
-        [disabled]="loadingMore()"
-        (click)="more.emit()"
-      >
-        {{
-          loadingMore()
-            ? ('pages.profile.media.loading' | transloco)
-            : ('pages.profile.media.more' | transloco)
-        }}
-      </button>
-    </div>
-  }
+@if (!exhausted() && !loading()) {
+  <div class="media-more">
+    <button type="button" class="btn btn-outline" [disabled]="loadingMore()" (click)="more.emit()">
+      {{
+        loadingMore()
+          ? ('pages.profile.media.loading' | transloco)
+          : ('pages.profile.media.more' | transloco)
+      }}
+    </button>
+  </div>
 }

@@ -82,6 +82,7 @@
 
 .acct {
   font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
 .bot-tag,
@@ -111,4 +112,13 @@
 .share small {
   display: block;
   opacity: 0.7;
+}
+
+@media (max-width: 540px) {
+  .member-row {
+    flex-wrap: wrap;
+  }
+  app-account-preview {
+    flex-basis: 100%;
+  }
 }

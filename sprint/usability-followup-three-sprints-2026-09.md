@@ -1,6 +1,6 @@
 # Usability follow-up: three-sprint plan
 
-Created 2026-09-19. Sprint 1 implemented and validated locally, ready for user trial; Sprints 2–3 remain planned.
+Created 2026-09-19. Sprints 1–2 implemented and validated locally, ready for user trial; Sprint 3 remains planned. No deployment has been performed.
 
 ## Scope and sequencing
 
@@ -65,6 +65,19 @@ Outcome: picture-heavy tags work as media feeds, tag actions are consistent, and
 Dependencies: S2-2 supplies reusable tag state/actions for S2-5; S1-4 supplies profile refresh; S1-6 protects media-view usability. Reuse existing batch controls and confirmation conventions without rewriting unrelated flows.
 
 Sprint review: search for a tag, follow/feature/bundle it from results, open its media view, preview members, and follow remaining bundle tags. Repeat on narrow screens and with a partial batch failure.
+
+### Sprint 2 implementation and evidence
+
+- Hashtag searches announce hashtag counts, including zero and singular results, through the existing live region. Post/account counts remain independent.
+- Tag pages, hashtag search results, and trending hashtag results use the same adjacent Follow / Feature / Add to bundle controls. Controls wrap at narrow widths, expose busy/error states, and share successful relationship changes within the active account. Unknown relationships resolve on intent rather than causing one request per search result. A Follow click cannot accidentally unfollow an already-followed tag whose state was unknown. Late information about a different tag is ignored. Anonymous follows remain local; unsupported account actions stay hidden.
+- Tag pages have a Media tab using the existing grid and picture viewer, including alt text, sensitive-media handling, and video tiles. Requests use `only_media`; pagination retains the raw response cursor so a server that ignores that parameter cannot strand the reader on an image-free page. Empty/error pages still offer More/retry. The media wall retains loaded pages across tab switches. Query parameters preserve the selected tab and viewer; Back/Close return to the loaded wall and its reading position. Reloading or leaving the tag route entirely still refetches the feed rather than retaining an unbounded history cache.
+- Feed member lists (including tag members) and bundle People lists reuse the account hover card. Hover loads a preview lazily; an explicit Preview profile button works on touch and keyboard. Previews contain full handles, bios, available counts, relationship context, and a full-profile link. Inline layout avoids clipped overlays on narrow screens; Escape closes the preview.
+- Bundle list rows and bundle details offer the same optional Follow all tags operation. It checks existing follows, previews only remaining tags, sends requests sequentially, reports partial progress, and retries only unsuccessful tags. HTTP 429 stops the batch and honors Retry-After; anonymous capacity errors remain visible. Creating or reading a bundle does not follow its tags automatically.
+- Automated evidence: 135 focused tests passed; final focused checks additionally cover scroll restoration and Escape on the preview button. The complete `cd ui && make test` gate passes 7,518 tests with zero failures/skips and zero missing inventory entries. `make test-integration` passes 5 real-client tests against the isolated PyPI `mastodon-mock==0.6.0` wheel, including follow/unfollow persistence. Production build passes at 878.89 kB initial size, below the unchanged 1 MB limit; optional collection data remains lazy. Lint and i18n checks pass. Repository-wide formatting reports 17 pre-existing issues in untouched files; changed UI files pass formatting.
+- Browser evidence: localhost against public mastodon.social data, anonymous account, desktop and 390px viewport. Verified #caturday media tiles and viewer, Back and Close, returning to a scrolled wall, useful member preview content, narrow layout without horizontal overflow, hashtag search count/actions, bundle creation from search, the list confirmation flow, successful local tag following, and the already-followed state on bundle detail. No remote follows or posts were made during browser review.
+- Remaining acceptance: user trial with a signed-in TEST account for Follow/Feature and bulk following, plus broader dark-mode/non-English/device coverage. New translation keys use the existing English fallback until translated. The earlier real-account notification-dot timing trial from Sprint 1 remains outstanding.
+
+Sprint 2 user trial: open a picture-heavy tag, switch to Media, scroll and open a picture, then press Back. Open Members and preview someone by mouse, keyboard, and phone. Search for a hashtag, use the adjacent actions, and add it to a bundle. From the bundle list and detail page, preview Follow all tags; confirm that previously followed tags are excluded. Test a partial failure and retry on TEST if a controllable failure environment is available.
 
 ## Sprint 3 — Explain Plus and remove setup friction
 

@@ -1,0 +1,74 @@
+<div class="actions">
+  @if (auth.isAnonymous || !auth.lacksMastodonToken) {
+    <button
+      type="button"
+      class="btn btn-sm"
+      [class.btn-outline]="!following()"
+      [disabled]="busy()"
+      [attr.aria-pressed]="following()"
+      (click)="toggle('follow')"
+    >
+      {{ (following() ? 'pages.tag.following' : 'pages.tag.follow') | transloco }}
+    </button>
+  }
+  @if (!auth.lacksMastodonToken) {
+    <button
+      type="button"
+      class="btn btn-sm"
+      [class.btn-outline]="!current()?.featuring"
+      [disabled]="busy()"
+      [attr.aria-pressed]="!!current()?.featuring"
+      (click)="toggle('feature')"
+    >
+      {{ (current()?.featuring ? 'pages.tag.featured' : 'pages.tag.feature') | transloco }}
+    </button>
+  }
+  <button
+    type="button"
+    class="btn btn-sm btn-outline"
+    [attr.aria-expanded]="picker()"
+    (click)="picker.set(!picker())"
+  >
+    {{
+      (memberships()
+        ? memberships() === 1
+          ? 'pages.tag.inBundles.one'
+          : 'pages.tag.inBundles.other'
+        : 'pages.tag.addToBundle'
+      ) | transloco: { count: memberships() }
+    }}
+  </button>
+</div>
+@if (error(); as error) {
+  <p role="alert">{{ error === 'tagActions.failed' ? (error | transloco) : error }}</p>
+}
+@if (picker()) {
+  <div class="bundle-picker">
+    @for (b of bundles.bundles(); track b.id) {
+      <label class="checkline">
+        <input
+          type="checkbox"
+          [checked]="bundles.hasTag(b.id, name())"
+          [disabled]="!bundles.hasTag(b.id, name()) && bundles.isFull(b.id)"
+          (change)="bundles.setTag(b.id, name(), $any($event.target).checked)"
+        />
+        {{ b.title }} · {{ b.tags.length }}/{{ bundles.maxTags }}
+      </label>
+    } @empty {
+      <p class="muted small">{{ 'pages.tag.noBundlesYet' | transloco }}</p>
+    }
+    <div class="bundle-new">
+      <input
+        type="text"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+        (keyup.enter)="create()"
+        [attr.aria-label]="'pages.tag.newBundleName' | transloco"
+        [placeholder]="'pages.tag.newBundleName' | transloco"
+      />
+      <button type="button" class="btn btn-sm" [disabled]="!title().trim()" (click)="create()">
+        {{ 'pages.tag.createAndAdd' | transloco }}
+      </button>
+    </div>
+  </div>
+}

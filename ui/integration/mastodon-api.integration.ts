@@ -69,4 +69,13 @@ describe('Mawkingbird client against the PyPI Mastodon mock', () => {
     auth.setToken('not-a-valid-token');
     await expect(firstValueFrom(api.verifyCredentials())).rejects.toMatchObject({ status: 401 });
   });
+
+  it('keeps hashtag follows stateful across the controls used by bundles and search', async () => {
+    const name = 'integrationcats';
+    await firstValueFrom(api.postStatus(`A tag to discover #${name}`));
+    expect((await firstValueFrom(api.followTag(name))).following).toBe(true);
+    expect((await firstValueFrom(api.getTag(name))).following).toBe(true);
+    expect((await firstValueFrom(api.unfollowTag(name))).following).toBe(false);
+    expect((await firstValueFrom(api.getTag(name))).following).toBe(false);
+  });
 });

@@ -1,3 +1,4 @@
+import { AccountPreview } from '../account-hover-card/account-preview';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -50,7 +51,7 @@ const MAX_RESOLVED_AUTHORS = 80;
 // i18n feedMembers.postCount.other: {{count}} {{posts}}
 @Component({
   selector: 'app-feed-members',
-  imports: [RouterLink, FollowButton, TranslocoPipe],
+  imports: [AccountPreview, RouterLink, FollowButton, TranslocoPipe],
   templateUrl: './feed-members.html',
   styleUrl: './feed-members.css',
 })

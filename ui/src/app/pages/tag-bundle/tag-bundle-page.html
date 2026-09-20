@@ -6,6 +6,7 @@
 } @else {
   <div class="page-head">
     <h1>{{ bundle()!.title }}</h1>
+    <app-follow-bundle-tags [tags]="bundle()!.tags" />
     <p class="muted small">
       {{ 'tagBundle.headerPrefix' | transloco }}
       {{ 'tagBundle.tagCount' | transloco: { count: bundle()!.tags.length, max: maxTags } }}
@@ -96,12 +97,16 @@
       <p class="muted center small">{{ 'tagBundle.nobodyYet' | transloco }}</p>
     } @else {
       @for (m of members(); track m.id) {
-        <a class="list-row" [routerLink]="['/accounts', m.id]">
-          <span>
-            {{ m.display_name || m.username }}
-            <span class="muted small">· &#64;{{ m.acct }}</span>
-          </span>
-        </a>
+        <div class="list-row">
+          <app-account-preview [account]="m"
+            ><a [routerLink]="['/accounts', m.id]">
+              <span>
+                {{ m.display_name || m.username }}
+                <span class="muted small">· &#64;{{ m.acct }}</span>
+              </span>
+            </a></app-account-preview
+          >
+        </div>
       }
     }
   }

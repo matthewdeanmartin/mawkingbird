@@ -1,5 +1,8 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { TagMedia } from './tag-media';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TagActions } from '../../tag-actions/tag-actions';
+import { Component, computed, inject, DestroyRef, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Status, Tag as TagEntity } from '../../models';
@@ -13,8 +16,6 @@ import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { AnonymousProviderRef } from '../../providers/anonymous/anonymous-mastodon-provider';
 import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { TagBundles } from '../../lists/tag-bundles';
 import { Terminology } from '../../terminology';
 
 /** Posts per request when sampling the tag — Mastodon's cap. */
@@ -30,7 +31,8 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n pages.tag.full: · full
 // i18n pages.tag.noBundlesYet: No bundles yet — name one below.
 // i18n pages.tag.newBundleName: New bundle name
-// i18n pages.tag.createAndAdd: Create &amp; add
+// i18n pages.tag.createAndAdd: Create & add
+// i18n pages.tag.tabs.media: Media
 // i18n pages.tag.tabs.feed: Feed
 // i18n pages.tag.tabs.members: Members
 // i18n pages.tag.tabs.analytics: Analytics
@@ -42,13 +44,16 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n pages.tag.loadMore: Load more
 @Component({
   selector: 'app-tag',
-  imports: [StatusCard, FeedAnalytics, FeedMembers, FormsModule, TranslocoPipe],
+  imports: [TagMedia, TagActions, StatusCard, FeedAnalytics, FeedMembers, TranslocoPipe],
   templateUrl: './tag.html',
   styleUrl: './tag.css',
 })
 export class Tag implements OnInit {
   private api = inject(Api);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  protected mediaVisited = signal(false);
   protected auth = inject(Auth);
   private anonymousTags = inject(AnonymousTags);
   private anonymous = inject(AnonymousAccount);
@@ -61,33 +66,9 @@ export class Tag implements OnInit {
   protected tagInfo = signal<TagEntity | null>(null);
   protected statuses = signal<Status[]>([]);
   protected loading = signal(true);
-  protected followError = signal<string | null>(null);
   protected loadingMore = signal(false);
   protected exhausted = signal(false);
-  protected tab = signal<'posts' | 'members' | 'analytics'>('posts');
-
-  // --- tag bundles (lists sprint 5) ---
-
-  protected bundles = inject(TagBundles);
-  protected bundlePickerOpen = signal(false);
-  protected newBundleTitle = signal('');
-
-  /** Bundles already containing this tag, for the button's label. */
-  protected bundlesWithTag = computed(() => this.bundles.bundlesWith(this.tag()));
-
-  toggleBundle(bundleId: string, member: boolean): void {
-    this.bundles.setTag(bundleId, this.tag(), member);
-  }
-
-  /** Create a bundle and put this tag in it — the reason the box was typed in. */
-  createBundleWithTag(): void {
-    const title = this.newBundleTitle().trim();
-    if (!title) {
-      return;
-    }
-    this.bundles.create(title, [this.tag()]);
-    this.newBundleTitle.set('');
-  }
+  protected tab = signal<'posts' | 'media' | 'members' | 'analytics'>('posts');
 
   /**
    * The feed the Members and Analytics tabs sample. Rebuilt whenever the tag
@@ -107,18 +88,30 @@ export class Tag implements OnInit {
   });
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const tag = params.get('tag');
       if (tag) {
         this.tag.set(tag);
+        this.mediaVisited.set(false);
         this.tab.set('posts');
         this.load(tag);
       }
     });
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const tab = params.get('tab');
+      this.tab.set(tab === 'media' || tab === 'members' || tab === 'analytics' ? tab : 'posts');
+      if (tab === 'media') this.mediaVisited.set(true);
+    });
   }
 
-  setTab(tab: 'posts' | 'members' | 'analytics'): void {
+  setTab(tab: 'posts' | 'media' | 'members' | 'analytics'): void {
     this.tab.set(tab);
+    if (tab === 'media') this.mediaVisited.set(true);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tab === 'posts' ? null : tab, photo: null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   // ------------------------------------------------------------- "My posts"
@@ -232,39 +225,6 @@ export class Tag implements OnInit {
     return status.provider === 'anonymous-mastodon' && typeof ref?.statusId === 'string'
       ? ref.statusId
       : status.id;
-  }
-
-  toggleFollow(): void {
-    const info = this.tagInfo();
-    if (!info) {
-      return;
-    }
-    this.followError.set(null);
-    if (this.auth.isAnonymous) {
-      if (info.following) {
-        this.anonymousTags.unfollow(info.name);
-        this.tagInfo.set({ ...info, following: false });
-        return;
-      }
-      const result = this.anonymousTags.follow(info.name);
-      if (!result.ok) {
-        this.followError.set(result.error);
-        return;
-      }
-      this.tagInfo.set({ ...info, following: true });
-      return;
-    }
-    const call = info.following ? this.api.unfollowTag(info.name) : this.api.followTag(info.name);
-    call.subscribe((updated) => this.tagInfo.set(updated));
-  }
-
-  toggleFeature(): void {
-    const info = this.tagInfo();
-    if (!info) {
-      return;
-    }
-    const call = info.featuring ? this.api.unfeatureTag(info.name) : this.api.featureTag(info.name);
-    call.subscribe((updated) => this.tagInfo.set(updated));
   }
 
   /**

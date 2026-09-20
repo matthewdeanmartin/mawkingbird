@@ -237,6 +237,25 @@ describe('Search', () => {
    * the results. "Facets alone look like nothing happened."
    */
   describe('saying that the search finished', () => {
+    for (const count of [0, 1, 2]) {
+      it(`announces ${count} hashtags independently of posts`, () => {
+        const fixture = setUp();
+        internals(fixture).type.set('hashtags');
+        internals(fixture).results.set({
+          accounts: [],
+          statuses: [makeStatus('unrelated-post')],
+          hashtags: Array.from({ length: count }, (_, index) => ({
+            name: `tag${index}`,
+            url: '',
+          })),
+        });
+        fixture.detectChanges();
+        const live = (fixture.nativeElement as HTMLElement).querySelector('.result-announcement');
+        expect(live?.textContent?.trim()).toBe(
+          `Found ${count} ${count === 1 ? 'hashtag' : 'hashtags'}.`,
+        );
+      });
+    }
     it('announces how many posts were found', () => {
       const fixture = setUp();
       search(fixture, 'gardening');

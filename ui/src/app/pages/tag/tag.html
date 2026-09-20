@@ -1,86 +1,13 @@
 <div class="page-head tag-head">
   <span>#{{ tag() }}</span>
-  @if (tagInfo(); as info) {
-    <span class="tag-actions">
-      <!-- Both act as toggles: filled (accent) when on, outline when off. -->
-      <button class="btn btn-sm" [class.btn-outline]="!info.following" (click)="toggleFollow()">
-        {{ (info.following ? 'pages.tag.following' : 'pages.tag.follow') | transloco }}
-      </button>
-      @if (!auth.isAnonymous) {
-        <button class="btn btn-sm" [class.btn-outline]="!info.featuring" (click)="toggleFeature()">
-          {{ (info.featuring ? 'pages.tag.featured' : 'pages.tag.feature') | transloco }}
-        </button>
-      }
-    </span>
-  }
+  <app-tag-actions [name]="tag()" [info]="tagInfo()" (changed)="tagInfo.set($event)" />
 </div>
-
-@if (followError(); as error) {
-  <p class="muted center" role="alert">{{ error }}</p>
-}
-
-<!-- Bundling is client-side, so unlike Follow above it needs no tagInfo and no account.
-     Following a tag pushes it into Home forever; a bundle is a feed you open. -->
-<div class="bundle-bar">
-  <button
-    type="button"
-    class="btn btn-sm btn-outline"
-    (click)="bundlePickerOpen.set(!bundlePickerOpen())"
-    [attr.aria-expanded]="bundlePickerOpen()"
-  >
-    @if (bundlesWithTag().length) {
-      {{
-        (bundlesWithTag().length === 1 ? 'pages.tag.inBundles.one' : 'pages.tag.inBundles.other')
-          | transloco: { count: bundlesWithTag().length }
-      }}
-    } @else {
-      {{ 'pages.tag.addToBundle' | transloco }}
-    }
-  </button>
-
-  @if (bundlePickerOpen()) {
-    <div class="bundle-picker">
-      @for (b of bundles.bundles(); track b.id) {
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [checked]="bundles.hasTag(b.id, tag())"
-            [disabled]="!bundles.hasTag(b.id, tag()) && bundles.isFull(b.id)"
-            (change)="toggleBundle(b.id, $any($event.target).checked)"
-          />
-          {{ b.title }}
-          <span class="muted small">· {{ b.tags.length }}/{{ bundles.maxTags }}</span>
-          @if (!bundles.hasTag(b.id, tag()) && bundles.isFull(b.id)) {
-            <span class="muted small">{{ 'pages.tag.full' | transloco }}</span>
-          }
-        </label>
-      } @empty {
-        <p class="muted small">{{ 'pages.tag.noBundlesYet' | transloco }}</p>
-      }
-
-      <div class="bundle-new">
-        <input
-          type="text"
-          [ngModel]="newBundleTitle()"
-          (ngModelChange)="newBundleTitle.set($event)"
-          (keyup.enter)="createBundleWithTag()"
-          [placeholder]="'pages.tag.newBundleName' | transloco"
-        />
-        <button
-          class="btn btn-sm"
-          [disabled]="!newBundleTitle().trim()"
-          (click)="createBundleWithTag()"
-        >
-          {{ 'pages.tag.createAndAdd' | transloco }}
-        </button>
-      </div>
-    </div>
-  }
-</div>
-
 <div class="tabs">
   <button class="tab" [class.active]="tab() === 'posts'" (click)="setTab('posts')">
     {{ 'pages.tag.tabs.feed' | transloco }}
+  </button>
+  <button class="tab" [class.active]="tab() === 'media'" (click)="setTab('media')">
+    {{ 'pages.tag.tabs.media' | transloco }}
   </button>
   <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
     {{ 'pages.tag.tabs.members' | transloco }}
@@ -92,7 +19,12 @@
 
 <!-- Mounting either component starts its own collection, so both stay off the
      Feed tab until opened. -->
-@if (tab() === 'members') {
+@if (mediaVisited()) {
+  <div [hidden]="tab() !== 'media'"><app-tag-media [tag]="tag()" /></div>
+}
+@if (tab() === 'media') {
+  <!-- The mounted wall retains loaded pages when switching tabs. -->
+} @else if (tab() === 'members') {
   <app-feed-members [source]="feedSource()" />
 } @else if (tab() === 'analytics') {
   <app-feed-analytics [source]="feedSource()" />

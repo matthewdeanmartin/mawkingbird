@@ -2,9 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status, Tag as TagEntity } from '../../models';
 import { Tag } from './tag';
 import { Auth } from '../../auth';
@@ -69,9 +69,14 @@ let httpMock: HttpTestingController;
 
 function setUpWithTag(tagName: string, prepare?: () => void): ComponentFixture<Tag> {
   TestBed.overrideProvider(ActivatedRoute, {
-    useValue: { paramMap: of(convertToParamMap({ tag: tagName })) },
+    useValue: {
+      paramMap: of(convertToParamMap({ tag: tagName })),
+      queryParamMap: of(convertToParamMap({})),
+    },
   });
+  TestBed.inject(Auth).setToken('tag-test');
   prepare?.();
+  vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
   httpMock = TestBed.inject(HttpTestingController);
   const fixture = TestBed.createComponent(Tag);
   fixture.detectChanges();
@@ -140,70 +145,97 @@ describe('Tag (timeline)', () => {
 
   // ---------------------------------------------------------------- toggleFollow
 
-  it('toggleFollow: POSTs to /follow when not following', () => {
+  it('toggleFollow: POSTs to /follow when not following', async () => {
     const fixture = setUpWithTag('python');
     httpMock.expectOne('/api/v1/tags/python').flush(makeTagEntity('python', { following: false }));
     httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/python')).flush([]);
 
-    fixture.componentInstance.toggleFollow();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelectorAll('app-tag-actions button')[0] as HTMLButtonElement
+    ).click();
 
     const req = httpMock.expectOne('/api/v1/tags/python/follow');
     expect(req.request.method).toBe('POST');
     req.flush(makeTagEntity('python', { following: true }));
+    await Promise.resolve();
 
     expect(internals(fixture).tagInfo()?.following).toBe(true);
   });
 
-  it('toggleFollow: POSTs to /unfollow when already following', () => {
+  it('toggleFollow: POSTs to /unfollow when already following', async () => {
     const fixture = setUpWithTag('python');
     httpMock.expectOne('/api/v1/tags/python').flush(makeTagEntity('python', { following: true }));
     httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/python')).flush([]);
 
-    fixture.componentInstance.toggleFollow();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelectorAll('app-tag-actions button')[0] as HTMLButtonElement
+    ).click();
 
     const req = httpMock.expectOne('/api/v1/tags/python/unfollow');
     expect(req.request.method).toBe('POST');
     req.flush(makeTagEntity('python', { following: false }));
+    await Promise.resolve();
   });
 
-  it('toggleFollow: does nothing when tagInfo is null', () => {
+  it('toggleFollow: does nothing when tagInfo is null', async () => {
     const fixture = setUpWithTag('unknowntag');
     httpMock.expectOne('/api/v1/tags/unknowntag').flush(makeTagEntity('unknowntag'));
     httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/unknowntag')).flush([]);
 
     // Manually clear tagInfo to simulate null state.
     internals(fixture).tagInfo.set(null);
-    fixture.componentInstance.toggleFollow();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelectorAll('app-tag-actions button')[0] as HTMLButtonElement
+    ).click();
 
-    // No follow/unfollow request should be issued.
+    // Unknown state cannot trigger a mutation. Resolve it first; discovering
+    // an existing follow must not turn the user's Follow click into Unfollow.
+    httpMock.expectNone((request) => request.method === 'POST');
+    httpMock
+      .expectOne('/api/v1/tags/unknowntag')
+      .flush(makeTagEntity('unknowntag', { following: true }));
+    await Promise.resolve();
+    expect(internals(fixture).tagInfo()?.following).toBe(true);
+    httpMock.expectNone('/api/v1/tags/unknowntag/unfollow');
     httpMock.expectNone('/api/v1/tags/unknowntag/follow');
   });
 
   // ---------------------------------------------------------------- toggleFeature
 
-  it('toggleFeature: POSTs to /feature when not featuring', () => {
+  it('toggleFeature: POSTs to /feature when not featuring', async () => {
     const fixture = setUpWithTag('art');
     httpMock.expectOne('/api/v1/tags/art').flush(makeTagEntity('art', { featuring: false }));
     httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/art')).flush([]);
 
-    fixture.componentInstance.toggleFeature();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelectorAll('app-tag-actions button')[1] as HTMLButtonElement
+    ).click();
 
     const req = httpMock.expectOne('/api/v1/tags/art/feature');
     expect(req.request.method).toBe('POST');
     req.flush(makeTagEntity('art', { featuring: true }));
+    await Promise.resolve();
     expect(internals(fixture).tagInfo()?.featuring).toBe(true);
   });
 
-  it('toggleFeature: POSTs to /unfeature when already featuring', () => {
+  it('toggleFeature: POSTs to /unfeature when already featuring', async () => {
     const fixture = setUpWithTag('art');
     httpMock.expectOne('/api/v1/tags/art').flush(makeTagEntity('art', { featuring: true }));
     httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/art')).flush([]);
 
-    fixture.componentInstance.toggleFeature();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelectorAll('app-tag-actions button')[1] as HTMLButtonElement
+    ).click();
 
     const req = httpMock.expectOne('/api/v1/tags/art/unfeature');
     expect(req.request.method).toBe('POST');
     req.flush(makeTagEntity('art', { featuring: false }));
+    await Promise.resolve();
   });
 
   // ------------------------------------------------------------------ My posts
@@ -291,7 +323,7 @@ describe('Tag (timeline)', () => {
     const tabs = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.tab')].map((b) =>
       b.textContent?.trim(),
     );
-    expect(tabs).toEqual(['Feed', 'Members', 'Analytics']);
+    expect(tabs).toEqual(['Feed', 'Media', 'Members', 'Analytics']);
     expect(internals(fixture).tab()).toBe('posts');
   });
 

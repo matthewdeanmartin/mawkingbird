@@ -78,6 +78,14 @@ export interface AccountStatusesOptions {
  */
 @Injectable({ providedIn: 'root' })
 export class Api {
+  readonly tagChanges = new Subject<{ scope: string; tag: Tag }>();
+  private tagMutation(request: Observable<Tag>): Observable<Tag> {
+    return defer(() => {
+      const scope = accountScopeSuffix();
+      return request.pipe(tap((tag) => this.tagChanges.next({ scope, tag })));
+    });
+  }
+
   readonly accountChanges = new Subject<{ scope: string; kind: 'profile' | 'tags' }>();
 
   private accountMutation<T>(request: Observable<T>, kind: 'profile' | 'tags'): Observable<T> {
@@ -333,11 +341,17 @@ export class Api {
   }
 
   /** `limit` is capped at 40 by Mastodon; analytics pages at the cap to halve calls. */
-  tagTimeline(tag: string, maxId?: string, limit?: number): Observable<Status[]> {
+  tagTimeline(
+    tag: string,
+    maxId?: string,
+    limit?: number,
+    onlyMedia = false,
+  ): Observable<Status[]> {
     let params = this.pageParams(maxId);
     if (limit) {
       params = params.set('limit', String(limit));
     }
+    if (onlyMedia) params = params.set('only_media', 'true');
     return this.http.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(tag)}`, {
       params,
       context: serverRole('tag'),
@@ -929,24 +943,30 @@ export class Api {
 
   followTag(name: string): Observable<Tag> {
     return this.accountMutation(
-      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/follow`, {}),
+      this.tagMutation(this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/follow`, {})),
       'tags',
     );
   }
 
   unfollowTag(name: string): Observable<Tag> {
     return this.accountMutation(
-      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfollow`, {}),
+      this.tagMutation(
+        this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfollow`, {}),
+      ),
       'tags',
     );
   }
 
   featureTag(name: string): Observable<Tag> {
-    return this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/feature`, {});
+    return this.tagMutation(
+      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/feature`, {}),
+    );
   }
 
   unfeatureTag(name: string): Observable<Tag> {
-    return this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfeature`, {});
+    return this.tagMutation(
+      this.http.post<Tag>(`/api/v1/tags/${encodeURIComponent(name)}/unfeature`, {}),
+    );
   }
 
   followedTags(): Observable<Tag[]> {

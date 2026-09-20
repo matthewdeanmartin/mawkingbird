@@ -53,26 +53,28 @@
 
   @for (row of authors(); track row.account.id) {
     <div class="member-row">
-      <a class="member-link" [routerLink]="['/accounts', row.account.id]">
-        <img
-          class="avatar"
-          [src]="row.account.avatar_static || row.account.avatar"
-          [alt]="row.account.username"
-          loading="lazy"
-          decoding="async"
-        />
-        <span class="names">
-          <span class="name">
-            {{ row.account.display_name || row.account.username }}
-            @if (row.account.bot) {
-              <span class="bot-tag" [title]="'feedMembers.botTag.title' | transloco">{{
-                'feedMembers.botTag.label' | transloco
-              }}</span>
-            }
+      <app-account-preview [account]="row.account">
+        <a class="member-link" [routerLink]="['/accounts', row.account.id]">
+          <img
+            class="avatar"
+            [src]="row.account.avatar_static || row.account.avatar"
+            [alt]="row.account.username"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="names">
+            <span class="name">
+              {{ row.account.display_name || row.account.username }}
+              @if (row.account.bot) {
+                <span class="bot-tag" [title]="'feedMembers.botTag.title' | transloco">{{
+                  'feedMembers.botTag.label' | transloco
+                }}</span>
+              }
+            </span>
+            <span class="acct muted">&#64;{{ row.account.acct }}</span>
           </span>
-          <span class="acct muted">&#64;{{ row.account.acct }}</span>
-        </span>
-      </a>
+        </a>
+      </app-account-preview>
       <span
         class="share muted"
         [title]="'feedMembers.share.title' | transloco: { pct: pct(row.share) }"

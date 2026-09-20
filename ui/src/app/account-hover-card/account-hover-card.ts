@@ -1,3 +1,8 @@
+import { RouterLink } from '@angular/router';
+import { effect, untracked } from '@angular/core';
+import { accountRoutePath } from '../account-route';
+import { TranslocoPipe } from '@jsverse/transloco';
+// i18n accountPreview.fullProfile: View full profile
 import {
   booleanAttribute,
   Component,
@@ -34,9 +39,10 @@ function didOf(account: Account): string {
  */
 @Component({
   selector: 'app-account-hover-card',
-  imports: [VerifiedBadge, HumanCountPipe, RenderedHtmlLinks],
+  imports: [RouterLink, TranslocoPipe, VerifiedBadge, HumanCountPipe, RenderedHtmlLinks],
+  host: { '[class.inline]': 'inline()' },
   template: `
-    <div class="hover-card" (mouseenter)="loadRelationship()">
+    <div class="hover-card" (mouseenter)="loadRelationship()" (focusin)="loadRelationship()">
       <img
         class="hc-avatar"
         [src]="account().avatar_static || account().avatar"
@@ -49,7 +55,7 @@ function didOf(account: Account): string {
         <app-verified-badge [account]="account()" />
       </div>
       <div class="hc-acct muted">
-        &#64;{{ account().acct }}
+        &#64;{{ fullHandle() }}
         <!-- The follow button says what you did; this says what they did. A card
              that shows "Following" and nothing else cannot distinguish a mutual
              from a stranger, which is usually the thing you hovered to find out. -->
@@ -74,6 +80,11 @@ function didOf(account: Account): string {
         </div>
       }
       <div class="hc-actions">
+        @if (inline()) {
+          <a class="btn btn-sm btn-outline" [routerLink]="profileRoute()">{{
+            'accountPreview.fullProfile' | transloco
+          }}</a>
+        }
         @if (showFollowButton()) {
           <button
             type="button"
@@ -131,6 +142,25 @@ function didOf(account: Account): string {
       :host {
         display: none;
       }
+    }
+    :host.inline {
+      display: block;
+      position: static;
+      visibility: visible;
+      opacity: 1;
+      content-visibility: visible;
+      margin-top: 8px;
+    }
+    :host.inline .hover-card {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 360px;
+    }
+    .hc-acct {
+      overflow-wrap: anywhere;
+    }
+    .hc-stats {
+      flex-wrap: wrap;
     }
     .hover-card {
       width: 280px;
@@ -218,6 +248,27 @@ export class AccountHoverCard {
   private destroyRef = inject(DestroyRef);
 
   readonly account = input.required<Account>();
+  readonly inline = input(false, { transform: booleanAttribute });
+  protected fullHandle = computed(() => {
+    const account = this.account();
+    if (account.acct.includes('@') || account.id.startsWith('bsky:')) return account.acct;
+    try {
+      return account.acct + '@' + new URL(account.url).hostname;
+    } catch {
+      return account.acct;
+    }
+  });
+  protected profileRoute = computed(() =>
+    accountRoutePath({
+      id: this.account().id,
+      handle: this.fullHandle().includes('@') ? this.fullHandle() : undefined,
+    }),
+  );
+  constructor() {
+    effect(() => {
+      if (this.inline()) untracked(() => this.loadRelationship());
+    });
+  }
   readonly allowFollow = input(true, { transform: booleanAttribute });
   readonly showStats = input(true, { transform: booleanAttribute });
 
@@ -305,7 +356,10 @@ export class AccountHoverCard {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (relationships) => this.relationship.set(relationships[0] ?? null),
-        error: () => this.relationshipLoading.set(false),
+        error: () => {
+          this.relationshipLoadedFor = null;
+          this.relationshipLoading.set(false);
+        },
         complete: () => this.relationshipLoading.set(false),
       });
   }

@@ -417,20 +417,25 @@
       <p class="muted center small">{{ 'pages.lists.tagBundles.empty' | transloco }}</p>
     } @else {
       @for (b of tagBundles.bundles(); track b.id) {
-        <a class="list-row" [routerLink]="['/tag-bundles', b.id]">
-          <span>
-            {{ b.title }}
-            @if (b.tags.length) {
-              <span class="muted small">
-                ·
-                @for (t of b.tags; track t; let last = $last) {
-                  #{{ t }}{{ last ? '' : ', ' }}
-                }
-              </span>
-            } @else {
-              <span class="muted small">{{ 'pages.lists.tagBundles.noTagsYet' | transloco }}</span>
-            }
-          </span>
+        <div class="list-row bundle-list-row">
+          <a [routerLink]="['/tag-bundles', b.id]">
+            <span>
+              {{ b.title }}
+              @if (b.tags.length) {
+                <span class="muted small">
+                  ·
+                  @for (t of b.tags; track t; let last = $last) {
+                    #{{ t }}{{ last ? '' : ', ' }}
+                  }
+                </span>
+              } @else {
+                <span class="muted small">{{
+                  'pages.lists.tagBundles.noTagsYet' | transloco
+                }}</span>
+              }
+            </span>
+          </a>
+          <app-follow-bundle-tags [tags]="b.tags" />
           <button
             class="del"
             (click)="askDeleteBundle(b, $event)"
@@ -438,7 +443,7 @@
           >
             ✕
           </button>
-        </a>
+        </div>
       }
     }
   }

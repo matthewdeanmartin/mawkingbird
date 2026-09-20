@@ -1,3 +1,5 @@
+import { AccountPreview } from '../../account-hover-card/account-preview';
+import { FollowBundleTags } from '../../tag-actions/follow-bundle-tags';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -41,7 +43,7 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n tagBundle.tagAlreadyIn: That tag is already in this bundle.
 @Component({
   selector: 'app-tag-bundle-page',
-  imports: [RouterLink, FormsModule, StatusCard, TranslocoPipe],
+  imports: [FollowBundleTags, AccountPreview, RouterLink, FormsModule, StatusCard, TranslocoPipe],
   templateUrl: './tag-bundle-page.html',
   styleUrl: './tag-bundle-page.css',
 })

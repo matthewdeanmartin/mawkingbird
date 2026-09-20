@@ -221,9 +221,16 @@ export class AnonymousPublicApi {
   }
 
   /** `limit` is capped at 40 by Mastodon; analytics pages at the cap to halve calls. */
-  getTagTimeline(server: string, name: string, maxId?: string, limit = 20): Observable<Status[]> {
+  getTagTimeline(
+    server: string,
+    name: string,
+    maxId?: string,
+    limit = 20,
+    onlyMedia = false,
+  ): Observable<Status[]> {
     let params = new HttpParams().set('limit', String(limit));
     if (maxId) params = params.set('max_id', maxId);
+    if (onlyMedia) params = params.set('only_media', 'true');
     return this.http
       .get<Status[]>(`${server}/api/v1/timelines/tag/${encodeURIComponent(name)}`, {
         params,
@@ -324,9 +331,11 @@ export class AnonymousPublicApi {
     let params = new HttpParams().set('limit', String(PEOPLE_PAGE_LIMIT));
     if (maxId) params = params.set('max_id', maxId);
     return this.http
-      .get<
-        Account[]
-      >(`${ref.server}/api/v1/accounts/${encodeURIComponent(ref.id)}/${kind}`, { params, context: externalFetch(), observe: 'response' })
+      .get<Account[]>(`${ref.server}/api/v1/accounts/${encodeURIComponent(ref.id)}/${kind}`, {
+        params,
+        context: externalFetch(),
+        observe: 'response',
+      })
       .pipe(
         timeout(REQUEST_TIMEOUT_MS),
         map((response) => {

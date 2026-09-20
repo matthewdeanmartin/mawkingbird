@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bundle-picker {
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+}
+.checkline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  overflow-wrap: anywhere;
+}
+.bundle-new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.bundle-new input {
+  flex: 1;
+  min-width: 100px;
+  width: 100%;
+}

@@ -1187,13 +1187,16 @@
           @if (trendingTags().length) {
             <div class="page-head">{{ 'pages.search.results.trendingHashtags' | transloco }}</div>
             @for (h of trendingTags(); track h.name) {
-              <a class="result-tag" [routerLink]="['/tags', h.name]">
-                #{{ h.name }}
-                <span class="muted tag-uses">{{
-                  'pages.search.results.recentUses'
-                    | transloco: { count: tagUses(h).toLocaleString() }
-                }}</span>
-              </a>
+              <div class="result-tag">
+                <a [routerLink]="['/tags', h.name]">
+                  #{{ h.name }}
+                  <span class="muted tag-uses">{{
+                    'pages.search.results.recentUses'
+                      | transloco: { count: tagUses(h).toLocaleString() }
+                  }}</span></a
+                >
+                <app-tag-actions [name]="h.name" [info]="h" />
+              </div>
             }
           }
         }
@@ -1295,7 +1298,10 @@
           @if (r.hashtags.length) {
             <div class="page-head">{{ 'pages.search.results.hashtags' | transloco }}</div>
             @for (h of r.hashtags; track h.name) {
-              <a class="result-tag" [routerLink]="['/tags', h.name]">#{{ h.name }}</a>
+              <div class="result-tag">
+                <a [routerLink]="['/tags', h.name]">#{{ h.name }}</a>
+                <app-tag-actions [name]="h.name" [info]="h" />
+              </div>
             }
           }
 

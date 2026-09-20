@@ -155,3 +155,12 @@ p.muted.center.small {
   gap: 8px;
   padding: 3px 0;
 }
+
+.bundle-list-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bundle-list-row > a {
+  flex: 1;
+  min-width: 160px;
+}

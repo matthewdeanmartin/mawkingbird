@@ -1,3 +1,4 @@
+import { TagActions } from '../../tag-actions/tag-actions';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
@@ -184,6 +185,8 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.refine.activeCount.other: {{count}} filters on
 // i18n pages.search.found.posts.one: Found 1 {{post}}.
 // i18n pages.search.found.posts.other: Found {{count}} {{posts}}.
+// i18n pages.search.found.hashtags.one: Found 1 hashtag.
+// i18n pages.search.found.hashtags.other: Found {{count}} hashtags.
 // i18n pages.search.found.accounts.one: Found 1 account.
 // i18n pages.search.found.accounts.other: Found {{count}} accounts.
 // i18n pages.search.type.accounts: Accounts
@@ -392,6 +395,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 @Component({
   selector: 'app-search',
   imports: [
+    TagActions,
     FormsModule,
     RouterLink,
     StatusCard,
@@ -1576,6 +1580,13 @@ export class Search implements OnInit, OnDestroy {
     }
     if (!this.results()) {
       return null;
+    }
+    if (this.type() === 'hashtags') {
+      const count = this.results()!.hashtags.length;
+      return this.transloco.translate(
+        count === 1 ? 'pages.search.found.hashtags.one' : 'pages.search.found.hashtags.other',
+        { count },
+      );
     }
     const count = this.loadedCount();
     return this.transloco.translate(

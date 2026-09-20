@@ -1,3 +1,4 @@
+import { FollowBundleTags } from '../../tag-actions/follow-bundle-tags';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -219,7 +220,14 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.confirm.deleteCollection.confirm: Delete collection
 @Component({
   selector: 'app-lists',
-  imports: [RouterLink, FormsModule, ConfirmDialog, TranslocoPipe, PeopleListsPanel],
+  imports: [
+    FollowBundleTags,
+    RouterLink,
+    FormsModule,
+    ConfirmDialog,
+    TranslocoPipe,
+    PeopleListsPanel,
+  ],
   templateUrl: './lists.html',
   styleUrl: './lists.css',
 })
