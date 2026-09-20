@@ -101,6 +101,11 @@
     "empty": "Nobody yet.",
     "loading": "Loading…"
   },
+  "accountPreview": {
+    "close": "Close preview",
+    "fullProfile": "View full profile",
+    "open": "Preview profile"
+  },
   "adminAccounts": {
     "actions.approve": "Approve",
     "actions.delete": "Delete",
@@ -1009,6 +1014,21 @@
     "unifiedShare.label": "Unified share menu",
     "write.description": "The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.",
     "write.label": "Write"
+  },
+  "followBundle": {
+    "cancel": "Close",
+    "checkFailed": "Couldn't check followed tags. Please try again.",
+    "checking": "Checking followed tags…",
+    "confirm": "Follow these tags",
+    "done": "All tags in this bundle are followed.",
+    "failed": "Some tags couldn't be followed. Retry the remaining tags.",
+    "open": "Follow all tags…",
+    "preview.one": "Follow 1 remaining tag:",
+    "preview.other": "Follow {{count}} remaining tags:",
+    "progress": "Followed {{done}} of {{total}} tags.",
+    "rateLimit": "The server asked us to slow down. Try again after {{time}}.",
+    "retry": "Retry remaining tags",
+    "retryCheck": "Check again"
   },
   "footer": {
     "buildLog": "build log",
@@ -2961,6 +2981,8 @@
     "search.field.sensitiveOnly": "Sensitive only",
     "search.found.accounts.one": "Found 1 account.",
     "search.found.accounts.other": "Found {{count}} accounts.",
+    "search.found.hashtags.one": "Found 1 hashtag.",
+    "search.found.hashtags.other": "Found {{count}} hashtags.",
     "search.found.posts.one": "Found 1 {{post}}.",
     "search.found.posts.other": "Found {{count}} {{posts}}.",
     "search.fullTextPostSearch": "for full-text post search.",
@@ -3189,7 +3211,7 @@
     "search.type.posts": "Posts",
     "search.type.web": "Search the web ↗",
     "tag.addToBundle": "Add to bundle",
-    "tag.createAndAdd": "Create &amp; add",
+    "tag.createAndAdd": "Create & add",
     "tag.feature": "Feature",
     "tag.featured": "Featured",
     "tag.follow": "Follow",
@@ -3199,6 +3221,7 @@
     "tag.inBundles.other": "In {{count}} bundles",
     "tag.loadMore": "Load more",
     "tag.loading": "Loading…",
+    "tag.mediaError": "Couldn't load pictures. Try loading more to retry.",
     "tag.mine.none": "None of the {{total}} loaded {{posts}} are yours.",
     "tag.mine.summary": "{{visible}} of the {{total}} loaded {{posts}}. Load more to search further back.",
     "tag.myPosts": "My {{posts}}",
@@ -3207,6 +3230,7 @@
     "tag.noStatuses": "No statuses tagged #{{tag}}.",
     "tag.tabs.analytics": "Analytics",
     "tag.tabs.feed": "Feed",
+    "tag.tabs.media": "Media",
     "tag.tabs.members": "Members",
     "thread.anonymous.contextUnavailable": "This server did not make the surrounding conversation available anonymously. The post is still readable below.",
     "thread.anonymous.openOriginal": "Open the original",
@@ -6294,6 +6318,9 @@
     "tileLargestKey": "largest key",
     "tileTotalSize": "total size",
     "title": "Storage Diagnostics"
+  },
+  "tagActions": {
+    "failed": "Couldn't update this tag. Please try again."
   },
   "tagBundle": {
     "add": "Add",
