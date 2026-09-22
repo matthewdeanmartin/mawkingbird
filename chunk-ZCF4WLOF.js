@@ -1,0 +1,1 @@
+function t(){let o=new URL(window.location.href);return o.protocol!=="http:"||/^(localhost|.*\.localhost|127(?:\.\d+){3}|\[::1\])$/.test(o.hostname)?!1:(o.protocol="https:",window.location.href=o.toString(),!0)}export{t as a};

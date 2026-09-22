@@ -101,6 +101,11 @@
     "empty": "Nobody yet.",
     "loading": "Loading…"
   },
+  "accountPreview": {
+    "close": "Close preview",
+    "fullProfile": "View full profile",
+    "open": "Preview profile"
+  },
   "adminAccounts": {
     "actions.approve": "Approve",
     "actions.delete": "Delete",
@@ -398,8 +403,10 @@
     "status.notfound": "notfound"
   },
   "bulkFollow": {
-    "confirm": "Follow {{count}} accounts or topics? Accounts may receive follow notifications or follow requests.",
-    "feeds": "Follow {{count}} feeds?"
+    "action": "Follow {{count}}",
+    "feeds": "Follow {{count}} feeds?",
+    "title": "Follow {{count}} accounts or topics?",
+    "warning": "Accounts may receive follow notifications or follow requests. Unfollowing later won't take those notifications back."
   },
   "bundledStarterKits": {
     "account.one": "{{count}} account",
@@ -423,7 +430,8 @@
   "commandBar": {
     "textFocus.label": "Text-focus",
     "textFocus.turnOff": "Turn off text-focus and show images",
-    "textFocus.turnOn": "Turn on text-focus: show image icons and alt text"
+    "textFocus.turnOn": "Turn on text-focus: show image icons and alt text",
+    "tweetView": "Tweet view"
   },
   "common": {
     "cancel": "Cancel",
@@ -466,6 +474,12 @@
     "keepEditing": "Keep editing",
     "langMismatch": "You set the language to <strong>{{picked}}</strong>, but this reads as <strong>{{detected}}</strong>. Post anyway, or fix it?",
     "markSensitive": "Mark media sensitive",
+    "mentions.continue": "Use these mentions",
+    "mentions.invalid": "Check @{{handle}} — that handle is not valid. Your reply has not been sent.",
+    "mentions.missing": "No exact account was found for @{{handle}}. Check the spelling; your reply has not been sent.",
+    "mentions.review": "Your reply will mention: {{people}}",
+    "mentions.title": "Check the people you are mentioning",
+    "mentions.unavailable": "Could not check @{{handle}} right now. Try again; your reply has not been sent.",
     "notPosted": "Not posted",
     "pasteExpiry": "Paste expiry",
     "pasteService": "Paste service",
@@ -616,6 +630,14 @@
     "write.body": "Open the writing workspace for something longer than a quick post.",
     "write.title": "Give an idea more room"
   },
+  "dialogs": {
+    "alertTitle": "Notice",
+    "confirmTitle": "Are you sure?",
+    "continue": "Continue",
+    "ok": "OK",
+    "promptTitle": "Enter a value",
+    "value": "Value"
+  },
   "discovery": {
     "card.actions": "Discovery card actions",
     "card.dismiss": "Dismiss this card",
@@ -762,6 +784,10 @@
     "accounts.topAuthors": "Top authors",
     "accounts.topFive": "Top 5 authors",
     "accounts.topTen": "Top 10 authors",
+    "calendar.caption": "One square per day; darker means more posts. Uses original publication dates, including for boosts. Only the loaded sample is shown, including the quiet days between posts. Load more posts to extend the calendar.",
+    "calendar.day": "{{date}}: {{count}} posts",
+    "calendar.summary": "{{posts}} posts across {{days}} days; {{active}} days with posts. Busiest day: {{peak}} posts.",
+    "calendar.title": "Posting frequency",
     "composition.description": "What kind of posts make up the sample. Categories overlap — a post can be a reply with media and a link.",
     "composition.languages": "Declared languages",
     "composition.length": "Post length averages {{average}} characters (median {{median}}).",
@@ -989,6 +1015,21 @@
     "write.description": "The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.",
     "write.label": "Write"
   },
+  "followBundle": {
+    "cancel": "Close",
+    "checkFailed": "Couldn't check followed tags. Please try again.",
+    "checking": "Checking followed tags…",
+    "confirm": "Follow these tags",
+    "done": "All tags in this bundle are followed.",
+    "failed": "Some tags couldn't be followed. Retry the remaining tags.",
+    "open": "Follow all tags…",
+    "preview.one": "Follow 1 remaining tag:",
+    "preview.other": "Follow {{count}} remaining tags:",
+    "progress": "Followed {{done}} of {{total}} tags.",
+    "rateLimit": "The server asked us to slow down. Try again after {{time}}.",
+    "retry": "Retry remaining tags",
+    "retryCheck": "Check again"
+  },
   "footer": {
     "buildLog": "build log",
     "builtAt": "Built {{date}} UTC",
@@ -1138,12 +1179,14 @@
   },
   "localePicker": {
     "auto": "Automatic (browser)",
+    "browserLanguage": "{{language}} (browser)",
     "label": "Interface language"
   },
   "loginChooser": {
     "anonymousLink": "Look around without an account",
     "bluesky": "Bluesky",
     "blueskyHint": "A handle like yourname.bsky.social, or your own domain.",
+    "connecting": "Connecting your account…",
     "countViews": "Count my page views",
     "instead": "instead.",
     "mastodon": "Mastodon",
@@ -1242,6 +1285,9 @@
     "collection.followEveryone": "Follow everyone in this collection",
     "collection.followedSummary": "Followed {{followed}} of {{total}}",
     "collection.followingProgress": "Following… {{done}}/{{total}}",
+    "collection.leaveConfirm": "Remove your account from this collection? You can still browse it afterwards.",
+    "collection.leaveFailed": "Could not remove you. Your server must support collections and your sign-in must allow writing collections. You can retry or open the collection on your server.",
+    "collection.left": "You have been removed from this collection.",
     "collection.loading": "Loading…",
     "collection.loadingFeed": "Loading feed…",
     "collection.loadingPosts": "Loading posts…",
@@ -1576,6 +1622,7 @@
     "home.loadMore.loading": "Loading more…",
     "home.loading.generic": "Loading…",
     "home.loading.preparingServer": "Preparing Just My Server…",
+    "home.noNewPosts": "No new posts. You're up to date.",
     "home.noneVisible.findFriends": "Find friends to follow →",
     "home.nudge.cta": "Find people",
     "home.nudge.dismiss": "Dismiss",
@@ -1730,6 +1777,8 @@
     "lists.clientList.members.other": "{{count}} members",
     "lists.clientList.newNamePlaceholder": "New private list name",
     "lists.collections.deleteTitle": "Delete collection",
+    "lists.collections.discover": "Browse starter packs",
+    "lists.collections.discoverHint": "Looking for people to follow? Browse starter packs curated by others.",
     "lists.collections.empty": "No collections yet — a public, curated set of accounts you recommend.",
     "lists.collections.featuringMe": "Collections featuring me",
     "lists.collections.heading": "Collections",
@@ -1850,6 +1899,7 @@
     "login.confirm.sentTo": "Almost there! We sent a confirmation email to",
     "login.confirm.verify": "✉ Verify email & continue",
     "login.confirm.verifying": "Verifying…",
+    "login.connecting": "Signing you in…",
     "login.intent.change": "← Something else",
     "login.intent.have": "I have a Mastodon account",
     "login.intent.haveHint": "Sign in on the server where your account lives.",
@@ -1895,6 +1945,7 @@
     "login.server.checking": "Checking {{server}}…",
     "login.server.connected": "✓ Connected to <strong>{{server}}</strong>",
     "login.server.degraded": "⚠ Connected to <strong>{{server}}</strong>, but {{media}} is blocked or down. Images will not load.",
+    "login.server.editing": "Enter your server's full address. It will be checked automatically.",
     "login.server.itsMediaServer": "its media server",
     "login.server.label": "Your server",
     "login.server.pickAServer": "— pick a server —",
@@ -2466,8 +2517,10 @@
     "profile.relationship.requested": "Requested",
     "profile.relationship.thisAccountFollowsYou": "This account follows you",
     "profile.relationship.unfollowTitle": "Click to unfollow.",
+    "profile.rss.confirmUnsubscribe": "Unsubscribe from {{feed}}? Saved articles and reading history will be kept.",
     "profile.rss.subscribe": "📡 Subscribe",
     "profile.rss.subscribed": "📡 Subscribed",
+    "profile.rss.unsubscribe": "Unsubscribe",
     "profile.search.after": "After",
     "profile.search.ariaLabel": "Search this account's posts",
     "profile.search.before": "Before",
@@ -2529,6 +2582,13 @@
     "rss.couldntLoadFeeds": "Couldn't load {{count}} feeds.",
     "rss.density": "Density",
     "rss.done": "Done",
+    "rss.feedActions.confirmMessage": "Stop receiving new items from this feed? Saved articles and reading history will be kept.",
+    "rss.feedActions.confirmTitle": "Unsubscribe from {{feed}}?",
+    "rss.feedActions.label": "Feed ···",
+    "rss.feedActions.menu": "Feed actions for {{feed}}",
+    "rss.feedActions.unsubscribe": "Unsubscribe",
+    "rss.feedActions.unsubscribeFrom": "Unsubscribe from {{feed}}…",
+    "rss.feedActions.view": "View feed",
     "rss.feedOff": "· off",
     "rss.filter": "Filter",
     "rss.friendFeeds": "Friends’ blogs",
@@ -2921,6 +2981,8 @@
     "search.field.sensitiveOnly": "Sensitive only",
     "search.found.accounts.one": "Found 1 account.",
     "search.found.accounts.other": "Found {{count}} accounts.",
+    "search.found.hashtags.one": "Found 1 hashtag.",
+    "search.found.hashtags.other": "Found {{count}} hashtags.",
     "search.found.posts.one": "Found 1 {{post}}.",
     "search.found.posts.other": "Found {{count}} {{posts}}.",
     "search.fullTextPostSearch": "for full-text post search.",
@@ -3149,7 +3211,7 @@
     "search.type.posts": "Posts",
     "search.type.web": "Search the web ↗",
     "tag.addToBundle": "Add to bundle",
-    "tag.createAndAdd": "Create &amp; add",
+    "tag.createAndAdd": "Create & add",
     "tag.feature": "Feature",
     "tag.featured": "Featured",
     "tag.follow": "Follow",
@@ -3159,6 +3221,7 @@
     "tag.inBundles.other": "In {{count}} bundles",
     "tag.loadMore": "Load more",
     "tag.loading": "Loading…",
+    "tag.mediaError": "Couldn't load pictures. Try loading more to retry.",
     "tag.mine.none": "None of the {{total}} loaded {{posts}} are yours.",
     "tag.mine.summary": "{{visible}} of the {{total}} loaded {{posts}}. Load more to search further back.",
     "tag.myPosts": "My {{posts}}",
@@ -3167,6 +3230,7 @@
     "tag.noStatuses": "No statuses tagged #{{tag}}.",
     "tag.tabs.analytics": "Analytics",
     "tag.tabs.feed": "Feed",
+    "tag.tabs.media": "Media",
     "tag.tabs.members": "Members",
     "thread.anonymous.contextUnavailable": "This server did not make the surrounding conversation available anonymously. The post is still readable below.",
     "thread.anonymous.openOriginal": "Open the original",
@@ -3471,16 +3535,17 @@
     "dialog.following": "Only people you currently follow can belong to these server lists. Readers you do not follow are left out; nobody is automatically followed, unfollowed, muted, or notified.",
     "dialog.sample": "Relationships use your complete follow list. Interactions use up to ten recent pages each of notifications, your posts, and Home, plus evidence remembered in this browser. Older interactions may be missed. Chatty and Broadcasters need at least five observed posts; nobody’s individual timeline is downloaded.",
     "dialog.scope": "Creates eleven private Mastodon lists, each prefixed “Mawkingbird:”. A person can belong to more than one category. Existing generated lists are reused and missing ones recreated.",
-    "dialog.snapshot": "This is a snapshot, not automatic upkeep. After seven days, a changed follow count, or missing lists, we offer a refresh. You can update sooner. Closing this dialog or visiting another page keeps the job running; reloading or switching accounts stops it. Reopen Lists to see progress.",
+    "dialog.snapshot": "This is a snapshot, not automatic upkeep. After seven days, a changed follow count, or missing lists, we offer a refresh. You can update sooner. Closing this dialog or visiting another page keeps the job running; reloading or switching accounts stops it. Reopen this dialog to see progress.",
     "dialog.sync": "A full update adds matching people and removes nonmatching members, including manual additions, from these generated lists. Other lists are untouched. If stopped halfway, changes already made stay; run Update again to finish.",
     "dialog.title": "Generate or update your people lists",
-    "done": "Your people lists are ready. Open a list below to read its feed.",
+    "done": "Your people lists are ready. Close this dialog to read their feeds.",
     "failed": "The update could not finish. Any completed changes remain. Update again to repair the lists.",
     "generate": "Generate lists of mutuals, etc.",
     "intro": "Create lists that categorize people by interaction style",
     "lastSync": "Last successful update:",
     "onlyAdd": "Only add, don’t remove from lists",
     "progress": "{{scanned}} people read · {{requests}} requests · {{completed}} of 11 lists synchronized",
+    "running": "In progress",
     "start": "Generate / update lists",
     "status.addOnly": "Last updated with additions only. Run a full update to remove outdated members.",
     "status.fresh": "Recently synchronized. Relationships can still change; update whenever you need.",
@@ -3491,7 +3556,7 @@
     "step.following": "Reading everyone you follow…",
     "step.lists": "Synchronizing your server lists…",
     "step.relationships": "Checking relationships and account activity…",
-    "title": "Your people, in lists",
+    "title": "Autogroup your friends to lists",
     "update": "Update people lists"
   },
   "pkm": {
@@ -5346,7 +5411,7 @@
     "indicators.batch": "Chat batch interval in minutes (0 for immediate)",
     "indicators.end": "Quiet hours end",
     "indicators.hint": "Only the Notification and Chat menu icons change. Chat unread markers and live messages work as usual. Times use this device's timezone and round to the nearest hour.",
-    "indicators.hours": "Notification delivery hours (0–23, separated by commas)",
+    "indicators.hours": "Notification delivery hours (0–23, separated by commas; leave empty for immediate dots)",
     "indicators.quiet": "Quiet hours hold replies and DMs too. Equal start and end hours disable quiet hours. Chat stays quiet while its page is visible and the app has focus.",
     "indicators.start": "Quiet hours start",
     "indicators.title": "Menu activity indicators",
@@ -6158,6 +6223,11 @@
     "recorded": "Recorded",
     "removeBookmark": "Remove bookmark",
     "removeThisBoostFromBlog": "Remove this boost from your blog record",
+    "replaceConfirm": "Delete the original and publish this replacement? The original has {{replies}} replies, {{reposts}} reposts, {{likes}} likes and {{quotes}} quotes. These will not move to the new post, and replies and quotes will still reference the deleted original. Continue anyway?",
+    "replaceFailed": "Could not confirm the replacement. Your edits are still here. Refresh your profile to check whether it was published before retrying.",
+    "replaceHint": "Bluesky edits replace the original with a new post. Existing links and engagement will not move to the replacement.",
+    "replacePost": "Delete and repost",
+    "replaceTooLong": "Shorten the replacement to 300 characters before reposting.",
     "replies": "replies",
     "repliesTitle": "Replies",
     "reply": "Reply",
@@ -6248,6 +6318,9 @@
     "tileLargestKey": "largest key",
     "tileTotalSize": "total size",
     "title": "Storage Diagnostics"
+  },
+  "tagActions": {
+    "failed": "Couldn't update this tag. Please try again."
   },
   "tagBundle": {
     "add": "Add",
