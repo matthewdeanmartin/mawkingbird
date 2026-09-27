@@ -730,6 +730,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Account-local pseudonymity flag and posting reminder. Never part of global configuration or Mawkingbird Plus settings sync.',
   },
   {
+    base: 'mockingbird_onboarding_app',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Which app-wide onboarding questions have been asked in this browser. Ids only — the answers live in their own settings keys — so an imported setup, which brings the answers, also skips the questions.',
+  },
+  {
+    base: 'mockingbird_onboarding_account',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'setting',
+    note: 'Per-account onboarding progress: whether the wizard should auto-start on first Home visit, and which account questions were asked. Ids only, never answers.',
+  },
+  {
     base: 'mockingbird_client_lists',
     storage: 'local',
     suffix: 'account',

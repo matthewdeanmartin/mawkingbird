@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { map, Observable, switchMap, tap } from 'rxjs';
 import { externalFetch } from '../external-fetch';
-import { scopedKey } from '../../account-scope';
+import { scopedKey, scopeSuffixForDid } from '../../account-scope';
+import { markOnboardingPending } from '../../onboarding/onboarding-store';
 import { ProfileAccountKey } from '../account/profile-account-key';
 import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
 import { BlueskyOAuth } from './bluesky-oauth';
@@ -312,7 +313,7 @@ export class BlueskySession implements ExpiringConnection {
           appPassword: pw,
           ...profile
         } = session;
-        saveBlueskyIdentity(
+        const created = saveBlueskyIdentity(
           profile,
           {
             authMethod: 'app-password',
@@ -323,6 +324,7 @@ export class BlueskySession implements ExpiringConnection {
           },
           true,
         );
+        if (created) markOnboardingPending(scopeSuffixForDid(profile.did));
         // Straight to the identity keys rather than through `persist`, so the
         // vault write must be requested here too. Always the identity base:
         // this instance may still be holding *connector* keys (see the ordering
@@ -362,11 +364,12 @@ export class BlueskySession implements ExpiringConnection {
       authMethod: 'oauth',
       connectedAt: Date.now(),
     };
-    saveBlueskyIdentity(
+    const created = saveBlueskyIdentity(
       result.profile,
       { authMethod: 'oauth', connectedAt: session.connectedAt },
       true,
     );
+    if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
     this.session.set(session);
     return { session, adding: result.state === 'identity:add' };
   }

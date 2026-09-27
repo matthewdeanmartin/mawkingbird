@@ -1,0 +1,155 @@
+<div class="ob-card">
+  @if (flow.current(); as q) {
+    <div class="ob-top">
+      @if (flow.canGoBack()) {
+        <button type="button" class="ob-back" aria-label="Back" (click)="back()">←</button>
+      }
+      <span class="ob-progress">{{ flow.position() }} of {{ flow.total() }}</span>
+      <span class="ob-tag">{{ scopeTag() }}</span>
+    </div>
+    <div
+      class="ob-bar"
+      role="progressbar"
+      aria-label="Onboarding progress"
+      [attr.aria-valuenow]="flow.position()"
+      aria-valuemin="1"
+      [attr.aria-valuemax]="flow.total()"
+    >
+      <span [style.width.%]="(flow.position() / (flow.total() || 1)) * 100"></span>
+    </div>
+
+    <h2 id="onboarding-title" tabindex="-1" #heading>{{ title() }}</h2>
+    @if (help(); as helpText) {
+      <p class="ob-help">{{ helpText }}</p>
+    }
+
+    <div class="ob-control">
+      @switch (q.control.kind) {
+        @case ('choice') {
+          <div class="ob-tiles" role="radiogroup" [attr.aria-labelledby]="'onboarding-title'">
+            @for (o of options(); track o.value) {
+              <button
+                type="button"
+                role="radio"
+                class="ob-tile"
+                [attr.aria-checked]="isChosen(o.value)"
+                [disabled]="flow.saving()"
+                (click)="pick(o.value)"
+              >
+                {{ o.label }}
+              </button>
+            }
+          </div>
+        }
+        @case ('multi') {
+          <div class="ob-chips" role="group" [attr.aria-labelledby]="'onboarding-title'">
+            @for (o of options(); track o.value) {
+              <button
+                type="button"
+                class="ob-chip"
+                [attr.aria-pressed]="isChosen(o.value)"
+                (click)="toggleMulti(o.value)"
+              >
+                {{ o.label }}
+              </button>
+            }
+          </div>
+          @if (q.control.extra === 'learning') {
+            <button type="button" class="ob-link" (click)="learning()">
+              I'm learning a language
+            </button>
+          }
+        }
+        @case ('toggle') {
+          <button
+            type="button"
+            role="switch"
+            class="ob-switch"
+            [attr.aria-checked]="flow.value() === true"
+            [disabled]="flow.saving()"
+            (click)="pick(flow.value() !== true)"
+          >
+            <span class="ob-switch-track" aria-hidden="true"><span></span></span>
+            {{ q.control.label }}
+          </button>
+        }
+        @case ('accent') {
+          <div class="ob-swatches" role="radiogroup" aria-label="Colour">
+            @for (s of swatches; track s.id) {
+              <button
+                type="button"
+                role="radio"
+                class="ob-swatch"
+                [style.background]="s.accent"
+                [attr.aria-label]="s.id"
+                [attr.aria-checked]="isChosen(s.id)"
+                (click)="pick(s.id)"
+              ></button>
+            }
+          </div>
+        }
+        @case ('action') {
+          <button type="button" class="ob-primary" (click)="go(q.control.route)">
+            {{ q.control.label }}
+          </button>
+        }
+        @case ('plus') {
+          @if (isMember()) {
+            <button
+              type="button"
+              class="ob-primary"
+              (click)="go('/settings/mawkingbird-plus', true)"
+            >
+              Plus settings
+            </button>
+          } @else {
+            <ul class="ob-benefits">
+              @for (row of plusRows(); track row.label) {
+                <li>
+                  <strong>{{ row.label }}</strong> {{ row.plus }}
+                </li>
+              }
+            </ul>
+            <div class="ob-plus-actions">
+              <button
+                type="button"
+                class="ob-primary"
+                (click)="go('/settings/mawkingbird-plus', true)"
+              >
+                Set up Plus
+              </button>
+              <button type="button" class="ob-secondary" (click)="go('/plans')">See plans</button>
+            </div>
+          }
+        }
+      }
+    </div>
+
+    @if (flow.error(); as message) {
+      <p class="ob-error" role="alert">{{ message }}</p>
+    }
+
+    <div class="ob-footer">
+      <button type="button" class="ob-quit" (click)="quit()">Quit</button>
+      <span class="ob-spacer"></span>
+      <button type="button" class="ob-secondary" [disabled]="flow.saving()" (click)="skip()">
+        {{ q.control.kind === 'plus' ? 'Maybe later' : 'Skip' }}
+      </button>
+      @if (q.control.kind !== 'plus') {
+        <button type="button" class="ob-primary" [disabled]="flow.saving()" (click)="next()">
+          Next
+        </button>
+      }
+    </div>
+  } @else {
+    <h2 id="onboarding-title" tabindex="-1" #heading>You're all set.</h2>
+    <p class="ob-help">Change any of this in Settings, or run Onboarding again from the … menu.</p>
+    <div class="ob-footer">
+      @if (flow.canGoBack()) {
+        <button type="button" class="ob-quit" (click)="back()">Back</button>
+      }
+      <span class="ob-spacer"></span>
+      <button type="button" class="ob-primary" (click)="quit()">Close</button>
+    </div>
+  }
+</div>

@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
 import { ClientPrefs } from './client-prefs';
-import { adoptMastodonStorageScope } from './account-scope';
+import { adoptMastodonStorageScope, ANONYMOUS_SCOPE_SUFFIX } from './account-scope';
 import { Account } from './models';
 import { AnonymousAccount } from './providers/anonymous/anonymous-account';
 import {
@@ -20,6 +20,7 @@ import {
 } from './providers/mastodon/mastodon-connector';
 import { Server } from './server';
 import { SessionDiagnostics } from './session-diagnostics';
+import { markOnboardingPending } from './onboarding/onboarding-store';
 
 const TOKEN_KEY = 'mastodon_mock_token';
 const SESSIONS_KEY = 'mastodon_mock_sessions';
@@ -219,6 +220,14 @@ export class Auth {
   private diagnostics = inject(SessionDiagnostics);
   private blueskyOAuth = inject(BlueskyOAuth);
 
+  /**
+   * Tokens that became new sessions during this page load, awaiting their first
+   * verified account. That verification is the moment an account is new to this
+   * browser, and the one place onboarding can be armed without also arming it
+   * for re-authorisation, switching, or a boot-time re-verify.
+   */
+  private freshTokens = new Set<string>();
+
   /** The active account's kind. Null when signed out. */
   readonly kind = signal<AccountKind | null>(storedKind());
 
@@ -397,6 +406,7 @@ export class Auth {
     if (!existing) {
       const saved = this.sessions().length;
       const id = newSessionId();
+      this.freshTokens.add(token);
       this.persistSessions([...this.sessions(), { id, token, server, account: null }]);
       this.diagnostics.transition('add-session', saved, this.sessions().length, { id, server });
     } else if (existing.server === undefined) {
@@ -497,7 +507,10 @@ export class Auth {
     this.prefs.setDefaultVisibility(account?.source?.privacy);
     const token = this.token();
     if (account && token) {
-      adoptMastodonStorageScope(account.id, this.server.baseUrl(), [token]);
+      const scope = adoptMastodonStorageScope(account.id, this.server.baseUrl(), [token]);
+      if (this.freshTokens.delete(token)) {
+        markOnboardingPending(scope);
+      }
       this.persistSessions(this.sessions().map((s) => (s.token === token ? { ...s, account } : s)));
     }
   }
@@ -568,7 +581,12 @@ export class Auth {
   /** Enter the permanent local account without deleting any saved logins. */
   enterAnonymous(server?: string): void {
     const saved = this.sessions().length;
+    // The first activation ever is the Anonymous account's first use here.
+    const isNew = !this.anonymous.activated();
     this.anonymous.activate(server);
+    if (isNew) {
+      markOnboardingPending(ANONYMOUS_SCOPE_SUFFIX);
+    }
     this.server.setBaseUrl(this.anonymous.server());
     localStorage.removeItem(TOKEN_KEY);
     localStorage.setItem(ACCOUNT_MODE_KEY, 'anonymous');

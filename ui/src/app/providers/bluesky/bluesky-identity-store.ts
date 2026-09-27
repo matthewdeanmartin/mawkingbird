@@ -163,18 +163,25 @@ export function blueskyIdentity(did: string | null = blueskyIdentityDid()): Blue
   return profile && identityCredentials ? { profile, credentials: identityCredentials } : null;
 }
 
-/** Persist or replace an identity without affecting any other Bluesky account. */
+/**
+ * Persist or replace an identity without affecting any other Bluesky account.
+ *
+ * Returns true when the DID was not stored before — a login that introduced a
+ * new identity to this browser, as opposed to a refresh of one it knew.
+ */
 export function saveBlueskyIdentity(
   profile: BlueskyIdentityProfile,
   credentials: BlueskyIdentityCredentials,
   activate = false,
-): void {
+): boolean {
   const current = stores();
+  const created = !current.profiles[profile.did];
   current.profiles[profile.did] = profile;
   current.credentials[profile.did] = credentials;
   persistMap(BSKY_IDENTITY_PROFILE_KEY, current.profiles);
   persistMap(BSKY_IDENTITY_CREDENTIALS_KEY, current.credentials);
   if (activate) localStorage.setItem(BSKY_ACTIVE_IDENTITY_DID_KEY, profile.did);
+  return created;
 }
 
 /** Select an existing, usable Bluesky identity. */

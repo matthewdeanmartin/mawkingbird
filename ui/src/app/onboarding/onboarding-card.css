@@ -1,0 +1,269 @@
+/* Floats over the live app without covering it: no backdrop, no focus trap.
+   Above ordinary page chrome, below dialogs (1000+), the first-run modal
+   (1500), the fail whale and the update overlay — any of which supersede a
+   setup question. */
+:host {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 900;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.ob-card {
+  display: grid;
+  gap: 10px;
+  max-height: min(560px, calc(100vh - 32px));
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
+}
+
+/* Phones: a bottom sheet, full width inside the page gutter. */
+@media (width <= 800px) {
+  :host {
+    right: 16px;
+    left: 16px;
+    bottom: 12px;
+    width: auto;
+  }
+
+  .ob-card {
+    max-height: 60vh;
+  }
+}
+
+.ob-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ob-tag {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ob-bar {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--border);
+}
+
+.ob-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+h2:focus {
+  outline: none;
+}
+
+.ob-help {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.ob-tiles {
+  display: grid;
+  gap: 6px;
+}
+
+.ob-tile,
+.ob-chip,
+.ob-switch,
+.ob-primary,
+.ob-secondary,
+.ob-quit,
+.ob-back,
+.ob-link {
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.ob-tile {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: none;
+  text-align: left;
+}
+
+.ob-tile[aria-checked='true'],
+.ob-chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  font-weight: 600;
+}
+
+.ob-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.ob-chip {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  font-size: 14px;
+}
+
+.ob-link {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.ob-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.ob-switch-track {
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--border);
+  transition: background 0.15s;
+}
+
+.ob-switch-track span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s;
+}
+
+.ob-switch[aria-checked='true'] .ob-switch-track {
+  background: var(--accent);
+}
+
+.ob-switch[aria-checked='true'] .ob-switch-track span {
+  transform: translateX(16px);
+}
+
+.ob-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ob-swatch {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--col-bg);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border);
+  cursor: pointer;
+}
+
+.ob-swatch[aria-checked='true'] {
+  box-shadow: 0 0 0 2px var(--text);
+}
+
+.ob-benefits {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.ob-plus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ob-error {
+  margin: 0;
+  color: var(--danger, #e0245e);
+  font-size: 14px;
+}
+
+.ob-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.ob-spacer {
+  flex: 1;
+}
+
+.ob-primary,
+.ob-secondary {
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+}
+
+.ob-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.ob-primary:disabled,
+.ob-secondary:disabled,
+.ob-tile:disabled,
+.ob-switch:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ob-quit,
+.ob-back {
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+}
+
+.ob-back {
+  font-size: 16px;
+}

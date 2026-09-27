@@ -159,6 +159,105 @@ describe('Streaming', () => {
     sub.unsubscribe();
   });
 
+  it('opens no WebSocket and warns once when the instance says it has no streaming', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      TestBed.inject(Server).setBaseUrl('http://mastomini.local');
+      const sub1 = streaming.open({ stream: 'user:notification' }).subscribe();
+      await settle();
+      httpMock
+        .expectOne('/api/v2/instance')
+        .flush({ configuration: { urls: { streaming: null } } });
+      await settle();
+      const sub2 = streaming.open({ stream: 'direct' }).subscribe();
+      await settle();
+      httpMock.expectNone('/api/v2/instance');
+      expect(FakeWebSocket.instances).toHaveLength(0);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(String(warn.mock.calls[0][0])).toContain('server has no streaming');
+      sub1.unsubscribe();
+      sub2.unsubscribe();
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it('pauses every stream after repeated failed handshakes, warns, then probes again', async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const sub = await open({ stream: 'user' });
+      // Three handshakes that never open (1 s and 2 s apart).
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(1_000);
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(2_000);
+      expect(FakeWebSocket.instances).toHaveLength(3);
+      lastSocket().onclose?.();
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(String(warn.mock.calls[0][0])).toContain('does not seem to support WebSockets');
+
+      // Paused for every stream, including ones opened by other pages.
+      const other = await open({ stream: 'direct' });
+      await vi.advanceTimersByTimeAsync(4 * 60_000);
+      expect(FakeWebSocket.instances).toHaveLength(3);
+
+      // After the pause both streams probe; a successful handshake resumes streaming.
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(FakeWebSocket.instances).toHaveLength(5);
+      FakeWebSocket.instances[3].onopen?.();
+      FakeWebSocket.instances[4].onopen?.();
+      expect(warn).toHaveBeenCalledTimes(1);
+      sub.unsubscribe();
+      other.unsubscribe();
+    } finally {
+      warn.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it('pauses again after one failed probe', async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const sub = await open({ stream: 'user' });
+      for (const wait of [1_000, 2_000]) {
+        lastSocket().onclose?.();
+        await vi.advanceTimersByTimeAsync(wait);
+      }
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(5 * 60_000);
+      expect(FakeWebSocket.instances).toHaveLength(4);
+      lastSocket().onclose?.();
+      expect(warn).toHaveBeenCalledTimes(2);
+      await vi.advanceTimersByTimeAsync(4 * 60_000);
+      expect(FakeWebSocket.instances).toHaveLength(4);
+      sub.unsubscribe();
+    } finally {
+      warn.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it('never pauses a server whose handshakes succeed, however often sockets drop', async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const sub = await open({ stream: 'user' });
+      for (let i = 0; i < 5; i++) {
+        lastSocket().onopen?.();
+        lastSocket().onclose?.();
+        await vi.advanceTimersByTimeAsync(60_000);
+      }
+      expect(FakeWebSocket.instances).toHaveLength(6);
+      expect(warn).not.toHaveBeenCalled();
+      sub.unsubscribe();
+    } finally {
+      warn.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
   it('fetches /api/v2/instance only once per instance across streams', async () => {
     TestBed.inject(Server).setBaseUrl('https://mastodon.social');
     const sub1 = streaming.open({ stream: 'user' }).subscribe();

@@ -5,15 +5,17 @@ import { ProxyLimitNotice } from '../providers/cors-proxy/proxy-limit-notice';
 import {
   Component,
   computed,
+  effect,
   ElementRef,
   HostListener,
   inject,
   OnInit,
   signal,
+  Type,
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NgOptimizedImage } from '@angular/common';
+import { NgComponentOutlet, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Api } from '../api';
@@ -35,6 +37,7 @@ import { WritingZen } from '../writing-zen';
 import { ReadingZen } from '../reading-zen';
 import { FirstRunChoice, FirstRunModal } from '../first-run/first-run-modal';
 import { PreviewSeed } from '../first-run/preview-seed';
+import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
 import { PlusBadgeEntitlement } from '../providers/account/plus-badge-entitlement';
 import { visiblePlusBenefits } from '../plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
@@ -83,6 +86,7 @@ import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.nav.moreAria: More navigation
 // i18n shell.nav.more: More
 // i18n shell.menu.settings: Settings
+// i18n shell.menu.onboarding: Onboarding
 // i18n shell.menu.likes: Likes
 // i18n shell.menu.bookmarks: Bookmarks
 // i18n shell.menu.manageRss: Manage RSS feeds
@@ -150,6 +154,7 @@ function isWideUrl(url: string): boolean {
     NgOptimizedImage,
     LeaveDialog,
     FirstRunModal,
+    NgComponentOutlet,
     TranslocoPipe,
   ],
   templateUrl: './shell.html',
@@ -162,6 +167,23 @@ export class Shell implements OnInit {
   private transloco = inject(TranslocoService);
   private bots = inject(BotPeers);
   private preview = inject(PreviewSeed);
+  protected onboarding = inject(OnboardingLauncher);
+
+  /**
+   * The onboarding card's component, fetched the first time it is needed.
+   *
+   * A dynamic import rather than `@defer`: the wizard, its questions and their
+   * dependencies stay out of the initial bundle either way, and this keeps the
+   * shell's own metadata synchronous for everything that renders it.
+   */
+  protected onboardingCard = signal<Type<unknown> | null>(null);
+  private readonly loadOnboardingCard = effect(() => {
+    if (this.onboarding.mode() && !this.onboardingCard()) {
+      void import('../onboarding/onboarding-card').then((m) =>
+        this.onboardingCard.set(m.OnboardingCard),
+      );
+    }
+  });
 
   /**
    * Whether an anonymous visitor has anyone to chat with.
@@ -343,6 +365,8 @@ export class Shell implements OnInit {
         // A route change is a dismissal: the card is header chrome, and leaving
         // it open over a page the reader just navigated to is stale furniture.
         this.closePlanCard();
+        // A brand-new account's first Home visit opens the onboarding card.
+        this.onboarding.maybeAutoOpen(this.router.url, this.firstRunActive());
         setTimeout(() => this.focusMain());
       });
   }
@@ -515,6 +539,12 @@ export class Shell implements OnInit {
     // removeSession only touches the active account if it *was* active; it isn't
     // here, so the current identity is untouched and no reload is needed.
     this.showToast(this.transloco.translate('shell.toast.removed'));
+  }
+
+  /** The … menu's Onboarding entry: close the menu, open the card. */
+  protected openOnboarding(event: Event): void {
+    (event.currentTarget as HTMLElement).closest('details')?.removeAttribute('open');
+    this.onboarding.openFromMenu();
   }
 
   /** Optional server links are discovered only when the user opens More. */

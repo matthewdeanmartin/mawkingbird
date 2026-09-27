@@ -20,6 +20,7 @@ import { Server } from '../server';
 import { serverInterceptor } from '../server.interceptor';
 import { WritingZen } from '../writing-zen';
 import { Shell } from './shell';
+import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
 import {
   PlusBadgeEntitlement,
   type PlusBadgeState,
@@ -358,6 +359,20 @@ describe('Shell account switching', () => {
 
     expect(link.textContent).toContain('Find Friends');
     expect(canary.textContent).toContain('Canary');
+  });
+
+  it('opens onboarding from the More menu and closes the menu', () => {
+    const fixture = createShell();
+    const menu = fixture.nativeElement.querySelector('details.more-menu') as HTMLDetailsElement;
+    menu.open = true;
+    const entry = [...menu.querySelectorAll('button')].find(
+      (b) => b.textContent?.trim() === 'Onboarding',
+    ) as HTMLButtonElement;
+
+    entry.click();
+
+    expect(TestBed.inject(OnboardingLauncher).mode()).toBe('menu');
+    expect(menu.open).toBe(false);
   });
 });
 

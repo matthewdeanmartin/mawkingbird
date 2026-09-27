@@ -187,7 +187,8 @@
   box-shadow: 0 8px 28px rgb(15 20 25 / 16%);
 }
 
-.menu-panel a {
+.menu-panel a,
+.menu-panel .menu-button {
   display: block;
   padding: 10px 12px;
   border-radius: 10px;
@@ -195,8 +196,20 @@
   font-weight: 600;
 }
 
-.menu-panel a:hover {
+.menu-panel a:hover,
+.menu-panel .menu-button:hover {
   background: var(--hover);
+}
+
+/* Onboarding is an action, not a route: a button dressed as its link siblings. */
+.menu-panel .menu-button {
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
 
 .menu-panel a.admin-link {

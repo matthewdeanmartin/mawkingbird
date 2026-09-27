@@ -300,6 +300,10 @@
                in Chat, or at /eliza by anyone who goes looking. -->
 
             <a routerLink="/settings">{{ 'shell.menu.settings' | transloco }}</a>
+            <!-- The setup wizard, for anyone who skipped it or wants to redo it. -->
+            <button type="button" class="menu-button" (click)="openOnboarding($event)">
+              {{ 'shell.menu.onboarding' | transloco }}
+            </button>
 
             <!-- Feed-likes -->
             <div class="menu-divider"></div>
@@ -485,6 +489,12 @@
     </aside>
   }
 </div>
+
+<!-- Lazy: the wizard and its questions load only when the card opens, and
+     never over the blocking first-run modal. -->
+@if (onboarding.mode() && !firstRun() && onboardingCard(); as card) {
+  <ng-container *ngComponentOutlet="card" />
+}
 
 @if (hotkeys.helpOpen()) {
   <app-shortcut-help (closed)="hotkeys.helpOpen.set(false)" />
