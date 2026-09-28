@@ -63,9 +63,14 @@ for (const [region, value, action, payload] of cases)
     await input.fill("   ");
     await expect(button).toBeDisabled();
     await input.fill(value);
+    await expect(button).toBeEnabled();
+    await page.clock.install({ time: 0 });
+    await page.clock.pauseAt(1000);
     if (region === "Domain blocks") await input.press("Enter");
     else await button.click();
+    await page.clock.runFor(32);
     await expect(button).toBeDisabled();
+    await page.clock.runFor(400);
     await expect(scope.getByRole("alert")).toHaveText(
       "Could not save. Your entries are still here; try again.",
     );
@@ -73,6 +78,9 @@ for (const [region, value, action, payload] of cases)
     await expect(input).toHaveAttribute("aria-invalid", "true");
     await expect(page.locator("output")).toHaveText(JSON.stringify(payload));
     await button.click();
+    await page.clock.runFor(32);
+    await expect(button).toBeDisabled();
+    await page.clock.runFor(400);
     await expect(input).toHaveValue("");
     await expect(input).not.toHaveAttribute("aria-invalid", "true");
   });
@@ -89,15 +97,21 @@ test("canonical lookup has named controls and recovers without losing the email"
     exact: true,
   });
   await input.fill("reader@example.test");
+  await expect(scope.getByRole("button", { name: "Test match" })).toBeEnabled();
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(1000);
   await input.press("Enter");
+  await page.clock.runFor(32);
   await expect(
     scope.getByRole("button", { name: "Test match" }),
   ).toBeDisabled();
+  await page.clock.runFor(400);
   await expect(scope.getByRole("alert")).toHaveText(
     "Could not check this email. Try again.",
   );
   await expect(input).toHaveValue("reader@example.test");
   await input.press("Enter");
+  await page.clock.runFor(400);
   await expect(
     scope.getByText("No match — this email is not blocked.", { exact: true }),
   ).toBeVisible();

@@ -121,7 +121,9 @@ describe('RssPage', () => {
     expect(fixture.componentInstance['expandedId']()).toBeNull();
     expect(first.textContent).toContain('Unsubscribe from Wikipedia recent changes?');
     expect(subs.has(wiki)).toBe(true);
-    (first.querySelector('.confirm-actions .btn-outline') as HTMLButtonElement).click();
+    Array.from(first.querySelectorAll<HTMLButtonElement>('app-confirm-dialog button'))
+      .find((button) => button.textContent?.trim() === 'Cancel')!
+      .click();
     fixture.detectChanges();
     expect(subs.has(wiki)).toBe(true);
     (first.querySelector('.feed-menu button') as HTMLButtonElement).click();

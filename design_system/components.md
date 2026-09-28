@@ -148,6 +148,11 @@ Project ordinary content and mark each footer action with `mbDialogActions`.
 Use native `type="button"` and caller-owned click handlers. Do not submit a
 `method="dialog"` form or manipulate the internal native dialog directly.
 
+`dialogRole="alertdialog"` preserves urgent confirmation semantics. `[showClose]="false"` is for flows whose footer already
+provides all dismissal actions, such as the single-OK alert. Always retain an
+accessible dismissal action. Prompt Enter handlers must prevent the default before
+closing, so restoring focus cannot activate the opener with the same key.
+
 `closeOnBackdrop` defaults to false. `busy` blocks the dialog's dismiss controls;
 the caller also owns disabling projected actions. Native modal behavior supplies
 background inertness and stacking. Focus enters at the Close button by default

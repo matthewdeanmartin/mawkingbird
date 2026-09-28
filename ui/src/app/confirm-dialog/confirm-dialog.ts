@@ -1,6 +1,8 @@
 import { Component, input, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbField, MbControl } from '../design-system/field/field';
+import { MbButton } from '../design-system/button/button';
 
 // i18n confirm.cancel: Cancel
 
@@ -10,7 +12,7 @@ import { FocusTrap } from '../a11y/focus-trap';
  */
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [FocusTrap, TranslocoPipe],
+  imports: [MbDialog, MbField, MbControl, MbButton, TranslocoPipe],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.css',
 })

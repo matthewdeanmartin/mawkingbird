@@ -27,7 +27,9 @@ describe('AppDialogs', () => {
     const modal = await dialog();
     expect(modal.textContent).toContain('Follow 30 accounts?');
     expect(modal.textContent).toContain('Notifications cannot be recalled.');
-    expect(modal.getAttribute('aria-describedby')).toBe('confirm-message');
+    expect(document.getElementById(modal.getAttribute('aria-describedby')!)?.textContent).toContain(
+      'Notifications cannot be recalled.',
+    );
     modal.querySelectorAll<HTMLButtonElement>('button')[0].click();
     expect(await result).toBe(false);
     expect(document.querySelector('app-confirm-dialog')).toBeNull();
@@ -57,7 +59,39 @@ describe('AppDialogs', () => {
     expect(await result).toBe('');
     const cancelled = service.prompt('Choose a name.');
     await dialog();
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    (await dialog()).dispatchEvent(new Event('cancel', { cancelable: true }));
     expect(await cancelled).toBeNull();
+  });
+});
+
+describe('AppDialogs adoption parity', () => {
+  it('keeps distinct requests queued and continues after cancellation', async () => {
+    const service = TestBed.inject(AppDialogs);
+    const first = service.confirm('First decision');
+    const second = service.alert('Second decision');
+    const firstModal = await dialog();
+    expect(document.querySelectorAll('app-confirm-dialog')).toHaveLength(1);
+    expect(firstModal.textContent).toContain('First decision');
+    firstModal.querySelector('button')!.click();
+    expect(await first).toBe(false);
+    const secondModal = await dialog();
+    expect(document.querySelectorAll('app-confirm-dialog')).toHaveLength(1);
+    expect(secondModal.textContent).toContain('Second decision');
+    secondModal.querySelector('button')!.click();
+    await second;
+    expect(document.querySelector('app-confirm-dialog')).toBeNull();
+  });
+
+  it('consumes prompt Enter so focus return cannot activate the opener again', async () => {
+    const result = TestBed.inject(AppDialogs).prompt('Name', 'Initial');
+    const modal = await dialog();
+    const input = modal.querySelector('input')!;
+    input.value = 'Edited';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+    input.dispatchEvent(enter);
+    expect(enter.defaultPrevented).toBe(true);
+    expect(await result).toBe('Edited');
+    expect(document.querySelector('app-confirm-dialog')).toBeNull();
   });
 });

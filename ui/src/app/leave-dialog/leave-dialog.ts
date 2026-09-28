@@ -1,8 +1,10 @@
-import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../auth';
 import { SessionTeardown } from '../session-teardown';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbButton } from '../design-system/button/button';
+import { MbNotice } from '../design-system/notice/notice';
 import { PageDiagnostics } from '../page-diagnostics';
 
 /** What the user chose on the way out. */
@@ -51,7 +53,7 @@ export type LeaveChoice = 'leave' | 'anonymous-data' | 'all-data';
 // i18n leaveDialog.backupError: Couldn't build a backup file. You can still leave.
 @Component({
   selector: 'app-leave-dialog',
-  imports: [FocusTrap, TranslocoPipe],
+  imports: [MbDialog, MbButton, MbNotice, TranslocoPipe],
   templateUrl: './leave-dialog.html',
   styleUrl: './leave-dialog.css',
 })
@@ -142,7 +144,6 @@ export class LeaveDialog {
     this.chose.emit('all-data');
   }
 
-  @HostListener('document:keydown.escape')
   close(): void {
     this.closed.emit();
   }

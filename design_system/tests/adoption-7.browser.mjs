@@ -23,13 +23,23 @@ test("real Privacy controls roll back failed saves and retry with only the chang
     name: "Require follow requests",
     exact: true,
   });
+  await expect(locked).toBeVisible();
+  // Hold the fixture's 350ms response until pending-state assertions finish.
+  // A loaded CI worker can otherwise miss that entire real-time interval.
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(1000);
   await scope.getByText("Require follow requests", { exact: true }).click();
+  await page.clock.runFor(32);
   await expect(locked).toBeDisabled();
+  await page.clock.runFor(400);
   await expect(locked).not.toBeChecked();
   await expect(locked).toBeEnabled();
   await expect(scope.getByRole("alert")).toHaveCount(1);
   await expect(page.locator("output").first()).toHaveText('{"locked":"true"}');
   await locked.check();
+  await page.clock.runFor(32);
+  await expect(locked).toBeDisabled();
+  await page.clock.runFor(400);
   await expect(locked).toBeEnabled();
   await expect(locked).toBeChecked();
   await expect(scope.getByRole("alert")).toHaveCount(0);
@@ -40,6 +50,9 @@ test("real Privacy controls roll back failed saves and retry with only the chang
   ]) {
     const control = scope.getByRole("checkbox", { name, exact: true });
     await control.check();
+    await page.clock.runFor(32);
+    await expect(control).toBeDisabled();
+    await page.clock.runFor(400);
     await expect(control).toBeEnabled();
     await expect(control).toBeChecked();
     await expect(page.locator("output").first()).toHaveText(
@@ -51,6 +64,9 @@ test("real Privacy controls roll back failed saves and retry with only the chang
     exact: true,
   });
   await discovery.uncheck();
+  await page.clock.runFor(32);
+  await expect(discovery).toBeDisabled();
+  await page.clock.runFor(400);
   await expect(discovery).toBeEnabled();
   await expect(page.locator("output").first()).toHaveText(
     '{"discoverable":"false"}',

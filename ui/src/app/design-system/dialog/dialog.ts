@@ -19,22 +19,25 @@ const locks = new WeakMap<HTMLElement, { count: number; overflow: string; gutter
   template: `
     <dialog
       #dialog
+      [attr.role]="dialogRole()"
       [attr.aria-labelledby]="id"
       [attr.aria-describedby]="description() ? id + '-description' : null"
       (cancel)="cancel($event)"
     >
       <header>
         <h2 [id]="id">{{ title() }}</h2>
-        <button
-          mbButton
-          variant="outline"
-          size="small"
-          type="button"
-          [disabled]="busy()"
-          (click)="dismissed.emit('button')"
-        >
-          {{ closeLabel() }}
-        </button>
+        @if (showClose()) {
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            [disabled]="busy()"
+            (click)="dismissed.emit('button')"
+          >
+            {{ closeLabel() }}
+          </button>
+        }
       </header>
       @if (description()) {
         <p [id]="id + '-description'">{{ description() }}</p>
@@ -49,6 +52,8 @@ export class MbDialog implements OnDestroy {
   readonly title = input.required<string>();
   readonly closeLabel = input.required<string>();
   readonly description = input('');
+  readonly dialogRole = input<'dialog' | 'alertdialog'>('dialog');
+  readonly showClose = input(true);
   readonly busy = input(false);
   readonly closeOnBackdrop = input(false);
   readonly dismissed = output<'button' | 'escape' | 'backdrop'>();
@@ -71,6 +76,21 @@ export class MbDialog implements OnDestroy {
         'keydown',
         (event) => {
           if (event.key === 'Tab') this.cycleFocus(event);
+          // Do not let legacy document-level Escape handlers dismiss a parent.
+          // The native cancel event still handles this dialog's dismissal.
+          if (event.key === 'Escape') {
+            event.stopPropagation();
+            // Dismissal restores parent focus before keyup. Consume that matching
+            // release too, or a legacy parent's keyup.escape closes it as well.
+            // This one-shot listener intentionally survives this dialog's removal.
+            dialog.ownerDocument.addEventListener(
+              'keyup',
+              (release) => {
+                if (release.key === 'Escape') release.stopPropagation();
+              },
+              { capture: true, once: true },
+            );
+          }
         },
         options,
       );

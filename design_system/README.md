@@ -1,12 +1,13 @@
 # Mawkingbird design system
 
-Status: adoption phase underway. Sprint 8 migrates 18 registration/admin controls; Sprints 9–11 cover the next integration batches. Sprint 7 adopted five Privacy/admin checkboxes.
+Status: adoption phase underway. Sprint 9 adopts shared confirmations/prompts, Leave and Translate dialogs. Effective Audience and specialized variants remain explicit follow-ups; Sprints 10–11 cover navigation and post tools.
 
 ## Open the preview
 
-[Sprint 8 app forms](http://127.0.0.1:6006/?path=/story/start-here-sprint-8-review--app-forms)
-renders six real admin components with local failure/retry, plus an isolated registration consent example.
-See [review notes](REVIEW-8.md) for interactions and the visual review checkpoint.
+[Sprint 9 app dialogs](http://127.0.0.1:6006/?path=/story/start-here-sprint-9-review--app-dialogs-review)
+exercises real confirmation, prompt, leave and translation flows with local fixtures.
+See [review notes](REVIEW-9.md) for keyboard, recovery and adoption boundaries.
+[Sprint 8 forms](REVIEW-8.md) remain available in the catalogue.
 
 Latest correction: [Stacked compact toolbars](http://127.0.0.1:6006/?path=/story/adoption-sprint-3-toolbars--stacked-compact)
 shows four contiguous control rows and the aligned analytics checkbox.

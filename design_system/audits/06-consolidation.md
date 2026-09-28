@@ -67,3 +67,8 @@ remain pending. See Sprints 8–11 for the next bounded adoption batches.
 17 admin form controls. The seven-screen batch now uses the approved checkbox,
 field/control and button widgets. Remaining row actions, other Login fields and
 list states remain open inventory findings; this is not whole-screen completion.
+
+[Sprint 9](09-dialog-adoption.md) adopts three production dialog implementations:
+shared confirmation/prompt, Leave and Translate. Its audit lists service/direct
+consumers and the individually deferred Effective Audience layout, destructive
+button and consequence-card variants. Legacy overlays are not globally exempted.

@@ -15,3 +15,16 @@ their own reviewed contract. Delete duplicate dialog CSS only after parity passe
 
 Exit: explicit migrated service/consumer list, keyboard and viewport tests,
 manual Firefox/assistive-technology checkpoint, full app gate and bundle check.
+
+## Implementation checkpoint
+
+ConfirmDialog (including AppDialogs and direct consumers), LeaveDialog and
+TranslateDialog now adopt the approved modal surface. Service results, queue and
+duplicate guards remain unchanged. Native and legacy parent keyboard interop is
+covered. See [review notes](../REVIEW-9.md) and the
+[consumer audit](../audits/09-dialog-adoption.md).
+
+Effective Audience needs a reviewed wide results composition; destructive buttons
+and Leave consequence cards retain scoped legacy styling until their variants are
+reviewed. Manual Firefox/assistive-technology review is still open. These are
+explicit follow-ups, so this checkpoint does not claim every dialog is migrated.

@@ -1,39 +1,13 @@
-<button
-  class="ld-backdrop"
-  type="button"
-  [attr.aria-label]="'leaveDialog.close' | transloco"
-  (click)="close()"
-></button>
-<!-- Escape is already handled by the component's own document keydown listener,
-     so the trap only manages focus here (appFocusTrapCloseOnEscape="false"). -->
-<section
-  class="ld-dialog"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="ld-title"
-  appFocusTrap
-  [appFocusTrapCloseOnEscape]="false"
+<mb-dialog
+  [title]="
+    isAnonymous()
+      ? ('leaveDialog.leaveAnonymous' | transloco)
+      : ('leaveDialog.logOutOf' | transloco: { who: who() })
+  "
+  [closeLabel]="'leaveDialog.close' | transloco"
+  [closeOnBackdrop]="true"
+  (dismissed)="close()"
 >
-  <div class="ld-head">
-    <h2 id="ld-title">
-      @if (isAnonymous()) {
-        {{ 'leaveDialog.leaveAnonymous' | transloco }}
-      } @else {
-        {{ 'leaveDialog.logOutOf' | transloco: { who: who() } }}
-      }
-      <!-- `who()` already resolves to the Bluesky handle: the identity is adapted
-           into a normal Account, so no third title is needed here. -->
-    </h2>
-    <button
-      class="icon-close"
-      type="button"
-      [attr.aria-label]="'leaveDialog.close' | transloco"
-      (click)="close()"
-    >
-      ×
-    </button>
-  </div>
-
   <!-- Ordered least to most destructive, and each says what survives rather than
        only what goes: "this can't be undone" is a warning, but "your saved accounts
        are kept" is the part that lets someone choose confidently. -->
@@ -79,22 +53,22 @@
   </div>
 
   <div class="ld-actions">
-    <button class="btn btn-outline" type="button" (click)="downloadBackup()">
+    <button mbButton variant="outline" type="button" (click)="downloadBackup()">
       @if (exported()) {
         ✓ {{ 'leaveDialog.backupDownloaded' | transloco }}
       } @else {
         {{ 'leaveDialog.downloadFirst' | transloco }}
       }
     </button>
-    <button class="btn btn-outline" type="button" (click)="close()">
+    <button mbButton variant="outline" type="button" (click)="close()">
       {{ 'leaveDialog.cancel' | transloco }}
     </button>
   </div>
 
   @if (exportError(); as msg) {
-    <p class="ld-error" role="alert">{{ msg }}</p>
+    <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
   }
   <p class="muted small">
     {{ 'leaveDialog.backupNote' | transloco }}
   </p>
-</section>
+</mb-dialog>

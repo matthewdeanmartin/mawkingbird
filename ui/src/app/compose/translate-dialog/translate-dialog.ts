@@ -1,5 +1,9 @@
+import { MbDialog } from '../../design-system/dialog/dialog';
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
+import { MbNotice } from '../../design-system/notice/notice';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Component, computed, HostListener, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { AiTranslate } from '../../ai-translate';
 import { POSTING_LANGUAGE_OPTIONS } from '../../language-detect';
 import { ClientPrefs } from '../../client-prefs';
@@ -43,7 +47,7 @@ export interface TranslateResult {
 
 @Component({
   selector: 'app-translate-dialog',
-  imports: [TranslocoPipe],
+  imports: [MbDialog, MbField, MbControl, MbButton, MbNotice, TranslocoPipe],
   templateUrl: './translate-dialog.html',
   styleUrl: './translate-dialog.css',
 })
@@ -116,7 +120,6 @@ export class TranslateDialog {
     this.applied.emit({ text, mode, code: this.target() });
   }
 
-  @HostListener('document:keydown.escape')
   close(): void {
     this.closed.emit();
   }

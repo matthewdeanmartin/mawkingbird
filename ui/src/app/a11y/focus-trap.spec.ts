@@ -80,6 +80,28 @@ describe('FocusTrap', () => {
     fixture.detectChanges();
   }
 
+  it('leaves native dialog keyboard events to the top modal during adoption', async () => {
+    open();
+    await new Promise((resolve) => setTimeout(resolve));
+    const native = document.createElement('dialog');
+    native.open = true;
+    const input = document.createElement('input');
+    native.appendChild(input);
+    document.body.appendChild(native);
+    try {
+      input.focus();
+      for (const key of ['Tab', 'Escape']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        input.dispatchEvent(event);
+        expect(event.defaultPrevented).toBe(false);
+        expect(host.open()).toBe(true);
+        expect(document.activeElement).toBe(input);
+      }
+    } finally {
+      native.remove();
+    }
+  });
+
   it('moves focus into the dialog when it opens', async () => {
     open();
     // focusFirst defers a tick so composed dialogs have rendered.

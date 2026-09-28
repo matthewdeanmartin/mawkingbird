@@ -132,6 +132,9 @@ export class FocusTrap implements OnDestroy {
    */
   private readonly onKeydown = (event: KeyboardEvent): void => {
     if (FocusTrap.stack.at(-1) !== this) return;
+    // During migration, a native modal may be above this legacy trap.
+    // Its own keyboard boundary must handle Tab/Escape without dismissing us.
+    if (event.target instanceof Element && event.target.closest('dialog[open]')) return;
     if (event.key === 'Escape' && this.closeOnEscape()) {
       event.preventDefault();
       this.dismissed.emit();
