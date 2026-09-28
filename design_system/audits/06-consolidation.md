@@ -62,3 +62,8 @@ consumer counts and parity evidence, not just a green catalogue.
 candidates and Admin Announcements' publish toggle: five production controls now
 use the approved widget. Registration consent and the other opening findings
 remain pending. See Sprints 8–11 for the next bounded adoption batches.
+
+[Sprint 8](08-forms-adoption.md) subsequently resolves registration consent and
+17 admin form controls. The seven-screen batch now uses the approved checkbox,
+field/control and button widgets. Remaining row actions, other Login fields and
+list states remain open inventory findings; this is not whole-screen completion.

@@ -1,3 +1,5 @@
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -12,9 +14,9 @@ import { EmailDomainBlock } from '../../models';
 
 @Component({
   selector: 'app-admin-email-blocks',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-email-blocks.html',
-  styleUrl: './admin-lists.css',
+  styleUrls: ['./admin-lists.css', '../admin-form.css'],
 })
 export class AdminEmailBlocks implements OnInit {
   private api = inject(AdminApi);
@@ -23,6 +25,7 @@ export class AdminEmailBlocks implements OnInit {
   protected loading = signal(true);
   protected newDomain = signal('');
   protected submitting = signal(false);
+  protected saveFailed = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -44,6 +47,7 @@ export class AdminEmailBlocks implements OnInit {
     if (!domain || this.submitting()) {
       return;
     }
+    this.saveFailed.set(false);
     this.submitting.set(true);
     this.api.createEmailDomainBlock(domain).subscribe({
       next: (block) => {
@@ -51,7 +55,10 @@ export class AdminEmailBlocks implements OnInit {
         this.newDomain.set('');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: () => {
+        this.submitting.set(false);
+        this.saveFailed.set(true);
+      },
     });
   }
 

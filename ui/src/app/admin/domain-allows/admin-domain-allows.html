@@ -1,12 +1,18 @@
 <div class="add-block">
-  <input
-    type="text"
-    [ngModel]="newDomain()"
-    (ngModelChange)="newDomain.set($event)"
-    (keyup.enter)="add()"
-    [placeholder]="'adminDomainAllows.placeholder' | transloco"
-  />
-  <button class="btn" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
+  <mb-field
+    [label]="'adminDomainAllows.placeholder' | transloco"
+    [error]="saveFailed() ? ('adminForms.saveFailed' | transloco) : ''"
+  >
+    <input
+      mbControl
+      type="text"
+      [ngModel]="newDomain()"
+      (ngModelChange)="newDomain.set($event)"
+      (keyup.enter)="add()"
+      [placeholder]="'adminDomainAllows.placeholder' | transloco"
+    />
+  </mb-field>
+  <button mbButton type="button" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
     {{ 'adminDomainAllows.allow' | transloco }}
   </button>
 </div>

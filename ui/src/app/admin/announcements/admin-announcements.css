@@ -3,15 +3,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.new-announcement textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 15px;
-  resize: vertical;
-}
-
 .new-actions {
   display: flex;
   flex-wrap: wrap;

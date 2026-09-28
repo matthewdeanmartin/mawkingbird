@@ -47,7 +47,7 @@ show actual app components and state which production consumers changed.
 | Sprint                                         | Deliverable                                                                       | State                             |
 | ---------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------- |
 | [7](sprints/07-checkbox-adoption.md)           | Five Privacy/admin checkboxes, real-component preview, rollback and publish tests | Implemented; morning review ready |
-| [8](sprints/08-forms-adoption.md)              | Registration consent and admin forms                                              | Planned                           |
+| [8](sprints/08-forms-adoption.md)              | Registration consent and admin forms                                              | Implemented; review ready         |
 | [9](sprints/09-dialog-adoption.md)             | Shared confirmation service and eligible dialogs                                  | Planned                           |
 | [10](sprints/10-navigation-and-states.md)      | Navigation, headers and timeline states                                           | Planned                           |
 | [11](sprints/11-post-tools-and-enforcement.md) | Real post tools, provider parity and final enforcement reconciliation             | Planned                           |

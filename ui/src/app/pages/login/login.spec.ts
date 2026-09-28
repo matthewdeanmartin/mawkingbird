@@ -56,6 +56,37 @@ describe('Login', () => {
     return fixture;
   }
 
+  it('shared registration consent gates signup and preserves the agreement payload', async () => {
+    const fixture = setUp();
+    const component = fixture.componentInstance as any;
+    component.intent.set('need');
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    component.regUsername.set('reader');
+    component.regEmail.set('reader@example.test');
+    component.regPassword.set('preview-password');
+    await fixture.whenStable();
+    component.register();
+    httpMock.expectNone('/api/v1/apps');
+    expect(component.regError()).toContain('accept');
+    const root = fixture.nativeElement as HTMLElement;
+    const consent = root.querySelector<HTMLInputElement>('mb-checkbox.agree input')!;
+    expect(consent.checked).toBe(false);
+    (root.querySelector('mb-checkbox.agree label') as HTMLElement).click();
+    await fixture.whenStable();
+    expect(component.regAgree()).toBe(true);
+    component.register();
+    httpMock.expectOne('/api/v1/apps').flush({ client_id: 'app', client_secret: 'secret' });
+    httpMock.expectOne('/oauth/token').flush({ access_token: 'app-token' });
+    const registration = httpMock.expectOne('/api/v1/accounts');
+    expect(registration.request.body.get('agreement')).toBe('true');
+    expect(registration.request.body.get('username')).toBe('reader');
+    registration.flush({ access_token: 'pending-verification' });
+    await fixture.whenStable();
+    expect(component.pendingToken()).toBe('pending-verification');
+    httpMock.verify();
+  });
+
   it('on init with no ?code, lists dev users and does not touch oauth/token', () => {
     const fixture = setUp();
     fixture.detectChanges();

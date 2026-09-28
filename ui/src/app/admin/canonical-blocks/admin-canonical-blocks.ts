@@ -1,3 +1,5 @@
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -17,9 +19,9 @@ import { CanonicalEmailBlock } from '../../models';
 
 @Component({
   selector: 'app-admin-canonical-blocks',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-canonical-blocks.html',
-  styleUrl: './admin-lists.css',
+  styleUrls: ['./admin-lists.css', '../admin-form.css'],
 })
 export class AdminCanonicalBlocks implements OnInit {
   private api = inject(AdminApi);
@@ -28,8 +30,11 @@ export class AdminCanonicalBlocks implements OnInit {
   protected loading = signal(true);
   protected newEmail = signal('');
   protected submitting = signal(false);
+  protected saveFailed = signal(false);
 
   // Canonicalization test.
+  protected testing = signal(false);
+  protected testFailed = signal(false);
   protected testEmail = signal('');
   protected testResult = signal<CanonicalEmailBlock[] | null>(null);
 
@@ -53,6 +58,7 @@ export class AdminCanonicalBlocks implements OnInit {
     if (!email || this.submitting()) {
       return;
     }
+    this.saveFailed.set(false);
     this.submitting.set(true);
     this.api.createCanonicalEmailBlock(email).subscribe({
       next: (block) => {
@@ -60,16 +66,31 @@ export class AdminCanonicalBlocks implements OnInit {
         this.newEmail.set('');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: () => {
+        this.submitting.set(false);
+        this.saveFailed.set(true);
+      },
     });
   }
 
   test(): void {
     const email = this.testEmail().trim();
-    if (!email) {
+    if (!email || this.testing()) {
       return;
     }
-    this.api.testCanonicalEmailBlock(email).subscribe((matches) => this.testResult.set(matches));
+    this.testing.set(true);
+    this.testFailed.set(false);
+    this.testResult.set(null);
+    this.api.testCanonicalEmailBlock(email).subscribe({
+      next: (matches) => {
+        this.testResult.set(matches);
+        this.testing.set(false);
+      },
+      error: () => {
+        this.testFailed.set(true);
+        this.testing.set(false);
+      },
+    });
   }
 
   remove(block: CanonicalEmailBlock): void {

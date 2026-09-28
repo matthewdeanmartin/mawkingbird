@@ -1,3 +1,5 @@
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { AppDialogs } from '../../app-dialogs';
 import { Component, inject, OnInit, signal } from '@angular/core';
@@ -20,7 +22,7 @@ import { Announcement } from '../../models';
 /** Staff management of instance announcements: list / create / publish / delete. */
 @Component({
   selector: 'app-admin-announcements',
-  imports: [MbCheckbox, FormsModule, TranslocoPipe],
+  imports: [MbField, MbControl, MbButton, MbCheckbox, FormsModule, TranslocoPipe],
   templateUrl: './admin-announcements.html',
   styleUrl: './admin-announcements.css',
 })
@@ -35,6 +37,7 @@ export class AdminAnnouncements implements OnInit {
   protected newText = signal('');
   protected publishNow = signal(true);
   protected submitting = signal(false);
+  protected saveFailed = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -56,6 +59,7 @@ export class AdminAnnouncements implements OnInit {
     if (!text || this.submitting()) {
       return;
     }
+    this.saveFailed.set(false);
     this.submitting.set(true);
     this.api.createAnnouncement(text, this.publishNow()).subscribe({
       next: (a) => {
@@ -63,7 +67,10 @@ export class AdminAnnouncements implements OnInit {
         this.newText.set('');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: () => {
+        this.submitting.set(false);
+        this.saveFailed.set(true);
+      },
     });
   }
 

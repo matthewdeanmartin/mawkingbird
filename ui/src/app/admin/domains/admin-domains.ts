@@ -1,3 +1,5 @@
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +17,9 @@ import { DomainBlock } from '../../models';
 
 @Component({
   selector: 'app-admin-domains',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-domains.html',
-  styleUrl: './admin-domains.css',
+  styleUrls: ['./admin-domains.css', '../admin-form.css'],
 })
 export class AdminDomains implements OnInit {
   private api = inject(AdminApi);
@@ -28,6 +30,7 @@ export class AdminDomains implements OnInit {
   protected newDomain = signal('');
   protected severity = signal('silence');
   protected submitting = signal(false);
+  protected saveFailed = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -49,6 +52,7 @@ export class AdminDomains implements OnInit {
     if (!domain || this.submitting()) {
       return;
     }
+    this.saveFailed.set(false);
     this.submitting.set(true);
     this.api.createDomainBlock(domain, this.severity()).subscribe({
       next: (block) => {
@@ -56,7 +60,10 @@ export class AdminDomains implements OnInit {
         this.newDomain.set('');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: () => {
+        this.submitting.set(false);
+        this.saveFailed.set(true);
+      },
     });
   }
 
@@ -66,3 +73,7 @@ export class AdminDomains implements OnInit {
     });
   }
 }
+
+// i18n adminForms.severity: Moderation action
+// i18n adminForms.saveFailed: Could not save. Your entries are still here; try again.
+// i18n adminForms.testFailed: Could not check this email. Try again.

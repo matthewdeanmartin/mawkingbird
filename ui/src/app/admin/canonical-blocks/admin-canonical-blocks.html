@@ -1,25 +1,43 @@
 <div class="add-block">
-  <input
-    type="text"
-    [ngModel]="newEmail()"
-    (ngModelChange)="newEmail.set($event)"
-    (keyup.enter)="add()"
-    [placeholder]="'adminCanonical.placeholder' | transloco"
-  />
-  <button class="btn" [disabled]="!newEmail().trim() || submitting()" (click)="add()">
+  <mb-field
+    [label]="'adminCanonical.placeholder' | transloco"
+    [error]="saveFailed() ? ('adminForms.saveFailed' | transloco) : ''"
+  >
+    <input
+      mbControl
+      type="text"
+      [ngModel]="newEmail()"
+      (ngModelChange)="newEmail.set($event)"
+      (keyup.enter)="add()"
+      [placeholder]="'adminCanonical.placeholder' | transloco"
+    />
+  </mb-field>
+  <button mbButton type="button" [disabled]="!newEmail().trim() || submitting()" (click)="add()">
     {{ 'adminCanonical.block' | transloco }}
   </button>
 </div>
 
 <div class="add-block">
-  <input
-    type="text"
-    [ngModel]="testEmail()"
-    (ngModelChange)="testEmail.set($event)"
-    (keyup.enter)="test()"
-    [placeholder]="'adminCanonical.testPlaceholder' | transloco"
-  />
-  <button class="btn btn-outline" [disabled]="!testEmail().trim()" (click)="test()">
+  <mb-field
+    [label]="'adminCanonical.testPlaceholder' | transloco"
+    [error]="testFailed() ? ('adminForms.testFailed' | transloco) : ''"
+  >
+    <input
+      mbControl
+      type="text"
+      [ngModel]="testEmail()"
+      (ngModelChange)="testEmail.set($event)"
+      (keyup.enter)="test()"
+      [placeholder]="'adminCanonical.testPlaceholder' | transloco"
+    />
+  </mb-field>
+  <button
+    mbButton
+    variant="outline"
+    type="button"
+    [disabled]="!testEmail().trim() || testing()"
+    (click)="test()"
+  >
     {{ 'adminCanonical.testMatch' | transloco }}
   </button>
 </div>

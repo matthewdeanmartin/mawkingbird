@@ -327,14 +327,12 @@
                       (ngModelChange)="regPassword.set($event)"
                       [placeholder]="'pages.login.register.passwordPlaceholder' | transloco"
                     />
-                    <label class="agree">
-                      <input
-                        type="checkbox"
-                        [ngModel]="regAgree()"
-                        (ngModelChange)="regAgree.set($event)"
-                      />
-                      <span>{{ 'pages.login.register.agree' | transloco }}</span>
-                    </label>
+                    <mb-checkbox
+                      class="agree"
+                      [label]="'pages.login.register.agree' | transloco"
+                      [ngModel]="regAgree()"
+                      (ngModelChange)="regAgree.set($event)"
+                    />
                     @if (regError()) {
                       <p class="error">{{ regError() }}</p>
                     }

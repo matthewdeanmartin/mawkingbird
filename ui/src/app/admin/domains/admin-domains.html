@@ -1,17 +1,25 @@
 <div class="add-block">
-  <input
-    type="text"
-    [ngModel]="newDomain()"
-    (ngModelChange)="newDomain.set($event)"
-    (keyup.enter)="add()"
-    [placeholder]="'adminDomains.placeholder' | transloco"
-  />
-  <select [ngModel]="severity()" (ngModelChange)="severity.set($event)">
-    <option value="silence">{{ 'adminDomains.silence' | transloco }}</option>
-    <option value="suspend">{{ 'adminDomains.suspend' | transloco }}</option>
-    <option value="noop">{{ 'adminDomains.noop' | transloco }}</option>
-  </select>
-  <button class="btn" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
+  <mb-field
+    [label]="'adminDomains.placeholder' | transloco"
+    [error]="saveFailed() ? ('adminForms.saveFailed' | transloco) : ''"
+  >
+    <input
+      mbControl
+      type="text"
+      [ngModel]="newDomain()"
+      (ngModelChange)="newDomain.set($event)"
+      (keyup.enter)="add()"
+      [placeholder]="'adminDomains.placeholder' | transloco"
+    />
+  </mb-field>
+  <mb-field [label]="'adminForms.severity' | transloco">
+    <select mbControl [ngModel]="severity()" (ngModelChange)="severity.set($event)">
+      <option value="silence">{{ 'adminDomains.silence' | transloco }}</option>
+      <option value="suspend">{{ 'adminDomains.suspend' | transloco }}</option>
+      <option value="noop">{{ 'adminDomains.noop' | transloco }}</option>
+    </select>
+  </mb-field>
+  <button mbButton type="button" [disabled]="!newDomain().trim() || submitting()" (click)="add()">
     {{ 'adminDomains.block' | transloco }}
   </button>
 </div>

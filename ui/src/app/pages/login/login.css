@@ -316,16 +316,7 @@ app-app-footer {
 }
 
 .agree {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
   margin: 4px 0 12px;
-}
-
-.agree input {
-  width: auto;
-  margin: 0;
 }
 
 .switch-line {

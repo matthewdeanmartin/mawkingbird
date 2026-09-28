@@ -1,17 +1,28 @@
 <div class="new-announcement">
-  <textarea
-    rows="3"
-    [ngModel]="newText()"
-    (ngModelChange)="newText.set($event)"
-    [placeholder]="'adminAnnouncements.placeholder' | transloco"
-  ></textarea>
+  <mb-field
+    [label]="'adminAnnouncements.placeholder' | transloco"
+    [error]="saveFailed() ? ('adminForms.saveFailed' | transloco) : ''"
+  >
+    <textarea
+      mbControl
+      rows="3"
+      [ngModel]="newText()"
+      (ngModelChange)="newText.set($event)"
+      [placeholder]="'adminAnnouncements.placeholder' | transloco"
+    ></textarea>
+  </mb-field>
   <div class="new-actions">
     <mb-checkbox
       [label]="'adminAnnouncements.publishImmediately' | transloco"
       [ngModel]="publishNow()"
       (ngModelChange)="publishNow.set($event)"
     />
-    <button class="btn" [disabled]="!newText().trim() || submitting()" (click)="create()">
+    <button
+      mbButton
+      type="button"
+      [disabled]="!newText().trim() || submitting()"
+      (click)="create()"
+    >
       {{ 'adminAnnouncements.create' | transloco }}
     </button>
   </div>

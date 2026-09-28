@@ -1,3 +1,5 @@
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +17,9 @@ const SEVERITIES = ['no_access', 'sign_up_requires_approval', 'sign_up_block'] a
 
 @Component({
   selector: 'app-admin-ip-blocks',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-ip-blocks.html',
-  styleUrl: './admin-lists.css',
+  styleUrls: ['./admin-lists.css', '../admin-form.css'],
 })
 export class AdminIpBlocks implements OnInit {
   private api = inject(AdminApi);
@@ -29,6 +31,7 @@ export class AdminIpBlocks implements OnInit {
   protected severity = signal<string>('no_access');
   protected comment = signal('');
   protected submitting = signal(false);
+  protected saveFailed = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -50,6 +53,7 @@ export class AdminIpBlocks implements OnInit {
     if (!ip || this.submitting()) {
       return;
     }
+    this.saveFailed.set(false);
     this.submitting.set(true);
     this.api.createIpBlock(ip, this.severity(), this.comment().trim()).subscribe({
       next: (block) => {
@@ -58,7 +62,10 @@ export class AdminIpBlocks implements OnInit {
         this.comment.set('');
         this.submitting.set(false);
       },
-      error: () => this.submitting.set(false),
+      error: () => {
+        this.submitting.set(false);
+        this.saveFailed.set(true);
+      },
     });
   }
 
