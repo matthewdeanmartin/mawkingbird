@@ -1,3 +1,4 @@
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { AppDialogs } from '../../app-dialogs';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -19,7 +20,7 @@ import { Announcement } from '../../models';
 /** Staff management of instance announcements: list / create / publish / delete. */
 @Component({
   selector: 'app-admin-announcements',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbCheckbox, FormsModule, TranslocoPipe],
   templateUrl: './admin-announcements.html',
   styleUrl: './admin-announcements.css',
 })

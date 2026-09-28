@@ -164,24 +164,24 @@
       "status": "needs semantic review",
       "findings": [
         {
-          "pattern": "nativeButtons",
-          "line": 13
+          "pattern": "shared",
+          "line": 9
         },
         {
           "pattern": "nativeButtons",
-          "line": 40
+          "line": 14
         },
         {
           "pattern": "nativeButtons",
-          "line": 46
+          "line": 41
         },
         {
-          "pattern": "checkboxes",
-          "line": 10
+          "pattern": "nativeButtons",
+          "line": 47
         },
         {
           "pattern": "legacyPills",
-          "line": 13
+          "line": 14
         }
       ]
     },
@@ -7857,31 +7857,31 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 169
+          "line": 13
         },
         {
-          "pattern": "checkboxes",
-          "line": 15
+          "pattern": "shared",
+          "line": 28
         },
         {
-          "pattern": "checkboxes",
-          "line": 35
+          "pattern": "shared",
+          "line": 47
         },
         {
-          "pattern": "checkboxes",
-          "line": 59
+          "pattern": "shared",
+          "line": 99
         },
         {
-          "pattern": "checkboxes",
+          "pattern": "shared",
+          "line": 147
+        },
+        {
+          "pattern": "selects",
+          "line": 74
+        },
+        {
+          "pattern": "selects",
           "line": 118
-        },
-        {
-          "pattern": "selects",
-          "line": 91
-        },
-        {
-          "pattern": "selects",
-          "line": 140
         }
       ]
     },

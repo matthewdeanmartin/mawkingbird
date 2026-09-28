@@ -55,3 +55,10 @@ mixed-action variant, migrate eligible consumers in small tested batches, then
 remove duplicate CSS. Earlier preview approvals are retained; outstanding app
 integration is not hidden by the sprint number. Completion requires recorded
 consumer counts and parity evidence, not just a green catalogue.
+
+## Subsequent adoption
+
+[Sprint 7](07-checkbox-adoption.md) resolves the four listed Privacy checkbox
+candidates and Admin Announcements' publish toggle: five production controls now
+use the approved widget. Registration consent and the other opening findings
+remain pending. See Sprints 8–11 for the next bounded adoption batches.

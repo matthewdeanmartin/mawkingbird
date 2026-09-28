@@ -1,6 +1,6 @@
-# Component contracts — Sprints 1 and 2
+# Component contracts
 
-Status: Sprint 2 forms are in preview; app migration remains a separate checkpoint.
+Approved widgets are being adopted in production batches. See [sprint status](SPRINTS.md) and the per-batch audits for actual consumers; catalogue availability alone does not mean app adoption.
 
 | Component          | Owns                                                                               | Consumer owns                                               | Preview             |
 | ------------------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------- |

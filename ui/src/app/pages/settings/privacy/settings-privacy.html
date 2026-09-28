@@ -10,69 +10,52 @@
     <div class="srow">
       <span class="slabel">{{ 'settings.privacy.reach' | transloco }}</span>
       <div class="scontrol">
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [ngModel]="locked()"
-            (ngModelChange)="commit('locked', $event)"
-            [disabled]="saving() === 'locked'"
-            name="locked"
-          />
-          {{ 'settings.privacy.locked' | transloco }}
-          @if (saved() === 'locked') {
-            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
-          }
-        </label>
-        <span class="hint">{{ 'settings.privacy.locked.hint' | transloco }}</span>
-        @if (errorFor('locked'); as message) {
-          <span class="save-error" role="alert">{{
-            'common.errorPrefix' | transloco: { message: message }
-          }}</span>
-        }
+        <mb-checkbox
+          [label]="'settings.privacy.locked' | transloco"
+          [hint]="'settings.privacy.locked.hint' | transloco"
+          [ngModel]="locked()"
+          (ngModelChange)="commit('locked', $event)"
+          [disabled]="saving() === 'locked'"
+          name="locked"
+          [status]="saved() === 'locked' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('locked')
+              ? ('common.errorPrefix' | transloco: { message: errorFor('locked') })
+              : ''
+          "
+        />
 
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [ngModel]="discoverable()"
-            (ngModelChange)="commit('discoverable', $event)"
-            [disabled]="saving() === 'discoverable'"
-            name="discoverable"
-          />
-          {{ 'settings.privacy.discoverable' | transloco }}
-          @if (saved() === 'discoverable') {
-            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
-          }
-        </label>
-        @if (errorFor('discoverable'); as message) {
-          <span class="save-error" role="alert">{{
-            'common.errorPrefix' | transloco: { message: message }
-          }}</span>
-        }
+        <mb-checkbox
+          [label]="'settings.privacy.discoverable' | transloco"
+          [ngModel]="discoverable()"
+          (ngModelChange)="commit('discoverable', $event)"
+          [disabled]="saving() === 'discoverable'"
+          name="discoverable"
+          [status]="saved() === 'discoverable' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('discoverable')
+              ? ('common.errorPrefix' | transloco: { message: errorFor('discoverable') })
+              : ''
+          "
+        />
       </div>
     </div>
 
     <div class="srow">
       <span class="slabel">{{ 'settings.privacy.automation' | transloco }}</span>
       <div class="scontrol">
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [ngModel]="bot()"
-            (ngModelChange)="commit('bot', $event)"
-            [disabled]="saving() === 'bot'"
-            name="bot"
-          />
-          {{ 'settings.privacy.bot' | transloco }}
-          @if (saved() === 'bot') {
-            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
-          }
-        </label>
-        <span class="hint">{{ 'settings.privacy.bot.hint' | transloco }}</span>
-        @if (errorFor('bot'); as message) {
-          <span class="save-error" role="alert">{{
-            'common.errorPrefix' | transloco: { message: message }
-          }}</span>
-        }
+        <mb-checkbox
+          [label]="'settings.privacy.bot' | transloco"
+          [hint]="'settings.privacy.bot.hint' | transloco"
+          [ngModel]="bot()"
+          (ngModelChange)="commit('bot', $event)"
+          [disabled]="saving() === 'bot'"
+          name="bot"
+          [status]="saved() === 'bot' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('bot') ? ('common.errorPrefix' | transloco: { message: errorFor('bot') }) : ''
+          "
+        />
       </div>
     </div>
   </div>
@@ -113,24 +96,19 @@
     <div class="srow">
       <span class="slabel">{{ 'settings.privacy.media' | transloco }}</span>
       <div class="scontrol">
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [ngModel]="sensitive()"
-            (ngModelChange)="commit('sensitive', $event)"
-            [disabled]="saving() === 'sensitive'"
-            name="sensitive"
-          />
-          {{ 'settings.privacy.sensitive' | transloco }}
-          @if (saved() === 'sensitive') {
-            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
-          }
-        </label>
-        @if (errorFor('sensitive'); as message) {
-          <span class="save-error" role="alert">{{
-            'common.errorPrefix' | transloco: { message: message }
-          }}</span>
-        }
+        <mb-checkbox
+          [label]="'settings.privacy.sensitive' | transloco"
+          [ngModel]="sensitive()"
+          (ngModelChange)="commit('sensitive', $event)"
+          [disabled]="saving() === 'sensitive'"
+          name="sensitive"
+          [status]="saved() === 'sensitive' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('sensitive')
+              ? ('common.errorPrefix' | transloco: { message: errorFor('sensitive') })
+              : ''
+          "
+        />
       </div>
     </div>
 

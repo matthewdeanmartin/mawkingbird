@@ -6,10 +6,11 @@
     [placeholder]="'adminAnnouncements.placeholder' | transloco"
   ></textarea>
   <div class="new-actions">
-    <label class="publish-toggle">
-      <input type="checkbox" [ngModel]="publishNow()" (ngModelChange)="publishNow.set($event)" />
-      {{ 'adminAnnouncements.publishImmediately' | transloco }}
-    </label>
+    <mb-checkbox
+      [label]="'adminAnnouncements.publishImmediately' | transloco"
+      [ngModel]="publishNow()"
+      (ngModelChange)="publishNow.set($event)"
+    />
     <button class="btn" [disabled]="!newText().trim() || submitting()" (click)="create()">
       {{ 'adminAnnouncements.create' | transloco }}
     </button>

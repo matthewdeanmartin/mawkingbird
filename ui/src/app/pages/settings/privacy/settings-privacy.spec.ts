@@ -138,4 +138,36 @@ describe('SettingsPrivacy', () => {
     expect(internals(fixture).errorFor('locked')).not.toBeNull();
     expect(internals(fixture).errorFor('bot')).toBeNull();
   });
+  for (const field of ['locked', 'discoverable', 'bot', 'sensitive']) {
+    it(`shared ${field} checkbox saves one field and restores the native control after failure`, async () => {
+      const fixture = setUp();
+      httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({});
+      await fixture.whenStable();
+      const input = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+        `input[name="${field}"]`,
+      )!;
+      expect(input.closest('mb-checkbox')).not.toBeNull();
+      input.click();
+      await fixture.whenStable();
+      expect(input.disabled).toBe(true);
+      const failed = httpMock.expectOne('/api/v1/accounts/update_credentials');
+      const key = field === 'sensitive' ? 'source[sensitive]' : field;
+      const sent: string[] = [];
+      (failed.request.body as FormData).forEach((_value, name) => sent.push(name));
+      expect(sent).toEqual([key]);
+      expect(failed.request.body.get(key)).toBe('true');
+      failed.flush('unavailable', { status: 503, statusText: 'Unavailable' });
+      await fixture.whenStable();
+      expect(input.checked).toBe(false);
+      expect(input.disabled).toBe(false);
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      expect(input.closest('mb-checkbox')!.querySelector('[role="alert"]')).not.toBeNull();
+      input.click();
+      httpMock.expectOne('/api/v1/accounts/update_credentials').flush({});
+      await fixture.whenStable();
+      expect(input.checked).toBe(true);
+      expect(input.hasAttribute('aria-invalid')).toBe(false);
+      expect(input.closest('mb-checkbox')!.querySelector('[role="status"]')).not.toBeNull();
+    });
+  }
 });

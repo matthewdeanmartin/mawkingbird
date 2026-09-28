@@ -1,12 +1,13 @@
-# Six sprints: preview, review, integrate, audit
+# Design-system sprints: preview, review, integrate, audit
 
 Each sprint has two checkpoints: **A: review the working catalogue**, then
 **B: integrate the approved widgets into the listed app surfaces**. User review
 at A is explicitly requested in this workflow. Do not treat an unreviewed preview
 as permission to migrate screens. Revisions happen before integration.
 
-These are six coherent groups, not a claim that each contains exactly one sixth
-of the templates. The first audit establishes counts; subsequent audits measure
+The first six sprints established the widget families. Sprints 7–11 focus on
+production adoption in bounded batches, not equal fractions of the templates.
+The first audit establishes counts; subsequent audits measure
 adoption by eligible consumers and remaining exceptions.
 
 | Sprint                           | Solved family                                    | First integration targets                    | Status                                                      |
@@ -36,3 +37,20 @@ Storybook/tooling upgrades are separate changes: exact version pins, inspect
 migration notes, clean `npm ci`, build catalogue, exercise review stories, run
 the Angular gate, and review lockfile changes. Never rerun an initializer over
 the working catalogue to upgrade it.
+
+## Adoption phase: five additional sprints
+
+Approved widgets may be integrated within the requested batch without repeating
+widget approval. New variants still return to preview. Every sprint's review must
+show actual app components and state which production consumers changed.
+
+| Sprint                                         | Deliverable                                                                       | State                             |
+| ---------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------- |
+| [7](sprints/07-checkbox-adoption.md)           | Five Privacy/admin checkboxes, real-component preview, rollback and publish tests | Implemented; morning review ready |
+| [8](sprints/08-forms-adoption.md)              | Registration consent and admin forms                                              | Planned                           |
+| [9](sprints/09-dialog-adoption.md)             | Shared confirmation service and eligible dialogs                                  | Planned                           |
+| [10](sprints/10-navigation-and-states.md)      | Navigation, headers and timeline states                                           | Planned                           |
+| [11](sprints/11-post-tools-and-enforcement.md) | Real post tools, provider parity and final enforcement reconciliation             | Planned                           |
+
+These sprints absorb the open integration work from Sprints 1–6. Their original
+records remain historical evidence rather than being retroactively marked done.

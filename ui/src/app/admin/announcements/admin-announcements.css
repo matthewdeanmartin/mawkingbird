@@ -14,17 +14,11 @@
 
 .new-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
-}
-
-.publish-toggle {
-  font-size: 13px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .announcement-row {
