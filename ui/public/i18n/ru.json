@@ -3211,7 +3211,7 @@
     "clientListsHint": "Подписываться на людей не нужно, и это работает без входа.",
     "collections": "Коллекции",
     "collectionsUnsupported": "Этот сервер не поддерживает коллекции.",
-    "createAndAdd": "Создать &amp; добавить",
+    "createAndAdd": "Создать & добавить",
     "done": "Готово",
     "followAndAdd": "Подписаться и добавить",
     "followGateMessage": "Mastodon позволяет добавлять в список только тех, на кого ты подписан, поэтому &#64;{{username}} не добавлен в <strong>{{listTitle}}</strong>.",
@@ -3228,8 +3228,8 @@
     "private": "личная",
     "public": "общедоступная",
     "thisBrowser": "этот браузер",
-    "titleFull": "Добавить &#64;{{username}} в списки и коллекции",
-    "titleLocal": "Добавить &#64;{{username}} в локальные списки"
+    "titleFull": "Добавить @{{username}} в списки и коллекции",
+    "titleLocal": "Добавить @{{username}} в локальные списки"
   },
   "listTimeline": {
     "addPeopleByName": "Добавить людей по имени",

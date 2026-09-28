@@ -1,3 +1,4 @@
+import { MbDisclosure } from '../design-system/disclosure/disclosure';
 import { Component, computed, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -22,7 +23,7 @@ import { pollStatistics } from './poll-statistics';
 
 @Component({
   selector: 'app-poll-results',
-  imports: [DecimalPipe, TranslocoPipe],
+  imports: [MbDisclosure, DecimalPipe, TranslocoPipe],
   templateUrl: './poll-results.html',
   styleUrl: './poll-results.css',
 })

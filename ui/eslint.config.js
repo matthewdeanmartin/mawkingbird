@@ -29,6 +29,10 @@ module.exports = defineConfig([
     rules: { 'mb/no-pill-in-toolbar': 'error', 'mb/require-shared-post-action': 'error' },
   },
   {
+    files: ['**/pages/client-list/client-list-page.html'],
+    rules: { 'mb/prefer-shared-local-tabs': 'error' },
+  },
+  {
     files: ['**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -37,13 +41,7 @@ module.exports = defineConfig([
   {
     // Existing backdrop and card click handlers need keyboard-semantics work.
     // Keep the exception narrow so every new template receives the a11y rules.
-    files: [
-      '**/account-list-dialog.html',
-      '**/history-dialog.html',
-      '**/list-dialog.html',
-      '**/report-dialog.html',
-      '**/status-card.html',
-    ],
+    files: ['**/status-card.html'],
     rules: {
       '@angular-eslint/template/click-events-have-key-events': 'off',
       '@angular-eslint/template/interactive-supports-focus': 'off',

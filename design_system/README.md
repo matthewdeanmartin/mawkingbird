@@ -1,14 +1,22 @@
 # Mawkingbird design system
 
-Status: Sprint 11 adopts real post action rows and the nested library button, with provider/state previews and candidate reconciliation. Remaining migrations are explicit backlog, not whole-app completion.
+Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
+
+[Integration progress](PROGRESS.md): zero sprints remain in the current plan.
+Source adoption is 24 of 27 widget types, 208 direct placements in 30 app templates.
+This closes the planned batches, not all migration debt. Source integration is
+separate from deployment.
 
 ## Open the preview
 
-[Sprint 11 real post tools](http://127.0.0.1:6006/?path=/story/start-here-sprint-11-review--provider-tools)
-shows actual StatusCards, large counts, provider/ownership branches and held action responses.
-See [review notes](REVIEW-11.md), the [adoption audit](audits/11-post-tools-and-enforcement.md)
+[Sprints 17–18: local panels and metadata](http://127.0.0.1:6006/?path=/story/start-here-sprints-17-and-18-review--local-panels-and-metadata)
+shows the real client-list page and edit-history dialog.
+[Corrected Feed actions](http://127.0.0.1:6006/?path=/story/start-here-sprint-16-review--feed-actions-and-polls)
+now expose View feed directly; subscribed feeds also show Unsubscribe with confirmation.
+See [combined review](REVIEW-17-18.md), [closeout audit](audits/17-18-final-batch.md)
 and [candidate ledger](audits/11-reconciliation.json).
-[Sprint 10 app pages](REVIEW-10.md) and [Sprint 9 dialogs](REVIEW-9.md) remain available.
+[Sprint 15 Privacy and Trust](REVIEW-15.md), [Sprint 14 list membership](REVIEW-14.md), [Sprint 13 bookmark choices and reports](REVIEW-13.md), [Sprint 12 post dialogs](REVIEW-12.md), [Sprint 11 post tools](REVIEW-11.md), [Sprint 10 app pages](REVIEW-10.md) and
+[Sprint 9 dialogs](REVIEW-9.md) remain available.
 
 Latest correction: [Stacked compact toolbars](http://127.0.0.1:6006/?path=/story/adoption-sprint-3-toolbars--stacked-compact)
 shows four contiguous control rows and the aligned analytics checkbox.
@@ -44,7 +52,8 @@ to the existing **21.2.23** patch. Use the committed UI lockfile with `npm ci`.
 The established Angular adapter is used; Angular/Vite is still preview. No
 Storybook initializer or legacy `addon-essentials` setup is required.
 
-The active delivery plan is [six preview-first sprints](SPRINTS.md). Each sprint
+The [delivery record](SPRINTS.md) covers the original six preview-first sprints
+and subsequent adoption batches, ending with combined Sprints 17–18. Each sprint
 has a user preview checkpoint before app integration and an [LLM drift audit](AUDIT.md).
 See [component contracts](components.md). The original proposal below provides
 architectural context; the six-sprint plan supersedes its delivery-stage schedule.

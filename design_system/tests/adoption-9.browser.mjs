@@ -61,6 +61,9 @@ test("prompt preserves input and empty Enter result; backdrop cancels", async ({
   await expect(page.locator("output")).toHaveText('""');
   await expect(opener).toBeFocused();
   await opener.click();
+  // Raw pointer actions do not wait for the asynchronously mounted modal.
+  await expect(modal).toHaveJSProperty("open", true);
+  await expect(input).toBeFocused();
   await page.mouse.click(2, 2);
   await expect(page.locator("output")).toHaveText("Cancelled");
   await expect(modal).toHaveCount(0);

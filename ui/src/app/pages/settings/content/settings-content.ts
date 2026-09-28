@@ -1,10 +1,12 @@
+import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { AppDialogs } from '../../../app-dialogs';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../../api';
 import { Auth } from '../../../auth';
 import { Server } from '../../../server';
-import { TrustLevel, TrustedAccounts } from '../../../trusted-accounts';
+import { TrustedAccounts } from '../../../trusted-accounts';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
@@ -62,7 +64,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.content.footnote: Trust never overrides a filter. A word filter you set, or a post your server chose to hide, stays hidden — those are your rules and the server's, and one person being trusted is not a reason to break them.
 @Component({
   selector: 'app-settings-content',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbRadioGroup, MbCheckbox, RouterLink, TranslocoPipe],
   templateUrl: './settings-content.html',
   styleUrl: './settings-content.css',
 })
@@ -113,8 +115,15 @@ export class SettingsContent {
     }
   }
 
-  protected setLevel(level: TrustLevel): void {
-    this.trusted.setLevel(level);
+  protected setLevel(level: string): void {
+    if (
+      level === 'none' ||
+      level === 'individuals' ||
+      level === 'follows' ||
+      level === 'follows-boosts'
+    ) {
+      this.trusted.setLevel(level);
+    }
   }
 
   protected toggleCw(): void {

@@ -30,9 +30,6 @@
   margin-block: 10px;
   font-size: 0.875rem;
 }
-summary {
-  cursor: pointer;
-}
 p {
   margin-block: 8px;
 }
@@ -64,4 +61,10 @@ p {
   width: 3px;
   background: var(--text);
   transform: translateX(-50%);
+}
+
+.poll-count {
+  white-space: nowrap;
+  flex-shrink: 0;
+  unicode-bidi: isolate;
 }

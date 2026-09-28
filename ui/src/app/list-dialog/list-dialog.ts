@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { describeHttpError, PageDiagnostics, statusOf } from '../page-diagnostics';
@@ -13,7 +13,12 @@ import { AnonymousAccount } from '../providers/anonymous/anonymous-account';
 import { ClientLists, handleFor } from '../lists/client-lists';
 import { Server } from '../server';
 import { Account } from '../models';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbCheckbox } from '../design-system/checkbox/checkbox';
+import { MbField, MbControl } from '../design-system/field/field';
+import { MbButton } from '../design-system/button/button';
+import { MbNotice } from '../design-system/notice/notice';
+import { MbBadge } from '../design-system/badge/badge';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 interface ListRow {
@@ -76,8 +81,8 @@ interface CollectionRow {
  * Bulk "add several people by name" lives on the list/collection pages
  * instead — this dialog is strictly about one person.
  */
-// i18n listDialog.titleLocal: Add &#64;{{username}} to local lists
-// i18n listDialog.titleFull: Add &#64;{{username}} to lists & collections
+// i18n listDialog.titleLocal: Add @{{username}} to local lists
+// i18n listDialog.titleFull: Add @{{username}} to lists & collections
 // i18n listDialog.loading: Loading…
 // i18n listDialog.lists: Lists
 // i18n listDialog.private: private
@@ -88,7 +93,7 @@ interface CollectionRow {
 // i18n listDialog.followAndAdd: Follow and add
 // i18n listDialog.cancel: Cancel
 // i18n listDialog.newListPlaceholder: New list name
-// i18n listDialog.createAndAdd: Create &amp; add
+// i18n listDialog.createAndAdd: Create & add
 // i18n listDialog.clientLists: Private lists
 // i18n listDialog.thisBrowser: this browser
 // i18n listDialog.clientListsHint: No need to follow them, and it works signed out.
@@ -102,7 +107,17 @@ interface CollectionRow {
 // i18n listDialog.done: Done
 @Component({
   selector: 'app-list-dialog',
-  imports: [FocusTrap, FormsModule, TranslocoPipe],
+  imports: [
+    MbDialog,
+    MbCheckbox,
+    MbField,
+    MbControl,
+    MbButton,
+    MbNotice,
+    MbBadge,
+    FormsModule,
+    TranslocoPipe,
+  ],
   templateUrl: './list-dialog.html',
   styleUrl: './list-dialog.css',
 })
@@ -122,6 +137,10 @@ export class ListDialog implements OnInit {
   protected rows = signal<ListRow[]>([]);
   protected loading = signal(true);
   protected newTitle = signal('');
+  protected listBusy = signal(new Set<string>());
+  protected creatingList = signal(false);
+  protected creatingCollection = signal(false);
+  protected collectionError = signal('');
 
   /** Set when an add failed because the viewer doesn't follow the target. */
   protected followGate = signal<FollowGate | null>(null);
@@ -259,7 +278,33 @@ export class ListDialog implements OnInit {
     });
   }
 
+  // The checkbox owns its native input. Restore confirmed membership immediately;
+  // request completion updates the bound value. A rejected write never leaves a
+  // phantom check, including a synchronous local/fixture response.
+  chooseList(row: ListRow, control: MbCheckbox): void {
+    this.toggle(row);
+    control.writeValue(this.rows().find((item) => item.list.id === row.list.id)?.member ?? false);
+  }
+
+  chooseCollection(row: CollectionRow, control: MbCheckbox): void {
+    this.toggleCollection(row);
+    control.writeValue(
+      this.collectionRows().find((item) => item.collection.id === row.collection.id)?.member ??
+        false,
+    );
+  }
+
+  private setListBusy(id: string, busy: boolean): void {
+    this.listBusy.update((current) => {
+      const next = new Set(current);
+      if (busy) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
   toggle(row: ListRow): void {
+    if (this.listBusy().has(row.list.id)) return;
     if (this.auth.isAnonymous) {
       const follow = row.member ? this.anonymousFollow() : this.ensureAnonymousFollow();
       if (!follow) return;
@@ -272,27 +317,32 @@ export class ListDialog implements OnInit {
       return;
     }
     if (row.member) {
+      this.clearErrors();
+      this.setListBusy(row.list.id, true);
       this.diagnostics.info('Lists', 'member-remove:start', {
         listId: row.list.id,
         accountId: this.accountId(),
       });
-      this.api.removeFromList(row.list.id, this.accountId()).subscribe({
-        next: () => {
-          this.diagnostics.info('Lists', 'member-remove:success', {
-            listId: row.list.id,
-            accountId: this.accountId(),
-          });
-          this.markMember(row.list.id, false);
-        },
-        error: (err) => {
-          this.diagnostics.error('Lists', 'member-remove:error', err, {
-            listId: row.list.id,
-            accountId: this.accountId(),
-            status: statusOf(err),
-          });
-          this.reportListError(err);
-        },
-      });
+      this.api
+        .removeFromList(row.list.id, this.accountId())
+        .pipe(finalize(() => this.setListBusy(row.list.id, false)))
+        .subscribe({
+          next: () => {
+            this.diagnostics.info('Lists', 'member-remove:success', {
+              listId: row.list.id,
+              accountId: this.accountId(),
+            });
+            this.markMember(row.list.id, false);
+          },
+          error: (err) => {
+            this.diagnostics.error('Lists', 'member-remove:error', err, {
+              listId: row.list.id,
+              accountId: this.accountId(),
+              status: statusOf(err),
+            });
+            this.reportListError(err);
+          },
+        });
       return;
     }
     this.addTo(row.list, () => this.markMember(row.list.id, true));
@@ -304,32 +354,37 @@ export class ListDialog implements OnInit {
    * create-and-add so both fail the same way.
    */
   private addTo(list: UserList, onAdded: () => void): void {
+    if (this.listBusy().has(list.id)) return;
+    this.setListBusy(list.id, true);
     this.clearErrors();
     const context = { listId: list.id, accountId: this.accountId() };
     this.diagnostics.info('Lists', 'member-add:start', context);
-    this.api.addToList(list.id, this.accountId()).subscribe({
-      next: () => {
-        this.diagnostics.info('Lists', 'member-add:success', context);
-        onAdded();
-      },
-      error: (err) => {
-        const status = statusOf(err);
-        if (isNotFollowingError(err)) {
-          // Not a fault — the expected refusal for an account you don't follow.
-          // Logged at info so the console shows why the gate appeared, and so a
-          // *misclassified* failure (a real 404 read as "follow first") is
-          // visible next to the status that produced it.
-          this.diagnostics.info('Lists', 'member-add:needs-follow', { ...context, status });
-          this.followGate.set({
-            listTitle: list.title,
-            retry: () => this.addTo(list, onAdded),
-          });
-        } else {
-          this.diagnostics.error('Lists', 'member-add:error', err, { ...context, status });
-          this.reportListError(err);
-        }
-      },
-    });
+    this.api
+      .addToList(list.id, this.accountId())
+      .pipe(finalize(() => this.setListBusy(list.id, false)))
+      .subscribe({
+        next: () => {
+          this.diagnostics.info('Lists', 'member-add:success', context);
+          onAdded();
+        },
+        error: (err) => {
+          const status = statusOf(err);
+          if (isNotFollowingError(err)) {
+            // Not a fault — the expected refusal for an account you don't follow.
+            // Logged at info so the console shows why the gate appeared, and so a
+            // *misclassified* failure (a real 404 read as "follow first") is
+            // visible next to the status that produced it.
+            this.diagnostics.info('Lists', 'member-add:needs-follow', { ...context, status });
+            this.followGate.set({
+              listTitle: list.title,
+              retry: () => this.addTo(list, onAdded),
+            });
+          } else {
+            this.diagnostics.error('Lists', 'member-add:error', err, { ...context, status });
+            this.reportListError(err);
+          }
+        },
+      });
   }
 
   /**
@@ -385,7 +440,7 @@ export class ListDialog implements OnInit {
 
   createAndAdd(): void {
     const title = this.newTitle().trim();
-    if (!title) {
+    if (!title || this.creatingList()) {
       return;
     }
     if (this.auth.isAnonymous) {
@@ -397,30 +452,36 @@ export class ListDialog implements OnInit {
       this.rows.update((rows) => [...rows, { list, member: true }]);
       return;
     }
+    this.creatingList.set(true);
+    this.clearErrors();
     this.diagnostics.info('Lists', 'create-and-add:start', { titleLength: title.length });
-    this.api.createList(title).subscribe({
-      next: (list) => {
-        this.diagnostics.info('Lists', 'create-and-add:list-created', { listId: list.id });
-        this.newTitle.set('');
-        // The list exists now even if the add is refused, so show it immediately
-        // as a non-member row; addTo flips it once membership actually lands.
-        this.rows.update((rows) => [...rows, { list, member: false }]);
-        this.addTo(list, () => this.markMember(list.id, true));
-      },
-      error: (err) => {
-        this.diagnostics.error('Lists', 'create-and-add:error', err, {
-          titleLength: title.length,
-          status: statusOf(err),
-        });
-        this.reportListError(err);
-      },
-    });
+    this.api
+      .createList(title)
+      .pipe(finalize(() => this.creatingList.set(false)))
+      .subscribe({
+        next: (list) => {
+          this.diagnostics.info('Lists', 'create-and-add:list-created', { listId: list.id });
+          this.newTitle.set('');
+          // The list exists now even if the add is refused, so show it immediately
+          // as a non-member row; addTo flips it once membership actually lands.
+          this.rows.update((rows) => [...rows, { list, member: false }]);
+          this.addTo(list, () => this.markMember(list.id, true));
+        },
+        error: (err) => {
+          this.diagnostics.error('Lists', 'create-and-add:error', err, {
+            titleLength: title.length,
+            status: statusOf(err),
+          });
+          this.reportListError(err);
+        },
+      });
   }
 
   toggleCollection(row: CollectionRow): void {
-    if (row.busy) {
+    if (this.collectionRows().find((item) => item.collection.id === row.collection.id)?.busy) {
       return;
     }
+    this.collectionError.set('');
     this.setCollectionBusy(row.collection.id, true);
     if (row.member) {
       // Need the item id to remove. Fetch it if we don't have it yet.
@@ -437,7 +498,7 @@ export class ListDialog implements OnInit {
               this.markCollection(row.collection.id, { member: false, itemId: '', busy: false });
             }
           },
-          error: () => this.setCollectionBusy(row.collection.id, false),
+          error: (err) => this.collectionFailed(row.collection.id, err),
         });
       }
     } else {
@@ -446,7 +507,7 @@ export class ListDialog implements OnInit {
           const itemId = res?.collection_item?.id ?? '';
           this.markCollection(row.collection.id, { member: true, itemId, busy: false });
         },
-        error: () => this.setCollectionBusy(row.collection.id, false),
+        error: (err) => this.collectionFailed(row.collection.id, err),
       });
     }
   }
@@ -454,34 +515,36 @@ export class ListDialog implements OnInit {
   private removeFromCollection(collectionId: string, itemId: string): void {
     this.api.removeCollectionItem(collectionId, itemId).subscribe({
       next: () => this.markCollection(collectionId, { member: false, itemId: '', busy: false }),
-      error: () => this.setCollectionBusy(collectionId, false),
+      error: (err) => this.collectionFailed(collectionId, err),
     });
+  }
+
+  private collectionFailed(id: string, err: unknown): void {
+    this.setCollectionBusy(id, false);
+    this.collectionError.set(describeHttpError(err));
   }
 
   createCollectionAndAdd(): void {
     const name = this.newCollectionName().trim();
-    if (!name) {
-      return;
-    }
-    this.api.createCollection(name).subscribe((wrapped) => {
-      this.newCollectionName.set('');
-      const collection = wrapped?.collection;
-      if (!collection) {
-        // Stub server returned {collection:null}; nothing to add to.
-        return;
-      }
-      this.api.addCollectionAccount(collection.id, this.accountId()).subscribe((res) => {
-        this.collectionRows.update((rows) => [
-          ...rows,
-          {
-            collection,
-            itemId: res?.collection_item?.id ?? '',
-            member: true,
-            busy: false,
-          },
-        ]);
+    if (!name || this.creatingCollection()) return;
+    this.creatingCollection.set(true);
+    this.collectionError.set('');
+    this.api
+      .createCollection(name)
+      .pipe(finalize(() => this.creatingCollection.set(false)))
+      .subscribe({
+        next: (wrapped) => {
+          this.newCollectionName.set('');
+          const collection = wrapped?.collection;
+          if (!collection) return;
+          // Creation has succeeded even if adding fails. Keep the created row so
+          // retry targets it instead of creating a duplicate collection.
+          const row = { collection, itemId: '', member: false, busy: false };
+          this.collectionRows.update((rows) => [...rows, row]);
+          this.toggleCollection(row);
+        },
+        error: (err) => this.collectionError.set(describeHttpError(err)),
       });
-    });
   }
 
   private markCollection(id: string, patch: Partial<CollectionRow>): void {

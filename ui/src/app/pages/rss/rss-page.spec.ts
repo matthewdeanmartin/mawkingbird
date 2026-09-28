@@ -115,8 +115,7 @@ describe('RssPage', () => {
     expect(decodeURIComponent(first.querySelector('.source')!.getAttribute('href')!)).toContain(
       'rss:' + wiki,
     );
-    (first.querySelector('summary') as HTMLElement).click();
-    (first.querySelector('.feed-menu button') as HTMLButtonElement).click();
+    (first.querySelector('mb-post-actions button') as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(fixture.componentInstance['expandedId']()).toBeNull();
     expect(first.textContent).toContain('Unsubscribe from Wikipedia recent changes?');
@@ -126,7 +125,7 @@ describe('RssPage', () => {
       .click();
     fixture.detectChanges();
     expect(subs.has(wiki)).toBe(true);
-    (first.querySelector('.feed-menu button') as HTMLButtonElement).click();
+    (first.querySelector('mb-post-actions button') as HTMLButtonElement).click();
     fixture.detectChanges();
     (first.querySelector('.btn-danger') as HTMLButtonElement).click();
     fixture.detectChanges();
@@ -171,7 +170,7 @@ describe('RssPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const actions = fixture.nativeElement.querySelector('.full-item app-rss-feed-actions');
-    expect(actions.querySelector('summary').textContent).toContain('Feed');
+    expect(actions.querySelector('a').textContent).toContain('View feed');
     expect(decodeURIComponent(actions.querySelector('a').getAttribute('href'))).toContain(
       'rss:' + url,
     );

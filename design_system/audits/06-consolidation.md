@@ -85,3 +85,37 @@ including 165 explicit backlog files. Candidate patterns now include navigation
 and remaining shared widget names; counts are not adoption percentages. Lint
 protects adopted post actions, and the gate rejects missing ledger entries.
 Deep semantic reconciliation of the backlog remains work, not an exception.
+
+[Sprint 12](12-post-dialogs.md) adopts 16 modal/state/action consumers in the
+account-list, history and sign-in dialogs. Three candidate templates move from
+backlog to adopted scope; the ledger retains 162 explicit backlog files. The
+obsolete sign-in stylesheet is removed, accounting for the source-file decrease.
+Native link actions now reuse the approved solid/outline button appearance.
+
+[Sprint 13](13-bookmark-and-report.md) adopts eight consumers in bookmark/report
+forms. Their two templates become partial adoption, with specialized choice cards
+and destructive action styling retained as explicit work. The ledger now has 160
+backlog files. Native dialog and retained-report behavior have browser coverage.
+
+[Sprint 14](14-list-membership.md) adopts 22 shared placements in ListDialog.
+The ledger moves its template to partial adoption: 159 backlog files remain.
+Read-state recovery stays explicit debt. Badge gains its first app consumer;
+source usage is 17/27 widget types and 183 placements in 26 templates.
+
+[Sprint 15](15-settings-forms.md) adopts 13 placements in Privacy and Trust settings.
+The ledger now has 19 partial and 158 backlog files. RadioGroup and SettingsRow
+gain app consumers; source usage reaches 19/27 types and 196 placements in 27 templates.
+
+[Sprint 16](16-post-menus-and-disclosure.md) adopts four placements in RSS feed
+actions and post poll statistics. Both scoped templates are adopted: 10 adopted,
+19 partial and 156 backlog files remain. Source usage reaches 21/27 types and
+200 placements in 29 templates. Privacy's compact-column correction changes
+inventory line positions, not adoption counts. Mixed-content post menus remain
+explicit backlog; specialized poll charts remain purpose-specific content.
+
+[Sprints 17–18 combined](17-18-final-batch.md) add eight placements and replace
+three RSS popup/action placements with direct compact actions. Source usage is
+24/27 types and 208 placements in 30 templates. Ledger: 10 adopted, 20 partial,
+155 backlog, plus 15 shared and 9 lexical-only candidates. Shared local-tab lint
+is enabled for the migrated client-list template. Zero sprints remain in this
+plan; the explicit app migration backlog is not complete.

@@ -1,34 +1,18 @@
 @if (!list()) {
   <p class="muted center small">
     {{ 'pagesClientList.notFound.note' | transloco }}
-    <a routerLink="/feeds">{{ 'pagesClientList.notFound.back' | transloco }}</a>
+    <a mbContentLink routerLink="/feeds">{{ 'pagesClientList.notFound.back' | transloco }}</a>
   </p>
 } @else {
-  <div class="page-head">
-    <h1>{{ list()!.title }}</h1>
-    <p class="muted small">
-      {{
-        (list()!.memberHandles.length === 1
-          ? 'pagesClientList.header.member.one'
-          : 'pagesClientList.header.member.other'
-        ) | transloco: { count: list()!.memberHandles.length }
-      }}
-    </p>
-  </div>
-
-  <div class="tabs">
-    <button type="button" class="tab" [class.active]="tab() === 'posts'" (click)="tab.set('posts')">
-      {{ 'pagesClientList.tabs.posts' | transloco }}
-    </button>
-    <button
-      type="button"
-      class="tab"
-      [class.active]="tab() === 'members'"
-      (click)="tab.set('members')"
-    >
-      {{ 'pagesClientList.tabs.members' | transloco }}
-    </button>
-  </div>
+  <mb-page-header
+    [title]="list()!.title"
+    [description]="
+      (list()!.memberHandles.length === 1
+        ? 'pagesClientList.header.member.one'
+        : 'pagesClientList.header.member.other'
+      ) | transloco: { count: list()!.memberHandles.length }
+    "
+  />
 
   @if (capped()) {
     <p class="muted small center">
@@ -48,32 +32,37 @@
     </p>
   }
 
-  @if (loading()) {
-    <p class="muted center small">{{ 'pagesClientList.loading' | transloco }}</p>
-  } @else if (tab() === 'posts') {
-    @if (!list()!.memberHandles.length) {
-      <p class="muted center small">
-        {{ 'pagesClientList.members.empty' | transloco }}
-      </p>
-    } @else if (!statuses().length) {
-      <p class="muted center small">{{ 'pagesClientList.posts.empty' | transloco }}</p>
-    } @else {
-      @for (s of statuses(); track s.id) {
-        <app-status-card [status]="s" />
+  <mb-tabs [label]="list()!.title" [selected]="tab()" (selectedChange)="selectTab($event)">
+    <ng-template mbTab value="posts" [label]="'pagesClientList.tabs.posts' | transloco">
+      @if (loading()) {
+        <p class="muted center small">{{ 'pagesClientList.loading' | transloco }}</p>
+      } @else if (tab() === 'posts') {
+        @if (!list()!.memberHandles.length) {
+          <p class="muted center small">{{ 'pagesClientList.members.empty' | transloco }}</p>
+        } @else if (!statuses().length) {
+          <p class="muted center small">{{ 'pagesClientList.posts.empty' | transloco }}</p>
+        } @else {
+          @for (s of statuses(); track s.id) {
+            <app-status-card [status]="s" />
+          }
+        }
       }
-    }
-  } @else {
-    @if (!members().length) {
-      <p class="muted center small">{{ 'pagesClientList.members.unresolved' | transloco }}</p>
-    } @else {
-      @for (m of members(); track m.id) {
-        <a class="list-row" [routerLink]="['/accounts', m.id]">
-          <span>
-            {{ m.display_name || m.username }}
-            <span class="muted small">· &#64;{{ m.acct }}</span>
-          </span>
-        </a>
+    </ng-template>
+    <ng-template mbTab value="members" [label]="'pagesClientList.tabs.members' | transloco">
+      @if (loading()) {
+        <p class="muted center small">{{ 'pagesClientList.loading' | transloco }}</p>
+      } @else if (tab() === 'members') {
+        @if (!members().length) {
+          <p class="muted center small">{{ 'pagesClientList.members.unresolved' | transloco }}</p>
+        } @else {
+          @for (m of members(); track m.id) {
+            <a mbContentLink class="member-link" [routerLink]="['/accounts', m.id]">
+              <span>{{ m.display_name || m.username }}</span>
+              <mb-metadata>&#64;{{ m.acct }}</mb-metadata>
+            </a>
+          }
+        }
       }
-    }
-  }
+    </ng-template>
+  </mb-tabs>
 }

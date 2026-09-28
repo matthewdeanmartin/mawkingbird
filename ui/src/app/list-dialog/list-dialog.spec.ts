@@ -48,9 +48,24 @@ function makeCollection(id: string, name = `Col ${id}`): Collection {
 
 describe('ListDialog', () => {
   let httpMock: HttpTestingController;
+  const descriptors = ['showModal', 'close'].map(
+    (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+  );
 
   beforeEach(() => {
     localStorage.clear();
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value() {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value() {
+        this.open = false;
+      },
+    });
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
@@ -60,8 +75,13 @@ describe('ListDialog', () => {
   });
 
   afterEach(() => {
-    httpMock.verify();
     TestBed.inject(Auth).account.set(null);
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of descriptors) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else delete (HTMLDialogElement.prototype as unknown as Record<string, unknown>)[name];
+    }
+    httpMock.verify();
   });
 
   /** Create the dialog for a target account and settle ngOnInit's fetches. */
@@ -275,5 +295,129 @@ describe('ListDialog', () => {
     del.flush({});
 
     expect(internals(fixture).collectionRows()[0].member).toBe(false);
+  });
+  function checkbox(f: ComponentFixture<ListDialog>, label: string): HTMLInputElement {
+    const el = f.nativeElement as HTMLElement;
+    const text = Array.from(el.querySelectorAll('label')).find(
+      (l) => l.textContent?.trim() === label,
+    )!;
+    return el.querySelector<HTMLInputElement>(`#${text.htmlFor}`)!;
+  }
+
+  it('keeps a failed list write unchecked and guards duplicate requests before retry', () => {
+    const f = setUp({ lists: [{ id: '1', title: 'Friends' }] });
+    f.detectChanges();
+    const input = checkbox(f, 'Friends');
+    input.click();
+    f.detectChanges();
+    expect(input.checked).toBe(false);
+    expect(input.disabled).toBe(true);
+    f.componentInstance.toggle(internals(f).rows()[0]);
+    const write = httpMock.expectOne('/api/v1/lists/1/accounts');
+    expect(write.request.body).toEqual({ account_ids: ['T'] });
+    write.flush({ error: 'Try again' }, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    expect(input.checked).toBe(false);
+    expect(input.disabled).toBe(false);
+    expect(f.nativeElement.textContent).toContain('Try again');
+    input.click();
+    f.detectChanges();
+    httpMock.expectOne('/api/v1/lists/1/accounts').flush({});
+    f.detectChanges();
+    expect(input.checked).toBe(true);
+  });
+
+  it('keeps confirmed collection membership when removal fails and retries the same item', () => {
+    const f = setUp({ myCols: [makeCollection('C1')], featuring: [makeCollection('C1')] });
+    f.detectChanges();
+    const input = checkbox(f, 'Col C1');
+    input.click();
+    f.detectChanges();
+    expect(input.checked).toBe(true);
+    expect(input.disabled).toBe(true);
+    httpMock.expectOne('/api/v1/collections/C1').flush({
+      collection: { ...makeCollection('C1'), items: [{ id: 'item', account_id: 'T' }] },
+      accounts: [],
+    });
+    httpMock
+      .expectOne('/api/v1/collections/C1/items/item')
+      .flush({ error: 'Remove failed' }, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    expect(input.checked).toBe(true);
+    expect(input.disabled).toBe(false);
+    expect(f.nativeElement.textContent).toContain('Remove failed');
+    input.click();
+    httpMock.expectOne('/api/v1/collections/C1').flush({
+      collection: { ...makeCollection('C1'), items: [{ id: 'item', account_id: 'T' }] },
+      accounts: [],
+    });
+    httpMock.expectOne('/api/v1/collections/C1/items/item').flush({});
+    f.detectChanges();
+    expect(input.checked).toBe(false);
+  });
+
+  it('retains the create-list name after failure and keeps the explicit follow gate after creation', async () => {
+    const f = setUp();
+    f.detectChanges();
+    await f.whenStable();
+    const input = (f.nativeElement as HTMLElement).querySelector<HTMLInputElement>(
+      'input[type="text"]',
+    )!;
+    input.value = 'New friends';
+    input.dispatchEvent(new Event('input'));
+    await f.whenStable();
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+    f.componentInstance.createAndAdd();
+    httpMock
+      .expectOne('/api/v1/lists')
+      .flush({ error: 'Create failed' }, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    await f.whenStable();
+    expect(input.value).toBe('New friends');
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+    httpMock.expectOne('/api/v1/lists').flush({ id: 'new', title: 'New friends' });
+    httpMock
+      .expectOne('/api/v1/lists/new/accounts')
+      .flush('', { status: 404, statusText: 'Not Found' });
+    f.detectChanges();
+    expect(checkbox(f, 'New friends').checked).toBe(false);
+    expect(f.nativeElement.textContent).toContain('Following them is public');
+    httpMock.expectNone('/api/v1/accounts/T/follow');
+    internals(f).confirmFollow();
+    httpMock.expectOne('/api/v1/accounts/T/follow').flush({});
+    httpMock.expectOne('/api/v1/lists/new/accounts').flush({});
+    f.detectChanges();
+    expect(checkbox(f, 'New friends').checked).toBe(true);
+  });
+
+  it('keeps a newly created collection visible when adding fails, without recreating it on retry', async () => {
+    const f = setUp();
+    f.detectChanges();
+    await f.whenStable();
+    const input = Array.from(
+      (f.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>('input[type="text"]'),
+    )[2];
+    input.value = 'New collection';
+    input.dispatchEvent(new Event('input'));
+    await f.whenStable();
+    f.componentInstance.createCollectionAndAdd();
+    f.componentInstance.createCollectionAndAdd();
+    httpMock
+      .expectOne('/api/v1/collections')
+      .flush({ collection: makeCollection('new', 'New collection') });
+    httpMock
+      .expectOne('/api/v1/collections/new/items')
+      .flush({ error: 'Add failed' }, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    await f.whenStable();
+    const check = checkbox(f, 'New collection');
+    expect(check.checked).toBe(false);
+    expect(input.value).toBe('');
+    expect(f.nativeElement.textContent).toContain('Add failed');
+    check.click();
+    httpMock.expectNone('/api/v1/collections');
+    httpMock.expectOne('/api/v1/collections/new/items').flush({ collection_item: { id: 'item' } });
+    f.detectChanges();
+    expect(check.checked).toBe(true);
   });
 });

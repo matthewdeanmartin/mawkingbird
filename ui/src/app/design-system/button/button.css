@@ -39,3 +39,9 @@
   color: var(--muted);
   cursor: default;
 }
+
+/* Keep native link semantics while sharing the approved action appearance. */
+:host(:any-link),
+:host(:any-link):hover {
+  text-decoration: none;
+}

@@ -2,7 +2,10 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../api';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbField, MbControl } from '../design-system/field/field';
+import { MbButton } from '../design-system/button/button';
+import { MbNotice } from '../design-system/notice/notice';
 import { ProviderId } from '../models';
 import { BlueskyApi, BskyReportReason } from '../providers/bluesky/bluesky-api';
 import { BskyRef } from '../providers/bluesky/bluesky-types';
@@ -26,7 +29,7 @@ const CATEGORIES = ['spam', 'violation', 'other'] as const;
 
 @Component({
   selector: 'app-report-dialog',
-  imports: [FocusTrap, FormsModule, TranslocoPipe],
+  imports: [MbDialog, MbField, MbControl, MbButton, MbNotice, FormsModule, TranslocoPipe],
   templateUrl: './report-dialog.html',
   styleUrl: './report-dialog.css',
 })

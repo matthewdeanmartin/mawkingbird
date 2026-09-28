@@ -1,7 +1,6 @@
-/* Sits under a checkline to explain it, indented to the checkbox's label so it
-   reads as belonging to that row rather than to the group. */
-.checkline-note {
-  margin: 2px 0 12px 26px;
+.trust-switches {
+  display: grid;
+  gap: 16px;
 }
 
 .trust-list {

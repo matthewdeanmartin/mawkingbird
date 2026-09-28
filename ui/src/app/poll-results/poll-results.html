@@ -6,7 +6,7 @@
       }
       <span>{{ option.title }}</span>
       @if (hasCount(option.votes_count)) {
-        <span>
+        <span class="poll-count" dir="ltr">
           @if (hasDenominator()) {
             {{ percent(option.votes_count) | number: '1.0-1' }}%
           }
@@ -17,8 +17,7 @@
       }
     </div>
   }
-  <details class="statistics">
-    <summary>{{ 'pollResults.statistics' | transloco }}</summary>
+  <mb-disclosure class="statistics" [label]="'pollResults.statistics' | transloco">
     @if (stats(); as s) {
       <p>{{ 'pollResults.sample' | transloco: { count: s.n } }}</p>
       @if (poll().multiple) {
@@ -59,7 +58,7 @@
     } @else {
       <p>{{ 'pollResults.unavailable' | transloco }}</p>
     }
-  </details>
+  </mb-disclosure>
 } @else {
   @for (option of poll().options; track $index) {
     <div class="poll-result">

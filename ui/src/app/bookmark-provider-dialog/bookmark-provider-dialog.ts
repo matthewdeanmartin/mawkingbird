@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
 
 // i18n bookmarkProvider.title: Where should this bookmark go?
 // i18n bookmarkProvider.close: Close
@@ -18,7 +18,7 @@ export type BookmarkChoice = 'mastodon' | 'raindrop-post' | 'raindrop-link';
 /** Chooses between native and Raindrop.io bookmark destinations. */
 @Component({
   selector: 'app-bookmark-provider-dialog',
-  imports: [FocusTrap, TranslocoPipe],
+  imports: [MbDialog, TranslocoPipe],
   templateUrl: './bookmark-provider-dialog.html',
   styleUrl: './bookmark-provider-dialog.css',
 })

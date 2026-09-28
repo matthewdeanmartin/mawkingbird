@@ -1,5 +1,9 @@
 # Design-system sprints: preview, review, integrate, audit
 
+**Current checkpoint: Sprints 17 and 18 combined and implemented; zero planned
+remaining.** See [live progress](PROGRESS.md) for source adoption and explicit
+migration backlog. Historical checkpoints below are retained as evidence.
+
 Each sprint has two checkpoints: **A: review the working catalogue**, then
 **B: integrate the approved widgets into the listed app surfaces**. User review
 at A is explicitly requested in this workflow. Do not treat an unreviewed preview
@@ -54,3 +58,29 @@ show actual app components and state which production consumers changed.
 
 These sprints absorb the open integration work from Sprints 1–6. Their original
 records remain historical evidence rather than being retroactively marked done.
+
+## Continued adoption
+
+The user accepted Sprint 11's post-tool batch and requested continued work.
+
+| Sprint                                  | Deliverable                                                                                | State                     |
+| --------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------- |
+| [12](sprints/12-post-dialogs.md)        | Real account/history/sign-in dialogs, explicit read failures/retry and native link actions | Implemented; review ready |
+| [13](sprints/13-bookmark-and-report.md) | Real bookmark/report dialogs, shared fields and retained report retry                      | Implemented; review ready |
+
+The recorded residual backlog, rather than an equal fraction of remaining
+screens, determines subsequent coherent batches. No blanket migration is claimed.
+
+## Rolling plan: complete as a bounded sequence
+
+| Sprint                                         | Scope                                                                                      | State                     | Planned remaining after completion |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------- | ---------------------------------- |
+| [14](sprints/14-list-membership.md)            | List membership dialog                                                                     | Implemented; review ready | 4                                  |
+| [15](sprints/15-settings-forms.md)             | Settings form composition                                                                  | Implemented; review ready | 3                                  |
+| [16](sprints/16-post-menus-and-disclosure.md)  | RSS feed popup and post poll disclosure                                                    | Implemented; review ready | 2                                  |
+| [17–18 combined](sprints/17-18-final-batch.md) | Client-list local tabs and metadata; history metadata; Feed simplification; reconciliation | Implemented; review ready | 0                                  |
+
+Zero remaining in this plan does not mean zero app migration debt. Each closeout
+must follow the [required report](PROGRESS.md#required-sprint-report), including
+this sprint's integration, cumulative measured usage, next sprint and remaining
+count. Refresh source adoption with `cd ui && npm run design:adoption`.

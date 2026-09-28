@@ -1032,8 +1032,8 @@
     "private": "приватний",
     "public": "публічний",
     "thisBrowser": "цей браузер",
-    "titleFull": "Додати &#64;{{username}} до списків і колекцій",
-    "titleLocal": "Додати &#64;{{username}} до локальних списків"
+    "titleFull": "Додати @{{username}} до списків і колекцій",
+    "titleLocal": "Додати @{{username}} до локальних списків"
   },
   "listTimeline": {
     "addPeopleByName": "Додати людей за іменем",

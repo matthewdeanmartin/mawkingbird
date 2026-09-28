@@ -2,11 +2,11 @@
 
 Approved widgets are being adopted in production batches. See [sprint status](SPRINTS.md) and the per-batch audits for actual consumers; catalogue availability alone does not mean app adoption.
 
-| Component          | Owns                                                                               | Consumer owns                                               | Preview             |
-| ------------------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------- |
-| `mb-checkbox`      | Native checkbox, label column, description/error IDs, focus, hint/status placement | Translated strings, checked/form value, saving and rollback | Forms/Checkbox      |
-| `mb-settings-row`  | Group-heading column and stacking below 500px container width                      | Heading and child controls, page placement                  | Layout/Settings row |
-| `button[mbButton]` | Pill geometry, solid/outline, regular/small, focus/disabled treatment              | Native type, action, disabled state, accessible name        | Actions/Button      |
+| Component                         | Owns                                                                               | Consumer owns                                               | Preview             |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------- |
+| `mb-checkbox`                     | Native checkbox, label column, description/error IDs, focus, hint/status placement | Translated strings, checked/form value, saving and rollback | Forms/Checkbox      |
+| `mb-settings-row`                 | Group-heading column and stacking below 500px container width                      | Heading and child controls, page placement                  | Layout/Settings row |
+| `button[mbButton]`, `a[mbButton]` | Pill geometry, solid/outline, regular/small, focus/disabled treatment              | Native type, action, disabled state, accessible name        | Actions/Button      |
 
 Use `(checkedChange)` with `[checked]`, or Angular forms, not both on one checkbox.
 The component supports `ControlValueAccessor`; form disable/reset/touch propagate
@@ -14,9 +14,18 @@ to the native input. `label` is required. Errors and hints describe the input;
 status is a separate live region, not part of its name. Indeterminate is a native
 visual state. Linked descriptions/rich content are not yet supported.
 
-Buttons require an explicit `type` at usage sites. Navigation continues to use
-native links; link styling will be reviewed in Sprint 3. There is no arbitrary
-internal style API. Pages may control available width and external spacing.
+For confirmed-membership controls without Angular forms, a caller may restore
+its authoritative value through `writeValue` during `checkedChange`, then update
+`checked` after a successful request. Writes restore the native input even when
+rejected synchronously; they do not emit a second change. Keep pending guards and
+errors with the consumer, as in ListDialog. Do not combine this pattern with a
+separate form value owner.
+
+Buttons require an explicit `type` at usage sites. Navigation uses native links;
+`a[mbButton]` shares the same solid/outline action appearance with href/routerLink,
+without adding a button role or disabled behavior. Use a real button for disabled
+commands. Ordinary prose links use MbContentLink. There is no arbitrary internal
+style API. Pages may control available width and external spacing.
 
 The review stories use fixture strings, not new app translation keys or service
 calls. Theme toolbar controls use the app's existing attributes without persisting
@@ -192,7 +201,9 @@ Do not announce the same error through multiple notices/fields. This is not a
 toast scheduler and does not decide when to dismiss or retry a request.
 
 All five families are previewed under **Start here / Sprint 4 review**, including
-long-dialog and opt-in backdrop examples. App adoption is pending review.
+long-dialog and opt-in backdrop examples. Dialog and notice have real app consumers;
+menu, popover and disclosure remain catalogue-only at the Sprint 13 checkpoint.
+See [current integration counts](PROGRESS.md).
 
 ## Metadata and badges
 
@@ -259,3 +270,32 @@ Neither input owns the action handler, request, permission or provider state.
 Retain native button/link behavior, count-list actions and confirmation flows.
 Consumer CSS may set outer spacing; it must not replace shared target geometry.
 See [Sprint 11](REVIEW-11.md) for actual-provider fixtures and residual menus.
+
+### Settings composition in app source
+
+SettingsPrivacy adopts SettingsRow for its grouped checkboxes and Field/Control
+with direct SaveFeedback for native selects. SettingsContent adopts RadioGroup
+and Checkbox for trust choices. Pass translated labels/hints at the caller and
+keep persistence in the page/service; disabling trust must not erase stored choices.
+See [Sprint 15](REVIEW-15.md) for real-component examples and remaining scope.
+
+### Popovers and disclosures in app source
+
+RSS FeedActions exposes a direct native View feed link and a conditional
+Unsubscribe button through PostActions/PostAction. Confirmation remains separate.
+Do not add an intermediate popup when direct actions fit. Popover remains a
+catalogue option for surfaces that actually need mixed-content disclosure.
+PollResults uses Disclosure for optional statistics; its caller owns result
+visibility and statistical calculations.
+Privacy's post-default group bounds the composition to 24rem; SettingsRow's
+existing container query then stacks its heading. Do not override widget internals
+or stretch a short select merely because the surrounding page is wide.
+
+### Adopted local panels and identity content
+
+ClientListPage uses Tabs/Tab for local Posts/Members panels. Keep its inner
+conditional content: Tabs mounts both panel templates, while this consumer must
+preserve post unmounting on selection changes. Do not replace native route links
+with local tabs. ContentLink retains native routes; Metadata supplies wrapping
+identity/version content. History uses native time elements for timestamps.
+The scoped local-tab lint rule protects ClientListPage from copied tab geometry.

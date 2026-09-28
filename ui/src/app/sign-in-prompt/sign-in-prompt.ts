@@ -1,7 +1,8 @@
 import { Component, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbButton } from '../design-system/button/button';
 import { Auth } from '../auth';
 
 // i18n signInPrompt.title: Sign in to {{action}}
@@ -41,9 +42,8 @@ import { Auth } from '../auth';
  */
 @Component({
   selector: 'app-sign-in-prompt',
-  imports: [FocusTrap, RouterLink, TranslocoPipe],
+  imports: [MbDialog, MbButton, RouterLink, TranslocoPipe],
   templateUrl: './sign-in-prompt.html',
-  styleUrl: './sign-in-prompt.css',
 })
 export class SignInPrompt {
   protected auth = inject(Auth);

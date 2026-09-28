@@ -224,11 +224,7 @@
             <!-- Full mode gets the same two controls headline rows carry, so
                  switching density never costs you an affordance. -->
             <div class="item-tools">
-              <app-rss-feed-actions
-                align="start"
-                [status]="s"
-                (unsubscribed)="onFeedUnsubscribed($event)"
-              />
+              <app-rss-feed-actions [status]="s" (unsubscribed)="onFeedUnsubscribed($event)" />
               <button
                 class="link-btn"
                 type="button"

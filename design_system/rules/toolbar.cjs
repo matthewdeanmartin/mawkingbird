@@ -1,6 +1,17 @@
 // Angular template AST: applies to external templates and processed inline templates.
 module.exports = {
   rules: {
+    "prefer-shared-local-tabs": {
+      meta: {type:"problem", schema:[], messages:{shared:"Use mb-tabs and mbTab for the adopted local panels; retain native links for route navigation."}},
+      create(context) { return { Element(node) {
+        const attrs = [...node.attributes, ...node.inputs];
+        const local = attrs.some(a => (a.name === "role" && a.value === "tablist") ||
+          (a.name === "class" && typeof a.value === "string" &&
+            ((node.name === "button" && a.value.split(/\s+/).includes("tab")) ||
+             (node.name === "div" && a.value.split(/\s+/).includes("tabs")))));
+        if (local) context.report({loc:context.sourceCode.parserServices.convertNodeSourceSpanToLoc(node.sourceSpan),messageId:"shared"});
+      }}; }
+    },
     "require-shared-post-action": {
       meta: { type: "problem", schema: [], messages: {
         shared: "Use mbPostAction for adopted post-row button/link actions; do not reintroduce local action geometry."

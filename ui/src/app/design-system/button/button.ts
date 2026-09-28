@@ -1,8 +1,8 @@
 import { Component, input } from '@angular/core';
 
-/** Native button semantics with a bounded visual API. Set type at the call site. */
+/** Bounded action appearance. Native buttons own type/disabled; links own href/routerLink. */
 @Component({
-  selector: 'button[mbButton]',
+  selector: 'button[mbButton], a[mbButton]',
   template: '<ng-content />',
   styleUrl: './button.css',
   host: { '[attr.data-variant]': 'variant()', '[attr.data-size]': 'size()' },

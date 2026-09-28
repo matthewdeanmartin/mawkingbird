@@ -1,4 +1,16 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { MbPostActions, MbPostAction } from '../../../design-system/post-actions/post-actions';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  afterNextRender,
+  Injector,
+  ElementRef,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ConfirmDialog } from '../../../confirm-dialog/confirm-dialog';
@@ -15,27 +27,24 @@ import { rssSourceUrl } from '../../../providers/rss/rss-source';
 // i18n pages.rss.feedActions.unsubscribe: Unsubscribe
 @Component({
   selector: 'app-rss-feed-actions',
-  imports: [RouterLink, TranslocoPipe, ConfirmDialog],
+  imports: [MbPostActions, MbPostAction, RouterLink, TranslocoPipe, ConfirmDialog],
   template: `
     @if (feedUrl(); as url) {
-      <details #menu tabindex="-1" (keydown.escape)="menu.open = false; trigger.focus()">
-        <summary
-          #trigger
-          [attr.aria-label]="'pages.rss.feedActions.menu' | transloco: { feed: title() }"
-        >
-          {{ 'pages.rss.feedActions.label' | transloco }}
-        </summary>
-        <div class="feed-menu" [class.align-start]="align() === 'start'">
-          <a [routerLink]="['/accounts', 'rss:' + url]">{{
-            'pages.rss.feedActions.view' | transloco
-          }}</a>
-          @if (subs.has(url)) {
-            <button type="button" (click)="menu.open = false; confirming.set(true)">
-              {{ 'pages.rss.feedActions.unsubscribeFrom' | transloco: { feed: title() } }}
-            </button>
-          }
-        </div>
-      </details>
+      <mb-post-actions [label]="'pages.rss.feedActions.menu' | transloco: { feed: title() }">
+        <a #viewLink mbPostAction [routerLink]="['/accounts', 'rss:' + url]">{{
+          'pages.rss.feedActions.view' | transloco
+        }}</a>
+        @if (subs.has(url)) {
+          <button
+            mbPostAction
+            type="button"
+            (click)="confirming.set(true)"
+            [title]="'pages.rss.feedActions.unsubscribeFrom' | transloco: { feed: title() }"
+          >
+            {{ 'pages.rss.feedActions.unsubscribe' | transloco }}
+          </button>
+        }
+      </mb-post-actions>
       @if (confirming()) {
         <app-confirm-dialog
           [title]="'pages.rss.feedActions.confirmTitle' | transloco: { feed: title() }"
@@ -51,58 +60,13 @@ import { rssSourceUrl } from '../../../providers/rss/rss-source';
     :host {
       display: inline-block;
     }
-    details {
-      position: relative;
-    }
-    summary {
-      cursor: pointer;
-      list-style: none;
-      padding: 7px 10px;
-      font-size: 13px;
-      white-space: nowrap;
-      color: var(--muted);
-    }
-    summary::-webkit-details-marker {
-      display: none;
-    }
-    .feed-menu {
-      position: absolute;
-      right: 0;
-      top: 100%;
-      z-index: 20;
-      width: max-content;
-      max-width: min(300px, 85vw);
-      background: var(--col-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: 0 4px 16px #0003;
-      padding: 4px;
-    }
-    .feed-menu a,
-    .feed-menu button {
-      display: block;
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px 12px;
-      text-align: left;
-      border: 0;
-      background: none;
-      color: var(--text);
-      font: inherit;
-      cursor: pointer;
-    }
-    .feed-menu.align-start {
-      left: 0;
-      right: auto;
-    }
-    .feed-menu a:hover,
-    .feed-menu button:hover {
-      background: var(--bg);
-    }
   `,
 })
 export class RssFeedActions {
-  readonly align = input<'start' | 'end'>('end');
+  private readonly injector = inject(Injector);
+  private readonly viewLink = viewChild<MbPostAction, ElementRef<HTMLAnchorElement>>('viewLink', {
+    read: ElementRef,
+  });
   readonly status = input.required<Status>();
   readonly unsubscribed = output<string>();
   protected subs = inject(RssSubscriptions);
@@ -118,5 +82,8 @@ export class RssFeedActions {
     this.confirming.set(false);
     this.subs.remove(url);
     this.unsubscribed.emit(url);
+    afterNextRender(() => this.viewLink()?.nativeElement.focus({ preventScroll: true }), {
+      injector: this.injector,
+    });
   }
 }

@@ -170,4 +170,44 @@ describe('SettingsPrivacy', () => {
       expect(input.closest('mb-checkbox')!.querySelector('[role="status"]')).not.toBeNull();
     });
   }
+  for (const [field, value] of [
+    ['privacy', 'private'],
+    ['language', 'eo'],
+  ]) {
+    it(`shared ${field} select keeps its label, one-field payload and failed-save rollback`, async () => {
+      const f = setUp();
+      httpMock
+        .expectOne('/api/v1/accounts/verify_credentials')
+        .flush({ source: { privacy: 'public', language: 'en' } });
+      await f.whenStable();
+      const select = (f.nativeElement as HTMLElement).querySelector<HTMLSelectElement>(
+        `select[name="${field}"]`,
+      )!;
+      const wrapper = select.closest('mb-field')!;
+      expect(wrapper.querySelector('label')!.htmlFor).toBe(select.id);
+      const old = select.value;
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
+      await f.whenStable();
+      expect(select.disabled).toBe(true);
+      const write = httpMock.expectOne('/api/v1/accounts/update_credentials');
+      expect(Array.from((write.request.body as FormData).entries())).toEqual([
+        [`source[${field}]`, value],
+      ]);
+      write.flush({}, { status: 503, statusText: 'Unavailable' });
+      await f.whenStable();
+      expect(select.value).toBe(old);
+      expect(select.disabled).toBe(false);
+      expect(select.getAttribute('aria-invalid')).toBe('true');
+      expect(wrapper.textContent).toContain('503');
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
+      await f.whenStable();
+      httpMock.expectOne('/api/v1/accounts/update_credentials').flush({});
+      await f.whenStable();
+      expect(select.value).toBe(value);
+      expect(select.hasAttribute('aria-invalid')).toBe(false);
+      expect(wrapper.textContent).toContain('Saved');
+    });
+  }
 });

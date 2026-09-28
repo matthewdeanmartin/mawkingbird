@@ -743,8 +743,8 @@
     "private": "非公開",
     "public": "公開",
     "thisBrowser": "このブラウザー",
-    "titleFull": "&#64;{{username}}をリストとコレクションに追加",
-    "titleLocal": "&#64;{{username}}をローカルリストに追加"
+    "titleFull": "@{{username}}をリストとコレクションに追加",
+    "titleLocal": "@{{username}}をローカルリストに追加"
   },
   "listTimeline": {
     "addPeopleByName": "名前で追加",

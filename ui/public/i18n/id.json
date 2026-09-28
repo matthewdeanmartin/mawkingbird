@@ -5519,7 +5519,7 @@
     "clientListsHint": "Tidak perlu mengikuti mereka, dan tetap berfungsi saat keluar.",
     "collections": "Kumpulan",
     "collectionsUnsupported": "Server ini tidak mendukung kumpulan.",
-    "createAndAdd": "Buat &amp; tambahkan",
+    "createAndAdd": "Buat & tambahkan",
     "done": "Selesai",
     "followAndAdd": "Ikuti dan tambahkan",
     "followGateMessage": "Mastodon hanya mengizinkan kamu menambahkan orang yang kamu ikuti ke daftar, jadi &#64;{{username}} tidak ditambahkan ke <strong>{{listTitle}}</strong>.",
@@ -5536,8 +5536,8 @@
     "private": "privat",
     "public": "publik",
     "thisBrowser": "peramban ini",
-    "titleFull": "Tambahkan &#64;{{username}} ke daftar & kumpulan",
-    "titleLocal": "Tambahkan &#64;{{username}} ke daftar lokal"
+    "titleFull": "Tambahkan @{{username}} ke daftar & kumpulan",
+    "titleLocal": "Tambahkan @{{username}} ke daftar lokal"
   },
   "loginChooser": {
     "anonymousLink": "Lihat-lihat tanpa akun",

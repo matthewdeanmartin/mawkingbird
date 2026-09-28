@@ -1,54 +1,48 @@
-<div class="overlay" role="presentation" (click)="closed.emit()">
-  <div
-    class="dialog"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="report-title"
-    appFocusTrap
-    (dismissed)="closed.emit()"
-    (click)="$event.stopPropagation()"
-  >
-    <h3 id="report-title">{{ 'report.title' | transloco: { username: username() } }}</h3>
-    @if (statusId()) {
-      <p class="muted small">{{ 'report.specificPost' | transloco }}</p>
-    }
-    <p class="muted small">
-      {{ 'report.review' | transloco }}
-    </p>
-    @if (provider() === 'bluesky') {
-      <p class="muted small">{{ 'report.blueskyService' | transloco }}</p>
-    }
+<mb-dialog
+  [title]="'report.title' | transloco: { username: username() }"
+  [closeLabel]="'report.cancel' | transloco"
+  [showClose]="false"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  @if (statusId()) {
+    <p class="muted small">{{ 'report.specificPost' | transloco }}</p>
+  }
+  <p class="muted small">
+    {{ 'report.review' | transloco }}
+  </p>
+  @if (provider() === 'bluesky') {
+    <p class="muted small">{{ 'report.blueskyService' | transloco }}</p>
+  }
 
-    <label class="field">
-      {{ 'report.category' | transloco }}
-      <select [ngModel]="category()" (ngModelChange)="category.set($event)">
-        @for (c of categories; track c) {
-          <option [value]="c">{{ c }}</option>
-        }
-      </select>
-    </label>
+  <mb-field [label]="'report.category' | transloco">
+    <select mbControl [ngModel]="category()" (ngModelChange)="category.set($event)">
+      @for (c of categories; track c) {
+        <option [value]="c">{{ c }}</option>
+      }
+    </select>
+  </mb-field>
 
-    <label class="field">
-      {{ 'report.comment' | transloco }}
-      <textarea
-        rows="3"
-        [ngModel]="comment()"
-        (ngModelChange)="comment.set($event)"
-        [placeholder]="'report.placeholder' | transloco"
-      ></textarea>
-    </label>
+  <mb-field [label]="'report.comment' | transloco">
+    <textarea
+      mbControl
+      rows="3"
+      [ngModel]="comment()"
+      (ngModelChange)="comment.set($event)"
+      [placeholder]="'report.placeholder' | transloco"
+    ></textarea>
+  </mb-field>
 
-    @if (error()) {
-      <p class="report-error" role="alert">{{ error() }}</p>
-    }
+  @if (error()) {
+    <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
+  }
 
-    <div class="dialog-actions">
-      <button class="btn btn-outline" (click)="closed.emit()">
-        {{ 'report.cancel' | transloco }}
-      </button>
-      <button class="btn warn" [disabled]="submitting()" (click)="submit()">
-        {{ submitting() ? ('report.sending' | transloco) : ('report.confirm' | transloco) }}
-      </button>
-    </div>
-  </div>
-</div>
+  <ng-container mbDialogActions>
+    <button mbButton type="button" variant="outline" (click)="closed.emit()">
+      {{ 'report.cancel' | transloco }}
+    </button>
+    <button type="button" class="btn warn" [disabled]="submitting()" (click)="submit()">
+      {{ submitting() ? ('report.sending' | transloco) : ('report.confirm' | transloco) }}
+    </button>
+  </ng-container>
+</mb-dialog>

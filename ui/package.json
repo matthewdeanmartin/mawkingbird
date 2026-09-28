@@ -4,6 +4,7 @@
   "scripts": {
     "design:dev": "ng run ui:storybook",
     "design:lint": "stylelint --config ../design_system/stylelint.config.mjs \"src/app/design-system/**/*.css\" ../design_system/preview.css ../design_system/tokens.css && node --test ../design_system/rules/*.test.mjs",
+    "design:adoption": "node scripts/report-design-adoption.mjs",
     "design:audit-controls": "node scripts/audit-design-controls.mjs",
     "design:inventory-check": "node scripts/audit-design-controls.mjs --check && node scripts/check-design-reconciliation.mjs",
     "design:audit-colors": "node scripts/audit-design-colors.mjs",

@@ -1,3 +1,6 @@
+import { MbPageHeader } from '../../design-system/page-header/page-header';
+import { MbMetadata, MbContentLink } from '../../design-system/metadata/metadata';
+import { MbTabs, MbTab } from '../../design-system/tabs/tabs';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -32,7 +35,16 @@ import { PageDiagnostics } from '../../page-diagnostics';
  */
 @Component({
   selector: 'app-client-list-page',
-  imports: [RouterLink, StatusCard, TranslocoPipe],
+  imports: [
+    MbPageHeader,
+    MbMetadata,
+    MbContentLink,
+    MbTabs,
+    MbTab,
+    RouterLink,
+    StatusCard,
+    TranslocoPipe,
+  ],
   templateUrl: './client-list-page.html',
   styleUrl: './client-list-page.css',
 })
@@ -61,6 +73,10 @@ export class ClientListPage implements OnInit {
    */
   protected capped = computed(() => (this.list()?.memberHandles.length ?? 0) > MERGE_MEMBER_CAP);
   protected readonly memberCap = MERGE_MEMBER_CAP;
+
+  protected selectTab(value: string): void {
+    if (value === 'posts' || value === 'members') this.tab.set(value);
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

@@ -11,64 +11,34 @@
 </div>
 
 <div class="spage-body">
-  <h2>{{ 'settings.content.howFar' | transloco }}</h2>
-  <p class="muted small">
-    {{ 'settings.content.howFar.hint' | transloco }}
-  </p>
-
-  <div class="scontrol trust-levels">
-    <label class="checkline">
-      <input
-        type="radio"
-        name="trust_level"
-        [checked]="trusted.level() === 'none'"
-        (change)="setLevel('none')"
-      />
-      {{ 'settings.content.level.none' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.level.none.note' | transloco }}
-    </p>
-
-    <label class="checkline">
-      <input
-        type="radio"
-        name="trust_level"
-        [checked]="trusted.level() === 'individuals'"
-        (change)="setLevel('individuals')"
-      />
-      {{ 'settings.content.level.individuals' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.level.individuals.note' | transloco }}
-    </p>
-
-    <label class="checkline">
-      <input
-        type="radio"
-        name="trust_level"
-        [checked]="trusted.level() === 'follows'"
-        (change)="setLevel('follows')"
-      />
-      {{ 'settings.content.level.follows' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.level.follows.note' | transloco }}
-    </p>
-
-    <label class="checkline">
-      <input
-        type="radio"
-        name="trust_level"
-        [checked]="trusted.level() === 'follows-boosts'"
-        (change)="setLevel('follows-boosts')"
-      />
-      {{ 'settings.content.level.followsBoosts' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.level.followsBoosts.note' | transloco }}
-    </p>
-  </div>
+  <mb-radio-group
+    [label]="'settings.content.howFar' | transloco"
+    [hint]="'settings.content.howFar.hint' | transloco"
+    [value]="trusted.level()"
+    (valueChange)="setLevel($event)"
+    [options]="[
+      {
+        value: 'none',
+        label: ('settings.content.level.none' | transloco),
+        hint: ('settings.content.level.none.note' | transloco),
+      },
+      {
+        value: 'individuals',
+        label: ('settings.content.level.individuals' | transloco),
+        hint: ('settings.content.level.individuals.note' | transloco),
+      },
+      {
+        value: 'follows',
+        label: ('settings.content.level.follows' | transloco),
+        hint: ('settings.content.level.follows.note' | transloco),
+      },
+      {
+        value: 'follows-boosts',
+        label: ('settings.content.level.followsBoosts' | transloco),
+        hint: ('settings.content.level.followsBoosts.note' | transloco),
+      },
+    ]"
+  />
 
   @if (trusted.trustsFollows()) {
     <p class="muted small">
@@ -81,34 +51,23 @@
     {{ 'settings.content.everyone.hint' | transloco }}
   </p>
 
-  <div class="scontrol">
-    <label class="checkline">
-      <input
-        type="checkbox"
-        [checked]="trusted.expandAllCwSetting()"
-        [disabled]="trusted.level() === 'none'"
-        (change)="toggleCw()"
-        name="expand_all_cw"
-      />
-      {{ 'settings.content.expandCw' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.expandCw.note' | transloco }}
-    </p>
-
-    <label class="checkline">
-      <input
-        type="checkbox"
-        [checked]="trusted.showAllSensitiveSetting()"
-        [disabled]="trusted.level() === 'none'"
-        (change)="toggleSensitive()"
-        name="show_all_sensitive"
-      />
-      {{ 'settings.content.showSensitive' | transloco }}
-    </label>
-    <p class="muted small checkline-note">
-      {{ 'settings.content.showSensitive.note' | transloco }}
-    </p>
+  <div class="trust-switches">
+    <mb-checkbox
+      name="expand_all_cw"
+      [label]="'settings.content.expandCw' | transloco"
+      [hint]="'settings.content.expandCw.note' | transloco"
+      [checked]="trusted.expandAllCwSetting()"
+      [disabled]="trusted.level() === 'none'"
+      (checkedChange)="toggleCw()"
+    />
+    <mb-checkbox
+      name="show_all_sensitive"
+      [label]="'settings.content.showSensitive' | transloco"
+      [hint]="'settings.content.showSensitive.note' | transloco"
+      [checked]="trusted.showAllSensitiveSetting()"
+      [disabled]="trusted.level() === 'none'"
+      (checkedChange)="toggleSensitive()"
+    />
   </div>
 
   @if (trusted.level() === 'none') {

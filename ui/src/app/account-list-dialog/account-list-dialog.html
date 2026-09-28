@@ -1,45 +1,47 @@
-<div class="overlay" role="presentation" (click)="closed.emit()">
-  <div
-    class="dialog"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="account-list-title"
-    appFocusTrap
-    (dismissed)="closed.emit()"
-    (click)="$event.stopPropagation()"
-  >
-    <h3 id="account-list-title">{{ title }}</h3>
-
-    @if (loading()) {
-      <p class="muted small">{{ 'accountList.loading' | transloco }}</p>
-    } @else if (!accounts().length) {
-      <p class="muted small">{{ 'accountList.empty' | transloco }}</p>
-    } @else {
-      <ul class="account-list">
-        @for (a of accounts(); track a.id) {
-          <li>
-            <a class="account-row" [routerLink]="['/accounts', a.id]" (click)="closed.emit()">
-              <img
-                class="avatar"
-                [src]="a.avatar_static || a.avatar"
-                [alt]="a.username"
-                loading="lazy"
-                decoding="async"
-              />
-              <span class="names">
-                <span class="name">{{ a.display_name || a.username }}</span>
-                <span class="acct muted">&#64;{{ a.acct }}</span>
-              </span>
-            </a>
-          </li>
-        }
-      </ul>
-    }
-
-    <div class="dialog-actions">
-      <button class="btn btn-outline" (click)="closed.emit()">
-        {{ 'accountList.close' | transloco }}
+<mb-dialog
+  [title]="title"
+  [closeLabel]="'accountList.close' | transloco"
+  [showClose]="false"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  @if (loading()) {
+    <mb-content-state
+      kind="loading"
+      announcement="status"
+      [title]="'accountList.loading' | transloco"
+    />
+  } @else if (failed()) {
+    <mb-content-state kind="error" announcement="alert" [title]="'accountList.failed' | transloco">
+      <button mbButton type="button" variant="outline" (click)="load()">
+        {{ 'accountList.retry' | transloco }}
       </button>
-    </div>
-  </div>
-</div>
+    </mb-content-state>
+  } @else if (!accounts().length) {
+    <mb-content-state kind="empty" [title]="'accountList.empty' | transloco" />
+  } @else {
+    <ul class="account-list">
+      @for (a of accounts(); track a.id) {
+        <li>
+          <a class="account-row" [routerLink]="['/accounts', a.id]" (click)="closed.emit()">
+            <img
+              class="avatar"
+              [src]="a.avatar_static || a.avatar"
+              [alt]="a.username"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="names">
+              <span class="name">{{ a.display_name || a.username }}</span>
+              <span class="acct muted">&#64;{{ a.acct }}</span>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+
+  <button mbDialogActions mbButton type="button" variant="outline" (click)="closed.emit()">
+    {{ 'accountList.close' | transloco }}
+  </button>
+</mb-dialog>

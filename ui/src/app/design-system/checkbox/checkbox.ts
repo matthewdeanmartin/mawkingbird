@@ -1,4 +1,13 @@
-import { Component, forwardRef, input, linkedSignal, output, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  forwardRef,
+  input,
+  linkedSignal,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 let nextId = 0;
@@ -22,6 +31,7 @@ export class MbCheckbox implements ControlValueAccessor {
   readonly indeterminate = input(false);
   readonly checked = input(false);
   readonly checkedChange = output<boolean>();
+  private readonly nativeInput = viewChild<ElementRef<HTMLInputElement>>('nativeInput');
   readonly value = linkedSignal(() => this.checked());
   readonly controlId = `mb-checkbox-${nextId++}`;
   readonly formDisabled = signal(false);
@@ -50,6 +60,11 @@ export class MbCheckbox implements ControlValueAccessor {
   writeValue(value: boolean | null): void {
     // A forms write must not emit a user change (including form reset).
     this.value.set(value === true);
+    // A consumer may reject a change synchronously, before Angular renders the
+    // intermediate value. Its cached binding is then unchanged even though the
+    // browser toggled the input. CVA writes must restore the native value too.
+    const native = this.nativeInput()?.nativeElement;
+    if (native) native.checked = value === true;
   }
 
   registerOnChange(fn: (value: boolean) => void): void {

@@ -22,3 +22,10 @@ export const Disabled: Story = {
     template: '<button mbButton type="button" disabled>Save changes</button>',
   }),
 };
+
+export const NativeLink: Story = {
+  render: () => ({
+    template:
+      '<a mbButton href="#destination">Open destination</a><p id="destination">Native link destination</p>',
+  }),
+};

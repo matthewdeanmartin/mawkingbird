@@ -89,4 +89,16 @@ describe('MbCheckbox', () => {
     expect(root.querySelector('input')!.hasAttribute('aria-describedby')).toBe(false);
     expect(root.querySelector('input')!.hasAttribute('aria-invalid')).toBe(false);
   });
+  it('restores a synchronously rejected native toggle without emitting another change', async () => {
+    const fixture = TestBed.createComponent(MbCheckbox);
+    fixture.componentRef.setInput('label', 'Membership');
+    const changed = vi.fn(() => fixture.componentInstance.writeValue(false));
+    fixture.componentInstance.checkedChange.subscribe(changed);
+    await fixture.whenStable();
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    input.click();
+    await fixture.whenStable();
+    expect(input.checked).toBe(false);
+    expect(changed).toHaveBeenCalledExactlyOnceWith(true);
+  });
 });

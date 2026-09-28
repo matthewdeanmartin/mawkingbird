@@ -1,3 +1,6 @@
+import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
+import { MbField, MbControl } from '../../../design-system/field/field';
+import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedback';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -64,8 +67,26 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
 // i18n common.errorPrefix: ⚠ {{message}}
 @Component({
   selector: 'app-settings-privacy',
-  imports: [MbCheckbox, FormsModule, RouterLink, TranslocoPipe],
+  imports: [
+    MbSettingsRow,
+    MbField,
+    MbControl,
+    MbSaveFeedback,
+    MbCheckbox,
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './settings-privacy.html',
+  styles: `
+    mb-field {
+      display: block;
+      margin-block: 10px;
+    }
+    .post-default-controls {
+      max-inline-size: 24rem;
+    }
+  `,
 })
 export class SettingsPrivacy implements OnInit {
   private api = inject(Api);

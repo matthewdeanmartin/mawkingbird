@@ -8,9 +8,23 @@ import { ReportDialog } from './report-dialog';
 
 describe('ReportDialog', () => {
   let http: HttpTestingController;
+  const modalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
+  const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
 
   beforeEach(() => {
     localStorage.clear();
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value() {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value() {
+        this.open = false;
+      },
+    });
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
@@ -24,7 +38,17 @@ describe('ReportDialog', () => {
     });
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of [
+      ['showModal', modalDescriptor],
+      ['close', closeDescriptor],
+    ] as const) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else delete (HTMLDialogElement.prototype as unknown as Record<string, unknown>)[name];
+    }
+    http.verify();
+  });
 
   function setUp(statusRef: BskyRef | null = null): ComponentFixture<ReportDialog> {
     const fixture = TestBed.createComponent(ReportDialog);
@@ -76,6 +100,64 @@ describe('ReportDialog', () => {
       },
     });
     request.flush({});
+    http.expectNone('/api/v1/reports');
+  });
+  it('retains shared-field values on Mastodon failure and retries the same payload once', async () => {
+    const f = setUp();
+    f.componentRef.setInput('provider', 'mastodon');
+    f.componentRef.setInput('accountId', '7');
+    f.componentRef.setInput('statusId', '42');
+    f.detectChanges();
+    await f.whenStable();
+    f.detectChanges();
+    const el = f.nativeElement as HTMLElement;
+    const select = el.querySelector('select')!;
+    select.value = 'violation';
+    select.dispatchEvent(new Event('change'));
+    const comment = el.querySelector('textarea')!;
+    comment.value = ' Keep this comment ';
+    comment.dispatchEvent(new Event('input'));
+    await f.whenStable();
+    f.detectChanges();
+    const labels = Array.from(el.querySelectorAll('label')).map((l) => l.htmlFor);
+    expect(labels).toEqual([select.id, comment.id]);
+    f.componentInstance.submit();
+    f.componentInstance.submit();
+    f.detectChanges();
+    const request = http.expectOne('/api/v1/reports');
+    const expected = {
+      account_id: '7',
+      category: 'violation',
+      comment: 'Keep this comment',
+      status_ids: ['42'],
+    };
+    expect(request.request.body).toEqual(expected);
+    request.flush({}, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    expect(el.querySelector('mb-notice [role="alert"]')?.textContent).toContain(
+      'Could not send this report to Mastodon',
+    );
+    expect(comment.value).toBe(' Keep this comment ');
+    expect(select.value).toBe('violation');
+    const submitted = vi.fn();
+    f.componentInstance.submitted.subscribe(submitted);
+    f.componentInstance.submit();
+    const retry = http.expectOne('/api/v1/reports');
+    expect(retry.request.body).toEqual(expected);
+    retry.flush({});
+    expect(submitted).toHaveBeenCalledOnce();
+  });
+
+  it('refuses a Bluesky post report without its exact reference', () => {
+    const f = setUp();
+    f.componentRef.setInput('statusId', 'missing-ref');
+    f.detectChanges();
+    f.componentInstance.submit();
+    f.detectChanges();
+    expect(
+      (f.nativeElement as HTMLElement).querySelector('mb-notice [role="alert"]')?.textContent,
+    ).toContain('exact Bluesky post');
+    http.expectNone('https://bsky.social/xrpc/com.atproto.moderation.createReport');
     http.expectNone('/api/v1/reports');
   });
 });

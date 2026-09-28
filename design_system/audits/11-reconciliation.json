@@ -24,8 +24,8 @@
     },
     {
       "file": "ui/src/app/account-list-dialog/account-list-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Sprint 12 adopts modal shell, loading/error/empty states, Retry and Close. Account rows retain native routes and specialized content layout."
     },
     {
       "file": "ui/src/app/admin/accounts/admin-accounts.html",
@@ -79,8 +79,8 @@
     },
     {
       "file": "ui/src/app/bookmark-provider-dialog/bookmark-provider-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 13 adopts the shared modal shell. Rich destination choice cards retain content-specific styling pending a reviewed shared variant; owned by the next contributor changing bookmark choices and their maintainer reviewer."
     },
     {
       "file": "ui/src/app/bug-report-dialog/bug-report-dialog.html",
@@ -269,8 +269,8 @@
     },
     {
       "file": "ui/src/app/history-dialog/history-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Sprint 12 adopts modal/read states/actions; Sprints 17–18 adopt shared version metadata and native time elements. Preserve specialized snapshot content and failure/retry behavior."
     },
     {
       "file": "ui/src/app/leave-dialog/leave-dialog.html",
@@ -284,8 +284,8 @@
     },
     {
       "file": "ui/src/app/list-dialog/list-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 14 adopts modal, membership checkboxes, create fields, actions, notices and visibility badges. Initial read error/retry, collection-discovery failure semantics and loading/empty state adoption remain; owned by the next ListDialog contributor and maintainer reviewer."
     },
     {
       "file": "ui/src/app/lists/people-lists-panel.html",
@@ -324,8 +324,8 @@
     },
     {
       "file": "ui/src/app/pages/client-list/client-list-page.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Combined Sprints 17–18 adopt page header, local tabs, native member/back links and identity metadata. Preserve post unmount semantics and no tab-triggered fetch. Plain read states and existing failed-read/racing-route semantics remain a separate behavior pass."
     },
     {
       "file": "ui/src/app/pages/collection/collection.html",
@@ -519,8 +519,8 @@
     },
     {
       "file": "ui/src/app/pages/rss/feed-actions/feed-actions.ts",
-      "disposition": "backlog",
-      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "disposition": "adopted scope",
+      "nextStep": "Sprints 17–18 remove the unnecessary popup after user review: View feed is a direct native link; subscribed feeds also expose compact Unsubscribe with existing confirmation. Focus returns to View feed after confirmed removal when the component remains mounted."
     },
     {
       "file": "ui/src/app/pages/rss/headline-row/headline-row.html",
@@ -719,8 +719,8 @@
     },
     {
       "file": "ui/src/app/pages/settings/content/settings-content.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 15 adopts all four trust levels as one radio group and both global checkboxes with linked hints. Named-account row actions, remove/revoke buttons, content metadata and initial server-preference read states remain backlog; preserve destructive confirmation and native server navigation."
     },
     {
       "file": "ui/src/app/pages/settings/deletion/settings-deletion.html",
@@ -790,7 +790,7 @@
     {
       "file": "ui/src/app/pages/settings/privacy/settings-privacy.html",
       "disposition": "partial adoption",
-      "nextStep": "Five shared checkboxes including analytics; remaining selects need labelled-field review."
+      "nextStep": "Sprint 15 adds shared settings rows, labelled select fields and save feedback to the five adopted checkboxes. Initial credential read recovery and overlapping write/status semantics remain a separate behavior pass."
     },
     {
       "file": "ui/src/app/pages/settings/profile/settings-profile.html",
@@ -889,8 +889,8 @@
     },
     {
       "file": "ui/src/app/poll-results/poll-results.html",
-      "disposition": "backlog",
-      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "disposition": "adopted scope",
+      "nextStep": "Sprint 16 adopts statistics disclosure. Keep specialized poll bars and interval charts; preserve hidden-result gating and missing-count states. No chart geometry is claimed as a shared widget."
     },
     {
       "file": "ui/src/app/private-like-button.ts",
@@ -949,8 +949,8 @@
     },
     {
       "file": "ui/src/app/report-dialog/report-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 13 adopts modal, fields, controls, error notice and Cancel. Preserve the existing red Confirm report action until a shared destructive variant is reviewed; owned by the next contributor changing destructive actions and their maintainer reviewer."
     },
     {
       "file": "ui/src/app/search-server-discovery/search-server-discovery.html",
@@ -1009,8 +1009,8 @@
     },
     {
       "file": "ui/src/app/sign-in-prompt/sign-in-prompt.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Sprint 12 adopts modal shell and all three footer actions, including native anchor appearances. Account exits and native destinations are unchanged."
     },
     {
       "file": "ui/src/app/starter-kit-post/starter-kit-post.html",

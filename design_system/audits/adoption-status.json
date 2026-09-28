@@ -1,0 +1,580 @@
+{
+  "scope": "Maintained Angular app template call sites; excludes stories, specs and shared internals from direct counts. Repeated runtime rows count once per source node. Integration means source usage, not commit, deployment or full app coverage.",
+  "widgetsAvailable": 27,
+  "widgetsDirectlyUsed": 24,
+  "widgetsUsedThroughCompositionOnly": [],
+  "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
+  "appTemplateFiles": 30,
+  "directTemplateCallSites": 208,
+  "widgets": [
+    {
+      "name": "MbActionMenu",
+      "selector": "mb-action-menu",
+      "directCallSites": 0,
+      "consumers": [],
+      "integrated": false
+    },
+    {
+      "name": "MbBadge",
+      "selector": "mb-badge",
+      "directCallSites": 3,
+      "consumers": [
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 3
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbButton",
+      "selector": "button[mbButton], a[mbButton]",
+      "directCallSites": 34,
+      "consumers": [
+        {
+          "file": "account-list-dialog/account-list-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "admin/canonical-blocks/admin-canonical-blocks.html",
+          "count": 2
+        },
+        {
+          "file": "admin/domain-allows/admin-domain-allows.html",
+          "count": 1
+        },
+        {
+          "file": "admin/domains/admin-domains.html",
+          "count": 1
+        },
+        {
+          "file": "admin/email-blocks/admin-email-blocks.html",
+          "count": 1
+        },
+        {
+          "file": "admin/ip-blocks/admin-ip-blocks.html",
+          "count": 1
+        },
+        {
+          "file": "compose/translate-dialog/translate-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "confirm-dialog/confirm-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "history-dialog/history-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "leave-dialog/leave-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 6
+        },
+        {
+          "file": "pages/list-timeline/list-timeline.html",
+          "count": 3
+        },
+        {
+          "file": "pages/public-timeline/public-timeline.html",
+          "count": 1
+        },
+        {
+          "file": "report-dialog/report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "sign-in-prompt/sign-in-prompt.html",
+          "count": 3
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbCheckbox",
+      "selector": "mb-checkbox",
+      "directCallSites": 14,
+      "consumers": [
+        {
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "pages/login-chooser/login-chooser.html",
+          "count": 1
+        },
+        {
+          "file": "pages/login/login.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/content/settings-content.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 5
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbContentState",
+      "selector": "mb-content-state",
+      "directCallSites": 14,
+      "consumers": [
+        {
+          "file": "account-list-dialog/account-list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "history-dialog/history-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "pages/list-timeline/list-timeline.html",
+          "count": 5
+        },
+        {
+          "file": "pages/public-timeline/public-timeline.html",
+          "count": 3
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbDialog",
+      "selector": "mb-dialog",
+      "directCallSites": 9,
+      "consumers": [
+        {
+          "file": "account-list-dialog/account-list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bookmark-provider-dialog/bookmark-provider-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "compose/translate-dialog/translate-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "confirm-dialog/confirm-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "history-dialog/history-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "leave-dialog/leave-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "report-dialog/report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "sign-in-prompt/sign-in-prompt.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbDisclosure",
+      "selector": "mb-disclosure",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "poll-results/poll-results.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbControl",
+      "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
+      "directCallSites": 20,
+      "consumers": [
+        {
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "admin/canonical-blocks/admin-canonical-blocks.html",
+          "count": 2
+        },
+        {
+          "file": "admin/domain-allows/admin-domain-allows.html",
+          "count": 1
+        },
+        {
+          "file": "admin/domains/admin-domains.html",
+          "count": 2
+        },
+        {
+          "file": "admin/email-blocks/admin-email-blocks.html",
+          "count": 1
+        },
+        {
+          "file": "admin/ip-blocks/admin-ip-blocks.html",
+          "count": 3
+        },
+        {
+          "file": "compose/translate-dialog/translate-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "confirm-dialog/confirm-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 2
+        },
+        {
+          "file": "report-dialog/report-dialog.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbField",
+      "selector": "mb-field",
+      "directCallSites": 20,
+      "consumers": [
+        {
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "admin/canonical-blocks/admin-canonical-blocks.html",
+          "count": 2
+        },
+        {
+          "file": "admin/domain-allows/admin-domain-allows.html",
+          "count": 1
+        },
+        {
+          "file": "admin/domains/admin-domains.html",
+          "count": 2
+        },
+        {
+          "file": "admin/email-blocks/admin-email-blocks.html",
+          "count": 1
+        },
+        {
+          "file": "admin/ip-blocks/admin-ip-blocks.html",
+          "count": 3
+        },
+        {
+          "file": "compose/translate-dialog/translate-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "confirm-dialog/confirm-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 2
+        },
+        {
+          "file": "report-dialog/report-dialog.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbMetadata",
+      "selector": "mb-metadata",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "history-dialog/history-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "pages/client-list/client-list-page.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbContentLink",
+      "selector": "a[mbContentLink]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/client-list/client-list-page.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbNavigation",
+      "selector": "nav[mbNavigation]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/settings/settings-shell.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbNavLink",
+      "selector": "a[mbNavLink]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/settings/settings-shell.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbNotice",
+      "selector": "mb-notice",
+      "directCallSites": 11,
+      "consumers": [
+        {
+          "file": "compose/translate-dialog/translate-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "leave-dialog/leave-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "pages/list-timeline/list-timeline.html",
+          "count": 3
+        },
+        {
+          "file": "report-dialog/report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "status-card/status-card.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbPageHeader",
+      "selector": "mb-page-header",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/client-list/client-list-page.html",
+          "count": 1
+        },
+        {
+          "file": "pages/list-timeline/list-timeline.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbSection",
+      "selector": "mb-section",
+      "directCallSites": 0,
+      "consumers": [],
+      "integrated": false
+    },
+    {
+      "name": "MbPopover",
+      "selector": "mb-popover",
+      "directCallSites": 0,
+      "consumers": [],
+      "integrated": false
+    },
+    {
+      "name": "MbPostActions",
+      "selector": "mb-post-actions",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/rss/feed-actions/feed-actions.ts",
+          "count": 1
+        },
+        {
+          "file": "status-card/status-card.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbPostAction",
+      "selector": "button[mbPostAction], a[mbPostAction]",
+      "directCallSites": 29,
+      "consumers": [
+        {
+          "file": "pages/read/save-to-library/save-to-library.html",
+          "count": 1
+        },
+        {
+          "file": "pages/rss/feed-actions/feed-actions.ts",
+          "count": 2
+        },
+        {
+          "file": "status-card/status-card.html",
+          "count": 26
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbActionCount",
+      "selector": "span[mbActionCount]",
+      "directCallSites": 10,
+      "consumers": [
+        {
+          "file": "status-card/status-card.html",
+          "count": 10
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbRadioGroup",
+      "selector": "mb-radio-group",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/settings/content/settings-content.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbSaveFeedback",
+      "selector": "mb-save-feedback",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbSettingsRow",
+      "selector": "mb-settings-row",
+      "directCallSites": 4,
+      "consumers": [
+        {
+          "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 4
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbTab",
+      "selector": "ng-template[mbTab]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/client-list/client-list-page.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbTabs",
+      "selector": "mb-tabs",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/client-list/client-list-page.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbToolbarButton",
+      "selector": "button[mbToolbarButton]",
+      "directCallSites": 18,
+      "consumers": [
+        {
+          "file": "command-bar/command-bar.ts",
+          "count": 13
+        },
+        {
+          "file": "pages/home/home.html",
+          "count": 3
+        },
+        {
+          "file": "reader-toolbar/reader-toolbar.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbToolbar",
+      "selector": "mb-toolbar",
+      "directCallSites": 5,
+      "consumers": [
+        {
+          "file": "command-bar/command-bar.ts",
+          "count": 3
+        },
+        {
+          "file": "pages/home/home.html",
+          "count": 1
+        },
+        {
+          "file": "reader-toolbar/reader-toolbar.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    }
+  ]
+}
