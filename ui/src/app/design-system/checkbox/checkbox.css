@@ -1,6 +1,7 @@
 :host {
   display: block;
   min-width: 0;
+  text-align: start;
   color: var(--text);
   font-size: 14px;
   line-height: 1.5;

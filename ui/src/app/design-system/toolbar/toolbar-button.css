@@ -33,8 +33,14 @@
   outline-offset: -2px;
 }
 
+:host([data-density='compact']) {
+  min-height: 28px;
+  padding: 3px 4px;
+}
+
 @media (pointer: coarse) {
-  :host {
+  :host,
+  :host([data-density='compact']) {
     min-height: 44px;
     min-width: 44px;
   }

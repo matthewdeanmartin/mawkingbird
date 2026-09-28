@@ -166,16 +166,13 @@
     <div class="srow">
       <span class="slabel">{{ 'settings.privacy.analytics' | transloco }}</span>
       <div class="scontrol">
-        <label class="checkline">
-          <input
-            type="checkbox"
-            [ngModel]="prefs.analytics()"
-            (ngModelChange)="prefs.setAnalytics($event)"
-            name="analytics"
-          />
-          {{ 'settings.privacy.analytics.label' | transloco }}
-        </label>
-        <span class="hint">{{ 'settings.privacy.analytics.hint' | transloco }}</span>
+        <mb-checkbox
+          name="analytics"
+          [checked]="prefs.analytics()"
+          (checkedChange)="prefs.setAnalytics($event)"
+          [label]="'settings.privacy.analytics.label' | transloco"
+          [hint]="'settings.privacy.analytics.hint' | transloco"
+        />
       </div>
     </div>
   </div>

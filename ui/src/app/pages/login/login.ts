@@ -1,3 +1,4 @@
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -171,7 +172,7 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.privacy.explain: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at. Unchecking this means the analytics script is never loaded: nothing is fetched, counted or sent. You can change it later in Settings.
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink, AppFooter, ServerDiscovery, TranslocoPipe],
+  imports: [MbCheckbox, FormsModule, RouterLink, AppFooter, ServerDiscovery, TranslocoPipe],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

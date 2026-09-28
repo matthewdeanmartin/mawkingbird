@@ -499,23 +499,6 @@ input {
   text-align: center;
 }
 
-/* The label's text is an anonymous flex item, so it shrinks to whatever the
-   checkbox leaves it and breaks "Count my page views" over three lines even on
-   a wide screen. nowrap keeps it on one line; the checkbox is the thing that
-   must not shrink around it. */
-.login-privacy .checkline {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.login-privacy .checkline input {
-  flex: none;
-  margin: 0;
-}
-
 /* --- The opening question ---------------------------------------------------
    Deliberately the same shape as LoginChooser's `.door` rows. The two questions
    are consecutive screens in one flow ("which network", then "what are you here

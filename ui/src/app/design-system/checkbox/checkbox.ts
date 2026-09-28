@@ -14,6 +14,7 @@ let nextId = 0;
 })
 export class MbCheckbox implements ControlValueAccessor {
   readonly label = input.required<string>();
+  readonly name = input('');
   readonly hint = input('');
   readonly error = input('');
   readonly status = input('');

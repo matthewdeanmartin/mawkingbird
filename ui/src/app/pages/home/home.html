@@ -117,7 +117,7 @@
       role="group"
       [attr.aria-label]="'pages.home.filters.ariaLabel' | transloco"
     >
-      <mb-toolbar [label]="'pages.home.filters.ariaLabel' | transloco">
+      <mb-toolbar density="compact" embedded [label]="'pages.home.filters.ariaLabel' | transloco">
         <button type="button" mbToolbarButton [pressed]="showBoosts()" (click)="toggleBoosts()">
           🔁 {{ 'pages.home.filters.retweets' | transloco }}
         </button>

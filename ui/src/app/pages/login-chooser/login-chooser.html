@@ -54,18 +54,13 @@
       flow, so this is where it belongs.
     -->
       <div class="chooser-privacy">
-        <label class="checkline">
-          <input
-            type="checkbox"
-            name="analytics"
-            [ngModel]="prefs.analytics()"
-            (ngModelChange)="prefs.setAnalytics($event)"
-          />
-          {{ 'loginChooser.countViews' | transloco }}
-        </label>
-        <p class="muted small">
-          {{ 'loginChooser.privacy' | transloco }}
-        </p>
+        <mb-checkbox
+          name="analytics"
+          [checked]="prefs.analytics()"
+          (checkedChange)="prefs.setAnalytics($event)"
+          [label]="'loginChooser.countViews' | transloco"
+          [hint]="'loginChooser.privacy' | transloco"
+        />
       </div>
     </div>
   </div>

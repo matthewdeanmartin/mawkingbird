@@ -473,18 +473,13 @@
     should not have to create an account to find the switch.
   -->
     <div class="login-privacy">
-      <label class="checkline">
-        <input
-          type="checkbox"
-          name="analytics"
-          [ngModel]="prefs.analytics()"
-          (ngModelChange)="prefs.setAnalytics($event)"
-        />
-        {{ 'pages.login.privacy.checkbox' | transloco }}
-      </label>
-      <p class="muted small">
-        {{ 'pages.login.privacy.explain' | transloco }}
-      </p>
+      <mb-checkbox
+        name="analytics"
+        [checked]="prefs.analytics()"
+        (checkedChange)="prefs.setAnalytics($event)"
+        [label]="'pages.login.privacy.checkbox' | transloco"
+        [hint]="'pages.login.privacy.explain' | transloco"
+      />
     </div>
 
     <app-app-footer />

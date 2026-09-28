@@ -4,6 +4,10 @@ Status: Sprint 3 preview approved; first app toolbar adoption batch implemented.
 
 ## Open the preview
 
+Latest correction: [Stacked compact toolbars](http://127.0.0.1:6006/?path=/story/adoption-sprint-3-toolbars--stacked-compact)
+shows four contiguous control rows and the aligned analytics checkbox.
+See the [density/alignment audit](audits/03-compact-correction.md).
+
 From Git Bash: `cd ui && npm ci && make design`. Open http://127.0.0.1:6006
 and select **Adoption / Sprint 3 toolbars / App controls** for the real app components,
 or **Start here / Sprint 3 review** for the approved widget collection. Use the theme, accent and direction

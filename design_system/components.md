@@ -80,6 +80,16 @@ Keep one save policy per page when integrating these presentation primitives.
 
 ## Toolbar
 
+For stacked, dense app controls use `density="compact"`: 28px minimum desktop
+buttons with 3px vertical / 4px horizontal padding, and a 35px single-line row.
+Use `embedded` when the parent row already supplies padding and a separator.
+Embedded toolbars add neither, preventing nested spacing from inflating the stack.
+The parent owns row layout; do not override shared button internals. Regular
+standalone toolbars retain their existing spacing. Both densities retain 44px
+minimum targets for coarse pointers and wrap when their labels need room.
+See **Adoption / Sprint 3 toolbars / Stacked compact**, which composes actions,
+presentation, filters and reader controls without gaps between the rows.
+
 Import `MbToolbar` and `MbToolbarButton`. Use a named `mb-toolbar` for a cluster
 of related actions (normally three or more), containing native buttons with
 `mbToolbarButton`. Pass `[pressed]` only for toggles; provide translated visible

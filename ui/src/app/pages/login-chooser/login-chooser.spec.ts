@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
 import { Server } from '../../server';
 import { LoginChooser } from './login-chooser';
+import { ClientPrefs } from '../../client-prefs';
 
 /** Stand in for the activated route's query params. */
 function withQuery(params: Record<string, string>): void {
@@ -83,6 +84,15 @@ describe('LoginChooser', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('input[name="analytics"]')).not.toBeNull();
+    const checkbox: HTMLInputElement =
+      fixture.nativeElement.querySelector('input[name="analytics"]');
+    const label: HTMLLabelElement = fixture.nativeElement.querySelector('mb-checkbox label');
+    expect(label.htmlFor).toBe(checkbox.id);
+    const before = TestBed.inject(ClientPrefs).analytics();
+    label.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(ClientPrefs).analytics()).toBe(!before);
+    expect(checkbox.checked).toBe(!before);
   });
 
   /**

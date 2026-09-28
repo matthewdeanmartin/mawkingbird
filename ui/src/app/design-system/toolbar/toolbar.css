@@ -9,3 +9,13 @@
   background: var(--col-bg);
   color: var(--text);
 }
+
+:host([data-density='compact']) {
+  padding: 3px 8px;
+  border-top: 0;
+}
+:host([data-embedded='true']) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}

@@ -17,6 +17,7 @@ import {
   host: {
     type: 'button',
     '[disabled]': 'disabled()',
+    '[attr.data-density]': 'toolbar.density()',
     '[attr.aria-pressed]': 'pressed()',
     '[tabIndex]': 'toolbar.tabIndexFor(this)',
     '(focus)': 'toolbar.remember(this)',
@@ -38,11 +39,15 @@ export class MbToolbarButton {
     role: 'toolbar',
     'aria-orientation': 'horizontal',
     '[attr.aria-label]': 'label()',
+    '[attr.data-density]': 'density()',
+    '[attr.data-embedded]': 'embedded()',
     '(keydown)': 'navigate($event)',
   },
 })
 export class MbToolbar {
   readonly label = input.required<string>();
+  readonly density = input<'regular' | 'compact'>('regular');
+  readonly embedded = input(false, { transform: booleanAttribute });
   readonly buttons = contentChildren(MbToolbarButton, { descendants: true });
   readonly enabled = computed(() =>
     this.buttons().filter((button) => button.toolbar === this && !button.disabled()),

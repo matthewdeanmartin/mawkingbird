@@ -30,7 +30,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
     <div class="command-bar" role="group" aria-label="Feed controls">
       <div class="command-row action-row" role="group" aria-label="Feed actions">
         @if (showRefresh() || showFeedViews()) {
-          <mb-toolbar label="Feed actions">
+          <mb-toolbar label="Feed actions" density="compact" embedded>
             @if (showRefresh()) {
               <button
                 mbToolbarButton
@@ -76,7 +76,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           </a>
         }
       </div>
-      <mb-toolbar class="command-row presentation-row" label="Feed presentation">
+      <mb-toolbar class="command-row presentation-row" label="Feed presentation" density="compact">
         <button
           mbToolbarButton
           [pressed]="prefs.feedReader()"
@@ -140,7 +140,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           @if (providerChips() && hasSourceControls()) {
             <!-- WHAT: networks included in this feed. The label is intentionally a
              code comment rather than visible toolbar furniture. -->
-            <mb-toolbar class="provider-group" label="Feed sources">
+            <mb-toolbar class="provider-group" label="Feed sources" density="compact" embedded>
               @if ((!auth.isAnonymous && !auth.isBlueskyPrimary) || privateFedi()) {
                 <button
                   mbToolbarButton
@@ -178,9 +178,6 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
     </div>
   `,
   styles: `
-    .command-bar {
-      border-bottom: 1px solid var(--border);
-    }
     div.command-row {
       display: flex;
       align-items: center;
@@ -188,12 +185,10 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
       min-width: 0;
       flex-wrap: wrap;
     }
-    .filter-row {
-      padding: 5px 10px;
+    .filter-row,
+    .action-row {
+      padding: 3px 8px;
       border-bottom: 1px solid var(--border);
-    }
-    .action-row > mb-toolbar {
-      flex: 1 1 auto;
     }
     /* Native destination link remains outside button-only focus navigation. */
     a.command-item {
@@ -201,7 +196,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
       border-radius: 5px;
       background: transparent;
       color: var(--text);
-      padding: 5px 7px;
+      padding: 3px 4px;
       font-size: 13px;
       white-space: normal;
     }

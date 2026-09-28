@@ -1,3 +1,4 @@
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -63,7 +64,7 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
 // i18n common.errorPrefix: ⚠ {{message}}
 @Component({
   selector: 'app-settings-privacy',
-  imports: [FormsModule, RouterLink, TranslocoPipe],
+  imports: [MbCheckbox, FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './settings-privacy.html',
 })
 export class SettingsPrivacy implements OnInit {

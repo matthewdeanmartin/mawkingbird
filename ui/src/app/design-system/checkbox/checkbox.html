@@ -2,6 +2,7 @@
   <input
     [id]="controlId"
     type="checkbox"
+    [attr.name]="name() || null"
     [checked]="value()"
     [indeterminate]="indeterminate()"
     [disabled]="disabled() || formDisabled()"
@@ -18,6 +19,8 @@
     @if (error()) {
       <p class="error" role="alert" [id]="controlId + '-error'">{{ error() }}</p>
     }
-    <span class="status" role="status">{{ status() }}</span>
+    <span class="status" aria-live="polite" [attr.role]="status() ? 'status' : null">{{
+      status()
+    }}</span>
   </div>
 </div>

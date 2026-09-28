@@ -1,4 +1,9 @@
-import { Component, importProvidersFrom, signal } from "@angular/core";
+import {
+  MbToolbar,
+  MbToolbarButton,
+} from "../../ui/src/app/design-system/toolbar/toolbar";
+import { MbCheckbox } from "../../ui/src/app/design-system/checkbox/checkbox";
+import { Component, importProvidersFrom, signal, input } from "@angular/core";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
   applicationConfig,
@@ -46,7 +51,7 @@ function preferences() {
 
 @Component({
   selector: "mb-toolbar-integration-demo",
-  imports: [CommandBar, ReaderToolbar],
+  imports: [CommandBar, ReaderToolbar, MbToolbar, MbToolbarButton, MbCheckbox],
   providers: [
     { provide: ClientPrefs, useFactory: preferences },
     {
@@ -69,23 +74,57 @@ function preferences() {
         These are the production feed command bar and reader controls, using
         in-memory preferences for this preview.
       </p>
-      <app-command-bar
-        [showRefresh]="true"
-        [showFeedViews]="true"
-        [showFeedDoctor]="true"
-        [providerChips]="true"
-        [showReaderControls]="false"
-        [view]="view()"
-        (viewChange)="view.set($event)"
-        (refresh)="refreshes.set(refreshes() + 1)"
-      />
+      <div class="stacked-controls">
+        <app-command-bar
+          [showFilters]="stacked()"
+          [showRefresh]="true"
+          [showFeedViews]="true"
+          [showFeedDoctor]="true"
+          [providerChips]="true"
+          [showReaderControls]="false"
+          [view]="view()"
+          (viewChange)="view.set($event)"
+          (refresh)="refreshes.set(refreshes() + 1)"
+        >
+          @if (stacked()) {
+            <mb-toolbar label="Timeline filters" density="compact" embedded>
+              <button mbToolbarButton [pressed]="true">Retweets</button>
+              <button mbToolbarButton [pressed]="false">Replies</button>
+              <button mbToolbarButton [pressed]="false">Calm</button>
+            </mb-toolbar>
+            <select aria-label="How far back to load">
+              <option>Today</option>
+              <option>This week</option>
+            </select>
+            <button type="button">All languages</button>
+          }
+        </app-command-bar>
+        @if (stacked()) {
+          <app-reader-toolbar />
+        }
+      </div>
       <p role="status">View: {{ view() }} · Refreshes: {{ refreshes() }}</p>
-      <h2>Reader controls</h2>
-      <app-reader-toolbar />
+      @if (!stacked()) {
+        <h2>Reader controls</h2>
+        <app-reader-toolbar />
+      } @else {
+        <h2>Aligned analytics consent</h2>
+        <div style="text-align: center; max-width: 380px">
+          <mb-checkbox
+            name="analytics"
+            label="Count my page views"
+            hint="Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at."
+            [checked]="analytics()"
+            (checkedChange)="analytics.set($event)"
+          />
+        </div>
+      }
     </article>
   `,
 })
 class ToolbarIntegrationDemo {
+  readonly stacked = input(false);
+  readonly analytics = signal(true);
   readonly view = signal<FeedView>("feed");
   readonly refreshes = signal(0);
 }
@@ -104,3 +143,7 @@ const meta: Meta<ToolbarIntegrationDemo> = {
 };
 export default meta;
 export const AppControls: StoryObj<ToolbarIntegrationDemo> = {};
+
+export const StackedCompact: StoryObj<ToolbarIntegrationDemo> = {
+  args: { stacked: true },
+};

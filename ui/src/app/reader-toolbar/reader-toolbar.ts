@@ -8,7 +8,7 @@ import { ClientPrefs, ReaderFontFamily, ReaderTheme, READER_FONT_OPTIONS } from 
   imports: [MbToolbar, MbToolbarButton],
   template: `
     <div class="reader-toolbar" role="group" aria-label="Reader controls">
-      <mb-toolbar label="Reader text size">
+      <mb-toolbar label="Reader text size" density="compact" embedded>
         <button mbToolbarButton type="button" (click)="bumpFont(-1)" title="Smaller text">
           A−
         </button>

@@ -1,6 +1,6 @@
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
@@ -39,7 +39,7 @@ import { ClientPrefs } from '../../client-prefs';
  */
 @Component({
   selector: 'app-login-chooser',
-  imports: [RouterLink, FormsModule, TranslocoPipe],
+  imports: [MbCheckbox, RouterLink, TranslocoPipe],
   templateUrl: './login-chooser.html',
   styleUrl: './login-chooser.css',
 })
