@@ -175,6 +175,11 @@
     "placeholder": "email domain to block (e.g. mailinator.com)",
     "remove": "Remove"
   },
+  "adminForms": {
+    "saveFailed": "Could not save. Your entries are still here; try again.",
+    "severity": "Moderation action",
+    "testFailed": "Could not check this email. Try again."
+  },
   "adminIpBlocks": {
     "block": "Block",
     "commentPlaceholder": "comment (optional)",
