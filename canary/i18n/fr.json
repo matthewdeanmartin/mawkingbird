@@ -4823,7 +4823,7 @@
     "clientListsHint": "Pas besoin de les suivre, et ça marche même déconnecté.",
     "collections": "Collections",
     "collectionsUnsupported": "Ce serveur ne prend pas en charge les collections.",
-    "createAndAdd": "Créer &amp; ajouter",
+    "createAndAdd": "Créer & ajouter",
     "done": "Terminé",
     "followAndAdd": "Suivre et ajouter",
     "followGateMessage": "Mastodon ne te laisse ajouter à une liste que des gens que tu suis, &#64;{{username}} n’a donc pas été ajouté à <strong>{{listTitle}}</strong>.",
@@ -4840,8 +4840,8 @@
     "private": "privée",
     "public": "publique",
     "thisBrowser": "ce navigateur",
-    "titleFull": "Ajouter &#64;{{username}} à des listes et collections",
-    "titleLocal": "Ajouter &#64;{{username}} à des listes locales"
+    "titleFull": "Ajouter @{{username}} à des listes et collections",
+    "titleLocal": "Ajouter @{{username}} à des listes locales"
   },
   "report": {
     "blueskyService": "Ce signalement sera envoyé au service de modération de Bluesky.",

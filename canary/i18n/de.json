@@ -5053,7 +5053,7 @@
     "clientListsHint": "Du musst ihnen nicht folgen, und es funktioniert auch abgemeldet.",
     "collections": "Sammlungen",
     "collectionsUnsupported": "Dieser Server unterstützt keine Sammlungen.",
-    "createAndAdd": "Anlegen &amp; hinzufügen",
+    "createAndAdd": "Anlegen & hinzufügen",
     "done": "Fertig",
     "followAndAdd": "Folgen und hinzufügen",
     "followGateMessage": "Mastodon lässt dich nur Leute zu einer Liste hinzufügen, denen du folgst – &#64;{{username}} wurde deshalb nicht zu <strong>{{listTitle}}</strong> hinzugefügt.",
@@ -5070,8 +5070,8 @@
     "private": "privat",
     "public": "öffentlich",
     "thisBrowser": "dieser Browser",
-    "titleFull": "&#64;{{username}} zu Listen & Sammlungen hinzufügen",
-    "titleLocal": "&#64;{{username}} zu lokalen Listen hinzufügen"
+    "titleFull": "@{{username}} zu Listen & Sammlungen hinzufügen",
+    "titleLocal": "@{{username}} zu lokalen Listen hinzufügen"
   },
   "accountAnalytics": {
     "audience.cta": "Aktiv erreichbare Gefolgte/Follower ermitteln",

@@ -1032,8 +1032,8 @@
     "private": "privato",
     "public": "pubblico",
     "thisBrowser": "questo browser",
-    "titleFull": "Aggiungi &#64;{{username}} a elenchi e raccolte",
-    "titleLocal": "Aggiungi &#64;{{username}} agli elenchi locali"
+    "titleFull": "Aggiungi @{{username}} a elenchi e raccolte",
+    "titleLocal": "Aggiungi @{{username}} agli elenchi locali"
   },
   "listTimeline": {
     "addPeopleByName": "Aggiungi persone per nome",

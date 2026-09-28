@@ -3228,8 +3228,8 @@
     "private": "privada",
     "public": "pública",
     "thisBrowser": "este navegador",
-    "titleFull": "Añadir a &#64;{{username}} a listas y colecciones",
-    "titleLocal": "Añadir a &#64;{{username}} a listas locales"
+    "titleFull": "Añadir a @{{username}} a listas y colecciones",
+    "titleLocal": "Añadir a @{{username}} a listas locales"
   },
   "listTimeline": {
     "addPeopleByName": "Añadir personas por nombre",
