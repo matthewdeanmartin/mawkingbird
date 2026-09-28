@@ -3228,8 +3228,8 @@
     "private": "निजी",
     "public": "सार्वजनिक",
     "thisBrowser": "यह ब्राउज़र",
-    "titleFull": "&#64;{{username}} को सूचियों और संग्रहों में जोड़ें",
-    "titleLocal": "&#64;{{username}} को स्थानीय सूचियों में जोड़ें"
+    "titleFull": "@{{username}} को सूचियों और संग्रहों में जोड़ें",
+    "titleLocal": "@{{username}} को स्थानीय सूचियों में जोड़ें"
   },
   "listTimeline": {
     "addPeopleByName": "नाम से लोग जोड़ें",

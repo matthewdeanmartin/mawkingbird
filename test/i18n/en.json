@@ -99,7 +99,10 @@
   "accountList": {
     "close": "Close",
     "empty": "Nobody yet.",
-    "loading": "Loading…"
+    "failed": "Could not load accounts. Try again.",
+    "favouritedBy": "Favourited by",
+    "loading": "Loading…",
+    "retry": "Retry"
   },
   "accountPreview": {
     "close": "Close preview",
@@ -1100,7 +1103,9 @@
     "close": "Close",
     "current": "Current",
     "empty": "No history.",
+    "failed": "Could not load edit history. Try again.",
     "loading": "Loading…",
+    "retry": "Retry",
     "title": "Edit history",
     "version": "Version {{version}}"
   },
@@ -1137,7 +1142,7 @@
     "clientListsHint": "No need to follow them, and it works signed out.",
     "collections": "Collections",
     "collectionsUnsupported": "This server does not support collections.",
-    "createAndAdd": "Create &amp; add",
+    "createAndAdd": "Create & add",
     "done": "Done",
     "followAndAdd": "Follow and add",
     "followGateMessage": "Mastodon only lets you add people you follow to a list, so &#64;{{username}} wasn't added to <strong>{{listTitle}}</strong>.",
@@ -1154,8 +1159,8 @@
     "private": "private",
     "public": "public",
     "thisBrowser": "this browser",
-    "titleFull": "Add &#64;{{username}} to lists & collections",
-    "titleLocal": "Add &#64;{{username}} to local lists"
+    "titleFull": "Add @{{username}} to lists & collections",
+    "titleLocal": "Add @{{username}} to local lists"
   },
   "listTimeline": {
     "addPeopleByName": "Add people by name",

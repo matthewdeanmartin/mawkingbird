@@ -5125,7 +5125,7 @@
     "clientListsHint": "不必跟隨對方，未登入也能使用。",
     "collections": "收藏集",
     "collectionsUnsupported": "此伺服器不支援收藏集。",
-    "createAndAdd": "建立 &amp; 加入",
+    "createAndAdd": "建立 & 加入",
     "done": "完成",
     "followAndAdd": "跟隨並加入",
     "followGateMessage": "Mastodon 只允許將已跟隨的人加入清單，因此尚未將 &#64;{{username}} 加入 <strong>{{listTitle}}</strong>。",
@@ -5142,8 +5142,8 @@
     "private": "不公開",
     "public": "公開",
     "thisBrowser": "此瀏覽器",
-    "titleFull": "將 &#64;{{username}} 加入清單與收藏集",
-    "titleLocal": "將 &#64;{{username}} 加入本機清單"
+    "titleFull": "將 @{{username}} 加入清單與收藏集",
+    "titleLocal": "將 @{{username}} 加入本機清單"
   },
   "listTimeline": {
     "addPeopleByName": "以名稱新增帳號",

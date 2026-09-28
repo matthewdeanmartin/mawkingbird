@@ -3228,8 +3228,8 @@
     "private": "privat",
     "public": "offentlig",
     "thisBrowser": "den här webbläsaren",
-    "titleFull": "Lägg till &#64;{{username}} i listor och samlingar",
-    "titleLocal": "Lägg till &#64;{{username}} i lokala listor"
+    "titleFull": "Lägg till @{{username}} i listor och samlingar",
+    "titleLocal": "Lägg till @{{username}} i lokala listor"
   },
   "listTimeline": {
     "addPeopleByName": "Lägg till personer efter namn",

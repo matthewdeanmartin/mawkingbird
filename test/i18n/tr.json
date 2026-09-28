@@ -1015,7 +1015,7 @@
     "clientListsHint": "Onları takip etmene gerek yoktur ve giriş yapmadan çalışır.",
     "collections": "Koleksiyonlar",
     "collectionsUnsupported": "Bu sunucu koleksiyonları desteklemiyor.",
-    "createAndAdd": "Oluştur &amp; ekle",
+    "createAndAdd": "Oluştur & ekle",
     "done": "Bitti",
     "followAndAdd": "Takip et ve ekle",
     "followGateMessage": "Mastodon bir listeye yalnızca takip ettiğin kişileri eklemene izin verir; bu yüzden &#64;{{username}}, <strong>{{listTitle}}</strong> listesine eklenmedi.",
@@ -1032,8 +1032,8 @@
     "private": "özel",
     "public": "herkese açık",
     "thisBrowser": "bu tarayıcı",
-    "titleFull": "&#64;{{username}} kullanıcısını listelere ve koleksiyonlara ekle",
-    "titleLocal": "&#64;{{username}} kullanıcısını yerel listelere ekle"
+    "titleFull": "@{{username}} kullanıcısını listelere ve koleksiyonlara ekle",
+    "titleLocal": "@{{username}} kullanıcısını yerel listelere ekle"
   },
   "listTimeline": {
     "addPeopleByName": "Ada göre kişi ekle",
