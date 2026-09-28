@@ -1,8 +1,10 @@
-<div class="page-head page-head-actions">
-  <span>{{ title() || ('listTimeline.fallbackTitle' | transloco) }}</span>
+<mb-page-header [title]="title() || ('listTimeline.fallbackTitle' | transloco)">
   @if (!auth.isAnonymous) {
     <button
-      class="btn btn-outline btn-sm"
+      mbButton
+      variant="outline"
+      size="small"
+      type="button"
       [disabled]="converting()"
       (click)="convertToCollection()"
     >
@@ -11,16 +13,16 @@
       }}
     </button>
   }
-</div>
+</mb-page-header>
 @if (conversionMessage()) {
-  <p class="conversion-message muted" role="status">{{ conversionMessage() }}</p>
+  <mb-notice announcement="status">{{ conversionMessage() }}</mb-notice>
 }
 @if (warnings().length) {
-  <aside class="muted" role="status">
+  <mb-notice announcement="status">
     @for (warning of warnings(); track warning) {
       <div>{{ warning }}</div>
     }
-  </aside>
+  </mb-notice>
 }
 
 <div class="tabs">
@@ -40,10 +42,16 @@
   <app-feed-analytics [source]="feedSource()" />
 } @else if (tab() === 'posts') {
   @if (loading()) {
-    <p class="muted center">{{ 'listTimeline.loading' | transloco }}</p>
-  } @else if (!displayedStatuses().length) {
-    <p class="muted center">{{ 'listTimeline.noStatuses' | transloco }}</p>
-  } @else {
+    <mb-content-state
+      kind="loading"
+      announcement="status"
+      [title]="'listTimeline.loading' | transloco"
+    />
+  }
+  @if (!loading() && !loadFailed() && !displayedStatuses().length) {
+    <mb-content-state [title]="'listTimeline.noStatuses' | transloco" />
+  }
+  @if (displayedStatuses().length) {
     @for (s of displayedStatuses(); track s.id) {
       <app-status-card
         [status]="s"
@@ -51,11 +59,30 @@
         (deleted)="onDeleted($event)"
       />
     }
-    @if (!exhausted()) {
-      <button class="btn btn-outline more" [disabled]="loadingMore()" (click)="loadMore()">
-        {{ (loadingMore() ? 'listTimeline.loading' : 'listTimeline.loadMore') | transloco }}
-      </button>
+    @if (!exhausted() && !loadFailed()) {
+      <div class="pagination">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          [disabled]="loadingMore()"
+          (click)="loadMore()"
+        >
+          {{ (loadingMore() ? 'listTimeline.loading' : 'listTimeline.loadMore') | transloco }}
+        </button>
+      </div>
     }
+  }
+  @if (loadFailed()) {
+    <mb-content-state
+      kind="error"
+      announcement="alert"
+      [title]="'timelineState.failed' | transloco"
+    >
+      <button mbButton variant="outline" type="button" (click)="retryTimeline()">
+        {{ 'timelineState.retry' | transloco }}
+      </button>
+    </mb-content-state>
   }
 } @else {
   <div class="members-actions">
@@ -84,14 +111,16 @@
   </div>
   <app-bulk-progress />
   @if (memberError(); as message) {
-    <p class="member-error" role="alert">{{ message }}</p>
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   }
   @if (membersLoading()) {
-    <p class="muted center">{{ 'listTimeline.loading' | transloco }}</p>
+    <mb-content-state
+      kind="loading"
+      announcement="status"
+      [title]="'listTimeline.loading' | transloco"
+    />
   } @else if (!members().length) {
-    <p class="muted center">
-      {{ 'listTimeline.noMembers' | transloco }}
-    </p>
+    <mb-content-state [title]="'listTimeline.noMembers' | transloco" />
   } @else {
     @for (a of members(); track a.id) {
       <div class="member-row">

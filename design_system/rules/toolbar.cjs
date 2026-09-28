@@ -1,6 +1,25 @@
 // Angular template AST: applies to external templates and processed inline templates.
 module.exports = {
   rules: {
+    "require-shared-post-action": {
+      meta: { type: "problem", schema: [], messages: {
+        shared: "Use mbPostAction for adopted post-row button/link actions; do not reintroduce local action geometry."
+      } },
+      create(context) {
+        let depth = 0;
+        return {
+          Element(node) {
+            if (node.name === "mb-post-actions") depth++;
+            const attributes = [...node.attributes, ...node.inputs];
+            const action = attributes.some(attr => attr.name === "class" && typeof attr.value === "string" && attr.value.split(/\s+/).includes("action"));
+            if (depth && ["button", "a"].includes(node.name) && action && !attributes.some(attr => attr.name === "mbPostAction")) {
+              context.report({ loc: context.sourceCode.parserServices.convertNodeSourceSpanToLoc(node.sourceSpan), messageId: "shared" });
+            }
+          },
+          "Element:exit"(node) { if (node.name === "mb-post-actions") depth--; }
+        };
+      }
+    },
     "no-pill-in-toolbar": {
       meta: {
         type: "problem",

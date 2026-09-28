@@ -1,3 +1,4 @@
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -56,6 +57,7 @@ describe('PublicTimeline', () => {
     fakeStreaming = new FakeStreaming();
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: Streaming, useValue: fakeStreaming },
@@ -93,6 +95,56 @@ describe('PublicTimeline', () => {
     TestBed.inject(ClientPrefs).setAutoRefreshTimeline(false);
     fixture.detectChanges();
   }
+
+  it('keeps rendered posts during a failed refresh and recovers through Retry', () => {
+    const fixture = setUp();
+    fixture.componentInstance.load();
+    httpMock.expectOne('/api/v1/timelines/public?limit=20').flush([makeStatus('kept')]);
+    fixture.detectChanges();
+    const firstCard = fixture.nativeElement.querySelector('app-status-card');
+    expect(firstCard).not.toBeNull();
+    fixture.componentInstance.load();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-status-card')).toBe(firstCard);
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain(
+      'Loading',
+    );
+    httpMock
+      .expectOne('/api/v1/timelines/public?limit=20')
+      .flush('', { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-status-card')).toBe(firstCard);
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain(
+      'Could not load posts',
+    );
+    (
+      fixture.nativeElement.querySelector(
+        'mb-content-state[kind="error"] button',
+      ) as HTMLButtonElement
+    ).click();
+    httpMock
+      .expectOne('/api/v1/timelines/public?limit=20')
+      .flush([makeStatus('kept'), makeStatus('new')]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-status-card')).toBe(firstCard);
+    expect(fixture.nativeElement.querySelectorAll('app-status-card')).toHaveLength(2);
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+  });
+
+  it('does not show posts from All after switching to a failed Local feed', () => {
+    const fixture = setUp();
+    fixture.componentInstance.load();
+    httpMock.expectOne('/api/v1/timelines/public?limit=20').flush([makeStatus('all-post')]);
+    fixture.componentInstance.setLocal(true);
+    expect(internals(fixture).statuses()).toEqual([]);
+    httpMock
+      .expectOne('/api/v1/timelines/public?limit=20&local=true')
+      .flush('', { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-status-card')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('No public statuses yet.');
+  });
 
   it('opens a non-local public stream by default when the Blue pref goes on', () => {
     const fixture = setUp();

@@ -1,9 +1,10 @@
 @if (eligible()) {
   <button
+    mbPostAction
     class="save-to-library"
     type="button"
     [class.on]="saved()"
-    [attr.aria-pressed]="saved()"
+    [pressed]="saved()"
     [title]="(saved() ? 'reader.saveToLibrary.remove' : 'reader.saveToLibrary.save') | transloco"
     [attr.aria-label]="
       (saved() ? 'reader.saveToLibrary.remove' : 'reader.saveToLibrary.save') | transloco

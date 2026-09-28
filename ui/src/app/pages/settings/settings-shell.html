@@ -18,19 +18,26 @@
       </a>
     }
 
-    <nav class="settings-nav" [attr.aria-label]="'settings.sectionsAriaLabel' | transloco">
+    <nav mbNavigation class="settings-nav" [label]="'settings.sectionsAriaLabel' | transloco">
       @for (group of groups; track group.titleKey) {
         <h2 class="settings-nav-heading">{{ group.titleKey | transloco }}</h2>
         <!-- Tracked by path *within* a group: a page filed under two headings
              appears twice, so path alone is not unique across the whole nav. -->
         @for (item of group.items; track item.path) {
           <a
+            mbNavLink
             [routerLink]="item.path"
+            #activeLink="routerLinkActive"
+            [current]="activeLink.isActive"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: item.exact }"
+            [routerLinkActiveOptions]="{
+              paths: item.exact ? 'exact' : 'subset',
+              queryParams: 'ignored',
+              fragment: 'ignored',
+              matrixParams: 'ignored',
+            }"
           >
             <span>{{ item.labelKey | transloco }}</span>
-            <span class="chev" aria-hidden="true">›</span>
           </a>
         }
       }

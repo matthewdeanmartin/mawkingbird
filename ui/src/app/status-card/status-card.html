@@ -403,17 +403,23 @@
         </div>
       }
 
-      <div class="actions">
+      <mb-post-actions
+        class="actions"
+        [label]="'statusCard.moreActions' | transloco: { post: words().post }"
+      >
         @if (canReply) {
           <button
+            type="button"
+            mbPostAction
             class="action"
             [class.on]="replying()"
+            [pressed]="replying()"
             (click)="toggleReply($event)"
             [title]="'statusCard.reply' | transloco"
             [attr.aria-label]="'statusCard.reply' | transloco"
           >
             <span aria-hidden="true">💬</span>
-            <span>{{
+            <span mbActionCount>{{
               'statusCard.countLabel'
                 | transloco
                   : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
@@ -421,21 +427,25 @@
           </button>
         } @else if (auth.isAnonymous && threadLink) {
           <a
+            mbPostAction
             class="action"
             [routerLink]="threadLink"
             (click)="$event.stopPropagation()"
             [title]="'statusCard.repliesTitle' | transloco"
             ><span aria-hidden="true">💬</span>
-            <span>{{
+            <span mbActionCount>{{
               'statusCard.countLabel'
                 | transloco
                   : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
             }}</span></a
           >
         } @else if (auth.isAnonymous || readOnlyStats) {
-          <span class="action action-static" [title]="'statusCard.repliesTitle' | transloco"
+          <span
+            mbActionCount
+            class="action action-static"
+            [title]="'statusCard.repliesTitle' | transloco"
             ><span aria-hidden="true">💬</span>
-            <span>{{
+            <span mbActionCount>{{
               'statusCard.countLabel'
                 | transloco
                   : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
@@ -457,7 +467,7 @@
             display.provider === 'rss' ||
             display.content.length > 600)
         ) {
-          <a
+          <a mbPostAction
             class="action"
             [routerLink]="threadLink"
             [queryParams]="{ reader: 'thread' }"
@@ -466,7 +476,7 @@
           >
             <span aria-hidden="true">📖</span> {{ 'reader.open.thread' | transloco }}
           </a>
-          <a
+          <a mbPostAction
             class="action"
             [routerLink]="longTextLink"
             (click)="$event.stopPropagation()"
@@ -478,6 +488,7 @@
         -->
         @if (display.provider === 'rss' && threadable) {
           <a
+            mbPostAction
             class="action"
             [routerLink]="threadLink"
             [queryParams]="{ reader: '0' }"
@@ -498,16 +509,20 @@
                middleman, so the button just does the thing. -->
           <div class="share-menu-host">
             <button
+              mbPostAction
               class="action"
               type="button"
               [class.on]="
+                display.reblogged || (soleShareAction() === 'posse' && posseQueued(repostKind))
+              "
+              [active]="
                 display.reblogged || (soleShareAction() === 'posse' && posseQueued(repostKind))
               "
               [class.working]="busyWith('reblog')"
               [disabled]="actionBusy()"
               [attr.aria-expanded]="shareMenuIsUseful() ? shareMenuOpen() : null"
               [attr.aria-haspopup]="shareMenuIsUseful() ? 'menu' : 'dialog'"
-              [attr.aria-pressed]="soleShareAction() === 'posse' ? posseQueued(repostKind) : null"
+              [pressed]="soleShareAction() === 'posse' ? posseQueued(repostKind) : null"
               [title]="shareButtonLabel()"
               [attr.aria-label]="shareButtonLabel()"
               (click)="shareMenuIsUseful() ? toggleShareMenu($event) : runSoleShareAction($event)"
@@ -573,13 +588,15 @@
           </div>
         } @else if (caps.reblog) {
           <button
+            type="button"
+            mbPostAction
             class="action"
             [class.on]="display.reblogged"
             [class.working]="busyWith('reblog')"
             [disabled]="busyWith('reblog')"
             (click)="toggleReblog($event)"
             [title]="display.reblogged ? words().UndoBoost : words().Boost"
-            [attr.aria-pressed]="display.reblogged"
+            [pressed]="display.reblogged"
             [attr.aria-label]="display.reblogged ? words().UndoBoost : words().Boost"
           >
             <span aria-hidden="true">🔁</span>
@@ -594,6 +611,7 @@
         } @else if (auth.isAnonymous) {
           @if (display.url) {
             <button
+              mbPostAction
               type="button"
               class="action"
               [title]="'statusCard.shareElsewhere' | transloco"
@@ -610,7 +628,7 @@
             <!-- No URL to share and no network to boost on: a number, not a
                  control. `.action-static` keeps the row's spacing without the
                  pointer cursor that made this look tappable. -->
-            <span class="action action-static" [title]="words().Boosts"
+            <span mbActionCount class="action action-static" [title]="words().Boosts"
               ><span aria-hidden="true">🔁</span>
               <span>{{
                 'statusCard.countLabel'
@@ -620,8 +638,11 @@
           }
         } @else if (!foreign && capabilities.canCompose) {
           <button
+            type="button"
+            mbPostAction
             class="action"
             [class.on]="quoting()"
+            [pressed]="quoting()"
             (click)="toggleQuote($event)"
             [title]="'statusCard.quote' | transloco"
             [attr.aria-label]="'statusCard.quote' | transloco"
@@ -630,6 +651,8 @@
           </button>
           @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
             <button
+              type="button"
+              mbPostAction
               class="action count-link"
               (click)="openAccountList('reblogged_by', $event)"
               [title]="countWords().BoostedBy"
@@ -644,7 +667,7 @@
               }}
             </button>
           } @else {
-            <span class="action action-static">{{
+            <span mbActionCount class="action action-static">{{
               'statusCard.countLabel'
                 | transloco: { count: display.reblogs_count, label: countWords().boosts }
             }}</span>
@@ -654,7 +677,7 @@
                attach them to. When `caps.reblog` already rendered a button above,
                this fallback would be a second 🔁 on the same row — the case a
                signed-in viewer hits on every Bluesky post. -->
-          <span class="action action-static" [title]="words().Boosts"
+          <span mbActionCount class="action action-static" [title]="words().Boosts"
             ><span aria-hidden="true">🔁</span>
             {{
               'statusCard.countLabel'
@@ -664,6 +687,8 @@
         }
         @if (caps.favourite) {
           <button
+            type="button"
+            mbPostAction
             class="action"
             [class.on]="display.favourited"
             [class.working]="busyWith('favourite')"
@@ -672,7 +697,7 @@
             [title]="
               (display.favourited ? 'statusCard.undoFavourite' : 'statusCard.favourite') | transloco
             "
-            [attr.aria-pressed]="display.favourited"
+            [pressed]="display.favourited"
             [attr.aria-label]="
               (display.favourited ? 'statusCard.undoFavourite' : 'statusCard.favourite') | transloco
             "
@@ -694,6 +719,8 @@
                  in that menu instead: a second bare 🔁 next to the first one
                  asked the reader to tell two identical recycle symbols apart. -->
             <button
+              type="button"
+              mbPostAction
               class="action"
               [class.on]="posseQueued(repostKind)"
               (click)="togglePosseOnly(repostKind, $event)"
@@ -702,7 +729,7 @@
                   ? ('statusCard.boostFromBlogRecord' | transloco)
                   : ('statusCard.recordBoostOnBlog' | transloco)
               "
-              [attr.aria-pressed]="posseQueued(repostKind)"
+              [pressed]="posseQueued(repostKind)"
             >
               🔁
               @if (posseQueued(repostKind)) {
@@ -711,6 +738,8 @@
             </button>
           }
           <button
+            type="button"
+            mbPostAction
             class="action"
             [class.on]="posseQueued('like')"
             (click)="togglePosseOnly('like', $event)"
@@ -719,7 +748,7 @@
                 ? ('statusCard.likeFromBlogRecord' | transloco)
                 : ('statusCard.recordLikeOnBlog' | transloco)
             "
-            [attr.aria-pressed]="posseQueued('like')"
+            [pressed]="posseQueued('like')"
           >
             {{ favIcon() }}
             @if (posseQueued('like')) {
@@ -734,13 +763,14 @@
                respect that ignored the tap. Now it answers: it says what liking
                costs and offers the way there. -->
           <button
+            mbPostAction
             class="action"
             type="button"
             (click)="promptSignIn('like', $event)"
             [title]="'statusCard.favouritesTitle' | transloco"
           >
             <span aria-hidden="true">{{ favIcon() }}</span>
-            <span>{{
+            <span mbActionCount>{{
               'statusCard.countLabel'
                 | transloco
                   : {
@@ -752,6 +782,8 @@
         } @else if (!foreign) {
           @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
             <button
+              type="button"
+              mbPostAction
               class="action count-link"
               (click)="openAccountList('favourited_by', $event)"
               [title]="'statusCard.favouritedBy' | transloco"
@@ -769,7 +801,7 @@
               }}
             </button>
           } @else {
-            <span class="action action-static">{{
+            <span mbActionCount class="action action-static">{{
               'statusCard.countLabel'
                 | transloco
                   : {
@@ -781,7 +813,10 @@
         } @else if (!caps.favourite && readOnlyStats) {
           <!-- Same pairing as the boost fallback above: only stand in for the
                button when there is no button. -->
-          <span class="action action-static" [title]="'statusCard.likesTitle' | transloco"
+          <span
+            mbActionCount
+            class="action action-static"
+            [title]="'statusCard.likesTitle' | transloco"
             ><span aria-hidden="true">⭐</span>
             {{
               'statusCard.countLabel'
@@ -799,6 +834,7 @@
                  actually configured rather than hardcoding one that may not be
                  where the link goes. -->
             <a
+              mbPostAction
               class="action open-original"
               [href]="nitter"
               target="_blank"
@@ -813,6 +849,7 @@
                  is a link to the current page, so clicking it silently reloaded
                  the route and threw the reader back to the top of the feed. -->
             <a
+              mbPostAction
               class="action open-original"
               [href]="display.url"
               target="_blank"
@@ -831,6 +868,8 @@
         @if (!foreign || display.provider === 'bluesky' || auth.isAnonymous || readOnlyStats) {
           @if (capabilities.canBookmark) {
             <button
+              type="button"
+              mbPostAction
               class="action"
               [class.on]="bookmarkActive()"
               [class.working]="busyWith('bookmark')"
@@ -839,7 +878,7 @@
               [title]="
                 (bookmarkActive() ? 'statusCard.removeBookmark' : 'statusCard.bookmark') | transloco
               "
-              [attr.aria-pressed]="bookmarkActive()"
+              [pressed]="bookmarkActive()"
               [attr.aria-label]="
                 (bookmarkActive() ? 'statusCard.removeBookmark' : 'statusCard.bookmark') | transloco
               "
@@ -862,8 +901,11 @@
             !serverCannotTranslate
           ) {
             <button
+              type="button"
+              mbPostAction
               class="action"
               [class.on]="!!translation()"
+              [pressed]="!!translation()"
               [disabled]="translating()"
               (click)="translateByPreference($event)"
               [title]="'statusCard.translate' | transloco"
@@ -880,8 +922,11 @@
             (capabilities.active || serverCannotTranslate || translatePref.choice() === 'ai')
           ) {
             <button
+              type="button"
+              mbPostAction
               class="action"
               [class.on]="!!aiTranslation()"
+              [pressed]="!!aiTranslation()"
               [disabled]="aiTranslating()"
               (click)="onAiTranslateClick($event)"
               [title]="'statusCard.translateWithAi' | transloco"
@@ -893,6 +938,8 @@
           @if (canUsePostOwnerActions) {
             @if (display.provider !== 'bluesky' && display.edited_at) {
               <button
+                type="button"
+                mbPostAction
                 class="action"
                 (click)="openHistory($event)"
                 [title]="'statusCard.editHistory' | transloco"
@@ -904,8 +951,11 @@
             @if (isOwn()) {
               @if (display.provider !== 'bluesky') {
                 <button
+                  type="button"
+                  mbPostAction
                   class="action"
                   [class.on]="display.pinned"
+                  [pressed]="display.pinned"
                   (click)="togglePin($event)"
                   [title]="'statusCard.pin' | transloco"
                   [attr.aria-label]="'statusCard.pin' | transloco"
@@ -913,8 +963,11 @@
                   <span aria-hidden="true">📌</span>
                 </button>
                 <button
+                  type="button"
+                  mbPostAction
                   class="action"
                   [class.on]="display.muted"
+                  [pressed]="display.muted"
                   (click)="toggleMute($event)"
                   [title]="'statusCard.muteThread' | transloco"
                   [attr.aria-label]="'statusCard.muteThread' | transloco"
@@ -923,6 +976,8 @@
                 </button>
                 <div class="policy-wrap">
                   <button
+                    type="button"
+                    mbPostAction
                     class="action"
                     (click)="togglePolicyMenu($event)"
                     [title]="'statusCard.whoCanQuote' | transloco"
@@ -949,6 +1004,8 @@
                 </div>
               }
               <button
+                type="button"
+                mbPostAction
                 class="action"
                 (click)="startEdit($event)"
                 [title]="'statusCard.edit' | transloco"
@@ -957,6 +1014,8 @@
                 <span aria-hidden="true">✏️</span>
               </button>
               <button
+                type="button"
+                mbPostAction
                 class="action"
                 (click)="remove($event)"
                 [title]="'statusCard.delete' | transloco"
@@ -966,6 +1025,8 @@
               </button>
               @if (display.provider !== 'bluesky') {
                 <button
+                  type="button"
+                  mbPostAction
                   class="action"
                   (click)="deleteAndRedraft($event)"
                   [title]="'statusCard.deleteAndBoost' | transloco: { boost: words().boost }"
@@ -1102,6 +1163,8 @@
                  get a ••• menu for client-side mute/block + open-original. -->
             @if (canViewPublicHistory) {
               <button
+                type="button"
+                mbPostAction
                 class="action"
                 (click)="openHistory($event)"
                 [title]="'statusCard.editHistory' | transloco"
@@ -1185,13 +1248,13 @@
             </details>
           }
         }
-      </div>
+      </mb-post-actions>
 
       @if (actionError(); as err) {
-        <div class="action-error">{{ err }}</div>
+        <mb-notice class="action-error" tone="error" announcement="alert">{{ err }}</mb-notice>
       }
       @if (actionNotice(); as notice) {
-        <div class="action-notice" role="status">{{ notice }}</div>
+        <mb-notice class="action-notice" announcement="status">{{ notice }}</mb-notice>
       }
 
       @if (redrafting()) {

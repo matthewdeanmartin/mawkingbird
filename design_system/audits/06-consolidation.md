@@ -72,3 +72,16 @@ list states remain open inventory findings; this is not whole-screen completion.
 shared confirmation/prompt, Leave and Translate. Its audit lists service/direct
 consumers and the individually deferred Effective Audience layout, destructive
 button and consequence-card variants. Legacy overlays are not globally exempted.
+
+[Sprint 10](10-navigation-and-states.md) adopts 18 template consumers in Settings
+navigation, Public Timeline and List Timeline. Shared states now distinguish
+failed reads from empty results, retain posts through refresh/pagination retry,
+and preserve current-route marking with query parameters. Search's richer
+results and remaining list controls stay explicit migration debt.
+
+[Sprint 11](11-post-tools-and-enforcement.md) adopts 40 post-row/count/notice and
+nested-library consumers. Its ledger accounts for all 209 current candidates,
+including 165 explicit backlog files. Candidate patterns now include navigation
+and remaining shared widget names; counts are not adoption percentages. Lint
+protects adopted post actions, and the gate rejects missing ledger entries.
+Deep semantic reconciliation of the backlog remains work, not an exception.

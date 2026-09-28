@@ -1,3 +1,9 @@
+import { MbNotice } from '../design-system/notice/notice';
+import {
+  MbPostActions,
+  MbPostAction,
+  MbActionCount,
+} from '../design-system/post-actions/post-actions';
 import { AppDialogs } from '../app-dialogs';
 import {
   afterNextRender,
@@ -322,6 +328,10 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    MbNotice,
+    MbPostActions,
+    MbPostAction,
+    MbActionCount,
     PollResults,
     PrivateLikeButton,
     RouterLink,

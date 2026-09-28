@@ -19,3 +19,14 @@ Verify the hosted catalogue job and document ownership and recurring audit caden
 Exit: actual consumer counts, no hidden unclassified remainder, tested contracts
 for public widgets, preserved initial budget, and an honest residual backlog.
 Do not label all five sprints complete merely because previews exist.
+
+## Implementation checkpoint
+
+The real post-row batch and nested library action are adopted (40 template
+consumers), with provider/state previews, full-count wrapping, local held-response
+browser coverage and shared notices. See [review](../REVIEW-11.md) and
+[audit](../audits/11-post-tools-and-enforcement.md). All 209 scanner candidates
+have explicit file-level dispositions with a completeness check. Backlog still
+requires deeper semantic/style/runtime review; this is not whole-app completion.
+The existing hosted catalogue validation job was verified successful; this batch
+has not been committed or pushed and the catalogue has not been published.

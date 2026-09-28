@@ -158,6 +158,50 @@ describe('ListTimeline', () => {
     expect(internals(fixture).loading()).toBe(false);
   });
 
+  it('retains the page and retries its exact cursor after pagination fails', () => {
+    const fixture = setUpWithList('retry-page');
+    httpMock.expectOne('/api/v1/lists/retry-page').flush(makeList('retry-page', 'Readers'));
+    const page = Array.from({ length: 40 }, (_, i) => makeStatus(`p${i}`));
+    httpMock.expectOne((r) => r.url.includes('/timelines/list/retry-page')).flush(page);
+    fixture.componentInstance.loadMore();
+    const failed = httpMock.expectOne((r) => r.url.includes('/timelines/list/retry-page'));
+    expect(failed.request.params.get('max_id')).toBe('p39');
+    expect(internals(fixture).statuses()).toEqual(page);
+    failed.flush('', { status: 503, statusText: 'Unavailable' });
+    expect(internals(fixture).statuses()).toEqual(page);
+    fixture.componentInstance.retryTimeline();
+    fixture.componentInstance.retryTimeline();
+    const retry = httpMock.expectOne((r) => r.url.includes('/timelines/list/retry-page'));
+    expect(retry.request.params.get('max_id')).toBe('p39');
+    retry.flush([makeStatus('p39'), makeStatus('p40')]);
+    expect(
+      internals(fixture)
+        .statuses()
+        .map((status) => status.id),
+    ).toEqual([...page.map((status) => status.id), 'p40']);
+    expect(internals(fixture).exhausted()).toBe(true);
+  });
+
+  it('retries an initial error without pretending that the feed is empty', () => {
+    const fixture = setUpWithList('retry-initial');
+    httpMock.expectOne('/api/v1/lists/retry-initial').flush(makeList('retry-initial', 'Readers'));
+    httpMock
+      .expectOne((r) => r.url.includes('/timelines/list/retry-initial'))
+      .flush('', { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain(
+      'Could not load posts',
+    );
+    expect(fixture.nativeElement.textContent).not.toContain('No statuses in this list yet.');
+    fixture.componentInstance.retryTimeline();
+    const retry = httpMock.expectOne((r) => r.url.includes('/timelines/list/retry-initial'));
+    expect(retry.request.params.has('max_id')).toBe(false);
+    retry.flush([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('No statuses in this list yet.');
+  });
+
   it('pages signed-in list posts beyond the first 40', () => {
     const fixture = setUpWithList('paged');
     httpMock.expectOne('/api/v1/lists/paged').flush(makeList('paged', 'Big List'));
@@ -345,7 +389,9 @@ describe('ListTimeline', () => {
         .members()
         .map((m) => m.id),
     ).toEqual(['a']);
-    const message = (fixture.nativeElement as HTMLElement).querySelector('.member-error')!;
+    const message = (fixture.nativeElement as HTMLElement).querySelector(
+      'mb-notice [role="alert"]',
+    )!;
     expect(message.textContent).toContain('still on the list');
     expect(message.textContent).toContain('503');
   });

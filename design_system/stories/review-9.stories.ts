@@ -123,6 +123,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
     </button>
     @if (legacy()) {
       <section
+        class="ds-section ds-dialog-tools"
         role="dialog"
         aria-label="Legacy parent"
         (keyup.escape)="legacy.set(false)"

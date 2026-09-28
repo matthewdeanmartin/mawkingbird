@@ -1,3 +1,6 @@
+import { Component } from '@angular/core';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -137,5 +140,43 @@ describe('SettingsShell', () => {
     ).map((node) => node.textContent?.trim());
 
     expect(labels).not.toContain('Server');
+  });
+});
+
+@Component({ template: '<p>Settings destination</p>' })
+class SettingsRouteFixture {}
+
+describe('Settings navigation adoption', () => {
+  it('keeps native destinations and marks nested and cross-listed active links', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([
+          {
+            path: 'settings',
+            component: SettingsShell,
+            children: [{ path: '**', component: SettingsRouteFixture }],
+          },
+        ]),
+      ],
+    });
+    const harness = await RouterTestingHarness.create('/settings/filters/new?source=review');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const element = harness.routeNativeElement!;
+    const filters = element.querySelector('a[href="/settings/filters"]')!;
+    expect(filters.getAttribute('aria-current')).toBe('page');
+    expect(TestBed.inject(Router).url).toBe('/settings/filters/new?source=review');
+    await harness.navigateByUrl('/settings/privacy');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const privacy = element.querySelectorAll('a[href="/settings/privacy"]');
+    expect(privacy).toHaveLength(2);
+    for (const link of privacy) expect(link.getAttribute('aria-current')).toBe('page');
+    expect(filters.getAttribute('aria-current')).toBeNull();
+    expect(element.querySelector('nav[mbNavigation]')?.getAttribute('aria-label')).toBe(
+      'Settings sections',
+    );
   });
 });

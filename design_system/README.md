@@ -1,13 +1,14 @@
 # Mawkingbird design system
 
-Status: adoption phase underway. Sprint 9 adopts shared confirmations/prompts, Leave and Translate dialogs. Effective Audience and specialized variants remain explicit follow-ups; Sprints 10–11 cover navigation and post tools.
+Status: Sprint 11 adopts real post action rows and the nested library button, with provider/state previews and candidate reconciliation. Remaining migrations are explicit backlog, not whole-app completion.
 
 ## Open the preview
 
-[Sprint 9 app dialogs](http://127.0.0.1:6006/?path=/story/start-here-sprint-9-review--app-dialogs-review)
-exercises real confirmation, prompt, leave and translation flows with local fixtures.
-See [review notes](REVIEW-9.md) for keyboard, recovery and adoption boundaries.
-[Sprint 8 forms](REVIEW-8.md) remain available in the catalogue.
+[Sprint 11 real post tools](http://127.0.0.1:6006/?path=/story/start-here-sprint-11-review--provider-tools)
+shows actual StatusCards, large counts, provider/ownership branches and held action responses.
+See [review notes](REVIEW-11.md), the [adoption audit](audits/11-post-tools-and-enforcement.md)
+and [candidate ledger](audits/11-reconciliation.json).
+[Sprint 10 app pages](REVIEW-10.md) and [Sprint 9 dialogs](REVIEW-9.md) remain available.
 
 Latest correction: [Stacked compact toolbars](http://127.0.0.1:6006/?path=/story/adoption-sprint-3-toolbars--stacked-compact)
 shows four contiguous control rows and the aligned analytics checkbox.

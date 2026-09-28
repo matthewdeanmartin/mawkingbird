@@ -75,25 +75,6 @@
   background: var(--col-bg);
 }
 
-.settings-nav a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* Was `a:last-child`, which stopped meaning "the last row" once headings began
-   interleaving with the links. The row before a heading gets its divider from
-   the heading's own top border instead. */
-.settings-nav > a:last-child {
-  border-bottom: 0;
-}
-
 .settings-nav-heading {
   margin: 0;
   padding: 10px 14px 6px;
@@ -108,26 +89,6 @@
 
 .settings-nav-heading:first-child {
   border-top: 0;
-}
-
-.settings-nav a:hover {
-  background: var(--hover);
-  text-decoration: none;
-}
-
-.settings-nav a.active {
-  background: var(--accent);
-  color: #fff;
-}
-
-.settings-nav a.active .chev {
-  color: #fff;
-}
-
-.chev {
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1;
 }
 
 .settings-content {

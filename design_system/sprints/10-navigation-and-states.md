@@ -14,3 +14,12 @@ Remove duplicate presentation CSS per migrated consumer, not via blanket cleanup
 
 Exit: named adoption inventory, routing/pagination regression checks, screenshots,
 full test gate, production budget and refreshed drift inventory.
+
+## Implementation checkpoint
+
+Settings navigation, Public Timeline and List Timeline adopt 18 template
+consumers. See [review notes](../REVIEW-10.md) and the
+[consumer audit](../audits/10-navigation-and-states.md). Search's richer result
+composition, mode tabs, member actions and member/metadata request recovery
+remain explicit follow-ups. The legacy-parent preview spacing reported after
+Sprint 9 is corrected here.

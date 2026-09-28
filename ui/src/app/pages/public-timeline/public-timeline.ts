@@ -1,3 +1,5 @@
+import { MbContentState } from '../../design-system/content-state/content-state';
+import { MbButton } from '../../design-system/button/button';
 import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
@@ -11,11 +13,13 @@ import { Streaming } from '../../streaming';
 // i18n publicTimeline.all: All
 // i18n publicTimeline.local: Local
 // i18n publicTimeline.loading: Loading…
+// i18n timelineState.failed: Could not load posts. Try again.
+// i18n timelineState.retry: Retry
 // i18n publicTimeline.empty: No public statuses yet.
 
 @Component({
   selector: 'app-public-timeline',
-  imports: [CommandBar, StatusCard, TranslocoPipe],
+  imports: [MbContentState, MbButton, CommandBar, StatusCard, TranslocoPipe],
   templateUrl: './public-timeline.html',
 })
 export class PublicTimeline implements OnInit, OnDestroy {
@@ -25,6 +29,7 @@ export class PublicTimeline implements OnInit, OnDestroy {
 
   protected statuses = signal<Status[]>([]);
   protected loading = signal(true);
+  protected loadFailed = signal(false);
   protected local = signal(false);
   protected live = signal(false);
 
@@ -48,6 +53,7 @@ export class PublicTimeline implements OnInit, OnDestroy {
       return;
     }
     this.local.set(local);
+    this.statuses.set([]);
     this.load();
     if (this.live()) {
       this.restartLive();
@@ -92,12 +98,16 @@ export class PublicTimeline implements OnInit, OnDestroy {
   load(): void {
     this.loadSub?.unsubscribe();
     this.loading.set(true);
+    this.loadFailed.set(false);
     this.loadSub = this.api.publicTimeline(this.local()).subscribe({
       next: (s) => {
         this.statuses.set(s);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadFailed.set(true);
+      },
     });
   }
 

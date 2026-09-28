@@ -13,3 +13,9 @@
     min-width: 44px;
   }
 }
+
+/* A menu can reflect an existing action without pretending to be a toggle. */
+:host([data-active='true']) {
+  background: var(--accent-soft);
+  box-shadow: inset 0 -2px 0 var(--text);
+}

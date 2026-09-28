@@ -1,0 +1,1051 @@
+{
+  "scope": "Candidate-file reconciliation, not per-control completion. Source triage covers every candidate; backlog explicitly requires deeper template/style/runtime review. Evidence lines are in 06-control-inventory.json. Changes to the scanner now include navigation, fields, counts and remaining shared widget names.",
+  "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
+  "entries": [
+    {
+      "file": "ui/src/app/a11y/focus-trap.ts",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/account-analytics/account-analytics.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/account-hover-card/account-hover-card.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/account-hover-card/account-preview.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/account-list-dialog/account-list-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/admin/accounts/admin-accounts.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/admin/announcements/admin-announcements.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/canonical-blocks/admin-canonical-blocks.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/domain-allows/admin-domain-allows.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/domains/admin-domains.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/email-blocks/admin-email-blocks.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/ip-blocks/admin-ip-blocks.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 8 form controls adopted; table row actions, removal controls and remaining list feedback need separate adoption."
+    },
+    {
+      "file": "ui/src/app/admin/reports/admin-reports.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/admin/trends/admin-trends.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/announcements/announcements.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/bookmark-provider-dialog/bookmark-provider-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/bug-report-dialog/bug-report-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/bulk-add-dialog/bulk-add-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/bulk-progress/bulk-progress.css",
+      "disposition": "backlog",
+      "nextStep": "Review and replace the listed styling escape with an explicit component contract; do not allowlist it as design-system compliance."
+    },
+    {
+      "file": "ui/src/app/bulk-progress/bulk-progress.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/command-bar/command-bar.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Compact toolbar adopted; navigation/pill links outside the toolbar remain."
+    },
+    {
+      "file": "ui/src/app/compose/compose.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/compose/compose.ts",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/compose/tag-helper-dialog/tag-helper-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/compose/translate-dialog/translate-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
+    },
+    {
+      "file": "ui/src/app/compose/visibility-state.ts",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/confirm-dialog/confirm-dialog.html",
+      "disposition": "partial adoption",
+      "nextStep": "Shared dialog and ordinary actions adopted; destructive button variant stays in preview backlog."
+    },
+    {
+      "file": "ui/src/app/design-system/action-menu/action-menu.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/button/button.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/checkbox/checkbox.html",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/dialog/dialog.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/disclosure/disclosure.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/field/field.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/metadata/metadata.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/navigation/navigation.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/popover/popover.css",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/popover/popover.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/post-actions/post-actions.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/radio-group/radio-group.html",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/tabs/tabs.html",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/tabs/tabs.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/design-system/toolbar/toolbar.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, stories and behavior tests; native elements here implement the shared widget."
+    },
+    {
+      "file": "ui/src/app/discovery-card/discovery-card.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/effective-audience-dialog/effective-audience-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/eliza/local-compose.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/fail-whale/fail-whale.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/feed-analytics/feed-analytics.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/feed-language-picker/feed-language-picker.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/feed-members/feed-members.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/first-run/first-run-modal.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/follow-button/follow-button.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/friend-feeds-dialog/friend-feeds-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/history-dialog/history-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/leave-dialog/leave-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
+    },
+    {
+      "file": "ui/src/app/lightbox/lightbox.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/list-dialog/list-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/lists/people-lists-panel.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/locale-picker/locale-picker.ts",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/onboarding/onboarding-card.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/algo/algo.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/bluesky-feed/bluesky-feed.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/bookmarks/bookmarks.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/bundled-starter-kits/bundled-starter-kits.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/client-list/client-list-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/collection/collection.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/conversations/conversations.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/directory/directory.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/drafts/drafts-page.css",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/pages/drafts/drafts-page.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/endorsed-list/endorsed-list.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/explore/explore.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/fail-whale-demo/fail-whale-demo.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/fault-injection/fault-injection.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/favourites/favourites.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/feed-doctor/feed-doctor-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/find-friends/find-friends.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/home/home.html",
+      "disposition": "partial adoption",
+      "nextStep": "Compact filter toolbars adopted; remaining select and ordinary actions remain."
+    },
+    {
+      "file": "ui/src/app/pages/invites/invites.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/links/links-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/list-timeline/list-timeline.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 10 adopts header, notices and timeline states; mode tabs and member actions remain."
+    },
+    {
+      "file": "ui/src/app/pages/lists/lists.css",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/pages/lists/lists.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/login-bluesky/login-bluesky.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/pages/login-chooser/login-chooser.html",
+      "disposition": "adopted scope",
+      "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
+    },
+    {
+      "file": "ui/src/app/pages/login/login.html",
+      "disposition": "partial adoption",
+      "nextStep": "Analytics and registration consent adopted; login/register inputs, provider choices and actions remain."
+    },
+    {
+      "file": "ui/src/app/pages/notifications/notifications.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/observability/observability.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/pastes/pastes-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/posse/posse-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/profile/copy-account-dialog/copy-account-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/profile/media/profile-media-grid.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/profile/media/profile-photo-view.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/profile/profile.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/pages/public-timeline/public-timeline.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 10 adopts states and Retry; mode tabs and refresh remain."
+    },
+    {
+      "file": "ui/src/app/pages/read/document-search/document-search-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/read/library-panel/library-panel.html",
+      "disposition": "backlog",
+      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+    },
+    {
+      "file": "ui/src/app/pages/read/notes-rail/notes-rail.html",
+      "disposition": "backlog",
+      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+    },
+    {
+      "file": "ui/src/app/pages/read/read-toolbar/read-toolbar.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/read/reader-core/reader-core.html",
+      "disposition": "backlog",
+      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+    },
+    {
+      "file": "ui/src/app/pages/read/save-to-library/save-to-library.html",
+      "disposition": "adopted scope",
+      "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
+    },
+    {
+      "file": "ui/src/app/pages/read/selection-tools/selection-tools.html",
+      "disposition": "backlog",
+      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+    },
+    {
+      "file": "ui/src/app/pages/rss/add-feed-dialog/add-feed-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/rss/feed-actions/feed-actions.ts",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/pages/rss/headline-row/headline-row.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/rss/rss-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/rss/starter-kits/rss-starter-kits-panel.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/search/account-result-card.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/pages/search/account-search-help/account-search-help.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/search/bluesky-search-panel.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/search/search-helper-dialog/search-helper-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/search/search-syntax-help/search-syntax-help.ts",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/search/search.css",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/pages/search/search.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/search/search.ts",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/pages/server-announcements/server-announcements.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/server-feed/server-feed.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/settings/account-list/settings-account-list.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/account/settings-account.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/accounts/settings-accounts.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/anonymous/settings-anonymous.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/appearance/settings-appearance.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/blue/blue-controls.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/config/settings-config.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/blogger/connection-blogger.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/bluesky/connection-bluesky.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/cors-proxy/connection-cors-proxy.css",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/cors-proxy/connection-cors-proxy.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/dropbox/connection-dropbox.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/gist/connection-gist.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/github/connection-github.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/hugo/connection-hugo.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/link-shortener/connection-link-shortener.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/mastodon/connection-mastodon.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/mataroa/connection-mataroa.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/openrouter/connection-openrouter.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/pastes/connection-pastes.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/raindrop/connection-raindrop.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/settings-connections.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/content/settings-content.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/deletion/settings-deletion.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/development/settings-development.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/feature-flags/settings-feature-flags.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/filters/settings-filter-edit.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/filters/settings-filters.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/follows/settings-follows.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/i18n/settings-i18n.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/import-export/settings-import-export.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/invites/settings-invites.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/mawkingbird-plus/adoption-dialog/adoption-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/settings/mawkingbird-plus/plus-welcome-dialog/plus-welcome-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/pages/settings/mawkingbird-plus/settings-mawkingbird-plus.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/notifications/settings-notifications.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/privacy/settings-privacy.html",
+      "disposition": "partial adoption",
+      "nextStep": "Five shared checkboxes including analytics; remaining selects need labelled-field review."
+    },
+    {
+      "file": "ui/src/app/pages/settings/profile/settings-profile.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/pseudonymity/settings-pseudonymity.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/rss/settings-rss.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/server/settings-server.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/settings-shell.html",
+      "disposition": "adopted scope",
+      "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
+    },
+    {
+      "file": "ui/src/app/pages/settings/spotlight/settings-spotlight.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/storage/settings-storage.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/writing/settings-writing.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/starter-collection/starter-collection.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/storage-diagnostics/storage-diagnostics.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/tag-bundle/tag-bundle-page.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/tag/tag.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/thread/thread.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/unavailable/unavailable.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/welcome-back/welcome-back.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/write/board/write-board.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/write/write-editor.css",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/pages/write/write-page.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/people-browser/people-browser.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/poll-results/poll-results.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/private-like-button.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/account/connection-sync-button.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/account/feed-sync-button.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/account/plus-paywall-dialog.ts",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/providers/account/plus-price.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/account/plus-promotion.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/bluesky/bluesky-reply.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/cors-proxy/proxy-limit-notice.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/reader-toolbar/reader-toolbar.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Text-size toolbar adopted; select-based preferences remain."
+    },
+    {
+      "file": "ui/src/app/report-dialog/report-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/search-server-discovery/search-server-discovery.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/server-discovery/server-discovery.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/server-picker/server-picker.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/share-dialog/share-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/shell/app-footer/app-footer.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/shell/left-rail/left-rail.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/shell/left-rail/profile-stack/profile-stack.css",
+      "disposition": "backlog",
+      "nextStep": "Review and replace the listed styling escape with an explicit component contract; do not allowlist it as design-system compliance."
+    },
+    {
+      "file": "ui/src/app/shell/left-rail/profile-stack/profile-stack.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/shell/right-rail/right-rail.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/shell/shell.html",
+      "disposition": "backlog",
+      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+    },
+    {
+      "file": "ui/src/app/shortcut-help/shortcut-help.ts",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/sign-in-prompt/sign-in-prompt.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/starter-kit-post/starter-kit-post.html",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/status-card/status-card.html",
+      "disposition": "partial adoption",
+      "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers."
+    },
+    {
+      "file": "ui/src/app/status-card/status-card.ts",
+      "disposition": "lexical only",
+      "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
+    },
+    {
+      "file": "ui/src/app/tag-actions/follow-bundle-tags.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/tag-actions/tag-actions.html",
+      "disposition": "backlog",
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/unreachable-server-dialog/unreachable-server-dialog.html",
+      "disposition": "backlog",
+      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+    },
+    {
+      "file": "ui/src/app/update-overlay/update-overlay.ts",
+      "disposition": "backlog",
+      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    }
+  ]
+}

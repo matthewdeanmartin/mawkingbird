@@ -1,3 +1,7 @@
+import { MbContentState } from '../../design-system/content-state/content-state';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
+import { MbNotice } from '../../design-system/notice/notice';
+import { MbButton } from '../../design-system/button/button';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -54,6 +58,10 @@ const SAMPLE_PAGE_SIZE = 40;
 @Component({
   selector: 'app-list-timeline',
   imports: [
+    MbContentState,
+    MbPageHeader,
+    MbNotice,
+    MbButton,
     RouterLink,
     StatusCard,
     BulkAddDialog,
@@ -89,6 +97,8 @@ export class ListTimeline implements OnInit {
   });
   protected loading = signal(true);
   protected loadingMore = signal(false);
+  protected loadFailed = signal(false);
+  private retryAppend = false;
   protected exhausted = signal(true);
   protected warnings = signal<string[]>([]);
   private anonymousFeed: AnonymousFollowFeedSession | null = null;
@@ -147,6 +157,7 @@ export class ListTimeline implements OnInit {
 
   load(id: string): void {
     this.loading.set(true);
+    this.loadFailed.set(false);
     this.statuses.set([]);
     this.warnings.set([]);
     this.exhausted.set(true);
@@ -177,7 +188,16 @@ export class ListTimeline implements OnInit {
     }
   }
 
+  retryTimeline(): void {
+    if (this.loading() || this.loadingMore()) return;
+    if (this.auth.isAnonymous) this.fetchAnonymousPage(this.retryAppend);
+    else this.fetchMastodonPage(this.retryAppend);
+  }
+
   private fetchMastodonPage(append: boolean): void {
+    this.loadFailed.set(false);
+    this.retryAppend = append;
+    this.loading.set(!append);
     this.loadingMore.set(append);
     const maxId = append ? this.statuses().at(-1)?.id : undefined;
     this.api.listTimeline(this.listId(), maxId, SAMPLE_PAGE_SIZE).subscribe({
@@ -192,6 +212,7 @@ export class ListTimeline implements OnInit {
         this.loadingMore.set(false);
       },
       error: () => {
+        this.loadFailed.set(true);
         this.loading.set(false);
         this.loadingMore.set(false);
       },
@@ -204,6 +225,9 @@ export class ListTimeline implements OnInit {
       this.loading.set(false);
       return;
     }
+    this.loadFailed.set(false);
+    this.retryAppend = append;
+    this.loading.set(!append);
     this.loadingMore.set(append);
     feed.fetchPage().subscribe({
       next: (page) => {
@@ -217,6 +241,7 @@ export class ListTimeline implements OnInit {
         this.loadingMore.set(false);
       },
       error: () => {
+        this.loadFailed.set(true);
         this.loading.set(false);
         this.loadingMore.set(false);
         this.exhausted.set(true);

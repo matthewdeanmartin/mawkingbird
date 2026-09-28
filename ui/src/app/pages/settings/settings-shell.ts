@@ -1,3 +1,4 @@
+import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -125,7 +126,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
  */
 @Component({
   selector: 'app-settings-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe],
+  imports: [MbNavigation, MbNavLink, RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe],
   templateUrl: './settings-shell.html',
   styleUrl: './settings-shell.css',
 })

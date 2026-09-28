@@ -249,3 +249,13 @@ compact wrapping and retain 44px touch targets. No per-post sizing overrides are
 needed. The preview includes 21 controls and millions-scale counts; adding more
 commands requires extending the stress story, not a one-off fixed width. Menus
 are appropriate for moderation/removal, not the default escape for normal tools.
+
+### Post-action state and production adoption
+
+StatusCard and SaveToLibrary consume the post-action widgets. `pressed` controls
+ARIA toggle semantics. `active` supplies the same visual selection for a menu
+trigger reflecting an existing action, without inventing toggle semantics.
+Neither input owns the action handler, request, permission or provider state.
+Retain native button/link behavior, count-list actions and confirmation flows.
+Consumer CSS may set outer spacing; it must not replace shared target geometry.
+See [Sprint 11](REVIEW-11.md) for actual-provider fixtures and residual menus.

@@ -26,7 +26,7 @@ module.exports = defineConfig([
     files: ['**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     plugins: { mb: designSystem },
-    rules: { 'mb/no-pill-in-toolbar': 'error' },
+    rules: { 'mb/no-pill-in-toolbar': 'error', 'mb/require-shared-post-action': 'error' },
   },
   {
     files: ['**/*.spec.ts'],

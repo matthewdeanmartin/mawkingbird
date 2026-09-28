@@ -13,10 +13,12 @@ export class MbPostActions {
   selector: 'button[mbPostAction], a[mbPostAction]',
   template: '<ng-content />',
   styleUrls: ['../toolbar/toolbar-button.css', './post-action.css'],
-  host: { '[attr.aria-pressed]': 'pressed()' },
+  host: { '[attr.aria-pressed]': 'pressed()', '[attr.data-active]': 'active() ? true : null' },
 })
 export class MbPostAction {
   readonly pressed = input<boolean | null>(null);
+  /** Visual state for a menu trigger whose underlying action is active. */
+  readonly active = input(false);
 }
 @Component({
   selector: 'span[mbActionCount]',

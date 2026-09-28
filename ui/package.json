@@ -5,7 +5,7 @@
     "design:dev": "ng run ui:storybook",
     "design:lint": "stylelint --config ../design_system/stylelint.config.mjs \"src/app/design-system/**/*.css\" ../design_system/preview.css ../design_system/tokens.css && node --test ../design_system/rules/*.test.mjs",
     "design:audit-controls": "node scripts/audit-design-controls.mjs",
-    "design:inventory-check": "node scripts/audit-design-controls.mjs --check",
+    "design:inventory-check": "node scripts/audit-design-controls.mjs --check && node scripts/check-design-reconciliation.mjs",
     "design:audit-colors": "node scripts/audit-design-colors.mjs",
     "design:browser": "playwright test --config ../design_system/playwright.config.mjs",
     "design:verify": "npm run design:inventory-check && npm run design:check && npm run design:lint && npm run design:build && npm run design:browser",

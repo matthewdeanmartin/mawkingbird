@@ -10,16 +10,27 @@
 <app-command-bar [showRefresh]="!live()" (refresh)="load()" />
 
 @if (loading()) {
-  <p class="muted center">{{ 'publicTimeline.loading' | transloco }}</p>
-} @else if (!statuses().length) {
-  <p class="muted center">{{ 'publicTimeline.empty' | transloco }}</p>
-} @else {
-  @for (s of statuses(); track s.id; let i = $index) {
-    <app-status-card
-      [status]="s"
-      filterContext="public"
-      (changed)="onChanged(i, $event)"
-      (deleted)="onDeleted($event)"
-    />
-  }
+  <mb-content-state
+    kind="loading"
+    announcement="status"
+    [title]="'publicTimeline.loading' | transloco"
+  />
+}
+@if (loadFailed()) {
+  <mb-content-state kind="error" announcement="alert" [title]="'timelineState.failed' | transloco">
+    <button mbButton variant="outline" type="button" (click)="load()">
+      {{ 'timelineState.retry' | transloco }}
+    </button>
+  </mb-content-state>
+}
+@if (!loading() && !loadFailed() && !statuses().length) {
+  <mb-content-state [title]="'publicTimeline.empty' | transloco" />
+}
+@for (s of statuses(); track s.id; let i = $index) {
+  <app-status-card
+    [status]="s"
+    filterContext="public"
+    (changed)="onChanged(i, $event)"
+    (deleted)="onDeleted($event)"
+  />
 }

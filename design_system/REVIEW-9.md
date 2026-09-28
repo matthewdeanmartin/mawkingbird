@@ -75,3 +75,10 @@ Sprint 8 form fixtures. No assertions, retries or production delays were weakene
 The earlier Privacy test passed five consecutive focused runs, followed by the
 complete browser gate. All pending-state assertions remain, with explicit clock
 advancement rather than a longer real-time delay or retry setting.
+
+## Subsequent review correction
+
+The user accepted these dialogs to proceed and reported touching buttons in the
+legacy-parent interoperability fixture. Sprint 10 adds the existing preview
+spacing to that row. The old trap remains there specifically to test coexistence
+during phase-out; it is not a new production pattern.

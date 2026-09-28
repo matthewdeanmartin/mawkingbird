@@ -6355,6 +6355,10 @@
     "loading": "Loading terms…",
     "title": "Terms of Service"
   },
+  "timelineState": {
+    "failed": "Could not load posts. Try again.",
+    "retry": "Retry"
+  },
   "twitter": {
     "consent.aboutSource": "About {{source}}",
     "consent.acceptRisk": "I accept the risk",

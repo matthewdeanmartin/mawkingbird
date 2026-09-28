@@ -1,3 +1,4 @@
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { Status } from '../../../models';
@@ -47,7 +48,7 @@ import { readerRouteId } from '../reader-route-id';
 @Component({
   selector: 'app-save-to-library',
   standalone: true,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, MbPostAction],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './save-to-library.html',
   styleUrl: './save-to-library.css',
