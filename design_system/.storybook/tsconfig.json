@@ -1,0 +1,25 @@
+{
+  "extends": "../../ui/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../ui/node_modules/@types"],
+    "paths": {
+      "@storybook/angular": [
+        "../../ui/node_modules/@storybook/angular/dist/index"
+      ],
+      "@angular/*": ["../../ui/node_modules/@angular/*"],
+      "@storybook/*": ["../../ui/node_modules/@storybook/*"],
+      "storybook/*": ["../../ui/node_modules/storybook/*"],
+      "rxjs": ["../../ui/node_modules/rxjs"],
+      "tslib": ["../../ui/node_modules/tslib"]
+    }
+  },
+  "include": [
+    "./preview.ts",
+    "./main.ts",
+    "./oauth-unavailable.ts",
+    "../stories/**/*.ts",
+    "../../ui/src/app/design-system/**/*.ts"
+  ],
+  "exclude": ["../../ui/src/**/*.spec.ts"]
+}

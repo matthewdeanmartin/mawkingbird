@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 170px) minmax(0, 1fr);
+  gap: 8px 20px;
+  padding-block: 10px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.heading {
+  text-align: end;
+  font-weight: 700;
+}
+
+.controls {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+@container (max-width: 500px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .heading {
+    text-align: start;
+  }
+}

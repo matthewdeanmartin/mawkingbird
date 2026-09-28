@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+}
+section {
+  padding-block: 16px;
+  border-bottom: 1px solid var(--border);
+}
+h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}

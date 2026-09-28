@@ -14,6 +14,21 @@ what breaking it looked like.
 
 ## Style Guide
 
+### Reuse the design system
+
+Start with the [component contracts](../../design_system/components.md) and
+[local Storybook catalogue](../../design_system/README.md). The shared feed command
+bar, Home filters and reader text-size controls now use `MbToolbar` and
+`MbToolbarButton`. Use that compact treatment for related button actions; keep
+standalone primary actions separate. Do not recreate toolbar button padding,
+corners or active-state CSS in a page.
+
+The current toolbar manages buttons only. Keep native links, selects and text
+inputs outside its arrow-key focus sequence. Supply a meaningful group label
+and use `pressed` for toggles. Angular template lint rejects `mbButton` and the
+legacy `.btn` class inside a toolbar. See the [adoption audit](../../design_system/audits/03-toolbar-adoption.md)
+for the migration boundary and remaining work.
+
 ### Text contrast: no light grey text
 
 **Rule: every piece of text must reach a contrast ratio of 7:1 (WCAG AAA)

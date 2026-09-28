@@ -1,6 +1,23 @@
 .DEFAULT_GOAL := help
 MAKEFLAGS += --no-print-directory
 
+.PHONY: design design-build design-check design-test design-verify
+design:
+	npm run design:dev
+
+design-build:
+	npm run design:build
+
+design-check:
+	npm run design:check
+	npm run design:lint
+
+design-test:
+	npm run design:test
+
+design-verify:
+	npm run design:verify
+
 .PHONY: starter-catalog-update starter-catalog-check
 starter-catalog-update:
 	npm run starter-catalog:update $(if $(CATALOG),-- "$(CATALOG)",)
@@ -122,6 +139,6 @@ build-mockingbird:
 security:
 	npm audit --omit=dev --audit-level=high
 
-check: format-check lint storage subpaths i18n starter-catalog-check test build security
+check: format-check lint design-check storage subpaths i18n starter-catalog-check test build security
 
 check-ci: check

@@ -117,24 +117,23 @@
       role="group"
       [attr.aria-label]="'pages.home.filters.ariaLabel' | transloco"
     >
-      <button
-        type="button"
-        class="btn btn-outline btn-sm"
-        [class.active]="showBoosts()"
-        [attr.aria-pressed]="showBoosts()"
-        (click)="toggleBoosts()"
-      >
-        🔁 {{ 'pages.home.filters.retweets' | transloco }}
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline btn-sm"
-        [class.active]="showReplies()"
-        [attr.aria-pressed]="showReplies()"
-        (click)="toggleReplies()"
-      >
-        💬 {{ 'pages.home.filters.replies' | transloco }}
-      </button>
+      <mb-toolbar [label]="'pages.home.filters.ariaLabel' | transloco">
+        <button type="button" mbToolbarButton [pressed]="showBoosts()" (click)="toggleBoosts()">
+          🔁 {{ 'pages.home.filters.retweets' | transloco }}
+        </button>
+        <button type="button" mbToolbarButton [pressed]="showReplies()" (click)="toggleReplies()">
+          💬 {{ 'pages.home.filters.replies' | transloco }}
+        </button>
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="prefs.algoCalm()"
+          (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
+          [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
+        >
+          😌 {{ 'pages.home.filters.calm.label' | transloco }}
+        </button>
+      </mb-toolbar>
       <label class="home-window">
         📅
         <select
@@ -147,16 +146,6 @@
           <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
         </select>
       </label>
-      <button
-        type="button"
-        class="btn btn-outline btn-sm feed-filter"
-        [class.active]="prefs.algoCalm()"
-        [attr.aria-pressed]="prefs.algoCalm()"
-        (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
-        [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
-      >
-        😌 {{ 'pages.home.filters.calm.label' | transloco }}
-      </button>
       <app-feed-language-picker />
     </div>
   </app-command-bar>

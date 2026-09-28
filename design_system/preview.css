@@ -1,0 +1,57 @@
+/* Preview-only additions. The builder also loads the application's real styles.css. */
+body {
+  background: var(--bg);
+}
+
+.ds-sheet {
+  max-width: 820px;
+  margin: 24px auto;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--col-bg);
+  color: var(--text);
+}
+
+.ds-sheet h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.ds-intro {
+  margin: 0 0 24px;
+  color: var(--muted);
+  max-width: 64ch;
+}
+
+.ds-section {
+  padding-block: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.ds-section h2 {
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+
+.ds-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.ds-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ds-narrow {
+  max-width: 280px;
+}
+
+@media (max-width: 480px) {
+  .ds-sheet {
+    margin: 0;
+    padding: 16px;
+  }
+}

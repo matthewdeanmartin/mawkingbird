@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+:host([data-presentation='tabs']) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}

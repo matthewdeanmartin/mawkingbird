@@ -1,0 +1,30 @@
+<div class="tabs" role="tablist" [attr.aria-label]="label()" (focusout)="leave($event)">
+  @for (tab of tabs(); track tab; let i = $index) {
+    <button
+      type="button"
+      role="tab"
+      [id]="id + '-tab-' + i"
+      [disabled]="tab.disabled()"
+      [attr.aria-controls]="id + '-panel-' + i"
+      [attr.aria-selected]="active() === tab"
+      [tabIndex]="tabIndexFor(tab)"
+      (focus)="focused.set(tab)"
+      (keydown)="navigate($event, tab)"
+      (click)="activate(tab)"
+    >
+      {{ tab.label() }}
+    </button>
+  }
+</div>
+@for (tab of tabs(); track tab; let i = $index) {
+  <section
+    class="panel"
+    role="tabpanel"
+    [id]="id + '-panel-' + i"
+    [attr.aria-labelledby]="id + '-tab-' + i"
+    [hidden]="active() !== tab"
+    tabindex="0"
+  >
+    <ng-container [ngTemplateOutlet]="tab.template" />
+  </section>
+}

@@ -959,7 +959,9 @@ describe('Home', () => {
   it('offers Members and Analytics in the command bar, starting on the feed', () => {
     const fixture = setUp();
 
-    const labels = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.command-bar .btn')]
+    const labels = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.command-bar button'),
+    ]
       .map((b) => b.textContent?.trim())
       .join(' ');
     expect(labels).toContain('Members');
@@ -1078,6 +1080,24 @@ describe('Home', () => {
     expect(filters).toContain('Everything');
     expect(filters).not.toContain('Local Feed');
     expect(el.querySelectorAll('.command-bar .command-row')).toHaveLength(3);
+  });
+
+  it('adopts a button-only filter toolbar while preserving native time and language controls', async () => {
+    const fixture = setUp();
+    await fixture.whenStable();
+    const filters = (fixture.nativeElement as HTMLElement).querySelector('.home-filters')!;
+    const toolbar = filters.querySelector('mb-toolbar')!;
+    expect(toolbar.getAttribute('aria-label')).toBe('Timeline filters');
+    const buttons = [...toolbar.querySelectorAll<HTMLButtonElement>('button')];
+    expect(buttons).toHaveLength(3);
+    expect(buttons.map((button) => button.tabIndex)).toEqual([0, -1, -1]);
+    const before = buttons[0].getAttribute('aria-pressed');
+    buttons[0].click();
+    await fixture.whenStable();
+    expect(buttons[0].getAttribute('aria-pressed')).toBe(before === 'true' ? 'false' : 'true');
+    expect(toolbar.querySelector('select, app-feed-language-picker')).toBeNull();
+    expect(filters.querySelector('select')).not.toBeNull();
+    expect(filters.querySelector('app-feed-language-picker')).not.toBeNull();
   });
 
   it('puts the complete Reader controls in a dedicated fourth toolbar row', () => {

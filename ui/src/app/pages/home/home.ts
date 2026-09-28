@@ -20,6 +20,7 @@ import { byNewestFirst } from '../../status-sort';
 import { CalmVerdicts } from '../../calm-verdicts';
 import { BookmarkPresence } from '../../bookmark-presence';
 import { FeedLanguageFilter } from '../../trend-language-filter';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { CommandBar, FeedView } from '../../command-bar/command-bar';
 import { FeedAnalytics } from '../../feed-analytics/feed-analytics';
 import { FeedMembers } from '../../feed-members/feed-members';
@@ -154,6 +155,8 @@ const ARTICLE_TARGET = 10;
   selector: 'app-home',
   imports: [
     FormsModule,
+    MbToolbar,
+    MbToolbarButton,
     ConfirmDialog,
     DiscoveryCard,
     CommandBar,

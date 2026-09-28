@@ -1,0 +1,61 @@
+mb-field {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+mb-field .mb-field-label {
+  display: block;
+  margin-block-end: 6px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+mb-field .mb-control {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+mb-field textarea.mb-control {
+  min-height: 96px;
+  resize: vertical;
+}
+
+mb-field .mb-control::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+mb-field .mb-control:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+mb-field .mb-control[aria-invalid='true'] {
+  border-color: var(--ds-error-text, var(--text));
+}
+
+mb-field .mb-control:disabled {
+  border-style: dashed;
+  background: var(--hover);
+  color: var(--muted);
+  cursor: default;
+}
+
+mb-field .mb-field-hint {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}

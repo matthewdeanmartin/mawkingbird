@@ -1,18 +1,20 @@
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Component, inject } from '@angular/core';
 import { ClientPrefs, ReaderFontFamily, ReaderTheme, READER_FONT_OPTIONS } from '../client-prefs';
 
 /** The complete set of controls available while reading long-form content. */
 @Component({
   selector: 'app-reader-toolbar',
+  imports: [MbToolbar, MbToolbarButton],
   template: `
-    <div class="reader-toolbar" role="toolbar" aria-label="Reader controls">
-      <button class="btn reader-item" type="button" (click)="bumpFont(-1)" title="Smaller text">
-        A−
-      </button>
-      <span class="reader-size" aria-live="polite">{{ prefs.readerFontSize() }}px</span>
-      <button class="btn reader-item" type="button" (click)="bumpFont(1)" title="Larger text">
-        A+
-      </button>
+    <div class="reader-toolbar" role="group" aria-label="Reader controls">
+      <mb-toolbar label="Reader text size">
+        <button mbToolbarButton type="button" (click)="bumpFont(-1)" title="Smaller text">
+          A−
+        </button>
+        <span class="reader-size" aria-live="polite">{{ prefs.readerFontSize() }}px</span>
+        <button mbToolbarButton type="button" (click)="bumpFont(1)" title="Larger text">A+</button>
+      </mb-toolbar>
 
       <select
         class="reader-select"

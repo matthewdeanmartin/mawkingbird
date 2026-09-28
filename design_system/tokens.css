@@ -1,0 +1,8 @@
+/* New semantic roles under review; existing app tokens come from ui/src/styles.css. */
+:root {
+  --ds-error-text: #a41037;
+}
+
+:root[data-theme="dark"] {
+  --ds-error-text: #ff9db4;
+}

@@ -1,0 +1,23 @@
+<div class="choice">
+  <input
+    [id]="controlId"
+    type="checkbox"
+    [checked]="value()"
+    [indeterminate]="indeterminate()"
+    [disabled]="disabled() || formDisabled()"
+    [attr.aria-describedby]="descriptionIds()"
+    [attr.aria-invalid]="error() ? 'true' : null"
+    (change)="change($event)"
+    (blur)="touch()"
+  />
+  <div class="copy">
+    <label [for]="controlId">{{ label() }}</label>
+    @if (hint()) {
+      <p class="hint" [id]="controlId + '-hint'">{{ hint() }}</p>
+    }
+    @if (error()) {
+      <p class="error" role="alert" [id]="controlId + '-error'">{{ error() }}</p>
+    }
+    <span class="status" role="status">{{ status() }}</span>
+  </div>
+</div>

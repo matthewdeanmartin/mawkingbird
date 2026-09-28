@@ -1,0 +1,64 @@
+:host {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+legend {
+  padding: 0;
+  margin-block-end: 8px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.group-hint {
+  margin: 0 0 12px;
+}
+.options {
+  display: grid;
+  gap: 14px;
+}
+.choice {
+  display: grid;
+  grid-template-columns: 1.125em minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+input {
+  width: 1.125em;
+  height: 1.125em;
+  margin: 0.1875em 0 0;
+  font: inherit;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+input:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+label {
+  display: block;
+  cursor: pointer;
+}
+input:disabled,
+input:disabled + .copy label {
+  cursor: default;
+}
+p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.copy p {
+  margin: 4px 0 0;
+}

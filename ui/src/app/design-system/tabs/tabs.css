@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+button {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font: 600 14px / 1.4 var(--app-font-family);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  background: var(--hover);
+}
+button[aria-selected='true'] {
+  border-bottom-color: var(--text);
+  background: var(--accent-soft);
+}
+button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+button:focus-visible,
+.panel:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -3px;
+}
+.panel {
+  padding: 16px 0;
+}

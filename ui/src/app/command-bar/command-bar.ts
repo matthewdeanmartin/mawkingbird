@@ -1,4 +1,5 @@
 import { Component, computed, inject, input, output } from '@angular/core';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../auth';
@@ -24,45 +25,46 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
  */
 @Component({
   selector: 'app-command-bar',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton],
   template: `
-    <div class="command-bar" role="toolbar" aria-label="Feed controls">
+    <div class="command-bar" role="group" aria-label="Feed controls">
       <div class="command-row action-row" role="group" aria-label="Feed actions">
-        @if (showRefresh()) {
-          <button
-            class="btn command-item"
-            (click)="refresh.emit()"
-            title="Reload the feed from the newest posts"
-          >
-            🔄 More
-          </button>
-        }
-        @if (showFeedViews()) {
-          <button
-            class="btn command-item"
-            [class.active]="view() === 'feed'"
-            [attr.aria-pressed]="view() === 'feed'"
-            (click)="viewChange.emit('feed')"
-          >
-            {{ 'commandBar.tweetView' | transloco }}
-          </button>
-          <button
-            class="btn command-item"
-            [class.active]="view() === 'members'"
-            [attr.aria-pressed]="view() === 'members'"
-            (click)="setView('members')"
-            title="Who is in this feed — the accounts whose posts are loaded"
-          >
-            👥 Members</button
-          ><button
-            class="btn command-item"
-            [class.active]="view() === 'analytics'"
-            [attr.aria-pressed]="view() === 'analytics'"
-            (click)="setView('analytics')"
-            title="Analytics for the posts currently loaded in this feed"
-          >
-            📊 Analytics
-          </button>
+        @if (showRefresh() || showFeedViews()) {
+          <mb-toolbar label="Feed actions">
+            @if (showRefresh()) {
+              <button
+                mbToolbarButton
+                (click)="refresh.emit()"
+                title="Reload the feed from the newest posts"
+              >
+                🔄 More
+              </button>
+            }
+            @if (showFeedViews()) {
+              <button
+                mbToolbarButton
+                [pressed]="view() === 'feed'"
+                (click)="viewChange.emit('feed')"
+              >
+                {{ 'commandBar.tweetView' | transloco }}
+              </button>
+              <button
+                mbToolbarButton
+                [pressed]="view() === 'members'"
+                (click)="setView('members')"
+                title="Who is in this feed — the accounts whose posts are loaded"
+              >
+                👥 Members</button
+              ><button
+                mbToolbarButton
+                [pressed]="view() === 'analytics'"
+                (click)="setView('analytics')"
+                title="Analytics for the posts currently loaded in this feed"
+              >
+                📊 Analytics
+              </button>
+            }
+          </mb-toolbar>
         }
         @if (showFeedDoctor()) {
           <a
@@ -74,10 +76,10 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
           </a>
         }
       </div>
-      <div class="command-row presentation-row" role="group" aria-label="Feed presentation">
+      <mb-toolbar class="command-row presentation-row" label="Feed presentation">
         <button
-          class="btn command-item"
-          [class.active]="prefs.feedReader()"
+          mbToolbarButton
+          [pressed]="prefs.feedReader()"
           (click)="prefs.setFeedReader(!prefs.feedReader())"
           title="Reader mode for the feed: reader typography, no pictures"
         >
@@ -85,9 +87,8 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
         </button>
         @if (showImages()) {
           <button
-            class="btn command-item"
-            [class.active]="imagesHidden()"
-            [attr.aria-pressed]="imagesHidden()"
+            mbToolbarButton
+            [pressed]="imagesHidden()"
             (click)="toggleImages()"
             [title]="
               (imagesHidden() ? 'commandBar.textFocus.turnOff' : 'commandBar.textFocus.turnOn')
@@ -99,17 +100,15 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
         }
         @if (showFeedViews()) {
           <button
-            class="btn command-item"
-            [class.active]="view() === 'media'"
-            [attr.aria-pressed]="view() === 'media'"
+            mbToolbarButton
+            [pressed]="view() === 'media'"
             (click)="setView('media')"
             title="Pictures and videos from the posts currently loaded"
           >
             🖼️ Media</button
           ><button
-            class="btn command-item"
-            [class.active]="view() === 'articles'"
-            [attr.aria-pressed]="view() === 'articles'"
+            mbToolbarButton
+            [pressed]="view() === 'articles'"
             (click)="setView('articles')"
             title="Article links from the posts currently loaded"
           >
@@ -119,14 +118,14 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
         @if (prefs.feedReader() && showReaderControls()) {
           <span class="font-controls">
             <button
-              class="btn command-item btn-sm"
+              mbToolbarButton
               (click)="prefs.setReaderFontSize(prefs.readerFontSize() - 1)"
               title="Smaller text"
             >
               A−
             </button>
             <button
-              class="btn command-item btn-sm"
+              mbToolbarButton
               (click)="prefs.setReaderFontSize(prefs.readerFontSize() + 1)"
               title="Larger text"
             >
@@ -134,18 +133,18 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
             </button>
           </span>
         }
-      </div>
+      </mb-toolbar>
       @if (providerChips() || showFilters()) {
         <div class="command-row filter-row" role="group" aria-label="Feed filters">
           <ng-content />
           @if (providerChips() && hasSourceControls()) {
             <!-- WHAT: networks included in this feed. The label is intentionally a
              code comment rather than visible toolbar furniture. -->
-            <div class="provider-group" role="group" aria-label="Feed sources">
+            <mb-toolbar class="provider-group" label="Feed sources">
               @if ((!auth.isAnonymous && !auth.isBlueskyPrimary) || privateFedi()) {
                 <button
-                  class="btn command-item"
-                  [class.active]="prefs.isProviderVisible('mastodon')"
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible('mastodon')"
                   (click)="toggleProvider('mastodon')"
                   title="Show or hide Mastodon posts"
                 >
@@ -154,8 +153,8 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
               }
               @if (anonymousFedi()) {
                 <button
-                  class="btn command-item"
-                  [class.active]="prefs.isProviderVisible('anonymous-mastodon')"
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible('anonymous-mastodon')"
                   (click)="toggleProvider('anonymous-mastodon')"
                   title="Show or hide Fediverse posts"
                 >
@@ -164,15 +163,15 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
               }
               @for (p of sourceProviders(); track p.id) {
                 <button
-                  class="btn command-item"
-                  [class.active]="prefs.isProviderVisible(p.id)"
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible(p.id)"
                   (click)="toggleProvider(p.id)"
                   [title]="'Show or hide ' + p.label + ' posts'"
                 >
                   {{ p.badge }}
                 </button>
               }
-            </div>
+            </mb-toolbar>
           }
         </div>
       }
@@ -182,60 +181,36 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
     .command-bar {
       border-bottom: 1px solid var(--border);
     }
-    .command-row {
+    div.command-row {
       display: flex;
       align-items: center;
       gap: 2px;
       min-width: 0;
+      flex-wrap: wrap;
+    }
+    .filter-row {
       padding: 5px 10px;
-      flex-wrap: wrap;
       border-bottom: 1px solid var(--border);
     }
-    .provider-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2px;
-      border-bottom: 1px solid var(--border);
+    .action-row > mb-toolbar {
+      flex: 1 1 auto;
     }
-    .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2px;
-    }
-    .command-row .command-item {
-      padding: 5px 4px;
-      font-size: 13px;
-    }
-    .command-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-    }
-    .command-item {
-      flex: 0 1 auto;
-      max-width: 100%;
-      overflow-wrap: anywhere;
+    /* Native destination link remains outside button-only focus navigation. */
+    a.command-item {
       border: 0;
       border-radius: 5px;
       background: transparent;
       color: var(--text);
-      padding: 6px 8px;
+      padding: 5px 7px;
+      font-size: 13px;
       white-space: normal;
     }
-    .command-item:hover {
+    a.command-item:hover {
       background: var(--hover);
-    }
-    .command-item.active {
-      background: var(--accent-soft);
-      color: var(--accent);
     }
     .font-controls {
       display: inline-flex;
       gap: 2px;
-    }
-    .btn-sm {
-      padding: 4px 7px;
-      font-size: 0.85em;
     }
   `,
 })

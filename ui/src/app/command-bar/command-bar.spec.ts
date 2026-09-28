@@ -11,6 +11,27 @@ import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
 describe('CommandBar', () => {
+  it('uses independent toolbar focus groups and leaves navigation links outside them', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = setUp(true);
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showFeedDoctor', true);
+    await fixture.whenStable();
+    const root: HTMLElement = fixture.nativeElement;
+    const toolbars = [...root.querySelectorAll('mb-toolbar')];
+    expect(toolbars).toHaveLength(3);
+    for (const toolbar of toolbars) {
+      expect(toolbar.getAttribute('role')).toBe('toolbar');
+      expect(toolbar.querySelectorAll('button[tabindex="0"]')).toHaveLength(1);
+      expect(toolbar.querySelectorAll('a, select, .btn')).toHaveLength(0);
+    }
+    expect(root.querySelector('a')?.getAttribute('href')).toBe('/feed-doctor');
+    expect(root.querySelector('a')?.closest('mb-toolbar')).toBeNull();
+    const reader = root.querySelector<HTMLButtonElement>('.presentation-row button')!;
+    reader.click();
+    await fixture.whenStable();
+    expect(reader.getAttribute('aria-pressed')).toBe('true');
+  });
   it('offers an explicit way back from analytics to tweets', () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = setUp();

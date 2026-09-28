@@ -39,6 +39,28 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "configDir": "../design_system/.storybook",
+            "tsConfig": "../design_system/.storybook/tsconfig.json",
+            "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],
+            "compodoc": false,
+            "port": 6006,
+            "host": "127.0.0.1",
+            "open": false
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "configDir": "../design_system/.storybook",
+            "tsConfig": "../design_system/.storybook/tsconfig.json",
+            "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],
+            "compodoc": false,
+            "outputDir": "../design_system/dist"
+          }
+        },
         "build": {
           "builder": "@angular/build:application",
           "options": {

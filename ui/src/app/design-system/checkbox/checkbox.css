@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.choice {
+  display: grid;
+  grid-template-columns: 1.125em minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+}
+
+input {
+  width: 1.125em;
+  height: 1.125em;
+  margin: 0.1875em 0 0;
+  font: inherit;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+
+input:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+input:disabled,
+input:disabled + .copy label {
+  cursor: default;
+}
+
+.copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+label {
+  display: block;
+  cursor: pointer;
+}
+
+p {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.hint,
+.status {
+  color: var(--muted);
+}
+
+.status {
+  display: block;
+  font-size: 13px;
+}
+
+.status:empty {
+  display: none;
+}
+
+.error {
+  color: var(--ds-error-text, var(--text));
+  font-weight: 600;
+}
