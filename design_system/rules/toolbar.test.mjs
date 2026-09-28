@@ -23,6 +23,21 @@ for (const [name, code, count] of [
     '<mb-toolbar label="Feed"><button class="btn btn-sm">Refresh</button></mb-toolbar>',
     1,
   ],
+  [
+    "post pill",
+    '<mb-post-actions label="Post"><button mbButton>Like</button></mb-post-actions>',
+    1,
+  ],
+  [
+    "post legacy pill",
+    '<mb-post-actions label="Post"><a class="btn" href="/post">Read</a></mb-post-actions>',
+    1,
+  ],
+  [
+    "mixed native actions",
+    '<mb-post-actions label="Post"><button mbPostAction>Like</button><a mbPostAction href="/post">Read</a></mb-post-actions>',
+    0,
+  ],
   ["standalone pill", "<button mbButton>Save</button>", 0],
   [
     "compact button",

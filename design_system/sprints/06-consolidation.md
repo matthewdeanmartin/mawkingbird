@@ -17,3 +17,11 @@ new violations fail with replacement guidance; every public widget has stories,
 tests and usage contracts; final drift/contrast/bundle reports are reviewed.
 Assign ongoing ownership and run the LLM audit after substantial UI work and
 periodically during maintenance. The final audit creates the next backlog.
+
+## Started checkpoint
+
+[Full-tools review](../REVIEW-6.md) adds a mixed button/link action group with full
+counts and natural wrapping. The [opening audit](../audits/06-consolidation.md)
+records source-wide candidates, remaining migrations and exceptions requiring
+semantic review. Catalogue checks are wired into the client-build workflow;
+this does not mark the sprint complete or claim the hosted job has run.

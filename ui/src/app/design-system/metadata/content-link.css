@@ -1,0 +1,10 @@
+:host {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+:host(:focus-visible) {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}

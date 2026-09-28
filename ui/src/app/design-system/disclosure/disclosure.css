@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  color: var(--text);
+}
+details {
+  border-block: 1px solid var(--border);
+}
+summary {
+  padding: 10px 0;
+  font-weight: 600;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+.content {
+  padding: 0 0 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}

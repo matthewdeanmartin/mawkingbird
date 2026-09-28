@@ -1,6 +1,8 @@
 /* New semantic roles under review; existing app tokens come from ui/src/styles.css. */
 :root {
   --ds-error-text: #a41037;
+  --ds-overlay-backdrop: rgba(0, 0, 0, 0.4);
+  --ds-overlay-shadow: rgba(0, 0, 0, 0.3);
 }
 
 :root[data-theme="dark"] {

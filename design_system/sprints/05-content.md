@@ -13,3 +13,11 @@ actions, long account names, dense content and translated states.
 Done: tested shared patterns replace recurring CSS, the production bundle stays
 within its existing budget, reader/feed fixtures pass, and the audit explains
 remaining specialized layouts rather than forcing false uniformity.
+
+## Preview checkpoint
+
+The [Sprint 5 review](../REVIEW-5.md) includes metadata, badges, content states and
+an embedded compact post toolbar, plus long names and translated copy. The
+[opening audit](../audits/05-content.md) distinguishes eligible patterns from mixed
+action rows and structured posting errors. Preview review and app adoption remain
+pending; no production consumer or content rendering behavior has changed.

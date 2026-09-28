@@ -1,8 +1,12 @@
 # Mawkingbird design system
 
-Status: Sprint 3 preview approved; first app toolbar adoption batch implemented. Navigation and earlier form adoption remain open.
+Status: Sprint 6 started: full-tools post preview, source inventory and CI enforcement. Earlier toolbar adoption is retained; remaining navigation/form adoption stays open.
 
 ## Open the preview
+
+[Sprint 6 review](http://127.0.0.1:6006/?path=/story/start-here-sprint-6-review--all-tools)
+shows all post tools with large counts; use the Millions story for extreme counts.
+See [review notes](REVIEW-6.md) for interactions and the approval checkpoint.
 
 Latest correction: [Stacked compact toolbars](http://127.0.0.1:6006/?path=/story/adoption-sprint-3-toolbars--stacked-compact)
 shows four contiguous control rows and the aligned analytics checkbox.

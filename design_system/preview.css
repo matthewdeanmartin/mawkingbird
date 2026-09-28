@@ -45,6 +45,11 @@ body {
   gap: 12px;
 }
 
+.ds-actions-compact {
+  align-items: center;
+  gap: 4px;
+}
+
 .ds-narrow {
   max-width: 280px;
 }
@@ -54,4 +59,32 @@ body {
     margin: 0;
     padding: 16px;
   }
+}
+
+.ds-dialog-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+
+.ds-content-card {
+  min-width: 0;
+}
+.ds-content-copy {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-block: 12px;
+}
+.ds-content-feedback {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ds-content-feedback:empty {
+  display: none;
+}
+
+.ds-power-danger {
+  margin-block: 8px;
 }

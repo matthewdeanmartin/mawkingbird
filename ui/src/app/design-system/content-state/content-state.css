@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  padding: 16px 12px;
+  border-block: 1px solid var(--border);
+  color: var(--text);
+  background: var(--col-bg);
+  overflow-wrap: anywhere;
+}
+strong {
+  font-size: 14px;
+}
+p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+:host([data-kind='error']) strong {
+  color: var(--ds-error-text);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.actions:not(:empty) {
+  margin-top: 10px;
+}

@@ -11,12 +11,12 @@ module.exports = {
         },
       },
       create(context) {
-        let depth = 0;
+        const groups = [];
         return {
           Element(node) {
-            if (node.name === "mb-toolbar") depth++;
+            if (["mb-toolbar", "mb-post-actions"].includes(node.name)) groups.push(node.name);
             if (
-              depth &&
+              groups.length &&
               [...node.attributes, ...node.inputs].some(
                 (attr) =>
                   attr.name === "mbButton" ||
@@ -29,12 +29,14 @@ module.exports = {
                 loc: context.sourceCode.parserServices.convertNodeSourceSpanToLoc(
                   node.sourceSpan,
                 ),
-                messageId: "useToolbar",
+                message: groups.at(-1) === "mb-post-actions"
+                  ? "Use mbPostAction inside mb-post-actions; keep full counts in mbActionCount. See design_system/components.md#post-actions."
+                  : "Use mbToolbarButton inside mb-toolbar; keep mbButton for standalone actions. See design_system/components.md#toolbar.",
               });
             }
           },
           "Element:exit"(node) {
-            if (node.name === "mb-toolbar") depth--;
+            if (["mb-toolbar", "mb-post-actions"].includes(node.name)) groups.pop();
           },
         };
       },

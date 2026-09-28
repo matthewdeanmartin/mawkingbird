@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+div {
+  border-inline-start: 3px solid var(--text);
+  background: var(--col-bg);
+  color: var(--text);
+  padding: 10px 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+strong {
+  display: block;
+}
+[data-tone='error'] {
+  border-inline-start-color: var(--ds-error-text);
+}

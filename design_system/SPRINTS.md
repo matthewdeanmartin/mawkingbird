@@ -14,9 +14,9 @@ adoption by eligible consumers and remaining exceptions.
 | [1](sprints/01-foundation.md)    | Catalogue, checkbox, settings row, button        | Privacy, login consent, CORS proxy           | Preview accepted to proceed; integration pending            |
 | [2](sprints/02-forms.md)         | Radio groups, fields, validation, save feedback  | Remaining settings and connection forms      | Preview accepted to proceed; integration pending            |
 | [3](sprints/03-navigation.md)    | Compact toolbars, page headers, tabs, navigation | Home/reader toolbars, settings shell, search | Preview approved; toolbar batch adopted; navigation pending |
-| [4](sprints/04-overlays.md)      | Dialog, menu, disclosure, notices                | Existing dialogs and popovers                | Planned                                                     |
-| [5](sprints/05-content.md)       | Content actions, metadata, loading/empty states  | Timelines, compose, reader surfaces          | Planned                                                     |
-| [6](sprints/06-consolidation.md) | Remaining recurring patterns and enforcement     | Remaining public/admin surfaces from audit   | Planned                                                     |
+| [4](sprints/04-overlays.md)      | Dialog, menu, disclosure, notices                | Existing dialogs and popovers                | Preview accepted; integration pending                       |
+| [5](sprints/05-content.md)       | Content actions, metadata, loading/empty states  | Timelines, compose, reader surfaces          | Ordinary preview accepted; full-tools extension in review   |
+| [6](sprints/06-consolidation.md) | Remaining recurring patterns and enforcement     | Remaining public/admin surfaces from audit   | In progress: dense post preview, inventory and CI gate      |
 
 Every sprint delivers real production-ready Angular source, stories covering
 states and composition, behavior tests, review notes, an integration inventory,

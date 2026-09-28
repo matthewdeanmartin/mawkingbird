@@ -138,3 +138,109 @@ Import `MbPageHeader` and `MbSection`. Header accepts `title`, optional
 `description`, and `level` (1 or 2), with projected actions. Choose the heading
 level to fit the page. Section supplies an h2 and a labelled section with projected
 content. Pages own outer width and placement. Stories: **Layout / Page structure**.
+
+## Dialog
+
+Import `MbDialog`, and mount it under `@if (open())`. Supply translated `title`
+and `closeLabel`, optional `description`, and handle `dismissed` to remove it.
+Dismissal reasons are `button`, `escape` or `backdrop`; none means confirmation.
+Project ordinary content and mark each footer action with `mbDialogActions`.
+Use native `type="button"` and caller-owned click handlers. Do not submit a
+`method="dialog"` form or manipulate the internal native dialog directly.
+
+`closeOnBackdrop` defaults to false. `busy` blocks the dialog's dismiss controls;
+the caller also owns disabling projected actions. Native modal behavior supplies
+background inertness and stacking. Focus enters at the Close button by default
+(or a projected autofocus target); Tab wraps among visible, enabled controls.
+Nested dialogs retain the scroll lock until the last one closes and return focus
+to a connected opener. The fixed-size surface scrolls internally on small screens.
+There are no entrance/exit animations. The component owns width, internal padding,
+border, focus handling and scrolling. Do not apply the legacy `appFocusTrap` too.
+
+## Popover and action menu
+
+`MbPopover` takes a translated `label` and projects rich content. It is a click-open,
+nonmodal dialog by default: normal Tab order, outside-click/Escape dismissal,
+and a viewport-clamped surface. Opening focuses its first control or the panel.
+Resize/page scroll closes the popup. Callers can use `openedChange` to observe
+state; keep network/loading logic outside the surface. No hover behavior is implied.
+
+`MbActionMenu` takes `label` and `actions` with unique IDs, translated labels,
+optional `disabled` and `danger` flags. Handle `chosen` with the stable action ID.
+The popup closes and returns focus before emitting so a follow-up dialog has a
+valid opener. Arrow keys wrap through enabled commands, Home/End reach the ends,
+and typeahead finds labels. Enter/Space activate; Escape returns to the trigger;
+Tab closes and continues outside the menu. Use a real confirmation for destructive
+actions. Links, submenu trees, checkbox/radio items and rich forms are not action
+menu items; use the appropriate native controls or a separately reviewed contract.
+
+## Disclosure and notice
+
+`MbDisclosure` wraps native details/summary with a translated `label`, projected
+content and optional two-way `expanded` state. It retains native Enter/Space and
+Tab behavior. Do not put interactive controls inside the summary label.
+
+`MbNotice` accepts optional `title`, `tone` (`info` or `error`), and explicitly
+chosen `announcement` (`off`, `status`, `alert`). Static information defaults to
+off; a new asynchronous error may use alert. Project translated content/actions.
+Do not announce the same error through multiple notices/fields. This is not a
+toast scheduler and does not decide when to dismiss or retry a request.
+
+All five families are previewed under **Start here / Sprint 4 review**, including
+long-dialog and opt-in backdrop examples. App adoption is pending review.
+
+## Metadata and badges
+
+`MbMetadata` is a wrapping, baseline-aligned layout for projected text, native
+links and `<time datetime>` elements. Callers own URLs, router links, hover-card
+behavior, localization and accurate dates. It does not truncate content or
+sanitize supplied HTML. Keep projected children shrinkable; complex account
+wrappers need their own measured layout before adoption. Isolate handles with
+`dir="auto"` when mixing writing directions.
+
+`a[mbContentLink]` keeps native link behavior and supplies an underlined text-token
+style with visible keyboard focus. Use it for links in metadata/content-state
+surfaces; preserve actual destinations and router-link bindings.
+
+`MbBadge` is informational plain text with `tone="neutral"` (default) or
+`"attention"`. No interactive role, automatic announcement, or verification
+meaning is supplied. Use explicit text rather than color alone. Buttons, filters
+and verification entitlements retain their own contracts.
+
+## Content states and post actions
+
+`MbContentState` requires `title`; optional `description` and
+`kind="empty|loading|error"` provide presentation only. `announcement` defaults to
+`off`; opt into `status` or `alert` for an actual transition requiring announcement.
+Projected native buttons/links sit outside the live message. Callers own retry,
+loading state, retained posts, translations and focus. Do not remove existing
+content during pagination, or attach `aria-busy` to a region containing its own
+live loading announcement. No spinner, timer, service or animation is included.
+
+Use existing `MbToolbar density="compact" embedded` for related button-only post
+actions. Icon-only buttons require a localized accessible name; decorative icons
+must be hidden from accessibility APIs. Use `pressed` for toggles and native
+`disabled` for unavailable commands. Native links and read-only counts must not
+be converted to buttons to fit that toolbar. Sprint 5 previews this composition;
+real mixed-action rows await a reviewed contract.
+
+## Post actions
+
+`MbPostActions` is a labeled, wrapping group for mixed links and buttons. Keep
+frequent commands visible; add rows as needed instead of hiding commands, clipping
+counts or abbreviating them to make a row fit. Use `button[mbPostAction]` with
+`type="button"` for commands and `a[mbPostAction]` with a native href/routerLink
+for navigation. Use `pressed` only on toggle buttons; links are never toggles.
+The group preserves native Tab order and does not capture arrow keys. Use the
+existing `MbToolbar` when a button-only roving-focus group is appropriate.
+
+`span[mbActionCount]` keeps a formatted count on one line with tabular numerals.
+Its containing action moves intact to another row. Counts with their own account
+list behavior remain separate buttons from Like/Boost toggles. Localize labels
+and number formatting at the caller; use accessible names for icon-only actions.
+
+The shared toolbar button stylesheet provides visual states; post actions add
+compact wrapping and retain 44px touch targets. No per-post sizing overrides are
+needed. The preview includes 21 controls and millions-scale counts; adding more
+commands requires extending the stress story, not a one-off fixed width. Menus
+are appropriate for moderation/removal, not the default escape for normal tools.

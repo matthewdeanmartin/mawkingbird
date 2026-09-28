@@ -1,0 +1,18 @@
+:host {
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  vertical-align: baseline;
+  overflow-wrap: anywhere;
+}
+:host([data-tone='attention']) {
+  border-color: var(--text);
+  color: var(--text);
+}

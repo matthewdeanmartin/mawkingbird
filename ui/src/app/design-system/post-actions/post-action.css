@@ -1,0 +1,15 @@
+:host {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 3px 4px;
+  text-decoration: none;
+}
+:host(:any-link):hover {
+  text-decoration: underline;
+}
+@media (pointer: coarse) {
+  :host {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

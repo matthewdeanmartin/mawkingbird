@@ -1,0 +1,23 @@
+:host {
+  display: inline-block;
+}
+[popover] {
+  position: fixed;
+  margin: 0;
+  box-sizing: border-box;
+  width: min(280px, calc(100vw - 16px));
+  max-height: min(320px, calc(100dvh - 16px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  box-shadow: 0 8px 24px var(--ds-overlay-shadow);
+  overflow-wrap: anywhere;
+}
+[role='menu'] {
+  padding: 4px;
+  width: min(240px, calc(100vw - 16px));
+}
