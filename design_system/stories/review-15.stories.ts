@@ -34,6 +34,7 @@ class SettingsPreview {
   readonly analytics = signal(false);
   readonly visibility = signal("public");
   readonly language = signal("en");
+  readonly knownLanguages = signal(["en"]);
   readonly level = signal<TrustLevel>("individuals");
   readonly cw = signal(false);
   readonly sensitive = signal(false);
@@ -179,8 +180,19 @@ export default {
               analytics: s.analytics,
               setAnalytics: (v: boolean) => s.analytics.set(v),
               setDefaultVisibility: (v: string) => s.visibility.set(v),
-              addKnownLanguage: (v: string) => s.language.set(v),
-            };
+              setPostingLanguage: (v: string) => s.language.set(v),
+              addKnownLanguage: (v: string) =>
+                s.knownLanguages.update((languages) =>
+                  languages.includes(v) ? languages : [...languages, v],
+                ),
+            } satisfies Pick<
+              ClientPrefs,
+              | "analytics"
+              | "setAnalytics"
+              | "setDefaultVisibility"
+              | "setPostingLanguage"
+              | "addKnownLanguage"
+            >;
           },
         },
         {

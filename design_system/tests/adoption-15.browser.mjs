@@ -40,6 +40,7 @@ for (const [label, key, value, old] of [
     await expect(control).toBeEnabled();
     await expect(control).toHaveAttribute("aria-invalid", "true");
     await expect(scope.getByRole("alert")).toContainText("503");
+    await expect(page.locator("[data-defaults]")).toHaveText("public / en");
     await expect(page.locator("[data-requests]")).toHaveText(
       JSON.stringify({ [`source[${key}]`]: value }),
     );
@@ -52,6 +53,9 @@ for (const [label, key, value, old] of [
     await expect(scope.getByRole("alert")).toHaveCount(0);
     await expect(scope.getByRole("status")).toHaveText("Saved ✓");
     await expect(page.locator("[data-count]")).toHaveText("2");
+    await expect(page.locator("[data-defaults]")).toHaveText(
+      key === "language" ? "public / eo" : "private / en",
+    );
     const described = await control.getAttribute("aria-describedby");
     expect(described).toBeTruthy();
     await expect(page.locator(`[id="${described}"]`)).toContainText("Default");
@@ -71,6 +75,7 @@ test("clearing posting language preserves the explicit empty value", async ({
     '{"source[language]":""}',
   );
   await expect(control).toHaveValue("");
+  await expect(page.locator("[data-defaults]")).toHaveText("public /");
 });
 test("trust radio keyboard choices preserve people and reversible local switches", async ({
   page,
