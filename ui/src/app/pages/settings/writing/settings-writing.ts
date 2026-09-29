@@ -15,6 +15,11 @@ import {
 } from '../../../pkm/pkm-tags';
 import { WIZARD_STEPS, WizardStep, activeSteps, stepTitleKey } from '../../../publish-wizard';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
+import { MbField, MbControl } from '../../../design-system/field/field';
+import { MbButton } from '../../../design-system/button/button';
+import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedback';
 
 /**
  * Writing settings: everything about getting words out — where writing starts,
@@ -52,6 +57,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.writing.requireAlt: Require a description on every attachment before posting
 // i18n settings.writing.savePostingDefaults: Save posting defaults
 // i18n settings.writing.wizard: The publish wizard
+// i18n settings.writing.wizard.steps: Steps
+// i18n settings.writing.wizard.safety: Safety check
 // i18n settings.writing.wizard.hint.before: What
 // i18n settings.writing.wizard.hint.after: shows you between hitting Publish and the post going out. Turn off the steps you don't want; the ones left run in this order.
 // i18n settings.writing.wizard.allOff: ⚠ Every step is off, so Publish goes straight to the composer — which is exactly how it behaved before this wizard existed.
@@ -62,7 +69,10 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.writing.notes.or: or
 // i18n settings.writing.notes.hint.b: and it becomes a productivity object: it shows up beside the editor in
 // i18n settings.writing.notes.hint.c: , instead of you having to go looking for it. A note is something you wrote down to keep. A to-do is something you owe a reply to. Both live either in this browser as drafts, or on the server as posts only you can see.
-// i18n settings.writing.yourWords: Your words
+// i18n settings.writing.yourWords: What do you call tasks, notes and appointments?
+// i18n settings.writing.words.todo: Tasks
+// i18n settings.writing.words.note: Notes
+// i18n settings.writing.words.cal: Appointments
 // i18n settings.writing.yourWords.hint.a: is English, and this feature is useless if the word isn't yours. Set your own — comma-separated, and any of them will match. Tags are matched whole and case-insensitively, so
 // i18n settings.writing.yourWords.and: and
 // i18n settings.writing.yourWords.hint.b: are the same tag but
@@ -76,23 +86,21 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.writing.savedTick: ✓ Saved
 @Component({
   selector: 'app-settings-writing',
-  imports: [FormsModule, RouterLink, TranslocoPipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+    MbSettingsRow,
+    MbCheckbox,
+    MbField,
+    MbControl,
+    MbButton,
+    MbSaveFeedback,
+  ],
   templateUrl: './settings-writing.html',
   styles: `
-    .pkm-toggle {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.65rem;
-      margin-block: 1rem;
-    }
-    .pkm-toggle input {
-      flex: none;
-      width: auto;
-      margin-top: 0.2rem;
-    }
-    .pkm-toggle .hint {
-      display: block;
-      margin-top: 0.3rem;
+    .vocabulary-field {
+      max-width: 375px;
     }
   `,
 })
@@ -152,6 +160,11 @@ export class SettingsWriting implements OnInit {
   }
 
   protected readonly kinds = PKM_KINDS;
+  protected readonly wordLabelKeys: Record<PkmKind, string> = {
+    todo: 'settings.writing.words.todo',
+    note: 'settings.writing.words.note',
+    cal: 'settings.writing.words.cal',
+  };
   protected readonly noun = pkmNounKey;
   protected saved = signal(false);
 

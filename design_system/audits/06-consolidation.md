@@ -130,3 +130,12 @@ Profile link helpers adopt Dialog, Field/Control and Button for both website and
 other-profile forms. The metadata rows also adopt labelled shared fields and
 buttons, while the rest of the Profile form remains partial adoption. Helpers
 reuse blank rows, preserve existing details and defer publishing to Save changes.
+
+Profile rows now use Field's opt-in visually hidden labels to retain compact
+editing and accessible names. The two helper buttons remain available at the
+four-row limit; each dialog explains the limit and blocks adding, including form
+submission, until a row is removed. Guided dialog labels remain visible.
+
+Writing's publish wizard and vocabulary fields adopt shared two-column settings
+rows. Wizard checkboxes, vocabulary inputs, actions and saved feedback use the
+design system; preference semantics and the upper sections remain unchanged.

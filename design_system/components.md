@@ -34,6 +34,10 @@ this is a visible review decision, not an approved change to existing buttons.
 
 ## Field and native control
 
+Compact editors can set `hideLabel` on `mb-field` to keep the label available
+to assistive technology without repeating a visible caption on every row.
+Keep visible labels in guided forms and dialogs; the default is unchanged.
+
 Import `MbField` and `MbControl`. Put exactly one native input/select/textarea
 with `mbControl` inside `mb-field`. Keep the native `ngModel` or `formControl`,
 type, autocomplete, min/max, rows, required and disabled semantics. The directive

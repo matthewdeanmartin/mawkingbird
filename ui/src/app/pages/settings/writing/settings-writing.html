@@ -131,36 +131,31 @@
       {{ 'settings.writing.wizard.hint.after' | transloco }}
     </p>
 
-    @for (step of wizardSteps; track step) {
-      <label class="pkm-toggle">
-        <input
-          type="checkbox"
-          [ngModel]="stepOn(step)"
-          (ngModelChange)="toggleStep(step, $event)"
-          [attr.name]="'wizard-' + step"
+    <mb-settings-row [heading]="'settings.writing.wizard.steps' | transloco">
+      @for (step of wizardSteps; track step) {
+        <mb-checkbox
+          [label]="stepTitleKey(step) | transloco"
+          [checked]="stepOn(step)"
+          (checkedChange)="toggleStep(step, $event)"
+          [name]="'wizard-' + step"
         />
-        <span>{{ stepTitleKey(step) | transloco }}</span>
-      </label>
-    }
+      }
+      @if (wizardOff()) {
+        <p class="hint" role="status">
+          {{ 'settings.writing.wizard.allOff' | transloco }}
+        </p>
+      }
+    </mb-settings-row>
 
-    @if (wizardOff()) {
-      <p class="hint" role="status">
-        {{ 'settings.writing.wizard.allOff' | transloco }}
-      </p>
-    }
-
-    <label class="pkm-toggle">
-      <input
-        type="checkbox"
-        [ngModel]="prefs.warnOnPkmPublish()"
-        (ngModelChange)="toggleWarn($event)"
+    <mb-settings-row [heading]="'settings.writing.wizard.safety' | transloco">
+      <mb-checkbox
+        [label]="'settings.writing.warnPkm' | transloco"
+        [hint]="'settings.writing.warnPkm.hint' | transloco"
+        [checked]="prefs.warnOnPkmPublish()"
+        (checkedChange)="toggleWarn($event)"
         name="warnOnPkmPublish"
       />
-      <span>
-        {{ 'settings.writing.warnPkm' | transloco }}
-        <span class="hint">{{ 'settings.writing.warnPkm.hint' | transloco }}</span>
-      </span>
-    </label>
+    </mb-settings-row>
   </div>
 
   <div class="ssection">
@@ -181,49 +176,52 @@
       {{ 'settings.writing.yourWords.hint.c' | transloco }}
     </p>
 
-    @for (kind of kinds; track kind) {
-      <label class="pkm-field">
-        <span class="pkm-field-label">{{
-          'settings.writing.wordsThatMean' | transloco: { noun: noun(kind) | transloco }
-        }}</span>
-        <input
-          type="text"
-          [ngModel]="fields()[kind]"
-          (ngModelChange)="setField(kind, $event)"
-          [attr.placeholder]="defaultsFor(kind)"
-          [attr.name]="'pkm-' + kind"
-        />
-      </label>
-    }
-
-    @if (disabledKinds().length) {
-      <p class="hint" role="status">
-        {{ 'settings.writing.switchedOff' | transloco }}
-        @for (kind of disabledKinds(); track kind) {
-          <strong>{{ noun(kind) | transloco }}</strong>
-          @if (!$last) {
-            ,
-          }
-        }
-        {{
-          (disabledKinds().length === 1
-            ? 'settings.writing.switchedOff.afterOne'
-            : 'settings.writing.switchedOff.afterOther'
-          ) | transloco
-        }}
-      </p>
-    }
-
-    <div class="pkm-actions">
-      <button class="btn" type="button" (click)="save()">
-        {{ 'settings.writing.saveWords' | transloco }}
-      </button>
-      <button class="btn btn-outline" type="button" (click)="reset()">
-        {{ 'settings.writing.restoreDefaults' | transloco }}
-      </button>
-      @if (saved()) {
-        <span class="hint" role="status">{{ 'settings.writing.savedTick' | transloco }}</span>
+    <form (ngSubmit)="save()">
+      @for (kind of kinds; track kind) {
+        <mb-settings-row [heading]="wordLabelKeys[kind] | transloco">
+          <mb-field class="vocabulary-field" hideLabel [label]="wordLabelKeys[kind] | transloco">
+            <input
+              mbControl
+              type="text"
+              [ngModel]="fields()[kind]"
+              (ngModelChange)="setField(kind, $event)"
+              [attr.placeholder]="defaultsFor(kind)"
+              [name]="'pkm-' + kind"
+            />
+          </mb-field>
+        </mb-settings-row>
       }
-    </div>
+
+      @if (disabledKinds().length) {
+        <p class="hint" role="status">
+          {{ 'settings.writing.switchedOff' | transloco }}
+          @for (kind of disabledKinds(); track kind) {
+            <strong>{{ noun(kind) | transloco }}</strong>
+            @if (!$last) {
+              ,
+            }
+          }
+          {{
+            (disabledKinds().length === 1
+              ? 'settings.writing.switchedOff.afterOne'
+              : 'settings.writing.switchedOff.afterOther'
+            ) | transloco
+          }}
+        </p>
+      }
+
+      <div class="sactions">
+        <mb-save-feedback
+          [state]="saved() ? 'saved' : 'idle'"
+          [message]="'settings.writing.savedTick' | transloco"
+        />
+        <button mbButton variant="outline" type="button" (click)="reset()">
+          {{ 'settings.writing.restoreDefaults' | transloco }}
+        </button>
+        <button mbButton type="submit">
+          {{ 'settings.writing.saveWords' | transloco }}
+        </button>
+      </div>
+    </form>
   </div>
 </div>

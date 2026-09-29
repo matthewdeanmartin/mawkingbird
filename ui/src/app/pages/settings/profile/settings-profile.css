@@ -1,6 +1,6 @@
 .meta-row {
   display: flex;
-  align-items: end;
+  align-items: center;
   flex-wrap: wrap;
   gap: 6px;
 }

@@ -35,8 +35,7 @@ import { ProfileLinkDialog } from './profile-link-dialog';
 // i18n settings.profile.verified: ✓ verified
 // i18n settings.profile.verified.title: Link ownership verified via rel=me on {{date}}
 // i18n settings.profile.addField: + Add field
-// i18n settings.profile.links.hint: Add a website or another profile using the buttons below. You can also add details such as pronouns with Add field. Choose Save changes when you are finished.
-// i18n settings.profile.links.full: All 4 profile rows are in use. Remove a row to add another link or detail.
+// i18n settings.profile.links.full: All 4 profile rows are in use. You can explore this form, but to add a link, cancel and remove a row from your profile first.
 // i18n settings.profile.metadata.hint: Up to 4 table rows shown on your profile (links, pronouns, ...). A link whose page links back to your profile with rel="me" shows as ✓ verified (checked by the server when you save).
 // i18n settings.profile.avatar: Avatar
 // i18n settings.profile.header: Header

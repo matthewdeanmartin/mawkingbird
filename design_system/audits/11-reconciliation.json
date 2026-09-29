@@ -839,8 +839,8 @@
     },
     {
       "file": "ui/src/app/pages/settings/writing/settings-writing.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Publish wizard and vocabulary sections use SettingsRow, Checkbox, Field/Control, Button and SaveFeedback. Home composer and server-backed posting defaults remain a separate migration."
     },
     {
       "file": "ui/src/app/pages/starter-collection/starter-collection.html",

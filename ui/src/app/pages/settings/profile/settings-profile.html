@@ -60,13 +60,13 @@
       <div class="srow">
         <span class="slabel">{{ 'settings.profile.metadata' | transloco }}</span>
         <div class="scontrol">
-          <p class="hint">{{ 'settings.profile.links.hint' | transloco }}</p>
           <div class="link-actions">
             <button
               mbButton
               type="button"
               variant="outline"
-              [disabled]="!canAddLink() || saving()"
+              size="small"
+              [disabled]="saving()"
               (click)="linkDialog.set('link')"
             >
               {{ 'settings.profile.link.add' | transloco }}
@@ -75,30 +75,30 @@
               mbButton
               type="button"
               variant="outline"
-              [disabled]="!canAddLink() || saving()"
+              size="small"
+              [disabled]="saving()"
               (click)="linkDialog.set('profile')"
             >
               {{ 'settings.profile.link.other' | transloco }}
             </button>
           </div>
-          @if (!canAddLink()) {
-            <p class="hint">{{ 'settings.profile.links.full' | transloco }}</p>
-          }
           @for (f of fields(); track $index; let i = $index) {
             <div class="meta-row" [class.meta-verified]="verifiedAt()[f.name]">
-              <mb-field [label]="'settings.profile.field.label' | transloco">
+              <mb-field hideLabel [label]="'settings.profile.field.label' | transloco">
                 <input
                   mbControl
                   type="text"
+                  [placeholder]="'settings.profile.field.label' | transloco"
                   [ngModel]="f.name"
                   (ngModelChange)="setField(i, 'name', $event)"
                   [name]="'field_name_' + i"
                 />
               </mb-field>
-              <mb-field [label]="'settings.profile.field.content' | transloco">
+              <mb-field hideLabel [label]="'settings.profile.field.content' | transloco">
                 <input
                   mbControl
                   type="text"
+                  [placeholder]="'settings.profile.field.content' | transloco"
                   [ngModel]="f.value"
                   (ngModelChange)="setField(i, 'value', $event)"
                   [name]="'field_value_' + i"
@@ -181,6 +181,7 @@
   <app-profile-link-dialog
     [mode]="mode"
     [local]="auth.isAnonymous"
+    [canAdd]="canAddLink() && !saving()"
     (added)="addLink($event)"
     (closed)="linkDialog.set(null)"
   />

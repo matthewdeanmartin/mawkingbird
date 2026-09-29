@@ -33,7 +33,7 @@ export class MbControl {
   selector: 'mb-field',
   imports: [MbSaveFeedback],
   template: `
-    <label class="mb-field-label" [for]="controlId">
+    <label class="mb-field-label" [class.mb-field-label-hidden]="hideLabel()" [for]="controlId">
       {{ label() }}
       @if (control()?.required()) {
         <span aria-hidden="true"> *</span>
@@ -52,6 +52,8 @@ export class MbControl {
 })
 export class MbField {
   readonly label = input.required<string>();
+  /** Compact editors retain an accessible label without repeating visible captions. */
+  readonly hideLabel = input(false, { transform: booleanAttribute });
   readonly hint = input('');
   readonly error = input('');
   readonly control = contentChild(MbControl);

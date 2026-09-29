@@ -72,6 +72,7 @@ function webLink(value: string): string | null {
 export class ProfileLinkDialog {
   readonly mode = input.required<'link' | 'profile'>();
   readonly local = input(false);
+  readonly canAdd = input(true);
   readonly added = output<AccountField>();
   readonly closed = output<void>();
   protected readonly label = signal('');
@@ -83,6 +84,7 @@ export class ProfileLinkDialog {
   protected readonly validAddress = computed(() => webLink(this.address()));
 
   protected submit(): void {
+    if (!this.canAdd()) return;
     this.attempted.set(true);
     if (this.mode() === 'link') {
       const name = this.label().trim();

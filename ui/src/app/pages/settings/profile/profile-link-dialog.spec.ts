@@ -78,6 +78,32 @@ describe('ProfileLinkDialog', () => {
     });
   });
 
+  it('lets users explore either full-slot form but blocks button and form submission', async () => {
+    for (const mode of ['link', 'profile'] as const) {
+      const dialog = await setup(mode);
+      dialog.fixture.componentRef.setInput('canAdd', false);
+      dialog.fixture.detectChanges();
+      if (mode === 'link') {
+        dialog.fill('link_label', 'Website');
+        dialog.fill('link_url', 'https://example.com/');
+      } else {
+        dialog.fill('profile_username', '@alice@mastodon.social');
+        expect(dialog.el.querySelector<HTMLInputElement>('input[readonly]')?.value).toBe(
+          'https://mastodon.social/@alice',
+        );
+      }
+      expect(dialog.el.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled).toBe(
+        true,
+      );
+      dialog.submit();
+      expect(dialog.added).not.toHaveBeenCalled();
+      expect(dialog.el.textContent).toContain('cancel and remove a row');
+      dialog.el.querySelector<HTMLButtonElement>('button[type="button"]')!.click();
+      expect(dialog.closed).toHaveBeenCalledOnce();
+      dialog.fixture.destroy();
+    }
+  });
+
   it('previews the selected site and adds the generated profile link', async () => {
     const dialog = await setup('profile');
     dialog.fill('profile_username', '@alice@mastodon.social');

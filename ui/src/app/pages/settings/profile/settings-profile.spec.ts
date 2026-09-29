@@ -135,7 +135,7 @@ describe('SettingsProfile', () => {
     req.flush(makeAccount());
   });
 
-  it('disables both convenience buttons at the field limit and re-enables them after removal', () => {
+  it('opens both helpers at the field limit but only allows adding after a row is removed', () => {
     const fixture = setUp();
     internals(fixture).fields.set(
       Array.from({ length: 4 }, (_, i) => ({
@@ -148,7 +148,25 @@ describe('SettingsProfile', () => {
       fixture.nativeElement.querySelectorAll('.link-actions button'),
     );
     expect(buttons).toHaveLength(2);
-    expect(buttons.every((button) => button.disabled)).toBe(true);
+    expect(buttons.every((button) => !button.disabled)).toBe(true);
+    for (const [index, mode] of ['link', 'profile'].entries()) {
+      buttons[index].click();
+      fixture.detectChanges();
+      const dialog = fixture.debugElement.query(By.directive(ProfileLinkDialog))
+        .componentInstance as ProfileLinkDialog;
+      expect(dialog.mode()).toBe(mode);
+      expect(dialog.canAdd()).toBe(false);
+      expect(fixture.nativeElement.querySelector('dialog button[type="submit"]').disabled).toBe(
+        true,
+      );
+      expect(fixture.nativeElement.querySelector('dialog').textContent).toContain(
+        'cancel and remove a row',
+      );
+      dialog.added.emit({ name: 'Extra', value: 'https://example.com/extra' });
+      expect(internals(fixture).fields()).toHaveLength(4);
+      dialog.closed.emit();
+      fixture.detectChanges();
+    }
     fixture.componentInstance.removeField(0);
     fixture.detectChanges();
     expect(buttons.every((button) => !button.disabled)).toBe(true);
@@ -157,6 +175,25 @@ describe('SettingsProfile', () => {
     expect(
       fixture.debugElement.query(By.directive(ProfileLinkDialog)).componentInstance.mode(),
     ).toBe('profile');
+    expect(
+      fixture.debugElement.query(By.directive(ProfileLinkDialog)).componentInstance.canAdd(),
+    ).toBe(true);
+    expect(fixture.nativeElement.querySelector('dialog button[type="submit"]').disabled).toBe(
+      false,
+    );
+  });
+
+  it('keeps metadata rows compact with accessible labels and a single pair of helper buttons', () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const labels = el.querySelectorAll<HTMLLabelElement>('.meta-row label');
+    expect(labels).toHaveLength(2);
+    for (const label of labels) {
+      expect(label.classList.contains('mb-field-label-hidden')).toBe(true);
+      expect(label.control).toBeTruthy();
+    }
+    expect(el.querySelectorAll('.link-actions button')).toHaveLength(2);
   });
 
   it('saves via PATCH update_credentials with form data', () => {

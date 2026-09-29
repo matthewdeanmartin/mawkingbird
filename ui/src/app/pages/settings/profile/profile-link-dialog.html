@@ -7,6 +7,9 @@
   [showClose]="false"
   (dismissed)="closed.emit()"
 >
+  @if (!canAdd()) {
+    <p id="profile-link-limit" role="status">{{ 'settings.profile.links.full' | transloco }}</p>
+  }
   <form id="profile-link-form" class="link-fields" (ngSubmit)="submit()" novalidate>
     @if (mode() === 'link') {
       <mb-field
@@ -90,7 +93,14 @@
   <button mbDialogActions mbButton type="button" variant="outline" (click)="closed.emit()">
     {{ 'settings.profile.link.cancel' | transloco }}
   </button>
-  <button mbDialogActions mbButton type="submit" form="profile-link-form">
+  <button
+    mbDialogActions
+    mbButton
+    type="submit"
+    form="profile-link-form"
+    [disabled]="!canAdd()"
+    [attr.aria-describedby]="!canAdd() ? 'profile-link-limit' : null"
+  >
     {{ 'settings.profile.link.submit' | transloco }}
   </button>
 </mb-dialog>

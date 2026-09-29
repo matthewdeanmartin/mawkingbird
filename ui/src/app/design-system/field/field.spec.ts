@@ -6,7 +6,7 @@ import { MbControl, MbField } from './field';
 @Component({
   imports: [MbField, MbControl, FormsModule, ReactiveFormsModule],
   template: `
-    <mb-field label="Name" hint="Public name" [error]="error">
+    <mb-field label="Name" hint="Public name" [error]="error" [hideLabel]="hideLabel">
       <input mbControl required [(ngModel)]="name" #nameModel="ngModel" />
     </mb-field>
     <mb-field label="Goal"><input mbControl type="number" [formControl]="goal" /></mb-field>
@@ -21,6 +21,7 @@ import { MbControl, MbField } from './field';
   `,
 })
 class FieldHost {
+  hideLabel = false;
   name = '';
   error = 'Enter a name';
   goal = new FormControl<number | null>(10);
@@ -29,6 +30,19 @@ class FieldHost {
 }
 
 describe('MbField', () => {
+  it('can visually hide a compact label while preserving its native control association', async () => {
+    const fixture = TestBed.createComponent(FieldHost);
+    await fixture.whenStable();
+    const label: HTMLLabelElement = fixture.nativeElement.querySelector('label');
+    expect(label.classList.contains('mb-field-label-hidden')).toBe(false);
+    fixture.componentInstance.hideLabel = true;
+    fixture.changeDetectorRef.markForCheck();
+    await fixture.whenStable();
+    expect(label.classList.contains('mb-field-label-hidden')).toBe(true);
+    expect(label.control).toBe(fixture.nativeElement.querySelector('input'));
+    expect(label.textContent).toContain('Name');
+    expect(label.getAttribute('aria-hidden')).toBeNull();
+  });
   it('links native controls to unique labels, hints and errors and removes stale associations', async () => {
     const fixture = TestBed.createComponent(FieldHost);
     await fixture.whenStable();
