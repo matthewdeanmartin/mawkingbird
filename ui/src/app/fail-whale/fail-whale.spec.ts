@@ -37,6 +37,8 @@ describe('FailWhale', () => {
     // Scoped to the action row: the diagnostics box has its own (always-present)
     // link to the connection doctor, which is not a status-page link.
     expect(el.querySelector('.actions a')).toBeNull();
+    expect(el.textContent).not.toContain('Report this');
+    expect(el.querySelector('app-bug-report-dialog')).toBeNull();
   });
 
   it('names the instance and links its official status page when registered', () => {

@@ -6,6 +6,7 @@ export interface RailProfileStat {
   value: number;
   /** In-app destination, when the figure has a page behind it. */
   link?: (string | number)[];
+  queryParams?: { tab: 'following' | 'followers' };
 }
 
 /**
@@ -36,6 +37,7 @@ export interface RailProfile {
   stats: RailProfileStat[];
   /** In-app profile page, when this build has one for the network. */
   link?: (string | number)[];
+  queryParams?: { tab: 'following' | 'followers' };
   /** External profile page, for networks with no in-app page yet. */
   href?: string;
   /** The Mastodon account behind the card, for the verified badge. */

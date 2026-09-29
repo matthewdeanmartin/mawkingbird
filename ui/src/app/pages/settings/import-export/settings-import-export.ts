@@ -1,4 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, Injectable, signal } from '@angular/core';
+import { MbButton } from '../../../design-system/button/button';
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -209,9 +211,8 @@ function saveCsv(csv: string, filename: string): void {
 // i18n settings.importExport.suggest.posts.one: {{count}} post
 // i18n settings.importExport.suggest.posts.other: {{count}} posts
 // i18n settings.importExport.suggest.reads.a: Reads about
-// i18n settings.importExport.suggest.reads.b: of your posts or favourites and counts the hashtags in them. Nothing is followed until you send the results to the box above.
-// i18n settings.importExport.suggest.send.a: Send
-// i18n settings.importExport.suggest.send.b: to the box above
+// i18n settings.importExport.suggest.readsSelection.b: of your posts or favourites and counts the hashtags in them. Choose the tags you want, then select Follow selected hashtags.
+// i18n settings.importExport.suggest.follow: Follow selected hashtags ({{count}})
 // i18n settings.importExport.suggest.summary.one: {{tags}} hashtag found across {{posts}} posts. The most-used are ticked.
 // i18n settings.importExport.suggest.summary.other: {{tags}} hashtags found across {{posts}} posts. The most-used are ticked.
 // i18n settings.importExport.suggest.title: Suggest hashtags from what you already read
@@ -275,9 +276,13 @@ function saveCsv(csv: string, filename: string): void {
 // i18n settings.importExport.tags.found.other: Found {{count}} hashtags to follow.
 // i18n settings.importExport.tags.noneFound: No hashtags found — expected #tag names, one per line, or tag page URLs.
 
+@Injectable()
+export class SuggestedTagImporter extends ImportTags {}
+
 @Component({
   selector: 'app-settings-import-export',
-  imports: [FormsModule, RouterLink, TranslocoPipe],
+  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbCheckbox],
+  providers: [SuggestedTagImporter],
   templateUrl: './settings-import-export.html',
   styleUrl: './settings-import-export.css',
 })
@@ -292,6 +297,7 @@ export class SettingsImportExport {
   protected importer = inject(ImportFollows);
   protected tagImporter = inject(ImportTags);
   protected tagSources = inject(TagSources);
+  protected suggestedTagImporter = inject(SuggestedTagImporter);
   private anonymousTags = inject(AnonymousTags);
   protected contactDiscovery = inject(ContactDiscovery);
   protected github = inject(GitHubSession);
@@ -926,14 +932,13 @@ export class SettingsImportExport {
     await this.tagSources.loadFromFavourites();
   }
 
-  /** Move the ticked suggestions into the importer above, ready to follow. */
+  /** Follow the selected suggestions and keep their results in this section. */
   protected useSuggestedTags(): void {
     const tags = this.tagSources.selectedTags();
-    if (!tags.length) {
-      return;
-    }
-    this.pastedTags.set(tags.map((tag) => `#${tag}`).join('\n'));
-    this.previewTags();
+    if (!tags.length || this.suggestedTagImporter.running()) return;
+    this.suggestedTagImporter.reset();
+    this.suggestedTagImporter.load(tags);
+    void this.suggestedTagImporter.start();
   }
 
   protected tagStatusLabel(status: string): string {

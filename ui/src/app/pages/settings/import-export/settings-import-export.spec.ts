@@ -488,7 +488,7 @@ describe('SettingsImportExport', () => {
     expect(internals(fixture).tagExportError()).toBeNull();
   });
 
-  it('useSuggestedTags() moves the ticked suggestions into the importer', async () => {
+  it('useSuggestedTags() follows only the ticked suggestions without replacing a pasted import', async () => {
     const fixture = setUp();
     const sources = TestBed.inject(TagSources);
     const suggested = internals(fixture).suggestTagsFromFavourites();
@@ -503,11 +503,16 @@ describe('SettingsImportExport', () => {
     await suggested;
 
     sources.toggle('baking');
+    const importer = fixture.componentInstance['suggestedTagImporter'];
+    const start = vi.spyOn(importer, 'start').mockResolvedValue();
+    fixture.componentInstance['tagImporter'].load(['photography']);
     internals(fixture).useSuggestedTags();
 
-    // Suggesting never follows on its own: the picks land in the box above,
-    // still needing a deliberate Follow.
-    expect(fixture.componentInstance['tagImporter'].rows().map((r) => r.tag)).toEqual(['cats']);
+    expect(importer.rows().map((r) => r.tag)).toEqual(['cats']);
+    expect(start).toHaveBeenCalledOnce();
+    expect(fixture.componentInstance['tagImporter'].rows().map((r) => r.tag)).toEqual([
+      'photography',
+    ]);
     expect(fixture.componentInstance['tagImporter'].running()).toBe(false);
   });
 

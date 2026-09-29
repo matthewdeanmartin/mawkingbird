@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/write/posting-language-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Posting language selection adopts Dialog, Field/Control and Button for the one-time default question and custom per-post language tags. Preserve shared focus handling and accessible field labels."
+    },
+    {
       "file": "ui/src/app/pages/settings/notifications/settings-notification-preferences.html",
       "disposition": "adopted scope",
       "nextStep": "Notifications adopts PageHeader, SettingsRow and Field/Control for all four browser-local activity preferences. Keep future controls on shared components and preserve linked validation hints."
@@ -1056,6 +1061,11 @@
       "file": "ui/src/app/update-overlay/update-overlay.ts",
       "disposition": "backlog",
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/pages/settings/filters/filter-wizard.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Filter setup uses shared buttons and fields. Keep scenario drafts editable before saving; no custom control styling."
     }
   ]
 }

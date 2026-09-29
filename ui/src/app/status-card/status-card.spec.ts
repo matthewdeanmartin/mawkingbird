@@ -10,6 +10,7 @@ import { provideRouter, Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
+import { TrustedAccounts } from '../trusted-accounts';
 import { Server } from '../server';
 import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
@@ -146,6 +147,31 @@ describe('StatusCard', () => {
   });
 
   /** Creates a fixture, sets the required `status` input, and runs the first CD cycle. */
+  it.each(['reader', 'trusted'] as const)(
+    'lets the viewer collapse a warning expanded by %s and resets for another post',
+    (reason) => {
+      if (reason === 'reader') TestBed.inject(ClientPrefs).setFeedReader(true);
+      else TestBed.inject(TrustedAccounts).trust(makeStatus().account);
+      const fixture = setUp(makeStatus({ spoiler_text: 'Spoilers' }));
+      const button = () =>
+        (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.cw-toggle')!;
+      expect(button().getAttribute('aria-expanded')).toBe('true');
+      button().click();
+      fixture.detectChanges();
+      expect(button().getAttribute('aria-expanded')).toBe('false');
+      button().click();
+      fixture.detectChanges();
+      expect(button().getAttribute('aria-expanded')).toBe('true');
+      button().click();
+      fixture.componentRef.setInput(
+        'status',
+        makeStatus({ id: 'another', spoiler_text: 'Spoilers' }),
+      );
+      fixture.detectChanges();
+      expect(button().getAttribute('aria-expanded')).toBe('true');
+    },
+  );
+
   function setUp(status = makeStatus()): ComponentFixture<StatusCard> {
     const fixture = TestBed.createComponent(StatusCard);
     fixture.componentRef.setInput('status', status);

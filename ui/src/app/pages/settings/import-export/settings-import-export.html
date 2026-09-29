@@ -245,20 +245,11 @@
     </p>
   </section>
 
-  <!--
-    Where the list comes from when you don't have one.
-
-    Nobody keeps a file of hashtags — there is no export to bring. So these read
-    what you have already written or liked and count the tags in it: the same
-    question three ways, answered from whichever history a given person happens
-    to own. The result is a ranked, ticked list, not an immediate follow — it
-    fills the box above so you still press Follow yourself.
-  -->
   <section id="suggest-tags" class="friend-section">
     <h2>{{ 'settings.importExport.suggest.title' | transloco }}</h2>
     <p class="muted small">
       {{ 'settings.importExport.suggest.reads.a' | transloco }} {{ tagSampleSize }}
-      {{ 'settings.importExport.suggest.reads.b' | transloco }}
+      {{ 'settings.importExport.suggest.readsSelection.b' | transloco }}
     </p>
     <div class="import-actions">
       <label class="btn btn-outline file-btn">
@@ -304,43 +295,69 @@
       <ul class="suggest-tags">
         @for (row of tagSources.suggestions(); track row.tag) {
           <li>
-            <label>
-              <input
-                type="checkbox"
-                [checked]="row.selected"
-                (change)="tagSources.toggle(row.tag)"
-              />
-              <span>#{{ row.tag }}</span>
-              <span class="muted small">
-                {{
-                  (row.count === 1
-                    ? 'settings.importExport.suggest.posts.one'
-                    : 'settings.importExport.suggest.posts.other'
-                  ) | transloco: { count: row.count }
-                }}
-              </span>
-            </label>
+            <mb-checkbox
+              [checked]="row.selected"
+              [disabled]="suggestedTagImporter.running()"
+              (checkedChange)="tagSources.toggle(row.tag)"
+              [label]="'#' + row.tag"
+              [hint]="
+                (row.count === 1
+                  ? 'settings.importExport.suggest.posts.one'
+                  : 'settings.importExport.suggest.posts.other'
+                ) | transloco: { count: row.count }
+              "
+            />
           </li>
         }
       </ul>
       <div class="import-actions">
         <button
           type="button"
-          class="btn"
-          [disabled]="!tagSources.selectedTags().length"
+          mbButton
+          [disabled]="!tagSources.selectedTags().length || suggestedTagImporter.running()"
           (click)="useSuggestedTags()"
         >
-          {{ 'settings.importExport.suggest.send.a' | transloco }}
-          {{ tagSources.selectedTags().length }}
-          {{ 'settings.importExport.suggest.send.b' | transloco }}
+          {{
+            'settings.importExport.suggest.follow'
+              | transloco: { count: tagSources.selectedTags().length }
+          }}
         </button>
-        <button type="button" class="link" (click)="tagSources.setAllSelected(true)">
+        <button
+          type="button"
+          mbButton
+          variant="outline"
+          [disabled]="suggestedTagImporter.running()"
+          (click)="tagSources.setAllSelected(true)"
+        >
           {{ 'settings.importExport.selectAll' | transloco }}
         </button>
-        <button type="button" class="link" (click)="tagSources.setAllSelected(false)">
+        <button
+          type="button"
+          mbButton
+          variant="outline"
+          [disabled]="suggestedTagImporter.running()"
+          (click)="tagSources.setAllSelected(false)"
+        >
           {{ 'settings.importExport.selectNone' | transloco }}
         </button>
       </div>
+    }
+    @if (suggestedTagImporter.rows().length) {
+      @if (suggestedTagImporter.running()) {
+        <button mbButton variant="outline" type="button" (click)="suggestedTagImporter.stop()">
+          {{ 'settings.importExport.stop' | transloco }}
+        </button>
+      }
+      <ul class="import-rows" aria-live="polite">
+        @for (row of suggestedTagImporter.rows(); track row.tag) {
+          <li class="import-row" [class]="'row-' + row.status">
+            <a [routerLink]="['/tags', row.tag]">#{{ row.tag }}</a>
+            <span class="row-status muted" [title]="row.error || ''">{{
+              tagStatusLabel(row.status)
+            }}</span>
+          </li>
+        }
+      </ul>
     }
   </section>
 

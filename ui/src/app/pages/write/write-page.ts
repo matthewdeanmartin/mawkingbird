@@ -20,6 +20,10 @@ import { FocusTrap } from '../../a11y/focus-trap';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
+import { PostingLanguage } from '../../posting-language';
+import { PostingLanguageDialog } from './posting-language-dialog';
+import { PrivateMedia } from '../../private-media';
+import { MbButton } from '../../design-system/button/button';
 import { FeatureFlags } from '../../feature-flags';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BloggerSession } from '../../providers/blogger/blogger-session';
@@ -246,6 +250,8 @@ export interface Notice {
 // i18n pages.write.noFindings: The built-in checks found nothing worth mentioning.
 // i18n pages.write.proofreadElsewhere: Proofreading happens in the editor, where you can still change the text. Close this and use 🤖 Proofread with AI beside your writing.
 // i18n pages.write.publishAt: Publish at
+// i18n pages.write.now: Now
+// i18n pages.write.singleTarget: Publishing to
 // i18n pages.write.holdsUntilPublish: The server holds it and publishes it then. It appears under Parked in your drafts until it does.
 // i18n pages.write.emptyPublishesNow: Leave this empty to publish to Mastodon now.
 // i18n pages.write.back: Back
@@ -284,6 +290,8 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    PostingLanguageDialog,
+    MbButton,
     FocusTrap,
     FormsModule,
     HumanTimePipe,
@@ -300,6 +308,12 @@ export interface Notice {
   providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication],
 })
 export class WritePage implements OnInit, OnDestroy {
+  private readonly postingLanguageDefaults = inject(PostingLanguage);
+  private readonly privateMedia = inject(PrivateMedia);
+  protected readonly languagePromptOpen = signal(false);
+  protected readonly choosingDefaultLanguage = signal(true);
+  private readonly languageExplicit = signal(false);
+  private mediaPreflight: Promise<boolean> | null = null;
   protected pseudonymity = inject(Pseudonymity);
   protected publication = inject(WritePublication);
   private postConfirmation = inject(PostConfirmation);
@@ -402,10 +416,18 @@ export class WritePage implements OnInit, OnDestroy {
   private editorSelection: { start: number; end: number } | null = null;
   protected tagHelperOpen = signal(false);
   protected translateOpen = signal(false);
-  protected postLanguage = signal('');
+  protected postLanguage = signal(this.postingLanguageDefaults.default());
   protected readonly canUseAi = computed(() => this.ai.enabled() && this.openrouter.connected());
   protected readonly languageOptions = computed(() =>
-    [...this.knownLanguages.codes()]
+    [
+      ...new Set(
+        [
+          ...this.knownLanguages.codes(),
+          this.postingLanguageDefaults.default(),
+          this.postLanguage(),
+        ].filter(Boolean),
+      ),
+    ]
       .map((code) => ({ code, name: LANG_NAMES[code as LangCode] ?? code.toUpperCase() }))
       .sort((a, b) => a.name.localeCompare(b.name)),
   );
@@ -709,6 +731,7 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.languagePromptOpen.set(this.postingLanguageDefaults.needsPrompt());
     this.sources.load();
     this.pkm.load();
     const draftId = this.route.snapshot.queryParamMap.get('draft');
@@ -952,8 +975,19 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   protected setPostLanguage(code: string): void {
+    if (code === '__other') {
+      this.choosingDefaultLanguage.set(false);
+      this.languagePromptOpen.set(true);
+      return;
+    }
+    this.languageExplicit.set(true);
     this.postLanguage.set(code);
     this.dirty.set(true);
+  }
+
+  protected usePostingLanguage(code: string): void {
+    this.setPostLanguage(code);
+    if (this.choosingDefaultLanguage()) this.languageExplicit.set(false);
   }
 
   protected onFilesSelected(event: Event): void {
@@ -983,6 +1017,43 @@ export class WritePage implements OnInit, OnDestroy {
     this.media.update((items) => [...items, ...accepted.map(localDraftMedia)]);
     this.mediaNotice.set('');
     this.dirty.set(true);
+    if (this.pseudonymity.cleanMedia()) void this.preflightMedia();
+  }
+
+  /** Local validation/cleaning happens before review, without uploading anything. */
+  private preflightMedia(): Promise<boolean> {
+    if (this.mediaPreflight) return this.mediaPreflight.then(() => this.preflightMedia());
+    this.mediaPreflight = (async () => {
+      this.uploading.set(true);
+      try {
+        for (const item of this.media()) {
+          if (!item.file) {
+            if (this.pseudonymity.cleanMedia())
+              throw new Error(
+                'Remove older attachments and attach them again so their metadata can be checked.',
+              );
+            continue;
+          }
+          const file = await firstValueFrom(this.privateMedia.prepare(item.file));
+          if (file instanceof File)
+            this.media.update((items) =>
+              items.map((current) => (current === item ? { ...current, file } : current)),
+            );
+        }
+        this.mediaNotice.set('');
+        return true;
+      } catch (error) {
+        this.mediaNotice.set(
+          error instanceof Error ? error.message : 'The attachments could not be checked.',
+        );
+        return false;
+      } finally {
+        this.uploading.set(false);
+      }
+    })().finally(() => {
+      this.mediaPreflight = null;
+    });
+    return this.mediaPreflight;
   }
 
   protected setMediaDescription(index: number, description: string): void {
@@ -1210,6 +1281,7 @@ export class WritePage implements OnInit, OnDestroy {
           }
         : null,
       postLanguage: this.postLanguage(),
+      postLanguageExplicit: this.languageExplicit(),
       target: 'fedi',
     };
   }
@@ -1221,7 +1293,11 @@ export class WritePage implements OnInit, OnDestroy {
     this.spoilerText.set(snapshot.spoilerText);
     this.cwOpen.set(!!snapshot.spoilerText);
     this.sensitive.set(snapshot.sensitive);
-    this.postLanguage.set(snapshot.postLanguage ?? '');
+    this.languageExplicit.set(snapshot.postLanguageExplicit ?? false);
+    this.postLanguage.set(
+      snapshot.postLanguage ||
+        (snapshot.postLanguageExplicit ? '' : this.postingLanguageDefaults.default()),
+    );
     if (snapshot.poll) {
       this.pollOpen.set(true);
       this.pollOptions.set(snapshot.poll.options.length >= 2 ? snapshot.poll.options : ['', '']);
@@ -1246,27 +1322,45 @@ export class WritePage implements OnInit, OnDestroy {
     this.pollOptions.set(['', '']);
     this.pollMultiple.set(false);
     this.pollExpiresIn.set(86400);
-    const defaultLanguage =
-      this.auth.account()?.source?.language?.toLowerCase().split(/[-_]/)[0] ?? '';
-    this.postLanguage.set(
-      defaultLanguage && this.knownLanguages.knows(defaultLanguage) ? defaultLanguage : '',
-    );
+    this.languageExplicit.set(false);
+    this.postLanguage.set(this.postingLanguageDefaults.default());
     this.editorSelection = null;
     this.resetProofreading();
   }
 
   /** Review and publish without leaving the writing workspace. */
   protected publish(): void {
-    if (!this.hasContent()) {
+    if (!this.hasContent() || this.uploading()) {
       return;
     }
-    const first = firstStep(this.wizardEnabled());
+    if (this.altTextMissing()) {
+      this.mediaNotice.set(
+        altTextMessage(this.undescribedMedia(), true) ??
+          this.transloco.translate<string>('pages.write.describeAttachmentsFirst'),
+      );
+      return;
+    }
+    if (this.pollOpen() && this.pollOptions().filter((option) => option.trim()).length < 2) {
+      this.mediaNotice.set('A poll needs at least two choices.');
+      return;
+    }
+    if (this.media().length && this.pseudonymity.cleanMedia()) {
+      void this.preflightMedia().then((valid) => {
+        if (valid) this.beginPublish();
+      });
+      return;
+    }
+    this.beginPublish();
+  }
+
+  private beginPublish(): void {
     const firstTarget = this.wizardTargets().find(
       (target) => !this.targetUnsupportedReason(target),
     );
     if (firstTarget) {
       this.setWizardTarget(firstTarget);
     }
+    const first = firstStep(this.wizardEnabled());
     if (!first) {
       this.enterWizardStep('targets');
       if (!this.media().length) void this.wizardFinish();
@@ -1323,6 +1417,9 @@ export class WritePage implements OnInit, OnDestroy {
 
   /** Targets this session can actually post to, asked of the composer's own rules. */
   protected wizardTargets = computed(() => usableTargets(this.availability()));
+  protected selectableTargets = computed(() =>
+    this.wizardTargets().filter((target) => !this.targetUnsupportedReason(target)),
+  );
 
   protected qualityFindings = computed(() =>
     runQualityChecks(this.body(), {
@@ -1457,7 +1554,7 @@ export class WritePage implements OnInit, OnDestroy {
     const hasMedia = this.media().length > 0;
     const hasPoll = this.pollOpen();
     const hasCw = this.cwOpen() && !!this.spoilerText().trim();
-    const hasLanguage = !!this.postLanguage();
+    const hasLanguage = !!this.postLanguage() && this.languageExplicit();
     if (scheduled && threaded) {
       return 'Scheduling supports one post, not a thread.';
     }

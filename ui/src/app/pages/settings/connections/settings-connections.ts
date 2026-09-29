@@ -1,3 +1,5 @@
+import { NgTemplateOutlet } from '@angular/common';
+import { MbTab, MbTabs } from '../../../design-system/tabs/tabs';
 import { ConnectionSyncButton } from '../../../providers/account/connection-sync-button';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -64,6 +66,8 @@ export interface ConnectionCatalogRow {
  * The credential-retention policy stays here rather than on any child because
  * it governs all of them at once.
  */
+// i18n settings.connections.basic: Basic
+// i18n settings.connections.advanced: Advanced
 // i18n settings.connections.title: Connections
 // i18n settings.connections.intro: Follow your people wherever they post. Mastodon is home — a connection is one account somewhere else, merged in as a guest. Credentials work from this browser first; supported low-churn keys can also be encrypted with Mawkingbird Plus and synced to your other devices. Each connected card says which is true.
 // i18n settings.connections.rssBefore: Subscribing to many feeds at once isn't a connection — that lives under
@@ -91,11 +95,31 @@ export interface ConnectionCatalogRow {
 // i18n settings.connections.dropboxNotConfigured: Not configured for this build — the Dropbox app key is missing.
 @Component({
   selector: 'app-settings-connections',
-  imports: [ConnectionSyncButton, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    NgTemplateOutlet,
+    MbTab,
+    MbTabs,
+    ConnectionSyncButton,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+  ],
   templateUrl: './settings-connections.html',
   styleUrl: './settings-connections.css',
 })
 export class SettingsConnections implements OnInit {
+  protected readonly connectionTabs = ['basic', 'advanced'] as const;
+  protected isAdvanced(id: ConnectionId): boolean {
+    return [
+      'pastes',
+      'gist',
+      'cors-proxy',
+      'dropbox',
+      'openrouter',
+      'link-shortener',
+      'hugo',
+    ].includes(id);
+  }
   private auth = inject(Auth);
   private transloco = inject(TranslocoService);
   private bsky = inject(BlueskySession);

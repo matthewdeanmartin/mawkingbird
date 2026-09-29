@@ -175,8 +175,18 @@ export class RailProfiles {
                 value: active.statuses_count,
                 link: ['/accounts', active.id],
               },
-              { label: 'Following', value: this.followingCount(), link: ['/accounts', active.id] },
-              { label: 'Followers', value: active.followers_count, link: ['/accounts', active.id] },
+              {
+                label: 'Following',
+                value: this.followingCount(),
+                link: ['/accounts', active.id],
+                queryParams: { tab: 'following' },
+              },
+              {
+                label: 'Followers',
+                value: active.followers_count,
+                link: ['/accounts', active.id],
+                queryParams: { tab: 'followers' },
+              },
               {
                 label: 'Hashtags',
                 value: anonymousActive ? this.anonymousTags.count() : this.hashtagCount(),

@@ -36,7 +36,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.custom: Custom colors
 // i18n settings.blue.custom.bg: Background
 // i18n settings.blue.reset: reset
-// i18n settings.blue.custom.links: Links &amp; buttons
+// i18n settings.blue.custom.links: Links & buttons
 // i18n settings.blue.custom.sidebar: Sidebar cards
 // i18n settings.blue.custom.hint: Overrides ride on top of the theme; reset any of them to fall back to the theme's own color. A custom link color replaces the accent preset above.
 // i18n settings.blue.favStyle: Favourites look like

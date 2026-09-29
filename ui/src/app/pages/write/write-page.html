@@ -1,5 +1,9 @@
-@if (pseudonymity.enabled()) {
-  <p class="hint" role="note">{{ 'pseudonymity.postingHint' | transloco }}</p>
+@if (languagePromptOpen()) {
+  <app-posting-language-dialog
+    [setDefault]="choosingDefaultLanguage()"
+    (selectedLanguage)="usePostingLanguage($event)"
+    (closed)="languagePromptOpen.set(false)"
+  />
 }
 @if (zen.active()) {
   <!-- Writing zen. Everything is gone: the rails, the header, the footer, both
@@ -546,6 +550,7 @@
               [attr.aria-label]="words().Post + ' language'"
             >
               <option value="">{{ 'pages.write.languageNotSpecified' | transloco }}</option>
+              <option value="__other">{{ 'write.language.other' | transloco }}</option>
               @for (language of languageOptions(); track language.code) {
                 <option [value]="language.code">{{ language.name }}</option>
               }
@@ -749,20 +754,20 @@
                 [attr.aria-label]="'Schedule this ' + words().post"
               />
             </label>
-            @if (wizardScheduleAt()) {
-              <button
-                class="btn btn-outline btn-sm"
-                type="button"
-                (click)="setWizardScheduleAt('')"
-                [aria-label]="'pages.write.aria.clearScheduled' | transloco"
-              >
-                {{ 'pages.write.clear' | transloco }}
-              </button>
-              @if (!canScheduleSelectedTarget()) {
-                <span class="muted small">
-                  {{ 'pages.write.scheduleSingleTarget' | transloco: { post: words().post } }}
-                </span>
-              }
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="setWizardScheduleAt('')"
+              [attr.aria-pressed]="!wizardScheduleAt()"
+            >
+              {{ 'pages.write.now' | transloco }}
+            </button>
+            @if (wizardScheduleAt() && !canScheduleSelectedTarget()) {
+              <span class="muted small">
+                {{ 'pages.write.scheduleSingleTarget' | transloco: { post: words().post } }}
+              </span>
             }
             <button
               class="btn btn-outline btn-sm"
@@ -772,7 +777,12 @@
             >
               {{ 'pages.write.saveDraft' | transloco }}
             </button>
-            <button class="btn btn-sm" type="button" [disabled]="!hasContent()" (click)="publish()">
+            <button
+              class="btn btn-sm"
+              type="button"
+              [disabled]="!hasContent() || uploading()"
+              (click)="publish()"
+            >
               {{ 'pages.write.publish' | transloco }}
             </button>
           </div>
@@ -1126,12 +1136,21 @@
           'pages.write.wizardStep' | transloco: { position: wizardPosition(), total: wizardTotal() }
         }}
       </p>
-      <h3 id="wizard-title" tabindex="-1">{{ stepTitleKey(step) | transloco }}</h3>
+      <h3 id="wizard-title" tabindex="-1">
+        {{
+          (step === 'targets' && selectableTargets().length === 1
+            ? 'pages.write.singleTarget'
+            : stepTitleKey(step)
+          ) | transloco
+        }}
+      </h3>
 
       <div class="wizard-body">
         @switch (step) {
           @case ('targets') {
-            @if (wizardTargets().length) {
+            @if (selectableTargets().length === 1) {
+              <p>{{ targetLabel(selectableTargets()[0]) }}</p>
+            } @else if (wizardTargets().length) {
               <div
                 class="wizard-targets"
                 role="radiogroup"
@@ -1158,17 +1177,6 @@
                   </label>
                 }
               </div>
-              @if (prefs.wizardSteps().when) {
-                @if (canScheduleSelectedTarget()) {
-                  <p class="muted small">
-                    {{ 'pages.write.scheduleAvailable' | transloco }}
-                  </p>
-                } @else {
-                  <p class="muted small">
-                    {{ 'pages.write.scheduleUnavailable' | transloco }}
-                  </p>
-                }
-              }
             } @else {
               <p class="muted">
                 {{ 'pages.write.noTargets.before' | transloco }}
@@ -1247,10 +1255,6 @@
             } @else {
               <p class="muted">{{ 'pages.write.noFindings' | transloco }}</p>
             }
-
-            <p class="muted small">
-              {{ 'pages.write.proofreadElsewhere' | transloco }}
-            </p>
           }
 
           @case ('when') {
@@ -1263,6 +1267,15 @@
                 name="wizard-schedule"
               />
             </label>
+            <button
+              mbButton
+              variant="outline"
+              type="button"
+              [attr.aria-pressed]="!wizardScheduleAt()"
+              (click)="setWizardScheduleAt('')"
+            >
+              {{ 'pages.write.now' | transloco }}
+            </button>
             <p class="muted small">
               @if (wizardScheduleAt()) {
                 {{ 'pages.write.holdsUntilPublish' | transloco }}

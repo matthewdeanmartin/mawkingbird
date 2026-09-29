@@ -143,3 +143,11 @@ design system; preference semantics and the upper sections remain unchanged.
 Privacy's posting defaults now use full-width SettingsRows for visibility,
 media and language. Only the select fields retain a width cap, so the containing
 rows no longer trigger the narrow-screen stacked layout on a wide page.
+
+Write's posting-language question adopts Dialog, Field/Control and Button,
+including an Other language field for custom tags. Both schedule controls use
+the shared Button for Now, which clears the scheduled timestamp.
+
+## Settings bug fixes, 2026-09-29
+
+Connections uses shared local tabs for Basic and Advanced. The filter wizard uses shared buttons and fields; suggested hashtag selection uses shared checkboxes and buttons with results in place. Removed the network outage report action. Regenerated the control inventory, preserving existing classifications and recording the new wizard.

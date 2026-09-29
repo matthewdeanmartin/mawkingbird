@@ -536,10 +536,7 @@ export class Profile implements OnInit, OnDestroy {
 
   setTab(tab: ProfileTab): void {
     this.tab.set(tab);
-    // The media tab is linkable, so it lives in the URL. Everything else stays
-    // page-local state: those tabs were never shareable and making them so now
-    // would rewrite history entries readers did not ask for.
-    this.syncMediaUrl(tab === 'media' ? { tab: 'media' } : { tab: null, photo: null });
+    this.syncMediaUrl({ tab: tab === 'posts' ? null : tab, photo: null });
     if (tab === 'media' && !this.mediaStatuses().length && !this.mediaLoading()) {
       this.loadMedia();
     }
@@ -935,7 +932,11 @@ export class Profile implements OnInit, OnDestroy {
     // returns to the posts tab. Reading the params here rather than only in the
     // click handlers is also what makes a pasted link open the right picture.
     this.route.queryParamMap?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const wantsMedia = params.get('tab') === 'media';
+      const requestedTab = params.get('tab');
+      if (requestedTab === 'following' || requestedTab === 'followers') {
+        this.tab.set(requestedTab);
+      }
+      const wantsMedia = requestedTab === 'media';
       if (wantsMedia && this.canShowMedia()) {
         if (this.tab() !== 'media') {
           this.tab.set('media');
@@ -943,7 +944,11 @@ export class Profile implements OnInit, OnDestroy {
         if (!this.mediaStatuses().length && !this.mediaLoading()) {
           this.loadMedia();
         }
-      } else if (this.tab() === 'media') {
+      } else if (
+        requestedTab !== 'following' &&
+        requestedTab !== 'followers' &&
+        (this.tab() === 'media' || this.tab() === 'following' || this.tab() === 'followers')
+      ) {
         this.tab.set('posts');
       }
       this.openPhoto.set(wantsMedia ? params.get('photo') : null);
@@ -1064,7 +1069,14 @@ export class Profile implements OnInit, OnDestroy {
     // change, so reading the snapshot here is what stops it stomping on a
     // pasted `?tab=media&photo=…` URL before the query-param subscription runs.
     const deepLinkedToMedia = this.route.snapshot?.queryParamMap?.get('tab') === 'media';
-    this.tab.set(deepLinkedToMedia ? 'media' : 'posts');
+    const requestedTab = this.route.snapshot?.queryParamMap?.get('tab');
+    this.tab.set(
+      deepLinkedToMedia
+        ? 'media'
+        : requestedTab === 'following' || requestedTab === 'followers'
+          ? requestedTab
+          : 'posts',
+    );
     // Deep links must also *fetch* the wall. The query-param subscription fires
     // before the account is resolved, so it has no id to load with and bails;
     // by the time it could work it sees `tab() === 'media'` already set and

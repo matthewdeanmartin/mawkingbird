@@ -3,11 +3,6 @@
   <p>
     {{ 'settings.connections.intro' | transloco }}
   </p>
-  <p class="muted small">
-    {{ 'settings.connections.rssBefore' | transloco }}
-    <a [routerLink]="['/settings/rss']">{{ 'settings.connections.rssLink' | transloco }}</a
-    >.
-  </p>
 </div>
 
 <div class="spage-body">
@@ -26,65 +21,81 @@
       }
     </p>
   }
-  <ul class="catalog" [aria-label]="'settings.connections.catalogAriaLabel' | transloco">
-    @for (row of rows(); track row.entry.id) {
-      <li>
-        <a
-          class="catalog-card"
-          [class.unavailable]="row.unavailableReason"
-          [routerLink]="['/settings/connections', row.entry.id]"
-        >
-          <span class="catalog-emoji" aria-hidden="true">{{ row.entry.emoji }}</span>
-          <span class="catalog-body">
-            <span class="catalog-title">
-              <span class="catalog-label">{{ row.entry.label | transloco }}</span>
-              @if (row.flagged) {
-                <span class="pill pill-off">{{
-                  'settings.connections.pillTurnedOff' | transloco
-                }}</span>
-              } @else if (row.unavailableReason) {
-                <span class="pill pill-off">{{
-                  'settings.connections.pillUnavailable' | transloco
-                }}</span>
-              } @else if (row.connected) {
-                <span class="pill pill-on">{{
-                  'settings.connections.pillConnected' | transloco
-                }}</span>
-              } @else {
-                <span class="pill">{{ 'settings.connections.pillNotConnected' | transloco }}</span>
-              }
-              <span class="pill pill-scope" [title]="scopeCopy[row.entry.scope].detail | transloco">
-                {{ scopeCopy[row.entry.scope].label | transloco }}
-              </span>
-              @if (row.storage; as storage) {
-                <app-storage-badge [where]="storage" />
-              }
-            </span>
-            <span class="muted catalog-pitch">{{ row.entry.pitch | transloco }}</span>
-            @if (row.unavailableReason; as reason) {
-              <span class="muted small catalog-reason">{{ reason }}</span>
-            } @else {
-              <span class="catalog-enables">
-                @for (feature of row.entry.enables; track feature) {
-                  <span class="enable">{{ feature | transloco }}</span>
+  <mb-tabs [label]="'settings.connections.catalogAriaLabel' | transloco">
+    @for (tab of connectionTabs; track tab) {
+      <ng-template mbTab [value]="tab" [label]="'settings.connections.' + tab | transloco">
+        <ng-container *ngTemplateOutlet="catalog; context: { advanced: tab === 'advanced' }" />
+      </ng-template>
+    }
+  </mb-tabs>
+  <ng-template #catalog let-advanced="advanced">
+    <ul class="catalog" [aria-label]="'settings.connections.catalogAriaLabel' | transloco">
+      @for (row of rows(); track row.entry.id) {
+        @if (isAdvanced(row.entry.id) === advanced) {
+          <li>
+            <a
+              class="catalog-card"
+              [class.unavailable]="row.unavailableReason"
+              [routerLink]="['/settings/connections', row.entry.id]"
+            >
+              <span class="catalog-emoji" aria-hidden="true">{{ row.entry.emoji }}</span>
+              <span class="catalog-body">
+                <span class="catalog-title">
+                  <span class="catalog-label">{{ row.entry.label | transloco }}</span>
+                  @if (row.flagged) {
+                    <span class="pill pill-off">{{
+                      'settings.connections.pillTurnedOff' | transloco
+                    }}</span>
+                  } @else if (row.unavailableReason) {
+                    <span class="pill pill-off">{{
+                      'settings.connections.pillUnavailable' | transloco
+                    }}</span>
+                  } @else if (row.connected) {
+                    <span class="pill pill-on">{{
+                      'settings.connections.pillConnected' | transloco
+                    }}</span>
+                  } @else {
+                    <span class="pill">{{
+                      'settings.connections.pillNotConnected' | transloco
+                    }}</span>
+                  }
+                  <span
+                    class="pill pill-scope"
+                    [title]="scopeCopy[row.entry.scope].detail | transloco"
+                  >
+                    {{ scopeCopy[row.entry.scope].label | transloco }}
+                  </span>
+                  @if (row.storage; as storage) {
+                    <app-storage-badge [where]="storage" />
+                  }
+                </span>
+                <span class="muted catalog-pitch">{{ row.entry.pitch | transloco }}</span>
+                @if (row.unavailableReason; as reason) {
+                  <span class="muted small catalog-reason">{{ reason }}</span>
+                } @else {
+                  <span class="catalog-enables">
+                    @for (feature of row.entry.enables; track feature) {
+                      <span class="enable">{{ feature | transloco }}</span>
+                    }
+                  </span>
                 }
               </span>
-            }
-          </span>
-          <span class="chev" aria-hidden="true">›</span>
-        </a>
-        <!-- Outside the card: a link inside a link is invalid, and the card is
+              <span class="chev" aria-hidden="true">›</span>
+            </a>
+            <!-- Outside the card: a link inside a link is invalid, and the card is
            still worth opening — its page explains what the connector does. -->
-        @if (row.flagged) {
-          <p class="muted small catalog-flag-link">
-            <a [routerLink]="['/settings/feature-flags']">{{
-              'settings.connections.turnBackOn' | transloco
-            }}</a>
-          </p>
+            @if (row.flagged) {
+              <p class="muted small catalog-flag-link">
+                <a [routerLink]="['/settings/feature-flags']">{{
+                  'settings.connections.turnBackOn' | transloco
+                }}</a>
+              </p>
+            }
+          </li>
         }
-      </li>
-    }
-  </ul>
+      }
+    </ul>
+  </ng-template>
 
   <section class="conn-section">
     <h2>{{ 'settings.connections.doctorHeading' | transloco }}</h2>

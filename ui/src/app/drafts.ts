@@ -26,6 +26,7 @@ export interface Draft {
   poll: DraftPoll | null;
   /** ISO 639-1 code, or empty/absent to let the server infer it. */
   postLanguage?: string;
+  postLanguageExplicit?: boolean;
   inReplyToId?: string;
   quotedStatusId?: string;
   /**

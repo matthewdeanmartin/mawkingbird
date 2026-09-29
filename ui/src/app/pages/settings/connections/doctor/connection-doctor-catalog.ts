@@ -385,61 +385,6 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
     status: null,
   },
   {
-    id: 'allorigins',
-    host: 'api.allorigins.win',
-    labelKey: 'settings.connections.doctor.target.allorigins.label',
-    category: 'proxy',
-    probeUrl: 'https://api.allorigins.win/raw?url=https%3A%2F%2Fexample.com',
-    openUrl: 'https://allorigins.win/',
-    mattersKey: 'settings.connections.doctor.target.allorigins.matters',
-    // No status page of either kind. It is a free service with no incident
-    // reporting, so the probe above is the only signal there is — and the
-    // repeated timeouts recorded in cors-proxy-catalog.ts are the reason the
-    // catalog no longer treats it as dependable.
-    status: null,
-  },
-  {
-    id: 'corssh',
-    host: 'proxy.cors.sh',
-    labelKey: 'settings.connections.doctor.target.corssh.label',
-    category: 'proxy',
-    probeUrl: 'https://proxy.cors.sh/https://example.com',
-    openUrl: 'https://cors.sh/',
-    mattersKey: 'settings.connections.doctor.target.corssh.matters',
-    // No status page found. Active service and repository, no published incidents.
-    status: null,
-  },
-  {
-    id: 'corsfix',
-    host: 'proxy.corsfix.com',
-    labelKey: 'settings.connections.doctor.target.corsfix.label',
-    category: 'proxy',
-    probeUrl: 'https://proxy.corsfix.com/?https://example.com',
-    openUrl: 'https://corsfix.com/',
-    mattersKey: 'settings.connections.doctor.target.corsfix.matters',
-    // Monitors the proxy itself and publishes uptime history.
-    status: {
-      url: 'https://status.corsfix.com/',
-      labelKey: 'settings.connections.doctor.status.corsfixStatus',
-      official: true,
-    },
-  },
-  {
-    id: 'corsproxy-io',
-    host: 'corsproxy.io',
-    labelKey: 'settings.connections.doctor.target.corsproxyIo.label',
-    category: 'proxy',
-    probeUrl: 'https://corsproxy.io/?url=https%3A%2F%2Fexample.com',
-    openUrl: 'https://corsproxy.io/',
-    mattersKey: 'settings.connections.doctor.target.corsproxyIo.matters',
-    // Separate components for the proxy, dashboard and API.
-    status: {
-      url: 'https://status.corsproxy.io/',
-      labelKey: 'settings.connections.doctor.status.corsproxyStatus',
-      official: true,
-    },
-  },
-  {
     id: 'control',
     host: 'example.com',
     labelKey: 'settings.connections.doctor.target.control.label',

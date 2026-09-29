@@ -69,6 +69,18 @@ describe('ConnectionDoctorPage', () => {
     expect(rowFor(fixture, 'mastodon.social').textContent).toContain('Your Mastodon server');
   });
 
+  it('lists a configured self-hosted proxy without exposing template credentials', () => {
+    TestBed.inject(CorsProxySettings).select('custom', {
+      template: 'https://relay.example/fetch?secret=private&url={url}',
+    });
+    const fixture = setUp();
+    expect(rowFor(fixture, 'relay.example').textContent).toContain('Self-hosted CORS proxy');
+    expect(el(fixture).innerHTML).not.toContain('secret=private');
+    for (const host of ['corsproxy.io', 'corsfix.com', 'cors.sh', 'allorigins.win']) {
+      expect(el(fixture).textContent).not.toContain(host);
+    }
+  });
+
   it('checks every host and reports each verdict', async () => {
     const fixture = setUp();
     await check(fixture);

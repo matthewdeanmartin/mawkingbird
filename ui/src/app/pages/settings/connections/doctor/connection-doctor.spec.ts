@@ -328,9 +328,12 @@ describe('status pages', () => {
     // is.gd is the case that sets the rule: the outage aggregators covering it
     // were observed reporting it down while it was serving requests. A
     // confidently wrong answer is worse than no answer.
-    for (const id of ['isgd', 'allorigins', 'corssh', 'control']) {
+    for (const id of ['isgd', 'mawkingbird-proxy', 'control']) {
       expect(PROBE_TARGETS.find((t) => t.id === id)!.status).toBeNull();
     }
+    expect(PROBE_TARGETS.filter((t) => t.category === 'proxy').map((t) => t.id)).toEqual([
+      'mawkingbird-proxy',
+    ]);
   });
 
   it('probes a real endpoint on the API connectors, not a bare host root', () => {

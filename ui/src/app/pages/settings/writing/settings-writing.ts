@@ -152,6 +152,7 @@ export class SettingsWriting implements OnInit {
       next: () => {
         this.postingSaving.set(false);
         this.postingSaved.set(true);
+        this.prefs.setPostingLanguage(this.language());
         this.prefs.setDefaultVisibility(this.privacy());
         if (this.language()) this.prefs.addKnownLanguage(this.language());
       },

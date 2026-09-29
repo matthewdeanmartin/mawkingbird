@@ -97,14 +97,7 @@ export function asVisibility(value: unknown): Visibility | null {
 /** When the blue verification check shows on other accounts. */
 export type VerifiedMode = 'fixed' | 'famous' | 'everyone';
 export type ReaderFontFamily =
-  | 'serif'
-  | 'charter'
-  | 'palatino'
-  | 'sans'
-  | 'helvetica-neue'
-  | 'inter'
-  | 'verdana'
-  | 'mono';
+  'serif' | 'charter' | 'palatino' | 'sans' | 'helvetica-neue' | 'inter' | 'verdana' | 'mono';
 export type ReaderTextAlign = 'left' | 'justify';
 
 /** Readable, local-only typeface choices shared by every reader control. */
@@ -449,6 +442,8 @@ interface StoredPrefs {
   excludeUnknownLangTrends?: boolean;
   uiLocale?: string | null;
   knownLanguages?: string[];
+  postingLanguage?: string;
+  postingLanguageAsked?: boolean;
   hideForeignLangPosts?: boolean;
   feedLanguages?: string[];
   learningLanguages?: string[];
@@ -851,6 +846,8 @@ export class ClientPrefs {
    * the browser, and the posting default.
    */
   readonly knownLanguages = signal<string[]>([]);
+  readonly postingLanguage = signal('');
+  readonly postingLanguageAsked = signal(false);
 
   /**
    * Hide feed posts (Home, Algo) that are confidently in a language the user
@@ -1238,6 +1235,11 @@ export class ClientPrefs {
     this.knownLanguages.set(normalizeLangs(list));
   }
 
+  setPostingLanguage(code: string): void {
+    this.postingLanguage.set(code.trim());
+    this.postingLanguageAsked.set(true);
+  }
+
   setHideForeignLangPosts(on: boolean): void {
     this.hideForeignLangPosts.set(on);
   }
@@ -1505,6 +1507,10 @@ export class ClientPrefs {
     this.loadBool(stored.excludeUnknownLangTrends, this.excludeUnknownLangTrends);
     this.uiLocale.set(normalizeLocale(stored.uiLocale));
     this.knownLanguages.set(normalizeLangs(stored.knownLanguages));
+    this.postingLanguage.set(
+      typeof stored.postingLanguage === 'string' ? stored.postingLanguage : '',
+    );
+    this.loadBool(stored.postingLanguageAsked, this.postingLanguageAsked);
     this.loadBool(stored.hideForeignLangPosts, this.hideForeignLangPosts);
     this.feedLanguages.set(normalizeLangs(stored.feedLanguages).slice(0, MAX_FEED_LANGUAGES));
     this.learningLanguages.set(normalizeLangs(stored.learningLanguages));
@@ -1580,6 +1586,8 @@ export class ClientPrefs {
       excludeUnknownLangTrends: this.excludeUnknownLangTrends(),
       uiLocale: this.uiLocale(),
       knownLanguages: this.knownLanguages(),
+      postingLanguage: this.postingLanguage(),
+      postingLanguageAsked: this.postingLanguageAsked(),
       hideForeignLangPosts: this.hideForeignLangPosts(),
       feedLanguages: this.feedLanguages(),
       learningLanguages: this.learningLanguages(),

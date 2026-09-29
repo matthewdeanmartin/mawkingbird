@@ -600,7 +600,7 @@ export class StatusCard {
   // --- content warnings ---
 
   /** CW revealed by the viewer; resets whenever a different status is bound. */
-  protected cwOpen = linkedSignal({ source: this.status, computation: () => false });
+  protected cwOpen = linkedSignal({ source: this.status, computation: (): boolean | null => null });
 
   /** The CW label to show (a translation may carry its own spoiler text). */
   protected spoilerText = computed(
@@ -628,15 +628,13 @@ export class StatusCard {
   protected cwCollapsed = computed(
     () =>
       !!this.spoilerText() &&
-      !this.cwOpen() &&
-      !this.prefs.feedReader() &&
-      !this.authorTrustedForCw(),
+      !(this.cwOpen() ?? (this.prefs.feedReader() || this.authorTrustedForCw())),
   );
 
   toggleCw(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.cwOpen.update((v) => !v);
+    this.cwOpen.set(this.cwCollapsed());
   }
 
   // --- sensitive media ---
@@ -839,7 +837,7 @@ export class StatusCard {
       case 'x':
         // Mastodon's shortcut: toggle the content-warning fold.
         if (this.spoilerText()) {
-          this.cwOpen.update((v) => !v);
+          this.cwOpen.set(this.cwCollapsed());
         }
         return true;
       default:

@@ -142,8 +142,9 @@ export class SettingsPrivacy implements OnInit {
         if (field === 'privacy') {
           this.prefs.setDefaultVisibility(String(value));
         }
-        if (field === 'language' && value) {
-          this.prefs.addKnownLanguage(String(value));
+        if (field === 'language') {
+          this.prefs.setPostingLanguage(String(value));
+          if (value) this.prefs.addKnownLanguage(String(value));
         }
       },
       error: (err: unknown) => {

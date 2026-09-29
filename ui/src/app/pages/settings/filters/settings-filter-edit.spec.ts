@@ -6,6 +6,8 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ContentFilter, FilterAction, FilterContext } from '../../../models';
 import { SettingsFilterEdit } from './settings-filter-edit';
+import { By } from '@angular/platform-browser';
+import { FilterWizard } from './filter-wizard';
 
 interface KeywordRow {
   id: string | null;
@@ -64,6 +66,38 @@ describe('SettingsFilterEdit', () => {
   afterEach(() => {
     httpMock.verify();
   });
+
+  it.each(['politics', 'spoilers'] as const)(
+    'reviews and saves the %s wizard draft',
+    (scenario) => {
+      configure(null);
+      const fixture = TestBed.createComponent(SettingsFilterEdit);
+      fixture.detectChanges();
+      const wizard = fixture.debugElement.query(By.directive(FilterWizard))
+        .componentInstance as FilterWizard;
+      wizard['choose'](scenario);
+      if (scenario === 'spoilers') {
+        wizard['words'].set('Dune\nArrakis\nDune');
+        wizard['duration'].set(86400);
+      }
+      wizard['review']();
+      fixture.detectChanges();
+      httpMock.expectNone('/api/v2/filters');
+      expect(fixture.nativeElement.textContent).toContain('3. Review');
+      fixture.nativeElement
+        .querySelector('form')
+        .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      const req = httpMock.expectOne('/api/v2/filters');
+      expect(req.request.body.filter_action).toBe('hide');
+      expect(req.request.body.expires_in).toBe(scenario === 'spoilers' ? 86400 : null);
+      expect(req.request.body.keywords_attributes).toContainEqual({
+        keyword: scenario === 'spoilers' ? 'Arrakis' : 'election',
+        whole_word: true,
+      });
+      if (scenario === 'spoilers') expect(req.request.body.keywords_attributes).toHaveLength(2);
+      req.flush(makeFilter());
+    },
+  );
 
   it('creates a new filter with keywords_attributes', () => {
     configure(null);

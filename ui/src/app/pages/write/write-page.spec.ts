@@ -10,6 +10,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
 import { Pseudonymity } from '../../pseudonymity';
+import { PrivateMedia } from '../../private-media';
+import { throwError } from 'rxjs';
 import { DraftMedia, Drafts } from '../../drafts';
 import { Account, ScheduledStatus, Status } from '../../models';
 import { PostTarget } from '../../compose/compose';
@@ -39,6 +41,7 @@ interface PageInternals {
   dirty: WritableSignal<boolean>;
   notice: WritableSignal<Notice | null>;
   pendingSwitch: WritableSignal<{ run: () => void } | null>;
+  mediaNotice: WritableSignal<string>;
   segments: Signal<Segment[]>;
   splitMode: Signal<SplitMode>;
   sources: DraftSources;
@@ -151,6 +154,8 @@ function parked(id: string): ScheduledStatus {
 
 describe('WritePage', () => {
   let httpMock: HttpTestingController;
+  const modalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
+  const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
 
   beforeEach(() => {
     // HumanTimePipe is impure and reads the wall clock during change detection;
@@ -158,6 +163,18 @@ describe('WritePage', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-08-08T12:00:00Z'));
     localStorage.clear();
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value() {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value() {
+        this.open = false;
+      },
+    });
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -171,6 +188,14 @@ describe('WritePage', () => {
   });
 
   afterEach(() => {
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of [
+      ['showModal', modalDescriptor],
+      ['close', closeDescriptor],
+    ] as const) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else delete (HTMLDialogElement.prototype as unknown as Record<string, unknown>)[name];
+    }
     vi.useRealTimers();
   });
 
@@ -869,6 +894,78 @@ describe('WritePage', () => {
   });
 
   // ------------------------------------------------------------- authoring tools
+
+  it('uses a monolingual default on entry and preserves a per-post unspecified choice through drafts', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    TestBed.inject(ClientPrefs).setKnownLanguages(['eo']);
+    const fixture = setUp();
+    const page = internals(fixture);
+    expect(page.postLanguage()).toBe('eo');
+    page.newDraft();
+    page.onBodyInput('Mia teksto');
+    page.setPostLanguage('');
+    page.save();
+    const draft = TestBed.inject(Drafts).drafts()[0];
+    expect(draft.postLanguageExplicit).toBe(true);
+    page.newDraft();
+    expect(page.postLanguage()).toBe('eo');
+    page.open({
+      key: `local:${draft.id}`,
+      kind: 'local',
+      source: { kind: 'local', draft },
+    } as DraftItem);
+    expect(page.postLanguage()).toBe('');
+  });
+
+  it('shows one destination without radio choices and clears a scheduled time with Now', () => {
+    signIn();
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('a post');
+    vi.spyOn(page, 'wizardTargets').mockReturnValue(['fedi']);
+    page.wizardStep.set('targets');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.wizard input[type="radio"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.wizard').textContent).toContain('Publishing to');
+    expect(fixture.nativeElement.textContent).not.toContain('Proofreading happens in the editor');
+    expect(fixture.nativeElement.textContent).not.toContain('Mastodon can hold this post');
+    page.wizardStep.set('when');
+    page.setWizardScheduleAt('2126-01-01T09:00');
+    fixture.detectChanges();
+    const now = Array.from(
+      fixture.nativeElement.querySelectorAll('.wizard button') as NodeListOf<HTMLButtonElement>,
+    ).find((button) => button.textContent?.trim() === 'Now')!;
+    now.click();
+    expect(page.wizardScheduleAt()).toBe('');
+  });
+
+  it('reports unsupported metadata cleaning at attachment time, before opening the publish wizard', async () => {
+    TestBed.inject(Auth).setToken('media-preflight');
+    signIn();
+    const fixture = setUp();
+    const page = internals(fixture);
+    TestBed.inject(Pseudonymity).setEnabled(true);
+    TestBed.inject(Pseudonymity).setCleanMedia(true);
+    vi.spyOn(TestBed.inject(PrivateMedia), 'prepare').mockReturnValue(
+      throwError(() => new Error('Cannot clean this file')),
+    );
+    const file = new File(['video'], 'clip.mp4', { type: 'video/mp4' });
+    page.onPaste({
+      clipboardData: { files: [file] },
+      preventDefault: vi.fn(),
+    } as unknown as ClipboardEvent);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(page.mediaNotice()).toContain('Cannot clean this file');
+    expect(page.wizardStep()).toBeNull();
+    httpMock.expectNone((request) => request.url.includes('/api/v2/media'));
+    page.onBodyInput('with media');
+    page.publish();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(page.wizardStep()).toBeNull();
+  });
 
   it('saves and restores CW, poll, sensitive, and post-language state', () => {
     TestBed.inject(Auth).mode.set('anonymous');

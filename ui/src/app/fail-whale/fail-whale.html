@@ -31,9 +31,6 @@
     <button class="btn" type="button" [disabled]="health.checking()" (click)="retry()">
       {{ (health.checking() ? 'failWhale.checking' : 'failWhale.tryAgain') | transloco }}
     </button>
-    <button class="btn" type="button" (click)="reporting.set(true)">
-      {{ 'failWhale.reportThis' | transloco }}
-    </button>
   </div>
 
   @if (offline()) {
@@ -120,6 +117,3 @@
     </div>
   </details>
 </div>
-@if (reporting()) {
-  <app-bug-report-dialog (closed)="reporting.set(false)" />
-}

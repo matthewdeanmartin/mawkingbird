@@ -42,6 +42,7 @@
         "storybook": {
           "builder": "@storybook/angular:start-storybook",
           "options": {
+            "browserTarget": "ui:build:development",
             "configDir": "../design_system/.storybook",
             "tsConfig": "../design_system/.storybook/tsconfig.json",
             "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],
@@ -54,6 +55,7 @@
         "build-storybook": {
           "builder": "@storybook/angular:build-storybook",
           "options": {
+            "browserTarget": "ui:build:development",
             "configDir": "../design_system/.storybook",
             "tsConfig": "../design_system/.storybook/tsconfig.json",
             "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],

@@ -75,6 +75,14 @@ describe('RailProfiles', () => {
       .expectOne('/api/v1/accounts/verify_credentials')
       .flush({ ...ME, following_count: 43, statuses_count: 121 });
     expect(rail.profiles()[0].stats.map((stat) => stat.value)).toEqual([121, 43, 300, 3]);
+    expect(rail.profiles()[0].stats[1]).toMatchObject({
+      link: ['/accounts', ME.id],
+      queryParams: { tab: 'following' },
+    });
+    expect(rail.profiles()[0].stats[2]).toMatchObject({
+      link: ['/accounts', ME.id],
+      queryParams: { tab: 'followers' },
+    });
     api.deleteStatus('new').subscribe();
     httpMock.expectOne('/api/v1/statuses/new').flush({ id: 'new' });
     vi.advanceTimersByTime(100);

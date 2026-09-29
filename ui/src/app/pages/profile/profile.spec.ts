@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Relationship, Status } from '../../models';
 import { Profile } from './profile';
@@ -85,6 +85,25 @@ describe('self profile local actions', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it.each(['following', 'followers'] as const)(
+    'opens the %s badge destination and follows Back to posts',
+    (tab) => {
+      const params = new BehaviorSubject(convertToParamMap({ tab }));
+      TestBed.overrideProvider(ActivatedRoute, {
+        useValue: {
+          paramMap: EMPTY,
+          queryParamMap: params,
+          snapshot: { queryParamMap: params.value },
+        },
+      });
+      TestBed.overrideComponent(Profile, { set: { template: '' } });
+      const fixture = setUp(false);
+      expect(fixture.componentInstance['tab']()).toBe(tab);
+      params.next(convertToParamMap({}));
+      expect(fixture.componentInstance['tab']()).toBe('posts');
+    },
+  );
 
   it('labels a disabled RSS subscription Unsubscribe and requires confirmation before removing it', async () => {
     const url = 'https://example.com/feed?type=changes';

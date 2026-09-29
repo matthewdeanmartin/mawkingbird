@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { FilterDraft, FilterWizard } from './filter-wizard';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -61,11 +62,22 @@ interface KeywordRow {
 // i18n common.cancel: Cancel
 @Component({
   selector: 'app-settings-filter-edit',
-  imports: [DatePipe, FormsModule, RouterLink, TranslocoPipe],
+  imports: [DatePipe, FormsModule, RouterLink, TranslocoPipe, FilterWizard],
   templateUrl: './settings-filter-edit.html',
   styleUrl: './settings-filter-edit.css',
 })
 export class SettingsFilterEdit implements OnInit {
+  protected wizardOpen = signal(true);
+  protected wizardPrepared = signal(false);
+
+  protected applyDraft(draft: FilterDraft): void {
+    this.title.set(draft.title);
+    this.keywords.set(draft.keywords.map((keyword) => ({ id: null, keyword, whole_word: true })));
+    this.action.set('hide');
+    this.expiresIn.set(draft.expiresIn);
+    this.wizardPrepared.set(true);
+    this.wizardOpen.set(false);
+  }
   private api = inject(Api);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -87,6 +99,7 @@ export class SettingsFilterEdit implements OnInit {
     { value: 43200, key: 'settings.filters.expiry.hour12' },
     { value: 86400, key: 'settings.filters.expiry.day1' },
     { value: 604800, key: 'settings.filters.expiry.week1' },
+    { value: 2592000, key: 'settings.filters.wizard.month' },
   ];
 
   protected filterId = signal<string | null>(null);

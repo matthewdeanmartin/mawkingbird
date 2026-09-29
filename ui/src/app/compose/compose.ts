@@ -20,6 +20,7 @@ import { Server } from '../server';
 import { PageDiagnostics } from '../page-diagnostics';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
+import { PostingLanguage } from '../posting-language';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { PostConfirmation } from '../post-confirmation';
 import { VisibilityState, VISIBILITIES } from './visibility-state';
@@ -733,10 +734,20 @@ export class Compose implements OnDestroy {
    * you almost always post in a language you read. Defaults to the posting
    * default when it's among the known set, else "Not specified".
    */
+  private readonly postingLanguageDefaults = inject(PostingLanguage);
+  private readonly languageExplicit = signal(false);
   protected postLanguage = signal<string>('');
   /** Options for the language picker: the known languages, named + sorted. */
   protected languageOptions = computed(() =>
-    [...this.knownLanguages.codes()]
+    [
+      ...new Set(
+        [
+          ...this.knownLanguages.codes(),
+          this.postingLanguageDefaults.default(),
+          this.postLanguage(),
+        ].filter(Boolean),
+      ),
+    ]
       .map((code) => ({ code, name: LANG_NAMES[code as LangCode] ?? code.toUpperCase() }))
       .sort((a, b) => a.name.localeCompare(b.name)),
   );
@@ -1513,23 +1524,19 @@ export class Compose implements OnDestroy {
   // --- post language ---
 
   /**
-   * Seed the picker from the account's posting-default language, but only if
-   * that language is one we'd offer (i.e. in the known set). Reads the already
-   * loaded credential account (`source.language`) — no extra request — so it
-   * costs nothing and stays "Not specified" when there's no default. Runs once.
+   * Seed once from the saved posting language, account default, sole known
+   * language, or interface language. Unspecified is an explicit per-post choice.
    */
   private seedDefaultLanguage(): void {
     if (this.seededLanguage) {
       return;
     }
     this.seededLanguage = true;
-    const def = this.auth.account()?.source?.language?.toLowerCase().split(/[-_]/)[0] ?? '';
-    if (def && this.knownLanguages.knows(def)) {
-      this.postLanguage.set(def);
-    }
+    this.postLanguage.set(this.postingLanguageDefaults.default());
   }
 
   onLanguageChange(code: string): void {
+    this.languageExplicit.set(true);
     this.postLanguage.set(code);
     // Changing the picker clears any standing mismatch warning, and any prior
     // dismissal — the user picked a new language, so re-check against it.
@@ -1833,6 +1840,7 @@ export class Compose implements OnDestroy {
           }
         : null,
       postLanguage: this.postLanguage(),
+      postLanguageExplicit: this.languageExplicit(),
       inReplyToId: this.inReplyToId(),
       quotedStatusId: this.quotedStatusId(),
       target: this.target(),
@@ -1867,7 +1875,10 @@ export class Compose implements OnDestroy {
     this.spoilerText.set(d.spoilerText);
     this.cwOpen.set(!!d.spoilerText);
     this.sensitive.set(d.sensitive);
-    this.postLanguage.set(d.postLanguage ?? '');
+    this.languageExplicit.set(d.postLanguageExplicit ?? false);
+    this.postLanguage.set(
+      d.postLanguage || (d.postLanguageExplicit ? '' : this.postingLanguageDefaults.default()),
+    );
     if (!this.lockVisibility()) {
       // A saved draft's visibility is a real choice, so it outranks anything a
       // paste clamp stashed on the way here.

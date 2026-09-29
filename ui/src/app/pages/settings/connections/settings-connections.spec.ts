@@ -124,6 +124,21 @@ describe('SettingsConnections (catalog)', () => {
     // cannot connect to yourself, and the row it used to render was permanent
     // furniture explaining an impossibility. See `isOwnIdentity`.
     expect(cards(fixture)).toHaveLength(CONNECTION_CATALOG.length - 1);
+    const panels = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
+      '[role="tabpanel"]',
+    );
+    expect(panels[0].hidden).toBe(false);
+    expect(panels[1].hidden).toBe(true);
+    expect(panels[0].querySelector('a[href$="/dropbox"]')).toBeNull();
+    for (const id of ['dropbox', 'pastes', 'cors-proxy']) {
+      expect(panels[1].querySelector(`a[href$="/${id}"]`)).not.toBeNull();
+    }
+    (fixture.nativeElement as HTMLElement)
+      .querySelectorAll<HTMLButtonElement>('[role="tab"]')[1]
+      .click();
+    fixture.detectChanges();
+    expect(panels[1].hidden).toBe(false);
+    expect(text).not.toContain('Subscribing to many feeds');
     expect(text).not.toContain('it is your account here, not a connector');
     for (const label of ['Bluesky', 'Raindrop.io', 'GitHub', 'Dropbox']) {
       expect(text).toContain(label);

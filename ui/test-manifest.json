@@ -3203,7 +3203,7 @@
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport shows separate GitHub friends and stars actions before any import is prepared",
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport upload() POSTs the CSV with the selected type and stores the report",
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport upload() with empty CSV issues no request",
-    "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport useSuggestedTags() moves the ticked suggestions into the importer",
+    "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport useSuggestedTags() follows only the ticked suggestions without replacing a pasted import",
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport writes the same following_accounts.csv shape accepted by the importer",
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport, signed out hides the sections whose Follow buttons need a server account",
     "src/app/pages/settings/import-export/settings-import-export.spec.ts :: SettingsImportExport, signed out says plainly where a signed-out follow is saved",

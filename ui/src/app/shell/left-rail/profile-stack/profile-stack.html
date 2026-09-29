@@ -52,7 +52,7 @@
           <div class="profile-stats" [style.grid-template-columns]="statColumns(card)">
             @for (stat of card.stats; track stat.label) {
               @if (stat.link) {
-                <a [routerLink]="stat.link">
+                <a [routerLink]="stat.link" [queryParams]="stat.queryParams">
                   <span class="stat-label">{{ stat.label }}</span>
                   <span class="stat-value">{{ stat.value | humanCount }}</span>
                 </a>

@@ -289,6 +289,7 @@ export class SettingsI18n implements OnInit {
       next: () => {
         this.savingPostingLanguage.set(false);
         this.postingLanguageSaved.set(true);
+        this.prefs.setPostingLanguage(this.postingLang());
         if (this.postingLang()) this.prefs.addKnownLanguage(this.postingLang());
       },
       error: () => this.savingPostingLanguage.set(false),

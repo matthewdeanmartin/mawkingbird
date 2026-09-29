@@ -5,8 +5,13 @@
 
 @if (loading()) {
   <p class="muted center">{{ 'common.loading' | transloco }}</p>
+} @else if (isNew && wizardOpen()) {
+  <app-filter-wizard (prepared)="applyDraft($event)" (custom)="wizardOpen.set(false)" />
 } @else {
   <form class="spage-body" (ngSubmit)="save()">
+    @if (wizardPrepared()) {
+      <p>{{ 'settings.filters.wizard.reviewHint' | transloco }}</p>
+    }
     <div class="ssection">
       <div class="srow">
         <span class="slabel">{{ 'settings.filters.titleLabel' | transloco }}</span>

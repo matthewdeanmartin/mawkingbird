@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { CorsProxy } from '../../../../providers/cors-proxy/cors-proxy';
+import { CorsProxySettings } from '../../../../providers/cors-proxy/cors-proxy-settings';
 import { Server } from '../../../../server';
 import { ConnectionDoctor } from './connection-doctor';
 import {
@@ -124,6 +125,8 @@ interface DoctorGroup {
  * Deliberately reachable without connecting anything, and it never reads a
  * stored credential — see the note in `connection-doctor-catalog.ts`.
  */
+// i18n settings.connections.doctor.selfHosted: Self-hosted CORS proxy
+// i18n settings.connections.doctor.selfHostedHint: Your configured proxy for requests that need a relay.
 @Component({
   selector: 'app-connection-doctor-page',
   imports: [RouterLink, TranslocoPipe],
@@ -134,6 +137,7 @@ export class ConnectionDoctorPage {
   protected doctor = inject(ConnectionDoctor);
   private server = inject(Server);
   private proxy = inject(CorsProxy);
+  private proxySettings = inject(CorsProxySettings);
   private transloco = inject(TranslocoService);
 
   /** Bound to `translate`'s shape so the catalog's free functions stay DI-free. */
@@ -154,7 +158,24 @@ export class ConnectionDoctorPage {
    */
   protected readonly targets = computed<ProbeTarget[]>(() => {
     const home = homeServerTarget(this.server.baseUrl(), this.translate);
-    const rest = probeTargets(this.translate);
+    const rest = [...probeTargets(this.translate)];
+    if (this.proxySettings.currentId() === 'custom' && this.proxySettings.customTemplate()) {
+      try {
+        const origin = new URL(this.proxySettings.customTemplate()).origin;
+        rest.push({
+          id: 'self-hosted-proxy',
+          host: new URL(origin).host,
+          label: this.translate('settings.connections.doctor.selfHosted'),
+          category: 'proxy',
+          probeUrl: origin,
+          openUrl: origin,
+          matters: this.translate('settings.connections.doctor.selfHostedHint'),
+          status: null,
+        });
+      } catch {
+        /* Invalid templates are explained in proxy settings. */
+      }
+    }
     return home ? [home, ...rest] : [...rest];
   });
 
