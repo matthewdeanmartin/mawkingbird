@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -13,6 +13,9 @@ import { prepareImageForBluesky } from '../../../providers/bluesky/bluesky-image
 import { Pseudonymity } from '../../../pseudonymity';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
 import { BskyBlobRef, BskyProfile } from '../../../providers/bluesky/bluesky-types';
+import { MbButton } from '../../../design-system/button/button';
+import { MbControl, MbField } from '../../../design-system/field/field';
+import { ProfileLinkDialog } from './profile-link-dialog';
 
 /** Public profile: display name, bio, metadata fields, avatar/header. */
 /** English source strings; see scripts/extract-i18n.mjs. */
@@ -25,20 +28,22 @@ import { BskyBlobRef, BskyProfile } from '../../../providers/bluesky/bluesky-typ
 // i18n settings.profile.localHandle.hint: Shown only in this browser. It does not create an account.
 // i18n settings.profile.bio: Bio
 // i18n settings.profile.bio.hint: Describe yourself. Appears on your public profile.
-// i18n settings.profile.metadata: Profile metadata
+// i18n settings.profile.metadata: Links and profile details
 // i18n settings.profile.field.label: Label
 // i18n settings.profile.field.content: Content
 // i18n settings.profile.field.remove: Remove field
 // i18n settings.profile.verified: ✓ verified
 // i18n settings.profile.verified.title: Link ownership verified via rel=me on {{date}}
 // i18n settings.profile.addField: + Add field
+// i18n settings.profile.links.hint: Add a website or another profile using the buttons below. You can also add details such as pronouns with Add field. Choose Save changes when you are finished.
+// i18n settings.profile.links.full: All 4 profile rows are in use. Remove a row to add another link or detail.
 // i18n settings.profile.metadata.hint: Up to 4 table rows shown on your profile (links, pronouns, ...). A link whose page links back to your profile with rel="me" shows as ✓ verified (checked by the server when you save).
 // i18n settings.profile.avatar: Avatar
 // i18n settings.profile.header: Header
 // i18n settings.profile.resetLocal: Reset local profile
 @Component({
   selector: 'app-settings-profile',
-  imports: [DatePipe, FormsModule, TranslocoPipe],
+  imports: [DatePipe, FormsModule, TranslocoPipe, MbButton, MbField, MbControl, ProfileLinkDialog],
   templateUrl: './settings-profile.html',
   styleUrl: './settings-profile.css',
 })
@@ -55,6 +60,12 @@ export class SettingsProfile implements OnInit {
   protected username = signal('');
   protected note = signal('');
   protected fields = signal<AccountField[]>([]);
+  protected readonly linkDialog = signal<'link' | 'profile' | null>(null);
+  protected readonly canAddLink = computed(
+    () =>
+      this.fields().length < 4 ||
+      this.fields().some((field) => !field.name.trim() && !field.value.trim()),
+  );
   protected avatar = signal<File | null>(null);
   protected header = signal<File | null>(null);
   protected saving = signal(false);
@@ -100,7 +111,7 @@ export class SettingsProfile implements OnInit {
       name: f.name,
       value: f.value,
     }));
-    this.fields.set(fields.length ? fields : [{ name: '', value: '' }]);
+    this.fields.set(fields);
     const verified: Record<string, string> = {};
     for (const f of acc.fields ?? []) {
       if (f.verified_at) {
@@ -118,6 +129,18 @@ export class SettingsProfile implements OnInit {
     if (this.fields().length < 4) {
       this.fields.update((list) => [...list, { name: '', value: '' }]);
     }
+  }
+
+  protected addLink(field: AccountField): void {
+    if (!this.canAddLink() || this.saving()) return;
+    this.fields.update((fields) => {
+      const blank = fields.findIndex((entry) => !entry.name.trim() && !entry.value.trim());
+      return blank < 0
+        ? [...fields, field]
+        : fields.map((entry, index) => (index === blank ? field : entry));
+    });
+    this.saved.set(false);
+    this.linkDialog.set(null);
   }
 
   removeField(index: number): void {

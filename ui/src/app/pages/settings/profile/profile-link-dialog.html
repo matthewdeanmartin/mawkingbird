@@ -1,0 +1,96 @@
+<mb-dialog
+  [title]="
+    (mode() === 'link' ? 'settings.profile.link.add' : 'settings.profile.link.other') | transloco
+  "
+  [description]="'settings.profile.link.intro' | transloco"
+  [closeLabel]="'settings.profile.link.cancel' | transloco"
+  [showClose]="false"
+  (dismissed)="closed.emit()"
+>
+  <form id="profile-link-form" class="link-fields" (ngSubmit)="submit()" novalidate>
+    @if (mode() === 'link') {
+      <mb-field
+        [label]="'settings.profile.link.label' | transloco"
+        [hint]="'settings.profile.link.labelHint' | transloco"
+        [error]="
+          attempted() && !label().trim() ? ('settings.profile.link.labelError' | transloco) : ''
+        "
+      >
+        <input
+          mbControl
+          type="text"
+          name="link_label"
+          required
+          [ngModel]="label()"
+          (ngModelChange)="label.set($event)"
+        />
+      </mb-field>
+      <mb-field
+        [label]="'settings.profile.link.url' | transloco"
+        [hint]="'settings.profile.link.urlHint' | transloco"
+        [error]="
+          attempted() && !validAddress() ? ('settings.profile.link.urlError' | transloco) : ''
+        "
+      >
+        <input
+          mbControl
+          type="url"
+          name="link_url"
+          required
+          [ngModel]="address()"
+          (ngModelChange)="address.set($event)"
+        />
+      </mb-field>
+    } @else {
+      <mb-field [label]="'settings.profile.link.site' | transloco">
+        <select mbControl name="profile_site" [ngModel]="site()" (ngModelChange)="site.set($event)">
+          <option value="mastodon">{{ 'settings.profile.link.site.mastodon' | transloco }}</option>
+          <option value="github">{{ 'settings.profile.link.site.github' | transloco }}</option>
+          <option value="gitlab">{{ 'settings.profile.link.site.gitlab' | transloco }}</option>
+        </select>
+      </mb-field>
+      <mb-field
+        [label]="'settings.profile.link.username' | transloco"
+        [hint]="
+          (site() === 'mastodon'
+            ? 'settings.profile.link.mastodonHint'
+            : 'settings.profile.link.usernameHint'
+          ) | transloco
+        "
+        [error]="
+          attempted() && !profileAddress()
+            ? ('settings.profile.link.usernameError' | transloco)
+            : ''
+        "
+      >
+        <input
+          mbControl
+          type="text"
+          name="profile_username"
+          required
+          autocapitalize="none"
+          spellcheck="false"
+          [ngModel]="username()"
+          (ngModelChange)="username.set($event)"
+        />
+      </mb-field>
+      @if (profileAddress(); as url) {
+        <mb-field [label]="'settings.profile.link.preview' | transloco">
+          <input mbControl type="url" readonly [value]="url" />
+        </mb-field>
+      }
+      <p>
+        {{
+          (local() ? 'settings.profile.link.local' : 'settings.profile.link.verification')
+            | transloco
+        }}
+      </p>
+    }
+  </form>
+  <button mbDialogActions mbButton type="button" variant="outline" (click)="closed.emit()">
+    {{ 'settings.profile.link.cancel' | transloco }}
+  </button>
+  <button mbDialogActions mbButton type="submit" form="profile-link-form">
+    {{ 'settings.profile.link.submit' | transloco }}
+  </button>
+</mb-dialog>

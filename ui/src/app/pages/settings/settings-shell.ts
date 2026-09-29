@@ -64,6 +64,7 @@ interface SettingsNavGroup {
 // i18n settings.nav.endorsements: Endorsements
 // i18n settings.nav.signedInAccounts: Signed-in accounts
 // i18n settings.nav.emailNotifications: Email notifications
+// i18n settings.nav.notifications: Notifications
 // i18n settings.nav.approveFollowRequests: Approve follow requests
 // i18n settings.nav.mutedBlocked: Muted & Blocked
 // i18n settings.nav.trustCwSensitive: Trust: CW/Sensitive
@@ -98,7 +99,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
     // What gets shown to you and what gets shown about you — the filtering and
     // labelling rules, as opposed to the people they apply to.
     titleKey: 'settings.groups.content',
-    paths: ['filters', 'spotlight', 'content'],
+    paths: ['filters', 'spotlight', 'content', 'notification-preferences'],
   },
   {
     titleKey: 'settings.groups.people',
@@ -199,6 +200,12 @@ export class SettingsShell {
       // The flipside of the line above — accounts you want *without* a doorway in
       // front of them — so it sits next to it. Client-side, hence anonymous: true.
       { labelKey: 'settings.nav.trustCwSensitive', path: 'content', exact: true, anonymous: true },
+      {
+        labelKey: 'settings.nav.notifications',
+        path: 'notification-preferences',
+        exact: true,
+        anonymous: true,
+      },
       // Sits under the two lists it can empty, and next to the follow-wide
       // retweet switches, because that is what all four of them operate on.
       { labelKey: 'settings.nav.bulkModeration', path: 'bulk-actions', exact: true },

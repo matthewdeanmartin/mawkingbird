@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/settings/notifications/settings-notification-preferences.html",
+      "disposition": "adopted scope",
+      "nextStep": "Notifications adopts PageHeader, SettingsRow and Field/Control for all four browser-local activity preferences. Keep future controls on shared components and preserve linked validation hints."
+    },
+    {
       "file": "ui/src/app/a11y/focus-trap.ts",
       "disposition": "lexical only",
       "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
@@ -794,8 +799,13 @@
     },
     {
       "file": "ui/src/app/pages/settings/profile/settings-profile.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Profile link helpers and metadata rows use shared buttons and labelled Field/Control pairs. Display name, bio, image uploads and overall save feedback remain a separate migration."
+    },
+    {
+      "file": "ui/src/app/pages/settings/profile/profile-link-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Both guided link forms use Dialog, Field/Control and Button, with associated validation, native form submission, cancellation and a generated profile-address preview. Preserve the parent profile's explicit save boundary."
     },
     {
       "file": "ui/src/app/pages/settings/pseudonymity/settings-pseudonymity.html",

@@ -8,6 +8,8 @@ import { Account, AccountField } from '../../../models';
 import { Auth } from '../../../auth';
 import { seedBskyIdentity } from '../../../testing/seed-storage';
 import { SettingsProfile } from './settings-profile';
+import { By } from '@angular/platform-browser';
+import { ProfileLinkDialog } from './profile-link-dialog';
 
 interface SettingsProfileInternals {
   displayName: WritableSignal<string>;
@@ -52,9 +54,23 @@ function makeAccount(): Account {
 
 describe('SettingsProfile', () => {
   let httpMock: HttpTestingController;
+  const modalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
+  const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
 
   beforeEach(() => {
     localStorage.clear();
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value() {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value() {
+        this.open = false;
+      },
+    });
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
@@ -63,6 +79,14 @@ describe('SettingsProfile', () => {
 
   afterEach(() => {
     httpMock.verify();
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of [
+      ['showModal', modalDescriptor],
+      ['close', closeDescriptor],
+    ] as const) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else delete (HTMLDialogElement.prototype as unknown as Record<string, unknown>)[name];
+    }
   });
 
   function setUp(): ComponentFixture<SettingsProfile> {
@@ -78,6 +102,61 @@ describe('SettingsProfile', () => {
     expect(c.displayName()).toBe('Alice');
     expect(c.note()).toBe('source note');
     expect(c.fields()).toEqual([{ name: 'Web', value: 'example.com' }]);
+  });
+
+  it('adds a guided link to a blank row and only publishes it when Save changes is chosen', () => {
+    const fixture = setUp();
+    const c = internals(fixture);
+    c.fields.set([
+      { name: '', value: '' },
+      { name: 'Pronouns', value: 'she/her' },
+    ]);
+    fixture.detectChanges();
+    const button: HTMLButtonElement = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'),
+    ).find((button) => button.textContent?.trim() === 'Add a link')!;
+    button.click();
+    fixture.detectChanges();
+    const dialog = fixture.debugElement.query(By.directive(ProfileLinkDialog))
+      .componentInstance as ProfileLinkDialog;
+    dialog.added.emit({ name: 'My website', value: 'https://example.com/' });
+    fixture.detectChanges();
+    expect(c.fields()).toEqual([
+      { name: 'My website', value: 'https://example.com/' },
+      { name: 'Pronouns', value: 'she/her' },
+    ]);
+    expect(fixture.debugElement.query(By.directive(ProfileLinkDialog))).toBeNull();
+    httpMock.expectNone('/api/v1/accounts/update_credentials');
+    c.saveProfile();
+    const req = httpMock.expectOne('/api/v1/accounts/update_credentials');
+    expect((req.request.body as FormData).get('fields_attributes[0][value]')).toBe(
+      'https://example.com/',
+    );
+    req.flush(makeAccount());
+  });
+
+  it('disables both convenience buttons at the field limit and re-enables them after removal', () => {
+    const fixture = setUp();
+    internals(fixture).fields.set(
+      Array.from({ length: 4 }, (_, i) => ({
+        name: `Link ${i}`,
+        value: `https://example.com/${i}`,
+      })),
+    );
+    fixture.detectChanges();
+    const buttons: HTMLButtonElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.link-actions button'),
+    );
+    expect(buttons).toHaveLength(2);
+    expect(buttons.every((button) => button.disabled)).toBe(true);
+    fixture.componentInstance.removeField(0);
+    fixture.detectChanges();
+    expect(buttons.every((button) => !button.disabled)).toBe(true);
+    buttons[1].click();
+    fixture.detectChanges();
+    expect(
+      fixture.debugElement.query(By.directive(ProfileLinkDialog)).componentInstance.mode(),
+    ).toBe('profile');
   });
 
   it('saves via PATCH update_credentials with form data', () => {

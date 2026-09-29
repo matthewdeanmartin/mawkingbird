@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1053,
-  "filesWithCandidates": 209,
+  "filesScanned": 1056,
+  "filesWithCandidates": 211,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -8148,6 +8148,60 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/settings/notifications/settings-notification-preferences.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 1
+        },
+        {
+          "pattern": "shared",
+          "line": 7
+        },
+        {
+          "pattern": "shared",
+          "line": 8
+        },
+        {
+          "pattern": "shared",
+          "line": 14
+        },
+        {
+          "pattern": "shared",
+          "line": 23
+        },
+        {
+          "pattern": "shared",
+          "line": 24
+        },
+        {
+          "pattern": "shared",
+          "line": 29
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        },
+        {
+          "pattern": "shared",
+          "line": 43
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 55
+        },
+        {
+          "pattern": "shared",
+          "line": 60
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/settings/notifications/settings-notifications.html",
       "status": "needs semantic review",
       "findings": [
@@ -8264,40 +8318,142 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/settings/profile/profile-link-dialog.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 1
+        },
+        {
+          "pattern": "shared",
+          "line": 12
+        },
+        {
+          "pattern": "shared",
+          "line": 20
+        },
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 46
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 67
+        },
+        {
+          "pattern": "shared",
+          "line": 78
+        },
+        {
+          "pattern": "shared",
+          "line": 79
+        },
+        {
+          "pattern": "shared",
+          "line": 90
+        },
+        {
+          "pattern": "shared",
+          "line": 93
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 90
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 93
+        },
+        {
+          "pattern": "selects",
+          "line": 46
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/settings/profile/settings-profile.html",
       "status": "needs semantic review",
       "findings": [
         {
-          "pattern": "nativeButtons",
-          "line": 79
+          "pattern": "shared",
+          "line": 66
         },
         {
-          "pattern": "nativeButtons",
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 89
+        },
+        {
+          "pattern": "shared",
+          "line": 91
+        },
+        {
+          "pattern": "shared",
+          "line": 98
+        },
+        {
+          "pattern": "shared",
           "line": 100
         },
         {
-          "pattern": "nativeButtons",
-          "line": 133
+          "pattern": "shared",
+          "line": 108
+        },
+        {
+          "pattern": "shared",
+          "line": 131
         },
         {
           "pattern": "nativeButtons",
-          "line": 137
+          "line": 65
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 74
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 107
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 130
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 170
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 174
         },
         {
           "pattern": "legacyPills",
-          "line": 81
+          "line": 170
         },
         {
           "pattern": "legacyPills",
-          "line": 100
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 133
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 137
+          "line": 174
         }
       ]
     },

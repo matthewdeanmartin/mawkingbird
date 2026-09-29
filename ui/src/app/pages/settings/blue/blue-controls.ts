@@ -1,5 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-import { MenuIndicatorControls } from './menu-indicator-controls';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
@@ -85,7 +84,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.analytics.hint: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at, and never a query string. Turn this off and the analytics script is never loaded at all: nothing is fetched, counted or sent. The script is served from this site, not from a third party.
 @Component({
   selector: 'app-blue-controls',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MenuIndicatorControls],
+  imports: [FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './blue-controls.html',
   styleUrl: './blue-controls.css',
 })

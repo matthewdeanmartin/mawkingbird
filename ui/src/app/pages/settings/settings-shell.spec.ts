@@ -59,6 +59,19 @@ describe('SettingsShell', () => {
     expect(previous?.textContent?.trim()).toBe('Advanced');
   });
 
+  it('places Notifications only under Content', () => {
+    const fixture = TestBed.createComponent(SettingsShell);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const links = el.querySelectorAll('a[href="/notification-preferences"]');
+    expect(links).toHaveLength(1);
+    expect(links[0].textContent).toContain('Notifications');
+    let previous = links[0].previousElementSibling;
+    while (previous && !previous.classList.contains('settings-nav-heading'))
+      previous = previous.previousElementSibling;
+    expect(previous?.textContent?.trim()).toBe('Content');
+  });
+
   it('shows only browser-local settings in Anonymous', () => {
     TestBed.inject(Auth).enterAnonymous();
     const fixture = TestBed.createComponent(SettingsShell);
@@ -86,6 +99,7 @@ describe('SettingsShell', () => {
         // Trusted accounts and the CW/sensitive switches are client-side, so they
         // work anonymously even though 'Muted & Blocked' beside them does not.
         'Trust: CW/Sensitive',
+        'Notifications',
         // A feed URL carries no credential, so a reading list works with no
         // server identity at all — the most anonymous-capable page there is.
         'RSS feeds',

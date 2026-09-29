@@ -119,3 +119,14 @@ three RSS popup/action placements with direct compact actions. Source usage is
 155 backlog, plus 15 shared and 9 lexical-only candidates. Shared local-tab lint
 is enabled for the migrated client-list template. Zero sprints remain in this
 plan; the explicit app migration backlog is not complete.
+
+Notification preferences now live under Content → Notifications, outside the
+Appearance/Blue controls. The new page adopts PageHeader, three SettingsRows,
+and four Field/Control pairs, with shared labels, hints and validation feedback.
+The inventory and reconciliation ledger include this adopted scope; existing
+preference storage and delivery behavior remain unchanged.
+
+Profile link helpers adopt Dialog, Field/Control and Button for both website and
+other-profile forms. The metadata rows also adopt labelled shared fields and
+buttons, while the rest of the Profile form remains partial adoption. Helpers
+reuse blank rows, preserve existing details and defer publishing to Save changes.

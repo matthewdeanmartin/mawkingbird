@@ -464,6 +464,15 @@ export const routes: Routes = [
               import('./pages/settings/content/settings-content').then((m) => m.SettingsContent),
           },
           {
+            path: 'notification-preferences',
+            title: 'Notifications',
+            data: { preloadSettings: true },
+            loadComponent: () =>
+              import('./pages/settings/notifications/settings-notification-preferences').then(
+                (m) => m.SettingsNotificationPreferences,
+              ),
+          },
+          {
             // Legacy deep links keep their selected list while the sidebar now
             // exposes a single combined destination.
             path: 'mutes',

@@ -1,0 +1,70 @@
+<mb-page-header
+  [title]="'settings.indicators.title' | transloco"
+  [description]="'settings.indicators.hint' | transloco"
+/>
+
+<div class="spage-body">
+  <mb-settings-row [heading]="'settings.indicators.delivery' | transloco">
+    <mb-field
+      [label]="'settings.indicators.hours' | transloco"
+      [hint]="'settings.indicators.hours.hint' | transloco"
+      [error]="invalidHours() ? ('settings.indicators.hours.error' | transloco) : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        name="notification_hours"
+        [ngModel]="indicators.preferences().hours.join(', ')"
+        (change)="hours($any($event.target).value)"
+      />
+    </mb-field>
+  </mb-settings-row>
+
+  <mb-settings-row [heading]="'settings.indicators.quietTitle' | transloco">
+    <mb-field
+      [label]="'settings.indicators.start' | transloco"
+      [hint]="'settings.indicators.hour.hint' | transloco"
+    >
+      <input
+        mbControl
+        type="number"
+        min="0"
+        max="23"
+        name="quiet_start"
+        [ngModel]="indicators.preferences().quietStart"
+        (ngModelChange)="indicators.configure({ quietStart: $event })"
+      />
+    </mb-field>
+    <mb-field
+      [label]="'settings.indicators.end' | transloco"
+      [hint]="'settings.indicators.quiet' | transloco"
+    >
+      <input
+        mbControl
+        type="number"
+        min="0"
+        max="23"
+        name="quiet_end"
+        [ngModel]="indicators.preferences().quietEnd"
+        (ngModelChange)="indicators.configure({ quietEnd: $event })"
+      />
+    </mb-field>
+  </mb-settings-row>
+
+  <mb-settings-row [heading]="'settings.indicators.chat' | transloco">
+    <mb-field
+      [label]="'settings.indicators.batch' | transloco"
+      [hint]="'settings.indicators.batch.hint' | transloco"
+    >
+      <input
+        mbControl
+        type="number"
+        min="0"
+        max="1440"
+        name="chat_minutes"
+        [ngModel]="indicators.preferences().chatMinutes"
+        (ngModelChange)="indicators.configure({ chatMinutes: $event })"
+      />
+    </mb-field>
+  </mb-settings-row>
+</div>
