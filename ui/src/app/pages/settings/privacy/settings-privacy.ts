@@ -80,10 +80,6 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
   templateUrl: './settings-privacy.html',
   styles: `
     mb-field {
-      display: block;
-      margin-block: 10px;
-    }
-    .post-default-controls {
       max-inline-size: 24rem;
     }
   `,

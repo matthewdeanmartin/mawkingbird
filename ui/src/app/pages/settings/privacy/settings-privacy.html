@@ -62,8 +62,9 @@
       >{{ 'settings.privacy.crosslink.after' | transloco }}
     </p>
 
-    <div class="post-default-controls">
+    <mb-settings-row [heading]="'settings.privacy.visibility' | transloco">
       <mb-field
+        hideLabel
         [label]="'settings.privacy.visibility' | transloco"
         [hint]="'settings.privacy.visibility.hint' | transloco"
         [error]="
@@ -88,24 +89,27 @@
           [message]="(saving() === 'privacy' ? 'common.saving' : 'common.saved') | transloco"
         />
       </mb-field>
+    </mb-settings-row>
 
-      <mb-settings-row [heading]="'settings.privacy.media' | transloco">
-        <mb-checkbox
-          [label]="'settings.privacy.sensitive' | transloco"
-          [ngModel]="sensitive()"
-          (ngModelChange)="commit('sensitive', $event)"
-          [disabled]="saving() === 'sensitive'"
-          name="sensitive"
-          [status]="saved() === 'sensitive' ? ('common.saved' | transloco) : ''"
-          [error]="
-            errorFor('sensitive')
-              ? ('common.errorPrefix' | transloco: { message: errorFor('sensitive') })
-              : ''
-          "
-        />
-      </mb-settings-row>
+    <mb-settings-row [heading]="'settings.privacy.media' | transloco">
+      <mb-checkbox
+        [label]="'settings.privacy.sensitive' | transloco"
+        [ngModel]="sensitive()"
+        (ngModelChange)="commit('sensitive', $event)"
+        [disabled]="saving() === 'sensitive'"
+        name="sensitive"
+        [status]="saved() === 'sensitive' ? ('common.saved' | transloco) : ''"
+        [error]="
+          errorFor('sensitive')
+            ? ('common.errorPrefix' | transloco: { message: errorFor('sensitive') })
+            : ''
+        "
+      />
+    </mb-settings-row>
 
+    <mb-settings-row [heading]="'settings.privacy.language' | transloco">
       <mb-field
+        hideLabel
         [label]="'settings.privacy.language' | transloco"
         [hint]="'settings.privacy.language.hint' | transloco"
         [error]="
@@ -131,7 +135,7 @@
           [message]="(saving() === 'language' ? 'common.saving' : 'common.saved') | transloco"
         />
       </mb-field>
-    </div>
+    </mb-settings-row>
   </div>
 
   <div class="ssection">

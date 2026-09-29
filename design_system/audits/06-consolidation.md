@@ -139,3 +139,7 @@ submission, until a row is removed. Guided dialog labels remain visible.
 Writing's publish wizard and vocabulary fields adopt shared two-column settings
 rows. Wizard checkboxes, vocabulary inputs, actions and saved feedback use the
 design system; preference semantics and the upper sections remain unchanged.
+
+Privacy's posting defaults now use full-width SettingsRows for visibility,
+media and language. Only the select fields retain a width cap, so the containing
+rows no longer trigger the narrow-screen stacked layout on a wide page.
