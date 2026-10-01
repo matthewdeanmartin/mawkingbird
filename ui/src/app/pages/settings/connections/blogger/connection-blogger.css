@@ -82,11 +82,3 @@
   gap: 10px;
   flex-wrap: wrap;
 }
-
-.blog-list .btn:disabled {
-  /* The chosen blog: not a dimmed dead control, but the current selection. */
-  opacity: 1;
-  border-color: var(--accent);
-  color: var(--accent);
-  cursor: default;
-}

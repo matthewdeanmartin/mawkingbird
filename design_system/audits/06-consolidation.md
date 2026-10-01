@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Button consistency follow-up
+
+The October 1 button batch refreshes the inventory to 1,058 source files and
+215 candidate files. MbButton and legacy action classes now share one canonical
+stylesheet; component CSS no longer owns pill colors or sizing. Import/export
+direction selection uses RadioGroup; compact Algo, Thread, Drafts and Write
+actions use PostAction. Additional login, onboarding, follow and analytics
+actions adopt MbButton. See [button review](../REVIEW-buttons.md) for scope and
+verification. Historical sprint counts below describe their original checkpoints.
+
 ## Scope and accounting
 
 `npm run design:audit-controls` scans all maintained `ui/src/app` HTML, non-spec

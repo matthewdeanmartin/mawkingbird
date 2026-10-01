@@ -53,24 +53,6 @@
   padding: 6px 16px 12px;
 }
 
-.op {
-  border: 1px solid var(--border);
-  background: none;
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.op.warn {
-  border-color: #f3c0cf;
-  color: #e0245e;
-}
-
-.op.warn:hover {
-  background: #fdecf1;
-}
-
 .moderated {
   font-size: 12px;
   font-style: italic;

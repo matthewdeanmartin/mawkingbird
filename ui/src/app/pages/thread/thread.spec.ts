@@ -312,13 +312,13 @@ describe('Thread', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    const link = [...el.querySelectorAll<HTMLAnchorElement>('a.btn')].find((a) =>
+    const link = [...el.querySelectorAll<HTMLAnchorElement>('a[mbPostAction]')].find((a) =>
       a.textContent?.includes('Thread reader'),
     );
     expect(link).toBeTruthy();
     expect(link!.getAttribute('href')).toContain('/statuses/1?reader=thread');
     expect(
-      [...el.querySelectorAll<HTMLAnchorElement>('a.btn')]
+      [...el.querySelectorAll<HTMLAnchorElement>('a[mbPostAction]')]
         .find((a) => a.textContent?.includes('Long text reader'))
         ?.getAttribute('href'),
     ).toContain('/read/1');
@@ -495,7 +495,7 @@ describe('Thread', () => {
     fixture.detectChanges();
 
     const back = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>('a.btn'),
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLAnchorElement>('a[mbPostAction]'),
     ).find((a) => a.textContent?.includes('Return to RSS reader'));
 
     expect(back).toBeTruthy();
@@ -555,7 +555,7 @@ describe('Thread', () => {
       context: '1',
     });
     const link = (fixture.nativeElement as HTMLElement).querySelector(
-      'a.btn[href*="/conversations"]',
+      'a[mbPostAction][href*="/conversations"]',
     );
     expect(link?.textContent).toContain('Open in chat');
   });
@@ -571,7 +571,7 @@ describe('Thread', () => {
 
     expect(chatInternals(fixture).chatKey()).toBeNull();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('a.btn[href*="/conversations"]')).toBeNull();
+    expect(el.querySelector('a[mbPostAction][href*="/conversations"]')).toBeNull();
     expect(el.querySelector('button[disabled][title*="two-person"]')).toBeNull();
     expect(el.textContent).not.toContain('Open in chat');
   });
@@ -609,7 +609,7 @@ describe('Thread', () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('a.btn[href*="/conversations"]')).toBeNull();
+    expect(el.querySelector('a[mbPostAction][href*="/conversations"]')).toBeNull();
     // The disabled variant must be gone too, not just the enabled one — a
     // permanently-inert control on every RSS view is noise, not information.
     expect(el.querySelector('button[disabled][title*="two-person"]')).toBeNull();

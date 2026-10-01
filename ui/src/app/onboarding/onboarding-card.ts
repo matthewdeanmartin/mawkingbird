@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import {
   afterNextRender,
   Component,
@@ -44,6 +45,7 @@ import { MastodonOnboardingServer, NO_SERVER } from './onboarding-server';
  * English only; see the header of `onboarding-questions.ts`.
  */
 @Component({
+  imports: [MbButton],
   selector: 'app-onboarding-card',
   templateUrl: './onboarding-card.html',
   styleUrl: './onboarding-card.css',

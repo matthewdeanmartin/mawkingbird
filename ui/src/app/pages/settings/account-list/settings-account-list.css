@@ -40,11 +40,6 @@
   flex-direction: column;
 }
 
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 0.85em;
-}
-
 /* Four buttons per row on a phone need to wrap rather than squeeze the name. */
 .row-actions {
   display: flex;
@@ -106,16 +101,6 @@
 
 .amnesty-row .btn {
   flex: none;
-}
-
-.btn.danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
-.btn.danger:hover:not(:disabled) {
-  background: #e0245e;
-  color: #fff;
 }
 
 /* --- Domains tab --- */

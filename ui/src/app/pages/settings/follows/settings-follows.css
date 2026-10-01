@@ -41,11 +41,6 @@
   gap: 6px;
 }
 
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 0.85em;
-}
-
 /* Pointer to the bulk boost switches, which live on their own page. */
 .follows-crosslink {
   margin: 0 0 12px;

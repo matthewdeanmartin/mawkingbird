@@ -72,16 +72,6 @@
   flex: none;
 }
 
-.btn.danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
-.btn.danger:hover:not(:disabled) {
-  background: #e0245e;
-  color: #fff;
-}
-
 .footnote {
   margin-top: 16px;
 }

@@ -14,17 +14,6 @@
   align-items: center;
   gap: 4px;
   margin: 10px 16px 0;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 9999px;
-  background: var(--col-bg);
-  color: var(--text);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background: var(--bg);
 }
 
 /* The cross-server dead end: a real explanation plus the two ways out. */
@@ -334,10 +323,6 @@
 }
 
 /* Blocked state: turn the (outline) Block button into a clear danger affordance. */
-.btn-danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
 
 .report-done {
   margin-top: 10px;
@@ -566,8 +551,6 @@ h2 {
 .featured-head .btn {
   width: auto;
   white-space: nowrap;
-  padding: 6px 12px;
-  font-size: 13px;
 }
 
 .featured-hint {
@@ -611,8 +594,6 @@ h2 {
 
 .featured-follow {
   width: auto;
-  padding: 5px 12px;
-  font-size: 13px;
   white-space: nowrap;
   flex-shrink: 0;
 }

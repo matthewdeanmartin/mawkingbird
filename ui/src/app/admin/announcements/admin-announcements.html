@@ -49,13 +49,27 @@
         }
       </div>
       <div class="ann-ops">
-        <button class="op" (click)="togglePublished(a)">
+        <button
+          mbButton
+          size="small"
+          variant="outline"
+          type="button"
+          class="op"
+          (click)="togglePublished(a)"
+        >
           {{
             (a.published ? 'adminAnnouncements.unpublish' : 'adminAnnouncements.publish')
               | transloco
           }}
         </button>
-        <button class="op warn" (click)="remove(a)">
+        <button
+          mbButton
+          size="small"
+          tone="danger"
+          type="button"
+          class="op warn"
+          (click)="remove(a)"
+        >
           {{ 'adminAnnouncements.delete' | transloco }}
         </button>
       </div>

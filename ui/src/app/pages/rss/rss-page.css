@@ -64,8 +64,6 @@
 }
 
 .btn-small {
-  font-size: 13px;
-  padding: 4px 10px;
   white-space: nowrap;
 }
 
@@ -76,26 +74,6 @@
   flex-wrap: wrap;
   gap: 6px;
   justify-content: flex-end;
-}
-
-/* `btn-outline` is defined per-page in this codebase rather than globally, so
-   the rail's secondary button carries its own quiet styling here — otherwise it
-   inherits the filled `.btn` and competes with "Add a feed" for the eye. */
-.head-actions .btn-outline {
-  background: none;
-  border: 1px solid var(--border);
-  color: inherit;
-}
-
-.head-actions .btn-outline:hover {
-  background: var(--bg);
-}
-
-/* The kits toggle is a mode, so it reads as pressed while the pane is showing
-   them — the same treatment the segmented controls use. */
-.head-actions .btn-outline.active {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  font-weight: 700;
 }
 
 /* `flex: 0 1 auto` not `flex: 1`: the rail should be as tall as its list, and

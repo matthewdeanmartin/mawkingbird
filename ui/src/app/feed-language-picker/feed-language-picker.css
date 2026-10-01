@@ -6,28 +6,6 @@
   flex: 0 0 auto;
 }
 
-/* Toolbar filters are flat rectangular controls. This must live in the child
-   component because Angular's style scoping prevents a parent filter bar from
-   overriding the button's global blue-pill active state. */
-.lang-button {
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--text);
-  padding: 5px 7px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.lang-button:hover {
-  background: var(--hover);
-}
-
-.lang-button.active {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
 .lang-menu {
   position: absolute;
   top: calc(100% + 4px);

@@ -1,5 +1,13 @@
 # Design-system progress
 
+## Button consistency follow-up
+
+The [button batch](REVIEW-buttons.md) unifies action appearance and expands source
+adoption to **377 direct placements across 56 templates**, still using 24 of 27
+widget types. Legacy action classes share the canonical button implementation.
+The historical sprint checkpoints below retain their original counts; the current
+machine-readable snapshot is [adoption-status.json](audits/adoption-status.json).
+
 Current checkpoint: **Sprints 17 and 18 combined and implemented; review ready. Zero planned sprints remain.** This closes the bounded 1–18 plan,
 not the migration of every app surface. Further adoption needs a newly scoped
 batch from the explicit backlog; no Sprint 19 is implicitly promised.

@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -48,7 +49,7 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n pages.loginBluesky.errors.signInFailed: Sign-in failed. Please try again.
 @Component({
   selector: 'app-login-bluesky',
-  imports: [FormsModule, RouterLink, TranslocoPipe],
+  imports: [MbButton, FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './login-bluesky.html',
   styleUrl: './login-bluesky.css',
 })

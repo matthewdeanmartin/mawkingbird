@@ -1,4 +1,5 @@
 import { Component, output, signal } from '@angular/core';
+import { MbButton } from '../design-system/button/button';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 // i18n firstRun.welcomeTitle: Welcome to Mawkingbird
@@ -35,7 +36,7 @@ export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky';
   selector: 'app-first-run-modal',
   templateUrl: './first-run-modal.html',
   styleUrl: './first-run-modal.css',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, MbButton],
   host: {
     role: 'dialog',
     'aria-modal': 'true',

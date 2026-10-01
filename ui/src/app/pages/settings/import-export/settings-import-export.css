@@ -411,7 +411,7 @@
 }
 
 .bridge-body[disabled] {
-  opacity: 0.5;
+  color: var(--muted);
 }
 
 .bridge-gate {
@@ -446,15 +446,8 @@
 }
 
 .bridge-direction {
-  display: flex;
-  gap: 8px;
+  display: block;
   margin: 10px 0;
-  flex-wrap: wrap;
-}
-
-.bridge-direction .active {
-  border-color: var(--accent);
-  color: var(--accent);
 }
 
 .bridge-summary {

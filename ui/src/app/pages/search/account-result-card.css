@@ -216,16 +216,6 @@
 
 /* A followed/mutual button reads as an outlined "done" state, not a call to
    action — hover reveals it's clickable to unfollow. */
-.follow-btn.following {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.follow-btn.mutual {
-  border-color: var(--accent, #6364ff);
-  color: var(--accent, #6364ff);
-}
 
 .acct-matches {
   margin-top: 10px;

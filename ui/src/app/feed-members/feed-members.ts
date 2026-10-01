@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { AccountPreview } from '../account-hover-card/account-preview';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -51,7 +52,7 @@ const MAX_RESOLVED_AUTHORS = 80;
 // i18n feedMembers.postCount.other: {{count}} {{posts}}
 @Component({
   selector: 'app-feed-members',
-  imports: [AccountPreview, RouterLink, FollowButton, TranslocoPipe],
+  imports: [MbButton, AccountPreview, RouterLink, FollowButton, TranslocoPipe],
   templateUrl: './feed-members.html',
   styleUrl: './feed-members.css',
 })

@@ -115,11 +115,6 @@ h2 {
   overflow-wrap: anywhere;
 }
 
-.danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
 .empty {
   padding: 30px 0;
   text-align: center;

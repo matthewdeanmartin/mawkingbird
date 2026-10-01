@@ -25,36 +25,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 4px 12px;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 0.9em;
-  cursor: pointer;
-}
-
-.chip:hover:not(:disabled) {
-  background: var(--hover);
-}
-
-.chip.on {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-/* A kind with nothing in it stays put rather than shifting the row of chips. */
-.chip:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
 .chip-count {
   font-size: 0.85em;
   opacity: 0.75;

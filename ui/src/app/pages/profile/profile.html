@@ -36,7 +36,7 @@
        profiles have no tabs, so they keep a standalone button rather than no
        way back. -->
   @if (isRss() || isTwitter()) {
-    <button class="back-button" type="button" (click)="goBack()">
+    <button mbButton variant="outline" class="back-button" type="button" (click)="goBack()">
       {{ 'pages.profile.actions.back' | transloco }}
     </button>
   }

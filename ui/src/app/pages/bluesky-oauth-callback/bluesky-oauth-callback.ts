@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +13,7 @@ import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 /** Completes the SDK-owned OAuth code exchange before Angular enters the app. */
 @Component({
   selector: 'app-bluesky-oauth-callback',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbButton, RouterLink, TranslocoPipe],
   templateUrl: './bluesky-oauth-callback.html',
   styleUrl: './bluesky-oauth-callback.css',
 })

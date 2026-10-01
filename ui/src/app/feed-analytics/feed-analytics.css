@@ -20,27 +20,6 @@
   white-space: nowrap;
 }
 
-.load-more-btn {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--col-bg);
-  color: var(--text);
-  font-size: 12.5px;
-  font-weight: 700;
-  padding: 2px 10px;
-  cursor: pointer;
-}
-
-.load-more-btn:hover {
-  background: var(--hover);
-}
-
-.load-more-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
 .highlights {
   margin: 0;
   padding: 12px 16px 12px 34px;

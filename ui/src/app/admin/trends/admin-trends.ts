@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -18,7 +19,7 @@ import { StatusCard } from '../../status-card/status-card';
 /** Read-only trends viewer: trending hashtags and most-favourited statuses. */
 @Component({
   selector: 'app-admin-trends',
-  imports: [RouterLink, StatusCard, TranslocoPipe],
+  imports: [MbButton, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './admin-trends.html',
   styleUrl: './admin-trends.css',
 })

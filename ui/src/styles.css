@@ -1,4 +1,5 @@
 @import '../../design_system/tokens.css';
+@import './app/design-system/button/button.css';
 
 :root {
   --bg: #f7f9f9;
@@ -321,36 +322,6 @@ main.column:focus {
   outline: none;
 }
 
-.btn {
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 9999px;
-  padding: 8px 16px;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.btn:hover {
-  background: var(--accent-hover);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-}
-
-.btn-sm {
-  padding: 5px 12px;
-  font-size: 13px;
-}
-
 .muted {
   color: var(--muted);
 }
@@ -374,11 +345,6 @@ textarea {
 
 .live-toggle {
   padding: 8px 16px;
-}
-
-.btn-outline.active {
-  background: var(--accent);
-  color: #fff;
 }
 
 .more {
@@ -744,24 +710,6 @@ a.tab:hover {
   color: var(--muted);
   font-size: 12px;
   font-weight: 600;
-}
-
-.plan-cta {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.plan-cta:hover,
-.plan-cta:focus-visible {
-  filter: brightness(1.08);
-  text-decoration: none;
 }
 
 @media (max-width: 720px) {

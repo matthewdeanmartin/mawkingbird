@@ -146,11 +146,12 @@
         >
           @for (chip of chips; track chip.id) {
             <button
+              mbPostAction
               class="chip"
               type="button"
               [class.on]="filter() === chip.id"
               [disabled]="!count(chip.id)"
-              [attr.aria-pressed]="filter() === chip.id"
+              [pressed]="filter() === chip.id"
               (click)="select(chip.id)"
             >
               {{ chip.key | transloco }}
@@ -905,10 +906,11 @@
           [aria-label]="'pages.write.aria.filterNotesByKind' | transloco"
         >
           <button
+            mbPostAction
             class="chip"
             type="button"
             [class.on]="pkmFilter() === null"
-            [attr.aria-pressed]="pkmFilter() === null"
+            [pressed]="pkmFilter() === null"
             (click)="setPkmFilter(null)"
           >
             {{ 'pages.write.allChip' | transloco }}
@@ -917,11 +919,12 @@
           @for (kind of pkmKindList; track kind) {
             @if (pkmKindEnabled(kind)) {
               <button
+                mbPostAction
                 class="chip"
                 type="button"
                 [class.on]="pkmFilter() === kind"
                 [disabled]="!pkmCount(kind)"
-                [attr.aria-pressed]="pkmFilter() === kind"
+                [pressed]="pkmFilter() === kind"
                 (click)="setPkmFilter(kind)"
               >
                 {{ pkmChipLabel(kind) }}
@@ -983,10 +986,11 @@
           [aria-label]="'pages.write.aria.filterNotesByKind' | transloco"
         >
           <button
+            mbPostAction
             class="chip"
             type="button"
             [class.on]="pkmFilter() === null"
-            [attr.aria-pressed]="pkmFilter() === null"
+            [pressed]="pkmFilter() === null"
             (click)="setPkmFilter(null)"
           >
             {{ 'pages.write.allChip' | transloco }}
@@ -995,11 +999,12 @@
           @for (kind of pkmKindList; track kind) {
             @if (pkmKindEnabled(kind)) {
               <button
+                mbPostAction
                 class="chip"
                 type="button"
                 [class.on]="pkmFilter() === kind"
                 [disabled]="!pkmCount(kind)"
-                [attr.aria-pressed]="pkmFilter() === kind"
+                [pressed]="pkmFilter() === kind"
                 (click)="setPkmFilter(kind)"
               >
                 {{ pkmChipLabel(kind) }}

@@ -127,7 +127,7 @@ describe('RssPage', () => {
     expect(subs.has(wiki)).toBe(true);
     (first.querySelector('mb-post-actions button') as HTMLButtonElement).click();
     fixture.detectChanges();
-    (first.querySelector('.btn-danger') as HTMLButtonElement).click();
+    (first.querySelector('button[mbButton][data-tone="danger"]') as HTMLButtonElement).click();
     fixture.detectChanges();
     await fixture.whenStable();
     expect(subs.has(wiki)).toBe(false);

@@ -89,13 +89,14 @@
           </div>
         }
         @case ('action') {
-          <button type="button" class="ob-primary" (click)="go(q.control.route)">
+          <button mbButton type="button" class="ob-primary" (click)="go(q.control.route)">
             {{ q.control.label }}
           </button>
         }
         @case ('plus') {
           @if (isMember()) {
             <button
+              mbButton
               type="button"
               class="ob-primary"
               (click)="go('/settings/mawkingbird-plus', true)"
@@ -112,13 +113,22 @@
             </ul>
             <div class="ob-plus-actions">
               <button
+                mbButton
                 type="button"
                 class="ob-primary"
                 (click)="go('/settings/mawkingbird-plus', true)"
               >
                 Set up Plus
               </button>
-              <button type="button" class="ob-secondary" (click)="go('/plans')">See plans</button>
+              <button
+                mbButton
+                variant="outline"
+                type="button"
+                class="ob-secondary"
+                (click)="go('/plans')"
+              >
+                See plans
+              </button>
             </div>
           }
         }
@@ -132,11 +142,24 @@
     <div class="ob-footer">
       <button type="button" class="ob-quit" (click)="quit()">Quit</button>
       <span class="ob-spacer"></span>
-      <button type="button" class="ob-secondary" [disabled]="flow.saving()" (click)="skip()">
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        class="ob-secondary"
+        [disabled]="flow.saving()"
+        (click)="skip()"
+      >
         {{ q.control.kind === 'plus' ? 'Maybe later' : 'Skip' }}
       </button>
       @if (q.control.kind !== 'plus') {
-        <button type="button" class="ob-primary" [disabled]="flow.saving()" (click)="next()">
+        <button
+          mbButton
+          type="button"
+          class="ob-primary"
+          [disabled]="flow.saving()"
+          (click)="next()"
+        >
           Next
         </button>
       }
@@ -149,7 +172,7 @@
         <button type="button" class="ob-quit" (click)="back()">Back</button>
       }
       <span class="ob-spacer"></span>
-      <button type="button" class="ob-primary" (click)="quit()">Close</button>
+      <button mbButton type="button" class="ob-primary" (click)="quit()">Close</button>
     </div>
   }
 </div>

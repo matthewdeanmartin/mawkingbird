@@ -6,10 +6,3 @@ mb-field {
   margin: 14px 0;
 }
 /* Preserve the existing destructive action pending the shared danger variant. */
-.btn.warn {
-  background: #e0245e;
-}
-
-.btn.warn:hover {
-  background: #c01e50;
-}

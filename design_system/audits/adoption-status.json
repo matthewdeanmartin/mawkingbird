@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 24,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 30,
-  "directTemplateCallSites": 208,
+  "appTemplateFiles": 56,
+  "directTemplateCallSites": 377,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,35 +29,51 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 34,
+      "directCallSites": 131,
       "consumers": [
+        {
+          "file": "account-analytics/account-analytics.html",
+          "count": 1
+        },
         {
           "file": "account-list-dialog/account-list-dialog.html",
           "count": 2
         },
         {
+          "file": "admin/accounts/admin-accounts.html",
+          "count": 10
+        },
+        {
           "file": "admin/announcements/admin-announcements.html",
-          "count": 1
+          "count": 3
         },
         {
           "file": "admin/canonical-blocks/admin-canonical-blocks.html",
-          "count": 2
+          "count": 3
         },
         {
           "file": "admin/domain-allows/admin-domain-allows.html",
-          "count": 1
+          "count": 2
         },
         {
           "file": "admin/domains/admin-domains.html",
-          "count": 1
+          "count": 2
         },
         {
           "file": "admin/email-blocks/admin-email-blocks.html",
-          "count": 1
+          "count": 2
         },
         {
           "file": "admin/ip-blocks/admin-ip-blocks.html",
-          "count": 1
+          "count": 2
+        },
+        {
+          "file": "admin/reports/admin-reports.html",
+          "count": 3
+        },
+        {
+          "file": "admin/trends/admin-trends.html",
+          "count": 4
         },
         {
           "file": "compose/translate-dialog/translate-dialog.html",
@@ -65,6 +81,18 @@
         },
         {
           "file": "confirm-dialog/confirm-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feed-analytics/feed-analytics.html",
+          "count": 2
+        },
+        {
+          "file": "feed-members/feed-members.html",
+          "count": 2
+        },
+        {
+          "file": "first-run/first-run-modal.html",
           "count": 2
         },
         {
@@ -80,16 +108,68 @@
           "count": 6
         },
         {
+          "file": "onboarding/onboarding-card.html",
+          "count": 3
+        },
+        {
+          "file": "pages/bluesky-oauth-callback/bluesky-oauth-callback.html",
+          "count": 1
+        },
+        {
           "file": "pages/list-timeline/list-timeline.html",
           "count": 3
+        },
+        {
+          "file": "pages/login-bluesky/login-bluesky.html",
+          "count": 3
+        },
+        {
+          "file": "pages/profile/profile.html",
+          "count": 1
         },
         {
           "file": "pages/public-timeline/public-timeline.html",
           "count": 1
         },
         {
+          "file": "pages/settings/filters/filter-wizard.ts",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/import-export/settings-import-export.html",
+          "count": 39
+        },
+        {
+          "file": "pages/settings/profile/profile-link-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/profile/settings-profile.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 2
+        },
+        {
+          "file": "pages/write/posting-language-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "pages/write/write-page.html",
+          "count": 1
+        },
+        {
+          "file": "people-browser/people-browser.html",
+          "count": 1
+        },
+        {
           "file": "report-dialog/report-dialog.html",
           "count": 1
+        },
+        {
+          "file": "shell/shell.html",
+          "count": 2
         },
         {
           "file": "sign-in-prompt/sign-in-prompt.html",
@@ -101,7 +181,7 @@
     {
       "name": "MbCheckbox",
       "selector": "mb-checkbox",
-      "directCallSites": 14,
+      "directCallSites": 17,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -124,8 +204,16 @@
           "count": 2
         },
         {
+          "file": "pages/settings/import-export/settings-import-export.html",
+          "count": 1
+        },
+        {
           "file": "pages/settings/privacy/settings-privacy.html",
           "count": 5
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 2
         }
       ],
       "integrated": true
@@ -157,7 +245,7 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 9,
+      "directCallSites": 11,
       "consumers": [
         {
           "file": "account-list-dialog/account-list-dialog.html",
@@ -188,6 +276,14 @@
           "count": 1
         },
         {
+          "file": "pages/settings/profile/profile-link-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "pages/write/posting-language-dialog.ts",
+          "count": 1
+        },
+        {
           "file": "report-dialog/report-dialog.html",
           "count": 1
         },
@@ -213,7 +309,7 @@
     {
       "name": "MbControl",
       "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
-      "directCallSites": 20,
+      "directCallSites": 37,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -252,7 +348,31 @@
           "count": 3
         },
         {
+          "file": "pages/settings/filters/filter-wizard.ts",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "count": 4
+        },
+        {
           "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/profile/profile-link-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/profile/settings-profile.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 1
+        },
+        {
+          "file": "pages/write/posting-language-dialog.ts",
           "count": 2
         },
         {
@@ -265,7 +385,7 @@
     {
       "name": "MbField",
       "selector": "mb-field",
-      "directCallSites": 20,
+      "directCallSites": 37,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -304,7 +424,31 @@
           "count": 3
         },
         {
+          "file": "pages/settings/filters/filter-wizard.ts",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "count": 4
+        },
+        {
           "file": "pages/settings/privacy/settings-privacy.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/profile/profile-link-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/profile/settings-profile.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 1
+        },
+        {
+          "file": "pages/write/posting-language-dialog.ts",
           "count": 2
         },
         {
@@ -401,7 +545,7 @@
     {
       "name": "MbPageHeader",
       "selector": "mb-page-header",
-      "directCallSites": 2,
+      "directCallSites": 3,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
@@ -409,6 +553,10 @@
         },
         {
           "file": "pages/list-timeline/list-timeline.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/notifications/settings-notification-preferences.html",
           "count": 1
         }
       ],
@@ -447,8 +595,24 @@
     {
       "name": "MbPostAction",
       "selector": "button[mbPostAction], a[mbPostAction]",
-      "directCallSites": 29,
+      "directCallSites": 49,
       "consumers": [
+        {
+          "file": "command-bar/command-bar.ts",
+          "count": 1
+        },
+        {
+          "file": "feed-language-picker/feed-language-picker.html",
+          "count": 1
+        },
+        {
+          "file": "pages/algo/algo.html",
+          "count": 7
+        },
+        {
+          "file": "pages/drafts/drafts-page.html",
+          "count": 1
+        },
         {
           "file": "pages/read/save-to-library/save-to-library.html",
           "count": 1
@@ -456,6 +620,14 @@
         {
           "file": "pages/rss/feed-actions/feed-actions.ts",
           "count": 2
+        },
+        {
+          "file": "pages/thread/thread.html",
+          "count": 5
+        },
+        {
+          "file": "pages/write/write-page.html",
+          "count": 5
         },
         {
           "file": "status-card/status-card.html",
@@ -479,10 +651,14 @@
     {
       "name": "MbRadioGroup",
       "selector": "mb-radio-group",
-      "directCallSites": 1,
+      "directCallSites": 2,
       "consumers": [
         {
           "file": "pages/settings/content/settings-content.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/import-export/settings-import-export.html",
           "count": 1
         }
       ],
@@ -491,11 +667,15 @@
     {
       "name": "MbSaveFeedback",
       "selector": "mb-save-feedback",
-      "directCallSites": 2,
+      "directCallSites": 3,
       "consumers": [
         {
           "file": "pages/settings/privacy/settings-privacy.html",
           "count": 2
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -503,11 +683,19 @@
     {
       "name": "MbSettingsRow",
       "selector": "mb-settings-row",
-      "directCallSites": 4,
+      "directCallSites": 12,
       "consumers": [
         {
+          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "count": 3
+        },
+        {
           "file": "pages/settings/privacy/settings-privacy.html",
-          "count": 4
+          "count": 6
+        },
+        {
+          "file": "pages/settings/writing/settings-writing.html",
+          "count": 3
         }
       ],
       "integrated": true
@@ -515,11 +703,15 @@
     {
       "name": "MbTab",
       "selector": "ng-template[mbTab]",
-      "directCallSites": 2,
+      "directCallSites": 3,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
           "count": 2
+        },
+        {
+          "file": "pages/settings/connections/settings-connections.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -527,10 +719,14 @@
     {
       "name": "MbTabs",
       "selector": "mb-tabs",
-      "directCallSites": 1,
+      "directCallSites": 2,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/settings-connections.html",
           "count": 1
         }
       ],

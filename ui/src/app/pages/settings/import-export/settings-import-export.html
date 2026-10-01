@@ -60,6 +60,8 @@
         <input type="file" accept=".csv,.txt" (change)="onFriendFile($event)" hidden />
       </label>
       <button
+        mbButton
+        variant="outline"
         type="button"
         class="btn btn-outline"
         [disabled]="!pasted().trim() || importer.running()"
@@ -68,12 +70,18 @@
         {{ 'settings.importExport.preview' | transloco }}
       </button>
       @if (importer.rows().length && !importer.running()) {
-        <button type="button" class="btn" (click)="startImport()">
+        <button mbButton type="button" class="btn" (click)="startImport()">
           {{ 'settings.importExport.followAllOpen' | transloco }}{{ importer.rows().length }})
         </button>
       }
       @if (importer.running()) {
-        <button type="button" class="btn btn-outline" (click)="importer.stop()">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          class="btn btn-outline"
+          (click)="importer.stop()"
+        >
           {{ 'settings.importExport.stop' | transloco }}
         </button>
       }
@@ -162,6 +170,8 @@
         <input type="file" accept=".csv,.txt" (change)="onTagFile($event)" hidden />
       </label>
       <button
+        mbButton
+        variant="outline"
         type="button"
         class="btn btn-outline"
         [disabled]="!pastedTags().trim() || tagImporter.running()"
@@ -170,14 +180,20 @@
         {{ 'settings.importExport.tags.preview' | transloco }}
       </button>
       @if (tagImporter.rows().length && !tagImporter.running()) {
-        <button type="button" class="btn" (click)="startTagImport()">
+        <button mbButton type="button" class="btn" (click)="startTagImport()">
           {{
             'settings.importExport.tags.followAll' | transloco: { count: tagImporter.rows().length }
           }}
         </button>
       }
       @if (tagImporter.running()) {
-        <button type="button" class="btn btn-outline" (click)="tagImporter.stop()">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          class="btn btn-outline"
+          (click)="tagImporter.stop()"
+        >
           {{ 'settings.importExport.stop' | transloco }}
         </button>
       }
@@ -258,6 +274,8 @@
       </label>
       @if (bsky.linked()) {
         <button
+          mbButton
+          variant="outline"
           type="button"
           class="btn btn-outline"
           [disabled]="tagSources.loading()"
@@ -268,6 +286,8 @@
       }
       @if (!isAnonymous) {
         <button
+          mbButton
+          variant="outline"
           type="button"
           class="btn btn-outline"
           [disabled]="tagSources.loading()"
@@ -368,6 +388,8 @@
       {{ 'settings.importExport.tags.exportBody.b' | transloco }}
     </p>
     <button
+      mbButton
+      variant="outline"
       type="button"
       class="btn btn-outline"
       [disabled]="exportingTags()"
@@ -428,7 +450,7 @@
           />
         </label>
         @if (twitterArchive(); as archive) {
-          <button type="button" class="btn" (click)="downloadTwitterArchive()">
+          <button mbButton type="button" class="btn" (click)="downloadTwitterArchive()">
             {{ 'settings.importExport.twitter.downloadCsv' | transloco }}
           </button>
           <button type="button" class="link" (click)="clearTwitterArchive()">
@@ -534,6 +556,7 @@
           </label>
           @if (twitterDiscovery.rows().length && !twitterDiscovery.running()) {
             <button
+              mbButton
               type="button"
               class="btn"
               (click)="startTwitterSearch()"
@@ -549,12 +572,20 @@
             </button>
           }
           @if (twitterDiscovery.running()) {
-            <button type="button" class="btn btn-outline" (click)="twitterDiscovery.stop()">
+            <button
+              mbButton
+              variant="outline"
+              type="button"
+              class="btn btn-outline"
+              (click)="twitterDiscovery.stop()"
+            >
               {{ 'settings.importExport.stop' | transloco }}
             </button>
           }
           @if (twitterDiscovery.rows().length) {
             <button
+              mbButton
+              variant="outline"
               type="button"
               class="btn btn-outline"
               [attr.aria-pressed]="hideTwitterFollowed()"
@@ -711,6 +742,9 @@
                           </div>
                           @if (twitterDiscovery.relationship(match.account.id); as relationship) {
                             <button
+                              mbButton
+                              variant="outline"
+                              size="small"
                               type="button"
                               class="btn btn-outline btn-sm"
                               [disabled]="
@@ -731,7 +765,14 @@
                               }}
                             </button>
                           } @else {
-                            <button type="button" class="btn btn-outline btn-sm" disabled>
+                            <button
+                              mbButton
+                              variant="outline"
+                              size="small"
+                              type="button"
+                              class="btn btn-outline btn-sm"
+                              disabled
+                            >
                               {{ 'settings.importExport.checking' | transloco }}
                             </button>
                           }
@@ -770,6 +811,8 @@
             </p>
           </div>
           <button
+            mbButton
+            variant="outline"
             type="button"
             class="btn btn-outline"
             (click)="loadGitHubFriends()"
@@ -796,6 +839,8 @@
             </p>
           </div>
           <button
+            mbButton
+            variant="outline"
             type="button"
             class="btn btn-outline"
             (click)="loadGitHubStarredOwners()"
@@ -831,6 +876,7 @@
         </label>
         @if (githubDiscovery.rows().length && !githubDiscovery.running()) {
           <button
+            mbButton
             type="button"
             class="btn"
             (click)="startGitHubSearch()"
@@ -844,12 +890,20 @@
           </button>
         }
         @if (githubDiscovery.running()) {
-          <button type="button" class="btn btn-outline" (click)="githubDiscovery.stop()">
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            class="btn btn-outline"
+            (click)="githubDiscovery.stop()"
+          >
             {{ 'settings.importExport.stop' | transloco }}
           </button>
         }
         @if (githubDiscovery.rows().length) {
           <button
+            mbButton
+            variant="outline"
             type="button"
             class="btn btn-outline"
             [attr.aria-pressed]="hideGithubFollowed()"
@@ -1044,6 +1098,9 @@
                           </div>
                           @if (githubDiscovery.relationship(match.account.id); as relationship) {
                             <button
+                              mbButton
+                              variant="outline"
+                              size="small"
                               type="button"
                               class="btn btn-outline btn-sm"
                               [disabled]="
@@ -1064,7 +1121,14 @@
                               }}
                             </button>
                           } @else {
-                            <button type="button" class="btn btn-outline btn-sm" disabled>
+                            <button
+                              mbButton
+                              variant="outline"
+                              size="small"
+                              type="button"
+                              class="btn btn-outline btn-sm"
+                              disabled
+                            >
                               {{ 'settings.importExport.checking' | transloco }}
                             </button>
                           }
@@ -1092,6 +1156,8 @@
       {{ 'settings.importExport.friends.exportBody.b' | transloco }}
     </p>
     <button
+      mbButton
+      variant="outline"
       type="button"
       class="btn btn-outline"
       [disabled]="exportingFriends()"
@@ -1159,33 +1225,27 @@
       }
 
       <fieldset class="bridge-body" [disabled]="!bridgeReady()">
-        <div
+        <mb-radio-group
           class="bridge-direction"
-          role="group"
-          [aria-label]="'settings.importExport.bridge.directionLabel' | transloco"
-        >
-          <button
-            type="button"
-            class="btn btn-outline"
-            [class.active]="bridgeSource() === 'mastodon'"
-            [attr.aria-pressed]="bridgeSource() === 'mastodon'"
-            (click)="setBridgeDirection('mastodon')"
-          >
-            {{ 'settings.importExport.bridge.mastodonToBluesky' | transloco }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline"
-            [class.active]="bridgeSource() === 'bluesky'"
-            [attr.aria-pressed]="bridgeSource() === 'bluesky'"
-            (click)="setBridgeDirection('bluesky')"
-          >
-            {{ 'settings.importExport.bridge.blueskyToMastodon' | transloco }}
-          </button>
-        </div>
+          [label]="'settings.importExport.bridge.directionLabel' | transloco"
+          [options]="[
+            {
+              value: 'mastodon',
+              label: 'settings.importExport.bridge.mastodonToBluesky' | transloco,
+            },
+            {
+              value: 'bluesky',
+              label: 'settings.importExport.bridge.blueskyToMastodon' | transloco,
+            },
+          ]"
+          [value]="bridgeSource()"
+          [disabled]="!bridgeReady()"
+          (valueChange)="setBridgeDirection($event === 'mastodon' ? 'mastodon' : 'bluesky')"
+        />
 
         <div class="import-actions">
           <button
+            mbButton
             type="button"
             class="btn"
             [disabled]="bridge.loading() || bridge.running()"
@@ -1255,6 +1315,8 @@
                 </label>
                 @if (!bridge.running()) {
                   <button
+                    mbButton
+                    variant="outline"
                     type="button"
                     class="btn btn-outline"
                     (click)="bridge.scan(bridgeBudget())"
@@ -1262,7 +1324,13 @@
                     {{ 'settings.importExport.bridge.search' | transloco }}
                   </button>
                 } @else {
-                  <button type="button" class="btn btn-outline" (click)="bridge.stop()">
+                  <button
+                    mbButton
+                    variant="outline"
+                    type="button"
+                    class="btn btn-outline"
+                    (click)="bridge.stop()"
+                  >
                     {{ 'settings.importExport.stop' | transloco }}
                   </button>
                 }
@@ -1325,6 +1393,7 @@
 
             <div class="import-actions">
               <button
+                mbButton
                 type="button"
                 class="btn"
                 [disabled]="!bridgeFollowTargets().length || bridgeFollowing()"
@@ -1370,6 +1439,7 @@
     <div class="contact-controls">
       @if (canPickContacts) {
         <button
+          mbButton
           type="button"
           class="btn"
           (click)="pickPhoneContacts()"
@@ -1402,6 +1472,7 @@
       </label>
       @if (contactDiscovery.rows().length && !contactDiscovery.running()) {
         <button
+          mbButton
           type="button"
           class="btn"
           (click)="startContactSearch()"
@@ -1415,7 +1486,13 @@
         </button>
       }
       @if (contactDiscovery.running()) {
-        <button type="button" class="btn btn-outline" (click)="contactDiscovery.stop()">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          class="btn btn-outline"
+          (click)="contactDiscovery.stop()"
+        >
           {{ 'settings.importExport.stop' | transloco }}
         </button>
       }
@@ -1528,6 +1605,9 @@
                         strangers.
                       -->
                       <button
+                        mbButton
+                        variant="outline"
+                        size="small"
                         type="button"
                         class="btn btn-outline btn-sm"
                         [disabled]="
@@ -1570,7 +1650,14 @@
       <div class="srow">
         <span class="slabel">{{ 'settings.importExport.mock.follows' | transloco }}</span>
         <div class="scontrol">
-          <button type="button" class="btn btn-outline btn-sm" (click)="download('following')">
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            class="btn btn-outline btn-sm"
+            (click)="download('following')"
+          >
             {{ 'settings.importExport.mock.downloadCsv' | transloco }}
           </button>
         </div>
@@ -1578,7 +1665,14 @@
       <div class="srow">
         <span class="slabel">{{ 'settings.importExport.mock.mutes' | transloco }}</span>
         <div class="scontrol">
-          <button type="button" class="btn btn-outline btn-sm" (click)="download('mutes')">
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            class="btn btn-outline btn-sm"
+            (click)="download('mutes')"
+          >
             {{ 'settings.importExport.mock.downloadCsv' | transloco }}
           </button>
         </div>
@@ -1586,7 +1680,14 @@
       <div class="srow">
         <span class="slabel">{{ 'settings.importExport.mock.blocks' | transloco }}</span>
         <div class="scontrol">
-          <button type="button" class="btn btn-outline btn-sm" (click)="download('blocks')">
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            class="btn btn-outline btn-sm"
+            (click)="download('blocks')"
+          >
             {{ 'settings.importExport.mock.downloadCsv' | transloco }}
           </button>
         </div>
@@ -1631,7 +1732,7 @@
       <div class="srow">
         <span class="slabel"></span>
         <div class="scontrol">
-          <button type="button" class="btn" (click)="upload()" [disabled]="uploading()">
+          <button mbButton type="button" class="btn" (click)="upload()" [disabled]="uploading()">
             {{
               uploading()
                 ? ('settings.importExport.mock.uploading' | transloco)

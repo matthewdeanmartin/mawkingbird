@@ -69,22 +69,3 @@
   gap: 6px;
   flex-shrink: 0;
 }
-
-.op {
-  border: 1px solid var(--border);
-  background: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 13px;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.op:hover {
-  background: var(--bg);
-}
-
-.op.warn {
-  color: #e0245e;
-  border-color: #f3c0cf;
-}

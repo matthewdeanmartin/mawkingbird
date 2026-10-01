@@ -34,11 +34,12 @@
 >
   @for (chip of chips; track chip.id) {
     <button
+      mbPostAction
       class="chip"
       type="button"
       [class.on]="filter() === chip.id"
       [disabled]="!count(chip.id)"
-      [attr.aria-pressed]="filter() === chip.id"
+      [pressed]="filter() === chip.id"
       (click)="select(chip.id)"
     >
       {{ chip.labelKey | transloco }}

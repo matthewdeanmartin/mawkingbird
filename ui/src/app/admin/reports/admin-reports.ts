@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -20,7 +21,7 @@ import { AdminReport } from '../../models';
 
 @Component({
   selector: 'app-admin-reports',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbButton, RouterLink, TranslocoPipe],
   templateUrl: './admin-reports.html',
   styleUrl: './admin-reports.css',
 })

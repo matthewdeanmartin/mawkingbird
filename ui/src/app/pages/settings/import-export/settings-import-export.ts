@@ -1,6 +1,7 @@
 import { Component, computed, inject, Injectable, signal } from '@angular/core';
 import { MbButton } from '../../../design-system/button/button';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
+import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -281,7 +282,7 @@ export class SuggestedTagImporter extends ImportTags {}
 
 @Component({
   selector: 'app-settings-import-export',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbCheckbox],
+  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbCheckbox, MbRadioGroup],
   providers: [SuggestedTagImporter],
   templateUrl: './settings-import-export.html',
   styleUrl: './settings-import-export.css',

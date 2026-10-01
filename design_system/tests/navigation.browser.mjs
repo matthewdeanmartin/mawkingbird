@@ -22,11 +22,14 @@ for (const theme of ["light", "dark"]) {
         page.getByRole("heading", { name: "Actions belong together." }),
       ).toBeVisible();
       const pairs = await page.evaluate(() => {
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
         const luminance = (color) => {
-          const rgb = color
-            .match(/[\d.]+/g)
-            .slice(0, 3)
-            .map(Number);
+          context.clearRect(0, 0, 1, 1);
+          context.fillStyle = color;
+          context.fillRect(0, 0, 1, 1);
+          const rgb = [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
           return rgb
             .map((v) => v / 255)
             .map((v) =>

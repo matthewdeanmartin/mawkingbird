@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
 import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
 // i18n pages.profile.privateFollow.add: Private follow
@@ -218,6 +219,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    MbButton,
     NgTemplateOutlet,
     TranslocoPipe,
     FormsModule,

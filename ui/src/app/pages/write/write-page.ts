@@ -1,3 +1,4 @@
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { Pseudonymity } from '../../pseudonymity';
 import { PosseQueue } from '../../providers/hugo/posse-queue';
 import {
@@ -290,6 +291,7 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    MbPostAction,
     PostingLanguageDialog,
     MbButton,
     FocusTrap,

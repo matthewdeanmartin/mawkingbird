@@ -3,6 +3,16 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/design-system/button/button.css",
+      "disposition": "shared implementation",
+      "nextStep": "Canonical button appearance for MbButton and legacy class aliases. Keep contrast, states and touch targets covered by the button browser matrix."
+    },
+    {
+      "file": "ui/src/app/pages/bluesky-oauth-callback/bluesky-oauth-callback.html",
+      "disposition": "adopted scope",
+      "nextStep": "The return-to-login action uses MbButton with native router-link semantics. Preserve callback status and recovery behavior."
+    },
+    {
       "file": "ui/src/app/pages/write/posting-language-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Posting language selection adopts Dialog, Field/Control and Button for the one-time default question and custom per-post language tags. Preserve shared focus handling and accessible field labels."
@@ -19,8 +29,8 @@
     },
     {
       "file": "ui/src/app/account-analytics/account-analytics.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/account-hover-card/account-hover-card.ts",
@@ -39,8 +49,8 @@
     },
     {
       "file": "ui/src/app/admin/accounts/admin-accounts.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/admin/announcements/admin-announcements.html",
@@ -74,13 +84,13 @@
     },
     {
       "file": "ui/src/app/admin/reports/admin-reports.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/admin/trends/admin-trends.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/announcements/announcements.html",
@@ -249,23 +259,23 @@
     },
     {
       "file": "ui/src/app/feed-analytics/feed-analytics.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/feed-language-picker/feed-language-picker.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
     },
     {
       "file": "ui/src/app/feed-members/feed-members.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/first-run/first-run-modal.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/follow-button/follow-button.ts",
@@ -309,13 +319,13 @@
     },
     {
       "file": "ui/src/app/onboarding/onboarding-card.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/pages/algo/algo.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/pages/bluesky-feed/bluesky-feed.html",
@@ -359,8 +369,8 @@
     },
     {
       "file": "ui/src/app/pages/drafts/drafts-page.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
     },
     {
       "file": "ui/src/app/pages/endorsed-list/endorsed-list.html",
@@ -429,8 +439,8 @@
     },
     {
       "file": "ui/src/app/pages/login-bluesky/login-bluesky.html",
-      "disposition": "backlog",
-      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
     },
     {
       "file": "ui/src/app/pages/login-chooser/login-chooser.html",
@@ -479,8 +489,8 @@
     },
     {
       "file": "ui/src/app/pages/profile/profile.html",
-      "disposition": "backlog",
-      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
     },
     {
       "file": "ui/src/app/pages/public-timeline/public-timeline.html",
@@ -769,8 +779,8 @@
     },
     {
       "file": "ui/src/app/pages/settings/import-export/settings-import-export.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
       "file": "ui/src/app/pages/settings/invites/settings-invites.html",
@@ -789,8 +799,8 @@
     },
     {
       "file": "ui/src/app/pages/settings/mawkingbird-plus/settings-mawkingbird-plus.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
       "file": "ui/src/app/pages/settings/notifications/settings-notifications.html",
@@ -869,8 +879,8 @@
     },
     {
       "file": "ui/src/app/pages/thread/thread.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/pages/unavailable/unavailable.ts",
@@ -894,13 +904,13 @@
     },
     {
       "file": "ui/src/app/pages/write/write-page.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
     },
     {
       "file": "ui/src/app/people-browser/people-browser.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/poll-results/poll-results.html",
@@ -1014,8 +1024,8 @@
     },
     {
       "file": "ui/src/app/shell/shell.html",
-      "disposition": "backlog",
-      "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "disposition": "partial adoption",
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
     },
     {
       "file": "ui/src/app/shortcut-help/shortcut-help.ts",

@@ -88,11 +88,6 @@
   flex-wrap: wrap;
 }
 
-.btn-danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
 /* --- publish wizard --- */
 
 .wizard {

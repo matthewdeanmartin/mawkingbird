@@ -30,19 +30,10 @@
   font-size: 13px;
 }
 
-.btn-sm {
-  padding: 4px 10px;
-  font-size: 0.85em;
-}
-
 .form-error {
   margin: 10px 0 0;
   color: #e0245e;
   font-weight: 600;
-}
-
-.sactions .btn-outline:hover {
-  text-decoration: none;
 }
 
 .hint {

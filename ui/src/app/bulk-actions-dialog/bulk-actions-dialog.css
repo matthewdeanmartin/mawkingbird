@@ -75,19 +75,6 @@ h3 {
   gap: 8px;
 }
 
-/* The commit button for an irreversible action is filled red, not accent blue.
-   `.btn` is a solid accent button by default, so an outline-style danger class
-   would read as *less* prominent than Cancel — the wrong way round here. */
-.btn.btn-danger {
-  background: #e0245e;
-  border-color: #e0245e;
-  color: #fff;
-}
-
-.btn.btn-danger:hover:not(:disabled) {
-  background: #c31e51;
-}
-
 /* Live counters during the planning pass. Tabular figures so the numbers
    climbing don't shift the line's width under the reader. */
 .plan-progress {

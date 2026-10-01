@@ -320,10 +320,6 @@ a.eliza-invite:hover {
 /* The button keeps pace with the lead above it. Left at default size it became
    the quiet element on the page, which inverts the point — the sentence exists
    to get this pressed. */
-.home-empty .btn {
-  font-size: 17px;
-  padding: 12px 22px;
-}
 
 /*
   Sized to be the thing on the page, not a caption.

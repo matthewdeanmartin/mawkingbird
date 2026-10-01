@@ -1,3 +1,4 @@
+import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -28,7 +29,7 @@ const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as c
 // i18n adminAccounts.confirm.delete: Permanently delete @{{username}}? This cannot be undone.
 @Component({
   selector: 'app-admin-accounts',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbButton, RouterLink, TranslocoPipe],
   templateUrl: './admin-accounts.html',
   styleUrl: './admin-accounts.css',
 })

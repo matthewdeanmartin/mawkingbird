@@ -27,10 +27,20 @@ without adding a button role or disabled behavior. Use a real button for disable
 commands. Ordinary prose links use MbContentLink. There is no arbitrary internal
 style API. Pages may control available width and external spacing.
 
-The review stories use fixture strings, not new app translation keys or service
-calls. Theme toolbar controls use the app's existing attributes without persisting
-preferences. Solid buttons currently use text/surface tokens for high contrast;
-this is a visible review decision, not an approved change to existing buttons.
+Buttons use the selected accent through contrast-safe `--ds-action-*` tokens in
+both themes. `tone="danger"` identifies a destructive action. Solid, outline,
+hover, selected, disabled and link states share one stylesheet, imported by the
+app's global styles. The legacy `.btn`, `.btn-outline`, `.btn-sm`/`.btn-small`
+classes are compatibility aliases for that same implementation, including file
+input labels; new actions use MbButton. Do not add page-specific button colors,
+padding, typography or radii. Pages own width, placement and external spacing.
+
+Use RadioGroup for mutually exclusive form choices, Toolbar for button-only
+roving-focus groups, and PostAction for compact mixed actions. Keep their native
+interaction semantics; making every control a pill is not the goal. Selected
+compact actions use the same readable accent text token. See **Actions / Button /
+Consistency** for shared/legacy states, all accents, narrow layouts and keyboard
+interaction. The review stories use fixture strings and never persist preferences.
 
 ## Field and native control
 

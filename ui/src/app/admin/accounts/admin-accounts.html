@@ -26,44 +26,114 @@
       </div>
       <div class="actions">
         @if (status() === 'pending') {
-          <button class="op" (click)="approve(a)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="approve(a)"
+          >
             {{ 'adminAccounts.actions.approve' | transloco }}
           </button>
-          <button class="op warn" (click)="reject(a)">
+          <button
+            mbButton
+            size="small"
+            tone="danger"
+            type="button"
+            class="op warn"
+            (click)="reject(a)"
+          >
             {{ 'adminAccounts.actions.reject' | transloco }}
           </button>
         }
-        <button class="op" (click)="unsensitive(a)">
+        <button
+          mbButton
+          size="small"
+          variant="outline"
+          type="button"
+          class="op"
+          (click)="unsensitive(a)"
+        >
           {{ 'adminAccounts.actions.unsensitive' | transloco }}
         </button>
         @if (a.silenced) {
-          <button class="op" (click)="unsilence(a)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="unsilence(a)"
+          >
             {{ 'adminAccounts.actions.unsilence' | transloco }}
           </button>
         } @else {
-          <button class="op warn" (click)="moderate(a, 'silence')">
+          <button
+            mbButton
+            size="small"
+            tone="danger"
+            type="button"
+            class="op warn"
+            (click)="moderate(a, 'silence')"
+          >
             {{ 'adminAccounts.actions.silence' | transloco }}
           </button>
         }
         @if (a.suspended) {
-          <button class="op" (click)="unsuspend(a)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="unsuspend(a)"
+          >
             {{ 'adminAccounts.actions.unsuspend' | transloco }}
           </button>
         } @else {
-          <button class="op warn" (click)="moderate(a, 'suspend')">
+          <button
+            mbButton
+            size="small"
+            tone="danger"
+            type="button"
+            class="op warn"
+            (click)="moderate(a, 'suspend')"
+          >
             {{ 'adminAccounts.actions.suspend' | transloco }}
           </button>
         }
         @if (a.disabled) {
-          <button class="op" (click)="enable(a)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="enable(a)"
+          >
             {{ 'adminAccounts.actions.enable' | transloco }}
           </button>
         } @else {
-          <button class="op warn" (click)="moderate(a, 'disable')">
+          <button
+            mbButton
+            size="small"
+            tone="danger"
+            type="button"
+            class="op warn"
+            (click)="moderate(a, 'disable')"
+          >
             {{ 'adminAccounts.actions.disable' | transloco }}
           </button>
         }
-        <button class="op warn" (click)="remove(a)">
+        <button
+          mbButton
+          size="small"
+          tone="danger"
+          type="button"
+          class="op warn"
+          (click)="remove(a)"
+        >
           {{ 'adminAccounts.actions.delete' | transloco }}
         </button>
       </div>

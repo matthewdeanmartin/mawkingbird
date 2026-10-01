@@ -25,7 +25,7 @@
   @for (a of allows(); track a.id) {
     <div class="block-row">
       <strong>{{ a.domain }}</strong>
-      <button class="op warn" (click)="remove(a)">
+      <button mbButton size="small" tone="danger" type="button" class="op warn" (click)="remove(a)">
         {{ 'adminDomainAllows.remove' | transloco }}
       </button>
     </div>

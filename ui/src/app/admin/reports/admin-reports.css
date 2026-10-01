@@ -34,16 +34,3 @@
   align-items: center;
   margin-top: 8px;
 }
-
-.op {
-  border: 1px solid var(--border);
-  background: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 13px;
-  color: var(--text);
-}
-
-.op:hover {
-  background: var(--bg);
-}

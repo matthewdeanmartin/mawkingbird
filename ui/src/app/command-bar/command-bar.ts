@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
+import { MbPostAction } from '../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../auth';
@@ -25,7 +26,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
  */
 @Component({
   selector: 'app-command-bar',
-  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton],
+  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton, MbPostAction],
   template: `
     <div class="command-bar" role="group" aria-label="Feed controls">
       <div class="command-row action-row" role="group" aria-label="Feed actions">
@@ -68,7 +69,8 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
         }
         @if (showFeedDoctor()) {
           <a
-            class="btn command-item"
+            mbPostAction
+            class="command-item"
             routerLink="/feed-doctor"
             title="Why is this feed like this — who is flooding it, and why it ended"
           >
@@ -189,19 +191,6 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
     .action-row {
       padding: 3px 8px;
       border-bottom: 1px solid var(--border);
-    }
-    /* Native destination link remains outside button-only focus navigation. */
-    a.command-item {
-      border: 0;
-      border-radius: 5px;
-      background: transparent;
-      color: var(--text);
-      padding: 3px 4px;
-      font-size: 13px;
-      white-space: normal;
-    }
-    a.command-item:hover {
-      background: var(--hover);
     }
     .font-controls {
       display: inline-flex;

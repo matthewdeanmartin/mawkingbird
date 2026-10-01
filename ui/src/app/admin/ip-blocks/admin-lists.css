@@ -26,24 +26,6 @@
   font-size: 13px;
 }
 
-.op {
-  border: 1px solid var(--border);
-  background: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.op.warn {
-  border: 1px solid #f3c0cf;
-  color: #e0245e;
-}
-
-.op.warn:hover {
-  background: #fdecf1;
-}
-
 .test-result {
   padding: 8px 16px;
   font-size: 13px;

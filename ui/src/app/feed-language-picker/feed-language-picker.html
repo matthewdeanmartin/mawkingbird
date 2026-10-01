@@ -1,7 +1,8 @@
 <button
   type="button"
-  class="btn btn-outline btn-sm feed-filter lang-button"
-  [class.active]="!showingAll()"
+  mbPostAction
+  class="feed-filter lang-button"
+  [active]="!showingAll()"
   [attr.aria-expanded]="open()"
   aria-haspopup="menu"
   (click)="toggleOpen()"

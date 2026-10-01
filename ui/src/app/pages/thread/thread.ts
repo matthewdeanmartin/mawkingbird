@@ -1,4 +1,5 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Api } from '../../api';
@@ -58,6 +59,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 @Component({
   selector: 'app-thread',
   imports: [
+    MbPostAction,
     StatusCard,
     Compose,
     BskyReply,

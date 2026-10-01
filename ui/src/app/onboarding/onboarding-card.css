@@ -91,8 +91,6 @@ h2:focus {
 .ob-tile,
 .ob-chip,
 .ob-switch,
-.ob-primary,
-.ob-secondary,
 .ob-quit,
 .ob-back,
 .ob-link {
@@ -233,23 +231,6 @@ h2:focus {
   flex: 1;
 }
 
-.ob-primary,
-.ob-secondary {
-  padding: 7px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: none;
-}
-
-.ob-primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-
-.ob-primary:disabled,
-.ob-secondary:disabled,
 .ob-tile:disabled,
 .ob-switch:disabled {
   opacity: 0.6;

@@ -511,11 +511,6 @@ summary.action {
   margin-top: 6px;
 }
 
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 0.85em;
-}
-
 /* --- poll --- */
 .poll {
   margin-top: 10px;
@@ -839,7 +834,6 @@ a.open-original {
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
-  text-align: left;
 }
 
 .tc-remember {

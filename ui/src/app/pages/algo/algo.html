@@ -6,16 +6,16 @@
   >
     <button
       type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="prefs.algoAudience() === 'all'"
+      mbPostAction
+      [pressed]="prefs.algoAudience() === 'all'"
       (click)="setAudience('all')"
     >
       {{ 'pages.algo.filter.all' | transloco }}
     </button>
     <button
       type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="prefs.algoAudience() === 'friends'"
+      mbPostAction
+      [pressed]="prefs.algoAudience() === 'friends'"
       (click)="setAudience('friends')"
       [title]="
         'pages.algo.filter.friendsTitle'
@@ -27,8 +27,8 @@
     @if (prefs.algoAudience() === 'all') {
       <button
         type="button"
-        class="btn btn-outline btn-sm"
-        [class.active]="prefs.algoTags()"
+        mbPostAction
+        [pressed]="prefs.algoTags()"
         (click)="toggleTags()"
         [title]="'pages.algo.filter.tagsTitle' | transloco: { posts: words().posts }"
       >
@@ -37,8 +37,8 @@
     }
     <button
       type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="prefs.algoCalm()"
+      mbPostAction
+      [pressed]="prefs.algoCalm()"
       (click)="toggleCalm()"
       [title]="'pages.algo.filter.calmTitle' | transloco: { posts: words().posts }"
     >
@@ -47,9 +47,8 @@
     <app-feed-language-picker />
     <button
       type="button"
-      class="btn btn-outline btn-sm"
-      [class.active]="linksView()"
-      [attr.aria-pressed]="linksView()"
+      mbPostAction
+      [pressed]="linksView()"
       (click)="toggleLinks()"
       [title]="'pages.algo.filter.linksTitle' | transloco: { posts: words().posts }"
     >
@@ -57,7 +56,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-outline btn-sm"
+      mbPostAction
       (click)="shuffle()"
       [disabled]="feed.loading()"
       [title]="'pages.algo.filter.shuffleTitle' | transloco: { posts: words().posts }"
@@ -66,7 +65,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-outline btn-sm"
+      mbPostAction
       (click)="refresh()"
       [disabled]="feed.loading()"
       [title]="'pages.algo.filter.refreshTitle' | transloco"

@@ -133,21 +133,4 @@
 .bsky-btn {
   display: inline-flex;
   align-items: center;
-  min-height: 42px;
-  padding: 0 20px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  text-decoration: none;
-  color: inherit;
-  font-weight: 600;
-}
-
-.bsky-btn-primary {
-  background: var(--col-accent, #1d9bf0);
-  border-color: transparent;
-  color: #fff;
-}
-
-.bsky-btn:hover {
-  filter: brightness(1.08);
 }

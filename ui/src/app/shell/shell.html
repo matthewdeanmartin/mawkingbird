@@ -181,6 +181,7 @@
                    real, clickable target that no pointer travel can take away. -->
                 <a
                   class="plan-cta"
+                  mbButton
                   routerLink="/settings/mawkingbird-plus"
                   (click)="closePlanCard()"
                 >
@@ -456,7 +457,7 @@
             </div>
           </details>
         } @else {
-          <button class="logout-button" type="button" (click)="logout()">
+          <button mbButton class="logout-button" type="button" (click)="logout()">
             {{ 'shell.account.logout' | transloco }}
           </button>
         }

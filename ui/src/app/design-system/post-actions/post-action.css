@@ -17,5 +17,6 @@
 /* A menu can reflect an existing action without pretending to be a toggle. */
 :host([data-active='true']) {
   background: var(--accent-soft);
-  box-shadow: inset 0 -2px 0 var(--text);
+  color: var(--ds-action-text);
+  box-shadow: inset 0 -2px 0 var(--ds-action-text);
 }

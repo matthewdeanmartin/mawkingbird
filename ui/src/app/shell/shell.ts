@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PlusPrice } from '../providers/account/plus-price';
 import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
@@ -141,6 +142,7 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    MbButton,
     PlusPrice,
     PlusPaywallDialog,
     ProxyLimitNotice,

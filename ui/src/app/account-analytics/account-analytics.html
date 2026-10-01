@@ -33,6 +33,9 @@
             <span>{{ 'accountAnalytics.getMorePostsLabel' | transloco }}</span>
             @for (n of loadMoreChoices; track n) {
               <button
+                mbButton
+                variant="outline"
+                size="small"
                 type="button"
                 class="load-more-btn"
                 (click)="loadMore(n)"

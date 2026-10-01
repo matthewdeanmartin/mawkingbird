@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -138,7 +139,14 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
  */
 @Component({
   selector: 'app-account-analytics',
-  imports: [RouterLink, StatusCard, HumanTimePipe, EffectiveAudienceDialog, TranslocoPipe],
+  imports: [
+    MbButton,
+    RouterLink,
+    StatusCard,
+    HumanTimePipe,
+    EffectiveAudienceDialog,
+    TranslocoPipe,
+  ],
   templateUrl: './account-analytics.html',
   styleUrl: './account-analytics.css',
 })

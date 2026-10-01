@@ -1,10 +1,18 @@
 /* New semantic roles under review; existing app tokens come from ui/src/styles.css. */
 :root {
   --ds-error-text: #a41037;
+  --ds-action-fill: color-mix(in srgb, var(--accent) 42%, #000);
+  --ds-action-ink: #fff;
+  --ds-action-text: var(--ds-action-fill);
+  --ds-action-hover: color-mix(in srgb, var(--ds-action-fill) 90%, var(--text));
+  --ds-danger-fill: #a41037;
   --ds-overlay-backdrop: rgba(0, 0, 0, 0.4);
   --ds-overlay-shadow: rgba(0, 0, 0, 0.3);
 }
 
 :root[data-theme="dark"] {
   --ds-error-text: #ff9db4;
+  --ds-action-fill: color-mix(in srgb, var(--accent) 35%, #fff);
+  --ds-action-ink: #10171e;
+  --ds-danger-fill: #ff9db4;
 }

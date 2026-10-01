@@ -1,6 +1,0 @@
-/* Retained until a destructive shared-button variant is reviewed. */
-.btn-danger {
-  color: var(--ds-error-text);
-  border-color: var(--ds-error-text);
-  background: var(--col-bg);
-}

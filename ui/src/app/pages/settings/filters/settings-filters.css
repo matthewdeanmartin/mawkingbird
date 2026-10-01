@@ -4,10 +4,6 @@
   padding: 12px 22px 0;
 }
 
-.filters-toolbar .btn:hover {
-  text-decoration: none;
-}
-
 .filter-list {
   list-style: none;
   margin: 8px 0 0;
@@ -72,18 +68,4 @@
   display: flex;
   flex: none;
   gap: 6px;
-}
-
-.filter-actions .btn-sm:hover {
-  text-decoration: none;
-}
-
-.btn-sm {
-  padding: 4px 10px;
-  font-size: 0.85em;
-}
-
-.danger {
-  border-color: #e0245e;
-  color: #e0245e;
 }

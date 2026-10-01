@@ -25,7 +25,7 @@
   @for (b of blocks(); track b.id) {
     <div class="block-row">
       <strong>{{ b.domain }}</strong>
-      <button class="op warn" (click)="remove(b)">
+      <button mbButton size="small" tone="danger" type="button" class="op warn" (click)="remove(b)">
         {{ 'adminEmailBlocks.remove' | transloco }}
       </button>
     </div>

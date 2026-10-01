@@ -82,16 +82,6 @@
   padding: 10px 14px;
 }
 
-.members-actions .btn.danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
-.members-actions .btn.danger:hover:not(:disabled) {
-  background: #e0245e;
-  color: #fff;
-}
-
 .pagination {
   display: flex;
   justify-content: center;

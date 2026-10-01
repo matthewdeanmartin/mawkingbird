@@ -15,10 +15,16 @@
         {{ 'firstRun.sampleNote' | transloco }}
       </p>
       <div class="first-run-actions">
-        <button type="button" class="first-run-primary" (click)="toNetwork()">
+        <button mbButton type="button" class="first-run-primary" (click)="toNetwork()">
           {{ 'firstRun.logIn' | transloco }}
         </button>
-        <button type="button" class="first-run-secondary" (click)="pick('anonymous')">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          class="first-run-secondary"
+          (click)="pick('anonymous')"
+        >
           {{ 'firstRun.continueAnonymous' | transloco }}
         </button>
       </div>

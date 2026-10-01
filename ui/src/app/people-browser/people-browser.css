@@ -83,38 +83,10 @@
 .follow-btn {
   flex: none;
   align-self: center;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: #fff;
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
   min-width: 92px;
-  text-align: center;
-}
-
-.follow-btn:hover:not(:disabled) {
-  background: var(--accent-hover);
 }
 
 /* Already-following: outline style, turning red on hover to signal "unfollow". */
-.follow-btn.following {
-  background: transparent;
-  color: var(--accent);
-}
-
-.follow-btn.following:hover:not(:disabled) {
-  border-color: #e0245e;
-  color: #e0245e;
-  background: transparent;
-}
-
-.follow-btn:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
 
 .follow-btn.is-self {
   border-color: transparent;

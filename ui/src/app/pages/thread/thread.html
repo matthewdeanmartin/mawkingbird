@@ -3,8 +3,8 @@
 } @else if (status(); as s) {
   <div class="reader-bar">
     <a
-      class="btn btn-outline"
-      [class.active]="threadReader()"
+      mbPostAction
+      [active]="threadReader()"
       [routerLink]="['/statuses', currentId()]"
       [queryParams]="{ reader: 'thread' }"
     >
@@ -16,22 +16,18 @@
           : ('pages.thread.reader.reader' | transloco)
       }}
     </a>
-    <a class="btn btn-outline" [routerLink]="['/read', currentId()]">
+    <a mbPostAction [routerLink]="['/read', currentId()]">
       📄 {{ 'reader.open.longText' | transloco }}
     </a>
     @if (threadReader()) {
-      <a
-        class="btn btn-outline"
-        [routerLink]="['/statuses', currentId()]"
-        [queryParams]="{ reader: '0' }"
-      >
+      <a mbPostAction [routerLink]="['/statuses', currentId()]" [queryParams]="{ reader: '0' }">
         {{ 'pages.thread.reader.conversation' | transloco }}
       </a>
     }
 
     @if (isRss()) {
       <a
-        class="btn btn-outline"
+        mbPostAction
         [routerLink]="['/rss']"
         [queryParams]="rssFeedUrl() ? { feed: rssFeedUrl() } : {}"
       >
@@ -42,7 +38,7 @@
     <!-- Only offer chat for an existing exchange with one other person. -->
     @if (chatQueryParams(); as params) {
       <a
-        class="btn btn-outline"
+        mbPostAction
         [routerLink]="['/conversations']"
         [queryParams]="params"
         [title]="'pages.thread.chat.continueTitle' | transloco"

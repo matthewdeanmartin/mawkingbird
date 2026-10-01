@@ -54,6 +54,9 @@
           <span>{{ 'feedAnalytics.sample.label' | transloco }}</span>
           @for (n of sampleChoices; track n) {
             <button
+              mbButton
+              variant="outline"
+              size="small"
               type="button"
               class="load-more-btn"
               [class.active]="sampleSize() === n"
@@ -66,6 +69,9 @@
             </button>
           }
           <button
+            mbButton
+            variant="outline"
+            size="small"
             type="button"
             class="load-more-btn"
             [title]="'feedAnalytics.sample.refresh' | transloco"

@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ALGO_MAX_CALLS, AlgoFeed, AlgoPost, AlgoSource } from '../../algo-feed';
 import { AlgoAudience, ClientPrefs } from '../../client-prefs';
@@ -72,7 +73,7 @@ interface AlgoLink {
  */
 @Component({
   selector: 'app-algo',
-  imports: [StatusCard, FeedLanguagePicker, TranslocoPipe],
+  imports: [StatusCard, FeedLanguagePicker, TranslocoPipe, MbPostAction],
   templateUrl: './algo.html',
   styleUrl: './algo.css',
 })

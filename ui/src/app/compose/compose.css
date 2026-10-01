@@ -499,11 +499,6 @@ textarea {
   gap: 4px;
 }
 
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 0.85em;
-}
-
 .over-limit {
   color: #e0245e;
   font-weight: 700;

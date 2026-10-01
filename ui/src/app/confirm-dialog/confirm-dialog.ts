@@ -14,7 +14,6 @@ import { MbButton } from '../design-system/button/button';
   selector: 'app-confirm-dialog',
   imports: [MbDialog, MbField, MbControl, MbButton, TranslocoPipe],
   templateUrl: './confirm-dialog.html',
-  styleUrl: './confirm-dialog.css',
 })
 export class ConfirmDialog {
   readonly title = input.required<string>();

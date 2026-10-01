@@ -156,7 +156,7 @@ test("sign-in prompt preserves cancellation, focus cycling and native account ex
   await expect(signIn).toHaveAttribute("mbButton", "");
   const appearance = await signIn.evaluate((link) => {
     const probe = document.createElement("span");
-    probe.style.backgroundColor = "var(--text)";
+    probe.style.backgroundColor = "var(--ds-action-fill)";
     document.body.append(probe);
     const expected = getComputedStyle(probe).backgroundColor;
     probe.remove();

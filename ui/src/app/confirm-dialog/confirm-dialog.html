@@ -25,7 +25,7 @@
       </button>
     }
     @if (danger()) {
-      <button class="btn btn-danger" type="button" (click)="confirmed.emit()">
+      <button mbButton tone="danger" type="button" (click)="confirmed.emit()">
         {{ confirmLabel() }}
       </button>
     } @else {

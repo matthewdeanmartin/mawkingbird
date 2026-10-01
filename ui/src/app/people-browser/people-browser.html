@@ -46,6 +46,10 @@
              button here could only fail on click. -->
         @if (!isSelf(a) && canFollow()) {
           <button
+            type="button"
+            mbButton
+            [variant]="isFollowing(a) ? 'outline' : 'solid'"
+            size="small"
             class="follow-btn"
             [class.following]="isFollowing(a)"
             [disabled]="isBusy(a)"

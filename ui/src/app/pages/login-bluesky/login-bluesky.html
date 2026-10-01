@@ -7,6 +7,7 @@
     </p>
 
     <button
+      mbButton
       class="bsky-btn bsky-btn-primary bsky-submit bsky-entryway"
       type="button"
       [disabled]="working()"
@@ -41,6 +42,8 @@
         </label>
 
         <button
+          mbButton
+          variant="outline"
           class="bsky-btn bsky-submit"
           type="submit"
           [disabled]="!handle().trim() || working()"
@@ -95,6 +98,8 @@
           />
         </label>
         <button
+          mbButton
+          variant="outline"
           class="bsky-btn bsky-submit"
           type="submit"
           [disabled]="!handle().trim() || !appPassword() || working()"

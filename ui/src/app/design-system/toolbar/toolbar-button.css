@@ -22,14 +22,15 @@
 }
 :host([aria-pressed='true']) {
   background: var(--accent-soft);
-  box-shadow: inset 0 -2px 0 var(--text);
+  color: var(--ds-action-text);
+  box-shadow: inset 0 -2px 0 var(--ds-action-text);
 }
 :host(:disabled) {
   color: var(--muted);
   cursor: default;
 }
 :host(:focus-visible) {
-  outline: 2px solid var(--text);
+  outline: 2px solid var(--ds-action-text);
   outline-offset: -2px;
 }
 

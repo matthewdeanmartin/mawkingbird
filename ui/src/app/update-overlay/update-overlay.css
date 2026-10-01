@@ -53,23 +53,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 18px;
-  border: 1px solid var(--border, #d0d7de);
-  border-radius: 999px;
-  background: var(--accent, #6364ff);
-  color: #fff;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.update-overlay .btn:hover {
-  filter: brightness(1.05);
-}
-
-.update-overlay .btn-outline {
-  background: transparent;
-  color: var(--text, #111);
 }
 
 .overlay-actions {

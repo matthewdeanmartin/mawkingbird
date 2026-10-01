@@ -347,23 +347,6 @@
   white-space: nowrap;
 }
 
-.logout-button {
-  height: 40px;
-  padding: 0 18px;
-  border: 1px solid var(--text);
-  border-radius: 999px;
-  background: var(--text);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.logout-button:hover {
-  border-color: #3f4549;
-  background: #3f4549;
-}
-
 .layout {
   width: min(1460px, 100%);
   margin: 0 auto;
@@ -556,11 +539,6 @@
     border-radius: 0 0 999px 999px;
   }
 
-  .logout-button {
-    height: 36px;
-    padding-inline: 14px;
-  }
-
   .column {
     min-height: calc(100vh - 115px);
     margin-bottom: 58px;
@@ -652,11 +630,6 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 16px;
-}
-
-.dead-session-actions .danger {
-  border-color: #e0245e;
-  color: #e0245e;
 }
 
 /* Pending count on the "Waiting to publish" row (the POSSE queue). The only

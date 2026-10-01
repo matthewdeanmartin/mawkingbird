@@ -47,7 +47,9 @@
           <span class="muted small">{{ b.comment }}</span>
         }
       </div>
-      <button class="op warn" (click)="remove(b)">{{ 'adminIpBlocks.remove' | transloco }}</button>
+      <button mbButton size="small" tone="danger" type="button" class="op warn" (click)="remove(b)">
+        {{ 'adminIpBlocks.remove' | transloco }}
+      </button>
     </div>
   }
 }

@@ -1,3 +1,4 @@
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -220,7 +221,15 @@ function kindNoun(kind: DraftKind): string {
 // i18n pages.drafts.remove.forget: Forget
 @Component({
   selector: 'app-drafts-page',
-  imports: [Compose, ConfirmDialog, FormsModule, HumanTimePipe, RouterLink, TranslocoPipe],
+  imports: [
+    MbPostAction,
+    Compose,
+    ConfirmDialog,
+    FormsModule,
+    HumanTimePipe,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './drafts-page.html',
   styleUrl: './drafts-page.css',
 })

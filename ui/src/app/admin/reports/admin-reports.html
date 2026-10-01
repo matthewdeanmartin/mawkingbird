@@ -51,16 +51,37 @@
             'adminReports.item.assignedTo' | transloco: { username: r.assigned_account.username }
           }}</span>
         } @else if (!resolved()) {
-          <button class="op" (click)="assign(r)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="assign(r)"
+          >
             {{ 'adminReports.actions.assignToMe' | transloco }}
           </button>
         }
         @if (resolved()) {
-          <button class="op" (click)="reopen(r)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="reopen(r)"
+          >
             {{ 'adminReports.actions.reopen' | transloco }}
           </button>
         } @else {
-          <button class="op" (click)="resolve(r)">
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            class="op"
+            (click)="resolve(r)"
+          >
             {{ 'adminReports.actions.resolve' | transloco }}
           </button>
         }

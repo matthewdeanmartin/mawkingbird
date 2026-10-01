@@ -99,10 +99,6 @@
   margin: 6px 0 12px;
 }
 
-.plus-vault-delete {
-  color: var(--danger, #b42318);
-}
-
 @media (width <= 480px) {
   .plus-vault-title {
     flex-direction: column;

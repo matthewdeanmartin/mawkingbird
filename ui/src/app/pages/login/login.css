@@ -244,9 +244,6 @@ app-app-footer {
 }
 
 .btn-hero {
-  font-size: 17px;
-  font-weight: 800;
-  padding: 14px;
   margin-top: 4px;
 }
 
@@ -324,10 +321,6 @@ app-app-footer {
   margin-top: 12px;
 }
 
-.verify-link {
-  background: var(--accent);
-}
-
 .refresh {
   margin-left: auto;
   align-self: center;
@@ -350,7 +343,6 @@ input {
 
 .btn {
   width: 100%;
-  padding: 10px;
 }
 
 .dev {
@@ -385,8 +377,6 @@ input {
 .dev-gen .btn {
   width: auto;
   flex: 1;
-  padding: 8px;
-  font-size: 13px;
 }
 
 .dev-list {
@@ -433,12 +423,6 @@ input {
 
 .small {
   font-size: 13px;
-}
-
-.btn-outline.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
 }
 
 /* OAuth access-level picker (full vs read-only). */

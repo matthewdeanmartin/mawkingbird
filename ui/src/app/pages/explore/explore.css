@@ -272,21 +272,6 @@
 
 .btn {
   display: block;
-  text-align: center;
-  padding: 11px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-outline {
-  border: 1px solid var(--accent);
-  color: var(--accent);
 }
 
 .docs-link {

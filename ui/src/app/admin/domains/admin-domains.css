@@ -18,16 +18,3 @@
 .small {
   font-size: 13px;
 }
-
-.op.warn {
-  border: 1px solid #f3c0cf;
-  background: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 13px;
-  color: #e0245e;
-}
-
-.op.warn:hover {
-  background: #fdecf1;
-}

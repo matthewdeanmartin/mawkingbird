@@ -49,30 +49,6 @@
   gap: 9px;
 }
 
-.first-run-primary,
-.first-run-secondary {
-  padding: 11px 14px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.first-run-primary {
-  border-color: var(--accent, #1d9bf0);
-  background: var(--accent, #1d9bf0);
-  color: #fff;
-  font-weight: 600;
-}
-
-/* Deliberately a peer, not a footnote. The previous front door styled
-   "browse anonymously" as path 3 of 3 and buried the common case. */
-.first-run-secondary {
-  background: none;
-  color: var(--text);
-}
-
-.first-run-secondary:hover,
 .first-run-network:hover {
   background: var(--border);
 }

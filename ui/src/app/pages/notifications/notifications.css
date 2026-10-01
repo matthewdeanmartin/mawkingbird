@@ -142,9 +142,6 @@
 }
 
 /* The action buttons are anchors; keep them from picking up link underlines. */
-.mention-actions .btn {
-  text-decoration: none;
-}
 
 .who {
   font-weight: 700;

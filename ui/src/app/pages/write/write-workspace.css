@@ -200,31 +200,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 3px 10px;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 0.82em;
-  cursor: pointer;
-}
-
-.chip.on {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.chip:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
 .chip-count {
   opacity: 0.75;
   font-variant-numeric: tabular-nums;

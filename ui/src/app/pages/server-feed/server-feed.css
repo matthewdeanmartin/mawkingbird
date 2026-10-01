@@ -4,12 +4,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.feed-shortcuts .btn-sm {
-  padding: 4px 8px;
-  font-size: 13px;
-  text-decoration: none;
-}
-
 .feed-blurb {
   padding: 0 16px 8px;
   margin: 0;

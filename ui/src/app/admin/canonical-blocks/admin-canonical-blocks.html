@@ -62,7 +62,9 @@
   @for (b of blocks(); track b.id) {
     <div class="block-row">
       <span class="mono">{{ b.canonical_email_hash }}</span>
-      <button class="op warn" (click)="remove(b)">{{ 'adminCanonical.remove' | transloco }}</button>
+      <button mbButton size="small" tone="danger" type="button" class="op warn" (click)="remove(b)">
+        {{ 'adminCanonical.remove' | transloco }}
+      </button>
     </div>
   }
 }

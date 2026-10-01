@@ -17,10 +17,24 @@
             <span class="moderated muted">{{ state }}</span>
           } @else {
             <span class="trend-actions">
-              <button class="op" (click)="approveTag(t)">
+              <button
+                mbButton
+                size="small"
+                variant="outline"
+                type="button"
+                class="op"
+                (click)="approveTag(t)"
+              >
                 {{ 'adminTrends.approve' | transloco }}
               </button>
-              <button class="op warn" (click)="rejectTag(t)">
+              <button
+                mbButton
+                size="small"
+                tone="danger"
+                type="button"
+                class="op warn"
+                (click)="rejectTag(t)"
+              >
                 {{ 'adminTrends.reject' | transloco }}
               </button>
             </span>
@@ -45,10 +59,24 @@
           @if (moderated()['status-' + s.id]; as state) {
             <span class="moderated muted">{{ state }}</span>
           } @else {
-            <button class="op" (click)="approveStatus(s)">
+            <button
+              mbButton
+              size="small"
+              variant="outline"
+              type="button"
+              class="op"
+              (click)="approveStatus(s)"
+            >
               {{ 'adminTrends.approve' | transloco }}
             </button>
-            <button class="op warn" (click)="rejectStatus(s)">
+            <button
+              mbButton
+              size="small"
+              tone="danger"
+              type="button"
+              class="op warn"
+              (click)="rejectStatus(s)"
+            >
               {{ 'adminTrends.reject' | transloco }}
             </button>
           }

@@ -99,8 +99,3 @@ section.risk p:last-child {
   gap: 8px;
   padding-top: 4px;
 }
-
-.btn-danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}

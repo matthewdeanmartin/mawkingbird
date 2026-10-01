@@ -93,20 +93,11 @@ kbd {
 
 .btn {
   width: 100%;
-  padding: 10px;
 }
 
 .btn-outline {
   display: inline-block;
   width: auto;
-  text-decoration: none;
-  text-align: center;
-}
-
-.btn-hero {
-  font-size: 17px;
-  font-weight: 800;
-  padding: 14px;
 }
 
 .helper {

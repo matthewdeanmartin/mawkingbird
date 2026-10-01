@@ -168,16 +168,6 @@
   width: 1%;
 }
 
-.btn.danger {
-  color: #e0245e;
-  border-color: #e0245e;
-}
-
-.btn.danger:hover {
-  background: #e0245e;
-  color: #fff;
-}
-
 /* ------------------------------------------------------------- explanatory */
 /* A short "what am I looking at" line under a section heading. */
 .section-note {

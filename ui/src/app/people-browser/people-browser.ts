@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -48,7 +49,7 @@ type FollowState = 'idle' | 'busy';
  */
 @Component({
   selector: 'app-people-browser',
-  imports: [RouterLink, VerifiedBadge, RenderedHtmlLinks, TranslocoPipe],
+  imports: [MbButton, RouterLink, VerifiedBadge, RenderedHtmlLinks, TranslocoPipe],
   templateUrl: './people-browser.html',
   styleUrl: './people-browser.css',
 })

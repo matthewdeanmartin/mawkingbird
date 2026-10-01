@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PostingCalendar } from './posting-calendar';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
@@ -179,7 +180,7 @@ const PREVIEW_ROWS = 8;
  */
 @Component({
   selector: 'app-feed-analytics',
-  imports: [RouterLink, StatusCard, HumanTimePipe, TranslocoPipe, PostingCalendar],
+  imports: [MbButton, RouterLink, StatusCard, HumanTimePipe, TranslocoPipe, PostingCalendar],
   templateUrl: './feed-analytics.html',
   styleUrl: './feed-analytics.css',
 })
