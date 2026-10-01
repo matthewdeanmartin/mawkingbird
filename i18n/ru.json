@@ -3211,7 +3211,7 @@
     "clientListsHint": "Подписываться на людей не нужно, и это работает без входа.",
     "collections": "Коллекции",
     "collectionsUnsupported": "Этот сервер не поддерживает коллекции.",
-    "createAndAdd": "Создать &amp; добавить",
+    "createAndAdd": "Создать & добавить",
     "done": "Готово",
     "followAndAdd": "Подписаться и добавить",
     "followGateMessage": "Mastodon позволяет добавлять в список только тех, на кого ты подписан, поэтому &#64;{{username}} не добавлен в <strong>{{listTitle}}</strong>.",
@@ -3228,8 +3228,8 @@
     "private": "личная",
     "public": "общедоступная",
     "thisBrowser": "этот браузер",
-    "titleFull": "Добавить &#64;{{username}} в списки и коллекции",
-    "titleLocal": "Добавить &#64;{{username}} в локальные списки"
+    "titleFull": "Добавить @{{username}} в списки и коллекции",
+    "titleLocal": "Добавить @{{username}} в локальные списки"
   },
   "listTimeline": {
     "addPeopleByName": "Добавить людей по имени",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "{{count}} пост",
     "importExport.suggest.posts.other": "{{count}} постов",
     "importExport.suggest.reads.a": "Читает около",
-    "importExport.suggest.reads.b": "твоих постов или избранного и подсчитывает хэштеги в них. Подписка не оформляется, пока ты не отправишь результаты в поле выше.",
-    "importExport.suggest.send.a": "Отправить",
-    "importExport.suggest.send.b": "в поле выше",
     "importExport.suggest.summary.one": "В {{posts}} постах найден {{tags}} хэштег. Наиболее частые отмечены.",
     "importExport.suggest.summary.other": "В {{posts}} постах найдено {{tags}} хэштегов. Наиболее частые отмечены.",
     "importExport.suggest.title": "Предложить хэштеги из уже прочитанного",

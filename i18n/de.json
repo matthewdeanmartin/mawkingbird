@@ -3067,7 +3067,7 @@
     "blue.custom": "Benutzerdefinierte Farben",
     "blue.custom.bg": "Hintergrund",
     "blue.custom.hint": "Eigene Farben liegen über dem Design; setzt du eine davon zurück, gilt wieder die Farbe des Designs. Eine eigene Linkfarbe ersetzt die Akzent-Voreinstellung oben.",
-    "blue.custom.links": "Verknüpft &amp;-Schaltflächen",
+    "blue.custom.links": "Verknüpft &-Schaltflächen",
     "blue.custom.sidebar": "Seitenleistenkarten",
     "blue.delayedSend": "30 Sekunden warten, bevor gepostet wird, damit du abbrechen (oder früher senden) kannst",
     "blue.favStyle": "Favoriten sehen aus wie",
@@ -4357,9 +4357,6 @@
     "importExport.suggest.posts.one": "{{count}} Beitrag",
     "importExport.suggest.posts.other": "{{count}} Beiträge",
     "importExport.suggest.reads.a": "Liest über",
-    "importExport.suggest.reads.b": "deiner Beiträge oder Favoriten und zählt die Hashtags darin. Es wird nichts gefolgt, bis du die Ergebnisse an das Feld oben schickst.",
-    "importExport.suggest.send.a": "Senden",
-    "importExport.suggest.send.b": "zum Kasten oben",
     "importExport.suggest.summary.one": "{{tags}}-Hashtag in {{posts}}-Beiträgen gefunden. Die am häufigsten verwendeten sind angekreuzt.",
     "importExport.suggest.summary.other": "{{tags}}-Hashtags, die in {{posts}}-Beiträgen gefunden wurden. Die am häufigsten verwendeten sind angekreuzt.",
     "importExport.suggest.title": "Hashtags aus dem vorschlagen, was du ohnehin liest",
@@ -5053,7 +5050,7 @@
     "clientListsHint": "Du musst ihnen nicht folgen, und es funktioniert auch abgemeldet.",
     "collections": "Sammlungen",
     "collectionsUnsupported": "Dieser Server unterstützt keine Sammlungen.",
-    "createAndAdd": "Anlegen &amp; hinzufügen",
+    "createAndAdd": "Anlegen & hinzufügen",
     "done": "Fertig",
     "followAndAdd": "Folgen und hinzufügen",
     "followGateMessage": "Mastodon lässt dich nur Leute zu einer Liste hinzufügen, denen du folgst – &#64;{{username}} wurde deshalb nicht zu <strong>{{listTitle}}</strong> hinzugefügt.",
@@ -5070,8 +5067,8 @@
     "private": "privat",
     "public": "öffentlich",
     "thisBrowser": "dieser Browser",
-    "titleFull": "&#64;{{username}} zu Listen & Sammlungen hinzufügen",
-    "titleLocal": "&#64;{{username}} zu lokalen Listen hinzufügen"
+    "titleFull": "@{{username}} zu Listen & Sammlungen hinzufügen",
+    "titleLocal": "@{{username}} zu lokalen Listen hinzufügen"
   },
   "accountAnalytics": {
     "audience.cta": "Aktiv erreichbare Gefolgte/Follower ermitteln",

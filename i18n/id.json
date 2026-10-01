@@ -2463,7 +2463,7 @@
     "blue.custom": "Warna kustom",
     "blue.custom.bg": "Latar belakang",
     "blue.custom.hint": "Override berlaku di atas tema; atur ulang salah satunya untuk kembali ke warna bawaan tema. Warna tautan kustom menggantikan preset aksen di atas.",
-    "blue.custom.links": "Tautan &amp; tombol",
+    "blue.custom.links": "Tautan & tombol",
     "blue.custom.sidebar": "Kartu bilah sisi",
     "blue.delayedSend": "Tunggu 30 detik sebelum memposting, agar kamu bisa membatalkan (atau publikasikan lebih awal)",
     "blue.favStyle": "Favorit terlihat seperti",
@@ -3753,9 +3753,6 @@
     "importExport.suggest.posts.one": "{{count}} postingan",
     "importExport.suggest.posts.other": "{{count}} postingan",
     "importExport.suggest.reads.a": "Membaca sekitar",
-    "importExport.suggest.reads.b": "postingan atau favoritmu dan menghitung tagar di dalamnya. Tidak ada yang diikuti sampai kamu mengirim hasilnya ke kotak di atas.",
-    "importExport.suggest.send.a": "Kirim",
-    "importExport.suggest.send.b": "ke kotak di atas",
     "importExport.suggest.summary.one": "{{tags}} tagar ditemukan di {{posts}} postingan. Yang paling sering dipakai sudah dicentang.",
     "importExport.suggest.summary.other": "{{tags}} tagar ditemukan di {{posts}} postingan. Yang paling sering dipakai sudah dicentang.",
     "importExport.suggest.title": "Sarankan tagar dari apa yang sudah kamu baca",
@@ -5519,7 +5516,7 @@
     "clientListsHint": "Tidak perlu mengikuti mereka, dan tetap berfungsi saat keluar.",
     "collections": "Kumpulan",
     "collectionsUnsupported": "Server ini tidak mendukung kumpulan.",
-    "createAndAdd": "Buat &amp; tambahkan",
+    "createAndAdd": "Buat & tambahkan",
     "done": "Selesai",
     "followAndAdd": "Ikuti dan tambahkan",
     "followGateMessage": "Mastodon hanya mengizinkan kamu menambahkan orang yang kamu ikuti ke daftar, jadi &#64;{{username}} tidak ditambahkan ke <strong>{{listTitle}}</strong>.",
@@ -5536,8 +5533,8 @@
     "private": "privat",
     "public": "publik",
     "thisBrowser": "peramban ini",
-    "titleFull": "Tambahkan &#64;{{username}} ke daftar & kumpulan",
-    "titleLocal": "Tambahkan &#64;{{username}} ke daftar lokal"
+    "titleFull": "Tambahkan @{{username}} ke daftar & kumpulan",
+    "titleLocal": "Tambahkan @{{username}} ke daftar lokal"
   },
   "loginChooser": {
     "anonymousLink": "Lihat-lihat tanpa akun",

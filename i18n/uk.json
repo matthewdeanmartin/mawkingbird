@@ -1032,8 +1032,8 @@
     "private": "приватний",
     "public": "публічний",
     "thisBrowser": "цей браузер",
-    "titleFull": "Додати &#64;{{username}} до списків і колекцій",
-    "titleLocal": "Додати &#64;{{username}} до локальних списків"
+    "titleFull": "Додати @{{username}} до списків і колекцій",
+    "titleLocal": "Додати @{{username}} до локальних списків"
   },
   "listTimeline": {
     "addPeopleByName": "Додати людей за іменем",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "Дописів: {{count}}",
     "importExport.suggest.posts.other": "Дописів: {{count}}",
     "importExport.suggest.reads.a": "Читає приблизно",
-    "importExport.suggest.reads.b": "ваші дописи або вподобання й підраховує хештеги в них. Ніхто не додається до підписок, доки ви не надішлете результати до поля вище.",
-    "importExport.suggest.send.a": "Надіслати",
-    "importExport.suggest.send.b": "до поля вище",
     "importExport.suggest.summary.one": "Знайдено хештегів: {{tags}} · опрацьовано дописів: {{posts}}. Найуживаніші позначено.",
     "importExport.suggest.summary.other": "Знайдено хештегів: {{tags}} · опрацьовано дописів: {{posts}}. Найуживаніші позначено.",
     "importExport.suggest.title": "Пропонувати хештеги з того, що ви вже читаєте",

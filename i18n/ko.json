@@ -1015,7 +1015,7 @@
     "clientListsHint": "팔로우할 필요가 없고 로그인하지 않아도 작동합니다.",
     "collections": "컬렉션",
     "collectionsUnsupported": "이 서버는 컬렉션을 지원하지 않습니다.",
-    "createAndAdd": "만들기 &amp; 추가",
+    "createAndAdd": "만들기 & 추가",
     "done": "완료",
     "followAndAdd": "팔로우하고 추가",
     "followGateMessage": "Mastodon에서는 팔로우하는 사람만 목록에 추가할 수 있으므로 &#64;{{username}} 계정은 <strong>{{listTitle}}</strong>에 추가되지 않았습니다.",
@@ -1032,8 +1032,8 @@
     "private": "비공개",
     "public": "공개",
     "thisBrowser": "이 브라우저",
-    "titleFull": "목록 및 컬렉션에 &#64;{{username}} 추가",
-    "titleLocal": "로컬 목록에 &#64;{{username}} 추가"
+    "titleFull": "목록 및 컬렉션에 @{{username}} 추가",
+    "titleLocal": "로컬 목록에 @{{username}} 추가"
   },
   "listTimeline": {
     "addPeopleByName": "이름으로 사람 추가",
@@ -3725,7 +3725,7 @@
     "blue.custom": "사용자 지정 색상",
     "blue.custom.bg": "배경",
     "blue.custom.hint": "재정의는 테마 위에 적용됩니다. 테마 자체 색상으로 돌아가려면 각각 재설정하세요. 사용자 지정 링크 색상은 위의 강조 색상 사전 설정을 대체합니다.",
-    "blue.custom.links": "링크 &amp; 버튼",
+    "blue.custom.links": "링크 & 버튼",
     "blue.custom.sidebar": "사이드바 카드",
     "blue.delayedSend": "게시 전 30초 대기하여 취소하거나 일찍 게시하기",
     "blue.favStyle": "즐겨찾기 모양",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "게시물 {{count}}개",
     "importExport.suggest.posts.other": "게시물 {{count}}개",
     "importExport.suggest.reads.a": "약",
-    "importExport.suggest.reads.b": "개의 게시물 또는 즐겨찾기를 읽고 그 안의 해시태그를 셉니다. 결과를 위 상자로 보내기 전까지는 아무것도 팔로우하지 않습니다.",
-    "importExport.suggest.send.a": "보내기",
-    "importExport.suggest.send.b": "위 상자로",
     "importExport.suggest.summary.one": "게시물 {{posts}}개에서 해시태그 {{tags}}개를 찾았습니다. 가장 많이 사용한 항목이 선택됩니다.",
     "importExport.suggest.summary.other": "게시물 {{posts}}개에서 해시태그 {{tags}}개를 찾았습니다. 가장 많이 사용한 항목이 선택됩니다.",
     "importExport.suggest.title": "이미 읽는 항목에서 해시태그 제안",

@@ -1032,8 +1032,8 @@
     "private": "prywatna",
     "public": "publiczna",
     "thisBrowser": "ta przeglądarka",
-    "titleFull": "Dodaj &#64;{{username}} do list i kolekcji",
-    "titleLocal": "Dodaj &#64;{{username}} do lokalnych list"
+    "titleFull": "Dodaj @{{username}} do list i kolekcji",
+    "titleLocal": "Dodaj @{{username}} do lokalnych list"
   },
   "listTimeline": {
     "addPeopleByName": "Dodaj osoby według nazwy",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "{{count}} wpis",
     "importExport.suggest.posts.other": "{{count}} wpisów",
     "importExport.suggest.reads.a": "Odczytuje około",
-    "importExport.suggest.reads.b": "Twoich wpisów lub ulubionych i zlicza hashtagi. Nic nie zostanie zaobserwowane, dopóki nie wyślesz wyników do pola powyżej.",
-    "importExport.suggest.send.a": "Wyślij",
-    "importExport.suggest.send.b": "do pola powyżej",
     "importExport.suggest.summary.one": "Znaleziono {{tags}} hashtag w {{posts}} wpisach. Najczęstsze są zaznaczone.",
     "importExport.suggest.summary.other": "Znaleziono {{tags}} hashtagów w {{posts}} wpisach. Najczęstsze są zaznaczone.",
     "importExport.suggest.title": "Zaproponuj hashtagi na podstawie tego, co już czytasz",

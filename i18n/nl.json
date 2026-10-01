@@ -1015,7 +1015,7 @@
     "clientListsHint": "Je hoeft ze niet te volgen en het werkt ook zonder aanmelding.",
     "collections": "Verzamelingen",
     "collectionsUnsupported": "Deze server ondersteunt geen verzamelingen.",
-    "createAndAdd": "Maken &amp; toevoegen",
+    "createAndAdd": "Maken & toevoegen",
     "done": "Gereed",
     "followAndAdd": "Volgen en toevoegen",
     "followGateMessage": "Met Mastodon kun je alleen gevolgde mensen aan een lijst toevoegen, dus &#64;{{username}} is niet toegevoegd aan <strong>{{listTitle}}</strong>.",
@@ -1032,8 +1032,8 @@
     "private": "privé",
     "public": "openbaar",
     "thisBrowser": "deze browser",
-    "titleFull": "&#64;{{username}} toevoegen aan lijsten & verzamelingen",
-    "titleLocal": "&#64;{{username}} toevoegen aan lokale lijsten"
+    "titleFull": "@{{username}} toevoegen aan lijsten & verzamelingen",
+    "titleLocal": "@{{username}} toevoegen aan lokale lijsten"
   },
   "listTimeline": {
     "addPeopleByName": "Mensen op naam toevoegen",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "{{count}} bericht",
     "importExport.suggest.posts.other": "{{count}} berichten",
     "importExport.suggest.reads.a": "Leest ongeveer",
-    "importExport.suggest.reads.b": "van je berichten of favorieten en telt de hashtags erin. Er wordt niets gevolgd totdat je de resultaten naar het vak hierboven stuurt.",
-    "importExport.suggest.send.a": "Sturen",
-    "importExport.suggest.send.b": "naar het vak hierboven",
     "importExport.suggest.summary.one": "{{tags}} hashtag gevonden in {{posts}} berichten. De meest gebruikte zijn aangevinkt.",
     "importExport.suggest.summary.other": "{{tags}} hashtags gevonden in {{posts}} berichten. De meest gebruikte zijn aangevinkt.",
     "importExport.suggest.title": "Hashtags voorstellen op basis van wat je al leest",

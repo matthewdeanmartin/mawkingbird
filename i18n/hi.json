@@ -3228,8 +3228,8 @@
     "private": "निजी",
     "public": "सार्वजनिक",
     "thisBrowser": "यह ब्राउज़र",
-    "titleFull": "&#64;{{username}} को सूचियों और संग्रहों में जोड़ें",
-    "titleLocal": "&#64;{{username}} को स्थानीय सूचियों में जोड़ें"
+    "titleFull": "@{{username}} को सूचियों और संग्रहों में जोड़ें",
+    "titleLocal": "@{{username}} को स्थानीय सूचियों में जोड़ें"
   },
   "listTimeline": {
     "addPeopleByName": "नाम से लोग जोड़ें",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "{{count}} पोस्ट",
     "importExport.suggest.posts.other": "{{count}} पोस्ट",
     "importExport.suggest.reads.a": "लगभग इतना पढ़ता है:",
-    "importExport.suggest.reads.b": "आपकी पोस्ट या पसंदीदा और उनमें हैशटैग गिनता है। परिणाम ऊपर के बॉक्स में भेजने तक कुछ फ़ॉलो नहीं होता।",
-    "importExport.suggest.send.a": "भेजें",
-    "importExport.suggest.send.b": "ऊपर के बॉक्स में",
     "importExport.suggest.summary.one": "{{posts}} पोस्ट में {{tags}} हैशटैग मिला। सबसे अधिक इस्तेमाल वाले चुने गए हैं।",
     "importExport.suggest.summary.other": "{{posts}} पोस्ट में {{tags}} हैशटैग मिले। सबसे अधिक इस्तेमाल वाले चुने गए हैं।",
     "importExport.suggest.title": "पहले से पढ़ी चीज़ों से हैशटैग सुझाएँ",

@@ -1015,7 +1015,7 @@
     "clientListsHint": "Không cần theo dõi họ và vẫn hoạt động khi đã đăng xuất.",
     "collections": "Bộ sưu tập",
     "collectionsUnsupported": "Máy chủ này không hỗ trợ bộ sưu tập.",
-    "createAndAdd": "Tạo &amp; thêm",
+    "createAndAdd": "Tạo & thêm",
     "done": "Xong",
     "followAndAdd": "Theo dõi và thêm",
     "followGateMessage": "Mastodon chỉ cho phép thêm người bạn theo dõi vào danh sách, nên &#64;{{username}} chưa được thêm vào <strong>{{listTitle}}</strong>.",
@@ -1032,8 +1032,8 @@
     "private": "riêng tư",
     "public": "công khai",
     "thisBrowser": "trình duyệt này",
-    "titleFull": "Thêm &#64;{{username}} vào danh sách & bộ sưu tập",
-    "titleLocal": "Thêm &#64;{{username}} vào danh sách cục bộ"
+    "titleFull": "Thêm @{{username}} vào danh sách & bộ sưu tập",
+    "titleLocal": "Thêm @{{username}} vào danh sách cục bộ"
   },
   "listTimeline": {
     "addPeopleByName": "Thêm người theo tên",
@@ -3725,7 +3725,7 @@
     "blue.custom": "Màu tùy chỉnh",
     "blue.custom.bg": "Nền",
     "blue.custom.hint": "Màu ghi đè nằm trên chủ đề; đặt lại để dùng màu chủ đề. Màu liên kết tùy chỉnh thay màu nhấn.",
-    "blue.custom.links": "Liên kết &amp; nút",
+    "blue.custom.links": "Liên kết & nút",
     "blue.custom.sidebar": "Thẻ thanh bên",
     "blue.delayedSend": "Chờ 30 giây trước khi đăng để có thể hủy hoặc đăng sớm",
     "blue.favStyle": "Biểu tượng yêu thích",
@@ -5015,9 +5015,6 @@
     "importExport.suggest.posts.one": "{{count}} bài đăng",
     "importExport.suggest.posts.other": "{{count}} bài đăng",
     "importExport.suggest.reads.a": "Đọc khoảng",
-    "importExport.suggest.reads.b": "bài đăng hoặc lượt yêu thích của bạn và đếm hashtag trong đó. Không theo dõi gì cho đến khi bạn gửi kết quả đến ô bên trên.",
-    "importExport.suggest.send.a": "Gửi",
-    "importExport.suggest.send.b": "đến ô bên trên",
     "importExport.suggest.summary.one": "Tìm thấy {{tags}} hashtag trong {{posts}} bài đăng. Những thẻ dùng nhiều nhất đã được chọn.",
     "importExport.suggest.summary.other": "Tìm thấy {{tags}} hashtag trong {{posts}} bài đăng. Những thẻ dùng nhiều nhất đã được chọn.",
     "importExport.suggest.title": "Đề xuất hashtag từ nội dung bạn đã đọc",
