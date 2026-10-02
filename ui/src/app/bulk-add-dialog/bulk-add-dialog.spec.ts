@@ -30,16 +30,34 @@ function makeAccount(id: string): Account {
 }
 
 describe('BulkAddDialog', () => {
+  const descriptors = ['showModal', 'close'].map(
+    (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+  );
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
+    for (const [name] of descriptors) {
+      Object.defineProperty(HTMLDialogElement.prototype, name, {
+        configurable: true,
+        value(this: HTMLDialogElement) {
+          this.open = name === 'showModal';
+        },
+      });
+    }
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify();
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of descriptors) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
+  });
 
   function setUp(kind: 'list' | 'collection', id = 'T1'): ComponentFixture<BulkAddDialog> {
     const fixture = TestBed.createComponent(BulkAddDialog);
@@ -52,6 +70,34 @@ describe('BulkAddDialog', () => {
   it('parseHandles splits on commas, whitespace, and newlines and strips @', () => {
     const fixture = setUp('list');
     expect(internals(fixture).parseHandles(' @a, @b@x\n@c  @d ')).toEqual(['a', 'b@x', 'c', 'd']);
+  });
+
+  it('uses a labelled shared field and shared footer actions', () => {
+    const fixture = setUp('list');
+    const element = fixture.nativeElement as HTMLElement;
+    const input = element.querySelector('textarea[mbControl]') as HTMLTextAreaElement;
+    expect(element.querySelector('mb-dialog dialog')).not.toBeNull();
+    expect(element.querySelector('mb-field label')?.getAttribute('for')).toBe(input.id);
+    expect(input.getAttribute('aria-describedby')).toBeTruthy();
+    expect(element.querySelectorAll('footer button[mbButton]')).toHaveLength(2);
+    expect(
+      element
+        .querySelector('footer button:not([data-variant="outline"])')
+        ?.hasAttribute('disabled'),
+    ).toBe(true);
+  });
+
+  it('dismisses through the shared shell without adding accounts', () => {
+    const fixture = setUp('collection');
+    const closed = vi.fn();
+    const added = vi.fn();
+    fixture.componentInstance.closed.subscribe(closed);
+    fixture.componentInstance.added.subscribe(added);
+    fixture.nativeElement
+      .querySelector('dialog')
+      .dispatchEvent(new Event('cancel', { cancelable: true }));
+    expect(closed).toHaveBeenCalledOnce();
+    expect(added).not.toHaveBeenCalled();
   });
 
   it('adds each resolved handle to a list sequentially and emits the added count', () => {

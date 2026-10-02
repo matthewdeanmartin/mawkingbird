@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 24,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 56,
-  "directTemplateCallSites": 377,
+  "appTemplateFiles": 59,
+  "directTemplateCallSites": 400,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,7 +29,7 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 131,
+      "directCallSites": 144,
       "consumers": [
         {
           "file": "account-analytics/account-analytics.html",
@@ -74,6 +74,18 @@
         {
           "file": "admin/trends/admin-trends.html",
           "count": 4
+        },
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "bulk-actions-dialog/bulk-actions-dialog.html",
+          "count": 8
+        },
+        {
+          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "count": 2
         },
         {
           "file": "compose/translate-dialog/translate-dialog.html",
@@ -181,11 +193,15 @@
     {
       "name": "MbCheckbox",
       "selector": "mb-checkbox",
-      "directCallSites": 17,
+      "directCallSites": 19,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
           "count": 1
+        },
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 2
         },
         {
           "file": "list-dialog/list-dialog.html",
@@ -245,7 +261,7 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 11,
+      "directCallSites": 14,
       "consumers": [
         {
           "file": "account-list-dialog/account-list-dialog.html",
@@ -253,6 +269,18 @@
         },
         {
           "file": "bookmark-provider-dialog/bookmark-provider-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bulk-actions-dialog/bulk-actions-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bulk-add-dialog/bulk-add-dialog.html",
           "count": 1
         },
         {
@@ -297,8 +325,12 @@
     {
       "name": "MbDisclosure",
       "selector": "mb-disclosure",
-      "directCallSites": 1,
+      "directCallSites": 2,
       "consumers": [
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
         {
           "file": "poll-results/poll-results.html",
           "count": 1
@@ -309,7 +341,7 @@
     {
       "name": "MbControl",
       "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
-      "directCallSites": 37,
+      "directCallSites": 39,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -334,6 +366,14 @@
         {
           "file": "admin/ip-blocks/admin-ip-blocks.html",
           "count": 3
+        },
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
         },
         {
           "file": "compose/translate-dialog/translate-dialog.html",
@@ -385,7 +425,7 @@
     {
       "name": "MbField",
       "selector": "mb-field",
-      "directCallSites": 37,
+      "directCallSites": 39,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -410,6 +450,14 @@
         {
           "file": "admin/ip-blocks/admin-ip-blocks.html",
           "count": 3
+        },
+        {
+          "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
         },
         {
           "file": "compose/translate-dialog/translate-dialog.html",

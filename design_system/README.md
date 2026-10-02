@@ -1,12 +1,13 @@
 # Mawkingbird design system
 
-Latest follow-up: [button consistency](REVIEW-buttons.md) unifies accent-aware
-actions, legacy aliases and shared states. Preview **Actions / Button / Consistency**.
+Latest follow-up: shared-dialog migration batch 1 adopts the real bug-report,
+bulk-add and bulk-action dialogs. Preview **Adoption / Shared dialogs / Interactive**.
+The [button batch](REVIEW-buttons.md) supplies their accent-aware actions.
 
 Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
 
 [Integration progress](PROGRESS.md): zero sprints remain in the current plan.
-Source adoption after the button follow-up is 24 of 27 widget types, 377 direct placements in 56 app templates.
+Source adoption after dialog batch 1 is 24 of 27 widget types, 400 direct placements in 59 app templates.
 This closes the planned batches, not all migration debt. Source integration is
 separate from deployment.
 

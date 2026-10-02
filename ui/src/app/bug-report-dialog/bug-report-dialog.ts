@@ -3,7 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BugReport } from '../bug-report';
 import { ErrorLog } from '../error-log';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbButton } from '../design-system/button/button';
+import { MbField, MbControl } from '../design-system/field/field';
+import { MbCheckbox } from '../design-system/checkbox/checkbox';
+import { MbDisclosure } from '../design-system/disclosure/disclosure';
 import { DiagnosticLog } from '../diagnostic-log';
 import { PageDiagnostics } from '../page-diagnostics';
 
@@ -30,7 +34,16 @@ import { PageDiagnostics } from '../page-diagnostics';
 // i18n bugReport.openGithubIssue: Open GitHub issue
 @Component({
   selector: 'app-bug-report-dialog',
-  imports: [FocusTrap, FormsModule, TranslocoPipe],
+  imports: [
+    MbDialog,
+    MbButton,
+    MbField,
+    MbControl,
+    MbCheckbox,
+    MbDisclosure,
+    FormsModule,
+    TranslocoPipe,
+  ],
   templateUrl: './bug-report-dialog.html',
   styleUrl: './bug-report-dialog.css',
 })

@@ -1,5 +1,31 @@
 # Design-system progress
 
+## Shared-dialog migration, batch 1
+
+BugReportDialog, BulkAddDialog and BulkActionsDialog now compose the production
+Dialog and Button widgets. Report/add fields use Field/Control; report choices
+use Checkbox and the report preview uses Disclosure. Their bespoke modal shells,
+focus traps and control styling have been removed. Existing requests, outputs,
+stop-counting/retry behavior and explicit destructive confirmation remain owned
+by the app components. Native modal stacking replaces local overlay z-indexes.
+
+Storybook **Adoption / Shared dialogs / Interactive** imports those production
+components with local fixtures. Try reporting, mixed add outcomes using
+@alice @missing @error, and Stop counting followed by Count again. No requests
+or account writes occur; the fixture GitHub action opens only a blank tab.
+
+Source adoption is now **400 direct placements across 59 templates**. This is
+the first dialog batch, not completion of the migration backlog. Next: remaining
+shared dialogs, then search/composer, then settings/connections. Reuse existing
+widgets before creating new ones; this batch required no new public component.
+
+Validation: the full `make test` gate passes all 7,663 tests with no missing
+inventory entries. Five real-browser checks cover bindings, mixed add outcomes,
+stop/retry/confirmation, Escape, focus restoration and narrow light/dark layouts.
+Angular lint, design lint, design format/type checks, inventory reconciliation,
+Storybook build and the production build pass. Initial production JS/CSS is
+896.70 kB under the unchanged 1 MB limit; optional collection data stays lazy.
+
 ## Button consistency follow-up
 
 The [button batch](REVIEW-buttons.md) unifies action appearance and expands source

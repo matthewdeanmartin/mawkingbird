@@ -7,7 +7,8 @@ import {
   bulkAction,
   needsList,
 } from '../bulk-actions';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbButton } from '../design-system/button/button';
 import { PageDiagnostics } from '../page-diagnostics';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
@@ -73,7 +74,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n common.close: Close
 @Component({
   selector: 'app-bulk-actions-dialog',
-  imports: [FocusTrap, TranslocoPipe],
+  imports: [MbDialog, MbButton, TranslocoPipe],
   templateUrl: './bulk-actions-dialog.html',
   styleUrl: './bulk-actions-dialog.css',
 })

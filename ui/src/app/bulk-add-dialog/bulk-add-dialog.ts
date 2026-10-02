@@ -11,7 +11,9 @@ import { AnonymousAccount } from '../providers/anonymous/anonymous-account';
 import { AnonymousFollows } from '../providers/anonymous/anonymous-follows';
 import { AnonymousLists } from '../providers/anonymous/anonymous-lists';
 import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
-import { FocusTrap } from '../a11y/focus-trap';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { MbButton } from '../design-system/button/button';
+import { MbField, MbControl } from '../design-system/field/field';
 
 /** One line of the bulk add-by-name result. */
 interface BulkResult {
@@ -40,7 +42,7 @@ interface BulkResult {
 // i18n bulkAdd.status.error: error
 @Component({
   selector: 'app-bulk-add-dialog',
-  imports: [FocusTrap, FormsModule, TranslocoPipe],
+  imports: [MbDialog, MbButton, MbField, MbControl, FormsModule, TranslocoPipe],
   templateUrl: './bulk-add-dialog.html',
   styleUrl: './bulk-add-dialog.css',
 })

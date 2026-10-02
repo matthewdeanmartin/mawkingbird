@@ -1,50 +1,5 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 16px;
-}
-
-.dialog {
-  background: var(--col-bg);
-  border-radius: 16px;
-  padding: 24px;
-  width: 400px;
-  max-width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-h3 {
-  margin: 0 0 8px;
-}
-
-.target-name {
-  font-weight: 400;
-}
-
 .small {
   font-size: 13px;
-}
-
-.bulk-handles {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  resize: vertical;
-  font: inherit;
-}
-
-.dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 12px;
 }
 
 .bulk-results {
@@ -76,10 +31,10 @@ h3 {
 }
 
 .result-added .result-status {
-  color: #2e7d32;
+  color: var(--text);
 }
 
 .result-notfound .result-status,
 .result-error .result-status {
-  color: #c62828;
+  color: var(--ds-error-text);
 }

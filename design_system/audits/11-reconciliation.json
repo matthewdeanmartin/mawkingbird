@@ -104,18 +104,18 @@
     },
     {
       "file": "ui/src/app/bug-report-dialog/bug-report-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Shared-dialog batch 1 adopts MbDialog and MbButton; report/add forms use MbField/MbControl, report choices use MbCheckbox and preview uses MbDisclosure. Preserve caller-owned requests, cancellation, results and explicit confirmation. Content-specific layout remains local; browser and component tests cover the migrated contract."
     },
     {
       "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Shared-dialog batch 1 adopts MbDialog and MbButton; report/add forms use MbField/MbControl, report choices use MbCheckbox and preview uses MbDisclosure. Preserve caller-owned requests, cancellation, results and explicit confirmation. Content-specific layout remains local; browser and component tests cover the migrated contract."
     },
     {
       "file": "ui/src/app/bulk-add-dialog/bulk-add-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Shared-dialog batch 1 adopts MbDialog and MbButton; report/add forms use MbField/MbControl, report choices use MbCheckbox and preview uses MbDisclosure. Preserve caller-owned requests, cancellation, results and explicit confirmation. Content-specific layout remains local; browser and component tests cover the migrated contract."
     },
     {
       "file": "ui/src/app/bulk-progress/bulk-progress.css",

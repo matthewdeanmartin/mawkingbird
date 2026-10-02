@@ -1,76 +1,55 @@
-<div
-  class="overlay"
-  role="presentation"
-  tabindex="-1"
-  (click)="closed.emit()"
-  (keyup.escape)="closed.emit()"
+<mb-dialog
+  [title]="'bugReport.title' | transloco"
+  [description]="'bugReport.intro' | transloco"
+  [closeLabel]="'bugReport.close' | transloco"
+  [showClose]="false"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
 >
-  <div
-    class="dialog"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="bug-title"
-    appFocusTrap
-    (dismissed)="closed.emit()"
-    (click)="$event.stopPropagation()"
-    (keyup)="$event.stopPropagation()"
-  >
-    <h3 id="bug-title">{{ 'bugReport.title' | transloco }}</h3>
-    <p class="muted intro">{{ 'bugReport.intro' | transloco }}</p>
-
-    <label class="field-label" for="bug-desc">{{ 'bugReport.whatHappened' | transloco }}</label>
-    <textarea
-      id="bug-desc"
-      rows="4"
-      placeholder="{{ 'bugReport.descriptionPlaceholder' | transloco }}"
-      [ngModel]="description()"
-      (ngModelChange)="description.set($event)"
-    ></textarea>
-
+  <div class="report-fields">
+    <mb-field [label]="'bugReport.whatHappened' | transloco">
+      <textarea
+        mbControl
+        rows="4"
+        [placeholder]="'bugReport.descriptionPlaceholder' | transloco"
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)"
+      ></textarea>
+    </mb-field>
     @if (hasErrors()) {
-      <label class="check">
-        <input
-          type="checkbox"
-          [ngModel]="includeErrors()"
-          (ngModelChange)="includeErrors.set($event)"
-        />
-        {{
+      <mb-checkbox
+        [label]="
           (errorLog.entries().length === 1
             ? 'bugReport.includeErrors.one'
             : 'bugReport.includeErrors.other'
           ) | transloco: { count: errorLog.entries().length }
-        }}
-      </label>
+        "
+        [checked]="includeErrors()"
+        (checkedChange)="includeErrors.set($event)"
+      />
     }
-
     @if (hasDiagnostics()) {
-      <label class="check">
-        <input
-          type="checkbox"
-          [ngModel]="includeDiagnostics()"
-          (ngModelChange)="includeDiagnostics.set($event)"
-        />
-        {{ 'bugReport.includeDiagnostics' | transloco }}
-      </label>
+      <mb-checkbox
+        [label]="'bugReport.includeDiagnostics' | transloco"
+        [checked]="includeDiagnostics()"
+        (checkedChange)="includeDiagnostics.set($event)"
+      />
     }
-
-    <button class="link-btn" type="button" (click)="showDetails.set(!showDetails())">
-      {{ (showDetails() ? 'bugReport.toggle.hide' : 'bugReport.toggle.show') | transloco }}
-    </button>
-    @if (showDetails()) {
+    <mb-disclosure
+      [label]="(showDetails() ? 'bugReport.toggle.hide' : 'bugReport.toggle.show') | transloco"
+      [expanded]="showDetails()"
+      (expandedChange)="showDetails.set($event)"
+    >
       <pre class="preview">{{ preview() }}</pre>
-    }
-
-    <div class="actions">
-      <button class="btn btn-outline" type="button" (click)="closed.emit()">
-        {{ 'bugReport.close' | transloco }}
-      </button>
-      <button class="btn btn-outline" type="button" (click)="copy()">
-        {{ (copied() ? 'bugReport.copied' : 'bugReport.copyReport') | transloco }}
-      </button>
-      <button class="btn" type="button" (click)="openGithub()">
-        {{ 'bugReport.openGithubIssue' | transloco }}
-      </button>
-    </div>
+    </mb-disclosure>
   </div>
-</div>
+  <button mbDialogActions mbButton variant="outline" type="button" (click)="closed.emit()">
+    {{ 'bugReport.close' | transloco }}
+  </button>
+  <button mbDialogActions mbButton variant="outline" type="button" (click)="copy()">
+    {{ (copied() ? 'bugReport.copied' : 'bugReport.copyReport') | transloco }}
+  </button>
+  <button mbDialogActions mbButton type="button" (click)="openGithub()">
+    {{ 'bugReport.openGithubIssue' | transloco }}
+  </button>
+</mb-dialog>
