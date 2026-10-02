@@ -1,7 +1,7 @@
 import { Component, importProvidersFrom, input, signal } from "@angular/core";
 import { TagHelper } from "../../ui/src/app/compose/tag-helper";
 import { AiTranslate } from "../../ui/src/app/ai-translate";
-import { provideRouter } from "@angular/router";
+import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
   applicationConfig,
   type Meta,
@@ -57,7 +57,7 @@ const drafts = {
   get: () => null,
 };
 const providers = [
-  provideRouter([]),
+  provideRouter([], withDisabledInitialNavigation()),
   { provide: TagHelper, useValue: { run: unavailable } },
   { provide: AiTranslate, useValue: { translateText: unavailable } },
   importProvidersFrom(translocoTesting()),

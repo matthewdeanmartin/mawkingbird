@@ -5,6 +5,17 @@ const { test, expect } = createRequire(
 const url =
   "/iframe.html?id=start-here-sprint-6-review--millions&viewMode=story";
 const errors = new WeakMap();
+const textLineCount = (element) => {
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  const tops = new Set();
+  while (walker.nextNode()) {
+    if (!walker.currentNode.textContent.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(walker.currentNode);
+    for (const rect of range.getClientRects()) tops.add(Math.round(rect.top));
+  }
+  return tops.size;
+};
 test.beforeEach(async ({ page }) => {
   const list = [];
   errors.set(page, list);
@@ -14,6 +25,16 @@ test.beforeEach(async ({ page }) => {
   });
 });
 test.afterEach(async ({ page }) => expect(errors.get(page)).toEqual([]));
+test("count geometry distinguishes nested inline boxes from wrapped text", async ({
+  page,
+}) => {
+  await page.setContent(`
+    <span id="nested"><span>12,345,678</span></span>
+    <span id="wrapped" style="display:inline-block;width:3ch;font:16px monospace;white-space:normal">123 456 789</span>
+  `);
+  expect(await page.locator("#nested").evaluate(textLineCount)).toBe(1);
+  expect(await page.locator("#wrapped").evaluate(textLineCount)).toBe(3);
+});
 for (const [theme, width, direction, touch] of [
   ["light", 1280, "ltr", false],
   ["dark", 380, "ltr", false],
@@ -69,13 +90,7 @@ for (const [theme, width, direction, touch] of [
           ).toBe(true);
         }
       for (const count of await group.locator("[mbActionCount]").all()) {
-        expect(
-          await count.evaluate((e) => {
-            const r = document.createRange();
-            r.selectNodeContents(e);
-            return r.getClientRects().length;
-          }),
-        ).toBe(1);
+        expect(await count.evaluate(textLineCount)).toBe(1);
       }
       expect(
         await page.evaluate(

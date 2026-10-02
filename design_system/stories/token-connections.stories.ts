@@ -1,5 +1,5 @@
 import { importProvidersFrom, signal } from "@angular/core";
-import { provideRouter } from "@angular/router";
+import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
   applicationConfig,
   type Meta,
@@ -49,7 +49,7 @@ export default {
   decorators: [
     applicationConfig({
       providers: [
-        provideRouter([]),
+        provideRouter([], withDisabledInitialNavigation()),
         importProvidersFrom(translocoTesting()),
         { provide: VaultBridge, useValue: { syncs: () => false } },
         { provide: PageDiagnostics, useValue: { error: () => undefined } },

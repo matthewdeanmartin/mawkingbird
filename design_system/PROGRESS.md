@@ -1,5 +1,26 @@
 # Design-system progress
 
+## Catalogue CI regression follow-up
+
+Reproduced all 19 reported failures locally. Fifteen adoption previews enabled
+Angular's initial navigation with an empty route table, causing NG04002 for
+Storybook's `iframe.html`. Their five story modules now disable initial
+navigation, matching the existing preview convention; application routing is
+unchanged and the catalogue's console-error assertions remain intact.
+
+The four power-post failures counted DOM range rectangles rather than text
+lines. The count widget's new nested span can produce two rectangles on the
+same line. The check now measures text-node line positions, with a regression
+case proving that nested inline text passes while genuinely wrapped text has
+three lines. All existing bounds, overflow, touch-target, action-count and
+keyboard assertions remain in place.
+
+Validation: the complete `npm run design:verify` gate passes, including all 345
+browser tests (not just the affected files), formatting, story type-checking,
+design lint, inventory reconciliation and the catalogue build. `make test` also
+passes. This follow-up changes only preview fixtures, browser tests and this
+report; no application runtime changes, commits or deployments.
+
 ## Phone post toolbar density
 
 Post counts now use locale-aware compact notation, retaining exact projected
