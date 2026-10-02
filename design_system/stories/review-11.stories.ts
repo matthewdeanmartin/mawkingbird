@@ -41,7 +41,7 @@ function post(mode: string): Status {
     created_at: "2026-09-28T12:00:00Z",
     edited_at: "2026-09-28T13:00:00Z",
     content:
-      "<p>The real post toolbar, with all actions this provider supports. Long names and full counts should wrap without pushing tools out of reach.</p>",
+      "<p>The real post toolbar, with all actions this provider supports. Compact counts and phone-sized labels leave more room for posts without removing tools.</p>",
     spoiler_text: "",
     visibility: "public",
     url: "https://social.example/@reader/review-post",
@@ -146,7 +146,7 @@ function flags() {
   selector: "ds-post-adoption-review",
   imports: [StatusCard, MbToolbar, MbToolbarButton],
   template: `<article class="ds-sheet">
-    <h1>Real post tools, full counts.</h1>
+    <h1>Real post tools, compact counts.</h1>
     <p class="ds-intro">
       Sprint 11 · Existing provider capabilities and power-user actions, shared
       compact geometry.
@@ -185,6 +185,13 @@ function flags() {
       <button mbToolbarButton [pressed]="unified()" (click)="toggleUnified()">
         Unified share preference
       </button>
+      <button
+        mbToolbarButton
+        [pressed]="smallCounts()"
+        (click)="toggleCounts()"
+      >
+        Small counts
+      </button>
     </mb-toolbar>
     <section aria-label="Real post">
       @for (key of [selected()]; track key) {
@@ -215,6 +222,7 @@ class PostAdoptionReview {
   readonly selected = signal("Signed in");
   readonly status = signal(post("Signed in"));
   readonly unified = signal(false);
+  readonly smallCounts = signal(false);
   constructor() {
     this.select("Signed in");
   }
@@ -225,7 +233,19 @@ class PostAdoptionReview {
     this.auth.token.set(anonymous ? null : "preview-only-not-a-credential");
     this.auth.account.set({ ...post(mode).account, id: "viewer" });
     this.selected.set(mode);
-    this.status.set(post(mode));
+    this.updateCounts();
+  }
+  toggleCounts() {
+    this.smallCounts.update((value) => !value);
+    this.updateCounts();
+  }
+  private updateCounts() {
+    const status = post(this.selected());
+    this.status.set(
+      this.smallCounts()
+        ? { ...status, replies_count: 2, reblogs_count: 3, favourites_count: 5 }
+        : status,
+    );
   }
   toggleUnified() {
     this.unified.update((value) => !value);

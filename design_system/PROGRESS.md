@@ -1,5 +1,27 @@
 # Design-system progress
 
+## Phone post toolbar density
+
+Post counts now use locale-aware compact notation, retaining exact projected
+text for assistive technology and numeric tooltips. At 400px and below, shared
+post-action labels become visually hidden and metric labels disappear; icons,
+numbers, independent count-list actions and touch targets remain. The real card
+also reclaims the avatar gutter for its action row. Larger toolsets still wrap
+instead of clipping or reducing 44px touch targets. Sprint 11's real-provider
+preview now switches between small and millions-scale counts.
+
+Source adoption is now **702 placements across 74 templates**, using 25 of 28
+widget types; all 217 candidate-file dispositions remain accounted for. No
+commands have moved to overflow menus. Changes are local, not deployed.
+
+Validation: the full gate passes 7,687 tests with zero missing or skipped tests;
+15 browser scenarios cover breakpoint boundaries, exact accessible counts,
+320px touch/RTL, wrapping and the one-row small-count case. Production build,
+application lint, design checks and inventory reconciliation pass. Initial JS
+remains 896.91 kB, below the unchanged 1 MB ceiling. Whole-app formatting still
+reports 18 unrelated, untouched files; changed files are formatted. Existing
+component-CSS and CommonJS build warnings remain.
+
 ## Specialized Twitter and publishing controls
 
 Twitter now uses RadioGroup for provider inspection, Field/Control for keys,

@@ -2,3 +2,19 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+
+.exact {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+  .label {
+    display: none;
+  }
+}

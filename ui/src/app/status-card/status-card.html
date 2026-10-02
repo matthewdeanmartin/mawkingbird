@@ -419,11 +419,17 @@
             [attr.aria-label]="'statusCard.reply' | transloco"
           >
             <span aria-hidden="true">💬</span>
-            <span mbActionCount>{{
-              'statusCard.countLabel'
-                | transloco
-                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
-            }}</span>
+            <span
+              mbActionCount
+              [count]="display.replies_count"
+              [label]="'statusCard.replies' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+              }}</span
+            >
           </button>
         } @else if (auth.isAnonymous && threadLink) {
           <a
@@ -433,11 +439,17 @@
             (click)="$event.stopPropagation()"
             [title]="'statusCard.repliesTitle' | transloco"
             ><span aria-hidden="true">💬</span>
-            <span mbActionCount>{{
-              'statusCard.countLabel'
-                | transloco
-                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
-            }}</span></a
+            <span
+              mbActionCount
+              [count]="display.replies_count"
+              [label]="'statusCard.replies' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+              }}</span
+            ></a
           >
         } @else if (auth.isAnonymous || readOnlyStats) {
           <span
@@ -445,11 +457,17 @@
             class="action action-static"
             [title]="'statusCard.repliesTitle' | transloco"
             ><span aria-hidden="true">💬</span>
-            <span mbActionCount>{{
-              'statusCard.countLabel'
-                | transloco
-                  : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
-            }}</span></span
+            <span
+              mbActionCount
+              [count]="display.replies_count"
+              [label]="'statusCard.replies' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.replies_count, label: ('statusCard.replies' | transloco) }
+              }}</span
+            ></span
           >
         }
         <!-- Reader entry points, parked rather than deleted.
@@ -495,7 +513,8 @@
             (click)="$event.stopPropagation()"
             [title]="'statusCard.readArticleAndComments' | transloco"
           >
-            📖 <span>{{ 'statusCard.viewThread' | transloco }}</span>
+            <span aria-hidden="true">📖</span>
+            <span mbPostActionLabel>{{ 'statusCard.viewThread' | transloco }}</span>
           </a>
         }
         @if (unifiedShare()) {
@@ -529,9 +548,11 @@
             >
               <span aria-hidden="true">🔁</span>
               @if (display.reblogged) {
-                <span class="did" aria-hidden="true">{{ words().Boosted }}</span>
+                <span mbPostActionLabel class="did" aria-hidden="true">{{ words().Boosted }}</span>
               } @else if (soleShareAction() === 'posse' && posseQueued(repostKind)) {
-                <span class="did" aria-hidden="true">{{ 'statusCard.recorded' | transloco }}</span>
+                <span mbPostActionLabel class="did" aria-hidden="true">{{
+                  'statusCard.recorded' | transloco
+                }}</span>
               }
             </button>
             @if (shareMenuIsUseful() && shareMenuOpen()) {
@@ -601,7 +622,7 @@
           >
             <span aria-hidden="true">🔁</span>
             @if (display.reblogged) {
-              <span class="did" aria-hidden="true">{{ words().Boosted }}</span>
+              <span mbPostActionLabel class="did" aria-hidden="true">{{ words().Boosted }}</span>
             }
           </button>
         }
@@ -619,10 +640,18 @@
               (click)="openShare($event)"
             >
               <span aria-hidden="true">🔁</span>
-              <span>{{
-                'statusCard.countLabel'
-                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
-              }}</span>
+              <span
+                ><span
+                  mbActionCount
+                  [count]="display.reblogs_count"
+                  [label]="countWords().boosts"
+                  [locale]="countLocale"
+                  >{{
+                    'statusCard.countLabel'
+                      | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                  }}</span
+                ></span
+              >
             </button>
           } @else {
             <!-- No URL to share and no network to boost on: a number, not a
@@ -630,10 +659,18 @@
                  pointer cursor that made this look tappable. -->
             <span mbActionCount class="action action-static" [title]="words().Boosts"
               ><span aria-hidden="true">🔁</span>
-              <span>{{
-                'statusCard.countLabel'
-                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
-              }}</span></span
+              <span
+                ><span
+                  mbActionCount
+                  [count]="display.reblogs_count"
+                  [label]="countWords().boosts"
+                  [locale]="countLocale"
+                  >{{
+                    'statusCard.countLabel'
+                      | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                  }}</span
+                ></span
+              ></span
             >
           }
         } @else if (!foreign && capabilities.canCompose) {
@@ -661,16 +698,30 @@
                   | transloco: { count: display.reblogs_count, label: countWords().BoostedBy }
               "
             >
-              {{
-                'statusCard.countLabel'
-                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
-              }}
+              <span
+                mbActionCount
+                [count]="display.reblogs_count"
+                [label]="countWords().boosts"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                }}</span
+              >
             </button>
           } @else {
-            <span mbActionCount class="action action-static">{{
-              'statusCard.countLabel'
-                | transloco: { count: display.reblogs_count, label: countWords().boosts }
-            }}</span>
+            <span mbActionCount class="action action-static"
+              ><span
+                mbActionCount
+                [count]="display.reblogs_count"
+                [label]="countWords().boosts"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                }}</span
+              ></span
+            >
           }
         } @else if (!caps.reblog && readOnlyStats) {
           <!-- Read-only providers (Twitter) report real counts with no button to
@@ -679,10 +730,16 @@
                signed-in viewer hits on every Bluesky post. -->
           <span mbActionCount class="action action-static" [title]="words().Boosts"
             ><span aria-hidden="true">🔁</span>
-            {{
-              'statusCard.countLabel'
-                | transloco: { count: display.reblogs_count, label: countWords().boosts }
-            }}</span
+            <span
+              mbActionCount
+              [count]="display.reblogs_count"
+              [label]="countWords().boosts"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
+              }}</span
+            ></span
           >
         }
         @if (caps.favourite) {
@@ -704,7 +761,9 @@
           >
             <span aria-hidden="true">{{ favIcon() }}</span>
             @if (display.favourited) {
-              <span class="did" aria-hidden="true">{{ 'statusCard.favourited' | transloco }}</span>
+              <span mbPostActionLabel class="did" aria-hidden="true">{{
+                'statusCard.favourited' | transloco
+              }}</span>
             }
           </button>
         }
@@ -733,7 +792,7 @@
             >
               🔁
               @if (posseQueued(repostKind)) {
-                <span class="did">{{ 'statusCard.recorded' | transloco }}</span>
+                <span mbPostActionLabel class="did">{{ 'statusCard.recorded' | transloco }}</span>
               }
             </button>
           }
@@ -752,7 +811,7 @@
           >
             {{ favIcon() }}
             @if (posseQueued('like')) {
-              <span class="did">{{ 'statusCard.recorded' | transloco }}</span>
+              <span mbPostActionLabel class="did">{{ 'statusCard.recorded' | transloco }}</span>
             }
           </button>
         }
@@ -770,14 +829,20 @@
             [title]="'statusCard.favouritesTitle' | transloco"
           >
             <span aria-hidden="true">{{ favIcon() }}</span>
-            <span mbActionCount>{{
-              'statusCard.countLabel'
-                | transloco
-                  : {
-                      count: display.favourites_count,
-                      label: ('statusCard.favourites' | transloco),
-                    }
-            }}</span>
+            <span
+              mbActionCount
+              [count]="display.favourites_count"
+              [label]="'statusCard.favourites' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : {
+                        count: display.favourites_count,
+                        label: ('statusCard.favourites' | transloco),
+                      }
+              }}</span
+            >
           </button>
         } @else if (!foreign) {
           @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
@@ -791,24 +856,38 @@
                 'statusCard.favouritedByCount' | transloco: { count: display.favourites_count }
               "
             >
-              {{
-                'statusCard.countLabel'
-                  | transloco
-                    : {
-                        count: display.favourites_count,
-                        label: ('statusCard.favourites' | transloco),
-                      }
-              }}
+              <span
+                mbActionCount
+                [count]="display.favourites_count"
+                [label]="'statusCard.favourites' | transloco"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco
+                      : {
+                          count: display.favourites_count,
+                          label: ('statusCard.favourites' | transloco),
+                        }
+                }}</span
+              >
             </button>
           } @else {
-            <span mbActionCount class="action action-static">{{
-              'statusCard.countLabel'
-                | transloco
-                  : {
-                      count: display.favourites_count,
-                      label: ('statusCard.favourites' | transloco),
-                    }
-            }}</span>
+            <span mbActionCount class="action action-static"
+              ><span
+                mbActionCount
+                [count]="display.favourites_count"
+                [label]="'statusCard.favourites' | transloco"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco
+                      : {
+                          count: display.favourites_count,
+                          label: ('statusCard.favourites' | transloco),
+                        }
+                }}</span
+              ></span
+            >
           }
         } @else if (!caps.favourite && readOnlyStats) {
           <!-- Same pairing as the boost fallback above: only stand in for the
@@ -818,11 +897,17 @@
             class="action action-static"
             [title]="'statusCard.likesTitle' | transloco"
             ><span aria-hidden="true">⭐</span>
-            {{
-              'statusCard.countLabel'
-                | transloco
-                  : { count: display.favourites_count, label: ('statusCard.likes' | transloco) }
-            }}</span
+            <span
+              mbActionCount
+              [count]="display.favourites_count"
+              [label]="'statusCard.likes' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.favourites_count, label: ('statusCard.likes' | transloco) }
+              }}</span
+            ></span
           >
         }
         @if (foreign) {
@@ -841,7 +926,7 @@
               rel="noopener noreferrer"
               [title]="'statusCard.openOnNitter' | transloco: { host: nitterLabel }"
             >
-              ↗ {{ nitterLabel }}
+              <span aria-hidden="true">↗</span> <span mbPostActionLabel>{{ nitterLabel }}</span>
             </a>
           } @else if (display.url) {
             <!-- Guarded on the url. Bound straight to `display.url`, a post
@@ -856,7 +941,8 @@
               rel="noopener noreferrer"
               [title]="'statusCard.openOriginalTitle' | transloco"
             >
-              {{ 'statusCard.openOriginal' | transloco }}
+              <span class="narrow-action-icon" aria-hidden="true">↗</span>
+              <span mbPostActionLabel>{{ 'statusCard.openOriginal' | transloco }}</span>
             </a>
           }
         }

@@ -3,6 +3,7 @@ import {
   MbPostActions,
   MbPostAction,
   MbActionCount,
+  MbPostActionLabel,
 } from '../design-system/post-actions/post-actions';
 import { AppDialogs } from '../app-dialogs';
 import {
@@ -332,6 +333,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     MbPostActions,
     MbPostAction,
     MbActionCount,
+    MbPostActionLabel,
     PollResults,
     PrivateLikeButton,
     RouterLink,
@@ -384,6 +386,9 @@ export class StatusCard {
   private raindrop = inject(RaindropSession);
   private server = inject(Server);
   private transloco = inject(TranslocoService);
+  protected get countLocale(): string {
+    return this.transloco.getActiveLang();
+  }
   /**
    * Gives the `translate()` calls in the computeds here a dependency on the
    * loaded dictionary. Without it, a label built before the fetch lands keeps

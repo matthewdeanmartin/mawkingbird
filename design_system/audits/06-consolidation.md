@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Phone post toolbar follow-up
+
+The October 2 compact-count batch scans 1,062 source files and retains 217
+candidate files. StatusCard uses shared compact metrics and narrow-screen action
+labels, without changing provider capabilities or removing commands. Exact count
+text, account-list actions and touch targets remain. The refreshed source report
+records 702 placements in 74 templates, using 25 of 28 widget types. These are
+source-adoption counts, not a claim that all candidate files are migrated.
+
 ## Button consistency follow-up
 
 The October 1 button batch refreshes the inventory to 1,058 source files and

@@ -1,11 +1,11 @@
 {
   "scope": "Maintained Angular app template call sites; excludes stories, specs and shared internals from direct counts. Repeated runtime rows count once per source node. Integration means source usage, not commit, deployment or full app coverage.",
-  "widgetsAvailable": 27,
-  "widgetsDirectlyUsed": 24,
+  "widgetsAvailable": 28,
+  "widgetsDirectlyUsed": 25,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
   "appTemplateFiles": 74,
-  "directTemplateCallSites": 685,
+  "directTemplateCallSites": 702,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -1015,11 +1015,23 @@
     {
       "name": "MbActionCount",
       "selector": "span[mbActionCount]",
-      "directCallSites": 10,
+      "directCallSites": 18,
       "consumers": [
         {
           "file": "status-card/status-card.html",
-          "count": 10
+          "count": 18
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbPostActionLabel",
+      "selector": "span[mbPostActionLabel]",
+      "directCallSites": 9,
+      "consumers": [
+        {
+          "file": "status-card/status-card.html",
+          "count": 9
         }
       ],
       "integrated": true

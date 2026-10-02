@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto(url);
   await expect(
-    page.getByRole("heading", { name: "Real post tools, full counts." }),
+    page.getByRole("heading", { name: "Real post tools, compact counts." }),
   ).toBeVisible();
 });
 test.afterEach(async ({ page }) => expect(errors.get(page)).toEqual([]));
@@ -24,6 +24,69 @@ const choose = (page, name) =>
     .getByRole("toolbar", { name: "Preview account and provider" })
     .getByRole("button", { name, exact: true })
     .click();
+
+for (const width of [320, 400, 401]) {
+  test(`phone count labels and exact accessible values at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    const scope = card(page);
+    const count = scope
+      .locator('[mbActionCount]:has(> [title="2000000"])')
+      .first();
+    await expect(count.locator('[aria-hidden="true"]')).toContainText("2M");
+    await expect(count.locator(".exact")).toHaveText("2000000 boosts");
+    if (width <= 400) await expect(count.locator(".label")).toBeHidden();
+    else await expect(count.locator(".label")).toBeVisible();
+    await expect(
+      scope.getByRole("button", { name: "2000000 Boosted by", exact: true }),
+    ).toBeVisible();
+    await choose(page, "Twitter");
+    const link = scope.locator("a.open-original");
+    await expect(link).toHaveAccessibleName(/.+/);
+    const label = link.locator("[mbPostActionLabel]");
+    const labelWidth = await label.evaluate(
+      (el) => el.getBoundingClientRect().width,
+    );
+    if (width <= 400) expect(labelWidth).toBe(1);
+    else expect(labelWidth).toBeGreaterThan(1);
+  });
+}
+
+test("small counts keep a full-width anonymous phone toolbar on one touch row", async ({
+  browser,
+}, info) => {
+  const context = await browser.newContext({
+    viewport: { width: 320, height: 900 },
+    hasTouch: true,
+  });
+  const page = await context.newPage();
+  await page.goto(`http://127.0.0.1:6008${url}`);
+  await choose(page, "Anonymous");
+  await page.getByRole("button", { name: "Small counts", exact: true }).click();
+  await page.addStyleTag({
+    content:
+      "body { padding: 0 !important; } .ds-sheet { padding-inline: 0 !important; border: 0; }",
+  });
+  const scope = card(page);
+  const layout = await scope.locator("mb-post-actions").evaluate((group) => {
+    const controls = [
+      ...group.querySelectorAll("[mbPostAction], summary"),
+    ].filter((el) => el.getClientRects().length);
+    return controls.map((el) => {
+      const box = el.getBoundingClientRect();
+      return { top: box.top, width: box.width, height: box.height };
+    });
+  });
+  expect(layout.length).toBeGreaterThanOrEqual(4);
+  expect(new Set(layout.map((box) => box.top)).size).toBe(1);
+  for (const box of layout) {
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await scope.screenshot({ path: info.outputPath("single-row-phone.png") });
+  await context.close();
+});
 test("real favourite retains optimistic, busy, rollback and retry behavior", async ({
   page,
 }) => {
@@ -180,6 +243,7 @@ for (const [theme, width, direction, touch] of [
   ["dark", 380, "ltr", false],
   ["light", 320, "rtl", false],
   ["dark", 380, "ltr", true],
+  ["dark", 320, "rtl", true],
 ]) {
   test(`real post tools wrap ${theme} ${width} ${direction} touch=${touch}`, async ({
     browser,

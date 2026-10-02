@@ -267,16 +267,24 @@ real mixed-action rows await a reviewed contract.
 
 `MbPostActions` is a labeled, wrapping group for mixed links and buttons. Keep
 frequent commands visible; add rows as needed instead of hiding commands, clipping
-counts or abbreviating them to make a row fit. Use `button[mbPostAction]` with
+counts or removing commands to make a row fit. Use `button[mbPostAction]` with
 `type="button"` for commands and `a[mbPostAction]` with a native href/routerLink
 for navigation. Use `pressed` only on toggle buttons; links are never toggles.
 The group preserves native Tab order and does not capture arrow keys. Use the
 existing `MbToolbar` when a button-only roving-focus group is appropriate.
 
 `span[mbActionCount]` keeps a formatted count on one line with tabular numerals.
+Supply `count`, localized `label` and `locale` for compact number formatting
+(for example, 1.2M). Project the exact localized count text for assistive
+technology; the numeric tooltip also preserves precision. Projection-only uses
+remain supported. At viewport widths of 400px or less, count labels disappear;
+`span[mbPostActionLabel]` visually hides other action labels while retaining their
+accessible text. Icons, counts, actions and 44px touch targets remain present.
+StatusCard reclaims the avatar gutter for its toolbar at that width. Small-count
+rows can fit on one line; larger toolsets still wrap rather than shrink targets.
 Its containing action moves intact to another row. Counts with their own account
-list behavior remain separate buttons from Like/Boost toggles. Localize labels
-and number formatting at the caller; use accessible names for icon-only actions.
+list behavior remain separate buttons from Like/Boost toggles. Pass localized
+labels and the active locale; use accessible names for icon-only actions.
 
 The shared toolbar button stylesheet provides visual states; post actions add
 compact wrapping and retain 44px touch targets. No per-post sizing overrides are
