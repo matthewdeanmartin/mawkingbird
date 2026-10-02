@@ -164,6 +164,10 @@ content. Pages own outer width and placement. Stories: **Layout / Page structure
 
 ## Dialog
 
+For a dialog opened after an asynchronous operation disables its trigger, pass
+`[returnFocusTo]="triggerElement"` (an HTMLElement). Otherwise Dialog captures
+the focused element on opening. Restoration still requires a connected target.
+
 Import `MbDialog`, and mount it under `@if (open())`. Supply translated `title`
 and `closeLabel`, optional `description`, and handle `dismissed` to remove it.
 Dismissal reasons are `button`, `escape` or `backdrop`; none means confirmation.

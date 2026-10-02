@@ -7,7 +7,8 @@
   flex-wrap: wrap;
 }
 
-.raindrop-form input {
+.raindrop-form mb-field {
   flex: 1;
-  min-width: 180px;
+  min-width: 0;
+  flex-basis: 220px;
 }

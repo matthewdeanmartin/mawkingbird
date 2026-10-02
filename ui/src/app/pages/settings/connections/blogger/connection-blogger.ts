@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { MbDisclosure } from '../../../../design-system/disclosure/disclosure';
+import { MbRadioGroup } from '../../../../design-system/radio-group/radio-group';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { BloggerApi, BloggerBlog } from '../../../../providers/blogger/blogger-api';
@@ -73,7 +81,19 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 
 @Component({
   selector: 'app-connection-blogger',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [
+    MbField,
+    MbControl,
+    MbCheckbox,
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    MbDisclosure,
+    MbRadioGroup,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-blogger.html',
   styleUrls: ['../connection-page.css', './connection-blogger.css'],
 })
@@ -85,6 +105,14 @@ export class ConnectionBlogger implements OnInit {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly blogs = signal<BloggerBlog[]>([]);
+  protected readonly blogOptions = computed(() =>
+    this.blogs().map((blog) => ({ value: blog.id, label: blog.name, hint: blog.url })),
+  );
+
+  protected chooseBlog(id: string): void {
+    const blog = this.blogs().find((entry) => entry.id === id);
+    if (blog && blog.id !== this.session.blogId()) this.choose(blog);
+  }
   protected readonly busy = signal(false);
   protected readonly notice = signal<string | null>(null);
   protected readonly error = signal<string | null>(null);

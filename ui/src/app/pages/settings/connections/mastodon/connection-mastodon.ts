@@ -1,3 +1,8 @@
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { MbField, MbControl } from '../../../../design-system/field/field';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -66,9 +71,20 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
  */
 @Component({
   selector: 'app-connection-mastodon',
-  imports: [FormsModule, RouterLink, ServerDiscovery, TranslocoPipe],
+  imports: [
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    MbField,
+    MbControl,
+    FormsModule,
+    RouterLink,
+    ServerDiscovery,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-mastodon.html',
-  styleUrls: ['../connection-page.css'],
+  styleUrls: ['../connection-page.css', './connection-mastodon.css'],
 })
 export class ConnectionMastodon {
   protected auth = inject(Auth);

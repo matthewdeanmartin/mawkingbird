@@ -1,3 +1,7 @@
+import { MbButton } from '../../../../design-system/button/button';
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -64,9 +68,20 @@ const GIST_KEY = 'mockingbird_gist_credentials';
  */
 @Component({
   selector: 'app-connection-gist',
-  imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+  ],
   templateUrl: './connection-gist.html',
-  styleUrls: ['../connection-page.css'],
+  styleUrls: ['../connection-page.css', './connection-gist.css'],
 })
 export class ConnectionGist implements OnInit {
   protected readonly settings = inject(GistSettings);
@@ -150,3 +165,4 @@ export class ConnectionGist implements OnInit {
     this.error.set(null);
   }
 }
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';

@@ -48,12 +48,14 @@ describe('Paste service settings', () => {
   it('keeps unavailable providers visible and directs setup to the existing credential page', () => {
     const fixture = TestBed.createComponent(ConnectionPastes);
     fixture.detectChanges();
-    const buttons = fixture.nativeElement.querySelectorAll(
-      '.provider',
-    ) as NodeListOf<HTMLButtonElement>;
-    expect(buttons.length).toBe(2);
-    buttons[1].click();
+    const radios = fixture.nativeElement.querySelectorAll(
+      'mb-radio-group input[type="radio"]',
+    ) as NodeListOf<HTMLInputElement>;
+    expect(radios.length).toBe(2);
+    expect(radios[1].disabled).toBe(false);
+    radios[1].click();
     fixture.detectChanges();
+    expect(radios[1].checked).toBe(true);
     expect(
       fixture.nativeElement.querySelector('a[href="/settings/connections/gist"]'),
     ).not.toBeNull();

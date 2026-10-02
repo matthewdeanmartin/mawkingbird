@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.hugo.back' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.hugo.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.hugo.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.hugo.intro' | transloco }}
   </p>
@@ -13,13 +13,19 @@
 <ol class="setup-steps muted small">
   <li>
     {{ 'settings.connections.hugo.step1.a' | transloco }}
-    <a href="https://gohugo.io/getting-started/quick-start/" target="_blank" rel="noopener">
+    <a
+      mbContentLink
+      href="https://gohugo.io/getting-started/quick-start/"
+      target="_blank"
+      rel="noopener"
+    >
       {{ 'settings.connections.hugo.step1.link' | transloco }}
     </a>
     {{ 'settings.connections.hugo.step1.b' | transloco }}
   </li>
   <li>
     <a
+      mbContentLink
       href="https://github.com/settings/personal-access-tokens/new"
       target="_blank"
       rel="noopener"
@@ -41,24 +47,28 @@
   <li>{{ 'settings.connections.hugo.step3' | transloco }}</li>
 </ol>
 
-<p class="credential-warning small">
+<mb-notice>
   {{ 'settings.connections.hugo.warning.a' | transloco }} <code>api.github.com</code>
   {{ 'settings.connections.hugo.warning.b' | transloco }}
-</p>
+</mb-notice>
 
 @if (settings.connected()) {
   <div class="connected-row">
-    <span class="connection-ok">{{ 'settings.connections.hugo.connected' | transloco }}</span>
+    <span>{{ 'settings.connections.hugo.connected' | transloco }}</span>
     <app-storage-badge [where]="where()" />
-    <a [href]="'https://github.com/' + settings.slug()" target="_blank" rel="noopener noreferrer"
+    <a
+      mbContentLink
+      [href]="'https://github.com/' + settings.slug()"
+      target="_blank"
+      rel="noopener noreferrer"
       >{{ settings.slug() }} ↗</a
     >
     @if (settings.siteUrl(); as site) {
-      <a [href]="site" target="_blank" rel="noopener noreferrer">{{
+      <a mbContentLink [href]="site" target="_blank" rel="noopener noreferrer">{{
         'settings.connections.hugo.viewSite' | transloco
       }}</a>
     }
-    <button class="btn btn-outline" type="button" (click)="disconnect()">
+    <button mbButton variant="outline" type="button" (click)="disconnect()">
       {{ 'settings.connections.hugo.disconnect' | transloco }}
     </button>
   </div>
@@ -80,36 +90,30 @@
     {{ 'settings.connections.hugo.readBack.body' | transloco }}
   </p>
 
-  <label class="profile-feed-option">
-    <input
-      type="checkbox"
-      [ngModel]="settings.includeInProfile()"
-      (ngModelChange)="setProfileFeed($event)"
-      [disabled]="!settings.siteUrl()"
-    />
-    <span>
-      <strong>{{ 'settings.connections.hugo.includeInProfile' | transloco }}</strong>
-      <span class="muted small">
-        @if (settings.siteUrl()) {
-          {{ 'settings.connections.hugo.includeInProfile.on' | transloco }}
-        } @else {
-          {{ 'settings.connections.hugo.includeInProfile.off' | transloco }}
-        }
-      </span>
-    </span>
-  </label>
+  <mb-checkbox
+    [label]="'settings.connections.hugo.includeInProfile' | transloco"
+    [hint]="
+      (settings.siteUrl()
+        ? 'settings.connections.hugo.includeInProfile.on'
+        : 'settings.connections.hugo.includeInProfile.off'
+      ) | transloco
+    "
+    [ngModel]="settings.includeInProfile()"
+    (ngModelChange)="setProfileFeed($event)"
+    [disabled]="!settings.siteUrl()"
+  />
 
   <div class="feed-row">
     @if (feed.subscribed()) {
-      <span class="connection-ok">{{
-        'settings.connections.hugo.inHomeTimeline' | transloco
-      }}</span>
-      <button class="btn btn-outline btn-sm" type="button" (click)="unsubscribeFeed()">
+      <span>{{ 'settings.connections.hugo.inHomeTimeline' | transloco }}</span>
+      <button mbButton variant="outline" size="small" type="button" (click)="unsubscribeFeed()">
         {{ 'settings.connections.hugo.removeFromFeeds' | transloco }}
       </button>
     } @else {
       <button
-        class="btn btn-outline btn-sm"
+        mbButton
+        variant="outline"
+        size="small"
         type="button"
         (click)="subscribeFeed()"
         [disabled]="feedBusy() || !settings.siteUrl()"
@@ -126,34 +130,34 @@
     }
   </div>
   @if (feedNotice(); as message) {
-    <p class="connection-ok" role="status">{{ message }}</p>
+    <mb-notice announcement="status">{{ message }}</mb-notice>
   }
   @if (feedError(); as message) {
-    <p class="feed-error" role="alert">{{ message }}</p>
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   }
 
   <h2 class="section-head">{{ 'settings.connections.hugo.posse.title' | transloco }}</h2>
-  <label class="profile-feed-option">
-    <input type="checkbox" [ngModel]="settings.posseEnabled()" (ngModelChange)="setPosse($event)" />
-    <span>
-      <strong>{{ 'settings.connections.hugo.posse.label' | transloco }}</strong>
-      <span class="muted small">
-        {{ 'settings.connections.hugo.posse.hintA' | transloco }}
-        <a [routerLink]="['/posse']">{{
-          'settings.connections.hugo.waitingToPublish' | transloco
-        }}</a>
-        {{ 'settings.connections.hugo.posse.hintB' | transloco }}
-      </span>
-      <span class="muted small">
-        {{ 'settings.connections.hugo.posse.hintC' | transloco }}
-      </span>
-    </span>
-  </label>
+  <mb-checkbox
+    [label]="'settings.connections.hugo.posse.label' | transloco"
+    [ngModel]="settings.posseEnabled()"
+    (ngModelChange)="setPosse($event)"
+  />
+  <div class="control-help">
+    {{ 'settings.connections.hugo.posse.hintA' | transloco }}
+    <a mbContentLink [routerLink]="['/posse']">{{
+      'settings.connections.hugo.waitingToPublish' | transloco
+    }}</a>
+    {{ 'settings.connections.hugo.posse.hintB' | transloco }}
+
+    {{ 'settings.connections.hugo.posse.hintC' | transloco }}
+  </div>
 
   <div class="posts-head">
     <h2>{{ 'settings.connections.hugo.postsHeading' | transloco }}</h2>
     <button
-      class="btn btn-outline btn-sm"
+      mbButton
+      variant="outline"
+      size="small"
       type="button"
       (click)="refresh()"
       [disabled]="posts.loading()"
@@ -167,7 +171,7 @@
   </div>
 
   @if (posts.error(); as message) {
-    <p class="feed-error" role="alert">{{ message }}</p>
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   } @else if (posts.loading()) {
     <p class="muted small">{{ 'settings.connections.hugo.readingFolder' | transloco }}</p>
   } @else if (!posts.rows().length) {
@@ -206,7 +210,9 @@
             </span>
           </span>
           <button
-            class="btn btn-outline btn-sm"
+            mbButton
+            variant="outline"
+            size="small"
             type="button"
             (click)="edit(row)"
             [disabled]="!!opening()"
@@ -222,7 +228,9 @@
     </ul>
     @if (posts.hasMoreToHydrate()) {
       <button
-        class="btn btn-outline btn-sm"
+        mbButton
+        variant="outline"
+        size="small"
         type="button"
         (click)="showMore()"
         [disabled]="posts.hydrating()"
@@ -239,7 +247,7 @@
     }
   }
   @if (openError(); as message) {
-    <p class="feed-error" role="alert">{{ message }}</p>
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   }
 } @else {
   @if (needsToken()) {
@@ -248,9 +256,9 @@
     </p>
   }
   <form class="hugo-form" (ngSubmit)="connect()">
-    <label>
-      <span>{{ 'settings.connections.hugo.githubTokenLabel' | transloco }}</span>
+    <mb-field [label]="'settings.connections.hugo.githubTokenLabel' | transloco">
       <input
+        mbControl
         type="password"
         name="hugoToken"
         autocomplete="off"
@@ -259,10 +267,13 @@
         (ngModelChange)="token.set($event)"
         [disabled]="busy()"
       />
-    </label>
-    <label>
-      <span>{{ 'settings.connections.hugo.repositoryLabel' | transloco }}</span>
+    </mb-field>
+    <mb-field
+      [label]="'settings.connections.hugo.repositoryLabel' | transloco"
+      [hint]="'settings.connections.hugo.repositoryHint' | transloco"
+    >
       <input
+        mbControl
         type="text"
         name="repo"
         [placeholder]="'settings.connections.hugo.repositoryPlaceholder' | transloco"
@@ -270,11 +281,13 @@
         (ngModelChange)="repoInput.set($event)"
         [disabled]="busy()"
       />
-      <span class="muted small">{{ 'settings.connections.hugo.repositoryHint' | transloco }}</span>
-    </label>
-    <label>
-      <span>{{ 'settings.connections.hugo.branchLabel' | transloco }}</span>
+    </mb-field>
+    <mb-field
+      [label]="'settings.connections.hugo.branchLabel' | transloco"
+      [hint]="'settings.connections.hugo.branchHint' | transloco"
+    >
       <input
+        mbControl
         type="text"
         name="branch"
         [placeholder]="'settings.connections.hugo.branchPlaceholder' | transloco"
@@ -282,11 +295,10 @@
         (ngModelChange)="branch.set($event)"
         [disabled]="busy()"
       />
-      <span class="muted small">{{ 'settings.connections.hugo.branchHint' | transloco }}</span>
-    </label>
-    <label>
-      <span>{{ 'settings.connections.hugo.postsFolderLabel' | transloco }}</span>
+    </mb-field>
+    <mb-field [label]="'settings.connections.hugo.postsFolderLabel' | transloco">
       <input
+        mbControl
         type="text"
         name="contentPath"
         [placeholder]="'settings.connections.hugo.postsFolderPlaceholder' | transloco"
@@ -294,18 +306,14 @@
         (ngModelChange)="contentPath.set($event)"
         [disabled]="busy()"
       />
-      <span class="muted small">
-        {{ 'settings.connections.hugo.postsFolderHint.a' | transloco }}
-        <code>content/post</code> {{ 'settings.connections.hugo.postsFolderHint.or' | transloco }}
-        <code>content/blog</code>.
-      </span>
-    </label>
-    <label>
-      <span
-        >{{ 'settings.connections.hugo.siteAddressLabel' | transloco }}
-        <span class="muted">{{ 'settings.connections.hugo.optional' | transloco }}</span></span
-      >
+      <div class="control-help">
+        {{ 'settings.connections.hugo.postsFolderHint.a' | transloco }} <code>content/post</code>
+        {{ 'settings.connections.hugo.postsFolderHint.or' | transloco }} <code>content/blog</code>.
+      </div>
+    </mb-field>
+    <mb-field [label]="'settings.connections.hugo.siteAddressLabel' | transloco">
       <input
+        mbControl
         type="url"
         name="siteUrl"
         [placeholder]="'settings.connections.hugo.siteAddressPlaceholder' | transloco"
@@ -313,12 +321,14 @@
         (ngModelChange)="siteUrl.set($event)"
         [disabled]="busy()"
       />
-      <span class="muted small">
-        {{ 'settings.connections.hugo.siteAddressHint' | transloco }}
-      </span>
-    </label>
+      <div class="control-help">
+        {{ 'settings.connections.hugo.optional' | transloco }}
 
-    <button class="btn" type="submit" [disabled]="!canSubmit()">
+        {{ 'settings.connections.hugo.siteAddressHint' | transloco }}
+      </div>
+    </mb-field>
+
+    <button mbButton type="submit" [disabled]="!canSubmit()">
       {{
         busy()
           ? ('settings.connections.hugo.checking' | transloco)
@@ -329,11 +339,11 @@
 }
 
 @if (notice(); as message) {
-  <p class="connection-ok" role="status">{{ message }}</p>
+  <mb-notice announcement="status">{{ message }}</mb-notice>
 }
 @if (warning(); as message) {
-  <p class="muted small" role="status">{{ message }}</p>
+  <mb-notice announcement="status">{{ message }}</mb-notice>
 }
 @if (error(); as message) {
-  <p class="feed-error" role="alert">{{ message }}</p>
+  <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
 }

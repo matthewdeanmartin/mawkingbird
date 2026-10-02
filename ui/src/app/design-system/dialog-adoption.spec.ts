@@ -8,6 +8,7 @@ import { DiagnosticLog } from '../diagnostic-log';
 import { PageDiagnostics } from '../page-diagnostics';
 import { BulkActionsDialog } from '../bulk-actions-dialog/bulk-actions-dialog';
 import { BulkActions } from '../bulk-actions';
+import { MbDialog } from './dialog/dialog';
 
 describe('Shared dialog adoption', () => {
   const descriptors = ['showModal', 'close'].map(
@@ -48,6 +49,24 @@ describe('Shared dialog adoption', () => {
     for (const [name, descriptor] of descriptors) {
       if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
       else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
+  });
+
+  it('restores an explicit async trigger instead of the element focused when opened', async () => {
+    const trigger = document.createElement('button');
+    document.body.append(trigger);
+    try {
+      const fixture = TestBed.createComponent(MbDialog);
+      fixture.componentRef.setInput('title', 'Async result');
+      fixture.componentRef.setInput('closeLabel', 'Close');
+      fixture.componentRef.setInput('returnFocusTo', trigger);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.nativeElement.querySelector('button').focus();
+      fixture.destroy();
+      expect(document.activeElement).toBe(trigger);
+    } finally {
+      trigger.remove();
     }
   });
 

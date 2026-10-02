@@ -1,5 +1,6 @@
 .connected-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin: 18px 0 10px;
@@ -8,33 +9,14 @@
 /* Advanced, and genuinely optional — collapsed unless already in use, so the
    ordinary path is not buried under Google Cloud instructions. */
 .own-project {
+  display: block;
   margin-top: 26px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.own-project summary {
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .own-project-field {
   display: grid;
   gap: 4px;
   margin: 12px 0;
-}
-
-.own-project-field input {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--col-bg);
-  color: inherit;
-  font: inherit;
-  font-size: 13px;
-  box-sizing: border-box;
 }
 
 /* The redirect URI has to be copied character-exact, so give it room to wrap
@@ -47,18 +29,6 @@
   background: var(--hover);
   font-size: 12px;
   overflow-wrap: anywhere;
-}
-
-.profile-feed-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.profile-feed-option > span {
-  display: grid;
-  gap: 3px;
 }
 
 .section-title {
@@ -81,4 +51,10 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.control-help {
+  margin-block: 6px 12px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }

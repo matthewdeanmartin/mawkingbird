@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.backLink' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.bluesky.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.bluesky.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.bluesky.intro' | transloco }}
   </p>
@@ -26,7 +26,7 @@
       <span class="name">{{ session.displayName || session.handle }}</span>
       <span class="muted small">&#64;{{ session.handle }}</span>
     </span>
-    <button class="btn btn-outline btn-sm" (click)="unlinkBluesky()">
+    <button mbButton type="button" variant="outline" size="small" (click)="unlinkBluesky()">
       {{ 'settings.connections.bluesky.unlink' | transloco }}
     </button>
   </div>
@@ -47,25 +47,31 @@
     {{ 'settings.connections.bluesky.linkHint.c' | transloco }}
   </p>
   <form class="bsky-form" (ngSubmit)="linkBluesky()">
-    <input
-      type="text"
-      name="bskyHandle"
-      [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
-      [ngModel]="bskyHandle()"
-      (ngModelChange)="bskyHandle.set($event)"
-      [disabled]="bskyLinking()"
-    />
-    <input
-      type="password"
-      name="bskyPassword"
-      [placeholder]="'settings.connections.bluesky.passwordPlaceholder' | transloco"
-      autocomplete="off"
-      [ngModel]="bskyPassword()"
-      (ngModelChange)="bskyPassword.set($event)"
-      [disabled]="bskyLinking()"
-    />
+    <mb-field [label]="'settings.connections.bluesky.handlePlaceholder' | transloco">
+      <input
+        mbControl
+        type="text"
+        name="bskyHandle"
+        [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
+        [ngModel]="bskyHandle()"
+        (ngModelChange)="bskyHandle.set($event)"
+        [disabled]="bskyLinking()"
+      />
+    </mb-field>
+    <mb-field [label]="'settings.connections.bluesky.passwordPlaceholder' | transloco">
+      <input
+        mbControl
+        type="password"
+        name="bskyPassword"
+        [placeholder]="'settings.connections.bluesky.passwordPlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="bskyPassword()"
+        (ngModelChange)="bskyPassword.set($event)"
+        [disabled]="bskyLinking()"
+      />
+    </mb-field>
     <button
-      class="btn"
+      mbButton
       type="submit"
       [disabled]="!bskyHandle().trim() || !bskyPassword() || bskyLinking()"
     >
@@ -78,6 +84,6 @@
     </button>
   </form>
   @if (bskyError(); as msg) {
-    <p class="feed-error">{{ msg }}</p>
+    <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
   }
 }

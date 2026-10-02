@@ -1,6 +1,12 @@
+import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { MbRadioGroup } from '../../../../design-system/radio-group/radio-group';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { PasteProviderRegistry } from '../../../../providers/paste/paste-provider-registry';
 import { PasteSettings } from '../../../../providers/paste/paste-settings';
 import { PasteFeedSubscriptions } from '../../../../providers/paste/paste-feed-subscriptions';
@@ -30,9 +36,18 @@ import { PASTE_SERVICES } from '../../../../providers/publishing-services';
 // i18n settings.connections.pastes.proxy: Use my configured CORS proxy
 @Component({
   selector: 'app-connection-pastes',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [
+    MbCheckbox,
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    MbRadioGroup,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-pastes.html',
-  styleUrls: ['../connection-page.css', '../link-shortener/connection-link-shortener.css'],
+  styleUrls: ['../connection-page.css', './connection-pastes.css'],
 })
 export class ConnectionPastes {
   protected readonly registry = inject(PasteProviderRegistry);
@@ -41,6 +56,24 @@ export class ConnectionPastes {
   protected readonly feedFetch = inject(PasteFeedFetch);
   protected readonly failed = signal(false);
   protected readonly selected = signal(this.settings.selected());
+  private readonly transloco = inject(TranslocoService);
+  protected readonly serviceOptions = () =>
+    this.registry.all.map((provider) => ({
+      value: provider.id,
+      label: provider.label,
+      hint: [
+        this.registry.default.id === provider.id
+          ? this.transloco.translate('settings.connections.pastes.active')
+          : '',
+        this.transloco.translate(
+          this.ready(provider.id)
+            ? 'settings.connections.pastes.ready'
+            : 'settings.connections.pastes.needsSetup',
+        ),
+      ]
+        .filter(Boolean)
+        .join(' — '),
+    }));
   protected readonly entry = computed(
     () => this.registry.get(this.selected()) ?? this.registry.default,
   );

@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.twitter.back' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.twitter.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.twitter.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.twitter.intro' | transloco }}
   </p>
@@ -35,49 +35,25 @@
 </section>
 
 @if (nextStep(); as step) {
-  <p class="next-step">
-    <strong>{{ 'settings.connections.twitter.nextStep' | transloco }}</strong>
-    {{ step }}
-  </p>
+  <mb-notice [title]="'settings.connections.twitter.nextStep' | transloco">{{ step }}</mb-notice>
 } @else {
-  <p class="connection-ok">{{ 'settings.connections.twitter.workingOk' | transloco }}</p>
+  <mb-notice announcement="status">{{
+    'settings.connections.twitter.workingOk' | transloco
+  }}</mb-notice>
 }
 
-<p class="credential-warning small">
+<mb-notice>
   {{ 'settings.connections.twitter.credentialWarning' | transloco }}
-</p>
+</mb-notice>
 
 @if (sources.length > 1) {
   <section class="picker">
-    <h2 class="section-title">{{ 'settings.connections.twitter.services' | transloco }}</h2>
-    <ul class="provider-list">
-      @for (item of sources; track item.id) {
-        <li>
-          <button
-            class="provider"
-            type="button"
-            [class.chosen]="selected() === item.id"
-            (click)="choose(item.id)"
-          >
-            <span class="provider-text">
-              <span class="provider-name">
-                {{ item.label }}
-                @if (isActive(item.id)) {
-                  <span class="pill pill-active">{{
-                    'settings.connections.twitter.active' | transloco
-                  }}</span>
-                } @else if (hasKey(item.id)) {
-                  <span class="pill">{{
-                    'settings.connections.twitter.keySaved' | transloco
-                  }}</span>
-                }
-              </span>
-              <span class="provider-pitch muted small">{{ item.pitch }}</span>
-            </span>
-          </button>
-        </li>
-      }
-    </ul>
+    <mb-radio-group
+      [label]="'settings.connections.twitter.services' | transloco"
+      [options]="sourceOptions()"
+      [value]="selected()"
+      (valueChange)="chooseSource($event)"
+    />
   </section>
 }
 
@@ -85,14 +61,14 @@
   <h2 class="section-title">{{ entry().label }}</h2>
   <p class="muted small">{{ entry().pricingNote }}</p>
   <p class="small">
-    <a [href]="entry().keyUrl" target="_blank" rel="noopener noreferrer">
+    <a mbContentLink [href]="entry().keyUrl" target="_blank" rel="noopener noreferrer">
       {{ 'settings.connections.twitter.getKeyFrom' | transloco }} {{ entry().label }} ↗
     </a>
   </p>
 
-  <label class="field">
-    <span class="field-label">{{ 'settings.connections.twitter.apiKey' | transloco }}</span>
+  <mb-field class="field" [label]="'settings.connections.twitter.apiKey' | transloco">
     <input
+      mbControl
       type="password"
       autocomplete="off"
       spellcheck="false"
@@ -100,26 +76,27 @@
       [ngModel]="keyDraft()"
       (ngModelChange)="keyDraft.set($event)"
     />
-    @if (hasKey(entry().id)) {
-      <app-storage-badge [where]="where(entry().id)" />
-      <span class="muted small">
+    <div class="control-help">
+      @if (hasKey(entry().id)) {
+        <app-storage-badge [where]="where(entry().id)" />
+
         {{ 'settings.connections.twitter.keySavedNote' | transloco }}
         @if (expiryLabel(settings.expiresAt()); as expiry) {
           {{ 'settings.connections.twitter.keyExpiry' | transloco }} {{ expiry }}.
         }
-      </span>
-    }
-  </label>
+      }
+    </div>
+  </mb-field>
 
   <div class="actions">
-    <button class="btn" type="button" [disabled]="busy() || !keyDraft().trim()" (click)="save()">
+    <button mbButton type="button" [disabled]="busy() || !keyDraft().trim()" (click)="save()">
       {{ 'settings.connections.twitter.saveAndTest' | transloco }}
     </button>
     @if (hasKey(entry().id)) {
-      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="test()">
+      <button mbButton variant="outline" type="button" [disabled]="busy()" (click)="test()">
         {{ 'settings.connections.twitter.testConnection' | transloco }}
       </button>
-      <button class="btn btn-outline" type="button" (click)="forget(entry().id)">
+      <button mbButton variant="outline" type="button" (click)="forget(entry().id)">
         {{ 'settings.connections.twitter.disconnect' | transloco }}
       </button>
     }
@@ -133,10 +110,10 @@
     <p class="muted small">{{ 'settings.connections.twitter.testing' | transloco }}</p>
   }
   @if (notice()) {
-    <p class="connection-ok">{{ notice() }}</p>
+    <mb-notice announcement="status">{{ notice() }}</mb-notice>
   }
   @if (error()) {
-    <p class="feed-error">{{ error() }}</p>
+    <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
   }
 </section>
 
@@ -155,20 +132,20 @@
     </p>
 
     @if (proxyStripsHeaders()) {
-      <p class="feed-error">
+      <mb-notice tone="error" announcement="alert">
         {{ proxy.label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.a' | transloco }}
         {{ entry().label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.b' | transloco }}
-        <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
           'settings.connections.twitter.proxy.title' | transloco
         }}</a
         >.
-      </p>
+      </mb-notice>
     }
 
     @if (proxyNeedsRegistration(); as allowlist) {
       <p class="muted small">
         {{ allowlist.note }}
-        <a [href]="allowlist.dashboardUrl" target="_blank" rel="noopener noreferrer">
+        <a mbContentLink [href]="allowlist.dashboardUrl" target="_blank" rel="noopener noreferrer">
           {{ 'settings.connections.twitter.proxy.openDashboard.a' | transloco }} {{ proxy.label }}
           {{ 'settings.connections.twitter.proxy.openDashboard.b' | transloco }}
         </a>
@@ -176,7 +153,7 @@
     }
 
     @if (hasConsent()) {
-      <button class="btn btn-outline" type="button" (click)="revokeConsent()">
+      <button mbButton variant="outline" type="button" (click)="revokeConsent()">
         {{ 'settings.connections.twitter.proxy.withdraw' | transloco }}
       </button>
     }
@@ -186,7 +163,7 @@
       {{ 'settings.connections.twitter.proxy.none.b' | transloco }}
     </p>
     <p class="small">
-      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+      <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
         'settings.connections.twitter.proxy.setUp' | transloco
       }}</a>
     </p>
@@ -233,7 +210,9 @@
 
     <div class="actions">
       <button
-        class="btn btn-outline btn-small"
+        mbButton
+        variant="outline"
+        size="small"
         type="button"
         [disabled]="balanceLoading()"
         (click)="checkBalance()"
@@ -247,60 +226,58 @@
       <span class="muted small">{{ 'settings.connections.twitter.balanceFree' | transloco }}</span>
     </div>
     @if (balanceError(); as message) {
-      <p class="feed-error">{{ message }}</p>
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
     }
 
     @if (usage.atHardLimit()) {
-      <p class="feed-error">
+      <mb-notice tone="error" announcement="alert">
         {{
           'settings.connections.twitter.spend.hardLimit' | transloco: { count: usage.hardLimit() }
         }}
-      </p>
+      </mb-notice>
     } @else if (usage.overSoftLimit()) {
-      <p class="spend-warning">
+      <mb-notice>
         {{ 'settings.connections.twitter.spend.past.a' | transloco }} {{ usage.softLimit() }}
         {{ 'settings.connections.twitter.spend.past.b' | transloco }}
-      </p>
+      </mb-notice>
     }
 
-    <details class="spend-limits">
-      <summary class="small">{{ 'settings.connections.twitter.limits.title' | transloco }}</summary>
+    <mb-disclosure
+      class="spend-limits"
+      [label]="'settings.connections.twitter.limits.title' | transloco"
+    >
       <p class="muted small">
         {{ 'settings.connections.twitter.limits.intro' | transloco }}
       </p>
       <div class="limit-fields">
-        <label class="field">
-          <span class="field-label small">{{
-            'settings.connections.twitter.limits.warnAt' | transloco
-          }}</span>
+        <mb-field class="field" [label]="'settings.connections.twitter.limits.warnAt' | transloco">
           <input
+            mbControl
             type="number"
             min="1"
             [ngModel]="softDraft()"
             (ngModelChange)="softDraft.set($event)"
           />
-        </label>
-        <label class="field">
-          <span class="field-label small">{{
-            'settings.connections.twitter.limits.stopAt' | transloco
-          }}</span>
+        </mb-field>
+        <mb-field class="field" [label]="'settings.connections.twitter.limits.stopAt' | transloco">
           <input
+            mbControl
             type="number"
             min="1"
             [ngModel]="hardDraft()"
             (ngModelChange)="hardDraft.set($event)"
           />
-        </label>
+        </mb-field>
       </div>
       <div class="actions">
-        <button class="btn btn-outline btn-small" type="button" (click)="saveLimits()">
+        <button mbButton variant="outline" size="small" type="button" (click)="saveLimits()">
           {{ 'settings.connections.twitter.limits.save' | transloco }}
         </button>
-        <button class="btn btn-outline btn-small" type="button" (click)="resetUsage()">
+        <button mbButton variant="outline" size="small" type="button" (click)="resetUsage()">
           {{ 'settings.connections.twitter.limits.reset' | transloco }}
         </button>
       </div>
-    </details>
+    </mb-disclosure>
     <p class="muted small">
       {{ 'settings.connections.twitter.limits.countedNote' | transloco }}
     </p>
@@ -321,11 +298,12 @@
     </p>
 
     @if (!lookupResult()) {
-      <label class="field">
-        <span class="field-label">{{
-          'settings.connections.twitter.follows.handleLabel' | transloco
-        }}</span>
+      <mb-field
+        class="field"
+        [label]="'settings.connections.twitter.follows.handleLabel' | transloco"
+      >
         <input
+          mbControl
           type="text"
           autocomplete="off"
           spellcheck="false"
@@ -334,10 +312,10 @@
           (ngModelChange)="handleDraft.set($event)"
           (keyup.enter)="lookup()"
         />
-      </label>
+      </mb-field>
       <div class="actions">
         <button
-          class="btn"
+          mbButton
           type="button"
           [disabled]="lookingUp() || !handleDraft().trim() || follows.atLimit()"
           (click)="lookup()"
@@ -389,17 +367,23 @@
                       }
               }}
             </span>
-            <a [href]="lookupResult()!.url" target="_blank" rel="noopener noreferrer" class="small">
+            <a
+              mbContentLink
+              [href]="lookupResult()!.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="small"
+            >
               {{ 'settings.connections.twitter.follows.viewOnTwitter' | transloco }}
             </a>
           </div>
         </div>
         <div class="actions">
-          <button class="btn" type="button" (click)="confirmFollow()">
+          <button mbButton type="button" (click)="confirmFollow()">
             {{ 'settings.connections.twitter.follows.followHandle' | transloco
             }}{{ lookupResult()!.username }}
           </button>
-          <button class="btn btn-outline" type="button" (click)="cancelLookup()">
+          <button mbButton variant="outline" type="button" (click)="cancelLookup()">
             {{ 'settings.connections.twitter.cancel' | transloco }}
           </button>
         </div>
@@ -407,10 +391,10 @@
     }
 
     @if (followError()) {
-      <p class="feed-error">{{ followError() }}</p>
+      <mb-notice tone="error" announcement="alert">{{ followError() }}</mb-notice>
     }
     @if (followNotice()) {
-      <p class="connection-ok">{{ followNotice() }}</p>
+      <mb-notice announcement="status">{{ followNotice() }}</mb-notice>
     }
 
     @if (follows.follows().length) {
@@ -421,7 +405,9 @@
              it spent re-fetching accounts that were current a moment ago. -->
         @if (rotationCost() > 0) {
           <button
-            class="btn btn-outline btn-small"
+            mbButton
+            variant="outline"
+            size="small"
             type="button"
             [disabled]="refreshing() || usage.atHardLimit()"
             (click)="refreshStalest()"
@@ -441,7 +427,9 @@
           </button>
         }
         <button
-          class="btn btn-outline btn-small"
+          mbButton
+          variant="outline"
+          size="small"
           type="button"
           [disabled]="refreshing() || usage.atHardLimit()"
           (click)="refreshAll()"
@@ -462,7 +450,9 @@
         <!-- Costs nothing and spends nothing: for someone who wants the stored
              posts gone, not someone who wants newer ones. -->
         <button
-          class="btn btn-outline btn-small"
+          mbButton
+          variant="outline"
+          size="small"
           type="button"
           [disabled]="refreshing() || storedCount() === 0"
           (click)="clearCache()"
@@ -478,7 +468,11 @@
         {{ 'settings.connections.twitter.posts.note' | transloco }}
       </p>
       @if (refreshResult(); as result) {
-        <p [class]="result.stopped ? 'feed-error' : 'connection-ok'">{{ result.message }}</p>
+        <mb-notice
+          [tone]="result.stopped ? 'error' : 'info'"
+          [announcement]="result.stopped ? 'alert' : 'status'"
+          >{{ result.message }}</mb-notice
+        >
       }
       <ul class="follow-list">
         @for (f of follows.follows(); track f.username) {
@@ -486,7 +480,11 @@
             <!-- The whole identity is the link. The profile page already reads
                  `twitter:@handle` ids, so this row was the only place in the app
                  where a followed account couldn't be opened. -->
-            <a class="follow-link" [routerLink]="['/accounts', 'twitter:@' + f.username]">
+            <a
+              mbContentLink
+              class="follow-link"
+              [routerLink]="['/accounts', 'twitter:@' + f.username]"
+            >
               @if (f.avatar) {
                 <img class="follow-avatar" [src]="f.avatar" alt="" width="32" height="32" />
               }
@@ -495,15 +493,18 @@
                 <span class="muted small">&#64;{{ f.username }}</span>
               </span>
             </a>
-            <label class="follow-toggle small">
-              <input
-                type="checkbox"
-                [checked]="f.enabled"
-                (change)="toggleFollowEnabled(f.username, !f.enabled)"
-              />
-              {{ 'settings.connections.twitter.follows.show' | transloco }}
-            </label>
-            <button class="btn btn-outline btn-small" type="button" (click)="unfollow(f.username)">
+            <mb-checkbox
+              [label]="'settings.connections.twitter.follows.show' | transloco"
+              [checked]="f.enabled"
+              (checkedChange)="toggleFollowEnabled(f.username, !f.enabled)"
+            />
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="unfollow(f.username)"
+            >
               {{ 'settings.connections.twitter.follows.unfollow' | transloco }}
             </button>
           </li>
@@ -525,17 +526,15 @@
     <p class="muted small">
       <span [innerHTML]="'settings.connections.twitter.paste.hint' | transloco"></span>
     </p>
-    <label class="field">
-      <span class="field-label">{{
-        'settings.connections.twitter.paste.handles' | transloco
-      }}</span>
+    <mb-field class="field" [label]="'settings.connections.twitter.paste.handles' | transloco">
       <textarea
+        mbControl
         rows="4"
         placeholder="&#64;AnthropicAI, &#64;OpenAI&#10;https://x.com/NASA"
         [ngModel]="pasteDraft()"
         (ngModelChange)="pasteDraft.set($event)"
       ></textarea>
-    </label>
+    </mb-field>
     @if (pastePreview().length) {
       <p class="muted small">
         {{
@@ -545,12 +544,7 @@
       </p>
     }
     <div class="actions">
-      <button
-        class="btn"
-        type="button"
-        [disabled]="!pastePreview().length"
-        (click)="followPasted()"
-      >
+      <button mbButton type="button" [disabled]="!pastePreview().length" (click)="followPasted()">
         {{
           (pastePreview().length === 1
             ? 'settings.connections.twitter.followPasted.one'
@@ -560,7 +554,7 @@
       </button>
     </div>
     @if (pasteResult(); as message) {
-      <p class="connection-ok">{{ message }}</p>
+      <mb-notice announcement="status">{{ message }}</mb-notice>
     }
   </section>
 
@@ -571,11 +565,9 @@
     </p>
 
     <div class="import-form">
-      <label class="field">
-        <span class="field-label">{{
-          'settings.connections.twitter.importer.whose' | transloco
-        }}</span>
+      <mb-field class="field" [label]="'settings.connections.twitter.importer.whose' | transloco">
         <input
+          mbControl
           type="text"
           autocomplete="off"
           spellcheck="false"
@@ -584,12 +576,13 @@
           (ngModelChange)="importHandle.set($event)"
           [disabled]="importer.running()"
         />
-      </label>
-      <label class="field field-narrow">
-        <span class="field-label">{{
-          'settings.connections.twitter.importer.stopAfter' | transloco
-        }}</span>
+      </mb-field>
+      <mb-field
+        class="field field-narrow"
+        [label]="'settings.connections.twitter.importer.stopAfter' | transloco"
+      >
         <input
+          mbControl
           type="number"
           min="1"
           [max]="followLimit"
@@ -597,12 +590,12 @@
           (ngModelChange)="importStopAfter.set(+$event)"
           [disabled]="importer.running()"
         />
-      </label>
+      </mb-field>
     </div>
 
     <div class="actions">
       <button
-        class="btn"
+        mbButton
         type="button"
         [disabled]="importer.running() || !importHandle().trim()"
         (click)="startImport()"
@@ -614,19 +607,19 @@
         }}
       </button>
       @if (importer.running()) {
-        <button class="btn btn-outline" type="button" (click)="importer.stop()">
+        <button mbButton variant="outline" type="button" (click)="importer.stop()">
           {{ 'settings.connections.twitter.importer.stop' | transloco }}
         </button>
       }
       @if (importer.candidates().length && !importer.running()) {
-        <button class="btn btn-outline" type="button" (click)="importer.reset()">
+        <button mbButton variant="outline" type="button" (click)="importer.reset()">
           {{ 'settings.connections.twitter.importer.clear' | transloco }}
         </button>
       }
     </div>
 
     @if (importer.error(); as message) {
-      <p class="feed-error">{{ message }}</p>
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
     }
 
     @if (importer.candidates().length) {
@@ -651,23 +644,23 @@
            allows one request every five seconds on the free tier, so this is
            the only thing here that takes real time. -->
       <div class="import-liveness">
-        <label class="field field-narrow">
-          <span class="field-label">{{
-            'settings.connections.twitter.importer.skipSilent' | transloco
-          }}</span>
+        <mb-field
+          class="field field-narrow"
+          [label]="'settings.connections.twitter.importer.skipSilent' | transloco"
+          [hint]="'settings.connections.twitter.importer.days' | transloco"
+        >
           <input
+            mbControl
             type="number"
             min="1"
             [ngModel]="importInactiveDays()"
             (ngModelChange)="importInactiveDays.set(+$event)"
             [disabled]="importer.running()"
           />
-          <span class="muted small">{{
-            'settings.connections.twitter.importer.days' | transloco
-          }}</span>
-        </label>
+        </mb-field>
         <button
-          class="btn btn-outline"
+          mbButton
+          variant="outline"
           type="button"
           [disabled]="importer.running() || !importer.unchecked().length"
           (click)="checkLiveness()"
@@ -712,24 +705,18 @@
                 >
               }
             </span>
-            <button
-              class="btn btn-outline btn-small"
-              type="button"
-              (click)="importer.toggle(c.userId)"
-            >
-              {{
-                c.excluded
-                  ? ('settings.connections.twitter.importer.include' | transloco)
-                  : ('settings.connections.twitter.importer.skip' | transloco)
-              }}
-            </button>
+            <mb-checkbox
+              [label]="'settings.connections.twitter.importer.include' | transloco"
+              [checked]="!c.excluded"
+              (checkedChange)="importer.toggle(c.userId)"
+            />
           </li>
         }
       </ul>
 
       <div class="actions">
         <button
-          class="btn"
+          mbButton
           type="button"
           [disabled]="importer.running() || !importer.keeping().length"
           (click)="applyImport()"
@@ -745,7 +732,7 @@
     }
 
     @if (importResult(); as message) {
-      <p class="connection-ok">{{ message }}</p>
+      <mb-notice announcement="status">{{ message }}</mb-notice>
     }
   </section>
 }

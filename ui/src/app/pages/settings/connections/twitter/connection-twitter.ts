@@ -1,4 +1,12 @@
-import { TranslocoPipe } from '@jsverse/transloco';
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
+import { MbDisclosure } from '../../../../design-system/disclosure/disclosure';
+import { MbRadioGroup } from '../../../../design-system/radio-group/radio-group';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -203,6 +211,15 @@ import { Terminology } from '../../../../terminology';
 @Component({
   selector: 'app-connection-twitter',
   imports: [
+    MbField,
+    MbControl,
+    MbCheckbox,
+    MbDisclosure,
+    MbRadioGroup,
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -240,6 +257,27 @@ export class ConnectionTwitter implements OnInit {
   protected readonly selected = signal<TwitterSourceId>(
     this.settings.activeId() ?? this.sources[0].id,
   );
+  private readonly transloco = inject(TranslocoService);
+  protected readonly sourceOptions = () =>
+    this.sources.map((source) => ({
+      value: source.id,
+      label: source.label,
+      hint: [
+        source.pitch,
+        this.isActive(source.id)
+          ? this.transloco.translate('settings.connections.twitter.active')
+          : this.hasKey(source.id)
+            ? this.transloco.translate('settings.connections.twitter.keySaved')
+            : '',
+      ]
+        .filter(Boolean)
+        .join(' — '),
+    }));
+
+  protected chooseSource(value: string): void {
+    const source = this.sources.find((entry) => entry.id === value);
+    if (source) this.choose(source.id);
+  }
 
   protected readonly entry = computed<TwitterSourceEntry>(
     () => this.sources.find((item) => item.id === this.selected()) ?? this.sources[0],

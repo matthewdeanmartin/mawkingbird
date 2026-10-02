@@ -38,6 +38,16 @@ describe('ConnectionTwitter', () => {
 
   const text = () => fixture.nativeElement.textContent as string;
 
+  it('uses shared standalone actions while leaving the specialized provider picker separate', () => {
+    const root: HTMLElement = fixture.nativeElement;
+    expect(root.querySelector('mb-page-header h1')).not.toBeNull();
+    for (const button of root.querySelectorAll<HTMLButtonElement>('button:not(.provider)')) {
+      expect(button.hasAttribute('mbButton')).toBe(true);
+      expect(button.type).toBe('button');
+    }
+    expect(root.querySelector('mb-notice')).not.toBeNull();
+  });
+
   describe('the setup checklist', () => {
     // Five stages across two services is the most setup of any connector here.
     // One sentence naming the current stage is what keeps that navigable.

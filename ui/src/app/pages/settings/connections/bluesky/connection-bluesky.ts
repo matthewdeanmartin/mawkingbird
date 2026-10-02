@@ -1,3 +1,8 @@
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { MbField, MbControl } from '../../../../design-system/field/field';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,7 +36,18 @@ import { StorageBadge } from '../storage-badge';
 /** Settings → Connections → Bluesky. App-password link; the only read/write connector. */
 @Component({
   selector: 'app-connection-bluesky',
-  imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    MbField,
+    MbControl,
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-bluesky.html',
   styleUrls: ['../connection-page.css', './connection-bluesky.css'],
 })

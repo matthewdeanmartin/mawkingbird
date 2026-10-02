@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.backLink' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.raindrop.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.raindrop.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.raindrop.intro' | transloco }}
   </p>
@@ -22,15 +22,15 @@
 <p class="muted small">
   {{ 'settings.connections.raindrop.oauthNote' | transloco }}
 </p>
-<p class="credential-warning small">
+<mb-notice>
   {{ 'settings.connections.raindrop.credentialWarning' | transloco }}
-</p>
+</mb-notice>
 
 @if (raindrop.connected()) {
   <div class="raindrop-actions">
-    <span class="connection-ok">{{ 'settings.connections.raindrop.connected' | transloco }}</span>
+    <span>{{ 'settings.connections.raindrop.connected' | transloco }}</span>
     <app-storage-badge [where]="where()" />
-    <button class="btn btn-outline" type="button" (click)="disconnectRaindrop()">
+    <button mbButton variant="outline" type="button" (click)="disconnectRaindrop()">
       {{ 'settings.connections.raindrop.disconnect' | transloco }}
     </button>
   </div>
@@ -45,22 +45,25 @@
   }
 } @else {
   <form class="raindrop-form" (ngSubmit)="connectRaindrop()">
-    <input
-      type="password"
-      name="raindropToken"
-      [placeholder]="'settings.connections.raindrop.tokenPlaceholder' | transloco"
-      autocomplete="off"
-      [ngModel]="raindropToken()"
-      (ngModelChange)="raindropToken.set($event)"
-    />
-    <button class="btn" type="submit" [disabled]="!raindropToken().trim()">
+    <mb-field [label]="'settings.connections.raindrop.tokenPlaceholder' | transloco">
+      <input
+        mbControl
+        type="password"
+        name="raindropToken"
+        [placeholder]="'settings.connections.raindrop.tokenPlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="raindropToken()"
+        (ngModelChange)="raindropToken.set($event)"
+      />
+    </mb-field>
+    <button mbButton type="submit" [disabled]="!raindropToken().trim()">
       {{ 'settings.connections.raindrop.save' | transloco }}
     </button>
   </form>
 }
 @if (raindropNotice(); as msg) {
-  <p class="connection-ok" role="status">{{ msg }}</p>
+  <mb-notice announcement="status">{{ msg }}</mb-notice>
 }
 @if (raindropError(); as msg) {
-  <p class="feed-error" role="alert">{{ msg }}</p>
+  <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
 }

@@ -1,56 +1,36 @@
-<a class="conn-back" routerLink="/settings/connections">{{
+<a mbContentLink class="conn-back" routerLink="/settings/connections">{{
   'settings.connections.backLink' | transloco
 }}</a>
-<div class="spage-head">
-  <h1>{{ 'settings.connections.pastes.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.pastes.title' | transloco" />
+<div class="connection-intro">
   <p>{{ 'settings.connections.pastes.intro' | transloco }}</p>
   <p class="muted">{{ 'settings.connections.pastes.privacy' | transloco }}</p>
   <div class="conn-actions">
-    <a routerLink="/more/pastes">{{ 'settings.connections.pastes.history' | transloco }}</a>
-    <a routerLink="/settings/connections/doctor">{{
+    <a mbContentLink routerLink="/more/pastes">{{
+      'settings.connections.pastes.history' | transloco
+    }}</a>
+    <a mbContentLink routerLink="/settings/connections/doctor">{{
       'settings.connections.pastes.doctor' | transloco
     }}</a>
   </div>
 </div>
 @if (failed()) {
-  <p role="alert">{{ 'settings.connections.pastes.saveFailed' | transloco }}</p>
+  <mb-notice tone="error" announcement="alert">{{
+    'settings.connections.pastes.saveFailed' | transloco
+  }}</mb-notice>
 }
 @if (!ready(settings.selected())) {
-  <p role="status">{{ 'settings.connections.pastes.unavailable' | transloco }}</p>
+  <mb-notice announcement="status">{{
+    'settings.connections.pastes.unavailable' | transloco
+  }}</mb-notice>
 }
 <section class="picker">
-  <h2 class="section-title">
-    {{ 'settings.connections.linkShortener.servicesHeading' | transloco }}
-  </h2>
-  <ul class="provider-list">
-    @for (item of registry.all; track item.id) {
-      <li>
-        <button
-          class="provider"
-          type="button"
-          [class.chosen]="selected() === item.id"
-          [attr.aria-pressed]="selected() === item.id"
-          (click)="selected.set(item.id)"
-        >
-          <span class="provider-text"
-            ><span class="provider-name"
-              >{{ item.label }}
-              @if (registry.default.id === item.id) {
-                <span class="pill pill-active">{{
-                  'settings.connections.pastes.active' | transloco
-                }}</span>
-              }</span
-            ><span class="muted small">{{
-              (ready(item.id)
-                ? 'settings.connections.pastes.ready'
-                : 'settings.connections.pastes.needsSetup'
-              ) | transloco
-            }}</span></span
-          >
-        </button>
-      </li>
-    }
-  </ul>
+  <mb-radio-group
+    [label]="'settings.connections.linkShortener.servicesHeading' | transloco"
+    [options]="serviceOptions()"
+    [value]="selected()"
+    (valueChange)="selected.set($event)"
+  />
 </section>
 <section class="setup">
   <h2 class="section-title">{{ entry().label }}</h2>
@@ -70,7 +50,8 @@
   </p>
   <div class="conn-actions">
     <button
-      class="btn btn-outline"
+      mbButton
+      variant="outline"
       type="button"
       [disabled]="!ready(entry().id) || settings.selected() === entry().id"
       (click)="activate(entry().id)"
@@ -78,7 +59,9 @@
       {{ 'settings.connections.pastes.use' | transloco }}
     </button>
     @if (setup(entry().id); as route) {
-      <a [routerLink]="route">{{ 'settings.connections.pastes.setup' | transloco }}</a>
+      <a mbContentLink [routerLink]="route">{{
+        'settings.connections.pastes.setup' | transloco
+      }}</a>
     }
   </div>
 </section>
@@ -86,13 +69,13 @@
   <section>
     <h2>{{ 'settings.connections.pastes.feeds' | transloco }}</h2>
     <p>{{ 'settings.connections.pastes.feedIntro' | transloco }}</p>
-    <a routerLink="/settings/connections/cors-proxy">{{
+    <a mbContentLink routerLink="/settings/connections/cors-proxy">{{
       'settings.connections.pastes.setup' | transloco
     }}</a>
     @for (feed of registry.feeds; track feed.id) {
       <div class="setup">
         <h3>{{ feed.label }}</h3>
-        <button type="button" (click)="toggleFeed(feed)">
+        <button mbButton type="button" (click)="toggleFeed(feed)">
           {{
             (feeds.has(feed.id)
               ? 'settings.connections.pastes.unfollow'
@@ -101,13 +84,11 @@
           }}
         </button>
         @if (feedFetch.proxyLabel()) {
-          <label
-            ><input
-              type="checkbox"
-              [checked]="feeds.usesProxy(feed.id)"
-              (change)="feeds.setUseProxy(feed.id, !feeds.usesProxy(feed.id))"
-            />{{ 'settings.connections.pastes.proxy' | transloco }}</label
-          >
+          <mb-checkbox
+            [label]="'settings.connections.pastes.proxy' | transloco"
+            [checked]="feeds.usesProxy(feed.id)"
+            (checkedChange)="feeds.setUseProxy(feed.id, $event)"
+          />
         }
       </div>
     }

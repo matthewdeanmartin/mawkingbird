@@ -7,9 +7,10 @@
   flex-wrap: wrap;
 }
 
-.github-form input {
+.github-form mb-field {
   flex: 1;
-  min-width: 220px;
+  min-width: 0;
+  flex-basis: 220px;
 }
 
 .github-avatar {
@@ -23,13 +24,4 @@
   flex: 1;
   flex-direction: column;
   min-width: 140px;
-}
-
-.github-proof {
-  margin: 10px 0;
-  padding: 10px 12px;
-  border: 1px solid rgb(43 138 62 / 35%);
-  border-radius: 6px;
-  background: rgb(43 138 62 / 8%);
-  font-size: 13px;
 }

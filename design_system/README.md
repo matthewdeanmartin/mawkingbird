@@ -1,14 +1,18 @@
 # Mawkingbird design system
 
-Latest follow-up: search/composer actions adopt shared widgets, and compact
-composer tools and emoji panels fit narrow columns. Preview **Adoption / Composer**
-for full, compact and chat modes with all optional tool buttons available.
+Latest follow-up: Twitter's provider, spending, follow and import controls now
+use shared widgets, as do Blogger, Hugo, Mataroa and paste-service settings.
+**Adoption / Publishing connections** and **Adoption / Account connections / Twitter controls**
+preview the real pages without publishing, paid requests or credential writes.
+Mastodon, Bluesky and Dropbox remain in **Adoption / Account connections**.
+**Adoption / Token connections** covers GitHub, GitHub Gist and Raindrop.
+**Adoption / Composer** still covers full, compact and chat tools at narrow widths.
 The [button batch](REVIEW-buttons.md) supplies their accent-aware actions.
 
 Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
 
 [Integration progress](PROGRESS.md): zero sprints remain in the current plan.
-Source adoption after the composer batch is 24 of 27 widget types, 470 direct placements in 63 app templates.
+Source adoption after the publishing batch is 24 of 27 widget types, 685 direct placements in 74 app templates.
 This closes the planned batches, not all migration debt. Source integration is
 separate from deployment.
 

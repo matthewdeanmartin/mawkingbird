@@ -1,3 +1,7 @@
+import { MbButton } from '../../../../design-system/button/button';
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -42,7 +46,18 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 /** Settings → Connections → GitHub. Token paste, validation, and the API proof. */
 @Component({
   selector: 'app-connection-github',
-  imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+  ],
   templateUrl: './connection-github.html',
   styleUrls: ['../connection-page.css', './connection-github.css'],
 })
@@ -142,3 +157,4 @@ export class ConnectionGitHub implements OnInit {
 function describeError(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';

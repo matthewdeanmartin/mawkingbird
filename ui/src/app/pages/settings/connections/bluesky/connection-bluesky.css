@@ -1,17 +1,20 @@
 .bsky-form {
   display: flex;
+  align-items: end;
   gap: 8px;
   margin: 12px 0;
   flex-wrap: wrap;
 }
 
-.bsky-form input {
+.bsky-form mb-field {
   flex: 1;
-  min-width: 160px;
+  flex-basis: 160px;
+  min-width: 0;
 }
 
 .bsky-linked {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 10px 0;
@@ -22,7 +25,7 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  background: #0085ff;
+  background: var(--col-bg);
 }
 
 .bsky-linked .names {

@@ -649,13 +649,13 @@
     },
     {
       "file": "ui/src/app/pages/settings/connections/blogger/connection-blogger.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Specialized/publishing controls batch: Field/Control, Checkbox, RadioGroup and Disclosure replace native bespoke controls; Button/Notice/PageHeader/ContentLink own shared presentation. Preserve Twitter paid-request and import gates, Blogger sign-out versus forget, Hugo validation/POSSE opt-in, Mataroa consent rollback, and paste inspect-versus-activate semantics. Previews are memory-only; future controls stay on these contracts."
     },
     {
       "file": "ui/src/app/pages/settings/connections/bluesky/connection-bluesky.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Account connections batch: PageHeader, Button, ContentLink and Notice; native Mastodon/Bluesky fields use Field/Control, and Dropbox's file listing uses Dialog. Preserve sign-in/rollback, sign-out versus disconnect, scope copy and OAuth callback semantics. ServerDiscovery remains a separate child surface."
     },
     {
       "file": "ui/src/app/pages/settings/connections/cors-proxy/connection-cors-proxy.css",
@@ -674,23 +674,23 @@
     },
     {
       "file": "ui/src/app/pages/settings/connections/dropbox/connection-dropbox.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Account connections batch: PageHeader, Button, ContentLink and Notice; native Mastodon/Bluesky fields use Field/Control, and Dropbox's file listing uses Dialog. Preserve sign-in/rollback, sign-out versus disconnect, scope copy and OAuth callback semantics. ServerDiscovery remains a separate child surface."
     },
     {
       "file": "ui/src/app/pages/settings/connections/gist/connection-gist.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Token connection batch: native credential controls use Field/Control, actions Button, page titles PageHeader, guidance and feedback Notice, and links ContentLink. Real-page Storybook fixtures cover rejection, pending validation, connection and disconnect at narrow LTR/RTL widths. Preserve provider-specific validation and credential storage semantics."
     },
     {
       "file": "ui/src/app/pages/settings/connections/github/connection-github.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Token connection batch: native credential controls use Field/Control, actions Button, page titles PageHeader, guidance and feedback Notice, and links ContentLink. Real-page Storybook fixtures cover rejection, pending validation, connection and disconnect at narrow LTR/RTL widths. Preserve provider-specific validation and credential storage semantics."
     },
     {
       "file": "ui/src/app/pages/settings/connections/hugo/connection-hugo.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Specialized/publishing controls batch: Field/Control, Checkbox, RadioGroup and Disclosure replace native bespoke controls; Button/Notice/PageHeader/ContentLink own shared presentation. Preserve Twitter paid-request and import gates, Blogger sign-out versus forget, Hugo validation/POSSE opt-in, Mataroa consent rollback, and paste inspect-versus-activate semantics. Previews are memory-only; future controls stay on these contracts."
     },
     {
       "file": "ui/src/app/pages/settings/connections/link-shortener/connection-link-shortener.html",
@@ -699,13 +699,13 @@
     },
     {
       "file": "ui/src/app/pages/settings/connections/mastodon/connection-mastodon.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Account connections batch: PageHeader, Button, ContentLink and Notice; native Mastodon/Bluesky fields use Field/Control, and Dropbox's file listing uses Dialog. Preserve sign-in/rollback, sign-out versus disconnect, scope copy and OAuth callback semantics. ServerDiscovery remains a separate child surface."
     },
     {
       "file": "ui/src/app/pages/settings/connections/mataroa/connection-mataroa.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Specialized/publishing controls batch: Field/Control, Checkbox, RadioGroup and Disclosure replace native bespoke controls; Button/Notice/PageHeader/ContentLink own shared presentation. Preserve Twitter paid-request and import gates, Blogger sign-out versus forget, Hugo validation/POSSE opt-in, Mataroa consent rollback, and paste inspect-versus-activate semantics. Previews are memory-only; future controls stay on these contracts."
     },
     {
       "file": "ui/src/app/pages/settings/connections/openrouter/connection-openrouter.html",
@@ -714,13 +714,13 @@
     },
     {
       "file": "ui/src/app/pages/settings/connections/pastes/connection-pastes.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Specialized/publishing controls batch: Field/Control, Checkbox, RadioGroup and Disclosure replace native bespoke controls; Button/Notice/PageHeader/ContentLink own shared presentation. Preserve Twitter paid-request and import gates, Blogger sign-out versus forget, Hugo validation/POSSE opt-in, Mataroa consent rollback, and paste inspect-versus-activate semantics. Previews are memory-only; future controls stay on these contracts."
     },
     {
       "file": "ui/src/app/pages/settings/connections/raindrop/connection-raindrop.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Token connection batch: native credential controls use Field/Control, actions Button, page titles PageHeader, guidance and feedback Notice, and links ContentLink. Real-page Storybook fixtures cover rejection, pending validation, connection and disconnect at narrow LTR/RTL widths. Preserve provider-specific validation and credential storage semantics."
     },
     {
       "file": "ui/src/app/pages/settings/connections/settings-connections.css",
@@ -734,8 +734,8 @@
     },
     {
       "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Specialized/publishing controls batch: Field/Control, Checkbox, RadioGroup and Disclosure replace native bespoke controls; Button/Notice/PageHeader/ContentLink own shared presentation. Preserve Twitter paid-request and import gates, Blogger sign-out versus forget, Hugo validation/POSSE opt-in, Mataroa consent rollback, and paste inspect-versus-activate semantics. Previews are memory-only; future controls stay on these contracts."
     },
     {
       "file": "ui/src/app/pages/settings/content/settings-content.html",
@@ -1076,6 +1076,16 @@
       "file": "ui/src/app/pages/settings/filters/filter-wizard.ts",
       "disposition": "adopted scope",
       "nextStep": "Filter setup uses shared buttons and fields. Keep scenario drafts editable before saving; no custom control styling."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/hugo/connection-hugo.css",
+      "disposition": "adopted scope",
+      "nextStep": "Reviewed shared-button selectors only place actions using logical margin and flex layout; widget geometry, states, colors and typography remain shared. Keep narrow rows wrapping."
+    },
+    {
+      "file": "ui/src/app/pages/settings/connections/mataroa/connection-mataroa.css",
+      "disposition": "adopted scope",
+      "nextStep": "Reviewed shared-button selectors only place actions using logical margin and flex layout; widget geometry, states, colors and typography remain shared. Keep narrow rows wrapping."
     }
   ]
 }

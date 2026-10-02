@@ -56,6 +56,7 @@ export class MbDialog implements OnDestroy {
   readonly showClose = input(true);
   readonly busy = input(false);
   readonly closeOnBackdrop = input(false);
+  readonly returnFocusTo = input<HTMLElement | null>(null);
   readonly dismissed = output<'button' | 'escape' | 'backdrop'>();
   readonly id = `mb-dialog-${nextId++}`;
   readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
@@ -94,7 +95,7 @@ export class MbDialog implements OnDestroy {
         },
         options,
       );
-      this.opener = dialog.ownerDocument.activeElement as HTMLElement;
+      this.opener = this.returnFocusTo() ?? (dialog.ownerDocument.activeElement as HTMLElement);
       dialog.showModal();
       this.root = dialog.ownerDocument.documentElement;
       const lock = locks.get(this.root);

@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 24,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 63,
-  "directTemplateCallSites": 470,
+  "appTemplateFiles": 74,
+  "directTemplateCallSites": 685,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,7 +29,7 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 189,
+      "directCallSites": 244,
       "consumers": [
         {
           "file": "account-analytics/account-analytics.html",
@@ -152,6 +152,50 @@
           "count": 25
         },
         {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 7
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 6
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 20
+        },
+        {
           "file": "pages/settings/filters/filter-wizard.ts",
           "count": 5
         },
@@ -209,7 +253,7 @@
     {
       "name": "MbCheckbox",
       "selector": "mb-checkbox",
-      "directCallSites": 19,
+      "directCallSites": 28,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -229,6 +273,26 @@
         },
         {
           "file": "pages/login/login.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
           "count": 2
         },
         {
@@ -277,7 +341,7 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 16,
+      "directCallSites": 17,
       "consumers": [
         {
           "file": "account-list-dialog/account-list-dialog.html",
@@ -320,6 +384,10 @@
           "count": 1
         },
         {
+          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "count": 1
+        },
+        {
           "file": "pages/settings/profile/profile-link-dialog.html",
           "count": 1
         },
@@ -349,10 +417,18 @@
     {
       "name": "MbDisclosure",
       "selector": "mb-disclosure",
-      "directCallSites": 2,
+      "directCallSites": 4,
       "consumers": [
         {
           "file": "bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
@@ -365,7 +441,7 @@
     {
       "name": "MbControl",
       "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
-      "directCallSites": 39,
+      "directCallSites": 61,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -410,6 +486,42 @@
         {
           "file": "list-dialog/list-dialog.html",
           "count": 3
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 8
         },
         {
           "file": "pages/settings/filters/filter-wizard.ts",
@@ -449,7 +561,7 @@
     {
       "name": "MbField",
       "selector": "mb-field",
-      "directCallSites": 39,
+      "directCallSites": 61,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -494,6 +606,42 @@
         {
           "file": "list-dialog/list-dialog.html",
           "count": 3
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 8
         },
         {
           "file": "pages/settings/filters/filter-wizard.ts",
@@ -549,11 +697,55 @@
     {
       "name": "MbContentLink",
       "selector": "a[mbContentLink]",
-      "directCallSites": 10,
+      "directCallSites": 52,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
           "count": 2
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 7
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 6
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 7
         },
         {
           "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
@@ -593,7 +785,7 @@
     {
       "name": "MbNotice",
       "selector": "mb-notice",
-      "directCallSites": 13,
+      "directCallSites": 61,
       "consumers": [
         {
           "file": "compose/translate-dialog/translate-dialog.html",
@@ -610,6 +802,50 @@
         {
           "file": "pages/list-timeline/list-timeline.html",
           "count": 3
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 4
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 8
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 5
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 2
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 3
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 15
         },
         {
           "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
@@ -633,7 +869,7 @@
     {
       "name": "MbPageHeader",
       "selector": "mb-page-header",
-      "directCallSites": 3,
+      "directCallSites": 14,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
@@ -641,6 +877,50 @@
         },
         {
           "file": "pages/list-timeline/list-timeline.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/gist/connection-gist.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/github/connection-github.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
@@ -747,8 +1027,20 @@
     {
       "name": "MbRadioGroup",
       "selector": "mb-radio-group",
-      "directCallSites": 2,
+      "directCallSites": 5,
       "consumers": [
+        {
+          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "count": 1
+        },
+        {
+          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "count": 1
+        },
         {
           "file": "pages/settings/content/settings-content.html",
           "count": 1

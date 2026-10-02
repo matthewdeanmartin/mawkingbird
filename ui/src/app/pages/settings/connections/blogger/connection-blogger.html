@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.blogger.back' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.blogger.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.blogger.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.blogger.intro' | transloco }}
   </p>
@@ -22,14 +22,14 @@
     <span [innerHTML]="'settings.connections.blogger.unverified' | transloco"></span>
   </p>
 
-  <p class="credential-warning small">
+  <mb-notice>
     {{ 'settings.connections.blogger.permissionNote' | transloco }}
-  </p>
+  </mb-notice>
 
   @if (session.connected()) {
     <div class="connected-row">
-      <span class="connection-ok">{{ 'settings.connections.blogger.signedIn' | transloco }}</span>
-      <button class="btn btn-outline" type="button" (click)="disconnect()">
+      <span>{{ 'settings.connections.blogger.signedIn' | transloco }}</span>
+      <button mbButton variant="outline" type="button" (click)="disconnect()">
         {{ 'settings.connections.blogger.signOut' | transloco }}
       </button>
     </div>
@@ -45,7 +45,7 @@
     }
 
     <div class="connected-row">
-      <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="loadBlogs()">
+      <button mbButton variant="outline" type="button" [disabled]="busy()" (click)="loadBlogs()">
         {{
           busy()
             ? ('settings.connections.blogger.loading' | transloco)
@@ -55,20 +55,18 @@
     </div>
 
     @if (blogs().length) {
+      <mb-radio-group
+        [label]="'settings.connections.blogger.publishTo' | transloco"
+        [options]="blogOptions()"
+        [value]="session.blogId()"
+        (valueChange)="chooseBlog($event)"
+      />
       <ul class="blog-list">
         @for (blog of blogs(); track blog.id) {
           <li>
-            <button
-              class="btn btn-outline"
-              type="button"
-              [disabled]="blog.id === session.blogId()"
-              (click)="choose(blog)"
+            <a mbContentLink [href]="blog.url" target="_blank" rel="noopener noreferrer"
+              >{{ blog.name }} ↗</a
             >
-              {{ blog.id === session.blogId() ? '✓ ' : '' }}{{ blog.name }}
-            </button>
-            <a class="muted small" [href]="blog.url" target="_blank" rel="noopener noreferrer">
-              {{ blog.url }} ↗
-            </a>
           </li>
         }
       </ul>
@@ -79,7 +77,7 @@
       <li>{{ 'settings.connections.blogger.step.choose' | transloco }}</li>
       <li>{{ 'settings.connections.blogger.step.post' | transloco }}</li>
     </ol>
-    <button class="btn" type="button" (click)="connect()">
+    <button mbButton type="button" (click)="connect()">
       {{ 'settings.connections.blogger.signInWithGoogle' | transloco }}
     </button>
 
@@ -96,35 +94,32 @@
     <h2 class="section-title">{{ 'settings.connections.blogger.profile.title' | transloco }}</h2>
     <!-- Reading a public feed needs no Google session, so this is offered
          whenever a blog is known — including to an anonymous browser. -->
-    <label class="profile-feed-option">
-      <input
-        type="checkbox"
-        [checked]="session.includeInProfile()"
-        (change)="toggleIncludeInProfile($any($event.target).checked)"
-      />
-      <span>
-        <strong>{{ 'settings.connections.blogger.profile.include' | transloco }}</strong>
-        <span class="muted small">
-          {{ 'settings.connections.blogger.profile.hint.a' | transloco }}
-          <a [routerLink]="['/settings/connections/cors-proxy']">{{
-            'settings.connections.blogger.profile.corsProxy' | transloco
-          }}</a
-          >{{ 'settings.connections.blogger.profile.hint.b' | transloco }}
-        </span>
-      </span>
-    </label>
+    <mb-checkbox
+      [label]="'settings.connections.blogger.profile.include' | transloco"
+      [checked]="session.includeInProfile()"
+      (checkedChange)="toggleIncludeInProfile($event)"
+    />
+    <div class="control-help">
+      {{ 'settings.connections.blogger.profile.hint.a' | transloco }}
+      <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.connections.blogger.profile.corsProxy' | transloco
+      }}</a
+      >{{ 'settings.connections.blogger.profile.hint.b' | transloco }}
+    </div>
 
     <div class="connected-row">
-      <button class="btn btn-outline danger" type="button" (click)="forget()">
+      <button mbButton variant="outline" tone="danger" type="button" (click)="forget()">
         {{ 'settings.connections.blogger.forget' | transloco }}
       </button>
     </div>
   }
 }
 
-<details class="own-project" [open]="showAdvanced()">
-  <summary>{{ 'settings.connections.blogger.own.title' | transloco }}</summary>
-
+<mb-disclosure
+  class="own-project"
+  [expanded]="showAdvanced()"
+  [label]="'settings.connections.blogger.own.title' | transloco"
+>
   <p class="muted small">
     {{ 'settings.connections.blogger.own.intro' | transloco }}
   </p>
@@ -132,9 +127,12 @@
   <ol class="setup-steps muted small">
     <li>
       {{ 'settings.connections.blogger.own.step1.a' | transloco }}
-      <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">{{
-        'settings.connections.blogger.own.console' | transloco
-      }}</a
+      <a
+        mbContentLink
+        href="https://console.cloud.google.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'settings.connections.blogger.own.console' | transloco }}</a
       >{{ 'settings.connections.blogger.own.step1.b' | transloco }}
       <strong>{{ 'settings.connections.blogger.own.bloggerApi' | transloco }}</strong
       >.
@@ -153,11 +151,12 @@
     <li>{{ 'settings.connections.blogger.own.step4' | transloco }}</li>
   </ol>
 
-  <label class="own-project-field">
-    <span class="muted small">{{
-      'settings.connections.blogger.own.clientIdLabel' | transloco
-    }}</span>
+  <mb-field
+    class="own-project-field"
+    [label]="'settings.connections.blogger.own.clientIdLabel' | transloco"
+  >
     <input
+      mbControl
       type="text"
       spellcheck="false"
       autocomplete="off"
@@ -165,21 +164,21 @@
       [value]="clientIdDraft()"
       (input)="clientIdDraft.set($any($event.target).value)"
     />
-  </label>
+  </mb-field>
 
   <div class="connected-row">
-    <button class="btn" type="button" (click)="saveClientId()">
+    <button mbButton type="button" (click)="saveClientId()">
       {{ 'settings.connections.blogger.save' | transloco }}
     </button>
     @if (session.ownClientId()) {
       <span class="muted small">{{ 'settings.connections.blogger.own.inUse' | transloco }}</span>
     }
   </div>
-</details>
+</mb-disclosure>
 
 @if (notice(); as message) {
-  <p class="connection-ok" role="status">{{ message }}</p>
+  <mb-notice announcement="status">{{ message }}</mb-notice>
 }
 @if (error(); as message) {
-  <p class="feed-error" role="alert">{{ message }}</p>
+  <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
 }

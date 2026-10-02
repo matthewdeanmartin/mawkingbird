@@ -1,3 +1,9 @@
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -50,7 +56,19 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 /** Settings → Connections → Blog (Mataroa). */
 @Component({
   selector: 'app-connection-mataroa',
-  imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    MbField,
+    MbControl,
+    MbCheckbox,
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-mataroa.html',
   styleUrls: ['../connection-page.css', './connection-mataroa.css'],
 })

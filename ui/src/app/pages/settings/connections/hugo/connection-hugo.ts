@@ -1,3 +1,9 @@
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -118,7 +124,20 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 /** Settings → Connections → Blog (Hugo). */
 @Component({
   selector: 'app-connection-hugo',
-  imports: [DatePipe, FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    MbField,
+    MbControl,
+    MbCheckbox,
+    MbButton,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+    DatePipe,
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-hugo.html',
   styleUrls: ['../connection-page.css', './connection-hugo.css'],
 })

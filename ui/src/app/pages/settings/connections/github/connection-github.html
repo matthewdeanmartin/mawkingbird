@@ -1,9 +1,9 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
   'settings.connections.backLink' | transloco
 }}</a>
 
-<div class="spage-head">
-  <h1>{{ 'settings.connections.github.title' | transloco }}</h1>
+<mb-page-header [title]="'settings.connections.github.title' | transloco" />
+<div class="connection-intro">
   <p>
     {{ 'settings.connections.github.intro' | transloco }}
   </p>
@@ -14,13 +14,13 @@
   <div class="github-linked">
     <img class="github-avatar" [src]="user.avatar_url" alt="" decoding="async" />
     <span class="names">
-      <a class="name" [href]="user.html_url" target="_blank" rel="noopener">
+      <a mbContentLink class="name" [href]="user.html_url" target="_blank" rel="noopener">
         {{ user.name || user.login }}
       </a>
       <span class="muted small">&#64;{{ user.login }}</span>
     </span>
     <app-storage-badge [where]="where()" />
-    <button class="btn" type="button" (click)="proveGitHubConnection()" [disabled]="githubBusy()">
+    <button mbButton type="button" (click)="proveGitHubConnection()" [disabled]="githubBusy()">
       {{
         (githubBusy()
           ? 'settings.connections.github.calling'
@@ -28,7 +28,7 @@
         ) | transloco
       }}
     </button>
-    <button class="btn btn-outline" type="button" (click)="disconnectGitHub()">
+    <button mbButton variant="outline" type="button" (click)="disconnectGitHub()">
       {{ 'settings.connections.github.disconnect' | transloco }}
     </button>
   </div>
@@ -43,14 +43,14 @@
   }
   <p class="muted small">
     {{ 'settings.connections.github.lookingForFriends' | transloco }}
-    <a [routerLink]="['/settings/import-export']" fragment="github-friends">
+    <a mbContentLink [routerLink]="['/settings/import-export']" fragment="github-friends">
       {{ 'settings.connections.github.findFriendsLink' | transloco }}
     </a>
     {{ 'settings.connections.github.findFriendsAfter' | transloco }}
   </p>
 
   @if (github.notifications(); as notifications) {
-    <div class="github-proof" role="status">
+    <mb-notice announcement="status">
       <strong>{{ 'settings.connections.github.success' | transloco }}</strong>
       {{
         (notifications.length === 1
@@ -65,12 +65,13 @@
         ) | transloco: { count: github.following()?.length ?? 0 }
       }}
       <span [innerHTML]="'settings.connections.github.directlyFrom' | transloco"></span>
-    </div>
+    </mb-notice>
   }
 } @else {
   <ol class="setup-steps muted small">
     <li>
       <a
+        mbContentLink
         href="https://github.com/settings/tokens/new?scopes=notifications%2Cread%3Auser&description=Mawkingbird"
         target="_blank"
         rel="noopener"
@@ -80,20 +81,23 @@
     </li>
     <li><span [innerHTML]="'settings.connections.github.validatesWith' | transloco"></span></li>
   </ol>
-  <p class="credential-warning small">
+  <mb-notice>
     <span [innerHTML]="'settings.connections.github.credentialWarning' | transloco"></span>
-  </p>
+  </mb-notice>
   <form class="github-form" (ngSubmit)="connectGitHub()">
-    <input
-      type="password"
-      name="githubToken"
-      [placeholder]="'settings.connections.github.tokenPlaceholder' | transloco"
-      autocomplete="off"
-      [ngModel]="githubToken()"
-      (ngModelChange)="githubToken.set($event)"
-      [disabled]="githubBusy()"
-    />
-    <button class="btn" type="submit" [disabled]="!githubToken().trim() || githubBusy()">
+    <mb-field [label]="'settings.connections.github.tokenPlaceholder' | transloco">
+      <input
+        mbControl
+        type="password"
+        name="githubToken"
+        [placeholder]="'settings.connections.github.tokenPlaceholder' | transloco"
+        autocomplete="off"
+        [ngModel]="githubToken()"
+        (ngModelChange)="githubToken.set($event)"
+        [disabled]="githubBusy()"
+      />
+    </mb-field>
+    <button mbButton type="submit" [disabled]="!githubToken().trim() || githubBusy()">
       {{
         (githubBusy()
           ? 'settings.connections.github.checking'
@@ -104,8 +108,8 @@
   </form>
 }
 @if (githubNotice(); as msg) {
-  <p class="connection-ok" role="status">{{ msg }}</p>
+  <mb-notice announcement="status">{{ msg }}</mb-notice>
 }
 @if (githubError(); as msg) {
-  <p class="feed-error" role="alert">{{ msg }}</p>
+  <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
 }

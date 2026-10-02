@@ -1,5 +1,122 @@
 # Design-system progress
 
+## Specialized Twitter and publishing controls
+
+Twitter now uses RadioGroup for provider inspection, Field/Control for keys,
+spending limits, handle lookup and import fields, Checkbox for follow visibility
+and import inclusion, Disclosure for daily limits, and Notice for remaining
+setup/spending/refresh feedback. The ordinary action migration from the previous
+batch remains in place. Native validation, request limits, import staging,
+two-step follow confirmation and proxy-consent gates are unchanged.
+
+Blogger, Hugo, Mataroa and paste-service settings adopt the existing shared
+headers, links, actions, notices and applicable field/choice widgets. Blogger's
+radio group chooses one blog; sign-out still retains the blog and profile opt-in,
+while Forget removes it. Hugo keeps validation before saving and separate profile
+and POSSE opt-ins. Mataroa's proxy acknowledgement remains a separate checkbox,
+with credential/consent rollback after a rejected probe. Inspecting a paste
+provider never makes it the default: activation still requires its own button,
+and feed following remains separate from optional proxy use.
+
+Storybook **Adoption / Publishing connections** imports all four real pages.
+**Adoption / Account connections / Twitter controls** adds spending, follows
+and staged import controls to the existing setup preview. Fixtures never publish,
+redirect for OAuth, persist credentials, make paid requests or grant real consent.
+Ten new browser scenarios cover narrow light LTR and dark purple RTL flows.
+New Mataroa/Blogger component specs cover consent rollback and radio selection;
+the existing paste availability test now exercises radios without weakening its
+unavailable-provider or persistence assertions.
+
+The selected five templates are adopted for this control scope, not certified as
+complete redesigns of every content panel. Source adoption is **685 placements
+across 74 templates**, using 24 of 27 widget types. Settings has **30 backlog
+candidate files and six partial files**; two newly detected CSS entries contain
+reviewed button placement only, not appearance overrides. Next: OpenRouter,
+proxy/shortener configuration, connection diagnostics/catalogue and core settings.
+
+Validation: 151 targeted connection tests, all 7,684 full-gate tests, and 18
+browser scenarios pass (ten publishing/specialized-control scenarios plus eight
+account-connection regressions). None are skipped or missing. Narrow screenshots
+were reviewed. Angular/design lint, format/type checks, inventory reconciliation,
+Storybook and production builds pass; the initial bundle remains 896.91 kB under
+the unchanged 1 MB limit. Source only: no commit, push or deployment.
+
+## Account connections
+
+Mastodon and Bluesky adopt Field/Control for native credential forms, with
+wrapping field containers and shared Button, PageHeader, ContentLink and Notice.
+Bluesky's linked identity row also wraps. Service handlers are untouched:
+Mastodon opt-in, credential verification/rollback, sign-out and disconnect remain
+distinct; Bluesky still links with an app password rather than OAuth.
+
+Dropbox adopts the same header/action/feedback widgets and replaces its bespoke
+file-list overlay with Dialog. Native modality now contains focus, restores the
+opener on dismissal, supports Escape and bounds scrolling. Dialog now accepts an
+optional `returnFocusTo` element: asynchronous listing disables and blurs its
+trigger before the result opens, so Dropbox supplies that trigger explicitly.
+Default focus capture remains unchanged for existing consumers. Long filenames wrap
+without widening the dialog. OAuth initiation and callback cleanup are unchanged.
+
+Twitter adopts shared standalone actions, page title, links and basic notices.
+It is deliberately **partial adoption**: provider selection, spending controls,
+follow/import fields and toggles, and conditional refresh feedback still need a
+separate pass. Paid-request and proxy-consent behavior is unchanged.
+
+Storybook **Adoption / Account connections** imports the four production pages.
+Fixtures are memory-only: no credential writes, OAuth redirects or API requests.
+Mastodon/Bluesky accept dummy credentials and reject `reject`; Dropbox lists
+35 fake files; Twitter setup always reports a blocked preview probe. Server
+discovery has an empty fixture directory and remains a separate child surface.
+
+Source adoption is **580 direct placements across 70 templates**, using 24 of
+27 widget types. Settings now has **34 backlog candidate files and seven
+partially adopted files**, not 41 equal-size page migrations. Next: finish
+Twitter's specialized controls, then publishing integrations (Blogger, Hugo,
+Mataroa and pastes), OpenRouter, proxy/shortener settings and the connections hub.
+
+Validation: 178 targeted connection/design-system specs and 20 browser checks
+pass, including eight new account-connection scenarios and the existing consent
+and migrated-dialog suites. The full `make test` gate passes all 7,681 tests,
+with none skipped or missing. Narrow LTR/RTL screenshots were reviewed. Angular
+and design lint, format/type checks, inventory reconciliation, Storybook and
+production builds pass. Initial bundle size is 896.91 kB against the unchanged
+1 MB limit. No commit, push or deployment was performed.
+
+## Token connections
+
+GitHub, GitHub Gist and Raindrop now use existing PageHeader, Field/Control,
+Button, ContentLink and Notice widgets. Credential inputs have visible linked
+labels; forms wrap without fixed input minimum widths. Static risk disclosures
+remain unannounced, while request errors and completion messages retain their
+alert/status semantics. Scope explanations, storage badges, destinations, token
+lifetimes and service handlers are unchanged. GitHub and Gist still validate
+before saving; Raindrop still saves its Test token without claiming verification.
+
+Storybook **Adoption / Token connections** imports all three production pages
+with in-memory providers. Use `reject` to preview a failure, or any other dummy
+token to connect. No tokens are stored or sent. Six browser scenarios cover
+320px light LTR and dark purple RTL layouts, rejected input retention, pending
+validation, connection and disconnect. Five new component specs cover shared
+control semantics and Gist's verification-before-storage ordering.
+
+Source adoption is **508 placements across 66 templates**, using 24 of 27 widget
+types. The settings ledger now has **38 backlog files and six partially adopted
+files**; these are candidate-file dispositions, not page counts or compliance
+percentages. The three selected templates are adopted for this scope.
+
+Next: OAuth/account connections (Mastodon, Bluesky, Twitter, Dropbox), publishing
+integrations (Blogger, Hugo, Mataroa, pastes), OpenRouter and proxy/shortener
+configuration, connection diagnostics/catalogue, then settings forms for account,
+appearance, privacy, storage and filtering. Existing partial migrations still need
+review; closing this batch does not exempt them.
+
+Validation: 143 targeted connection tests and all 7,675 full-gate tests pass,
+with no skipped or missing tests. All six browser checks, Angular/design lint,
+format/type checks, inventory reconciliation, Storybook and production builds
+pass. Narrow form and connected-state screenshots were reviewed. Initial bundle
+size remains 896.83 kB against the unchanged 1 MB limit. This batch is working-tree
+source only; no commit, push or deployment was performed.
+
 ## Search and composer consistency
 
 The shared composer now uses PostActions/PostAction for its mixed tool group and

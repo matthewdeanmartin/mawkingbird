@@ -1,3 +1,7 @@
+import { MbButton } from '../../../../design-system/button/button';
+import { MbField, MbControl } from '../../../../design-system/field/field';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { VaultBridge } from '../../../../providers/vault/vault-bridge';
@@ -32,7 +36,18 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 /** Settings → Connections → Raindrop.io. Test-token paste; no OAuth (see the copy). */
 @Component({
   selector: 'app-connection-raindrop',
-  imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    StorageBadge,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    MbNotice,
+    MbContentLink,
+    MbPageHeader,
+  ],
   templateUrl: './connection-raindrop.html',
   styleUrls: ['../connection-page.css', './connection-raindrop.css'],
 })
@@ -90,3 +105,4 @@ export class ConnectionRaindrop implements OnInit {
     return credentialLocation(this.bridge.syncs(RAINDROP_KEY), this.raindrop.needsFetch());
   }
 }
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';

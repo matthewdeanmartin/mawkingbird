@@ -1,4 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { MbButton } from '../../../../design-system/button/button';
+import { MbNotice } from '../../../../design-system/notice/notice';
+import { MbContentLink } from '../../../../design-system/metadata/metadata';
+import { MbPageHeader } from '../../../../design-system/page-header/page-header';
+import { MbDialog } from '../../../../design-system/dialog/dialog';
+import { Component, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DropboxEntry, DropboxSession } from '../../../../providers/dropbox/dropbox-session';
@@ -27,7 +32,7 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
  */
 @Component({
   selector: 'app-connection-dropbox',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbButton, MbNotice, MbContentLink, MbPageHeader, MbDialog, RouterLink, TranslocoPipe],
   templateUrl: './connection-dropbox.html',
   styleUrls: ['../connection-page.css', './connection-dropbox.css'],
 })
@@ -42,6 +47,9 @@ export class ConnectionDropbox implements OnInit {
   protected dropboxError = signal<string | null>(null);
   protected dropboxNotice = signal<string | null>(null);
   protected dropboxEntries = signal<DropboxEntry[] | null>(null);
+  protected readonly listButton = viewChild<unknown, ElementRef<HTMLButtonElement>>('listButton', {
+    read: ElementRef,
+  });
 
   /** The storage-scope sentence shown under the heading. */
   protected readonly scopeDetail = CONNECTION_SCOPE_COPY.session.detail;
