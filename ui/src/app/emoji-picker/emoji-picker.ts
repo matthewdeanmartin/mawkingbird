@@ -19,11 +19,18 @@ interface PickedEmoji {
   selector: 'app-emoji-picker',
   template: `<div #host class="emoji-picker-host"></div>`,
   styles: `
+    :host {
+      display: block;
+      width: 352px;
+      max-width: 100%;
+    }
     .emoji-picker-host {
       display: block;
       /* Reserve the picker's footprint so the popover doesn't jump on load. */
-      min-width: 352px;
+      width: 100%;
+      min-width: 0;
       min-height: 435px;
+      overflow: clip;
     }
   `,
 })
@@ -82,11 +89,13 @@ export class EmojiPicker implements OnDestroy {
       set: 'native',
       theme: this.prefs.themeMode() === 'auto' ? 'auto' : this.prefs.themeMode(),
       autoFocus: true,
+      dynamicWidth: true,
       previewPosition: 'bottom',
       onEmojiSelect: (emoji: PickedEmoji) => {
         this.picked.emit(emoji.native ?? `:${emoji.id}:`);
       },
     }) as unknown as HTMLElement;
+    this.picker.style.width = '100%';
     el.appendChild(this.picker);
   }
 

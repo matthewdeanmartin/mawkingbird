@@ -17,7 +17,7 @@
         {{ 'compose.editing' | transloco }} <strong>{{ edit.originalTitle || edit.path }}</strong>
         <span class="muted small">{{ edit.path }}</span>
       </span>
-      <button class="btn btn-outline btn-sm" type="button" (click)="cancelHugoEdit()">
+      <button mbButton variant="outline" size="small" type="button" (click)="cancelHugoEdit()">
         {{ 'compose.cancelEdit' | transloco }}
       </button>
     </div>
@@ -120,7 +120,9 @@
       </span>
       @if (shortenerReady()) {
         <button
-          class="btn btn-outline btn-sm"
+          mbButton
+          variant="outline"
+          size="small"
           type="button"
           [disabled]="shortening()"
           (click)="shortenLinks()"
@@ -160,7 +162,9 @@
             >{{ countOf(t) }}/{{ effectiveMax() }}</span
           >
           <button
-            class="btn btn-outline btn-sm"
+            mbButton
+            variant="outline"
+            size="small"
             type="button"
             (click)="removeThreadBox(i)"
             [title]="'compose.removeFromThread' | transloco: { noun: words().post }"
@@ -191,7 +195,10 @@
             [placeholder]="'compose.altPlaceholder' | transloco"
           />
           <button
-            class="btn btn-outline btn-sm"
+            type="button"
+            mbButton
+            variant="outline"
+            size="small"
             (click)="removeMedia(i)"
             [title]="'compose.remove' | transloco"
             [aria-label]="'compose.remove' | transloco"
@@ -220,7 +227,10 @@
           />
           @if (pollOptions().length > 2) {
             <button
-              class="btn btn-outline btn-sm"
+              type="button"
+              mbButton
+              variant="outline"
+              size="small"
               (click)="removePollOption(i)"
               [title]="'compose.removeChoice' | transloco"
               [aria-label]="'compose.removeChoice' | transloco"
@@ -232,7 +242,7 @@
       }
       <div class="poll-controls">
         @if (pollOptions().length < 4) {
-          <button class="btn btn-outline btn-sm" (click)="addPollOption()">
+          <button type="button" mbButton variant="outline" size="small" (click)="addPollOption()">
             {{ 'compose.addChoice' | transloco }}
           </button>
         }
@@ -288,7 +298,7 @@
         (ngModelChange)="scheduleAt.set($event)"
       />
       @if (scheduleAt()) {
-        <button class="btn btn-outline btn-sm" type="button" (click)="scheduleAt.set('')">
+        <button mbButton variant="outline" size="small" type="button" (click)="scheduleAt.set('')">
           {{ 'compose.clear' | transloco }}
         </button>
       }
@@ -298,7 +308,8 @@
   <div class="compose-bottom">
     @if (chatMode()) {
       <button
-        class="tool-btn chat-tools-toggle"
+        mbPostAction
+        class="chat-tools-toggle"
         type="button"
         [attr.aria-expanded]="chatToolsOpen()"
         (click)="chatToolsOpen.set(!chatToolsOpen())"
@@ -468,26 +479,31 @@
     </div>
 
     <div class="compose-actions">
-      <div class="compose-tools">
+      <mb-post-actions class="compose-tools" [label]="'compose.chatTools' | transloco">
         @if (!targetIncludesPaste() && !targetIncludesBlog()) {
-          <label
-            class="tool-btn"
-            [class.disabled]="!canAttachMedia()"
+          <button
+            mbPostAction
+            type="button"
+            [disabled]="!canAttachMedia()"
             [title]="'compose.attachMedia' | transloco"
+            [attr.aria-label]="'compose.attachMedia' | transloco"
+            (click)="mediaInput.click()"
           >
-            📎
-            <input
-              type="file"
-              multiple
-              hidden
-              [disabled]="!canAttachMedia()"
-              (change)="onFilesSelected($event)"
-            />
-          </label>
+            <span aria-hidden="true">📎</span>
+          </button>
+          <input
+            #mediaInput
+            type="file"
+            multiple
+            hidden
+            [disabled]="!canAttachMedia()"
+            (change)="onFilesSelected($event)"
+          />
 
           <button
-            class="tool-btn"
-            [class.on]="pollOpen()"
+            type="button"
+            mbPostAction
+            [active]="pollOpen()"
             [disabled]="!canAddPoll()"
             (click)="togglePoll()"
             [title]="'compose.addPoll' | transloco"
@@ -500,8 +516,9 @@
                one thing a gated composer must not offer. -->
           @if (!inReplyToId() && !quotedStatusId() && !gated()) {
             <button
-              class="tool-btn"
-              [class.on]="scheduleOpen()"
+              type="button"
+              mbPostAction
+              [active]="scheduleOpen()"
               (click)="toggleSchedule()"
               [title]="'compose.scheduleThis' | transloco: { noun: words().post }"
               [aria-label]="'compose.scheduleThis' | transloco: { noun: words().post }"
@@ -513,8 +530,9 @@
 
         @if (!targetIncludesBlog()) {
           <button
-            class="tool-btn"
-            [class.on]="cwOpen()"
+            type="button"
+            mbPostAction
+            [active]="cwOpen()"
             (click)="toggleCw()"
             [title]="
               (targetIncludesPaste() ? 'compose.addATitle' : 'compose.contentWarning') | transloco
@@ -526,8 +544,9 @@
 
         @if (!targetIncludesPaste() && !targetIncludesBlog()) {
           <button
-            class="tool-btn"
-            [class.on]="sensitive()"
+            type="button"
+            mbPostAction
+            [pressed]="sensitive()"
             (click)="sensitive.set(!sensitive())"
             [title]="'compose.markSensitive' | transloco"
             [aria-label]="'compose.markSensitive' | transloco"
@@ -538,8 +557,9 @@
 
         <span class="emoji-anchor">
           <button
-            class="tool-btn"
-            [class.on]="emojiOpen()"
+            type="button"
+            mbPostAction
+            [active]="emojiOpen()"
             (click)="toggleEmoji()"
             [title]="'compose.insertEmoji' | transloco"
             [aria-label]="'compose.insertEmoji' | transloco"
@@ -555,10 +575,11 @@
 
         @if (canUseTagHelper()) {
           <button
-            class="tool-btn"
+            mbPostAction
             type="button"
             (click)="tagHelperOpen.set(true)"
             [title]="'compose.suggestHashtagsFor' | transloco: { noun: words().post }"
+            [attr.aria-label]="'compose.suggestHashtagsFor' | transloco: { noun: words().post }"
           >
             🤖#️⃣
           </button>
@@ -566,7 +587,7 @@
 
         @if (canTranslate()) {
           <button
-            class="tool-btn"
+            mbPostAction
             type="button"
             (click)="translateOpen.set(true)"
             [title]="'compose.translateThis' | transloco: { noun: words().post }"
@@ -578,7 +599,9 @@
 
         @if (!targetIncludesPaste() && !targetIncludesBlog()) {
           <button
-            class="tool-btn thread-btn"
+            type="button"
+            mbPostAction
+            class="thread-btn"
             (click)="addThreadBox()"
             [title]="'compose.addAnotherPost' | transloco: { noun: words().post }"
             [aria-label]="'compose.addAnotherPost' | transloco: { noun: words().post }"
@@ -589,8 +612,10 @@
 
         @if (compact()) {
           <button
-            class="tool-btn drafts-toggle"
-            [class.on]="draftsOpen()"
+            type="button"
+            mbPostAction
+            class="drafts-toggle"
+            [active]="draftsOpen()"
             (click)="draftsOpen.set(!draftsOpen())"
             [title]="'compose.showDrafts' | transloco"
             [aria-label]="'compose.showDrafts' | transloco"
@@ -598,8 +623,10 @@
             <span aria-hidden="true">📝</span>
           </button>
           <button
-            class="tool-btn preview-toggle"
-            [class.on]="previewOn()"
+            type="button"
+            mbPostAction
+            class="preview-toggle"
+            [pressed]="previewOn()"
             (click)="previewOn.set(!previewOn())"
             [title]="'compose.togglePreview' | transloco"
             [aria-label]="'compose.togglePreview' | transloco"
@@ -607,7 +634,7 @@
             <span aria-hidden="true">👁</span>
           </button>
         }
-      </div>
+      </mb-post-actions>
 
       @if (targetIncludesBsky()) {
         <span
@@ -628,7 +655,8 @@
       <!-- Thoughtful posting: this composer saves, it does not publish. The
            post happens later from /drafts, which is the entire point. -->
       <button
-        class="btn"
+        type="button"
+        mbButton
         [disabled]="!canSubmit()"
         [title]="gated() ? ('compose.savesToDraftsHint' | transloco) : ''"
         (click)="submit()"
@@ -657,13 +685,13 @@
         ></span>
       </p>
       <div class="lang-mismatch-actions">
-        <button class="btn btn-outline" (click)="useDetectedLanguage()">
+        <button type="button" mbButton variant="outline" (click)="useDetectedLanguage()">
           {{ 'compose.switchTo' | transloco: { language: languageName(mismatch.detected) } }}
         </button>
-        <button class="btn" (click)="confirmLanguageAndSend()">
+        <button type="button" mbButton (click)="confirmLanguageAndSend()">
           {{ 'compose.postAs' | transloco: { language: languageName(mismatch.picked) } }}
         </button>
-        <button class="btn btn-outline" (click)="dismissLangMismatch()">
+        <button type="button" mbButton variant="outline" (click)="dismissLangMismatch()">
           {{ 'compose.keepEditing' | transloco }}
         </button>
       </div>
@@ -678,10 +706,10 @@
         <span [innerHTML]="'compose.pkmWarning' | transloco: { label: pkmWarningLabel() }"></span>
       </p>
       <div class="lang-mismatch-actions">
-        <button class="btn" (click)="dismissPkmWarning()">
+        <button type="button" mbButton (click)="dismissPkmWarning()">
           {{ 'compose.keepEditing' | transloco }}
         </button>
-        <button class="btn btn-outline" (click)="confirmPkmAndSend()">
+        <button type="button" mbButton variant="outline" (click)="confirmPkmAndSend()">
           {{ 'compose.publishAnyway' | transloco }}
         </button>
       </div>
@@ -731,7 +759,7 @@
   @if (draftSaveFailed()) {
     <div class="post-error" role="alert">
       <span class="post-error-text">{{ 'compose.draftUnsaved' | transloco }}</span>
-      <button class="btn btn-outline btn-sm" type="button" (click)="downloadDraft()">
+      <button mbButton variant="outline" size="small" type="button" (click)="downloadDraft()">
         {{ 'compose.downloadDraft' | transloco }}
       </button>
     </div>
@@ -822,10 +850,10 @@
   @if (countdown() !== null) {
     <div class="undo-banner">
       <span>{{ 'compose.postingIn' | transloco }} {{ countdown() }}s…</span>
-      <button class="btn btn-sm" type="button" (click)="publishNow()">
+      <button mbButton size="small" type="button" (click)="publishNow()">
         {{ 'compose.publishNow' | transloco }}
       </button>
-      <button class="btn btn-outline btn-sm" type="button" (click)="cancelSend()">
+      <button mbButton variant="outline" size="small" type="button" (click)="cancelSend()">
         {{ 'compose.cancel' | transloco }}
       </button>
     </div>

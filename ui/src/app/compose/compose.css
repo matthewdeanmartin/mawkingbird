@@ -1,4 +1,6 @@
 .compose {
+  min-width: 0;
+  box-sizing: border-box;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -81,6 +83,7 @@ textarea {
 }
 
 .thread-box-body {
+  min-width: 0;
   flex: 1;
 }
 
@@ -151,17 +154,21 @@ textarea {
   font-style: italic;
 }
 
-.emoji-anchor {
+.compose-bottom {
   position: relative;
-  display: inline-flex;
+}
+
+.emoji-anchor {
+  display: contents;
 }
 
 .emoji-popover {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  inset-inline-start: 0;
+  width: min(352px, 100%);
   z-index: 60;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 24px var(--ds-overlay-shadow);
   border-radius: 10px;
 }
 
@@ -177,6 +184,8 @@ textarea {
 /* Row 2: attach / poll / CW / … tools, counters and the Post button. */
 .compose-actions {
   display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
@@ -184,10 +193,8 @@ textarea {
 }
 
 .compose-tools {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-right: auto;
+  max-width: 100%;
+  margin-inline-end: auto;
 }
 
 /* --- Compact (chat) mode: one toolbar row, tighter everything --- */
@@ -211,11 +218,6 @@ textarea {
   display: contents;
 }
 
-.compose-compact .compose-tools {
-  gap: 4px;
-}
-
-.compose-compact .tool-btn,
 .compose-compact .target-select,
 .compose-compact .visibility-select,
 .compose-compact .visibility-locked,
@@ -248,9 +250,6 @@ textarea {
   .compose-chat:not(.chat-tools-open) .compose-tools {
     display: none;
   }
-  .compose-chat .compose-tools {
-    flex-wrap: wrap;
-  }
   .compose-chat .compose-bottom {
     gap: 4px;
     margin-top: 4px;
@@ -268,19 +267,6 @@ textarea {
   }
 }
 
-.tool-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 4px 8px;
-  background: none;
-  cursor: pointer;
-  font-size: 0.9em;
-  white-space: nowrap;
-}
-
 .thread-btn {
   flex-direction: row;
 }
@@ -290,17 +276,6 @@ textarea {
   border-radius: 12px;
   padding: 4px 8px;
   max-width: 220px;
-}
-
-.tool-btn.on {
-  border-color: var(--accent, #1d9bf0);
-  color: var(--accent, #1d9bf0);
-}
-
-.tool-btn.disabled,
-.tool-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .visibility-select {
@@ -625,4 +600,9 @@ textarea {
 .alt-required.advisory {
   color: inherit;
   opacity: 0.75;
+}
+
+.compose-selects > * {
+  max-width: 100%;
+  min-width: 0;
 }

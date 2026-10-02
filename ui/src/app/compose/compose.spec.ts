@@ -140,6 +140,26 @@ describe('Compose', () => {
     return fixture;
   }
 
+  it('uses shared compact actions and a keyboard-accessible attachment button', () => {
+    const fixture = setUp();
+    const element = fixture.nativeElement as HTMLElement;
+    const file = element.querySelector('input[type="file"]') as HTMLInputElement;
+    const openFile = vi.spyOn(file, 'click').mockImplementation(() => undefined);
+    const attach = element.querySelector('button[aria-label^="Attach media"]') as HTMLButtonElement;
+    expect(attach.hasAttribute('mbPostAction')).toBe(true);
+    expect(attach.type).toBe('button');
+    attach.click();
+    expect(openFile).toHaveBeenCalledOnce();
+    const sensitive = element.querySelector(
+      'button[aria-label="Mark media sensitive"]',
+    ) as HTMLButtonElement;
+    sensitive.click();
+    fixture.detectChanges();
+    expect(sensitive.getAttribute('aria-pressed')).toBe('true');
+    expect(element.querySelector('.compose-tools')?.tagName).toBe('MB-POST-ACTIONS');
+    expect(element.querySelector('button[mbButton][mbPostAction]')).toBeNull();
+  });
+
   // ---------------------------------------------------------------- alt text
 
   it('checks a manually typed reply handle before posting and keeps misspelled replies intact', async () => {
@@ -1273,7 +1293,7 @@ describe('Compose', () => {
     f.detectChanges();
 
     const label = [
-      ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button.btn'),
+      ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button[mbButton]'),
     ]
       .map((b) => b.textContent?.trim())
       .find((t) => t === 'Update post' || t === 'Publish');

@@ -1,14 +1,14 @@
 # Mawkingbird design system
 
-Latest follow-up: shared-dialog migration batch 2 adopts shortener and Twitter
-proxy consent. Preview **Adoption / Consent dialogs / Interactive**; batch 1
-remains available under **Adoption / Shared dialogs / Interactive**.
+Latest follow-up: search/composer actions adopt shared widgets, and compact
+composer tools and emoji panels fit narrow columns. Preview **Adoption / Composer**
+for full, compact and chat modes with all optional tool buttons available.
 The [button batch](REVIEW-buttons.md) supplies their accent-aware actions.
 
 Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
 
 [Integration progress](PROGRESS.md): zero sprints remain in the current plan.
-Source adoption after dialog batch 2 is 24 of 27 widget types, 416 direct placements in 61 app templates.
+Source adoption after the composer batch is 24 of 27 widget types, 470 direct placements in 63 app templates.
 This closes the planned batches, not all migration debt. Source integration is
 separate from deployment.
 

@@ -55,12 +55,13 @@
         }
       </optgroup>
     </select>
-    <button class="btn" [disabled]="searchDisabled()" (click)="run()">
+    <button type="button" mbButton [disabled]="searchDisabled()" (click)="run()">
       {{ 'pages.search.action.search' | transloco }}
     </button>
     @if (canUseSearchHelper()) {
       <button
-        class="btn btn-outline"
+        mbButton
+        variant="outline"
         type="button"
         [title]="'pages.search.action.searchHelperTitle' | transloco"
         [attr.aria-label]="'pages.search.action.helpMeSearch' | transloco"
@@ -70,7 +71,8 @@
       </button>
     }
     <button
-      class="btn btn-outline"
+      mbButton
+      variant="outline"
       type="button"
       [title]="'pages.search.action.syntaxHelpTitle' | transloco: { post: words().post }"
       [attr.aria-label]="'pages.search.action.syntaxHelp' | transloco"
@@ -80,7 +82,9 @@
     </button>
     @if (type() === 'statuses' || type() === 'accounts') {
       <button
-        class="btn btn-outline"
+        type="button"
+        mbButton
+        variant="outline"
         [class.on]="advancedOpen()"
         (click)="toggleAdvanced()"
         [attr.aria-expanded]="advancedOpen()"
@@ -131,21 +135,29 @@
          through (saveRequested) so naming happens in this one shared dialog. -->
     @if (blueskyMode()) {
       <button
-        class="btn btn-outline"
+        type="button"
+        mbButton
+        variant="outline"
         [disabled]="saved.atLimit()"
         (click)="blueskyPanel()?.requestSave()"
       >
         {{ 'pages.search.action.save' | transloco }}
       </button>
     } @else {
-      <button class="btn btn-outline" [disabled]="saved.atLimit()" (click)="openSaveDialog()">
+      <button
+        type="button"
+        mbButton
+        variant="outline"
+        [disabled]="saved.atLimit()"
+        (click)="openSaveDialog()"
+      >
         {{ 'pages.search.action.save' | transloco }}
       </button>
     }
     <!-- Share works on both now. Bluesky's criteria round-trip through the query
          box (see bluesky-query-serializer), so a Bluesky link carries its
          operators in `q` rather than needing the Mastodon param encoding. -->
-    <button class="btn btn-outline" (click)="share()">
+    <button type="button" mbButton variant="outline" (click)="share()">
       {{
         (shareCopied() ? 'pages.search.action.linkCopied' : 'pages.search.action.share') | transloco
       }}
@@ -243,7 +255,10 @@
   @if (!blueskyMode()) {
     <div class="search-server-row">
       <button
-        class="btn btn-outline btn-sm search-server-toggle"
+        mbButton
+        variant="outline"
+        size="small"
+        class="search-server-toggle"
         type="button"
         (click)="toggleSearchServer()"
         [attr.aria-expanded]="searchServerOpen()"
@@ -288,7 +303,8 @@
           [attr.aria-label]="'pages.search.server.hostLabel' | transloco"
         />
         <button
-          class="btn btn-sm"
+          mbButton
+          size="small"
           type="button"
           [disabled]="searchServerStatus() === 'checking'"
           (click)="applySearchServer()"
@@ -301,7 +317,13 @@
           }}
         </button>
         @if (searchServer.active()) {
-          <button class="btn btn-outline btn-sm" type="button" (click)="clearSearchServer()">
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            (click)="clearSearchServer()"
+          >
             {{ 'pages.search.server.useOwn' | transloco }}
           </button>
         }
@@ -375,10 +397,16 @@
         [placeholder]="'pages.search.savedNamePlaceholder' | transloco"
         [attr.aria-label]="'pages.search.savedNameLabel' | transloco"
       />
-      <button class="btn btn-sm" (click)="confirmSave()">
+      <button type="button" mbButton size="small" (click)="confirmSave()">
         {{ 'pages.search.action.save' | transloco }}
       </button>
-      <button class="btn btn-outline btn-sm" (click)="saveDialogOpen.set(false)">
+      <button
+        type="button"
+        mbButton
+        variant="outline"
+        size="small"
+        (click)="saveDialogOpen.set(false)"
+      >
         {{ 'pages.search.action.cancel' | transloco }}
       </button>
     </div>
@@ -544,11 +572,17 @@
             </div>
 
             <div class="advanced-actions">
-              <button class="btn btn-sm" (click)="applyAdvanced()">
+              <button type="button" mbButton size="small" (click)="applyAdvanced()">
                 {{ 'pages.search.action.applyAndSearch' | transloco }}
               </button>
               @if (hasAdvanced()) {
-                <button class="btn btn-outline btn-sm" (click)="clearAdvanced()">
+                <button
+                  type="button"
+                  mbButton
+                  variant="outline"
+                  size="small"
+                  (click)="clearAdvanced()"
+                >
                   {{ 'pages.search.recent.clear' | transloco }}
                 </button>
               }
@@ -652,11 +686,17 @@
             </p>
 
             <div class="advanced-actions">
-              <button class="btn btn-sm" (click)="applyAccountAdvanced()">
+              <button type="button" mbButton size="small" (click)="applyAccountAdvanced()">
                 {{ 'pages.search.action.applyAndSearch' | transloco }}
               </button>
               @if (hasAccountAdvanced()) {
-                <button class="btn btn-outline btn-sm" (click)="clearAccountAdvanced()">
+                <button
+                  type="button"
+                  mbButton
+                  variant="outline"
+                  size="small"
+                  (click)="clearAccountAdvanced()"
+                >
                   {{ 'pages.search.recent.clear' | transloco }}
                 </button>
               }
@@ -798,7 +838,13 @@
                       </div>
                     }
                     @if (excludedAuthors().size) {
-                      <button class="btn btn-outline btn-sm" (click)="clearExcludedAuthors()">
+                      <button
+                        type="button"
+                        mbButton
+                        variant="outline"
+                        size="small"
+                        (click)="clearExcludedAuthors()"
+                      >
                         {{ 'pages.search.refine.showExcluded' | transloco }}
                       </button>
                     }
@@ -823,7 +869,13 @@
                 </div>
 
                 @if (selectedFacets().length || loadedFilter() || excludedAuthors().size) {
-                  <button class="btn btn-outline btn-sm" (click)="clearRefinements()">
+                  <button
+                    type="button"
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    (click)="clearRefinements()"
+                  >
                     {{ 'pages.search.refine.clearFilters' | transloco }}
                   </button>
                 }
@@ -881,7 +933,8 @@
                   }}
                 </p>
                 <button
-                  class="btn btn-sm"
+                  mbButton
+                  size="small"
                   type="button"
                   [disabled]="searching()"
                   (click)="loadMore(true)"
@@ -1102,7 +1155,13 @@
                 </div>
               }
               @if (selectedAccountFacets().length || accountFilter()) {
-                <button class="btn btn-outline btn-sm" (click)="clearAccountRefinements()">
+                <button
+                  type="button"
+                  mbButton
+                  variant="outline"
+                  size="small"
+                  (click)="clearAccountRefinements()"
+                >
                   {{ 'pages.search.refine.clearFilters' | transloco }}
                 </button>
               }
@@ -1247,7 +1306,7 @@
               {{ 'pages.search.results.timedOut' | transloco }}
             </p>
             <p class="muted center">
-              <button type="button" class="btn btn-outline" (click)="retrySearch()">
+              <button type="button" mbButton variant="outline" (click)="retrySearch()">
                 {{ 'pages.search.results.tryAgain' | transloco }}
               </button>
             </p>
@@ -1288,7 +1347,7 @@
             {{ 'pages.search.results.timedOut' | transloco }}
           </p>
           <p class="muted center">
-            <button type="button" class="btn btn-outline" (click)="retrySearch()">
+            <button type="button" mbButton variant="outline" (click)="retrySearch()">
               {{ 'pages.search.results.tryAgain' | transloco }}
             </button>
           </p>
@@ -1370,7 +1429,13 @@
              grow the faceting corpus as much as you like. -->
             <div class="load-more-row">
               @if (canLoadMore()) {
-                <button class="btn btn-outline" [disabled]="searching()" (click)="loadMore(true)">
+                <button
+                  type="button"
+                  mbButton
+                  variant="outline"
+                  [disabled]="searching()"
+                  (click)="loadMore(true)"
+                >
                   @if (searching()) {
                     {{ 'pages.search.results.loading' | transloco }}
                   } @else {
@@ -1411,7 +1476,7 @@
                   }
                   {{ 'pages.search.results.followingTag' | transloco }}
                 </p>
-                <a class="btn btn-outline" [routerLink]="['/tags', tag]">
+                <a mbButton variant="outline" [routerLink]="['/tags', tag]">
                   {{ 'pages.search.results.viewAndFollow' | transloco: { tag: tag } }}
                 </a>
               </div>
@@ -1422,7 +1487,7 @@
               <p class="search-unavailable" role="status">{{ why }}</p>
               @if (!searchServerOpen()) {
                 <p class="center">
-                  <button class="btn btn-outline" type="button" (click)="toggleSearchServer()">
+                  <button mbButton variant="outline" type="button" (click)="toggleSearchServer()">
                     {{ 'pages.search.results.chooseSearchServer' | transloco }}
                   </button>
                 </p>

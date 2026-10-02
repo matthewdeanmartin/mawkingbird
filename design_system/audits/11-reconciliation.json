@@ -134,8 +134,8 @@
     },
     {
       "file": "ui/src/app/compose/compose.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Composer consistency batch adopts Button, PostActions and PostAction, including keyboard-accessible media attachment. Tools wrap within narrow columns and emoji sizing follows available width. Rich editor, selects, poll/media editors and helper dialogs remain specialized or pending review; this is not complete composer migration."
     },
     {
       "file": "ui/src/app/compose/compose.ts",
@@ -589,8 +589,8 @@
     },
     {
       "file": "ui/src/app/pages/search/search.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Search consistency batch adopts standalone Button actions and links while preserving handlers, disabled states and native disclosure summaries. Fields, saved-search controls, refinement controls and content-specific actions remain pending semantic review."
     },
     {
       "file": "ui/src/app/pages/search/search.ts",

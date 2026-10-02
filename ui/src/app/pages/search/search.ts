@@ -1,4 +1,5 @@
 import { TagActions } from '../../tag-actions/tag-actions';
+import { MbButton } from '../../design-system/button/button';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
@@ -395,6 +396,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 @Component({
   selector: 'app-search',
   imports: [
+    MbButton,
     TagActions,
     FormsModule,
     RouterLink,

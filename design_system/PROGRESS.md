@@ -1,5 +1,34 @@
 # Design-system progress
 
+## Search and composer consistency
+
+The shared composer now uses PostActions/PostAction for its mixed tool group and
+Button for standalone actions. The tool group wraps within the available column;
+the action row and selects no longer force a minimum-content width. File attachment
+is a named native button that opens the existing file input, preserving upload
+behavior while making the action keyboard-accessible. Toggle state is exposed
+through the shared active/pressed contracts. Existing compact/chat visibility
+policies, submission handlers and provider gates are unchanged.
+
+The emoji panel is sized and anchored to the composer rather than to its icon.
+EmojiPicker uses the library's dynamic-width layout and bounds the library's
+off-screen accessibility content inside its own viewport, preventing RTL page
+overflow without hiding composer controls. Storybook **Adoption / Composer**
+renders the real full, compact and chat composers with all optional tool buttons
+available, local nonpersistent drafts, blocked posting and fixture-only AI errors.
+
+Search changes are deliberately conservative: standalone action buttons/links
+use MbButton with explicit native button types. Query behavior, result/refinement
+layout, saved-search disclosure semantics and specialized controls are unchanged.
+Neither Search nor Compose is classified as fully migrated. The adoption snapshot
+is **470 direct placements across 63 templates**, using 24 of 27 widget types.
+
+Validation: all 7,670 tests pass through the full gate (610 targeted search/composer
+tests). Ten browser checks cover full/compact/chat at 320, 480 and 1100px plus
+dark RTL touch targets and actual emoji insertion. Narrow screenshots were reviewed.
+Angular/design lint, format/type checks, inventory reconciliation, Storybook and
+production builds pass. The initial bundle is 896.83 kB with the 1 MB limit unchanged.
+
 ## Shared-dialog migration, batch 2
 
 Shortener proxy consent and Twitter proxy consent now use Dialog, Button,

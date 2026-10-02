@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 24,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 61,
-  "directTemplateCallSites": 416,
+  "appTemplateFiles": 63,
+  "directTemplateCallSites": 470,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,7 +29,7 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 148,
+      "directCallSites": 189,
       "consumers": [
         {
           "file": "account-analytics/account-analytics.html",
@@ -88,6 +88,10 @@
           "count": 2
         },
         {
+          "file": "compose/compose.html",
+          "count": 16
+        },
+        {
           "file": "compose/translate-dialog/translate-dialog.html",
           "count": 5
         },
@@ -142,6 +146,10 @@
         {
           "file": "pages/public-timeline/public-timeline.html",
           "count": 1
+        },
+        {
+          "file": "pages/search/search.html",
+          "count": 25
         },
         {
           "file": "pages/settings/filters/filter-wizard.ts",
@@ -659,8 +667,12 @@
     {
       "name": "MbPostActions",
       "selector": "mb-post-actions",
-      "directCallSites": 2,
+      "directCallSites": 3,
       "consumers": [
+        {
+          "file": "compose/compose.html",
+          "count": 1
+        },
         {
           "file": "pages/rss/feed-actions/feed-actions.ts",
           "count": 1
@@ -675,11 +687,15 @@
     {
       "name": "MbPostAction",
       "selector": "button[mbPostAction], a[mbPostAction]",
-      "directCallSites": 49,
+      "directCallSites": 61,
       "consumers": [
         {
           "file": "command-bar/command-bar.ts",
           "count": 1
+        },
+        {
+          "file": "compose/compose.html",
+          "count": 12
         },
         {
           "file": "feed-language-picker/feed-language-picker.html",

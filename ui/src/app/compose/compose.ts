@@ -11,6 +11,8 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { MbButton } from '../design-system/button/button';
+import { MbPostAction, MbPostActions } from '../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
@@ -472,6 +474,9 @@ function dragHasFiles(event: DragEvent): boolean {
 @Component({
   selector: 'app-compose',
   imports: [
+    MbButton,
+    MbPostAction,
+    MbPostActions,
     FormsModule,
     RouterLink,
     EmojiPicker,

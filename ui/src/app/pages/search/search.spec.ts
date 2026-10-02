@@ -160,6 +160,21 @@ describe('Search', () => {
     return fixture;
   }
 
+  it('uses shared standalone search actions without changing native button semantics', () => {
+    const fixture = setUp();
+    const buttons = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+        '.search-bar > button',
+      ),
+    ];
+    expect(buttons.length).toBeGreaterThan(2);
+    for (const button of buttons) {
+      expect(button.hasAttribute('mbButton')).toBe(true);
+      expect(button.type).toBe('button');
+    }
+    expect(buttons.find((button) => button.textContent?.trim() === 'Search')?.disabled).toBe(true);
+  });
+
   /** Type a query and run the search (navigation is synchronous in the stub).
    *  Defaults to the Posts tab, whose single-request flow these generic tests
    *  exercise; the Accounts tab fans out to two requests (bio + posts) and stores
