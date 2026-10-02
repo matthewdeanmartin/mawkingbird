@@ -499,23 +499,23 @@
     },
     {
       "file": "ui/src/app/pages/read/document-search/document-search-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Find surface, native search field and match rows use MbReaderSearch; Close uses MbPostAction. Keep query/index logic, current-match activation, Escape and anchored nonmodal placement reader-owned."
     },
     {
       "file": "ui/src/app/pages/read/library-panel/library-panel.html",
-      "disposition": "backlog",
-      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+      "disposition": "adopted scope",
+      "nextStep": "Library chrome, shelves, current-document rows and row menus use MbReaderLibrary with MbPostAction commands. Preserve native replaceUrl links, stable shelf order, disclosure, clear confirmation and storage behavior."
     },
     {
       "file": "ui/src/app/pages/read/notes-rail/notes-rail.html",
-      "disposition": "backlog",
-      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+      "disposition": "adopted scope",
+      "nextStep": "Reader note commands adopt shared compact actions with semantic danger tone for Remove. Note anchors, drift reporting, rail position and event handlers are unchanged."
     },
     {
       "file": "ui/src/app/pages/read/read-toolbar/read-toolbar.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Reader commands and native typography preference presentation now use MbPostAction and MbReaderPreferences. Preserve native labels, ranges, dictionary validation and preference bindings; toolbar/progress placement stays reader-owned."
     },
     {
       "file": "ui/src/app/pages/read/reader-core/reader-core.html",
@@ -529,8 +529,8 @@
     },
     {
       "file": "ui/src/app/pages/read/selection-tools/selection-tools.html",
-      "disposition": "backlog",
-      "nextStep": "Review reader-specific interaction and selection semantics; migrate eligible tool buttons while preserving reader layout and keyboard contracts."
+      "disposition": "adopted scope",
+      "nextStep": "Reader selection commands use shared compact actions. Preserve selection-relative positioning, word-versus-passage behavior and annotation handlers; the reader core remains specialized."
     },
     {
       "file": "ui/src/app/pages/rss/add-feed-dialog/add-feed-dialog.html",

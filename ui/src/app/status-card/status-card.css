@@ -441,13 +441,14 @@
   display: none;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 720px) {
   .meta {
     min-height: 48px;
   }
 
   .actions {
-    margin-inline-start: -60px;
+    margin-inline-start: -68px;
+    margin-inline-end: -8px;
   }
 
   .narrow-action-icon {
@@ -468,7 +469,7 @@ summary.action {
 }
 @media (pointer: coarse) {
   summary.action {
-    min-width: 44px;
+    min-width: var(--mb-post-action-min-width, 44px);
     min-height: 44px;
   }
 }

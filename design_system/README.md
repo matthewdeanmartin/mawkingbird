@@ -1,5 +1,11 @@
 # Mawkingbird design system
 
+Reader follow-up: **Reader / Presentation** now documents the existing native
+preferences, library, Find results and panel surfaces as shared components.
+**Adoption / Reader controls** uses those same components in the real reader
+controls. This is an extraction for future evolution, not a reader redesign;
+see [preservation evidence](audits/reader-preservation.md).
+
 Latest follow-up: Twitter's provider, spending, follow and import controls now
 use shared widgets, as do Blogger, Hugo, Mataroa and paste-service settings.
 **Adoption / Publishing connections** and **Adoption / Account connections / Twitter controls**
@@ -12,7 +18,7 @@ The [button batch](REVIEW-buttons.md) supplies their accent-aware actions.
 Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
 
 [Integration progress](PROGRESS.md): zero sprints remain in the current plan.
-Source adoption after the publishing batch is 24 of 27 widget types, 685 direct placements in 74 app templates.
+Source adoption after the reader extraction is 29 of 32 widget types, 735 direct placements in 79 app templates.
 This closes the planned batches, not all migration debt. Source integration is
 separate from deployment.
 

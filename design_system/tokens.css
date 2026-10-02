@@ -8,6 +8,8 @@
   --ds-danger-fill: #a41037;
   --ds-overlay-backdrop: rgba(0, 0, 0, 0.4);
   --ds-overlay-shadow: rgba(0, 0, 0, 0.3);
+  --ds-reader-shadow: rgb(0 0 0 / 18%);
+  --ds-reader-invalid: var(--danger, #c2255c);
 }
 
 :root[data-theme="dark"] {

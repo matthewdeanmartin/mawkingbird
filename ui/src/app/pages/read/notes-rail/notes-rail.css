@@ -14,9 +14,6 @@
   max-height: calc(100dvh - 24px);
   overflow-y: auto;
   padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
 }
 
 .notes-title {
@@ -85,25 +82,6 @@
   flex-wrap: wrap;
   gap: 2px;
   margin-top: 4px;
-}
-
-.tool {
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--text);
-  padding: 3px 6px;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.tool:hover {
-  background: var(--hover);
-}
-
-.tool.danger:hover {
-  background: color-mix(in srgb, var(--danger, #c2255c) 18%, transparent);
 }
 
 /* Below the width where a 15rem rail and a 68ch measure both fit, the rail goes

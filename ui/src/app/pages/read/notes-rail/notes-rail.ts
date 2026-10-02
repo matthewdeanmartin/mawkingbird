@@ -1,3 +1,5 @@
+import { MbReaderSurface } from '../../../design-system/reader/reader';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { Annotation } from '../../../providers/read/reader-annotations';
@@ -41,7 +43,7 @@ export interface RailNote {
 @Component({
   selector: 'app-notes-rail',
   standalone: true,
-  imports: [TranslocoModule],
+  imports: [MbReaderSurface, MbPostAction, TranslocoModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notes-rail.html',
   styleUrl: './notes-rail.css',

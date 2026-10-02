@@ -1,5 +1,26 @@
 # Sprint 6 opening consolidation audit
 
+## Reader presentation follow-up
+
+Preferences, library chrome/rows, Find fields/results and notes/selection surfaces
+now use four reader-specific presentation components. Five consumers retain their
+native markup and reader-owned behavior/placement. The inventory scans 1,067
+source files with 217 candidates; adoption is 735 placements in 79 templates,
+using 29 of 32 widget types. The three partial reader templates are reconciled
+for this presentation scope, not for reader-core or all reading experiences.
+See [preservation evidence](reader-preservation.md); earlier counts below are
+historical checkpoints.
+
+## Pixel and reader control follow-up
+
+Mobile post density now covers the 720px app breakpoint with explicit compact
+target geometry. Five reader control templates adopt shared compact commands;
+their layout, storage, pagination and selection behavior remain intact. Source
+adoption is 730 placements in 79 templates, using 25 of 28 widget types. The
+refreshed inventory still covers 1,062 source files and 217 candidate files;
+the reader ledger distinguishes adopted action scope from remaining specialized
+fields, library rows, search results and reader-core controls.
+
 ## Phone post toolbar follow-up
 
 The October 2 compact-count batch scans 1,062 source files and retains 217

@@ -1,7 +1,7 @@
-<aside class="library" [attr.aria-label]="'reader.library.title' | transloco">
+<aside mbReaderLibrary class="library" [attr.aria-label]="'reader.library.title' | transloco">
   <div class="library-head">
     <h2>{{ 'reader.library.title' | transloco }}</h2>
-    <button class="tool" type="button" (click)="closed.emit()">
+    <button mbPostAction size="small" class="tool" type="button" (click)="closed.emit()">
       {{ 'reader.library.close' | transloco }}
     </button>
   </div>
@@ -57,6 +57,8 @@
               </a>
 
               <button
+                mbPostAction
+                size="small"
                 class="tool row-menu-btn"
                 type="button"
                 [attr.aria-label]="'reader.library.rowMenu' | transloco: { title: row.title }"
@@ -72,16 +74,35 @@
                     {{ 'reader.library.moveTo' | transloco }}
                   </span>
                   @for (target of otherShelves(row.shelf); track target.id) {
-                    <button class="tool" type="button" (click)="moveTo(row.id, target.id)">
+                    <button
+                      mbPostAction
+                      size="small"
+                      class="tool"
+                      type="button"
+                      (click)="moveTo(row.id, target.id)"
+                    >
                       {{ target.labelKey | transloco }}
                     </button>
                   }
                   @if (row.pinnedShelf) {
-                    <button class="tool" type="button" (click)="unpin(row.id, row.shelf)">
+                    <button
+                      mbPostAction
+                      size="small"
+                      class="tool"
+                      type="button"
+                      (click)="unpin(row.id, row.shelf)"
+                    >
                       {{ 'reader.library.automatic' | transloco }}
                     </button>
                   }
-                  <button class="tool danger" type="button" (click)="remove(row.id)">
+                  <button
+                    mbPostAction
+                    size="small"
+                    class="tool danger"
+                    tone="danger"
+                    type="button"
+                    (click)="remove(row.id)"
+                  >
                     {{ 'reader.library.remove' | transloco }}
                   </button>
                 </div>
@@ -107,14 +128,23 @@
         <span class="muted small" role="status">
           {{ 'reader.library.clearAllConfirm' | transloco: { count: total() } }}
         </span>
-        <button class="tool danger" type="button" (click)="clearAll()">
+        <button
+          mbPostAction
+          size="small"
+          class="tool danger"
+          tone="danger"
+          type="button"
+          (click)="clearAll()"
+        >
           {{ 'reader.library.clearAll' | transloco }}
         </button>
-        <button class="tool" type="button" (click)="cancelClearAll()">
+        <button mbPostAction size="small" class="tool" type="button" (click)="cancelClearAll()">
           {{ 'reader.library.clearAllCancel' | transloco }}
         </button>
       } @else {
         <button
+          mbPostAction
+          size="small"
           class="tool"
           type="button"
           [title]="'reader.library.clearAllTitle' | transloco"

@@ -72,34 +72,6 @@
   border-left: 1px solid var(--border);
 }
 
-.tool {
-  flex: 0 0 auto;
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--text);
-  padding: 5px 8px;
-  font: inherit;
-  font-size: 13px;
-  line-height: 1.2;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.tool:hover:not(:disabled) {
-  background: var(--hover);
-}
-
-.tool.active {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.tool:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
 .pager .position {
   min-width: 4.5em;
   padding: 0 4px;
@@ -124,65 +96,8 @@
   gap: 6px;
   margin-top: 6px;
   padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--col-bg);
-}
-
-.typo-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.typo-label {
-  flex: 0 0 8em;
-  font-size: 13px;
-  color: var(--muted, inherit);
-}
-
-.typo-value {
-  min-width: 3.5em;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
-
-.typo-row select,
-.typo-row input[type='range'] {
-  font: inherit;
-  font-size: 13px;
 }
 
 .typo-done {
   justify-content: flex-end;
-}
-
-@media (max-width: 640px) {
-  /* On a phone the label column costs more than it explains. */
-  .typo-label {
-    flex-basis: 5.5em;
-  }
-}
-
-/* A row whose control needs the full width — a URL template does not fit
-   beside its label the way a select does. */
-.typo-row.typo-stack {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 4px;
-}
-
-.typo-row.typo-stack input {
-  width: 100%;
-  padding: 5px 7px;
-  font: inherit;
-  font-size: 13px;
-  color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-}
-
-.typo-row.typo-stack input[aria-invalid='true'] {
-  border-color: var(--danger, #c2255c);
 }

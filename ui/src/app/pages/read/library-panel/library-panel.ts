@@ -1,3 +1,5 @@
+import { MbReaderLibrary } from '../../../design-system/reader/reader';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -62,7 +64,7 @@ const SHELVES: readonly { id: Shelf; labelKey: string }[] = [
  */
 @Component({
   selector: 'app-library-panel',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbReaderLibrary, MbPostAction, RouterLink, TranslocoPipe],
   templateUrl: './library-panel.html',
   styleUrl: './library-panel.css',
 })

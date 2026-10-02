@@ -1,3 +1,5 @@
+import { MbReaderSurface } from '../../../design-system/reader/reader';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { isSingleWord } from '../../../providers/read/dictionaries';
@@ -41,7 +43,7 @@ export interface SelectionPoint {
 @Component({
   selector: 'app-selection-tools',
   standalone: true,
-  imports: [TranslocoModule],
+  imports: [MbReaderSurface, MbPostAction, TranslocoModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './selection-tools.html',
   styleUrl: './selection-tools.css',

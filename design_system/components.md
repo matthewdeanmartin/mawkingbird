@@ -277,9 +277,14 @@ existing `MbToolbar` when a button-only roving-focus group is appropriate.
 Supply `count`, localized `label` and `locale` for compact number formatting
 (for example, 1.2M). Project the exact localized count text for assistive
 technology; the numeric tooltip also preserves precision. Projection-only uses
-remain supported. At viewport widths of 400px or less, count labels disappear;
+remain supported. At viewport widths of 720px or less, count labels disappear;
 `span[mbPostActionLabel]` visually hides other action labels while retaining their
-accessible text. Icons, counts, actions and 44px touch targets remain present.
+accessible text. Icons, counts and all actions remain present.
+`density="compact"` opts a post group into 36px minimum target widths and 1px
+gaps at the same mobile breakpoint. Touch targets remain at least 44px tall;
+the default group keeps 44px minimum touch widths. This deliberate horizontal
+density tradeoff and 8px outer action-row insets allow ten small-count Mastodon
+tools to fit 393px and 412px phones.
 StatusCard reclaims the avatar gutter for its toolbar at that width. Small-count
 rows can fit on one line; larger toolsets still wrap rather than shrink targets.
 Its containing action moves intact to another row. Counts with their own account
@@ -287,10 +292,59 @@ list behavior remain separate buttons from Like/Boost toggles. Pass localized
 labels and the active locale; use accessible names for icon-only actions.
 
 The shared toolbar button stylesheet provides visual states; post actions add
-compact wrapping and retain 44px touch targets. No per-post sizing overrides are
+compact wrapping and retain 44px touch targets by default. No per-post sizing overrides are
 needed. The preview includes 21 controls and millions-scale counts; adding more
 commands requires extending the stress story, not a one-off fixed width. Menus
 are appropriate for moderation/removal, not the default escape for normal tools.
+
+### Reader presentation
+
+`design-system/reader/reader.ts` extracts the reader's existing presentation;
+it is not a replacement reader or a new visual treatment. Storybook's
+**Reader / Presentation** shows the pieces, and **Adoption / Reader controls**
+uses the real app consumers with in-memory preferences and library data.
+Both import the same implementation; there is no copy/paste integration step.
+
+These components attach to existing native elements and project their children
+without adding boxes. The names below are CSS slot contracts within each host,
+not global utility classes:
+
+| Component / native host                                                | Owned presentation / slots                                                                                                                                                                                 |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MbReaderPreferences` / `div[mbReaderPreferences]`                     | Typography panel surface; `.typo-row`, `.typo-label`, `.typo-value`, `.typo-stack`, native selects/ranges and custom dictionary URL field, including invalid border.                                       |
+| `MbReaderLibrary` / `aside[mbReaderLibrary]`                           | App-chrome typography/surface, `.library-head`, `.library-body`, `.library-foot`, `.rail-row`, `.rail-folder`, `.rail-feed.nested`, `.row-wrap.active`, metadata, empty shelves and row-menu presentation. |
+| `MbReaderSearch` / `div[mbReaderSearch]`                               | Find surface, `.search-field`, `.search-result`, `.on-this-page`, `.search-context` with native `mark`, and `.search-page`. Current results remain clickable.                                              |
+| `MbReaderSurface` / `aside[mbReaderSurface]` or `div[mbReaderSurface]` | Notes surface by default; `surface="selection"` preserves the selection bubble's radius and shadow. No placement or content styling.                                                                       |
+
+Keep implicit native labels, input/change/ngModel bindings, translations,
+validation, ARIA, Escape handling, links and click handlers in the caller.
+These components do not impose modal semantics, focus trapping, forms adapters,
+navigation or persistence. Preferences/library/search use explicitly namespaced
+styles for projected content; ownership tests guard against global leakage and
+page-local copies. Shared `MbPostAction size="small"` remains the command control.
+
+Reader-specific placement stays local: sticky/absolute positioning, widths,
+responsive rail placement, scroll limits, progress and selection coordinates.
+The article's measure, paper, typography, pagination, extraction and annotation
+anchoring are not DS chrome. Thread readability is unchanged. Do not replace the
+native preferences with ordinary `MbField` geometry or inflate these controls
+while evolving them. `--ds-reader-shadow` and `--ds-reader-invalid` preserve the
+existing colors, rather than introducing a new reader palette.
+
+### Reader commands
+
+Reader toolbar, selection, note, library and find-panel commands reuse
+`MbPostAction` without changing their surrounding reader-specific layout or
+keyboard handling. Native Tab order is retained; these are not converted into a
+roving toolbar. `tone="danger"` supplies a shared compact destructive treatment
+without turning removal into a toggle or a prominent pill. Reader commands use
+`size="small"` to preserve their quiet, 28px minimum-height density on mouse and
+touch screens instead of inflating the established reader toolbar. Other
+consumers keep default 44px touch targets; only post groups opt into mobile
+compact widths. The selection bubble sizes to its contents and contains wrapping
+commands without changing the selection coordinates or positioning algorithm.
+Typography fields, shelf navigation, passage result cards, article pagination,
+selection anchoring and shared thread readability remain separate contracts.
 
 ### Post-action state and production adoption
 

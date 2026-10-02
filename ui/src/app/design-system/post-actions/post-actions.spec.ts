@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { MbActionCount } from './post-actions';
+import { MbActionCount, MbPostAction } from './post-actions';
 
 @Component({
   imports: [MbActionCount],
@@ -14,6 +14,16 @@ class CountHost {
 }
 
 describe('post action counts', () => {
+  it('keeps compact destructive commands distinct from toggles', () => {
+    const fixture = TestBed.createComponent(MbPostAction);
+    fixture.componentRef.setInput('tone', 'danger');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('data-tone')).toBe('danger');
+    expect(fixture.nativeElement.hasAttribute('aria-pressed')).toBe(false);
+    fixture.componentRef.setInput('pressed', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('aria-pressed')).toBe('true');
+  });
   it('compacts large counts while retaining exact accessible text and a tooltip', () => {
     const fixture = TestBed.createComponent(CountHost);
     fixture.detectChanges();

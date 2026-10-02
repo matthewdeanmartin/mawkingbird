@@ -4,18 +4,26 @@ import { Component, computed, inject, input, LOCALE_ID } from '@angular/core';
   selector: 'mb-post-actions',
   template: '<ng-content />',
   styleUrl: './post-actions.css',
-  host: { role: 'group', '[attr.aria-label]': 'label()' },
+  host: { role: 'group', '[attr.aria-label]': 'label()', '[attr.data-density]': 'density()' },
 })
 export class MbPostActions {
   readonly label = input.required<string>();
+  readonly density = input<'default' | 'compact'>('default');
 }
 @Component({
   selector: 'button[mbPostAction], a[mbPostAction]',
   template: '<ng-content />',
   styleUrls: ['../toolbar/toolbar-button.css', './post-action.css'],
-  host: { '[attr.aria-pressed]': 'pressed()', '[attr.data-active]': 'active() ? true : null' },
+  host: {
+    '[attr.aria-pressed]': 'pressed()',
+    '[attr.data-active]': 'active() ? true : null',
+    '[attr.data-tone]': 'tone()',
+    '[attr.data-size]': 'size()',
+  },
 })
 export class MbPostAction {
+  readonly size = input<'default' | 'small'>('default');
+  readonly tone = input<'default' | 'danger'>('default');
   readonly pressed = input<boolean | null>(null);
   /** Visual state for a menu trigger whose underlying action is active. */
   readonly active = input(false);

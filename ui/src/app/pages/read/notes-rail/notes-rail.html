@@ -1,5 +1,5 @@
 @if (notes().length) {
-  <aside class="notes-rail" [attr.aria-label]="'reader.notes.title' | transloco">
+  <aside mbReaderSurface class="notes-rail" [attr.aria-label]="'reader.notes.title' | transloco">
     <h2 class="notes-title">{{ 'reader.notes.title' | transloco }}</h2>
 
     <ul class="notes-list">
@@ -27,6 +27,8 @@
           <div class="note-actions">
             @if (!note.moved && note.page !== null) {
               <button
+                mbPostAction
+                size="small"
                 class="tool"
                 type="button"
                 [title]="'reader.notes.goTo' | transloco"
@@ -35,13 +37,20 @@
                 {{ 'reader.notes.onPage' | transloco: { page: note.page } }}
               </button>
             }
-            <button class="tool" type="button" (click)="edit.emit(note)">
+            <button mbPostAction size="small" class="tool" type="button" (click)="edit.emit(note)">
               {{ 'reader.notes.edit' | transloco }}
             </button>
-            <button class="tool" type="button" (click)="share.emit(note)">
+            <button mbPostAction size="small" class="tool" type="button" (click)="share.emit(note)">
               {{ 'reader.notes.share' | transloco }}
             </button>
-            <button class="tool danger" type="button" (click)="remove.emit(note)">
+            <button
+              mbPostAction
+              size="small"
+              class="tool danger"
+              tone="danger"
+              type="button"
+              (click)="remove.emit(note)"
+            >
               {{ 'reader.notes.remove' | transloco }}
             </button>
           </div>

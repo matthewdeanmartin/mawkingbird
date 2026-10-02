@@ -1,11 +1,11 @@
 {
   "scope": "Maintained Angular app template call sites; excludes stories, specs and shared internals from direct counts. Repeated runtime rows count once per source node. Integration means source usage, not commit, deployment or full app coverage.",
-  "widgetsAvailable": 28,
-  "widgetsDirectlyUsed": 25,
+  "widgetsAvailable": 32,
+  "widgetsDirectlyUsed": 29,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 74,
-  "directTemplateCallSites": 702,
+  "appTemplateFiles": 79,
+  "directTemplateCallSites": 735,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -967,7 +967,7 @@
     {
       "name": "MbPostAction",
       "selector": "button[mbPostAction], a[mbPostAction]",
-      "directCallSites": 61,
+      "directCallSites": 89,
       "consumers": [
         {
           "file": "command-bar/command-bar.ts",
@@ -990,8 +990,28 @@
           "count": 1
         },
         {
+          "file": "pages/read/document-search/document-search-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "pages/read/library-panel/library-panel.html",
+          "count": 8
+        },
+        {
+          "file": "pages/read/notes-rail/notes-rail.html",
+          "count": 4
+        },
+        {
+          "file": "pages/read/read-toolbar/read-toolbar.html",
+          "count": 11
+        },
+        {
           "file": "pages/read/save-to-library/save-to-library.html",
           "count": 1
+        },
+        {
+          "file": "pages/read/selection-tools/selection-tools.html",
+          "count": 4
         },
         {
           "file": "pages/rss/feed-actions/feed-actions.ts",
@@ -1059,6 +1079,58 @@
         },
         {
           "file": "pages/settings/import-export/settings-import-export.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbReaderPreferences",
+      "selector": "div[mbReaderPreferences]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/read/read-toolbar/read-toolbar.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbReaderLibrary",
+      "selector": "aside[mbReaderLibrary]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/read/library-panel/library-panel.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbReaderSearch",
+      "selector": "div[mbReaderSearch]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "pages/read/document-search/document-search-dialog.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbReaderSurface",
+      "selector": "aside[mbReaderSurface], div[mbReaderSurface]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "pages/read/notes-rail/notes-rail.html",
+          "count": 1
+        },
+        {
+          "file": "pages/read/selection-tools/selection-tools.html",
           "count": 1
         }
       ],

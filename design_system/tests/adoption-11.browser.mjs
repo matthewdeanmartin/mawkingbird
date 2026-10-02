@@ -25,7 +25,7 @@ const choose = (page, name) =>
     .getByRole("button", { name, exact: true })
     .click();
 
-for (const width of [320, 400, 401]) {
+for (const width of [320, 400, 401, 412, 414, 430, 480, 720, 721]) {
   test(`phone count labels and exact accessible values at ${width}px`, async ({
     page,
   }) => {
@@ -36,7 +36,7 @@ for (const width of [320, 400, 401]) {
       .first();
     await expect(count.locator('[aria-hidden="true"]')).toContainText("2M");
     await expect(count.locator(".exact")).toHaveText("2000000 boosts");
-    if (width <= 400) await expect(count.locator(".label")).toBeHidden();
+    if (width <= 720) await expect(count.locator(".label")).toBeHidden();
     else await expect(count.locator(".label")).toBeVisible();
     await expect(
       scope.getByRole("button", { name: "2000000 Boosted by", exact: true }),
@@ -48,7 +48,7 @@ for (const width of [320, 400, 401]) {
     const labelWidth = await label.evaluate(
       (el) => el.getBoundingClientRect().width,
     );
-    if (width <= 400) expect(labelWidth).toBe(1);
+    if (width <= 720) expect(labelWidth).toBe(1);
     else expect(labelWidth).toBeGreaterThan(1);
   });
 }
@@ -81,12 +81,63 @@ test("small counts keep a full-width anonymous phone toolbar on one touch row", 
   expect(layout.length).toBeGreaterThanOrEqual(4);
   expect(new Set(layout.map((box) => box.top)).size).toBe(1);
   for (const box of layout) {
-    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.width).toBeGreaterThanOrEqual(36);
     expect(box.height).toBeGreaterThanOrEqual(44);
   }
   await scope.screenshot({ path: info.outputPath("single-row-phone.png") });
   await context.close();
 });
+for (const [mode, width] of [
+  ["Anonymous", 393],
+  ["Anonymous", 412],
+  ["Signed in", 393],
+  ["Signed in", 412],
+]) {
+  test(`Pixel-width ${width} Mastodon ${mode} keeps small counts on one touch row`, async ({
+    browser,
+  }, info) => {
+    const context = await browser.newContext({
+      viewport: { width, height: 915 },
+      hasTouch: true,
+      isMobile: true,
+    });
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:6008${url}`);
+    await choose(page, mode);
+    await page
+      .getByRole("button", { name: "Small counts", exact: true })
+      .click();
+    await page.addStyleTag({
+      content:
+        "body { padding: 0 !important; } .ds-sheet { padding-inline: 0 !important; border: 0; }",
+    });
+    const group = card(page).locator("mb-post-actions");
+    for (const label of await group.locator("[mbActionCount] .label").all())
+      await expect(label).toBeHidden();
+    const controls = await group
+      .locator("[mbPostAction], summary")
+      .evaluateAll((elements) =>
+        elements
+          .filter((el) => el.getClientRects().length)
+          .map((el) => {
+            const box = el.getBoundingClientRect();
+            return { top: box.top, height: box.height, width: box.width };
+          }),
+      );
+    expect(
+      new Set(controls.map((box) => box.top)).size,
+      JSON.stringify(controls),
+    ).toBe(1);
+    for (const box of controls) {
+      expect(box.height).toBeGreaterThanOrEqual(44);
+      expect(box.width).toBeGreaterThanOrEqual(36);
+    }
+    expect((await group.boundingBox()).height).toBeLessThanOrEqual(44);
+    await card(page).screenshot({ path: info.outputPath("pixel-post.png") });
+    await context.close();
+  });
+}
+
 test("real favourite retains optimistic, busy, rollback and retry behavior", async ({
   page,
 }) => {

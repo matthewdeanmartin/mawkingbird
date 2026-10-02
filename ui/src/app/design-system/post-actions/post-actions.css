@@ -6,3 +6,10 @@
   min-width: 0;
   color: var(--text);
 }
+
+@media (max-width: 720px) {
+  :host([data-density='compact']) {
+    --mb-post-action-min-width: 36px;
+    gap: 1px;
+  }
+}

@@ -1,3 +1,5 @@
+import { MbReaderPreferences } from '../../../design-system/reader/reader';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { Component, computed, ElementRef, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
@@ -77,7 +79,7 @@ import { DICTIONARIES, DictionaryId } from '../../../providers/read/dictionaries
  */
 @Component({
   selector: 'app-read-toolbar',
-  imports: [TranslocoPipe],
+  imports: [MbReaderPreferences, MbPostAction, TranslocoPipe],
   templateUrl: './read-toolbar.html',
   styleUrl: './read-toolbar.css',
 })

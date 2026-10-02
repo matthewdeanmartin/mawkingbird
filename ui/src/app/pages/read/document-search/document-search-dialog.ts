@@ -1,3 +1,5 @@
+import { MbReaderSearch } from '../../../design-system/reader/reader';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -40,7 +42,7 @@ import { findInPages, SearchMatch } from '../document-search';
 @Component({
   selector: 'app-document-search-dialog',
   standalone: true,
-  imports: [FormsModule, TranslocoModule],
+  imports: [MbReaderSearch, MbPostAction, FormsModule, TranslocoModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './document-search-dialog.html',
   styleUrl: './document-search-dialog.css',

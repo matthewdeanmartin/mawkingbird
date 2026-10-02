@@ -7,10 +7,16 @@
 :host(:any-link):hover {
   text-decoration: underline;
 }
+:host([data-tone='danger']) {
+  color: var(--ds-error-text);
+}
+:host([data-tone='danger']:hover:not(:disabled)) {
+  background: color-mix(in srgb, var(--ds-error-text) 12%, transparent);
+}
 @media (pointer: coarse) {
   :host {
     min-height: 44px;
-    min-width: 44px;
+    min-width: var(--mb-post-action-min-width, 44px);
   }
 }
 
@@ -19,4 +25,11 @@
   background: var(--accent-soft);
   color: var(--ds-action-text);
   box-shadow: inset 0 -2px 0 var(--ds-action-text);
+}
+
+:host([data-size='small']) {
+  min-height: 28px;
+  min-width: 28px;
+  padding: 5px 8px;
+  line-height: 1.2;
 }

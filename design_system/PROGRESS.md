@@ -1,5 +1,74 @@
 # Design-system progress
 
+## Reader presentation extraction (no redesign)
+
+Four reader-specific DS components now own preferences, library presentation,
+Find fields/results, and notes/selection surfaces. They attach to existing native
+elements and project existing markup. Five app consumers use them; ordinary
+commands continue to use the established small PostAction variant. Native form
+bindings, ARIA, navigation and domain behavior remain in the reader. Placement,
+article typography/measure, pagination, extraction and thread readability are
+unchanged. No wrappers or modal/focus behavior were introduced.
+
+Storybook adds **Reader / Presentation** for the isolated contracts alongside
+the real **Adoption / Reader controls** fixture. Component contracts document
+the projected slots and the ownership boundary. CSS checks prevent projected
+styles leaking outside their hosts or the extracted appearance being copied
+back into the five page stylesheets. This preserves the current reader as the
+starting point for future evolution, rather than forcing general form geometry
+onto it.
+
+Source adoption is now 735 placements in 79 templates, using 29 of 32 widget
+types. The inventory scans 1,067 source files and retains 217 candidates. The
+three previously partial reader templates now adopt their presentation scope;
+reader-core remains explicitly outside this pass. These are source counts, not
+full-app migration or deployment claims. See [preservation evidence](audits/reader-preservation.md).
+
+Validation: 296 focused unit tests and all 7,692 full-gate unit tests pass, with
+no missing/skipped inventory entries. `design:verify` passes all 366 browser
+tests. App lint, i18n checks and production build pass; initial output is
+896.99 kB under the unchanged 1 MB limit. Existing shell/status-card CSS and
+CommonJS warnings remain. Changes are uncommitted and undeployed.
+
+## Pixel post density and conservative reader controls
+
+The previous 400px cutoff missed wider phone viewports. Post count/action labels
+now hide through the app's 720px mobile breakpoint. Mobile post groups explicitly
+opt into 36px minimum widths, 1px gaps and 8px outer action-row insets, while
+retaining 44px target heights. This horizontal density tradeoff keeps all ten
+small-count signed-in Mastodon tools visible on one row at Pixel-sized widths;
+it does not merge count-list buttons, remove history or enable unified share.
+Exact count text/tooltips and humanized visible counts remain intact. Desktop
+and other compact-action consumers keep their existing target contract.
+
+The reader pass replaces duplicated command styling in the document toolbar,
+selection tools, notes rail, library panel and Find close action with shared
+PostAction controls, including a compact semantic danger tone and explicit small
+size that preserves the reader's existing quiet button density on touch screens.
+The selection bubble contains its commands rather than letting them spill beyond
+its background. Pagination,
+article measure, sticky positioning, selection coordinates, annotation anchors,
+library replaceUrl navigation, stable shelf order and two-step clear behavior
+are unchanged. Native typography fields, shelf rows and search-result cards
+remain specialized; reader-core and thread readability code are not changed.
+
+Storybook adds the real reader controls with in-memory preferences/library and
+exercises paging, typography, Find, highlight state, notes and clear cancellation.
+Post tests cover 320–720px label suppression, the desktop boundary at 721px and
+393/412px touch rows for both anonymous and signed-in Mastodon. Source adoption
+is 730 placements in 79 templates; 25 of 28 widget types have app usage. The
+217-file ledger marks the reader control scope explicitly rather than claiming
+that every reader surface is migrated. Changes remain local and undeployed.
+
+Validation: 446 focused reader/provider/post tests passed before the added
+shared-action tone regression. The final full gate passes all 7,688 unit tests
+with no skips or missing inventory entries. Complete `design:verify` passes all
+359 browser tests, including both Pixel-sized signed-in rows, default target
+geometry, reader controls and catalogue rendering. Narrow screenshots were
+reviewed. Application lint, i18n checks and production build pass; initial JS
+remains 896.91 kB under the unchanged 1 MB ceiling. Existing component-CSS and
+CommonJS build warnings remain; no commit, push or deployment was performed.
+
 ## Catalogue CI regression follow-up
 
 Reproduced all 19 reported failures locally. Fifteen adoption previews enabled

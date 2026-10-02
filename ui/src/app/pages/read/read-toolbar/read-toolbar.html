@@ -7,9 +7,11 @@
   >
     <div class="tool-group">
       <button
+        mbPostAction
+        size="small"
         class="tool"
         type="button"
-        [class.active]="typographyOpen()"
+        [active]="typographyOpen()"
         [attr.aria-expanded]="typographyOpen()"
         [title]="'reader.toolbar.typographyTitle' | transloco"
         (click)="toggleTypography()"
@@ -21,20 +23,24 @@
       <!-- Pages vs. scroll. A segmented pair rather than one toggle, because
          "Pages" alone gives no clue what the other state is. -->
       <button
+        mbPostAction
+        size="small"
         class="tool"
         type="button"
-        [class.active]="prefs.readerPageFlip()"
-        [attr.aria-pressed]="prefs.readerPageFlip()"
+        [active]="prefs.readerPageFlip()"
+        [pressed]="prefs.readerPageFlip()"
         [title]="'reader.toolbar.pageFlipTitle' | transloco"
         (click)="setPageFlip(true)"
       >
         {{ 'reader.toolbar.pageFlip' | transloco }}
       </button>
       <button
+        mbPostAction
+        size="small"
         class="tool"
         type="button"
-        [class.active]="!prefs.readerPageFlip()"
-        [attr.aria-pressed]="!prefs.readerPageFlip()"
+        [active]="!prefs.readerPageFlip()"
+        [pressed]="!prefs.readerPageFlip()"
         [title]="'reader.toolbar.scrollTitle' | transloco"
         (click)="setPageFlip(false)"
       >
@@ -45,6 +51,8 @@
     @if (paging()) {
       <div class="tool-group pager">
         <button
+          mbPostAction
+          size="small"
           class="tool"
           type="button"
           [disabled]="!canPrev()"
@@ -65,6 +73,8 @@
           </span>
         </span>
         <button
+          mbPostAction
+          size="small"
           class="tool"
           type="button"
           [disabled]="!canNext()"
@@ -85,9 +95,11 @@
     <div class="tool-group">
       @if (canSearch()) {
         <button
+          mbPostAction
+          size="small"
           class="tool"
           type="button"
-          [class.active]="searchOpen()"
+          [active]="searchOpen()"
           [attr.aria-expanded]="searchOpen()"
           [title]="'reader.toolbar.searchTitle' | transloco"
           (click)="findInDocument.emit()"
@@ -96,10 +108,12 @@
         </button>
       }
       <button
+        mbPostAction
+        size="small"
         class="tool"
         type="button"
-        [class.active]="libraryOpen()"
-        [attr.aria-pressed]="libraryOpen()"
+        [active]="libraryOpen()"
+        [pressed]="libraryOpen()"
         [disabled]="!libraryEnabled()"
         [title]="'reader.toolbar.libraryTitle' | transloco"
         (click)="toggleLibrary.emit()"
@@ -108,6 +122,8 @@
       </button>
       @if (canExit()) {
         <button
+          mbPostAction
+          size="small"
           class="tool"
           type="button"
           [title]="'reader.toolbar.exitTitle' | transloco"
@@ -119,10 +135,12 @@
     </div>
 
     @if (typographyOpen()) {
-      <div class="typography">
+      <div mbReaderPreferences class="typography">
         <div class="typo-row">
           <span class="typo-label">{{ 'reader.toolbar.size' | transloco }}</span>
           <button
+            mbPostAction
+            size="small"
             class="tool"
             type="button"
             [title]="'reader.toolbar.smaller' | transloco"
@@ -133,6 +151,8 @@
           </button>
           <span class="typo-value" aria-live="polite">{{ prefs.readerFontSize() }}px</span>
           <button
+            mbPostAction
+            size="small"
             class="tool"
             type="button"
             [title]="'reader.toolbar.larger' | transloco"
@@ -220,7 +240,7 @@
         }
 
         <div class="typo-row typo-done">
-          <button class="tool" type="button" (click)="closeTypography()">
+          <button mbPostAction size="small" class="tool" type="button" (click)="closeTypography()">
             {{ 'reader.toolbar.done' | transloco }}
           </button>
         </div>
