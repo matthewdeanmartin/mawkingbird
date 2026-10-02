@@ -1,5 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbDialog } from '../../../design-system/dialog/dialog';
+import { MbButton } from '../../../design-system/button/button';
+import { MbContentLink } from '../../../design-system/metadata/metadata';
+import { MbNotice } from '../../../design-system/notice/notice';
 import { CorsProxyEntry } from '../../cors-proxy/cors-proxy-catalog';
 import { TwitterSourceEntry } from '../twitter-source';
 
@@ -64,7 +68,7 @@ import { TwitterSourceEntry } from '../twitter-source';
 // i18n twitter.consent.acceptRisk: I accept the risk
 @Component({
   selector: 'app-twitter-consent-dialog',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, MbDialog, MbButton, MbContentLink, MbNotice],
   templateUrl: './twitter-consent-dialog.html',
   styleUrls: ['../../shortener/proxy-consent-dialog/proxy-consent-dialog.css'],
 })

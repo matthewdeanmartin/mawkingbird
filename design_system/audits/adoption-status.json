@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 24,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 59,
-  "directTemplateCallSites": 400,
+  "appTemplateFiles": 61,
+  "directTemplateCallSites": 416,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,7 +29,7 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 144,
+      "directCallSites": 148,
       "consumers": [
         {
           "file": "account-analytics/account-analytics.html",
@@ -176,6 +176,14 @@
           "count": 1
         },
         {
+          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 2
+        },
+        {
           "file": "report-dialog/report-dialog.html",
           "count": 1
         },
@@ -261,7 +269,7 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 14,
+      "directCallSites": 16,
       "consumers": [
         {
           "file": "account-list-dialog/account-list-dialog.html",
@@ -309,6 +317,14 @@
         },
         {
           "file": "pages/write/posting-language-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
           "count": 1
         },
         {
@@ -525,11 +541,19 @@
     {
       "name": "MbContentLink",
       "selector": "a[mbContentLink]",
-      "directCallSites": 2,
+      "directCallSites": 10,
       "consumers": [
         {
           "file": "pages/client-list/client-list-page.html",
           "count": 2
+        },
+        {
+          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 3
         }
       ],
       "integrated": true
@@ -561,7 +585,7 @@
     {
       "name": "MbNotice",
       "selector": "mb-notice",
-      "directCallSites": 11,
+      "directCallSites": 13,
       "consumers": [
         {
           "file": "compose/translate-dialog/translate-dialog.html",
@@ -578,6 +602,14 @@
         {
           "file": "pages/list-timeline/list-timeline.html",
           "count": 3
+        },
+        {
+          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 1
         },
         {
           "file": "report-dialog/report-dialog.html",

@@ -1,5 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbDialog } from '../../../design-system/dialog/dialog';
+import { MbButton } from '../../../design-system/button/button';
+import { MbContentLink } from '../../../design-system/metadata/metadata';
+import { MbNotice } from '../../../design-system/notice/notice';
 import { CorsProxyEntry } from '../../cors-proxy/cors-proxy-catalog';
 import { ShortenerCatalogEntry } from '../shortener-catalog';
 
@@ -64,7 +68,7 @@ import { ShortenerCatalogEntry } from '../shortener-catalog';
  */
 @Component({
   selector: 'app-proxy-consent-dialog',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, MbDialog, MbButton, MbContentLink, MbNotice],
   templateUrl: './proxy-consent-dialog.html',
   styleUrls: ['./proxy-consent-dialog.css'],
 })

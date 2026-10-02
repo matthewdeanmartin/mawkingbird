@@ -959,13 +959,13 @@
     },
     {
       "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Consent-dialog batch 2 adopts Dialog, Button, ContentLink and Notice. Preserve service-specific disclosures and existing accepted/cancelled outputs; Escape, backdrop and Close never grant consent. Retain distinct external-key, self-hosted and credential-free states with native focus/scrolling browser coverage."
     },
     {
       "file": "ui/src/app/providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Consent-dialog batch 2 adopts Dialog, Button, ContentLink and Notice. Preserve service-specific disclosures and existing accepted/cancelled outputs; Escape, backdrop and Close never grant consent. Retain distinct external-key, self-hosted and credential-free states with native focus/scrolling browser coverage."
     },
     {
       "file": "ui/src/app/reader-toolbar/reader-toolbar.ts",

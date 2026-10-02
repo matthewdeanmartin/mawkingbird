@@ -185,6 +185,11 @@ to a connected opener. The fixed-size surface scrolls internally on small screen
 There are no entrance/exit animations. The component owns width, internal padding,
 border, focus handling and scrolling. Do not apply the legacy `appFocusTrap` too.
 
+Long dialog titles and the Close action wrap onto separate header rows when
+necessary. The Close button does not shrink into a vertical stack of letters;
+its appearance still belongs to MbButton, not the caller. Keep a safe dismissal
+action above long consent disclosures rather than initially focusing acceptance.
+
 ## Popover and action menu
 
 `MbPopover` takes a translated `label` and projects rich content. It is a click-open,

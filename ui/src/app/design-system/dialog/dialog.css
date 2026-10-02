@@ -16,11 +16,14 @@ dialog::backdrop {
 }
 header {
   display: flex;
+  flex-wrap: wrap;
   align-items: start;
   justify-content: space-between;
   gap: 12px;
 }
 h2 {
+  flex: 1 1 180px;
+  min-width: 0;
   margin: 0;
   font-size: 19px;
   overflow-wrap: anywhere;
@@ -43,4 +46,8 @@ footer {
 }
 footer:empty {
   display: none;
+}
+header button {
+  flex-shrink: 0;
+  max-width: 100%;
 }

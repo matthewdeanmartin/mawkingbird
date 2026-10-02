@@ -1,5 +1,34 @@
 # Design-system progress
 
+## Shared-dialog migration, batch 2
+
+Shortener proxy consent and Twitter proxy consent now use Dialog, Button,
+ContentLink and Notice. Service-specific disclosure text, destinations and
+accepted/cancelled outputs remain unchanged. External credential risk stays
+distinct from self-hosted and credential-free requests; closing the dialog never
+grants consent. Native modality adds focus containment, inert background content
+and focus restoration to these formerly bespoke overlays. The initial focus is
+the safe Close action above the disclosure, not the acceptance action below it.
+
+Storybook **Adoption / Consent dialogs / Interactive** imports both production
+components and exercises all five scenarios without storing consent or sending
+requests. Seven browser checks cover explicit acceptance, decline/Escape/backdrop,
+focus restoration/wrapping and long disclosure scrolling at 320px in both themes.
+Twenty-two targeted tests cover the migrated components and existing consent stores.
+
+Narrow-screen visual review exposed a shared header defect: long titles squeezed
+Close into a column of letters. Dialog now wraps its header and preserves the
+button width; the consent browser tests guard this at 320px. This fix lives in
+the shared widget, not a consent-specific override. The full test gate passes
+all 7,668 tests with no missing runtime inventory entries.
+All 35 consent, batch-1 dialog and shared-overlay browser checks pass. Angular
+lint, design lint, formatting/type checks, inventory reconciliation and both
+Storybook and production builds pass; the initial bundle remains below 1 MB.
+
+Source adoption is now **416 direct placements across 61 templates**. No new
+widget was needed; the existing contracts cover this batch. Remaining shared
+dialogs still precede search/composer and then settings/connections in the queue.
+
 ## Shared-dialog migration, batch 1
 
 BugReportDialog, BulkAddDialog and BulkActionsDialog now compose the production
