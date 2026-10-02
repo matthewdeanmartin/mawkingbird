@@ -1,0 +1,26 @@
+[mbRailCard] {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--rail-bg, var(--col-bg));
+  overflow: hidden;
+}
+[mbRailCard][data-overflow='visible'] {
+  overflow: visible;
+}
+[mbRailCard][data-tone='accent'] {
+  border-color: var(--accent);
+}
+[mbRailCard][data-tone='subtle'] {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+}
+[mbRailCard] .card-title {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 17px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+}
+[mbRailCard] .card-title.server-mode-title {
+  padding: 1px 0 0;
+  border: 0;
+}

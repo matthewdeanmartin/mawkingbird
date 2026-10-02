@@ -1,7 +1,7 @@
 <div class="sdiscovery" aria-live="polite">
   @switch (state()) {
     @case ('idle') {
-      <button class="btn btn-outline" type="button" (click)="startSearch()">
+      <button mbButton variant="outline" type="button" (click)="startSearch()">
         {{ startText() }}
       </button>
       <p class="muted small sd-note">
@@ -10,14 +10,14 @@
     }
     @case ('searching') {
       <div class="sd-searching">
-        <span class="spinner" aria-hidden="true"></span>
+        <span mbSpinner class="spinner" aria-hidden="true"></span>
         <span>
           {{ 'searchServerDiscovery.searching.label' | transloco }}
           <span class="muted small">{{
             'searchServerDiscovery.searching.tried' | transloco: { count: tried() }
           }}</span>
         </span>
-        <button class="text-button" type="button" (click)="cancel()">
+        <button mbPostAction size="small" class="text-button" type="button" (click)="cancel()">
           {{ 'searchServerDiscovery.searching.cancel' | transloco }}
         </button>
       </div>
@@ -29,7 +29,7 @@
     }
     @case ('found') {
       @if (candidate(); as server) {
-        <div class="sd-candidate">
+        <div mbDiscoveryCandidate class="sd-candidate">
           <strong>
             {{
               'searchServerDiscovery.candidate.allowsSearch' | transloco: { domain: server.domain }
@@ -57,11 +57,11 @@
           @if (server.description) {
             <p>{{ server.description }}</p>
           }
-          <div class="sd-actions">
-            <button class="btn" type="button" (click)="useCandidate()">
+          <div data-candidate-actions class="sd-actions">
+            <button mbButton type="button" (click)="useCandidate()">
               {{ 'searchServerDiscovery.candidate.use' | transloco }}
             </button>
-            <button class="btn btn-outline" type="button" (click)="startSearch(false)">
+            <button mbButton variant="outline" type="button" (click)="startSearch(false)">
               {{ 'searchServerDiscovery.candidate.keepLooking' | transloco }}
             </button>
           </div>
@@ -72,7 +72,7 @@
       <p class="muted small">
         {{ 'searchServerDiscovery.exhausted.note' | transloco }}
       </p>
-      <button class="btn btn-outline" type="button" (click)="startSearch()">
+      <button mbButton variant="outline" type="button" (click)="startSearch()">
         {{ 'searchServerDiscovery.exhausted.retry' | transloco }}
       </button>
     }
@@ -99,7 +99,7 @@
           : 'searchServerDiscovery.rejects.skipping.other'
         ) | transloco: { count: rejectCount() }
       }}
-      <button class="text-button" type="button" (click)="forgetRejects()">
+      <button mbPostAction size="small" class="text-button" type="button" (click)="forgetRejects()">
         {{ 'searchServerDiscovery.rejects.forget' | transloco }}
       </button>
     </p>

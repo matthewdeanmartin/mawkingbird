@@ -1,3 +1,5 @@
+import { MbServerPickerSurface } from '../design-system/identity/server-picker';
+import { MbPostAction } from '../design-system/post-actions/post-actions';
 import { Component, DestroyRef, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +24,8 @@ import { probeServerAvailability } from '../server-availability';
 const DOMAIN_RE =
   /^(https?:\/\/)?(([a-z0-9-]+\.)+[a-z]{2,}|localhost|([a-z0-9-]+\.)*localhost|(\d{1,3}\.){3}\d{1,3})(:\d+)?$/i;
 
+let nextPickerId = 0;
+
 /** How the current combo text relates to a reachable instance. */
 export type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 
@@ -43,7 +47,7 @@ export type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachabl
  */
 @Component({
   selector: 'app-server-picker',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [MbPostAction, MbServerPickerSurface, FormsModule, TranslocoPipe],
   templateUrl: './server-picker.html',
   styleUrl: './server-picker.css',
 })
@@ -59,6 +63,8 @@ export class ServerPicker implements OnInit, OnDestroy {
   protected serverSuggestions = signal<ServerSuggestion[]>([]);
   /** Whether the suggestion dropdown is open (focused + has results). */
   protected suggestOpen = signal(false);
+  protected readonly listId = `server-picker-options-${nextPickerId++}`;
+  protected readonly activeSuggestion = signal(-1);
   /** Reachability of what's typed in the combo (drives the ✓/⚠ hint). */
   protected serverStatus = signal<ServerStatus>('idle');
   /** The reached instance's self-reported title ("Mastodon", …). */
@@ -86,6 +92,7 @@ export class ServerPicker implements OnInit, OnDestroy {
 
   /** As soon as the text looks like a domain, probe it and (on success) emit. */
   onServerInput(value: string): void {
+    this.activeSuggestion.set(-1);
     // Invalidate an in-flight probe even when the replacement text is not yet a domain.
     this.probeSeq += 1;
     this.customServer.set(value);
@@ -112,16 +119,33 @@ export class ServerPicker implements OnInit, OnDestroy {
   }
 
   onServerFocus(): void {
+    this.activeSuggestion.set(-1);
     this.refreshSuggestions(this.customServer());
     this.suggestOpen.set(true);
   }
 
   onServerBlur(): void {
     // Delay so a click on an option can register before the list closes.
-    setTimeout(() => this.suggestOpen.set(false), 150);
+    setTimeout(() => this.closeSuggestions(), 150);
+  }
+
+  closeSuggestions(): void {
+    this.suggestOpen.set(false);
+    this.activeSuggestion.set(-1);
+  }
+
+  moveSuggestion(direction: number): void {
+    if (!this.suggestOpen()) this.onServerFocus();
+    const count = this.serverSuggestions().length;
+    if (!count) return;
+    const current = this.activeSuggestion();
+    this.activeSuggestion.set(
+      current < 0 ? (direction > 0 ? 0 : count - 1) : (current + direction + count) % count,
+    );
   }
 
   chooseSuggestion(s: ServerSuggestion): void {
+    this.activeSuggestion.set(-1);
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
     }
@@ -142,6 +166,13 @@ export class ServerPicker implements OnInit, OnDestroy {
 
   /** Enter in the combo: don't wait for the debounce. */
   applyServerNow(): void {
+    const suggestion = this.suggestOpen()
+      ? this.serverSuggestions()[this.activeSuggestion()]
+      : null;
+    if (suggestion) {
+      this.chooseSuggestion(suggestion);
+      return;
+    }
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
     }

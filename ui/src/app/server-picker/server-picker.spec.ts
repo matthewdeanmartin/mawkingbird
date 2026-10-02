@@ -35,6 +35,62 @@ const SUGGESTION: ServerSuggestion = {
 describe('ServerPicker', () => {
   let fakeServers: { search: ReturnType<typeof vi.fn>; ensureLoaded: ReturnType<typeof vi.fn> };
 
+  it('supports keyboard option navigation, Escape and explicit selection', async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => ({ title: 'Selected server' }) });
+    vi.stubGlobal('fetch', fetch);
+    fakeServers.search.mockReturnValue([SUGGESTION, { ...SUGGESTION, domain: 'second.example' }]);
+    const fixture = TestBed.createComponent(ServerPicker);
+    const picked = vi.fn();
+    fixture.componentInstance.picked.subscribe(picked);
+    await fixture.whenStable();
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    input.dispatchEvent(new Event('focus'));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await fixture.whenStable();
+    const options = fixture.nativeElement.querySelectorAll('[role="option"]');
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[0].id);
+    expect(options[0].getAttribute('aria-selected')).toBe('true');
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    await fixture.whenStable();
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[1].id);
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(input.hasAttribute('aria-activedescendant')).toBe(false);
+    expect(fetch).not.toHaveBeenCalled();
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', bubbles: true }));
+    await flush();
+    await fixture.whenStable();
+    expect(picked).toHaveBeenCalledExactlyOnceWith('https://second.example');
+    expect(input.value).toBe('second.example');
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('assigns independent listbox IDs when multiple pickers are rendered', async () => {
+    const first = TestBed.createComponent(ServerPicker);
+    const second = TestBed.createComponent(ServerPicker);
+    await first.whenStable();
+    await second.whenStable();
+    const firstInput: HTMLInputElement = first.nativeElement.querySelector('input');
+    const secondInput: HTMLInputElement = second.nativeElement.querySelector('input');
+    firstInput.dispatchEvent(new Event('focus'));
+    secondInput.dispatchEvent(new Event('focus'));
+    await first.whenStable();
+    await second.whenStable();
+    expect(firstInput.getAttribute('aria-controls')).not.toBe(
+      secondInput.getAttribute('aria-controls'),
+    );
+    expect(first.nativeElement.querySelector('[role="listbox"]').id).toBe(
+      firstInput.getAttribute('aria-controls'),
+    );
+    expect(second.nativeElement.querySelector('[role="listbox"]').id).toBe(
+      secondInput.getAttribute('aria-controls'),
+    );
+  });
+
   beforeEach(() => {
     fakeServers = {
       search: vi.fn().mockReturnValue([SUGGESTION]),

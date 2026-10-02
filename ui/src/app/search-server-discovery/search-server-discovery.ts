@@ -1,3 +1,7 @@
+import { MbDiscoveryCandidate } from '../design-system/identity/discovery-candidate';
+import { MbSpinner } from '../design-system/identity/spinner';
+import { MbPostAction } from '../design-system/post-actions/post-actions';
+import { MbButton } from '../design-system/button/button';
 import { Component, computed, inject, input, OnDestroy, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
@@ -68,7 +72,7 @@ const VISIBLE_ATTEMPTS = 6;
  */
 @Component({
   selector: 'app-search-server-discovery',
-  imports: [TranslocoPipe],
+  imports: [MbButton, MbPostAction, MbDiscoveryCandidate, MbSpinner, TranslocoPipe],
   templateUrl: './search-server-discovery.html',
   styleUrl: './search-server-discovery.css',
 })

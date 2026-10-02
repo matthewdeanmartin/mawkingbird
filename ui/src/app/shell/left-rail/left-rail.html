@@ -1,10 +1,10 @@
 <app-profile-stack />
 
-<section class="card suggest-card">
+<section mbRailCard overflow="visible" class="card suggest-card">
   <h2 class="card-title">{{ 'shell.left.whoToFollow' | transloco }}</h2>
   @if (suggestions().length) {
     @for (account of suggestions().slice(0, 5); track account.id) {
-      <div class="suggestion">
+      <div mbIdentityRow class="suggestion">
         <span class="hover-anchor">
           <a class="suggestion-avatar" [routerLink]="['/accounts', account.id]">
             <img
@@ -24,11 +24,17 @@
           <app-account-hover-card [account]="account" />
         </span>
         @if (followed().has(account.id)) {
-          <button type="button" class="btn follow-btn" disabled>
+          <button type="button" mbButton class="follow-btn" disabled>
             {{ 'shell.left.following' | transloco }}
           </button>
         } @else {
-          <button type="button" class="btn btn-outline follow-btn" (click)="follow(account)">
+          <button
+            type="button"
+            mbButton
+            variant="outline"
+            class="follow-btn"
+            (click)="follow(account)"
+          >
             {{ 'shell.left.follow' | transloco }}
           </button>
         }
@@ -47,7 +53,7 @@
 </section>
 
 @if (trends().length) {
-  <section class="card">
+  <section mbRailCard class="card">
     <h2 class="card-title">{{ 'shell.left.trendsForYou' | transloco }}</h2>
     @for (tag of trends().slice(0, 10); track tag.name) {
       <a class="trend" [routerLink]="['/tags', tag.name]">

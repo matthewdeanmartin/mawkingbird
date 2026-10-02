@@ -297,6 +297,55 @@ needed. The preview includes 21 controls and millions-scale counts; adding more
 commands requires extending the stress story, not a one-off fixed width. Menus
 are appropriate for moderation/removal, not the default escape for normal tools.
 
+### Navigation and identity
+
+Application consumers import the individual modules under `design-system/identity/`
+(for example, `rail-card` or `server-picker`). The `identity.ts` re-export is for
+catalogue/spec composition, not root-app imports: separate leaf modules keep
+optional rail/deck styling out of eager account/server controls. An ownership
+check guards this boundary.
+
+`design-system/identity/identity.ts` owns the existing rail/identity presentation.
+These components attach to native elements and project existing children, not
+provider services. **Adoption / Navigation and identity** renders the real rails,
+profile stack, preview and follow controls with Mastodon, anonymous and Bluesky
+fixtures. **Adoption / Server selection** renders the real picker and both
+discovery flows with working, degraded and unavailable responses.
+
+| Component               | Contract                                                                                                                                                                                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MbRailCard`            | `section[mbRailCard]` or `article[mbRailCard]`; existing 14px rail surface, `.card-title` slot, `overflow="visible"` for hover-card parents, `tone="accent"` for endorsements or `tone="subtle"` for server mode. Caller owns placement and domain content.               |
+| `MbIdentityRow`         | `div[mbIdentityRow]`; suggestion avatar/name/handle slots and row appearance. Caller owns hover anchors, links, ranking and follow action.                                                                                                                                |
+| `MbProfileStack`        | `section[mbProfileStack]`; native `.peek` buttons, profile banner/avatar, bio, metadata, statistics and stretched profile-link presentation. Keep native bio/stat links above the stretched link. No tablist semantics or account-switching logic are added.              |
+| `MbAccountCard`         | `div[mbAccountCard]`; `.hc-*` slots for the compact identity card. `[inline]` selects fluid width capped at 360px rather than the 280px hover card. The account component still owns visibility, relationship loading, verification, sanitized HTML and provider actions. |
+| `MbServerPickerSurface` | `div[mbServerPickerSurface]`; native combobox field and `.server-suggest`/`.suggest-*` popup slots, including active-option styling. No fetching, value coercion or approval behavior.                                                                                    |
+| `MbDiscoveryCandidate`  | `div[mbDiscoveryCandidate]`; candidate surface, bounded description and `[data-candidate-actions]` layout shared by ordinary and search-server discovery.                                                                                                                 |
+| `MbSwitch`              | `label[mbSwitch]` containing a native checkbox followed by an `aria-hidden` thumb span. Callers supply accessible naming, checked/disabled bindings and change handlers; disabled/focus appearance derives from the actual input.                                         |
+| `MbSpinner`             | `span[mbSpinner]`; the established 16px discovery indicator. Keep it decorative (`aria-hidden`) beside meaningful loading text. Animation stops with reduced motion.                                                                                                      |
+
+Projected styles are explicitly namespaced. The stack no longer needs a local
+`::ng-deep` escape for bio links. Ownership tests reject local copies of the
+migrated card/row/switch/picker appearance. Domain-specific content styles and
+rail placement remain local; a whole rail is not an all-purpose DS widget.
+
+Reuse existing components for behavior already represented in the system:
+`MbNavigation presentation="rail"` and `MbNavLink` for feed links; `MbButton`
+for profile/follow/ordinary actions; small `MbPostAction` for secondary commands;
+`MbCheckbox` for degraded-media consent; `MbDialog`, `MbField`/`MbControl` and
+`MbSaveFeedback` for share/update dialogs. FollowButton remains the shared domain
+control: unknown/self/anonymous hiding, foreign resolution, Requested versus
+Following, busy/error state and success outputs are not moved into DS components.
+Its former page-local destructive hover color is replaced by the canonical
+button treatment, including contrast-safe accent ink.
+
+ServerPicker retains its native input and probe lifecycle. Arrow keys highlight
+suggestions, Enter chooses the highlighted server, Escape dismisses suggestions,
+and pointer selection is a native click. Each instance has unique list/option
+IDs with active-descendant state. Degraded servers still require explicit consent.
+Do not replace this with an ordinary text-field form or merge its probes with
+Login's separate OAuth flow. AccountPreview explicitly queries the native toggle
+element so Escape still returns focus after Button adoption.
+
 ### Reader presentation
 
 `design-system/reader/reader.ts` extracts the reader's existing presentation;

@@ -1,6 +1,6 @@
 <app-plus-promotion placement="rail" />
 @for (ad of houseAds.visible(); track ad.id) {
-  <section class="card spotlight-card">
+  <section mbRailCard tone="accent" class="card spotlight-card">
     <a
       class="spotlight-body"
       [href]="ad.url"
@@ -24,6 +24,8 @@
       <!-- Outside the link above, or dismissing would open the advertiser. -->
       <button
         type="button"
+        mbPostAction
+        size="small"
         class="spotlight-dismiss"
         [attr.aria-label]="'shell.toast.dismiss' | transloco"
         [attr.title]="'shell.rail.hideAd' | transloco"
@@ -40,16 +42,13 @@
      connector this is not merely empty, it is meaningless — and it calls
      Mastodon list APIs there may be no token for. -->
 @if (auth.isAuthenticated && usableMastodon()) {
-  <section class="card server-mode-card">
+  <section mbRailCard tone="subtle" class="card server-mode-card">
     <div class="server-mode-heading">
       <div>
         <span class="server-mode-kicker">{{ 'shell.rail.singleServerMode' | transloco }}</span>
         <h2 class="card-title server-mode-title">{{ 'shell.rail.justMyServer' | transloco }}</h2>
       </div>
-      <label
-        class="server-mode-switch"
-        [class.disabled]="!justMyServer.ready() && !justMyServer.enabled()"
-      >
+      <label mbSwitch class="server-mode-switch">
         <input
           type="checkbox"
           [checked]="justMyServer.enabled()"
@@ -68,7 +67,10 @@
     </p>
     <button
       type="button"
-      class="btn btn-outline btn-sm server-mode-update"
+      mbButton
+      variant="outline"
+      size="small"
+      class="server-mode-update"
       [disabled]="justMyServer.preparing() || justMyServer.updating()"
       (click)="justMyServer.prepareUpdate()"
     >
@@ -99,7 +101,7 @@
      a donate block: Bluesky has no per-instance donation model and no instance
      to fund, so that block does not exist here rather than being translated. -->
 @if (usableBluesky() && bskyService(); as svc) {
-  <section class="card bsky-service-card">
+  <section mbRailCard class="card bsky-service-card">
     <h2 class="card-title">{{ 'shell.rail.yourBluesky' | transloco }}</h2>
     <p class="bsky-handle">&#64;{{ svc.handle }}</p>
     <p class="muted server-line">
@@ -114,56 +116,60 @@
      forcing them into the Mastodon tag UI would produce dead links. Hidden
      entirely when the unspecced endpoints refuse. -->
 @if (usableBluesky() && bskyTrends.trends().length) {
-  <section class="card">
+  <section mbRailCard class="card">
     <h2 class="card-title">{{ 'shell.rail.trendingBluesky' | transloco }}</h2>
-    @for (trend of bskyTrends.trends(); track trend.url) {
-      <a
-        class="rail-link bsky-trend"
-        [href]="trend.url"
-        target="_blank"
-        rel="noopener noreferrer"
-        [title]="trend.description || trend.displayName"
-      >
-        <span class="bsky-trend-name">{{ trend.displayName }}</span>
-        @if (trend.postCount) {
-          <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
-        }
-      </a>
-    }
+    <nav mbNavigation presentation="rail" [label]="'shell.rail.trendingBluesky' | transloco">
+      @for (trend of bskyTrends.trends(); track trend.url) {
+        <a
+          mbNavLink
+          class="rail-link bsky-trend"
+          [href]="trend.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          [title]="trend.description || trend.displayName"
+        >
+          <span class="bsky-trend-name">{{ trend.displayName }}</span>
+          @if (trend.postCount) {
+            <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
+          }
+        </a>
+      }
+    </nav>
   </section>
 }
 
 @if (usableMastodon()) {
-  <section class="card">
+  <section mbRailCard class="card">
     <h2 class="card-title">{{ 'shell.rail.fediverse' | transloco }}</h2>
 
-    <!-- Trends are not universal: some instances serve no trending links at all,
+    <nav mbNavigation presentation="rail" [label]="'shell.rail.fediverse' | transloco">
+      <!-- Trends are not universal: some instances serve no trending links at all,
        and a rail row leading to an error page reads as our bug. Hidden only
        once the server has actually refused the endpoint. -->
-    @if (feedCaps.shows('trending-links')) {
-      <a class="rail-link" routerLink="/feeds/news">
+      @if (feedCaps.shows('trending-links')) {
+        <a mbNavLink class="rail-link" routerLink="/feeds/news">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="m15.5 8.5-2 5-5 2 2-5z" />
+          </svg>
+          <span>{{ 'shell.rail.news' | transloco }}</span>
+        </a>
+      }
+      @if (feedCaps.shows('trending-statuses')) {
+        <a mbNavLink class="rail-link" routerLink="/feeds/trending">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 17l6-6 4 4 7-7M14 8h6v6" />
+          </svg>
+          <span>{{ 'shell.rail.trendingPosts' | transloco }}</span>
+        </a>
+      }
+      <a mbNavLink class="rail-link" routerLink="/feeds">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="m15.5 8.5-2 5-5 2 2-5z" />
+          <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
         </svg>
-        <span>{{ 'shell.rail.news' | transloco }}</span>
+        <span>{{ 'shell.rail.allFeeds' | transloco }}</span>
       </a>
-    }
-    @if (feedCaps.shows('trending-statuses')) {
-      <a class="rail-link" routerLink="/feeds/trending">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 17l6-6 4 4 7-7M14 8h6v6" />
-        </svg>
-        <span>{{ 'shell.rail.trendingPosts' | transloco }}</span>
-      </a>
-    }
-    <a class="rail-link" routerLink="/feeds">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-      </svg>
-      <span>{{ 'shell.rail.allFeeds' | transloco }}</span>
-    </a>
-
+    </nav>
     <div class="donate-block">
       <p class="donate-head muted">{{ 'shell.rail.keepNetworkRunning' | transloco }}</p>
       <a class="donate-link" [href]="donateServerUrl()" target="_blank" rel="noopener noreferrer">
@@ -257,7 +263,10 @@
           @if (announcements.activeCount()) {
             <button
               type="button"
-              class="btn btn-outline btn-sm dismiss-all"
+              mbButton
+              variant="outline"
+              size="small"
+              class="dismiss-all"
               (click)="announcements.dismissAll()"
             >
               {{ 'shell.rail.dismissAll' | transloco }}
@@ -266,7 +275,10 @@
         }
         <button
           type="button"
-          class="btn btn-outline btn-sm share-server"
+          mbButton
+          variant="outline"
+          size="small"
+          class="share-server"
           (click)="openShare()"
           [attr.title]="'shell.rail.copyShareTitle' | transloco"
         >
@@ -278,125 +290,110 @@
 }
 
 @if (shareOpen()) {
-  <div
-    class="overlay"
-    role="presentation"
-    tabindex="-1"
-    (click)="closeShare()"
-    (keyup.escape)="closeShare()"
+  <mb-dialog
+    [title]="'shell.rail.shareServer' | transloco"
+    [closeLabel]="'shell.rail.close' | transloco"
+    [showClose]="false"
+    [closeOnBackdrop]="true"
+    (dismissed)="closeShare()"
   >
-    <div
-      class="dialog"
-      role="dialog"
-      aria-labelledby="share-server-title"
-      (click)="$event.stopPropagation()"
-      (keyup)="$event.stopPropagation()"
-    >
-      <h3 id="share-server-title">{{ 'shell.rail.shareServer' | transloco }}</h3>
-      <p class="muted small">
-        {{ 'shell.rail.shareDescription' | transloco: { server: homeHost() } }}
-      </p>
-      <div class="share-url-row">
-        <input
+    <p class="muted small">
+      {{ 'shell.rail.shareDescription' | transloco: { server: homeHost() } }}
+    </p>
+    <div class="share-url-row">
+      <mb-field
+        class="share-field"
+        [label]="'shell.rail.shareLinkAria' | transloco"
+        [hideLabel]="true"
+        ><input
+          mbControl
           class="share-url"
           type="text"
           readonly
           [value]="anonymousShareAbsoluteUrl()"
           [attr.aria-label]="'shell.rail.shareLinkAria' | transloco"
           (focus)="$any($event.target).select()"
-        />
-        <button class="btn" type="button" (click)="copyShareUrl()">
-          {{ 'shell.rail.copy' | transloco }}
-        </button>
-      </div>
-      @if (copyState() === 'copied') {
-        <p class="share-copy-note ok small">{{ 'shell.rail.copied' | transloco }}</p>
-      } @else if (copyState() === 'failed') {
-        <p class="share-copy-note fail small">
-          {{ 'shell.rail.copyFailed' | transloco }}
-        </p>
-      }
-      <div class="share-actions">
-        <button class="btn btn-outline" type="button" (click)="closeShare()">
-          {{ 'shell.rail.close' | transloco }}
-        </button>
-      </div>
+      /></mb-field>
+      <button mbButton type="button" (click)="copyShareUrl()">
+        {{ 'shell.rail.copy' | transloco }}
+      </button>
     </div>
-  </div>
+    <mb-save-feedback
+      [state]="copyState() === 'copied' ? 'saved' : copyState() === 'failed' ? 'error' : 'idle'"
+      [message]="
+        (copyState() === 'copied' ? 'shell.rail.copied' : 'shell.rail.copyFailed') | transloco
+      "
+    />
+    <div class="share-actions">
+      <button mbButton variant="outline" type="button" (click)="closeShare()">
+        {{ 'shell.rail.close' | transloco }}
+      </button>
+    </div>
+  </mb-dialog>
 }
 
 @if (justMyServer.dialogOpen()) {
-  <div
-    class="overlay"
-    role="presentation"
-    tabindex="-1"
-    (click)="justMyServer.closeDialog()"
-    (keyup.escape)="justMyServer.closeDialog()"
+  <mb-dialog
+    [title]="'shell.rail.updateTitle' | transloco"
+    [closeLabel]="'shell.rail.close' | transloco"
+    [showClose]="false"
+    [closeOnBackdrop]="true"
+    [busy]="justMyServer.updating()"
+    (dismissed)="justMyServer.closeDialog()"
   >
-    <div
-      class="dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="server-list-update-title"
-      (click)="$event.stopPropagation()"
-      (keyup)="$event.stopPropagation()"
-    >
-      <h3 id="server-list-update-title">{{ 'shell.rail.updateTitle' | transloco }}</h3>
-      @if (justMyServer.plan(); as plan) {
-        <p>
-          {{
-            'shell.rail.updatePrompt'
-              | transloco
-                : {
-                    addCount: plan.addIds.length,
-                    addWord:
-                      (plan.addIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
-                      | transloco,
-                    removeCount: plan.removeIds.length,
-                    removeWord:
-                      (plan.removeIds.length === 1
-                        ? 'shell.rail.user.one'
-                        : 'shell.rail.user.other'
-                      ) | transloco,
-                    server: justMyServer.homeHost(),
-                  }
-          }}
-        </p>
-        <p class="muted small">
-          <span
-            [innerHTML]="
-              'shell.rail.alreadyPresent'
-                | transloco: { count: plan.alreadyPresent, title: justMyServer.listTitle() }
-            "
-          ></span>
-        </p>
-      }
-      @if (justMyServer.updating()) {
-        <div class="server-mode-progress" role="status">
-          <progress [value]="justMyServer.completed()" [max]="justMyServer.total() || 1"></progress>
-          <span>{{ justMyServer.progressLabel() }}</span>
-        </div>
-      }
-      <div class="share-actions">
-        <button
-          class="btn btn-outline"
-          type="button"
-          [disabled]="justMyServer.updating()"
-          (click)="justMyServer.closeDialog()"
-        >
-          {{ 'shell.rail.cancel' | transloco }}
-        </button>
-        <button
-          class="btn"
-          type="button"
-          [disabled]="justMyServer.updating()"
-          (click)="justMyServer.confirmUpdate()"
-        >
-          {{
-            (justMyServer.updating() ? 'shell.rail.updating' : 'shell.rail.updateList') | transloco
-          }}
-        </button>
+    @if (justMyServer.plan(); as plan) {
+      <p>
+        {{
+          'shell.rail.updatePrompt'
+            | transloco
+              : {
+                  addCount: plan.addIds.length,
+                  addWord:
+                    (plan.addIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
+                    | transloco,
+                  removeCount: plan.removeIds.length,
+                  removeWord:
+                    (plan.removeIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
+                    | transloco,
+                  server: justMyServer.homeHost(),
+                }
+        }}
+      </p>
+      <p class="muted small">
+        <span
+          [innerHTML]="
+            'shell.rail.alreadyPresent'
+              | transloco: { count: plan.alreadyPresent, title: justMyServer.listTitle() }
+          "
+        ></span>
+      </p>
+    }
+    @if (justMyServer.updating()) {
+      <div class="server-mode-progress" role="status">
+        <progress [value]="justMyServer.completed()" [max]="justMyServer.total() || 1"></progress>
+        <span>{{ justMyServer.progressLabel() }}</span>
       </div>
+    }
+    <div class="share-actions">
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [disabled]="justMyServer.updating()"
+        (click)="justMyServer.closeDialog()"
+      >
+        {{ 'shell.rail.cancel' | transloco }}
+      </button>
+      <button
+        mbButton
+        type="button"
+        [disabled]="justMyServer.updating()"
+        (click)="justMyServer.confirmUpdate()"
+      >
+        {{
+          (justMyServer.updating() ? 'shell.rail.updating' : 'shell.rail.updateList') | transloco
+        }}
+      </button>
     </div>
-  </div>
+  </mb-dialog>
 }

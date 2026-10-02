@@ -9,7 +9,7 @@ import { booleanAttribute, Component, inject, input } from '@angular/core';
 })
 export class MbNavigation {
   readonly label = input.required<string>();
-  readonly presentation = input<'rows' | 'tabs'>('rows');
+  readonly presentation = input<'rows' | 'tabs' | 'rail'>('rows');
 }
 
 @Component({

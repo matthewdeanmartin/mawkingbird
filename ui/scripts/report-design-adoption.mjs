@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { relative, resolve, sep } from 'node:path';
 import ts from 'typescript';
 import { parseTemplate } from '@angular/compiler';
+import { designTemplateNodes } from './design-template-nodes.mjs';
 
 const root = fileURLToPath(new URL('../src/app/', import.meta.url));
 const files = [];
@@ -80,16 +81,11 @@ for (const { file, source } of templates) {
   const parsed = parseTemplate(source, file);
   if (parsed.errors?.length) throw new Error(`Cannot count ${file}: ${parsed.errors.join('\n')}`);
   const counts = new Map();
-  function visit(node) {
+  for (const node of designTemplateNodes(parsed.nodes)) {
     for (const widget of widgets)
       if (matches(node, widget.selector))
         counts.set(widget.name, (counts.get(widget.name) ?? 0) + 1);
-    for (const key of ['children', 'branches', 'cases'])
-      for (const child of node[key] ?? []) visit(child);
-    for (const key of ['empty', 'placeholder', 'loading', 'error'])
-      if (node[key]?.children) visit(node[key]);
   }
-  for (const node of parsed.nodes) visit(node);
   for (const widget of widgets) {
     if (counts.has(widget.name))
       widget[file.startsWith('design-system/') ? 'internal' : 'direct'].push({

@@ -1,3 +1,6 @@
+import { MbRailCard } from '../../design-system/identity/rail-card';
+import { MbIdentityRow } from '../../design-system/identity/identity-row';
+import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../../account-hover-card/account-hover-card';
@@ -41,7 +44,15 @@ function accountKey(account: Account): string {
  */
 @Component({
   selector: 'app-left-rail',
-  imports: [RouterLink, AccountHoverCard, ProfileStack, TranslocoPipe],
+  imports: [
+    MbButton,
+    MbRailCard,
+    MbIdentityRow,
+    RouterLink,
+    AccountHoverCard,
+    ProfileStack,
+    TranslocoPipe,
+  ],
   templateUrl: './left-rail.html',
   styleUrl: './left-rail.css',
 })

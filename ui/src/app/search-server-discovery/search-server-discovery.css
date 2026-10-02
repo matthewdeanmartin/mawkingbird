@@ -8,59 +8,12 @@
   gap: 8px;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-.text-button {
-  border: 0;
-  padding: 4px;
-  background: none;
-  color: var(--accent);
-  font-weight: 700;
-  cursor: pointer;
-}
-
 .sd-searching .text-button {
   margin-left: auto;
 }
 
 .sd-note {
   margin: 6px 0 0;
-}
-
-.sd-candidate {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--accent-soft);
-  text-align: left;
-}
-
-.sd-candidate p {
-  margin: 5px 0;
-  font-size: 13px;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.sd-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 6px;
 }
 
 /* The walk, made visible. Monospace host + plain reason, newest on top. */
@@ -87,16 +40,4 @@
 
 .sd-rejects {
   margin: 10px 0 0;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation: none;
-  }
 }

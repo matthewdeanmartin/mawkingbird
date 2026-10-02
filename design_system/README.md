@@ -1,5 +1,11 @@
 # Mawkingbird design system
 
+Navigation/identity follow-up: **Adoption / Navigation and identity** previews
+the real rails, profile stack, account cards and follow controls across providers.
+**Adoption / Server selection** covers the picker and both discovery flows.
+Shared presentation preserves the existing card/deck shapes; ordinary actions,
+rail links and dialogs reuse established DS widgets. See [review and scope](audits/navigation-identity.md).
+
 Reader follow-up: **Reader / Presentation** now documents the existing native
 preferences, library, Find results and panel surfaces as shared components.
 **Adoption / Reader controls** uses those same components in the real reader
@@ -18,7 +24,7 @@ The [button batch](REVIEW-buttons.md) supplies their accent-aware actions.
 Status: Sprints 17 and 18 are combined into the final planned batch: client-list local tabs and identity content, edit-history metadata, direct Feed actions and reconciliation.
 
 [Integration progress](PROGRESS.md): zero sprints remain in the current plan.
-Source adoption after the reader extraction is 29 of 32 widget types, 735 direct placements in 79 app templates.
+Source adoption after the navigation/identity batch is 37 of 40 widget types, 797 direct placements in 88 app templates. The scanner now includes Angular switch-case groups that were previously omitted.
 This closes the planned batches, not all migration debt. Source integration is
 separate from deployment.
 

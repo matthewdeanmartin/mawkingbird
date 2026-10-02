@@ -1,3 +1,6 @@
+import { MbProfileStack } from '../../../design-system/identity/profile-stack';
+import { MbRailCard } from '../../../design-system/identity/rail-card';
+import { MbButton } from '../../../design-system/button/button';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../../auth';
@@ -35,7 +38,15 @@ function loadSelected(key: string): string | null {
  */
 @Component({
   selector: 'app-profile-stack',
-  imports: [RouterLink, VerifiedBadge, HumanCountPipe, TranslocoPipe],
+  imports: [
+    MbButton,
+    MbProfileStack,
+    MbRailCard,
+    RouterLink,
+    VerifiedBadge,
+    HumanCountPipe,
+    TranslocoPipe,
+  ],
   templateUrl: './profile-stack.html',
   styleUrl: './profile-stack.css',
 })

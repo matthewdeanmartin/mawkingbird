@@ -1,4 +1,5 @@
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { MbButton } from '../design-system/button/button';
+import { Component, DestroyRef, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Account } from '../models';
 import { AccountHoverCard } from './account-hover-card';
@@ -7,14 +8,16 @@ import { AccountHoverCard } from './account-hover-card';
 // i18n accountPreview.close: Close preview
 @Component({
   selector: 'app-account-preview',
-  imports: [AccountHoverCard, TranslocoPipe],
+  imports: [MbButton, AccountHoverCard, TranslocoPipe],
   template: `
     <div class="summary" (pointerenter)="enter($event)" (pointerleave)="leave()">
       <ng-content />
       <button
-        #toggle
+        #previewToggle
         type="button"
-        class="btn btn-sm btn-outline"
+        mbButton
+        variant="outline"
+        size="small"
         [attr.aria-expanded]="opened()"
         (click)="pinned = !pinned; opened.set(pinned)"
         (keydown.escape)="dismiss(); $event.stopPropagation()"
@@ -28,7 +31,9 @@ import { AccountHoverCard } from './account-hover-card';
         (pointerenter)="cancelClose()"
         (pointerleave)="leave()"
         (focusin)="pinned = true"
-        (keydown.escape)="dismiss(); toggle.focus(); $event.stopPropagation()"
+        (keydown.escape)="
+          dismiss(); toggleButton()?.nativeElement?.focus(); $event.stopPropagation()
+        "
       >
         <app-account-hover-card [account]="account()" inline />
       </div>
@@ -46,12 +51,15 @@ import { AccountHoverCard } from './account-hover-card';
       flex-wrap: wrap;
       gap: 8px;
     }
-    .summary button {
-      font-size: 12px;
-    }
   `,
 })
 export class AccountPreview {
+  protected readonly toggleButton = viewChild<unknown, ElementRef<HTMLButtonElement>>(
+    'previewToggle',
+    {
+      read: ElementRef,
+    },
+  );
   readonly account = input.required<Account>();
   protected opened = signal(false);
   protected pinned = false;

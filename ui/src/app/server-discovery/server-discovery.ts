@@ -1,3 +1,8 @@
+import { MbDiscoveryCandidate } from '../design-system/identity/discovery-candidate';
+import { MbSpinner } from '../design-system/identity/spinner';
+import { MbPostAction } from '../design-system/post-actions/post-actions';
+import { MbButton } from '../design-system/button/button';
+import { MbCheckbox } from '../design-system/checkbox/checkbox';
 import {
   Component,
   computed,
@@ -42,7 +47,7 @@ export interface DiscoveredServer extends ServerSuggestion {
 /** Finds a CORS-accessible Mastodon instance without depending on the live directory. */
 @Component({
   selector: 'app-server-discovery',
-  imports: [TranslocoPipe],
+  imports: [MbButton, MbPostAction, MbDiscoveryCandidate, MbSpinner, MbCheckbox, TranslocoPipe],
   templateUrl: './server-discovery.html',
   styleUrl: './server-discovery.css',
 })

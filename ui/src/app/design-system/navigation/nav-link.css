@@ -32,3 +32,17 @@
   outline: 2px solid var(--text);
   outline-offset: -3px;
 }
+
+:host([data-presentation='rail']) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-inline-start: 0;
+  font-weight: 700;
+  line-height: inherit;
+}
+
+:host([data-presentation='rail']:hover) {
+  color: var(--accent);
+}

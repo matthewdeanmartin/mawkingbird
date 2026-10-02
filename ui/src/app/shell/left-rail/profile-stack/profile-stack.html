@@ -1,5 +1,5 @@
 @if (selected(); as card) {
-  <section class="stack">
+  <section mbProfileStack class="stack">
     @for (peek of peeks(); track peek.key) {
       <button
         type="button"
@@ -18,7 +18,7 @@
       </button>
     }
 
-    <article class="card profile-card">
+    <article mbRailCard class="card profile-card">
       <div class="banner">
         @if (card.header) {
           <img [src]="card.header" alt="" decoding="async" />
@@ -75,7 +75,13 @@
           </a>
         }
         @if (card.switchTo) {
-          <button type="button" class="btn btn-outline switch-btn" (click)="switchToLocal()">
+          <button
+            type="button"
+            mbButton
+            variant="outline"
+            class="switch-btn"
+            (click)="switchToLocal()"
+          >
             {{ 'shell.profile.switch' | transloco }}
           </button>
         }

@@ -1,5 +1,45 @@
 # Design-system progress
 
+## Navigation and identity
+
+Nine consumer templates now adopt shared rail cards, identity rows/decks,
+hover/inline account-card presentation, discovery candidates/spinners, native
+switches and picker popup styling. Existing Button, PostAction, Checkbox,
+Navigation (rail presentation), Dialog, Field/Control and SaveFeedback supply
+ordinary controls instead of parallel implementations. The two rail overlays
+now use the existing native-dialog focus/dismissal contract; a busy server-list
+update still cannot be dismissed. Account-preview Escape returns focus to the
+native button rather than the Button component instance.
+
+Profile selection keys, real account switching, lazy relationship loading,
+anonymous/provider gates, requested-follow semantics, search probes and explicit
+degraded-media approval remain domain-owned. The native server combobox gains
+Arrow/Enter/Escape option navigation and unique IDs; mouse and keyboard share
+the same selection path. No OAuth or publishing behavior changes.
+
+Six new Storybook stories show real consumers, with preview services and
+simulated probes rather than live follows/server changes. Browser tests exercise
+320px light, 412px dark RTL and wide desktop, plus anonymous/Bluesky gates,
+failure/retry, native focus return and degraded/unavailable server paths.
+Ownership rules cover projected CSS and recurring local-style copies.
+
+The report also fixes a discovered scanner gap: Angular switch-case groups
+were not traversed. Regression fixtures cover switches, loops, conditionals
+and deferred states. Current source adoption is 797 placements in 88 templates,
+37 of 40 widget types; this increase includes previously uncounted controls,
+not just this batch. The candidate ledger covers 216 files from 1,084 scanned
+sources. One obsolete candidate (the profile-stack CSS escape) disappears because
+its appearance moved into a namespaced shared component, not because it was
+allowlisted. See [review and scope](audits/navigation-identity.md).
+
+Final validation: 83 focused specs and all 7,702 unit tests pass with no skips
+or missing tests; all 381 browser tests pass against the final catalogue build.
+Lint, i18n, types, formatting, ownership rules and the production build pass.
+Identity components use leaf imports to avoid eagerly loading rail/deck styles
+with root controls. Initial output is 903.10 kB: above the existing 900 kB warning
+threshold, below the unchanged 1 MB error limit. No budget was raised. Existing
+component-CSS/CommonJS warnings remain. Nothing is committed, pushed or deployed.
+
 ## Reader presentation extraction (no redesign)
 
 Four reader-specific DS components now own preferences, library presentation,

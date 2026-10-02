@@ -1,0 +1,51 @@
+[mbSwitch] {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: none;
+  cursor: pointer;
+}
+
+[mbSwitch] input {
+  position: absolute;
+  opacity: 0;
+}
+
+[mbSwitch] span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--border);
+  transition: background 120ms ease;
+}
+
+[mbSwitch] span::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ds-switch-thumb);
+  box-shadow: 0 1px 3px var(--ds-switch-shadow);
+  transition: transform 120ms ease;
+}
+
+[mbSwitch] input:checked + span {
+  background: var(--accent);
+}
+
+[mbSwitch] input:checked + span::after {
+  transform: translateX(18px);
+}
+
+[mbSwitch] input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+[mbSwitch]:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

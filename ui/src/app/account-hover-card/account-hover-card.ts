@@ -1,3 +1,5 @@
+import { MbAccountCard } from '../design-system/identity/account-card';
+import { MbButton } from '../design-system/button/button';
 import { RouterLink } from '@angular/router';
 import { effect, untracked } from '@angular/core';
 import { accountRoutePath } from '../account-route';
@@ -39,10 +41,24 @@ function didOf(account: Account): string {
  */
 @Component({
   selector: 'app-account-hover-card',
-  imports: [RouterLink, TranslocoPipe, VerifiedBadge, HumanCountPipe, RenderedHtmlLinks],
+  imports: [
+    MbButton,
+    MbAccountCard,
+    RouterLink,
+    TranslocoPipe,
+    VerifiedBadge,
+    HumanCountPipe,
+    RenderedHtmlLinks,
+  ],
   host: { '[class.inline]': 'inline()' },
   template: `
-    <div class="hover-card" (mouseenter)="loadRelationship()" (focusin)="loadRelationship()">
+    <div
+      mbAccountCard
+      [inline]="inline()"
+      class="hover-card"
+      (mouseenter)="loadRelationship()"
+      (focusin)="loadRelationship()"
+    >
       <img
         class="hc-avatar"
         [src]="account().avatar_static || account().avatar"
@@ -81,14 +97,16 @@ function didOf(account: Account): string {
       }
       <div class="hc-actions">
         @if (inline()) {
-          <a class="btn btn-sm btn-outline" [routerLink]="profileRoute()">{{
+          <a mbButton variant="outline" size="small" [routerLink]="profileRoute()">{{
             'accountPreview.fullProfile' | transloco
           }}</a>
         }
         @if (showFollowButton()) {
           <button
             type="button"
-            class="btn btn-sm hc-follow"
+            mbButton
+            size="small"
+            class="hc-follow"
             [class.following]="isFollowingState()"
             [disabled]="relationshipLoading() || followBusy()"
             (click)="toggleFollow($event)"
@@ -103,7 +121,10 @@ function didOf(account: Account): string {
              inside a status that navigates on click. -->
         @if (homeServerLink(); as link) {
           <a
-            class="btn btn-sm btn-outline hc-home"
+            mbButton
+            variant="outline"
+            size="small"
+            class="hc-home"
             [href]="link.url"
             target="_blank"
             rel="noopener noreferrer"
@@ -150,91 +171,6 @@ function didOf(account: Account): string {
       opacity: 1;
       content-visibility: visible;
       margin-top: 8px;
-    }
-    :host.inline .hover-card {
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 360px;
-    }
-    .hc-acct {
-      overflow-wrap: anywhere;
-    }
-    .hc-stats {
-      flex-wrap: wrap;
-    }
-    .hover-card {
-      width: 280px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--col-bg);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 1.4;
-      text-align: left;
-      white-space: normal;
-    }
-    .hc-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 9999px;
-      object-fit: cover;
-      background: var(--border);
-    }
-    .hc-name {
-      margin-top: 6px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .hc-acct {
-      font-size: 13px;
-    }
-    .hc-inbound {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 1px 6px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 11px;
-      white-space: nowrap;
-    }
-    .hc-note {
-      margin-top: 6px;
-      color: var(--text);
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-    }
-    .hc-stats {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-      font-size: 13px;
-    }
-    .hc-stats strong {
-      color: var(--text);
-    }
-    .hc-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .hc-follow {
-      width: auto;
-      min-width: 92px;
-    }
-    /* The hostname can be long (indieweb.social, chaos.social…), so it is
-       allowed to shrink and ellipsize rather than widening the card. */
-    .hc-home {
-      min-width: 0;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
   `,
 })

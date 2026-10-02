@@ -34,13 +34,13 @@
     },
     {
       "file": "ui/src/app/account-hover-card/account-hover-card.ts",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbAccountCard and MbButton own card/action presentation. Preserve lazy provider-specific relationships, anonymous follows, hover suppression on phones, inline previews, sanitized bio links and native actions."
     },
     {
       "file": "ui/src/app/account-hover-card/account-preview.ts",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbButton owns the preview toggle; native ElementRef focus return preserves Escape/pinning and touch disclosure. Hover timers remain caller-owned."
     },
     {
       "file": "ui/src/app/account-list-dialog/account-list-dialog.html",
@@ -279,8 +279,8 @@
     },
     {
       "file": "ui/src/app/follow-button/follow-button.ts",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbButton supplies accent-aware Follow/Following/Requested presentation. Preserve unknown/self/anonymous hiding, foreign-account resolution on intent, pending requests, busy disabling, failure feedback and successful-change outputs."
     },
     {
       "file": "ui/src/app/friend-feeds-dialog/friend-feeds-dialog.html",
@@ -979,18 +979,18 @@
     },
     {
       "file": "ui/src/app/search-server-discovery/search-server-discovery.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbDiscoveryCandidate, MbSpinner, MbButton and MbPostAction own discovery controls. Preserve cancellable probes, explicit approval, rejection history, retry and provider-specific search criteria."
     },
     {
       "file": "ui/src/app/server-discovery/server-discovery.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "adopted scope",
+      "nextStep": "Discovery uses shared candidate/spinner/actions and MbCheckbox for degraded-media consent. Preserve worker cancellation, current-server exclusion, explicit approval and unavailable/degraded states."
     },
     {
       "file": "ui/src/app/server-picker/server-picker.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbServerPickerSurface and MbPostAction own popup/confirmation presentation. Native combobox now has unique list IDs, active-descendant keyboard navigation and click selection. Keep probes, stale-response guards and degraded-server approval local."
     },
     {
       "file": "ui/src/app/share-dialog/share-dialog.html",
@@ -1004,23 +1004,18 @@
     },
     {
       "file": "ui/src/app/shell/left-rail/left-rail.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
-    },
-    {
-      "file": "ui/src/app/shell/left-rail/profile-stack/profile-stack.css",
-      "disposition": "backlog",
-      "nextStep": "Review and replace the listed styling escape with an explicit component contract; do not allowlist it as design-system compliance."
+      "disposition": "adopted scope",
+      "nextStep": "MbRailCard, MbIdentityRow and MbButton own shared card/suggestion/action presentation. Retain trend content, hover anchoring, timeline ranking, network gates and follow orchestration."
     },
     {
       "file": "ui/src/app/shell/left-rail/profile-stack/profile-stack.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "MbProfileStack, MbRailCard and MbButton own identity deck presentation. The old CSS escape was removed into scoped projection slots. Preserve selected-profile storage, per-provider data, native stats links, bio links and account switching."
     },
     {
       "file": "ui/src/app/shell/right-rail/right-rail.html",
-      "disposition": "backlog",
-      "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
+      "disposition": "adopted scope",
+      "nextStep": "Rail cards, rail-mode Navigation, native Switch, Button/PostAction, Dialog, Field/Control and SaveFeedback are adopted. Preserve network consent gates, disclosures, donation links, announcement commands, share URLs and guarded server-list updates. Embedded PlusPromotion remains a separate specialized consumer."
     },
     {
       "file": "ui/src/app/shell/shell.html",

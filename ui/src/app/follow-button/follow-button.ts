@@ -1,3 +1,4 @@
+import { MbButton } from '../design-system/button/button';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Auth } from '../auth';
 import { FollowState } from '../follow-state';
@@ -24,12 +25,14 @@ import { Account } from '../models';
  */
 @Component({
   selector: 'app-follow-button',
-  imports: [],
+  imports: [MbButton],
   template: `
     @if (visible()) {
       <button
-        class="btn btn-sm follow-btn"
-        [class.btn-outline]="!connected()"
+        mbButton
+        size="small"
+        class="follow-btn"
+        [variant]="connected() ? 'solid' : 'outline'"
         [class.following]="connected()"
         type="button"
         [disabled]="busy()"
@@ -47,15 +50,9 @@ import { Account } from '../models';
     .follow-btn {
       white-space: nowrap;
     }
-    /* Hovering an established follow offers to undo it, so the label changes
-       under the cursor and the button reads as destructive. */
-    .follow-btn.following:hover {
-      border-color: var(--danger, #c0392b);
-      color: var(--danger, #c0392b);
-    }
     .follow-error {
       margin-left: 6px;
-      color: var(--danger, #c0392b);
+      color: var(--ds-error-text);
     }
   `,
 })

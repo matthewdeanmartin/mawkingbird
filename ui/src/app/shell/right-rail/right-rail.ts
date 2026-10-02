@@ -1,3 +1,11 @@
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
+import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback';
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbDialog } from '../../design-system/dialog/dialog';
+import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
+import { MbRailCard } from '../../design-system/identity/rail-card';
+import { MbSwitch } from '../../design-system/identity/switch';
+import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../providers/account/plus-promotion';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -76,7 +84,21 @@ import { TranslocoPipe } from '@jsverse/transloco';
  */
 @Component({
   selector: 'app-right-rail',
-  imports: [RouterLink, TranslocoPipe, PlusPromotion],
+  imports: [
+    MbPostAction,
+    MbSaveFeedback,
+    MbField,
+    MbControl,
+    MbDialog,
+    MbNavigation,
+    MbNavLink,
+    MbSwitch,
+    MbButton,
+    MbRailCard,
+    RouterLink,
+    TranslocoPipe,
+    PlusPromotion,
+  ],
   templateUrl: './right-rail.html',
   styleUrl: './right-rail.css',
 })

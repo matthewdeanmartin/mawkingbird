@@ -1,5 +1,9 @@
 /* New semantic roles under review; existing app tokens come from ui/src/styles.css. */
 :root {
+  --ds-identity-shadow: rgb(0 0 0 / 18%);
+  --ds-switch-thumb: #fff;
+  --ds-switch-shadow: rgb(0 0 0 / 25%);
+  --ds-warning-text: #93400a;
   --ds-error-text: #a41037;
   --ds-action-fill: color-mix(in srgb, var(--accent) 42%, #000);
   --ds-action-ink: #fff;
@@ -13,6 +17,7 @@
 }
 
 :root[data-theme="dark"] {
+  --ds-warning-text: #ffc387;
   --ds-error-text: #ff9db4;
   --ds-action-fill: color-mix(in srgb, var(--accent) 35%, #fff);
   --ds-action-ink: #10171e;

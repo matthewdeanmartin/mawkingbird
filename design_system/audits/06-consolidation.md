@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Navigation and identity follow-up
+
+Nine rail/identity/server-selection consumers adopt shared presentation and
+existing DS controls. The scanner visits Angular switch-case groups as well as
+branches/loops/deferred alternatives; current usage is 797 placements in 88
+templates, 37 of 40 widget types. The inventory scans 1,084 source files and
+lists 216 candidate files. The profile-stack CSS candidate is removed because
+its `::ng-deep` escape was replaced with namespaced projected styles; the
+template remains accounted for. These numbers include corrected source counting,
+not only new adoption. See [review and scope](navigation-identity.md).
+
 ## Reader presentation follow-up
 
 Preferences, library chrome/rows, Find fields/results and notes/selection surfaces

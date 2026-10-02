@@ -57,7 +57,7 @@ describe('ServerDiscovery', () => {
     fixture.detectChanges();
 
     (fixture.nativeElement as HTMLElement)
-      .querySelector<HTMLButtonElement>('.btn-outline')!
+      .querySelector<HTMLButtonElement>('button[mbButton][data-variant="outline"]')!
       .click();
     await vi.waitFor(() => {
       fixture.detectChanges();
@@ -80,7 +80,7 @@ describe('ServerDiscovery', () => {
     fixture.detectChanges();
 
     (fixture.nativeElement as HTMLElement)
-      .querySelector<HTMLButtonElement>('.btn-outline')!
+      .querySelector<HTMLButtonElement>('button[mbButton][data-variant="outline"]')!
       .click();
     await vi.waitFor(() => expect(directory.shuffled).toHaveBeenCalled());
 

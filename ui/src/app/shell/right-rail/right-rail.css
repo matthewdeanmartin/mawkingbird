@@ -1,22 +1,9 @@
 .card {
   margin-bottom: 12px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--rail-bg, var(--col-bg));
-  overflow: hidden;
-}
-
-.card-title {
-  margin: 0;
-  padding: 12px 14px;
-  font-size: 17px;
-  font-weight: 800;
-  border-bottom: 1px solid var(--border);
 }
 
 .server-mode-card {
   padding: 13px 14px;
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 
 .server-mode-heading {
@@ -33,11 +20,6 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.server-mode-title {
-  padding: 1px 0 0;
-  border: 0;
 }
 
 .server-mode-copy {
@@ -60,59 +42,7 @@
 }
 
 .server-mode-status.fail {
-  color: #e0245e;
-}
-
-.server-mode-switch {
-  position: relative;
-  width: 42px;
-  height: 24px;
-  flex: none;
-  cursor: pointer;
-}
-
-.server-mode-switch input {
-  position: absolute;
-  opacity: 0;
-}
-
-.server-mode-switch span {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: var(--border);
-  transition: background 120ms ease;
-}
-
-.server-mode-switch span::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
-  transition: transform 120ms ease;
-}
-
-.server-mode-switch input:checked + span {
-  background: var(--accent);
-}
-
-.server-mode-switch input:checked + span::after {
-  transform: translateX(18px);
-}
-
-.server-mode-switch input:focus-visible + span {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.server-mode-switch.disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+  color: var(--ds-error-text);
 }
 
 .server-mode-progress {
@@ -125,23 +55,6 @@
 .server-mode-progress progress {
   flex: 1;
   accent-color: var(--accent);
-}
-
-.rail-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.rail-link:hover {
-  background: var(--hover);
-  text-decoration: none;
-  color: var(--accent);
 }
 
 .rail-link svg {
@@ -270,9 +183,6 @@
  * .ad-title, …), which made these invisible for anyone running uBlock/AdBlock.
  * The visible "House ad" text label stays — filters match selectors, not text.
  */
-.spotlight-card {
-  border-color: var(--accent);
-}
 
 .spotlight-body {
   display: flex;
@@ -336,80 +246,12 @@
   color: inherit;
 }
 
-/* Small, but not smaller than a comfortable target: 24px box around a 11px
-   glyph, so it is hittable on a phone without shouting on a desktop. */
-.spotlight-dismiss {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  margin: -6px -6px -6px 0;
-  border: none;
-  border-radius: 50%;
-  background: none;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1;
-}
-
-.spotlight-dismiss:hover {
-  background: var(--hover);
-  color: var(--text);
-}
-
 /* Share-this-server dialog */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 110;
-  padding: 16px;
-}
-
-.dialog {
-  background: var(--col-bg);
-  border-radius: 16px;
-  padding: 24px;
-  width: 420px;
-  max-width: 100%;
-}
-
-.dialog h3 {
-  margin: 0 0 8px;
-}
 
 .share-url-row {
   display: flex;
   gap: 8px;
   margin: 12px 0 4px;
-}
-
-.share-url {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--col-bg);
-  color: inherit;
-  font-family: monospace;
-  font-size: 13px;
-}
-
-.share-copy-note {
-  margin: 4px 0 0;
-}
-
-.share-copy-note.ok {
-  color: var(--accent);
-}
-
-.share-copy-note.fail {
-  color: #e0245e;
 }
 
 .share-actions {
@@ -455,4 +297,12 @@
 
 .dismiss-all {
   margin-bottom: 6px;
+}
+
+.share-field {
+  flex: 1;
+  min-width: 0;
+}
+.spotlight-dismiss {
+  flex: none;
 }

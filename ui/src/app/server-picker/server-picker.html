@@ -1,27 +1,47 @@
-<div class="server-combo">
+<div mbServerPickerSurface class="server-combo">
   <div class="server-field">
     <input
       type="text"
       role="combobox"
       [attr.aria-label]="'serverPicker.instanceAria' | transloco"
       aria-autocomplete="list"
-      aria-controls="picker-suggest-list"
+      [attr.aria-controls]="listId"
+      [attr.aria-activedescendant]="
+        suggestOpen() && activeSuggestion() >= 0 ? listId + '-' + activeSuggestion() : null
+      "
       [attr.aria-expanded]="suggestOpen() && serverSuggestions().length > 0"
       [ngModel]="customServer()"
       (ngModelChange)="onServerInput($event)"
       (focus)="onServerFocus()"
       (blur)="onServerBlur()"
       (keyup.enter)="applyServerNow()"
+      (keydown.arrowdown)="moveSuggestion(1); $event.preventDefault()"
+      (keydown.arrowup)="moveSuggestion(-1); $event.preventDefault()"
+      (keydown.escape)="closeSuggestions(); $event.preventDefault(); $event.stopPropagation()"
       [placeholder]="'serverPicker.instancePlaceholder' | transloco"
       autocomplete="off"
       autocapitalize="off"
       spellcheck="false"
     />
     @if (suggestOpen() && serverSuggestions().length) {
-      <ul id="picker-suggest-list" class="server-suggest" role="listbox">
-        @for (s of serverSuggestions(); track s.domain) {
-          <li role="option" [attr.aria-selected]="false">
-            <button type="button" class="suggest-row" (mousedown)="chooseSuggestion(s)">
+      <ul
+        [id]="listId"
+        class="server-suggest"
+        role="listbox"
+        [attr.aria-label]="'serverPicker.instanceAria' | transloco"
+      >
+        @for (s of serverSuggestions(); track s.domain; let index = $index) {
+          <li role="presentation">
+            <button
+              type="button"
+              class="suggest-row"
+              role="option"
+              tabindex="-1"
+              [id]="listId + '-' + index"
+              [attr.aria-selected]="activeSuggestion() === index"
+              (mousedown)="$event.preventDefault()"
+              (click)="chooseSuggestion(s)"
+            >
               <span class="suggest-top">
                 <span class="suggest-domain">{{ s.domain }}</span>
                 @if (s.category) {
@@ -58,7 +78,13 @@
         'serverPicker.mediaBlocked'
           | transloco: { media: mediaHost() || ('serverPicker.mediaServer' | transloco) }
       }}</span>
-      <button class="text-button" type="button" (click)="useDegradedServer()">
+      <button
+        mbPostAction
+        size="small"
+        class="text-button"
+        type="button"
+        (click)="useDegradedServer()"
+      >
         {{ 'serverPicker.useAnyway' | transloco }}
       </button>
     }

@@ -1,11 +1,11 @@
 {
   "scope": "Maintained Angular app template call sites; excludes stories, specs and shared internals from direct counts. Repeated runtime rows count once per source node. Integration means source usage, not commit, deployment or full app coverage.",
-  "widgetsAvailable": 32,
-  "widgetsDirectlyUsed": 29,
+  "widgetsAvailable": 40,
+  "widgetsDirectlyUsed": 37,
   "widgetsUsedThroughCompositionOnly": [],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 79,
-  "directTemplateCallSites": 735,
+  "appTemplateFiles": 88,
+  "directTemplateCallSites": 797,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -29,10 +29,18 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 244,
+      "directCallSites": 272,
       "consumers": [
         {
           "file": "account-analytics/account-analytics.html",
+          "count": 1
+        },
+        {
+          "file": "account-hover-card/account-hover-card.ts",
+          "count": 3
+        },
+        {
+          "file": "account-hover-card/account-preview.ts",
           "count": 1
         },
         {
@@ -112,6 +120,10 @@
           "count": 2
         },
         {
+          "file": "follow-button/follow-button.ts",
+          "count": 1
+        },
+        {
           "file": "history-dialog/history-dialog.html",
           "count": 2
         },
@@ -125,7 +137,7 @@
         },
         {
           "file": "onboarding/onboarding-card.html",
-          "count": 3
+          "count": 7
         },
         {
           "file": "pages/bluesky-oauth-callback/bluesky-oauth-callback.html",
@@ -221,7 +233,7 @@
         },
         {
           "file": "pages/write/write-page.html",
-          "count": 1
+          "count": 2
         },
         {
           "file": "people-browser/people-browser.html",
@@ -240,6 +252,26 @@
           "count": 1
         },
         {
+          "file": "search-server-discovery/search-server-discovery.html",
+          "count": 4
+        },
+        {
+          "file": "server-discovery/server-discovery.html",
+          "count": 4
+        },
+        {
+          "file": "shell/left-rail/left-rail.html",
+          "count": 2
+        },
+        {
+          "file": "shell/left-rail/profile-stack/profile-stack.html",
+          "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 7
+        },
+        {
           "file": "shell/shell.html",
           "count": 2
         },
@@ -253,7 +285,7 @@
     {
       "name": "MbCheckbox",
       "selector": "mb-checkbox",
-      "directCallSites": 28,
+      "directCallSites": 29,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -310,6 +342,10 @@
         {
           "file": "pages/settings/writing/settings-writing.html",
           "count": 2
+        },
+        {
+          "file": "server-discovery/server-discovery.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -341,7 +377,7 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 17,
+      "directCallSites": 19,
       "consumers": [
         {
           "file": "account-list-dialog/account-list-dialog.html",
@@ -408,6 +444,10 @@
           "count": 1
         },
         {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 2
+        },
+        {
           "file": "sign-in-prompt/sign-in-prompt.html",
           "count": 1
         }
@@ -441,7 +481,7 @@
     {
       "name": "MbControl",
       "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
-      "directCallSites": 61,
+      "directCallSites": 62,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -554,6 +594,10 @@
         {
           "file": "report-dialog/report-dialog.html",
           "count": 2
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -561,7 +605,7 @@
     {
       "name": "MbField",
       "selector": "mb-field",
-      "directCallSites": 61,
+      "directCallSites": 62,
       "consumers": [
         {
           "file": "admin/announcements/admin-announcements.html",
@@ -674,6 +718,122 @@
         {
           "file": "report-dialog/report-dialog.html",
           "count": 2
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbAccountCard",
+      "selector": "div[mbAccountCard]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "account-hover-card/account-hover-card.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbDiscoveryCandidate",
+      "selector": "div[mbDiscoveryCandidate]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "search-server-discovery/search-server-discovery.html",
+          "count": 1
+        },
+        {
+          "file": "server-discovery/server-discovery.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbIdentityRow",
+      "selector": "div[mbIdentityRow]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "shell/left-rail/left-rail.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbProfileStack",
+      "selector": "section[mbProfileStack]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "shell/left-rail/profile-stack/profile-stack.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbRailCard",
+      "selector": "section[mbRailCard], article[mbRailCard]",
+      "directCallSites": 8,
+      "consumers": [
+        {
+          "file": "shell/left-rail/left-rail.html",
+          "count": 2
+        },
+        {
+          "file": "shell/left-rail/profile-stack/profile-stack.html",
+          "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 5
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbServerPickerSurface",
+      "selector": "div[mbServerPickerSurface]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "server-picker/server-picker.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbSpinner",
+      "selector": "span[mbSpinner]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "search-server-discovery/search-server-discovery.html",
+          "count": 1
+        },
+        {
+          "file": "server-discovery/server-discovery.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbSwitch",
+      "selector": "label[mbSwitch]",
+      "directCallSites": 1,
+      "consumers": [
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -761,11 +921,15 @@
     {
       "name": "MbNavigation",
       "selector": "nav[mbNavigation]",
-      "directCallSites": 1,
+      "directCallSites": 3,
       "consumers": [
         {
           "file": "pages/settings/settings-shell.html",
           "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 2
         }
       ],
       "integrated": true
@@ -773,11 +937,15 @@
     {
       "name": "MbNavLink",
       "selector": "a[mbNavLink]",
-      "directCallSites": 1,
+      "directCallSites": 5,
       "consumers": [
         {
           "file": "pages/settings/settings-shell.html",
           "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 4
         }
       ],
       "integrated": true
@@ -967,7 +1135,7 @@
     {
       "name": "MbPostAction",
       "selector": "button[mbPostAction], a[mbPostAction]",
-      "directCallSites": 89,
+      "directCallSites": 94,
       "consumers": [
         {
           "file": "command-bar/command-bar.ts",
@@ -1024,6 +1192,22 @@
         {
           "file": "pages/write/write-page.html",
           "count": 5
+        },
+        {
+          "file": "search-server-discovery/search-server-discovery.html",
+          "count": 2
+        },
+        {
+          "file": "server-discovery/server-discovery.html",
+          "count": 1
+        },
+        {
+          "file": "server-picker/server-picker.html",
+          "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 1
         },
         {
           "file": "status-card/status-card.html",
@@ -1139,7 +1323,7 @@
     {
       "name": "MbSaveFeedback",
       "selector": "mb-save-feedback",
-      "directCallSites": 3,
+      "directCallSites": 4,
       "consumers": [
         {
           "file": "pages/settings/privacy/settings-privacy.html",
@@ -1147,6 +1331,10 @@
         },
         {
           "file": "pages/settings/writing/settings-writing.html",
+          "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
           "count": 1
         }
       ],
