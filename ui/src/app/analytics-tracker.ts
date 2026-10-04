@@ -44,6 +44,7 @@ export class AnalyticsTracker {
   private readonly router = inject(Router);
   private readonly prefs = inject(ClientPrefs);
   private loaded = false;
+  private pending: string[] = [];
 
   start(): void {
     // Canary is a testing deployment (normally just me), so don't pollute the
@@ -51,21 +52,37 @@ export class AnalyticsTracker {
     if (isCanaryBuild() || isTestBuild()) {
       return;
     }
+    let previousPath: string | undefined;
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe((e) => this.count(e.urlAfterRedirects));
+      .subscribe((e) => {
+        const path = e.urlAfterRedirects;
+        const withoutFragment = path.split('#', 1)[0].replace(/\/+$/, '');
+        const sectionJump = path.includes('#') && withoutFragment === previousPath;
+        previousPath = withoutFragment;
+        if (!sectionJump) this.count(path);
+      });
   }
 
   private count(path: string): void {
     // Checked per view, not once at startup: turning analytics off stops
     // counting immediately, without a reload.
     if (!this.prefs.analytics()) {
+      this.pending = [];
       return;
     }
+    this.pending.push(sanitizePath(path));
     this.ensureScript();
-    // The script loads async; if a navigation beats it, that view is skipped
-    // rather than queued — acceptable for lightweight page analytics.
-    window.goatcounter?.count?.({ path: sanitizePath(path) });
+    this.flush();
+  }
+
+  private flush(): void {
+    if (!this.prefs.analytics()) {
+      this.pending = [];
+      return;
+    }
+    if (!window.goatcounter?.count) return;
+    for (const path of this.pending.splice(0)) window.goatcounter.count({ path });
   }
 
   /**
@@ -87,6 +104,17 @@ export class AnalyticsTracker {
     script.src = SCRIPT_URL;
     script.async = true;
     script.dataset['goatcounter'] = ENDPOINT;
+    // Retain first/direct landing-page visits while the local script loads.
+    script.addEventListener('load', () => this.flush(), { once: true });
+    script.addEventListener(
+      'error',
+      () => {
+        this.pending = [];
+        this.loaded = false;
+        script.remove();
+      },
+      { once: true },
+    );
     document.head.append(script);
   }
 }

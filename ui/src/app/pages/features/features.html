@@ -16,10 +16,10 @@
     <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
   </div>
   <nav mbNavigation label="Feature areas" presentation="tabs">
-    <a mbNavLink href="#mastodon">Mastodon feeds</a>
-    <a mbNavLink href="#reading">Reading</a>
-    <a mbNavLink href="#creators">Creators</a>
-    <a mbNavLink href="#advanced">Advanced tools</a>
+    <a mbNavLink [href]="sectionHref('mastodon')">Mastodon feeds</a>
+    <a mbNavLink [href]="sectionHref('reading')">Reading</a>
+    <a mbNavLink [href]="sectionHref('creators')">Creators</a>
+    <a mbNavLink [href]="sectionHref('advanced')">Advanced tools</a>
   </nav>
   <section>
     <h2>Find your way into Mawkingbird</h2>
@@ -106,6 +106,12 @@
     </div>
   </aside>
   <footer>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/readers">For readers</a>
+    <a mbContentLink routerLink="/for/bluesky">For Bluesky users</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter / X</a>
+    <a mbContentLink routerLink="/for/instagram">For photo lovers</a>
+    <a mbContentLink routerLink="/for/creators">For creators</a>
     <a mbContentLink routerLink="/about">About the design</a>
     <a mbContentLink routerLink="/credits">Credits and privacy</a>
   </footer>

@@ -2,6 +2,13 @@
 
 ## Public SEO pages and footer follow-up
 
+The feature-reference navigation now resolves fragments against its own pathname
+so the root base tag cannot send section links into the app. Its footer adds the
+six shared public-page links using MbContentLink. The inventory diff contains
+only these adopted links and their shifted template lines; no custom controls
+or styling exceptions were introduced. SEO browser checks require section links
+to scroll within the same document with JavaScript enabled and disabled.
+
 The five audience landing pages add four source files and one candidate template:
 1,097 scanned files and 220 candidate files. The shared audience template uses
 MbButton and MbContentLink, reuses the existing feature-page layout without

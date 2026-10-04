@@ -137,6 +137,9 @@ describe('AnalyticsTracker opt-out', () => {
     (window as { goatcounter?: { count?: (v: { path: string }) => void } }).goatcounter = {
       count: (v) => counted.push(v.path),
     };
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toEqual(['/home']);
+    counted.length = 0;
 
     navigate();
     expect(counted).toEqual(['/home']);
@@ -145,5 +148,58 @@ describe('AnalyticsTracker opt-out', () => {
     TestBed.inject(ClientPrefs).setAnalytics(false);
     navigate();
     expect(counted).toEqual(['/home']);
+  });
+
+  it('counts initial and intervening public visits once after the script loads', () => {
+    setUp(true);
+    router.events.next(new NavigationEnd(1, '/features/', '/features/'));
+    router.events.next(
+      new NavigationEnd(2, '/for/readers?source=private', '/for/readers?source=private'),
+    );
+    const counted: string[] = [];
+    window.goatcounter = { count: ({ path }) => counted.push(path) };
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toEqual(['/features/', '/for/readers']);
+    router.events.next(new NavigationEnd(3, '/for/creators', '/for/creators'));
+    expect(counted).toEqual(['/features/', '/for/readers', '/for/creators']);
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toHaveLength(3);
+  });
+
+  it('discards queued landing views if analytics are disabled before script load', () => {
+    setUp(true);
+    navigate();
+    TestBed.inject(ClientPrefs).setAnalytics(false);
+    const counted: string[] = [];
+    window.goatcounter = { count: ({ path }) => counted.push(path) };
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toEqual([]);
+    TestBed.inject(ClientPrefs).setAnalytics(true);
+    router.events.next(new NavigationEnd(2, '/features', '/features'));
+    expect(counted).toEqual(['/features']);
+  });
+
+  it('discards failed script-load visits and permits a later navigation to retry', () => {
+    setUp(true);
+    navigate();
+    injectedScript()!.dispatchEvent(new Event('error'));
+    expect(injectedScript()).toBeNull();
+    router.events.next(new NavigationEnd(2, '/for/readers', '/for/readers'));
+    const counted: string[] = [];
+    window.goatcounter = { count: ({ path }) => counted.push(path) };
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toEqual(['/for/readers']);
+  });
+
+  it('counts direct fragment visits but not subsequent same-page section jumps', () => {
+    setUp(true);
+    router.events.next(new NavigationEnd(1, '/features/#mastodon', '/features/#mastodon'));
+    router.events.next(new NavigationEnd(2, '/features#reading', '/features#reading'));
+    const counted: string[] = [];
+    window.goatcounter = { count: ({ path }) => counted.push(path) };
+    injectedScript()!.dispatchEvent(new Event('load'));
+    expect(counted).toEqual(['/features/']);
+    router.events.next(new NavigationEnd(3, '/for/readers#intro', '/for/readers#intro'));
+    expect(counted).toEqual(['/features/', '/for/readers']);
   });
 });

@@ -32,6 +32,17 @@ describes photo viewing on supported networks, not an Instagram connection;
 the Twitter/X guide does not promise automatic account migration. Audience
 content is lazy-loaded and stays out of the app's initial bundle.
 
+The feature-area navigation uses this document's pathname plus a fragment. Bare
+`href="#reading"` links would resolve against the root `<base href="/">` and
+open the app instead. The feature reference and audience pages share the same
+audience footer links.
+
+Production public pages use the app's GoatCounter tracker after browser startup.
+Direct visits wait for the vendored script before being counted; delayed script
+loading does not discard the first view. Analytics opt-out still suppresses
+loading/counting, and canary/test deployments and JavaScript-disabled visits are
+not tracked. Prerendering itself never initializes analytics.
+
 The features reference is explicitly English and does not imply localized
 indexable URLs. Existing app locale choices and script tags are unchanged.
 Feature descriptions must reflect shipped capabilities and their account,

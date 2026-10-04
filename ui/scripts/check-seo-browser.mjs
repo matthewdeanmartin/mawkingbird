@@ -46,6 +46,13 @@ try {
   await mkdir(results, { recursive: true });
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled });
+    // Exercise the real tracker without sending local test visits to production.
+    await context.route('**/vendor/count.js', (route) =>
+      route.fulfill({
+        contentType: 'text/javascript',
+        body: 'window.__seoPageViews = []; window.goatcounter.count = ({path}) => window.__seoPageViews.push(path);',
+      }),
+    );
     const page = await context.newPage();
     const errors = [];
     const diagnostics = [];
@@ -96,12 +103,60 @@ try {
       fullPage: true,
     });
     assert.deepEqual(errors, [], 'no browser runtime errors');
+    if (javaScriptEnabled) {
+      await page.waitForFunction(() =>
+        window.__seoPageViews?.some((path) => path.replace(/\/$/, '') === '/features'),
+      );
+      assert.equal(await page.locator('script[data-goatcounter]').count(), 1);
+    }
+    const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
+    for (const [label, fragment] of [
+      ['Mastodon feeds', 'mastodon'],
+      ['Reading', 'reading'],
+      ['Creators', 'creators'],
+      ['Advanced tools', 'advanced'],
+    ]) {
+      await page
+        .getByRole('navigation', { name: 'Feature areas' })
+        .getByRole('link', { name: label, exact: true })
+        .click();
+      await page.waitForURL(
+        (url) => url.pathname.replace(/\/$/, '') === '/features' && url.hash === `#${fragment}`,
+      );
+      assert.equal(
+        await page.evaluate(() => performance.timeOrigin),
+        documentStartedAt,
+        `${label} stays in the same document with JavaScript ${javaScriptEnabled}`,
+      );
+      assert.equal(await page.locator('app-features').count(), 1);
+      await page.waitForFunction((id) => {
+        const box = document.getElementById(id)?.getBoundingClientRect();
+        return box && box.top < innerHeight && box.bottom > 0;
+      }, fragment);
+    }
+    assert.equal(await page.locator('footer a[href="/for/readers"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/bluesky"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/twitter-exodus"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/instagram"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/creators"]').count(), 1);
+    if (javaScriptEnabled)
+      assert.deepEqual(
+        await page.evaluate(() => window.__seoPageViews.map((path) => path.replace(/\/$/, ''))),
+        ['/features'],
+        'section jumps do not count as additional page views',
+      );
     for (const [slug, heading] of audiencePages) {
       await page.goto(`${origin}/for/${slug}/`);
       await page.getByRole('heading', { name: heading, exact: true }).waitFor();
       if (javaScriptEnabled)
         await page.waitForFunction(() =>
           document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      if (javaScriptEnabled)
+        await page.waitForFunction(
+          (slug) =>
+            window.__seoPageViews?.some((path) => path.replace(/\/$/, '') === `/for/${slug}`),
+          slug,
         );
       assert.equal(
         await page.locator('link[rel="canonical"]').getAttribute('href'),
@@ -135,6 +190,26 @@ try {
     }
     if (javaScriptEnabled) {
       await page.goto(`${origin}/for/readers/`);
+      await page.waitForFunction(() =>
+        window.__seoPageViews?.some((path) => path.replace(/\/$/, '') === '/for/readers'),
+      );
+      await page
+        .getByRole('link', { name: 'Discover all Mawkingbird features', exact: true })
+        .click();
+      await page.waitForURL(`${origin}/features`);
+      const enteredFeaturesAt = await page.evaluate(() => performance.timeOrigin);
+      await page
+        .getByRole('navigation', { name: 'Feature areas' })
+        .getByRole('link', { name: 'Reading', exact: true })
+        .click();
+      await page.waitForURL(`${origin}/features#reading`);
+      assert.equal(
+        await page.evaluate(() => performance.timeOrigin),
+        enteredFeaturesAt,
+        'section links also stay in the document after client navigation to /features',
+      );
+      await page.locator('footer').getByRole('link', { name: 'For readers', exact: true }).click();
+      await page.waitForURL(`${origin}/for/readers`);
       await page.getByRole('link', { name: 'For creators', exact: true }).click();
       await page.waitForURL(`${origin}/for/creators`);
       await page.getByRole('heading', { name: audiencePages[4][1], exact: true }).waitFor();
