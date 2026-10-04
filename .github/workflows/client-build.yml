@@ -32,9 +32,13 @@ jobs:
           npm run check:storage
           node --test scripts/import-starter-catalog.test.mjs
 
-  design-system:
+  design-system-shards:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     defaults:
       run:
         working-directory: ui
@@ -50,4 +54,15 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run lint
-      - run: npm run design:verify
+      - run: npm run design:verify -- --shard=${{ matrix.shard }}/2
+
+  # Preserve the required check name and require every shard to pass.
+  design-system:
+    if: ${{ always() }}
+    needs: design-system-shards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all design shards
+        env:
+          SHARD_RESULT: ${{ needs.design-system-shards.result }}
+        run: test "$SHARD_RESULT" = success

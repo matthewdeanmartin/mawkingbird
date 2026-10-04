@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 
@@ -81,9 +81,12 @@ try {
       await page.goto(origin + '/');
       assert.equal(await page.locator('a[rel="me"]').count(), 0);
       assert.equal(await page.locator('head link[rel="me"]').count(), 2);
-      await page
-        .getByRole('heading', { name: 'Mastodon, Bluesky and RSS in one familiar home' })
-        .waitFor();
+      assert.equal(await page.locator('app-root').innerHTML(), '');
+      assert.equal(await page.locator('app-public-home').count(), 0);
+      assert.equal(
+        await page.locator('meta[property="og:image"]').getAttribute('content'),
+        'https://mawkingbird.com/mockingbird_hand.png',
+      );
     } else {
       // Router navigation proves the browser bootstrapped the real app rather
       // than merely leaving the prerendered markup on screen.
@@ -96,6 +99,52 @@ try {
         'noindex, follow',
       );
       assert.deepEqual(errors, [], 'client navigation has no runtime errors');
+
+      // Hold the first-run probe so the startup interval is observable without
+      // depending on external Mastodon servers or arbitrary sleep durations.
+      let releaseProbe;
+      const probeReady = new Promise((resolve) => {
+        releaseProbe = resolve;
+      });
+      await context.route('https://**/*', async (route) => {
+        const instance = new URL(route.request().url()).pathname === '/api/v1/instance';
+        if (instance) await probeReady;
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(instance ? { title: 'Preview test server' } : []),
+        });
+      });
+      await context.addInitScript(() => {
+        window.__seoLandingSeen = false;
+        new MutationObserver(() => {
+          if (
+            document.querySelector('app-public-home') ||
+            document.body?.textContent.includes('Mastodon, Bluesky and RSS in one familiar home')
+          ) {
+            window.__seoLandingSeen = true;
+          }
+        }).observe(document, { childList: true, subtree: true });
+      });
+      await page.goto(origin + '/');
+      await page.locator('app-entry').waitFor({ state: 'attached' });
+      assert.equal(await page.locator('app-public-home').count(), 0);
+      assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
+      releaseProbe();
+      await page.waitForURL(origin + '/home');
+      try {
+        await page.getByRole('heading', { name: 'Welcome to Mawkingbird' }).waitFor();
+      } catch (error) {
+        await writeFile(path.join(results, 'seo-root-failure.html'), await page.content());
+        await page.screenshot({ path: path.join(results, 'seo-root-failure.png'), fullPage: true });
+        throw error;
+      }
+      assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
+      await page.goto(origin + '/');
+      await page.waitForURL(origin + '/home');
+      await page.getByRole('heading', { name: 'Welcome to Mawkingbird' }).waitFor();
+      assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
+      assert.deepEqual(errors, [], 'preview startup has no runtime errors');
     }
     await context.close();
   }

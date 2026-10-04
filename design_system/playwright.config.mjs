@@ -11,6 +11,9 @@ export default defineConfig({
   outputDir: "./test-results",
   forbidOnly: true,
   retries: 0,
+  // Each test owns its browser context and artifact paths; schedule individual
+  // tests so large catalogue files cannot leave the other workers idle.
+  fullyParallel: true,
   workers: 2,
   reporter: "list",
   use: {

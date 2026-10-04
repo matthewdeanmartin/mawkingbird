@@ -8,11 +8,6 @@
       "nextStep": "Public feature reference uses MbButton for CTA links, MbContentLink for prose links and MbNavigation/MbNavLink for fragment navigation. Keep native destinations, mobile wrapping, themes, contrast and prerendered content covered; page CSS owns only layout."
     },
     {
-      "file": "ui/src/app/pages/features/public-home.ts",
-      "disposition": "adopted scope",
-      "nextStep": "Signed-out public summary uses MbButton and MbContentLink without a custom pill style. Preserve automatic app entry, the footer-only feature link, machine-only rel=me metadata and server-renderable public content."
-    },
-    {
       "file": "ui/src/app/design-system/button/button.css",
       "disposition": "shared implementation",
       "nextStep": "Canonical button appearance for MbButton and legacy class aliases. Keep contrast, states and touch targets covered by the button browser matrix."

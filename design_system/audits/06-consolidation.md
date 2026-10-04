@@ -2,6 +2,13 @@
 
 ## Public SEO pages and footer follow-up
 
+The root-entry correction removes the signed-out summary component and its
+reconciliation entry: 1,093 source files scanned, 219 candidate files. Public
+feature content remains at `/features`; social metadata stays in the document
+head. Neither prerendered root HTML nor preview startup shows a marketing page.
+The inventory change is the deleted summary's shared controls, not an exemption
+or a change to the remaining public page's design-system contracts.
+
 The October 4 SEO follow-up reconciles five additional source files and updated
 footer line numbers: 1,094 source files scanned, 220 candidate files. The public
 feature reference and signed-out summary now use MbButton for call-to-action

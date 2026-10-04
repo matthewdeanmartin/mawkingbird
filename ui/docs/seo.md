@@ -14,13 +14,15 @@ The checker still rejects preview/project-path bases, duplicate bases, incorrect
 
 `src/main.server.ts` bootstraps only the public features component and route
 metadata. It does not initialize accounts, storage, runtime translations,
-analytics or remote-server probes. `/` and `/features/` receive real HTML; the
-browser bootstraps the ordinary client without hydration. At `/`, the existing
-entry dispatcher then opens the app preview or the returning user's Home.
-The public HTML is visible while JavaScript loads and when JavaScript is off.
-The root summary also appears for signed-out visitors while their preview starts;
-this is not crawler-specific rendering. `/features` is the fuller public
-reference and stays visible after browser startup.
+analytics or remote-server probes. Only `/features/` receives prerendered page
+content. `/` uses the ordinary client entry with its existing anonymous preview
+and welcome/login flow; no intermediate marketing page renders during loading,
+preview preparation, reloads or account changes. Its social-card tags and identity
+links are already in `src/index.html` and are available without JavaScript.
+The SEO postbuild copies Angular's `index.csr.html` to the root `index.html`
+required by GitHub Pages, preserving the client entry and its head metadata.
+The browser bootstraps without hydration. `/features` remains the public
+reference, including when JavaScript is disabled.
 
 The features reference is explicitly English and does not imply localized
 indexable URLs. Existing app locale choices and script tags are unchanged.

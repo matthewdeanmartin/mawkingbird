@@ -109,6 +109,24 @@ describe('EntryPage', () => {
     expect(TestBed.inject(AnonymousFollows).count()).toBe(0);
   });
 
+  it('renders no marketing page while a first-time preview probe is pending', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        () =>
+          new Promise(() => {
+            // Keep the probe pending to inspect startup before account entry.
+          }),
+      ),
+    );
+    const fixture = TestBed.createComponent(EntryPage);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.children.length).toBe(0);
+    expect(navigate).not.toHaveBeenCalled();
+    fixture.destroy();
+  });
+
   it('enters anonymous and seeds the preview for a first-time visitor', async () => {
     probeAnswers({ 'mastodon.social': true });
     TestBed.createComponent(EntryPage).detectChanges();

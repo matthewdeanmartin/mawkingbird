@@ -55,6 +55,16 @@ the browser smoke/interaction tests. The test server uses port 6008 and shuts
 down automatically; it does not control your desktop browser. Screenshots and
 failure traces go in ignored `design_system/test-results/`.
 
+The browser gate schedules independent tests in parallel using two workers.
+CI runs two shards on separate runners, using
+`npm run design:verify -- --shard=1/2` and `--shard=2/2`. Both rebuild and check
+the catalogue; together they cover the complete browser inventory. The existing
+`design-system` required check passes only when both shards pass. Sharding trades
+more runner time for shorter elapsed time. Local `npm run design:verify` still
+runs every test. Screenshots, failure traces and zero retries are preserved.
+For a focused development check after building the catalogue, use
+`npm run design:browser -- --grep "your test title"`; finish with the complete gate.
+
 [Sprint 3 review notes](REVIEW-3.md) describe compact toolbars, navigation, tabs
 and page structure. [Sprint 2](REVIEW-2.md) covers forms and save feedback. [Component contracts](components.md) show how to reuse them.
 Stylelint 17.15.0 is pinned; `npm run design:lint` rejects literal colors and

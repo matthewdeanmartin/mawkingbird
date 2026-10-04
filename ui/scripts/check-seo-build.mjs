@@ -13,11 +13,20 @@ for (const page of pages) {
     '/',
     'SEO publishing uses root base href',
   );
-  assert.equal(doc.querySelectorAll('h1').length, 1, `${page || '/'} has rendered content`);
-  assert.match(doc.body.textContent, /Core Mastodon features/);
-  assert.match(doc.body.textContent, /Readability features/);
-  assert.match(doc.body.textContent, /Creators:/);
-  assert.match(doc.body.textContent, /Advanced user features/);
+  if (page) {
+    assert.equal(doc.querySelectorAll('h1').length, 1, 'features has rendered content');
+    assert.match(doc.body.textContent, /Core Mastodon features/);
+    assert.match(doc.body.textContent, /Readability features/);
+    assert.match(doc.body.textContent, /Creators:/);
+    assert.match(doc.body.textContent, /Advanced user features/);
+  } else {
+    assert.equal(
+      doc.querySelector('app-root')?.innerHTML.trim(),
+      '',
+      'root must bootstrap the existing app without a prerendered landing page',
+    );
+    assert.equal(doc.querySelector('app-public-home'), null);
+  }
   for (const account of ['mawkingbird', 'mistersql']) {
     assert.equal(
       doc.querySelector(`a[href="https://mastodon.social/@${account}"]`),

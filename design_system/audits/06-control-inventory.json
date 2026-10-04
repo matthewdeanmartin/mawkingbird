@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1094,
-  "filesWithCandidates": 220,
+  "filesScanned": 1093,
+  "filesWithCandidates": 219,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3322,24 +3322,6 @@
         {
           "pattern": "shared",
           "line": 99
-        }
-      ]
-    },
-    {
-      "file": "ui/src/app/pages/features/public-home.ts",
-      "status": "needs semantic review",
-      "findings": [
-        {
-          "pattern": "shared",
-          "line": 24
-        },
-        {
-          "pattern": "shared",
-          "line": 25
-        },
-        {
-          "pattern": "shared",
-          "line": 44
         }
       ]
     },

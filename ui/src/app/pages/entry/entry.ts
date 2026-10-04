@@ -5,7 +5,6 @@ import { Server } from '../../server';
 import { PreviewSeed, PREVIEW_SERVER } from '../../first-run/preview-seed';
 import { probeServerAvailability } from '../../server-availability';
 import { UnreachableServerDialog } from '../../unreachable-server-dialog/unreachable-server-dialog';
-import { PublicHome } from '../features/public-home';
 
 /**
  * Servers tried, in order, for the first-run preview.
@@ -22,8 +21,7 @@ const PREVIEW_SERVERS: readonly string[] = [
 ];
 
 /**
- * `/` dispatches to the app. Signed-out visitors see the public summary while
- * the preview starts; the same summary is prerendered for non-JavaScript access.
+ * `/` dispatches to the app without an intermediate marketing page.
  *
  * This is the correction at the centre of sprint 2b. `/` used to be a marketing
  * landing page, which meant a stranger's first sight of a social media client
@@ -37,15 +35,12 @@ const PREVIEW_SERVERS: readonly string[] = [
  * | nobody at all | enter Anonymous, seed the preview, `/home` with the modal |
  *
  * Returning signed-in visitors still dispatch straight to Home without a
- * marketing stop. The public summary never blocks or changes that navigation.
+ * marketing stop.
  */
 @Component({
   selector: 'app-entry',
-  imports: [UnreachableServerDialog, PublicHome],
+  imports: [UnreachableServerDialog],
   template: `
-    @if (!auth.isAuthenticated) {
-      <app-public-home />
-    }
     @if (unreachableServer(); as server) {
       <app-unreachable-server-dialog
         [attemptedServer]="server"
