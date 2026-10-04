@@ -9,7 +9,6 @@ import { RouterLink } from '@angular/router';
     <main class="features" lang="en">
       <header>
         <strong>Mawkingbird</strong>
-        <a routerLink="/features">Discover the features</a>
       </header>
       <div class="intro">
         <div>
@@ -36,11 +35,9 @@ import { RouterLink } from '@angular/router';
         <p>Keep your ideas in drafts and use writing and publishing tools when enabled.</p>
         <h2>Advanced user features</h2>
         <p>Manage accounts with bulk actions, third-party connections and network diagnostics.</p>
-        <a routerLink="/features">Explore all four feature areas</a>
       </section>
       <footer>
-        <a rel="me" href="https://mastodon.social/@mawkingbird">Mawkingbird on Mastodon</a>
-        <a rel="me" href="https://mastodon.social/@mistersql">Matthew on Mastodon</a>
+        <a routerLink="/features">Discover Mawkingbird features</a>
       </footer>
     </main>
   `,

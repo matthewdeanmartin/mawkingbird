@@ -36,8 +36,9 @@ entry and HTML checks in sync.
 
 The original hand-drawn `public/mockingbird_hand.png` is the share image.
 Absolute production URLs in `src/index.html` allow unfurling without JavaScript.
-Both Mastodon accounts have `rel="me"` links in the HTML head, rendered public
-content and Home. Verification also requires the Mastodon profile's website
+Both Mastodon accounts have machine-readable `rel="me"` links in the HTML head,
+without visible profile navigation. The features link lives in the app footer,
+away from the Home feed header. Verification also requires the Mastodon profile's website
 field to link back to `https://mawkingbird.com/`.
 
 After deployment, inspect the actual HTML for `/` and `/features/`, fetch the

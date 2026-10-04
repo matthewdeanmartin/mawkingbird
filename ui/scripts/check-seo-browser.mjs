@@ -50,7 +50,8 @@ try {
       await page.waitForFunction(() =>
         document.querySelector('app-root')?.hasAttribute('ng-version'),
       );
-    assert.equal(await page.locator('a[rel="me"]').count(), 2);
+    assert.equal(await page.locator('a[rel="me"]').count(), 0);
+    assert.equal(await page.locator('head link[rel="me"]').count(), 2);
     assert.equal(
       await page.locator('meta[property="og:image"]').getAttribute('content'),
       'https://mawkingbird.com/mockingbird_hand.png',
@@ -78,7 +79,8 @@ try {
     assert.deepEqual(errors, [], 'no browser runtime errors');
     if (!javaScriptEnabled) {
       await page.goto(origin + '/');
-      assert.equal(await page.locator('a[rel="me"]').count(), 2);
+      assert.equal(await page.locator('a[rel="me"]').count(), 0);
+      assert.equal(await page.locator('head link[rel="me"]').count(), 2);
       await page
         .getByRole('heading', { name: 'Mastodon, Bluesky and RSS in one familiar home' })
         .waitFor();

@@ -2,10 +2,6 @@ import { FeedCtaStore } from '../../feed-cta-store';
 import { FeedCta } from '../../feed-ctas';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-// i18n pages.home.projectLinks: Mawkingbird project links
-// i18n pages.home.features: Discover Mawkingbird features
-// i18n pages.home.projectMastodon: Mawkingbird on Mastodon
-// i18n pages.home.creatorMastodon: Matthew on Mastodon
 import {
   ActivatedRoute,
   NavigationSkipped,

@@ -25,6 +25,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
 // i18n footer.source: Mawkingbird source
 // i18n footer.reportBug: Report a bug
 // i18n footer.privacy: Privacy
+// i18n footer.features: Discover Mawkingbird features
 // i18n footer.failWhale: Fail whale
 // i18n footer.hotkeys: ? for keyboard
 // i18n footer.hotkeys.title: Keyboard shortcuts (or press ? anywhere)
@@ -53,6 +54,8 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
       </button>
       <span class="footer-separator" aria-hidden="true">·</span>
       <a routerLink="/credits" fragment="privacy">{{ 'footer.privacy' | transloco }}</a>
+      <span class="footer-separator" aria-hidden="true">·</span>
+      <a routerLink="/features">{{ 'footer.features' | transloco }}</a>
       <span class="footer-separator" aria-hidden="true">·</span>
       <a routerLink="/fail-whale">{{ 'footer.failWhale' | transloco }}</a>
       <span class="footer-separator" aria-hidden="true">·</span>

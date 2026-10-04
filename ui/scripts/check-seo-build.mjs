@@ -19,8 +19,12 @@ for (const page of pages) {
   assert.match(doc.body.textContent, /Creators:/);
   assert.match(doc.body.textContent, /Advanced user features/);
   for (const account of ['mawkingbird', 'mistersql']) {
-    assert.ok(doc.querySelector(`a[rel="me"][href="https://mastodon.social/@${account}"]`));
-    assert.ok(doc.querySelector(`link[rel="me"][href="https://mastodon.social/@${account}"]`));
+    assert.equal(
+      doc.querySelector(`a[href="https://mastodon.social/@${account}"]`),
+      null,
+      'identity metadata must not become visible navigation',
+    );
+    assert.ok(doc.head.querySelector(`link[rel="me"][href="https://mastodon.social/@${account}"]`));
   }
   const canonical = `https://mawkingbird.com/${page ? page + '/' : ''}`;
   assert.equal(doc.querySelector('link[rel="canonical"]')?.getAttribute('href'), canonical);
