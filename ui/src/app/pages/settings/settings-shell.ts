@@ -1,6 +1,11 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
+import { NgTemplateOutlet } from '@angular/common';
+import { MbButton } from '../../design-system/button/button';
+import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../../auth';
 import { environment } from '../../../environments/environment';
@@ -79,6 +84,9 @@ interface SettingsNavGroup {
 // i18n settings.nav.development: Development
 // i18n settings.nav.rss: RSS feeds
 // i18n settings.sectionsAriaLabel: Settings sections
+// i18n settings.openMenu: Open settings menu
+// i18n settings.menuTitle: Settings
+// i18n settings.closeMenu: Close
 const NAV_GROUPS: SettingsNavGroup[] = [
   {
     titleKey: 'settings.groups.basic',
@@ -127,12 +135,31 @@ const NAV_GROUPS: SettingsNavGroup[] = [
  */
 @Component({
   selector: 'app-settings-shell',
-  imports: [MbNavigation, MbNavLink, RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe],
+  imports: [
+    NgTemplateOutlet,
+    MbButton,
+    MbDialog,
+    MbNavigation,
+    MbNavLink,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    TranslocoPipe,
+  ],
   templateUrl: './settings-shell.html',
   styleUrl: './settings-shell.css',
 })
 export class SettingsShell {
   protected auth = inject(Auth);
+  protected readonly drawerOpen = signal(false);
+  protected readonly phone = signal(false);
+  protected readonly menuButton = viewChild.required<MbButton, ElementRef<HTMLButtonElement>>(
+    'menuTrigger',
+    {
+      read: ElementRef,
+    },
+  );
+  private readonly destroyRef = inject(DestroyRef);
   private readonly flags = inject(FeatureFlags);
   private readonly preloading = inject(SettingsPreloading);
 
@@ -140,6 +167,22 @@ export class SettingsShell {
     // The router preloader runs after navigation completes. Enabling it while
     // entering Settings makes the sibling page bundles available for later clicks.
     this.preloading.enable();
+    inject(Router)
+      .events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.drawerOpen.set(false));
+    const viewport = window.matchMedia?.('(max-width: 600px)');
+    if (viewport) {
+      this.phone.set(viewport.matches);
+      const changed = (event: MediaQueryListEvent) => {
+        this.phone.set(event.matches);
+        if (!event.matches) this.drawerOpen.set(false);
+      };
+      viewport.addEventListener('change', changed);
+      this.destroyRef.onDestroy(() => viewport.removeEventListener('change', changed));
+    }
   }
 
   // The element type is annotated on the literal rather than only on `nav`:

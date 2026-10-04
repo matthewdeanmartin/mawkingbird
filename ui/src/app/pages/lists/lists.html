@@ -16,39 +16,34 @@
 </div>
 
 @if (showSectionPicker && section() === 'landing') {
-  <mb-page-header
-    [level]="2"
-    [title]="'pages.lists.recent.heading' | transloco"
-    [description]="'pages.lists.recent.hint' | transloco"
-  />
-  <nav mbNavigation [label]="'pages.lists.recent.heading' | transloco">
-    @for (feed of recent.entries(); track feed.url) {
-      <div class="recent-feed-row">
-        <a mbNavLink [routerLink]="recentLink(feed.url)" (click)="rememberFeed($event)">
-          {{ feed.labelKey ? (feed.labelKey | transloco) : feed.label }}
-        </a>
-        <button
-          type="button"
-          mbButton
-          variant="outline"
-          size="small"
-          [attr.aria-pressed]="feed.pinned"
-          [attr.aria-label]="
-            (feed.pinned ? 'pages.lists.recent.unpin' : 'pages.lists.recent.pin')
-              | transloco: { feed: feed.labelKey ? (feed.labelKey | transloco) : feed.label }
-          "
-          (click)="recent.togglePin(feed.url)"
-        >
-          {{
-            (feed.pinned ? 'pages.lists.recent.unpinLabel' : 'pages.lists.recent.pinLabel')
-              | transloco
-          }}
-        </button>
-      </div>
-    } @empty {
-      <p class="muted center small">{{ 'pages.lists.recent.empty' | transloco }}</p>
-    }
-  </nav>
+  @if (recent.entries().length) {
+    <nav mbNavigation [label]="'pages.lists.recent.heading' | transloco">
+      @for (feed of recent.entries(); track feed.url) {
+        <div class="recent-feed-row">
+          <a mbNavLink [routerLink]="recentLink(feed.url)" (click)="rememberFeed($event)">
+            {{ feed.label }}
+          </a>
+          <button
+            type="button"
+            mbButton
+            variant="outline"
+            size="small"
+            [attr.aria-pressed]="feed.pinned"
+            [attr.aria-label]="
+              (feed.pinned ? 'pages.lists.recent.unpin' : 'pages.lists.recent.pin')
+                | transloco: { feed: feed.label }
+            "
+            (click)="recent.togglePin(feed.url)"
+          >
+            {{
+              (feed.pinned ? 'pages.lists.recent.unpinLabel' : 'pages.lists.recent.pinLabel')
+                | transloco
+            }}
+          </button>
+        </div>
+      }
+    </nav>
+  }
 
   <!-- The drill-down landing list: every category as its own row, so reaching
        one costs a single click and zero scrolling past the rest. Counts fill

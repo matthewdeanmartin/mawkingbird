@@ -1,50 +1,82 @@
+<div class="settings-phone-nav">
+  <button
+    #menuTrigger
+    type="button"
+    mbButton
+    variant="outline"
+    size="small"
+    [attr.aria-label]="'settings.openMenu' | transloco"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="drawerOpen()"
+    (click)="drawerOpen.set(true)"
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" />
+    </svg>
+  </button>
+</div>
+
 <div class="settings-wrap">
   <aside class="settings-side">
-    @if (auth.account(); as acc) {
-      <a class="side-profile" [routerLink]="['/accounts', acc.id]">
-        <div class="side-header" [style.background-image]="'url(' + acc.header + ')'"></div>
-        <div class="side-identity">
-          <img
-            class="side-avatar"
-            [src]="acc.avatar_static || acc.avatar"
-            alt=""
-            decoding="async"
-          />
-          <div class="side-names">
-            <span class="side-name">{{ acc.display_name || acc.username }}</span>
-            <span class="side-acct muted">&#64;{{ acc.acct }}</span>
-          </div>
-        </div>
-      </a>
-    }
-
-    <nav mbNavigation class="settings-nav" [label]="'settings.sectionsAriaLabel' | transloco">
-      @for (group of groups; track group.titleKey) {
-        <h2 class="settings-nav-heading">{{ group.titleKey | transloco }}</h2>
-        <!-- Tracked by path *within* a group: a page filed under two headings
-             appears twice, so path alone is not unique across the whole nav. -->
-        @for (item of group.items; track item.path) {
-          <a
-            mbNavLink
-            [routerLink]="item.path"
-            #activeLink="routerLinkActive"
-            [current]="activeLink.isActive"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{
-              paths: item.exact ? 'exact' : 'subset',
-              queryParams: 'ignored',
-              fragment: 'ignored',
-              matrixParams: 'ignored',
-            }"
-          >
-            <span>{{ item.labelKey | transloco }}</span>
-          </a>
-        }
-      }
-    </nav>
+    <ng-container [ngTemplateOutlet]="settingsNavigation" />
   </aside>
-
   <section class="settings-content">
     <router-outlet />
   </section>
 </div>
+
+@if (phone() && drawerOpen()) {
+  <mb-dialog
+    presentation="drawer"
+    [title]="'settings.menuTitle' | transloco"
+    [closeLabel]="'settings.closeMenu' | transloco"
+    [returnFocusTo]="menuButton().nativeElement"
+    [closeOnBackdrop]="true"
+    (dismissed)="drawerOpen.set(false)"
+  >
+    <div class="settings-drawer-content">
+      <ng-container [ngTemplateOutlet]="settingsNavigation" />
+    </div>
+  </mb-dialog>
+}
+
+<ng-template #settingsNavigation>
+  @if (auth.account(); as acc) {
+    <a class="side-profile" (click)="drawerOpen.set(false)" [routerLink]="['/accounts', acc.id]">
+      <div class="side-header" [style.background-image]="'url(' + acc.header + ')'"></div>
+      <div class="side-identity">
+        <img class="side-avatar" [src]="acc.avatar_static || acc.avatar" alt="" decoding="async" />
+        <div class="side-names">
+          <span class="side-name">{{ acc.display_name || acc.username }}</span>
+          <span class="side-acct muted">&#64;{{ acc.acct }}</span>
+        </div>
+      </div>
+    </a>
+  }
+
+  <nav mbNavigation class="settings-nav" [label]="'settings.sectionsAriaLabel' | transloco">
+    @for (group of groups; track group.titleKey) {
+      <h2 class="settings-nav-heading">{{ group.titleKey | transloco }}</h2>
+      <!-- Tracked by path *within* a group: a page filed under two headings
+             appears twice, so path alone is not unique across the whole nav. -->
+      @for (item of group.items; track item.path) {
+        <a
+          mbNavLink
+          (click)="drawerOpen.set(false)"
+          [routerLink]="item.path"
+          #activeLink="routerLinkActive"
+          [current]="activeLink.isActive"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{
+            paths: item.exact ? 'exact' : 'subset',
+            queryParams: 'ignored',
+            fragment: 'ignored',
+            matrixParams: 'ignored',
+          }"
+        >
+          <span>{{ item.labelKey | transloco }}</span>
+        </a>
+      }
+    }
+  </nav>
+</ng-template>

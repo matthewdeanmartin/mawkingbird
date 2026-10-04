@@ -4,7 +4,7 @@ import { RecentFeeds } from './recent-feeds';
 import { scopedKey } from './account-scope';
 import { isKeyExportable } from './storage-registry';
 
-const feed = (id: string) => ({ url: `/feeds?section=${id}`, label: id });
+const feed = (id: string) => ({ url: `/client-lists/${id}`, label: id });
 
 describe('RecentFeeds', () => {
   beforeEach(() => {
@@ -52,6 +52,22 @@ describe('RecentFeeds', () => {
     store.refresh();
     expect(store.entries()[0].label).toBe('a');
     expect(isKeyExportable(scopedKey('mockingbird_recent_feeds'), 'shareable')).toBe(false);
+  });
+
+  it('rejects categories and removes previously saved category pins on load', () => {
+    localStorage.setItem(
+      scopedKey('mockingbird_recent_feeds'),
+      JSON.stringify([
+        { url: '/feeds?section=client-lists', label: 'Private lists', pinned: true },
+        { url: '/feeds/tags', label: 'Tags', pinned: true },
+        { ...feed('newspapers'), pinned: true },
+      ]),
+    );
+    const store = TestBed.inject(RecentFeeds);
+    store.refresh();
+    expect(store.entries()).toEqual([{ ...feed('newspapers'), pinned: true }]);
+    store.visit({ url: '/feeds?section=rss', label: 'RSS feeds' });
+    expect(store.entries()).toHaveLength(1);
   });
 
   it('tolerates malformed or unavailable storage', () => {

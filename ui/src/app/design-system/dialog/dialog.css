@@ -51,3 +51,55 @@ header button {
   flex-shrink: 0;
   max-width: 100%;
 }
+
+/* Drawer uses the same modal, focus and dismissal contract as a dialog. */
+dialog[data-presentation='drawer'] {
+  width: min(320px, calc(100vw - 40px));
+  height: 100dvh;
+  max-height: 100dvh;
+  margin-block: 0;
+  margin-inline: 0 auto;
+  padding: 16px;
+  border-radius: 0;
+  flex-direction: column;
+  overflow: hidden;
+  animation: drawer-enter 160ms ease-out;
+}
+
+dialog[open][data-presentation='drawer'] {
+  display: flex;
+}
+
+dialog[data-presentation='drawer'] .body {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+@keyframes drawer-enter {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+dialog[data-presentation='drawer']:dir(rtl) {
+  animation-name: drawer-enter-rtl;
+}
+
+@keyframes drawer-enter-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[data-presentation='drawer'] {
+    animation: none;
+  }
+}

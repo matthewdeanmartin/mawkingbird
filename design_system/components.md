@@ -180,6 +180,12 @@ provides all dismissal actions, such as the single-OK alert. Always retain an
 accessible dismissal action. Prompt Enter handlers must prevent the default before
 closing, so restoring focus cannot activate the opener with the same key.
 
+`presentation="drawer"` uses the same modal contract in a full-height panel at
+the inline start of the viewport. Its body scrolls independently, with a visible
+close action, RTL placement and reduced-motion support. Callers own the breakpoint
+and must unmount it when switching back to an inline navigation layout.
+See **Overlays / Navigation drawer**.
+
 `closeOnBackdrop` defaults to false. `busy` blocks the dialog's dismiss controls;
 the caller also owns disabling projected actions. Native modal behavior supplies
 background inertness and stacking. Focus enters at the Close button by default

@@ -19,6 +19,7 @@ const locks = new WeakMap<HTMLElement, { count: number; overflow: string; gutter
   template: `
     <dialog
       #dialog
+      [attr.data-presentation]="presentation()"
       [attr.role]="dialogRole()"
       [attr.aria-labelledby]="id"
       [attr.aria-describedby]="description() ? id + '-description' : null"
@@ -52,6 +53,7 @@ export class MbDialog implements OnDestroy {
   readonly title = input.required<string>();
   readonly closeLabel = input.required<string>();
   readonly description = input('');
+  readonly presentation = input<'dialog' | 'drawer'>('dialog');
   readonly dialogRole = input<'dialog' | 'alertdialog'>('dialog');
   readonly showClose = input(true);
   readonly busy = input(false);

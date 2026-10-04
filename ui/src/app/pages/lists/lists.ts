@@ -1,4 +1,3 @@
-import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MbButton } from '../../design-system/button/button';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
@@ -111,8 +110,6 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.title.backToFeeds: ← Feeds
 // i18n pages.lists.title.feeds: Feeds
 // i18n pages.lists.recent.heading: Recently used feeds
-// i18n pages.lists.recent.hint: Five slots. Pin a feed to keep it here.
-// i18n pages.lists.recent.empty: Open a feed or category below to add it here.
 // i18n pages.lists.recent.pin: Pin {{feed}}
 // i18n pages.lists.recent.unpin: Unpin {{feed}}
 // i18n pages.lists.recent.pinLabel: Pin
@@ -240,7 +237,6 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 @Component({
   selector: 'app-lists',
   imports: [
-    MbPageHeader,
     MbButton,
     MbNavigation,
     MbNavLink,
@@ -413,7 +409,9 @@ export class Lists implements OnInit {
     const url = new URL(anchor.href);
     const basePath = new URL(document.baseURI).pathname;
     const target = '/' + url.pathname.slice(basePath.length) + url.search;
-    const label = (anchor.querySelector('span')?.textContent ?? anchor.textContent ?? '').trim();
+    const name = (anchor.querySelector('span') ?? anchor).cloneNode(true) as HTMLElement;
+    name.querySelectorAll('.muted, .small, button').forEach((item) => item.remove());
+    const label = (name.textContent ?? '').replace(/\s+/g, ' ').trim();
     this.router.events
       .pipe(
         filter(
@@ -429,14 +427,11 @@ export class Lists implements OnInit {
           this.recent.visit({
             url: target,
             label,
-            labelKey: this.recent.entries().find((entry) => entry.url === target)?.labelKey,
           });
       });
   }
 
   protected setSection(value: string): void {
-    const key = FEED_SECTIONS.find((entry) => entry.id === value)?.key;
-    if (key) this.recent.visit({ url: `/feeds?section=${value}`, label: value, labelKey: key });
     this.section.set(value as FeedSection | 'landing');
     void this.router.navigate([], {
       relativeTo: this.route,

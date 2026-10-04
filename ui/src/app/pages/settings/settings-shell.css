@@ -108,3 +108,29 @@
     position: static;
   }
 }
+
+.settings-phone-nav {
+  display: none;
+}
+
+.settings-drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .settings-side {
+    display: none;
+  }
+
+  .settings-phone-nav {
+    display: flex;
+    position: sticky;
+    top: 56px;
+    z-index: 2;
+    padding: 8px;
+    background: var(--col-bg);
+    border-bottom: 1px solid var(--border);
+  }
+}

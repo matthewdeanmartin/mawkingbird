@@ -2,11 +2,18 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { RecentFeeds } from '../../recent-feeds';
 import { provideRouter } from '@angular/router';
-import { ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  ParamMap,
+  Router,
+  NavigationEnd,
+  Event as RouterEvent,
+} from '@angular/router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Collection, UserList } from '../../models';
 import { Auth } from '../../auth';
 import { Account } from '../../models';
@@ -41,6 +48,7 @@ interface ListsInternals {
   askUnsubscribeRss(feed: RssFeedSub, event: Event): void;
   removeRss(feed: RssFeedSub): void;
   section: WritableSignal<string>;
+  rememberFeed(event: MouseEvent): void;
 }
 
 function makeCollection(id: string, name = `Collection ${id}`): Collection {
@@ -249,6 +257,8 @@ describe('Lists', () => {
     fixture.detectChanges();
 
     expect(internals(fixture).section()).toBe('landing');
+    expect((fixture.nativeElement as HTMLElement).querySelector('.recent-feed-row')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('nav[mbNavigation]')).toBeNull();
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('All feeds');
     expect(text).toContain('RSS feeds');
@@ -267,12 +277,24 @@ describe('Lists', () => {
     );
     rss!.click();
     fixture.detectChanges();
-    expect(TestBed.inject(RecentFeeds).entries()[0].url).toBe('/feeds?section=rss');
+    expect(TestBed.inject(RecentFeeds).entries()).toEqual([]);
+    const events = new Subject<RouterEvent>();
+    const routerEvents = vi
+      .spyOn(TestBed.inject(Router), 'events', 'get')
+      .mockReturnValue(events.asObservable());
+    const link = document.createElement('a');
+    link.href = '/client-lists/newspapers';
+    link.innerHTML = '<span>newspapers<span class="muted small"> · 3 members</span></span>';
+    internals(fixture).rememberFeed({ currentTarget: link, button: 0 } as unknown as MouseEvent);
+    events.next(new NavigationEnd(1, '/client-lists/newspapers', '/client-lists/newspapers'));
+    routerEvents.mockRestore();
+    expect(TestBed.inject(RecentFeeds).entries()[0].url).toBe('/client-lists/newspapers');
     root.querySelector<HTMLButtonElement>('.feeds-back')!.click();
     fixture.detectChanges();
     const recent = root.querySelector<HTMLElement>('.recent-feed-row')!;
-    expect(recent.textContent).toContain('RSS feeds');
-    expect(recent.querySelector('a')?.getAttribute('href')).toBe('/feeds?section=rss');
+    expect(recent.textContent).toContain('newspapers');
+    expect(recent.textContent).not.toContain('3 members');
+    expect(recent.querySelector('a')?.getAttribute('href')).toBe('/client-lists/newspapers');
     recent.querySelector<HTMLButtonElement>('button')!.click();
     fixture.detectChanges();
     expect(recent.querySelector('button')?.getAttribute('aria-pressed')).toBe('true');

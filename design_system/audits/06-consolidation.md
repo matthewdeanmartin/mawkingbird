@@ -202,3 +202,18 @@ the shared Button for Now, which clears the scheduled timestamp.
 ## Settings bug fixes, 2026-09-29
 
 Connections uses shared local tabs for Basic and Advanced. The filter wizard uses shared buttons and fields; suggested hashtag selection uses shared checkboxes and buttons with results in place. Removed the network outage report action. Regenerated the control inventory, preserving existing classifications and recording the new wizard.
+
+## Recent feeds and tour choices, 2026-10-04
+
+The Feeds directory's five recent slots reuse Navigation/NavLink for individual
+feed shortcuts and Button for pin toggles. Empty recents are hidden; category
+shortcuts, a visible heading and explanatory copy are excluded. The catalogue
+below retains its existing rows. The tour reuses its existing
+choice tiles for Zen mode. Regenerated the control inventory; all existing
+candidate dispositions remain in place.
+
+Settings adds a phone-only trigger at 600px and below, reusing its existing
+navigation template inside Dialog's bounded drawer presentation. Tablet and
+desktop layouts keep their existing breakpoints and sidebar. The shared drawer
+retains native modality, focus restoration, Escape/backdrop dismissal and scroll
+locking; the caller closes it on navigation and when the viewport widens.

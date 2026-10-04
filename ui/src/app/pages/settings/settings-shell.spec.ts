@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SettingsShell } from './settings-shell';
 import { Auth } from '../../auth';
 
@@ -192,5 +192,96 @@ describe('Settings navigation adoption', () => {
     expect(element.querySelector('nav[mbNavigation]')?.getAttribute('aria-label')).toBe(
       'Settings sections',
     );
+  });
+});
+
+describe('Settings phone drawer', () => {
+  let viewport: MediaQueryList;
+  const descriptors = ['showModal', 'close'].map(
+    (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+  );
+
+  beforeEach(() => {
+    viewport = new EventTarget() as MediaQueryList;
+    Object.defineProperty(viewport, 'matches', { value: true, writable: true });
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => viewport),
+    );
+    for (const [name] of descriptors) {
+      Object.defineProperty(HTMLDialogElement.prototype, name, {
+        configurable: true,
+        value(this: HTMLDialogElement) {
+          this.open = name === 'showModal';
+        },
+      });
+    }
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([
+          {
+            path: 'settings',
+            component: SettingsShell,
+            children: [{ path: '**', component: SettingsRouteFixture }],
+          },
+        ]),
+      ],
+    });
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    vi.unstubAllGlobals();
+    for (const [name, descriptor] of descriptors) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
+  });
+
+  it('opens a modal drawer and closes it after choosing a native settings link', async () => {
+    const harness = await RouterTestingHarness.create('/settings/appearance');
+    const root = harness.routeNativeElement!;
+    root.querySelector<HTMLButtonElement>('.settings-phone-nav button')!.click();
+    harness.detectChanges();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const dialog = root.querySelector('dialog')!;
+    expect(dialog.getAttribute('data-presentation')).toBe('drawer');
+    expect(dialog.open).toBe(true);
+    expect(root.querySelector('.settings-phone-nav button')?.getAttribute('aria-expanded')).toBe(
+      'true',
+    );
+    expect(
+      dialog.querySelector('a[href="/settings/appearance"]')?.getAttribute('aria-current'),
+    ).toBe('page');
+    dialog.querySelector<HTMLAnchorElement>('a[href="/settings/writing"]')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/settings/writing');
+    expect(root.querySelector('dialog')).toBeNull();
+    expect(root.querySelector('.settings-content')?.textContent).toContain('Settings destination');
+  });
+
+  it('dismisses on Escape and removes the modal when the viewport becomes wider', async () => {
+    const fixture = TestBed.createComponent(SettingsShell);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const trigger = root.querySelector<HTMLButtonElement>('.settings-phone-nav button')!;
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    root.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true }));
+    fixture.detectChanges();
+    expect(root.querySelector('dialog')).toBeNull();
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    viewport.dispatchEvent(Object.assign(new Event('change'), { matches: false }));
+    fixture.detectChanges();
+    expect(root.querySelector('dialog')).toBeNull();
+    expect(document.documentElement.style.overflow).not.toBe('hidden');
+    expect(root.querySelector('.settings-side nav')).not.toBeNull();
   });
 });

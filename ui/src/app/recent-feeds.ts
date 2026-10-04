@@ -7,8 +7,20 @@ export const RECENT_FEED_SLOTS = 5;
 export interface RecentFeed {
   url: string;
   label: string;
-  labelKey?: string;
   pinned: boolean;
+}
+
+/** A directory/category is not a timeline. Also drops category shortcuts from the first release. */
+function isFeedUrl(url: string): boolean {
+  if (!url.startsWith('/') || url.startsWith('//')) return false;
+  const parsed = new URL(url, 'https://local.invalid');
+  const path = parsed.pathname;
+  if (path === '/search') return !!parsed.searchParams.get('saved');
+  if (path === '/collections/starter') return false;
+  return (
+    /^\/(lists|client-lists|tags|tag-bundles|collections|endorsed|accounts)\/[^/]+$/.test(path) ||
+    /^\/feeds\/(local|federated|trending|news|bluesky\/[^/]+)$/.test(path)
+  );
 }
 
 /** Five browser-local shortcuts. Pins retain their slot; other slots rotate by recency. */
@@ -30,11 +42,9 @@ export class RecentFeeds {
             if (
               !entry ||
               typeof entry.url !== 'string' ||
-              !entry.url.startsWith('/') ||
-              entry.url.startsWith('//') ||
+              !isFeedUrl(entry.url) ||
               typeof entry.label !== 'string' ||
               typeof entry.pinned !== 'boolean' ||
-              (entry.labelKey !== undefined && typeof entry.labelKey !== 'string') ||
               seen.has(entry.url)
             )
               return false;
@@ -50,6 +60,7 @@ export class RecentFeeds {
 
   visit(feed: Omit<RecentFeed, 'pinned'>): void {
     this.refresh();
+    if (!isFeedUrl(feed.url)) return;
     const current = this.entries();
     const pinned = current.find((entry) => entry.url === feed.url && entry.pinned);
     if (pinned) {
