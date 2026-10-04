@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CorsProxySettings } from '../../../../providers/cors-proxy/cors-proxy-settings';
 import { Server } from '../../../../server';
@@ -365,5 +365,15 @@ describe('ConnectionDoctorPage', () => {
     // a conclusion supported by neither.
     await check(fixture);
     expect(rowFor(fixture, 'openrouter.ai').querySelector('.doc-interpretation')).toBeNull();
+  });
+  it('checks a requested server without replacing the active server', () => {
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', 'get').mockReturnValue(
+      convertToParamMap({ server: 'https://mastomini.local' }),
+    );
+    TestBed.inject(Server).setBaseUrl('https://fast.example');
+    const fixture = setUp();
+    expect(rowFor(fixture, 'mastomini.local')).toBeTruthy();
+    expect(TestBed.inject(Server).baseUrl()).toBe('https://fast.example');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

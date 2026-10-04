@@ -1,3 +1,6 @@
+import { MbServerPickerSurface } from '../../design-system/identity/server-picker';
+import { MbButton } from '../../design-system/button/button';
+import { ServerConnectionHelp } from '../../server-connection-help/server-connection-help';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +12,7 @@ import { Auth } from '../../auth';
 import { Account, DevUser } from '../../models';
 import { Server, SERVER_PRESETS } from '../../server';
 import { MastodonServers, ServerSuggestion } from '../../mastodon-servers';
-import { normalizeHostUrl } from '../../host-url';
+import { isLocalNetworkServer, normalizeHostUrl } from '../../host-url';
 import { ClientPrefs } from '../../client-prefs';
 import { codeChallengeFor, createCodeVerifier, createOAuthState, statesMatch } from '../../pkce';
 import { probeServerAvailability } from '../../server-availability';
@@ -172,7 +175,17 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.privacy.explain: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at. Unchecking this means the analytics script is never loaded: nothing is fetched, counted or sent. You can change it later in Settings.
 @Component({
   selector: 'app-login',
-  imports: [MbCheckbox, FormsModule, RouterLink, AppFooter, ServerDiscovery, TranslocoPipe],
+  imports: [
+    MbServerPickerSurface,
+    MbButton,
+    ServerConnectionHelp,
+    MbCheckbox,
+    FormsModule,
+    RouterLink,
+    AppFooter,
+    ServerDiscovery,
+    TranslocoPipe,
+  ],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -265,6 +278,7 @@ export class Login implements OnInit, OnDestroy {
   private serverDebounce: ReturnType<typeof setTimeout> | null = null;
   /** Guards against a slow instance probe overwriting a newer one. */
   private probeSeq = 0;
+  private probeController: AbortController | null = null;
 
   /**
    * Mocking Bird has no "this server"; until the user picks an instance, every API call
@@ -295,6 +309,7 @@ export class Login implements OnInit, OnDestroy {
   // --- Sign in (token) ---
   protected token = signal('');
   protected error = signal<string | null>(null);
+  protected connectionFailed = signal(false);
   protected checking = signal(false);
   protected enteringHome = signal(false);
 
@@ -389,6 +404,8 @@ export class Login implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.probeSeq += 1;
+    this.probeController?.abort();
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
     }
@@ -396,6 +413,7 @@ export class Login implements OnInit, OnDestroy {
 
   selectServer(baseUrl: string): void {
     this.probeSeq += 1;
+    this.probeController?.abort();
     if (this.serverDebounce) clearTimeout(this.serverDebounce);
     this.server.setBaseUrl(baseUrl);
     this.customServer.set(baseUrl);
@@ -411,9 +429,15 @@ export class Login implements OnInit, OnDestroy {
   }
 
   /** Probe domain-like text and switch on success; degraded media requires confirmation. */
+  protected isLocalServer(): boolean {
+    return isLocalNetworkServer(this.customServer());
+  }
+
   onServerInput(value: string): void {
+    this.connectionFailed.set(false);
     // Invalidate an in-flight probe even when the replacement text is not yet a domain.
     this.probeSeq += 1;
+    this.probeController?.abort();
     this.customServer.set(value);
     this.serverStatus.set('idle');
     this.serverTitle.set(null);
@@ -427,6 +451,10 @@ export class Login implements OnInit, OnDestroy {
       return;
     }
     this.serverStatus.set('checking');
+    if (isLocalNetworkServer(value)) {
+      this.serverStatus.set('idle');
+      return;
+    }
     this.serverDebounce = setTimeout(() => this.probeAndApply(value), 500);
   }
 
@@ -495,12 +523,14 @@ export class Login implements OnInit, OnDestroy {
     // Quietly supply the scheme: https for real hosts, http for localhost / IPs.
     const base = normalizeHostUrl(trimmed);
     const seq = ++this.probeSeq;
+    this.probeController?.abort();
+    this.probeController = new AbortController();
     this.pendingDegradedServer.set(null);
     this.mediaHost.set(null);
     this.suggestOpen.set(false);
     this.serverStatus.set('checking');
     try {
-      const result = await probeServerAvailability(base);
+      const result = await probeServerAvailability(base, this.probeController.signal);
       if (seq !== this.probeSeq) {
         return; // a newer probe superseded this one
       }
@@ -779,7 +809,8 @@ export class Login implements OnInit, OnDestroy {
           this.token.set(tok.access_token);
           this.submit();
         },
-        error: () => {
+        error: (error) => {
+          this.connectionFailed.set(error.status === 0);
           this.oauthWorking.set(false);
           this.oauthError.set('Code exchange failed.');
         },
@@ -852,7 +883,8 @@ export class Login implements OnInit, OnDestroy {
             this.oauthError.set('Could not start secure sign-in. Please try again.');
           });
       },
-      error: () => {
+      error: (error) => {
+        this.connectionFailed.set(error.status === 0);
         this.oauthWorking.set(false);
         this.oauthError.set('Could not register the app.');
       },

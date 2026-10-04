@@ -1,5 +1,5 @@
-<a class="conn-back" [routerLink]="['/settings/connections']">{{
-  'settings.connections.doctor.back' | transloco
+<a class="conn-back" [routerLink]="[publicPage ? '/login/mastodon' : '/settings/connections']">{{
+  (publicPage ? 'connectionHelp.back' : 'settings.connections.doctor.back') | transloco
 }}</a>
 
 <div class="spage-head">
@@ -14,6 +14,11 @@
   </p>
 </div>
 
+<p>
+  <a routerLink="/connection-help" [queryParams]="{ server: requestedServer }">{{
+    'connectionHelp.certificates' | transloco
+  }}</a>
+</p>
 <section class="doc-run">
   <button type="button" class="btn" (click)="run()" [disabled]="doctor.running()">
     {{
@@ -164,7 +169,7 @@
               <legend class="small">
                 {{ 'settings.connections.doctor.report.legend' | transloco }}
               </legend>
-              @for (option of reportedOptions; track option.value) {
+              @for (option of reportedOptions(); track option.value) {
                 <label class="doc-report-option">
                   <input
                     type="radio"

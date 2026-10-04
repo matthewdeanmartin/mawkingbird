@@ -5,6 +5,7 @@ import { Server } from '../../server';
 import { PreviewSeed, PREVIEW_SERVER } from '../../first-run/preview-seed';
 import { probeServerAvailability } from '../../server-availability';
 import { UnreachableServerDialog } from '../../unreachable-server-dialog/unreachable-server-dialog';
+import { PublicHome } from '../features/public-home';
 
 /**
  * Servers tried, in order, for the first-run preview.
@@ -21,7 +22,8 @@ const PREVIEW_SERVERS: readonly string[] = [
 ];
 
 /**
- * `/` — a router, not a page. It renders nothing of its own.
+ * `/` dispatches to the app. Signed-out visitors see the public summary while
+ * the preview starts; the same summary is prerendered for non-JavaScript access.
  *
  * This is the correction at the centre of sprint 2b. `/` used to be a marketing
  * landing page, which meant a stranger's first sight of a social media client
@@ -34,14 +36,16 @@ const PREVIEW_SERVERS: readonly string[] = [
  * | mid-preview (reloaded with the modal open) | `/home`, modal again |
  * | nobody at all | enter Anonymous, seed the preview, `/home` with the modal |
  *
- * Because a pitch is never rendered here, the worst failure of the old design —
- * showing marketing to a signed-in user, which reads as "the app logged me
- * out" — is not mitigated but structurally impossible.
+ * Returning signed-in visitors still dispatch straight to Home without a
+ * marketing stop. The public summary never blocks or changes that navigation.
  */
 @Component({
   selector: 'app-entry',
-  imports: [UnreachableServerDialog],
+  imports: [UnreachableServerDialog, PublicHome],
   template: `
+    @if (!auth.isAuthenticated) {
+      <app-public-home />
+    }
     @if (unreachableServer(); as server) {
       <app-unreachable-server-dialog
         [attemptedServer]="server"
@@ -52,7 +56,7 @@ const PREVIEW_SERVERS: readonly string[] = [
   `,
 })
 export class EntryPage implements OnInit {
-  private auth = inject(Auth);
+  protected auth = inject(Auth);
   private router = inject(Router);
   private server = inject(Server);
   private preview = inject(PreviewSeed);

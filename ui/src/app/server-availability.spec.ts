@@ -64,4 +64,17 @@ describe('probeServerAvailability', () => {
       mediaUrl: 'https://cdn.masto.host/mastodonuno/avatar.png',
     });
   });
+  it('waits longer for .local discovery without slowing public checks or explicit deadlines', async () => {
+    const timeout = vi.spyOn(AbortSignal, 'timeout');
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) }));
+    await probeServerAvailability('https://mastomini.local');
+    expect(timeout).toHaveBeenLastCalledWith(15000);
+    await probeServerAvailability('https://Mastomini.LOCAL.:443');
+    expect(timeout).toHaveBeenLastCalledWith(15000);
+    await probeServerAvailability('https://mastomini.local.example');
+    expect(timeout).toHaveBeenLastCalledWith(6000);
+    await probeServerAvailability('https://mastomini.local', undefined, 100);
+    expect(timeout).toHaveBeenLastCalledWith(100);
+    timeout.mockRestore();
+  });
 });

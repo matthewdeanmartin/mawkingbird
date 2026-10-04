@@ -1,0 +1,103 @@
+<main>
+  <a mbContentLink routerLink="/login/mastodon">{{ 'connectionHelp.back' | transloco }}</a>
+  <mb-page-header
+    [title]="'connectionHelp.title' | transloco"
+    [description]="'connectionHelp.intro' | transloco"
+  />
+  <mb-section [title]="'connectionHelp.first' | transloco">
+    <p>{{ 'connectionHelp.diagnosis' | transloco }}</p>
+    @if (server) {
+      <a mbContentLink [href]="server" target="_blank" rel="noopener noreferrer"
+        >{{ 'connectionHelp.open' | transloco }}: {{ server }}</a
+      >
+    }
+  </mb-section>
+  <mb-section [title]="'connectionHelp.network' | transloco"
+    ><p>{{ 'connectionHelp.permission' | transloco }}</p>
+    <p>{{ 'connectionHelp.localNames' | transloco }}</p>
+    <a
+      mbContentLink
+      href="https://support.google.com/chrome/answer/114662"
+      target="_blank"
+      rel="noopener noreferrer"
+      >{{ 'connectionHelp.platformDocs' | transloco }} · Chrome</a
+    ></mb-section
+  >
+  <mb-section [title]="'connectionHelp.ca' | transloco">
+    <p>{{ 'connectionHelp.verify' | transloco }}</p>
+    <p>
+      <a mbContentLink [href]="trustUrl" target="_blank" rel="noopener noreferrer"
+        >{{ 'connectionHelp.download' | transloco }} ↗</a
+      >
+    </p>
+    <p>{{ 'connectionHelp.otherServer' | transloco }}</p>
+    <mb-disclosure [label]="'connectionHelp.ios' | transloco"
+      ><p>{{ 'connectionHelp.iosSteps' | transloco }}</p>
+      <a
+        mbContentLink
+        href="https://support.apple.com/en-us/102390"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    >
+    <mb-disclosure [label]="'connectionHelp.android' | transloco"
+      ><p>{{ 'connectionHelp.androidSteps' | transloco }}</p>
+      <a
+        mbContentLink
+        href="https://support.google.com/pixelphone/answer/2844832"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    >
+    <mb-disclosure [label]="'connectionHelp.mac' | transloco"
+      ><p>{{ 'connectionHelp.macSteps' | transloco }}</p>
+      <a
+        mbContentLink
+        href="https://support.apple.com/guide/keychain-access/kyca11871/mac"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    >
+    <mb-disclosure [label]="'connectionHelp.windows' | transloco"
+      ><p>{{ 'connectionHelp.windowsSteps' | transloco }}</p>
+      <a
+        mbContentLink
+        href="https://learn.microsoft.com/en-us/windows-hardware/drivers/install/trusted-root-certification-authorities-certificate-store"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    >
+    <mb-disclosure [label]="'connectionHelp.linux' | transloco"
+      ><p>{{ 'connectionHelp.linuxSteps' | transloco }}</p>
+      <pre><code>sudo cp mastomini.crt /usr/local/share/ca-certificates/mastomini.crt
+sudo update-ca-certificates</code></pre>
+      <a
+        mbContentLink
+        href="https://ubuntu.com/server/docs/how-to/security/install-a-root-ca-certificate-in-the-trust-store/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    >
+    <mb-disclosure [label]="'connectionHelp.firefox' | transloco"
+      ><p>{{ 'connectionHelp.firefoxSteps' | transloco }}</p>
+      <a
+        mbContentLink
+        href="https://support.mozilla.org/en-US/kb/setting-certificate-authorities-firefox"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'connectionHelp.platformDocs' | transloco }} ↗</a
+      ></mb-disclosure
+    > </mb-section
+  ><mb-section [title]="'connectionHelp.finish' | transloco"
+    ><p>{{ 'connectionHelp.finishSteps' | transloco }}</p>
+    <p>{{ 'connectionHelp.firewall' | transloco }}</p>
+    <a mbContentLink routerLink="/connection-doctor" [queryParams]="{ server: server }">{{
+      'connectionHelp.doctor' | transloco
+    }}</a></mb-section
+  >
+</main>

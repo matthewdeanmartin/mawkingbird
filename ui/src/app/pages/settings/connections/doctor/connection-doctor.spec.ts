@@ -52,6 +52,18 @@ describe('ConnectionDoctor (probes)', () => {
   let doctor: ConnectionDoctor;
   let fetchMock: ReturnType<typeof vi.fn>;
 
+  it('gives local hardware longer direct checks and never sends its name to a public proxy', async () => {
+    configureProxy();
+    const timeout = vi.spyOn(AbortSignal, 'timeout');
+    fetchMock.mockRejectedValue(new TypeError('certificate or local permission'));
+    await doctor.runAll([target('local', 'https://mastomini.local/api/v1/instance')]);
+    expect(timeout).toHaveBeenCalledWith(15000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toBe('https://mastomini.local/api/v1/instance');
+    expect(doctor.results()['local'].proxy).toBe('none');
+    timeout.mockRestore();
+  });
+
   beforeEach(() => {
     localStorage.clear();
     fetchMock = vi.fn(() => Promise.resolve(new Response(null, { status: 200 })));

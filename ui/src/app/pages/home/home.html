@@ -1,3 +1,13 @@
+<nav class="home-project-links" [attr.aria-label]="'pages.home.projectLinks' | transloco">
+  <a routerLink="/features">{{ 'pages.home.features' | transloco }}</a>
+  <a rel="me" href="https://mastodon.social/@mawkingbird">{{
+    'pages.home.projectMastodon' | transloco
+  }}</a>
+  <a rel="me" href="https://mastodon.social/@mistersql">{{
+    'pages.home.creatorMastodon' | transloco
+  }}</a>
+</nav>
+
 @if (nothingFollowed()) {
   <div class="home-empty">
     <p class="home-empty-lead">{{ 'pages.home.empty.sourcesLead' | transloco }}</p>

@@ -92,7 +92,11 @@ export class SettingsServer implements OnInit {
     void this.checkCurrent();
   }
 
+  private checkSequence = 0;
+
   protected async checkCurrent(): Promise<void> {
+    const sequence = ++this.checkSequence;
+    const server = this.currentUrl();
     this.connectionStatus.set('checking');
     // Which feeds this server serves is cached for a day, so "check connection"
     // is also the button that re-asks: someone whose admin just turned the
@@ -100,10 +104,12 @@ export class SettingsServer implements OnInit {
     this.feedCaps.reset();
     this.feedCaps.ensureAll();
     try {
-      const result = await probeServerAvailability(this.currentUrl());
-      this.connectionStatus.set(result.status);
+      const result = await probeServerAvailability(server);
+      if (sequence === this.checkSequence && server === this.currentUrl())
+        this.connectionStatus.set(result.status);
     } catch {
-      this.connectionStatus.set('unreachable');
+      if (sequence === this.checkSequence && server === this.currentUrl())
+        this.connectionStatus.set('unreachable');
     }
   }
 

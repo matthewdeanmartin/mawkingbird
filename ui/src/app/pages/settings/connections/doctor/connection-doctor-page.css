@@ -74,6 +74,7 @@
 }
 
 .doc-label {
+  overflow-wrap: anywhere;
   font-weight: 700;
 }
 
@@ -210,4 +211,15 @@
 
 .small {
   font-size: 13px;
+}
+
+:host.public-doctor {
+  display: block;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+:host.public-doctor .spage-head {
+  margin-inline: 0;
 }

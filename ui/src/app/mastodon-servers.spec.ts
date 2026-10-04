@@ -118,4 +118,16 @@ describe('MastodonServers', () => {
 
     expect(candidates.map((server) => server.users >= 10_000)).toEqual([true, false, true]);
   });
+  it('offers a distinct household server even offline, but never discovers it automatically', async () => {
+    expect(svc.search('')).toContainEqual(
+      expect.objectContaining({ domain: 'mastomini.local', local: true, users: 0 }),
+    );
+    expect(svc.search('mastomini')[0].category).toContain('Local network');
+    mockDirectoryFetch(RAW);
+    await svc.ensureLoaded();
+    expect(svc.search('')).toHaveLength(4);
+    expect(svc.search('').at(-1)?.domain).toBe('mastomini.local');
+    expect(svc.shuffled().some((server) => server.local)).toBe(false);
+    expect(svc.servers().some((server) => server.local)).toBe(false);
+  });
 });

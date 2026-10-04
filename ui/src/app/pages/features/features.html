@@ -1,0 +1,101 @@
+<main class="features" lang="en">
+  <header>
+    <a routerLink="/">Mawkingbird</a>
+    <a class="open-app" routerLink="/">Open the app</a>
+  </header>
+  <div class="intro">
+    <div>
+      <p class="eyebrow">Your feeds. Your reading. Your words.</p>
+      <h1>A familiar home for Mastodon, Bluesky and RSS</h1>
+      <p>
+        Mawkingbird brings social feeds, long reads and writing into one browser client. Follow what
+        interests you, save what matters, and make room to create.
+      </p>
+      <a class="open-app" routerLink="/">Try Mawkingbird</a>
+    </div>
+    <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
+  </div>
+  <nav aria-label="Feature areas">
+    <a href="#mastodon">Mastodon feeds</a>
+    <a href="#reading">Reading</a>
+    <a href="#creators">Creators</a>
+    <a href="#advanced">Advanced tools</a>
+  </nav>
+  <section id="mastodon">
+    <h2>Core Mastodon features: a feed that feels like yours</h2>
+    <p>
+      Read your home timeline, public timelines and hashtag feeds. Reply, boost, favourite and
+      bookmark posts, and keep up with conversations and notifications.
+    </p>
+    <ul>
+      <li>Organize feeds with lists, saved searches, tags and collections.</li>
+      <li>Discover people through starter collections and search.</li>
+      <li>Switch between connected accounts and bring Bluesky into the same client.</li>
+      <li>
+        Browse anonymously before choosing an account; feeds end in pages rather than an endless
+        scroll.
+      </li>
+    </ul>
+    <a routerLink="/feeds">Explore feeds</a>
+  </section>
+  <section id="reading">
+    <h2>Readability features: from headlines to long reads</h2>
+    <p>
+      Follow RSS feeds alongside social posts, keep a reading list with bookmarks, and open
+      supported content in a focused reader view.
+    </p>
+    <ul>
+      <li>Read RSS as headlines or articles, with read and unread tracking.</li>
+      <li>Add feeds and import or export subscriptions with OPML.</li>
+      <li>Save bookmarks and revisit them at the end of your feed.</li>
+      <li>
+        Fetch supported linked pages and format their content for reading. Site access and proxy
+        availability can affect article extraction.
+      </li>
+    </ul>
+    <a routerLink="/rss">Read RSS</a>
+  </section>
+  <section id="creators">
+    <h2>Creators: space to write and keep your drafts</h2>
+    <p>
+      Compose social posts, keep unfinished ideas in drafts, and use the writing workspace for
+      longer work when enabled in your deployment.
+    </p>
+    <ul>
+      <li>Return to saved drafts instead of starting over.</li>
+      <li>Use a focused writing workspace and publication tools.</li>
+      <li>Connect supported publishing services such as Blogger and Hugo.</li>
+      <li>Use optional OpenRouter tools with your own configured connection.</li>
+    </ul>
+    <a routerLink="/drafts">See your drafts</a>
+  </section>
+  <section id="advanced">
+    <h2>Advanced user features: more control, fewer repetitive steps</h2>
+    <p>
+      Manage accounts, use bulk actions, connect third-party APIs and diagnose connection problems
+      from the same client.
+    </p>
+    <ul>
+      <li>Manage follows, mutes and blocks, including supported bulk account operations.</li>
+      <li>Configure third-party connections and publishing integrations.</li>
+      <li>Customize reading, appearance and account settings.</li>
+      <li>Use connection help and diagnostic tools when a server or network is unreachable.</li>
+    </ul>
+    <a routerLink="/connection-help">Get connection help</a>
+  </section>
+  <aside>
+    <h2>Start with a preview</h2>
+    <p>
+      Open Mawkingbird to try the app, or sign in with Mastodon or Bluesky. Account actions need a
+      connected account; some tools depend on deployment settings and third-party services.
+    </p>
+    <a class="open-app" routerLink="/">Open Mawkingbird</a>
+    <a routerLink="/login">Sign in</a>
+  </aside>
+  <footer>
+    <a rel="me" href="https://mastodon.social/@mawkingbird">Mawkingbird on Mastodon</a>
+    <a rel="me" href="https://mastodon.social/@mistersql">Matthew on Mastodon</a>
+    <a routerLink="/about">About the design</a>
+    <a routerLink="/credits">Credits and privacy</a>
+  </footer>
+</main>

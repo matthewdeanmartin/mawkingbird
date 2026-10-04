@@ -48,6 +48,7 @@ help:
 	@echo "  make build              Production-build admin UI and Mockingbird"
 	@echo "  make build-admin        Build the packaged admin UI"
 	@echo "  make build-mockingbird  Build the standalone Mockingbird site"
+	@echo "  make test-seo           Prerender and verify the public SEO pages on demand"
 	@echo "  make starter-catalog-update  Bundle the sibling starter catalogue"
 	@echo "  make starter-catalog-check   Validate the bundle and importer offline"
 	@echo "  make security           Audit production dependencies"
@@ -135,6 +136,12 @@ build-admin:
 
 build-mockingbird:
 	npm run build:mockingbird
+
+.PHONY: build-seo test-seo
+build-seo:
+	npm run build:seo
+
+test-seo: build-seo
 
 security:
 	npm audit --omit=dev --audit-level=high

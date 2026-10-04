@@ -1,5 +1,7 @@
+import { toSignal } from '@angular/core/rxjs-interop';
+import { connectionHelpServer } from '../../../../host-url';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { CorsProxy } from '../../../../providers/cors-proxy/cors-proxy';
 import { CorsProxySettings } from '../../../../providers/cors-proxy/cors-proxy-settings';
@@ -129,22 +131,37 @@ interface DoctorGroup {
 // i18n settings.connections.doctor.selfHostedHint: Your configured proxy for requests that need a relay.
 @Component({
   selector: 'app-connection-doctor-page',
+  host: { '[class.public-doctor]': 'publicPage' },
   imports: [RouterLink, TranslocoPipe],
   templateUrl: './connection-doctor-page.html',
   styleUrls: ['../connection-page.css', './connection-doctor-page.css'],
 })
 export class ConnectionDoctorPage {
+  protected readonly publicPage = inject(Router).url.split(/[?#]/)[0] === '/connection-doctor';
+  protected readonly requestedServer = connectionHelpServer(
+    inject(ActivatedRoute).snapshot.queryParamMap.get('server'),
+  );
   protected doctor = inject(ConnectionDoctor);
   private server = inject(Server);
   private proxy = inject(CorsProxy);
   private proxySettings = inject(CorsProxySettings);
   private transloco = inject(TranslocoService);
 
-  /** Bound to `translate`'s shape so the catalog's free functions stay DI-free. */
-  private readonly translate = (key: string, params?: Record<string, unknown>) =>
-    this.transloco.translate(key, params);
+  // Directly opened public pages can render before the locale file arrives.
+  // Catalog copy must update on both a language change and a completed load.
+  private readonly language = toSignal(this.transloco.langChanges$, {
+    initialValue: this.transloco.getActiveLang(),
+  });
+  private readonly translationEvent = toSignal(this.transloco.events$, { initialValue: null });
 
-  protected readonly reportedOptions = reportedOptions(this.translate);
+  /** Bound to `translate`'s shape so the catalog's free functions stay DI-free. */
+  private readonly translate = (key: string, params?: Record<string, unknown>) => {
+    this.language();
+    this.translationEvent();
+    return this.transloco.translate(key, params);
+  };
+
+  protected readonly reportedOptions = computed(() => reportedOptions(this.translate));
 
   /** What the user says they saw, per target id. */
   private reports = signal<Readonly<Record<string, ReportedOutcome>>>({});
@@ -157,7 +174,7 @@ export class ConnectionDoctorPage {
    * built-in mock contributes no row at all.
    */
   protected readonly targets = computed<ProbeTarget[]>(() => {
-    const home = homeServerTarget(this.server.baseUrl(), this.translate);
+    const home = homeServerTarget(this.requestedServer ?? this.server.baseUrl(), this.translate);
     const rest = [...probeTargets(this.translate)];
     if (this.proxySettings.currentId() === 'custom' && this.proxySettings.customTemplate()) {
       try {

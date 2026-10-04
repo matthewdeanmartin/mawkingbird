@@ -1,3 +1,4 @@
+import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PlusPrice } from '../providers/account/plus-price';
@@ -142,6 +143,7 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    MbContentState,
     MbButton,
     PlusPrice,
     PlusPaywallDialog,
@@ -614,7 +616,10 @@ export class Shell implements OnInit {
    * do a full page reload — the cleanest way to invalidate everything and
    * re-bootstrap against the new identity.
    */
+  protected readonly switchingServer = signal<string | null>(null);
+
   switchTo(target: AccountChoice | Session): void {
+    if (this.switchingServer()) return;
     const session: AccountChoice =
       'kind' in target
         ? target
@@ -649,6 +654,7 @@ export class Shell implements OnInit {
     if (!session.token) {
       return;
     }
+    this.switchingServer.set(session.server || location.origin);
     this.auth.switchTo(session.token);
     this.api.verifyCredentials().subscribe({
       next: (acc) => {
@@ -673,6 +679,7 @@ export class Shell implements OnInit {
           // clear it rather than leaving the app authenticated with a dead token.
           this.auth.exitToLoggedOut();
         }
+        this.switchingServer.set(null);
         this.deadSession.set(session);
       },
     });
@@ -730,3 +737,5 @@ export class Shell implements OnInit {
     location.assign(document.baseURI);
   }
 }
+
+// i18n shell.switchingServer: Connecting to {{server}}…

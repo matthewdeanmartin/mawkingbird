@@ -1,10 +1,12 @@
+import { MbButton } from '../design-system/button/button';
+import { ServerConnectionHelp } from '../server-connection-help/server-connection-help';
 import { MbServerPickerSurface } from '../design-system/identity/server-picker';
 import { MbPostAction } from '../design-system/post-actions/post-actions';
 import { Component, DestroyRef, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
-import { normalizeHostUrl } from '../host-url';
+import { isLocalNetworkServer, normalizeHostUrl } from '../host-url';
 import { probeServerAvailability } from '../server-availability';
 
 // i18n serverPicker.instanceAria: Server instance
@@ -47,7 +49,14 @@ export type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachabl
  */
 @Component({
   selector: 'app-server-picker',
-  imports: [MbPostAction, MbServerPickerSurface, FormsModule, TranslocoPipe],
+  imports: [
+    MbButton,
+    ServerConnectionHelp,
+    MbPostAction,
+    MbServerPickerSurface,
+    FormsModule,
+    TranslocoPipe,
+  ],
   templateUrl: './server-picker.html',
   styleUrl: './server-picker.css',
 })
@@ -75,6 +84,7 @@ export class ServerPicker implements OnInit, OnDestroy {
   private serverDebounce: ReturnType<typeof setTimeout> | null = null;
   /** Guards against a slow instance probe overwriting a newer one. */
   private probeSeq = 0;
+  private probeController: AbortController | null = null;
   /** A degraded result must be explicitly accepted before it is emitted. */
   private pendingDegradedServer: string | null = null;
 
@@ -85,16 +95,23 @@ export class ServerPicker implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.probeSeq += 1;
+    this.probeController?.abort();
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
     }
   }
 
   /** As soon as the text looks like a domain, probe it and (on success) emit. */
+  protected isLocalServer(): boolean {
+    return isLocalNetworkServer(this.customServer());
+  }
+
   onServerInput(value: string): void {
     this.activeSuggestion.set(-1);
     // Invalidate an in-flight probe even when the replacement text is not yet a domain.
     this.probeSeq += 1;
+    this.probeController?.abort();
     this.customServer.set(value);
     this.serverStatus.set('idle');
     this.serverTitle.set(null);
@@ -105,6 +122,10 @@ export class ServerPicker implements OnInit, OnDestroy {
       clearTimeout(this.serverDebounce);
     }
     if (!DOMAIN_RE.test(value.trim())) {
+      return;
+    }
+    if (isLocalNetworkServer(value)) {
+      this.serverStatus.set('idle');
       return;
     }
     this.serverDebounce = setTimeout(() => void this.probeAndApply(value), 500);
@@ -197,12 +218,14 @@ export class ServerPicker implements OnInit, OnDestroy {
     // Quietly supply the scheme: https for real hosts, http for localhost / IPs.
     const base = normalizeHostUrl(trimmed);
     const seq = ++this.probeSeq;
+    this.probeController?.abort();
+    this.probeController = new AbortController();
     this.pendingDegradedServer = null;
     this.mediaHost.set(null);
     this.suggestOpen.set(false);
     this.serverStatus.set('checking');
     try {
-      const result = await probeServerAvailability(base);
+      const result = await probeServerAvailability(base, this.probeController.signal);
       if (seq !== this.probeSeq) {
         return; // a newer probe superseded this one
       }

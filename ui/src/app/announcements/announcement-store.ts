@@ -1,4 +1,5 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { Server } from '../server';
+import { computed, inject, Injectable, linkedSignal, signal } from '@angular/core';
 import { Api } from '../api';
 import { Announcement } from '../models';
 import { networkSources } from '../shell/network-sources';
@@ -38,10 +39,14 @@ function readDismissed(): string[] {
 @Injectable({ providedIn: 'root' })
 export class AnnouncementStore {
   private api = inject(Api);
+  private server = inject(Server);
 
   /** Everything the server published, dismissed or not. */
-  readonly all = signal<Announcement[]>([]);
-  readonly loaded = signal(false);
+  readonly all = linkedSignal<string, Announcement[]>({
+    source: () => this.server.baseUrl(),
+    computation: () => [],
+  });
+  readonly loaded = linkedSignal({ source: () => this.server.baseUrl(), computation: () => false });
 
   private dismissed = signal(new Set<string>(readDismissed()));
 
@@ -60,7 +65,8 @@ export class AnnouncementStore {
    */
   readonly hasUnread = computed(() => this.active().some((a) => a.read === false));
 
-  private loading = false;
+  private loadingFor: string | null = null;
+  private request = 0;
 
   /**
    * Whether this account has a Mastodon server to ask at all.
@@ -84,7 +90,8 @@ export class AnnouncementStore {
   private usableMastodon = networkSources().usableMastodon;
 
   load(force = false): void {
-    if (this.loading || (this.loaded() && !force)) {
+    const server = this.server.baseUrl();
+    if (this.loadingFor === server || (this.loaded() && !force)) {
       return;
     }
     // No Mastodon source, no announcements to have. Settle as an empty,
@@ -94,18 +101,21 @@ export class AnnouncementStore {
       this.loaded.set(true);
       return;
     }
-    this.loading = true;
+    this.loadingFor = server;
+    const request = ++this.request;
     this.api.announcements().subscribe({
       next: (list) => {
+        if (server !== this.server.baseUrl() || request !== this.request) return;
         this.all.set(list);
         this.loaded.set(true);
-        this.loading = false;
+        this.loadingFor = null;
       },
       error: () => {
+        if (server !== this.server.baseUrl() || request !== this.request) return;
         // A server with announcements switched off answers 404; that is an
         // empty list, not a failure worth surfacing.
         this.loaded.set(true);
-        this.loading = false;
+        this.loadingFor = null;
       },
     });
   }

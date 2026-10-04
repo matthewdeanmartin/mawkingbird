@@ -1,3 +1,5 @@
+import { serverProbeTimeout } from './host-url';
+
 /** Result of checking both a Mastodon API and the media host it advertises. */
 export interface ServerAvailability {
   status: 'available' | 'degraded' | 'unreachable';
@@ -37,7 +39,7 @@ function advertisedMedia(info: InstanceInfo, baseUrl: string): string | null {
 export async function probeServerAvailability(
   baseUrl: string,
   searchSignal?: AbortSignal,
-  timeoutMs = 6000,
+  timeoutMs = serverProbeTimeout(baseUrl),
 ): Promise<ServerAvailability> {
   const timeout = AbortSignal.timeout(timeoutMs);
   const signal = searchSignal ? AbortSignal.any([searchSignal, timeout]) : timeout;

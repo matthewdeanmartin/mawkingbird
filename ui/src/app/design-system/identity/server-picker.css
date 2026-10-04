@@ -89,3 +89,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+[mbServerPickerSurface] .suggest-local {
+  border-block-start: 1px solid var(--border);
+}

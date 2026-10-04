@@ -42,7 +42,7 @@ jobs:
       - name: Stamp build info
         run: node ui/scripts/gen-build-info.mjs
       - name: Build Mocking Bird
-        run: make mockingbird MOCKINGBIRD_BASE_HREF=/
+        run: make mockingbird MOCKINGBIRD_BASE_HREF=/ MOCKINGBIRD_SEO=true
       - name: Stamp Bluesky OAuth metadata
         run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/
       - name: Add SPA 404 fallback

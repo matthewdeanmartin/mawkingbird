@@ -402,4 +402,35 @@ describe('RightRail', () => {
       expect(el.querySelectorAll('.spotlight-card')).toHaveLength(HOUSE_ADS_SHOWN);
     });
   });
+  it('clears the previous server card before the slow new instance answers', () => {
+    const server = TestBed.inject(Server);
+    server.setBaseUrl('https://fast.example');
+    TestBed.inject(Auth).account.set({ id: '1', acct: 'me@fast.example' } as Account);
+    const fixture = TestBed.createComponent(RightRail);
+    fixture.detectChanges();
+    httpMock
+      .expectOne('/api/v2/instance')
+      .flush({
+        domain: 'fast.example',
+        title: 'Old server title',
+        usage: { users: { active_month: 99 } },
+      });
+    httpMock
+      .match(() => true)
+      .forEach((request) => request.flush([], { status: 200, statusText: 'OK' }));
+    fixture.detectChanges();
+    const rail = fixture.componentInstance as unknown as { instance(): { title: string } | null };
+    expect(rail.instance()?.title).toBe('Old server title');
+    server.setBaseUrl('https://mastomini.local');
+    expect(rail.instance()).toBeNull();
+    fixture.detectChanges();
+    const slow = httpMock.expectOne('/api/v2/instance');
+    expect(rail.instance()).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Old server title');
+    slow.flush({ domain: 'mastomini.local', title: 'Mastomini' });
+    expect(rail.instance()?.title).toBe('Mastomini');
+    httpMock
+      .match(() => true)
+      .forEach((request) => request.flush([], { status: 200, statusText: 'OK' }));
+  });
 });

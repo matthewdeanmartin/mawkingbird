@@ -2,6 +2,10 @@ import { FeedCtaStore } from '../../feed-cta-store';
 import { FeedCta } from '../../feed-ctas';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+// i18n pages.home.projectLinks: Mawkingbird project links
+// i18n pages.home.features: Discover Mawkingbird features
+// i18n pages.home.projectMastodon: Mawkingbird on Mastodon
+// i18n pages.home.creatorMastodon: Matthew on Mastodon
 import {
   ActivatedRoute,
   NavigationSkipped,
@@ -742,6 +746,9 @@ export class Home implements OnInit, OnDestroy {
     }
     if (key !== this.lastAnonymousSourceKey) {
       this.lastAnonymousSourceKey = key;
+      this.statuses.set([]);
+      this.publishMastodon([]);
+      this.bookmarkSub?.unsubscribe();
       this.load();
     }
   });
@@ -988,9 +995,11 @@ export class Home implements OnInit, OnDestroy {
     // the final follow or hashtag makes this provider unlinked, so reset it
     // explicitly or its old cursors keep paging posts from the removed source.
     this.anonymousProvider.reset();
+    const sourceKey = this.anonymousSourceKey();
     let sawFirst = false;
     this.pageSub = this.anonymousProvider.fetchPageStreaming().subscribe({
       next: (snapshot) => {
+        if (sourceKey !== this.anonymousSourceKey()) return;
         // Snapshots are already deduped and grow monotonically; show as-is
         // (arrival order) mid-stream — the final sort happens on completion.
         this.statuses.set(snapshot);
@@ -1006,6 +1015,7 @@ export class Home implements OnInit, OnDestroy {
         });
       },
       error: (error: unknown) => {
+        if (sourceKey !== this.anonymousSourceKey()) return;
         this.diagnostics.error('load:first-page-error', error, {
           mode: this.auth.mode() ?? 'unauthenticated',
           server: this.server.baseUrl() || 'same-origin',
@@ -1015,6 +1025,7 @@ export class Home implements OnInit, OnDestroy {
         this.noNewPosts.set(false);
       },
       complete: () => {
+        if (sourceKey !== this.anonymousSourceKey()) return;
         // Everything's in: sort newest-first once, cache, and top up to the min.
         this.statuses.update((list) => this.dedupeAnonymous(list));
         this.finishRefresh();
@@ -1456,6 +1467,7 @@ export class Home implements OnInit, OnDestroy {
       .map((feed) => feed.providerId)
       .sort();
     return JSON.stringify({
+      server: this.server.baseUrl(),
       follows: this.anonymousFollows
         .follows()
         .map((follow) => follow.key)

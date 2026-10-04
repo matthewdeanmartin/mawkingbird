@@ -104,6 +104,10 @@
               ],
               "outputHashing": "all"
             },
+            "seo": {
+              "server": "src/main.server.ts",
+              "outputMode": "static"
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

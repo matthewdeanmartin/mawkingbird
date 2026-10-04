@@ -14,7 +14,32 @@ import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
 
 export const routes: Routes = [
-  // The front door: a dispatcher that renders nothing. It sends a signed-in or
+  {
+    path: 'features',
+    title: 'Mastodon, reading and writing features',
+    data: {
+      seoIndexable: true,
+      seoDescription:
+        'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.',
+    },
+    loadComponent: () => import('./pages/features/features').then((m) => m.Features),
+  },
+  // Recovery works before signing in, without changing the active account.
+  {
+    path: 'connection-help',
+    title: 'Connection help',
+    loadComponent: () =>
+      import('./pages/connection-help/connection-help').then((m) => m.ConnectionHelp),
+  },
+  {
+    path: 'connection-doctor',
+    title: 'Network Doctor',
+    loadComponent: () =>
+      import('./pages/settings/connections/doctor/connection-doctor-page').then(
+        (m) => m.ConnectionDoctorPage,
+      ),
+  },
+  // The front door: a dispatcher with a signed-out loading summary. It sends a signed-in or
   // already-decided visitor to /home, and a first-time one into the seeded
   // preview — the app itself, with the login question as a modal on top.
   // Unguarded and matched `full`; the guarded shell keeps its own '' child below.
@@ -22,6 +47,7 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     loadComponent: () => import('./pages/entry/entry').then((m) => m.EntryPage),
+    data: { seoIndexable: true },
   },
   {
     path: 'anonymous',

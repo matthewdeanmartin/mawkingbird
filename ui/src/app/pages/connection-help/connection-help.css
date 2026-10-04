@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  color: var(--text);
+}
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+p {
+  line-height: 1.6;
+}
+pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}

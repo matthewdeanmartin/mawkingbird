@@ -345,3 +345,11 @@ a.eliza-invite:hover {
 .home-filters {
   display: contents;
 }
+.home-project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}

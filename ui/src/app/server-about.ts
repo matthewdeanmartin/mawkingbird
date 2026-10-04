@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, linkedSignal } from '@angular/core';
 import { catchError, forkJoin, map, of } from 'rxjs';
 import { Api } from './api';
 import { InstanceRule, TermsOfService } from './models';
@@ -27,12 +27,18 @@ function readCache(): ServerAboutCache {
 export class ServerAbout {
   private readonly api = inject(Api);
   private readonly server = inject(Server);
-  private readonly key = this.server.baseUrl() || location.origin;
-  private readonly cached = readCache()[this.key] ?? {};
+  private readonly key = computed(() => this.server.baseUrl() || location.origin);
 
-  readonly rules = signal<InstanceRule[] | undefined>(this.cached.rules);
-  readonly terms = signal<TermsOfService | null | undefined>(this.cached.terms);
-  readonly loading = signal(false);
+  readonly rules = linkedSignal<string, InstanceRule[] | undefined>({
+    source: this.key,
+    computation: (key) => readCache()[key]?.rules,
+  });
+  readonly terms = linkedSignal<string, TermsOfService | null | undefined>({
+    source: this.key,
+    computation: (key) => readCache()[key]?.terms,
+  });
+  readonly loading = linkedSignal({ source: this.key, computation: () => false });
+  private request = 0;
   readonly hasRules = computed(() => (this.rules()?.length ?? 0) > 0);
   readonly hasTerms = computed(() => !!this.terms()?.content.trim());
 
@@ -41,6 +47,8 @@ export class ServerAbout {
     if (this.loading() || (this.rules() !== undefined && this.terms() !== undefined)) {
       return;
     }
+    const key = this.key();
+    const request = ++this.request;
     this.loading.set(true);
     forkJoin({
       rules:
@@ -62,6 +70,7 @@ export class ServerAbout {
               ),
             ),
     }).subscribe(({ rules, terms }) => {
+      if (key !== this.key() || request !== this.request) return;
       if (rules.known) this.rules.set(rules.value);
       if (terms.known) this.terms.set(terms.value);
       this.persist();
@@ -71,7 +80,7 @@ export class ServerAbout {
 
   private persist(): void {
     const cache = readCache();
-    cache[this.key] = {
+    cache[this.key()] = {
       ...(this.rules() !== undefined ? { rules: this.rules() } : {}),
       ...(this.terms() !== undefined ? { terms: this.terms() } : {}),
     };

@@ -1,3 +1,4 @@
+import { provideRouter } from "@angular/router";
 import {
   Component,
   DestroyRef,
@@ -26,6 +27,14 @@ class ServerPreviewState {
   readonly mode = signal("working");
   readonly rejected = signal<string[]>([]);
   readonly directory = [
+    {
+      domain: "mastomini.local",
+      category: "Local network · ESP32",
+      users: 0,
+      local: true,
+      description:
+        "Your household Mastomini; browser permission and a trusted certificate may be needed.",
+    },
     {
       domain: "community.example",
       category: "general",
@@ -137,6 +146,7 @@ export default {
   decorators: [
     applicationConfig({
       providers: [
+        provideRouter([]),
         importProvidersFrom(translocoTesting()),
         ServerPreviewState,
         {
@@ -157,7 +167,7 @@ export default {
                 ),
               shuffled: (excluded: Set<string>) =>
                 state.directory.filter(
-                  (server) => !excluded.has(server.domain),
+                  (server) => !server.local && !excluded.has(server.domain),
                 ),
             };
           },

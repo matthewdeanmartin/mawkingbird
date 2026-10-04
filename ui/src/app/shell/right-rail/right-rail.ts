@@ -7,7 +7,7 @@ import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbSwitch } from '../../design-system/identity/switch';
 import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../providers/account/plus-promotion';
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, linkedSignal, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../terminology';
 import { AnnouncementStore } from '../../announcements/announcement-store';
@@ -174,7 +174,10 @@ export class RightRail implements OnInit {
     () => this.auth.isAnonymous && this.searchServer.active(),
   );
 
-  protected instance = signal<InstanceInfo | null>(null);
+  protected instance = linkedSignal<string, InstanceInfo | null>({
+    source: () => this.server.baseUrl(),
+    computation: () => null,
+  });
 
   /**
    * The host of the user's home server, inferred from their account (the part
@@ -244,14 +247,15 @@ export class RightRail implements OnInit {
   constructor() {
     // Runs on init and again when the user switches accounts or instances, so
     // the server-info block and donate link don't go stale mid-session.
-    effect(() => {
+    effect((onCleanup) => {
       this.auth.account();
       this.server.baseUrl();
       // No Mastodon source, no Mastodon request. Reading the signal inside the
       // effect keeps this live: opting the connector in from Settings fills the
       // card in without a reload.
       if (this.usableMastodon()) {
-        this.fetchInstance();
+        const subscription = this.fetchInstance();
+        onCleanup(() => subscription.unsubscribe());
       }
     });
   }
@@ -283,9 +287,12 @@ export class RightRail implements OnInit {
     void this.feedCaps.ensure('trending-statuses');
   }
 
-  private fetchInstance(): void {
-    this.api.instanceInfo().subscribe({
-      next: (info) => this.instance.set(info),
+  private fetchInstance() {
+    const server = this.server.baseUrl();
+    return this.api.instanceInfo().subscribe({
+      next: (info) => {
+        if (server === this.server.baseUrl()) this.instance.set(info);
+      },
       error: () => {
         // Sidebar widget: fail silently.
       },

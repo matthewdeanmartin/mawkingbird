@@ -374,6 +374,27 @@ describe('Shell account switching', () => {
     expect(TestBed.inject(OnboardingLauncher).mode()).toBe('menu');
     expect(menu.open).toBe(false);
   });
+  it(
+    'hides the old account content throughout a slow verification and restores it on failure',
+    { timeout: 20000 },
+    () => {
+      const fixture = createShell();
+      const social = auth.sessions().find((session) => session.token === 'social-token')!;
+      fixture.componentInstance.switchTo(social);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.switching-server').textContent).toContain(
+        'mastodon.social',
+      );
+      expect(fixture.nativeElement.querySelector('.topbar').closest('[hidden]')).not.toBeNull();
+      httpMock
+        .expectOne('https://mastodon.social/api/v1/accounts/verify_credentials')
+        .flush('No', { status: 401, statusText: 'Unauthorized' });
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.switching-server')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.topbar').closest('[hidden]')).toBeNull();
+      drainRailRequests();
+    },
+  );
 });
 
 /**

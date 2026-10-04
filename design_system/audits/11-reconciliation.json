@@ -1081,6 +1081,16 @@
       "file": "ui/src/app/pages/settings/connections/mataroa/connection-mataroa.css",
       "disposition": "adopted scope",
       "nextStep": "Reviewed shared-button selectors only place actions using logical margin and flex layout; widget geometry, states, colors and typography remain shared. Keep narrow rows wrapping."
+    },
+    {
+      "file": "ui/src/app/pages/connection-help/connection-help.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public certificate/network recovery uses PageHeader, Section, Disclosure and ContentLink. Keep OS instructions within shared disclosures and verify narrow/wide light/dim layouts without a login."
+    },
+    {
+      "file": "ui/src/app/server-connection-help/server-connection-help.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Compact failed-server recovery uses native RouterLink with ContentLink and keeps installation instructions on the separate public page. Preserve the requested host without changing account state."
     }
   ]
 }

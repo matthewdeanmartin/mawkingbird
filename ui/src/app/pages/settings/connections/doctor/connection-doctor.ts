@@ -1,3 +1,4 @@
+import { isPrivateNetworkServer, serverProbeTimeout } from '../../../../host-url';
 import { ProxyActivity } from '../../../../providers/cors-proxy/proxy-activity';
 import { inject, Injectable, signal } from '@angular/core';
 import { buildProxiedUrl } from '../../../../providers/cors-proxy/cors-proxy';
@@ -85,7 +86,7 @@ export class ConnectionDoctor {
 
     await Promise.all(
       targets.map(async (target) => {
-        const result = await this.probe(target, timeoutMs);
+        const result = await this.probe(target, serverProbeTimeout(target.probeUrl, timeoutMs));
         this.results.update((current) => ({ ...current, [target.id]: result }));
       }),
     );
@@ -160,6 +161,9 @@ export class ConnectionDoctor {
     target: ProbeTarget,
     timeoutMs: number,
   ): Promise<{ proxy: ProxyVerdict; proxyMs: number | null }> {
+    if (isPrivateNetworkServer(target.probeUrl)) {
+      return { proxy: 'none', proxyMs: null };
+    }
     try {
       this.activity.assertAllowed();
     } catch {

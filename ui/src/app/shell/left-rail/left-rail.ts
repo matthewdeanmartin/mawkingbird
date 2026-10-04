@@ -1,7 +1,8 @@
+import { Server } from '../../server';
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../../account-hover-card/account-hover-card';
 import { Api } from '../../api';
@@ -59,6 +60,7 @@ function accountKey(account: Account): string {
 export class LeftRail implements OnInit {
   protected auth = inject(Auth);
   private api = inject(Api);
+  private server = inject(Server);
   private homeTimelineFeed = inject(HomeTimelineFeed);
   private anonymousFollows = inject(AnonymousFollows);
   private anonymous = inject(AnonymousAccount);
@@ -76,13 +78,27 @@ export class LeftRail implements OnInit {
     return tag.history?.[0]?.uses ?? null;
   }
 
-  ngOnInit(): void {
-    this.api.trendingTags().subscribe({
-      next: (tags) => this.trends.set(tags),
-      error: () => {
-        // Sidebar widget: fail silently.
-      },
+  private readonly initialized = signal(false);
+
+  constructor() {
+    effect((onCleanup) => {
+      const server = this.server.baseUrl();
+      if (!this.initialized()) return;
+      this.candidates.clear();
+      this.suggestions.set([]);
+      this.trends.set([]);
+      const sub = this.api.trendingTags().subscribe({
+        next: (tags) => {
+          if (server === this.server.baseUrl()) this.trends.set(tags);
+        },
+        error: () => undefined,
+      });
+      onCleanup(() => sub.unsubscribe());
     });
+  }
+
+  ngOnInit(): void {
+    this.initialized.set(true);
     this.homeTimelineFeed.loaded.subscribe((statuses) => {
       const me = this.auth.account();
       const meKey = me ? accountKey(me) : '';
@@ -127,7 +143,9 @@ export class LeftRail implements OnInit {
         return;
       }
       const ids = ranked.map((candidate) => candidate.account.id);
+      const server = this.server.baseUrl();
       void this.follows.resolve(ids).then(() => {
+        if (server !== this.server.baseUrl()) return;
         this.suggestions.set(
           ranked
             .map((candidate) => candidate.account)

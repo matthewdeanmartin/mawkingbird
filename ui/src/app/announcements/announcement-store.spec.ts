@@ -1,3 +1,4 @@
+import { Server } from '../server';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -155,5 +156,22 @@ describe('AnnouncementStore', () => {
     // Settled, not pending: the surfaces must render their empty state rather
     // than a spinner waiting on a call that is never made.
     expect(store.loaded()).toBe(true);
+  });
+  it('clears old announcement badges and ignores late results after changing servers', () => {
+    const server = TestBed.inject(Server);
+    const store = loaded([announcement('1', false)]);
+    expect(store.activeCount()).toBe(1);
+    server.setBaseUrl('https://old.example');
+    expect(store.activeCount()).toBe(0);
+    store.load();
+    const old = httpMock.expectOne('/api/v1/announcements');
+    server.setBaseUrl('https://mastomini.local');
+    expect(store.loaded()).toBe(false);
+    store.load();
+    const current = httpMock.expectOne('/api/v1/announcements');
+    old.flush([announcement('2')]);
+    expect(store.total()).toBe(0);
+    current.flush([announcement('3')]);
+    expect(store.all()[0].id).toBe('3');
   });
 });

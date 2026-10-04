@@ -183,4 +183,46 @@ describe('ServerPicker', () => {
     internals(cmp).useDegradedServer();
     expect(emitted).toEqual(['https://degraded.example']);
   });
+  it('waits for an explicit action before connecting to a typed local server', async () => {
+    vi.useFakeTimers();
+    try {
+      const fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: async () => ({ title: 'Mastomini' }) });
+      vi.stubGlobal('fetch', fetch);
+      const cmp = create();
+      internals(cmp).onServerInput('mastomini.local');
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(fetch).not.toHaveBeenCalled();
+      expect(internals(cmp).serverStatus()).toBe('idle');
+      internals(cmp).applyServerNow();
+      await flush();
+      expect(fetch).toHaveBeenCalledWith(
+        'https://mastomini.local/api/v1/instance',
+        expect.any(Object),
+      );
+      expect(internals(cmp).serverStatus()).toBe('ok');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('cancels a slow probe when the input changes and ignores its late result', async () => {
+    let finish!: (value: unknown) => void;
+    const fetch = vi.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    vi.stubGlobal('fetch', fetch);
+    const cmp = create();
+    internals(cmp).chooseSuggestion({ ...SUGGESTION, domain: 'mastomini.local' });
+    const signal = fetch.mock.calls[0][1].signal as AbortSignal;
+    internals(cmp).onServerInput('new');
+    expect(signal.aborted).toBe(true);
+    finish({ ok: true, json: async () => ({ title: 'Old server' }) });
+    await flush();
+    expect(internals(cmp).serverStatus()).toBe('idle');
+  });
 });

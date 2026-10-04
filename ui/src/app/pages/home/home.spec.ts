@@ -435,7 +435,7 @@ describe('Home', () => {
     const cached = { ...makeStatus('cached'), provider: 'anonymous-mastodon' } as Status;
     TestBed.inject(AnonymousHomeFeedCache).store(
       [cached],
-      JSON.stringify({ follows: [], tags: [] }),
+      JSON.stringify({ server: 'https://mastodon.social', follows: [], tags: [] }),
     );
 
     const fixture = TestBed.createComponent(Home);
@@ -1264,6 +1264,25 @@ describe('Home', () => {
     fixture.detectChanges();
     expect(internals(fixture).view()).toBe('feed');
     expect((fixture.nativeElement as HTMLElement).querySelector('.home-filters')).not.toBeNull();
+  });
+  it('clears a cached Anonymous timeline when the server changes with the same follows and tags', () => {
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous('https://fast.example');
+    TestBed.inject(AnonymousHomeFeedCache).store(
+      [{ ...makeStatus('old-server'), provider: 'anonymous-mastodon' }],
+      JSON.stringify({ server: 'https://fast.example', follows: [], tags: [] }),
+    );
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    expect(
+      internals(fixture)
+        .statuses()
+        .map((status) => status.id),
+    ).toEqual(['old-server']);
+    auth.enterAnonymous('https://mastomini.local');
+    fixture.detectChanges();
+    expect(internals(fixture).statuses()).toEqual([]);
+    expect(fixture.nativeElement.textContent).not.toContain('status old-server');
   });
 });
 

@@ -11,9 +11,19 @@ export interface ServerSuggestion {
   category: string;
   /** Rough size, for a "big vs cozy" hint. 0 when the API omitted it. */
   users: number;
+  local?: boolean;
 }
 
 /** joinmastodon's public, CORS-open index (Access-Control-Allow-Origin: *). */
+const LOCAL_SERVER: ServerSuggestion = {
+  domain: 'mastomini.local',
+  description:
+    'Your Mastomini on this local network; browser permission and a trusted certificate may be needed.',
+  category: 'Local network · ESP32',
+  users: 0,
+  local: true,
+};
+
 const SERVERS_URL = 'https://api.joinmastodon.org/servers';
 /** A complete point-in-time copy of the same directory, shipped with the client. */
 const BUNDLED_SERVERS_URL = 'mastodon-servers.json';
@@ -168,13 +178,23 @@ export class MastodonServers {
    * as a sensible default suggestion list.
    */
   search(query: string, limit = 7): ServerSuggestion[] {
-    const all = this.servers();
+    const all = [
+      ...this.servers().filter((server) => server.domain !== LOCAL_SERVER.domain),
+      LOCAL_SERVER,
+    ];
     const q = query
       .trim()
       .toLowerCase()
       .replace(/^https?:\/\//, '');
     if (!q) {
-      return [...all].sort((a, b) => b.users - a.users).slice(0, limit);
+      if (limit <= 0) return [];
+      return [
+        ...all
+          .filter((server) => !server.local)
+          .sort((a, b) => b.users - a.users)
+          .slice(0, limit - 1),
+        LOCAL_SERVER,
+      ];
     }
     const scored = all
       .map((s) => ({ s, score: this.score(s, q) }))
