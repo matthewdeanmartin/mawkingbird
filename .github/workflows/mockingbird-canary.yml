@@ -94,8 +94,7 @@ jobs:
           test -f .pages-site/index.html
           test -f .pages-site/canary/index.html
           test -f .pages-site/test/index.html
-          grep --fixed-strings '<base href="/"/>' .pages-site/index.html
-          test "$(cat .pages-site/CNAME)" = mawkingbird.com
+          node ui/scripts/check-production-layout.mjs .pages-site
           test "$(cat .pages-site/canary/canary-commit.txt)" = "$GITHUB_SHA"
           test "$(cat .pages-site/test/test-commit.txt)" = "$GITHUB_SHA"
       - name: Upload complete Pages site
