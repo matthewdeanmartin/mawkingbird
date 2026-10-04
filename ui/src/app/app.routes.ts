@@ -12,8 +12,10 @@ import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
+import { audienceRoutes } from './pages/features/audience-routes';
 
 export const routes: Routes = [
+  ...audienceRoutes,
   {
     path: 'features',
     title: 'Mastodon, reading and writing features',
@@ -39,7 +41,7 @@ export const routes: Routes = [
         (m) => m.ConnectionDoctorPage,
       ),
   },
-  // The front door: a dispatcher with a signed-out loading summary. It sends a signed-in or
+  // The front door is the existing app dispatcher. It sends a signed-in or
   // already-decided visitor to /home, and a first-time one into the seeded
   // preview — the app itself, with the login question as a modal on top.
   // Unguarded and matched `full`; the guarded shell keeps its own '' child below.

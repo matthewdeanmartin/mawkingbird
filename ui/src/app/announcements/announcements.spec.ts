@@ -5,6 +5,7 @@ import { WritableSignal } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Announcement, AnnouncementReaction } from '../models';
 import { Announcements } from './announcements';
+import { Auth } from '../auth';
 
 interface AnnouncementsInternals {
   announcements: WritableSignal<Announcement[]>;
@@ -41,6 +42,7 @@ describe('Announcements', () => {
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).setToken('announcement-test-token');
   });
 
   afterEach(() => {

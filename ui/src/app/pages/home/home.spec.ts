@@ -120,6 +120,11 @@ describe('Home', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    // The default fixture exercises an authenticated home timeline, including
+    // its authenticated announcements. Anonymous cases enter that mode explicitly.
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('home-test-token');
   });
 
   afterEach(() => {
@@ -1322,6 +1327,9 @@ describe('Home, end-of-feed honesty', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('home-test-token');
   });
 
   // Separate hook: these fixtures use fixed dates, and the default 24h window
@@ -1417,6 +1425,9 @@ describe('Home, bookmark review', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('home-test-token');
   });
 
   // Separate hook: these fixtures use fixed dates, and the default 24h window
@@ -1534,6 +1545,9 @@ describe('Home, reading break', () => {
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('home-test-token');
   });
 
   // Separate hook: these fixtures use fixed dates, and the default 24h window

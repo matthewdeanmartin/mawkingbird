@@ -6,6 +6,13 @@ import { chromium } from '@playwright/test';
 
 const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
 const results = path.resolve(import.meta.dirname, '../.test-results');
+const audiencePages = [
+  ['readers', 'Make room for the stories you want to read'],
+  ['bluesky', 'Bring your Bluesky conversations into a familiar home'],
+  ['twitter-exodus', 'Find your next conversation without starting from an empty feed'],
+  ['instagram', 'Give the pictures their own space'],
+  ['creators', 'Keep the idea, shape the post, share the work'],
+];
 const types = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -41,6 +48,18 @@ try {
     const context = await browser.newContext({ javaScriptEnabled });
     const page = await context.newPage();
     const errors = [];
+    const diagnostics = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') diagnostics.push(message.text());
+    });
+    page.on('requestfailed', (request) =>
+      diagnostics.push(`${request.url()}: ${request.failure()?.errorText}`),
+    );
+    const announcementRequests = [];
+    page.on('request', (request) => {
+      if (new URL(request.url()).pathname === '/api/v1/announcements')
+        announcementRequests.push(request.url());
+    });
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto(`${origin}/features/`);
     await page
@@ -77,6 +96,54 @@ try {
       fullPage: true,
     });
     assert.deepEqual(errors, [], 'no browser runtime errors');
+    for (const [slug, heading] of audiencePages) {
+      await page.goto(`${origin}/for/${slug}/`);
+      await page.getByRole('heading', { name: heading, exact: true }).waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/for/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('meta[property="og:url"]').getAttribute('content'),
+        `https://mawkingbird.com/for/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('meta[property="og:image"]').getAttribute('content'),
+        'https://mawkingbird.com/mockingbird_hand.png',
+      );
+      assert.equal(await page.locator('head link[rel="me"]').count(), 2);
+      assert.equal(await page.locator('a[rel="me"]').count(), 0);
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug} has no overflow at ${width}px`,
+        );
+        await page.screenshot({
+          path: path.join(
+            results,
+            `seo-${slug}-${width}-${javaScriptEnabled ? 'client' : 'static'}.png`,
+          ),
+          fullPage: true,
+        });
+      }
+      assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
+    }
+    if (javaScriptEnabled) {
+      await page.goto(`${origin}/for/readers/`);
+      await page.getByRole('link', { name: 'For creators', exact: true }).click();
+      await page.waitForURL(`${origin}/for/creators`);
+      await page.getByRole('heading', { name: audiencePages[4][1], exact: true }).waitFor();
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        'https://mawkingbird.com/for/creators/',
+      );
+      assert.ok((await page.title()).includes('Writing and photography'));
+    }
     if (!javaScriptEnabled) {
       await page.goto(origin + '/');
       assert.equal(await page.locator('a[rel="me"]').count(), 0);
@@ -135,16 +202,36 @@ try {
       try {
         await page.getByRole('heading', { name: 'Welcome to Mawkingbird' }).waitFor();
       } catch (error) {
+        await writeFile(
+          path.join(results, 'seo-root-failure.json'),
+          JSON.stringify(diagnostics, null, 2),
+        );
         await writeFile(path.join(results, 'seo-root-failure.html'), await page.content());
         await page.screenshot({ path: path.join(results, 'seo-root-failure.png'), fullPage: true });
         throw error;
       }
       assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
+      // Re-entry must also retain the welcome flow if the dictionary arrives
+      // after the home route, rather than leaving empty translated controls.
+      let releaseTranslations;
+      const translationsReady = new Promise((resolve) => {
+        releaseTranslations = resolve;
+      });
+      await context.route(`${origin}/i18n/**`, async (route) => {
+        await translationsReady;
+        await route.continue();
+      });
       await page.goto(origin + '/');
       await page.waitForURL(origin + '/home');
+      releaseTranslations();
       await page.getByRole('heading', { name: 'Welcome to Mawkingbird' }).waitFor();
       assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
       assert.deepEqual(errors, [], 'preview startup has no runtime errors');
+      assert.deepEqual(
+        announcementRequests,
+        [],
+        'public pages and anonymous preview never fetch authenticated announcements',
+      );
     }
     await context.close();
   }

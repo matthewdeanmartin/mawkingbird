@@ -14,8 +14,8 @@ The checker still rejects preview/project-path bases, duplicate bases, incorrect
 
 `src/main.server.ts` bootstraps only the public features component and route
 metadata. It does not initialize accounts, storage, runtime translations,
-analytics or remote-server probes. Only `/features/` receives prerendered page
-content. `/` uses the ordinary client entry with its existing anonymous preview
+analytics or remote-server probes. `/features/` and the five audience pages
+receive prerendered content. `/` uses the ordinary client entry with its existing anonymous preview
 and welcome/login flow; no intermediate marketing page renders during loading,
 preview preparation, reloads or account changes. Its social-card tags and identity
 links are already in `src/index.html` and are available without JavaScript.
@@ -23,6 +23,14 @@ The SEO postbuild copies Angular's `index.csr.html` to the root `index.html`
 required by GitHub Pages, preserving the client entry and its head metadata.
 The browser bootstraps without hydration. `/features` remains the public
 reference, including when JavaScript is disabled.
+
+Audience pages are `/for/readers`, `/for/bluesky`, `/for/twitter-exodus`,
+`/for/instagram` and `/for/creators`. Each has specific public copy, a unique
+title/description and canonical URL, social-card metadata and a sitemap entry.
+They link from `/features` and from one another's footers. The Instagram guide
+describes photo viewing on supported networks, not an Instagram connection;
+the Twitter/X guide does not promise automatic account migration. Audience
+content is lazy-loaded and stays out of the app's initial bundle.
 
 The features reference is explicitly English and does not imply localized
 indexable URLs. Existing app locale choices and script tags are unchanged.
@@ -35,7 +43,7 @@ the existing `PageTitleStrategy`. Public routes opt in via `seoIndexable`.
 Utilities default to `noindex, follow` after client navigation. The static SPA
 fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
-contains only `/` and `/features/`. Do not add account feeds or arbitrary remote
+contains `/`, `/features/` and the five audience URLs. Do not add account feeds or arbitrary remote
 posts to the sitemap. Do not use robots.txt blocking as a substitute for noindex.
 When adding another public page, keep its client route, server route, sitemap
 entry and HTML checks in sync.

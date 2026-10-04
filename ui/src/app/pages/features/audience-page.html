@@ -1,0 +1,43 @@
+<main class="features" lang="en">
+  <header>
+    <a mbContentLink routerLink="/features">Mawkingbird · Features</a>
+    <a mbButton routerLink="/">Open the app</a>
+  </header>
+  <div class="intro">
+    <div>
+      <p class="eyebrow">{{ content.eyebrow }}</p>
+      <h1>{{ content.heading }}</h1>
+      <p>{{ content.intro }}</p>
+      <a mbButton routerLink="/">{{ content.action }}</a>
+    </div>
+    <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
+  </div>
+  @for (section of content.sections; track section.heading) {
+    <section>
+      <h2>{{ section.heading }}</h2>
+      <p>{{ section.text }}</p>
+      <ul>
+        @for (point of section.points; track point) {
+          <li>{{ point }}</li>
+        }
+      </ul>
+    </section>
+  }
+  <aside>
+    <h2>Make it your own</h2>
+    <p>{{ content.gettingStarted }}</p>
+    <p>{{ content.expectation }}</p>
+    <div class="feature-actions">
+      <a mbButton routerLink="/">{{ content.action }}</a>
+      <a mbContentLink routerLink="/login">Sign in</a>
+    </div>
+  </aside>
+  <footer>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/readers">For readers</a>
+    <a mbContentLink routerLink="/for/bluesky">For Bluesky users</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter / X</a>
+    <a mbContentLink routerLink="/for/instagram">For photo lovers</a>
+    <a mbContentLink routerLink="/for/creators">For creators</a>
+  </footer>
+</main>

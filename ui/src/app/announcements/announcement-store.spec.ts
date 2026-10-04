@@ -30,6 +30,7 @@ describe('AnnouncementStore', () => {
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).setToken('announcement-test-token');
   });
 
   afterEach(() => {
@@ -113,7 +114,7 @@ describe('AnnouncementStore', () => {
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     httpMock = TestBed.inject(HttpTestingController);
-
+    TestBed.inject(Auth).setToken('announcement-test-token');
     expect(loaded([announcement('1')]).activeCount()).toBe(0);
   });
 
@@ -156,6 +157,58 @@ describe('AnnouncementStore', () => {
     // Settled, not pending: the surfaces must render their empty state rather
     // than a spinner waiting on a call that is never made.
     expect(store.loaded()).toBe(true);
+  });
+  it('makes no announcement request while signed out, including forced refresh', () => {
+    TestBed.inject(Auth).token.set(null);
+    const store = TestBed.inject(AnnouncementStore);
+    store.load();
+    store.load(true);
+    httpMock.expectNone('/api/v1/announcements');
+    expect(store.loaded()).toBe(true);
+    expect(store.total()).toBe(0);
+  });
+
+  it('makes no announcement request for the anonymous preview', () => {
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    const store = TestBed.inject(AnnouncementStore);
+    store.load();
+    httpMock.expectNone('/api/v1/announcements');
+    expect(store.total()).toBe(0);
+  });
+
+  it('fetches after acquiring a token on the same server', () => {
+    const auth = TestBed.inject(Auth);
+    auth.token.set(null);
+    const store = TestBed.inject(AnnouncementStore);
+    store.load();
+    expect(store.loaded()).toBe(true);
+    auth.token.set('signed-in-token');
+    store.load();
+    httpMock.expectOne('/api/v1/announcements').flush([announcement('1')]);
+    expect(store.total()).toBe(1);
+  });
+
+  it('clears cached announcements when the active token changes on the same server', () => {
+    const store = loaded([announcement('1')]);
+    TestBed.inject(Auth).token.set('other-account-token');
+    expect(store.total()).toBe(0);
+    expect(store.loaded()).toBe(false);
+    store.load();
+    httpMock.expectOne('/api/v1/announcements').flush([announcement('2')]);
+    expect(store.all().map((item) => item.id)).toEqual(['2']);
+  });
+
+  it('ignores late results after losing authorization and makes no write calls', () => {
+    const store = TestBed.inject(AnnouncementStore);
+    store.load();
+    const pending = httpMock.expectOne('/api/v1/announcements');
+    TestBed.inject(Auth).token.set(null);
+    pending.flush([announcement('1')]);
+    expect(store.total()).toBe(0);
+    store.dismiss('1');
+    store.toggleReaction(announcement('1'), '👍');
+    httpMock.expectNone('/api/v1/announcements/1/dismiss');
+    httpMock.expectNone('/api/v1/announcements/1/reactions/%F0%9F%91%8D');
   });
   it('clears old announcement badges and ignores late results after changing servers', () => {
     const server = TestBed.inject(Server);

@@ -2,6 +2,14 @@
 
 ## Public SEO pages and footer follow-up
 
+The five audience landing pages add four source files and one candidate template:
+1,097 scanned files and 220 candidate files. The shared audience template uses
+MbButton and MbContentLink, reuses the existing feature-page layout without
+control restyling, and keeps discovery in public pages and footers. Route
+metadata is shared between browser and prerender builds; copy is lazy-loaded.
+Desktop/mobile and JavaScript/no-JavaScript SEO checks cover every audience URL,
+while the root regression continues to require an empty client-entry body.
+
 The root-entry correction removes the signed-out summary component and its
 reconciliation entry: 1,093 source files scanned, 219 candidate files. Public
 feature content remains at `/features`; social metadata stays in the document

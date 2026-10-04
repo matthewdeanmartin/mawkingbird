@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/features/audience-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Five public audience pages reuse the feature layout and MbButton/MbContentLink controls. Preserve native links, mobile wrapping, focused audience copy and metadata without rendering a landing page on the home route."
+    },
+    {
       "file": "ui/src/app/pages/features/features.html",
       "disposition": "adopted scope",
       "nextStep": "Public feature reference uses MbButton for CTA links, MbContentLink for prose links and MbNavigation/MbNavLink for fragment navigation. Keep native destinations, mobile wrapping, themes, contrast and prerendered content covered; page CSS owns only layout."

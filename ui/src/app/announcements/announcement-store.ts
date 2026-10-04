@@ -3,6 +3,13 @@ import { computed, inject, Injectable, linkedSignal, signal } from '@angular/cor
 import { Api } from '../api';
 import { Announcement } from '../models';
 import { networkSources } from '../shell/network-sources';
+import { Auth } from '../auth';
+
+interface AnnouncementContext {
+  server: string;
+  token: string | null;
+  allowed: boolean;
+}
 
 /**
  * localStorage key holding the ids the viewer has dismissed.
@@ -40,13 +47,20 @@ function readDismissed(): string[] {
 export class AnnouncementStore {
   private api = inject(Api);
   private server = inject(Server);
+  private auth = inject(Auth);
+  private usableMastodon = networkSources().usableMastodon;
+  private context = computed<AnnouncementContext>(() => ({
+    server: this.server.baseUrl(),
+    token: this.auth.token(),
+    allowed: !!this.auth.token() && !this.auth.isAnonymous && this.usableMastodon(),
+  }));
 
   /** Everything the server published, dismissed or not. */
-  readonly all = linkedSignal<string, Announcement[]>({
-    source: () => this.server.baseUrl(),
+  readonly all = linkedSignal<AnnouncementContext, Announcement[]>({
+    source: () => this.context(),
     computation: () => [],
   });
-  readonly loaded = linkedSignal({ source: () => this.server.baseUrl(), computation: () => false });
+  readonly loaded = linkedSignal({ source: () => this.context(), computation: () => false });
 
   private dismissed = signal(new Set<string>(readDismissed()));
 
@@ -65,11 +79,11 @@ export class AnnouncementStore {
    */
   readonly hasUnread = computed(() => this.active().some((a) => a.read === false));
 
-  private loadingFor: string | null = null;
+  private loadingFor: AnnouncementContext | null = null;
   private request = 0;
 
   /**
-   * Whether this account has a Mastodon server to ask at all.
+   * Announcements require both a usable Mastodon source and a user token.
    *
    * Announcements are a Mastodon-instance concept: there is no Bluesky
    * equivalent, and no endpoint to call for one. A Bluesky-primary account that
@@ -87,31 +101,31 @@ export class AnnouncementStore {
    * it on `!auth.isAnonymous`, which was the same question only while every
    * signed-in account was Mastodon-primary.
    */
-  private usableMastodon = networkSources().usableMastodon;
-
   load(force = false): void {
-    const server = this.server.baseUrl();
-    if (this.loadingFor === server || (this.loaded() && !force)) {
+    const context = this.context();
+    if (this.loadingFor === context || (this.loaded() && !force)) {
       return;
     }
     // No Mastodon source, no announcements to have. Settle as an empty,
     // *loaded* store so the surfaces render their empty state instead of
     // waiting forever on a request that is never coming.
-    if (!this.usableMastodon()) {
+    // A public timeline source does not authorize the announcements endpoint.
+    // No request is made while signed out, anonymous, or lacking a connector token.
+    if (!context.allowed) {
       this.loaded.set(true);
       return;
     }
-    this.loadingFor = server;
+    this.loadingFor = context;
     const request = ++this.request;
     this.api.announcements().subscribe({
       next: (list) => {
-        if (server !== this.server.baseUrl() || request !== this.request) return;
+        if (context !== this.context() || request !== this.request) return;
         this.all.set(list);
         this.loaded.set(true);
         this.loadingFor = null;
       },
       error: () => {
-        if (server !== this.server.baseUrl() || request !== this.request) return;
+        if (context !== this.context() || request !== this.request) return;
         // A server with announcements switched off answers 404; that is an
         // empty list, not a failure worth surfacing.
         this.loaded.set(true);
@@ -129,6 +143,7 @@ export class AnnouncementStore {
       return;
     }
     this.persist([...this.dismissed(), id]);
+    if (!this.context().allowed) return;
     // Best-effort server dismiss; a failure is fine, the local flag holds.
     this.api.dismissAnnouncement(id).subscribe({ error: () => undefined });
   }
@@ -140,6 +155,7 @@ export class AnnouncementStore {
       return;
     }
     this.persist([...this.dismissed(), ...ids]);
+    if (!this.context().allowed) return;
     for (const id of ids) {
       this.api.dismissAnnouncement(id).subscribe({ error: () => undefined });
     }
@@ -151,11 +167,15 @@ export class AnnouncementStore {
   }
 
   toggleReaction(a: Announcement, name: string): void {
+    const context = this.context();
+    if (!context.allowed) return;
     const mine = a.reactions.find((r) => r.name === name)?.me ?? false;
     const call = mine
       ? this.api.removeAnnouncementReaction(a.id, name)
       : this.api.addAnnouncementReaction(a.id, name);
-    call.subscribe(() => this.applyReaction(a.id, name, !mine));
+    call.subscribe(() => {
+      if (context === this.context()) this.applyReaction(a.id, name, !mine);
+    });
   }
 
   /** Patch the local reaction list after a successful toggle (no refetch). */

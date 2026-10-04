@@ -5,6 +5,7 @@ import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { PageTitleStrategy } from './app/a11y/page-title-strategy';
 import { Features } from './app/pages/features/features';
 import { FEATURES_DESCRIPTION } from './app/seo';
+import { audienceRoutes } from './app/pages/features/audience-routes';
 
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
@@ -24,6 +25,7 @@ export default (context: BootstrapContext) =>
     {
       providers: [
         provideRouter([
+          ...audienceRoutes,
           { path: '', pathMatch: 'full', component: ClientEntry },
           {
             path: 'features',
@@ -37,6 +39,10 @@ export default (context: BootstrapContext) =>
           withRoutes([
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
+            ...audienceRoutes.map((route) => ({
+              path: route.path ?? '',
+              renderMode: RenderMode.Prerender as const,
+            })),
             { path: '**', renderMode: RenderMode.Client },
           ]),
         ),

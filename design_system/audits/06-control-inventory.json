@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1093,
-  "filesWithCandidates": 219,
+  "filesScanned": 1097,
+  "filesWithCandidates": 220,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3256,6 +3256,56 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/features/audience-page.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 11
+        },
+        {
+          "pattern": "shared",
+          "line": 31
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 41
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/features/features.html",
       "status": "needs semantic review",
       "findings": [
@@ -3293,35 +3343,55 @@
         },
         {
           "pattern": "shared",
-          "line": 39
+          "line": 28
         },
         {
           "pattern": "shared",
-          "line": 56
+          "line": 29
         },
         {
           "pattern": "shared",
-          "line": 70
+          "line": 30
         },
         {
           "pattern": "shared",
-          "line": 84
+          "line": 31
         },
         {
           "pattern": "shared",
-          "line": 93
+          "line": 32
         },
         {
           "pattern": "shared",
-          "line": 94
+          "line": 50
         },
         {
           "pattern": "shared",
-          "line": 98
+          "line": 67
         },
         {
           "pattern": "shared",
-          "line": 99
+          "line": 81
+        },
+        {
+          "pattern": "shared",
+          "line": 95
+        },
+        {
+          "pattern": "shared",
+          "line": 104
+        },
+        {
+          "pattern": "shared",
+          "line": 105
+        },
+        {
+          "pattern": "shared",
+          "line": 109
+        },
+        {
+          "pattern": "shared",
+          "line": 110
         }
       ]
     },
