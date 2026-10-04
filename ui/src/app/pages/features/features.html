@@ -1,7 +1,7 @@
 <main class="features" lang="en">
   <header>
-    <a routerLink="/">Mawkingbird</a>
-    <a class="open-app" routerLink="/">Open the app</a>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <a mbButton routerLink="/">Open the app</a>
   </header>
   <div class="intro">
     <div>
@@ -11,15 +11,15 @@
         Mawkingbird brings social feeds, long reads and writing into one browser client. Follow what
         interests you, save what matters, and make room to create.
       </p>
-      <a class="open-app" routerLink="/">Try Mawkingbird</a>
+      <a mbButton routerLink="/">Try Mawkingbird</a>
     </div>
     <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
   </div>
-  <nav aria-label="Feature areas">
-    <a href="#mastodon">Mastodon feeds</a>
-    <a href="#reading">Reading</a>
-    <a href="#creators">Creators</a>
-    <a href="#advanced">Advanced tools</a>
+  <nav mbNavigation label="Feature areas" presentation="tabs">
+    <a mbNavLink href="#mastodon">Mastodon feeds</a>
+    <a mbNavLink href="#reading">Reading</a>
+    <a mbNavLink href="#creators">Creators</a>
+    <a mbNavLink href="#advanced">Advanced tools</a>
   </nav>
   <section id="mastodon">
     <h2>Core Mastodon features: a feed that feels like yours</h2>
@@ -36,7 +36,7 @@
         scroll.
       </li>
     </ul>
-    <a routerLink="/feeds">Explore feeds</a>
+    <a mbContentLink routerLink="/feeds">Explore feeds</a>
   </section>
   <section id="reading">
     <h2>Readability features: from headlines to long reads</h2>
@@ -53,7 +53,7 @@
         availability can affect article extraction.
       </li>
     </ul>
-    <a routerLink="/rss">Read RSS</a>
+    <a mbContentLink routerLink="/rss">Read RSS</a>
   </section>
   <section id="creators">
     <h2>Creators: space to write and keep your drafts</h2>
@@ -67,7 +67,7 @@
       <li>Connect supported publishing services such as Blogger and Hugo.</li>
       <li>Use optional OpenRouter tools with your own configured connection.</li>
     </ul>
-    <a routerLink="/drafts">See your drafts</a>
+    <a mbContentLink routerLink="/drafts">See your drafts</a>
   </section>
   <section id="advanced">
     <h2>Advanced user features: more control, fewer repetitive steps</h2>
@@ -81,7 +81,7 @@
       <li>Customize reading, appearance and account settings.</li>
       <li>Use connection help and diagnostic tools when a server or network is unreachable.</li>
     </ul>
-    <a routerLink="/connection-help">Get connection help</a>
+    <a mbContentLink routerLink="/connection-help">Get connection help</a>
   </section>
   <aside>
     <h2>Start with a preview</h2>
@@ -89,11 +89,13 @@
       Open Mawkingbird to try the app, or sign in with Mastodon or Bluesky. Account actions need a
       connected account; some tools depend on deployment settings and third-party services.
     </p>
-    <a class="open-app" routerLink="/">Open Mawkingbird</a>
-    <a routerLink="/login">Sign in</a>
+    <div class="feature-actions">
+      <a mbButton routerLink="/">Open Mawkingbird</a>
+      <a mbContentLink routerLink="/login">Sign in</a>
+    </div>
   </aside>
   <footer>
-    <a routerLink="/about">About the design</a>
-    <a routerLink="/credits">Credits and privacy</a>
+    <a mbContentLink routerLink="/about">About the design</a>
+    <a mbContentLink routerLink="/credits">Credits and privacy</a>
   </footer>
 </main>

@@ -1,4 +1,4 @@
-import { provideRouter } from "@angular/router";
+import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
   Component,
   DestroyRef,
@@ -146,7 +146,7 @@ export default {
   decorators: [
     applicationConfig({
       providers: [
-        provideRouter([]),
+        provideRouter([], withDisabledInitialNavigation()),
         importProvidersFrom(translocoTesting()),
         ServerPreviewState,
         {

@@ -237,18 +237,26 @@ for (const [width, theme, direction] of [
     await field.focus();
     await expect(page.getByRole("listbox")).toBeVisible();
     await expect(field).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("option")).toHaveCount(2);
+    const local = page.getByRole("option", { name: /^mastomini\.local/ });
+    const community = page.getByRole("option", { name: /^community\.example/ });
     await field.press("ArrowDown");
-    await expect(page.getByRole("option")).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    await expect(local).toHaveAttribute("aria-selected", "true");
+    await expect(community).toHaveAttribute("aria-selected", "false");
     await expect(field).toHaveAttribute(
       "aria-activedescendant",
-      await page.getByRole("option").getAttribute("id"),
+      await local.getAttribute("id"),
     );
     await field.press("Escape");
     await expect(field).toHaveAttribute("aria-expanded", "false");
     await field.press("ArrowDown");
+    await field.press("ArrowDown");
+    await expect(local).toHaveAttribute("aria-selected", "false");
+    await expect(community).toHaveAttribute("aria-selected", "true");
+    await expect(field).toHaveAttribute(
+      "aria-activedescendant",
+      await community.getAttribute("id"),
+    );
     await field.press("Enter");
     await expect(page.locator(".selection-result")).toHaveText(
       "Selected: https://community.example",

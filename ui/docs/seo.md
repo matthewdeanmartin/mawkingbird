@@ -7,6 +7,10 @@ without JavaScript on desktop and mobile (requires Playwright Chromium).
 Production GitHub Pages publishing uses `make mockingbird MOCKINGBIRD_SEO=true`.
 It keeps production base href `/` and the existing OAuth metadata and SPA 404
 fallback. Canary and test remain client-rendered.
+Production layout checks parse the base tag's value, accepting both `<base
+href="/">` from prerendering and `<base href="/"/>` from client-only builds.
+The checker still rejects preview/project-path bases, duplicate bases, incorrect
+404 configuration, changed OAuth identifiers/redirects and the wrong CNAME.
 
 `src/main.server.ts` bootstraps only the public features component and route
 metadata. It does not initialize accounts, storage, runtime translations,

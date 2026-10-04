@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { MbButton } from '../../design-system/button/button';
+import { MbContentLink } from '../../design-system/metadata/metadata';
 
 @Component({
   selector: 'app-public-home',
-  imports: [RouterLink],
+  imports: [RouterLink, MbButton, MbContentLink],
   styleUrl: './features.css',
   template: `
     <main class="features" lang="en">
@@ -18,8 +20,10 @@ import { RouterLink } from '@angular/router';
             A browser client for your social feeds, reading list and writing. Try the app preview,
             or connect your own account.
           </p>
-          <a class="open-app" routerLink="/anonymous">Browse anonymously</a>
-          <a routerLink="/login">Sign in</a>
+          <div class="feature-actions">
+            <a mbButton routerLink="/anonymous">Browse anonymously</a>
+            <a mbContentLink routerLink="/login">Sign in</a>
+          </div>
         </div>
         <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
       </div>
@@ -37,7 +41,7 @@ import { RouterLink } from '@angular/router';
         <p>Manage accounts with bulk actions, third-party connections and network diagnostics.</p>
       </section>
       <footer>
-        <a routerLink="/features">Discover Mawkingbird features</a>
+        <a mbContentLink routerLink="/features">Discover Mawkingbird features</a>
       </footer>
     </main>
   `,

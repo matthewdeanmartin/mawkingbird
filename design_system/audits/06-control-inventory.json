@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1089,
-  "filesWithCandidates": 218,
+  "filesScanned": 1094,
+  "filesWithCandidates": 220,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3252,6 +3252,94 @@
         {
           "pattern": "legacyPills",
           "line": 13
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/features/features.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 14
+        },
+        {
+          "pattern": "shared",
+          "line": 18
+        },
+        {
+          "pattern": "shared",
+          "line": 19
+        },
+        {
+          "pattern": "shared",
+          "line": 20
+        },
+        {
+          "pattern": "shared",
+          "line": 21
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 56
+        },
+        {
+          "pattern": "shared",
+          "line": 70
+        },
+        {
+          "pattern": "shared",
+          "line": 84
+        },
+        {
+          "pattern": "shared",
+          "line": 93
+        },
+        {
+          "pattern": "shared",
+          "line": 94
+        },
+        {
+          "pattern": "shared",
+          "line": 98
+        },
+        {
+          "pattern": "shared",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/features/public-home.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 24
+        },
+        {
+          "pattern": "shared",
+          "line": 25
+        },
+        {
+          "pattern": "shared",
+          "line": 44
         }
       ]
     },
@@ -11364,12 +11452,24 @@
       "status": "needs semantic review",
       "findings": [
         {
-          "pattern": "nativeButtons",
-          "line": 51
+          "pattern": "shared",
+          "line": 59
+        },
+        {
+          "pattern": "shared",
+          "line": 105
+        },
+        {
+          "pattern": "shared",
+          "line": 113
         },
         {
           "pattern": "nativeButtons",
-          "line": 59
+          "line": 53
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 63
         }
       ]
     },

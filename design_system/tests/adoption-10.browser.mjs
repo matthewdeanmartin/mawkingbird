@@ -195,6 +195,17 @@ for (const [theme, width, direction] of [
     await page
       .getByRole("link", { name: "Settings navigation", exact: true })
       .click();
+    if (width < 600) {
+      const trigger = page.getByRole("button", {
+        name: "Open settings menu",
+        exact: true,
+      });
+      await trigger.click();
+      await expect(trigger).toHaveAttribute("aria-expanded", "true");
+      await expect(
+        page.getByRole("dialog", { name: "Settings", exact: true }),
+      ).toBeVisible();
+    }
     const nav = page.getByRole("navigation", { name: "Settings sections" });
     await expect(
       nav.getByRole("link", { name: "Internationalization", exact: true }),
@@ -208,5 +219,14 @@ for (const [theme, width, direction] of [
       path: info.outputPath("settings.png"),
       fullPage: true,
     });
+    if (width < 600) {
+      await page.keyboard.press("Escape");
+      await expect(
+        page.getByRole("dialog", { name: "Settings", exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "Open settings menu", exact: true }),
+      ).toBeFocused();
+    }
   });
 }

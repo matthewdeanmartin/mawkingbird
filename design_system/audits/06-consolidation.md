@@ -1,5 +1,33 @@
 # Sprint 6 opening consolidation audit
 
+## Public SEO pages and footer follow-up
+
+The October 4 SEO follow-up reconciles five additional source files and updated
+footer line numbers: 1,094 source files scanned, 220 candidate files. The public
+feature reference and signed-out summary now use MbButton for call-to-action
+links, MbContentLink for ordinary links, and MbNavigation/MbNavLink for the
+feature-area fragment navigation. Native href/routerLink semantics, public
+content, and machine-only identity metadata remain intact. Page CSS owns layout
+and spacing; it no longer duplicates button colors, padding, typography, radii,
+or link treatment. The illustration surface uses the existing theme token.
+
+The footer's new feature link uses MbContentLink; other legacy footer controls
+remain explicitly partial adoption in the reconciliation ledger. Legacy footer
+color/hover selectors exclude the adopted link, preserving shared contrast and
+focus treatment. No whole-page
+or directory exemption was added. Refreshing the inventory alone would fix the
+reported stale-source gate, but would leave the public pages' custom pill style
+outside the approved button contract.
+
+The complete browser gate also exposed fixture drift outside the SEO pages.
+Server selection's isolated story disables initial router navigation to avoid
+matching Storybook's iframe URL against an empty route table. Narrow settings
+checks open the real mobile drawer before inspecting navigation, and verify
+Escape dismissal and focus return. Picker checks cover both local-network and
+community suggestions, their active-descendant/selection states, and keyboard
+selection of the intended community server. The original browser cases and
+assertions remain; no error filtering, test removal or retries were added.
+
 ## Navigation and identity follow-up
 
 Nine rail/identity/server-selection consumers adopt shared presentation and

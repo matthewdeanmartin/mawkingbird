@@ -50,10 +50,7 @@ jobs:
       - name: Add custom domain
         run: printf '%s' "$CUSTOM_DOMAIN" > ui/dist-mockingbird/browser/CNAME
       - name: Verify production layout
-        run: |
-          grep --fixed-strings '<base href="/"/>' ui/dist-mockingbird/browser/index.html
-          grep --fixed-strings "var SITE_BASE = '/';" ui/dist-mockingbird/browser/404.html
-          node -e "const m = require('./ui/dist-mockingbird/browser/oauth-client-metadata.json'); if (m.client_id !== 'https://mawkingbird.com/oauth-client-metadata.json') process.exit(1)"
+        run: node ui/scripts/check-production-layout.mjs ui/dist-mockingbird/browser
       - name: Publish production to gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -69,7 +66,7 @@ jobs:
         run: |
           test -f .pages-site/canary/index.html
           test -f .pages-site/test/index.html
-          grep --fixed-strings '<base href="/"/>' .pages-site/index.html
+          node ui/scripts/check-production-layout.mjs .pages-site
           test "$(cat .pages-site/CNAME)" = "$CUSTOM_DOMAIN"
       - name: Upload complete Pages site
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0

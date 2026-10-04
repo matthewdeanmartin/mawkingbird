@@ -8,6 +8,7 @@ import { BUILD_INFO } from '../../build-info';
 import { Hotkeys } from '../../hotkeys';
 import { Server } from '../../server';
 import { LocalePicker } from '../../locale-picker/locale-picker';
+import { MbContentLink } from '../../design-system/metadata/metadata';
 
 /**
  * The end-of-feed footer. Feeds here are finite, so there is a bottom — and a
@@ -34,7 +35,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
 // i18n footer.buildLog: build log
 @Component({
   selector: 'app-app-footer',
-  imports: [DatePipe, RouterLink, BugReportDialog, TranslocoPipe, LocalePicker],
+  imports: [DatePipe, RouterLink, BugReportDialog, TranslocoPipe, LocalePicker, MbContentLink],
   template: `
     <footer class="app-footer muted">
       <a [href]="aboutUrl()" target="_blank" rel="noopener noreferrer">
@@ -55,7 +56,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
       <span class="footer-separator" aria-hidden="true">·</span>
       <a routerLink="/credits" fragment="privacy">{{ 'footer.privacy' | transloco }}</a>
       <span class="footer-separator" aria-hidden="true">·</span>
-      <a routerLink="/features">{{ 'footer.features' | transloco }}</a>
+      <a mbContentLink routerLink="/features">{{ 'footer.features' | transloco }}</a>
       <span class="footer-separator" aria-hidden="true">·</span>
       <a routerLink="/fail-whale">{{ 'footer.failWhale' | transloco }}</a>
       <span class="footer-separator" aria-hidden="true">·</span>
@@ -101,7 +102,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
       font-size: 12.5px;
       text-align: center;
     }
-    .app-footer a,
+    .app-footer a:not([mbContentLink]),
     .app-footer .link {
       color: var(--muted);
     }
@@ -109,7 +110,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
       display: inline-block;
       margin: 0 0.55em;
     }
-    .app-footer a:hover,
+    .app-footer a:not([mbContentLink]):hover,
     .app-footer .link:hover {
       color: var(--accent);
     }
