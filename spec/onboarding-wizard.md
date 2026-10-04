@@ -158,8 +158,7 @@ there, so the card is never shown there.
 | 4 | `images` | **Show pictures in your feed?** Text-only shows a small icon and the description instead. | Show / Text-only → `setShowImages()` |
 | 5 | `likes` | **Stars or hearts?** | ⭐ / ❤️ → `setFavStyle()` |
 | 6 | `post-noun` | **What do you call a post?** Just a word. Change it any time. | post / toot / skeet / tweet (from `POST_NOUNS`, leave out `custom`) → `setPostNoun()` |
-| 7 | `zen` | **Hide the side panels?** Just you and the feed. | Toggle → `setZenMode()` |
-| 8 | `ai` | **Show AI features?** Things like AI translation and search help. Nothing is on until you set it up. | Show / Hide → `setAiMode()` |
+| 7 | `zen` | **Would you like Zen mode?** Less visual clutter, with more features behind menus. | Zen / Keep features in view → `setZenMode()` |
 
 ### Section 3: languages (B, branching)
 
@@ -186,7 +185,6 @@ learner can reach 9c.
 | 10 | `auto-refresh` | **Load new posts on their own?** Off keeps your place while you read. | Toggle, recommend off → `setAutoRefreshTimeline()` |
 | 11 | `posting-pace` | **How careful should posting be?** | Post right away / Ask "are you sure?" / Wait 30 seconds so I can cancel / Save to drafts first → mutually exclusive: `setConfirmBeforePost`, `setDelayedSend`, `setThoughtfulPosting` (the others off) |
 | 12 | `alt-text` | **Require a description on every image?** It helps people who can't see pictures. | Toggle → `setRequireAltText()` |
-| 13 | `analytics` | **Count which pages get used?** Anonymous counts only. Never who you are or what you read. | Toggle → `setAnalytics()` |
 
 On #11, if the user's current prefs have more than one of the three on (this is
 possible today), preselect the strongest one: thoughtful > delayed > confirm.
@@ -372,3 +370,14 @@ checks passing.
 6. With `mawkingbird-plus` off, the last card before Done is not the Plus card.
 7. Existing users who were signed in before the release see nothing until they
    choose it from the menu.
+
+### Tour choice wording (2026-10)
+
+AI visibility and page-view counting are configured in Settings, outside the tour.
+Zen mode presents the choice between less clutter and keeping shortcuts visible.
+Other feature choices name the cost as well as the benefit: follower approval
+adds waiting, reduced discovery limits reach, privacy cleanup removes referral
+and location details, reminders add a step, language filtering reduces discovery,
+translations add text or replace originals, image descriptions require writing,
+and opening warnings exposes sensitive content. Appearance and language identity
+questions remain personal preferences, rather than claims that one answer is better.

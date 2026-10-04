@@ -164,3 +164,16 @@ p.muted.center.small {
   flex: 1;
   min-width: 160px;
 }
+
+.recent-feed-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline-end: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.recent-feed-row a {
+  flex: 1;
+  border-bottom: none;
+}

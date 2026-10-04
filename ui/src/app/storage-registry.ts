@@ -105,6 +105,13 @@ export interface StorageKeySpec {
  */
 export const STORAGE_KEYS: readonly StorageKeySpec[] = [
   {
+    base: 'mockingbird_recent_feeds',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Five recently used feed/category shortcuts and their pins, per account. Reading history is excluded from shareable settings.',
+  },
+  {
     base: 'mockingbird_feature_use',
     storage: 'local',
     suffix: 'none',

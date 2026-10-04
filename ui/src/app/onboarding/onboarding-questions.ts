@@ -226,7 +226,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'pa-locked',
     scope: 'server',
     title: text('Approve new followers yourself?'),
-    help: text('People have to ask before they can follow you.'),
+    help: text(
+      'Approval gives you control over followers, but each new follower has to wait for you.',
+    ),
     control: { kind: 'toggle', label: 'Approve followers' },
     when: (ctx) => hasServer(ctx) && isPseudonymous(ctx),
     read: (ctx) => ctx.server.state()?.locked ?? false,
@@ -237,6 +239,7 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'pa-discoverable',
     scope: 'server',
     title: text('Keep this account out of suggestions and trends?'),
+    help: text('Less exposure, but people have fewer ways to discover you.'),
     control: { kind: 'toggle', label: 'Keep me out' },
     when: (ctx) => hasServer(ctx) && isPseudonymous(ctx),
     read: (ctx) => !(ctx.server.state()?.discoverable ?? false),
@@ -247,7 +250,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'pa-clean',
     scope: 'account',
     title: text('Strip hidden details from links and photos you post?'),
-    help: text('Removes trackers from links and location data from photos.'),
+    help: text(
+      'Share fewer hidden details, but cleaned links can lose referral information and photos lose location data.',
+    ),
     control: { kind: 'toggle', label: 'Strip hidden details' },
     when: (ctx) => pseudonymousEligible(ctx) && isPseudonymous(ctx),
     read: (ctx) => ctx.pseudonymity.cleanLinks() && ctx.pseudonymity.cleanMedia(),
@@ -260,7 +265,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'pa-reminder',
     scope: 'account',
     title: text('Remind you before each post?'),
-    help: text("A quick check that you're posting as the right person."),
+    help: text(
+      "Check that you're posting as the right person, with an extra step before each post.",
+    ),
     control: { kind: 'toggle', label: 'Remind me' },
     when: (ctx) => pseudonymousEligible(ctx) && isPseudonymous(ctx),
     read: (ctx) => ctx.pseudonymity.reminder(),
@@ -298,7 +305,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'images',
     scope: 'app',
     title: text('Show pictures in your feed?'),
-    help: text('Text-only shows a small icon and the description instead.'),
+    help: text(
+      'Pictures give visual context; text-only keeps the feed quieter with an icon and description.',
+    ),
     control: {
       kind: 'choice',
       options: () => [
@@ -345,28 +354,20 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
   {
     id: 'zen',
     scope: 'app',
-    title: text('Hide the side panels?'),
-    help: text('Just you and the feed.'),
-    control: { kind: 'toggle', label: 'Hide side panels' },
-    when: () => true,
-    read: (ctx) => ctx.prefs.zenMode(),
-    apply: (ctx, value) => ctx.prefs.setZenMode(value === true),
-  },
-  {
-    id: 'ai',
-    scope: 'app',
-    title: text('Show AI features?'),
-    help: text('Things like AI translation and search help. Nothing runs until you set it up.'),
+    title: text('Would you like Zen mode?'),
+    help: text(
+      'Less visual clutter, with side panels tucked away. More features live behind menus instead of staying in view.',
+    ),
     control: {
       kind: 'choice',
       options: () => [
-        { value: 'on', label: 'Show them' },
-        { value: 'off', label: 'Hide them' },
+        { value: 'zen', label: 'Zen mode', hint: 'Less clutter; open menus for more features.' },
+        { value: 'full', label: 'Keep features in view', hint: 'More shortcuts; more on screen.' },
       ],
     },
     when: () => true,
-    read: (ctx) => ctx.prefs.aiMode(),
-    apply: (ctx, value) => ctx.prefs.setAiMode(value as 'on' | 'off'),
+    read: (ctx) => (ctx.prefs.zenMode() ? 'zen' : 'full'),
+    apply: (ctx, value) => ctx.prefs.setZenMode(value === 'zen'),
   },
 
   // --- Languages -----------------------------------------------------------
@@ -409,6 +410,7 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'hide-foreign',
     scope: 'app',
     title: text("Hide posts in languages you don't read?"),
+    help: text('A more readable feed, but fewer chances to discover posts you could translate.'),
     control: { kind: 'toggle', label: 'Hide them' },
     when: () => true,
     read: (ctx) => ctx.prefs.hideForeignLangPosts(),
@@ -442,7 +444,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
         ? `Add a translation under posts in ${languageName(langs[0])}?`
         : 'Add a translation under posts in these languages?';
     },
-    help: text("Handy while you're learning."),
+    help: text(
+      'Translations help with unfamiliar words, but add more text and make it easier to skip practising.',
+    ),
     control: {
       kind: 'multi',
       options: (ctx) => languageOptions(ctx.prefs.learningLanguages().slice(0, 3)),
@@ -463,11 +467,14 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
   {
     id: 'auto-translate',
     scope: 'app',
-    title: text('Translate posts automatically?'),
+    title: text('When would you like translations?'),
+    help: text(
+      'Automatic translation saves taps but replaces the original text. On demand keeps the original until you ask.',
+    ),
     control: {
       kind: 'choice',
       options: () => [
-        { value: 'off', label: 'No' },
+        { value: 'off', label: 'When I ask' },
         { value: 'view', label: 'As they appear' },
         { value: 'hover', label: 'When I point at them' },
       ],
@@ -482,7 +489,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'auto-refresh',
     scope: 'app',
     title: text('Load new posts on their own?'),
-    help: text('Off keeps your place while you read.'),
+    help: text(
+      'Automatic refresh brings in the latest posts; manual refresh keeps the feed steady while you read.',
+    ),
     control: { kind: 'toggle', label: 'Load new posts automatically' },
     when: () => true,
     read: (ctx) => ctx.prefs.autoRefreshTimeline(),
@@ -491,7 +500,7 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
   {
     id: 'posting-pace',
     scope: 'app',
-    title: text('How careful should posting be?'),
+    title: text('How would you like to send posts?'),
     control: {
       kind: 'choice',
       options: () => [
@@ -521,21 +530,13 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'alt-text',
     scope: 'app',
     title: text('Require a description on every image?'),
-    help: text("It helps people who can't see pictures."),
+    help: text(
+      'Descriptions make images accessible; requiring them means you must add one before posting.',
+    ),
     control: { kind: 'toggle', label: 'Require descriptions' },
     when: () => true,
     read: (ctx) => ctx.prefs.requireAltText(),
     apply: (ctx, value) => ctx.prefs.setRequireAltText(value === true),
-  },
-  {
-    id: 'analytics',
-    scope: 'app',
-    title: text('Count which pages get used?'),
-    help: text('Anonymous counts only. Never who you are or what you read.'),
-    control: { kind: 'toggle', label: 'Count page views' },
-    when: () => true,
-    read: (ctx) => ctx.prefs.analytics(),
-    apply: (ctx, value) => ctx.prefs.setAnalytics(value === true),
   },
 
   // --- The rest of this account --------------------------------------------
@@ -573,7 +574,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'content-warnings',
     scope: 'account',
     title: text('Open content warnings for people you follow?'),
-    help: text('Warnings from strangers stay closed.'),
+    help: text(
+      'Opening warnings saves taps, but shows sensitive content straight away. Warnings from strangers stay closed.',
+    ),
     control: {
       kind: 'choice',
       options: () => [
@@ -610,7 +613,7 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'connect',
     scope: 'account',
     title: (ctx) => `Also read ${connectTarget(ctx) ?? 'another network'} here?`,
-    help: text('Your posts from both, together in one feed.'),
+    help: text('Read both networks together, with more variety and a busier feed.'),
     control: { kind: 'action', label: 'Connect', route: '/settings/connections' },
     when: (ctx) => connectTarget(ctx) !== null,
   },
@@ -618,7 +621,9 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
     id: 'find-people',
     scope: 'account',
     title: text('Follow a few people to fill your feed?'),
-    help: text('Starter packs are ready-made groups to follow in one go.'),
+    help: text(
+      'Following a whole starter pack fills your feed quickly, but gives you less say over who fills it.',
+    ),
     control: { kind: 'action', label: 'Show me starter packs', route: '/bundled-starter-kits' },
     when: followsNobody,
   },

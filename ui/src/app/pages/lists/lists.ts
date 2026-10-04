@@ -1,8 +1,20 @@
+import { MbPageHeader } from '../../design-system/page-header/page-header';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MbButton } from '../../design-system/button/button';
+import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
+import { RecentFeeds } from '../../recent-feeds';
 import { FollowBundleTags } from '../../tag-actions/follow-bundle-tags';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { filter, firstValueFrom, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { Collection, FeaturedTag, Tag, UserList } from '../../models';
@@ -98,6 +110,13 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.title.tags: Tags
 // i18n pages.lists.title.backToFeeds: ← Feeds
 // i18n pages.lists.title.feeds: Feeds
+// i18n pages.lists.recent.heading: Recently used feeds
+// i18n pages.lists.recent.hint: Five slots. Pin a feed to keep it here.
+// i18n pages.lists.recent.empty: Open a feed or category below to add it here.
+// i18n pages.lists.recent.pin: Pin {{feed}}
+// i18n pages.lists.recent.unpin: Unpin {{feed}}
+// i18n pages.lists.recent.pinLabel: Pin
+// i18n pages.lists.recent.unpinLabel: Unpin
 // i18n pages.lists.landing.allFeeds: All feeds
 // i18n pages.lists.landing.allFeedsHint: everything on one page
 // i18n pages.lists.sections.all: All
@@ -221,6 +240,10 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 @Component({
   selector: 'app-lists',
   imports: [
+    MbPageHeader,
+    MbButton,
+    MbNavigation,
+    MbNavLink,
     FollowBundleTags,
     RouterLink,
     FormsModule,
@@ -235,6 +258,7 @@ export class Lists implements OnInit {
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 
+  protected recent = inject(RecentFeeds);
   private api = inject(Api);
   protected auth = inject(Auth);
   protected tagsPub = inject(TagsPub);
@@ -248,6 +272,7 @@ export class Lists implements OnInit {
   private rssCache = inject(RssCache);
   private diagnostics = inject(PageDiagnostics);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private bskyFeeds = inject(BlueskyFeeds);
   protected bskySession = inject(BlueskySession);
 
@@ -369,7 +394,49 @@ export class Lists implements OnInit {
     return this.section() === 'all' || this.section() === section;
   }
 
+  protected recentLink(url: string) {
+    return this.router.parseUrl(url);
+  }
+
+  /** Ignore modified clicks and inline actions; record only completed feed navigation. */
+  protected rememberFeed(event: MouseEvent): void {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    const anchor = event.currentTarget as HTMLAnchorElement;
+    const url = new URL(anchor.href);
+    const basePath = new URL(document.baseURI).pathname;
+    const target = '/' + url.pathname.slice(basePath.length) + url.search;
+    const label = (anchor.querySelector('span')?.textContent ?? anchor.textContent ?? '').trim();
+    this.router.events
+      .pipe(
+        filter(
+          (item) =>
+            item instanceof NavigationEnd ||
+            item instanceof NavigationCancel ||
+            item instanceof NavigationError,
+        ),
+        take(1),
+      )
+      .subscribe((item) => {
+        if (item instanceof NavigationEnd && item.url === target)
+          this.recent.visit({
+            url: target,
+            label,
+            labelKey: this.recent.entries().find((entry) => entry.url === target)?.labelKey,
+          });
+      });
+  }
+
   protected setSection(value: string): void {
+    const key = FEED_SECTIONS.find((entry) => entry.id === value)?.key;
+    if (key) this.recent.visit({ url: `/feeds?section=${value}`, label: value, labelKey: key });
     this.section.set(value as FeedSection | 'landing');
     void this.router.navigate([], {
       relativeTo: this.route,
@@ -632,6 +699,14 @@ export class Lists implements OnInit {
   );
 
   ngOnInit(): void {
+    this.recent.refresh();
+    this.route.queryParamMap?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      if (!this.showSectionPicker) return;
+      const value = params.get('section');
+      this.section.set(
+        FEED_SECTIONS.some((item) => item.id === value) ? (value as FeedSection) : 'landing',
+      );
+    });
     this.diagnostics.info('Lists', 'page:open', {
       mode: this.auth.mode() ?? 'unauthenticated',
       filter: this.filter,

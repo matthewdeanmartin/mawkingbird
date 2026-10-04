@@ -2,8 +2,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { RecentFeeds } from '../../recent-feeds';
 import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Collection, UserList } from '../../models';
 import { Auth } from '../../auth';
@@ -83,12 +85,14 @@ function makeList(id: string, title = `List ${id}`): UserList {
 describe('Lists', () => {
   let httpMock: HttpTestingController;
   let routeOnly: 'tags' | 'lists' | undefined;
+  let queryParams: BehaviorSubject<ParamMap>;
 
   beforeEach(() => {
     // RSS subscriptions persist to localStorage, so a feed added by one test
     // would otherwise show up as a row in every test after it.
     localStorage.clear();
     routeOnly = undefined;
+    queryParams = new BehaviorSubject(convertToParamMap({}));
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -98,7 +102,10 @@ describe('Lists', () => {
         { provide: RssCache, useValue: { evict: () => Promise.resolve() } },
         {
           provide: ActivatedRoute,
-          useFactory: () => ({ snapshot: { data: routeOnly ? { only: routeOnly } : {} } }),
+          useFactory: () => ({
+            snapshot: { data: routeOnly ? { only: routeOnly } : {} },
+            queryParamMap: queryParams.asObservable(),
+          }),
         },
       ],
     });
@@ -248,6 +255,40 @@ describe('Lists', () => {
     expect(text).toContain('Bluesky feeds');
     // The old full-stack content is not rendered until a category is chosen.
     expect(newListInput(fixture)).toBeNull();
+  });
+
+  it('adds opened categories above the catalogue and lets the reader pin them', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const rss = [...root.querySelectorAll<HTMLButtonElement>('.feed-category-row')].find(
+      (button) => button.textContent?.trim() === 'RSS feeds',
+    );
+    rss!.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(RecentFeeds).entries()[0].url).toBe('/feeds?section=rss');
+    root.querySelector<HTMLButtonElement>('.feeds-back')!.click();
+    fixture.detectChanges();
+    const recent = root.querySelector<HTMLElement>('.recent-feed-row')!;
+    expect(recent.textContent).toContain('RSS feeds');
+    expect(recent.querySelector('a')?.getAttribute('href')).toBe('/feeds?section=rss');
+    recent.querySelector<HTMLButtonElement>('button')!.click();
+    fixture.detectChanges();
+    expect(recent.querySelector('button')?.getAttribute('aria-pressed')).toBe('true');
+    expect(root.querySelector('.feed-category-list')).not.toBeNull();
+  });
+
+  it('opens a recent category when query parameters change on the same page', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    queryParams.next(convertToParamMap({ section: 'rss' }));
+    fixture.detectChanges();
+    expect(internals(fixture).section()).toBe('rss');
+    expect(newListInput(fixture)).toBeNull();
+    queryParams.next(convertToParamMap({}));
+    fixture.detectChanges();
+    expect(internals(fixture).section()).toBe('landing');
   });
 
   it('drilling into a category shows only that section', () => {

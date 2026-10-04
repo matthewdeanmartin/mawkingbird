@@ -16,6 +16,40 @@
 </div>
 
 @if (showSectionPicker && section() === 'landing') {
+  <mb-page-header
+    [level]="2"
+    [title]="'pages.lists.recent.heading' | transloco"
+    [description]="'pages.lists.recent.hint' | transloco"
+  />
+  <nav mbNavigation [label]="'pages.lists.recent.heading' | transloco">
+    @for (feed of recent.entries(); track feed.url) {
+      <div class="recent-feed-row">
+        <a mbNavLink [routerLink]="recentLink(feed.url)" (click)="rememberFeed($event)">
+          {{ feed.labelKey ? (feed.labelKey | transloco) : feed.label }}
+        </a>
+        <button
+          type="button"
+          mbButton
+          variant="outline"
+          size="small"
+          [attr.aria-pressed]="feed.pinned"
+          [attr.aria-label]="
+            (feed.pinned ? 'pages.lists.recent.unpin' : 'pages.lists.recent.pin')
+              | transloco: { feed: feed.labelKey ? (feed.labelKey | transloco) : feed.label }
+          "
+          (click)="recent.togglePin(feed.url)"
+        >
+          {{
+            (feed.pinned ? 'pages.lists.recent.unpinLabel' : 'pages.lists.recent.pinLabel')
+              | transloco
+          }}
+        </button>
+      </div>
+    } @empty {
+      <p class="muted center small">{{ 'pages.lists.recent.empty' | transloco }}</p>
+    }
+  </nav>
+
   <!-- The drill-down landing list: every category as its own row, so reaching
        one costs a single click and zero scrolling past the rest. Counts fill
        in as each section's own data resolves (see sectionCount) rather than
@@ -67,7 +101,7 @@
       <p class="muted center small">{{ 'pages.lists.serverList.empty' | transloco }}</p>
     } @else {
       @for (l of lists(); track l.id) {
-        <a class="list-row" [routerLink]="['/lists', l.id]">
+        <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/lists', l.id]">
           <span>{{ l.title }}</span>
           <button
             class="del"
@@ -104,7 +138,7 @@
       <p class="muted center small">{{ 'pages.lists.emptyCreateAbove' | transloco }}</p>
     } @else {
       @for (l of clientLists.lists(); track l.id) {
-        <a class="list-row" [routerLink]="['/client-lists', l.id]">
+        <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/client-lists', l.id]">
           <span>
             {{ l.title }}
             <span class="muted small">
@@ -209,7 +243,7 @@
       </p>
     } @else {
       @for (l of profileLists.lists(); track l.id) {
-        <a class="list-row" [routerLink]="['/client-lists', l.id]">
+        <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/client-lists', l.id]">
           <span>
             {{ l.title }}
             <span class="muted small">
@@ -246,7 +280,12 @@
       </p>
     } @else {
       @for (s of saved.all(); track s.id) {
-        <a class="list-row" [routerLink]="['/search']" [queryParams]="{ saved: s.id }">
+        <a
+          (click)="rememberFeed($event)"
+          class="list-row"
+          [routerLink]="['/search']"
+          [queryParams]="{ saved: s.id }"
+        >
           <span>
             {{ s.name }}
             <span class="muted small">{{ 'pages.lists.savedSearches.badge' | transloco }}</span>
@@ -272,7 +311,7 @@
       </a>
     }
     @for (f of serverFeeds(); track f.feed) {
-      <a class="list-row" [routerLink]="['/feeds', f.feed]">
+      <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/feeds', f.feed]">
         <span>
           {{ f.title }}
           <span class="muted small">· {{ f.blurb }}</span>
@@ -306,7 +345,7 @@
       <p class="muted center small">{{ 'pages.lists.tags.empty' | transloco }}</p>
     } @else {
       @for (t of followedTags(); track t.name) {
-        <a class="list-row" [routerLink]="['/tags', t.name]">
+        <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/tags', t.name]">
           <span>#{{ t.name }}</span>
           <button
             class="del"
@@ -418,7 +457,7 @@
     } @else {
       @for (b of tagBundles.bundles(); track b.id) {
         <div class="list-row bundle-list-row">
-          <a [routerLink]="['/tag-bundles', b.id]">
+          <a (click)="rememberFeed($event)" [routerLink]="['/tag-bundles', b.id]">
             <span>
               {{ b.title }}
               @if (b.tags.length) {
@@ -455,7 +494,7 @@
         <p class="muted center small">{{ 'pages.lists.featuredTags.empty' | transloco }}</p>
       } @else {
         @for (t of featuredTags(); track t.id) {
-          <a class="list-row" [routerLink]="['/tags', t.name]">
+          <a (click)="rememberFeed($event)" class="list-row" [routerLink]="['/tags', t.name]">
             <span>
               #{{ t.name }}
               <span class="muted small">· {{ t.statuses_count }} {{ words().posts }}</span>
@@ -515,7 +554,11 @@
           }
         } @else {
           @for (c of collections(); track c.id) {
-            <a class="list-row" [routerLink]="['/collections', c.id]">
+            <a
+              (click)="rememberFeed($event)"
+              class="list-row"
+              [routerLink]="['/collections', c.id]"
+            >
               <span>
                 {{ c.name }}
                 <span class="muted small">
@@ -543,7 +586,9 @@
           <div class="section-head">{{ 'pages.lists.collections.featuringMe' | transloco }}</div>
           @for (c of inCollections(); track c.id) {
             <div class="list-row">
-              <a [routerLink]="['/collections', c.id]">{{ c.name }}</a>
+              <a (click)="rememberFeed($event)" [routerLink]="['/collections', c.id]">{{
+                c.name
+              }}</a>
               <button
                 class="btn btn-outline"
                 [disabled]="leavingCollection()"
@@ -580,7 +625,11 @@
     @if (!auth.isAnonymous) {
       <div class="section-head">{{ 'pages.lists.endorsements.heading' | transloco }}</div>
       @if (myEndorsedCount()) {
-        <a class="list-row" [routerLink]="['/endorsed', auth.account()?.id]">
+        <a
+          (click)="rememberFeed($event)"
+          class="list-row"
+          [routerLink]="['/endorsed', auth.account()?.id]"
+        >
           <span>
             {{ 'pages.lists.endorsements.accountsYouEndorse' | transloco }}
             <span class="muted small">
@@ -615,7 +664,11 @@
       </p>
     } @else {
       @for (f of rssFeeds(); track f.url) {
-        <a class="list-row" [routerLink]="['/accounts', 'rss:' + f.url]">
+        <a
+          (click)="rememberFeed($event)"
+          class="list-row"
+          [routerLink]="['/accounts', 'rss:' + f.url]"
+        >
           <span>
             {{ f.title || f.url }}
             <span class="muted small">
@@ -669,7 +722,11 @@
   @if (shows('lists') && twitterFollows().length && showsSection('twitter')) {
     <div class="section-head">{{ 'pages.lists.twitter.heading' | transloco }}</div>
     @for (f of twitterFollows(); track f.username) {
-      <a class="list-row" [routerLink]="['/accounts', 'twitter:@' + f.username]">
+      <a
+        (click)="rememberFeed($event)"
+        class="list-row"
+        [routerLink]="['/accounts', 'twitter:@' + f.username]"
+      >
         <span>
           {{ f.displayName || f.username }}
           <span class="muted small">
@@ -706,7 +763,7 @@
       @if (bskyPinned().length && showsSection('bsky-pinned')) {
         <div class="section-head">{{ 'pages.lists.bsky.pinnedHeading' | transloco }}</div>
         @for (entry of bskyPinned(); track entry.uri) {
-          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+          <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
             <span>
               {{ entry.displayName }}
               <span class="muted small">
@@ -724,7 +781,7 @@
       @if (bskyUnpinnedFeeds().length && showsSection('bsky-feeds')) {
         <div class="section-head">{{ 'pages.lists.bsky.feedsHeading' | transloco }}</div>
         @for (entry of bskyUnpinnedFeeds(); track entry.uri) {
-          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+          <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
             <span>
               {{ entry.displayName }}
               <span class="muted small">{{
@@ -738,7 +795,7 @@
       @if (bskyUnpinnedLists().length && showsSection('bsky-lists')) {
         <div class="section-head">{{ 'pages.lists.bsky.listsHeading' | transloco }}</div>
         @for (entry of bskyUnpinnedLists(); track entry.uri) {
-          <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+          <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
             <span>
               {{ entry.displayName }}
               <span class="muted small">
@@ -770,7 +827,7 @@
   @if (shows('lists') && bskyPopular().length && showsSection('bsky-popular')) {
     <div class="section-head">{{ 'pages.lists.bsky.popularHeading' | transloco }}</div>
     @for (entry of bskyPopular(); track entry.uri) {
-      <a class="list-row" [routerLink]="bskyFeedLink(entry)">
+      <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
         <span>
           {{ entry.displayName }}
           <span class="muted small">{{

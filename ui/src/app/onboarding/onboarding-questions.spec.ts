@@ -112,6 +112,22 @@ describe('onboarding questions', () => {
     expect(ids).toContain('theme');
   });
 
+  it('leaves AI and analytics questions out of the tour', () => {
+    expect(ONBOARDING_QUESTIONS.map((q) => q.id)).not.toContain('ai');
+    expect(ONBOARDING_QUESTIONS.map((q) => q.id)).not.toContain('analytics');
+  });
+
+  it('offers Zen mode as a choice and applies both answers', () => {
+    const ctx = context();
+    const zen = question('zen');
+    expect(zen.control.kind).toBe('choice');
+    zen.apply?.(ctx, 'zen');
+    expect(ctx.prefs.zenMode()).toBe(true);
+    expect(zen.read?.(ctx)).toBe('zen');
+    zen.apply?.(ctx, 'full');
+    expect(ctx.prefs.zenMode()).toBe(false);
+  });
+
   it('leaves at most one posting-pace setting on', () => {
     const ctx = context();
     ctx.prefs.setConfirmBeforePost(true);
