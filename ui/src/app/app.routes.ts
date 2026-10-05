@@ -161,6 +161,8 @@ export const routes: Routes = [
       {
         path: 'home',
         title: 'Home',
+        // The front door dispatches here, so crawlers must not lose its indexability.
+        data: { seoIndexable: true, seoCanonicalPath: '/' },
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
       },
       {

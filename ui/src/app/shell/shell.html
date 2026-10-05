@@ -483,7 +483,10 @@
     [class.layout-writing-zen]="chromeHidden()"
   >
     @if (!wide() && !railsHidden() && !chromeHidden()) {
-      <aside class="rail rail-left">
+      <aside
+        class="rail rail-left"
+        [attr.aria-label]="'shell.sidebar.accountsDiscovery' | transloco"
+      >
         <app-left-rail />
       </aside>
     }
@@ -495,7 +498,10 @@
       }
     </main>
     @if (!wide() && !railsHidden() && !chromeHidden()) {
-      <aside class="rail rail-right">
+      <aside
+        class="rail rail-right"
+        [attr.aria-label]="'shell.sidebar.serverRecommendations' | transloco"
+      >
         <app-right-rail />
       </aside>
     }

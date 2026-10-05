@@ -19,8 +19,10 @@ receive prerendered content. `/` uses the ordinary client entry with its existin
 and welcome/login flow; no intermediate marketing page renders during loading,
 preview preparation, reloads or account changes. Its social-card tags and identity
 links are already in `src/index.html` and are available without JavaScript.
-The SEO postbuild copies Angular's `index.csr.html` to the root `index.html`
+The SEO postbuild uses Angular's `index.csr.html` for the root `index.html`
 required by GitHub Pages, preserving the client entry and its head metadata.
+It adds a `noscript` overview with links to all six prerendered public guides,
+so visitors and crawlers without JavaScript can discover the public content.
 The browser bootstraps without hydration. `/features` remains the public
 reference, including when JavaScript is disabled.
 
@@ -51,6 +53,11 @@ the root bundle and route guards.
 
 `Seo` updates descriptions, robots, share titles and canonical URLs through
 the existing `PageTitleStrategy`. Public routes opt in via `seoIndexable`.
+The `/home` destination of the root dispatcher also opts in, with
+`seoCanonicalPath: '/'`, so executing JavaScript does not turn the front door
+into a noindex page. Its canonical stays at the root rather than indexing a
+second homepage URL. Canary and test still override public routes to noindex;
+their build stamping handles both ordinary and self-closing robots meta tags.
 Utilities default to `noindex, follow` after client navigation. The static SPA
 fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore

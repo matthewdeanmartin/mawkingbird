@@ -46,6 +46,7 @@ for (const page of pages) {
       'root must bootstrap the existing app without a prerendered landing page',
     );
     assert.equal(doc.querySelector('app-public-home'), null);
+    assert.match(doc.querySelector('noscript')?.textContent ?? '', /Discover Mawkingbird features/);
   }
   for (const account of ['mawkingbird', 'mistersql']) {
     assert.equal(

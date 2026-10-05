@@ -35,7 +35,7 @@
     "test:audit": "node scripts/run-audited-tests.mjs",
     "test:audit:update": "node scripts/run-audited-tests.mjs --update",
     "test:subset": "node scripts/run-test-subset.mjs",
-    "test:source-integrity": "node scripts/check-test-integrity.mjs && node --test scripts/report-bundle.test.mjs scripts/check-production-layout.test.mjs",
+    "test:source-integrity": "node scripts/check-test-integrity.mjs && node --test scripts/report-bundle.test.mjs scripts/check-production-layout.test.mjs scripts/stamp-preview-seo.test.mjs",
     "lint": "ng lint ui --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,html,css,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,css,scss}\"",

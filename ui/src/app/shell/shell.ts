@@ -48,6 +48,8 @@ import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.deployment.canary: Canary
 // i18n shell.deployment.test: Test
 // i18n shell.skipToMain: Skip to main content
+// i18n shell.sidebar.accountsDiscovery: Accounts and discovery
+// i18n shell.sidebar.serverRecommendations: Server information and recommendations
 // i18n shell.plan.state.checking: Checking…
 // i18n shell.plan.state.plus: Plus
 // i18n shell.plan.state.unavailable: Plan?

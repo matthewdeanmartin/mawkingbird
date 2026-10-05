@@ -225,6 +225,15 @@ try {
       assert.equal(await page.locator('head link[rel="me"]').count(), 2);
       assert.equal(await page.locator('app-root').innerHTML(), '');
       assert.equal(await page.locator('app-public-home').count(), 0);
+      await page
+        .getByRole('heading', { name: 'Mawkingbird — Mastodon, Bluesky and RSS' })
+        .waitFor();
+      assert.equal(
+        await page
+          .getByRole('link', { name: 'Discover Mawkingbird features' })
+          .getAttribute('href'),
+        '/features/',
+      );
       assert.equal(
         await page.locator('meta[property="og:image"]').getAttribute('content'),
         'https://mawkingbird.com/mockingbird_hand.png',
@@ -249,12 +258,22 @@ try {
         releaseProbe = resolve;
       });
       await context.route('https://**/*', async (route) => {
-        const instance = new URL(route.request().url()).pathname === '/api/v1/instance';
-        if (instance) await probeReady;
+        const pathname = new URL(route.request().url()).pathname;
+        const instance = pathname === '/api/v1/instance' || pathname === '/api/v2/instance';
+        if (pathname === '/api/v1/instance') await probeReady;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(instance ? { title: 'Preview test server' } : []),
+          body: JSON.stringify(
+            instance
+              ? {
+                  title: 'Preview test server',
+                  domain: 'mastodon.social',
+                  version: '4.5.0',
+                  usage: { users: { active_month: 0 } },
+                }
+              : [],
+          ),
         });
       });
       await context.addInitScript(() => {
@@ -268,12 +287,23 @@ try {
           }
         }).observe(document, { childList: true, subtree: true });
       });
+      // Both sidebar landmarks are visible in the desktop layout; mobile
+      // deliberately hides them and removes them from the accessibility tree.
+      await page.setViewportSize({ width: 1280, height: 900 });
       await page.goto(origin + '/');
       await page.locator('app-entry').waitFor({ state: 'attached' });
       assert.equal(await page.locator('app-public-home').count(), 0);
       assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
       releaseProbe();
       await page.waitForURL(origin + '/home');
+      assert.equal(
+        await page.locator('meta[name="robots"]').getAttribute('content'),
+        'index, follow',
+      );
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        'https://mawkingbird.com/',
+      );
       try {
         await page.getByRole('heading', { name: 'Welcome to Mawkingbird' }).waitFor();
       } catch (error) {
@@ -286,6 +316,23 @@ try {
         throw error;
       }
       assert.equal(await page.evaluate(() => window.__seoLandingSeen), false);
+      assert.equal(
+        await page
+          .getByRole('complementary', { name: 'Accounts and discovery', exact: true })
+          .count(),
+        1,
+        'the account and discovery sidebar has its own accessible name',
+      );
+      assert.equal(
+        await page
+          .getByRole('complementary', {
+            name: 'Server information and recommendations',
+            exact: true,
+          })
+          .count(),
+        1,
+        'the server sidebar has a distinct accessible name',
+      );
       // Re-entry must also retain the welcome flow if the dictionary arrives
       // after the home route, rather than leaving empty translated controls.
       let releaseTranslations;

@@ -17,6 +17,9 @@ function shellChild(path: string): Route | undefined {
 }
 
 describe('application routes', () => {
+  it('keeps the front door destination indexable under the root canonical', () => {
+    expect(shellChild('home')?.data).toEqual({ seoIndexable: true, seoCanonicalPath: '/' });
+  });
   it('provides a shareable Anonymous entry route', () => {
     expect(routes.find((route) => route.path === 'anonymous')?.loadComponent).toBeDefined();
   });

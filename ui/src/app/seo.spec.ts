@@ -27,6 +27,12 @@ describe('route SEO metadata', () => {
             data: { seoIndexable: true, seoDescription: FEATURES_DESCRIPTION },
           },
           { path: 'login', component: Page, title: 'Sign in' },
+          {
+            path: 'home',
+            component: Page,
+            title: 'Home',
+            data: { seoIndexable: true, seoCanonicalPath: '/' },
+          },
         ]),
         { provide: TitleStrategy, useClass: PageTitleStrategy },
       ],
@@ -59,6 +65,19 @@ describe('route SEO metadata', () => {
     expect(meta.getTag('name="description"')?.content).toBe(SITE_DESCRIPTION);
     expect(meta.getTag('property="og:title"')?.content).toContain('Sign in');
     expect(meta.getTag('property="og:url"')?.content).not.toContain('private');
+  });
+
+  it('keeps the home destination indexable with the front door canonical', async () => {
+    await TestBed.inject(Router).navigateByUrl('/home?code=private#feed');
+    expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('index, follow');
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
+      'https://mawkingbird.com/',
+    );
+    expect(TestBed.inject(Meta).getTag('property="og:url"')?.content).toBe(
+      'https://mawkingbird.com/',
+    );
+    await TestBed.inject(Router).navigateByUrl('/login');
+    expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('noindex, follow');
   });
 
   it('keeps preview public pages out of the index without a production canonical', async () => {

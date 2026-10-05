@@ -19,14 +19,16 @@ export class Seo {
     let route = snapshot.root;
     let description = SITE_DESCRIPTION;
     let indexable = false;
+    let canonicalPath: string | undefined;
     while (route) {
       if (route.data['seoDescription']) description = route.data['seoDescription'];
       if (route.data['seoIndexable'] !== undefined) indexable = route.data['seoIndexable'];
+      if (route.data['seoCanonicalPath']) canonicalPath = route.data['seoCanonicalPath'];
       if (!route.firstChild) break;
       route = route.firstChild;
     }
     // Canonicals never contain callback codes, shared-message content or account identifiers.
-    const path = snapshot.url.split(/[?#]/)[0];
+    const path = canonicalPath ?? snapshot.url.split(/[?#]/)[0];
     const canonical = indexable
       ? `${SITE_ORIGIN}${path === '/' ? '/' : path.replace(/\/$/, '') + '/'}`
       : `${SITE_ORIGIN}/`;
