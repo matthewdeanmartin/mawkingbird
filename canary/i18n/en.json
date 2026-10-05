@@ -6183,6 +6183,8 @@
     "rail.user.other": "users",
     "rail.yourBluesky": "Your Bluesky",
     "rail.yourSearchServer": "Your search server",
+    "sidebar.accountsDiscovery": "Accounts and discovery",
+    "sidebar.serverRecommendations": "Server information and recommendations",
     "skipToMain": "Skip to main content",
     "switchingServer": "Connecting to {{server}}…",
     "testDeployment": "Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at",
