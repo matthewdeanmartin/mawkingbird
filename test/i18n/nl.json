@@ -3686,10 +3686,8 @@
     "anonymous.age.years1": "1 jaar",
     "anonymous.age.years2": "2 jaar",
     "anonymous.age.years5": "5 jaar",
-    "anonymous.intro": "Bepaal hoe de browserlokale startfeed voor Anoniem wordt samengesteld.",
     "anonymous.maxAge": "Maximale ouderdom van berichten van gevolgde accounts",
     "anonymous.maxAge.hint": "Oudere berichten worden weggelaten wanneer Anoniem de startfeed samenstelt. Berichten van gevolgde hashtags worden niet beïnvloed.",
-    "anonymous.title": "Anoniem",
     "appearance.animations": "Animaties",
     "appearance.contentWarnings": "Inhoudswaarschuwingen",
     "appearance.disableSwiping": "Veegbewegingen uitschakelen",
@@ -5751,17 +5749,6 @@
     "notFound": "Niet gevonden",
     "opening": "Openen…",
     "unavailable": "Dit starterspakket is niet meer beschikbaar. Bekijk de huidige pakketten om mensen te vinden die je kunt volgen."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} account",
-    "account.other": "{{count}} accounts",
-    "accountsAria": "Alle accounts in {{title}}",
-    "followAll": "Alles volgen",
-    "followed": "{{followed}} van {{total}} gevolgd",
-    "following": "Volgen… {{completed}}/{{total}}",
-    "openAccount": "{{name}} openen in app",
-    "openOriginal": "Origineel openen op {{host}} ↗",
-    "viewCollection": "Collectie bekijken"
   },
   "statusCard": {
     "actionFailure": "Kon niet {{verb}} — probeer het opnieuw.",

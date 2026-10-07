@@ -2732,10 +2732,8 @@
     "anonymous.age.years1": "1 an",
     "anonymous.age.years2": "2 ans",
     "anonymous.age.years5": "5 ans",
-    "anonymous.intro": "Contrôle la façon dont le fil d’accueil Anonyme, local au navigateur, est assemblé.",
     "anonymous.maxAge": "Âge maximal des messages des comptes suivis",
     "anonymous.maxAge.hint": "Les messages plus anciens sont écartés quand Anonyme construit l’accueil. Les messages des hashtags suivis ne sont pas concernés.",
-    "anonymous.title": "Anonyme",
     "appearance.animations": "Animations",
     "appearance.contentWarnings": "Avertissements de contenu",
     "appearance.disableSwiping": "Désactiver les gestes de balayage",
@@ -5601,17 +5599,6 @@
     "everyKnown": "Toutes les langues que je connais",
     "myLanguages": "Mes langues",
     "note": "Choisis-en jusqu’à {{count}}. Ajoute des langues sous Paramètres → Internationalisation."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} compte",
-    "account.other": "{{count}} comptes",
-    "accountsAria": "Tous les comptes de {{title}}",
-    "followAll": "Suivre tout le monde",
-    "followed": "{{followed}} suivis sur {{total}}",
-    "following": "Abonnement… {{completed}}/{{total}}",
-    "openAccount": "Ouvrir {{name}} dans l’application",
-    "openOriginal": "Ouvrir l’original sur {{host}} ↗",
-    "viewCollection": "Voir la collection"
   },
   "serverPicker": {
     "checking": "Vérification de {{server}}…",
