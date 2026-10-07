@@ -79,75 +79,82 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
           </a>
         }
       </div>
-      <mb-toolbar class="command-row presentation-row" label="Feed presentation" density="compact">
-        <button
-          mbToolbarButton
-          [pressed]="prefs.feedReader()"
-          (click)="prefs.setFeedReader(!prefs.feedReader())"
-          title="Reader mode for the feed: reader typography, no pictures"
+      <div class="presentation-controls">
+        <mb-toolbar
+          class="command-row presentation-row"
+          label="Feed presentation"
+          density="compact"
         >
-          📖 Reader
-        </button>
-        @if (showImages()) {
           <button
             mbToolbarButton
-            [pressed]="imagesHidden()"
-            (click)="toggleImages()"
-            [title]="
-              (imagesHidden() ? 'commandBar.textFocus.turnOff' : 'commandBar.textFocus.turnOn')
-                | transloco
-            "
+            [pressed]="prefs.feedReader()"
+            (click)="prefs.setFeedReader(!prefs.feedReader())"
+            title="Reader mode for the feed: reader typography, no pictures"
           >
-            Aa {{ 'commandBar.textFocus.label' | transloco }}
+            📖 Reader
           </button>
-        }
-        @if (showFeedViews()) {
-          <button
-            mbToolbarButton
-            [pressed]="view() === 'media'"
-            (click)="setView('media')"
-            title="Pictures and videos from the posts currently loaded"
-          >
-            🖼️ Media
-          </button>
-          @if (showVideo()) {
+          @if (showImages()) {
             <button
-              type="button"
               mbToolbarButton
-              [pressed]="view() === 'video'"
-              (click)="setView('video')"
+              [pressed]="imagesHidden()"
+              (click)="toggleImages()"
+              [title]="
+                (imagesHidden() ? 'commandBar.textFocus.turnOff' : 'commandBar.textFocus.turnOn')
+                  | transloco
+              "
             >
-              🎬 {{ 'commandBar.video' | transloco }}
+              Aa {{ 'commandBar.textFocus.label' | transloco }}
             </button>
           }
-          <button
-            mbToolbarButton
-            [pressed]="view() === 'articles'"
-            (click)="setView('articles')"
-            title="Article links from the posts currently loaded"
-          >
-            🔗 Articles
-          </button>
-        }
-        @if (prefs.feedReader() && showReaderControls()) {
-          <span class="font-controls">
+          @if (showFeedViews()) {
             <button
               mbToolbarButton
-              (click)="prefs.setReaderFontSize(prefs.readerFontSize() - 1)"
-              title="Smaller text"
+              [pressed]="view() === 'media'"
+              (click)="setView('media')"
+              title="Pictures and videos from the posts currently loaded"
             >
-              A−
+              🖼️ Media
             </button>
+            @if (showVideo()) {
+              <button
+                type="button"
+                mbToolbarButton
+                [pressed]="view() === 'video'"
+                (click)="setView('video')"
+              >
+                🎬 {{ 'commandBar.video' | transloco }}
+              </button>
+            }
             <button
               mbToolbarButton
-              (click)="prefs.setReaderFontSize(prefs.readerFontSize() + 1)"
-              title="Larger text"
+              [pressed]="view() === 'articles'"
+              (click)="setView('articles')"
+              title="Article links from the posts currently loaded"
             >
-              A+
+              🔗 Articles
             </button>
-          </span>
-        }
-      </mb-toolbar>
+          }
+          @if (prefs.feedReader() && showReaderControls()) {
+            <span class="font-controls">
+              <button
+                mbToolbarButton
+                (click)="prefs.setReaderFontSize(prefs.readerFontSize() - 1)"
+                title="Smaller text"
+              >
+                A−
+              </button>
+              <button
+                mbToolbarButton
+                (click)="prefs.setReaderFontSize(prefs.readerFontSize() + 1)"
+                title="Larger text"
+              >
+                A+
+              </button>
+            </span>
+          }
+        </mb-toolbar>
+        <ng-content select="[presentationControl]" />
+      </div>
       @if (providerChips() || showFilters()) {
         <div class="command-row filter-row" role="group" aria-label="Feed filters">
           <ng-content />
@@ -192,6 +199,12 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
     </div>
   `,
   styles: `
+    .presentation-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
     div.command-row {
       display: flex;
       align-items: center;

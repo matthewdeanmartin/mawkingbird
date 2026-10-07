@@ -115,19 +115,24 @@
     (providerVisibilityChanged)="load()"
     (viewChange)="setView($event)"
   >
-    <label>
-      {{ 'pages.home.defaultView.label' | transloco }}
+    <mb-field
+      presentationControl
+      hideLabel
+      class="home-default"
+      [label]="'pages.home.defaultView.label' | transloco"
+    >
       <select
+        mbControl
         [attr.aria-label]="'pages.home.defaultView.label' | transloco"
         [ngModel]="homeDefaults.value() || ''"
         (ngModelChange)="setHomeDefault($event)"
       >
         <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
-        @for (choice of ['all', 'text', 'media', 'video']; track choice) {
+        @for (choice of ['all', 'text', 'media', 'video', 'articles']; track choice) {
           <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
         }
       </select>
-    </label>
+    </mb-field>
     <div
       class="home-filters"
       role="group"

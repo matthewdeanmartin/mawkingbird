@@ -31,7 +31,11 @@
       }
     </section>
     @if (loader.status(); as status) {
-      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+      <aside
+        class="watch-conversation"
+        tabindex="0"
+        [attr.aria-label]="'watch.conversation' | transloco"
+      >
         <app-status-card
           [status]="status"
           [showMedia]="false"
@@ -58,7 +62,11 @@
       </aside>
     }
     @if (!loader.status()) {
-      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+      <aside
+        class="watch-conversation"
+        tabindex="0"
+        [attr.aria-label]="'watch.conversation' | transloco"
+      >
         <h2>{{ 'watch.conversation' | transloco }}</h2>
         <app-party-conversation [session]="partySession()" />
       </aside>

@@ -67,4 +67,9 @@ describe('Home defaults per account', () => {
     expect(() => defaults.set('video')).not.toThrow();
     expect(defaults.value()).toBe('video');
   });
+  it('persists Articles as a starting view', () => {
+    defaults.set('articles');
+    expect(defaults.value()).toBe('articles');
+    expect(localStorage.getItem(defaults.scope())).toBe('articles');
+  });
 });

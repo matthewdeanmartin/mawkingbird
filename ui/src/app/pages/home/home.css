@@ -345,3 +345,7 @@ a.eliza-invite:hover {
 .home-filters {
   display: contents;
 }
+.home-default {
+  width: 10rem;
+  max-width: 100%;
+}

@@ -106,7 +106,7 @@ export class Watch {
   });
 
   constructor() {
-    const release = inject(ReadingZen).hold('rails');
+    const release = inject(ReadingZen).hold('full');
     this.destroyRef.onDestroy(() => {
       this.loader.destroy();
       release();

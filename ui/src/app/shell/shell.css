@@ -426,6 +426,8 @@
 
 .layout-writing-zen .column {
   min-height: 100vh;
+  min-height: 100dvh;
+  margin-bottom: 0;
   border: 0;
   background: transparent;
 }

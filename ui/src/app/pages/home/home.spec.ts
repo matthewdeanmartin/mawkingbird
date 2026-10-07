@@ -188,6 +188,9 @@ describe('Home', () => {
     expect(internals(fixture).homeTextFocus()).toBe(true);
     expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
     expect(TestBed.inject(ClientPrefs).feedReader()).toBe(false);
+    internals(fixture).setHomeDefault('articles');
+    expect(defaults.value()).toBe('articles');
+    expect(internals(fixture).view()).toBe('articles');
   });
   for (const trigger of ['popstate', 'imperative'] as const) {
     it(`restores a visit only for Back navigation, not a fresh entry: ${trigger}`, () => {
@@ -277,7 +280,9 @@ describe('Home', () => {
         'Bluesky session refresh failed (HTTP 401; ExpiredToken).',
       ]);
       fixture.detectChanges();
-      const warning = fixture.nativeElement.querySelector('[role="alert"]') as HTMLElement;
+      const warning = fixture.nativeElement.querySelector(
+        '.feed-warning[role="alert"]',
+      ) as HTMLElement;
       expect(warning.textContent).toContain('ExpiredToken');
       if (kind === 'bluesky') {
         expect(warning.querySelector('a')).toBeNull();

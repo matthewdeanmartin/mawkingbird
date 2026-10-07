@@ -12,7 +12,7 @@ iframe,
 img {
   display: block;
   width: 100%;
-  max-height: 70vh;
+  max-height: var(--video-player-max-height, 70vh);
   aspect-ratio: 16 / 9;
   object-fit: contain;
   border: 0;
@@ -20,7 +20,7 @@ img {
   background: #000;
 }
 iframe {
-  min-height: 200px;
+  min-height: var(--video-player-min-height, 200px);
 }
 .compact video {
   max-height: 180px;

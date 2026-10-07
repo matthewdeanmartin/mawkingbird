@@ -1,5 +1,10 @@
 :host {
-  display: block;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   padding: 1rem;
 }
 .watch-header {
@@ -9,6 +14,7 @@
 }
 h1 {
   font-size: 1.4rem;
+  margin-block: 0 1rem;
 }
 h2 {
   font-size: 1.1rem;
@@ -17,13 +23,38 @@ h2 {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
   gap: 1.5rem;
+  min-height: 0;
 }
 .watch-stage,
 .watch-conversation {
+  position: relative;
   min-width: 0;
 }
+.watch-stage {
+  align-self: start;
+  max-height: 100%;
+  overflow-y: auto;
+  --video-player-max-height: min(70dvh, calc(100dvh - 12rem));
+}
+.watch-conversation {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
 @media (max-width: 850px) {
+  :host {
+    padding: max(0.5rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right))
+      max(0.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left));
+  }
   .watch-layout {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  .watch-stage {
+    max-height: 45dvh;
+    --video-player-max-height: 32dvh;
+    --video-player-min-height: 0px;
   }
 }

@@ -14,6 +14,7 @@ import { ClientPrefs } from '../../client-prefs';
 import { StatusVisibility } from '../../status-visibility';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { FollowTrust } from '../../follow-trust';
+import { ReadingZen } from '../../reading-zen';
 
 @Component({ selector: 'app-status-card', template: '' })
 class CardStub {
@@ -130,6 +131,16 @@ describe('Watch post access and reveal gates', () => {
     fixture = TestBed.createComponent(Watch);
     fixture.detectChanges();
   }
+
+  it('holds the full viewport while open and releases the app chrome on leaving', () => {
+    const zen = TestBed.inject(ReadingZen);
+    mount();
+    expect(zen.active()).toBe(true);
+    expect(zen.chromeHidden()).toBe(true);
+    fixture.destroy();
+    expect(zen.active()).toBe(false);
+    expect(zen.chromeHidden()).toBe(false);
+  });
 
   it('resolves the post through the existing loader and selects only its requested attachment', () => {
     mount();

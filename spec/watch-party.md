@@ -2,6 +2,11 @@
 
 Status: temporary Watch hashtags implemented; full room features remain proposed · 2026-10-07.
 
+Watch uses the full viewport with a persistent Back button. Desktop conversation
+scrolls independently beside the video; on phones it scrolls below the pinned
+video. The surrounding app chrome returns when leaving Watch. The conversation
+region supports keyboard scrolling and retains room in portrait and landscape.
+
 Owner update: Watch supports Add hashtag to party and add-from-post buttons.
 Hashtag posts mix with comments, deduplicate across tags, and retain moderation
 and warning gates. Tags last only for this Watch visit; changing video, leaving,

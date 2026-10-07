@@ -2,7 +2,7 @@
 
 Status: Home defaults and Video view implemented · 2026-10-07.
 
-Implementation update: the Home dropdown saves All/Text/Media/Video per stable
+Implementation update: the Home dropdown saves All/Text/Media/Video/Articles per stable
 account scope and applies it immediately. Toolbar selections stay visit-local;
 browser Back restores the Home presentation. Text defaults do not rewrite global
 image or reader preferences. Video uses the loaded Home feed and its ordinary
@@ -18,8 +18,9 @@ Related: [video playback/Watch](video-player.md), [Watch Parties](watch-party.md
 
 ## Owner decisions
 
-Use the existing Home toolbar behavior. Add a dropdown labelled **Default Home
-to…** with **All / Text / Media / Video**, saved separately for each signed-in
+Use the existing Home toolbar behavior. Place a compact dropdown immediately
+after the presentation buttons, with **All Default / Text Default / Media
+Default / Video Default / Articles Default**, saved separately for each signed-in
 account. When switching to a photography account, Home should open in Media
 every time. The selected toolbar view is currently temporary; this change
 supplies a saved starting view without making every toolbar click persistent.
@@ -41,6 +42,7 @@ starting view per account.
 | Text | Existing regular feed with text-focus presentation: media descriptions/icons and explicit open/play actions |
 | Media | Existing Media grid and viewer |
 | Video | A new video gallery/list with posters, duration where known, author context, and Open Watch |
+| Articles | Existing Articles view |
 
 Media retains its current semantics, including photos, video, and animations.
 This proposal does not turn it into a new photos-only filter. Video includes

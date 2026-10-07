@@ -70,14 +70,16 @@ import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
+import { MbField, MbControl } from '../../design-system/field/field';
 import { isVideoStatus } from '../../video-player/video-discovery';
 
 // i18n pages.home.defaultView.label: Default Home to…
-// i18n pages.home.defaultView.legacy: Current preferences
-// i18n pages.home.defaultView.all: All
-// i18n pages.home.defaultView.text: Text
-// i18n pages.home.defaultView.media: Media
-// i18n pages.home.defaultView.video: Video
+// i18n pages.home.defaultView.legacy: Home Default
+// i18n pages.home.defaultView.all: All Default
+// i18n pages.home.defaultView.text: Text Default
+// i18n pages.home.defaultView.media: Media Default
+// i18n pages.home.defaultView.video: Video Default
+// i18n pages.home.defaultView.articles: Articles Default
 // i18n pages.home.videos.empty: No videos in the posts loaded so far. Load more to look further back.
 // i18n pages.home.visualRestriction: Your reading preferences hide images. Videos remain available through their Open Watch or original links.
 
@@ -169,6 +171,8 @@ const ARTICLE_TARGET = 10;
 @Component({
   selector: 'app-home',
   imports: [
+    MbField,
+    MbControl,
     FormsModule,
     MbToolbar,
     MbToolbarButton,
@@ -519,7 +523,7 @@ export class Home implements OnInit, OnDestroy {
 
   private applyHomeDefault(value: HomeDefault | null): void {
     this.homeTextFocus.set(value === 'text');
-    this.setView(value === 'media' || value === 'video' ? value : 'feed');
+    this.setView(value === 'media' || value === 'video' || value === 'articles' ? value : 'feed');
   }
 
   protected setHomeTextFocus(value: boolean): void {
