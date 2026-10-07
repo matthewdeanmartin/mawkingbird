@@ -3686,10 +3686,8 @@
     "anonymous.age.years1": "1 anno",
     "anonymous.age.years2": "2 anni",
     "anonymous.age.years5": "5 anni",
-    "anonymous.intro": "Controlla come viene composto il feed Home anonimo locale del browser.",
     "anonymous.maxAge": "Età massima dei post degli account seguiti",
     "anonymous.maxAge.hint": "I post più vecchi vengono esclusi quando Anonymous crea la Home. I post degli hashtag seguiti non sono interessati.",
-    "anonymous.title": "Anonimo",
     "appearance.animations": "Animazioni",
     "appearance.contentWarnings": "Avvisi sul contenuto",
     "appearance.disableSwiping": "Disattiva i gesti di scorrimento",
@@ -5751,17 +5749,6 @@
     "notFound": "Non trovato",
     "opening": "Apertura…",
     "unavailable": "Questa raccolta iniziale non è più disponibile. Esplora quelle attuali per trovare persone da seguire."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} account",
-    "account.other": "{{count}} account",
-    "accountsAria": "Tutti gli account in {{title}}",
-    "followAll": "Segui tutti",
-    "followed": "Seguiti {{followed}} su {{total}}",
-    "following": "Aggiunta in corso… {{completed}}/{{total}}",
-    "openAccount": "Apri {{name}} nell’app",
-    "openOriginal": "Apri originale su {{host}} ↗",
-    "viewCollection": "Visualizza raccolta"
   },
   "statusCard": {
     "actionFailure": "Impossibile {{verb}}: riprova.",

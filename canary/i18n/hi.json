@@ -3686,10 +3686,8 @@
     "anonymous.age.years1": "1 वर्ष",
     "anonymous.age.years2": "2 वर्ष",
     "anonymous.age.years5": "5 वर्ष",
-    "anonymous.intro": "ब्राउज़र में स्थानीय Anonymous होम फ़ीड कैसे बनती है, इसे नियंत्रित करें।",
     "anonymous.maxAge": "फ़ॉलो किए अकाउंट की पोस्ट की अधिकतम उम्र",
     "anonymous.maxAge.hint": "Anonymous द्वारा होम बनाते समय पुरानी पोस्ट छोड़ दी जाती हैं। फ़ॉलो किए हैशटैग की पोस्ट पर इसका असर नहीं पड़ता।",
-    "anonymous.title": "Anonymous",
     "appearance.animations": "ऐनिमेशन",
     "appearance.contentWarnings": "सामग्री चेतावनियाँ",
     "appearance.disableSwiping": "स्वाइप करने की गति बंद करें",
@@ -5751,17 +5749,6 @@
     "notFound": "नहीं मिला",
     "opening": "खुल रहा है…",
     "unavailable": "यह starter kit अब उपलब्ध नहीं। फ़ॉलो करने के लिए मौजूदा kit देखें।"
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} अकाउंट",
-    "account.other": "{{count}} अकाउंट",
-    "accountsAria": "{{title}} के सभी अकाउंट",
-    "followAll": "सभी को फ़ॉलो करें",
-    "followed": "{{total}} में से {{followed}} फ़ॉलो किए",
-    "following": "फ़ॉलो हो रहा है… {{completed}}/{{total}}",
-    "openAccount": "{{name}} को ऐप में खोलें",
-    "openOriginal": "मूल {{host}} पर खोलें ↗",
-    "viewCollection": "संग्रह देखें"
   },
   "statusCard": {
     "actionFailure": "{{verb}} नहीं कर सके — फिर कोशिश करें।",
