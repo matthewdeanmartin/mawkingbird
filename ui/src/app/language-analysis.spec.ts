@@ -20,6 +20,22 @@ describe('language analysis and explanations', () => {
     },
   );
 
+  it('recognizes Vietnamese from several distinct tone-marked words', () => {
+    const text = 'Buổi sáng đẹp, hẹn gặp lại!';
+    expect(analyzeLanguage(text).language).toBe('vi');
+    expect(detectLanguage(text, 'en')).toEqual([{ lang: 'vi', share: 1 }]);
+    expect(detectLanguage(text.normalize('NFD'), 'en')).toEqual([{ lang: 'vi', share: 1 }]);
+  });
+
+  it('does not label an accented hashtag as English from metadata', () => {
+    expect(detectLanguage('#SãoPaulo', 'en')).toEqual([{ lang: 'und', share: 1 }]);
+    const result = analyzeLanguage('#SãoPaulo');
+    expect(result.language).toBeNull();
+    expect(result.candidates).toEqual(['pt', 'vi']);
+    expect(result.candidatesComplete).toBe(false);
+    expect(analyzeLanguage(`${ENGLISH} #SãoPaulo`).language).toBe('en');
+  });
+
   it('separates the reported German prose from English marketing hashtags and link labels', () => {
     const text =
       GERMAN +

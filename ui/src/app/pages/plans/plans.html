@@ -76,14 +76,14 @@
       <tbody>
         <tr>
           <th scope="row">{{ 'pages.plans.connecting.row.requests' | transloco }}</th>
-          <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyFreeRate }"></td>
-          <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyFreeRate }"></td>
+          <td>{{ 'pages.plans.proxyDailyAnonymous' | transloco }}</td>
+          <td>{{ 'pages.plans.proxyDailyAccount' | transloco }}</td>
           <td [innerHTML]="'pages.plans.perMinute' | transloco: { count: proxyPlusRate }"></td>
         </tr>
         <tr>
           <th scope="row">{{ 'pages.plans.connecting.row.countedAgainst' | transloco }}</th>
           <td>{{ 'pages.plans.connecting.networkAddress' | transloco }}</td>
-          <td>{{ 'pages.plans.connecting.networkAddress' | transloco }}</td>
+          <td>{{ 'pages.plans.connecting.yourAccount' | transloco }}</td>
           <td>{{ 'pages.plans.connecting.yourAccount' | transloco }}</td>
         </tr>
       </tbody>

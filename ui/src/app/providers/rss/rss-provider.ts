@@ -5,7 +5,7 @@ import { FeedProvider } from '../provider';
 import { commentAccount, feedAccount, feedToStatuses, itemToStatus } from './rss-adapter';
 import { qualifiesForHome } from './rss-home-eligibility';
 import { ParsedItem } from './rss-parser';
-import { RssFetch } from './rss-fetch';
+import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { RssSubscriptions } from './rss-subscriptions';
 
 /** An RSS item plus the synthetic account and comment info the thread view needs. */
@@ -56,9 +56,8 @@ const FEED_JOIN_TIMEOUT_MS = 30_000;
  * and interleaves with Mastodon pages. Read-only by nature.
  *
  * Not every enabled feed contributes to Home: only ones that read like a
- * social timeline do (see {@link qualifiesForHome}). A feed that doesn't
- * qualify is still fetched (its title/count still get recorded for the RSS
- * pages) but contributes zero items here — it lives on `/rss` instead.
+ * social timeline do (see {@link qualifiesForHome}). Home reads saved feed content only, even if stale. Opening RSS or an
+ * individual feed refreshes it; visiting Home never polls every subscription.
  */
 @Injectable({ providedIn: 'root' })
 export class RssProvider implements FeedProvider {
@@ -91,7 +90,7 @@ export class RssProvider implements FeedProvider {
     const failures: string[] = [];
     return forkJoin(
       feeds.map((sub) =>
-        this.fetch.fetchFeed(sub.url, { useProxy: sub.useProxy === true }).pipe(
+        this.fetch.fetchFeed(sub.url, { useProxy: sub.useProxy === true, cacheOnly: true }).pipe(
           map((feed) => {
             // Banks the title and the feed's *true* item count for the Feeds
             // page while we are here anyway; see RssSubscriptions.recordFetch.
@@ -112,6 +111,7 @@ export class RssProvider implements FeedProvider {
               .slice(0, PER_FEED_ITEM_CAP);
           }),
           catchError((err: Error) => {
+            if (err instanceof RssCacheMiss) return of<Status[]>([]);
             failures.push(`${sub.title || sub.url}: ${err.message}`);
             return of<Status[]>([]);
           }),

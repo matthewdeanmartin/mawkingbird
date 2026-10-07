@@ -457,6 +457,30 @@ describe('Shell zen modes', () => {
     });
   });
 
+  it('groups footer links by purpose and points to the maintained source and license', () => {
+    const footer = render().nativeElement.querySelector('app-app-footer') as HTMLElement;
+    const rows = [...footer.querySelectorAll('.footer-row')];
+    expect(
+      rows.map((row) =>
+        [...row.querySelectorAll('a, button')].map((link) => link.textContent?.trim()).join(' · '),
+      ),
+    ).toEqual([
+      'Server rules & terms · Privacy',
+      'Source · MIT License',
+      'Report a bug · Fail whale',
+      'Discover · ? Keyboard',
+    ]);
+    expect(
+      footer.querySelector('a[href="https://github.com/matthewdeanmartin/mawkingbird/"]'),
+    ).not.toBeNull();
+    expect(
+      footer.querySelector(
+        'a[href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/LICENSE"]',
+      ),
+    ).not.toBeNull();
+    expect(footer.querySelector('[mbContentLink]')).toBeNull();
+  });
+
   it('global zen drops the rails but keeps the header and footer', () => {
     const fixture = render();
     TestBed.inject(ClientPrefs).zenMode.set(true);

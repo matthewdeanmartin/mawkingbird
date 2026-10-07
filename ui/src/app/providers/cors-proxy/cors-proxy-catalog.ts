@@ -219,7 +219,8 @@ export const CORS_PROXY_CATALOG: readonly CorsProxyEntry[] = [
   {
     id: 'mawkingbird',
     label: 'Mawkingbird proxy',
-    pitch: 'Run by this app, for this app. No signup, no key. Please see ToS below.',
+    pitch:
+      'Run by this app, for this app. A small free daily allowance; no key to paste. Please see ToS below.',
     template: {
       // `{route}` names the policy the proxy should apply; `{url}` is the
       // target. Both are substituted by `buildProxiedUrl`.
@@ -237,10 +238,9 @@ export const CORS_PROXY_CATALOG: readonly CorsProxyEntry[] = [
     // That is more than AllOrigins can do and is the point of running our own.
     forwardsCustomHeaders: true,
     limits:
-      `Feeds: ${PROXY_RATE_FREE_PER_MINUTE} requests per minute, 2 MB per response, cached 5 ` +
-      'minutes. Webmentions and the ' +
-      'API connectors are tighter. Only the destinations this app actually uses are reachable, ' +
-      'and video and audio are refused outright — it is not a general-purpose proxy.',
+      '1 request per day anonymously, or 5 per day with a Mawkingbird account, shared across all routes. ' +
+      'Resets at midnight UTC. Free destinations: wikipedia.org, wikimedia.org, wikisource.org, gutenberg.org and archive.org, including subdomains. ' +
+      `Additional rate ceiling: ${PROXY_RATE_FREE_PER_MINUTE} feed requests per minute. Response size and content-type restrictions apply.`,
     // The service's own terms page, not the source repository — the repo is
     // private, so linking it would send users to a 404 and imply the service is
     // open source when it is not.
@@ -272,8 +272,8 @@ export const CORS_PROXY_CATALOG: readonly CorsProxyEntry[] = [
     // and refreshed automatically, so the settings page shows no key field.
     limits:
       `Feeds and every other route: ${PROXY_RATE_PLUS_PER_MINUTE} requests per minute, counted ` +
-      'per account rather than per address. The same destinations, size caps and content-type rules as the free proxy — ' +
-      'a subscription raises the ceiling, it does not widen what the proxy will reach.',
+      'per account rather than per address. Plus supports the configured API connectors and public destinations on open routes. ' +
+      'Response size, content-type and destination safety restrictions still apply.',
     homepage: `${MAWKINGBIRD_PROXY}/`,
   },
   {

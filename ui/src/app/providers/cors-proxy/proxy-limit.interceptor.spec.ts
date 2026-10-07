@@ -7,8 +7,36 @@ import { CorsProxySettings } from './cors-proxy-settings';
 import { ProxyActivity, PROXY_PAUSED_KEY, PROXY_PROMPT_KEY } from './proxy-activity';
 import { SupporterStatus } from '../account/supporter-status';
 import { signal } from '@angular/core';
+import { QUIET_PROXY_LIMIT } from './proxy-limit-details';
+import { externalFetch } from '../external-fetch';
 
 describe('proxyLimitInterceptor', () => {
+  it('records automatic RSS limits without opening a global notice or consuming a dialog prompt', () => {
+    client
+      .get(url, { context: externalFetch().set(QUIET_PROXY_LIMIT, true) })
+      .subscribe({ error: () => undefined });
+    http.expectOne(url).flush(
+      {
+        source: 'proxy',
+        cause: 'caller_allowance',
+        scope: 'all_routes',
+        allowance: 'daily',
+        tier: 'free',
+        identity: 'ip',
+        retryAfterSeconds: 3600,
+      },
+      { status: 429, statusText: 'Limited' },
+    );
+    expect(activity.notice()).toBe(false);
+    expect(activity.prompt()).toBe(false);
+    expect(sessionStorage.getItem(PROXY_PROMPT_KEY)).toBeNull();
+    expect(activity.rssLimitDetails()?.allowance).toBe('daily');
+    expect(() => activity.assertAllowed('feeds')).toThrow('rate-limited');
+    client.get(url).subscribe({ error: () => undefined });
+    http.expectNone(url);
+    expect(activity.notice()).toBe(true);
+    expect(activity.prompt()).toBe(true);
+  });
   let http: HttpTestingController;
   let client: HttpClient;
   let activity: ProxyActivity;
@@ -56,6 +84,46 @@ describe('proxyLimitInterceptor', () => {
     client.post(url, {}).subscribe();
     http.expectOne(url).flush({ results: [{ status: 429, source: 'proxy' }] });
     expect(activity.prompt()).toBe(true);
+  });
+  it('opens the offer for a free-domain refusal without blocking the remaining sample', () => {
+    client.get(url).subscribe({ error: () => undefined });
+    http.expectOne(url).flush(
+      {
+        source: 'proxy',
+        code: 'free_destination_denied',
+        cause: 'destination_policy',
+        scope: 'route',
+        route: 'feeds',
+        tier: 'free',
+        identity: 'account',
+      },
+      { status: 403, statusText: 'Forbidden' },
+    );
+    expect(activity.prompt()).toBe(true);
+    expect(activity.details()?.identity).toBe('account');
+    client.get(url).subscribe();
+    http.expectOne(url).flush('allowed');
+  });
+  it('retains daily allowance metadata from a batch refusal', () => {
+    client.post(url, {}).subscribe();
+    http.expectOne(url).flush({
+      results: [
+        {
+          status: 429,
+          source: 'proxy',
+          body: JSON.stringify({
+            cause: 'caller_allowance',
+            scope: 'all_routes',
+            allowance: 'daily',
+            tier: 'free',
+            identity: 'ip',
+            retryAfterSeconds: 3600,
+          }),
+        },
+      ],
+    });
+    expect(activity.details()?.allowance).toBe('daily');
+    expect(activity.remainingSeconds()).toBe(3600);
   });
   it('uses new metadata to pause only the affected route and honor the body retry delay', () => {
     client.get(url, { responseType: 'text' }).subscribe({ error: () => undefined });
@@ -135,13 +203,11 @@ describe('proxyLimitInterceptor', () => {
   });
   it('falls back for malformed JSON and invalid metadata without mistaking unknown causes for an upgrade', () => {
     client.get(url, { responseType: 'text' }).subscribe({ error: () => undefined });
-    http
-      .expectOne(url)
-      .flush('not JSON', {
-        status: 429,
-        statusText: 'Limited',
-        headers: { 'X-Proxy-Source': 'proxy', 'Retry-After': '12' },
-      });
+    http.expectOne(url).flush('not JSON', {
+      status: 429,
+      statusText: 'Limited',
+      headers: { 'X-Proxy-Source': 'proxy', 'Retry-After': '12' },
+    });
     expect(activity.remainingSeconds()).toBe(12);
     expect(() => activity.assertAllowed('article')).toThrow();
   });

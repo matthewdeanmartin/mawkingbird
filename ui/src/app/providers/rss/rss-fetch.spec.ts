@@ -7,8 +7,9 @@ import { CorsProxySettings } from '../cors-proxy/cors-proxy-settings';
 import { CorsProxyUsageStore } from '../cors-proxy/cors-proxy-usage';
 import { Server } from '../../server';
 import { CachedFeed, CachedFeedRecord, RssCache } from './rss-cache';
-import { RssFetch } from './rss-fetch';
+import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { ParsedFeed } from './rss-parser';
+import { firstValueFrom } from 'rxjs';
 import { enableProxyFlags } from '../../testing/enable-proxy-flags';
 
 const FEED_XML = `<?xml version="1.0"?><rss><channel><title>A Feed</title></channel></rss>`;
@@ -89,6 +90,22 @@ async function settle(turns = 8): Promise<void> {
 }
 
 describe('RssFetch', () => {
+  it('serves stale cached RSS for Home without refreshing the network', async () => {
+    cache.seed('https://cached.example/feed', 'Saved feed', 7 * 24 * 60 * 60 * 1000);
+    const result = await firstValueFrom(
+      fetcher.fetchFeed('https://cached.example/feed', { cacheOnly: true, useProxy: true }),
+    );
+    expect(result.title).toBe('Saved feed');
+    http.expectNone(() => true);
+  });
+  it('leaves an uncached Home feed alone even when noCache was also requested', async () => {
+    await expect(
+      firstValueFrom(
+        fetcher.fetchFeed('https://new.example/feed', { cacheOnly: true, noCache: true }),
+      ),
+    ).rejects.toBeInstanceOf(RssCacheMiss);
+    http.expectNone(() => true);
+  });
   let fetcher: RssFetch;
   let http: HttpTestingController;
   let settings: CorsProxySettings;
@@ -226,7 +243,7 @@ describe('RssFetch', () => {
 
       expect(goodTitle).toBe('A Feed');
       expect(badError).not.toBeNull();
-      expect(badError!.message).toMatch(/rate-limiting/i);
+      expect(badError!.message).toMatch(/RSS refresh paused.*proxy request allowance/);
       expect(cache.putCount).toBe(1);
       expect(TestBed.inject(CorsProxyUsageStore).usage()).toMatchObject({
         requests: 1,

@@ -1,10 +1,22 @@
+import { HttpContextToken } from '@angular/common/http';
+
+/** Automatic RSS loads record limits without interrupting unrelated pages. */
+export const QUIET_PROXY_LIMIT = new HttpContextToken<boolean>(() => false);
+
 export interface ProxyLimitDetails {
-  cause: 'caller_allowance' | 'service_capacity' | 'upstream' | 'unknown' | 'legacy';
+  cause:
+    | 'caller_allowance'
+    | 'destination_policy'
+    | 'service_capacity'
+    | 'upstream'
+    | 'unknown'
+    | 'legacy';
   scope: 'all_routes' | 'route';
   route?: string;
   identity?: 'ip' | 'account';
   tier?: 'free' | 'plus';
   retryAfterSeconds?: number;
+  allowance?: 'daily';
 }
 
 /** HttpClient text responses and batch members carry JSON as a string. */
@@ -30,7 +42,10 @@ export function proxyLimitDetails(value: unknown, route?: string): ProxyLimitDet
     cause:
       cause === undefined
         ? 'legacy'
-        : cause === 'caller_allowance' || cause === 'service_capacity' || cause === 'upstream'
+        : cause === 'caller_allowance' ||
+            cause === 'destination_policy' ||
+            cause === 'service_capacity' ||
+            cause === 'upstream'
           ? cause
           : 'unknown',
     scope: body['scope'] === 'route' && body['route'] === route && !!route ? 'route' : 'all_routes',
@@ -40,5 +55,6 @@ export function proxyLimitDetails(value: unknown, route?: string): ProxyLimitDet
     tier: body['tier'] === 'free' || body['tier'] === 'plus' ? body['tier'] : undefined,
     retryAfterSeconds:
       typeof seconds === 'number' && Number.isFinite(seconds) && seconds > 0 ? seconds : undefined,
+    allowance: body['allowance'] === 'daily' ? 'daily' : undefined,
   };
 }

@@ -58,7 +58,8 @@
     "starter-locales:report": "node scripts/starter-locale-coverage.mjs",
     "starter-kits:check": "node scripts/update-bundled-starter-kits.mjs --check",
     "check:subpaths": "node scripts/check-subpath-deployments.mjs",
-    "check:mock-leakage": "node scripts/check-mock-leakage.mjs"
+    "check:mock-leakage": "node scripts/check-mock-leakage.mjs",
+    "dead-code": "knip"
   },
   "private": true,
   "packageManager": "npm@11.17.0",
@@ -98,6 +99,7 @@
     "angular-eslint": "^21.4.0",
     "eslint": "^10.10.0",
     "jsdom": "^29.1.1",
+    "knip": "^6.40.0",
     "prettier": "^3.9.6",
     "storybook": "10.6.0",
     "stylelint": "17.15.0",

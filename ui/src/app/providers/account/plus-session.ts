@@ -7,6 +7,7 @@ import { externalFetch } from '../external-fetch';
 import { SupporterStatus } from './supporter-status';
 import { accountPageUrl, authDebug } from './auth-debug';
 import { MawkingbirdSession } from './mawkingbird-session';
+import { ProxyActivity } from '../cors-proxy/proxy-activity';
 
 /**
  * The supporter session: proxy tokens, subscription state, and checkout.
@@ -132,6 +133,7 @@ export class PlusSession {
   // without importing this service, and so pulling the AuthKit SDK into the
   // initial bundle. See `supporter-status.ts`.
   private status = inject(SupporterStatus);
+  private proxyActivity = inject(ProxyActivity);
 
   /** The caller's tier, as last minted. */
   readonly tier = signal<'free' | 'plus'>('free');
@@ -254,6 +256,7 @@ export class PlusSession {
 
   /** Forget everything. Called on sign-out. */
   clear(): void {
+    this.proxyActivity.clearLimits();
     this.held = null;
     // Invalidate any mint still in flight. One that started while signed in
     // would otherwise settle a moment later and publish `tier: 'plus'` for an
@@ -384,6 +387,10 @@ export class PlusSession {
         // dropped rather than published over the newer one.
         authDebug('mint:superseded');
         return null;
+      }
+
+      if (response.tier === 'plus' || this.proxyActivity.details()?.identity === 'ip') {
+        this.proxyActivity.clearLimits();
       }
 
       // The auth token and this proxy token are separate credentials, minted by

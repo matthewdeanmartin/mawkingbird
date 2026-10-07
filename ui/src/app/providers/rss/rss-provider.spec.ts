@@ -3,7 +3,7 @@ import { EMPTY, firstValueFrom, NEVER, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../../models';
 import { ParsedFeed } from './rss-parser';
-import { RssFetch } from './rss-fetch';
+import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { PER_FEED_ITEM_CAP, RssProvider } from './rss-provider';
 import { RssSubscriptions } from './rss-subscriptions';
 
@@ -42,6 +42,32 @@ function hourlyDatesFrom(latest: string, count: number): string[] {
 }
 
 describe('RssProvider', () => {
+  it('uses only saved RSS content on Home and quietly skips feeds not read yet', async () => {
+    const fetchFeed = vi.fn((_url: string, _options: { cacheOnly?: boolean }) =>
+      throwError(() => new RssCacheMiss()),
+    );
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: RssFetch, useValue: { fetchFeed } },
+        {
+          provide: RssSubscriptions,
+          useValue: {
+            enabledFeeds: () =>
+              Array.from({ length: 100 }, (_, index) => ({
+                url: `https://feed${index}.example/rss`,
+                useProxy: true,
+              })),
+            recordFetch: vi.fn(),
+          },
+        },
+      ],
+    });
+    const provider = TestBed.inject(RssProvider);
+    expect(await firstValueFrom(provider.fetchPage())).toEqual([]);
+    expect(fetchFeed).toHaveBeenCalledTimes(100);
+    expect(fetchFeed.mock.calls.every((call) => call[1].cacheOnly)).toBe(true);
+    expect(provider.errors()).toEqual([]);
+  });
   beforeEach(() => {
     localStorage.clear();
   });

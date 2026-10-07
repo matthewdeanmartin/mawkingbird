@@ -2537,7 +2537,6 @@
     "write.emptyPublishesNow": "Leer lassen, um jetzt auf Mastodon zu veröffentlichen.",
     "write.exactPromptLabel": "Genau gesendete Eingabeaufforderung:",
     "write.finding.caps": "Eine Wortfolge ist vollständig großgeschrieben.",
-    "write.finding.longLinks": "Einige Links sind so lang, dass sie unordentlich wirken. Sie zählen unabhängig von der Länge gleich – das Kürzen ist rein optisch.",
     "write.finding.missingAlt": "Ein angehängtes Bild hat keine Beschreibung.",
     "write.finding.overLimit.one": "Ein Beitrag überschreitet das Längenlimit und wird abgelehnt.",
     "write.finding.overLimit.other": "{{count}} Beiträge überschreiten das Längenlimit und werden abgelehnt.",

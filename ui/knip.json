@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/main.ts!",
+    "src/main.server.ts!",
+    "src/app/testing/http-error.ts",
+    "src/app/testing/storybook-http.ts",
+    "scripts/*.{mjs,cjs}",
+    "vitest.integration.config.ts",
+    "integration/**/*.ts",
+    "../design_system/.storybook/*.{ts,mjs}",
+    "../design_system/stories/**/*.ts"
+  ],
+  "project": ["src/**/*.ts!", "scripts/*.{mjs,cjs}", "integration/**/*.ts", "*.ts"],
+  "ignoreDependencies": ["@storybook/addon-a11y", "@storybook/addon-docs"]
+}

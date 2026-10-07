@@ -2,14 +2,16 @@ import { PlusPrice } from '../../providers/account/plus-price';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { PROXY_RATE_FREE_PER_MINUTE, PROXY_RATE_PLUS_PER_MINUTE } from '../../plus-benefits';
+import { PROXY_RATE_PLUS_PER_MINUTE } from '../../plus-benefits';
+// i18n pages.plans.proxyDailyAnonymous: 1 request per day
+// i18n pages.plans.proxyDailyAccount: 5 requests per day
 import { FREE_DAILY_ARTICLES } from '../../providers/article/article-quota';
 
 // i18n pages.plans.title: What each plan includes
 // i18n pages.plans.intro.a: Mawkingbird works without an account. Signing in is free, and a subscription is
 // i18n pages.plans.intro.price: ${{price}} a year
 // i18n pages.plans.intro.b: . This page lists everything that differs between the three, including the exact limits.
-// i18n pages.plans.lede: Nothing here takes anything away. Every timeline, feed, list and post works signed out, and anything you have already made stays yours — readable and exportable — whether you subscribe, stop subscribing, or never start.
+// i18n pages.plans.lede: Your timelines, subscriptions, saved items, lists and posts remain readable and exportable on this device. Proxy access has the allowances listed below.
 // i18n pages.plans.reading.title: Reading articles
 // i18n pages.plans.reading.intro.a: A link in a feed can always be opened in a new browser tab, on every plan, as many times as you like. That costs nothing and needs nothing from us. What the limit below covers is opening the article
 // i18n pages.plans.reading.intro.b: inside Mawkingbird
@@ -26,14 +28,14 @@ import { FREE_DAILY_ARTICLES } from '../../providers/article/article-quota';
 // i18n pages.plans.table.freeNoCount: Free, does not count
 // i18n pages.plans.reading.footnote: The count resets at midnight, by your computer's clock. An article already fetched is kept in this browser and stays free to reopen forever, so re-reading something never costs an expansion.
 // i18n pages.plans.connecting.title: Connecting to other sites
-// i18n pages.plans.connecting.intro: Feeds, paste sites, link shorteners and blog publishing all involve Mawkingbird fetching something from a site that is not this one. Browsers refuse most of those requests for security reasons, so they pass through a small relay we run. The limit is on how fast you can make those requests, not how many in total.
+// i18n pages.plans.connecting.intro: Some feeds and services need our CORS relay. Free access is a small daily allowance on five domains; Plus keeps the higher per-minute allowance and wider destination access.
 // i18n pages.plans.connecting.row.requests: Requests through the relay
 // i18n pages.plans.perMinute: {{count}} a minute
 // i18n pages.plans.connecting.row.countedAgainst: Counted against
 // i18n pages.plans.connecting.networkAddress: Your network address
 // i18n pages.plans.connecting.yourAccount: Your account
-// i18n pages.plans.connecting.footnote1: Signing in does not change this limit — the relay does not ask who you are until you subscribe. What signing in changes is counted per address rather than per account, which matters if several people share a connection.
-// i18n pages.plans.connecting.footnote2: To put the number in scale: refreshing a page of feeds is typically one request per feed. The free rate is enough to refresh dozens of feeds at once, several times a minute. You are most likely to notice the ceiling while importing a large subscription file for the first time.
+// i18n pages.plans.connecting.footnote1: Free proxy requests reset at midnight UTC: 1 per network address anonymously, or 5 per signed-in account, shared across all routes.
+// i18n pages.plans.connecting.footnote2: Free domains are wikipedia.org, wikimedia.org, wikisource.org, gutenberg.org and archive.org, including subdomains. Each feed refresh and batch member counts as one request. Home uses saved RSS content; open RSS to refresh feeds.
 // i18n pages.plans.devices.title: Your things on your other devices
 // i18n pages.plans.devices.intro: Everything you set up in Mawkingbird is kept in the browser you set it up in. That is true on every plan and it is why the app works signed out at all. What a subscription adds is a copy kept on your account, so opening Mawkingbird on your phone finds the same setup as your computer.
 // i18n pages.plans.devices.row.feeds: Feeds you subscribe to
@@ -92,7 +94,6 @@ import { FREE_DAILY_ARTICLES } from '../../providers/article/article-quota';
 })
 export class Plans {
   protected readonly freeArticles = FREE_DAILY_ARTICLES;
-  protected readonly proxyFreeRate = PROXY_RATE_FREE_PER_MINUTE;
   protected readonly proxyPlusRate = PROXY_RATE_PLUS_PER_MINUTE;
 }
 

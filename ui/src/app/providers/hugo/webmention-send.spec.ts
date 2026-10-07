@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
 import { WebmentionSend } from './webmention-send';
+import { PLUS_TOKEN_HEADER, PlusTokenSource } from '../account/plus-token.interceptor';
 
 const TARGET = 'https://blog.example/posts/hello/';
 const SOURCE = 'https://mistersql.github.io/mistersql/interactions/2026-08-06-1/';
@@ -49,6 +50,29 @@ function posts(): { url: string; init: RequestInit }[] {
 }
 
 describe('WebmentionSend', () => {
+  it('attaches account tokens to native fetches only at the Mawkingbird proxy origin', async () => {
+    const token = vi.fn().mockResolvedValue('account-proxy-token');
+    TestBed.overrideProvider(PlusTokenSource, { useValue: { token } });
+    TestBed.overrideProvider(CorsProxy, {
+      useValue: {
+        observeResponse: vi.fn(),
+        proxyRequest: (url: string, route: string) => ({
+          url: `https://cors.mawkingbird.com/?route=${route}&url=${encodeURIComponent(url)}`,
+          headers: {},
+        }),
+      },
+    });
+    route(
+      () => html('<link rel="webmention" href="https://wm.example/e">'),
+      () => new Response('', { status: 202 }),
+    );
+    expect((await TestBed.inject(WebmentionSend).send(TARGET, SOURCE)).state).toBe('delivered');
+    expect(token).toHaveBeenCalledTimes(2);
+    for (const [url, init] of vi.mocked(fetch).mock.calls) {
+      expect(new URL(String(url)).origin).toBe('https://cors.mawkingbird.com');
+      expect(new Headers(init?.headers).get(PLUS_TOKEN_HEADER)).toBe('account-proxy-token');
+    }
+  });
   beforeEach(() => {
     localStorage.clear();
     vi.restoreAllMocks();

@@ -72,13 +72,13 @@ describe('plusTokenInterceptor', () => {
     expect(request.request.headers.get(PLUS_TOKEN_HEADER)).toBe('supporter-token');
   });
 
-  it('does not attach it when the free Mawkingbird proxy is selected', async () => {
+  it('attaches account tokens when the free Mawkingbird proxy is selected', async () => {
     settings.select('mawkingbird');
 
     const request = await fire(`${PROXY}/?route=feeds&url=https%3A%2F%2Fexample.com%2Ffeed.xml`);
 
-    expect(request.request.headers.has(PLUS_TOKEN_HEADER)).toBe(false);
-    expect(plus.token).not.toHaveBeenCalled();
+    expect(request.request.headers.get(PLUS_TOKEN_HEADER)).toBe('supporter-token');
+    expect(plus.token).toHaveBeenCalledOnce();
   });
 
   it('attaches the token when an entitled account is auto-upgraded', async () => {

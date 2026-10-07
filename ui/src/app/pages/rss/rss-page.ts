@@ -31,6 +31,7 @@ import { RssFeedActions } from './feed-actions/feed-actions';
 import { rssSourceUrl } from '../../providers/rss/rss-source';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { feedToStatuses } from '../../providers/rss/rss-adapter';
+import { ProxyActivity } from '../../providers/cors-proxy/proxy-activity';
 
 // i18n pages.rss.subscriptions: Subscriptions
 // i18n pages.rss.title: 📡 RSS
@@ -71,6 +72,9 @@ import { feedToStatuses } from '../../providers/rss/rss-adapter';
 // i18n pages.rss.nothingSaved: Nothing saved for later yet.
 // i18n pages.rss.nothingToRead: Nothing to read here.
 // i18n pages.rss.subscribeToRead: Subscribe to a feed to start reading.
+// i18n pages.rss.proxyRefreshPaused: RSS refresh is paused because the proxy request allowance was reached. Your subscriptions and saved items are still here. Refreshing many feeds at once can use the allowance; you do not need to unsubscribe.
+// i18n pages.rss.proxyDomainPaused: Some RSS feeds need Mawkingbird Plus because their sites are outside the free proxy domain list. Your subscriptions and saved items are still here.
+// i18n pages.rss.proxyOptions: Review proxy options
 
 /** A URL's hostname, or null when it isn't a parseable absolute URL. */
 function hostOf(url: string): string | null {
@@ -155,6 +159,7 @@ export class RssPage {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private rss = inject(RssProvider);
+  protected readonly proxyActivity = inject(ProxyActivity);
   private kitInstall = inject(RssStarterKitInstall);
   protected subs = inject(RssSubscriptions);
   protected readState = inject(RssReadState);

@@ -149,7 +149,7 @@ export class CorsProxySettings implements ExpiringConnection {
    * across the right screen. Nobody buys a rate limit in order to configure one.
    *
    * The swap is safe precisely because the two entries are the same service:
-   * byte-identical URL patterns, the same routes, the same destinations, and no
+   * byte-identical URL patterns, the same routes, and no
    * key to paste. The tier travels in a header the app attaches per request, so
    * "upgrading" changes nothing about how a request is built — only which
    * ceiling the Worker applies to it.

@@ -49,7 +49,8 @@ import { FeatureFlagId, FeatureFlags } from '../../../../feature-flags';
  * replacing it should be checked the same way; `hnrss.org` is a near miss that
  * AllOrigins answers with 522.
  */
-const TEST_FEED_URL = 'https://xkcd.com/rss.xml';
+const TEST_FEED_URL =
+  'https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom';
 
 /** How long to wait before calling a proxy too slow to be useful. */
 const TEST_TIMEOUT_MS = 15_000;

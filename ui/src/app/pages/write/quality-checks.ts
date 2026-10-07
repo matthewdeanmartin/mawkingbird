@@ -1,4 +1,4 @@
-import { longUrls, postLength } from '../../compose/post-length';
+import { postLength } from '../../compose/post-length';
 import { PkmVocabulary, pkmKinds, pkmLabel } from '../../pkm/pkm-tags';
 
 /**
@@ -186,7 +186,6 @@ export function hashtagsIn(text: string): string[] {
 // i18n pages.write.finding.pkmTagged: This is tagged {{kinds}} — publishing sends it to your followers.
 // i18n pages.write.finding.missingAlt: An attached image has no description.
 // i18n pages.write.finding.repeatedWords: A word is repeated back to back.
-// i18n pages.write.finding.longLinks: Some links are long enough to look untidy. They cost the same either way — shortening is cosmetic.
 // i18n pages.write.finding.caps: A run of words is in capitals.
 // i18n pages.write.finding.tagCount: {{count}} hashtags. Past about {{threshold}} they stop helping people find this.
 // i18n pages.write.finding.readability: Reads as {{band}} ({{score}}/100). Shorter sentences would help.
@@ -231,16 +230,6 @@ export function runQualityChecks(text: string, context: QualityContext): Quality
       severity: 'warn',
       messageKey: 'pages.write.finding.repeatedWords',
       samples: repeats.map((word) => `${word} ${word}`),
-    });
-  }
-
-  const long = longUrls(text);
-  if (long.length) {
-    findings.push({
-      id: 'long-links',
-      severity: 'info',
-      messageKey: 'pages.write.finding.longLinks',
-      samples: long.map((entry) => entry.url),
     });
   }
 

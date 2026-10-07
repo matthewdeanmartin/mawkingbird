@@ -26,7 +26,13 @@ export class PlusTokenSource {
   private injector = inject(Injector);
 
   async token(): Promise<string | null> {
-    const { PlusSession } = await import('./plus-session');
+    const [{ PlusSession }, { MawkingbirdSession }] = await Promise.all([
+      import('./plus-session'),
+      import('./mawkingbird-session'),
+    ]);
+    const account = this.injector.get(MawkingbirdSession);
+    await account.ensureReady();
+    if (!account.user()) return null;
     return this.injector.get(PlusSession).token();
   }
 }
@@ -48,8 +54,9 @@ export const PLUS_TOKEN_HEADER = 'X-Mawkingbird-Token';
  * ## What it deliberately does not do
  *
  * It attaches the token to **exactly one destination**: the proxy, and only
- * when the user has selected the Plus entry. Not to the free Mawkingbird
- * proxy, not to a third-party proxy, and never to a feed's own host.
+ * when the user has selected either Mawkingbird entry. Free-account tokens
+ * identify the five-request daily allowance. Never to a third-party proxy or
+ * a feed's own host.
  *
  * That narrowness is the whole point. The token is a bearer credential; the
  * blast radius of getting this wrong is handing it to whichever host a user
@@ -75,7 +82,7 @@ export const plusTokenInterceptor: HttpInterceptorFn = (request, next) => {
   // exactly those auto-upgraded requests, so the Worker would meter a paying
   // supporter at the free rate — the one outcome this whole path exists to
   // prevent.
-  if (settings.chosen()?.id !== 'mawkingbird-plus') {
+  if (!['mawkingbird', 'mawkingbird-plus'].includes(settings.chosen()?.id ?? '')) {
     return next(request);
   }
 

@@ -560,7 +560,7 @@
 
           <!-- Same wording as the compact composer: a link costs 23 characters
                whatever its length, so this offers tidiness, not budget. -->
-          @if (longLinks().length; as linkCount) {
+          @if (shortenerReady() && longLinks().length; as linkCount) {
             <div class="link-note muted">
               <span class="link-note-text">
                 {{

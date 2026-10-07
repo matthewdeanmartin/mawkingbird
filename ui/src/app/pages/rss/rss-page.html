@@ -161,6 +161,19 @@
       </div>
     }
 
+    @if (proxyActivity.rssLimitDetails(); as limit) {
+      <p class="pane-warning" role="status">
+        {{
+          (limit.cause === 'destination_policy'
+            ? 'pages.rss.proxyDomainPaused'
+            : 'pages.rss.proxyRefreshPaused'
+          ) | transloco
+        }}
+        <a routerLink="/settings/connections/cors-proxy">{{
+          'pages.rss.proxyOptions' | transloco
+        }}</a>
+      </p>
+    }
     @if (failed().length) {
       <p class="pane-warning">
         @if (failed().length === 1) {
@@ -169,7 +182,9 @@
           {{ 'pages.rss.couldntLoadFeeds' | transloco: { count: failed().length } }}
         }
         <a routerLink="/settings/rss">{{ 'pages.rss.checkInSettings' | transloco }}</a>
-        {{ 'pages.rss.corsWarning' | transloco }}
+        @if (!proxyActivity.rssLimitDetails()) {
+          {{ 'pages.rss.corsWarning' | transloco }}
+        }
       </p>
     }
 

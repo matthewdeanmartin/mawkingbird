@@ -142,12 +142,10 @@ describe('runQualityChecks', () => {
     expect(findings.find((f) => f.id === 'repeated-words')?.samples).toEqual(['is is']);
   });
 
-  it('mentions long links as cosmetic, not as a cost', () => {
-    const url = `https://example.com/${'p'.repeat(60)}`;
-    const findings = runQualityChecks(`see ${url}`, context({ segments: [`see ${url}`] }));
-    const finding = findings.find((f) => f.id === 'long-links');
-    expect(finding?.severity).toBe('info');
-    expect(finding?.messageKey).toBe('pages.write.finding.longLinks');
+  it('does not warn about link length', () => {
+    for (const url of ['https://mawkingbird.com/', `https://example.com/${'p'.repeat(600)}`]) {
+      expect(ids(`see ${url}`)).not.toContain('long-links');
+    }
   });
 
   it('does not flag a short link', () => {

@@ -1,6 +1,29 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProxyActivity, PROXY_PAUSED_KEY, PROXY_PROMPT_KEY } from './proxy-activity';
 describe('ProxyActivity', () => {
+  it('allows a separate account offer after the anonymous allowance dialog', () => {
+    const activity = new ProxyActivity();
+    activity.exhausted('86400', true, {
+      cause: 'caller_allowance',
+      scope: 'all_routes',
+      identity: 'ip',
+      tier: 'free',
+      allowance: 'daily',
+    });
+    expect(activity.claimPrompt()).toBe(true);
+    activity.dismissNotice();
+    activity.clearLimits();
+    activity.exhausted('86400', true, {
+      cause: 'caller_allowance',
+      scope: 'all_routes',
+      identity: 'account',
+      tier: 'free',
+      allowance: 'daily',
+    });
+    expect(activity.claimPrompt()).toBe(true);
+    expect(activity.claimPrompt()).toBe(false);
+    activity.ngOnDestroy();
+  });
   beforeEach(() => {
     vi.useFakeTimers();
     localStorage.removeItem(PROXY_PAUSED_KEY);

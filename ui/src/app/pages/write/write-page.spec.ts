@@ -1,3 +1,4 @@
+import { ShortenerSettings } from '../../providers/shortener/shortener-settings';
 import { AppDialogs } from '../../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -1846,7 +1847,11 @@ describe('WritePage', () => {
       fixture.detectChanges();
 
       expect(page.longLinks()).toHaveLength(1);
+      expect(fixture.nativeElement.querySelector('.link-note')).toBeNull();
+      TestBed.inject(ShortenerSettings).activate('isgd');
+      fixture.detectChanges();
       expect(fixture.nativeElement.textContent).toContain('23 characters');
+      expect(fixture.nativeElement.querySelector('.link-note button')).not.toBeNull();
     });
 
     /**

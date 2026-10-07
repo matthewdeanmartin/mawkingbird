@@ -28,6 +28,12 @@ veto English even if English word clues exist; they do not establish German by
 themselves. Distinctive spelling can settle a short word or corroborate two word
 clues; a borrowed name cannot establish the language of longer prose.
 
+Three distinct words with Vietnamese tone-marked spelling can establish Vietnamese
+without stop-word matches. Unknown accented Latin content cannot inherit English
+from metadata alone. A hashtag such as `#SãoPaulo` remains open between Portuguese
+and Vietnamese rather than being mislabeled English; it does not relabel clear
+English prose surrounding it.
+
 The tables are collision registries as well as clue lists. A token listed in
 multiple languages is excluded for every language. `HOMOGRAPHS` excludes known
 cross-language words absent from another compact table, including `um` (German /

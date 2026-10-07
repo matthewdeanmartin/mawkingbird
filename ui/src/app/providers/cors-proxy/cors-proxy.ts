@@ -1,6 +1,7 @@
 import { corsProxyOrigin } from '../../build-flavor';
 import { SupporterStatus } from '../account/supporter-status';
 import { ProxyActivity } from './proxy-activity';
+import { proxyErrorBody, proxyLimitDetails } from './proxy-limit-details';
 import { inject, Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Server } from '../../server';
@@ -114,13 +115,25 @@ export interface ProxiedBatchRequest {
 export class CorsProxy {
   private activity = inject(ProxyActivity);
   private supporter = inject(SupporterStatus);
-  observeResponse(response: Response, url: string): void {
+  async observeResponse(response: Response, url: string): Promise<void> {
     if (
       new URL(url).origin === corsProxyOrigin() &&
-      response.status === 429 &&
+      (response.status === 429 || response.status === 403) &&
       response.headers.get('X-Proxy-Source') === 'proxy'
     ) {
-      this.activity.exhausted(response.headers.get('Retry-After'), !this.supporter.isSupporter());
+      let body: unknown;
+      try {
+        body = await response.clone().json();
+      } catch {
+        body = {};
+      }
+      if (response.status === 429 || proxyErrorBody(body)['code'] === 'free_destination_denied') {
+        this.activity.exhausted(
+          response.headers.get('Retry-After'),
+          !this.supporter.isSupporter(),
+          proxyLimitDetails(body, new URL(url).searchParams.get('route') ?? undefined),
+        );
+      }
     }
   }
 
@@ -144,7 +157,7 @@ export class CorsProxy {
    * target through one would disclose a secret.
    */
   proxyRequest(targetUrl: string, route: CorsProxyRoute = 'feeds'): ProxiedRequest {
-    this.activity.assertAllowed();
+    this.activity.assertAllowed(undefined, false);
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');
@@ -196,7 +209,7 @@ export class CorsProxy {
     route: CorsProxyRoute,
     credentialed: boolean,
   ): ProxiedBatchRequest {
-    this.activity.assertAllowed();
+    this.activity.assertAllowed(undefined, false);
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');
@@ -270,7 +283,7 @@ export class CorsProxy {
         'Refusing to send an API key through a CORS proxy without your explicit consent.',
       );
     }
-    this.activity.assertAllowed();
+    this.activity.assertAllowed(undefined, false);
     const config = this.settings.resolve();
     if (!config) {
       throw new CorsProxyRefusal('No CORS proxy is configured.');

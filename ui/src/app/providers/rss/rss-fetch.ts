@@ -21,6 +21,13 @@ import { CorsProxyUsageStore, toResponse } from '../cors-proxy/cors-proxy-usage'
 import { externalFetch } from '../external-fetch';
 import { FAILURE_COOLDOWN_MS, RssCache } from './rss-cache';
 import { ParsedFeed, parseFeed } from './rss-parser';
+import { proxyErrorBody, QUIET_PROXY_LIMIT } from '../cors-proxy/proxy-limit-details';
+
+export class RssCacheMiss extends Error {
+  constructor() {
+    super('Open RSS to refresh this feed; no saved items are available yet.');
+  }
+}
 
 /**
  * Fetches and parses a feed, going to the network as rarely as it can.
@@ -118,13 +125,18 @@ export class RssFetch {
    */
   fetchFeed(
     url: string,
-    options: { useProxy?: boolean; forceRefresh?: boolean; noCache?: boolean } = {},
+    options: {
+      useProxy?: boolean;
+      forceRefresh?: boolean;
+      noCache?: boolean;
+      cacheOnly?: boolean;
+    } = {},
   ): Observable<ParsedFeed> {
     // `noCache` is for one-off reads of URLs that are not subscriptions — the
     // anonymous provider's `<profile>.rss` fallback, which has its own
     // per-follow deferral and would otherwise fill the cache with entries no
     // feed list ever refers to.
-    if (options.noCache) {
+    if (options.noCache && !options.cacheOnly) {
       return this.buildRequest(url, options);
     }
 
@@ -137,6 +149,9 @@ export class RssFetch {
     return defer(() =>
       from(this.cache.get(url, ttlMs)).pipe(
         switchMap((cached) => {
+          if (options.cacheOnly) {
+            return cached ? of(cached.feed) : throwError(() => new RssCacheMiss());
+          }
           if (cached && !cached.stale) {
             // Logged at most once per feed per session (see `logged`), so a
             // timeline that renders twenty cached items stays quiet.
@@ -360,7 +375,7 @@ export class RssFetch {
       .post<unknown>(request.url, request.body, {
         headers: request.headers,
         observe: 'response',
-        context: externalFetch(),
+        context: externalFetch().set(QUIET_PROXY_LIMIT, true),
       })
       .pipe(
         // The Worker waits for all upstreams before returning the envelope. Give
@@ -451,7 +466,7 @@ export class RssFetch {
         // readable. The body is still the text this parser wants; only the
         // wrapper changes.
         observe: 'response',
-        context: externalFetch(),
+        context: externalFetch().set(QUIET_PROXY_LIMIT, true),
         ...(headers ? { headers } : {}),
       })
       .pipe(
@@ -591,10 +606,13 @@ function describe(err: unknown, viaProxy: boolean): string {
             'one up on Settings → Connections → CORS proxy, then turn it on for this feed.';
     }
     if (viaProxy && (err.status === 401 || err.status === 403)) {
+      if (proxyErrorBody(err.error)['code'] === 'free_destination_denied') {
+        return 'This RSS feed is outside the free proxy domain list and needs Mawkingbird Plus. Your subscription to the feed is saved.';
+      }
       return `The CORS proxy rejected the request (${err.status}). It probably needs an API key, or the key it has is wrong or out of quota.`;
     }
     if (viaProxy && err.status === 429) {
-      return 'The CORS proxy is rate-limiting you. Wait a little, or switch to a proxy you hold a key for.';
+      return 'RSS refresh paused because the proxy request allowance was reached. Your feeds and saved items are still available. Refresh fewer feeds at once, wait for the allowance to reset, or review the proxy settings.';
     }
     return viaProxy
       ? `The CORS proxy answered ${err.status}.`

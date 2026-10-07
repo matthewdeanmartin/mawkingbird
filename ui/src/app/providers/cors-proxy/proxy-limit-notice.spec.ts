@@ -7,13 +7,48 @@ import { PlusBadgeEntitlement, PlusBadgeState } from '../account/plus-badge-enti
 import { PlusCatalogue } from '../account/plus-catalogue';
 import { fakePlusCatalogue } from '../../testing/plus-catalogue';
 import { ProxyActivity, PROXY_PAUSED_KEY, PROXY_PROMPT_KEY } from './proxy-activity';
-import { ProxyLimitNotice } from './proxy-limit-notice';
+import { ProxyAccountSignup, ProxyLimitNotice } from './proxy-limit-notice';
 
 describe('Proxy limit notice', () => {
+  const dialogDescriptors = ['showModal', 'close'].map(
+    (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+  );
+  it('allows account creation while billing is unavailable', async () => {
+    const fixture = TestBed.createComponent(ProxyLimitNotice);
+    const activity = TestBed.inject(ProxyActivity);
+    activity.exhausted('86400', true, {
+      cause: 'caller_allowance',
+      scope: 'all_routes',
+      tier: 'free',
+      identity: 'ip',
+      allowance: 'daily',
+    });
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('dialog')?.open).toBe(true);
+    expect(element.querySelector('dialog a')).toBeNull();
+    element.querySelector<HTMLButtonElement>('dialog button')!.click();
+    fixture.detectChanges();
+    const input = element.querySelector<HTMLInputElement>('input')!;
+    input.value = 'reader@example.org';
+    element.querySelector('form')!.dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve();
+    fixture.detectChanges();
+    expect(TestBed.inject(ProxyAccountSignup).send).toHaveBeenCalledWith('reader@example.org');
+    expect(fixture.componentInstance.signupStatus()).toBe('proxy.limit.linkSent');
+    expect(activity.paused()).toBe(false);
+  });
   const enabled = signal(false);
   const tier = signal<PlusBadgeState>('free');
   const check = vi.fn().mockResolvedValue(undefined);
   beforeEach(() => {
+    for (const [name] of dialogDescriptors)
+      Object.defineProperty(HTMLDialogElement.prototype, name, {
+        configurable: true,
+        value(this: HTMLDialogElement) {
+          this.open = name === 'showModal';
+        },
+      });
     vi.useFakeTimers();
     sessionStorage.removeItem(PROXY_PROMPT_KEY);
     localStorage.removeItem(PROXY_PAUSED_KEY);
@@ -26,6 +61,7 @@ describe('Proxy limit notice', () => {
         { provide: FeatureFlags, useValue: { enabled: () => enabled() } },
         { provide: PlusBadgeEntitlement, useValue: { state: tier, check } },
         { provide: PlusCatalogue, useValue: fakePlusCatalogue() },
+        { provide: ProxyAccountSignup, useValue: { send: vi.fn().mockResolvedValue(true) } },
       ],
     });
   });
@@ -34,6 +70,10 @@ describe('Proxy limit notice', () => {
     vi.useRealTimers();
     sessionStorage.removeItem(PROXY_PROMPT_KEY);
     localStorage.removeItem(PROXY_PAUSED_KEY);
+    for (const [name, descriptor] of dialogDescriptors) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
   });
   function render() {
     const fixture = TestBed.createComponent(ProxyLimitNotice);
@@ -46,7 +86,7 @@ describe('Proxy limit notice', () => {
     const { fixture, activity, element } = render();
     expect(element.querySelector('.toast')).not.toBeNull();
     expect(element.querySelector('a')).toBeNull();
-    expect(element.querySelector('dialog')).toBeNull();
+    expect(element.querySelector('dialog')?.open).toBe(false);
     expect(check).not.toHaveBeenCalled();
     expect(sessionStorage.getItem(PROXY_PROMPT_KEY)).toBeNull();
     element.querySelector('button')!.click();
@@ -63,7 +103,7 @@ describe('Proxy limit notice', () => {
     expect(element.querySelector('.toast')).toBeNull();
     expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/mawkingbird-plus');
     expect(element.querySelector('app-plus-price')).not.toBeNull();
-    expect(element.querySelector('dialog')).toBeNull();
+    expect(element.querySelector('dialog')?.open).toBe(false);
     vi.advanceTimersByTime(10_000);
     fixture.detectChanges();
     expect(element.querySelector('aside')).toBeNull();
@@ -98,5 +138,54 @@ describe('Proxy limit notice', () => {
     fixture.detectChanges();
     expect(element.querySelector('a')).toBeNull();
     expect(element.querySelector('.toast')).not.toBeNull();
+  });
+  it.each(['ip', 'account'] as const)(
+    'opens a daily allowance dialog for %s callers with the appropriate choices',
+    (identity) => {
+      enabled.set(true);
+      const fixture = TestBed.createComponent(ProxyLimitNotice);
+      const activity = TestBed.inject(ProxyActivity);
+      activity.exhausted('86400', true, {
+        cause: 'caller_allowance',
+        scope: 'all_routes',
+        tier: 'free',
+        identity,
+        allowance: 'daily',
+      });
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.querySelector('dialog')?.open).toBe(true);
+      expect(element.querySelectorAll('dialog a')).toHaveLength(1);
+      expect(element.querySelector('aside')).toBeNull();
+      const buttons = element.querySelectorAll<HTMLButtonElement>('dialog button');
+      buttons[identity === 'ip' ? 1 : 0]!.click();
+      fixture.detectChanges();
+      expect(activity.paused()).toBe(true);
+      expect(localStorage.getItem(PROXY_PAUSED_KEY)).toBe('true');
+      expect(element.querySelector('dialog')?.open).toBe(false);
+      expect(() => activity.assertAllowed()).toThrow('disabled');
+    },
+  );
+  it('opens the destination dialog without blocking requests to free domains', () => {
+    enabled.set(true);
+    const fixture = TestBed.createComponent(ProxyLimitNotice);
+    const activity = TestBed.inject(ProxyActivity);
+    activity.exhausted(null, true, {
+      cause: 'destination_policy',
+      scope: 'route',
+      route: 'feeds',
+      tier: 'free',
+      identity: 'ip',
+    });
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('dialog')?.open).toBe(true);
+    expect(() => activity.assertAllowed('feeds')).not.toThrow();
+    activity.dismissNotice();
+    fixture.detectChanges();
+    expect(element.querySelector('dialog')?.open).toBe(false);
+    activity.exhausted('60', true, { cause: 'destination_policy', scope: 'route', route: 'feeds' });
+    fixture.detectChanges();
+    expect(element.querySelector('dialog')?.open).toBe(false);
   });
 });

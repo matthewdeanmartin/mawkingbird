@@ -846,7 +846,14 @@ function latinLanguage(text: string): LangCode | null {
     const other = ranked
       .filter(([candidate]) => candidate !== lang)
       .reduce((sum, [, set]) => sum + set.size, 0);
-    if (other === 0 && ((unique.size <= 2 && count >= 1) || (hits >= 2 && count >= 1))) return lang;
+    if (
+      other === 0 &&
+      ((unique.size <= 2 && count >= 1) ||
+        (hits >= 2 && count >= 1) ||
+        // Several independent Vietnamese tone-marked words establish prose without stop words.
+        (lang === 'vi' && count >= 3))
+    )
+      return lang;
   }
   return null;
 }
@@ -935,7 +942,12 @@ function detectPlainLanguage(text: string, metaHint?: string | null): LangShare[
     }
     for (const [script, count] of scripts) add(refineScript(script, line, meta), count);
     if (latinCount) {
-      add(latinLanguage(latin) ?? (!scripts.size ? meta : null) ?? 'und', latinCount);
+      // Metadata cannot certify accented Latin text as English when text clues abstain.
+      const englishHintConflicts = meta === 'en' && /[^a-z]/i.test(latin.replace(/[^\p{L}]/gu, ''));
+      add(
+        latinLanguage(latin) ?? (!scripts.size && !englishHintConflicts ? meta : null) ?? 'und',
+        latinCount,
+      );
     }
   }
   const total = [...totals.values()].reduce((a, b) => a + b, 0);
@@ -1098,6 +1110,7 @@ const SCRIPT_NAMES: Partial<Record<LangCode, string>> = {
 
 /** Shared spelling is a narrowing hint, never sufficient proof about whole prose. */
 const SHARED_SPELLINGS: { re: RegExp; candidates: LangCode[] }[] = [
+  { re: /[ãõ]/i, candidates: ['pt', 'vi'] },
   { re: /ä/i, candidates: ['de', 'sv', 'fi', 'is'] },
   { re: /ö/i, candidates: ['de', 'sv', 'fi', 'tr', 'is'] },
   { re: /ü/i, candidates: ['de', 'tr', 'es', 'fr', 'ca', 'pt'] },

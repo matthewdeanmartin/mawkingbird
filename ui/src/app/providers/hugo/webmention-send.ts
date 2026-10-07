@@ -2,6 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { PageDiagnostics } from '../../page-diagnostics';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
 import { resolveEndpoint } from './webmention-discovery';
+import { PLUS_TOKEN_HEADER, PlusTokenSource } from '../account/plus-token.interceptor';
+import { corsProxyOrigin } from '../../build-flavor';
 
 /**
  * Telling the other site that you linked to it.
@@ -51,6 +53,19 @@ export interface DeliveryResult {
 export class WebmentionSend {
   private readonly proxy = inject(CorsProxy);
   private readonly diagnostics = inject(PageDiagnostics);
+  private readonly tokens = inject(PlusTokenSource);
+
+  private async proxyHeaders(proxied: {
+    url: string;
+    headers: unknown;
+  }): Promise<Record<string, string>> {
+    const headers = toHeaderRecord(proxied.headers);
+    if (new URL(proxied.url).origin === corsProxyOrigin()) {
+      const token = await this.tokens.token();
+      if (token) headers[PLUS_TOKEN_HEADER] = token;
+    }
+    return headers;
+  }
 
   /**
    * Per-batch endpoint memo.
@@ -116,9 +131,9 @@ export class WebmentionSend {
     // `unsupported` rather than swallowing.
     const proxied = this.proxy.proxyRequest(targetUrl, 'webmention-discover');
     const response = await fetch(proxied.url, {
-      headers: toHeaderRecord(proxied.headers),
+      headers: await this.proxyHeaders(proxied),
     });
-    this.proxy.observeResponse(response, proxied.url);
+    await this.proxy.observeResponse(response, proxied.url);
     if (!response.ok) {
       this.diagnostics.warn('POSSE', 'webmention:unreadable', {
         target: targetUrl,
@@ -167,12 +182,12 @@ export class WebmentionSend {
       response = await fetch(proxied.url, {
         method: 'POST',
         headers: {
-          ...toHeaderRecord(proxied.headers),
+          ...(await this.proxyHeaders(proxied)),
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: body.toString(),
       });
-      this.proxy.observeResponse(response, proxied.url);
+      await this.proxy.observeResponse(response, proxied.url);
     } catch {
       // A proxy that will not forward a POST at all — AllOrigins, for one — is
       // a configuration limit, not the target refusing. Reporting it as
