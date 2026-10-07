@@ -37,6 +37,7 @@ import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
 import { ProviderRegistry } from '../../providers/provider-registry';
 import { FeedProvider } from '../../providers/provider';
 import { HomeTimelineFeed } from '../../home-timeline-feed';
+import { LocalPostStore } from '../../eliza/local-post-store';
 
 /** Exposes Home's protected signals for white-box testing. */
 interface HomeInternals {
@@ -724,6 +725,85 @@ describe('Home', () => {
     expect(ids.filter((id) => id === '19')).toHaveLength(1);
     expect(ids.at(-1)).not.toBe('19');
   });
+
+  it.each([
+    { created_at: '2020-01-01T00:00:00Z', local: false },
+    { created_at: '1970-01-01T00:00:00Z', local: false },
+    { created_at: 'not-a-date', local: false },
+    { created_at: '2020-01-01T00:00:00Z', local: true },
+    { created_at: '2020-01-01T00:00:00Z', local: true, localDate: '2019-01-01T00:00:00Z' },
+  ])(
+    'appends Load more below the existing last row with timestamp $created_at and local posts $local ($localDate)',
+    ({ created_at, local, localDate }) => {
+      const tail = { ...makeStatus('rss-tail'), provider: 'rss' as const, created_at };
+      const rss: FeedProvider = {
+        id: 'rss',
+        label: 'RSS',
+        badge: 'RSS',
+        linked: signal(true),
+        errors: signal<string[]>([]),
+        reset: vi.fn(),
+        fetchPage: vi
+          .fn()
+          .mockReturnValueOnce(of([tail]))
+          .mockReturnValue(of([])),
+      };
+      vi.spyOn(TestBed.inject(ProviderRegistry), 'linked').mockReturnValue([rss]);
+      if (local) {
+        vi.spyOn(TestBed.inject(LocalPostStore), 'posts').mockReturnValue([
+          { ...makeStatus('local:practice'), created_at: localDate ?? '2026-02-01T00:00:00Z' },
+        ]);
+      }
+      const fixture = TestBed.createComponent(Home);
+      fixture.detectChanges();
+      httpMock.expectOne('/api/v1/announcements').flush([]);
+      flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20));
+      fixture.detectChanges();
+      const held = internals(fixture)
+        .statuses()
+        .map((s) => s.id);
+      expect(held.at(-1)).toBe('rss-tail');
+      const heldVisible = internals(fixture)
+        .visible()
+        .map((s) => s.id);
+      const tailIndex = heldVisible.length - 1;
+      const tailRow = fixture.nativeElement.querySelectorAll('app-status-card')[tailIndex];
+      for (let round = 1; round <= 2; round++) {
+        internals(fixture).loadMore();
+        if (round === 1) httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
+        const more = page(20, round * 20).map((s) => ({
+          ...s,
+          created_at: '2025-12-31T00:00:00Z',
+        }));
+        flushHomePage(
+          httpMock.expectOne((r) => r.url === '/api/v1/timelines/home'),
+          more,
+        );
+        fixture.detectChanges();
+        const ids = internals(fixture)
+          .statuses()
+          .map((s) => s.id);
+        expect(ids.slice(0, held.length)).toEqual(held);
+        expect(ids.at(-1)).toBe(more.at(-1)!.id);
+        expect(
+          internals(fixture)
+            .visible()
+            .map((s) => s.id)
+            .slice(0, heldVisible.length),
+        ).toEqual(heldVisible);
+        expect(fixture.nativeElement.querySelectorAll('app-status-card')[tailIndex]).toBe(tailRow);
+        expect(new Set(ids).size).toBe(ids.length);
+        expect(diagnostics.info).toHaveBeenCalledWith(
+          'feed:merge',
+          expect.objectContaining({
+            placement: 'older',
+            appendedBelowPreviousTail: 20,
+            previousTailStillLast: false,
+          }),
+        );
+      }
+    },
+  );
 
   it('does not apply Anonymous canonical deduplication to authenticated Home', () => {
     const firstBoost = makeStatus('boost-1');

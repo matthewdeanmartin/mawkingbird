@@ -17,7 +17,7 @@ import { Auth } from '../../auth';
 import { Drafts, draftHasContent } from '../../drafts';
 import { ClientPrefs, FEED_MAX_COOLDOWN_MS, HomeWindow } from '../../client-prefs';
 import { Status } from '../../models';
-import { byNewestFirst } from '../../status-sort';
+import { byNewestFirst, statusTime } from '../../status-sort';
 import { CalmVerdicts } from '../../calm-verdicts';
 import { BookmarkPresence } from '../../bookmark-presence';
 import { FeedLanguageFilter } from '../../trend-language-filter';
@@ -375,6 +375,7 @@ export class Home implements OnInit, OnDestroy {
   protected readonly hasWritePage = computed(() => this.flags.enabled('write'));
 
   protected statuses = signal<Status[]>([]);
+  private syntheticAnchors = new Map<string, { kind: 'before' | 'after'; key: string }>();
   protected loading = signal(true);
   protected live = signal(false);
   /** Home timeline presentation filters, matching the profile-feed controls. */
@@ -445,8 +446,45 @@ export class Home implements OnInit, OnDestroy {
     // Drop any real feed item colliding with an injected synthetic id.
     const injectedIds = new Set(injected.map((s) => s.id));
     const base = feed.filter((s) => !injectedIds.has(s.id) && !isElizaId(s.id));
-    return this.applyTimelineFilters([...injected, ...base].sort(byNewestFirst));
+    // Insert practice posts without re-sorting the loaded pages. A global sort
+    // here would undo Load more's stable append policy whenever Eliza or a
+    // local post is present, stranding an archival source at the bottom again.
+    return this.applyTimelineFilters(this.insertSynthetic(base, injected));
   });
+
+  /** Keep a practice post's place between held rows when another page appends. */
+  private insertSynthetic(base: Status[], injected: Status[]): Status[] {
+    const ordered = injected.sort(byNewestFirst);
+    if (!base.length) return ordered;
+    const key = (s: Status) => `${s.provider ?? 'mastodon'}:${s.id}`;
+    const baseKeys = new Set(base.map(key));
+    const activeIds = new Set(ordered.map((s) => s.id));
+    for (const id of this.syntheticAnchors.keys()) {
+      if (!activeIds.has(id)) this.syntheticAnchors.delete(id);
+    }
+    const before = new Map<string, Status[]>();
+    const after = new Map<string, Status[]>();
+    for (const post of ordered) {
+      let anchor = this.syntheticAnchors.get(post.id);
+      if (!anchor || !baseKeys.has(anchor.key)) {
+        const next =
+          statusTime(post) === null ? base[0] : base.find((s) => byNewestFirst(post, s) < 0);
+        anchor = next
+          ? { kind: 'before', key: key(next) }
+          : { kind: 'after', key: key(base[base.length - 1]) };
+        if (!this.loading()) this.syntheticAnchors.set(post.id, anchor);
+      }
+      const buckets = anchor.kind === 'before' ? before : after;
+      const bucket = buckets.get(anchor.key) ?? [];
+      bucket.push(post);
+      buckets.set(anchor.key, bucket);
+    }
+    return base.flatMap((post) => [
+      ...(before.get(key(post)) ?? []),
+      post,
+      ...(after.get(key(post)) ?? []),
+    ]);
+  }
 
   /** Which view the command bar's Members/Analytics toggles have selected. */
   protected view = signal<FeedView>('feed');
@@ -488,7 +526,7 @@ export class Home implements OnInit, OnDestroy {
   /**
    * Home as a feed source. It is the most synthetic feed in the client — a
    * server timeline merged with foreign providers, local practice posts and
-   * Eliza, filtered by the command-bar chips, then re-sorted. No `max_id`
+   * Eliza, filtered by the command-bar chips, with loaded rows kept in place. No `max_id`
    * reproduces that, so Members and Analytics work off exactly what's on
    * screen: {@link visible}. "Load more" widens them for free.
    */
@@ -907,6 +945,7 @@ export class Home implements OnInit, OnDestroy {
     this.pageSub?.unsubscribe();
     this.autoLoading.set(false);
     this.loading.set(true);
+    this.syntheticAnchors.clear();
     // A real reload is the one moment Calm should re-judge: a post whose ratio
     // genuinely moved gets recategorised here, and nowhere else. Language
     // detection is cached for the same reason and cleared at the same moment —
@@ -1070,7 +1109,7 @@ export class Home implements OnInit, OnDestroy {
       complete: () => {
         if (sourceKey !== this.anonymousSourceKey()) return;
         // Everything's in: sort newest-first once, cache, and top up to the min.
-        this.statuses.update((list) => this.dedupeAnonymous(list));
+        this.statuses.update((list) => this.dedupeAnonymous([...list].sort(byNewestFirst)));
         this.finishRefresh();
         this.publishMastodon(this.statuses());
         this.cacheAnonymousHome();
@@ -1247,20 +1286,23 @@ export class Home implements OnInit, OnDestroy {
    *
    * A setting called "maximum feed size" should be a property of the feed, not a
    * hint to the loader, so the trim happens here where the feed is assembled.
-   * Posts are sorted newest-first before the cut, so what survives is the newest
-   * — and the tail that gets dropped is what the reader was least likely to reach.
+   * Each loading round is newest-first, but older rounds append without moving
+   * the held rows. Different sources cover different dates: globally sorting
+   * every round strands an archival post below all later pages. Live and local
+   * arrivals prepend; the size bound still applies to every insertion.
    */
   private mergeStatuses(more: Status[], placement: 'newer' | 'older' = 'older'): void {
     const before = this.statuses().length;
+    const previousTail = this.visible().at(-1);
     this.statuses.update((statuses) => {
-      // Stable sorting makes placement meaningful for statuses with equal or
-      // unreadable timestamps: live/local arrivals go before the held feed,
-      // while an older page stays after it. All three insertion paths still
-      // share the exact same identity, ordering, and size rules below.
-      const candidates = placement === 'newer' ? [...more, ...statuses] : [...statuses, ...more];
+      // Sort only incoming items. The held feed is the reader's position, not
+      // a candidate pool to be re-dealt each time a source supplies more posts.
+      const incoming = [...more].sort(byNewestFirst);
+      const candidates =
+        placement === 'newer' ? [...incoming, ...statuses] : [...statuses, ...incoming];
       const merged = this.auth.isAnonymous
         ? this.dedupeAnonymous(candidates)
-        : this.dedupeExact(candidates).sort(byNewestFirst);
+        : this.dedupeExact(candidates);
       const max = this.prefs.feedMax();
       if (merged.length <= max) {
         return merged;
@@ -1273,12 +1315,14 @@ export class Home implements OnInit, OnDestroy {
       return merged.slice(0, max);
     });
     this.noteMaximum();
+    const visible = this.visible();
+    const previousTailIndex = previousTail ? visible.indexOf(previousTail) : -1;
     this.diagnostics.info('feed:merge', {
       received: more.length,
       before,
       stored: this.statuses().length,
       added: this.statuses().length - before,
-      visible: this.visible().length,
+      visible: visible.length,
       hiddenByFilters: this.hiddenByFilters(),
       hiddenByCalm: this.hiddenByCalm(),
       hiddenByLanguage: this.hiddenByLanguage(),
@@ -1286,6 +1330,11 @@ export class Home implements OnInit, OnDestroy {
       capActive: this.capActive(),
       hasMore: this.feedHasMore(),
       sources: this.aggregator.sourceStates(),
+      placement,
+      previousTailIndex,
+      appendedBelowPreviousTail:
+        previousTailIndex < 0 ? null : visible.length - previousTailIndex - 1,
+      previousTailStillLast: previousTailIndex >= 0 && previousTailIndex === visible.length - 1,
     });
   }
 
@@ -1330,9 +1379,8 @@ export class Home implements OnInit, OnDestroy {
 
   /** Collapse duplicate public posts acquired through different Anonymous read routes. */
   private dedupeAnonymous(statuses: Status[]): Status[] {
-    const newestFirst = statuses.sort(byNewestFirst);
     const seen = new Set<string>();
-    return newestFirst.filter((status) => {
+    return statuses.filter((status) => {
       const key = canonicalStatusKey(status);
       if (seen.has(key)) return false;
       seen.add(key);
