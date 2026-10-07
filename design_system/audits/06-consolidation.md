@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Home diagnostics and maintenance reconciliation, 2026-10-07
+
+Regenerated the control inventory after Home stopping-state and retry controls,
+Feed Doctor provenance, and the recent compose, RSS, proxy-notice, footer and
+shell changes. It scans 1,090 maintained source files with 218 candidate files.
+Home keeps its existing controls and migration disposition; this refresh does
+not claim additional shared-widget adoption. Removed only the reconciliation
+entries for the deleted anonymous settings and starter-kit-post templates from
+the dead-code cleanup. All remaining candidate files retain their dispositions.
+
 ## Public SEO pages and footer follow-up
 
 The feature-reference navigation now resolves fragments against its own pathname

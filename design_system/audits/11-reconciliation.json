@@ -633,11 +633,6 @@
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
-      "file": "ui/src/app/pages/settings/anonymous/settings-anonymous.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
-    },
-    {
       "file": "ui/src/app/pages/settings/appearance/settings-appearance.html",
       "disposition": "backlog",
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
@@ -1041,11 +1036,6 @@
       "file": "ui/src/app/sign-in-prompt/sign-in-prompt.html",
       "disposition": "adopted scope",
       "nextStep": "Sprint 12 adopts modal shell and all three footer actions, including native anchor appearances. Account exits and native destinations are unchanged."
-    },
-    {
-      "file": "ui/src/app/starter-kit-post/starter-kit-post.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/status-card/status-card.html",
