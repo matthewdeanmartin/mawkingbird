@@ -1,0 +1,1 @@
+function e(t){if(typeof t!="string")return null;let n=t.trim().replace(/^#/,"").normalize("NFKC");return/^[\p{L}\p{M}\p{N}_]{1,100}$/u.test(n)?n:null}function a(t){let n=t.reblog??t,r=new Map;for(let o of n.tags??[]){let s=e(o.name);s&&r.set(s.toLocaleLowerCase(),s)}return[...r.values()]}export{e as a,a as b};
