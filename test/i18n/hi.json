@@ -2632,7 +2632,6 @@
     "write.emptyPublishesNow": "अभी Mastodon पर प्रकाशित करने के लिए इसे खाली छोड़ें।",
     "write.exactPromptLabel": "भेजा जाने वाला सटीक प्रॉम्प्ट:",
     "write.finding.caps": "लगातार कई शब्द बड़े अक्षरों में हैं।",
-    "write.finding.longLinks": "कुछ लिंक इतने लंबे हैं कि अस्त-व्यस्त लगते हैं। लागत समान रहती है — छोटा करना केवल रूप बदलता है।",
     "write.finding.missingAlt": "जुड़ी तस्वीर का वर्णन नहीं है।",
     "write.finding.overLimit.one": "एक पोस्ट लंबाई सीमा से अधिक है और अस्वीकार होगी।",
     "write.finding.overLimit.other": "{{count}} पोस्ट लंबाई सीमा से अधिक हैं और अस्वीकार होंगी।",

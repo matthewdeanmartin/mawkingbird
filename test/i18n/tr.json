@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Şimdi Mastodon'da yayınlamak için bunu boş bırakın.",
     "write.exactPromptLabel": "Gönderilecek tam istem:",
     "write.finding.caps": "Bir sözcük dizisi büyük harflerle yazılmış.",
-    "write.finding.longLinks": "Bazı bağlantılar dağınık görünecek kadar uzun. Her iki durumda da aynı sayılırlar; kısaltma yalnızca görseldir.",
     "write.finding.missingAlt": "Ekli bir görselin açıklaması yok.",
     "write.finding.overLimit.one": "Bir gönderi uzunluk sınırını aşıyor ve reddedilecek.",
     "write.finding.overLimit.other": "{{count}} gönderi uzunluk sınırını aşıyor ve reddedilecek.",

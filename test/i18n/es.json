@@ -2632,7 +2632,6 @@
     "write.emptyPublishesNow": "Déjalo vacío para publicar ahora en Mastodon.",
     "write.exactPromptLabel": "Texto exacto que se enviará:",
     "write.finding.caps": "Hay una secuencia de palabras en mayúsculas.",
-    "write.finding.longLinks": "Algunos enlaces son tan largos que se ven desordenados. Su coste es el mismo en cualquier caso; acortarlos es solo una cuestión estética.",
     "write.finding.missingAlt": "Una imagen adjunta no tiene descripción.",
     "write.finding.overLimit.one": "Una publicación supera el límite de longitud y será rechazada.",
     "write.finding.overLimit.other": "{{count}} publicaciones superan el límite de longitud y serán rechazadas.",

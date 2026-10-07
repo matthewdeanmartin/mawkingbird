@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Lascia vuoto per pubblicare subito su Mastodon.",
     "write.exactPromptLabel": "Prompt esatto che verrà inviato:",
     "write.finding.caps": "Una sequenza di parole è in maiuscolo.",
-    "write.finding.longLinks": "Alcuni link sono così lunghi da risultare disordinati. Il costo in caratteri non cambia: abbreviarlo è solo una modifica estetica.",
     "write.finding.missingAlt": "Un'immagine allegata non ha una descrizione.",
     "write.finding.overLimit.one": "Un post supera il limite di lunghezza e verrà rifiutato.",
     "write.finding.overLimit.other": "{{count}} post superano il limite di lunghezza e verranno rifiutati.",

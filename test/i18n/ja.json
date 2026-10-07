@@ -2847,7 +2847,6 @@
     "write.emptyPublishesNow": "空欄のままにするとMastodonへ今すぐ投稿します。",
     "write.exactPromptLabel": "送信する正確なプロンプト：",
     "write.finding.caps": "大文字が連続している箇所があります。",
-    "write.finding.longLinks": "リンクが長く、見た目が乱れている可能性があります。長さによるコストは同じで、短縮は見た目だけの変更です。",
     "write.finding.missingAlt": "添付画像に説明がありません。",
     "write.finding.overLimit.one": "投稿が文字数制限を超えているため拒否されます。",
     "write.finding.overLimit.other": "{{count}}件の投稿が文字数制限を超えているため拒否されます。",

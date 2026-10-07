@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Để trống để đăng lên Mastodon ngay.",
     "write.exactPromptLabel": "Lời nhắc chính xác sẽ được gửi:",
     "write.finding.caps": "Có một chuỗi từ được viết hoa.",
-    "write.finding.longLinks": "Một số liên kết dài trông thiếu gọn gàng. Độ dài tính như nhau — rút gọn chỉ thay đổi hình thức.",
     "write.finding.missingAlt": "Một ảnh đính kèm chưa có mô tả.",
     "write.finding.overLimit.one": "Một bài đăng vượt giới hạn độ dài và sẽ bị từ chối.",
     "write.finding.overLimit.other": "{{count}} bài đăng vượt giới hạn độ dài và sẽ bị từ chối.",

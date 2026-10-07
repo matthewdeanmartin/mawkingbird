@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Pozostaw puste, aby opublikować teraz na Mastodonie.",
     "write.exactPromptLabel": "Dokładny prompt, który zostanie wysłany:",
     "write.finding.caps": "Ciąg słów zapisano wielkimi literami.",
-    "write.finding.longLinks": "Niektóre linki są na tyle długie, że wyglądają nieporządnie. Liczą się tak samo — skracanie jest tylko kosmetyczne.",
     "write.finding.missingAlt": "Dołączony obraz nie ma opisu.",
     "write.finding.overLimit.one": "Jeden wpis przekracza limit długości i zostanie odrzucony.",
     "write.finding.overLimit.other": "{{count}} wpisów przekracza limit długości i zostanie odrzuconych.",

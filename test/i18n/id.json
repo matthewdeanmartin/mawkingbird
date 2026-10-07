@@ -2233,7 +2233,6 @@
     "write.emptyPublishesNow": "Biarkan ini kosong untuk memublikasikan ke Mastodon sekarang.",
     "write.exactPromptLabel": "Prompt persis yang akan dikirim:",
     "write.finding.caps": "Ada rangkaian kata dalam huruf kapital.",
-    "write.finding.longLinks": "Beberapa tautan cukup panjang sehingga terlihat berantakan. Biayanya sama saja — memperpendek hanya soal tampilan.",
     "write.finding.missingAlt": "Ada gambar terlampir tanpa deskripsi.",
     "write.finding.overLimit.one": "Satu postingan melebihi batas panjang dan akan ditolak.",
     "write.finding.overLimit.other": "{{count}} postingan melebihi batas panjang dan akan ditolak.",
