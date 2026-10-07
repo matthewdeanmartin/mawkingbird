@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "지금 Mastodon에 게시하려면 비워 두세요.",
     "write.exactPromptLabel": "전송할 정확한 프롬프트:",
     "write.finding.caps": "연속된 단어가 대문자입니다.",
-    "write.finding.longLinks": "일부 링크가 길어 지저분해 보입니다. 어느 쪽이든 동일하게 계산되므로 줄이기는 외관상의 문제입니다.",
     "write.finding.missingAlt": "첨부된 이미지에 설명이 없습니다.",
     "write.finding.overLimit.one": "게시물 하나가 글자 수 제한을 초과하여 거부됩니다.",
     "write.finding.overLimit.other": "게시물 {{count}}개가 글자 수 제한을 초과하여 거부됩니다.",

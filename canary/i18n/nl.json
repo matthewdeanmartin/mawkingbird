@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Laat dit leeg om nu op Mastodon te publiceren.",
     "write.exactPromptLabel": "Exacte prompt die wordt verzonden:",
     "write.finding.caps": "Een reeks woorden staat in hoofdletters.",
-    "write.finding.longLinks": "Sommige links zijn zo lang dat ze er rommelig uitzien. Ze tellen hoe dan ook hetzelfde — inkorten is alleen cosmetisch.",
     "write.finding.missingAlt": "Een bijgevoegde afbeelding heeft geen beschrijving.",
     "write.finding.overLimit.one": "Eén bericht is langer dan toegestaan en wordt geweigerd.",
     "write.finding.overLimit.other": "{{count}} berichten zijn langer dan toegestaan en worden geweigerd.",

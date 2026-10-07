@@ -2541,7 +2541,6 @@
     "write.emptyPublishesNow": "Laisse ceci vide pour publier sur Mastodon maintenant.",
     "write.exactPromptLabel": "Prompt exact qui sera envoyé :",
     "write.finding.caps": "Une suite de mots est en majuscules.",
-    "write.finding.longLinks": "Certains liens sont assez longs pour paraître peu soignés. Ils coûtent le même nombre de caractères dans tous les cas — les raccourcir est purement esthétique.",
     "write.finding.missingAlt": "Une image jointe n’a pas de description.",
     "write.finding.overLimit.one": "Un message dépasse la limite de longueur et sera refusé.",
     "write.finding.overLimit.other": "{{count}} messages dépassent la limite de longueur et seront refusés.",

@@ -2075,7 +2075,6 @@
     "write.emptyPublishesNow": "Lämna tomt för att publicera på Mastodon nu.",
     "write.exactPromptLabel": "Exakt instruktion som skickas:",
     "write.finding.caps": "En följd av ord är skriven med versaler.",
-    "write.finding.longLinks": "Vissa länkar är så långa att de ser stökiga ut. De kostar lika mycket oavsett – förkortningen är bara kosmetisk.",
     "write.finding.missingAlt": "En bifogad bild saknar beskrivning.",
     "write.finding.overLimit.one": "Ett inlägg överskrider längdgränsen och kommer att nekas.",
     "write.finding.overLimit.other": "{{count}} inlägg överskrider längdgränsen och kommer att nekas.",
