@@ -71,10 +71,8 @@
     "anonymous.age.years1": "1 年",
     "anonymous.age.years2": "2 年",
     "anonymous.age.years5": "5 年",
-    "anonymous.intro": "控制瀏覽器本機的匿名首頁動態消息如何組成。",
     "anonymous.maxAge": "跟隨帳號嘟文的最長期限",
     "anonymous.maxAge.hint": "匿名首頁組成動態消息時會排除較舊的嘟文。跟隨的主題標籤不受影響。",
-    "anonymous.title": "匿名",
     "appearance.animations": "動畫",
     "appearance.contentWarnings": "內容警告",
     "appearance.disableSwiping": "停用滑動動作",
@@ -3986,7 +3984,6 @@
     "write.emptyPublishesNow": "留空即可立即發佈至 Mastodon。",
     "write.exactPromptLabel": "即將傳送的完整提示：",
     "write.finding.caps": "有一串字詞使用了大寫。",
-    "write.finding.longLinks": "有些連結太長，看起來不整齊。無論如何都會佔用相同空間——縮短只是外觀上的調整。",
     "write.finding.missingAlt": "附加的圖片沒有描述。",
     "write.finding.overLimit.one": "有一則貼文超過長度限制，將被拒絕。",
     "write.finding.overLimit.other": "有 {{count}} 則貼文超過長度限制，將被拒絕。",
@@ -5752,17 +5749,6 @@
     "notFound": "找不到",
     "opening": "開啟中…",
     "unavailable": "此推薦跟隨名單已無法使用。瀏覽目前名單以尋找可跟隨的使用者。"
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} 個帳號",
-    "account.other": "{{count}} 個帳號",
-    "accountsAria": "{{title}} 中的所有帳號",
-    "followAll": "跟隨全部",
-    "followed": "已跟隨 {{followed}} 個／共 {{total}} 個",
-    "following": "跟隨中… {{completed}}/{{total}}",
-    "openAccount": "在應用程式中開啟 {{name}}",
-    "openOriginal": "在 {{host}} 開啟原始內容 ↗",
-    "viewCollection": "檢視名單"
   },
   "statusCard": {
     "actionFailure": "無法{{verb}}——請再試一次。",

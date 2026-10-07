@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Deixe vazio para publicar agora no Mastodon.",
     "write.exactPromptLabel": "Prompt exato que será enviado:",
     "write.finding.caps": "Uma sequência de palavras está em maiúsculas.",
-    "write.finding.longLinks": "Alguns links são longos e parecem desorganizados. Eles ocupam o mesmo espaço de qualquer forma — encurtá-los é apenas estético.",
     "write.finding.missingAlt": "Uma imagem anexada não tem descrição.",
     "write.finding.overLimit.one": "Uma publicação excede o limite de tamanho e será recusada.",
     "write.finding.overLimit.other": "{{count}} publicações excedem o limite de tamanho e serão recusadas.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 ano",
     "anonymous.age.years2": "2 anos",
     "anonymous.age.years5": "5 anos",
-    "anonymous.intro": "Controle como o feed inicial anônimo local do navegador é montado.",
     "anonymous.maxAge": "Idade máxima das publicações de contas seguidas",
     "anonymous.maxAge.hint": "Publicações mais antigas são omitidas quando o modo Anônimo monta o feed inicial. Publicações de hashtags seguidas não são afetadas.",
-    "anonymous.title": "Anônimo",
     "appearance.animations": "Animações",
     "appearance.contentWarnings": "Avisos de conteúdo",
     "appearance.disableSwiping": "Desativar gestos de deslizar",
@@ -5752,17 +5749,6 @@
     "notFound": "Não encontrado",
     "opening": "Abrindo…",
     "unavailable": "Este kit inicial não está mais disponível. Explore os kits atuais para encontrar pessoas para seguir."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} conta",
-    "account.other": "{{count}} contas",
-    "accountsAria": "Todas as contas em {{title}}",
-    "followAll": "Seguir todos",
-    "followed": "{{followed}} de {{total}} seguidos",
-    "following": "Seguindo… {{completed}}/{{total}}",
-    "openAccount": "Abrir {{name}} no aplicativo",
-    "openOriginal": "Abrir original em {{host}} ↗",
-    "viewCollection": "Ver coleção"
   },
   "statusCard": {
     "actionFailure": "Não foi possível {{verb}} — tente novamente.",

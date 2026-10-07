@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Để trống để đăng lên Mastodon ngay.",
     "write.exactPromptLabel": "Lời nhắc chính xác sẽ được gửi:",
     "write.finding.caps": "Có một chuỗi từ được viết hoa.",
-    "write.finding.longLinks": "Một số liên kết dài trông thiếu gọn gàng. Độ dài tính như nhau — rút gọn chỉ thay đổi hình thức.",
     "write.finding.missingAlt": "Một ảnh đính kèm chưa có mô tả.",
     "write.finding.overLimit.one": "Một bài đăng vượt giới hạn độ dài và sẽ bị từ chối.",
     "write.finding.overLimit.other": "{{count}} bài đăng vượt giới hạn độ dài và sẽ bị từ chối.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 năm",
     "anonymous.age.years2": "2 năm",
     "anonymous.age.years5": "5 năm",
-    "anonymous.intro": "Kiểm soát cách trình duyệt tạo bảng tin Trang chủ Ẩn danh.",
     "anonymous.maxAge": "Tuổi tối đa của bài đăng từ tài khoản đang theo dõi",
     "anonymous.maxAge.hint": "Bài cũ hơn sẽ bị bỏ khi chế độ Ẩn danh tạo Trang chủ. Bài từ hashtag đang theo dõi không bị ảnh hưởng.",
-    "anonymous.title": "Ẩn danh",
     "appearance.animations": "Hoạt ảnh",
     "appearance.contentWarnings": "Cảnh báo nội dung",
     "appearance.disableSwiping": "Tắt thao tác vuốt",
@@ -5720,17 +5717,6 @@
     "notFound": "Không tìm thấy",
     "opening": "Đang mở…",
     "unavailable": "Bộ gợi ý này không còn khả dụng. Hãy duyệt các bộ hiện tại."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} tài khoản",
-    "account.other": "{{count}} tài khoản",
-    "accountsAria": "Mọi tài khoản trong {{title}}",
-    "followAll": "Theo dõi tất cả",
-    "followed": "Đã theo dõi {{followed}}/{{total}}",
-    "following": "Đang theo dõi… {{completed}}/{{total}}",
-    "openAccount": "Mở {{name}} trong ứng dụng",
-    "openOriginal": "Mở bản gốc trên {{host}} ↗",
-    "viewCollection": "Xem bộ sưu tập"
   },
   "statusCard": {
     "actionFailure": "Không thể {{verb}}; hãy thử lại.",

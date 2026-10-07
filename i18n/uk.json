@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Залиште порожнім, щоб негайно опублікувати в Mastodon.",
     "write.exactPromptLabel": "Точний запит, який буде надіслано:",
     "write.finding.caps": "Послідовність слів написана великими літерами.",
-    "write.finding.longLinks": "Деякі посилання досить довгі, щоб виглядати неохайно. Вони все одно займають стільки ж місця — скорочення лише косметичне.",
     "write.finding.missingAlt": "У прикріпленого зображення немає опису.",
     "write.finding.overLimit.one": "Один допис перевищує обмеження довжини, його буде відхилено.",
     "write.finding.overLimit.other": "Дописи: {{count}} — вони перевищують обмеження довжини, їх буде відхилено.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 рік",
     "anonymous.age.years2": "2 роки",
     "anonymous.age.years5": "5 років",
-    "anonymous.intro": "Керуйте складанням домашньої стрічки Anonymous у браузері.",
     "anonymous.maxAge": "Максимальний вік дописів від облікових записів, за якими ви стежите",
     "anonymous.maxAge.hint": "Старіші дописи не додаються, коли Anonymous створює домашню стрічку. Дописів із відстежуваними хештегами це не стосується.",
-    "anonymous.title": "Anonymous",
     "appearance.animations": "Анімації",
     "appearance.contentWarnings": "Попередження про вміст",
     "appearance.disableSwiping": "Вимкнути рухи свайпом",
@@ -5752,17 +5749,6 @@
     "notFound": "Не знайдено",
     "opening": "Відкриття…",
     "unavailable": "Ця добірка для початку більше недоступна. Перегляньте поточні добірки, щоб знайти людей для стеження."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} обліковий запис",
-    "account.other": "{{count}} облікових записів",
-    "accountsAria": "Усі облікові записи в {{title}}",
-    "followAll": "Стежити за всіма",
-    "followed": "Стеження встановлено для {{followed}} із {{total}}",
-    "following": "Стеження… {{completed}}/{{total}}",
-    "openAccount": "Відкрити {{name}} у застосунку",
-    "openOriginal": "Відкрити оригінал на {{host}} ↗",
-    "viewCollection": "Переглянути добірку"
   },
   "statusCard": {
     "actionFailure": "Не вдалося {{verb}} — повторіть спробу.",

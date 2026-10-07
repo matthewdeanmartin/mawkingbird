@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "Şimdi Mastodon'da yayınlamak için bunu boş bırakın.",
     "write.exactPromptLabel": "Gönderilecek tam istem:",
     "write.finding.caps": "Bir sözcük dizisi büyük harflerle yazılmış.",
-    "write.finding.longLinks": "Bazı bağlantılar dağınık görünecek kadar uzun. Her iki durumda da aynı sayılırlar; kısaltma yalnızca görseldir.",
     "write.finding.missingAlt": "Ekli bir görselin açıklaması yok.",
     "write.finding.overLimit.one": "Bir gönderi uzunluk sınırını aşıyor ve reddedilecek.",
     "write.finding.overLimit.other": "{{count}} gönderi uzunluk sınırını aşıyor ve reddedilecek.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 yıl",
     "anonymous.age.years2": "2 yıl",
     "anonymous.age.years5": "5 yıl",
-    "anonymous.intro": "Tarayıcıdaki yerel Anonim ana akışın nasıl oluşturulacağını denetleyin.",
     "anonymous.maxAge": "Takip edilen hesaplardan gelen gönderilerin en fazla yaşı",
     "anonymous.maxAge.hint": "Anonim Ana Sayfa'yı oluştururken eski gönderiler dışarıda bırakılır. Takip edilen etiketlerden gelen gönderiler etkilenmez.",
-    "anonymous.title": "Anonim",
     "appearance.animations": "Animasyonlar",
     "appearance.contentWarnings": "İçerik uyarıları",
     "appearance.disableSwiping": "Kaydırma hareketlerini devre dışı bırak",
@@ -5752,17 +5749,6 @@
     "notFound": "Bulunamadı",
     "opening": "Açılıyor…",
     "unavailable": "Bu başlangıç paketi artık kullanılamıyor. Takip edilecek kişiler bulmak için geçerli paketlere göz atın."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} hesap",
-    "account.other": "{{count}} hesap",
-    "accountsAria": "{{title}} içindeki tüm hesaplar",
-    "followAll": "Tümünü takip et",
-    "followed": "{{total}} hesaptan {{followed}} tanesi takip edildi",
-    "following": "Takip ediliyor… {{completed}}/{{total}}",
-    "openAccount": "{{name}} hesabını uygulamada aç",
-    "openOriginal": "Özgün içeriği {{host}} üzerinde aç ↗",
-    "viewCollection": "Koleksiyonu görüntüle"
   },
   "statusCard": {
     "actionFailure": "{{verb}} işlemi yapılamadı; tekrar deneyin.",

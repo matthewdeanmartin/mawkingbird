@@ -2632,7 +2632,6 @@
     "write.emptyPublishesNow": "Déjalo vacío para publicar ahora en Mastodon.",
     "write.exactPromptLabel": "Texto exacto que se enviará:",
     "write.finding.caps": "Hay una secuencia de palabras en mayúsculas.",
-    "write.finding.longLinks": "Algunos enlaces son tan largos que se ven desordenados. Su coste es el mismo en cualquier caso; acortarlos es solo una cuestión estética.",
     "write.finding.missingAlt": "Una imagen adjunta no tiene descripción.",
     "write.finding.overLimit.one": "Una publicación supera el límite de longitud y será rechazada.",
     "write.finding.overLimit.other": "{{count}} publicaciones superan el límite de longitud y serán rechazadas.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 año",
     "anonymous.age.years2": "2 años",
     "anonymous.age.years5": "5 años",
-    "anonymous.intro": "Controla cómo se compone el feed de inicio anónimo local del navegador.",
     "anonymous.maxAge": "Antigüedad máxima de las publicaciones de cuentas seguidas",
     "anonymous.maxAge.hint": "Las publicaciones más antiguas se omiten cuando Anónimo crea Inicio. No afecta a las publicaciones de hashtags seguidos.",
-    "anonymous.title": "Anónimo",
     "appearance.animations": "Animaciones",
     "appearance.contentWarnings": "Advertencias de contenido",
     "appearance.disableSwiping": "Desactivar gestos de deslizamiento",
@@ -5752,17 +5749,6 @@
     "notFound": "No encontrada",
     "opening": "Abriendo…",
     "unavailable": "Este conjunto inicial ya no está disponible. Explora los actuales para encontrar personas a quienes seguir."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} cuenta",
-    "account.other": "{{count}} cuentas",
-    "accountsAria": "Todas las cuentas de {{title}}",
-    "followAll": "Seguir todas",
-    "followed": "Se siguieron {{followed}} de {{total}}",
-    "following": "Siguiendo… {{completed}}/{{total}}",
-    "openAccount": "Abrir a {{name}} en la aplicación",
-    "openOriginal": "Abrir original en {{host}} ↗",
-    "viewCollection": "Ver colección"
   },
   "statusCard": {
     "actionFailure": "No se pudo {{verb}}; inténtalo de nuevo.",

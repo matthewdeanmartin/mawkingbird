@@ -2075,7 +2075,6 @@
     "write.emptyPublishesNow": "Lämna tomt för att publicera på Mastodon nu.",
     "write.exactPromptLabel": "Exakt instruktion som skickas:",
     "write.finding.caps": "En följd av ord är skriven med versaler.",
-    "write.finding.longLinks": "Vissa länkar är så långa att de ser stökiga ut. De kostar lika mycket oavsett – förkortningen är bara kosmetisk.",
     "write.finding.missingAlt": "En bifogad bild saknar beskrivning.",
     "write.finding.overLimit.one": "Ett inlägg överskrider längdgränsen och kommer att nekas.",
     "write.finding.overLimit.other": "{{count}} inlägg överskrider längdgränsen och kommer att nekas.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1 år",
     "anonymous.age.years2": "2 år",
     "anonymous.age.years5": "5 år",
-    "anonymous.intro": "Styr hur det webbläsarlokala anonyma hemflödet sammanställs.",
     "anonymous.maxAge": "Högsta ålder för inlägg från följda konton",
     "anonymous.maxAge.hint": "Äldre inlägg utelämnas när Anonym bygger Hem. Inlägg från följda hashtaggar påverkas inte.",
-    "anonymous.title": "Anonym",
     "appearance.animations": "Animeringar",
     "appearance.contentWarnings": "Innehållsvarningar",
     "appearance.disableSwiping": "Inaktivera sveprörelser",
@@ -5752,17 +5749,6 @@
     "notFound": "Hittades inte",
     "opening": "Öppnar…",
     "unavailable": "Startpaketet är inte längre tillgängligt. Bläddra bland aktuella paket för att hitta personer att följa."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} konto",
-    "account.other": "{{count}} konton",
-    "accountsAria": "Alla konton i {{title}}",
-    "followAll": "Följ alla",
-    "followed": "Följde {{followed}} av {{total}}",
-    "following": "Följer… {{completed}}/{{total}}",
-    "openAccount": "Öppna {{name}} i appen",
-    "openOriginal": "Öppna originalet på {{host}} ↗",
-    "viewCollection": "Visa samling"
   },
   "statusCard": {
     "actionFailure": "Kunde inte {{verb}} — försök igen.",

@@ -2847,7 +2847,6 @@
     "write.emptyPublishesNow": "空欄のままにするとMastodonへ今すぐ投稿します。",
     "write.exactPromptLabel": "送信する正確なプロンプト：",
     "write.finding.caps": "大文字が連続している箇所があります。",
-    "write.finding.longLinks": "リンクが長く、見た目が乱れている可能性があります。長さによるコストは同じで、短縮は見た目だけの変更です。",
     "write.finding.missingAlt": "添付画像に説明がありません。",
     "write.finding.overLimit.one": "投稿が文字数制限を超えているため拒否されます。",
     "write.finding.overLimit.other": "{{count}}件の投稿が文字数制限を超えているため拒否されます。",
@@ -3159,10 +3158,8 @@
     "anonymous.age.years1": "1年",
     "anonymous.age.years2": "2年",
     "anonymous.age.years5": "5年",
-    "anonymous.intro": "ブラウザー内の匿名ホームフィードの構成を設定します。",
     "anonymous.maxAge": "フォロー中のアカウントから取得する投稿の最長期間",
     "anonymous.maxAge.hint": "匿名でホームを作成するとき、古い投稿は除外されます。フォロー中のハッシュタグの投稿には影響しません。",
-    "anonymous.title": "匿名",
     "appearance.animations": "アニメーション",
     "appearance.contentWarnings": "コンテンツ警告",
     "appearance.disableSwiping": "スワイプの動きを無効化",
@@ -5960,17 +5957,6 @@
     "notFound": "見つかりません",
     "opening": "開いています…",
     "unavailable": "このスターターキットは利用できなくなりました。現在のキットからフォローするユーザーを探してください。"
-  },
-  "starterKitPost": {
-    "account.one": "{{count}}件のアカウント",
-    "account.other": "{{count}}件のアカウント",
-    "accountsAria": "{{title}}内のすべてのアカウント",
-    "followAll": "すべてフォロー",
-    "followed": "{{total}}件中{{followed}}件をフォローしました",
-    "following": "フォロー中… {{completed}}/{{total}}",
-    "openAccount": "アプリで{{name}}を開く",
-    "openOriginal": "{{host}}で元の投稿を開く ↗",
-    "viewCollection": "コレクションを表示"
   },
   "terms": {
     "byMastodon": "このMastodonサーバーが公開している利用規約です。",

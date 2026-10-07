@@ -3159,7 +3159,6 @@
     "write.emptyPublishesNow": "지금 Mastodon에 게시하려면 비워 두세요.",
     "write.exactPromptLabel": "전송할 정확한 프롬프트:",
     "write.finding.caps": "연속된 단어가 대문자입니다.",
-    "write.finding.longLinks": "일부 링크가 길어 지저분해 보입니다. 어느 쪽이든 동일하게 계산되므로 줄이기는 외관상의 문제입니다.",
     "write.finding.missingAlt": "첨부된 이미지에 설명이 없습니다.",
     "write.finding.overLimit.one": "게시물 하나가 글자 수 제한을 초과하여 거부됩니다.",
     "write.finding.overLimit.other": "게시물 {{count}}개가 글자 수 제한을 초과하여 거부됩니다.",
@@ -3687,10 +3686,8 @@
     "anonymous.age.years1": "1년",
     "anonymous.age.years2": "2년",
     "anonymous.age.years5": "5년",
-    "anonymous.intro": "브라우저 로컬 익명 홈 피드가 구성되는 방식을 설정합니다.",
     "anonymous.maxAge": "팔로우한 계정 게시물의 최대 기간",
     "anonymous.maxAge.hint": "익명 모드가 홈을 구성할 때 이전 게시물은 제외됩니다. 팔로우한 해시태그의 게시물에는 영향을 주지 않습니다.",
-    "anonymous.title": "익명",
     "appearance.animations": "애니메이션",
     "appearance.contentWarnings": "콘텐츠 경고",
     "appearance.disableSwiping": "스와이프 동작 사용 안 함",
@@ -5752,17 +5749,6 @@
     "notFound": "찾을 수 없음",
     "opening": "여는 중…",
     "unavailable": "이 스타터 키트는 더 이상 사용할 수 없습니다. 현재 키트를 둘러보고 팔로우할 사람을 찾으세요."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}}개 계정",
-    "account.other": "{{count}}개 계정",
-    "accountsAria": "{{title}}의 모든 계정",
-    "followAll": "모두 팔로우",
-    "followed": "{{total}}개 중 {{followed}}개 팔로우함",
-    "following": "팔로우 중… {{completed}}/{{total}}",
-    "openAccount": "앱에서 {{name}} 열기",
-    "openOriginal": "{{host}}에서 원본 열기 ↗",
-    "viewCollection": "컬렉션 보기"
   },
   "statusCard": {
     "actionFailure": "{{verb}} 작업을 완료할 수 없습니다. 다시 시도하세요.",
