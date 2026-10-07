@@ -50,6 +50,10 @@
       at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
       so the hosts cannot be enumerated in advance. http: and ws: are allowed so
       a localhost instance still works during development.
+
+      YouTube playback is confined to the privacy-enhanced cross-origin iframe
+      below, created only after the user loads it. No provider SDK executes in
+      our document; script-src remains self-only.
     -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -64,7 +68,7 @@
         form-action 'self';
         base-uri 'self';
         object-src 'none';
-        frame-src 'none';
+        frame-src https://www.youtube-nocookie.com;
       "/>
 
     <!--
@@ -102,5 +106,5 @@
   <link rel="stylesheet" href="styles-STO4DV54.css"></head>
   <body>
     <app-root></app-root>
-  <link rel="modulepreload" href="chunk-TFDU5RCL.js"><link rel="modulepreload" href="chunk-2FRFBJEN.js"><link rel="modulepreload" href="chunk-RTRQELR4.js"><link rel="modulepreload" href="chunk-W7DZACOL.js"><link rel="modulepreload" href="chunk-ZIZRFWZQ.js"><link rel="modulepreload" href="chunk-PI2IQPAH.js"><link rel="modulepreload" href="chunk-FBFXIRQW.js"><link rel="modulepreload" href="chunk-KVGMBZVO.js"><link rel="modulepreload" href="chunk-GUMX5PNG.js"><link rel="modulepreload" href="chunk-A272MPSN.js"><script src="main-ECPWPE4T.js" type="module"></script></body>
+  <link rel="modulepreload" href="chunk-LKUKJ5DR.js"><link rel="modulepreload" href="chunk-ZU3Y5HWQ.js"><link rel="modulepreload" href="chunk-5HEVUOK5.js"><link rel="modulepreload" href="chunk-L3Y3CFZG.js"><link rel="modulepreload" href="chunk-WA5ROM7T.js"><link rel="modulepreload" href="chunk-42M2KV3O.js"><link rel="modulepreload" href="chunk-5TD62LXA.js"><link rel="modulepreload" href="chunk-S3WOUALI.js"><link rel="modulepreload" href="chunk-J3OAYF2K.js"><link rel="modulepreload" href="chunk-EGLCQST2.js"><script src="main-IBWHVYXK.js" type="module"></script></body>
 </html>

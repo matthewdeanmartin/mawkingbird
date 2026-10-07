@@ -6512,6 +6512,35 @@
     "thatServer": "That server",
     "title": "{{server}} isn’t reachable"
   },
+  "videoPlayer": {
+    "audio": "Audio",
+    "external": "Loading this player connects to YouTube. Playback starts only when you press Play.",
+    "failed": "Couldn't play this video. Try again or open the original.",
+    "loadYoutube": "Load YouTube player",
+    "loading": "Loading player…",
+    "openOriginal": "Open original",
+    "openWatch": "Open Watch",
+    "openYoutube": "Open on YouTube",
+    "positionUnavailable": "YouTube opens paused at the link's start time. Your current playback position doesn't transfer between views.",
+    "retry": "Retry",
+    "speed": "Playback speed",
+    "video": "Video",
+    "youtubeStopped": "This YouTube player closes when another video starts or it scrolls out of view. Reload it to watch again."
+  },
+  "watch": {
+    "back": "Back",
+    "conversation": "Conversation",
+    "filterWarning": "This post matched a content filter.",
+    "hiddenMedia": "Media is hidden by your reading preferences. You can open this video without changing them.",
+    "loading": "Opening video…",
+    "noComments": "No comments yet.",
+    "reveal": "Show video",
+    "thread": "Open full thread",
+    "title": "Watch",
+    "unavailable": "This video is unavailable or you don't have access to its post.",
+    "warning": "This post has a content warning or sensitive media.",
+    "wrongServer": "Switch to the server this post belongs to before opening its video."
+  },
   "wizard": {
     "forward.continue": "Continue",
     "forward.publish": "Publish",
