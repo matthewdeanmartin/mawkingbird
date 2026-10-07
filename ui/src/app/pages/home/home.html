@@ -106,12 +106,28 @@
     [showReaderControls]="false"
     [showRefresh]="!live()"
     [showFeedViews]="true"
+    [showVideo]="true"
+    [localTextFocus]="homeTextFocus()"
+    (textFocusChange)="setHomeTextFocus($event)"
     [showFeedDoctor]="true"
     [view]="view()"
     (refresh)="refreshHome()"
     (providerVisibilityChanged)="load()"
     (viewChange)="setView($event)"
   >
+    <label>
+      {{ 'pages.home.defaultView.label' | transloco }}
+      <select
+        [attr.aria-label]="'pages.home.defaultView.label' | transloco"
+        [ngModel]="homeDefaults.value() || ''"
+        (ngModelChange)="setHomeDefault($event)"
+      >
+        <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
+        @for (choice of ['all', 'text', 'media', 'video']; track choice) {
+          <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
+        }
+      </select>
+    </label>
     <div
       class="home-filters"
       role="group"
@@ -173,15 +189,53 @@
   <app-feed-members [source]="feedSource()" />
 } @else if (view() === 'analytics') {
   <app-feed-analytics [source]="feedSource()" />
+} @else if (view() === 'video') {
+  @if (!prefs.showImages() || prefs.feedReader()) {
+    <p class="muted">{{ 'pages.home.visualRestriction' | transloco }}</p>
+  }
+  @for (s of videos(); track s.id) {
+    <app-status-card
+      [status]="s"
+      [textFocus]="homeTextFocus()"
+      (changed)="onChanged(s, $event)"
+      (deleted)="onDeleted($event)"
+      (replied)="onPosted($event)"
+    />
+  } @empty {
+    <p class="muted center">{{ 'pages.home.videos.empty' | transloco }}</p>
+  }
+  <div class="feed-more-actions">
+    @if (loading() || autoLoading()) {
+      <p role="status">{{ 'pages.home.loadMore.loading' | transloco }}</p>
+    } @else if (canLoadMore()) {
+      <button class="btn btn-outline more" type="button" (click)="loadMore()">
+        {{ 'pages.home.loadMore.button' | transloco }}
+      </button>
+    }
+  </div>
 } @else if (view() === 'media') {
-  <app-profile-media-grid
-    [items]="mediaItems()"
-    [loading]="loading()"
-    [loadingMore]="autoLoading()"
-    [exhausted]="!canLoadMore()"
-    (opened)="openPhotoItem($event)"
-    (more)="loadMore()"
-  />
+  @if (homeTextFocus() || !prefs.showImages() || prefs.feedReader()) {
+    <p class="muted">{{ 'pages.home.visualRestriction' | transloco }}</p>
+    @for (item of mediaItems(); track item.key) {
+      <button type="button" class="btn btn-outline" (click)="openPhotoItem(item)">
+        {{ item.description || ('pages.profile.media.openPicture' | transloco) }}
+      </button>
+    }
+    @if (canLoadMore()) {
+      <button type="button" class="btn btn-outline more" (click)="loadMore()">
+        {{ 'pages.home.loadMore.button' | transloco }}
+      </button>
+    }
+  } @else {
+    <app-profile-media-grid
+      [items]="mediaItems()"
+      [loading]="loading()"
+      [loadingMore]="autoLoading()"
+      [exhausted]="!canLoadMore()"
+      (opened)="openPhotoItem($event)"
+      (more)="loadMore()"
+    />
+  }
   @if (openPhoto(); as photoKey) {
     <app-profile-photo-view
       [items]="mediaItems()"
@@ -286,6 +340,7 @@
     @for (s of visible(); track s.id; let index = $index) {
       <app-status-card
         [status]="s"
+        [textFocus]="homeTextFocus()"
         (changed)="onChanged(s, $event)"
         (deleted)="onDeleted($event)"
         (replied)="onPosted($event)"

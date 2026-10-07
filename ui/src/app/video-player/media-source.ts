@@ -10,6 +10,8 @@ export interface VideoSource {
   duration?: number;
   videoId?: string;
   start?: number;
+  /** A single image accompanying a YouTube link serves as its poster, not a second media row. */
+  posterAttachmentId?: string;
 }
 
 const YOUTUBE_HOSTS = new Set([
@@ -100,19 +102,31 @@ export function attachmentSource(media: MediaAttachment): VideoSource | null {
 
 /** Recognize one primary link, even when the server did not supply a preview card. */
 export function statusVideo(status: Status): VideoSource | null {
+  const image =
+    status.media_attachments?.length === 1 && status.media_attachments[0].type === 'image'
+      ? status.media_attachments[0]
+      : null;
+  const withPoster = (source: VideoSource): VideoSource =>
+    image
+      ? {
+          ...source,
+          poster: mediaUrl(image.preview_url || image.url),
+          posterAttachmentId: image.id,
+        }
+      : source;
   const cardSource = status.card ? youtubeSource(status.card.url) : null;
   if (cardSource) {
-    return {
+    return withPoster({
       ...cardSource,
       title: status.card!.title || cardSource.title,
       poster: mediaUrl(status.card!.image),
-    };
+    });
   }
   if (!status.content?.includes('<a')) return null;
   const doc = new DOMParser().parseFromString(status.content, 'text/html');
   for (const anchor of Array.from(doc.querySelectorAll('a[href]'))) {
     const source = youtubeSource(anchor.getAttribute('href') ?? '');
-    if (source) return source;
+    if (source) return withPoster(source);
   }
   return null;
 }

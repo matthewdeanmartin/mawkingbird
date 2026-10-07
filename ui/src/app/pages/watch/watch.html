@@ -35,6 +35,8 @@
         <app-status-card
           [status]="status"
           [showMedia]="false"
+          [partyTagsEnabled]="true"
+          (partyTagAdded)="party()?.addTag($event)"
           filterContext="thread"
           (changed)="loader.status.set($event)"
           (deleted)="loader.status.set(null)"
@@ -45,11 +47,20 @@
         @if (loader.publicContextUnavailable()) {
           <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
         }
-        @for (reply of loader.descendants(); track reply.id) {
-          <app-status-card [status]="reply" filterContext="thread" />
-        } @empty {
-          <p class="muted">{{ 'watch.noComments' | transloco }}</p>
-        }
+        <app-party-conversation
+          [root]="status"
+          [comments]="loader.descendants()"
+          [session]="partySession()"
+          (changed)="onCommentChanged($event)"
+          (deleted)="onCommentDeleted($event)"
+          (replied)="onReply($event)"
+        />
+      </aside>
+    }
+    @if (!loader.status()) {
+      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+        <h2>{{ 'watch.conversation' | transloco }}</h2>
+        <app-party-conversation [session]="partySession()" />
       </aside>
     }
   </div>

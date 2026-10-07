@@ -924,3 +924,8 @@ a.open-original {
 .media-audio audio {
   width: 100%;
 }
+:host .party-tag-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}

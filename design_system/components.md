@@ -42,6 +42,25 @@ compact actions use the same readable accent text token. See **Actions / Button 
 Consistency** for shared/legacy states, all accents, narrow layouts and keyboard
 interaction. The review stories use fixture strings and never persist preferences.
 
+## Optional help
+
+Use `MbHelp` (`mb-help`) for secondary explanations. It shows a circled question
+mark with a 32px target (44px on touch devices) and opens the shared nonmodal popover on click, touch,
+Enter or Space. Escape restores focus; clicking outside dismisses it. The
+surface stays inside the viewport, supports long text, and uses theme tokens.
+Supply a translated, specific accessible `label` such as “About YouTube
+playback”, and project translated text or paragraphs. Keep essential labels,
+errors, progress, and information needed before an action visible.
+
+```html
+<mb-help [label]="'videoPlayer.help' | transloco">
+  <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+</mb-help>
+```
+
+Preview: **Feedback / Help**. Help controls isolate clicks and playback keys
+from parent cards; they do not open on hover or load external resources.
+
 ## Field and native control
 
 Compact editors can set `hideLabel` on `mb-field` to keep the label available

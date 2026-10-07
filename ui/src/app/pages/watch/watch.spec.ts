@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Watch } from './watch';
+import { PartyConversation } from './party-conversation';
 import { ThreadLoader } from '../read/thread-loader';
 import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
@@ -18,7 +19,19 @@ import { FollowTrust } from '../../follow-trust';
 class CardStub {
   readonly status = input<Status>();
   readonly showMedia = input(true);
+  readonly partyTagsEnabled = input(false);
+  readonly partyTagAdded = output<string>();
   readonly filterContext = input('thread');
+  readonly changed = output<Status>();
+  readonly deleted = output<Status>();
+  readonly replied = output<Status>();
+}
+
+@Component({ selector: 'app-party-conversation', template: '' })
+class PartyStub {
+  readonly root = input<Status | null>(null);
+  readonly comments = input<Status[]>([]);
+  readonly session = input('');
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
@@ -101,8 +114,11 @@ describe('Watch post access and reveal gates', () => {
       ],
     });
     TestBed.overrideComponent(Watch, {
-      remove: { imports: [StatusCard], providers: [ThreadLoader] },
-      add: { imports: [CardStub], providers: [{ provide: ThreadLoader, useValue: loader }] },
+      remove: { imports: [StatusCard, PartyConversation], providers: [ThreadLoader] },
+      add: {
+        imports: [CardStub, PartyStub],
+        providers: [{ provide: ThreadLoader, useValue: loader }],
+      },
     });
   });
   afterEach(() => {

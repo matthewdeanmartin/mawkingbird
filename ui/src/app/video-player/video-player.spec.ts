@@ -166,6 +166,9 @@ describe('VideoPlayer user control', () => {
   it('does not load an iframe or SDK before explicit external-player activation', () => {
     mount(youtubeSource('https://youtu.be/dQw4w9WgXcQ')!);
     expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.description')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('section > p')).toHaveLength(0);
+    expect(fixture.nativeElement.querySelectorAll('mb-help [popover] p')).toHaveLength(3);
     expect(document.querySelector('script[src="https://www.youtube.com/iframe_api"]')).toBeNull();
   });
 
@@ -209,6 +212,10 @@ describe('VideoPlayer user control', () => {
     expect(fixture.nativeElement.querySelector('iframe')).toBe(frame);
     expect(document.querySelector('script[src="https://www.youtube.com/iframe_api"]')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain("doesn't transfer between views");
+    expect(fixture.nativeElement.querySelector('mb-help [popover]').textContent).toContain(
+      "doesn't transfer between views",
+    );
+    expect(fixture.nativeElement.querySelector('p[role=status]')).toBeNull();
     expect(play).not.toHaveBeenCalled();
     fixture.destroy();
     expect(frame.hasAttribute('src')).toBe(false);

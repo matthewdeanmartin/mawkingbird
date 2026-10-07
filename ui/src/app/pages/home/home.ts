@@ -69,6 +69,17 @@ import { DiscoveryCard } from '../../discovery-card/discovery-card';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
+import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
+import { isVideoStatus } from '../../video-player/video-discovery';
+
+// i18n pages.home.defaultView.label: Default Home to…
+// i18n pages.home.defaultView.legacy: Current preferences
+// i18n pages.home.defaultView.all: All
+// i18n pages.home.defaultView.text: Text
+// i18n pages.home.defaultView.media: Media
+// i18n pages.home.defaultView.video: Video
+// i18n pages.home.videos.empty: No videos in the posts loaded so far. Load more to look further back.
+// i18n pages.home.visualRestriction: Your reading preferences hide images. Videos remain available through their Open Watch or original links.
 
 /** Below this many follows, nudge toward /find-friends (few follows = empty-feeling feed). */
 const FOLLOW_NUDGE_THRESHOLD = 5;
@@ -488,6 +499,48 @@ export class Home implements OnInit, OnDestroy {
 
   /** Which view the command bar's Members/Analytics toggles have selected. */
   protected view = signal<FeedView>('feed');
+  protected homeDefaults = inject(HomeDefaults);
+  protected homeTextFocus = signal(false);
+  protected videos = computed(() => this.visible().filter(isVideoStatus));
+  private homeScope = '';
+  private readonly homeDefaultEffect = effect(() => {
+    const scope = this.homeDefaults.scope();
+    if (!this.initialized || this.homeScope === scope) return;
+    this.homeScope = scope;
+    this.applyHomeDefault(this.homeDefaults.value());
+  });
+
+  protected setHomeDefault(raw: string): void {
+    const value = asHomeDefault(raw);
+    if (!value) return;
+    this.homeDefaults.set(value);
+    this.applyHomeDefault(value);
+  }
+
+  private applyHomeDefault(value: HomeDefault | null): void {
+    this.homeTextFocus.set(value === 'text');
+    this.setView(value === 'media' || value === 'video' ? value : 'feed');
+  }
+
+  protected setHomeTextFocus(value: boolean): void {
+    this.homeTextFocus.set(value);
+    this.saveHomeVisit();
+  }
+
+  private saveHomeVisit(): void {
+    if (location.pathname !== '/home') return;
+    history.replaceState(
+      {
+        ...history.state,
+        homePresentation: {
+          scope: this.homeDefaults.scope(),
+          view: this.view(),
+          text: this.homeTextFocus(),
+        },
+      },
+      '',
+    );
+  }
 
   /** The loaded feed rendered with the same media extraction as profile Media. */
   protected mediaItems = computed(() =>
@@ -507,6 +560,7 @@ export class Home implements OnInit, OnDestroy {
 
   protected setView(view: FeedView): void {
     this.view.set(view);
+    this.saveHomeVisit();
     if (view !== 'media') {
       this.openPhoto.set(null);
     }
@@ -834,13 +888,26 @@ export class Home implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.homeScope = this.homeDefaults.scope();
+    const navigation = this.router.currentNavigation() ?? this.router.lastSuccessfulNavigation();
+    const visit = (navigation?.extras.state?.['homePresentation'] ??
+      history.state?.homePresentation) as
+      { scope?: string; view?: FeedView; text?: boolean } | undefined;
+    if (
+      navigation?.trigger === 'popstate' &&
+      visit?.scope === this.homeScope &&
+      ['feed', 'media', 'video', 'members', 'analytics', 'articles'].includes(visit.view ?? '')
+    ) {
+      this.homeTextFocus.set(visit.text === true);
+      this.setView(visit.view!);
+    } else this.applyHomeDefault(this.homeDefaults.value());
     this.homeNavigationSub = this.router.events.subscribe((event) => {
       if (
         event instanceof NavigationSkipped &&
         event.code === NavigationSkippedCode.IgnoredSameUrlNavigation &&
         event.url.split(/[?#]/)[0] === '/home'
       ) {
-        this.setView('feed');
+        this.applyHomeDefault(this.homeDefaults.value());
         this.refreshHome();
       }
     });

@@ -11,9 +11,10 @@ import { ProviderId } from '../models';
 import { ProviderRegistry } from '../providers/provider-registry';
 
 /** What the host page is showing in place of its timeline. */
-export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
+export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles';
 
 // i18n commandBar.textFocus.label: Text-focus
+// i18n commandBar.video: Video
 // i18n commandBar.tweetView: Tweet view
 // i18n commandBar.textFocus.turnOff: Turn off text-focus and show images
 // i18n commandBar.textFocus.turnOn: Turn on text-focus: show image icons and alt text
@@ -107,8 +108,19 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'articles';
             (click)="setView('media')"
             title="Pictures and videos from the posts currently loaded"
           >
-            🖼️ Media</button
-          ><button
+            🖼️ Media
+          </button>
+          @if (showVideo()) {
+            <button
+              type="button"
+              mbToolbarButton
+              [pressed]="view() === 'video'"
+              (click)="setView('video')"
+            >
+              🎬 {{ 'commandBar.video' | transloco }}
+            </button>
+          }
+          <button
             mbToolbarButton
             [pressed]="view() === 'articles'"
             (click)="setView('articles')"
@@ -273,6 +285,10 @@ export class CommandBar {
   readonly showFeedDoctor = input(false);
   /** Which view the host page is currently showing. */
   readonly view = input<FeedView>('feed');
+  readonly showVideo = input(false);
+  /** Home can keep its text presentation local, without changing other accounts/pages. */
+  readonly localTextFocus = input<boolean | null>(null);
+  readonly textFocusChange = output<boolean>();
   readonly refresh = output<void>();
   /** A source filter changed; merged feeds need to refetch their active sources. */
   readonly providerVisibilityChanged = output<void>();
@@ -295,6 +311,7 @@ export class CommandBar {
    * never looks inert.
    */
   protected imagesHidden(): boolean {
+    if (this.localTextFocus() !== null) return this.localTextFocus()!;
     return !this.prefs.showImages() || this.prefs.feedReader();
   }
 
@@ -305,6 +322,10 @@ export class CommandBar {
    * silently overrode the images toggle, leaving no obvious way back.
    */
   protected toggleImages(): void {
+    if (this.localTextFocus() !== null) {
+      this.textFocusChange.emit(!this.localTextFocus());
+      return;
+    }
     if (this.imagesHidden()) {
       this.prefs.setShowImages(true);
       if (this.prefs.feedReader()) {

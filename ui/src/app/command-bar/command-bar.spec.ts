@@ -11,6 +11,27 @@ import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
 describe('CommandBar', () => {
+  it('offers Video next to Media on Home and emits local text focus without changing global preferences', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showVideo', true);
+    fixture.componentRef.setInput('localTextFocus', false);
+    fixture.detectChanges();
+    const views: string[] = [];
+    fixture.componentInstance.viewChange.subscribe((view) => views.push(view));
+    const focus: boolean[] = [];
+    fixture.componentInstance.textFocusChange.subscribe((value) => focus.push(value));
+    const row = fixture.nativeElement.querySelector('.presentation-row');
+    const buttons = [...row.querySelectorAll('button')] as HTMLButtonElement[];
+    const video = buttons.find((button) => button.textContent?.includes('Video'))!;
+    const media = buttons.find((button) => button.textContent?.includes('Media'))!;
+    expect(video.previousElementSibling).toBe(media);
+    video.click();
+    expect(views).toEqual(['video']);
+    buttons.find((button) => button.textContent?.includes('Text-focus'))!.click();
+    expect(focus).toEqual([true]);
+    expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
+  });
   it('uses independent toolbar focus groups and leaves navigation links outside them', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = setUp(true);

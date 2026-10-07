@@ -14,7 +14,7 @@ async function walk(dir) {
 await walk(root);
 const patterns = {
   shared:
-    /\b(?:mbButton|mbToolbarButton|mbPostAction|mbContentLink|mbActionCount|mbNavigation|mbNavLink|mbControl|mbTab)\b|<mb-(?:checkbox|field|radio-group|toolbar|post-actions|dialog|popover|notice|metadata|badge|content-state|navigation|page-header|section|tabs|action-menu|disclosure|settings-row|save-feedback)\b/g,
+    /\b(?:mbButton|mbToolbarButton|mbPostAction|mbContentLink|mbActionCount|mbNavigation|mbNavLink|mbControl|mbTab)\b|<mb-(?:checkbox|field|radio-group|toolbar|post-actions|dialog|popover|help|notice|metadata|badge|content-state|navigation|page-header|section|tabs|action-menu|disclosure|settings-row|save-feedback)\b/g,
   nativeButtons: /<button\b/g,
   checkboxes: /type\s*=\s*['"]checkbox['"]/g,
   radios: /type\s*=\s*['"]radio['"]/g,

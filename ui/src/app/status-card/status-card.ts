@@ -92,6 +92,10 @@ import { PrivateLikeButton } from '../private-like-button';
 import { nitterHost, toNitterUrl } from '../providers/twitter/nitter';
 import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
+import { statusHashtags } from '../hashtag';
+import { TagMuteMenu } from '../tag-filter-dialog/tag-mute-menu';
+import { MbButton } from '../design-system/button/button';
+// i18n watch.addPostTag: Add #{{tag}} to party
 import { HumanTimePipe } from '../human-time.pipe';
 import { VerifiedBadge } from '../verified-badge/verified-badge';
 import { AnonymousProviderRef } from '../providers/anonymous/anonymous-mastodon-provider';
@@ -347,6 +351,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     RouterLink,
     AccountHoverCard,
     ReportDialog,
+    TagMuteMenu,
+    MbButton,
     AccountListDialog,
     HistoryDialog,
     FormsModule,
@@ -417,7 +423,14 @@ export class StatusCard {
   private i18n = inject(TranslatedText);
 
   /** Pictures render only when images are on and feed reader mode is off. */
-  protected imagesVisible = computed(() => this.prefs.showImages() && !this.prefs.feedReader());
+  readonly textFocus = input(false);
+  readonly partyTagsEnabled = input(false);
+  readonly partyTagAdded = output<string>();
+  protected postTags = computed(() => statusHashtags(this.status()));
+  protected canMuteTags = computed(() => this.auth.kind() === 'mastodon' && !!this.auth.token());
+  protected imagesVisible = computed(
+    () => !this.textFocus() && this.prefs.showImages() && !this.prefs.feedReader(),
+  );
 
   /**
    * Icon standing in for one attachment when images are off. Mastodon's media

@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
+import { MbHelp } from '../design-system/help/help';
 import { Playback, PlaybackHandle, PlaybackPosition } from './playback';
 import { VideoSource } from './media-source';
 
@@ -30,11 +31,12 @@ import { VideoSource } from './media-source';
 // i18n videoPlayer.retry: Retry
 // i18n videoPlayer.speed: Playback speed
 // i18n videoPlayer.loading: Loading player…
+// i18n videoPlayer.help: About YouTube playback
 // i18n videoPlayer.positionUnavailable: YouTube opens paused at the link's start time. Your current playback position doesn't transfer between views.
 // i18n videoPlayer.youtubeStopped: This YouTube player closes when another video starts or it scrolls out of view. Reload it to watch again.
 @Component({
   selector: 'app-video-player-controls',
-  imports: [TranslocoPipe, RouterLink, MbButton],
+  imports: [TranslocoPipe, RouterLink, MbButton, MbHelp],
   templateUrl: './video-player.html',
   styleUrl: './video-player.css',
   host: { '(click)': '$event.stopPropagation()' },

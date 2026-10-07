@@ -1,6 +1,20 @@
 # Watch Parties: shared video with live hashtag conversation
 
-Status: future proposal for discussion · 2026-10-07. No runtime changes.
+Status: temporary Watch hashtags implemented; full room features remain proposed · 2026-10-07.
+
+Owner update: Watch supports Add hashtag to party and add-from-post buttons.
+Hashtag posts mix with comments, deduplicate across tags, and retain moderation
+and warning gates. Tags last only for this Watch visit; changing video, leaving,
+or switching accounts releases requests and streams. No follow/subscription or
+durable room is created. Mastodon tag streaming is supplemented by bounded
+refresh and explicit paging. A visit accepts up to eight tags and retains up to
+200 posts per tag; older paging stops at that bound. Ignore Party is deferred
+at the owner's request. The Ignore Party proposals below describe future scope.
+
+Instead, a post's more menu offers Mute #tag, opening a reviewable Mastodon
+account filter dialog with contexts, expiry, warn/hide, and whole-word choices.
+Opening/canceling writes nothing; submitting explicitly creates a standard
+[Mastodon keyword filter](https://docs.joinmastodon.org/methods/filters/).
 
 Build after [video playback/Watch](video-player.md). Account browsing defaults
 are specified in [focus modes](media-focus.md).

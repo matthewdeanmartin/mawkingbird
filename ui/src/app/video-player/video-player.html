@@ -36,8 +36,6 @@
     <button type="button" mbButton (click)="activated.set(true)">
       {{ 'videoPlayer.loadYoutube' | transloco }}
     </button>
-    <p class="muted">{{ 'videoPlayer.external' | transloco }}</p>
-    <p class="muted small">{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
   } @else if (!failed()) {
     <iframe
       #frame
@@ -56,7 +54,7 @@
   @if (duration()) {
     <span class="duration">{{ duration() }}</span>
   }
-  @if (title()) {
+  @if (title() && (source().kind !== 'youtube' || title() !== 'YouTube')) {
     <p class="description">{{ title() }}</p>
   }
   @if (failed()) {
@@ -64,9 +62,6 @@
     <button type="button" mbButton variant="outline" size="small" (click)="retry()">
       {{ 'videoPlayer.retry' | transloco }}
     </button>
-  }
-  @if (source().kind === 'youtube') {
-    <p role="status">{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
   }
   <div class="video-links">
     @if (watch(); as params) {
@@ -87,5 +82,12 @@
           | transloco
       }}
     </a>
+    @if (source().kind === 'youtube') {
+      <mb-help [label]="'videoPlayer.help' | transloco">
+        <p>{{ 'videoPlayer.external' | transloco }}</p>
+        <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+        <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
+      </mb-help>
+    }
   </div>
 </section>

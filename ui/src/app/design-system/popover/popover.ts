@@ -13,13 +13,31 @@ let nextId = 0;
       variant="outline"
       size="small"
       type="button"
+      [class.help-trigger]="icon() === 'help'"
+      [attr.aria-label]="label()"
       [attr.aria-haspopup]="kind()"
       [attr.aria-expanded]="opened()"
       [attr.aria-controls]="id"
       (click)="toggle()"
       (keydown)="triggerKey.emit($event)"
     >
-      {{ label() }}
+      @if (icon() === 'help') {
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.5 9a2.5 2.5 0 0 1 5 .3c0 1.7-2.5 1.8-2.5 3.7" />
+          <circle cx="12" cy="16.5" r=".8" fill="currentColor" stroke="none" />
+        </svg>
+      } @else {
+        {{ label() }}
+      }
     </button>
     <div
       #panel
@@ -43,6 +61,7 @@ let nextId = 0;
 export class MbPopover {
   readonly label = input.required<string>();
   readonly kind = input<'dialog' | 'menu'>('dialog');
+  readonly icon = input<'help' | null>(null);
   readonly openedChange = output<boolean>();
   readonly triggerKey = output<KeyboardEvent>();
   readonly opened = signal(false);

@@ -328,7 +328,12 @@
           {{ 'statusCard.quotedPostUnavailable' | transloco }}
         </div>
       }
-      @if (showMedia() && !cwCollapsed() && display.media_attachments.length) {
+      @if (
+        showMedia() &&
+        !cwCollapsed() &&
+        display.media_attachments.length &&
+        !youtubeVideo()?.posterAttachmentId
+      ) {
         @if (imagesVisible()) {
           <div class="media" [class.media-sensitive]="mediaBlurred()">
             @for (m of display.media_attachments; track m.id; let i = $index) {
@@ -452,6 +457,21 @@
         </div>
       }
 
+      @if (partyTagsEnabled() && !cwCollapsed()) {
+        <div class="party-tag-actions" (click)="$event.stopPropagation()">
+          @for (tag of postTags(); track tag) {
+            <button
+              type="button"
+              mbButton
+              variant="outline"
+              size="small"
+              (click)="partyTagAdded.emit(tag)"
+            >
+              {{ 'watch.addPostTag' | transloco: { tag } }}
+            </button>
+          }
+        </div>
+      }
       <mb-post-actions
         density="compact"
         class="actions"
@@ -1182,6 +1202,9 @@
                     •••
                   </summary>
                   <div class="danger-menu-panel">
+                    @if (canMuteTags() && postTags().length) {
+                      <app-tag-mute-menu [tags]="postTags()" />
+                    }
                     <app-private-like-button [status]="display" />
                     <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
@@ -1226,6 +1249,9 @@
                   •••
                 </summary>
                 <div class="danger-menu-panel">
+                  @if (canMuteTags() && postTags().length) {
+                    <app-tag-mute-menu [tags]="postTags()" />
+                  }
                   <app-private-like-button [status]="display" />
                   <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
@@ -1317,6 +1343,9 @@
                 •••
               </summary>
               <div class="danger-menu-panel">
+                @if (canMuteTags() && postTags().length) {
+                  <app-tag-mute-menu [tags]="postTags()" />
+                }
                 <app-private-like-button [status]="display" />
                 <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->

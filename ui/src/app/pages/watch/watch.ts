@@ -6,6 +6,7 @@ import {
   inject,
   linkedSignal,
   signal,
+  viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,6 +26,7 @@ import { ReadingZen } from '../../reading-zen';
 import { MbButton } from '../../design-system/button/button';
 import { parseAnonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { Status } from '../../models';
+import { PartyConversation } from './party-conversation';
 
 // i18n watch.title: Watch
 // i18n watch.back: Back
@@ -40,12 +42,14 @@ import { Status } from '../../models';
 // i18n watch.thread: Open full thread
 @Component({
   selector: 'app-watch',
-  imports: [VideoPlayer, StatusCard, TranslocoPipe, RouterLink, MbButton],
+  imports: [VideoPlayer, StatusCard, TranslocoPipe, RouterLink, MbButton, PartyConversation],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
   styleUrl: './watch.css',
 })
 export class Watch {
+  protected party = viewChild(PartyConversation);
+  protected partySession = computed(() => JSON.stringify(this.params()));
   protected loader = inject(ThreadLoader);
   private route = inject(ActivatedRoute);
   private server = inject(Server);
@@ -166,5 +170,13 @@ export class Watch {
 
   protected onReply(reply: Status): void {
     this.loader.descendants.update((replies) => [...replies, reply]);
+  }
+  protected onCommentChanged(status: Status): void {
+    this.loader.descendants.update((items) =>
+      items.map((item) => (item.id === status.id ? status : item)),
+    );
+  }
+  protected onCommentDeleted(status: Status): void {
+    this.loader.descendants.update((items) => items.filter((item) => item.id !== status.id));
   }
 }

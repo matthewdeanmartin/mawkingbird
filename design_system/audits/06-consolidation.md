@@ -1,5 +1,20 @@
 # Sprint 6 opening consolidation audit
 
+## Optional help and video playback, 2026-10-07
+
+Added `mb-help` to the shared-control scanner and regenerated the inventory:
+1,106 source files scanned, 225 candidate files. The new help component composes
+the existing popover; the video player, lazy player host, and Watch page use
+shared actions and retain native media/select semantics. The reconciliation
+ledger now covers these four new candidate files. Existing dispositions stay
+unchanged; shifted findings reflect the video-player integration and help copy
+moving into a popover. This refresh does not claim all controls are migrated.
+
+Temporary Watch hashtags adopt Field/Control, Button and Help; the post menu
+lazily opens a filter dialog using Dialog, Field/Control, Checkbox and Button.
+The ledger includes all three new surfaces, preserving existing dispositions.
+Home's default dropdown retains native select semantics and an explicit label.
+
 ## Home diagnostics and maintenance reconciliation, 2026-10-07
 
 Regenerated the control inventory after Home stopping-state and retry controls,

@@ -70,7 +70,10 @@ export class ProfileMediaGrid {
     if (this.revealed().has(item.key)) {
       return false;
     }
-    return item.status.sensitive && !this.trusted.sensitiveShown(item.status.account);
+    return (
+      (item.status.sensitive && !this.trusted.sensitiveShown(item.status.account)) ||
+      (!!item.status.spoiler_text && !this.trusted.cwExpanded(item.status.account))
+    );
   }
 
   /** Tiles the viewer has clicked through, per session. */

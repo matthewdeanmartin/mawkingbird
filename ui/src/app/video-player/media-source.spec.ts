@@ -11,6 +11,26 @@ import { parseAnonymousStatusRouteRef } from '../providers/anonymous/anonymous-r
 
 const ID = 'dQw4w9WgXcQ';
 describe('Video source classification', () => {
+  it('uses one attached image as a YouTube poster, but preserves mixed attachments', () => {
+    const image = {
+      id: 'poster',
+      type: 'image',
+      url: 'https://media.test/poster.jpg',
+      preview_url: 'https://media.test/small.jpg',
+    } as MediaAttachment;
+    const status = {
+      content: `<a href="https://youtu.be/${ID}">watch</a>`,
+      media_attachments: [image],
+    } as Status;
+    expect(statusVideo(status)).toMatchObject({
+      poster: image.preview_url,
+      posterAttachmentId: 'poster',
+    });
+    expect(
+      statusVideo({ ...status, media_attachments: [image, { ...image, id: 'second' }] })
+        ?.posterAttachmentId,
+    ).toBeUndefined();
+  });
   it.each([
     `https://youtube.com/watch?v=${ID}`,
     `https://www.youtube.com/watch?other=1&v=${ID}`,

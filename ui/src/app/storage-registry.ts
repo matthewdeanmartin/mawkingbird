@@ -140,6 +140,14 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Device-local suspension of proxy-dependent activity. Credentials are preserved.',
   },
 
+  {
+    base: 'mockingbird_home_default',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'setting',
+    note: 'Default Home presentation per account; independent of global reader/image preferences.',
+  },
+
   // ---- secret: credentials, never exported ----
   {
     base: 'mastodon_mock_token',

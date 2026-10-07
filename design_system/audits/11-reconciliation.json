@@ -3,6 +3,21 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/watch/party-conversation.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Temporary party tags use Field/Control, Button and Help. Preserve label associations, removable tag names, keyboard access and bounded narrow layouts; feed posts reuse StatusCard."
+    },
+    {
+      "file": "ui/src/app/tag-filter-dialog/tag-filter-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Account filter creation uses Dialog, Field/Control, Checkbox and Button. Preserve focus return, explicit confirmation, context selection, validation and retry choices."
+    },
+    {
+      "file": "ui/src/app/tag-filter-dialog/tag-mute-menu.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Per-post tag filter actions use Button and lazily load the shared dialog. Keep names specific to each hashtag and prevent parent card navigation."
+    },
+    {
       "file": "ui/src/app/pages/features/audience-page.html",
       "disposition": "adopted scope",
       "nextStep": "Five public audience pages reuse the feature layout and MbButton/MbContentLink controls. Preserve native links, mobile wrapping, focused audience copy and metadata without rendering a landing page on the home route."
@@ -1091,6 +1106,26 @@
       "file": "ui/src/app/server-connection-help/server-connection-help.ts",
       "disposition": "adopted scope",
       "nextStep": "Compact failed-server recovery uses native RouterLink with ContentLink and keeps installation instructions on the separate public page. Preserve the requested host without changing account state."
+    },
+    {
+      "file": "ui/src/app/design-system/help/help.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Optional help composes the shared popover with a named circled-question-mark trigger. Preserve keyboard/touch activation, light dismissal, focus restoration, narrow viewport placement and parent-action isolation."
+    },
+    {
+      "file": "ui/src/app/pages/watch/watch.html",
+      "disposition": "adopted scope",
+      "nextStep": "Watch uses MbButton for back/reveal actions and the shared video player; keep existing post actions and moderation gates. Media playback controls retain browser-native semantics."
+    },
+    {
+      "file": "ui/src/app/video-player/video-player-host.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Lazy shared player host uses MbButton for chunk-load retry. Preserve lazy imports, recovery and destruction before a pending import resolves."
+    },
+    {
+      "file": "ui/src/app/video-player/video-player.html",
+      "disposition": "adopted scope",
+      "nextStep": "Shared player uses MbButton actions and MbHelp for optional YouTube explanations. Native video and speed select keep browser semantics; preserve explicit playback, no looping, warnings and accessible help."
     }
   ]
 }

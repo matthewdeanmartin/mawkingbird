@@ -1,6 +1,18 @@
 # Default Home view per account, and Video focus
 
-Status: proposal with owner-confirmed scope · 2026-10-07. No runtime changes.
+Status: Home defaults and Video view implemented · 2026-10-07.
+
+Implementation update: the Home dropdown saves All/Text/Media/Video per stable
+account scope and applies it immediately. Toolbar selections stay visit-local;
+browser Back restores the Home presentation. Text defaults do not rewrite global
+image or reader preferences. Video uses the loaded Home feed and its ordinary
+explicit paging, including boosts, rather than searching a separate timeline.
+
+Owner-expanded discovery scope: uploads and links to major video sites count,
+even without inline playback support. This includes YouTube, Vimeo, Dailymotion,
+Twitch, TikTok, Bilibili, Rumble, Odysee, Streamable, Loom, federated PeerTube
+video routes, and other recognized hosts. Discovery is separate from embedding;
+unsupported links retain their ordinary external-link behavior.
 
 Related: [video playback/Watch](video-player.md), [Watch Parties](watch-party.md).
 
@@ -32,9 +44,10 @@ starting view per account.
 
 Media retains its current semantics, including photos, video, and animations.
 This proposal does not turn it into a new photos-only filter. Video includes
-uploaded `video` and validated supported video links; soundless `gifv`, audio,
-and ordinary article-card images are excluded. Use the shared classifier from
-the player. YouTube links with blocked embedding still appear with a provider
+uploaded `video` and recognized video-site links, including sites without an
+inline player; soundless `gifv`, audio, and ordinary article-card images are
+excluded. Discovery classification is separate from playback permission.
+YouTube links with blocked embedding still appear with a provider
 fallback. A mode selection never starts playback.
 
 Keep Feed/Media/Articles/Members/Analytics functionality and the existing
@@ -97,9 +110,9 @@ lack attachments, so `only_media` cannot be the only source: it would exclude
 YouTube posts. Mastodon's parameter means attached media, not video alone.
 [Mastodon timelines API](https://docs.joinmastodon.org/methods/timelines/).
 
-Avoid scanning the entire history to fill the view. Proposed cap: three
-source-page requests per explicit load action, then show matches and Load
-more. Advance raw cursors through nonmatching pages; zero video matches is
+Avoid scanning the entire history to fill the view. Each explicit load action
+uses the existing Home paging behavior, then shows matches and Load more.
+Advance raw cursors through nonmatching pages; zero video matches is
 not exhaustion. Use the same classifier for streaming updates; handle edits,
 deletes, and deduplication. State “No videos in the posts loaded so far” when
 appropriate. Reuse existing media extraction where suitable, but never treat
@@ -129,4 +142,4 @@ filters in every view. Manually check narrow layouts, accessible labels,
 keyboard access, and that view changes never autoplay.
 
 Run contributor tests and the production-build gate described in the player
-spec; inspect bundle size. No tests/build were run for this document change.
+spec; inspect bundle size. Viewed-profile defaults remain deferred.

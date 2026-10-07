@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, Signal, WritableSignal } from '@angular/core';
 import {
   type Event as RouterEvent,
+  type Navigation,
   NavigationSkipped,
   NavigationSkippedCode,
   provideRouter,
@@ -22,6 +23,7 @@ import { Status } from '../../models';
 import { Streaming } from '../../streaming';
 import { FakeStreaming } from '../../testing/fake-streaming';
 import { Home } from './home';
+import { HomeDefaults } from '../../home-defaults';
 import { Auth } from '../../auth';
 import { AnonymousHomeFeedCache } from '../../providers/anonymous/anonymous-home-feed-cache';
 import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-mastodon-provider';
@@ -55,10 +57,13 @@ interface HomeInternals {
   toggleBoosts(): void;
   toggleReplies(): void;
   articles: Signal<{ status: Status; card: NonNullable<Status['card']> }[]>;
-  view: WritableSignal<'feed' | 'members' | 'analytics' | 'media' | 'articles'>;
+  view: WritableSignal<'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles'>;
+  videos: Signal<Status[]>;
+  homeTextFocus: WritableSignal<boolean>;
+  setHomeDefault(value: string): void;
   noNewPosts: WritableSignal<boolean>;
   refreshHome(): void;
-  setView(view: 'feed' | 'members' | 'analytics' | 'media' | 'articles'): void;
+  setView(view: 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles'): void;
   onPosted(status: Status): void;
   startWriting(): void;
 }
@@ -171,6 +176,61 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+  it('applies a saved Home layout and leaves toolbar changes temporary', () => {
+    const defaults = TestBed.inject(HomeDefaults);
+    defaults.set('media');
+    const fixture = setUp();
+    expect(internals(fixture).view()).toBe('media');
+    internals(fixture).setView('video');
+    expect(defaults.value()).toBe('media');
+    internals(fixture).setHomeDefault('text');
+    expect(defaults.value()).toBe('text');
+    expect(internals(fixture).homeTextFocus()).toBe(true);
+    expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
+    expect(TestBed.inject(ClientPrefs).feedReader()).toBe(false);
+  });
+  for (const trigger of ['popstate', 'imperative'] as const) {
+    it(`restores a visit only for Back navigation, not a fresh entry: ${trigger}`, () => {
+      const defaults = TestBed.inject(HomeDefaults);
+      defaults.set('media');
+      const router = TestBed.inject(Router);
+      const current = vi.spyOn(router, 'currentNavigation').mockReturnValue(null);
+      const restored = signal({
+        id: 3,
+        initialUrl: router.parseUrl('/home'),
+        extractedUrl: router.parseUrl('/home'),
+        previousNavigation: null,
+        abort: vi.fn(),
+        trigger,
+        extras: {
+          state: { homePresentation: { scope: defaults.scope(), view: 'video', text: false } },
+        },
+      } as Navigation);
+      const descriptor = Object.getOwnPropertyDescriptor(router, 'lastSuccessfulNavigation');
+      Object.defineProperty(router, 'lastSuccessfulNavigation', {
+        configurable: true,
+        value: restored.asReadonly(),
+      });
+      try {
+        const fixture = setUp();
+        expect(internals(fixture).view()).toBe(trigger === 'popstate' ? 'video' : 'media');
+      } finally {
+        current.mockRestore();
+        if (descriptor) Object.defineProperty(router, 'lastSuccessfulNavigation', descriptor);
+        else Reflect.deleteProperty(router, 'lastSuccessfulNavigation');
+      }
+    });
+  }
+  it('filters the loaded Home feed for video links and uploads while retaining boost wrappers', () => {
+    const fixture = setUp();
+    const linked = { ...makeStatus('2'), content: '<a href="https://vimeo.com/123">watch</a>' };
+    const boosted = { ...makeStatus('3'), reblog: linked };
+    internals(fixture).statuses.set([makeStatus('1'), boosted]);
+    expect(internals(fixture).videos()).toEqual([boosted]);
+    internals(fixture).setView('video');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('watch');
+  });
 
   it('returns from analytics when Home is selected again without reloading the page', () => {
     const fixture = setUp();
