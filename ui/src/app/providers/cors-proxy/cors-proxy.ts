@@ -425,16 +425,6 @@ export function canProxy(targetUrl: string, mastodonBaseUrl: string): boolean {
   }
 }
 
-/** Why a URL cannot be proxied, or null when it can. */
-export function proxyRefusalReason(targetUrl: string, mastodonBaseUrl: string): string | null {
-  try {
-    assertProxyable(targetUrl, mastodonBaseUrl);
-    return null;
-  } catch (error: unknown) {
-    return error instanceof Error ? error.message : 'This URL cannot be proxied.';
-  }
-}
-
 /**
  * The instance's hostname, or null for the mock (whose base URL is empty).
  *

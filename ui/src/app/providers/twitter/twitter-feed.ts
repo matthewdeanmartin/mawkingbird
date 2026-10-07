@@ -11,7 +11,7 @@ import {
   tap,
   toArray,
 } from 'rxjs';
-import { Account, Status } from '../../models';
+import { Status } from '../../models';
 import { TwitterApi, TwitterPage } from './twitter-api';
 import { TwitterCache } from './twitter-cache';
 import { TwitterFollow, TwitterFollows } from './twitter-follows';
@@ -409,15 +409,4 @@ function authorIdOf(page: TwitterPage, username: string): string | undefined {
     }
   }
   return undefined;
-}
-
-/** Convenience for a page that has an `Account` rather than a follow. */
-export function followFromAccount(account: Account): TwitterFollow {
-  return {
-    username: account.username,
-    displayName: account.display_name,
-    avatar: account.avatar,
-    addedAt: Date.now(),
-    enabled: true,
-  };
 }

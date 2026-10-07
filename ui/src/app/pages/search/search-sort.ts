@@ -9,7 +9,7 @@
  * predictable. The default option for each result type is 'relevance', which is
  * a no-op that hands back the server's order untouched.
  *
- * Labels are keys rather than English — see `en.json`/settings-anonymous.ts for
+ * Labels are keys rather than English — see `en.json`/settings-server.ts for
  * the pattern — because a sort menu is read by every viewer, not just the ones
  * who typed the query in English.
  */
@@ -30,21 +30,10 @@ import { Account, Status } from '../../models';
 import { AccountWithMatches } from './account-refine';
 
 export type StatusSortKey =
-  | 'relevance'
-  | 'newest'
-  | 'oldest'
-  | 'favourites'
-  | 'reblogs'
-  | 'replies';
+  'relevance' | 'newest' | 'oldest' | 'favourites' | 'reblogs' | 'replies';
 
 export type AccountSortKey =
-  | 'relevance'
-  | 'followers'
-  | 'following'
-  | 'posts'
-  | 'name'
-  | 'matches'
-  | 'active';
+  'relevance' | 'followers' | 'following' | 'posts' | 'name' | 'matches' | 'active';
 
 export interface SortOption<K extends string> {
   value: K;

@@ -1,23 +1,30 @@
 # Mawkingbird dead code report
 
-The maintained Angular client has three application modules that are exercised
-by tests but have no runtime import path: `StarterKitPost`, `SettingsAnonymous`,
-and the older reader block splitter. These are the strongest removal candidates.
-No code or tests were deleted as part of this audit.
+The three application modules with no runtime import path have been removed:
+`StarterKitPost`, `SettingsAnonymous`, and the older reader block splitter.
+The unused `proxyRefusalReason` and `followFromAccount` helpers were also removed.
+The remaining findings below are retained for future reviews; unused exports
+and files outside the production graph still need individual judgment.
 
 This report covers the working tree on October 7, 2026, including existing local
 changes. It excludes the frozen sibling `mastodon_mock/ui`.
 
-## Findings
+## Findings after cleanup
 
 | Finding | All code including tests | Production graph |
 | --- | ---: | ---: |
-| Unused files | 0 | 15 |
-| Unused value exports | 137 | 453 |
+| Unused files | 0 | 12 |
+| Unused value exports | 135 | 451 |
 | Unused type exports | 101 | 119 |
 | Unused dependencies | 0 | 2 |
 | Unlisted dependencies | 3 | 0 |
 | Unresolved imports | 0 | 0 |
+
+The original audit had 15 unused production files and 137/453 unused value
+exports. Its complete inventory remains in
+[the snapshot before cleanup](dead-code-findings-2026-10-07-before-cleanup.csv).
+Keep that snapshot as historical evidence; its paths and line numbers describe
+the code before these removals, not current removal candidates.
 
 The complete symbol inventory, with paths and line numbers, is in
 [dead-code-findings.csv](dead-code-findings.csv). An unused export can still have
@@ -26,21 +33,27 @@ deleting the declaration. For example, `countSyllables`, `bloggerFeedUrl`, and
 `extractHashtags` are reported as unused exports but are called inside their own
 modules.
 
-## Application removal candidates
+## Completed removals
 
-| Module | Evidence | Next decision |
-| --- | --- | --- |
-| [StarterKitPost](../src/app/starter-kit-post/starter-kit-post.ts) | Component is imported only by its spec; no application component imports it and no template uses its selector. | Retire the old starter-kit card if it has been replaced, or reconnect the intended UI. |
-| [SettingsAnonymous](../src/app/pages/settings/anonymous/settings-anonymous.ts) | Only its spec imports this settings component; it has no route or parent component. | Decide whether the anonymous retention setting should be reachable before removing the page. |
-| [Reader post blocks](../src/app/pages/read/post-blocks.ts) | `chainBlocks` and `splitPostHtml` are imported only by `post-blocks.spec.ts`. | Compare with the current reader pagination before retiring this implementation. |
+| Removed module or helper | Evidence and retained behavior |
+| --- | --- |
+| `src/app/starter-kit-post/` | Only the removed component's specs imported it. Live starter collection and follow/import code remain. |
+| `src/app/pages/settings/anonymous/` | The old page was unused; `/settings/anonymous` already redirects to the live Server settings page. Shared age-setting translation declarations now live in `settings-server.ts`. Its default-age and select-change regression was transferred to `settings-server.spec.ts`. |
+| `src/app/pages/read/post-blocks.ts` | Only its obsolete specs imported `chainBlocks` and `splitPostHtml`. The reader uses `ReaderCore`; its existing rendered pagination regressions remain. |
+| `proxyRefusalReason` in `providers/cors-proxy/cors-proxy.ts` | No callers. The live `assertProxyable` and `canProxy` helpers remain. |
+| `followFromAccount` in `providers/twitter/twitter-feed.ts` | No callers. The active Twitter feed and follow storage remain. |
 
-Two smaller declaration candidates also have no references outside their own
-definitions: `proxyRefusalReason` in `providers/cors-proxy/cors-proxy.ts` and
-`followFromAccount` in `providers/twitter/twitter-feed.ts`.
+The 22 protected test identities belonging to the removed modules are recorded in
+[the retired inventory](dead-code-retired-tests.json). One age-setting test was
+transferred to the live Server settings suite, leaving 21 net test retirements.
+Only those obsolete identities were removed from `test-manifest.json`; other
+protected tests and the source-integrity floors were preserved. Obsolete
+starter-card and old-page title translations were removed from all UI locales.
+Shared anonymous age-setting keys and persisted storage names were retained.
 
 ## Findings to retain
 
-Nine of the 15 files outside the production graph are test support or fixtures:
+Nine of the 12 files outside the production graph are test support or fixtures:
 `i18n.testing.ts`, seven helpers under `src/app/testing/`, and
 `twitterapi-io.fixtures.ts`. Keep them. Their absence from production is expected.
 
@@ -56,6 +69,10 @@ The two production dependency findings are `@angular/ssr` and
 `src/main.server.ts` imports `@angular/ssr`, and the Angular server build needs
 the server platform package. Knip's production graph does not fully represent
 that optional configuration.
+
+The production-only unlisted `ng` binary is another build-tool boundary:
+`@angular/cli` is correctly a development dependency. Do not move it into runtime
+dependencies to silence the production scan.
 
 Storybook's `@storybook/addon-a11y` and `@storybook/addon-docs` are explicitly
 excluded from unused dependency reporting because
@@ -96,3 +113,23 @@ decide which manually invoked scripts should be retired.
 [Angular plugin](https://knip.dev/reference/plugins/angular) describe the graph
 model. Angular template members, feature flags, external catalogue entry points
 and optional build configurations still need review before deletion.
+
+## Next periodic review
+
+Rerun both graphs, compare the new inventory with the current and historical
+snapshots, and search application imports and template selectors before
+classifying files as dead. Review the 135 unused value exports individually:
+internal callers can justify keeping the declaration while dropping `export`.
+Do not remove design-system or SEO dependencies solely from the production scan.
+
+Related recurring work is proposed in [Maintenance reviews](maintenance-reviews.md).
+
+## Cleanup validation
+
+The October 7 cleanup passed `make test`: 7,736 runtime tests in 541 spec files,
+zero failures or pending tests, and zero missing protected identities. The
+before/after inventory comparison verifies exactly 22 old identities removed and
+the transferred Server settings identity added. Source-integrity floors were
+not reduced. Targeted live reader, Home, Server settings, proxy and Twitter tests
+also passed. Lint, i18n validation, changed-source formatting and the
+`build:mockingbird` production build passed; the initial bundle was 917.46 kB.

@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-07",
+  "reason": "User-authorized removal of three modules with no runtime import path",
+  "testCount": 22,
+  "tests": [
+    "src/app/pages/read/post-blocks.spec.ts :: blocks across a chain keeps reading order and remembers which post each block came from",
+    "src/app/pages/read/post-blocks.spec.ts :: blocks across a chain survives a post with no content",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks does not resurrect markup the parser had already neutralised",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks does not tear apart a list to get at a nested break",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks drops blank lines rather than making pages of them",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks keeps each split line inside its original element",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks keeps inline elements with the text around them",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks keeps inline markup balanced when long prose is split through it",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks leaves a paragraph with no line breaks alone",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks returns nothing for an empty post",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks separates loose text from the blocks around it",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks splits a digest written as <br>-separated lines",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks splits a full-content RSS article, which arrives as a post",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks splits a long post into its paragraphs",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks splits one uninterrupted long paragraph into page-sized prose fragments",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks treats headings, lists and quotes as their own blocks",
+    "src/app/pages/read/post-blocks.spec.ts :: splitting a post into blocks wraps loose text so the caller never special-cases it",
+    "src/app/pages/settings/anonymous/settings-anonymous.spec.ts :: SettingsAnonymous shows the one-year default and saves a new maximum age",
+    "src/app/starter-kit-post/starter-kit-post.spec.ts :: StarterKitPost names the anonymous follow cap when a kit runs past it",
+    "src/app/starter-kit-post/starter-kit-post.spec.ts :: StarterKitPost offers follow-all to anonymous visitors and writes browser-local follows",
+    "src/app/starter-kit-post/starter-kit-post.spec.ts :: StarterKitPost resolves a signed-in profile through the active server before opening it",
+    "src/app/starter-kit-post/starter-kit-post.spec.ts :: StarterKitPost shows every member and keeps the canonical collection as a secondary link"
+  ],
+  "transferredTests": [
+    {
+      "from": "src/app/pages/settings/anonymous/settings-anonymous.spec.ts :: SettingsAnonymous shows the one-year default and saves a new maximum age",
+      "to": "src/app/pages/settings/server/settings-server.spec.ts :: SettingsServer shows the one-year default and saves a new maximum age"
+    }
+  ]
+}

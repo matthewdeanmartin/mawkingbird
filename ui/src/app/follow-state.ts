@@ -238,7 +238,7 @@ export class FollowState {
    * The fix is the flow Mastodon provides for exactly this: search the
    * fully-qualified `user@host` handle with `resolve=true`, which webfingers the
    * account and creates a *local* record for it, then act on that id. It is what
-   * `import-follows.ts` and `starter-kit-post.ts` already do; this is that logic
+   * `import-follows.ts` already does; this is that logic
    * in one place so a third and fourth copy don't appear.
    *
    * Returns null when the handle can't be built or the account can't be found —

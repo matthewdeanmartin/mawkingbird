@@ -99,6 +99,7 @@ all,exports,src/app/feed-analytics/feed-analytics.ts,166,DEFAULT_SAMPLE
 all,exports,src/app/feed-members/feed-members.ts,16,SAMPLE_CHOICES
 all,exports,src/app/feed-members/feed-members.ts,18,DEFAULT_SAMPLE
 all,exports,src/app/providers/account/profile-account-key.ts,30,ACCOUNT_KEY_HEADER
+all,exports,src/app/providers/cors-proxy/cors-proxy.ts,429,proxyRefusalReason
 all,exports,src/app/invites/invite-templates.ts,21,MAWKINGBIRD_URL
 all,exports,src/app/lists/list-feed-resolver.ts,8,FEED_PER_MEMBER
 all,exports,src/app/lists/list-feed-resolver.ts,10,FEED_MAX
@@ -135,8 +136,9 @@ all,exports,src/app/pages/search/mastodon-query-serializer.ts,123,mastodonQueryS
 all,types,src/app/pages/search/mastodon-query-serializer.ts,22,MastodonQuerySerializer
 all,exports,src/app/pages/search/search-helper.ts,38,SEARCH_SUCCESS_THRESHOLD_NARROW
 all,exports,src/app/pages/search/search-helper.ts,41,SEARCH_QUERY_COUNT
-all,exports,src/app/pages/search/search-sort.ts,110,accountActivity
+all,exports,src/app/pages/search/search-sort.ts,121,accountActivity
 all,exports,src/app/pages/search/web-query-serializer.ts,49,webEngineDef
+all,exports,src/app/providers/twitter/twitter-feed.ts,415,followFromAccount
 all,exports,src/app/pages/write/quality-checks.ts,85,countSyllables
 all,exports,src/app/pages/write/quality-checks.ts,114,MIN_WORDS_FOR_READABILITY
 all,exports,src/app/pages/write/quality-checks.ts,117,DENSE_READING_EASE
@@ -200,10 +202,10 @@ all,types,src/app/lists/list-source.ts,10,ListSource
 all,types,src/app/lists/list-source.ts,21,ListSourceKind
 all,types,src/app/lists/list-source.ts,24,MemberOrigin
 all,types,src/app/lists/list-source.ts,27,ResolvedFeed
-all,types,src/app/observability/api-docs.ts,28,DocMatch
-all,types,src/app/observability/indexed-db-inspector.ts,47,QuotaInfo
 all,types,src/app/onboarding/onboarding-questions.ts,37,OnboardingScope
 all,types,src/app/onboarding/onboarding-questions.ts,45,OnboardingControl
+all,types,src/app/observability/api-docs.ts,28,DocMatch
+all,types,src/app/observability/indexed-db-inspector.ts,47,QuotaInfo
 all,types,src/app/pages/settings/connections/doctor/connection-doctor-catalog.ts,126,StatusPage
 all,types,src/app/providers/anonymous/anonymous-home-feed-cache.ts,15,AnonymousCacheLoadReport
 all,types,src/app/providers/bluesky/bluesky-post-search.ts,17,BlueskySearchSort
@@ -239,6 +241,7 @@ all,types,src/app/compose/visibility-state.ts,8,PostVisibility
 all,types,src/app/lists/server-feeds.ts,5,ServerFeedContent
 all,types,src/app/shell/left-rail/profile-stack/rail-profile.ts,4,RailProfileStat
 production,files,src/app/i18n/i18n.testing.ts,,src/app/i18n/i18n.testing.ts
+production,files,src/app/starter-kit-post/starter-kit-post.ts,,src/app/starter-kit-post/starter-kit-post.ts
 production,files,src/app/testing/enable-proxy-flags.ts,,src/app/testing/enable-proxy-flags.ts
 production,files,src/app/testing/fake-streaming.ts,,src/app/testing/fake-streaming.ts
 production,files,src/app/testing/plus-catalogue.ts,,src/app/testing/plus-catalogue.ts
@@ -249,6 +252,8 @@ production,files,src/app/testing/translate-en.ts,,src/app/testing/translate-en.t
 production,files,src/app/design-system/action-menu/action-menu.ts,,src/app/design-system/action-menu/action-menu.ts
 production,files,src/app/design-system/identity/identity.ts,,src/app/design-system/identity/identity.ts
 production,files,src/app/design-system/popover/popover.ts,,src/app/design-system/popover/popover.ts
+production,files,src/app/pages/read/post-blocks.ts,,src/app/pages/read/post-blocks.ts
+production,files,src/app/pages/settings/anonymous/settings-anonymous.ts,,src/app/pages/settings/anonymous/settings-anonymous.ts
 production,files,src/app/providers/twitter/fixtures/twitterapi-io.fixtures.ts,,src/app/providers/twitter/fixtures/twitterapi-io.fixtures.ts
 production,binaries,package.json,,ng
 production,dependencies,package.json,72,@angular/platform-server
@@ -336,6 +341,7 @@ production,exports,src/app/just-my-server.ts,78,accountIsOnServer
 production,exports,src/app/providers/cors-proxy/cors-proxy.ts,348,assertProxyable
 production,exports,src/app/providers/cors-proxy/cors-proxy.ts,374,assertProxyableIgnoringCredentialHosts
 production,exports,src/app/providers/cors-proxy/cors-proxy.ts,419,canProxy
+production,exports,src/app/providers/cors-proxy/cors-proxy.ts,429,proxyRefusalReason
 production,exports,src/app/pages/settings/connections/doctor/connection-doctor.ts,274,classifyProxyStatus
 production,exports,src/app/first-run/preview-seed.ts,111,PREVIEW_ACCOUNT_IDS
 production,exports,src/app/pkce.ts,33,randomBase64Url
@@ -428,6 +434,7 @@ production,types,src/app/providers/shortener/shortener-catalog.ts,49,ShortenerKe
 production,exports,src/app/providers/twitter/twitter-api.ts,257,parseBalance
 production,exports,src/app/providers/twitter/twitter-api.ts,283,CREDITS_PER_TIMELINE_PAGE
 production,exports,src/app/providers/twitter/twitter-feed.ts,29,TIMELINE_TTL_MS
+production,exports,src/app/providers/twitter/twitter-feed.ts,415,followFromAccount
 production,exports,src/app/providers/twitter/twitter-import.ts,120,RATE_LIMIT_RETRIES
 production,exports,src/app/providers/twitter/twitter-import.ts,422,toCandidate
 production,exports,src/app/providers/twitter/twitter-pacer.ts,47,FAST_DELAY_MS
@@ -516,7 +523,7 @@ production,types,src/app/pages/search/mawkingbird-search.ts,42,SearchTextCriteri
 production,types,src/app/pages/search/mawkingbird-search.ts,93,HashtagSearchCriteria
 production,types,src/app/pages/search/mawkingbird-search.ts,97,SearchPresentation
 production,exports,src/app/pages/search/web-query-serializer.ts,49,webEngineDef
-production,exports,src/app/pages/search/search-sort.ts,110,accountActivity
+production,exports,src/app/pages/search/search-sort.ts,121,accountActivity
 production,exports,src/app/pages/search/mastodon-query-serializer.ts,123,mastodonQuerySerializer
 production,types,src/app/pages/search/mastodon-query-serializer.ts,22,MastodonQuerySerializer
 production,exports,src/app/pages/search/recent-searches.ts,28,RECENT_SEARCH_LIMIT

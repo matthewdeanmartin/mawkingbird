@@ -43,6 +43,14 @@ type ConnectionStatus = 'checking' | 'available' | 'degraded' | 'unreachable';
 // i18n settings.server.rejects.hint: These are skipped when hunting for a search server, so a second hunt doesn't re-probe the same servers. A server that turns search on later won't be found again until you forget them.
 // i18n settings.server.rejects.forget: Forget all {{count}} and re-check
 // i18n settings.server.anonymous: Anonymous browsing
+// i18n settings.anonymous.maxAge: Maximum age of posts from followed accounts
+// i18n settings.anonymous.maxAge.hint: Older posts are left out when Anonymous builds Home. Posts from followed hashtags are not affected.
+// i18n settings.anonymous.age.days30: 30 days
+// i18n settings.anonymous.age.months3: 3 months
+// i18n settings.anonymous.age.months6: 6 months
+// i18n settings.anonymous.age.years1: 1 year
+// i18n settings.anonymous.age.years2: 2 years
+// i18n settings.anonymous.age.years5: 5 years
 @Component({
   selector: 'app-settings-server',
   imports: [FormsModule, ServerDiscovery, ServerPicker, SearchServerDiscovery, TranslocoPipe],

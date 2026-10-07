@@ -3686,10 +3686,8 @@
     "anonymous.age.years1": "1 год",
     "anonymous.age.years2": "2 года",
     "anonymous.age.years5": "5 лет",
-    "anonymous.intro": "Настройте формирование локальной анонимной домашней ленты в браузере.",
     "anonymous.maxAge": "Максимальный возраст постов отслеживаемых учётных записей",
     "anonymous.maxAge.hint": "Более старые посты исключаются при создании анонимной Главной. Посты отслеживаемых хэштегов не затрагиваются.",
-    "anonymous.title": "Анонимный режим",
     "appearance.animations": "Анимации",
     "appearance.contentWarnings": "Предупреждения о содержании",
     "appearance.disableSwiping": "Отключить жесты смахивания",
@@ -5751,17 +5749,6 @@
     "notFound": "Не найдено",
     "opening": "Открытие…",
     "unavailable": "Этот стартовый набор больше недоступен. Посмотрите текущие наборы, чтобы найти людей для подписки."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} учётная запись",
-    "account.other": "{{count}} учётных записей",
-    "accountsAria": "Все учётные записи в {{title}}",
-    "followAll": "Подписаться на всех",
-    "followed": "Оформлено {{followed}} из {{total}} подписок",
-    "following": "Подписка… {{completed}}/{{total}}",
-    "openAccount": "Открыть {{name}} в приложении",
-    "openOriginal": "Открыть оригинал на {{host}} ↗",
-    "viewCollection": "Посмотреть коллекцию"
   },
   "statusCard": {
     "actionFailure": "Не удалось {{verb}} — попробуйте снова.",

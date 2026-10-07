@@ -4064,10 +4064,8 @@
     "anonymous.age.years1": "1 year",
     "anonymous.age.years2": "2 years",
     "anonymous.age.years5": "5 years",
-    "anonymous.intro": "Control how the browser-local Anonymous home feed is assembled.",
     "anonymous.maxAge": "Maximum age of posts from followed accounts",
     "anonymous.maxAge.hint": "Older posts are left out when Anonymous builds Home. Posts from followed hashtags are not affected.",
-    "anonymous.title": "Anonymous",
     "appearance.animations": "Animations",
     "appearance.contentWarnings": "Content warnings",
     "appearance.disableSwiping": "Disable swiping motions",
@@ -6269,17 +6267,6 @@
     "tabs.members": "Members",
     "tabs.posts": "Posts",
     "unavailable": "This starter kit is no longer available. Browse the current kits to find people to follow."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} account",
-    "account.other": "{{count}} accounts",
-    "accountsAria": "All accounts in {{title}}",
-    "followAll": "Follow all",
-    "followed": "Followed {{followed}} of {{total}}",
-    "following": "Following… {{completed}}/{{total}}",
-    "openAccount": "Open {{name}} in app",
-    "openOriginal": "Open original on {{host}} ↗",
-    "viewCollection": "View collection"
   },
   "statusCard": {
     "actionFailure": "Couldn't {{verb}} — try again.",

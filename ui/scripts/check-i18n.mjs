@@ -169,7 +169,6 @@ const MIGRATED = [
   'admin/domains',
   'pages/endorsed-list',
   'pages/feed-doctor',
-  'starter-kit-post',
   'admin/ip-blocks',
   'history-dialog',
   'pages/server-rules',

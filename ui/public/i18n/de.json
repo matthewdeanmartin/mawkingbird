@@ -3028,10 +3028,8 @@
     "anonymous.age.years1": "1 Jahr",
     "anonymous.age.years2": "2 Jahre",
     "anonymous.age.years5": "5 Jahre",
-    "anonymous.intro": "Steuere, wie der browserlokale Anonymous-Home-Feed zusammengestellt wird.",
     "anonymous.maxAge": "Maximales Alter von Beiträgen aus gefolgten Konten",
     "anonymous.maxAge.hint": "Ältere Beiträge werden weggelassen, wenn Anonymous die Startseite zusammenstellt. Beiträge aus gefolgten Hashtags sind nicht betroffen.",
-    "anonymous.title": "Anonym",
     "appearance.animations": "Animationen",
     "appearance.contentWarnings": "Inhaltswarnungen",
     "appearance.disableSwiping": "Wischbewegungen deaktivieren",
@@ -5774,17 +5772,6 @@
     "notFound": "Nicht gefunden",
     "opening": "Wird geöffnet…",
     "unavailable": "Dieses Starter-Kit ist nicht mehr verfügbar. Stöbere durch die aktuellen Kits, um Leute zum Folgen zu finden."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} Konto",
-    "account.other": "{{count}} Konten",
-    "accountsAria": "Alle Konten in {{title}}",
-    "followAll": "Allen folgen",
-    "followed": "{{followed}} von {{total}} gefolgt",
-    "following": "Folgen… {{completed}}/{{total}}",
-    "openAccount": "{{name}} in der App öffnen",
-    "openOriginal": "Original auf {{host}} öffnen ↗",
-    "viewCollection": "Sammlung anzeigen"
   },
   "terms": {
     "byMastodon": "Von diesem Mastodon-Server veröffentlichte Nutzungsbedingungen.",

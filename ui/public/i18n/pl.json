@@ -3686,10 +3686,8 @@
     "anonymous.age.years1": "1 rok",
     "anonymous.age.years2": "2 lata",
     "anonymous.age.years5": "5 lat",
-    "anonymous.intro": "Określ, jak składany jest lokalny anonimowy kanał główny w przeglądarce.",
     "anonymous.maxAge": "Maksymalny wiek wpisów z obserwowanych kont",
     "anonymous.maxAge.hint": "Starsze wpisy są pomijane przy tworzeniu anonimowej strony Głównej. Wpisy z obserwowanych hashtagów pozostają bez zmian.",
-    "anonymous.title": "Anonimowo",
     "appearance.animations": "Animacje",
     "appearance.contentWarnings": "Ostrzeżenia o treści",
     "appearance.disableSwiping": "Wyłącz gesty przesuwania",
@@ -5751,17 +5749,6 @@
     "notFound": "Nie znaleziono",
     "opening": "Otwieranie…",
     "unavailable": "Ten zestaw startowy nie jest już dostępny. Przejrzyj aktualne zestawy, aby znaleźć osoby do obserwowania."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} konto",
-    "account.other": "{{count}} kont",
-    "accountsAria": "Wszystkie konta w {{title}}",
-    "followAll": "Obserwuj wszystkie",
-    "followed": "Zaobserwowano {{followed}} z {{total}}",
-    "following": "Obserwowanie… {{completed}}/{{total}}",
-    "openAccount": "Otwórz {{name}} w aplikacji",
-    "openOriginal": "Otwórz oryginał na {{host}} ↗",
-    "viewCollection": "Wyświetl kolekcję"
   },
   "statusCard": {
     "actionFailure": "Nie udało się {{verb}} — spróbuj ponownie.",

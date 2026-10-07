@@ -2424,10 +2424,8 @@
     "anonymous.age.years1": "1 tahun",
     "anonymous.age.years2": "2 tahun",
     "anonymous.age.years5": "5 tahun",
-    "anonymous.intro": "Atur cara feed Beranda Anonim (lokal-browser) disusun.",
     "anonymous.maxAge": "Usia maksimum postingan dari akun yang kamu ikuti",
     "anonymous.maxAge.hint": "Postingan yang lebih lama dilewati saat Anonim menyusun Beranda. Postingan dari tagar yang kamu ikuti tidak terpengaruh.",
-    "anonymous.title": "Anonim",
     "appearance.animations": "Animasi",
     "appearance.contentWarnings": "Peringatan konten",
     "appearance.disableSwiping": "Nonaktifkan gerakan geser",
@@ -5277,17 +5275,6 @@
     "notFound": "Tidak ditemukan",
     "opening": "Membuka…",
     "unavailable": "Paket awal ini sudah tidak tersedia lagi. Jelajahi paket yang ada sekarang untuk menemukan orang yang bisa diikuti."
-  },
-  "starterKitPost": {
-    "account.one": "{{count}} akun",
-    "account.other": "{{count}} akun",
-    "accountsAria": "Semua akun di {{title}}",
-    "followAll": "Ikuti semua",
-    "followed": "Mengikuti {{followed}} dari {{total}}",
-    "following": "Mengikuti… {{completed}}/{{total}}",
-    "openAccount": "Buka {{name}} di aplikasi",
-    "openOriginal": "Buka aslinya di {{host}} ↗",
-    "viewCollection": "Lihat kumpulan"
   },
   "about": {
     "title": "Desain"
