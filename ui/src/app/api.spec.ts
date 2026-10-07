@@ -37,6 +37,32 @@ describe('Api service (HTTP isolated)', () => {
     return { id: '7', following: false, blocking: false, ...overrides } as Relationship;
   }
 
+  it('homeTimelinePage follows Link on a short page and reports an explicit end', () => {
+    let page: { nextMaxId: string | null; cursorSource: string } | undefined;
+    api.homeTimelinePage().subscribe((result) => (page = result));
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([statusStub()], {
+      headers: { Link: '<https://example.social/api/v1/timelines/home?max_id=88>; rel="next"' },
+    });
+    expect(page).toMatchObject({ nextMaxId: '88', cursorSource: 'link' });
+    api.homeTimelinePage('88').subscribe((result) => (page = result));
+    httpMock
+      .expectOne('/api/v1/timelines/home?limit=20&max_id=88')
+      .flush([statusStub({ id: '77' })], {
+        headers: { Link: '<https://example.social/api/v1/timelines/home?min_id=77>; rel="prev"' },
+      });
+    expect(page).toMatchObject({ nextMaxId: null, cursorSource: 'none' });
+  });
+
+  it('homeTimelinePage keeps a short page pageable when Link is absent or hidden', () => {
+    let page: { nextMaxId: string | null } | undefined;
+    api.homeTimelinePage().subscribe((result) => (page = result));
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([statusStub()]);
+    expect(page?.nextMaxId).toBe('99');
+    api.homeTimelinePage('99').subscribe((result) => (page = result));
+    httpMock.expectOne('/api/v1/timelines/home?limit=20&max_id=99').flush([]);
+    expect(page?.nextMaxId).toBeNull();
+  });
+
   // ---------------------------------------------------------------- post
 
   it('post: POSTs the status text to /api/v1/statuses and returns the created Status', () => {

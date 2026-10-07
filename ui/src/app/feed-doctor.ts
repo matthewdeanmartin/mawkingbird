@@ -250,6 +250,8 @@ export interface FeedBounds {
   cooldownMinutes: number;
   /** True when the feed genuinely reached the end of every source. */
   exhausted: boolean;
+  /** A failed or stalled source is not evidence of exhaustion. */
+  failedSources?: string[];
   /** How many posts are on screen, for phrasing. */
   shown: number;
 }
@@ -257,6 +259,12 @@ export interface FeedBounds {
 export function diagnoseStopped(bounds: FeedBounds): Verdict {
   const detail: string[] = [];
   const actions: DoctorAction[] = [];
+
+  if (bounds.failedSources?.length) {
+    detail.push(
+      `Sources stopped before completeness could be verified: ${bounds.failedSources.join(', ')}. Retry Home to reload these sources.`,
+    );
+  }
 
   if (bounds.cooldownActive) {
     detail.push(
@@ -306,16 +314,20 @@ export function diagnoseStopped(bounds: FeedBounds): Verdict {
   // A cooldown or a window bounds what can be *fetched*; the filters only thin
   // what already arrived. Warn on the former, note the latter.
   const severity: Severity =
-    bounds.cooldownActive || bounds.droppedByWindow > 0 ? 'warn' : 'notice';
+    bounds.cooldownActive || bounds.droppedByWindow > 0 || bounds.failedSources?.length
+      ? 'warn'
+      : 'notice';
 
   return {
     id: 'stopped',
     severity,
     headline: bounds.cooldownActive
       ? 'Your feed stopped because of a reading break.'
-      : bounds.droppedByWindow > 0
-        ? `Your feed stopped at the edge of ${bounds.windowLabel}.`
-        : 'Your feed is shorter than it looks — filters are hiding posts.',
+      : bounds.failedSources?.length
+        ? 'Your feed stopped with a source failure — you may not be caught up.'
+        : bounds.droppedByWindow > 0
+          ? `Your feed stopped at the edge of ${bounds.windowLabel}.`
+          : 'Your feed is shorter than it looks — filters are hiding posts.',
     detail,
     actions,
   };

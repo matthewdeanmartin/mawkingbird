@@ -70,6 +70,14 @@ const SOURCE_HARD_CAP = 500;
 interface ForeignSource {
   provider: FeedProvider;
   exhausted: boolean;
+  reason: FeedSourceReason;
+}
+
+export type FeedSourceReason =
+  'active' | 'disabled' | 'empty' | 'end' | 'window' | 'error' | 'cursor-stalled' | 'oversized';
+export interface FeedSourceState {
+  provider: string;
+  reason: FeedSourceReason;
 }
 
 /**
@@ -93,6 +101,7 @@ export class FeedAggregator {
 
   private mastodonMaxId: string | undefined;
   private mastodonExhausted = false;
+  private mastodonReason: FeedSourceReason = 'active';
   private foreign: ForeignSource[] = [];
   /** Epoch ms before which posts are not loaded, or null for no limit. */
   private cutoff: number | null = null;
@@ -104,6 +113,22 @@ export class FeedAggregator {
    * only if the app can say there is actually something older to see.
    */
   readonly droppedByWindow = signal(0);
+  /** Reasons describe the loading session, rather than guessing from its posts. */
+  readonly sourceStates = signal<FeedSourceState[]>([]);
+  readonly failedSources = signal<string[]>([]);
+  private round = 0;
+
+  private reportState(): void {
+    this.sourceStates.set([
+      { provider: 'mastodon', reason: this.mastodonReason },
+      ...this.foreign.map((source) => ({ provider: source.provider.id, reason: source.reason })),
+    ]);
+    this.failedSources.set(
+      this.sourceStates()
+        .filter((source) => ['error', 'cursor-stalled', 'oversized'].includes(source.reason))
+        .map((source) => source.provider),
+    );
+  }
 
   /**
    * Whether a post is inside the loading window.
@@ -123,6 +148,7 @@ export class FeedAggregator {
 
   /** Start over from the top using the providers currently visible to the user. */
   reset(): void {
+    this.round = 0;
     const windowMs = homeWindowMs(this.prefs.homeWindow());
     this.cutoff = windowMs === null ? null : Date.now() - windowMs;
     this.droppedByWindow.set(0);
@@ -160,7 +186,7 @@ export class FeedAggregator {
       .filter((provider) => this.prefs.isProviderVisible(provider.id))
       .map((provider) => {
         provider.reset();
-        return { provider, exhausted: false };
+        return { provider, exhausted: false, reason: 'active' as const };
       });
     // The same recovery as Mastodon: a primary Bluesky identity must not be
     // stranded by filters hiding every source. Never enable a Mastodon call
@@ -170,7 +196,7 @@ export class FeedAggregator {
       if (primary) {
         if (!this.prefs.isProviderVisible('bluesky')) this.prefs.toggleProvider('bluesky');
         primary.reset();
-        this.foreign = [{ provider: primary, exhausted: false }];
+        this.foreign = [{ provider: primary, exhausted: false, reason: 'active' }];
         this.diagnostics.warn('aggregator:all-sources-hidden-fallback', { provider: 'bluesky' });
       }
     }
@@ -199,8 +225,10 @@ export class FeedAggregator {
       if (!this.prefs.isProviderVisible(provider.id)) continue;
       if (provider.id === 'bluesky' && !this.flags.enabled('connector-bluesky')) continue;
       provider.reset();
-      this.foreign.push({ provider, exhausted: false });
+      this.foreign.push({ provider, exhausted: false, reason: 'active' });
     }
+    this.mastodonReason = this.mastodonExhausted ? 'disabled' : 'active';
+    this.reportState();
     this.diagnostics.info('aggregator:reset', {
       mode: this.auth.mode() ?? 'unauthenticated',
       mastodonVisible: this.prefs.isProviderVisible('mastodon'),
@@ -208,11 +236,13 @@ export class FeedAggregator {
       mastodonConnector: this.connector.current().state,
       linkedProviders: this.registry.linked().map((provider) => provider.id),
       enabledForeignProviders: this.foreign.map((source) => source.provider.id),
+      window: this.prefs.homeWindow(),
+      cutoff: this.cutoff,
     });
   }
 
   hasMore(): boolean {
-    return !this.mastodonExhausted || this.foreign.some((source) => !source.exhausted);
+    return this.sourceStates().some((source) => source.reason === 'active');
   }
 
   /** Fetch one quota-sized round from every active source and merge it by date. */
@@ -222,7 +252,9 @@ export class FeedAggregator {
     // so pairing this with `round-success`'s elapsedMs and the per-source timeout
     // warnings is what names the culprit behind a Home feed that felt frozen.
     const roundStartedAt = Date.now();
+    const round = ++this.round;
     this.diagnostics.info('aggregator:round-start', {
+      round,
       mastodonEnabled: !this.mastodonExhausted,
       foreignProviders: this.foreign
         .filter((source) => !source.exhausted)
@@ -232,12 +264,18 @@ export class FeedAggregator {
 
     if (!this.mastodonExhausted) {
       sourcePages.push(
-        this.api.homeTimeline(this.mastodonMaxId).pipe(
-          map((items) => {
-            this.mastodonMaxId = items.at(-1)?.id ?? this.mastodonMaxId;
-            if (items.length < SOURCE_PAGE_SIZE) {
+        this.api.homeTimelinePage(this.mastodonMaxId).pipe(
+          map(({ statuses: items, nextMaxId, cursorSource }) => {
+            const previousCursor = this.mastodonMaxId;
+            this.mastodonReason = 'active';
+            if (!nextMaxId) {
               this.mastodonExhausted = true;
+              this.mastodonReason = items.length ? 'end' : 'empty';
+            } else if (nextMaxId === previousCursor) {
+              this.mastodonExhausted = true;
+              this.mastodonReason = 'cursor-stalled';
             }
+            this.mastodonMaxId = nextMaxId ?? previousCursor;
             // A page is newest-first, so once it crosses the cutoff everything
             // beyond it is older still — stop rather than paging into the
             // archive. This is what keeps "Today" from loading a year.
@@ -245,7 +283,18 @@ export class FeedAggregator {
             if (fresh.length < items.length) {
               this.droppedByWindow.update((n) => n + (items.length - fresh.length));
               this.mastodonExhausted = true;
+              this.mastodonReason = 'window';
             }
+            this.reportState();
+            this.diagnostics.info('mastodon:page-state', {
+              round,
+              received: items.length,
+              withinWindow: fresh.length,
+              droppedByWindow: items.length - fresh.length,
+              cursorSource,
+              cursorAdvanced: nextMaxId !== null && nextMaxId !== previousCursor,
+              reason: this.mastodonReason,
+            });
             return fresh;
           }),
           tap({
@@ -254,7 +303,14 @@ export class FeedAggregator {
                 posts: items.length,
                 exhausted: this.mastodonExhausted,
               }),
-            error: (error: unknown) => this.diagnostics.error('mastodon:page-error', error),
+            error: (error: unknown) =>
+              this.diagnostics.error('mastodon:page-error', error, { round }),
+          }),
+          catchError(() => {
+            this.mastodonExhausted = true;
+            this.mastodonReason = 'error';
+            this.reportState();
+            return of([] as Status[]);
           }),
         ),
       );
@@ -274,10 +330,12 @@ export class FeedAggregator {
       map((pages) => withoutPrivateFollowDuplicates(pages.flat()).sort(byNewestFirst)),
       tap((items) =>
         this.diagnostics.info('aggregator:round-success', {
+          round,
           posts: items.length,
           elapsedMs: Date.now() - roundStartedAt,
           providerCounts: this.providerCounts(items),
           hasMore: this.hasMore(),
+          sources: this.sourceStates(),
         }),
       ),
     );
@@ -325,6 +383,8 @@ export class FeedAggregator {
         // Only a real failure exhausts the source. Marking a timed-out source
         // exhausted would drop it for the rest of the session over one slow round.
         source.exhausted = !timedOut;
+        source.reason = timedOut ? 'active' : 'error';
+        this.reportState();
         if (timedOut) {
           this.diagnostics.warn('foreign:page-timeout', {
             provider: source.provider.id,
@@ -357,6 +417,13 @@ export class FeedAggregator {
         });
         if (!rawItems.length) {
           source.exhausted = true;
+          source.reason = 'empty';
+          this.reportState();
+          this.diagnostics.info('foreign:source-stopped', {
+            provider: source.provider.id,
+            reason: source.reason,
+            collected: collected.length,
+          });
           return of(collected);
         }
         // Truncate before anything else looks at the page. A source that
@@ -372,6 +439,8 @@ export class FeedAggregator {
           });
           items = rawItems.slice(0, SOURCE_HARD_CAP);
           source.exhausted = true;
+          source.reason = 'oversized';
+          this.reportState();
           return of([...collected, ...items.filter((item) => this.withinWindow(item))]);
         }
         // Same rule as Mastodon: a source that has gone past the cutoff has
@@ -382,7 +451,16 @@ export class FeedAggregator {
         const fresh = items.filter((item) => this.withinWindow(item));
         if (fresh.length < items.length) {
           this.droppedByWindow.update((n) => n + (items.length - fresh.length));
-          if (!source.provider.unorderedPages) source.exhausted = true;
+          if (!source.provider.unorderedPages) {
+            source.exhausted = true;
+            source.reason = 'window';
+            this.reportState();
+            this.diagnostics.info('foreign:source-stopped', {
+              provider: source.provider.id,
+              reason: source.reason,
+              dropped: items.length - fresh.length,
+            });
+          }
         }
         return this.fetchForeignPage(source, [...collected, ...fresh], deadline);
       }),

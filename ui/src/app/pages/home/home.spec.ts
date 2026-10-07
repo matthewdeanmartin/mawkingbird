@@ -1,8 +1,12 @@
 import { FEED_CTA_INTERVAL } from '../../feed-ctas';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+  TestRequest,
+} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Signal, WritableSignal } from '@angular/core';
+import { signal, Signal, WritableSignal } from '@angular/core';
 import {
   type Event as RouterEvent,
   NavigationSkipped,
@@ -30,6 +34,9 @@ import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { of, Subject } from 'rxjs';
 import { SERVER_ROLE } from '../../server-role';
 import { RssSubscriptions } from '../../providers/rss/rss-subscriptions';
+import { ProviderRegistry } from '../../providers/provider-registry';
+import { FeedProvider } from '../../providers/provider';
+import { HomeTimelineFeed } from '../../home-timeline-feed';
 
 /** Exposes Home's protected signals for white-box testing. */
 interface HomeInternals {
@@ -87,15 +94,31 @@ function makeStatus(id: string): Status {
   };
 }
 
+/** Existing view fixtures declare their paging intent in the server's Link header. */
+function flushHomePage(request: TestRequest, posts: Status[]): void {
+  const cursor = posts.at(-1)?.id;
+  request.flush(posts, {
+    headers: {
+      Link:
+        posts.length >= 20 && cursor
+          ? `<https://example.social/api/v1/timelines/home?max_id=${cursor}>; rel="next"`
+          : '<https://example.social/api/v1/timelines/home?min_id=1>; rel="prev"',
+    },
+  });
+}
+
 describe('Home', () => {
   it('stops automatic filling when a full server page only repeats loaded posts', () => {
     TestBed.inject(ClientPrefs).setFeedMin(100);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     const page = Array.from({ length: 20 }, (_, i) => makeStatus(String(100 - i)));
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page);
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne((r) => r.url.includes('/timelines/home')).flush(page);
+    flushHomePage(
+      httpMock.expectOne((r) => r.url.includes('/timelines/home')),
+      page,
+    );
     expect(internals(fixture).autoLoading()).toBe(false);
     expect(internals(fixture).statuses()).toHaveLength(20);
     httpMock.expectNone((r) => r.url.includes('/timelines/home'));
@@ -143,7 +166,7 @@ describe('Home', () => {
   function setUp(): ComponentFixture<Home> {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), []);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
@@ -156,7 +179,7 @@ describe('Home', () => {
       new NavigationSkipped(1, '/home', 'Same URL', NavigationSkippedCode.IgnoredSameUrlNavigation),
     );
     expect(internals(fixture).view()).toBe('feed');
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), []);
   });
 
   it('reports no new posts, ignores repeated clicks while loading, and clears the notice when posts arrive', () => {
@@ -164,12 +187,13 @@ describe('Home', () => {
     internals(fixture).statuses.set([makeStatus('old')]);
     internals(fixture).refreshHome();
     internals(fixture).refreshHome();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('old')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [makeStatus('old')]);
     expect(internals(fixture).noNewPosts()).toBe(true);
     internals(fixture).refreshHome();
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush([makeStatus('new'), makeStatus('old')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('new'),
+      makeStatus('old'),
+    ]);
     expect(internals(fixture).noNewPosts()).toBe(false);
   });
 
@@ -269,7 +293,7 @@ describe('Home', () => {
   function goLive(fixture: ComponentFixture<Home>, snapshot: Status[] = []): void {
     TestBed.inject(ClientPrefs).setAutoRefreshTimeline(true);
     fixture.detectChanges();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(snapshot);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), snapshot);
   }
 
   /** The inverse of {@link goLive}: no refetch happens on the way down. */
@@ -294,7 +318,11 @@ describe('Home', () => {
     const original = makeStatus('original');
     const retweet = { ...makeStatus('retweet'), reblog: makeStatus('boosted') };
     const reply = { ...makeStatus('reply'), in_reply_to_id: 'parent' };
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([original, retweet, reply]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      original,
+      retweet,
+      reply,
+    ]);
 
     expect(
       internals(fixture)
@@ -333,7 +361,7 @@ describe('Home', () => {
         in_reply_to_id: 'p',
       })),
     ];
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page1);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page1);
 
     // Twenty fetched is twenty fetched: the minimum is already satisfied, so no
     // second page is requested even though only one post is on screen.
@@ -352,7 +380,7 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
       makeStatus('keep-1'),
       ...Array.from({ length: 19 }, (_, i) => ({
         ...makeStatus(`r${i}`),
@@ -393,7 +421,10 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('a'), makeStatus('b')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('a'),
+      makeStatus('b'),
+    ]);
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
@@ -425,9 +456,10 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush([makeStatus('a'), { ...makeStatus('b'), in_reply_to_id: 'p' }]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('a'),
+      { ...makeStatus('b'), in_reply_to_id: 'p' },
+    ]);
 
     internals(fixture).toggleReplies();
     internals(fixture).toggleBoosts();
@@ -582,7 +614,7 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(50));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(50));
     fixture.detectChanges();
 
     goLive(fixture, page(50));
@@ -655,9 +687,12 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
 
     // First page: a full 20 → below min(40), so auto-load fires a second page.
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(20, 0));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20, 0));
     // Second page: another full 20 → now 40, min reached, auto-load stops.
-    httpMock.expectOne((r) => r.url === '/api/v1/timelines/home').flush(page(20, 20));
+    flushHomePage(
+      httpMock.expectOne((r) => r.url === '/api/v1/timelines/home'),
+      page(20, 20),
+    );
 
     expect(internals(fixture).statuses()).toHaveLength(40);
     expect(internals(fixture).autoLoading()).toBe(false);
@@ -668,18 +703,19 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(20, 0));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20, 0));
 
     internals(fixture).loadMore();
     // "Load more" also decides the bookmark button (see BookmarkPresence); it
     // is one request per day, not per page, and is unrelated to this assertion.
     httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
-    httpMock
-      .expectOne(
+    flushHomePage(
+      httpMock.expectOne(
         (request) =>
           request.url === '/api/v1/timelines/home' && request.params.get('max_id') === '19',
-      )
-      .flush([makeStatus('19'), makeStatus('20')]);
+      ),
+      [makeStatus('19'), makeStatus('20')],
+    );
 
     const ids = internals(fixture)
       .statuses()
@@ -700,7 +736,7 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([firstBoost, secondBoost]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [firstBoost, secondBoost]);
 
     expect(
       internals(fixture)
@@ -716,7 +752,7 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(20, 0));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20, 0));
 
     // Feed is at 20 == max; loadMore must NOT fetch, and the cap engages.
     expect(internals(fixture).statuses()).toHaveLength(20);
@@ -729,12 +765,83 @@ describe('Home', () => {
     expect(internals(fixture).canLoadMore()).toBe(false);
   });
 
+  it('reports the maximum when the last available page reaches it', () => {
+    TestBed.inject(ClientPrefs).setFeedMax(20);
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(20), {
+      headers: { Link: '</api/v1/timelines/home?min_id=1>; rel="prev"' },
+    });
+    fixture.detectChanges();
+    expect(internals(fixture).capActive()).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('You’ve had enough for now');
+    expect(fixture.nativeElement.textContent).not.toContain('You’re all caught up');
+  });
+
+  it('keeps paging a three-source Home after a short Mastodon page, then reports a source failure truthfully', () => {
+    TestBed.inject(ClientPrefs).setFeedMin(75);
+    const providers: FeedProvider[] = (['bluesky', 'rss'] as const).map((id) => ({
+      id,
+      label: id,
+      badge: id,
+      linked: signal(true),
+      errors: signal<string[]>([]),
+      reset: vi.fn(),
+      fetchPage: vi
+        .fn()
+        .mockReturnValueOnce(
+          of(Array.from({ length: 20 }, (_, i) => ({ ...makeStatus(`${id}${i}`), provider: id }))),
+        )
+        .mockReturnValue(of([])),
+    }));
+    vi.spyOn(TestBed.inject(ProviderRegistry), 'linked').mockReturnValue(providers);
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    // No Link header: the short-page fallback must also continue in Home.
+    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(3, 100));
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url.includes('/timelines/home') && r.params.get('max_id') === page(3, 100).at(-1)!.id,
+      )
+      .flush(page(20, 200));
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url.includes('/timelines/home') && r.params.get('max_id') === page(20, 200).at(-1)!.id,
+      )
+      .flush(page(20, 300));
+    fixture.detectChanges();
+    expect(internals(fixture).statuses()).toHaveLength(83);
+    expect(internals(fixture).canLoadMore()).toBe(true);
+    expect(TestBed.inject(HomeTimelineFeed).snapshot()?.bounds.exhausted).toBe(false);
+    internals(fixture).loadMore();
+    httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
+    httpMock
+      .expectOne((r) => r.url.includes('/timelines/home'))
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(internals(fixture).statuses()).toHaveLength(83);
+    expect(fixture.nativeElement.textContent).toContain('source failure (mastodon)');
+    expect(fixture.nativeElement.textContent).not.toContain('You’re all caught up');
+    expect(TestBed.inject(HomeTimelineFeed).snapshot()?.bounds).toMatchObject({
+      exhausted: false,
+      failedSources: ['mastodon'],
+    });
+    expect(diagnostics.info).toHaveBeenCalledWith(
+      'feed:state',
+      expect.objectContaining({ hasMore: false, failedSources: ['mastodon'], stored: 83 }),
+    );
+  });
+
   it('applies the same dedupe and cap when a locally created post is inserted', () => {
     TestBed.inject(ClientPrefs).setFeedMax(50);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(50));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(50));
 
     const created = { ...makeStatus('created'), created_at: '2026-02-01T00:00:00Z' };
     internals(fixture).onPosted(created);
@@ -764,7 +871,7 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush(page(20, 0));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20, 0));
 
     internals(fixture).loadMore();
     // The probe behind the button, not a page of bookmarks: one bookmark is all
@@ -1190,7 +1297,10 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('a'), makeStatus('b')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('a'),
+      makeStatus('b'),
+    ]);
     fixture.detectChanges();
 
     internals(fixture).setView('members');
@@ -1209,7 +1319,10 @@ describe('Home', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('a'), makeStatus('b')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('a'),
+      makeStatus('b'),
+    ]);
     fixture.detectChanges();
 
     internals(fixture).setView('analytics');
@@ -1234,13 +1347,11 @@ describe('Home', () => {
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
     // A full page that satisfies feedMin on post count but holds two articles.
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush([
-        withCard('a1'),
-        withCard('a2'),
-        ...Array.from({ length: 18 }, (_, i) => makeStatus(`p${i}`)),
-      ]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      withCard('a1'),
+      withCard('a2'),
+      ...Array.from({ length: 18 }, (_, i) => makeStatus(`p${i}`)),
+    ]);
     fixture.detectChanges();
 
     internals(fixture).setView('articles');
@@ -1355,9 +1466,11 @@ describe('Home, end-of-feed honesty', () => {
     TestBed.inject(ClientPrefs).setAlgoCalm(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush([ratioed('1'), ratioed('2'), ratioed('3')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      ratioed('1'),
+      ratioed('2'),
+      ratioed('3'),
+    ]);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1373,9 +1486,11 @@ describe('Home, end-of-feed honesty', () => {
     TestBed.inject(ClientPrefs).setAlgoCalm(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush([makeStatus('1'), ratioed('2'), ratioed('3')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('1'),
+      ratioed('2'),
+      ratioed('3'),
+    ]);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1387,7 +1502,7 @@ describe('Home, end-of-feed honesty', () => {
   it('still says you are all caught up when nothing is being held back', () => {
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('1')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [makeStatus('1')]);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1454,7 +1569,7 @@ describe('Home, bookmark review', () => {
     localStorage.setItem('mockingbird_has_bookmarks_v1', JSON.stringify({ has, at: Date.now() }));
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('1')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [makeStatus('1')]);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1473,7 +1588,7 @@ describe('Home, bookmark review', () => {
     // presses "Load more" never asks.
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock.expectOne('/api/v1/timelines/home?limit=20').flush([makeStatus('1')]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [makeStatus('1')]);
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1566,9 +1681,10 @@ describe('Home, reading break', () => {
     prefs.setFeedMax(5);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush(['1', '2', '3', '4', '5', '6'].map(makeStatus));
+    flushHomePage(
+      httpMock.expectOne('/api/v1/timelines/home?limit=20'),
+      ['1', '2', '3', '4', '5', '6'].map(makeStatus),
+    );
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
@@ -1587,9 +1703,10 @@ describe('Home, reading break', () => {
     prefs.setIgnoreFeedCooldown(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
-    httpMock
-      .expectOne('/api/v1/timelines/home?limit=20')
-      .flush(['1', '2', '3', '4', '5', '6'].map(makeStatus));
+    flushHomePage(
+      httpMock.expectOne('/api/v1/timelines/home?limit=20'),
+      ['1', '2', '3', '4', '5', '6'].map(makeStatus),
+    );
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 

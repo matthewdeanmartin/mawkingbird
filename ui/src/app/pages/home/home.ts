@@ -1,4 +1,5 @@
 import { FeedCtaStore } from '../../feed-cta-store';
+import { accountScopeSuffix } from '../../account-scope';
 import { FeedCta } from '../../feed-ctas';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -134,6 +135,9 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.feedEnd.moreInAnotherLanguage.other: {{count}} more already loaded are in another language — the language picker is at the top of the feed.
 // i18n pages.home.feedEnd.allCaughtUp: You’re all caught up. Were you expecting more?
 // i18n pages.home.feedEnd.checkDoctor: Check the Feed Doctor.
+// i18n pages.home.feedEnd.failedSources: Your feed stopped with a source failure ({{sources}}). This is not proof that you are caught up.
+// i18n pages.home.feedEnd.retrySources: Retry feed sources
+// i18n pages.home.feedEnd.hiddenAtTop: {{count}} loaded posts are hidden by Retweets/Replies. You can change these filters at the top of the feed.
 // i18n pages.home.warnings.anonymousErrors.link: Review followed sources or retry the public API
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
 // i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Retry the request. If your session has expired or access was revoked, sign in again.
@@ -194,6 +198,9 @@ export class Home implements OnInit, OnDestroy {
   private homeTimelineFeed = inject(HomeTimelineFeed);
   private diagnostics = inject(HomeDiagnostics);
   private aggregator = inject(FeedAggregator);
+  protected failedFeedSources = computed(() =>
+    this.justMyServer.effectiveEnabled() ? [] : this.aggregator.failedSources(),
+  );
   private privateFollows = inject(PrivateFollows);
   protected justMyServer = inject(JustMyServer);
 
@@ -658,6 +665,45 @@ export class Home implements OnInit, OnDestroy {
     () => this.feedHasMore() && !this.capActive() && !this.autoLoading(),
   );
 
+  /** Capture the settled state, including the actual stop and filter counts. */
+  private readonly reportFeedState = effect(() => {
+    if (this.loading() || this.autoLoading()) return;
+    const serverOnly = this.justMyServer.effectiveEnabled();
+    const sources = serverOnly ? [] : this.aggregator.sourceStates();
+    const failedSources = serverOnly ? [] : this.failedFeedSources();
+    const hasMore = this.feedHasMore();
+    const bounds = {
+      hiddenByCalm: this.hiddenByCalm(),
+      hiddenByLanguage: this.hiddenByLanguage(),
+      hiddenByChips: this.hiddenByFilters(),
+      droppedByWindow: serverOnly
+        ? this.justMyServer.droppedByWindow()
+        : this.aggregator.droppedByWindow(),
+      windowLabel: this.prefs.homeWindow() === 'all' ? null : this.windowLabel(),
+      cooldownActive: this.capActive(),
+      cooldownMinutes: this.capMinutesLeft(),
+      exhausted: !hasMore && !failedSources.length,
+      failedSources,
+      shown: this.visible().length,
+    };
+    this.homeTimelineFeed.snapshot.set({
+      scope: accountScopeSuffix(),
+      at: Date.now(),
+      posts: this.statuses(),
+      bounds,
+      sources,
+    });
+    this.diagnostics.info('feed:state', {
+      stored: this.statuses().length,
+      feedMin: this.prefs.feedMin(),
+      feedMax: this.prefs.feedMax(),
+      hasMore,
+      serverOnly,
+      sources,
+      ...bounds,
+    });
+  });
+
   /** A persisted on-state waits for list discovery instead of flashing the normal feed. */
   protected waitingForServerList = computed(
     () => this.auth.isAuthenticated && this.justMyServer.enabled() && !this.justMyServer.ready(),
@@ -931,6 +977,7 @@ export class Home implements OnInit, OnDestroy {
     this.pageSub = this.nextFeedPage().subscribe({
       next: (s) => {
         this.statuses.set(s);
+        this.noteMaximum();
         this.finishRefresh();
         const details = {
           received: s.length,
@@ -1204,6 +1251,7 @@ export class Home implements OnInit, OnDestroy {
    * — and the tail that gets dropped is what the reader was least likely to reach.
    */
   private mergeStatuses(more: Status[], placement: 'newer' | 'older' = 'older'): void {
+    const before = this.statuses().length;
     this.statuses.update((statuses) => {
       // Stable sorting makes placement meaningful for statuses with equal or
       // unreadable timestamps: live/local arrivals go before the held feed,
@@ -1224,6 +1272,32 @@ export class Home implements OnInit, OnDestroy {
       });
       return merged.slice(0, max);
     });
+    this.noteMaximum();
+    this.diagnostics.info('feed:merge', {
+      received: more.length,
+      before,
+      stored: this.statuses().length,
+      added: this.statuses().length - before,
+      visible: this.visible().length,
+      hiddenByFilters: this.hiddenByFilters(),
+      hiddenByCalm: this.hiddenByCalm(),
+      hiddenByLanguage: this.hiddenByLanguage(),
+      feedMax: this.prefs.feedMax(),
+      capActive: this.capActive(),
+      hasMore: this.feedHasMore(),
+      sources: this.aggregator.sourceStates(),
+    });
+  }
+
+  private noteMaximum(): void {
+    if (this.statuses().length >= this.prefs.feedMax() && this.maxHitAt() === null) {
+      this.maxHitAt.set(Date.now());
+      this.diagnostics.info('feed:maximum-reached', {
+        stored: this.statuses().length,
+        feedMax: this.prefs.feedMax(),
+        ignored: this.prefs.ignoreFeedCooldown(),
+      });
+    }
   }
 
   /** Remove the inclusive boundary item some timeline sources repeat on page N+1. */

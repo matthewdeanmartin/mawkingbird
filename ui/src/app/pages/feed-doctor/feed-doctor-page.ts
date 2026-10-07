@@ -23,6 +23,8 @@ import { CalmVerdicts } from '../../calm-verdicts';
 import { FeedLanguageFilter } from '../../trend-language-filter';
 import { feedSubject } from '../../feed-metrics';
 import { sampleFeed } from '../../feed-sample';
+import { accountScopeSuffix } from '../../account-scope';
+import { HomeTimelineFeed } from '../../home-timeline-feed';
 
 // i18n feedDoctor.title: Feed Doctor
 // i18n feedDoctor.reading: Reading your feed…
@@ -31,6 +33,7 @@ import { sampleFeed } from '../../feed-sample';
 // i18n feedDoctor.windowHidden.other: Your reading window hid {{count}} older posts. Everything below describes what the window let through.
 // i18n feedDoctor.widen: Widen the window
 // i18n feedDoctor.collecting: Collecting a sample…
+// i18n feedDoctor.lastHome: The stopping reason describes your last loaded Home feed. Check again collects a fresh sample.
 
 /** Posts to diagnose. Enough for shares to mean something, small enough to be quick. */
 const SAMPLE_SIZE = 140;
@@ -63,6 +66,8 @@ export class FeedDoctorPage implements OnInit {
   private prefs = inject(ClientPrefs);
   private calm = inject(CalmVerdicts);
   private langFilter = inject(FeedLanguageFilter);
+  private homeFeed = inject(HomeTimelineFeed);
+  protected usingHomeSnapshot = signal(false);
 
   protected loading = signal(true);
   protected diagnosis = signal<FeedDiagnosis | null>(null);
@@ -82,6 +87,13 @@ export class FeedDoctorPage implements OnInit {
   protected isAnonymous = computed(() => this.auth.isAnonymous);
 
   ngOnInit(): void {
+    const snapshot = this.homeFeed.snapshot();
+    if (!this.isAnonymous() && snapshot?.scope === accountScopeSuffix()) {
+      this.usingHomeSnapshot.set(true);
+      this.reportAggregated(snapshot.posts, snapshot.bounds);
+      this.collectedAt.set(new Date(snapshot.at));
+      return;
+    }
     this.run();
   }
 
@@ -96,6 +108,7 @@ export class FeedDoctorPage implements OnInit {
    * that actually happens to a connected account.
    */
   protected run(): void {
+    this.usingHomeSnapshot.set(false);
     this.loading.set(true);
     this.diagnosis.set(null);
 
@@ -183,7 +196,13 @@ export class FeedDoctorPage implements OnInit {
       // reload, so by the time this page is open it is not in force here.
       cooldownActive: false,
       cooldownMinutes: 0,
-      exhausted: !droppedByWindow && !hiddenByCalm && !hiddenByLanguage,
+      // A sample reaching its target says nothing about upstream exhaustion.
+      // Anonymous provider outcomes describe each sampled read, not its archive.
+      exhausted:
+        !this.isAnonymous() &&
+        !this.aggregator.hasMore() &&
+        !this.aggregator.failedSources().length,
+      failedSources: this.isAnonymous() ? [] : this.aggregator.failedSources(),
       shown: posts.length,
     };
   }
@@ -198,7 +217,7 @@ export class FeedDoctorPage implements OnInit {
    * filters apply identically whoever is signed in, and leaving them unreported
    * is what left this page saying only that nobody was flooding the feed.
    */
-  private reportAggregated(posts: Status[]): void {
+  private reportAggregated(posts: Status[], homeBounds?: FeedBounds): void {
     const labels: Record<string, string> = { mastodon: 'Mastodon' };
     for (const provider of this.registry.linked()) {
       labels[provider.id] = provider.label;
@@ -209,12 +228,12 @@ export class FeedDoctorPage implements OnInit {
 
     const slices = sliceByProvider(posts, labels, linked);
     this.slices.set(slices);
-    this.droppedByWindow.set(this.aggregator.droppedByWindow());
+    this.droppedByWindow.set(homeBounds?.droppedByWindow ?? this.aggregator.droppedByWindow());
     this.report(
       diagnoseFeed({
         posts,
         outcomes: [],
-        bounds: this.bounds(posts, this.aggregator.droppedByWindow()),
+        bounds: homeBounds ?? this.bounds(posts, this.aggregator.droppedByWindow()),
         bySource: Object.fromEntries(slices.map((slice) => [slice.label, slice.count])),
         slices,
       }),
@@ -241,7 +260,7 @@ export class FeedDoctorPage implements OnInit {
 
   private rerun(): void {
     this.loading.set(true);
-    this.ngOnInit();
+    this.run();
   }
 
   private report(diagnosis: FeedDiagnosis): void {

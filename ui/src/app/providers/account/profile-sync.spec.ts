@@ -228,6 +228,34 @@ describe('ProfileSync', () => {
       await sync.start();
       expect(sync.record().state).toBe('unasked');
     });
+
+    it('does not retry manifests for a known anonymous session with a stored on-state', async () => {
+      sync.resetForTest({ state: 'on', revision: 1 });
+      const session = TestBed.inject(MawkingbirdSession) as unknown as FakeMawkingbirdSession;
+      session.canOwnStorage.mockReturnValue(false);
+      await sync.start();
+      await sync.recheckOnFocus(true);
+      await sync.recheckOnFocus(true);
+      expect(session.token).not.toHaveBeenCalled();
+      expect(calls).toHaveLength(0);
+    });
+
+    it('coalesces concurrent focus checks after a background interval', async () => {
+      sync.resetForTest({ state: 'on', revision: 7 });
+      const response = deferred<Response>();
+      fetchStub.mockReturnValue(response.promise);
+      const checks = Array.from({ length: 5 }, () => sync.recheckOnFocus());
+      response.resolve(
+        respond(200, {
+          readOnly: false,
+          settings: { revision: 7, etag: '"a"', updatedAt: '2026-08-17T09:00:00.000Z', size: 10 },
+          quota: { used: 0, limit: 100 },
+          conflicts: 0,
+        }),
+      );
+      await Promise.all(checks);
+      expect(calls).toHaveLength(1);
+    });
   });
 
   describe('enable', () => {

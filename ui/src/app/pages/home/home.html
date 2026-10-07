@@ -237,6 +237,18 @@
         ) | transloco
       }}
     </p>
+  } @else if (!visible().length && failedFeedSources().length) {
+    <div class="feed-window-end">
+      <p class="muted small">
+        {{
+          'pages.home.feedEnd.failedSources'
+            | transloco: { sources: failedFeedSources().join(', ') }
+        }}
+      </p>
+      <button class="btn btn-outline more" type="button" (click)="refreshHome()">
+        {{ 'pages.home.feedEnd.retrySources' | transloco }}
+      </button>
+    </div>
   } @else if (!visible().length && allHiddenByFilters()) {
     <!-- Posts arrived and the filters hid every one of them. "Find friends to
          follow" is the worst possible answer here: it blames the reader's
@@ -362,6 +374,18 @@
           </button>
         }
       </div>
+    } @else if (failedFeedSources().length) {
+      <div class="feed-window-end">
+        <p class="muted small">
+          {{
+            'pages.home.feedEnd.failedSources'
+              | transloco: { sources: failedFeedSources().join(', ') }
+          }}
+        </p>
+        <button class="btn btn-outline more" type="button" (click)="refreshHome()">
+          {{ 'pages.home.feedEnd.retrySources' | transloco }}
+        </button>
+      </div>
     } @else if (olderAvailable()) {
       <!-- Not the end of the timeline: the *window* stopped the fetch, because a
            page crossed the cutoff. Saying "all caught up" here is false — there
@@ -387,9 +411,7 @@
                chips only re-show posts already fetched, so this never implies a
                new page is coming — "Load more" above is what fetches. -->
           {{ 'pages.home.feedEnd.matchingFilters' | transloco }}
-          <button type="button" class="link-button" (click)="showEverything()">
-            {{ 'pages.home.feedEnd.showHiddenByFilters' | transloco: { count: hidden } }}
-          </button>
+          {{ 'pages.home.feedEnd.hiddenAtTop' | transloco: { count: hidden } }}
         } @else if (hiddenByCalm(); as calmed) {
           <!-- Calm could empty a feed without ever saying so, which reads as
                "my follows went quiet" rather than "I turned a filter on". Same

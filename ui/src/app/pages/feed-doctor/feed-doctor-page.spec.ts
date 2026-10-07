@@ -11,6 +11,8 @@ import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
 import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-mastodon-provider';
 import { FeedAggregator } from '../../providers/feed-aggregator';
 import { FeedDoctorPage } from './feed-doctor-page';
+import { HomeTimelineFeed } from '../../home-timeline-feed';
+import { accountScopeSuffix } from '../../account-scope';
 
 function account(id: string): Account {
   return {
@@ -192,5 +194,51 @@ describe('FeedDoctorPage', () => {
     await vi.waitFor(() => expect(text()).toContain('No one is dominating'));
     expect(text()).toContain('Every follow returned posts');
     expect(text()).not.toContain('Mute for');
+  });
+
+  it('does not claim sources ran out when a healthy sample still has more pages', async () => {
+    TestBed.inject(Auth).setToken('a-token');
+    const aggregator = TestBed.inject(FeedAggregator);
+    vi.spyOn(aggregator, 'reset').mockImplementation(() => undefined);
+    vi.spyOn(aggregator, 'nextPage').mockReturnValue(
+      of(Array.from({ length: 140 }, (_, i) => post(`m${i}`, `author${i % 8}`))),
+    );
+    vi.spyOn(aggregator, 'hasMore').mockReturnValue(true);
+    fixture = TestBed.createComponent(FeedDoctorPage);
+    fixture.detectChanges();
+    await vi.waitFor(() => expect(text()).toContain('Nothing is limiting your feed'));
+    expect(text()).not.toContain('every source ran out');
+  });
+
+  it('explains the last Home stop without resetting or resampling its sources', async () => {
+    TestBed.inject(Auth).setToken('a-token');
+    TestBed.inject(HomeTimelineFeed).snapshot.set({
+      scope: accountScopeSuffix(),
+      at: Date.now(),
+      posts: [post('m1', 'author')],
+      sources: [{ provider: 'mastodon', reason: 'error' }],
+      bounds: {
+        hiddenByCalm: 0,
+        hiddenByLanguage: 0,
+        hiddenByChips: 4,
+        droppedByWindow: 0,
+        windowLabel: null,
+        cooldownActive: false,
+        cooldownMinutes: 0,
+        exhausted: false,
+        failedSources: ['mastodon'],
+        shown: 1,
+      },
+    });
+    const aggregator = TestBed.inject(FeedAggregator);
+    const reset = vi.spyOn(aggregator, 'reset');
+    const fetch = vi.spyOn(aggregator, 'nextPage');
+    fixture = TestBed.createComponent(FeedDoctorPage);
+    fixture.detectChanges();
+    expect(text()).toContain('last loaded Home feed');
+    expect(text()).toContain('source failure');
+    expect(text()).toContain('hiding 4 already-loaded posts');
+    expect(reset).not.toHaveBeenCalled();
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

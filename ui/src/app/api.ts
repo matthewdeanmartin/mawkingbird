@@ -50,6 +50,12 @@ import { PeopleCursorSource, nextMaxIdFrom, peopleCursorFrom } from './people-cu
 // this module. Its home is now `people-cursor.ts`, beside the fallback that uses it.
 export { nextMaxIdFrom } from './people-cursor';
 
+export interface HomeTimelinePage {
+  statuses: Status[];
+  nextMaxId: string | null;
+  cursorSource: 'link' | 'last-status' | 'none';
+}
+
 /** Filters/paging for an account's statuses (Mastodon query params). */
 export interface AccountStatusesOptions {
   excludeReplies?: boolean;
@@ -330,6 +336,31 @@ export class Api {
   // --- timelines ---
   homeTimeline(maxId?: string): Observable<Status[]> {
     return this.http.get<Status[]>('/api/v1/timelines/home', { params: this.pageParams(maxId) });
+  }
+
+  /** Home must follow pagination, not infer exhaustion from response length. */
+  homeTimelinePage(maxId?: string): Observable<HomeTimelinePage> {
+    return this.http
+      .get<Status[]>('/api/v1/timelines/home', {
+        params: this.pageParams(maxId),
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          const statuses = response.body ?? [];
+          const link = response.headers.get('Link');
+          const fromLink = nextMaxIdFrom(link);
+          // If CORS hides Link, status IDs are valid max_id cursors for timelines.
+          // Even a short page can have older posts. One final empty request proves
+          // the end; the aggregator guards a cursor that fails to advance.
+          const nextMaxId = fromLink ?? (link === null ? (statuses.at(-1)?.id ?? null) : null);
+          return {
+            statuses,
+            nextMaxId,
+            cursorSource: fromLink ? 'link' : nextMaxId ? 'last-status' : 'none',
+          };
+        }),
+      );
   }
 
   publicTimeline(local: boolean, maxId?: string): Observable<Status[]> {

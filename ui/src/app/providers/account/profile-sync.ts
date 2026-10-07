@@ -420,6 +420,12 @@ export class ProfileSync {
   }
 
   private async startNow(): Promise<void> {
+    // A persisted on-state can outlive the account session. Once the token
+    // identifies an anonymous visitor, focus cannot make profile storage work.
+    // Keep the record for a later sign-in, without re-minting or logging a
+    // guaranteed refusal on every focus. Unknown identity still resolves via
+    // ProfileClient's normal token path.
+    if (this.session.canOwnStorage() === false) return;
     const account = this.accountGeneration;
     const manifest = await this.client.manifest();
     if (account !== this.accountGeneration) {
@@ -528,16 +534,13 @@ export class ProfileSync {
    * without polling.
    */
   async recheckOnFocus(force = false): Promise<void> {
-    if (!this.syncing()) {
-      return;
-    }
-    if (!force && Date.now() - this.lastManifestAt < FOCUS_RECHECK_MS) {
-      this.diagnostics.info('ProfileSync', 'focus:throttled', {
-        sinceLastManifestMs: Date.now() - this.lastManifestAt,
-      });
-      return;
-    }
-    await this.start();
+    // Check *inside* the queue: simultaneous focus events previously all
+    // passed the stale timestamp check, then each queued another manifest.
+    return this.serialize(async () => {
+      if (!this.syncing() || this.session.canOwnStorage() === false) return;
+      if (!force && Date.now() - this.lastManifestAt < FOCUS_RECHECK_MS) return;
+      await this.startNow();
+    });
   }
 
   /**

@@ -71,7 +71,10 @@ describe('PrivateFollowFeeds', () => {
     const author = http.expectOne((r) => r.url.endsWith('/accounts/1/statuses'));
     expect(author.request.headers.has('Authorization')).toBe(false);
     expect(author.request.withCredentials).toBe(false);
-    home.flush([status('same')]);
+    // Declare the end via pagination; a short response alone is not the end.
+    home.flush([status('same')], {
+      headers: { Link: '<https://social.example/api/v1/timelines/home?min_id=same>; rel="prev"' },
+    });
     author.flush([status('same'), status('private-only')]);
     const posts = await pending;
     expect(posts).toHaveLength(2);

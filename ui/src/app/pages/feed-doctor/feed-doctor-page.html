@@ -18,6 +18,10 @@
     </button>
   </header>
 
+  @if (usingHomeSnapshot()) {
+    <p class="fd-note">{{ 'feedDoctor.lastHome' | transloco }}</p>
+  }
+
   <!-- Signed in, Home is FeedAggregator merging Mastodon with Bluesky, Twitter and
        RSS — so the useful question is not "which follow went quiet" (there are no
        per-follow reads to report on) but "which whole source stalled, and do they

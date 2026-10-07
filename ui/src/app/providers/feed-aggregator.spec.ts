@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { delay, firstValueFrom, NEVER, of, throwError } from 'rxjs';
+import { delay, firstValueFrom, map, NEVER, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../api';
 import { Auth } from '../auth';
@@ -69,14 +69,14 @@ interface FakeProvider {
 }
 
 describe('FeedAggregator', () => {
-  let homeTimeline: ReturnType<typeof vi.fn>;
+  let homeTimeline: ReturnType<typeof vi.fn<(maxId?: string) => Observable<Status[]>>>;
   let fakeRss: FakeProvider;
   let fakeBluesky: FakeProvider;
   let diagnostics: Pick<HomeDiagnostics, 'info' | 'warn' | 'error'>;
 
   beforeEach(() => {
     localStorage.clear();
-    homeTimeline = vi.fn();
+    homeTimeline = vi.fn<(maxId?: string) => Observable<Status[]>>();
     const fakeProvider = (): FakeProvider => {
       const fake: FakeProvider = { linked: signal(false), pages: [], fetchPage: vi.fn() };
       fake.fetchPage.mockImplementation(() => of(fake.pages.shift() ?? []));
@@ -87,7 +87,19 @@ describe('FeedAggregator', () => {
     diagnostics = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
-        { provide: Api, useValue: { homeTimeline } },
+        {
+          provide: Api,
+          useValue: {
+            homeTimelinePage: (maxId?: string) =>
+              homeTimeline(maxId).pipe(
+                map((statuses: Status[]) => ({
+                  statuses,
+                  nextMaxId: statuses.at(-1)?.id ?? null,
+                  cursorSource: 'last-status',
+                })),
+              ),
+          },
+        },
         { provide: HomeDiagnostics, useValue: diagnostics },
         {
           provide: BlueskyProvider,
@@ -156,6 +168,33 @@ describe('FeedAggregator', () => {
     aggregator.reset();
     const page = await firstValueFrom(aggregator.nextPage());
     expect(page.map((s) => s.id)).toEqual(['m2', 'r1', 'm1']);
+  });
+
+  it('keeps Mastodon pageable after a short nonempty page', async () => {
+    const aggregator = TestBed.inject(FeedAggregator);
+    homeTimeline
+      .mockReturnValueOnce(of(mastodonPage(59, 3)))
+      .mockReturnValueOnce(of(mastodonPage(56, 20)))
+      .mockReturnValueOnce(of([]));
+    aggregator.reset();
+    expect(await firstValueFrom(aggregator.nextPage())).toHaveLength(3);
+    expect(aggregator.hasMore()).toBe(true);
+    expect(await firstValueFrom(aggregator.nextPage())).toHaveLength(20);
+    expect(homeTimeline).toHaveBeenLastCalledWith('m57');
+    await firstValueFrom(aggregator.nextPage());
+    expect(aggregator.hasMore()).toBe(false);
+  });
+
+  it('preserves healthy foreign posts and names a failed Mastodon source', async () => {
+    const aggregator = TestBed.inject(FeedAggregator);
+    fakeBluesky.linked.set(true);
+    fakeBluesky.pages = [[blueskyStatus('b1', '2026-07-14T10:00:00.000Z')]];
+    homeTimeline.mockReturnValue(throwError(() => new Error('Mastodon unavailable')));
+    aggregator.reset();
+    expect((await firstValueFrom(aggregator.nextPage())).map((s) => s.id)).toEqual(['b1']);
+    expect(aggregator.failedSources()).toEqual(['mastodon']);
+    expect(aggregator.sourceStates()).toContainEqual({ provider: 'mastodon', reason: 'error' });
+    expect(aggregator.hasMore()).toBe(false);
   });
 
   it('does not let a full Mastodon page squeeze out an older RSS page', async () => {
@@ -402,7 +441,9 @@ describe('FeedAggregator', () => {
   it('keeps healthy sources when a browser-only provider fails', async () => {
     const aggregator = TestBed.inject(FeedAggregator);
     fakeRss.linked.set(true);
-    homeTimeline.mockReturnValueOnce(of([makeStatus('healthy', '2026-07-14T10:00:00.000Z')]));
+    homeTimeline
+      .mockReturnValueOnce(of([makeStatus('healthy', '2026-07-14T10:00:00.000Z')]))
+      .mockReturnValueOnce(of([]));
     fakeRss.fetchPage.mockReturnValueOnce(
       throwError(() => new Error('RSS server blocked this browser with CORS')),
     );
@@ -411,6 +452,9 @@ describe('FeedAggregator', () => {
     const page = await firstValueFrom(aggregator.nextPage());
 
     expect(page.map((status) => status.id)).toEqual(['healthy']);
+    expect(aggregator.hasMore()).toBe(true);
+    expect(aggregator.failedSources()).toEqual(['rss']);
+    await firstValueFrom(aggregator.nextPage());
     expect(aggregator.hasMore()).toBe(false);
     // objectContaining, so adding a field to the diagnostic payload (waitedMs and
     // friends, which is how a slow source gets attributed) is not a test failure.
@@ -701,9 +745,8 @@ describe('FeedAggregator', () => {
         [makeStatus('b', at(2)), makeStatus('c', at(3))],
       );
       const dated = feed.filter((s) => s.id !== 'undated').map((s) => s.id);
-      // A short first page exhausts the source, so only page one is fetched —
-      // ordering within what did load is what this asserts.
-      expect(dated).toEqual(['a']);
+      // Both short pages remain pageable; dated posts retain newest-first order.
+      expect(dated).toEqual(['a', 'b', 'c']);
     });
   });
 });
