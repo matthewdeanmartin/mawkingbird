@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+.watch-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+h1 {
+  font-size: 1.4rem;
+}
+h2 {
+  font-size: 1.1rem;
+}
+.watch-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 1.5rem;
+}
+.watch-stage,
+.watch-conversation {
+  min-width: 0;
+}
+@media (max-width: 850px) {
+  .watch-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,91 @@
+<section
+  class="video-player"
+  [class.compact]="compact()"
+  tabindex="0"
+  [attr.aria-label]="title() || ('videoPlayer.video' | transloco)"
+  (keydown)="onKey($event)"
+>
+  @if (source().kind === 'native') {
+    @for (key of [source().key]; track key) {
+      <video
+        #native
+        [src]="source().url"
+        [poster]="source().poster || ''"
+        controls
+        playsinline
+        [preload]="restoring() ? 'metadata' : 'none'"
+        [attr.aria-label]="title() || ('videoPlayer.video' | transloco)"
+        (loadedmetadata)="loaded()"
+        (error)="failed.set(true)"
+      ></video>
+    }
+    @if (!compact()) {
+      <label class="speed"
+        >{{ 'videoPlayer.speed' | transloco }}
+        <select [value]="rate()" (change)="setRate($event)">
+          @for (speed of [0.5, 0.75, 1, 1.25, 1.5, 2]; track speed) {
+            <option [value]="speed" [selected]="speed === rate()">{{ speed }}×</option>
+          }
+        </select>
+      </label>
+    }
+  } @else if (!activated()) {
+    @if (source().poster; as poster) {
+      <img [src]="poster" alt="" loading="lazy" />
+    }
+    <button type="button" mbButton (click)="activated.set(true)">
+      {{ 'videoPlayer.loadYoutube' | transloco }}
+    </button>
+    <p class="muted">{{ 'videoPlayer.external' | transloco }}</p>
+    <p class="muted small">{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
+  } @else if (!failed()) {
+    <iframe
+      #frame
+      [src]="embed()"
+      [title]="title() || 'YouTube'"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen
+      (load)="ready.set(true)"
+      (error)="failed.set(true)"
+    ></iframe>
+    @if (!ready()) {
+      <p role="status">{{ 'videoPlayer.loading' | transloco }}</p>
+    }
+  }
+  @if (duration()) {
+    <span class="duration">{{ duration() }}</span>
+  }
+  @if (title()) {
+    <p class="description">{{ title() }}</p>
+  }
+  @if (failed()) {
+    <p role="alert">{{ 'videoPlayer.failed' | transloco }}</p>
+    <button type="button" mbButton variant="outline" size="small" (click)="retry()">
+      {{ 'videoPlayer.retry' | transloco }}
+    </button>
+  }
+  @if (source().kind === 'youtube') {
+    <p role="status">{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+  }
+  <div class="video-links">
+    @if (watch(); as params) {
+      <a
+        mbButton
+        variant="outline"
+        size="small"
+        routerLink="/watch"
+        [queryParams]="params"
+        (click)="prepareWatch()"
+      >
+        {{ 'videoPlayer.openWatch' | transloco }}
+      </a>
+    }
+    <a [href]="source().url" target="_blank" rel="noopener noreferrer">
+      {{
+        (source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal')
+          | transloco
+      }}
+    </a>
+  </div>
+</section>

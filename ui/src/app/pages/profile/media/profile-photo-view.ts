@@ -31,6 +31,9 @@ import { ProfileMediaItem } from './profile-media-item';
 import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
 import { BskyRef } from '../../../providers/bluesky/bluesky-types';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { VideoPlayerHost as VideoPlayer } from '../../../video-player/video-player-host';
+import { attachmentSource, watchParams } from '../../../video-player/media-source';
+import { Server } from '../../../server';
 
 /**
  * The photo-first viewer behind a profile's media wall.
@@ -90,11 +93,33 @@ import { TranslocoPipe } from '@jsverse/transloco';
     RenderedHtmlLinks,
     Compose,
     TranslocoPipe,
+    VideoPlayer,
   ],
   templateUrl: './profile-photo-view.html',
   styleUrl: './profile-photo-view.css',
 })
 export class ProfilePhotoView {
+  private server = inject(Server);
+  protected video = computed(() => {
+    const item = this.current();
+    return item
+      ? attachmentSource({
+          id: item.key,
+          type: item.type,
+          url: item.url,
+          preview_url: item.previewUrl === item.url ? '' : item.previewUrl,
+          description: item.description,
+        })
+      : null;
+  });
+  protected watch = computed(() => {
+    const item = this.current();
+    const source = this.video();
+    const attachment = item?.status.media_attachments?.find((m) => m.url === item.url);
+    return item && source && attachment
+      ? watchParams(item.status, source, this.server.baseUrl(), attachment.id)
+      : null;
+  });
   private api = inject(Api);
   private anonymousPublic = inject(AnonymousPublicApi);
   private trusted = inject(TrustedAccounts);
@@ -143,7 +168,10 @@ export class ProfilePhotoView {
       return false;
     }
     this.trusted.entries();
-    return item.status.sensitive && !this.trusted.sensitiveShown(item.status.account);
+    return (
+      (item.status.sensitive && !this.trusted.sensitiveShown(item.status.account)) ||
+      (!!item.status.spoiler_text && !this.trusted.cwExpanded(item.status.account))
+    );
   });
 
   protected reveal(): void {
@@ -661,9 +689,11 @@ export class ProfilePhotoView {
 
   @HostListener('document:keydown', ['$event'])
   onKey(event: KeyboardEvent): void {
+    if (event.defaultPrevented) return;
     // Never steal keys from the reply box: arrowing through a draft must move
     // the caret, not the picture.
     const target = event.target as HTMLElement | null;
+    if (event.key !== 'Escape' && target?.closest('app-video-player, video, audio, select')) return;
     if (target && /^(INPUT|TEXTAREA)$/.test(target.tagName)) {
       return;
     }

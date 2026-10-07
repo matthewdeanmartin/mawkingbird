@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.video-player {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+}
+video,
+iframe,
+img {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  border: 0;
+  border-radius: 8px;
+  background: #000;
+}
+iframe {
+  min-height: 200px;
+}
+.compact video {
+  max-height: 180px;
+}
+.video-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.description {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.duration {
+  font-variant-numeric: tabular-nums;
+}

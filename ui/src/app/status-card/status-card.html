@@ -328,26 +328,55 @@
           {{ 'statusCard.quotedPostUnavailable' | transloco }}
         </div>
       }
-      @if (!cwCollapsed() && display.media_attachments.length) {
+      @if (showMedia() && !cwCollapsed() && display.media_attachments.length) {
         @if (imagesVisible()) {
           <div class="media" [class.media-sensitive]="mediaBlurred()">
             @for (m of display.media_attachments; track m.id; let i = $index) {
-              <button
-                type="button"
-                class="media-thumb"
-                (click)="openLightbox(i, $event)"
-                [attr.aria-label]="
-                  'statusCard.viewImage'
-                    | transloco: { description: m.description ? ': ' + m.description : '' }
-                "
-              >
-                <img
-                  [src]="m.preview_url || m.url"
-                  [alt]="m.description || ''"
-                  loading="lazy"
-                  decoding="async"
+              @let video = attachmentVideo(m);
+              @if (video && !mediaBlurred()) {
+                <app-video-player
+                  [source]="video"
+                  [inline]="true"
+                  [watch]="videoWatch(video, m.id)"
                 />
-              </button>
+              } @else if (m.type === 'audio' && !mediaBlurred()) {
+                <div class="media-audio" (click)="$event.stopPropagation()">
+                  <audio
+                    [src]="safeMediaUrl(m.url)"
+                    controls
+                    preload="none"
+                    [attr.aria-label]="m.description || ('videoPlayer.audio' | transloco)"
+                  ></audio>
+                  @if (m.description) {
+                    <p>{{ m.description }}</p>
+                  }
+                </div>
+              } @else if (m.type !== 'image' && !mediaBlurred()) {
+                <a [href]="safeMediaUrl(m.url)" target="_blank" rel="noopener noreferrer">
+                  {{ m.description || ('videoPlayer.openOriginal' | transloco) }}
+                </a>
+              } @else {
+                <button
+                  type="button"
+                  class="media-thumb"
+                  (click)="openLightbox(i, $event)"
+                  [attr.aria-label]="
+                    'statusCard.viewImage'
+                      | transloco: { description: m.description ? ': ' + m.description : '' }
+                  "
+                >
+                  @if (m.type === 'image' || m.preview_url) {
+                    <img
+                      [src]="m.preview_url || m.url"
+                      [alt]="m.description || ''"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  } @else {
+                    <span aria-hidden="true">{{ mediaIcon(m) }}</span>
+                  }
+                </button>
+              }
             }
             @if (mediaBlurred()) {
               <button
@@ -397,7 +426,27 @@
            media: an image attachment and a card image side by side is two
            pictures competing for the same glance, and the author's own upload
            wins that. Behind the images pref like every other picture here. -->
-      @if (!cwCollapsed() && !display.media_attachments.length && display.card; as card) {
+      @if (showMedia() && !cwCollapsed() && youtubeVideo(); as video) {
+        @if (mediaBlurred()) {
+          <button type="button" class="sensitive-reveal" (click)="revealSensitive($event)">
+            {{ 'statusCard.showSensitiveContent' | transloco }}
+          </button>
+        } @else if (imagesVisible()) {
+          <app-video-player [source]="video" [inline]="true" [watch]="videoWatch(video)" />
+        } @else {
+          <a routerLink="/watch" [queryParams]="videoWatch(video)"
+            >{{ video.title }} · {{ 'videoPlayer.openWatch' | transloco }}</a
+          >
+        }
+      }
+      @if (
+        showMedia() &&
+          !cwCollapsed() &&
+          !youtubeVideo() &&
+          !display.media_attachments.length &&
+          display.card;
+        as card
+      ) {
         <div class="status-card-preview" (click)="$event.stopPropagation()">
           <app-preview-card [card]="card" [showImage]="imagesVisible()" />
         </div>
@@ -1444,6 +1493,7 @@
   @if (lightboxIndex() !== null) {
     <app-lightbox
       [items]="display.media_attachments"
+      [context]="mediaContext()"
       [startIndex]="lightboxIndex()!"
       (closed)="lightboxIndex.set(null)"
     />

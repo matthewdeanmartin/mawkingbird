@@ -27,6 +27,11 @@ apps assumes otherwise:
 cannot set headers. The load-bearing directive is **`script-src 'self'`** — no
 third-party origin at all — with no `'unsafe-inline'` and no `'unsafe-eval'`.
 
+`frame-src` permits only `https://www.youtube-nocookie.com` for explicitly
+activated video players. The official player executes in its cross-origin
+iframe; no YouTube SDK runs in the parent document. Until activation the
+client creates no iframe. Uploaded media uses the browser's native controls.
+
 `style-src` does need `'unsafe-inline'`: Angular injects component styles as
 `<style>` elements at runtime, and removing that requires a per-response nonce
 which a static host cannot generate. `connect-src` and `img-src` are wide open

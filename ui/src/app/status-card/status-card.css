@@ -916,3 +916,11 @@ a.open-original {
   opacity: 0.5;
   cursor: default;
 }
+.media:has(app-video-player),
+.media:has(.media-audio) {
+  display: flex;
+  flex-direction: column;
+}
+.media-audio audio {
+  width: 100%;
+}

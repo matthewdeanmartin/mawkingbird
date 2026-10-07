@@ -33,12 +33,27 @@
 
   @if (current(); as m) {
     <figure class="lightbox-figure">
-      <img
-        class="lightbox-img"
-        [src]="m.url || m.preview_url"
-        [alt]="m.description || ''"
-        decoding="async"
-      />
+      @if (videoSource(m); as video) {
+        <app-video-player [source]="video" [watch]="videoWatch(video, m.id)" />
+      } @else if (m.type === 'audio') {
+        <audio
+          [src]="safeMediaUrl(m.url)"
+          controls
+          preload="none"
+          [attr.aria-label]="m.description || ('videoPlayer.audio' | transloco)"
+        ></audio>
+      } @else if (m.type === 'image') {
+        <img
+          class="lightbox-img"
+          [src]="m.url || m.preview_url"
+          [alt]="m.description || ''"
+          decoding="async"
+        />
+      } @else {
+        <a [href]="safeMediaUrl(m.url)" target="_blank" rel="noopener noreferrer">{{
+          'videoPlayer.openOriginal' | transloco
+        }}</a>
+      }
       @if (m.description) {
         <figcaption class="lightbox-caption">{{ m.description }}</figcaption>
       }

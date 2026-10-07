@@ -1973,6 +1973,46 @@ describe('StatusCard', () => {
     expect((event.preventDefault as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(1);
   });
 
+  it('does not mount uploaded players behind a content warning or sensitive reveal', () => {
+    const media = [{ ...makeMedia('v'), type: 'video', url: 'https://media.test/v.mp4' }];
+    const f = setUp(makeStatus({ media_attachments: media, spoiler_text: 'Warning' }));
+    expect(f.nativeElement.querySelector('app-video-player')).toBeNull();
+    f.componentRef.setInput('status', makeStatus({ media_attachments: media, sensitive: true }));
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('app-video-player')).toBeNull();
+    const event = { preventDefault: vi.fn(), stopPropagation: vi.fn() } as unknown as Event;
+    internals(f).openLightbox(0, event);
+    expect(internals(f).lightboxIndex()).toBeNull();
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('app-video-player')).not.toBeNull();
+  });
+
+  it('recognizes YouTube links without a server card and leaves text-focus media unmounted', () => {
+    const f = setUp(
+      makeStatus({ content: '<p><a href="https://youtu.be/dQw4w9WgXcQ">A video</a></p>' }),
+    );
+    expect(f.nativeElement.querySelector('app-video-player')).not.toBeNull();
+    expect(f.nativeElement.querySelector('iframe')).toBeNull();
+    TestBed.inject(ClientPrefs).setShowImages(false);
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('app-video-player')).toBeNull();
+    expect(f.nativeElement.querySelector('a[href^="/watch"]')).not.toBeNull();
+  });
+
+  it('audio and unknown attachments never become image thumbnails', () => {
+    const f = setUp(
+      makeStatus({
+        media_attachments: [
+          { ...makeMedia('audio'), type: 'audio' },
+          { ...makeMedia('other'), type: 'unknown' },
+        ],
+      }),
+    );
+    expect(f.nativeElement.querySelector('.media img')).toBeNull();
+    expect(f.nativeElement.querySelector('audio')?.getAttribute('preload')).toBe('none');
+    expect(f.nativeElement.querySelector('.media a[target="_blank"]')).not.toBeNull();
+  });
+
   it('renders a clickable media thumbnail per attachment', () => {
     const f = setUp(makeStatus({ media_attachments: [makeMedia('a'), makeMedia('b')] }));
     const thumbs = (f.nativeElement as HTMLElement).querySelectorAll('.media-thumb');

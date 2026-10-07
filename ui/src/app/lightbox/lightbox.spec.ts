@@ -124,4 +124,14 @@ describe('Lightbox', () => {
     expect(counter()).toBe('');
     expect(() => swipe(-120)).not.toThrow();
   });
+
+  it('leaves seek and form keys inside a video player to the player', () => {
+    const player = document.createElement('app-video-player');
+    const control = document.createElement('video');
+    player.append(control);
+    fixture.nativeElement.querySelector('.lightbox-overlay').append(player);
+    control.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    fixture.detectChanges();
+    expect(counter()).toBe('1 / 3');
+  });
 });

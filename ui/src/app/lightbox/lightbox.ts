@@ -1,7 +1,9 @@
 import { Component, HostListener, computed, input, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../a11y/focus-trap';
-import { MediaAttachment } from '../models';
+import { MediaAttachment, Status } from '../models';
+import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
+import { attachmentSource, mediaUrl, VideoSource, watchParams } from '../video-player/media-source';
 
 // i18n lightbox.viewer: Image viewer
 // i18n lightbox.close: Close
@@ -21,11 +23,18 @@ const SWIPE_MIN_PX = 40;
  */
 @Component({
   selector: 'app-lightbox',
-  imports: [FocusTrap, TranslocoPipe],
+  imports: [FocusTrap, TranslocoPipe, VideoPlayer],
   templateUrl: './lightbox.html',
   styleUrl: './lightbox.css',
 })
 export class Lightbox {
+  readonly context = input<{ status: Status; server: string } | null>(null);
+  protected videoWatch(source: VideoSource, id: string): Record<string, string> | null {
+    const context = this.context();
+    return context ? watchParams(context.status, source, context.server, id) : null;
+  }
+  protected videoSource = attachmentSource;
+  protected safeMediaUrl = mediaUrl;
   /** The images to page through. */
   readonly items = input.required<MediaAttachment[]>();
   /** Index of the image to show first. */
@@ -77,6 +86,7 @@ export class Lightbox {
   private touchStartY: number | null = null;
 
   onTouchStart(event: TouchEvent): void {
+    if ((event.target as HTMLElement)?.closest('app-video-player, audio, video')) return;
     // Multi-touch is a pinch-zoom, not a swipe — leave it entirely alone.
     if (event.touches.length !== 1) {
       this.touchStartX = null;
@@ -122,6 +132,13 @@ export class Lightbox {
 
   @HostListener('document:keydown', ['$event'])
   onKey(event: KeyboardEvent): void {
+    if (event.defaultPrevented) return;
+    const target = event.target as HTMLElement | null;
+    if (
+      event.key !== 'Escape' &&
+      target?.closest('app-video-player, video, audio, input, select, textarea, [contenteditable]')
+    )
+      return;
     if (event.key === 'Escape') {
       this.close();
     } else if (event.key === 'ArrowRight' && this.hasMultiple()) {

@@ -27,15 +27,19 @@
         "
         (click)="blurred(item) ? reveal($event, item) : open(item)"
       >
-        <img
-          class="media-thumb"
-          [src]="item.previewUrl"
-          [alt]="item.description || ''"
-          loading="lazy"
-          decoding="async"
-          (load)="onLoaded($event, item)"
-          (error)="onError(item)"
-        />
+        @if (item.type === 'image' || item.previewUrl !== item.url) {
+          <img
+            class="media-thumb"
+            [src]="item.previewUrl"
+            [alt]="item.description || ''"
+            loading="lazy"
+            decoding="async"
+            (load)="onLoaded($event, item)"
+            (error)="onError(item)"
+          />
+        } @else {
+          <span class="media-video-placeholder" aria-hidden="true">🎬</span>
+        }
         @if (item.type !== 'image') {
           <span class="media-badge play" aria-hidden="true">▶</span>
         }

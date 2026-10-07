@@ -39,6 +39,14 @@ import { Drafts } from '../drafts';
 import { withPkmTag } from '../pkm/pkm-tags';
 import { HistoryDialog } from '../history-dialog/history-dialog';
 import { Lightbox } from '../lightbox/lightbox';
+import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
+import {
+  attachmentSource,
+  mediaUrl,
+  statusVideo,
+  VideoSource,
+  watchParams,
+} from '../video-player/media-source';
 import { applyMinimalMarkdown } from '../markdown';
 import {
   Account,
@@ -346,6 +354,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     BskyReply,
     HumanTimePipe,
     Lightbox,
+    VideoPlayer,
     VerifiedBadge,
     NgOptimizedImage,
     LocalCompose,
@@ -360,6 +369,17 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
   styleUrl: './status-card.css',
 })
 export class StatusCard {
+  readonly showMedia = input(true);
+  protected attachmentVideo = attachmentSource;
+  protected safeMediaUrl = mediaUrl;
+  protected youtubeVideo = computed(() => statusVideo(this.display));
+  protected mediaContext = computed(() => ({
+    status: this.display,
+    server: this.server.baseUrl(),
+  }));
+  protected videoWatch(source: VideoSource, attachmentId?: string): Record<string, string> {
+    return watchParams(this.display, source, this.server.baseUrl(), attachmentId);
+  }
   private readonly dialogs = inject(AppDialogs);
 
   private api = inject(Api);
@@ -835,7 +855,7 @@ export class StatusCard {
         }
         return true;
       case 'e':
-        if (this.display.media_attachments?.length) {
+        if (!this.cwCollapsed() && !this.mediaBlurred() && this.display.media_attachments?.length) {
           this.lightboxIndex.set(0);
         }
         return true;
@@ -1115,6 +1135,11 @@ export class StatusCard {
   openLightbox(index: number, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+    if (this.cwCollapsed()) return;
+    if (this.mediaBlurred()) {
+      this.sensitiveRevealed.set(true);
+      return;
+    }
     this.lightboxIndex.set(index);
   }
 

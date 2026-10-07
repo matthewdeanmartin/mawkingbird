@@ -44,12 +44,8 @@
             </button>
           } @else if (item.type === 'image') {
             <img class="photo-image" [src]="item.url" [alt]="item.description || ''" />
-          } @else {
-            <!-- Video support across the app is thin; a native player with
-                 controls is the honest amount of support to claim here. -->
-            <video class="photo-image" [src]="item.url" controls playsinline preload="metadata">
-              {{ 'pages.profile.media.videoUnsupported' | transloco }}
-            </video>
+          } @else if (video(); as source) {
+            <app-video-player [source]="source" [watch]="watch()" />
           }
           @if (item.description && !blurred()) {
             <figcaption class="photo-alt muted">{{ item.description }}</figcaption>

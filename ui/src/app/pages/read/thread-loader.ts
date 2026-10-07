@@ -193,9 +193,12 @@ export class ThreadLoader {
       }),
     );
     this.sub.add(
-      this.api.getContext(id).subscribe((ctx) => {
-        this.ancestors.set(ctx.ancestors);
-        this.descendants.set(ctx.descendants);
+      this.api.getContext(id).subscribe({
+        next: (ctx) => {
+          this.ancestors.set(ctx.ancestors);
+          this.descendants.set(ctx.descendants);
+        },
+        error: () => this.publicContextUnavailable.set(true),
       }),
     );
   }

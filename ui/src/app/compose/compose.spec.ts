@@ -482,6 +482,29 @@ describe('Compose', () => {
 
   // ---------------------------------------------------------------- media management
 
+  it('previews processing video uploads locally before posting and releases the preview on removal', () => {
+    const create = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:https://media.test/preview');
+    const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+    const f = setUp();
+    const file = new File(['clip'], 'clip.webm', { type: 'video/webm' });
+    const pending = {
+      media: { id: 'processing', type: 'video', url: '', preview_url: '', description: null },
+      description: '',
+      file,
+    };
+    internals(f).media.set([pending]);
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('app-video-player')).not.toBeNull();
+    expect(create).toHaveBeenCalledOnce();
+    internals(f).removeMedia(0);
+    f.detectChanges();
+    expect(revoke).toHaveBeenCalledWith('blob:https://media.test/preview');
+    create.mockRestore();
+    revoke.mockRestore();
+  });
+
   it('setMediaDescription updates the description for the correct item', () => {
     const f = setUp();
     internals(f).media.set([

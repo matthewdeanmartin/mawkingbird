@@ -71,6 +71,11 @@ export interface MediaAttachment {
   url: string;
   preview_url: string;
   description: string | null;
+  remote_url?: string | null;
+  meta?: {
+    original?: { width?: number; height?: number; duration?: number; aspect?: number };
+    small?: { width?: number; height?: number };
+  };
 }
 
 export interface PollOption {

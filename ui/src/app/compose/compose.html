@@ -184,12 +184,27 @@
     <div class="media-previews">
       @for (m of media(); track m.media.id; let i = $index) {
         <div class="media-preview">
-          <img
-            [src]="m.media.preview_url || m.media.url"
-            [alt]="m.description"
-            loading="lazy"
-            decoding="async"
-          />
+          @if (previewVideo(m); as video) {
+            <app-video-player [source]="video" [compact]="true" />
+          } @else if (m.media.type === 'audio') {
+            <audio
+              [src]="safeMediaUrl(m.media.url)"
+              controls
+              preload="none"
+              [attr.aria-label]="m.description || ('videoPlayer.audio' | transloco)"
+            ></audio>
+          } @else if (m.media.type === 'image') {
+            <img
+              [src]="m.media.preview_url || m.media.url"
+              [alt]="m.description"
+              loading="lazy"
+              decoding="async"
+            />
+          } @else {
+            <a [href]="safeMediaUrl(m.media.url)" target="_blank" rel="noopener noreferrer">{{
+              'videoPlayer.openOriginal' | transloco
+            }}</a>
+          }
           <input
             type="text"
             class="alt-input"

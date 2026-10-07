@@ -1,5 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { PreviewCard } from '../models';
+import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
+import { mediaUrl, youtubeSource } from '../video-player/media-source';
 
 /**
  * A link, rendered as a card.
@@ -19,11 +21,17 @@ import { PreviewCard } from '../models';
  */
 @Component({
   selector: 'app-preview-card',
-  imports: [],
+  imports: [VideoPlayer],
   templateUrl: './preview-card.html',
   styleUrl: './preview-card.css',
 })
 export class PreviewCardComponent {
+  protected video = computed(() => {
+    const source = youtubeSource(this.card().url);
+    return source && this.showImage()
+      ? { ...source, title: this.card().title || source.title, poster: mediaUrl(this.card().image) }
+      : null;
+  });
   readonly card = input.required<PreviewCard>();
 
   /** Whether images may be shown. Off in text-only reading modes. */

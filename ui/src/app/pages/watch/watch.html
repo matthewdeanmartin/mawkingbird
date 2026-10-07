@@ -1,0 +1,56 @@
+<header class="watch-header">
+  <button type="button" mbButton variant="outline" size="small" (click)="back()">
+    {{ 'watch.back' | transloco }}
+  </button>
+  <h1>{{ 'watch.title' | transloco }}</h1>
+</header>
+@if (error()) {
+  <p role="alert">{{ error() | transloco }}</p>
+} @else if (loader.loading()) {
+  <p role="status">{{ 'watch.loading' | transloco }}</p>
+} @else if (loader.loadError() || hidden() || !source()) {
+  <p role="alert">{{ 'watch.unavailable' | transloco }}</p>
+} @else {
+  <div class="watch-layout">
+    <section class="watch-stage" [attr.aria-label]="'watch.title' | transloco">
+      @if (gated()) {
+        @if (warning()) {
+          <p>{{ loader.status()?.spoiler_text || ('watch.warning' | transloco) }}</p>
+        }
+        @if (filterWarning()) {
+          <p>{{ 'watch.filterWarning' | transloco }}</p>
+        }
+        @if (textOnly()) {
+          <p>{{ 'watch.hiddenMedia' | transloco }}</p>
+        }
+        <button type="button" mbButton (click)="revealed.set(true)">
+          {{ 'watch.reveal' | transloco }}
+        </button>
+      } @else if (source(); as video) {
+        <app-video-player-controls [source]="video" />
+      }
+    </section>
+    @if (loader.status(); as status) {
+      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+        <app-status-card
+          [status]="status"
+          [showMedia]="false"
+          filterContext="thread"
+          (changed)="loader.status.set($event)"
+          (deleted)="loader.status.set(null)"
+          (replied)="onReply($event)"
+        />
+        <a [routerLink]="['/statuses', params()['post']]">{{ 'watch.thread' | transloco }}</a>
+        <h2>{{ 'watch.conversation' | transloco }}</h2>
+        @if (loader.publicContextUnavailable()) {
+          <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
+        }
+        @for (reply of loader.descendants(); track reply.id) {
+          <app-status-card [status]="reply" filterContext="thread" />
+        } @empty {
+          <p class="muted">{{ 'watch.noComments' | transloco }}</p>
+        }
+      </aside>
+    }
+  </div>
+}

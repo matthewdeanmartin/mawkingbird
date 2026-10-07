@@ -427,6 +427,15 @@ textarea {
   gap: 8px;
 }
 
+.media-preview:has(app-video-player) {
+  flex-wrap: wrap;
+}
+.media-preview app-video-player {
+  flex: 0 1 100%;
+  max-width: 360px;
+  min-width: 0;
+}
+
 .media-preview img {
   width: 64px;
   height: 64px;

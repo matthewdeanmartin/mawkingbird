@@ -909,6 +909,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/unavailable/unavailable').then((m) => m.Unavailable),
       },
       {
+        path: 'watch',
+        title: 'Watch',
+        loadComponent: () => import('./pages/watch/watch').then((m) => m.Watch),
+      },
+      {
         path: 'statuses/:id',
         title: 'Post',
         loadComponent: () => import('./pages/thread/thread').then((m) => m.Thread),

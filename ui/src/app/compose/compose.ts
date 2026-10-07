@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { MbButton } from '../design-system/button/button';
 import { MbPostAction, MbPostActions } from '../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
+import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
+import { attachmentSource, mediaUrl, VideoSource } from '../video-player/media-source';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 import { Api } from '../api';
@@ -479,6 +481,7 @@ function dragHasFiles(event: DragEvent): boolean {
     MbPostActions,
     FormsModule,
     RouterLink,
+    VideoPlayer,
     EmojiPicker,
     ConfirmDialog,
     TagHelperDialog,
@@ -491,6 +494,20 @@ function dragHasFiles(event: DragEvent): boolean {
   providers: [VisibilityState, LinkShortening],
 })
 export class Compose implements OnDestroy {
+  private videoPreviews = new Map<File, string>();
+  protected previewVideo(item: PendingMedia): VideoSource | null {
+    const uploaded = attachmentSource({ ...item.media, description: item.description });
+    if (uploaded || !item.file?.type.startsWith('video/')) return uploaded;
+    // A 202 upload may still be processing. Preview the retained bytes locally;
+    // the uploaded attachment ID remains the only thing submitted to Mastodon.
+    let url = this.videoPreviews.get(item.file);
+    if (!url) {
+      url = URL.createObjectURL(item.file);
+      this.videoPreviews.set(item.file, url);
+    }
+    return { kind: 'native', key: `preview:${item.media.id}`, url, title: item.description };
+  }
+  protected safeMediaUrl = mediaUrl;
   protected pseudonymity = inject(Pseudonymity);
   private api = inject(Api);
   private server = inject(Server);
@@ -526,6 +543,8 @@ export class Compose implements OnDestroy {
     this.flushAutosave();
     // A publish followed by navigating away must not leave a poller running.
     this.deployWatch.stop();
+    for (const url of this.videoPreviews.values()) URL.revokeObjectURL(url);
+    this.videoPreviews.clear();
   }
 
   /** One sentence about the in-flight build, for the chip under the composer. */
@@ -799,6 +818,15 @@ export class Compose implements OnDestroy {
   );
 
   constructor() {
+    effect(() => {
+      const files = new Set(this.media().map((item) => item.file));
+      for (const [file, url] of this.videoPreviews) {
+        if (!files.has(file)) {
+          URL.revokeObjectURL(url);
+          this.videoPreviews.delete(file);
+        }
+      }
+    });
     // Seed the composer from inputs + any autosaved text or explicitly opened
     // draft. This re-seeds only when the *conversation context* changes (a
     // container like /conversations reuses one instance across replies), keyed
