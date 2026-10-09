@@ -19,7 +19,7 @@ import { stubLocation } from '../testing/stub-location';
 import { Server } from '../server';
 import { serverInterceptor } from '../server.interceptor';
 import { WritingZen } from '../writing-zen';
-import { Shell } from './shell';
+import { Shell, VERIFY_RETRY_DELAYS_MS } from './shell';
 import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
 import {
   PlusBadgeEntitlement,
@@ -201,6 +201,92 @@ describe('Shell account switching', () => {
     expect(auth.sessions().some((s) => s.token === 'art-token')).toBe(true);
     // ...but the known-bad token is no longer active.
     expect(auth.token()).toBeNull();
+  });
+
+  // A household board on Wi-Fi drops a request now and then; the browser reports
+  // status 0 (Firefox: "CORS request did not succeed"). That says nothing about
+  // the token, and used to sign the user out on every flaky boot.
+  it('a boot verify that gets no reply retries and keeps the account', { timeout: 20_000 }, () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(Shell);
+      fixture.detectChanges();
+      const url = 'https://mastodon.art/api/v1/accounts/verify_credentials';
+      httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
+      vi.advanceTimersByTime(VERIFY_RETRY_DELAYS_MS[0]);
+      httpMock.expectOne(url).flush('busy', { status: 503, statusText: 'Service Unavailable' });
+      vi.advanceTimersByTime(VERIFY_RETRY_DELAYS_MS[1]);
+      httpMock.expectOne(url).flush({ id: '1', username: 'arty' } as never);
+      drainRailRequests();
+      const cmp = fixture.componentInstance as any;
+
+      expect(auth.token()).toBe('art-token');
+      expect(auth.account()?.username).toBe('arty');
+      expect(cmp.deadSession()).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a boot verify that never gets through stays signed in, without the dialog', { timeout: 20_000 }, () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(Shell);
+      fixture.detectChanges();
+      const url = 'https://mastodon.art/api/v1/accounts/verify_credentials';
+      httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
+      for (const delay of VERIFY_RETRY_DELAYS_MS) {
+        vi.advanceTimersByTime(delay);
+        httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
+      }
+      drainRailRequests();
+      const cmp = fixture.componentInstance as any;
+
+      expect(auth.token()).toBe('art-token');
+      expect(auth.sessions().some((s) => s.token === 'art-token')).toBe(true);
+      expect(cmp.deadSession()).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a 401 after a dropped reply still offers the dialog', { timeout: 20_000 }, () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = TestBed.createComponent(Shell);
+      fixture.detectChanges();
+      const url = 'https://mastodon.art/api/v1/accounts/verify_credentials';
+      httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
+      vi.advanceTimersByTime(VERIFY_RETRY_DELAYS_MS[0]);
+      httpMock.expectOne(url).flush('nope', { status: 401, statusText: 'Unauthorized' });
+      drainRailRequests();
+      const cmp = fixture.componentInstance as any;
+
+      expect(cmp.deadSession()?.token).toBe('art-token');
+      expect(auth.token()).toBeNull();
+      // A 401 is final: no further retry.
+      vi.advanceTimersByTime(60_000);
+      httpMock.expectNone(url);
+      // The rails refresh on their own timers meanwhile; not under test here.
+      drainRailRequests();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a switch whose server does not answer reverts without calling the account dead', () => {
+    const fixture = createShell();
+    const cmp = fixture.componentInstance as any;
+    const social = auth.sessions().find((s) => s.token === 'social-token')!;
+    cmp.switchTo(social);
+    httpMock
+      .expectOne('https://mastodon.social/api/v1/accounts/verify_credentials')
+      .error(new ProgressEvent('error'), { status: 0 });
+
+    expect(auth.token()).toBe('art-token');
+    expect(server.baseUrl()).toBe('https://mastodon.art');
+    expect(auth.sessions().some((s) => s.token === 'social-token')).toBe(true);
+    expect(cmp.deadSession()).toBeNull();
   });
 
   it('reauthenticating points at the dead account instance without activating it', () => {

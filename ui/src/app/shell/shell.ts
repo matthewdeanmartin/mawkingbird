@@ -19,7 +19,8 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NgComponentOutlet, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { filter, map } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { filter, map, MonoTypeOperatorFunction, retry, throwError, timer } from 'rxjs';
 import { Api } from '../api';
 import { MenuIndicators } from '../menu-indicators';
 import { AccountChoice, Auth, Session } from '../auth';
@@ -583,9 +584,18 @@ export class Shell implements OnInit {
       return;
     }
     if (!this.auth.account()) {
-      this.api.verifyCredentials().subscribe({
+      this.api
+        .verifyCredentials()
+        .pipe(retryUnlessRejected())
+        .subscribe({
         next: (acc) => this.auth.setAccount(acc),
-        error: () => {
+        error: (err: unknown) => {
+          // A failure that is not a 401 says nothing about the token: the
+          // server (a household board on Wi-Fi, say) did not answer in time.
+          // Stay signed in; the fail whale reports an unreachable server.
+          if (!tokenRejected(err)) {
+            return;
+          }
           // The stored token was rejected on boot. Don't silently delete the
           // account: offer the same reauthenticate/remove choice as a failed
           // switch. The dead token is the *active* one here, so clear it (every
@@ -666,7 +676,7 @@ export class Shell implements OnInit {
         // Hard reload: rebuild the whole app under the new account.
         location.reload();
       },
-      error: () => {
+      error: (err: unknown) => {
         // The token was rejected by its instance. Don't silently delete the account —
         // put the user back where they were, then offer the only two things that
         // actually resolve it. A toast was a dead end: the switch leaves the broken
@@ -684,7 +694,11 @@ export class Shell implements OnInit {
           this.auth.exitToLoggedOut();
         }
         this.switchingServer.set(null);
-        this.deadSession.set(session);
+        // Only a 401 makes the account dead. Otherwise its server just did not
+        // answer (the fail whale says so); the account stays a normal choice.
+        if (tokenRejected(err)) {
+          this.deadSession.set(session);
+        }
       },
     });
   }
@@ -743,3 +757,24 @@ export class Shell implements OnInit {
 }
 
 // i18n shell.switchingServer: Connecting to {{server}}…
+
+/**
+ * Only a 401 says the instance rejected the token. Status 0 (no reply: Wi-Fi,
+ * a reset connection, which Firefox reports as a CORS failure), timeouts and
+ * 5xx are about reaching the server, and must not end a session.
+ */
+export function tokenRejected(err: unknown): boolean {
+  return err instanceof HttpErrorResponse && err.status === 401;
+}
+
+/** Waits before each retry of a boot `verify_credentials` that did not get a 401. */
+export const VERIFY_RETRY_DELAYS_MS = [2_000, 5_000, 15_000, 30_000];
+
+/** Retries with backoff unless the token was rejected, which is final. */
+function retryUnlessRejected<T>(): MonoTypeOperatorFunction<T> {
+  return retry<T>({
+    count: VERIFY_RETRY_DELAYS_MS.length,
+    delay: (err: unknown, attempt: number) =>
+      tokenRejected(err) ? throwError(() => err) : timer(VERIFY_RETRY_DELAYS_MS[attempt - 1]),
+  });
+}
