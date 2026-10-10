@@ -1,0 +1,1 @@
+function e(r){if(!r)return null;let n=r.trim().replace(/^https:\/\//i,"").replace(/\/$/,"");if(/[\s/\\@?#]/.test(n))return null;try{let t=new URL(`https://${n}`);return!t.hostname.includes(".")&&t.hostname!=="localhost"?null:t.host.toLowerCase()}catch{return null}}export{e as a};
