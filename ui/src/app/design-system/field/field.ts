@@ -49,9 +49,12 @@ export class MbControl {
   // Every CSS selector is explicitly namespaced to mb-field.
   encapsulation: ViewEncapsulation.None,
   styleUrl: './field.css',
+  host: { '[attr.data-density]': 'density()' },
 })
 export class MbField {
   readonly label = input.required<string>();
+  /** Compact selects sit beside feed actions; form fields retain regular sizing. */
+  readonly density = input<'regular' | 'compact'>('regular');
   /** Compact editors retain an accessible label without repeating visible captions. */
   readonly hideLabel = input(false, { transform: booleanAttribute });
   readonly hint = input('');

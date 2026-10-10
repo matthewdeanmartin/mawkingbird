@@ -52,10 +52,17 @@ for (const [width, theme, direction] of [
     await expect(stack.locator(".stat-value")).toContainText("1.2");
     const controls = page.getByRole("region", { name: "Account controls" });
     const preview = controls.locator("app-account-preview");
-    await preview
-      .getByRole("button", { name: "Preview profile", exact: true })
-      .click();
+    const previewButton = preview.getByRole("button", {
+      name: "Preview profile",
+      exact: true,
+    });
+    // Finish scrolling the narrow story before opening a surface that dismisses
+    // on window scroll. This models scrolling to the trigger, then tapping it.
+    await previewButton.scrollIntoViewIfNeeded();
+    await page.evaluate(() => new Promise(requestAnimationFrame));
+    await previewButton.click();
     await expect(preview.locator("[mbAccountCard]")).toBeVisible();
+    await expect(preview.locator(".pinned-post")).toHaveCount(3);
     const request = preview.getByRole("button", {
       name: "Request",
       exact: true,
@@ -174,7 +181,7 @@ for (const [width, theme, direction] of [
       rail.getByRole("link", { name: "All feeds", exact: true }),
     ).toHaveAttribute("href", /\/feeds$/);
     if (width >= 1000) {
-      await page.locator(".suggestion .hover-anchor").first().hover();
+      await page.locator(".suggestion .suggestion-name").first().hover();
       await expect(
         page.locator(".suggestion app-account-hover-card").first(),
       ).toBeVisible();

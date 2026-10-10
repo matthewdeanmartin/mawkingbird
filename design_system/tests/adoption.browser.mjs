@@ -30,17 +30,19 @@ test("production feed controls preserve actions, reversible preferences and nati
     name: "Reader",
     exact: false,
   });
-  const textFocus = presentation.getByRole("button", { name: "Text-focus" });
+  const textFocus = presentation.getByRole("button", {
+    name: "Aa Text",
+    exact: true,
+  });
   await reader.click();
   await expect(reader).toHaveAttribute("aria-pressed", "true");
   await expect(textFocus).toHaveAttribute("aria-pressed", "true");
   await textFocus.click();
   await expect(reader).toHaveAttribute("aria-pressed", "false");
   await expect(textFocus).toHaveAttribute("aria-pressed", "false");
-  await expect(page.getByRole("link", { name: "Feed Doctor" })).toHaveAttribute(
-    "href",
-    new URL("/feed-doctor", page.url()).href,
-  );
+  await expect(
+    page.getByRole("link", { name: "🩺 Doctor", exact: true }),
+  ).toHaveAttribute("href", new URL("/feed-doctor", page.url()).href);
   const sources = page.getByRole("toolbar", { name: "Feed sources" });
   const rss = sources.getByRole("button", { name: "RSS" });
   await rss.click();

@@ -56,3 +56,22 @@ export const LongLabel: Story = {
       '<div class="ds-narrow"><mb-field label="Standard-Sichtbarkeit für zukünftige Beiträge" hint="Diese Einstellung gilt nur für neue Beiträge."><select mbControl><option>Nur bestätigte Follower</option><option>Alle Personen</option></select></mb-field></div>',
   }),
 };
+
+export const CompactFeedSelects: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+        <mb-field label="Default Home to…" hideLabel density="compact">
+          <select mbControl><option value="all">All Default</option><option value="media">Media Default</option></select>
+        </mb-field>
+        <mb-field label="Time window" hideLabel density="compact">
+          <span aria-hidden="true">📅</span>
+          <select mbControl><option value="all">Everything</option><option value="today">Today</option></select>
+        </mb-field>
+        <mb-field label="Regular form select">
+          <select mbControl><option>Everyone</option></select>
+        </mb-field>
+      </div>
+    `,
+  }),
+};

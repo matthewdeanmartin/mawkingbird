@@ -71,3 +71,44 @@ mb-field .mb-field-hint {
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+
+/* Feed-bar selects reuse the compact Everything presentation. Native selection,
+   labels and Tab order remain intact; the optional icon is projected content. */
+mb-field[data-density='compact'] {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 3px;
+  padding: 0 4px 0 7px;
+  border-radius: 5px;
+  font: 500 13px / 1.4 var(--app-font-family);
+  white-space: nowrap;
+}
+
+mb-field[data-density='compact']:hover {
+  background: var(--hover);
+}
+
+mb-field[data-density='compact'] select.mb-control {
+  appearance: none;
+  width: auto;
+  max-width: 100%;
+  min-height: 28px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+mb-field[data-density='compact'] select.mb-control:focus-visible {
+  outline: 2px solid var(--ds-action-text);
+  outline-offset: -2px;
+}
+
+mb-field[data-density='compact'] select.mb-control:disabled {
+  color: var(--muted);
+  cursor: default;
+}

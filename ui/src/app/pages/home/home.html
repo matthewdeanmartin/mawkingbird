@@ -119,6 +119,7 @@
       presentationControl
       hideLabel
       class="home-default"
+      density="compact"
       [label]="'pages.home.defaultView.label' | transloco"
     >
       <select
@@ -155,9 +156,14 @@
           😌 {{ 'pages.home.filters.calm.label' | transloco }}
         </button>
       </mb-toolbar>
-      <label class="home-window">
-        📅
+      <mb-field
+        hideLabel
+        density="compact"
+        [label]="'pages.home.filters.windowAriaLabel' | transloco"
+      >
+        <span aria-hidden="true">📅</span>
         <select
+          mbControl
           [ngModel]="prefs.homeWindow()"
           (ngModelChange)="setHomeWindow($event)"
           [attr.aria-label]="'pages.home.filters.windowAriaLabel' | transloco"
@@ -166,7 +172,7 @@
           <option value="week">{{ 'pages.home.filters.window.week' | transloco }}</option>
           <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
         </select>
-      </label>
+      </mb-field>
       <app-feed-language-picker />
     </div>
   </app-command-bar>

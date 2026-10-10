@@ -1,5 +1,49 @@
 # Sprint 6 opening consolidation audit
 
+## Compact feed selects, 2026-10-10
+
+Field now offers an opt-in compact density for native selects outside button-only
+toolbars. Home Default and Everything share the existing Everything presentation:
+content-sized width, small text, transparent borderless control, compact padding,
+hover and visible keyboard focus. The shared compact style removes the native
+chevron; regular form selects keep their existing appearance and dimensions.
+My languages keeps its existing shared PostAction trigger. Home owns only the
+narrow-screen visibility rule; its former select styling and fixed default-control
+width are removed. The Field story and browser cases cover geometry, labels,
+keyboard selection, Tab order, themes and RTL. Refreshed the source inventory;
+existing candidate dispositions remain unchanged.
+
+## Feed browsing and bug-fix reconciliation, 2026-10-10
+
+Regenerated the inventory after Other Servers, feed pinning, profile previews,
+image-view pagination, follow-request actions and Home/Appearance controls:
+1,112 maintained source files scanned, 226 candidate files. Reviewed the 15
+changed candidate files; most findings move with template lines. Other Servers
+is the sole new candidate and is recorded as partial adoption: Field/Control
+owns search and domain inputs, Button owns browsing, and directory navigation
+retains the existing Feeds row pattern. Server-feed pin/retry buttons also move
+that template to partial adoption; remaining navigation controls stay explicit
+review work.
+
+AccountPreview now uses the shared Popover and embedded AccountHoverCard with
+up to three pinned posts. Its ledger reflects top-layer placement, pointer
+transfer, dismissal and focus return rather than an inline expanding preview.
+Existing dispositions for the remaining touched surfaces are preserved.
+Appearance's account-scoped Home Default select retains native semantics and
+an explicit label; AI controls move below Analytics. The toolbar browser checks
+use the requested Text and Doctor names while retaining their reversible-state,
+keyboard and destination assertions. No scanner or reconciliation gate was
+relaxed, and this refresh does not claim full control migration.
+
+The full browser run also found that the identity story API fixture lacked the
+new pinned-post read used by AccountPreview. The fixture now supplies three
+pinned posts, and the existing profile/follow/dialog cases assert they render
+while retaining their console-error, focus-return and interaction checks. The
+desktop hover check targets the current suggestion-name link rather than the
+removed hover-anchor wrapper. The narrow story finishes scrolling its trigger
+into view before opening the scroll-dismissed popover; interaction assertions
+remain unchanged.
+
 ## Optional help and video playback, 2026-10-07
 
 Added `mb-help` to the shared-control scanner and regenerated the inventory:

@@ -94,6 +94,27 @@ Field CSS is intentionally namespaced global CSS because Angular-scoped styles
 cannot reach projected native controls. Every selector starts with `mb-field`;
 it must not acquire generic `input`, `label` or `select` rules.
 
+## Compact feed selects
+
+Use `mb-field hideLabel density="compact"` with one native `select mbControl`
+for feed-bar choices such as Home Default and Everything. This shared variant
+preserves the existing small, transparent Everything control: content-sized
+width, 13px text, compact padding, hover and visible keyboard focus. It removes
+the native chevron with `appearance: none`; native selection and Tab order remain.
+Optional icons are projected separately with `aria-hidden="true"`. Keep selects
+outside button-only toolbars. Normal form fields keep their regular sizing.
+My languages continues to use the shared compact PostAction trigger.
+
+```html
+<mb-field label="Time window" hideLabel density="compact">
+  <span aria-hidden="true">📅</span>
+  <select mbControl [(ngModel)]="window">
+    <option value="all">Everything</option>
+    <option value="today">Today</option>
+  </select>
+</mb-field>
+```
+
 ## Radio group
 
 Import `MbRadioGroup`. Provide `label` and `options` with unique, stable string

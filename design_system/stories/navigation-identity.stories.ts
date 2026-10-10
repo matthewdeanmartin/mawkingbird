@@ -172,6 +172,14 @@ function services() {
       },
     },
     api: {
+      getAccountStatuses: () =>
+        of(
+          Array.from({ length: 3 }, (_, index) => ({
+            id: `preview-pin-${index + 1}`,
+            content: `<p>Pinned preview post ${index + 1}</p>`,
+            spoiler_text: "",
+          })),
+        ),
       relationships: () => of([state.relationship()]).pipe(delay(100)),
       follow: () =>
         defer(() => {

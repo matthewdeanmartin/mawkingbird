@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/other-servers/other-servers.html",
+      "disposition": "partial adoption",
+      "nextStep": "Server search and custom-domain inputs use Field/Control; the browse action uses Button. Preserve native router links, accessible field labels, domain-specific destinations and narrow wrapping. Directory rows and back links retain the existing Feeds navigation pattern pending a bounded navigation review."
+    },
+    {
       "file": "ui/src/app/pages/watch/party-conversation.ts",
       "disposition": "adopted scope",
       "nextStep": "Temporary party tags use Field/Control, Button and Help. Preserve label associations, removable tag names, keyboard access and bounded narrow layouts; feed posts reuse StatusCard."
@@ -65,7 +70,7 @@
     {
       "file": "ui/src/app/account-hover-card/account-preview.ts",
       "disposition": "adopted scope",
-      "nextStep": "MbButton owns the preview toggle; native ElementRef focus return preserves Escape/pinning and touch disclosure. Hover timers remain caller-owned."
+      "nextStep": "Popover owns the preview trigger, bounded top-layer surface, Escape dismissal and focus return; AccountHoverCard owns profile presentation. Preserve pointer transfer, click pinning, lazy loading of up to three pinned posts and native profile/thread destinations without reflowing member rows."
     },
     {
       "file": "ui/src/app/account-list-dialog/account-list-dialog.html",
@@ -435,7 +440,7 @@
     {
       "file": "ui/src/app/pages/home/home.html",
       "disposition": "partial adoption",
-      "nextStep": "Compact filter toolbars adopted; remaining select and ordinary actions remain."
+      "nextStep": "Compact filter toolbars and Home Default/time-window selects use shared Toolbar and compact Field/Control. Preserve native select labels, keyboard behavior, saved defaults and narrow visibility. Remaining ordinary actions still need review."
     },
     {
       "file": "ui/src/app/pages/invites/invites.html",
@@ -629,8 +634,8 @@
     },
     {
       "file": "ui/src/app/pages/server-feed/server-feed.html",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "partial adoption",
+      "nextStep": "Pin and retry actions use Button. Preserve per-server feed labels, loading/provider gates and native destinations. Existing tabs, member rows and news/back links still need a bounded navigation and compact-action review with associated CSS."
     },
     {
       "file": "ui/src/app/pages/settings/account-list/settings-account-list.html",

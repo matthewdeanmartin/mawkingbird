@@ -214,32 +214,6 @@ a.eliza-invite:hover {
   text-decoration: none;
 }
 
-/* How far back the feed reaches. Sits with the Retweets/Replies chips. */
-.home-window {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 0 4px 0 7px;
-  border: 0;
-  border-radius: 5px;
-  font-size: 13px;
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-.home-window:hover {
-  background: var(--hover);
-}
-
-.home-window select {
-  border: none;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  padding: 4px 2px;
-  cursor: pointer;
-}
-
 /* Provider warnings, below the feed. `.older-note` used to sit here for a note
    above the list; that note is gone (see home.html) because anything above the
    list that can appear mid-session displaces what the reader is reading. */
@@ -344,10 +318,6 @@ a.eliza-invite:hover {
 
 .home-filters {
   display: contents;
-}
-.home-default {
-  width: 10rem;
-  max-width: 100%;
 }
 
 @media (max-width: 720px) {
