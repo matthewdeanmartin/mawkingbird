@@ -1,3 +1,4 @@
+import { reconcileStatus } from '../../reconcile-status';
 import { FeedCtaStore } from '../../feed-cta-store';
 import { accountScopeSuffix } from '../../account-scope';
 import { FeedCta } from '../../feed-ctas';
@@ -318,7 +319,7 @@ export class Home implements OnInit, OnDestroy {
   private drafts = inject(Drafts).forCurrentAccount();
   private router = inject(Router);
   private homeNavigationSub?: Subscription;
-  // i18n pages.home.noNewPosts: No new posts. You're up to date.
+  // i18n pages.home.noNewPosts: No newer posts since your last refresh.
   protected noNewPosts = signal(false);
   private refreshBaseline: Set<string> | null = null;
   private flags = inject(FeatureFlags);
@@ -1713,8 +1714,8 @@ export class Home implements OnInit, OnDestroy {
     // future behaviour (e.g. scroll-to-post).
   }
 
-  onChanged(original: Status, updated: Status): void {
-    this.statuses.update((list) => list.map((s) => (s === original ? updated : s)));
+  onChanged(_original: Status, updated: Status): void {
+    this.statuses.update((list) => reconcileStatus(list, updated, this.auth.account()?.id));
   }
 
   onDeleted(removed: Status): void {

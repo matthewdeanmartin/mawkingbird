@@ -39,3 +39,8 @@
   padding: 4px;
   width: min(240px, calc(100vw - 16px));
 }
+
+[popover].roomy {
+  width: min(400px, calc(100vw - 16px));
+  max-height: min(640px, calc(100dvh - 16px));
+}

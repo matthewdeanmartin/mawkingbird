@@ -378,7 +378,11 @@ export class StatusCard {
   readonly showMedia = input(true);
   protected attachmentVideo = attachmentSource;
   protected safeMediaUrl = mediaUrl;
-  protected youtubeVideo = computed(() => statusVideo(this.display));
+  protected youtubeVideo = computed(() =>
+    this.display.media_attachments.some((media) => attachmentSource(media))
+      ? null
+      : statusVideo(this.display),
+  );
   protected mediaContext = computed(() => ({
     status: this.display,
     server: this.server.baseUrl(),

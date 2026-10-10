@@ -1987,6 +1987,18 @@ describe('StatusCard', () => {
     expect(f.nativeElement.querySelector('app-video-player')).not.toBeNull();
   });
 
+  it('shows a single video player when an uploaded clip also links to YouTube', () => {
+    const f = setUp(
+      makeStatus({
+        content: '<p><a href="https://youtu.be/dQw4w9WgXcQ">The same video</a></p>',
+        media_attachments: [
+          { ...makeMedia('clip'), type: 'video', url: 'https://cdn.example/clip.mp4' },
+        ],
+      }),
+    );
+    expect(f.nativeElement.querySelectorAll('app-video-player')).toHaveLength(1);
+  });
+
   it('recognizes YouTube links without a server card and leaves text-focus media unmounted', () => {
     const f = setUp(
       makeStatus({ content: '<p><a href="https://youtu.be/dQw4w9WgXcQ">A video</a></p>' }),

@@ -1,4 +1,13 @@
-import { Component, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { MbButton } from '../button/button';
 
 let nextId = 0;
@@ -42,6 +51,7 @@ let nextId = 0;
     <div
       #panel
       popover="auto"
+      [class.roomy]="roomy()"
       tabindex="-1"
       [id]="id"
       [attr.role]="kind()"
@@ -61,6 +71,7 @@ let nextId = 0;
 export class MbPopover {
   readonly label = input.required<string>();
   readonly kind = input<'dialog' | 'menu'>('dialog');
+  readonly roomy = input(false);
   readonly icon = input<'help' | null>(null);
   readonly openedChange = output<boolean>();
   readonly triggerKey = output<KeyboardEvent>();
@@ -72,11 +83,14 @@ export class MbPopover {
     read: ElementRef,
   });
 
-  show(): void {
-    if (this.opened()) return;
+  private observer?: ResizeObserver;
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
+  }
+
+  private reposition(): void {
+    if (!this.opened()) return;
     const panel = this.panel().nativeElement;
-    panel.showPopover();
-    this.opened.set(true);
     const anchor = this.trigger().nativeElement.getBoundingClientRect();
     const box = panel.getBoundingClientRect();
     const rtl = getComputedStyle(panel).direction === 'rtl';
@@ -92,7 +106,20 @@ export class MbPopover {
           : anchor.top - box.height - 4,
       ),
     });
-    if (this.kind() === 'dialog')
+  }
+
+  show(focus = true): void {
+    if (this.opened()) return;
+    const panel = this.panel().nativeElement;
+    panel.showPopover();
+    this.opened.set(true);
+    this.reposition();
+    if (typeof ResizeObserver !== 'undefined') {
+      this.observer?.disconnect();
+      this.observer = new ResizeObserver(() => this.reposition());
+      this.observer.observe(panel);
+    }
+    if (focus && this.kind() === 'dialog')
       (
         panel.querySelector<HTMLElement>(
           'button:not([disabled]), input:not([disabled]), a[href], select:not([disabled]), textarea:not([disabled])',
@@ -110,6 +137,7 @@ export class MbPopover {
     if (!this.opened()) return;
     this.panel().nativeElement.hidePopover();
     this.opened.set(false);
+    this.observer?.disconnect();
     if (restore) this.trigger().nativeElement.focus({ preventScroll: true });
     this.openedChange.emit(false);
   }

@@ -1,3 +1,4 @@
+<a class="pastes-back" routerLink="/feeds">{{ 'pages.pastes.back' | transloco }}</a>
 <div class="page-head">
   <h2>{{ 'pages.pastes.title' | transloco }}</h2>
 </div>
@@ -91,14 +92,6 @@
             <a class="btn btn-sm" [href]="paste.url" target="_blank" rel="noopener noreferrer">
               {{ 'pages.pastes.actions.open' | transloco }}
             </a>
-            <a
-              class="btn btn-outline btn-sm"
-              [href]="paste.rawUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ 'pages.pastes.actions.raw' | transloco }}
-            </a>
             <button
               class="btn btn-outline btn-sm"
               type="button"
@@ -113,38 +106,50 @@
                 ) | transloco
               }}
             </button>
-            <button
-              class="btn btn-outline btn-sm"
-              type="button"
-              (click)="editForPost(paste)"
-              [title]="'pages.pastes.actions.editForPostTitle' | transloco: { post: words().Post }"
-            >
-              {{ 'pages.pastes.actions.editForPost' | transloco: { post: words().post } }}
-            </button>
-            <button
-              class="btn btn-outline btn-sm"
-              type="button"
-              (click)="convertToDraft(paste)"
-              [title]="'pages.pastes.actions.toDraftTitle' | transloco"
-            >
-              {{ 'pages.pastes.actions.toDraft' | transloco }}
-            </button>
-            @if (providers.get(paste.providerId) && !isImmutable(paste.providerId)) {
-              <button class="btn btn-outline btn-sm" type="button" (click)="beginEdit(paste)">
-                {{ 'pages.pastes.actions.edit' | transloco }}
+            <mb-popover kind="menu" [label]="'pages.pastes.actions.more' | transloco">
+              <a
+                class="btn btn-outline btn-sm"
+                [href]="paste.rawUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ 'pages.pastes.actions.raw' | transloco }}
+              </a>
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                (click)="editForPost(paste)"
+                [title]="
+                  'pages.pastes.actions.editForPostTitle' | transloco: { post: words().Post }
+                "
+              >
+                {{ 'pages.pastes.actions.editForPost' | transloco: { post: words().post } }}
               </button>
               <button
-                class="btn btn-outline btn-sm danger"
+                class="btn btn-outline btn-sm"
                 type="button"
-                [disabled]="busy() === paste.slug"
-                (click)="delete(paste)"
+                (click)="convertToDraft(paste)"
+                [title]="'pages.pastes.actions.toDraftTitle' | transloco"
               >
-                {{ 'pages.pastes.actions.deleteRemote' | transloco }}
+                {{ 'pages.pastes.actions.toDraft' | transloco }}
               </button>
-            }
-            <button class="btn btn-outline btn-sm" type="button" (click)="forget(paste)">
-              {{ 'pages.pastes.actions.forget' | transloco }}
-            </button>
+              @if (providers.get(paste.providerId) && !isImmutable(paste.providerId)) {
+                <button class="btn btn-outline btn-sm" type="button" (click)="beginEdit(paste)">
+                  {{ 'pages.pastes.actions.edit' | transloco }}
+                </button>
+                <button
+                  class="btn btn-outline btn-sm danger"
+                  type="button"
+                  [disabled]="busy() === paste.slug"
+                  (click)="delete(paste)"
+                >
+                  {{ 'pages.pastes.actions.deleteRemote' | transloco }}
+                </button>
+              }
+              <button class="btn btn-outline btn-sm" type="button" (click)="forget(paste)">
+                {{ 'pages.pastes.actions.forget' | transloco }}
+              </button>
+            </mb-popover>
           </div>
           @if (sharing() === paste.slug) {
             <div class="paste-share">

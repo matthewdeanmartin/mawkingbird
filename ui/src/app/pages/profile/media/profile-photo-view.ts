@@ -51,6 +51,8 @@ import { Server } from '../../../server';
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n pages.profile.media.viewerAriaLabel: Picture viewer
+// i18n pages.profile.media.loadMore: Load more
+// i18n pages.profile.media.loadingMore: Loading more…
 // i18n pages.profile.media.closeViewer: Close viewer
 // i18n pages.profile.media.previousPicture: Previous picture
 // i18n pages.profile.media.nextPicture: Next picture
@@ -143,6 +145,12 @@ export class ProfilePhotoView {
   readonly navigated = output<ProfileMediaItem>();
   /** The reader hit the end of what is loaded and more may exist. */
   readonly wantMore = output<void>();
+  readonly loadingMore = input(false);
+  readonly exhausted = input(false);
+
+  protected loadMore(): void {
+    if (!this.loadingMore() && !this.exhausted()) this.wantMore.emit();
+  }
 
   protected current = computed(
     () => this.items().find((item) => item.key === this.activeKey()) ?? null,
@@ -617,7 +625,7 @@ export class ProfilePhotoView {
       // Off the end of what is loaded: ask for another page rather than
       // wrapping. Wrapping would quietly send the reader back to the newest
       // picture, which reads as "the app lost my place".
-      this.wantMore.emit();
+      this.loadMore();
       return;
     }
     this.navigated.emit(items[next]);
@@ -643,7 +651,7 @@ export class ProfilePhotoView {
     const target = items.find((candidate) => candidate.postIndex === targetPost);
     if (!target) {
       if (delta > 0) {
-        this.wantMore.emit();
+        this.loadMore();
       }
       return;
     }

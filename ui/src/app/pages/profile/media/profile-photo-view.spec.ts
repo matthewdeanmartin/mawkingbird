@@ -75,6 +75,33 @@ describe('ProfilePhotoView comments', () => {
     return (fixture.nativeElement as HTMLElement).textContent ?? '';
   }
 
+  it('loads more inside the viewer, disables repeated requests, and stays on the current picture', () => {
+    const fixture = setUp(makeStatus());
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+    const more = vi.fn();
+    fixture.componentInstance.wantMore.subscribe(more);
+    const button = () =>
+      fixture.nativeElement.querySelector('.photo-counter button') as HTMLButtonElement;
+    button().click();
+    expect(more).toHaveBeenCalledOnce();
+    fixture.componentRef.setInput('loadingMore', true);
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true);
+    button().click();
+    expect(more).toHaveBeenCalledOnce();
+    fixture.componentRef.setInput('loadingMore', false);
+    fixture.componentRef.setInput('items', [
+      makeItem(makeStatus()),
+      { ...makeItem(makeStatus({ id: 's2' })), postIndex: 1 },
+    ]);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.activeKey()).toBe('s1.0');
+    expect(fixture.nativeElement.querySelector('.photo-counter').textContent).toContain('1 of 2');
+    fixture.componentRef.setInput('exhausted', true);
+    fixture.detectChanges();
+    expect(button()).toBeNull();
+  });
+
   it('says there are no comments when the server has no thread (404)', () => {
     // The regression this pins: a 404 from /context is the ordinary answer for a
     // post with no replies, and for feed items whose ids this server never

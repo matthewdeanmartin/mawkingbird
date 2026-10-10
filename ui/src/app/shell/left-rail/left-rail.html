@@ -5,7 +5,7 @@
   @if (suggestions().length) {
     @for (account of suggestions().slice(0, 5); track account.id) {
       <div mbIdentityRow class="suggestion">
-        <span class="hover-anchor">
+        <app-account-preview [account]="account">
           <a class="suggestion-avatar" [routerLink]="['/accounts', account.id]">
             <img
               [src]="account.avatar_static || account.avatar"
@@ -14,15 +14,12 @@
               decoding="async"
             />
           </a>
-          <app-account-hover-card [account]="account" />
-        </span>
-        <span class="hover-anchor suggestion-name-wrap">
+
           <a class="suggestion-name" [routerLink]="['/accounts', account.id]">
             <span class="suggestion-display">{{ account.display_name || account.username }}</span>
             <span class="muted">&#64;{{ account.acct }}</span>
           </a>
-          <app-account-hover-card [account]="account" />
-        </span>
+        </app-account-preview>
         @if (followed().has(account.id)) {
           <button type="button" mbButton class="follow-btn" disabled>
             {{ 'shell.left.following' | transloco }}

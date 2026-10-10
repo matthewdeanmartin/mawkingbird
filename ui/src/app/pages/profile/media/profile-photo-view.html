@@ -68,6 +68,19 @@
             'pages.profile.media.positionOfTotal'
               | transloco: { position: position(), total: total() }
           }}
+          @if (!exhausted()) {
+            <button
+              class="btn btn-outline btn-sm"
+              type="button"
+              [disabled]="loadingMore()"
+              (click)="loadMore()"
+            >
+              {{
+                (loadingMore() ? 'pages.profile.media.loadingMore' : 'pages.profile.media.loadMore')
+                  | transloco
+              }}
+            </button>
+          }
           <span class="photo-hint">{{ 'pages.profile.media.keyboardHint' | transloco }}</span>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AccountHoverCard } from '../../account-hover-card/account-hover-card';
+import { AccountPreview } from '../../account-hover-card/account-preview';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { Account, Tag } from '../../models';
@@ -50,7 +50,7 @@ function accountKey(account: Account): string {
     MbRailCard,
     MbIdentityRow,
     RouterLink,
-    AccountHoverCard,
+    AccountPreview,
     ProfileStack,
     TranslocoPipe,
   ],

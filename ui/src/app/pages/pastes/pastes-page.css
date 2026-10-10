@@ -1,3 +1,30 @@
+:host {
+  display: block;
+}
+.pastes-back {
+  display: block;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.page-head {
+  padding: 12px 16px;
+}
+.page-head h2 {
+  margin: 0;
+}
+.page-note {
+  padding: 0 16px;
+}
+:host > p:not(.page-note),
+.paste-list {
+  margin: 16px;
+}
+mb-popover .btn {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  text-align: left;
+}
 .paste-tabs {
   display: flex;
   border-bottom: 1px solid var(--border);

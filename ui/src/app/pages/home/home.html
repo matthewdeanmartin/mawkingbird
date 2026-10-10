@@ -9,7 +9,7 @@
   <p role="alert">{{ 'drafts.saveFailed' | transloco }}</p>
 }
 
-@if (noNewPosts()) {
+@if (noNewPosts() && view() === 'feed' && !loading()) {
   <p class="muted center small" role="status">{{ 'pages.home.noNewPosts' | transloco }}</p>
 }
 
@@ -245,6 +245,8 @@
     <app-profile-photo-view
       [items]="mediaItems()"
       [activeKey]="photoKey"
+      [loadingMore]="autoLoading()"
+      [exhausted]="!canLoadMore()"
       (closed)="openPhoto.set(null)"
       (navigated)="navigatePhoto($event)"
       (wantMore)="loadMore()"

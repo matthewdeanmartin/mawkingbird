@@ -40,6 +40,8 @@ import { buildMediaItems, ProfileMediaItem } from '../profile/media/profile-medi
       <app-profile-photo-view
         [items]="items()"
         [activeKey]="key"
+        [loadingMore]="loading()"
+        [exhausted]="exhausted()"
         [publicRef]="publicRef()"
         (closed)="close()"
         (navigated)="open($event, true)"

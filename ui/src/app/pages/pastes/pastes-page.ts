@@ -1,3 +1,4 @@
+import { MbPopover } from '../../design-system/popover/popover';
 import { AppDialogs } from '../../app-dialogs';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +14,8 @@ import { PasteProviderRegistry } from '../../providers/paste/paste-provider-regi
 import { Terminology } from '../../terminology';
 
 // i18n pages.pastes.retired: This provider is no longer supported. Your saved text is still available; remote editing and deletion are disabled.
+// i18n pages.pastes.actions.more: More actions
+// i18n pages.pastes.back: ← Feeds
 // i18n pages.pastes.title: Pastes
 // i18n pages.pastes.note.a: Paste links and edit keys are saved only in this browser. Clearing site data removes your ability to edit or delete them.
 // i18n pages.pastes.note.b: Short-link services (TinyURL) are permanent and public: those links cannot be edited or deleted afterwards. Your use of each service is governed by its own terms — see
@@ -63,7 +66,7 @@ import { Terminology } from '../../terminology';
 
 @Component({
   selector: 'app-pastes-page',
-  imports: [FormsModule, RouterLink, HumanTimePipe, Compose, TranslocoPipe],
+  imports: [MbPopover, FormsModule, RouterLink, HumanTimePipe, Compose, TranslocoPipe],
   templateUrl: './pastes-page.html',
   styleUrl: './pastes-page.css',
 })

@@ -315,6 +315,33 @@ describe('Notifications', () => {
     return fixture;
   }
 
+  it.each([true, false])(
+    'offers follow request decisions and removes the request after success (approve=%s)',
+    (approve) => {
+      const fixture = TestBed.createComponent(Notifications);
+      fixture.detectChanges();
+      httpMock
+        .expectOne('/api/v1/notifications')
+        .flush([makeNotification('request', 'follow_request')]);
+      fixture.detectChanges();
+      const root = fixture.nativeElement as HTMLElement;
+      expect(root.textContent).toContain('requested to follow you');
+      expect(root.querySelector('a[href="/accounts/1"]')).not.toBeNull();
+      expect(root.querySelector('a[href="/settings/follows"]')).not.toBeNull();
+      const action = [...root.querySelectorAll<HTMLButtonElement>('.mention-actions button')].find(
+        (button) => button.textContent?.trim() === (approve ? 'Approve' : 'Deny'),
+      )!;
+      action.click();
+      fixture.detectChanges();
+      expect(action.disabled).toBe(true);
+      httpMock
+        .expectOne(`/api/v1/follow_requests/1/${approve ? 'authorize' : 'reject'}`)
+        .flush(relationship('1'));
+      fixture.detectChanges();
+      expect(root.querySelector('.mention-actions')).toBeNull();
+    },
+  );
+
   it('renders poll bars in both grouped and individual notifications', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();

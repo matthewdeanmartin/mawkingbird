@@ -50,7 +50,7 @@ function didOf(account: Account): string {
     HumanCountPipe,
     RenderedHtmlLinks,
   ],
-  host: { '[class.inline]': 'inline()' },
+  host: { '[class.inline]': 'inline()', '[class.embedded]': 'embedded()' },
   template: `
     <div
       mbAccountCard
@@ -164,6 +164,12 @@ function didOf(account: Account): string {
         display: none;
       }
     }
+    :host.embedded .hover-card {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      max-width: none;
+    }
     :host.inline {
       display: block;
       position: static;
@@ -184,6 +190,7 @@ export class AccountHoverCard {
   private destroyRef = inject(DestroyRef);
 
   readonly account = input.required<Account>();
+  readonly embedded = input(false, { transform: booleanAttribute });
   readonly inline = input(false, { transform: booleanAttribute });
   protected fullHandle = computed(() => {
     const account = this.account();

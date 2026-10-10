@@ -107,6 +107,9 @@
 @if (bskyError(); as error) {
   <p class="muted center" role="alert">{{ error }}</p>
 }
+@if (accountActionError() && view() !== 'new-accounts') {
+  <p role="alert">{{ accountActionError() }}</p>
+}
 @if (loading()) {
   <p class="muted center">{{ 'pages.notifications.loading' | transloco }}</p>
 } @else if (!items().length) {
@@ -219,6 +222,27 @@
             row.notif.account.display_name || row.notif.account.username
           }}</a>
           <span class="what muted">{{ label(row.notif.type) }}</span>
+          @if (row.notif.type === 'follow_request') {
+            <div class="mention-actions">
+              <button
+                class="btn btn-sm"
+                [disabled]="isAccountActionBusy(row.notif.account.id)"
+                (click)="decideFollowRequest(row.notif.account, true)"
+              >
+                {{ 'pages.notifications.requests.approve' | transloco }}
+              </button>
+              <button
+                class="btn btn-outline btn-sm"
+                [disabled]="isAccountActionBusy(row.notif.account.id)"
+                (click)="decideFollowRequest(row.notif.account, false)"
+              >
+                {{ 'pages.notifications.requests.deny' | transloco }}
+              </button>
+              <a routerLink="/settings/follows">{{
+                'pages.notifications.requests.manage' | transloco
+              }}</a>
+            </div>
+          }
           @if (row.notif.status) {
             <!-- Bluesky replies and mentions also arrive as type 'mention', but
                  "open in chat" means the Mastodon DM tab and `chatKey` builds a

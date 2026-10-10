@@ -76,6 +76,11 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.others.other: and {{count}} others
 // i18n pages.notifications.label.favourite: favourited your status
 // i18n pages.notifications.label.reblog: boosted your status
+// i18n pages.notifications.requests.approve: Approve
+// i18n pages.notifications.requests.deny: Deny
+// i18n pages.notifications.requests.manage: Manage follow requests
+// i18n pages.notifications.requests.error: Could not update this follow request. Please try again.
+// i18n pages.notifications.label.followRequest: requested to follow you
 // i18n pages.notifications.label.follow: followed you
 // i18n pages.notifications.label.mention: mentioned you
 
@@ -747,12 +752,37 @@ export class Notifications implements OnInit, OnDestroy {
     return `priv:${[...accts].sort().join(',')}`;
   }
 
+  protected decideFollowRequest(account: Account, approve: boolean): void {
+    if (this.isAccountActionBusy(account.id)) return;
+    this.accountActionBusy.update((ids) => new Set([...ids, account.id]));
+    this.accountActionError.set(null);
+    const request = approve
+      ? this.api.authorizeFollowRequest(account.id)
+      : this.api.rejectFollowRequest(account.id);
+    request.subscribe({
+      next: () => {
+        this.items.update((items) =>
+          items.filter((item) => item.type !== 'follow_request' || item.account.id !== account.id),
+        );
+        this.accountActionBusy.update((ids) => new Set([...ids].filter((id) => id !== account.id)));
+      },
+      error: () => {
+        this.accountActionBusy.update((ids) => new Set([...ids].filter((id) => id !== account.id)));
+        this.accountActionError.set(
+          this.transloco.translate<string>('pages.notifications.requests.error'),
+        );
+      },
+    });
+  }
+
   label(type: string): string {
     switch (type) {
       case 'favourite':
         return this.transloco.translate<string>('pages.notifications.label.favourite');
       case 'reblog':
         return this.transloco.translate<string>('pages.notifications.label.reblog');
+      case 'follow_request':
+        return this.transloco.translate<string>('pages.notifications.label.followRequest');
       case 'follow':
         return this.transloco.translate<string>('pages.notifications.label.follow');
       case 'mention':

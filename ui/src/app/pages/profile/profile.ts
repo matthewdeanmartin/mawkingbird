@@ -1,3 +1,4 @@
+import { reconcileStatus } from '../../reconcile-status';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
 import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
@@ -2371,8 +2372,8 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   onChanged(updated: Status): void {
-    this.statuses.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
-    this.pinnedStatuses.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
+    this.statuses.update((list) => reconcileStatus(list, updated, this.auth.account()?.id));
+    this.pinnedStatuses.update((list) => reconcileStatus(list, updated, this.auth.account()?.id));
   }
 
   onDeleted(removed: Status): void {

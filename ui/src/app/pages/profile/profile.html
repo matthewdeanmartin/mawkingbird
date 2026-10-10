@@ -800,6 +800,8 @@
     <app-profile-photo-view
       [items]="mediaItems()"
       [activeKey]="photoKey"
+      [loadingMore]="mediaLoadingMore()"
+      [exhausted]="mediaExhausted()"
       [publicRef]="publicRef"
       (closed)="closePhoto()"
       (navigated)="navigatePhoto($event)"
