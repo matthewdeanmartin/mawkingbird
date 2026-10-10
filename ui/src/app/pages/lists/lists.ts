@@ -1,3 +1,4 @@
+import { OtherServers } from '../other-servers/other-servers';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MbButton } from '../../design-system/button/button';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
@@ -67,6 +68,7 @@ export type FeedSection =
   | 'client-lists'
   | 'searches'
   | 'server'
+  | 'other-servers'
   | 'tags'
   | 'tag-bundles'
   | 'featured-tags'
@@ -86,6 +88,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
   { id: 'client-lists', key: 'pages.lists.clientList.heading' },
   { id: 'searches', key: 'pages.lists.savedSearches.heading' },
   { id: 'server', key: 'pages.lists.serverFeeds.heading' },
+  { id: 'other-servers', key: 'otherServers.heading' },
   { id: 'tags', key: 'pages.lists.tags.heading' },
   { id: 'tag-bundles', key: 'pages.lists.tagBundles.heading' },
   { id: 'featured-tags', key: 'pages.lists.sections.featuredTags' },
@@ -117,7 +120,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.landing.allFeeds: All feeds
 // i18n pages.lists.landing.allFeedsHint: everything on one page
 // i18n pages.lists.sections.all: All
-// i18n pages.lists.sections.featuredTags: Featured hashtags
+// i18n pages.lists.sections.featuredTags: Your Featured Hashtags
 // i18n pages.lists.create: Create
 // i18n pages.lists.loading: Loading…
 // i18n pages.lists.emptyCreateAbove: None yet — create one above.
@@ -145,7 +148,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.savedSearches.emptyLink: search
 // i18n pages.lists.savedSearches.badge: · saved search
 // i18n pages.lists.savedSearches.anonBadge: · anon
-// i18n pages.lists.serverFeeds.heading: Server feeds
+// i18n pages.lists.serverFeeds.heading: Your Server Feeds
 // i18n pages.lists.serverFeeds.directoryTitle: Server directory
 // i18n pages.lists.serverFeeds.directoryHint: · accounts here who opted into discovery
 // i18n pages.lists.tags.heading: Followed hashtags
@@ -170,9 +173,9 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 // i18n pages.lists.tagBundles.deleteTitle: Delete bundle
 // i18n pages.lists.tagBundles.empty: None yet — create one above, then add tags to it.
 // i18n pages.lists.tagBundles.noTagsYet: · no tags yet
-// i18n pages.lists.featuredTags.heading: Featured on your profile
+// i18n pages.lists.featuredTags.heading: Your Featured Hashtags
 // i18n pages.lists.featuredTags.empty: No featured hashtags.
-// i18n pages.lists.collections.heading: Collections
+// i18n pages.lists.collections.heading: Your Collections
 // i18n pages.lists.collections.newNamePlaceholder: New collection name
 // i18n pages.lists.collections.deleteTitle: Delete collection
 // i18n pages.lists.collections.unsupported: This server doesn't support collections (Mastodon 4.6+).
@@ -237,6 +240,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
 @Component({
   selector: 'app-lists',
   imports: [
+    OtherServers,
     MbButton,
     MbNavigation,
     MbNavLink,

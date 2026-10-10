@@ -315,6 +315,10 @@
     }
   }
 
+  @if (shows('lists') && showsSection('other-servers')) {
+    <app-other-servers />
+  }
+
   @if (shows('tags') && showsSection('tags')) {
     <div class="section-head">{{ 'pages.lists.tags.heading' | transloco }}</div>
 

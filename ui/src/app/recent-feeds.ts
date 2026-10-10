@@ -1,3 +1,4 @@
+import { otherServerHost } from './other-server-url';
 import { Injectable, signal } from '@angular/core';
 import { scopedKey } from './account-scope';
 
@@ -15,6 +16,14 @@ function isFeedUrl(url: string): boolean {
   if (!url.startsWith('/') || url.startsWith('//')) return false;
   const parsed = new URL(url, 'https://local.invalid');
   const path = parsed.pathname;
+  const remote = /^\/feeds\/servers\/([^/]+)\/(local|federated|trending|news)$/.exec(path);
+  if (remote) {
+    try {
+      return !!otherServerHost(decodeURIComponent(remote[1]));
+    } catch {
+      return false;
+    }
+  }
   if (path === '/search') return !!parsed.searchParams.get('saved');
   if (path === '/collections/starter') return false;
   return (

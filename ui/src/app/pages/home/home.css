@@ -349,3 +349,9 @@ a.eliza-invite:hover {
   width: 10rem;
   max-width: 100%;
 }
+
+@media (max-width: 720px) {
+  .home-default {
+    display: none;
+  }
+}

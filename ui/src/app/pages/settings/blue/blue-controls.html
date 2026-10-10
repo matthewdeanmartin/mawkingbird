@@ -1,37 +1,4 @@
 <div class="ssection">
-  <!-- Radios rather than a checkbox: this is a question with several answers
-       rather than a thing that is on or off. The illustration set that was once
-       planned as a third value here is its own row below — which pictures the
-       app draws turned out to be independent of whether the bots exist. -->
-  <div class="srow">
-    <span class="slabel">{{ 'settings.blue.ai' | transloco }}</span>
-    <div class="scontrol">
-      <label class="radioline">
-        <input
-          type="radio"
-          value="on"
-          [ngModel]="prefs.aiMode()"
-          (ngModelChange)="prefs.setAiMode($event)"
-          name="aiMode"
-        />
-        {{ 'settings.blue.ai.show' | transloco }}
-      </label>
-      <label class="radioline">
-        <input
-          type="radio"
-          value="off"
-          [ngModel]="prefs.aiMode()"
-          (ngModelChange)="prefs.setAiMode($event)"
-          name="aiMode"
-        />
-        {{ 'settings.blue.ai.hide' | transloco }}
-      </label>
-      <span class="hint">
-        {{ 'settings.blue.ai.hint' | transloco }}
-      </span>
-    </div>
-  </div>
-
   <div class="srow">
     <span class="slabel">{{ 'settings.blue.art' | transloco }}</span>
     <div class="scontrol">
@@ -630,6 +597,26 @@
   </div>
 
   <div class="srow">
+    <label class="slabel" for="appearance-home-default">{{
+      'pages.home.defaultView.label' | transloco
+    }}</label>
+    <div class="scontrol">
+      <select
+        id="appearance-home-default"
+        name="home_default"
+        [ngModel]="homeDefaults.value() || ''"
+        (ngModelChange)="setHomeDefault($event)"
+      >
+        <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
+        @for (choice of ['all', 'text', 'media', 'video', 'articles']; track choice) {
+          <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
+        }
+      </select>
+      <span class="hint">{{ 'settings.blue.homeDefault.hint' | transloco }}</span>
+    </div>
+  </div>
+
+  <div class="srow">
     <span class="slabel">{{ 'settings.blue.feed' | transloco }}</span>
     <div class="scontrol">
       <label class="checkline">
@@ -712,6 +699,38 @@
       </label>
       <span class="hint">
         {{ 'settings.blue.analytics.hint' | transloco }}
+      </span>
+    </div>
+  </div>
+  <!-- Radios rather than a checkbox: this is a question with several answers
+       rather than a thing that is on or off. The illustration set that was once
+       planned as a third value here is its own row below — which pictures the
+       app draws turned out to be independent of whether the bots exist. -->
+  <div class="srow">
+    <span class="slabel">{{ 'settings.blue.ai' | transloco }}</span>
+    <div class="scontrol">
+      <label class="radioline">
+        <input
+          type="radio"
+          value="on"
+          [ngModel]="prefs.aiMode()"
+          (ngModelChange)="prefs.setAiMode($event)"
+          name="aiMode"
+        />
+        {{ 'settings.blue.ai.show' | transloco }}
+      </label>
+      <label class="radioline">
+        <input
+          type="radio"
+          value="off"
+          [ngModel]="prefs.aiMode()"
+          (ngModelChange)="prefs.setAiMode($event)"
+          name="aiMode"
+        />
+        {{ 'settings.blue.ai.hide' | transloco }}
+      </label>
+      <span class="hint">
+        {{ 'settings.blue.ai.hint' | transloco }}
       </span>
     </div>
   </div>

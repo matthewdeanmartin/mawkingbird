@@ -658,6 +658,23 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/lists/lists').then((m) => m.Lists),
       },
       {
+        path: 'feeds/servers',
+        title: 'Other Servers',
+        loadComponent: () =>
+          import('./pages/other-servers/other-servers').then((m) => m.OtherServersPage),
+      },
+      {
+        path: 'feeds/servers/:server',
+        title: 'Server feeds',
+        loadComponent: () =>
+          import('./pages/other-servers/other-servers').then((m) => m.OtherServersPage),
+      },
+      {
+        path: 'feeds/servers/:server/:feed',
+        title: 'Server feed',
+        loadComponent: () => import('./pages/server-feed/server-feed').then((m) => m.ServerFeed),
+      },
+      {
         path: 'feeds/lists',
         title: 'Lists',
         data: { only: 'lists' },

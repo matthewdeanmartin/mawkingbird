@@ -7,6 +7,7 @@ import {
   CustomTerminologyKey,
   READER_FONT_OPTIONS,
 } from '../../../client-prefs';
+import { HomeDefaults, asHomeDefault } from '../../../home-defaults';
 import { Terminology } from '../../../terminology';
 import { FALLBACK_LOCALE, UiLocale } from '../../../i18n/locale';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -68,6 +69,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.align.left: Left
 // i18n settings.blue.align.justify: Justified
 // i18n settings.blue.typography.hint: Applies to reader mode on threads and, when feed reader is on, to every timeline.
+// i18n settings.blue.homeDefault.hint: The starting view when you open Home. Saved for this account.
 // i18n settings.blue.feed: Feed
 // i18n settings.blue.feedReader: Reader mode for feeds (reader typography, no pictures)
 // i18n settings.blue.reader.fontSize: Font size ({{size}}px)
@@ -102,6 +104,12 @@ export class BlueControls {
   );
 
   protected readonly prefs = inject(ClientPrefs);
+  protected readonly homeDefaults = inject(HomeDefaults);
+
+  protected setHomeDefault(raw: string): void {
+    const value = asHomeDefault(raw);
+    if (value) this.homeDefaults.set(value);
+  }
   protected readonly accents = ACCENT_PRESETS;
   protected readonly readerFonts = READER_FONT_OPTIONS;
 

@@ -8,6 +8,9 @@ import { Auth } from '../../auth';
 import { Account, Status, TrendLink } from '../../models';
 import { ServerFeed } from './server-feed';
 import { JustMyServer } from '../../just-my-server';
+import { RecentFeeds } from '../../recent-feeds';
+import { Server } from '../../server';
+import { parseAnonymousAccountRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 
 function makeAccount(id: string): Account {
   return { id, username: `u${id}`, acct: `u${id}`, display_name: `User ${id}` } as Account;
@@ -63,6 +66,76 @@ describe('ServerFeed', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  function remote(feed: string, server = 'foobar.social'): ComponentFixture<ServerFeed> {
+    params.next(convertToParamMap({ feed, server }));
+    const fixture = TestBed.createComponent(ServerFeed);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('browses another server anonymously, pins its distinct label, and pages using native ids', () => {
+    TestBed.inject(Auth).enterAnonymous();
+    TestBed.inject(Server).setBaseUrl('https://home.example');
+    const fixture = remote('local');
+    http
+      .expectOne((req) => req.url === 'https://foobar.social/api/v1/timelines/public')
+      .flush([makeStatus('100', 'a')]);
+    expect(internals(fixture).statuses()[0].id).toContain('foobar.social:100');
+    const component = fixture.componentInstance as unknown as {
+      togglePin(): void;
+      loadMore(): void;
+      memberLink(account: Account): string[];
+    };
+    component.togglePin();
+    expect(TestBed.inject(RecentFeeds).entries()[0]).toEqual({
+      url: '/feeds/servers/foobar.social/local',
+      label: 'Local timeline · foobar.social',
+      pinned: true,
+    });
+    component.loadMore();
+    const more = http.expectOne(
+      (req) => req.url === 'https://foobar.social/api/v1/timelines/public',
+    );
+    expect(more.request.params.get('max_id')).toBe('100');
+    more.flush([]);
+    expect(TestBed.inject(Server).baseUrl()).toBe('https://home.example');
+    const link = component.memberLink(makeAccount('a'));
+    expect(parseAnonymousAccountRouteRef(link[1])).toEqual({
+      server: 'https://foobar.social',
+      id: 'a',
+    });
+  });
+
+  it('explains a remote feed restriction and can retry without altering the signed-in server', () => {
+    const fixture = remote('federated');
+    http
+      .expectOne((req) => req.url.includes('foobar.social/api/v1/timelines/public'))
+      .flush({}, { status: 403, statusText: 'Forbidden' });
+    expect(internals(fixture).notice()).toContain('foobar.social requires its own account');
+    fixture.componentInstance.load();
+    http.expectOne((req) => req.url.includes('foobar.social/api/v1/timelines/public')).flush([]);
+    expect(internals(fixture).notice()).toBe('');
+  });
+
+  it('cancels an old server request when navigation selects another server', () => {
+    const fixture = remote('trending');
+    const first = http.expectOne(
+      (req) => req.url === 'https://foobar.social/api/v1/trends/statuses',
+    );
+    params.next(convertToParamMap({ server: 'second.social', feed: 'trending' }));
+    expect(first.cancelled).toBe(true);
+    http
+      .expectOne((req) => req.url === 'https://second.social/api/v1/trends/statuses')
+      .flush([makeStatus('10', 'b')]);
+    expect(internals(fixture).statuses()[0].id).toContain('second.social');
+  });
+
+  it('does not fall back to a home-server request for an invalid foreign host', () => {
+    const fixture = remote('local', 'bad/path');
+    http.expectNone(() => true);
+    expect(internals(fixture).notice()).toContain('invalid');
+  });
 
   it('trending loads statuses and does NOT compute members until the tab opens', () => {
     const fixture = setUp('trending');

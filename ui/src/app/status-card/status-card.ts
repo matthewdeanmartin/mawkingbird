@@ -902,7 +902,7 @@ export class StatusCard {
   }
 
   protected get canUsePostOwnerActions(): boolean {
-    if (this.privateFollowReadOnly) return false;
+    if (this.remoteMastodonReadOnly) return false;
     return this.display.provider === 'bluesky'
       ? this.blueskySession.linked()
       : this.capabilities.canUseServerActions;
@@ -1407,6 +1407,7 @@ export class StatusCard {
 
   protected bookmarkActive(): boolean {
     return this.auth.isAnonymous ||
+      this.remoteMastodonReadOnly ||
       (this.display.provider === 'bluesky' && !this.blueskySession.linked())
       ? this.anonymousBookmarks.has(this.display)
       : this.display.bookmarked;
@@ -1436,7 +1437,7 @@ export class StatusCard {
    * answer was wrong. RSS and paste genuinely have nothing to show; X has a lot.
    */
   protected get readOnlyStats(): boolean {
-    return this.display.provider === 'twitter';
+    return this.display.provider === 'twitter' || this.remoteMastodonReadOnly;
   }
 
   /**
@@ -1588,14 +1589,13 @@ export class StatusCard {
 
   /** Which interactions this post's network supports (buttons hide per provider). */
   protected get caps(): ProviderCapabilities {
-    if (this.privateFollowReadOnly) return { reply: false, favourite: false, reblog: false };
+    if (this.remoteMastodonReadOnly) return { reply: false, favourite: false, reblog: false };
     return this.capabilities.statusCaps(this.display.provider ?? 'mastodon');
   }
 
   /** Public ids from another instance must never become writes against our home server. */
-  private get privateFollowReadOnly(): boolean {
-    if (!this.status().privateFollow || this.display.provider !== 'anonymous-mastodon')
-      return false;
+  protected get remoteMastodonReadOnly(): boolean {
+    if (this.display.provider !== 'anonymous-mastodon') return false;
     try {
       return (
         new URL(this.anonymousRef?.server ?? '').origin !==
@@ -2049,7 +2049,12 @@ export class StatusCard {
       });
       return;
     }
-    if (this.auth.isAnonymous || s.provider === 'bluesky' || !serverKnowsStatus(s.provider)) {
+    if (
+      this.auth.isAnonymous ||
+      this.remoteMastodonReadOnly ||
+      s.provider === 'bluesky' ||
+      !serverKnowsStatus(s.provider)
+    ) {
       this.changed.emit(this.anonymousBookmarks.toggle(s));
       return;
     }

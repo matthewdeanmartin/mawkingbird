@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ClientPrefs } from '../../../client-prefs';
+import { HomeDefaults } from '../../../home-defaults';
 import { BlueControls } from './blue-controls';
 
 describe('BlueControls terminology', () => {
@@ -25,6 +26,24 @@ describe('BlueControls terminology', () => {
     expect(text).toContain('Skeets & reskeets');
     expect(text).toContain('Toots & boosts');
     expect(text).toContain('call them whatever you want');
+  });
+
+  it('saves the Home starting view through the shared account preference', async () => {
+    const defaults = TestBed.inject(HomeDefaults);
+    defaults.set('media');
+    const fixture = TestBed.createComponent(BlueControls);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const select: HTMLSelectElement = fixture.nativeElement.querySelector(
+      'select[name="home_default"]',
+    );
+    expect(select.value).toBe('media');
+    select.value = 'articles';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(defaults.value()).toBe('articles');
+    expect(localStorage.getItem(defaults.scope())).toBe('articles');
   });
 
   it('shows all custom grammatical forms and updates the live preview', () => {

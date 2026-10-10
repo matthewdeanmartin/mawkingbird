@@ -28,7 +28,7 @@ describe('CommandBar', () => {
     expect(video.previousElementSibling).toBe(media);
     video.click();
     expect(views).toEqual(['video']);
-    buttons.find((button) => button.textContent?.includes('Text-focus'))!.click();
+    buttons.find((button) => button.textContent?.includes('Text'))!.click();
     expect(focus).toEqual([true]);
     expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
   });
@@ -62,7 +62,7 @@ describe('CommandBar', () => {
     const change = vi.fn();
     fixture.componentInstance.viewChange.subscribe(change);
     const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
-      (item) => item.textContent?.trim() === 'Tweet view',
+      (item) => item.textContent?.trim() === 'Tweets',
     )!;
     expect(button.getAttribute('aria-pressed')).toBe('false');
     button.click();
@@ -81,12 +81,12 @@ describe('CommandBar', () => {
     expect(rows).toHaveLength(3);
     expect(labels(rows[0])).toEqual([
       '🔄 More',
-      'Tweet view',
+      'Tweets',
       '👥 Members',
       '📊 Analytics',
-      '🩺 Feed Doctor',
+      '🩺 Doctor',
     ]);
-    expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text-focus', '🖼️ Media', '🔗 Articles']);
+    expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text', '🖼️ Media', '🔗 Articles']);
     expect(labels(rows[2])).toEqual(['🦣 Fedi']);
   });
   beforeEach(() => {
@@ -143,7 +143,7 @@ describe('CommandBar', () => {
 
     expect(el.textContent).not.toContain('A+');
     const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Text-focus'),
+      b.textContent?.includes('Text'),
     )!;
     imagesBtn.click();
     fixture.detectChanges();
@@ -160,11 +160,11 @@ describe('CommandBar', () => {
     const prefs = TestBed.inject(ClientPrefs);
     const el = fixture.nativeElement as HTMLElement;
 
-    // Reader mode also hides images, so Text-focus is pressed.
+    // Reader mode also hides images, so Text is pressed.
     prefs.setFeedReader(true);
     fixture.detectChanges();
     const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Text-focus'),
+      b.textContent?.includes('Text'),
     )!;
     expect(imagesBtn.getAttribute('aria-pressed')).toBe('true');
     expect(imagesBtn.hasAttribute('disabled')).toBe(false);
@@ -195,7 +195,7 @@ describe('CommandBar', () => {
     fixture.detectChanges();
     const prefs = TestBed.inject(ClientPrefs);
     const buttons = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')];
-    const textFocus = buttons.find((button) => button.textContent?.includes('Text-focus'))!;
+    const textFocus = buttons.find((button) => button.textContent?.includes('Text'))!;
     const media = buttons.find((button) => button.textContent?.includes('Media'))!;
     const viewChanged = vi.fn();
     fixture.componentInstance.viewChange.subscribe(viewChanged);

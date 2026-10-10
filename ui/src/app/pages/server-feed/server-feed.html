@@ -1,4 +1,26 @@
-<div class="page-head">{{ title() }}</div>
+<a
+  class="feed-back"
+  [routerLink]="remoteHost() ? ['/feeds/servers', remoteHost()] : ['/feeds']"
+  [queryParams]="remoteHost() ? {} : { section: 'server' }"
+  >{{ 'pagesServerFeed.back' | transloco }}</a
+>
+<div class="page-head">
+  <span>{{ title() }}</span>
+  <button
+    mbButton
+    variant="outline"
+    size="small"
+    type="button"
+    [attr.aria-pressed]="pinned()"
+    [disabled]="remoteRoute && !remoteHost()"
+    (click)="togglePin()"
+  >
+    {{ (pinned() ? 'pages.lists.recent.unpinLabel' : 'pages.lists.recent.pinLabel') | transloco }}
+  </button>
+</div>
+@if (pinNotice()) {
+  <p class="feed-blurb muted" role="status">{{ pinNotice() }}</p>
+}
 @if (showServerFriendsShortcut()) {
   <div class="feed-shortcuts">
     <a class="btn btn-outline btn-sm" routerLink="/home">{{
@@ -12,6 +34,15 @@
 
 @if (notice()) {
   <p class="muted center" role="status">{{ notice() }}</p>
+  <button
+    mbButton
+    variant="outline"
+    type="button"
+    [disabled]="loading() || loadingMore()"
+    (click)="statuses().length ? loadMore() : load()"
+  >
+    {{ 'pagesServerFeed.retry' | transloco }}
+  </button>
 }
 
 @if (isLinks()) {
@@ -83,7 +114,7 @@
     } @else {
       @for (a of members(); track a.id) {
         <div class="member-row">
-          <a class="member-link" [routerLink]="['/accounts', a.id]">
+          <a class="member-link" [routerLink]="memberLink(a)">
             <img
               class="avatar"
               [src]="a.avatar_static || a.avatar"

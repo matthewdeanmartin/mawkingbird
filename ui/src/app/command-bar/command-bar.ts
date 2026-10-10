@@ -13,9 +13,10 @@ import { ProviderRegistry } from '../providers/provider-registry';
 /** What the host page is showing in place of its timeline. */
 export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles';
 
-// i18n commandBar.textFocus.label: Text-focus
+// i18n commandBar.textFocus.label: Text
 // i18n commandBar.video: Video
-// i18n commandBar.tweetView: Tweet view
+// i18n commandBar.tweetView: Tweets
+// i18n commandBar.doctor: Doctor
 // i18n commandBar.textFocus.turnOff: Turn off text-focus and show images
 // i18n commandBar.textFocus.turnOn: Turn on text-focus: show image icons and alt text
 
@@ -75,7 +76,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
             routerLink="/feed-doctor"
             title="Why is this feed like this — who is flooding it, and why it ended"
           >
-            🩺 Feed Doctor
+            🩺 {{ 'commandBar.doctor' | transloco }}
           </a>
         }
       </div>

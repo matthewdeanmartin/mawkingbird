@@ -708,6 +708,27 @@ describe('StatusCard', () => {
     expect(card.caps.reply).toBe(false);
   });
 
+  it('does not send other-server timeline actions to the home server and keeps bookmarks local', () => {
+    TestBed.inject(Server).setBaseUrl('https://home.example');
+    const fixture = setUp(
+      makeStatus({
+        id: 'anonymous-mastodon:foobar.social:100',
+        provider: 'anonymous-mastodon',
+        providerRef: { server: 'https://foobar.social', statusId: '100', accountId: '7' },
+      }),
+    );
+    fixture.componentInstance.toggleFavourite(fakeEvent());
+    fixture.componentInstance.toggleReblog(fakeEvent());
+    fixture.componentInstance.toggleBookmark(fakeEvent());
+    httpMock.expectNone((request) => request.method !== 'GET');
+    const card = fixture.componentInstance as unknown as {
+      caps: { reply: boolean };
+      bookmarkActive(): boolean;
+    };
+    expect(card.caps.reply).toBe(false);
+    expect(card.bookmarkActive()).toBe(true);
+  });
+
   it('links Anonymous Mastodon avatars and posts to public in-app routes', () => {
     TestBed.inject(Auth).enterAnonymous('https://home.example');
     const fixture = setUp(

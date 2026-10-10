@@ -1,0 +1,60 @@
+@if (selected(); as server) {
+  <a class="back" routerLink="/feeds/servers">{{ 'otherServers.backToServers' | transloco }}</a>
+  <h2 class="section-head">{{ server }}</h2>
+  <p class="section-note muted">{{ 'otherServers.publicOnly' | transloco: { server } }}</p>
+  @for (feed of feeds; track feed.feed) {
+    <a class="list-row" [routerLink]="['/feeds/servers', server, feed.feed]">
+      <span
+        >{{ feed.title }}<span class="muted small">{{ feed.blurb }}</span></span
+      >
+    </a>
+  }
+} @else {
+  <a class="back" routerLink="/feeds">{{ 'otherServers.back' | transloco }}</a>
+  <h2 class="section-head">{{ 'otherServers.heading' | transloco }}</h2>
+  <p class="section-note muted">{{ 'otherServers.intro' | transloco }}</p>
+  @if (invalid()) {
+    <p class="section-note" role="alert">{{ 'otherServers.invalid' | transloco }}</p>
+  }
+  <mb-field class="server-search" [label]="'otherServers.search' | transloco">
+    <input
+      mbControl
+      type="search"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      [placeholder]="'otherServers.searchPlaceholder' | transloco"
+    />
+  </mb-field>
+  <div class="custom-server">
+    <mb-field [label]="'otherServers.customLabel' | transloco">
+      <input
+        mbControl
+        type="text"
+        [ngModel]="custom()"
+        (ngModelChange)="custom.set($event)"
+        [placeholder]="'otherServers.customPlaceholder' | transloco"
+      />
+    </mb-field>
+    @if (customHost(); as host) {
+      <a mbButton variant="outline" size="small" [routerLink]="['/feeds/servers', host]">{{
+        'otherServers.browse' | transloco
+      }}</a>
+    }
+  </div>
+  @if (directory.loading() && !servers().length) {
+    <p class="section-note muted" role="status">{{ 'otherServers.loading' | transloco }}</p>
+  } @else if (!servers().length) {
+    <p class="section-note muted" role="status">{{ 'otherServers.empty' | transloco }}</p>
+  }
+  @for (server of servers(); track server.domain) {
+    <a class="list-row" [routerLink]="['/feeds/servers', server.domain]">
+      <span
+        ><strong>{{ server.domain }}</strong
+        ><span class="muted small">{{ server.description }}</span></span
+      >
+      @if (server.category) {
+        <span class="muted small category">{{ server.category }}</span>
+      }
+    </a>
+  }
+}

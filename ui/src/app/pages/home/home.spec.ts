@@ -1326,7 +1326,7 @@ describe('Home', () => {
     const commandBar = el.querySelector('.presentation-row')?.textContent ?? '';
     const filters = el.querySelector('.home-filters')?.textContent ?? '';
 
-    expect(commandBar).toContain('Text-focus');
+    expect(commandBar).toContain('Aa Text');
     expect(commandBar).not.toContain('All languages');
     expect(commandBar).not.toContain('Calm');
     expect(filters).toContain('Retweets');

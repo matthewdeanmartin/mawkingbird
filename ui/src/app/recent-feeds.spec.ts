@@ -78,4 +78,24 @@ describe('RecentFeeds', () => {
     store.visit(feed('a'));
     expect(store.entries()).toHaveLength(1);
   });
+
+  it('keeps the same feed from different servers distinct and restores their pins', () => {
+    const store = TestBed.inject(RecentFeeds);
+    const first = { url: '/feeds/servers/foo.social/local', label: 'Local timeline · foo.social' };
+    const second = { url: '/feeds/servers/bar.social/local', label: 'Local timeline · bar.social' };
+    store.visit(first);
+    store.togglePin(first.url);
+    store.visit(second);
+    store.togglePin(second.url);
+    const reloaded = new RecentFeeds();
+    reloaded.refresh();
+    expect(reloaded.entries()).toEqual([
+      { ...first, pinned: true },
+      { ...second, pinned: true },
+    ]);
+    store.visit({ url: '/feeds/servers', label: 'Other Servers' });
+    store.visit({ url: '/feeds/servers/foo.social', label: 'foo.social' });
+    store.visit({ url: '/feeds/servers/user%40foo.social/local', label: 'Invalid' });
+    expect(store.entries()).toHaveLength(2);
+  });
 });

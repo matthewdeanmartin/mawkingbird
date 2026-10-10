@@ -63,7 +63,7 @@
           }
         }
       </a>
-      <app-account-hover-card [account]="display.account" />
+      <app-account-hover-card [account]="display.account" [allowFollow]="!remoteMastodonReadOnly" />
     </span>
     <div class="body">
       <div class="meta">
@@ -71,7 +71,10 @@
           <a class="name" [routerLink]="accountLink">{{
             display.account.display_name || display.account.username
           }}</a>
-          <app-account-hover-card [account]="display.account" />
+          <app-account-hover-card
+            [account]="display.account"
+            [allowFollow]="!remoteMastodonReadOnly"
+          />
         </span>
         <app-verified-badge [account]="display.account" />
         <span class="acct muted">&#64;{{ display.account.acct }}</span>
