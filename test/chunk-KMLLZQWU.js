@@ -1,0 +1,1 @@
+import{a as o,b as e}from"./chunk-ZW5NV4UO.js";function l(n,i,g){return n.flatMap(r=>r.reblog?.id===i.id?r.account.id===g&&r.reblog.reblogged&&!i.reblogged?[]:[e(o({},r),{reblog:i})]:[r.id===i.id?i:r])}export{l as a};
