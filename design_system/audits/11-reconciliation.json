@@ -1131,6 +1131,16 @@
       "file": "ui/src/app/video-player/video-player.html",
       "disposition": "adopted scope",
       "nextStep": "Shared player uses MbButton actions and MbHelp for optional YouTube explanations. Native video and speed select keep browser semantics; preserve explicit playback, no looping, warnings and accessible help."
+    },
+    {
+      "file": "ui/src/app/pages/videos/video-subscriptions-panel.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Subscription actions use MbButton; channel text field, enabled checkbox and navigation links retain labelled native semantics. Migrate field, checkbox and navigation presentation in a separate design pass."
+    },
+    {
+      "file": "ui/src/app/pages/videos/videos-page.html",
+      "disposition": "partial adoption",
+      "nextStep": "Refresh, search, subscribe, save and watched actions use MbButton and the shared VideoPlayer. Labelled search field/select and channel links retain native semantics; migrate those controls in a separate design pass."
     }
   ]
 }

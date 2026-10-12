@@ -336,3 +336,11 @@ navigation template inside Dialog's bounded drawer presentation. Tablet and
 desktop layouts keep their existing breakpoints and sidebar. The shared drawer
 retains native modality, focus restoration, Escape/backdrop dismissal and scroll
 locking; the caller closes it on navigation and when the viewport widens.
+
+## Video feeds
+
+The video reader and shared subscription panel use MbButton for actions and the
+existing VideoPlayer for explicit embed playback. Labelled native channel/search
+fields, checkbox, result-type select and navigation links remain partial adoption
+backlog. Regenerated the inventory for the release and classified both new
+control-bearing files, preserving all existing dispositions.
