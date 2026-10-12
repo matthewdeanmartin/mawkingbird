@@ -707,6 +707,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/rss/rss-page').then((m) => m.RssPage),
       },
       {
+        path: 'videos',
+        title: 'Video feeds',
+        loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),
+      },
+      {
         path: 'search',
         title: 'Search',
         loadComponent: () => import('./pages/search/search').then((m) => m.Search),

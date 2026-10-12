@@ -371,6 +371,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Followed hashtags. The canonical example of privacy-sensitive-but-not-secret: a health or identity tag published in a gist is a disclosure.',
   },
   {
+    base: 'mockingbird_video_feeds',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Account-scoped YouTube channel subscriptions for Video feeds. Public channel IDs reveal what the reader follows; included only in personal backups.',
+  },
+  {
     base: 'mockingbird_rss_feeds',
     storage: 'local',
     suffix: 'account',

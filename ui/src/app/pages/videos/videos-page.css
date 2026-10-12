@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+.videos-page {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 680px);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+.subscriptions {
+  padding: 1.2rem;
+  border-right: 1px solid var(--border);
+}
+h1 {
+  font-size: 1.4rem;
+  margin: 0 0 1.5rem;
+}
+.video-feed {
+  min-width: 0;
+}
+header,
+footer,
+.byline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+header,
+.search-box {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+header h2 {
+  font-size: 1rem;
+  margin: 0;
+  flex: 1;
+}
+.search-box form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.search-box input {
+  flex: 1;
+  min-width: 120px;
+}
+.video-post {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.video-post h3 {
+  font-size: 1.1rem;
+  line-height: 1.45;
+  margin: 0.6rem 0 1rem;
+}
+.byline {
+  font-size: 0.85rem;
+}
+.byline time {
+  color: var(--muted);
+}
+footer {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+}
+.watched h3 {
+  color: var(--muted);
+}
+.empty,
+.feed-error {
+  padding: 1rem;
+}
+@media (max-width: 700px) {
+  .videos-page {
+    grid-template-columns: 1fr;
+  }
+  .subscriptions {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}

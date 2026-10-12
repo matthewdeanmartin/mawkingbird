@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direct browser YouTube CORS test</title>
+<style>
+  body { max-width: 900px; margin: 32px auto; padding: 0 20px; font: 16px system-ui; }
+  button { font: inherit; padding: 8px; } pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<h1>Direct browser YouTube CORS test</h1>
+<p>Requests go directly to YouTube, without our search server or a proxy.
+Open DevTools → Network and Console for the specific browser CORS errors.</p>
+<button id="run">Run direct fetch tests</button>
+<pre id="output" aria-live="polite"></pre>
+<script type="module">
+  const output = document.querySelector('#output');
+  const run = document.querySelector('#run');
+  // Version from the pinned youtubei.js 18.1.0 WEB client defaults.
+  const clientVersion = '2.20260623.01.00';
+  const body = JSON.stringify({
+    context: { client: { clientName: 'WEB', clientVersion, hl: 'en', gl: 'US' } },
+    query: 'Technology Connections',
+  });
+  run.onclick = async () => {
+    run.disabled = true; output.textContent = `Browser origin: ${location.origin}\n`;
+    const cases = [
+      ['Session bootstrap', 'https://www.youtube.com/sw.js_data', {}],
+      ['Search JSON (preflight required)', 'https://www.youtube.com/youtubei/v1/search?prettyPrint=false', {
+        method: 'POST', headers: { 'Content-Type': 'application/json',
+          'X-Youtube-Client-Name': '1', 'X-Youtube-Client-Version': clientVersion }, body,
+      }],
+      ['Search text/plain (no preflight)', 'https://www.youtube.com/youtubei/v1/search?prettyPrint=false', {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body,
+      }],
+      ['Google API host search', 'https://youtubei.googleapis.com/youtubei/v1/search?prettyPrint=false', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body,
+      }],
+      ['no-cors demonstration', 'https://www.youtube.com/sw.js_data', { mode: 'no-cors' }],
+    ];
+    try {
+      for (const [label, url, init] of cases) {
+        try {
+          const response = await fetch(url, { credentials: 'omit', ...init, signal: AbortSignal.timeout(20000) });
+          const text = await response.text();
+          output.textContent += `${label}: type=${response.type}, status=${response.status}, readable bytes=${text.length}\n`;
+        } catch (error) {
+          output.textContent += `${label}: ${error.name}: ${error.message}\n`;
+        }
+      }
+    } finally { run.disabled = false; }
+  };
+</script>
+</html>

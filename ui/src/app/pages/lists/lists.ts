@@ -42,6 +42,8 @@ import { SupporterStatus } from '../../providers/account/supporter-status';
 import { writeBlockMessage } from '../../providers/account/write-block';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PeopleListsPanel } from '../../lists/people-lists-panel';
+import { VideoSubscriptions } from '../../providers/videos/video-subscriptions';
+import { VideoSubscriptionsPanel } from '../videos/video-subscriptions-panel';
 
 /**
  * Which sections the Feeds page shows. `/feeds` shows everything; `/feeds/lists`
@@ -75,6 +77,7 @@ export type FeedSection =
   | 'collections'
   | 'endorsements'
   | 'rss'
+  | 'videos'
   | 'twitter'
   | 'bsky-pinned'
   | 'bsky-feeds'
@@ -95,6 +98,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
   { id: 'collections', key: 'pages.lists.collections.heading' },
   { id: 'endorsements', key: 'pages.lists.endorsements.heading' },
   { id: 'rss', key: 'pages.lists.rss.heading' },
+  { id: 'videos', key: 'videos.title' },
   { id: 'twitter', key: 'pages.lists.twitter.heading' },
   // Pinned is its own section rather than a sort order, because that is what
   // pinning means upstream: promoted to a top-level tab, not merged into a
@@ -250,6 +254,7 @@ export const FEED_SECTIONS: readonly { id: FeedSection; key: string }[] = [
     ConfirmDialog,
     TranslocoPipe,
     PeopleListsPanel,
+    VideoSubscriptionsPanel,
   ],
   templateUrl: './lists.html',
   styleUrl: './lists.css',
@@ -268,6 +273,7 @@ export class Lists implements OnInit {
   private anonymousTags = inject(AnonymousTags);
   protected saved = inject(SavedSearches);
   private rssSubs = inject(RssSubscriptions);
+  private videoSubs = inject(VideoSubscriptions);
   private twitterFollowStore = inject(TwitterFollows);
   private rssCache = inject(RssCache);
   private diagnostics = inject(PageDiagnostics);
@@ -475,6 +481,8 @@ export class Lists implements OnInit {
         return this.myEndorsedCount();
       case 'rss':
         return this.rssFeeds().length;
+      case 'videos':
+        return this.videoSubs.feeds().length;
       case 'twitter':
         return this.twitterFollows().length;
       case 'bsky-pinned':

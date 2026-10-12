@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YouTube search PoC</title>
+<style>
+  body { max-width: 900px; margin: 32px auto; padding: 0 20px; font: 16px system-ui; color: #20252c; background: #f6f7f9; }
+  input, select, button { font: inherit; padding: 8px; }
+  input { flex: 1; min-width: 100px; }
+  form { display: flex; gap: 8px; flex-wrap: wrap; }
+  article { margin: 16px 0; padding: 16px; background: white; border: 1px solid #d4d9e0; border-radius: 8px; }
+  h2 { font-size: 18px; margin: 0 0 8px; }
+  a { color: #214da0; margin-right: 12px; }
+  iframe { width: 100%; aspect-ratio: 16/9; border: 0; margin-top: 16px; }
+  #subscriptions li { margin: 8px 0; overflow-wrap: anywhere; }
+</style>
+<h1>YouTube search → RSS → embed</h1>
+<p>Search without a Google account or API key. Subscribe saves a channel RSS URL for this session.</p>
+<form id="search">
+  <input name="q" aria-label="Search query" placeholder="Search YouTube" maxlength="200" required>
+  <select name="type" aria-label="Result type"><option value="video">Videos</option><option value="channel">Channels</option></select>
+  <button>Search</button>
+</form>
+<p id="status" role="status"></p>
+<div id="player"></div>
+<h2>RSS subscriptions</h2>
+<ul id="subscriptions"></ul>
+<div id="results"></div>
+<script type="module">
+  const form = document.querySelector('form');
+  const status = document.querySelector('#status');
+  const results = document.querySelector('#results');
+  const subscriptions = new Map();
+  function link(label, url) {
+    const a = document.createElement('a');
+    a.textContent = label; a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    return a;
+  }
+  function button(label, action) {
+    const b = document.createElement('button'); b.textContent = label; b.onclick = action; return b;
+  }
+  function subscribe(owner) {
+    subscriptions.set(owner.id, owner);
+    document.querySelector('#subscriptions').replaceChildren(...[...subscriptions.values()].map((c) => {
+      const li = document.createElement('li');
+      li.append(link(`${c.name} RSS`, c.rssUrl), button('Remove', () => {
+        subscriptions.delete(c.id); li.remove();
+      }));
+      return li;
+    }));
+  }
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+    const submit = form.querySelector('button'); submit.disabled = true;
+    status.textContent = 'Searching…'; results.replaceChildren();
+    try {
+      const response = await fetch(`/api/search?${new URLSearchParams(new FormData(form))}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      for (const item of data.items) {
+        const card = document.createElement('article');
+        const title = document.createElement('h2'); title.textContent = item.title ?? item.name;
+        const detail = document.createElement('p');
+        detail.textContent = item.kind === 'video'
+          ? [item.channel.name, item.duration, item.published].filter(Boolean).join(' · ')
+          : item.description;
+        card.append(title, detail, link('YouTube', item.url));
+        const owner = item.kind === 'channel' ? item : item.channel;
+        if (owner.rssUrl) card.append(link('RSS', owner.rssUrl), button('Subscribe', () => subscribe(owner)));
+        if (item.kind === 'video') card.append(button('Watch', () => {
+          const frame = document.createElement('iframe');
+          frame.src = item.embedUrl; frame.title = item.title;
+          frame.allow = 'encrypted-media; picture-in-picture; fullscreen'; frame.allowFullscreen = true;
+          frame.referrerPolicy = 'strict-origin-when-cross-origin';
+          document.querySelector('#player').replaceChildren(frame);
+        }));
+        results.append(card);
+      }
+      status.textContent = `${data.items.length} results. ${data.hasMore ? 'More available; this PoC shows the first page.' : ''}`;
+    } catch (error) { status.textContent = error.message; }
+    finally { submit.disabled = false; }
+  };
+</script>
+</html>

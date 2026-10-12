@@ -7,11 +7,16 @@ Most people do not need it. Set it up only when a connection page or [Connection
 Free access covers **wikipedia.org, wikimedia.org, wikisource.org, gutenberg.org,
 and archive.org**, including their subdomains. Anonymous visitors get **1 request
 per day** per network address; signed-in Mawkingbird accounts get **5 requests
-per day** per account. These allowances are shared across all proxy features and
+per day** per account. These allowances are shared across general proxy routes and
 reset at midnight UTC. Each batch member counts as a request; cached responses
 and failed upstream attempts also count. Testing the proxy uses a request.
 
-Other destinations require Mawkingbird Plus. When the free allowance is used up,
+Other destinations require Mawkingbird Plus.
+The Video feeds reader is a narrow exception: public YouTube channel resolution
+and channel RSS reads are free, with per-minute limits and caching instead of
+the daily sample. YouTube search requires Plus. See [Video feeds](video-feeds.md).
+
+When the free allowance is used up,
 Mawkingbird offers account creation, Plus signup when available, or **Quietly
 disable all features that need the CORS proxy**. Disabling persists on this device;
 saved content and direct connections remain available. Re-enable proxy features

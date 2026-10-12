@@ -1,0 +1,136 @@
+<div class="videos-page">
+  <aside class="subscriptions">
+    <h1>{{ 'videos.title' | transloco }}</h1>
+    <app-video-subscriptions-panel [selected]="selected()" (opened)="results.set(null)" />
+    <p class="muted small">{{ 'videos.proxyNote' | transloco }}</p>
+  </aside>
+  <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
+    <header>
+      <h2>{{ 'videos.newest' | transloco }}</h2>
+      <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load(true)">
+        {{ 'videos.refresh' | transloco }}
+      </button>
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [attr.aria-pressed]="savedOnly()"
+        (click)="savedOnly.set(!savedOnly())"
+      >
+        {{ 'videos.saved' | transloco }}
+      </button>
+    </header>
+    <div class="search-box">
+      @if (supporter.isSupporter()) {
+        <form (ngSubmit)="search()">
+          <input
+            name="query"
+            [(ngModel)]="query"
+            [attr.aria-label]="'videos.searchQuery' | transloco"
+            [placeholder]="'videos.searchQuery' | transloco"
+            maxlength="200"
+            required
+          />
+          <select
+            name="type"
+            [(ngModel)]="searchType"
+            [attr.aria-label]="'videos.searchType' | transloco"
+          >
+            <option value="video">{{ 'videos.videoResults' | transloco }}</option>
+            <option value="channel">{{ 'videos.channelResults' | transloco }}</option>
+          </select>
+          <button mbButton type="submit" [disabled]="searching() || !query.trim()">
+            {{ (searching() ? 'videos.searching' : 'videos.search') | transloco }}
+          </button>
+        </form>
+      } @else {
+        <p>{{ 'videos.plusSearch' | transloco }}</p>
+        <a routerLink="/settings/mawkingbird-plus">{{ 'videos.plus' | transloco }}</a>
+      }
+      @if (searchError()) {
+        <p role="alert">{{ 'videos.searchFailed' | transloco }}</p>
+      }
+    </div>
+    @if (results(); as found) {
+      <button mbButton variant="outline" type="button" (click)="results.set(null)">
+        {{ 'videos.back' | transloco }}
+      </button>
+      @for (item of found; track item.id) {
+        <article class="video-post">
+          <h3>{{ item.title }}</h3>
+          <p class="muted">{{ item.channelTitle }}</p>
+          @if (searchSource(item); as source) {
+            <app-video-player-controls [source]="source" [inline]="true" />
+          }
+          @if (item.channelId; as id) {
+            <button
+              mbButton
+              variant="outline"
+              type="button"
+              [disabled]="subs.has(id)"
+              (click)="subscribe(item)"
+            >
+              {{ (subs.has(id) ? 'videos.subscribed' : 'videos.subscribe') | transloco }}
+            </button>
+          }
+        </article>
+      } @empty {
+        <p role="status">{{ 'videos.noResults' | transloco }}</p>
+      }
+    } @else {
+      @if (failed().length) {
+        <p class="feed-error" role="status">
+          {{ 'videos.failedFeeds' | transloco: { channels: failed().join(', ') } }}
+        </p>
+      }
+      @if (loading()) {
+        <p role="status">{{ 'videos.loading' | transloco }}</p>
+      }
+      @for (item of visible(); track item.id) {
+        <article class="video-post" [class.watched]="reads.isRead(item.id)">
+          <div class="byline">
+            <a routerLink="/videos" [queryParams]="{ channel: item.channelId }">{{
+              item.channelTitle
+            }}</a>
+            @if (item.publishedAt) {
+              <time [attr.datetime]="item.publishedAt">{{
+                item.publishedAt | date: 'medium'
+              }}</time>
+            }
+          </div>
+          <h3>{{ item.title }}</h3>
+          <app-video-player-controls [source]="item.source" [inline]="true" />
+          <footer>
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              [attr.aria-pressed]="reads.isStarred(item.id)"
+              (click)="reads.toggleStarred(item.id)"
+            >
+              {{ (reads.isStarred(item.id) ? 'videos.unsave' : 'videos.save') | transloco }}
+            </button>
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              [attr.aria-pressed]="reads.isRead(item.id)"
+              (click)="toggleRead(item.id)"
+            >
+              {{ (reads.isRead(item.id) ? 'videos.unread' : 'videos.read') | transloco }}
+            </button>
+            <a [href]="item.source.url" target="_blank" rel="noopener">{{
+              'videos.original' | transloco
+            }}</a>
+          </footer>
+        </article>
+      } @empty {
+        @if (!loading()) {
+          <p class="empty">{{ 'videos.empty' | transloco }}</p>
+        }
+      }
+    }
+  </section>
+</div>

@@ -16,6 +16,9 @@
         >
           {{ (showKits() ? 'pages.rss.readerView' : 'pages.rss.starterKits') | transloco }}
         </button>
+        <a class="btn btn-small btn-outline" routerLink="/videos">{{
+          'videos.title' | transloco
+        }}</a>
         <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
           {{ 'pages.rss.friendFeeds' | transloco }}
         </button>

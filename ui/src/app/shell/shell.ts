@@ -141,7 +141,9 @@ function isWideUrl(url: string): boolean {
     url.startsWith('/write') ||
     url === '/watch' ||
     url.startsWith('/watch?') ||
-    url.startsWith('/rss')
+    url.startsWith('/rss') ||
+    url === '/videos' ||
+    url.startsWith('/videos?')
   );
 }
 
@@ -588,37 +590,37 @@ export class Shell implements OnInit {
         .verifyCredentials()
         .pipe(retryUnlessRejected())
         .subscribe({
-        next: (acc) => this.auth.setAccount(acc),
-        error: (err: unknown) => {
-          // A failure that is not a 401 says nothing about the token: the
-          // server (a household board on Wi-Fi, say) did not answer in time.
-          // Stay signed in; the fail whale reports an unreachable server.
-          if (!tokenRejected(err)) {
-            return;
-          }
-          // The stored token was rejected on boot. Don't silently delete the
-          // account: offer the same reauthenticate/remove choice as a failed
-          // switch. The dead token is the *active* one here, so clear it (every
-          // request would 401) while leaving the saved session intact.
-          const token = this.auth.token();
-          const session = token
-            ? (this.auth.sessions().find((s) => s.token === token) ?? null)
-            : null;
-          this.auth.exitToLoggedOut();
-          if (!session) {
-            // Nothing saved to reauthenticate against — the old behaviour is right.
-            location.assign('login');
-            return;
-          }
-          this.deadSession.set({
-            key: `mastodon:${session.id}`,
-            kind: 'mastodon',
-            token: session.token,
-            server: session.server ?? '',
-            account: session.account,
-          });
-        },
-      });
+          next: (acc) => this.auth.setAccount(acc),
+          error: (err: unknown) => {
+            // A failure that is not a 401 says nothing about the token: the
+            // server (a household board on Wi-Fi, say) did not answer in time.
+            // Stay signed in; the fail whale reports an unreachable server.
+            if (!tokenRejected(err)) {
+              return;
+            }
+            // The stored token was rejected on boot. Don't silently delete the
+            // account: offer the same reauthenticate/remove choice as a failed
+            // switch. The dead token is the *active* one here, so clear it (every
+            // request would 401) while leaving the saved session intact.
+            const token = this.auth.token();
+            const session = token
+              ? (this.auth.sessions().find((s) => s.token === token) ?? null)
+              : null;
+            this.auth.exitToLoggedOut();
+            if (!session) {
+              // Nothing saved to reauthenticate against — the old behaviour is right.
+              location.assign('login');
+              return;
+            }
+            this.deadSession.set({
+              key: `mastodon:${session.id}`,
+              kind: 'mastodon',
+              token: session.token,
+              server: session.server ?? '',
+              account: session.account,
+            });
+          },
+        });
     }
   }
 

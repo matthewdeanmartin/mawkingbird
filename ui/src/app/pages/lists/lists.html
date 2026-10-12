@@ -715,6 +715,11 @@
     }
   }
 
+  @if (shows('lists') && showsSection('videos')) {
+    <div class="section-head">{{ 'videos.title' | transloco }}</div>
+    <div class="section-note"><app-video-subscriptions-panel /></div>
+  }
+
   <!-- Twitter accounts, like RSS, live entirely in this browser. Shown only once the
      connector is set up: an empty section advertising a connector that needs an
      API key and a CORS proxy would be noise on everyone else's Feeds page. -->
