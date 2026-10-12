@@ -443,7 +443,10 @@
         </div>
       }
     </div>
-    <h2>{{ a.display_name || a.username }} <app-verified-badge [account]="a" /></h2>
+    <h2>
+      <span [innerHTML]="a.display_name || a.username | customEmoji: a.emojis : true"></span>
+      <app-verified-badge [account]="a" />
+    </h2>
     <div class="acct muted">&#64;{{ a.acct }}</div>
     @if (followError(); as error) {
       <div class="action-error" role="alert">{{ error }}</div>
@@ -479,7 +482,7 @@
       </div>
     }
     @if (a.note) {
-      <div class="note" appRenderedHtmlLinks [innerHTML]="a.note"></div>
+      <div class="note" appRenderedHtmlLinks [innerHTML]="a.note | customEmoji: a.emojis"></div>
     }
     @if (a.fields.length) {
       <div class="profile-fields">

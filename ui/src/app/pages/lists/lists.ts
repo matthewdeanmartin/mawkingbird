@@ -30,6 +30,7 @@ import { SERVER_FEEDS, ServerFeedDef } from '../../lists/server-feeds';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { PER_FEED_ITEM_CAP } from '../../providers/rss/rss-provider';
 import { RssFeedSub, RssSubscriptions } from '../../providers/rss/rss-subscriptions';
+import { TwitterSettings } from '../../providers/twitter/twitter-settings';
 import { TwitterFollows } from '../../providers/twitter/twitter-follows';
 import { BlueskyFeedEntry, BlueskyFeeds } from '../../providers/bluesky/bluesky-feeds';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
@@ -275,6 +276,8 @@ export class Lists implements OnInit {
   private rssSubs = inject(RssSubscriptions);
   private videoSubs = inject(VideoSubscriptions);
   private twitterFollowStore = inject(TwitterFollows);
+  private twitterSettings = inject(TwitterSettings);
+  protected twitterAvailable = computed(() => this.twitterSettings.resolve() !== null);
   private rssCache = inject(RssCache);
   private diagnostics = inject(PageDiagnostics);
   private route = inject(ActivatedRoute);
@@ -316,19 +319,9 @@ export class Lists implements OnInit {
     return ['/feeds/bluesky', `${entry.kind}:${encodeURIComponent(entry.uri)}`];
   }
 
-  /**
-   * Popular feeds across Bluesky — discovery, for **everyone**.
-   *
-   * Deliberately not gated on `bskySession.linked()` the way the saved-feed
-   * sections above are. Those describe *your* feeds and need your account;
-   * this endpoint is anonymous, so a Mastodon-primary or anonymous reader who
-   * has never touched Bluesky can still browse what is worth reading there.
-   * Gating it would withhold public content for no reason.
-   *
-   * A refusal yields an empty list and the section hides itself — `unspecced`
-   * endpoints are unstable by name.
-   */
+  /** Public discovery is offered only for this account’s Bluesky connection. */
   private loadPopularFeeds(): void {
+    if (!this.bskySession.linked()) return;
     this.bskyFeeds.loadPopular().subscribe({
       next: (entries) => this.bskyPopular.set(entries),
       error: () => {
@@ -372,7 +365,15 @@ export class Lists implements OnInit {
     return this.filter === 'all' || this.filter === section;
   }
 
-  protected readonly sectionOptions = FEED_SECTIONS;
+  protected readonly sectionOptions = computed(() =>
+    FEED_SECTIONS.filter((section) =>
+      section.id === 'twitter'
+        ? this.twitterAvailable()
+        : section.id.startsWith('bsky-')
+          ? this.bskySession.linked()
+          : true,
+    ),
+  );
 
   /**
    * Which single kind of feed to show, `all` for the full stack, or `landing`

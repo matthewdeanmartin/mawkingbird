@@ -1,4 +1,7 @@
+import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { StatusActions } from '../../providers/status-actions';
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../../poll-results/poll-results';
@@ -83,6 +86,9 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.label.followRequest: requested to follow you
 // i18n pages.notifications.label.follow: followed you
 // i18n pages.notifications.label.mention: mentioned you
+// i18n pages.notifications.like: Like reply
+// i18n pages.notifications.unlike: Undo like
+// i18n pages.notifications.likeFailed: Could not update this like. Try again.
 
 function normalizedAccountUrl(url: string): string | null {
   try {
@@ -244,6 +250,8 @@ export function accountsNewToMe(
 @Component({
   selector: 'app-notifications',
   imports: [
+    CustomEmojiPipe,
+    MbPostAction,
     PollResults,
     RouterLink,
     FormsModule,
@@ -257,6 +265,39 @@ export function accountsNewToMe(
 })
 export class Notifications implements OnInit, OnDestroy {
   private api = inject(Api);
+  private statusActions = inject(StatusActions);
+  protected likeBusy = signal(new Set<string>());
+  protected likeError = signal('');
+
+  protected canLike(status: Status): boolean {
+    return status.provider === 'bluesky' ? this.bskySession.linked() : !!this.auth.token();
+  }
+
+  protected toggleLike(status: Status): void {
+    if (!this.canLike(status) || this.likeBusy().has(status.id)) return;
+    this.likeError.set('');
+    this.likeBusy.update((busy) => new Set(busy).add(status.id));
+    const done = () =>
+      this.likeBusy.update((busy) => {
+        const next = new Set(busy);
+        next.delete(status.id);
+        return next;
+      });
+    this.statusActions.toggleFavourite(status).subscribe({
+      next: (updated) => {
+        this.items.update((items) =>
+          items.map((item) =>
+            item.status?.id === updated.id ? { ...item, status: updated } : item,
+          ),
+        );
+        done();
+      },
+      error: () => {
+        this.likeError.set(this.transloco.translate('pages.notifications.likeFailed'));
+        done();
+      },
+    });
+  }
   private streaming = inject(Streaming);
   private prefs = inject(ClientPrefs);
   private diagnostics = inject(PageDiagnostics);

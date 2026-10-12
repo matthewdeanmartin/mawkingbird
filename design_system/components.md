@@ -319,6 +319,9 @@ for navigation. Use `pressed` only on toggle buttons; links are never toggles.
 The group preserves native Tab order and does not capture arrow keys. Use the
 existing `MbToolbar` when a button-only roving-focus group is appropriate.
 
+`narrowAlign="end"` is opt-in for right alignment at 480px and below; wider
+layouts retain their normal start alignment.
+
 `span[mbActionCount]` keeps a formatted count on one line with tabular numerals.
 Supply `count`, localized `label` and `locale` for compact number formatting
 (for example, 1.2M). Project the exact localized count text for assistive

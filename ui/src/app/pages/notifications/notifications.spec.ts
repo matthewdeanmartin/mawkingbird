@@ -315,6 +315,41 @@ describe('Notifications', () => {
     return fixture;
   }
 
+  it('likes a reply directly and preserves its confirmed state when undo fails', () => {
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const status = {
+      id: 'reply',
+      content: '<p>A reply</p>',
+      media_attachments: [],
+      favourited: false,
+      favourites_count: 0,
+    } as unknown as Status;
+    httpMock
+      .expectOne('/api/v1/notifications')
+      .flush([{ ...makeNotification('mention', 'mention'), status }]);
+    fixture.detectChanges();
+    const button = () => fixture.nativeElement.querySelector('.notif-like') as HTMLButtonElement;
+    expect(button().getAttribute('aria-label')).toBe('Like reply');
+    button().click();
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true);
+    httpMock
+      .expectOne('/api/v1/statuses/reply/favourite')
+      .flush({ ...status, favourited: true, favourites_count: 1 });
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-pressed')).toBe('true');
+    expect(button().textContent).toContain('★');
+    button().click();
+    httpMock
+      .expectOne('/api/v1/statuses/reply/unfavourite')
+      .flush({}, { status: 500, statusText: 'Error' });
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-pressed')).toBe('true');
+    expect(button().disabled).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Could not update this like');
+  });
+
   it.each([true, false])(
     'offers follow request decisions and removes the request after success (approve=%s)',
     (approve) => {

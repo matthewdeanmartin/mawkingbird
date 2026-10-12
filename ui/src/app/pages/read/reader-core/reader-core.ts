@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../../custom-emoji.pipe';
 import {
   afterRenderEffect,
   Component,
@@ -134,6 +135,7 @@ const POSITION_SAVE_DELAY_MS = 2_000;
 @Component({
   selector: 'app-reader-core',
   imports: [
+    CustomEmojiPipe,
     RouterLink,
     TranslocoPipe,
     FormsModule,

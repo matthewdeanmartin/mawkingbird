@@ -199,7 +199,10 @@
              in the browser's page layout, including media-only posts. -->
           <div #postBody class="reader-posts">
             @for (post of chain(); track $index) {
-              <section class="reader-post" [innerHTML]="post.content"></section>
+              <section
+                class="reader-post"
+                [innerHTML]="post.content | customEmoji: post.emojis"
+              ></section>
               @for (m of post.media_attachments; track m.id) {
                 <img
                   class="reader-media"

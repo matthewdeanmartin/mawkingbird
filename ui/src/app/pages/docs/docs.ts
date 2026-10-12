@@ -15,12 +15,12 @@ import { ServerAbout } from '../../server-about';
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n docs.head: Docs
 // i18n docs.design.title: Design
-// i18n docs.design.detail: Why this client exists — read it as a post.
+// i18n docs.design.detail: Why this client exists.
 // i18n docs.plans.title: Plans
-// i18n docs.plans.detail: Exactly what free and Plus include, with every limit spelled out.
+// i18n docs.plans.detail: Exactly what free and Plus include.
 // i18n docs.funding.title: Funding
 // i18n docs.funding.detail: What this costs, who pays for it, and where it's going.
-// i18n docs.credits.title: Credits &amp; Privacy
+// i18n docs.credits.title: Credits & Privacy
 // i18n docs.credits.detail: The software this client ships, and how it handles data.
 // i18n docs.serverRules.title: Server rules
 // i18n docs.serverRules.detail: The rules published by your instance.

@@ -4,11 +4,17 @@ import { Component, computed, inject, input, LOCALE_ID } from '@angular/core';
   selector: 'mb-post-actions',
   template: '<ng-content />',
   styleUrl: './post-actions.css',
-  host: { role: 'group', '[attr.aria-label]': 'label()', '[attr.data-density]': 'density()' },
+  host: {
+    role: 'group',
+    '[attr.aria-label]': 'label()',
+    '[attr.data-density]': 'density()',
+    '[attr.data-narrow-align]': 'narrowAlign()',
+  },
 })
 export class MbPostActions {
   readonly label = input.required<string>();
   readonly density = input<'default' | 'compact'>('default');
+  readonly narrowAlign = input<'start' | 'end'>('start');
 }
 @Component({
   selector: 'button[mbPostAction], a[mbPostAction]',

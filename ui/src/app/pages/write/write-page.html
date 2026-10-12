@@ -834,7 +834,10 @@
                 <div class="segment" [class.over]="segment.overLimit">
                   <div class="segment-num muted">{{ i + 1 }}</div>
                   @if (renderedPreview()) {
-                    <div class="segment-text" [innerHTML]="previewHtml()[i]"></div>
+                    <div
+                      class="segment-text"
+                      [innerHTML]="previewHtml()[i] | customEmoji: customEmojis.emojis()"
+                    ></div>
                   } @else {
                     <div class="segment-text">{{ segment.text }}</div>
                   }
@@ -1223,7 +1226,10 @@
                     {{ $index + 1 }}/{{ segments().length }}
                     <span [class.over]="segment.overLimit">{{ segment.length }}</span>
                   </header>
-                  <div class="preview-body" [innerHTML]="previewHtml()[$index]"></div>
+                  <div
+                    class="preview-body"
+                    [innerHTML]="previewHtml()[$index] | customEmoji: customEmojis.emojis()"
+                  ></div>
                 </article>
               }
             </div>

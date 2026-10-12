@@ -13,3 +13,9 @@
     gap: 1px;
   }
 }
+
+@media (max-width: 480px) {
+  :host([data-narrow-align='end']) {
+    justify-content: flex-end;
+  }
+}

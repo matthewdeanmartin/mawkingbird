@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../../custom-emoji.pipe';
 import {
   Component,
   HostListener,
@@ -88,6 +89,7 @@ import { Server } from '../../../server';
 @Component({
   selector: 'app-profile-photo-view',
   imports: [
+    CustomEmojiPipe,
     FocusTrap,
     RouterLink,
     HumanTimePipe,

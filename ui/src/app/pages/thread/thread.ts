@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -59,6 +60,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 @Component({
   selector: 'app-thread',
   imports: [
+    CustomEmojiPipe,
     MbPostAction,
     StatusCard,
     Compose,

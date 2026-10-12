@@ -10,6 +10,7 @@
  */
 
 .write {
+  container-type: inline-size;
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 12px 24px;
@@ -243,7 +244,7 @@
 /* --- narrow screens ---
    The side panes become disclosures above the editor rather than disappearing.
    Nothing in this workspace may become unreachable on a laptop. */
-@media (max-width: 1100px) {
+@container (max-width: 1100px) {
   .panes {
     grid-template-columns: minmax(0, 1fr);
   }

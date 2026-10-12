@@ -633,7 +633,7 @@
     "windowsSteps": "Open the downloaded CA → Install Certificate → Current User. Choose Place all certificates in the following store → Trusted Root Certification Authorities, then finish. This trusts it for your Windows user."
   },
   "credits": {
-    "title": "Credits &amp; Privacy"
+    "title": "Credits & Privacy"
   },
   "cta": {
     "analytics.body": "See who and what make up the feed you are reading.",
@@ -703,13 +703,13 @@
   },
   "docs": {
     "credits.detail": "The software this client ships, and how it handles data.",
-    "credits.title": "Credits &amp; Privacy",
-    "design.detail": "Why this client exists — read it as a post.",
+    "credits.title": "Credits & Privacy",
+    "design.detail": "Why this client exists.",
     "design.title": "Design",
     "funding.detail": "What this costs, who pays for it, and where it's going.",
     "funding.title": "Funding",
     "head": "Docs",
-    "plans.detail": "Exactly what free and Plus include, with every limit spelled out.",
+    "plans.detail": "Exactly what free and Plus include.",
     "plans.title": "Plans",
     "searchServerRules.detail": "The rules published by your search server.",
     "searchServerTerms.detail": "Your search server's terms of service.",
@@ -2103,6 +2103,8 @@
     "notifications.label.followRequest": "requested to follow you",
     "notifications.label.mention": "mentioned you",
     "notifications.label.reblog": "boosted your status",
+    "notifications.like": "Like reply",
+    "notifications.likeFailed": "Could not update this like. Try again.",
     "notifications.live.label": "● Live",
     "notifications.live.title": "Live: new notifications stream in as they arrive. Turn off in Blue → Auto-refresh timeline.",
     "notifications.loadMore": "Load more",
@@ -2137,6 +2139,7 @@
     "notifications.sourceAriaLabel": "Notification source",
     "notifications.type.all": "All types",
     "notifications.type.title": "Notification type",
+    "notifications.unlike": "Undo like",
     "notifications.viewAriaLabel": "Notification view",
     "notifications.viewThread": "🧵 View thread",
     "observability.api.reset": "Reset metrics",

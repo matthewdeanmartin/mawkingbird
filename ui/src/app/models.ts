@@ -36,6 +36,7 @@ export interface Account {
   username: string;
   acct: string;
   display_name: string;
+  emojis?: CustomEmoji[];
   note: string;
   url: string;
   avatar: string;
@@ -141,6 +142,7 @@ export interface Status {
   created_at: string;
   edited_at: string | null;
   content: string;
+  emojis?: CustomEmoji[];
   spoiler_text: string;
   visibility: string;
   url: string | null;

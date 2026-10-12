@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { Pseudonymity } from '../../pseudonymity';
 import { PosseQueue } from '../../providers/hugo/posse-queue';
@@ -291,6 +292,7 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    CustomEmojiPipe,
     MbPostAction,
     PostingLanguageDialog,
     MbButton,
@@ -339,7 +341,7 @@ export class WritePage implements OnInit, OnDestroy {
   private mataroa = inject(MataroaSettings);
   private blogger = inject(BloggerSession);
   private hugo = inject(HugoSettings);
-  private customEmojis = inject(CustomEmojis);
+  protected customEmojis = inject(CustomEmojis);
   private ai = inject(AiAvailability);
   private openrouter = inject(OpenRouterSession);
   private proofreader = inject(Proofreader);
@@ -722,6 +724,9 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   constructor() {
+    effect(() => {
+      if (/:[a-z0-9_]+:/i.test(this.body())) this.customEmojis.ensureLoaded();
+    });
     // Prune sidecar entries for drafts that are gone. Runs off the live list
     // rather than on a timer: nothing else can tell the workspace a draft was
     // deleted, and the sources signal is the only thing that knows.

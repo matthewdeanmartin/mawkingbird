@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { reconcileStatus } from '../../reconcile-status';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
@@ -220,6 +221,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    CustomEmojiPipe,
     MbButton,
     NgTemplateOutlet,
     TranslocoPipe,

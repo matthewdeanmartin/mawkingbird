@@ -5142,13 +5142,13 @@
   },
   "docs": {
     "credits.detail": "Perangkat lunak yang digunakan klien ini, dan bagaimana ia menangani data.",
-    "credits.title": "Kredit &amp; Privasi",
-    "design.detail": "Mengapa klien ini ada — baca seperti membaca postingan.",
+    "credits.title": "Kredit & Privasi",
+    "design.detail": "Mengapa klien ini ada.",
     "design.title": "Desain",
     "funding.detail": "Berapa biayanya, siapa yang membayar, dan ke mana perginya.",
     "funding.title": "Pendanaan",
     "head": "Dokumen",
-    "plans.detail": "Persisnya apa yang termasuk dalam paket gratis dan Plus, dengan setiap batasan dijelaskan.",
+    "plans.detail": "Persisnya apa yang termasuk dalam paket gratis dan Plus.",
     "plans.title": "Paket",
     "searchServerRules.detail": "Aturan yang diterbitkan oleh server pencarianmu.",
     "searchServerTerms.detail": "Ketentuan layanan server pencarianmu.",
@@ -5396,7 +5396,7 @@
     "cancel": "Batal"
   },
   "credits": {
-    "title": "Kredit &amp; Privasi"
+    "title": "Kredit & Privasi"
   },
   "endorsedList": {
     "capped": "Feed menggabungkan postingan dari {{count}} anggota pertama dari {{total}}.",

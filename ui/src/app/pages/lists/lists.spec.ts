@@ -21,6 +21,8 @@ import { RssCache } from '../../providers/rss/rss-cache';
 import { RssFeedSub, RssSubscriptions } from '../../providers/rss/rss-subscriptions';
 import { Lists } from './lists';
 import { TwitterFollows } from '../../providers/twitter/twitter-follows';
+import { TwitterSettings } from '../../providers/twitter/twitter-settings';
+import { BlueskySession, BskySession } from '../../providers/bluesky/bluesky-session';
 
 /** Exposes Lists' protected signals for white-box testing. */
 interface ListsInternals {
@@ -150,12 +152,7 @@ describe('Lists', () => {
     httpMock.match((r) => r.url === '/api/v1/directory').forEach((req) => req.flush([]));
   }
 
-  /**
-   * Popular Bluesky feeds load for **every** account kind, not just linked ones
-   * — the endpoint is anonymous, so withholding it would hide public content
-   * for no reason. That means it fires here too, where no Bluesky account
-   * exists. Settled as empty, which hides the section.
-   */
+  /** Settle public feed discovery when the test configures Bluesky. */
   function flushPopularFeeds(): void {
     httpMock
       .match((r) => r.url.includes('app.bsky.unspecced.getPopularFeedGenerators'))
@@ -192,6 +189,34 @@ describe('Lists', () => {
     expect(internals(fixture).loading()).toBe(true);
     expect(internals(fixture).lists()).toEqual([]);
     httpMock.expectOne('/api/v1/lists').flush([]);
+  });
+
+  it('hides unconfigured Twitter and Bluesky categories even with saved Twitter follows', () => {
+    TestBed.inject(TwitterFollows).add({ username: 'NASA', displayName: 'NASA' });
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Twitter accounts');
+    expect(fixture.nativeElement.textContent).not.toContain('Bluesky');
+    httpMock.expectNone((r) => r.url.includes('app.bsky.unspecced.getPopularFeedGenerators'));
+  });
+
+  it('offers categories when the current account’s connectors are configured', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    const twitter = TestBed.inject(TwitterSettings);
+    twitter.setKey('twitterapi-io', 'test-key');
+    twitter.activate('twitterapi-io');
+    TestBed.inject(BlueskySession).session.set({
+      did: 'did:plc:current',
+      handle: 'current.bsky.social',
+      service: 'https://bsky.social',
+      accessJwt: 'test-token',
+      refreshJwt: 'test-refresh',
+    } as BskySession);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Twitter accounts');
+    expect(fixture.nativeElement.textContent).toContain('Bluesky feeds');
   });
 
   it('removes only the current user from a featured collection using its membership id', async () => {
@@ -262,7 +287,7 @@ describe('Lists', () => {
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('All feeds');
     expect(text).toContain('RSS feeds');
-    expect(text).toContain('Bluesky feeds');
+    expect(text).not.toContain('Bluesky feeds');
     // The old full-stack content is not rendered until a category is chosen.
     expect(newListInput(fixture)).toBeNull();
   });

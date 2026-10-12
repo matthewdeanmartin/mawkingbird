@@ -68,9 +68,14 @@
     <div class="body">
       <div class="meta">
         <span class="hover-anchor">
-          <a class="name" [routerLink]="accountLink">{{
-            display.account.display_name || display.account.username
-          }}</a>
+          <a
+            class="name"
+            [routerLink]="accountLink"
+            [innerHTML]="
+              display.account.display_name || display.account.username
+                | customEmoji: display.account.emojis : true
+            "
+          ></a>
           <app-account-hover-card
             [account]="display.account"
             [allowFollow]="!remoteMastodonReadOnly"
@@ -198,13 +203,15 @@
           <div class="content-link" (click)="onContentClick($event)">
             <div
               class="content"
-              [innerHTML]="appendMode() ? originalContent() : renderedContent()"
+              [innerHTML]="
+                (appendMode() ? originalContent() : renderedContent()) | customEmoji: display.emojis
+              "
             ></div>
           </div>
 
           @if (appendMode() && translation(); as t) {
             <div class="learner-translation">
-              <div class="content" [innerHTML]="md(t.content)"></div>
+              <div class="content" [innerHTML]="md(t.content) | customEmoji: display.emojis"></div>
             </div>
           }
 
@@ -316,10 +323,15 @@
                 />
               }
             }
-            <span class="quote-name">{{ q.account.display_name || q.account.username }}</span>
+            <span
+              class="quote-name"
+              [innerHTML]="
+                q.account.display_name || q.account.username | customEmoji: q.account.emojis : true
+              "
+            ></span>
             <span class="acct muted">&#64;{{ q.account.acct }}</span>
           </div>
-          <div class="quote-content" [innerHTML]="q.content"></div>
+          <div class="quote-content" [innerHTML]="q.content | customEmoji: q.emojis"></div>
         </a>
         @if (canRevokeQuote()) {
           <button class="btn btn-outline btn-sm revoke-btn" (click)="revokeQuote($event)">
@@ -477,6 +489,7 @@
       }
       <mb-post-actions
         density="compact"
+        narrowAlign="end"
         class="actions"
         [label]="'statusCard.moreActions' | transloco: { post: words().post }"
       >

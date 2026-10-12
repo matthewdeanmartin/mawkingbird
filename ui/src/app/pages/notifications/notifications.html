@@ -104,6 +104,9 @@
 @if (mastodonError(); as error) {
   <p class="muted center" role="alert">{{ error }}</p>
 }
+@if (likeError()) {
+  <p role="alert">{{ likeError() }}</p>
+}
 @if (bskyError(); as error) {
   <p class="muted center" role="alert">{{ error }}</p>
 }
@@ -185,7 +188,10 @@
             <span class="what muted">{{ label(row.type) }}</span>
           </span>
           <a class="excerpt" [routerLink]="['/statuses', row.status.id]">
-            <span class="excerpt-content" [innerHTML]="row.status.content"></span>
+            <span
+              class="excerpt-content"
+              [innerHTML]="row.status.content | customEmoji: row.status.emojis"
+            ></span>
             @if (row.status.media_attachments.length && showImages()) {
               <span class="excerpt-media">
                 @for (m of row.status.media_attachments; track m.id) {
@@ -256,7 +262,10 @@
                 [routerLink]="['/conversations']"
                 [queryParams]="{ open: chatKey(row.notif) }"
               >
-                <span class="excerpt-content" [innerHTML]="row.notif.status.content"></span>
+                <span
+                  class="excerpt-content"
+                  [innerHTML]="row.notif.status.content | customEmoji: row.notif.status.emojis"
+                ></span>
                 @if (row.notif.status.media_attachments.length && showImages()) {
                   <span class="excerpt-media">
                     @for (m of row.notif.status.media_attachments; track m.id) {
@@ -284,7 +293,10 @@
               </div>
             } @else {
               <a class="excerpt" [routerLink]="['/statuses', row.notif.status.id]">
-                <span class="excerpt-content" [innerHTML]="row.notif.status.content"></span>
+                <span
+                  class="excerpt-content"
+                  [innerHTML]="row.notif.status.content | customEmoji: row.notif.status.emojis"
+                ></span>
                 @if (row.notif.status.media_attachments.length && showImages()) {
                   <span class="excerpt-media">
                     @for (m of row.notif.status.media_attachments; track m.id) {
@@ -301,6 +313,24 @@
             }
             @if (row.notif.status.poll; as poll) {
               <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
+            }
+            @if (row.notif.type === 'mention' && canLike(row.notif.status)) {
+              <button
+                mbPostAction
+                type="button"
+                class="notif-like"
+                [pressed]="!!row.notif.status.favourited"
+                [disabled]="likeBusy().has(row.notif.status.id)"
+                [attr.aria-label]="
+                  (row.notif.status.favourited
+                    ? 'pages.notifications.unlike'
+                    : 'pages.notifications.like'
+                  ) | transloco
+                "
+                (click)="toggleLike(row.notif.status)"
+              >
+                <span aria-hidden="true">{{ row.notif.status.favourited ? '★' : '☆' }}</span>
+              </button>
             }
           }
         </div>

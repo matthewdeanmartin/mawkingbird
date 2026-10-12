@@ -192,7 +192,7 @@ body {
   max-width: 100%;
 }
 
-.reader :is(.reader-post, .reader-article-body, .comment-content) img {
+.reader :is(.reader-post, .reader-article-body, .comment-content) img:not(.custom-emoji) {
   display: block;
   width: auto;
   max-width: 100%;
@@ -1006,4 +1006,13 @@ a.tab:hover {
   border-radius: 5px;
   padding: 1px 5px;
   font-size: 0.9em;
+}
+
+/* Server emoji stay inline at text size in posts, names and previews. */
+.custom-emoji {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  object-fit: contain;
+  vertical-align: -0.2em;
 }

@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Feeds, notifications, writing and server emoji, 2026-10-12
+
+Reviewed the refreshed inventory: 1,123 maintained source files and the same
+228 candidate files. Feed categories retain their existing navigation and now
+reflect configured connectors. Notification reply stars use PostAction with
+pressed and disabled states. PostActions owns an opt-in narrow alignment;
+StatusCard selects end alignment at 480px while wider layouts retain start
+alignment. The Write workspace uses its own container width to collapse side
+panes without losing their toggles. Custom emoji rendering preserves text-sized
+inline images and keeps the picker lazy. Existing candidate dispositions remain
+unchanged.
+
 ## Search, media pagination and exclusive lists, 2026-10-11
 
 Refreshed the inventory after reviewing the changed search, media viewer and

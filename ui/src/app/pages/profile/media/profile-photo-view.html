@@ -138,7 +138,7 @@
             class="photo-caption"
             [class.clamped]="!captionExpanded()"
             appRenderedHtmlLinks
-            [innerHTML]="item.status.content"
+            [innerHTML]="item.status.content | customEmoji: item.status.emojis"
           ></div>
           @if (item.status.content && item.status.content.length > 220) {
             <button type="button" class="photo-more-text" (click)="toggleCaption()">
@@ -339,7 +339,7 @@
                   <div
                     class="photo-comment-text"
                     appRenderedHtmlLinks
-                    [innerHTML]="reply.content"
+                    [innerHTML]="reply.content | customEmoji: reply.emojis"
                   ></div>
 
                   @if (isReplyingTo(reply)) {

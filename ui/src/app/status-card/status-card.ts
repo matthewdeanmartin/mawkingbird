@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../custom-emoji.pipe';
 import { MbNotice } from '../design-system/notice/notice';
 import {
   MbPostActions,
@@ -341,6 +342,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    CustomEmojiPipe,
     MbNotice,
     MbPostActions,
     MbPostAction,

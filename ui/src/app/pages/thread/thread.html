@@ -80,7 +80,10 @@
         @if (post.spoiler_text) {
           <p class="reader-author">{{ post.spoiler_text }}</p>
         }
-        <section class="reader-post" [innerHTML]="post.content"></section>
+        <section
+          class="reader-post"
+          [innerHTML]="post.content | customEmoji: post.emojis"
+        ></section>
         @for (media of post.media_attachments; track media.id) {
           <img
             class="reader-media"

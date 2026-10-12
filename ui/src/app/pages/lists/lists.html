@@ -57,7 +57,7 @@
         <span class="muted small">{{ 'pages.lists.landing.allFeedsHint' | transloco }}</span>
       </button>
     </li>
-    @for (opt of sectionOptions; track opt.id) {
+    @for (opt of sectionOptions(); track opt.id) {
       <li>
         <button class="list-row feed-category-row" type="button" (click)="setSection(opt.id)">
           <span>{{ opt.key | transloco }}</span>
@@ -723,7 +723,7 @@
   <!-- Twitter accounts, like RSS, live entirely in this browser. Shown only once the
      connector is set up: an empty section advertising a connector that needs an
      API key and a CORS proxy would be noise on everyone else's Feeds page. -->
-  @if (shows('lists') && twitterFollows().length && showsSection('twitter')) {
+  @if (shows('lists') && twitterAvailable() && twitterFollows().length && showsSection('twitter')) {
     <div class="section-head">{{ 'pages.lists.twitter.heading' | transloco }}</div>
     @for (f of twitterFollows(); track f.username) {
       <a
@@ -823,12 +823,9 @@
     }
   }
 
-  <!-- Popular feeds across Bluesky. Outside the `linked()` guard above on purpose:
-     this endpoint is anonymous, so it is browsable content for every account
-     kind, not just Bluesky ones. Custom algorithmic feeds have no Mastodon
-     counterpart at all, which is exactly why they are worth surfacing here.
-     Hidden when the unspecced endpoint refuses. -->
-  @if (shows('lists') && bskyPopular().length && showsSection('bsky-popular')) {
+  @if (
+    shows('lists') && bskySession.linked() && bskyPopular().length && showsSection('bsky-popular')
+  ) {
     <div class="section-head">{{ 'pages.lists.bsky.popularHeading' | transloco }}</div>
     @for (entry of bskyPopular(); track entry.uri) {
       <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">

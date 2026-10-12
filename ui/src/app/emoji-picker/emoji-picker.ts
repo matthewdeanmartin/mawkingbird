@@ -49,7 +49,9 @@ export class EmojiPicker implements OnDestroy {
     this.customEmojis.ensureLoaded();
     // (Re)build the picker when the host appears or custom emojis arrive.
     effect(() => {
-      const emojis = this.customEmojis.emojis();
+      const emojis = this.customEmojis
+        .emojis()
+        .filter((emoji) => emoji.visible_in_picker !== false);
       const el = this.host().nativeElement;
       void this.build(el, emojis);
     });

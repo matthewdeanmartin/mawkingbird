@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import {
   Component,
   ElementRef,
@@ -181,7 +182,15 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.legend: 🔒 rows are private DMs; 📢 rows are public reply threads.
 @Component({
   selector: 'app-conversations',
-  imports: [Compose, FormsModule, HumanTimePipe, ReportDialog, RouterLink, TranslocoPipe],
+  imports: [
+    CustomEmojiPipe,
+    Compose,
+    FormsModule,
+    HumanTimePipe,
+    ReportDialog,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './conversations.html',
   styleUrl: './conversations.css',
 })

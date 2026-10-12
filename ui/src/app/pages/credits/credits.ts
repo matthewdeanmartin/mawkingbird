@@ -4,7 +4,7 @@ import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
 import { MAWKINGBIRD_ACCOUNT, virtualTweet } from '../docs/static-status';
 
-// i18n credits.title: Credits &amp; Privacy
+// i18n credits.title: Credits & Privacy
 
 /**
  * Credits & Privacy, rendered as a virtual tweet in the centre column. The body

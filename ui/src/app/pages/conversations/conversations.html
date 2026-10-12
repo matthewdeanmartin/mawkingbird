@@ -188,7 +188,10 @@
             }
           </div>
           @if (c.lastStatus) {
-            <div class="conv-preview muted" [innerHTML]="stripped(c.lastStatus)"></div>
+            <div
+              class="conv-preview muted"
+              [innerHTML]="stripped(c.lastStatus) | customEmoji: c.lastStatus.emojis"
+            ></div>
           } @else if (c.previewText) {
             <div class="conv-preview muted">{{ c.previewText }}</div>
           }
@@ -450,7 +453,7 @@
                   {{ m.account.display_name || m.account.username }}
                 </div>
               }
-              <div class="bubble-content" [innerHTML]="stripped(m)"></div>
+              <div class="bubble-content" [innerHTML]="stripped(m) | customEmoji: m.emojis"></div>
               @for (media of m.media_attachments; track media.id) {
                 <img
                   class="bubble-media"

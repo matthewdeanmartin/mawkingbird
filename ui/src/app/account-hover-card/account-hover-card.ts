@@ -1,3 +1,4 @@
+import { CustomEmojiPipe } from '../custom-emoji.pipe';
 import { MbAccountCard } from '../design-system/identity/account-card';
 import { MbButton } from '../design-system/button/button';
 import { RouterLink } from '@angular/router';
@@ -42,6 +43,7 @@ function didOf(account: Account): string {
 @Component({
   selector: 'app-account-hover-card',
   imports: [
+    CustomEmojiPipe,
     MbButton,
     MbAccountCard,
     RouterLink,
@@ -67,7 +69,11 @@ function didOf(account: Account): string {
         decoding="async"
       />
       <div class="hc-name">
-        {{ account().display_name || account().username }}
+        <span
+          [innerHTML]="
+            account().display_name || account().username | customEmoji: account().emojis : true
+          "
+        ></span>
         <app-verified-badge [account]="account()" />
       </div>
       <div class="hc-acct muted">
@@ -80,7 +86,11 @@ function didOf(account: Account): string {
         }
       </div>
       @if (account().note) {
-        <div class="hc-note" appRenderedHtmlLinks [innerHTML]="account().note"></div>
+        <div
+          class="hc-note"
+          appRenderedHtmlLinks
+          [innerHTML]="account().note | customEmoji: account().emojis"
+        ></div>
       }
       @if (showStats() && hasStats) {
         <div class="hc-stats muted">
