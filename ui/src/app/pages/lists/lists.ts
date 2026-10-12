@@ -277,7 +277,9 @@ export class Lists implements OnInit {
   private videoSubs = inject(VideoSubscriptions);
   private twitterFollowStore = inject(TwitterFollows);
   private twitterSettings = inject(TwitterSettings);
-  protected twitterAvailable = computed(() => this.twitterSettings.resolve() !== null);
+  protected twitterAvailable = computed(
+    () => this.twitterSettings.usable() && this.twitterFollowStore.follows().length > 0,
+  );
   private rssCache = inject(RssCache);
   private diagnostics = inject(PageDiagnostics);
   private route = inject(ActivatedRoute);

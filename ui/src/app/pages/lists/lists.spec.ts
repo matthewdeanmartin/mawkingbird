@@ -16,6 +16,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Collection, UserList } from '../../models';
 import { Auth } from '../../auth';
+import { scopeSuffixForToken } from '../../account-scope';
 import { Account } from '../../models';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { RssFeedSub, RssSubscriptions } from '../../providers/rss/rss-subscriptions';
@@ -207,6 +208,7 @@ describe('Lists', () => {
     const twitter = TestBed.inject(TwitterSettings);
     twitter.setKey('twitterapi-io', 'test-key');
     twitter.activate('twitterapi-io');
+    TestBed.inject(TwitterFollows).add({ username: 'NASA', displayName: 'NASA' });
     TestBed.inject(BlueskySession).session.set({
       did: 'did:plc:current',
       handle: 'current.bsky.social',
@@ -217,6 +219,34 @@ describe('Lists', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Twitter accounts');
     expect(fixture.nativeElement.textContent).toContain('Bluesky feeds');
+  });
+
+  it('hides Twitter with a shared key but no follows for this account', () => {
+    localStorage.setItem(
+      `mockingbird_twitter_follows${scopeSuffixForToken('other-account')}`,
+      JSON.stringify([{ username: 'NASA', displayName: 'NASA', enabled: true, addedAt: 1 }]),
+    );
+    TestBed.inject(Auth).setToken('current-account');
+    const twitter = TestBed.inject(TwitterSettings);
+    twitter.setKey('twitterapi-io', 'test-key');
+    twitter.activate('twitterapi-io');
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Twitter accounts');
+
+    const follows = TestBed.inject(TwitterFollows);
+    follows.add({ username: 'NASA', displayName: 'NASA' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Twitter accounts');
+
+    // Disabled follows remain manageable in Feeds.
+    follows.setEnabled('NASA', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Twitter accounts');
+    follows.remove('NASA');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Twitter accounts');
   });
 
   it('removes only the current user from a featured collection using its membership id', async () => {

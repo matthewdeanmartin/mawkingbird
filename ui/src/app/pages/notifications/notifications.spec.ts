@@ -330,7 +330,20 @@ describe('Notifications', () => {
       .flush([{ ...makeNotification('mention', 'mention'), status }]);
     fixture.detectChanges();
     const button = () => fixture.nativeElement.querySelector('.notif-like') as HTMLButtonElement;
+    expect(button().getAttribute('aria-label')).toBe('Star reply');
+    expect(button().textContent).toContain('⭐');
+    expect(button().textContent).toContain('Star');
+    const toolbar = button().closest('.mention-actions')!;
+    expect(toolbar.querySelectorAll('a')).toHaveLength(2);
+    expect(toolbar.lastElementChild).toBe(button());
+    expect(button().querySelector('[mbActionCount]')).toBeNull();
+    TestBed.inject(ClientPrefs).setFavStyle('heart');
+    fixture.detectChanges();
     expect(button().getAttribute('aria-label')).toBe('Like reply');
+    expect(button().textContent).toContain('❤️');
+    expect(button().textContent).toContain('Like');
+    TestBed.inject(ClientPrefs).setFavStyle('star');
+    fixture.detectChanges();
     button().click();
     fixture.detectChanges();
     expect(button().disabled).toBe(true);
@@ -339,7 +352,15 @@ describe('Notifications', () => {
       .flush({ ...status, favourited: true, favourites_count: 1 });
     fixture.detectChanges();
     expect(button().getAttribute('aria-pressed')).toBe('true');
-    expect(button().textContent).toContain('★');
+    expect(button().textContent).toContain('⭐');
+    expect(button().getAttribute('aria-label')).toBe('Undo star');
+    TestBed.inject(ClientPrefs).setFavStyle('heart');
+    fixture.detectChanges();
+    expect(button().textContent).toContain('❤️');
+    expect(button().textContent).toContain('Like');
+    expect(button().textContent).not.toContain('Star');
+    expect(button().textContent).not.toMatch(/\d/);
+    expect(button().getAttribute('aria-label')).toBe('Undo like');
     button().click();
     httpMock
       .expectOne('/api/v1/statuses/reply/unfavourite')

@@ -88,6 +88,10 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.label.mention: mentioned you
 // i18n pages.notifications.like: Like reply
 // i18n pages.notifications.unlike: Undo like
+// i18n pages.notifications.star: Star reply
+// i18n pages.notifications.unstar: Undo star
+// i18n pages.notifications.likeLabel: Like
+// i18n pages.notifications.starLabel: Star
 // i18n pages.notifications.likeFailed: Could not update this like. Try again.
 
 function normalizedAccountUrl(url: string): string | null {
@@ -267,6 +271,21 @@ export class Notifications implements OnInit, OnDestroy {
   private api = inject(Api);
   private statusActions = inject(StatusActions);
   protected likeBusy = signal(new Set<string>());
+  protected favIcon = computed(() => (this.prefs.favStyle() === 'heart' ? '❤️' : '⭐'));
+  protected favLabel = computed(() =>
+    this.prefs.favStyle() === 'heart'
+      ? 'pages.notifications.likeLabel'
+      : 'pages.notifications.starLabel',
+  );
+  protected favActionLabel(status: Status): string {
+    return this.prefs.favStyle() === 'heart'
+      ? status.favourited
+        ? 'pages.notifications.unlike'
+        : 'pages.notifications.like'
+      : status.favourited
+        ? 'pages.notifications.unstar'
+        : 'pages.notifications.star';
+  }
   protected likeError = signal('');
 
   protected canLike(status: Status): boolean {

@@ -373,3 +373,10 @@ existing VideoPlayer for explicit embed playback. Labelled native channel/search
 fields, checkbox, result-type select and navigation links remain partial adoption
 backlog. Regenerated the inventory for the release and classified both new
 control-bearing files, preserving all existing dispositions.
+
+## Notification reply actions
+
+Reply favourites reuse the small PostAction at the end of the existing mention
+toolbar, with a visible Star/Like label and the configured star/heart icon.
+No count is rendered. Regenerated the control inventory while retaining the
+existing notification-page disposition.
