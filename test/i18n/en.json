@@ -1216,6 +1216,7 @@
     "convertError": "Could not convert this list.",
     "convertToCollection": "Convert to collection",
     "converting": "Converting…",
+    "exclusiveError": "Could not change List only. {{detail}}",
     "fallbackTitle": "List",
     "loadMore": "Load more",
     "loading": "Loading…",
@@ -1230,6 +1231,11 @@
     "tabs.members": "Members",
     "tabs.posts": "Posts",
     "unfollowEveryone": "Unfollow everyone"
+  },
+  "lists": {
+    "listOnly": "List only",
+    "listOnlyExplanation": "An exclusive list keeps all its members out of Home. You still follow these friends and can read their posts in lists. This applies to everyone on the list.",
+    "listOnlyHelp": "About exclusive lists"
   },
   "localePicker": {
     "auto": "Automatic (browser)",
@@ -3207,6 +3213,7 @@
     "search.results.noLoadedPeople": "No loaded people match the current filters.",
     "search.results.noLoadedPosts": "No loaded posts match the current filters.",
     "search.results.noPeople": "No people found.",
+    "search.results.noPosts": "No posts",
     "search.results.noPostsForTag": "No posts for <strong>#{{tag}}</strong> came back — and this server can’t search posts, so there may be some we can’t see.",
     "search.results.noResults": "No results.",
     "search.results.nobodyPosted": "Nobody has posted <strong>#{{tag}}</strong> yet.",
