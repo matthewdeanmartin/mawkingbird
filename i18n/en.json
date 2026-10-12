@@ -633,7 +633,7 @@
     "windowsSteps": "Open the downloaded CA → Install Certificate → Current User. Choose Place all certificates in the following store → Trusted Root Certification Authorities, then finish. This trusts it for your Windows user."
   },
   "credits": {
-    "title": "Credits &amp; Privacy"
+    "title": "Credits & Privacy"
   },
   "cta": {
     "analytics.body": "See who and what make up the feed you are reading.",
@@ -703,13 +703,13 @@
   },
   "docs": {
     "credits.detail": "The software this client ships, and how it handles data.",
-    "credits.title": "Credits &amp; Privacy",
-    "design.detail": "Why this client exists — read it as a post.",
+    "credits.title": "Credits & Privacy",
+    "design.detail": "Why this client exists.",
     "design.title": "Design",
     "funding.detail": "What this costs, who pays for it, and where it's going.",
     "funding.title": "Funding",
     "head": "Docs",
-    "plans.detail": "Exactly what free and Plus include, with every limit spelled out.",
+    "plans.detail": "Exactly what free and Plus include.",
     "plans.title": "Plans",
     "searchServerRules.detail": "The rules published by your search server.",
     "searchServerTerms.detail": "Your search server's terms of service.",
@@ -1216,6 +1216,7 @@
     "convertError": "Could not convert this list.",
     "convertToCollection": "Convert to collection",
     "converting": "Converting…",
+    "exclusiveError": "Could not change List only. {{detail}}",
     "fallbackTitle": "List",
     "loadMore": "Load more",
     "loading": "Loading…",
@@ -1230,6 +1231,11 @@
     "tabs.members": "Members",
     "tabs.posts": "Posts",
     "unfollowEveryone": "Unfollow everyone"
+  },
+  "lists": {
+    "listOnly": "List only",
+    "listOnlyExplanation": "An exclusive list keeps all its members out of Home. You still follow these friends and can read their posts in lists. This applies to everyone on the list.",
+    "listOnlyHelp": "About exclusive lists"
   },
   "localePicker": {
     "auto": "Automatic (browser)",
@@ -2097,6 +2103,9 @@
     "notifications.label.followRequest": "requested to follow you",
     "notifications.label.mention": "mentioned you",
     "notifications.label.reblog": "boosted your status",
+    "notifications.like": "Like reply",
+    "notifications.likeFailed": "Could not update this like. Try again.",
+    "notifications.likeLabel": "Like",
     "notifications.live.label": "● Live",
     "notifications.live.title": "Live: new notifications stream in as they arrive. Turn off in Blue → Auto-refresh timeline.",
     "notifications.loadMore": "Load more",
@@ -2129,8 +2138,12 @@
     "notifications.source.bluesky": "🦋 Bluesky",
     "notifications.source.mastodon": "🐘 Mastodon",
     "notifications.sourceAriaLabel": "Notification source",
+    "notifications.star": "Star reply",
+    "notifications.starLabel": "Star",
     "notifications.type.all": "All types",
     "notifications.type.title": "Notification type",
+    "notifications.unlike": "Undo like",
+    "notifications.unstar": "Undo star",
     "notifications.viewAriaLabel": "Notification view",
     "notifications.viewThread": "🧵 View thread",
     "observability.api.reset": "Reset metrics",
@@ -3207,6 +3220,7 @@
     "search.results.noLoadedPeople": "No loaded people match the current filters.",
     "search.results.noLoadedPosts": "No loaded posts match the current filters.",
     "search.results.noPeople": "No people found.",
+    "search.results.noPosts": "No posts",
     "search.results.noPostsForTag": "No posts for <strong>#{{tag}}</strong> came back — and this server can’t search posts, so there may be some we can’t see.",
     "search.results.noResults": "No results.",
     "search.results.nobodyPosted": "Nobody has posted <strong>#{{tag}}</strong> yet.",
