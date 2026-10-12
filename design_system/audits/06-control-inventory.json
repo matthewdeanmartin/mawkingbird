@@ -1,6 +1,6 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1120,
+  "filesScanned": 1122,
   "filesWithCandidates": 228,
   "inventory": [
     {

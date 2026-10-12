@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Account traffic rollout, 2026-10-11
+
+Regenerated the inventory for MawkingbirdAccess and RequestCooldown: 1,122
+maintained source files scanned, with the same 228 candidate files. These two
+service modules introduce no controls or styling. Candidate findings and all
+existing dispositions remain unchanged; the inventory gate remains enforced.
+
 ## Compact feed selects, 2026-10-10
 
 Field now offers an opt-in compact density for native selects outside button-only
