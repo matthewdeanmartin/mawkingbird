@@ -560,17 +560,17 @@
     "cancel": "İptal"
   },
   "credits": {
-    "title": "Katkıda Bulunanlar &amp; Gizlilik"
+    "title": "Katkıda Bulunanlar & Gizlilik"
   },
   "docs": {
     "credits.detail": "Bu istemciyle sunulan yazılım ve verileri işleme biçimi.",
-    "credits.title": "Katkıda Bulunanlar &amp; Gizlilik",
-    "design.detail": "Bu istemcinin var olma nedeni; gönderi olarak oku.",
+    "credits.title": "Katkıda Bulunanlar & Gizlilik",
+    "design.detail": "Bu istemcinin var olma nedeni.",
     "design.title": "Tasarım",
     "funding.detail": "Maliyeti, kimin ödediği ve gelecekteki yönü.",
     "funding.title": "Finansman",
     "head": "Belgeler",
-    "plans.detail": "Ücretsiz ve Plus planlarının tam kapsamı ve tüm sınırlar.",
+    "plans.detail": "Ücretsiz ve Plus planlarının tam kapsamı.",
     "plans.title": "Planlar",
     "searchServerRules.detail": "Arama sunucun tarafından yayımlanan kurallar.",
     "searchServerTerms.detail": "Arama sunucunun hizmet şartları.",

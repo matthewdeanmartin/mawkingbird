@@ -560,17 +560,17 @@
     "cancel": "Hủy"
   },
   "credits": {
-    "title": "Ghi công &amp; Quyền riêng tư"
+    "title": "Ghi công & Quyền riêng tư"
   },
   "docs": {
     "credits.detail": "Phần mềm đi kèm ứng dụng này và cách phần mềm xử lý dữ liệu.",
-    "credits.title": "Ghi công &amp; Quyền riêng tư",
-    "design.detail": "Lý do ứng dụng này tồn tại — hãy đọc như một bài đăng.",
+    "credits.title": "Ghi công & Quyền riêng tư",
+    "design.detail": "Lý do ứng dụng này tồn tại.",
     "design.title": "Thiết kế",
     "funding.detail": "Chi phí, người chi trả và hướng phát triển của dự án.",
     "funding.title": "Nguồn tài trợ",
     "head": "Tài liệu",
-    "plans.detail": "Thông tin chính xác về gói Miễn phí và Plus, bao gồm mọi giới hạn.",
+    "plans.detail": "Thông tin chính xác về gói Miễn phí và Plus.",
     "plans.title": "Các gói",
     "searchServerRules.detail": "Các quy tắc do máy chủ tìm kiếm của bạn công bố.",
     "searchServerTerms.detail": "Điều khoản dịch vụ của máy chủ tìm kiếm.",

@@ -2755,17 +2755,17 @@
     "cancel": "रद्द करें"
   },
   "credits": {
-    "title": "श्रेय &amp; गोपनीयता"
+    "title": "श्रेय & गोपनीयता"
   },
   "docs": {
     "credits.detail": "इस क्लाइंट में शामिल सॉफ़्टवेयर और डेटा प्रबंधन।",
-    "credits.title": "श्रेय &amp; गोपनीयता",
-    "design.detail": "यह क्लाइंट क्यों मौजूद है—इसे पोस्ट की तरह पढ़ें।",
+    "credits.title": "श्रेय & गोपनीयता",
+    "design.detail": "यह क्लाइंट क्यों मौजूद है।",
     "design.title": "डिज़ाइन",
     "funding.detail": "इसकी लागत, भुगतानकर्ता और भविष्य।",
     "funding.title": "वित्तपोषण",
     "head": "दस्तावेज़",
-    "plans.detail": "मुफ़्त और Plus में क्या शामिल है, सभी सीमाओं सहित।",
+    "plans.detail": "मुफ़्त और Plus में क्या शामिल है।",
     "plans.title": "प्लान",
     "searchServerRules.detail": "आपके खोज सर्वर द्वारा प्रकाशित नियम।",
     "searchServerTerms.detail": "आपके खोज सर्वर की सेवा शर्तें।",

@@ -5155,13 +5155,13 @@
   },
   "docs": {
     "credits.detail": "Die Software, die dieser Client mitbringt, und wie er mit Daten umgeht.",
-    "credits.title": "Danksagungen &amp; Datenschutz",
-    "design.detail": "Warum es diesen Client gibt – lies es wie einen Beitrag.",
+    "credits.title": "Danksagungen & Datenschutz",
+    "design.detail": "Warum es diesen Client gibt.",
     "design.title": "Konzept",
     "funding.detail": "Was das kostet, wer dafür zahlt und wohin es geht.",
     "funding.title": "Finanzierung",
     "head": "Doku",
-    "plans.detail": "Genau das, was „Kostenlos“ und „Plus“ enthalten, mit allen Grenzen im Detail.",
+    "plans.detail": "Genau das, was „Kostenlos“ und „Plus“ enthalten.",
     "plans.title": "Tarife",
     "searchServerRules.detail": "Die Regeln, die dein Suchserver veröffentlicht.",
     "searchServerTerms.detail": "Die Nutzungsbedingungen deines Suchservers.",
@@ -5584,7 +5584,7 @@
     "cancel": "Abbrechen"
   },
   "credits": {
-    "title": "Danksagungen &amp; Datenschutz"
+    "title": "Danksagungen & Datenschutz"
   },
   "endorsedList": {
     "capped": "Der Feed führt Beiträge der ersten {{count}} von {{total}} empfohlenen Konten zusammen.",
