@@ -560,17 +560,17 @@
     "cancel": "취소"
   },
   "credits": {
-    "title": "감사의 말 &amp; 개인정보 보호"
+    "title": "감사의 말 & 개인정보 보호"
   },
   "docs": {
     "credits.detail": "이 클라이언트가 제공하는 소프트웨어와 데이터 처리 방식입니다.",
-    "credits.title": "감사의 말 &amp; 개인정보 보호",
-    "design.detail": "이 클라이언트가 존재하는 이유 — 게시물로 읽어 보세요.",
+    "credits.title": "감사의 말 & 개인정보 보호",
+    "design.detail": "이 클라이언트가 존재하는 이유.",
     "design.title": "디자인",
     "funding.detail": "비용, 지불 주체와 향후 방향입니다.",
     "funding.title": "자금 지원",
     "head": "문서",
-    "plans.detail": "무료 및 Plus에 포함되는 항목과 모든 제한을 정확히 설명합니다.",
+    "plans.detail": "무료 및 Plus에 포함되는 항목.",
     "plans.title": "요금제",
     "searchServerRules.detail": "검색 서버가 게시한 규칙입니다.",
     "searchServerTerms.detail": "검색 서버의 서비스 약관입니다.",

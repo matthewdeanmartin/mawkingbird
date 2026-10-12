@@ -560,17 +560,17 @@
     "cancel": "Annuleren"
   },
   "credits": {
-    "title": "Credits &amp; privacy"
+    "title": "Credits & privacy"
   },
   "docs": {
     "credits.detail": "De software die met deze client wordt geleverd en hoe deze met gegevens omgaat.",
-    "credits.title": "Credits &amp; privacy",
-    "design.detail": "Waarom deze client bestaat — lees het als een bericht.",
+    "credits.title": "Credits & privacy",
+    "design.detail": "Waarom deze client bestaat.",
     "design.title": "Ontwerp",
     "funding.detail": "Wat dit kost, wie ervoor betaalt en waar het naartoe gaat.",
     "funding.title": "Financiering",
     "head": "Documentatie",
-    "plans.detail": "Precies wat Gratis en Plus omvatten, met elke limiet uitgeschreven.",
+    "plans.detail": "Precies wat Gratis en Plus omvatten.",
     "plans.title": "Abonnementen",
     "searchServerRules.detail": "De regels die je zoekserver heeft gepubliceerd.",
     "searchServerTerms.detail": "De servicevoorwaarden van je zoekserver.",

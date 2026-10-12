@@ -30,7 +30,7 @@
     "cancel": "Annuler"
   },
   "credits": {
-    "title": "Crédits &amp; confidentialité"
+    "title": "Crédits & confidentialité"
   },
   "favourites": {
     "empty": "Tu n’as encore rien aimé.",
@@ -5738,13 +5738,13 @@
   },
   "docs": {
     "credits.detail": "Le logiciel que ce client embarque, et comment il traite les données.",
-    "credits.title": "Crédits &amp; confidentialité",
-    "design.detail": "Pourquoi ce client existe — à lire comme un article.",
+    "credits.title": "Crédits & confidentialité",
+    "design.detail": "Pourquoi ce client existe.",
     "design.title": "Conception",
     "funding.detail": "Ce que ça coûte, qui le finance, et où va l’argent.",
     "funding.title": "Financement",
     "head": "Documentation",
-    "plans.detail": "Exactement ce que comprennent le forfait gratuit et Plus, avec chaque limite précisée.",
+    "plans.detail": "Exactement ce que comprennent le forfait gratuit et Plus.",
     "plans.title": "Forfaits",
     "searchServerRules.detail": "Les règles publiées par ton serveur de recherche.",
     "searchServerTerms.detail": "Les conditions d’utilisation de ton serveur de recherche.",
