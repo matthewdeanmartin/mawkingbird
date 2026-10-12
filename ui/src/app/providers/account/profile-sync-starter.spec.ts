@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -39,6 +40,7 @@ describe('ProfileSyncStarter', () => {
     );
     TestBed.configureTestingModule({
       providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
         { provide: MawkingbirdSession, useValue: new FakeMawkingbirdSession() },
         { provide: PROFILE_ORIGIN, useValue: 'https://profile-test.mawkingbird.com' },
       ],

@@ -3,6 +3,8 @@ import { corsProxyOrigin, isTestBuild } from '../../build-flavor';
 import { authDebug, registerAuthOrigins } from './auth-debug';
 import { MawkingbirdMetrics, billingTier } from '../../observability/mawkingbird-metrics';
 import { forgetAccountLocalState } from './account-local-state';
+import { MawkingbirdAccess } from './mawkingbird-access';
+import { RequestCooldown } from './request-cooldown';
 
 /**
  * The Mawkingbird account session.
@@ -123,6 +125,9 @@ export class MawkingbirdSession {
   private authBase = inject(AUTH_ORIGIN);
   private accountBase = inject(ACCOUNT_ORIGIN);
   private metrics = inject(MawkingbirdMetrics);
+  private access = inject(MawkingbirdAccess);
+  private cooldown = new RequestCooldown();
+  private cookieRefused = false;
 
   /** The signed-in account, or null when anonymous. */
   readonly user = signal<AccountUser | null>(null);
@@ -163,11 +168,13 @@ export class MawkingbirdSession {
    * an unidentified caller.
    */
   async token(): Promise<string | null> {
+    if (!this.access.enabled()) return null;
     if (this.held && this.held.expiresAt * 1000 - REFRESH_MARGIN_MS > Date.now()) {
       return this.held.token;
     }
     // Deduplicated: several proxied requests can start at once, and each
     // minting its own token would spend the endpoint's rate limit on itself.
+    if (this.cooldown.blocked()) return null;
     this.minting ??= this.mint().finally(() => {
       this.minting = null;
     });
@@ -189,6 +196,7 @@ export class MawkingbirdSession {
     email: string,
     returnTo = '/settings/mawkingbird-plus',
   ): Promise<boolean> {
+    if (!this.access.enabled() || this.sendingLink()) return false;
     this.error.set(null);
     this.sendingLink.set(true);
     // Logged with the full URL: the request's *destination* is the thing most
@@ -199,6 +207,7 @@ export class MawkingbirdSession {
     const emailStart = performance.now();
     try {
       const response = await fetch(`${this.accountBase}/auth/email/start`, {
+        signal: AbortSignal.timeout(10_000),
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // The session cookie is set by this service on a different origin, so
@@ -247,9 +256,11 @@ export class MawkingbirdSession {
    * rather than implying an instant global sign-out.
    */
   async signOut(): Promise<void> {
+    if (!this.access.enabled()) return;
     const signOutStart = performance.now();
     try {
       const response = await fetch(`${this.accountBase}/auth/signout`, {
+        signal: AbortSignal.timeout(10_000),
         method: 'POST',
         credentials: 'include',
       });
@@ -341,6 +352,7 @@ export class MawkingbirdSession {
   }
 
   private async mint(): Promise<MintedToken | null> {
+    this.cookieRefused = false;
     authDebug('mint:start', { authBase: this.authBase });
 
     const signedIn = await this.post({ grant: 'cookie' });
@@ -350,6 +362,15 @@ export class MawkingbirdSession {
       this.held = signedIn;
       this.user.set({ auth: signedIn.auth, tier: signedIn.tier });
       return signedIn;
+    }
+
+    // Only a normal absent/expired cookie warrants anonymous fallback. An
+    // outage or refusal must not cause a second request on every caller.
+    if (!this.cookieRefused) {
+      this.error.set(
+        'Could not reach the Mawkingbird account service. Signing in will not work until it is back.',
+      );
+      return null;
     }
 
     // A 401 from the cookie grant is what an expired 90-day session looks like.
@@ -405,6 +426,7 @@ export class MawkingbirdSession {
     const mintStart = performance.now();
     try {
       const response = await fetch(`${this.authBase}/mint`, {
+        signal: AbortSignal.timeout(10_000),
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -412,6 +434,8 @@ export class MawkingbirdSession {
       });
       this.metrics.record('auth', 'free', performance.now() - mintStart, response.ok);
       if (!response.ok) {
+        if (body.grant === 'cookie' && response.status === 401) this.cookieRefused = true;
+        else this.cooldown.fail(response.status, response.headers.get('Retry-After'));
         // Logged with the status, because 401 and 503 mean very different
         // things here: the first is "no usable session", the second is "this
         // deployment is misconfigured", and they are indistinguishable in the
@@ -421,8 +445,10 @@ export class MawkingbirdSession {
       }
       const minted = (await response.json()) as Partial<MintedToken>;
       if (typeof minted.token !== 'string' || typeof minted.expiresAt !== 'number') {
+        this.cooldown.fail();
         return null;
       }
+      this.cooldown.success();
       return {
         token: minted.token,
         expiresAt: minted.expiresAt,
@@ -430,6 +456,7 @@ export class MawkingbirdSession {
         tier: minted.tier ?? 'free',
       };
     } catch (error: unknown) {
+      this.cooldown.fail();
       // A network-level failure, not an HTTP error: CORS refusal, DNS, offline.
       // A CORS refusal is the likeliest cause on a fresh deployment and looks
       // identical to being offline from here, so the origin is logged too.

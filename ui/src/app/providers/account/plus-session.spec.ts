@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { PlusCatalogue } from './plus-catalogue';
 import { catalogueOffer } from '../../testing/plus-catalogue';
 import { TestBed } from '@angular/core/testing';
@@ -33,6 +34,7 @@ describe('PlusSession', () => {
     session = new FakeMawkingbirdSession();
     TestBed.configureTestingModule({
       providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: MawkingbirdSession, useValue: session },
@@ -256,6 +258,21 @@ describe('PlusSession', () => {
     // Every proxied request calls this; minting one token each would spend the
     // endpoint's rate limit on itself.
     await settle();
+    httpMock.expectNone(TOKEN_URL);
+  });
+
+  it('does not repeatedly mint or force-refresh after a rate-limit refusal', async () => {
+    const pending = plus.token();
+    await settle();
+    httpMock
+      .expectOne(TOKEN_URL)
+      .flush(
+        {},
+        { status: 429, statusText: 'Too Many Requests', headers: { 'Retry-After': '120' } },
+      );
+    expect(await pending).toBeNull();
+    expect(await plus.token()).toBeNull();
+    expect(await plus.refresh()).toBeNull();
     httpMock.expectNone(TOKEN_URL);
   });
 

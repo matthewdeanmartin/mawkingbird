@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MawkingbirdSession } from './mawkingbird-session';
@@ -33,6 +34,7 @@ describe('PlusBadgeEntitlement', () => {
     plus = { token: vi.fn().mockResolvedValue('free-token') };
     TestBed.configureTestingModule({
       providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
         PlusBadgeEntitlement,
         SupporterStatus,
         { provide: MawkingbirdSession, useValue: session },

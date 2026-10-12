@@ -508,6 +508,7 @@ export class ProfileClient {
     try {
       const response = await fetch(`${this.base}${path}`, {
         ...init,
+        signal: AbortSignal.timeout(10_000),
         // No cookies, ever. See the class comment.
         credentials: 'omit',
         headers: { ...init.headers, Authorization: `Bearer ${token}` },

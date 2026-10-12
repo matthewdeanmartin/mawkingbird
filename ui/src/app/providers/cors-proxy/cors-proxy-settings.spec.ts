@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CorsProxySettings } from './cors-proxy-settings';
 import {
   availableCorsProxies,
@@ -22,6 +22,23 @@ describe('CorsProxySettings', () => {
     enableProxyFlags();
     settings = TestBed.inject(CorsProxySettings);
   });
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each(['mawkingbird', 'mawkingbird-plus'] as const)(
+    'refuses a copied %s selection on a self-hosted origin',
+    (id) => {
+      vi.stubGlobal('location', {
+        hostname: 'selfhost.example',
+        href: 'https://selfhost.example/',
+      });
+      settings.select(id);
+      expect(settings.resolve()).toBeNull();
+      expect(settings.usable()).toBe(false);
+      settings.select('custom', { template: 'https://my-proxy.example/?url={url}' });
+      expect(settings.resolve()?.entry.id).toBe('custom');
+    },
+  );
 
   it('starts with nothing configured, so feeds are fetched directly', () => {
     expect(settings.currentId()).toBeNull();

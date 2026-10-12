@@ -1,5 +1,6 @@
 import { effect, inject, Injectable, Injector } from '@angular/core';
 import { SupporterStatus } from './supporter-status';
+import { MawkingbirdAccess } from './mawkingbird-access';
 
 /**
  * Starts settings sync without dragging it into the initial bundle.
@@ -34,6 +35,7 @@ import { SupporterStatus } from './supporter-status';
 export class ProfileSyncStarter {
   private injector = inject(Injector);
   private supporter = inject(SupporterStatus);
+  private access = inject(MawkingbirdAccess);
 
   constructor() {
     // Tokens are minted twice on a cold load: the first reports `tier: 'free'`
@@ -55,6 +57,7 @@ export class ProfileSyncStarter {
 
   /** Settle sync state, if this browser has an account and sync is on. */
   async start(): Promise<void> {
+    if (!this.access.enabled()) return;
     try {
       const { ProfileSync } = await import('./profile-sync');
       const sync = this.injector.get(ProfileSync);
@@ -81,6 +84,7 @@ export class ProfileSyncStarter {
    * cost a boolean comparison rather than a request.
    */
   async recheckEntitlement(): Promise<void> {
+    if (!this.access.enabled()) return;
     try {
       const { ProfileSync } = await import('./profile-sync');
       const sync = this.injector.get(ProfileSync);
@@ -93,6 +97,7 @@ export class ProfileSyncStarter {
 
   /** Re-check after a tab has been in the background for a while. */
   async recheckOnFocus(): Promise<void> {
+    if (!this.access.enabled()) return;
     try {
       const { ProfileSync } = await import('./profile-sync');
       await this.injector.get(ProfileSync).recheckOnFocus();
@@ -117,7 +122,7 @@ export class ProfileSyncStarter {
    * it, which is the whole point of the indirection.
    */
   noteLocalChange(): void {
-    if (!this.started) {
+    if (!this.access.enabled() || !this.started) {
       return;
     }
     void (async () => {

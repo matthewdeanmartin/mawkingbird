@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { corsProxyOrigin } from '../../build-flavor';
 import { externalFetch } from '../external-fetch';
+import { MawkingbirdAccess } from './mawkingbird-access';
 
 export interface PlusOffer {
   offer: 'plus';
@@ -60,6 +61,7 @@ export function formatOffer(offer: PlusOffer, locale = 'en'): string {
 @Injectable({ providedIn: 'root' })
 export class PlusCatalogue {
   private http = inject(HttpClient);
+  private access = inject(MawkingbirdAccess);
   readonly offer = signal<PlusOffer | null>(FALLBACK_OFFER);
   readonly loading = signal(false);
   readonly unavailable = signal(false);
@@ -71,6 +73,7 @@ export class PlusCatalogue {
   private expires = 0;
 
   load(force = false): Promise<void> {
+    if (!this.access.enabled()) return Promise.resolve();
     if (this.pending) return this.pending;
     if (!force && this.offer() && Date.now() < this.expires) return Promise.resolve();
     this.loading.set(true);
@@ -86,6 +89,7 @@ export class PlusCatalogue {
       .catch(() => {
         this.offer.set(FALLBACK_OFFER);
         this.unavailable.set(true);
+        this.expires = Date.now() + 60_000;
       })
       .finally(() => {
         this.loading.set(false);

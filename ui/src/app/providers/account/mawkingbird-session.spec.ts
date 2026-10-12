@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MawkingbirdMetrics } from '../../observability/mawkingbird-metrics';
@@ -32,6 +33,7 @@ describe('MawkingbirdSession token lifecycle', () => {
     vi.stubGlobal('fetch', fetchMock);
     TestBed.configureTestingModule({
       providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
         MawkingbirdSession,
         { provide: AUTH_ORIGIN, useValue: AUTH },
         { provide: ACCOUNT_ORIGIN, useValue: ACCOUNT },
@@ -100,6 +102,20 @@ describe('MawkingbirdSession token lifecycle', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it('honors Retry-After without anonymous fallback or sequential mint retries', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response('', { status: 429, headers: { 'Retry-After': '120' } }),
+    );
+    expect(await session.token()).toBeNull();
+    for (let attempt = 0; attempt < 10; attempt++) expect(await session.token()).toBeNull();
+    vi.spyOn(Date, 'now').mockReturnValue(NOW + 60_000);
+    expect(await session.token()).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    vi.spyOn(Date, 'now').mockReturnValue(NOW + 130_000);
+    fetchMock.mockResolvedValueOnce(minted('recovered', 'free'));
+    expect(await session.token()).toBe('recovered');
+  });
+
   it('re-mints inside the two-minute expiry safety margin', async () => {
     fetchMock
       .mockResolvedValueOnce(minted('nearly-expired', 'plus', 119))
@@ -137,11 +153,12 @@ describe('MawkingbirdSession token lifecycle', () => {
     expect(session.canOwnStorage()).toBe(true);
   });
   it('clears an account-service failure after anonymous minting recovers', async () => {
-    fetchMock
-      .mockRejectedValueOnce(new Error('offline'))
-      .mockRejectedValueOnce(new Error('offline'));
+    fetchMock.mockRejectedValueOnce(new Error('offline'));
     await session.ensureReady();
     expect(session.error()).toContain('Could not reach');
+    await session.ensureReady();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    vi.spyOn(Date, 'now').mockReturnValue(NOW + 60_000);
     fetchMock
       .mockResolvedValueOnce(new Response('', { status: 401 }))
       .mockResolvedValueOnce(minted('anonymous', 'free', 3600, 'anon'));

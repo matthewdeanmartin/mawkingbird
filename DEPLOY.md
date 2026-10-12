@@ -109,3 +109,30 @@ workflow on `main`; keep preview subtrees intact. For a Worker rollback, inspect
 recorded version in the exact environment. Worker rollback does not undo D1 or
 Durable Object data/migrations. Do not drop billing tables or reset live branches
 as a code rollback.
+
+## Traffic reduction rollout
+
+Deploy auth/account and profile from this computer first, using their sibling
+`DEPLOY.md` runbooks. Worker Actions deployments have failed; this differs from
+the Angular Pages workflows, whose recent production and preview runs passed.
+Production backend `MAWKINGBIRD_PLUS_ENABLED` stays `false`; test is `true`.
+The account test cron is every four hours UTC, with no production schedule.
+The CORS proxy also needs its rollout gate/CPU/JWKS fixes if a prior release
+lacks `MAWKINGBIRD_PLUS_ENABLED`; a recent video release alone is insufficient.
+
+Publish the client identity gate, auth cooldowns, shared mints and self-host
+restrictions together. Run `cd ui && make test`, `npm run lint`, storage/i18n/
+subpath checks and `npm run build:mockingbird`. Preserve the 1 MB budget.
+Preflight integration dependencies with published wheels only before dispatching
+CI (`uv pip compile ui/integration/requirements.txt --only-binary :all:
+--python-version 3.13 --python-platform x86_64-manylinux_2_28 --no-cache`).
+Push only reviewed client release files to main, without co-author trailers,
+then follow the working preview/validation and exact-SHA production promotion
+procedure above. Preserve unrelated local documentation changes.
+
+Verify the live source SHA in preview commit markers and root build info.
+With Plus disabled, check a fresh production page and tab focus generate no
+account mint/profile requests, including with persisted sync settings. Free
+proxy reads remain anonymous. Test `/test/` separately against test Workers;
+do not enable production Plus as a smoke test. Record Worker versions, flags,
+CPU caps, schedules and Pages run URLs in the release record.

@@ -1,13 +1,15 @@
 import { PlusCatalogue } from './plus-catalogue';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, timeout } from 'rxjs';
 import { corsProxyOrigin } from '../../build-flavor';
 import { externalFetch } from '../external-fetch';
 import { SupporterStatus } from './supporter-status';
 import { accountPageUrl, authDebug } from './auth-debug';
 import { MawkingbirdSession } from './mawkingbird-session';
 import { ProxyActivity } from '../cors-proxy/proxy-activity';
+import { MawkingbirdAccess } from './mawkingbird-access';
+import { RequestCooldown } from './request-cooldown';
 
 /**
  * The supporter session: proxy tokens, subscription state, and checkout.
@@ -134,6 +136,8 @@ export class PlusSession {
   // initial bundle. See `supporter-status.ts`.
   private status = inject(SupporterStatus);
   private proxyActivity = inject(ProxyActivity);
+  private access = inject(MawkingbirdAccess);
+  private cooldown = new RequestCooldown();
 
   /** The caller's tier, as last minted. */
   readonly tier = signal<'free' | 'plus'>('free');
@@ -149,6 +153,7 @@ export class PlusSession {
   readonly openingPortal = signal(false);
 
   async openBillingPortal(): Promise<void> {
+    if (!this.access.enabled()) return;
     if (this.openingPortal()) return;
     this.openingPortal.set(true);
     this.error.set(null);
@@ -207,11 +212,13 @@ export class PlusSession {
    * otherwise; the proxy reads an absent token as the free tier.
    */
   async token(): Promise<string | null> {
+    if (!this.access.enabled()) return null;
     if (this.held && this.held.expiresAtMs - REFRESH_MARGIN_MS > Date.now()) {
       return this.held.value;
     }
     // Deduplicated: several proxied requests can start at once, and each
     // minting its own token would spend the endpoint's rate limit on itself.
+    if (this.cooldown.blocked()) return null;
     return (this.minting ??= this.startMint());
   }
 
@@ -338,6 +345,7 @@ export class PlusSession {
    * subscription with `tier: 'free'`.
    */
   private async mint(seq: number): Promise<string | null> {
+    if (!this.access.enabled() || this.cooldown.blocked()) return null;
     /** Whether this attempt is still the one whose answer counts. */
     const current = () => this.mintSeq === seq;
 
@@ -357,18 +365,21 @@ export class PlusSession {
 
     try {
       const response = await firstValueFrom(
-        this.http.post<TokenResponse>(
-          `${PROXY_BASE}/plus/token`,
-          {},
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            // Never the Mastodon interceptor's business: this is a foreign
-            // host, and attaching the instance token here would leak it.
-            context: externalFetch(),
-          },
-        ),
+        this.http
+          .post<TokenResponse>(
+            `${PROXY_BASE}/plus/token`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+              // Never the Mastodon interceptor's business: this is a foreign
+              // host, and attaching the instance token here would leak it.
+              context: externalFetch(),
+            },
+          )
+          .pipe(timeout(10_000)),
       );
       if (!response?.token) {
+        this.cooldown.fail();
         authDebug('mint:no-token-in-response');
         return null;
       }
@@ -432,8 +443,14 @@ export class PlusSession {
           : null,
       );
       this.held = { value: response.token, expiresAtMs: response.expiresAt * 1000 };
+      this.cooldown.success();
       return this.held.value;
     } catch (error: unknown) {
+      if (current())
+        this.cooldown.fail(
+          error instanceof HttpErrorResponse ? error.status : 0,
+          error instanceof HttpErrorResponse ? error.headers.get('Retry-After') : null,
+        );
       // Not surfaced *to the user* as an error: failing to mint means free-tier
       // limits, and the app keeps working. Only checkout failures are worth
       // telling someone about, because those are the ones they asked for.

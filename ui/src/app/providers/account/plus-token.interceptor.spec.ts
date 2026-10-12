@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import {
@@ -34,6 +35,7 @@ describe('plusTokenInterceptor', () => {
     plus = new FakePlusTokenSource();
     TestBed.configureTestingModule({
       providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
         provideHttpClient(withInterceptors([plusTokenInterceptor])),
         provideHttpClientTesting(),
         { provide: PlusTokenSource, useValue: plus },

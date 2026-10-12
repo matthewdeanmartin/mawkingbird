@@ -2,6 +2,7 @@ import { inject, Injectable, Injector } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
 import { from, switchMap } from 'rxjs';
 import { CorsProxySettings } from '../cors-proxy/cors-proxy-settings';
+import { MawkingbirdAccess } from './mawkingbird-access';
 
 /**
  * How the interceptor gets a supporter token.
@@ -24,8 +25,10 @@ import { CorsProxySettings } from '../cors-proxy/cors-proxy-settings';
 @Injectable({ providedIn: 'root' })
 export class PlusTokenSource {
   private injector = inject(Injector);
+  private access = inject(MawkingbirdAccess);
 
   async token(): Promise<string | null> {
+    if (!this.access.enabled()) return null;
     const [{ PlusSession }, { MawkingbirdSession }] = await Promise.all([
       import('./plus-session'),
       import('./mawkingbird-session'),
@@ -74,6 +77,7 @@ export const PLUS_TOKEN_HEADER = 'X-Mawkingbird-Token';
 export const plusTokenInterceptor: HttpInterceptorFn = (request, next) => {
   const settings = inject(CorsProxySettings);
   const source = inject(PlusTokenSource);
+  if (!inject(MawkingbirdAccess).enabled()) return next(request);
 
   // `chosen()`, not `currentId()`. The stored id is what the user picked; the
   // chosen entry is what the app is actually using, and an entitled supporter is

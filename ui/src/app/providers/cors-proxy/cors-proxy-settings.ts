@@ -16,6 +16,7 @@ import { FeatureFlagId, FeatureFlags, proxyFeatureFlag } from '../../feature-fla
 import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
 import { SupporterStatus } from '../account/supporter-status';
 import { storedOutcome, type VaultReconcileOutcome } from '../vault/vault-reconcile';
+import { canUseHostedProxy } from '../account/mawkingbird-access';
 
 /**
  * Which CORS proxy this browser uses, and the key for it.
@@ -130,6 +131,9 @@ export class CorsProxySettings implements ExpiringConnection {
     if (!entry) {
       return null;
     }
+    // An arbitrary self-hosted origin cannot use the operator's CORS service.
+    // Refuse locally even if a copied/exported configuration selected it.
+    if (['mawkingbird', 'mawkingbird-plus'].includes(entry.id) && !canUseHostedProxy()) return null;
     const flag = proxyFeatureFlag(entry.id);
     if (flag !== null && !this.proxyFlagEnabled(flag)) {
       return null;

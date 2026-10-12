@@ -1,3 +1,4 @@
+import { MawkingbirdAccess } from './mawkingbird-access';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -24,7 +25,11 @@ describe('PlusCatalogue', () => {
   let http: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     http = TestBed.inject(HttpTestingController);
   });

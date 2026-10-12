@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { SupporterStatus } from './supporter-status';
 import { DiagnosticLog } from '../../diagnostic-log';
+import { MawkingbirdAccess } from './mawkingbird-access';
 
 export type PlusBadgeState = 'checking' | 'free' | 'plus' | 'unavailable';
 
@@ -36,6 +37,7 @@ export class PlusBadgeEntitlement {
   private unavailable = signal(false);
   private pending: Promise<void> | null = null;
   private log = inject(DiagnosticLog);
+  private access = inject(MawkingbirdAccess);
 
   readonly state = computed(() =>
     plusBadgeState(this.supporter.isSupporter(), this.checking(), this.unavailable()),
@@ -43,6 +45,10 @@ export class PlusBadgeEntitlement {
 
   /** Check once per app load; failure leaves an honest unavailable state. */
   check(): Promise<void> {
+    if (!this.access.enabled()) {
+      this.checking.set(false);
+      return Promise.resolve();
+    }
     return (this.pending ??= this.load());
   }
 
