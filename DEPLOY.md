@@ -101,6 +101,32 @@ verification rather than claiming a browser or account test was performed.
 Record the source SHA, Actions run URL, Worker version IDs, migrations applied,
 and smoke-test results. A successful upload alone is not a verified release.
 
+## YouTube RSS failures
+
+Valid YouTube channel feeds can intermittently return upstream 404 or 500.
+Users report this recurring for years and often recovering around a day later;
+do not promise a recovery deadline. Keep RSS as the source. Failed refreshes
+preserve subscriptions and previously cached videos; a new subscription may
+remain empty until its first successful refresh. Retry **Refresh** later.
+
+When a video-feed smoke test fails:
+
+1. Confirm the channel page advertises the same channel ID and this exact URL
+   shape: `https://www.youtube.com/feeds/videos.xml?channel_id=UC…`.
+2. Compare the proxied response with an uncached direct request for that exact
+   URL. If both return the same Google/YouTube error, record an upstream RSS
+   failure rather than claiming the reader passed its end-to-end fetch check.
+3. Check cache provenance when another reader appears to work. For example,
+   `youtuberfinder` uses `requests-cache` with `stale_if_error=True`; a cached
+   successful feed can survive long after expiry while fresh requests fail.
+   Compare response status, cache timestamp and an uncached request before
+   concluding that the domain, path or proxy is incorrect.
+4. Still verify proxy health, handle resolution, CORS/access checks, and the
+   reader's subscription retention and failure notice. Record the fresh-feed
+   check as unavailable and retry later. Do not redeploy, roll back, unsubscribe
+   channels, or introduce scraping solely because a verified upstream feed is
+   temporarily failing.
+
 ## Rollback
 
 Promote a recorded known-good client SHA through the **current** production

@@ -102,6 +102,33 @@ describe('ProfilePhotoView comments', () => {
     expect(button()).toBeNull();
   });
 
+  it('offers Load more in the Next position only at the end of loaded media', () => {
+    const fixture = setUp(makeStatus());
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+    const more = vi.fn();
+    fixture.componentInstance.wantMore.subscribe(more);
+    const next = () =>
+      fixture.nativeElement.querySelector('.photo-arrow.next') as HTMLButtonElement | null;
+    expect(next()?.textContent).toContain('Load more');
+    next()!.click();
+    expect(more).toHaveBeenCalledOnce();
+    fixture.componentRef.setInput('loadingMore', true);
+    fixture.detectChanges();
+    expect(next()?.disabled).toBe(true);
+    next()!.click();
+    expect(more).toHaveBeenCalledOnce();
+    fixture.componentRef.setInput('loadingMore', false);
+    fixture.componentRef.setInput('exhausted', true);
+    fixture.detectChanges();
+    expect(next()).toBeNull();
+    fixture.componentRef.setInput('items', [
+      makeItem(makeStatus()),
+      makeItem(makeStatus({ id: 's2' })),
+    ]);
+    fixture.detectChanges();
+    expect(next()?.textContent?.trim()).toBe('›');
+  });
+
   it('says there are no comments when the server has no thread (404)', () => {
     // The regression this pins: a 404 from /context is the ordinary answer for a
     // post with no replies, and for feed items whose ids this server never

@@ -14,6 +14,8 @@ import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api'
 import { MbDialog } from '../design-system/dialog/dialog';
 import { MbButton } from '../design-system/button/button';
 import { MbField, MbControl } from '../design-system/field/field';
+import { MbBadge } from '../design-system/badge/badge';
+import { MbHelp } from '../design-system/help/help';
 
 /** One line of the bulk add-by-name result. */
 interface BulkResult {
@@ -42,7 +44,7 @@ interface BulkResult {
 // i18n bulkAdd.status.error: error
 @Component({
   selector: 'app-bulk-add-dialog',
-  imports: [MbDialog, MbButton, MbField, MbControl, FormsModule, TranslocoPipe],
+  imports: [MbDialog, MbButton, MbField, MbControl, MbBadge, MbHelp, FormsModule, TranslocoPipe],
   templateUrl: './bulk-add-dialog.html',
   styleUrl: './bulk-add-dialog.css',
 })
@@ -60,6 +62,7 @@ export class BulkAddDialog {
   readonly targetKind = input.required<'list' | 'collection'>();
   /** Display name for the heading (list title / collection name). */
   readonly targetName = input<string>('');
+  readonly exclusive = input(false);
   /** Fires with the number of accounts successfully added, once, on finish. */
   readonly added = output<number>();
   readonly closed = output<void>();

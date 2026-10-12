@@ -25,6 +25,7 @@ import { RssFetch } from '../rss/rss-fetch';
 import { feedToStatuses } from '../rss/rss-adapter';
 import { AnonymousAccount } from './anonymous-account';
 import { AnonymousTags } from './anonymous-tags';
+import { AnonymousLists } from './anonymous-lists';
 import { externalFetch } from '../external-fetch';
 import { AnonymousPreferences } from './anonymous-preferences';
 import { PasteFeedProvider } from '../paste/paste-feed-provider';
@@ -143,6 +144,7 @@ export class AnonymousMastodonProvider implements FeedProvider {
   private auth = inject(Auth);
   private followStore = inject(AnonymousFollows);
   private tagStore = inject(AnonymousTags);
+  private lists = inject(AnonymousLists);
   private preferences = inject(AnonymousPreferences);
   private pasteFeed = inject(PasteFeedProvider);
   private featureFlags = inject(FeatureFlags);
@@ -193,7 +195,9 @@ export class AnonymousMastodonProvider implements FeedProvider {
   fetchPage(): Observable<Status[]> {
     const active: ActiveSource[] = [
       ...this.cursors
-        .filter((source) => !source.exhausted)
+        .filter(
+          (source) => !source.exhausted && !this.lists.excludedFromHome().has(source.follow.key),
+        )
         .map((source) => ({
           label: `@${source.follow.handle}`,
           cursor: source,
@@ -256,6 +260,7 @@ export class AnonymousMastodonProvider implements FeedProvider {
           .flat()
           .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
           .filter((status) => {
+            if (!this.allowedInHome(status)) return false;
             const key = status.url || status.id;
             if (this.seen.has(key)) {
               return false;
@@ -281,7 +286,9 @@ export class AnonymousMastodonProvider implements FeedProvider {
   fetchPageStreaming(): Observable<Status[]> {
     const active: ActiveSource[] = [
       ...this.cursors
-        .filter((source) => !source.exhausted)
+        .filter(
+          (source) => !source.exhausted && !this.lists.excludedFromHome().has(source.follow.key),
+        )
         .map((source) => ({
           label: `@${source.follow.handle}`,
           cursor: source,
@@ -327,6 +334,7 @@ export class AnonymousMastodonProvider implements FeedProvider {
       // seen; surface any accumulated warnings alongside every snapshot.
       scan((feed: Status[], page: Status[]) => {
         const additions = page.filter((status) => {
+          if (!this.allowedInHome(status)) return false;
           const key = status.url || status.id;
           if (this.seen.has(key)) {
             return false;
@@ -341,6 +349,14 @@ export class AnonymousMastodonProvider implements FeedProvider {
         ]);
         return additions.length ? [...feed, ...additions] : feed;
       }, [] as Status[]),
+    );
+  }
+
+  private allowedInHome(status: Status): boolean {
+    const excluded = this.lists.excludedFromHome();
+    return (
+      !excluded.has(status.account.acct.toLowerCase()) &&
+      (!status.reblog || !excluded.has(status.reblog.account.acct.toLowerCase()))
     );
   }
 

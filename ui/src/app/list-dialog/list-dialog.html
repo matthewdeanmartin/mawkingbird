@@ -28,6 +28,12 @@
                 [disabled]="listBusy().has(row.list.id)"
                 (checkedChange)="chooseList(row, listChoice)"
               />
+              @if (row.list.exclusive) {
+                <mb-badge>{{ 'lists.listOnly' | transloco }}</mb-badge>
+                <mb-help [label]="'lists.listOnlyHelp' | transloco">
+                  <p>{{ 'lists.listOnlyExplanation' | transloco }}</p>
+                </mb-help>
+              }
             </li>
           }
         </ul>

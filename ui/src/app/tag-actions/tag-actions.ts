@@ -2,7 +2,8 @@ import { TagState } from './tag-state';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { Tag } from '../models';
@@ -67,7 +68,17 @@ export class TagActions {
       const info =
         known && (kind === 'follow' ? known.following : known.featuring) !== undefined
           ? known
-          : await firstValueFrom(this.api.getTag(name));
+          : await firstValueFrom(
+              this.api
+                .getTag(name)
+                .pipe(
+                  catchError((error: unknown) =>
+                    kind === 'follow' && error instanceof HttpErrorResponse && error.status === 404
+                      ? of({ name, following: false, featuring: false })
+                      : throwError(() => error),
+                  ),
+                ),
+            );
       if (token !== this.auth.token() || name !== this.name()) return;
       if ((kind === 'follow' ? info.following : info.featuring) === desired) {
         this.state.remember(info as Tag);

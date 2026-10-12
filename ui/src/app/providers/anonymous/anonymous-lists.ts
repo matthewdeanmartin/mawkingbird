@@ -1,5 +1,6 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { UserList } from '../../models';
+import { AnonymousHomeFeedCache } from './anonymous-home-feed-cache';
 
 const STORAGE_KEY = 'mockingbird_anonymous_lists';
 const STATE_VERSION = 2;
@@ -39,6 +40,20 @@ function loadState(): AnonymousListState {
 @Injectable({ providedIn: 'root' })
 export class AnonymousLists {
   private state = signal(loadState());
+  private homeFeedCache = inject(AnonymousHomeFeedCache);
+
+  readonly excludedFromHome = computed(
+    () =>
+      new Set(
+        this.lists()
+          .filter((list) => list.exclusive === true)
+          .flatMap((list) => list.memberKeys),
+      ),
+  );
+
+  setExclusive(id: string, exclusive: boolean): void {
+    this.persist(this.lists().map((list) => (list.id === id ? { ...list, exclusive } : list)));
+  }
 
   readonly lists = computed(() => this.state().lists);
 
@@ -78,6 +93,7 @@ export class AnonymousLists {
 
   private persist(lists: AnonymousList[]): void {
     const state: AnonymousListState = { version: STATE_VERSION, lists };
+    this.homeFeedCache.invalidate();
     this.state.set(state);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }

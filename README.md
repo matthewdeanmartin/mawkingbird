@@ -19,7 +19,22 @@ build writes to `ui/dist-admin`.
 
 Production, canary and sandbox remain at `mawkingbird.com`, `/canary/`, and
 `/test/`. Help remains at https://mawkingbird.readthedocs.io/.
-See [MIGRATION.md](MIGRATION.md) for publishing activation and rollback.
+See [DEPLOY.md](DEPLOY.md) for deployment and rollback, and
+[MIGRATION.md](MIGRATION.md) for hosting history.
+
+## YouTube video feeds
+
+The `/videos` reader uses public YouTube channel RSS feeds. YouTube sometimes
+returns 404 or 500 for valid feeds; users report this recurring for years, with
+feeds often recovering around a day later. Recovery time is not guaranteed.
+
+Failed refreshes retain subscriptions and the last successfully cached videos.
+New subscriptions may remain empty until a successful refresh. Try **Refresh**
+again later; a feed error alone does not mean the channel URL is wrong. The
+reader stays based on RSS rather than switching to channel-page scraping.
+
+See [Video feeds](docs/connections/video-feeds.md) for reader behavior and
+[RSS failure checks](DEPLOY.md#youtube-rss-failures) for deployment diagnosis.
 
 For setup, testing, design rules, and help-page changes, see
 [Contributing](docs/contributing.md).

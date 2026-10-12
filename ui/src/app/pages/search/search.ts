@@ -333,6 +333,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.refine.onlyLeft: Only {{count}} {{postWord}} left after excluding. The excluded {{accountWord}} made up most of what was loaded — fetching more will find posts from other people.
 // i18n pages.search.results.loading: Loading…
 // i18n pages.search.results.loadMorePosts: Load more posts
+// i18n pages.search.results.noPosts: No posts
 // i18n pages.search.results.people: People
 // i18n pages.search.results.noPeople: No people found.
 // i18n pages.search.results.directory: Or
@@ -1087,6 +1088,7 @@ export class Search implements OnInit, OnDestroy {
   protected callsUsed = signal(0);
   /** How many statuses were requested but capped away by the budget (anon fan-out). */
   protected tagsDropped = signal(0);
+  protected missingTag = signal<string | null>(null);
 
   // Pagination cursors for "load more": authenticated search pages by offset;
   // anonymous merges per-tag timelines paged by the oldest seen status id.
@@ -2396,6 +2398,7 @@ export class Search implements OnInit, OnDestroy {
     // A new search resets the budget counters and pagination cursors (§7/§20).
     this.callsUsed.set(0);
     this.tagsDropped.set(0);
+    this.missingTag.set(null);
     this.nextOffset = 0;
     this.oldestId = '';
     this.executedQuery = q;
@@ -2448,6 +2451,18 @@ export class Search implements OnInit, OnDestroy {
       next: (r) => {
         this.stopSearchClock();
         this.results.set(r);
+        // Keep an exact, valid tag followable before the server indexes it.
+        const tag = q.trim().replace(/^#/, '');
+        if (
+          type === 'hashtags' &&
+          /^[\p{L}\p{M}\p{N}_]+$/u.test(tag) &&
+          /[\p{L}_]/u.test(tag) &&
+          !r.hashtags.some((item) => item.name.toLowerCase() === tag.toLowerCase())
+        ) {
+          this.missingTag.set(tag);
+          r = { ...r, hashtags: [{ name: tag, url: '' }, ...r.hashtags] };
+          this.results.set(r);
+        }
         this.callsUsed.update((c) => c + cost);
         this.rememberCursors(r);
         this.searching.set(false);

@@ -86,6 +86,21 @@
   }
 } @else {
   <div class="members-actions">
+    @if (list(); as currentList) {
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [attr.aria-pressed]="!!currentList.exclusive"
+        [disabled]="exclusiveBusy()"
+        (click)="toggleExclusive()"
+      >
+        {{ 'lists.listOnly' | transloco }}
+      </button>
+      <mb-help [label]="'lists.listOnlyHelp' | transloco">
+        <p>{{ 'lists.listOnlyExplanation' | transloco }}</p>
+      </mb-help>
+    }
     <button class="btn btn-outline" (click)="showBulk.set(true)">
       {{ 'listTimeline.addPeopleByName' | transloco }}
     </button>
@@ -110,6 +125,9 @@
     }
   </div>
   <app-bulk-progress />
+  @if (exclusiveError()) {
+    <mb-notice tone="error" announcement="alert">{{ exclusiveError() }}</mb-notice>
+  }
   @if (memberError(); as message) {
     <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   }
@@ -155,6 +173,7 @@
     [targetId]="listId()"
     targetKind="list"
     [targetName]="title()"
+    [exclusive]="!!list()?.exclusive"
     (added)="onBulkAdded()"
     (closed)="showBulk.set(false)"
   />

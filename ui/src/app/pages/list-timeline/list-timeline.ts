@@ -7,7 +7,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { describeHttpError, PageDiagnostics, statusOf } from '../../page-diagnostics';
-import { Account, Status } from '../../models';
+import { Account, Status, UserList } from '../../models';
+import { MbHelp } from '../../design-system/help/help';
 import { StatusCard } from '../../status-card/status-card';
 import { BulkAddDialog } from '../../bulk-add-dialog/bulk-add-dialog';
 import { BulkActionId, BulkActions, BulkTarget } from '../../bulk-actions';
@@ -33,6 +34,10 @@ const SAMPLE_PAGE_SIZE = 40;
 
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n listTimeline.fallbackTitle: List
+// i18n lists.listOnly: List only
+// i18n lists.listOnlyHelp: About exclusive lists
+// i18n lists.listOnlyExplanation: An exclusive list keeps all its members out of Home. You still follow these friends and can read their posts in lists. This applies to everyone on the list.
+// i18n listTimeline.exclusiveError: Could not change List only. {{detail}}
 // i18n listTimeline.converting: Converting…
 // i18n listTimeline.convertToCollection: Convert to collection
 // i18n listTimeline.tabs.posts: Posts
@@ -58,6 +63,7 @@ const SAMPLE_PAGE_SIZE = 40;
 @Component({
   selector: 'app-list-timeline',
   imports: [
+    MbHelp,
     MbContentState,
     MbPageHeader,
     MbNotice,
@@ -88,6 +94,9 @@ export class ListTimeline implements OnInit {
   private bulk = inject(BulkActions);
 
   protected title = signal('');
+  protected list = signal<UserList | null>(null);
+  protected exclusiveBusy = signal(false);
+  protected exclusiveError = signal('');
   protected statuses = signal<Status[]>([]);
   /** The generated same-server list hides boosts whose displayed author is remote. */
   protected displayedStatuses = computed(() => {
@@ -157,6 +166,8 @@ export class ListTimeline implements OnInit {
 
   load(id: string): void {
     this.loading.set(true);
+    this.list.set(null);
+    this.exclusiveError.set('');
     this.loadFailed.set(false);
     this.statuses.set([]);
     this.warnings.set([]);
@@ -164,6 +175,7 @@ export class ListTimeline implements OnInit {
     this.anonymousFeed = null;
     if (this.auth.isAnonymous) {
       const list = this.anonymousLists.get(id);
+      this.list.set(list);
       this.title.set(list?.title ?? this.transloco.translate<string>('listTimeline.fallbackTitle'));
       const memberKeys = new Set(list?.memberKeys ?? []);
       const follows = this.anonymousFollows
@@ -175,8 +187,41 @@ export class ListTimeline implements OnInit {
       this.fetchAnonymousPage(false);
       return;
     }
-    this.api.getList(id).subscribe((l) => this.title.set(l.title));
+    this.api.getList(id).subscribe((l) => {
+      if (this.listId() !== id) return;
+      this.title.set(l.title);
+      this.list.set(l);
+    });
     this.fetchMastodonPage(false);
+  }
+
+  protected toggleExclusive(): void {
+    const list = this.list();
+    if (!list || this.exclusiveBusy()) return;
+    const exclusive = !list.exclusive;
+    this.exclusiveError.set('');
+    if (this.auth.isAnonymous) {
+      this.anonymousLists.setExclusive(list.id, exclusive);
+      this.list.set(this.anonymousLists.get(list.id));
+      return;
+    }
+    this.exclusiveBusy.set(true);
+    this.api.updateList(list, exclusive).subscribe({
+      next: (updated) => {
+        this.exclusiveBusy.set(false);
+        if (this.listId() === list.id) this.list.set(updated);
+      },
+      error: (error: unknown) => {
+        this.exclusiveBusy.set(false);
+        if (this.listId() === list.id) {
+          this.exclusiveError.set(
+            this.transloco.translate('listTimeline.exclusiveError', {
+              detail: describeHttpError(error),
+            }),
+          );
+        }
+      },
+    });
   }
 
   loadMore(): void {

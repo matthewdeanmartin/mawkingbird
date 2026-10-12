@@ -108,6 +108,16 @@ describe('ListDialog', () => {
   }
 
   // ----------------------------------------------------------------- rendering
+  it('marks exclusive lists when choosing where to add a friend', () => {
+    const fixture = setUp({ lists: [{ id: '1', title: 'Friends', exclusive: true }] });
+    fixture.detectChanges();
+    const row = fixture.nativeElement.querySelector('.list-rows li') as HTMLElement;
+    expect(row.textContent).toContain('Friends');
+    expect(row.textContent).toContain('List only');
+    expect(row.querySelector('mb-help button')?.getAttribute('aria-label')).toBe(
+      'About exclusive lists',
+    );
+  });
 
   it('loads lists and collections; marks collection membership from in_collections', () => {
     const fixture = setUp({

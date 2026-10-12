@@ -287,6 +287,35 @@ describe('ListTimeline', () => {
     httpMock.expectOne((r) => r.url === `/api/v1/timelines/list/${id}`).flush([]);
   }
 
+  it('saves List only for the whole list while preserving its reply policy', () => {
+    const fixture = setUpWithList('exclusive');
+    const list = { id: 'exclusive', title: 'Friends', replies_policy: 'none', exclusive: false };
+    httpMock.expectOne('/api/v1/lists/exclusive').flush(list);
+    httpMock.expectOne((r) => r.url === '/api/v1/timelines/list/exclusive').flush([]);
+    internals(fixture).setTab('members');
+    httpMock.expectOne('/api/v1/lists/exclusive/accounts').flush([]);
+    fixture.detectChanges();
+    const button = () => fixture.nativeElement.querySelector('[aria-pressed]') as HTMLButtonElement;
+    expect(button().getAttribute('aria-pressed')).toBe('false');
+    button().click();
+    fixture.detectChanges();
+    expect(button().disabled).toBe(true);
+    const request = httpMock.expectOne('/api/v1/lists/exclusive');
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body.get('title')).toBe('Friends');
+    expect(request.request.body.get('replies_policy')).toBe('none');
+    expect(request.request.body.get('exclusive')).toBe('true');
+    request.flush({ ...list, exclusive: true });
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-pressed')).toBe('true');
+    button().click();
+    httpMock.expectOne('/api/v1/lists/exclusive').flush({}, { status: 500, statusText: 'Error' });
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-pressed')).toBe('true');
+    expect(button().disabled).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Could not change List only');
+  });
+
   it('does NOT request members on init (posts tab is default)', () => {
     const fixture = setUpWithList('10');
     loadList(fixture, '10');

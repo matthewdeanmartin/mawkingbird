@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Search, media pagination and exclusive lists, 2026-10-11
+
+Refreshed the inventory after reviewing the changed search, media viewer and
+list templates. List only uses Button with pressed state; its explanation uses
+Help, and both add-to-list dialogs use Badge and Help to surface exclusive lists.
+The media viewer reuses its existing Next arrow geometry for end-of-page loading,
+retaining the counter control and adding a disabled loading state. Search keeps
+the existing tag actions beside a short empty-result label. Existing candidate
+dispositions remain unchanged; no new component family or styling escape was added.
+
 ## Account traffic rollout, 2026-10-11
 
 Regenerated the inventory for MawkingbirdAccess and RequestCooldown: 1,122

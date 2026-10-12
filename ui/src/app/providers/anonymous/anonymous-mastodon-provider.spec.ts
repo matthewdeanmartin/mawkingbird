@@ -7,6 +7,7 @@ import { Account, Status } from '../../models';
 import { AnonymousFollows } from './anonymous-follows';
 import { AnonymousMastodonProvider } from './anonymous-mastodon-provider';
 import { AnonymousTags } from './anonymous-tags';
+import { AnonymousLists } from './anonymous-lists';
 import { AnonymousPreferences } from './anonymous-preferences';
 
 function account(username: string, server: string, id = '1'): Account {
@@ -70,6 +71,57 @@ describe('AnonymousMastodonProvider', () => {
   });
 
   afterEach(() => httpMock.verify());
+
+  it('excludes local exclusive members from Home while keeping their list readable', () => {
+    TestBed.inject(Auth).enterAnonymous('https://social.example');
+    const follows = TestBed.inject(AnonymousFollows);
+    const target = account('alice', 'https://social.example');
+    follows.follow(target, 'https://social.example');
+    const lists = TestBed.inject(AnonymousLists);
+    const list = lists.create('Friends');
+    lists.setMember(list.id, follows.follows()[0].key, true);
+    lists.setExclusive(list.id, true);
+    const provider = TestBed.inject(AnonymousMastodonProvider);
+    provider.reset();
+    let home: Status[] | undefined;
+    provider.fetchPage().subscribe((items) => (home = items));
+    expect(home).toEqual([]);
+    provider.fetchPageStreaming().subscribe((items) => (home = items));
+    expect(home).toEqual([]);
+    httpMock.expectNone((r) => r.url.includes('/statuses'));
+    let listed: Status[] = [];
+    provider
+      .createFollowFeed(follows.follows())
+      .fetchPage()
+      .subscribe((page) => (listed = page.statuses));
+    httpMock.expectOne((r) => r.url.includes('/accounts/1/statuses')).flush([status(target)]);
+    expect(listed).toHaveLength(1);
+    lists.setExclusive(list.id, false);
+    provider.fetchPage().subscribe((items) => (home = items));
+    httpMock.expectOne((r) => r.url.includes('/accounts/1/statuses')).flush([status(target)]);
+    expect(home).toHaveLength(1);
+    expect(follows.follows()).toHaveLength(1);
+  });
+
+  it('keeps exclusive friends out of followed hashtag results in streaming Home', () => {
+    TestBed.inject(Auth).enterAnonymous('https://social.example');
+    const follows = TestBed.inject(AnonymousFollows);
+    const target = account('alice', 'https://social.example');
+    follows.follow(target, 'https://social.example');
+    const lists = TestBed.inject(AnonymousLists);
+    const list = lists.create('Friends');
+    lists.setMember(list.id, follows.follows()[0].key, true);
+    lists.setExclusive(list.id, true);
+    TestBed.inject(AnonymousTags).follow('art');
+    const provider = TestBed.inject(AnonymousMastodonProvider);
+    provider.reset();
+    let received: Status[] = [];
+    provider.fetchPageStreaming().subscribe((items) => (received = items));
+    httpMock
+      .expectOne((r) => r.url.includes('/timelines/tag/art'))
+      .flush([status(target), status(account('bob', 'https://social.example', '2'), '11')]);
+    expect(received.map((item) => item.account.username)).toEqual(['bob']);
+  });
 
   it('uses the instance-local account reference that already discovered the follow', () => {
     const target = {

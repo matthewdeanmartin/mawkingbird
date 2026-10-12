@@ -19,6 +19,7 @@ import { MbField, MbControl } from '../design-system/field/field';
 import { MbButton } from '../design-system/button/button';
 import { MbNotice } from '../design-system/notice/notice';
 import { MbBadge } from '../design-system/badge/badge';
+import { MbHelp } from '../design-system/help/help';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 interface ListRow {
@@ -115,6 +116,7 @@ interface CollectionRow {
     MbButton,
     MbNotice,
     MbBadge,
+    MbHelp,
     FormsModule,
     TranslocoPipe,
   ],

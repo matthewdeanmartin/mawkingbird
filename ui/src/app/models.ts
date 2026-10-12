@@ -356,6 +356,8 @@ export interface SearchResults {
 export interface UserList {
   id: string;
   title: string;
+  exclusive?: boolean;
+  replies_policy?: 'followed' | 'list' | 'none';
 }
 
 /** A single membership entry inside a Collection (Mastodon 4.6+). */

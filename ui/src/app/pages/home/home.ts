@@ -52,6 +52,7 @@ import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { AnonymousHomeFeedCache } from '../../providers/anonymous/anonymous-home-feed-cache';
 import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
+import { AnonymousLists } from '../../providers/anonymous/anonymous-lists';
 import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
 import { ElizaService } from '../../eliza/eliza.service';
 import { isElizaId } from '../../eliza/eliza-identity';
@@ -312,6 +313,7 @@ export class Home implements OnInit, OnDestroy {
   protected twitterProvider = inject(TwitterProvider);
   private anonymousHomeCache = inject(AnonymousHomeFeedCache);
   protected anonymousFollows = inject(AnonymousFollows);
+  private anonymousLists = inject(AnonymousLists);
   private anonymousTags = inject(AnonymousTags);
   protected eliza = inject(ElizaService);
   protected localPosts = inject(LocalPostStore);
@@ -1663,6 +1665,9 @@ export class Home implements OnInit, OnDestroy {
         .map((follow) => follow.key)
         .sort(),
       tags: [...this.anonymousTags.tags()].sort(),
+      ...(this.anonymousLists.excludedFromHome().size
+        ? { listOnly: [...this.anonymousLists.excludedFromHome()].sort() }
+        : {}),
       ...(pasteFeeds.length ? { pasteFeeds } : {}),
     });
   }

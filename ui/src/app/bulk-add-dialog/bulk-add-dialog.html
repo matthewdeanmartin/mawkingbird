@@ -13,6 +13,12 @@
   [closeOnBackdrop]="true"
   (dismissed)="closed.emit()"
 >
+  @if (targetKind() === 'list' && exclusive()) {
+    <mb-badge>{{ 'lists.listOnly' | transloco }}</mb-badge>
+    <mb-help [label]="'lists.listOnlyHelp' | transloco">
+      <p>{{ 'lists.listOnlyExplanation' | transloco }}</p>
+    </mb-help>
+  }
   <mb-field [label]="'bulkAdd.dialogAria' | transloco" [hint]="'bulkAdd.instructions' | transloco">
     <textarea
       mbControl

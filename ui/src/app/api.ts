@@ -671,6 +671,15 @@ export class Api {
     return this.http.post<UserList>('/api/v1/lists', body);
   }
 
+  /** Preserve the list title and reply policy when changing Home visibility. */
+  updateList(list: UserList, exclusive: boolean): Observable<UserList> {
+    const body = new HttpParams()
+      .set('title', list.title)
+      .set('replies_policy', list.replies_policy ?? 'list')
+      .set('exclusive', String(exclusive));
+    return this.http.put<UserList>(`/api/v1/lists/${list.id}`, body);
+  }
+
   deleteList(id: string): Observable<unknown> {
     return this.http.delete(`/api/v1/lists/${id}`);
   }

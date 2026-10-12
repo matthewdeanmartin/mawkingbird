@@ -23,6 +23,12 @@
 .row {
   padding: 6px 0;
 }
+.list-rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
 .gate-actions {
   display: flex;
   flex-wrap: wrap;

@@ -190,6 +190,48 @@ describe('Search', () => {
     fixture.detectChanges();
   }
 
+  it('keeps an unindexed hashtag visible with a short empty label and follow action', async () => {
+    TestBed.inject(Auth).setToken('tag-follow-token');
+    const fixture = setUp();
+    search(fixture, '#foobar', 'hashtags');
+    httpMock.expectOne((r) => r.url === '/api/v2/search').flush(makeResults());
+    fixture.detectChanges();
+    const row = fixture.nativeElement.querySelector('.result-tag') as HTMLElement;
+    expect(row.textContent).toContain('#foobar');
+    expect(row.textContent).toContain('No posts');
+    const follow = [...row.querySelectorAll('button')].find(
+      (button) => button.textContent?.trim() === 'Follow',
+    )!;
+    follow.click();
+    httpMock.expectOne('/api/v1/tags/foobar').flush({}, { status: 404, statusText: 'Not Found' });
+    await Promise.resolve();
+    await Promise.resolve();
+    httpMock.expectOne('/api/v1/tags/foobar/follow').flush({
+      name: 'foobar',
+      url: '',
+      following: true,
+    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(row.textContent).toContain('Following');
+  });
+
+  it('does not duplicate exact hashtag results or label them empty', () => {
+    const fixture = setUp();
+    search(fixture, '#Foobar', 'hashtags');
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush({
+        ...makeResults(),
+        hashtags: [{ name: 'foobar', url: '' }],
+      });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.result-tag')).toHaveLength(1);
+    expect(fixture.nativeElement.querySelector('.result-tag').textContent).not.toContain(
+      'No posts',
+    );
+  });
+
   /**
    * The type was hard-coded to `accounts` because it is first in the union, so
    * someone typing a topic got a list of people whose *profile text* matched —

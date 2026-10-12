@@ -63,6 +63,20 @@
           </button>
         }
 
+        @if (!hasNext() && !exhausted()) {
+          <button
+            type="button"
+            class="photo-arrow next photo-load-more"
+            [disabled]="loadingMore()"
+            (click)="loadMore()"
+          >
+            {{
+              (loadingMore() ? 'pages.profile.media.loadingMore' : 'pages.profile.media.loadMore')
+                | transloco
+            }}
+          </button>
+        }
+
         <div class="photo-counter muted">
           {{
             'pages.profile.media.positionOfTotal'

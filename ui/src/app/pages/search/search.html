@@ -1359,6 +1359,9 @@
             @for (h of r.hashtags; track h.name) {
               <div class="result-tag">
                 <a [routerLink]="['/tags', h.name]">#{{ h.name }}</a>
+                @if (missingTag() === h.name) {
+                  <span class="muted small">{{ 'pages.search.results.noPosts' | transloco }}</span>
+                }
                 <app-tag-actions [name]="h.name" [info]="h" />
               </div>
             }
