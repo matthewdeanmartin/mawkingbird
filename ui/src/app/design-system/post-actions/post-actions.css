@@ -14,7 +14,10 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Same breakpoint as the status card's narrow layout, where the action row
+   bleeds left under the avatar: a hard-left row only reads as intentional once
+   it also flips to the end. */
+@media (max-width: 720px) {
   :host([data-narrow-align='end']) {
     justify-content: flex-end;
   }

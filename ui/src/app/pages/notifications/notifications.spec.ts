@@ -253,7 +253,10 @@ describe('Notifications across primary networks', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.notif-group')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.others-link')).toBeNull();
-    expect(fixture.nativeElement.querySelector('.mention-actions')).toBeNull();
+    const toolbar = fixture.nativeElement.querySelector('.mention-actions') as HTMLElement;
+    expect(toolbar.querySelectorAll('a')).toHaveLength(0);
+    expect(fixture.nativeElement.querySelector('a[href^="/conversations"]')).toBeNull();
+    expect(toolbar.querySelector('.notif-like')?.textContent).toContain('Star');
     expect(fixture.nativeElement.querySelector('.view-seg')).toBeNull();
     expect(fixture.nativeElement.querySelector('a.excerpt').getAttribute('href')).toContain(
       '/statuses/',

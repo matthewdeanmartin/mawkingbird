@@ -182,19 +182,6 @@
     flex-shrink: 1;
   }
 
-  /* Stop hanging the panel off a button that may be anywhere in the row: placed
-     against the viewport instead, so it is always fully on screen, and against
-     its bottom so it is thumb-reachable and cannot be pushed off the top of a
-     short screen by a tall menu. `inset` resets the desktop anchor in one go. */
-  .danger-menu-panel {
-    position: fixed;
-    inset: auto 12px 12px;
-    min-width: 0;
-    max-width: none;
-    max-height: 60vh;
-    overflow-y: auto;
-    border-radius: 12px;
-  }
 }
 
 .content-link,
@@ -707,7 +694,25 @@ summary.action {
 /* Phones: stop hanging the panel off a button that may be anywhere in the row.
    Fixed positioning takes the card out of the equation entirely — the sheet is
    placed against the viewport, so it is always fully on screen no matter where
-   the ••• that opened it sits. */
+   the ••• that opened it sits, and against its bottom so it is thumb-reachable
+   and cannot be pushed off the top of a short screen by a tall menu.
+
+   This must come after the base `.danger-menu-panel` rule: the selectors tie on
+   specificity, so source order decides. When it sat above the base rule, the
+   base `right: 0; bottom: 100%; min-width: 200px` won but the `left: 12px` from
+   `inset` survived, so the panel stayed anchored to the ••• and grew rightwards
+   off the screen. */
+@media (max-width: 720px) {
+  .danger-menu-panel {
+    position: fixed;
+    inset: auto 12px 12px;
+    min-width: 0;
+    max-width: none;
+    max-height: 60vh;
+    overflow-y: auto;
+    border-radius: 12px;
+  }
+}
 
 /* Neutral "open original" links, distinct from the red destructive actions. */
 .danger-menu-panel a {
