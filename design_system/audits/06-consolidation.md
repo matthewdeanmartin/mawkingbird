@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Post menu tag-mute rows, 2026-10-13
+
+Refreshed inventory: 1,123 maintained source files and the same 228 candidate
+files. The popup-menu fix replaced Button in `tag-mute-menu.ts` with native
+buttons styled as ••• menu entries, so its shared-control finding is gone and
+the native-button line moved. The ledger entry changes from adopted scope to
+partial adoption until a shared menu-item control exists. No other changes.
+
 ## Feeds, notifications, writing and server emoji, 2026-10-12
 
 Reviewed the refreshed inventory: 1,123 maintained source files and the same

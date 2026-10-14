@@ -19,8 +19,8 @@
     },
     {
       "file": "ui/src/app/tag-filter-dialog/tag-mute-menu.ts",
-      "disposition": "adopted scope",
-      "nextStep": "Per-post tag filter actions use Button and lazily load the shared dialog. Keep names specific to each hashtag and prevent parent card navigation."
+      "disposition": "partial adoption",
+      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's ••• menu, no longer Button, so they match the other menu items. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag and prevent parent card navigation."
     },
     {
       "file": "ui/src/app/pages/features/audience-page.html",

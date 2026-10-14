@@ -12898,12 +12898,8 @@
       "status": "needs semantic review",
       "findings": [
         {
-          "pattern": "shared",
-          "line": 15
-        },
-        {
           "pattern": "nativeButtons",
-          "line": 15
+          "line": 14
         }
       ]
     },
