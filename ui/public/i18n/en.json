@@ -6343,6 +6343,7 @@
     "boostFromBlogRecord": "Remove this boost from your blog record",
     "boostQuoteOrShare": "Boost, quote or share",
     "cancel": "Cancel",
+    "closeMenu": "Close menu",
     "closed": "Closed",
     "connectOpenrouter": "Connect OpenRouter",
     "countLabel": "{{count}} {{label}}",
@@ -6532,6 +6533,7 @@
     "failed": "Couldn't create the filter. Your choices are still here; try again.",
     "hint": "Create a keyword filter on your current Mastodon account. Choose where it applies and when it expires. Refresh loaded feeds after saving to see the server's filter results.",
     "mute": "Mute #{{tag}}…",
+    "muteMany": "Mute a hashtag ({{count}})",
     "saving": "Creating filter…",
     "title": "Mute #{{tag}}"
   },

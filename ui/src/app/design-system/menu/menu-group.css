@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.caption {
+  display: block;
+  padding: 6px 10px 2px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+:host([data-layout='inline']) .items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 10px 6px;
+}
+:host([data-nested]) .items {
+  max-height: min(40vh, 16rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-start: 12px;
+}

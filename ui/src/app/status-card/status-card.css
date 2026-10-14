@@ -181,7 +181,6 @@
   .acct {
     flex-shrink: 1;
   }
-
 }
 
 .content-link,
@@ -741,6 +740,15 @@ summary.action {
 
 .danger-menu-panel button:hover {
   background: var(--border);
+}
+
+/* Last row, set off from the commands above it. Neutral: closing is not one of
+   the red actions. */
+.danger-menu-panel button.menu-close {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 6px 6px;
+  color: var(--text);
 }
 
 .danger-menu-panel .menu-note {

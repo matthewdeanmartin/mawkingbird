@@ -194,6 +194,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.saveAsTodo: Save as to-do
 // i18n statusCard.openPostOriginal: Open post on original site ↗
 // i18n statusCard.openProfileOriginal: Open profile on original site ↗
+// i18n statusCard.closeMenu: Close menu
 // i18n statusCard.reported: 🚩 reported
 // i18n statusCard.muteThisPost: Mute this post
 // i18n statusCard.unblock: Unblock
@@ -922,6 +923,19 @@ export class StatusCard {
     { label: 'statusCard.sevenDays', seconds: 604800 },
     { label: 'statusCard.forever', seconds: null },
   ];
+
+  /**
+   * Close the ••• menu this row sits in. On phones the menu is a bottom sheet
+   * that can cover its own ••• trigger, so an explicit row is the dependable way
+   * out; elsewhere it is simply next to the trigger. Focus returns to the •••.
+   */
+  closeMenu(event: Event): void {
+    event.stopPropagation();
+    const menu = (event.target as HTMLElement).closest('details');
+    if (!menu) return;
+    menu.open = false;
+    menu.querySelector('summary')?.focus();
+  }
 
   /** Hide this post locally for 30 days (there is no server-side per-post hide). */
   mutePost(event: Event): void {

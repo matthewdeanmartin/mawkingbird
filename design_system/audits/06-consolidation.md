@@ -1,10 +1,33 @@
 # Sprint 6 opening consolidation audit
 
+## Sprint 19 checkpoint A: post menu widgets, 2026-10-13
+
+Refreshed inventory: 1,130 maintained source files and 230 candidate files.
+The two new candidates are shared implementations: `menu/menu-item.ts` and
+`menu/post-menu.ts`, whose native Close button implements the widget. The
+shared-control pattern now recognizes `mbMenuItem`, `mb-post-menu`,
+`mb-menu-group` and `mb-menu-separator`. Popover's line numbers moved for its
+`more` trigger and `list` layout. No app consumer changed; StatusCard
+integration waits for review. See [Sprint 19](19-post-menu.md).
+
+## Post menu close row and long tag lists, 2026-10-13
+
+Refreshed inventory: 1,123 maintained source files and the same 228 candidate
+files. StatusCard's three legacy ••• panels gain a final native "Close menu"
+row, because the phone bottom sheet can cover its own trigger. TagMuteMenu keeps
+one row per tag up to four; five or more collapse behind a native toggle row
+(`aria-expanded`/`aria-controls`) that reveals a scroll-bounded list. Both are
+new native buttons in already partial-adoption files; they follow the menu's
+existing row styling and wait for the same shared menu-item control. The
+remaining inventory diff is moved line numbers. The previous entry's ••• glyph,
+saved as Windows-1252 bytes in this file and the reconciliation ledger, is
+re-encoded as UTF-8. No other changes.
+
 ## Post menu tag-mute rows, 2026-10-13
 
 Refreshed inventory: 1,123 maintained source files and the same 228 candidate
 files. The popup-menu fix replaced Button in `tag-mute-menu.ts` with native
-buttons styled as ��� menu entries, so its shared-control finding is gone and
+buttons styled as ••• menu entries, so its shared-control finding is gone and
 the native-button line moved. The ledger entry changes from adopted scope to
 partial adoption until a shared menu-item control exists. No other changes.
 

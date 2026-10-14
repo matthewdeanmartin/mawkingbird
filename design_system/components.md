@@ -257,6 +257,54 @@ Tab closes and continues outside the menu. Use a real confirmation for destructi
 actions. Links, submenu trees, checkbox/radio items and rich forms are not action
 menu items; use the appropriate native controls or a separately reviewed contract.
 
+## Post menu (Sprint 19 preview)
+
+`MbPostMenu` (`mb-post-menu`) is a post's ••• overflow menu. It requires a
+translated `label` (the trigger's accessible name) and `closeLabel`, and emits
+`openedChange`. Its trigger is a compact PostAction, so it sits in
+`mb-post-actions` like the other post tools. The panel is a nonmodal list-layout
+Popover: tap-outside and Escape dismissal, top-layer stacking over neighbouring
+cards, viewport clamping, and a height capped to the space beside the trigger so
+the panel never covers it. A separator and a Close row always end the menu.
+Clicks and non-Escape keys do not reach the parent card. Call `close()` from a
+caller that must dismiss it programmatically.
+
+Project rows with `button[mbMenuItem]` or `a[mbMenuItem]`. Links stay native
+links. Rows are not `menuitem`s and do not rove; use ActionMenu for a pure
+command list. A command row closes the menu (focus returns to •••) before the
+caller's click handler runs, so a follow-up dialog has a valid opener. Rows with
+`pressed` (toggles, `aria-pressed`), `expanded` (disclosures, `aria-expanded`
+with a direction-aware marker) or `keepOpen` leave it open. Use
+`tone="danger"` only for destructive or suppressing actions.
+
+`mb-menu-group` groups related rows. An optional visible `label` names the
+group. `layout="inline"` renders its rows as compact wrapping choices (for
+example mute durations); `nested` indents and height-bounds a list revealed by an
+`expanded` row. Point the expanding row's `aria-controls` at the group's `id`.
+`mb-menu-separator` divides sections.
+
+```html
+<mb-post-menu
+  [label]="moreLabel"
+  [closeLabel]="'statusCard.closeMenu' | transloco"
+>
+  <button type="button" mbMenuItem [pressed]="liked" (click)="toggleLike()">
+    …
+  </button>
+  <a mbMenuItem [href]="post.url" target="_blank" rel="noopener noreferrer"
+    >…</a
+  >
+  <mb-menu-separator />
+  <mb-menu-group [label]="muteFor" layout="inline">
+    <button type="button" mbMenuItem (click)="mute(3600)">…</button>
+  </mb-menu-group>
+  <button type="button" mbMenuItem tone="danger" (click)="block()">…</button>
+</mb-post-menu>
+```
+
+Preview: **Start here / Sprint 19 review**. Catalogue-only until StatusCard
+integration is reviewed ([REVIEW-19](REVIEW-19.md)).
+
 ## Disclosure and notice
 
 `MbDisclosure` wraps native details/summary with a translated `label`, projected

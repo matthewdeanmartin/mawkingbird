@@ -44,3 +44,11 @@
   width: min(400px, calc(100vw - 16px));
   max-height: min(640px, calc(100dvh - 16px));
 }
+
+/* Rows of commands. The positioning code may lower max-height further so the
+   panel stays beside its trigger instead of covering it. */
+[popover].list {
+  padding: 4px;
+  width: min(280px, calc(100vw - 16px));
+  max-height: min(480px, calc(100dvh - 16px));
+}

@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: start;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+:host(:hover:not(:disabled)),
+:host(:focus-visible) {
+  background: var(--hover);
+}
+:host(:focus-visible) {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+:host(:disabled) {
+  color: var(--muted);
+  cursor: default;
+}
+:host([data-tone='danger']) {
+  color: var(--ds-error-text);
+}
+:host([aria-pressed='true']) {
+  color: var(--ds-action-text);
+  font-weight: 600;
+}
+/* Disclosure marker; the state itself is exposed by aria-expanded. */
+:host([aria-expanded])::before {
+  content: '▸' / '';
+  display: inline-block;
+  margin-inline-end: 6px;
+}
+:host([aria-expanded='false']:dir(rtl))::before {
+  content: '◂' / '';
+}
+:host([aria-expanded='true'])::before {
+  content: '▾' / '';
+}
+:host([data-inline]) {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  min-height: 28px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+}
+@media (pointer: coarse) {
+  :host,
+  :host([data-inline]) {
+    min-height: 44px;
+  }
+}

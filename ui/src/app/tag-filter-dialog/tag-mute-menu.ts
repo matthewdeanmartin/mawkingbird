@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal, Type } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, Type } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { normalizeHashtag } from '../hashtag';
@@ -7,13 +7,41 @@ import { Auth } from '../auth';
 import { Server } from '../server';
 
 // i18n tagFilter.mute: Mute #{{tag}}…
+// i18n tagFilter.muteMany: Mute a hashtag ({{count}})
+
+/** Up to this many tags get a row each; more collapse behind one toggle row. */
+const INLINE_TAGS = 4;
+let nextId = 0;
+
 @Component({
   selector: 'app-tag-mute-menu',
   imports: [NgComponentOutlet, TranslocoPipe],
-  template: `@for (tag of tags(); track tag) {
-      <button type="button" (click)="open(tag, $event)">
-        {{ 'tagFilter.mute' | transloco: { tag } }}
+  template: `@if (collapsible()) {
+      <button
+        type="button"
+        class="toggle"
+        [attr.aria-expanded]="expanded()"
+        [attr.aria-controls]="listId"
+        (click)="toggle($event)"
+      >
+        <span aria-hidden="true">{{ expanded() ? '▾' : '▸' }}</span>
+        {{ 'tagFilter.muteMany' | transloco: { count: tags().length } }}
       </button>
+      @if (expanded()) {
+        <div class="many" [id]="listId">
+          @for (tag of tags(); track tag) {
+            <button type="button" (click)="open(tag, $event)">
+              {{ 'tagFilter.mute' | transloco: { tag } }}
+            </button>
+          }
+        </div>
+      }
+    } @else {
+      @for (tag of tags(); track tag) {
+        <button type="button" (click)="open(tag, $event)">
+          {{ 'tagFilter.mute' | transloco: { tag } }}
+        </button>
+      }
     }
     @if (active(); as tag) {
       @if (component(); as dialog) {
@@ -45,6 +73,13 @@ import { Server } from '../server';
     button:focus-visible {
       background: var(--border);
     }
+    /* A long tag list scrolls inside its own box instead of stretching the
+       whole menu; the indent ties the rows to the toggle that revealed them. */
+    .many {
+      max-height: min(40vh, 16rem);
+      overflow-y: auto;
+      padding-inline-start: 12px;
+    }
     [role='alert'] {
       margin: 0;
       padding: 4px 9px;
@@ -64,6 +99,9 @@ export class TagMuteMenu {
     });
   }
   readonly tags = input.required<string[]>();
+  protected readonly listId = `tag-mute-list-${nextId++}`;
+  protected collapsible = computed(() => this.tags().length > INLINE_TAGS);
+  protected expanded = signal(false);
   protected active = signal<string | null>(null);
   protected component = signal<Type<TagFilterDialog> | null>(null);
   protected failed = signal(false);
@@ -76,6 +114,10 @@ export class TagMuteMenu {
       this.menu = null;
     }
   };
+  protected toggle(event: Event): void {
+    event.stopPropagation();
+    this.expanded.update((open) => !open);
+  }
   protected open(tag: string, event: Event): void {
     event.stopPropagation();
     const details = (event.target as HTMLElement).closest('details');

@@ -146,6 +146,21 @@ describe('StatusCard', () => {
     }
   });
 
+  it('ends the post menu with a close row that shuts it and returns focus to •••', () => {
+    const fixture = setUp(makeStatus({ url: 'https://social.example/@pizza/1' }));
+    const el = fixture.nativeElement as HTMLElement;
+    const menu = el.querySelector<HTMLDetailsElement>('details.danger-menu')!;
+    menu.open = true;
+    const close = menu.querySelector<HTMLButtonElement>('.danger-menu-panel > button.menu-close')!;
+    expect(close.textContent?.trim()).toBe('Close menu');
+    expect(close.parentElement!.lastElementChild).toBe(close);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    close.click();
+    expect(menu.open).toBe(false);
+    expect(document.activeElement).toBe(menu.querySelector('summary'));
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
   /** Creates a fixture, sets the required `status` input, and runs the first CD cycle. */
   it.each(['reader', 'trusted'] as const)(
     'lets the viewer collapse a warning expanded by %s and resets for another post',

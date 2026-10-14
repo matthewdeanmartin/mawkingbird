@@ -1,7 +1,7 @@
 # Design-system sprints: preview, review, integrate, audit
 
-**Current checkpoint: Sprints 17 and 18 combined and implemented; zero planned
-remaining.** See [live progress](PROGRESS.md) for source adoption and explicit
+**Current checkpoint: Sprint 19 (post ••• menu) checkpoint A implemented;
+preview review ready, StatusCard integration pending.** See [live progress](PROGRESS.md) for source adoption and explicit
 migration backlog. Historical checkpoints below are retained as evidence.
 
 Each sprint has two checkpoints: **A: review the working catalogue**, then
@@ -84,3 +84,12 @@ Zero remaining in this plan does not mean zero app migration debt. Each closeout
 must follow the [required report](PROGRESS.md#required-sprint-report), including
 this sprint's integration, cumulative measured usage, next sprint and remaining
 count. Refresh source adoption with `cd ui && npm run design:adoption`.
+
+## Post ••• menu
+
+User-requested after the 2026-10-13 menu fixes. One planned sprint, two
+checkpoints.
+
+| Sprint                        | Scope                                                                                     | State                                                          | Planned remaining after completion |
+| ----------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------- |
+| [19](sprints/19-post-menu.md) | Shared mixed-content post menu (PostMenu, MenuItem, MenuGroup, MenuSeparator); StatusCard | A implemented, [review](REVIEW-19.md) ready; B awaits approval | 0                                  |
