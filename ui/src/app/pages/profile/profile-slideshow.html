@@ -62,7 +62,7 @@
 <div #viewport class="viewport">
   @if (current(); as post) {
     <article #content class="slide" [class.emoji-art]="emojiArt()">
-      @if ((post.spoiler_text || post.sensitive) && revealed() !== post.id) {
+      @if (contentHidden()) {
         <p>{{ post.spoiler_text }}</p>
         <button mbButton (click)="revealed.set(post.id)">
           {{ 'pages.profile.slideshow.reveal' | transloco }}

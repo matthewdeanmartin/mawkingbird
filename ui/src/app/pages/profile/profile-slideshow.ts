@@ -16,6 +16,8 @@ import { MbButton } from '../../design-system/button/button';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { Status } from '../../models';
 import { ReadingZen } from '../../reading-zen';
+import { TrustedAccounts } from '../../trusted-accounts';
+import { FollowTrust } from '../../follow-trust';
 
 // i18n pages.profile.bot: Bot
 // i18n pages.profile.slideshow.open: View as Slide Show
@@ -81,6 +83,18 @@ export class ProfileSlideshow implements OnDestroy {
   readonly seconds = signal(2.5);
   readonly fullscreen = signal(false);
   readonly revealed = signal<string | null>(null);
+  private readonly trusted = inject(TrustedAccounts);
+  private readonly followTrust = inject(FollowTrust);
+  readonly contentHidden = computed(() => {
+    const post = this.current();
+    if (!post || this.revealed() === post.id) return false;
+    this.followTrust.revision();
+    // Match StatusCard: an expanded CW already reveals the whole post;
+    // the separate sensitive-media preference applies when there is no CW.
+    return post.spoiler_text
+      ? !this.trusted.cwExpanded(post.account)
+      : !!post.sensitive && !this.trusted.sensitiveShown(post.account);
+  });
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly document = inject(DOCUMENT);
   private readonly zen = inject(ReadingZen);
@@ -101,6 +115,7 @@ export class ProfileSlideshow implements OnDestroy {
     effect(() => {
       this.current();
       this.revealed();
+      this.contentHidden();
       this.fullscreen();
       const viewport = this.viewport()?.nativeElement;
       this.resize?.disconnect();
