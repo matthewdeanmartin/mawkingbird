@@ -134,6 +134,14 @@ describe('Thread', () => {
   });
 
   afterEach(() => {
+    // Status cards batch the fixture author's mutual-follow lookup.
+    for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
+      expect(request.request.method).toBe('GET');
+      const ids = request.request.params.getAll('id[]')!;
+      expect(ids.length).toBeGreaterThan(0);
+      for (const id of ids) expect(['1', 'me', 'them', 'other']).toContain(id);
+      request.flush(ids.map((id) => ({ id, following: false, followed_by: false })));
+    }
     httpMock.verify();
   });
 
@@ -647,7 +655,17 @@ describe('Thread cross-server dead end', () => {
     });
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    // Status cards batch the fixture author's mutual-follow lookup.
+    for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
+      expect(request.request.method).toBe('GET');
+      const ids = request.request.params.getAll('id[]')!;
+      expect(ids.length).toBeGreaterThan(0);
+      for (const id of ids) expect(['1', 'me', 'them', 'other']).toContain(id);
+      request.flush(ids.map((id) => ({ id, following: false, followed_by: false })));
+    }
+    httpMock.verify();
+  });
 
   it('stops loading and explains a 404 rather than spinning forever', () => {
     const fixture = setUpWithId('999');

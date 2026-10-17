@@ -32,6 +32,8 @@ export interface AccountSource {
 }
 
 export interface Account {
+  /** Viewer-specific mutual follow supplied by a foreign provider. */
+  mutual?: boolean;
   id: string;
   username: string;
   acct: string;

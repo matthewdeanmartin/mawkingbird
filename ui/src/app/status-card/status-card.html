@@ -33,6 +33,7 @@
        one clickable control would make it *harder* to use, not easier. -->
   <article
     class="status"
+    [class.mutual]="mutualAuthor"
     [class.status-clickable]="threadLink"
     tabindex="-1"
     (mousedown)="onCardMouseDown()"

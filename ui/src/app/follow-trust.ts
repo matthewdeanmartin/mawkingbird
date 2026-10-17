@@ -1,3 +1,4 @@
+import { accountScopeSuffix } from './account-scope';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Api } from './api';
 import { Auth } from './auth';
@@ -50,6 +51,25 @@ export class FollowTrust {
 
   /** Ids already requested, so a shared timeline page asks only once. */
   private asked = new Set<string>();
+  private mutuals = signal<Record<string, boolean>>({});
+  private scope = accountScopeSuffix();
+  private generation = 0;
+
+  isMutual(account: Account): boolean {
+    this.ensureScope();
+    if (account.id.startsWith('bsky:')) return !!account.mutual;
+    if (this.usesLocalFollows()) return false;
+    this.isFollowing(account);
+    return !!this.mutuals()[account.id];
+  }
+
+  private ensureScope(): void {
+    const scope = accountScopeSuffix();
+    if (scope !== this.scope) {
+      this.scope = scope;
+      this.reset();
+    }
+  }
 
   /**
    * Bumped whenever verdicts change, for card computeds to depend on.
@@ -67,6 +87,7 @@ export class FollowTrust {
    * batch. That keeps the call sites (status cards) free of any fetch logic.
    */
   isFollowing(account: Pick<Account, 'id' | 'acct' | 'url'> | null | undefined): boolean {
+    this.ensureScope();
     if (!account) {
       return false;
     }
@@ -88,6 +109,7 @@ export class FollowTrust {
    * a single request, instead of each card discovering its own id one at a time.
    */
   prime(accounts: readonly Pick<Account, 'id'>[]): void {
+    this.ensureScope();
     if (this.usesLocalFollows()) {
       return;
     }
@@ -104,6 +126,9 @@ export class FollowTrust {
    * for accounts we may already have cached.
    */
   reset(): void {
+    this.generation++;
+    this.pending.clear();
+    this.mutuals.set({});
     this.asked.clear();
     this.verdicts.set({});
   }
@@ -145,23 +170,30 @@ export class FollowTrust {
   }
 
   private fetch(ids: string[]): void {
+    const generation = this.generation;
+    const scope = this.scope;
     for (const id of ids) {
       this.asked.add(id);
     }
     this.api.relationships(ids).subscribe({
       next: (rels) => {
+        if (generation !== this.generation || scope !== accountScopeSuffix()) return;
+        const mutuals = { ...this.mutuals() };
         const next = { ...this.verdicts() };
         for (const rel of rels) {
           next[rel.id] = !!rel.following;
+          mutuals[rel.id] = !!rel.following && !!rel.followed_by;
         }
         // Ids the server said nothing about are settled as "not following", so
         // they are not re-requested on every subsequent render.
         for (const id of ids) {
           next[id] ??= false;
         }
+        this.mutuals.set(mutuals);
         this.verdicts.set(next);
       },
       error: () => {
+        if (generation !== this.generation || scope !== accountScopeSuffix()) return;
         // Leave the verdicts alone: absent still reads as untrusted, which is
         // the safe answer. Allow a retry on the next render rather than pinning
         // a wrong "false" for the session.

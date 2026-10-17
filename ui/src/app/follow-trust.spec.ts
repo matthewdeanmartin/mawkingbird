@@ -40,6 +40,37 @@ describe('FollowTrust', () => {
 
   beforeEach(() => setup());
 
+  it('requires both follow directions and batches mutual lookups', async () => {
+    for (const id of ['mutual', 'following', 'follower'])
+      expect(follows.isMutual(account(id))).toBe(false);
+    await flushBatch();
+    http
+      .expectOne((r) => r.url === '/api/v1/accounts/relationships')
+      .flush([
+        { id: 'mutual', following: true, followed_by: true },
+        { id: 'following', following: true, followed_by: false },
+        { id: 'follower', following: false, followed_by: true },
+      ]);
+    expect(follows.isMutual(account('mutual'))).toBe(true);
+    expect(follows.isMutual(account('following'))).toBe(false);
+    expect(follows.isMutual(account('follower'))).toBe(false);
+    http.verify();
+  });
+
+  it('discards old relationship responses after an account switch', async () => {
+    follows.isMutual(account('a'));
+    await flushBatch();
+    const old = http.expectOne((r) => r.url === '/api/v1/accounts/relationships');
+    localStorage.setItem('mastodon_mock_token', 'another-account');
+    expect(follows.isMutual(account('a'))).toBe(false);
+    await flushBatch();
+    const current = http.expectOne((r) => r.url === '/api/v1/accounts/relationships');
+    current.flush([{ id: 'a', following: false, followed_by: false }]);
+    old.flush([{ id: 'a', following: true, followed_by: true }]);
+    expect(follows.isMutual(account('a'))).toBe(false);
+    http.verify();
+  });
+
   it('is not trusted until the relationship arrives', async () => {
     // The safety property: unknown reads as "not following", so a warning stays
     // shut rather than opening on a guess.

@@ -20,6 +20,10 @@
   text-decoration: underline;
 }
 
+.status.mutual {
+  background: color-mix(in srgb, var(--col-bg) 90%, var(--text) 10%);
+}
+
 .status {
   display: flex;
   gap: 12px;

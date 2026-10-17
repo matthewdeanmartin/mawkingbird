@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Compact actions and mutual posts, 2026-10-17
+
+Notification dismissal now uses small outline Buttons within the existing wrapping
+action row. Composer permissions uses the existing PostAction icon toolbar.
+Permission dialog buttons project directly into the shared Dialog footer to inherit
+its 8px gap. Mutual posts blend 10% theme text into the application background.
+Reviewed inventory changes: existing candidate line positions and shared-control
+counts only; no new candidate sources or reconciliation dispositions. Browser
+checks cover compact notification actions, composer trigger geometry and footer
+spacing at phone width, plus the real mutual status card.
+
 ## Post permissions and moderation, 2026-10-17
 
 Reviewed 1,132 maintained sources and 231 candidate files. Two new app

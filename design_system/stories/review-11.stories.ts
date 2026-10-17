@@ -46,7 +46,12 @@ function post(mode: string): Status {
     visibility: "public",
     url: "https://social.example/@reader/review-post",
     account: {
-      id: mode === "Own post" ? "viewer" : "author",
+      id:
+        mode === "Own post"
+          ? "viewer"
+          : mode === "Mutual"
+            ? "mutual"
+            : "author",
       username: "reader",
       acct: "reader@social.example",
       display_name: "A very long author name — internationale Zusammenarbeit",
@@ -213,6 +218,7 @@ class PostAdoptionReview {
   readonly modes = [
     "Signed in",
     "Own post",
+    "Mutual",
     "Anonymous",
     "RSS",
     "RSS anonymous",
@@ -266,7 +272,15 @@ export default {
         provideRouter([], withDisabledInitialNavigation(), withHashLocation()),
         provideHttpClient(
           withInterceptors([
-            () => of(new HttpResponse({ status: 200, body: [] })),
+            (request) =>
+              of(
+                new HttpResponse({
+                  status: 200,
+                  body: request.url.includes("/relationships")
+                    ? [{ id: "mutual", following: true, followed_by: true }]
+                    : [],
+                }),
+              ),
           ]),
         ),
       ],

@@ -453,10 +453,6 @@
             <option [value]="v">{{ v }}</option>
           }
         </select>
-      } @else {
-        <button type="button" mbButton variant="outline" (click)="permissionsOpen.set(true)">
-          {{ 'permissions.title' | transloco }}
-        </button>
       }
 
       @if (targetIncludesBsky()) {
@@ -498,6 +494,17 @@
 
     <div class="compose-actions">
       <mb-post-actions class="compose-tools" [label]="'compose.chatTools' | transloco">
+        @if (!targetIncludesPaste() && !targetIncludesBlog() && !lockVisibility()) {
+          <button
+            mbPostAction
+            type="button"
+            [title]="'permissions.title' | transloco"
+            [attr.aria-label]="'permissions.title' | transloco"
+            (click)="permissionsOpen.set(true)"
+          >
+            <span aria-hidden="true">🔐</span>
+          </button>
+        }
         @if (!targetIncludesPaste() && !targetIncludesBlog()) {
           <button
             mbPostAction

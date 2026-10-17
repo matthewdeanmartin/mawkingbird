@@ -155,17 +155,6 @@
 } @else {
   @for (row of rows(); track row.key) {
     @if (row.kind === 'group') {
-      @if (!row.status.id.startsWith('bsky:')) {
-        <button
-          type="button"
-          mbButton
-          variant="outline"
-          [disabled]="dismissing()"
-          (click)="dismiss(row)"
-        >
-          {{ 'pages.notifications.hide' | transloco }}
-        </button>
-      }
       <div class="notif notif-group">
         <div class="group-avatars">
           @for (g of row.sample; track g.account.id) {
@@ -223,21 +212,24 @@
           @if (row.status.poll; as poll) {
             <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
           }
+          @if (!row.status.id.startsWith('bsky:')) {
+            <div class="mention-actions">
+              <button
+                type="button"
+                mbButton
+                size="small"
+                variant="outline"
+                [disabled]="dismissing()"
+                (click)="dismiss(row)"
+              >
+                {{ 'pages.notifications.hide' | transloco }}
+              </button>
+            </div>
+          }
         </div>
       </div>
     } @else {
       <div class="notif">
-        @if (!row.notif.id.startsWith('bsky:')) {
-          <button
-            type="button"
-            mbButton
-            variant="outline"
-            [disabled]="dismissing()"
-            (click)="dismiss(row)"
-          >
-            {{ 'pages.notifications.hide' | transloco }}
-          </button>
-        }
         <a [routerLink]="accountProfilePath(row.notif.account)">
           <img
             class="notif-avatar"
@@ -329,42 +321,66 @@
             @if (row.notif.status.poll; as poll) {
               <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
             }
-            @if (row.notif.type === 'mention') {
-              <div class="mention-actions">
-                @if (!row.notif.account.id.startsWith('bsky:')) {
-                  <a
-                    class="btn btn-sm"
-                    [routerLink]="['/conversations']"
-                    [queryParams]="{ open: chatKey(row.notif) }"
-                  >
-                    {{ 'pages.notifications.openChat' | transloco }}
-                  </a>
-                  <a
-                    class="btn btn-outline btn-sm"
-                    [routerLink]="['/statuses', row.notif.status.id]"
-                  >
-                    {{ 'pages.notifications.viewThread' | transloco }}
-                  </a>
-                }
-                @if (canLike(row.notif.status)) {
-                  <button
-                    mbPostAction
-                    size="small"
-                    type="button"
-                    class="notif-like"
-                    [pressed]="!!row.notif.status.favourited"
-                    [disabled]="likeBusy().has(row.notif.status.id)"
-                    [attr.aria-label]="favActionLabel(row.notif.status) | transloco"
-                    [title]="favActionLabel(row.notif.status) | transloco"
-                    (click)="toggleLike(row.notif.status)"
-                  >
-                    <span aria-hidden="true">{{ favIcon() }}</span>
-                    <span>{{ favLabel() | transloco }}</span>
-                  </button>
-                }
-              </div>
-            }
           }
+          <div class="mention-actions">
+            @if (row.notif.type === 'mention' && row.notif.status) {
+              @if (!row.notif.account.id.startsWith('bsky:')) {
+                <a
+                  class="btn btn-sm"
+                  [routerLink]="['/conversations']"
+                  [queryParams]="{ open: chatKey(row.notif) }"
+                >
+                  {{ 'pages.notifications.openChat' | transloco }}
+                </a>
+                <a class="btn btn-outline btn-sm" [routerLink]="['/statuses', row.notif.status.id]">
+                  {{ 'pages.notifications.viewThread' | transloco }}
+                </a>
+              }
+              @if (!row.notif.id.startsWith('bsky:')) {
+                <button
+                  type="button"
+                  mbButton
+                  size="small"
+                  variant="outline"
+                  [disabled]="dismissing()"
+                  (click)="dismiss(row)"
+                >
+                  {{ 'pages.notifications.hide' | transloco }}
+                </button>
+              }
+              @if (canLike(row.notif.status)) {
+                <button
+                  mbPostAction
+                  size="small"
+                  type="button"
+                  class="notif-like"
+                  [pressed]="!!row.notif.status.favourited"
+                  [disabled]="likeBusy().has(row.notif.status.id)"
+                  [attr.aria-label]="favActionLabel(row.notif.status) | transloco"
+                  [title]="favActionLabel(row.notif.status) | transloco"
+                  (click)="toggleLike(row.notif.status)"
+                >
+                  <span aria-hidden="true">{{ favIcon() }}</span>
+                  <span>{{ favLabel() | transloco }}</span>
+                </button>
+              }
+            }
+            @if (
+              (row.notif.type !== 'mention' || !row.notif.status) &&
+              !row.notif.id.startsWith('bsky:')
+            ) {
+              <button
+                type="button"
+                mbButton
+                size="small"
+                variant="outline"
+                [disabled]="dismissing()"
+                (click)="dismiss(row)"
+              >
+                {{ 'pages.notifications.hide' | transloco }}
+              </button>
+            }
+          </div>
         </div>
       </div>
     }

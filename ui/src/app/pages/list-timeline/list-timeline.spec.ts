@@ -90,6 +90,12 @@ describe('ListTimeline', () => {
   });
 
   afterEach(() => {
+    // Status cards batch the fixture author's mutual-follow lookup.
+    for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
+      expect(request.request.method).toBe('GET');
+      expect(request.request.params.getAll('id[]')).toEqual(['1']);
+      request.flush([{ id: '1', following: false, followed_by: false }]);
+    }
     httpMock.verify();
   });
 

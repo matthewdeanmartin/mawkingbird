@@ -1,6 +1,7 @@
 // Minimal AT Protocol / app.bsky view shapes — only what the adapter consumes.
 
 export interface BskyAuthor {
+  viewer?: BskyViewerState;
   did: string;
   handle: string;
   displayName?: string;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  adaptAuthor,
   adaptFeedItem,
   adaptPost,
   adaptProfile,
@@ -321,4 +322,14 @@ describe('Bluesky streaming media', () => {
       }
     },
   );
+});
+
+it('retains mutual relationships only when both Bluesky follow records exist', () => {
+  const author = makePost().author;
+  expect(adaptAuthor(author).mutual).toBe(false);
+  expect(adaptAuthor({ ...author, viewer: { following: 'at://follow' } }).mutual).toBe(false);
+  expect(
+    adaptAuthor({ ...author, viewer: { following: 'at://follow', followedBy: 'at://back' } })
+      .mutual,
+  ).toBe(true);
 });

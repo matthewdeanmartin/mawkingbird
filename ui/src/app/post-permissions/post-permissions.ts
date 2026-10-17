@@ -104,14 +104,18 @@ export interface PostPermissionsValue {
       <mb-help [label]="'permissions.help' | transloco">{{
         'permissions.explanation' | transloco
       }}</mb-help>
-      <div mbDialogActions>
-        <button mbButton variant="outline" [disabled]="busy()" (click)="closed.emit()">
-          {{ 'permissions.close' | transloco }}
-        </button>
-        <button mbButton [disabled]="busy()" (click)="apply()">
-          {{ 'permissions.save' | transloco }}
-        </button>
-      </div>
+      <button
+        mbDialogActions
+        mbButton
+        variant="outline"
+        [disabled]="busy()"
+        (click)="closed.emit()"
+      >
+        {{ 'permissions.close' | transloco }}
+      </button>
+      <button mbDialogActions mbButton [disabled]="busy()" (click)="apply()">
+        {{ 'permissions.save' | transloco }}
+      </button>
     </mb-dialog>
   `,
 })

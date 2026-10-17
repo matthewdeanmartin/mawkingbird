@@ -1,3 +1,4 @@
+import { FollowTrust } from '../follow-trust';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../compose/compose';
 import { AppDialogs } from '../app-dialogs';
@@ -113,6 +114,14 @@ function fakeEvent(): Event {
   return { stopPropagation: vi.fn() } as unknown as Event;
 }
 
+// Relationship batching is tested in follow-trust.spec; card tests control the verdict.
+beforeEach(() => {
+  vi.spyOn(FollowTrust.prototype, 'isMutual').mockReturnValue(false);
+});
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe('StatusCard', () => {
   let httpMock: HttpTestingController;
 
@@ -128,6 +137,19 @@ describe('StatusCard', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('tints the displayed author only when the relationship is mutual', () => {
+    const fixture = setUp();
+    expect(fixture.nativeElement.querySelector('article.status').classList.contains('mutual')).toBe(
+      false,
+    );
+    vi.mocked(FollowTrust.prototype.isMutual).mockReturnValue(true);
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('article.status').classList.contains('mutual')).toBe(
+      true,
+    );
   });
 
   it('keeps private likes in the post menu and out of the toolbar with PA both off and on', () => {

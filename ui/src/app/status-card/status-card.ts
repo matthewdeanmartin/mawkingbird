@@ -1429,6 +1429,16 @@ export class StatusCard {
     return { url, optimizable: !url.startsWith('data:') };
   }
 
+  protected get mutualAuthor(): boolean {
+    const status = this.display;
+    if (
+      this.remoteMastodonReadOnly ||
+      (status.provider && !['mastodon', 'bluesky'].includes(status.provider))
+    )
+      return false;
+    return this.followTrust.isMutual(status.account);
+  }
+
   get display(): Status {
     const s = this.status();
     const base = s.reblog ?? s;

@@ -88,6 +88,7 @@ export function adaptAuthor(author: BskyAuthor): Account {
   const avatar = author.avatar ?? BSKY_AVATAR;
   return {
     id: `bsky:${author.did}`,
+    mutual: !!author.viewer?.following && !!author.viewer?.followedBy,
     username: author.handle,
     acct: author.handle,
     display_name: author.displayName ?? author.handle,
