@@ -223,6 +223,23 @@ describe('Home', () => {
     expect(home.visible()).toHaveLength(1);
   });
 
+  it('opens My tags as the saved default and clears it when switching defaults', async () => {
+    const defaults = TestBed.inject(HomeDefaults);
+    defaults.set('tags');
+    const fixture = setUp();
+    const home = internals(fixture);
+    httpMock.expectOne('/api/v1/followed_tags?limit=100').flush([{ name: 'cats' }]);
+    await fixture.whenStable();
+    home.statuses.set([
+      makeStatus('untagged'),
+      { ...makeStatus('tagged'), tags: [{ name: 'cats', url: '' }] },
+    ]);
+    expect(home.visible().map((post) => post.id)).toEqual(['tagged']);
+    home.setHomeDefault('all');
+    expect(home.visible()).toHaveLength(2);
+    expect(defaults.value()).toBe('all');
+  });
+
   it('applies a saved Home layout and leaves toolbar changes temporary', () => {
     const defaults = TestBed.inject(HomeDefaults);
     defaults.set('media');

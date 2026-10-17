@@ -59,12 +59,21 @@
     </li>
     @for (opt of sectionOptions(); track opt.id) {
       <li>
-        <button class="list-row feed-category-row" type="button" (click)="setSection(opt.id)">
-          <span>{{ opt.key | transloco }}</span>
-          @if (sectionCount(opt.id); as count) {
-            <span class="muted small">{{ count }}</span>
-          }
-        </button>
+        @if (opt.id === 'videos') {
+          <a class="list-row feed-category-row" routerLink="/videos" (click)="rememberFeed($event)">
+            <span>{{ opt.key | transloco }}</span>
+            @if (sectionCount(opt.id); as count) {
+              <span class="muted small">{{ count }}</span>
+            }
+          </a>
+        } @else {
+          <button class="list-row feed-category-row" type="button" (click)="setSection(opt.id)">
+            <span>{{ opt.key | transloco }}</span>
+            @if (sectionCount(opt.id); as count) {
+              <span class="muted small">{{ count }}</span>
+            }
+          </button>
+        }
       </li>
     }
   </ul>

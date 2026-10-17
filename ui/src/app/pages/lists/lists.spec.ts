@@ -317,6 +317,11 @@ describe('Lists', () => {
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('All feeds');
     expect(text).toContain('RSS feeds');
+    const videos = fixture.nativeElement.querySelector(
+      '.feed-category-row[href="/videos"]',
+    ) as HTMLAnchorElement;
+    expect(videos.textContent).toContain('Video feeds');
+    expect(videos.parentElement?.previousElementSibling?.textContent).toContain('RSS feeds');
     expect(text).not.toContain('Bluesky feeds');
     // The old full-stack content is not rendered until a category is chosen.
     expect(newListInput(fixture)).toBeNull();

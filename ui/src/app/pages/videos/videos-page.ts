@@ -1,10 +1,15 @@
 import { Component, computed, DestroyRef, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbField, MbControl } from '../../design-system/field/field';
+import { MbDialog } from '../../design-system/dialog/dialog';
+import { Compose } from '../../compose/compose';
+import { Auth } from '../../auth';
+import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { MbButton } from '../../design-system/button/button';
 import { SupporterStatus } from '../../providers/account/supporter-status';
 import { RssReadState } from '../../providers/rss/rss-read-state';
@@ -13,8 +18,23 @@ import { YoutubeFeeds, YoutubeSearchItem } from '../../providers/videos/youtube-
 import { VideoPlayer } from '../../video-player/video-player';
 import { youtubeSource } from '../../video-player/media-source';
 import { VideoSubscriptionsPanel } from './video-subscriptions-panel';
-import { feedVideos, newestVideos, VideoItem } from './video-items';
+import {
+  feedVideos,
+  newestVideos,
+  sortVideos,
+  videoResponseText,
+  VideoItem,
+  VideoSort,
+} from './video-items';
 
+// i18n videos.main: Main feed
+// i18n videos.sort: Sort videos
+// i18n videos.oldest: Oldest first
+// i18n videos.titleSort: Title A–Z
+// i18n videos.channelSort: Channel A–Z
+// i18n videos.response: Post Response
+// i18n videos.watchParty: Watch Party
+// i18n videos.cancel: Cancel
 // i18n videos.newest: Newest first
 // i18n videos.refresh: Refresh
 // i18n videos.loading: Loading videos…
@@ -47,6 +67,10 @@ import { feedVideos, newestVideos, VideoItem } from './video-items';
     RouterLink,
     TranslocoPipe,
     MbButton,
+    MbField,
+    MbControl,
+    MbDialog,
+    Compose,
     VideoPlayer,
     VideoSubscriptionsPanel,
   ],
@@ -59,6 +83,24 @@ export class VideosPage {
   protected reads = inject(RssReadState);
   private youtube = inject(YoutubeFeeds);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private auth = inject(Auth);
+  private bsky = inject(BlueskySession);
+  protected responseTarget = computed(() =>
+    this.auth.isBlueskyPrimary || (this.auth.isAnonymous && this.bsky.linked())
+      ? ('bsky' as const)
+      : ('fedi' as const),
+  );
+  protected response = signal<{ id: string; text: string } | null>(null);
+  protected sort = signal<VideoSort>('newest');
+  protected readonly sortOptions: VideoSort[] = ['newest', 'oldest', 'title', 'channel'];
+  protected readonly sortLabels = {
+    newest: 'videos.newest',
+    oldest: 'videos.oldest',
+    title: 'videos.titleSort',
+    channel: 'videos.channelSort',
+  };
+
   private generation = 0;
   protected selected = toSignal(
     this.route.queryParamMap.pipe(map((params) => params.get('channel'))),
@@ -74,10 +116,13 @@ export class VideosPage {
   protected searchError = signal(false);
   protected results = signal<YoutubeSearchItem[] | null>(null);
   protected visible = computed(() =>
-    this.items().filter(
-      (item) =>
-        (!this.selected() || item.channelId === this.selected()) &&
-        (!this.savedOnly() || this.reads.isStarred(item.id)),
+    sortVideos(
+      this.items().filter(
+        (item) =>
+          (!this.selected() || item.channelId === this.selected()) &&
+          (!this.savedOnly() || this.reads.isStarred(item.id)),
+      ),
+      this.sort(),
     ),
   );
 
@@ -91,6 +136,17 @@ export class VideosPage {
         void this.load();
       });
     });
+  }
+
+  protected mainFeed(saved = false): void {
+    this.results.set(null);
+    this.searchError.set(false);
+    this.savedOnly.set(saved);
+    void this.router.navigate(['/videos']);
+  }
+
+  protected postResponse(item: Pick<VideoItem, 'id' | 'title' | 'channelTitle' | 'source'>): void {
+    this.response.set({ id: item.id, text: videoResponseText(item) });
   }
 
   protected async load(refresh = false): Promise<void> {

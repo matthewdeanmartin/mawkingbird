@@ -2,11 +2,13 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbHelp } from '../../design-system/help/help';
 import { MbButton } from '../../design-system/button/button';
 import { VideoSubscriptions } from '../../providers/videos/video-subscriptions';
 import { YoutubeFeeds } from '../../providers/videos/youtube-feeds';
 
 // i18n videos.title: Video feeds
+// i18n videos.proxyHelp: About video subscriptions
 // i18n videos.subscriptions: Subscriptions
 // i18n videos.paste: YouTube channel link, @handle or channel ID
 // i18n videos.subscribe: Subscribe
@@ -19,9 +21,14 @@ import { YoutubeFeeds } from '../../providers/videos/youtube-feeds';
 // i18n videos.all: All videos
 @Component({
   selector: 'app-video-subscriptions-panel',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton],
+  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbHelp],
   template: `
-    <h2>{{ 'videos.subscriptions' | transloco }}</h2>
+    <h2>
+      {{ 'videos.subscriptions' | transloco }}
+      <mb-help [label]="'videos.proxyHelp' | transloco"
+        ><p>{{ 'videos.proxyNote' | transloco }}</p></mb-help
+      >
+    </h2>
     <form (ngSubmit)="subscribe()">
       <label for="video-channel">{{ 'videos.paste' | transloco }}</label>
       <input id="video-channel" name="channel" [(ngModel)]="channel" maxlength="500" required />

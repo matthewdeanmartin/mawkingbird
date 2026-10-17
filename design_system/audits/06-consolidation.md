@@ -1,5 +1,21 @@
 # Sprint 6 opening consolidation audit
 
+## Video feed actions and My tags default, 2026-10-17
+
+Home and Appearance reuse their existing default-view selects for My tags. Video
+feeds use the shared compact Field/Control select for chronological, title and
+channel sorting; the existing Button rows contain Refresh, Main feed and Saved
+videos. Subscription documentation moves into Help beside its heading. Post
+Response uses Dialog and the existing compact Compose with an isolated video
+draft, editable title/link/channel hashtag and the Mastodon/Bluesky target picker.
+Watch Party links reuse the existing direct-video Watch route; the player retains
+the single Open on YouTube link. More and the Feeds landing list expose /videos.
+Reviewed all inventory changes: source line shifts, existing shared controls and
+new shared Button/Field/Dialog usage in Videos; no candidate files added or
+removed (1,132 scanned, 231 candidates). Reconciliation dispositions are unchanged.
+Browser checks exercise the real video page, compact help, sorting, saved/main
+navigation and editable response dialog at phone width in light and dark themes.
+
 ## Reports, profile previews and Home filters, 2026-10-17
 
 My reports now sits within the standard settings body and section, sharing the

@@ -1,11 +1,12 @@
 # Video feeds
 
-Open **RSS → Video feeds**, or **Feeds → Video feeds**, to read YouTube channels.
+Open **More → Videos**, **RSS → Video feeds**, or **Feeds → Video feeds** to read YouTube channels.
 Paste a channel URL, `@handle`, `UC…` channel ID, or channel RSS URL and choose
 **Subscribe**. No YouTube account or Google API key is needed.
 
-Subscriptions appear on the left. Select a channel or **All videos** to read
-uploads in reverse chronological order. The reader uses the channel's public
+Subscriptions appear on the left. Select a channel or **Main feed** to read
+uploads. The sort menu offers **Newest first**, **Oldest first**, **Title A–Z**
+and **Channel A–Z**. **Saved videos** shows the videos you saved. The reader uses the channel's public
 RSS feed, which contains recent uploads rather than its entire archive. Choose
 **Refresh** to check for updates. Failed refreshes preserve cached content and
 never unsubscribe you.
@@ -13,6 +14,11 @@ never unsubscribe you.
 Use **Load YouTube player**, then Play, to watch an embedded video. Playback is
 never automatic. Some videos cannot be embedded; **Open on YouTube** opens the
 original. Save videos for later or mark them watched with the card controls.
+**Watch Party** opens the existing Watch page with its conversation and temporary
+party hashtags. **Post Response** opens the mini composer with the video title,
+link and channel hashtag (for example, `#TechnologyConnections`). Add your own
+response, choose Mastodon, Bluesky or both from your connected posting targets,
+and post when ready.
 
 In **Feeds → Video feeds**, you can also subscribe, exclude a channel from the
 reader, or unsubscribe. These subscriptions are account-scoped in this browser,

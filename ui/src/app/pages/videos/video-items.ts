@@ -42,3 +42,38 @@ export function newestVideos(items: VideoItem[]): VideoItem[] {
   for (const item of sorted) if (!unique.has(item.id)) unique.set(item.id, item);
   return [...unique.values()];
 }
+
+export type VideoSort = 'newest' | 'oldest' | 'title' | 'channel';
+
+export function sortVideos(items: VideoItem[], order: VideoSort): VideoItem[] {
+  return [...items].sort((a, b) => {
+    const date = (Date.parse(b.publishedAt ?? '') || 0) - (Date.parse(a.publishedAt ?? '') || 0);
+    const primary =
+      order === 'title'
+        ? a.title.localeCompare(b.title)
+        : order === 'channel'
+          ? a.channelTitle.localeCompare(b.channelTitle)
+          : order === 'oldest'
+            ? -date
+            : date;
+    return primary || date || a.id.localeCompare(b.id);
+  });
+}
+
+/** Preserve existing inner capitals while joining a channel's words as a hashtag. */
+export function channelHashtag(title: string): string {
+  const words = title.normalize('NFKC').match(/[\p{L}\p{M}\p{N}_]+/gu) ?? [];
+  const tag = words
+    .map((word) => word.charAt(0).toLocaleUpperCase() + word.slice(1))
+    .join('')
+    .slice(0, 100);
+  return tag ? '#' + tag : '';
+}
+
+export function videoResponseText(
+  item: Pick<VideoItem, 'title' | 'channelTitle' | 'source'>,
+): string {
+  return [item.title, item.source.url, channelHashtag(item.channelTitle)]
+    .filter(Boolean)
+    .join('\n');
+}

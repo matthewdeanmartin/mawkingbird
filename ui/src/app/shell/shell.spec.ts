@@ -228,27 +228,31 @@ describe('Shell account switching', () => {
     }
   });
 
-  it('a boot verify that never gets through stays signed in, without the dialog', { timeout: 20_000 }, () => {
-    vi.useFakeTimers();
-    try {
-      const fixture = TestBed.createComponent(Shell);
-      fixture.detectChanges();
-      const url = 'https://mastodon.art/api/v1/accounts/verify_credentials';
-      httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
-      for (const delay of VERIFY_RETRY_DELAYS_MS) {
-        vi.advanceTimersByTime(delay);
+  it(
+    'a boot verify that never gets through stays signed in, without the dialog',
+    { timeout: 20_000 },
+    () => {
+      vi.useFakeTimers();
+      try {
+        const fixture = TestBed.createComponent(Shell);
+        fixture.detectChanges();
+        const url = 'https://mastodon.art/api/v1/accounts/verify_credentials';
         httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
-      }
-      drainRailRequests();
-      const cmp = fixture.componentInstance as any;
+        for (const delay of VERIFY_RETRY_DELAYS_MS) {
+          vi.advanceTimersByTime(delay);
+          httpMock.expectOne(url).error(new ProgressEvent('error'), { status: 0 });
+        }
+        drainRailRequests();
+        const cmp = fixture.componentInstance as any;
 
-      expect(auth.token()).toBe('art-token');
-      expect(auth.sessions().some((s) => s.token === 'art-token')).toBe(true);
-      expect(cmp.deadSession()).toBeNull();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
+        expect(auth.token()).toBe('art-token');
+        expect(auth.sessions().some((s) => s.token === 'art-token')).toBe(true);
+        expect(cmp.deadSession()).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    },
+  );
 
   it('a 401 after a dropped reply still offers the dialog', { timeout: 20_000 }, () => {
     vi.useFakeTimers();
@@ -445,6 +449,9 @@ describe('Shell account switching', () => {
 
     expect(link.textContent).toContain('Find Friends');
     expect(canary.textContent).toContain('Canary');
+    expect(
+      fixture.nativeElement.querySelector('.more-menu a[href="/videos"]').textContent,
+    ).toContain('Videos');
   });
 
   it('opens onboarding from the More menu and closes the menu', () => {

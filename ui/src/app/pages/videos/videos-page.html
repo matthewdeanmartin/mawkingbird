@@ -2,11 +2,9 @@
   <aside class="subscriptions">
     <h1>{{ 'videos.title' | transloco }}</h1>
     <app-video-subscriptions-panel [selected]="selected()" (opened)="results.set(null)" />
-    <p class="muted small">{{ 'videos.proxyNote' | transloco }}</p>
   </aside>
   <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
     <header>
-      <h2>{{ 'videos.newest' | transloco }}</h2>
       <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load(true)">
         {{ 'videos.refresh' | transloco }}
       </button>
@@ -14,12 +12,32 @@
         mbButton
         variant="outline"
         type="button"
-        [attr.aria-pressed]="savedOnly()"
-        (click)="savedOnly.set(!savedOnly())"
+        [attr.aria-pressed]="!savedOnly() && !selected() && results() === null"
+        (click)="mainFeed()"
+      >
+        {{ 'videos.main' | transloco }}
+      </button>
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [attr.aria-pressed]="savedOnly() && results() === null"
+        (click)="mainFeed(true)"
       >
         {{ 'videos.saved' | transloco }}
       </button>
     </header>
+    @if (results() === null) {
+      <div class="sort-bar">
+        <mb-field density="compact" [hideLabel]="true" [label]="'videos.sort' | transloco">
+          <select mbControl [ngModel]="sort()" (ngModelChange)="sort.set($event)">
+            @for (option of sortOptions; track option) {
+              <option [value]="option">{{ sortLabels[option] | transloco }}</option>
+            }
+          </select>
+        </mb-field>
+      </div>
+    }
     <div class="search-box">
       @if (supporter.isSupporter()) {
         <form (ngSubmit)="search()">
@@ -61,6 +79,32 @@
           <p class="muted">{{ item.channelTitle }}</p>
           @if (searchSource(item); as source) {
             <app-video-player-controls [source]="source" [inline]="true" />
+            <footer>
+              <a
+                mbButton
+                variant="outline"
+                size="small"
+                routerLink="/watch"
+                [queryParams]="{ youtube: source.videoId }"
+                >{{ 'videos.watchParty' | transloco }}</a
+              >
+              <button
+                mbButton
+                variant="outline"
+                size="small"
+                type="button"
+                (click)="
+                  postResponse({
+                    id: source.key,
+                    title: item.title,
+                    channelTitle: item.channelTitle,
+                    source,
+                  })
+                "
+              >
+                {{ 'videos.response' | transloco }}
+              </button>
+            </footer>
           }
           @if (item.channelId; as id) {
             <button
@@ -121,9 +165,23 @@
             >
               {{ (reads.isRead(item.id) ? 'videos.unread' : 'videos.read') | transloco }}
             </button>
-            <a [href]="item.source.url" target="_blank" rel="noopener">{{
-              'videos.original' | transloco
-            }}</a>
+            <a
+              mbButton
+              variant="outline"
+              size="small"
+              routerLink="/watch"
+              [queryParams]="{ youtube: item.source.videoId }"
+              >{{ 'videos.watchParty' | transloco }}</a
+            >
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="postResponse(item)"
+            >
+              {{ 'videos.response' | transloco }}
+            </button>
           </footer>
         </article>
       } @empty {
@@ -134,3 +192,20 @@
     }
   </section>
 </div>
+
+@if (response(); as draft) {
+  <mb-dialog
+    [title]="'videos.response' | transloco"
+    [closeLabel]="'videos.cancel' | transloco"
+    (dismissed)="response.set(null)"
+  >
+    <app-compose
+      [compact]="true"
+      [draftContext]="'video-response:' + draft.id"
+      [initialText]="draft.text"
+      [initialTarget]="responseTarget()"
+      initialVisibility="public"
+      (posted)="response.set(null)"
+    />
+  </mb-dialog>
+}

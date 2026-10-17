@@ -1,4 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Auth } from '../../auth';
+import { Compose } from '../../compose/compose';
+import { RssReadState } from '../../providers/rss/rss-read-state';
+import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { VideosPage } from './videos-page';
@@ -51,6 +56,69 @@ describe('Video feeds reader', () => {
     await fixture.componentInstance['search']();
     expect(youtube.search).not.toHaveBeenCalled();
   });
+  it('sorts feed cards, switches saved/main views and surfaces one original link plus Watch Party', async () => {
+    TestBed.inject(VideoSubscriptions).add(first, 'Example');
+    const fixture = TestBed.createComponent(VideosPage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.componentInstance['items']()).toHaveLength(2);
+    });
+    const page = fixture.componentInstance;
+    page['sort'].set('oldest');
+    fixture.detectChanges();
+    expect(page['visible']().map((item) => item.title)).toEqual(['Older', 'Newer']);
+    const item = page['visible']()[0];
+    TestBed.inject(RssReadState).toggleStarred(item.id);
+    page['mainFeed'](true);
+    fixture.detectChanges();
+    expect(page['visible']()).toHaveLength(1);
+    const card: HTMLElement = fixture.nativeElement.querySelector('.video-post');
+    expect(
+      [...card.querySelectorAll('a')].filter((a) => a.textContent?.includes('Open on YouTube')),
+    ).toHaveLength(1);
+    expect(card.querySelector('a[href^="/watch?"]')?.getAttribute('href')).toBe(
+      '/watch?youtube=0KoeY54M5VA',
+    );
+    page['results'].set([]);
+    page['mainFeed']();
+    expect(page['results']()).toBeNull();
+    expect(page['visible']()).toHaveLength(2);
+  });
+
+  for (const bluesky of [false, true]) {
+    it(`opens an editable mini composer for ${bluesky ? 'Bluesky' : 'Mastodon'} responses`, async () => {
+      TestBed.inject(VideoSubscriptions).add(first, 'Technology Connections');
+      vi.spyOn(TestBed.inject(BlueskySession), 'linked').mockReturnValue(bluesky);
+      TestBed.inject(Auth).kind.set(bluesky ? 'bluesky' : 'mastodon');
+      const fixture = TestBed.createComponent(VideosPage);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      await vi.waitFor(() => {
+        fixture.detectChanges();
+        expect(fixture.componentInstance['items']()).toHaveLength(2);
+      });
+      const page = fixture.componentInstance;
+      const item = { ...page['items']()[0], channelTitle: 'Technology Connections' };
+      page['postResponse'](item);
+      fixture.detectChanges();
+      const composer = fixture.debugElement.query(By.directive(Compose))
+        .componentInstance as Compose;
+      expect(composer.initialText()).toContain('#TechnologyConnections');
+      expect(composer.initialText()).toContain(item.title);
+      expect(composer.initialText()).toContain(item.source.url);
+      expect(composer.compact()).toBe(true);
+      expect(composer.initialTarget()).toBe(bluesky ? 'bsky' : 'fedi');
+      expect(composer.initialVisibility()).toBe('public');
+      expect(composer.draftContext()).toBe('video-response:' + item.id);
+      composer.posted.emit({} as never);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('app-compose')).toBeNull();
+    });
+  }
+
   it('lets Plus users search, subscribe a result and return to the RSS view', async () => {
     TestBed.inject(SupporterStatus).isSupporter.set(true);
     const fixture = TestBed.createComponent(VideosPage);

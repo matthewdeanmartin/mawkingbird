@@ -608,7 +608,7 @@
         (ngModelChange)="setHomeDefault($event)"
       >
         <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
-        @for (choice of ['all', 'text', 'media', 'video', 'articles']; track choice) {
+        @for (choice of ['all', 'text', 'media', 'video', 'articles', 'tags']; track choice) {
           <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
         }
       </select>

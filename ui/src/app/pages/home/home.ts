@@ -89,6 +89,7 @@ import { isVideoStatus } from '../../video-player/video-discovery';
 // i18n pages.home.myTags.off: Turn off My tags
 // i18n pages.home.defaultView.media: Media Default
 // i18n pages.home.defaultView.video: Video Default
+// i18n pages.home.defaultView.tags: My tags Default
 // i18n pages.home.defaultView.articles: Articles Default
 // i18n pages.home.videos.empty: No videos in the posts loaded so far. Load more to look further back.
 // i18n pages.home.visualRestriction: Your reading preferences hide images. Videos remain available through their Open Watch or original links.
@@ -535,6 +536,7 @@ export class Home implements OnInit, OnDestroy {
   protected async setMyTags(enabled: boolean): Promise<void> {
     const generation = ++this.myTagsGeneration;
     this.myTags.set(enabled);
+    this.saveHomeVisit();
     this.myTagsError.set(false);
     this.myTagsLoading.set(false);
     this.serverTagNames.set([]);
@@ -580,6 +582,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private applyHomeDefault(value: HomeDefault | null): void {
+    void this.setMyTags(value === 'tags');
     this.homeTextFocus.set(value === 'text');
     this.setView(value === 'media' || value === 'video' || value === 'articles' ? value : 'feed');
   }
@@ -598,6 +601,7 @@ export class Home implements OnInit, OnDestroy {
           scope: this.homeDefaults.scope(),
           view: this.view(),
           text: this.homeTextFocus(),
+          tags: this.myTags(),
         },
       },
       '',
@@ -962,12 +966,13 @@ export class Home implements OnInit, OnDestroy {
     const navigation = this.router.currentNavigation() ?? this.router.lastSuccessfulNavigation();
     const visit = (navigation?.extras.state?.['homePresentation'] ??
       history.state?.homePresentation) as
-      { scope?: string; view?: FeedView; text?: boolean } | undefined;
+      { scope?: string; view?: FeedView; text?: boolean; tags?: boolean } | undefined;
     if (
       navigation?.trigger === 'popstate' &&
       visit?.scope === this.homeScope &&
       ['feed', 'media', 'video', 'members', 'analytics', 'articles'].includes(visit.view ?? '')
     ) {
+      void this.setMyTags(visit.tags === true);
       this.homeTextFocus.set(visit.text === true);
       this.setView(visit.view!);
     } else this.applyHomeDefault(this.homeDefaults.value());

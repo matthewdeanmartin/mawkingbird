@@ -4,10 +4,10 @@ import { Server } from './server';
 import { scopedKey } from './account-scope';
 import { ProfileSyncStarter } from './providers/account/profile-sync-starter';
 
-export type HomeDefault = 'all' | 'text' | 'media' | 'video' | 'articles';
+export type HomeDefault = 'all' | 'text' | 'media' | 'video' | 'articles' | 'tags';
 const KEY = 'mockingbird_home_default';
 export function asHomeDefault(value: unknown): HomeDefault | null {
-  return ['all', 'text', 'media', 'video', 'articles'].includes(value as string)
+  return ['all', 'text', 'media', 'video', 'articles', 'tags'].includes(value as string)
     ? (value as HomeDefault)
     : null;
 }

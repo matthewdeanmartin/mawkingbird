@@ -87,6 +87,7 @@ import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.nav.newActivity: New activity
 // i18n shell.nav.search: Search
 // i18n shell.nav.feeds: Feeds
+// i18n shell.nav.videos: Videos
 // i18n shell.nav.rss: RSS
 // i18n shell.nav.login: Login
 // i18n shell.nav.moreAria: More navigation
