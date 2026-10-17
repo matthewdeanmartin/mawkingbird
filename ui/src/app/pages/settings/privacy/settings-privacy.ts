@@ -1,3 +1,4 @@
+import { ReportHistory } from '../../../report-history/report-history';
 import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedback';
@@ -68,6 +69,7 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
 @Component({
   selector: 'app-settings-privacy',
   imports: [
+    ReportHistory,
     MbSettingsRow,
     MbField,
     MbControl,

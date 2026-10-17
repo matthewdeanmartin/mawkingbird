@@ -20,7 +20,7 @@
     {
       "file": "ui/src/app/tag-filter-dialog/tag-mute-menu.ts",
       "disposition": "partial adoption",
-      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's ••• menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
+      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's \u2022\u2022\u2022 menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
     },
     {
       "file": "ui/src/app/pages/features/audience-page.html",
@@ -330,7 +330,7 @@
     {
       "file": "ui/src/app/history-dialog/history-dialog.html",
       "disposition": "adopted scope",
-      "nextStep": "Sprint 12 adopts modal/read states/actions; Sprints 17–18 adopt shared version metadata and native time elements. Preserve specialized snapshot content and failure/retry behavior."
+      "nextStep": "Sprint 12 adopts modal/read states/actions; Sprints 17\u201318 adopt shared version metadata and native time elements. Preserve specialized snapshot content and failure/retry behavior."
     },
     {
       "file": "ui/src/app/leave-dialog/leave-dialog.html",
@@ -385,7 +385,7 @@
     {
       "file": "ui/src/app/pages/client-list/client-list-page.html",
       "disposition": "partial adoption",
-      "nextStep": "Combined Sprints 17–18 adopt page header, local tabs, native member/back links and identity metadata. Preserve post unmount semantics and no tab-triggered fetch. Plain read states and existing failed-read/racing-route semantics remain a separate behavior pass."
+      "nextStep": "Combined Sprints 17\u201318 adopt page header, local tabs, native member/back links and identity metadata. Preserve post unmount semantics and no tab-triggered fetch. Plain read states and existing failed-read/racing-route semantics remain a separate behavior pass."
     },
     {
       "file": "ui/src/app/pages/collection/collection.html",
@@ -580,7 +580,7 @@
     {
       "file": "ui/src/app/pages/rss/feed-actions/feed-actions.ts",
       "disposition": "adopted scope",
-      "nextStep": "Sprints 17–18 remove the unnecessary popup after user review: View feed is a direct native link; subscribed feeds also expose compact Unsubscribe with existing confirmation. Focus returns to View feed after confirmed removal when the component remains mounted."
+      "nextStep": "Sprints 17\u201318 remove the unnecessary popup after user review: View feed is a direct native link; subscribed feeds also expose compact Unsubscribe with existing confirmation. Focus returns to View feed after confirmed removal when the component remains mounted."
     },
     {
       "file": "ui/src/app/pages/rss/headline-row/headline-row.html",
@@ -1065,7 +1065,7 @@
     {
       "file": "ui/src/app/status-card/status-card.html",
       "disposition": "partial adoption",
-      "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers. Each ••• panel ends with a Close menu row; keep it when the menus migrate, since the phone sheet can cover its trigger."
+      "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers. Each \u2022\u2022\u2022 panel ends with a Close menu row; keep it when the menus migrate, since the phone sheet can cover its trigger."
     },
     {
       "file": "ui/src/app/status-card/status-card.ts",
@@ -1146,6 +1146,16 @@
       "file": "ui/src/app/pages/videos/videos-page.html",
       "disposition": "partial adoption",
       "nextStep": "Refresh, search, subscribe, save and watched actions use MbButton and the shared VideoPlayer. Labelled search field/select and channel links retain native semantics; migrate those controls in a separate design pass."
+    },
+    {
+      "file": "ui/src/app/post-permissions/post-permissions.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Shared app permissions dialog composes Dialog, Field/Control, Button, Help and Notice. Preserve separate audience/discovery, published read-only audience, cancellation, focus return and permission failure feedback. See Post permissions Storybook and browser coverage."
+    },
+    {
+      "file": "ui/src/app/report-history/report-history.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Report receipts use shared Help and ordinary router links. History is scoped to the active account and limited to successful local submissions; keep that limitation explicit."
     }
   ]
 }

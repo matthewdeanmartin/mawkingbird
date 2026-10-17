@@ -1,6 +1,8 @@
+import { AppDialogs } from './app-dialogs';
+import { TranslocoService } from '@jsverse/transloco';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, Subject, defer, map, switchMap, tap } from 'rxjs';
+import { Observable, Subject, catchError, of, defer, map, switchMap, tap } from 'rxjs';
 import { accountScopeSuffix } from './account-scope';
 import { PrivateMedia } from './private-media';
 import { Pseudonymity } from './pseudonymity';
@@ -83,7 +85,10 @@ export interface AccountStatusesOptions {
  * in the standalone Mocking Bird build so those URLs never ship.
  */
 @Injectable({ providedIn: 'root' })
+// i18n permissions.muteFailed: Your post was published, but its notifications could not be turned off. Try again from the post menu.
 export class Api {
+  private dialogs = inject(AppDialogs);
+  private i18n = inject(TranslocoService);
   readonly tagChanges = new Subject<{ scope: string; tag: Tag }>();
   private tagMutation(request: Observable<Tag>): Observable<Tag> {
     return defer(() => {
@@ -414,6 +419,7 @@ export class Api {
     if (options.quotedStatusId) {
       body['quoted_status_id'] = options.quotedStatusId;
     }
+    if (options.quoteApprovalPolicy) body['quote_approval_policy'] = options.quoteApprovalPolicy;
     if (options.visibility) {
       body['visibility'] = options.visibility;
     }
@@ -444,8 +450,26 @@ export class Api {
     const headers = idempotencyKey
       ? new HttpHeaders().set('Idempotency-Key', idempotencyKey)
       : undefined;
+    const postingScope = accountScopeSuffix();
     const request = this.http.post<Status>('/api/v1/statuses', body, { headers });
-    return options.scheduledAt ? request : this.accountMutation(request, 'profile');
+    if (options.scheduledAt) return request;
+    const published = options.muteNotifications
+      ? request.pipe(
+          switchMap((status) => {
+            if (postingScope !== accountScopeSuffix()) {
+              void this.dialogs.alert(this.i18n.translate('permissions.muteFailed'));
+              return of(status);
+            }
+            return this.muteStatus(status.id).pipe(
+              catchError(() => {
+                void this.dialogs.alert(this.i18n.translate('permissions.muteFailed'));
+                return of(status);
+              }),
+            );
+          }),
+        )
+      : request;
+    return this.accountMutation(published, 'profile');
   }
 
   // --- scheduled statuses ---
@@ -803,6 +827,10 @@ export class Api {
     return this.http.request('delete', `/api/v1/lists/${id}/accounts`, {
       body: { account_ids: accountIds },
     });
+  }
+
+  dismissNotification(id: string): Observable<unknown> {
+    return this.http.post(`/api/v1/notifications/${encodeURIComponent(id)}/dismiss`, {});
   }
 
   // --- reports ---

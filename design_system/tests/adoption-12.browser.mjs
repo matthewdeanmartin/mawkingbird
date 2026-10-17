@@ -93,12 +93,19 @@ test("native account links close the dialog and retain their destination", async
   const dialog = page.getByRole("dialog");
   await expect(dialog.locator("li")).toHaveCount(18);
   const link = dialog.getByRole("link").first();
-  await expect(link).toHaveAttribute("href", "#/accounts/1");
+  await expect(link).toHaveAttribute(
+    "href",
+    "#/accounts/1/@reader-1@very-long-community-name.example",
+  );
   await link.click();
   await expect(dialog).toHaveCount(0);
-  await expect(page).toHaveURL(/#\/accounts\/1$/);
+  await expect(page).toHaveURL(
+    /#\/accounts\/1\/@reader-1@very-long-community-name\.example$/,
+  );
   await expect(
-    page.getByText("Local preview destination: accounts/1"),
+    page.getByText(
+      "Local preview destination: accounts/1/@reader-1@very-long-community-name.example",
+    ),
   ).toBeVisible();
 });
 test("nested history closes only its own modal and restores parent focus and scroll lock", async ({

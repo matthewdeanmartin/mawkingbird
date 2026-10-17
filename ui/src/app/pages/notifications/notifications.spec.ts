@@ -318,6 +318,24 @@ describe('Notifications', () => {
     return fixture;
   }
 
+  it('removes a notification only after dismissal succeeds and retains failed dismissals', async () => {
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const notification = makeNotification('42', 'follow');
+    httpMock.expectOne('/api/v1/notifications').flush([notification]);
+    const row = { kind: 'single' as const, key: '42', notif: notification };
+    const failed = fixture.componentInstance.dismiss(row);
+    httpMock
+      .expectOne('/api/v1/notifications/42/dismiss')
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    await failed;
+    expect(internals(fixture).items()).toHaveLength(1);
+    const success = fixture.componentInstance.dismiss(row);
+    httpMock.expectOne('/api/v1/notifications/42/dismiss').flush({});
+    await success;
+    expect(internals(fixture).items()).toHaveLength(0);
+  });
+
   it('likes a reply directly and preserves its confirmed state when undo fails', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();

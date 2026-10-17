@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1130,
-  "filesWithCandidates": 229,
+  "filesScanned": 1132,
+  "filesWithCandidates": 231,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -953,91 +953,95 @@
         },
         {
           "pattern": "shared",
-          "line": 465
+          "line": 457
         },
         {
           "pattern": "shared",
-          "line": 502
+          "line": 463
         },
         {
           "pattern": "shared",
-          "line": 505
+          "line": 500
         },
         {
           "pattern": "shared",
-          "line": 525
+          "line": 503
         },
         {
           "pattern": "shared",
-          "line": 540
+          "line": 523
         },
         {
           "pattern": "shared",
-          "line": 554
+          "line": 538
         },
         {
           "pattern": "shared",
-          "line": 568
+          "line": 552
         },
         {
           "pattern": "shared",
-          "line": 581
+          "line": 566
         },
         {
           "pattern": "shared",
-          "line": 598
+          "line": 579
         },
         {
           "pattern": "shared",
-          "line": 610
+          "line": 596
         },
         {
           "pattern": "shared",
-          "line": 623
+          "line": 608
         },
         {
           "pattern": "shared",
-          "line": 636
+          "line": 621
         },
         {
           "pattern": "shared",
-          "line": 647
+          "line": 634
         },
         {
           "pattern": "shared",
-          "line": 679
+          "line": 645
         },
         {
           "pattern": "shared",
-          "line": 708
+          "line": 677
         },
         {
           "pattern": "shared",
-          "line": 711
+          "line": 706
         },
         {
           "pattern": "shared",
-          "line": 714
+          "line": 709
         },
         {
           "pattern": "shared",
-          "line": 729
+          "line": 712
         },
         {
           "pattern": "shared",
-          "line": 732
+          "line": 727
         },
         {
           "pattern": "shared",
-          "line": 782
+          "line": 730
         },
         {
           "pattern": "shared",
-          "line": 873
+          "line": 780
         },
         {
           "pattern": "shared",
-          "line": 876
+          "line": 874
+        },
+        {
+          "pattern": "shared",
+          "line": 877
         },
         {
           "pattern": "nativeButtons",
@@ -1077,87 +1081,91 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 504
+          "line": 457
         },
         {
           "pattern": "nativeButtons",
-          "line": 523
+          "line": 502
         },
         {
           "pattern": "nativeButtons",
-          "line": 538
+          "line": 521
         },
         {
           "pattern": "nativeButtons",
-          "line": 552
+          "line": 536
         },
         {
           "pattern": "nativeButtons",
-          "line": 566
+          "line": 550
         },
         {
           "pattern": "nativeButtons",
-          "line": 579
+          "line": 564
         },
         {
           "pattern": "nativeButtons",
-          "line": 597
+          "line": 577
         },
         {
           "pattern": "nativeButtons",
-          "line": 609
+          "line": 595
         },
         {
           "pattern": "nativeButtons",
-          "line": 621
+          "line": 607
         },
         {
           "pattern": "nativeButtons",
-          "line": 634
+          "line": 619
         },
         {
           "pattern": "nativeButtons",
-          "line": 645
+          "line": 632
         },
         {
           "pattern": "nativeButtons",
-          "line": 677
+          "line": 643
         },
         {
           "pattern": "nativeButtons",
-          "line": 708
+          "line": 675
         },
         {
           "pattern": "nativeButtons",
-          "line": 711
+          "line": 706
         },
         {
           "pattern": "nativeButtons",
-          "line": 714
+          "line": 709
         },
         {
           "pattern": "nativeButtons",
-          "line": 729
+          "line": 712
         },
         {
           "pattern": "nativeButtons",
-          "line": 732
+          "line": 727
         },
         {
           "pattern": "nativeButtons",
-          "line": 756
+          "line": 730
         },
         {
           "pattern": "nativeButtons",
-          "line": 782
+          "line": 754
         },
         {
           "pattern": "nativeButtons",
-          "line": 873
+          "line": 780
         },
         {
           "pattern": "nativeButtons",
-          "line": 876
+          "line": 874
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 877
         },
         {
           "pattern": "checkboxes",
@@ -1193,15 +1201,15 @@
         },
         {
           "pattern": "selects",
-          "line": 471
+          "line": 469
         },
         {
           "pattern": "selects",
-          "line": 485
+          "line": 483
         },
         {
           "pattern": "legacyPills",
-          "line": 624
+          "line": 622
         }
       ]
     },
@@ -1211,7 +1219,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 770
+          "line": 783
         }
       ]
     },
@@ -4453,23 +4461,27 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 324
+          "line": 161
+        },
+        {
+          "pattern": "shared",
+          "line": 233
+        },
+        {
+          "pattern": "shared",
+          "line": 351
         },
         {
           "pattern": "nativeButtons",
-          "line": 11
+          "line": 14
         },
         {
           "pattern": "nativeButtons",
-          "line": 16
+          "line": 19
         },
         {
           "pattern": "nativeButtons",
-          "line": 21
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 35
+          "line": 24
         },
         {
           "pattern": "nativeButtons",
@@ -4477,7 +4489,7 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 53
+          "line": 41
         },
         {
           "pattern": "nativeButtons",
@@ -4489,55 +4501,67 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 94
+          "line": 62
         },
         {
           "pattern": "nativeButtons",
-          "line": 178
+          "line": 97
         },
         {
           "pattern": "nativeButtons",
-          "line": 233
+          "line": 159
         },
         {
           "pattern": "nativeButtons",
-          "line": 240
+          "line": 193
         },
         {
           "pattern": "nativeButtons",
-          "line": 323
+          "line": 231
         },
         {
           "pattern": "nativeButtons",
-          "line": 354
+          "line": 260
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 267
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 350
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 381
         },
         {
           "pattern": "selects",
-          "line": 66
+          "line": 69
         },
         {
           "pattern": "legacyPills",
-          "line": 95
+          "line": 98
         },
         {
           "pattern": "legacyPills",
-          "line": 234
+          "line": 261
         },
         {
           "pattern": "legacyPills",
-          "line": 241
+          "line": 268
         },
         {
           "pattern": "legacyPills",
-          "line": 309
+          "line": 336
         },
         {
           "pattern": "legacyPills",
-          "line": 316
+          "line": 343
         },
         {
           "pattern": "legacyPills",
-          "line": 354
+          "line": 381
         }
       ]
     },
@@ -4989,227 +5013,227 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 99
+          "line": 104
         },
         {
           "pattern": "nativeButtons",
-          "line": 108
+          "line": 113
         },
         {
           "pattern": "nativeButtons",
-          "line": 117
+          "line": 122
         },
         {
           "pattern": "nativeButtons",
-          "line": 141
+          "line": 146
         },
         {
           "pattern": "nativeButtons",
-          "line": 162
+          "line": 167
         },
         {
           "pattern": "nativeButtons",
-          "line": 205
+          "line": 210
         },
         {
           "pattern": "nativeButtons",
-          "line": 222
+          "line": 227
         },
         {
           "pattern": "nativeButtons",
-          "line": 231
+          "line": 236
         },
         {
           "pattern": "nativeButtons",
-          "line": 237
+          "line": 242
         },
         {
           "pattern": "nativeButtons",
-          "line": 248
+          "line": 253
         },
         {
           "pattern": "nativeButtons",
-          "line": 310
+          "line": 315
         },
         {
           "pattern": "nativeButtons",
-          "line": 343
+          "line": 348
         },
         {
           "pattern": "nativeButtons",
-          "line": 349
+          "line": 354
         },
         {
           "pattern": "nativeButtons",
-          "line": 364
+          "line": 369
         },
         {
           "pattern": "nativeButtons",
-          "line": 381
+          "line": 386
         },
         {
           "pattern": "nativeButtons",
-          "line": 390
+          "line": 395
         },
         {
           "pattern": "nativeButtons",
-          "line": 396
+          "line": 401
         },
         {
           "pattern": "nativeButtons",
-          "line": 409
+          "line": 414
         },
         {
           "pattern": "nativeButtons",
-          "line": 413
+          "line": 418
         },
         {
           "pattern": "nativeButtons",
-          "line": 438
+          "line": 443
         },
         {
           "pattern": "nativeButtons",
-          "line": 494
+          "line": 499
         },
         {
           "pattern": "nativeButtons",
-          "line": 542
+          "line": 547
         },
         {
           "pattern": "nativeButtons",
-          "line": 551
+          "line": 556
         },
         {
           "pattern": "nativeButtons",
-          "line": 557
+          "line": 562
         },
         {
           "pattern": "nativeButtons",
-          "line": 578
+          "line": 583
         },
         {
           "pattern": "nativeButtons",
-          "line": 609
+          "line": 614
         },
         {
           "pattern": "nativeButtons",
-          "line": 613
+          "line": 618
         },
         {
           "pattern": "nativeButtons",
-          "line": 640
+          "line": 645
         },
         {
           "pattern": "nativeButtons",
-          "line": 651
+          "line": 656
         },
         {
           "pattern": "nativeButtons",
-          "line": 672
+          "line": 677
         },
         {
           "pattern": "nativeButtons",
-          "line": 682
+          "line": 687
         },
         {
           "pattern": "nativeButtons",
-          "line": 692
+          "line": 697
         },
         {
           "pattern": "nativeButtons",
-          "line": 702
+          "line": 707
         },
         {
           "pattern": "nativeButtons",
-          "line": 711
+          "line": 716
         },
         {
           "pattern": "nativeButtons",
-          "line": 721
+          "line": 726
         },
         {
           "pattern": "nativeButtons",
-          "line": 732
+          "line": 737
         },
         {
           "pattern": "nativeButtons",
-          "line": 870
+          "line": 875
         },
         {
           "pattern": "nativeButtons",
-          "line": 879
+          "line": 884
         },
         {
           "pattern": "nativeButtons",
-          "line": 888
+          "line": 893
         },
         {
           "pattern": "nativeButtons",
-          "line": 901
+          "line": 906
         },
         {
           "pattern": "nativeButtons",
-          "line": 933
+          "line": 938
         },
         {
           "pattern": "nativeButtons",
-          "line": 940
+          "line": 945
         },
         {
           "pattern": "nativeButtons",
-          "line": 965
+          "line": 970
         },
         {
           "pattern": "nativeButtons",
-          "line": 974
+          "line": 979
         },
         {
           "pattern": "nativeButtons",
-          "line": 983
+          "line": 988
         },
         {
           "pattern": "nativeButtons",
-          "line": 1073
+          "line": 1078
         },
         {
           "pattern": "nativeButtons",
-          "line": 1133
+          "line": 1139
         },
         {
           "pattern": "nativeButtons",
-          "line": 1136
+          "line": 1142
         },
         {
           "pattern": "nativeButtons",
-          "line": 1163
+          "line": 1169
         },
         {
           "pattern": "nativeButtons",
-          "line": 1166
+          "line": 1172
         },
         {
           "pattern": "nativeButtons",
-          "line": 1193
+          "line": 1199
         },
         {
           "pattern": "nativeButtons",
-          "line": 1200
+          "line": 1206
         },
         {
           "pattern": "nativeButtons",
-          "line": 1213
+          "line": 1219
         },
         {
           "pattern": "nativeButtons",
-          "line": 1223
+          "line": 1229
         },
         {
           "pattern": "nativeButtons",
-          "line": 1235
+          "line": 1241
         },
         {
           "pattern": "nativeButtons",
-          "line": 1249
+          "line": 1255
         },
         {
           "pattern": "legacyPills",
@@ -5221,11 +5245,7 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 86
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 137
+          "line": 91
         },
         {
           "pattern": "legacyPills",
@@ -5233,7 +5253,7 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 158
+          "line": 147
         },
         {
           "pattern": "legacyPills",
@@ -5241,115 +5261,115 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 192
+          "line": 168
         },
         {
           "pattern": "legacyPills",
-          "line": 249
+          "line": 197
         },
         {
           "pattern": "legacyPills",
-          "line": 268
+          "line": 254
         },
         {
           "pattern": "legacyPills",
-          "line": 289
+          "line": 273
         },
         {
           "pattern": "legacyPills",
-          "line": 295
+          "line": 294
         },
         {
           "pattern": "legacyPills",
-          "line": 303
+          "line": 300
         },
         {
           "pattern": "legacyPills",
-          "line": 439
+          "line": 308
         },
         {
           "pattern": "legacyPills",
-          "line": 464
+          "line": 444
         },
         {
           "pattern": "legacyPills",
-          "line": 542
+          "line": 469
         },
         {
           "pattern": "legacyPills",
-          "line": 551
+          "line": 547
         },
         {
           "pattern": "legacyPills",
-          "line": 559
+          "line": 556
         },
         {
           "pattern": "legacyPills",
-          "line": 578
+          "line": 564
         },
         {
           "pattern": "legacyPills",
-          "line": 609
+          "line": 583
         },
         {
           "pattern": "legacyPills",
-          "line": 615
+          "line": 614
         },
         {
           "pattern": "legacyPills",
-          "line": 872
+          "line": 620
         },
         {
           "pattern": "legacyPills",
-          "line": 881
+          "line": 877
         },
         {
           "pattern": "legacyPills",
-          "line": 890
+          "line": 886
         },
         {
           "pattern": "legacyPills",
-          "line": 903
+          "line": 895
         },
         {
           "pattern": "legacyPills",
-          "line": 933
+          "line": 908
         },
         {
           "pattern": "legacyPills",
-          "line": 967
+          "line": 938
         },
         {
           "pattern": "legacyPills",
-          "line": 976
+          "line": 972
         },
         {
           "pattern": "legacyPills",
-          "line": 985
+          "line": 981
         },
         {
           "pattern": "legacyPills",
-          "line": 1073
+          "line": 990
         },
         {
           "pattern": "legacyPills",
-          "line": 1133
+          "line": 1078
         },
         {
           "pattern": "legacyPills",
-          "line": 1136
+          "line": 1139
         },
         {
           "pattern": "legacyPills",
-          "line": 1163
+          "line": 1142
         },
         {
           "pattern": "legacyPills",
-          "line": 1166
+          "line": 1169
         },
         {
           "pattern": "legacyPills",
-          "line": 1194
+          "line": 1172
         },
         {
           "pattern": "legacyPills",
@@ -5357,43 +5377,47 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 1213
+          "line": 1206
         },
         {
           "pattern": "legacyPills",
-          "line": 1223
+          "line": 1219
         },
         {
           "pattern": "legacyPills",
-          "line": 1232
+          "line": 1229
         },
         {
           "pattern": "legacyPills",
-          "line": 1235
+          "line": 1238
         },
         {
           "pattern": "legacyPills",
-          "line": 1249
+          "line": 1241
         },
         {
           "pattern": "legacyPills",
-          "line": 1252
+          "line": 1255
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 1258
         },
         {
           "pattern": "disclosure",
-          "line": 85
+          "line": 90
         },
         {
           "pattern": "disclosure",
-          "line": 190
+          "line": 195
         },
         {
           "pattern": "disclosure",
-          "line": 266
+          "line": 271
         },
         {
           "pattern": "disclosure",
-          "line": 301
+          "line": 306
         }
       ]
     },
@@ -6785,35 +6809,35 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 167
+          "line": 168
         },
         {
           "pattern": "nativeButtons",
-          "line": 176
+          "line": 177
         },
         {
           "pattern": "nativeButtons",
-          "line": 185
+          "line": 186
         },
         {
           "pattern": "nativeButtons",
-          "line": 194
+          "line": 195
         },
         {
           "pattern": "nativeButtons",
-          "line": 214
+          "line": 215
         },
         {
           "pattern": "nativeButtons",
-          "line": 217
+          "line": 218
         },
         {
           "pattern": "nativeButtons",
-          "line": 229
+          "line": 230
         },
         {
           "pattern": "nativeButtons",
-          "line": 232
+          "line": 233
         },
         {
           "pattern": "legacyPills",
@@ -6829,35 +6853,35 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 168
+          "line": 169
         },
         {
           "pattern": "legacyPills",
-          "line": 176
+          "line": 177
         },
         {
           "pattern": "legacyPills",
-          "line": 186
+          "line": 187
         },
         {
           "pattern": "legacyPills",
-          "line": 195
+          "line": 196
         },
         {
           "pattern": "legacyPills",
-          "line": 214
+          "line": 215
         },
         {
           "pattern": "legacyPills",
-          "line": 217
+          "line": 218
         },
         {
           "pattern": "legacyPills",
-          "line": 229
+          "line": 230
         },
         {
           "pattern": "legacyPills",
-          "line": 232
+          "line": 233
         }
       ]
     },
@@ -11023,27 +11047,31 @@
         },
         {
           "pattern": "shared",
-          "line": 759
+          "line": 522
         },
         {
           "pattern": "shared",
-          "line": 912
+          "line": 742
         },
         {
           "pattern": "shared",
-          "line": 925
+          "line": 895
         },
         {
           "pattern": "shared",
-          "line": 992
+          "line": 908
         },
         {
           "pattern": "shared",
-          "line": 1005
+          "line": 975
         },
         {
           "pattern": "shared",
-          "line": 1282
+          "line": 988
+        },
+        {
+          "pattern": "shared",
+          "line": 1265
         },
         {
           "pattern": "nativeButtons",
@@ -11131,107 +11159,107 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 528
+          "line": 522
         },
         {
           "pattern": "nativeButtons",
-          "line": 580
+          "line": 563
         },
         {
           "pattern": "nativeButtons",
-          "line": 660
+          "line": 643
         },
         {
           "pattern": "nativeButtons",
-          "line": 691
+          "line": 674
         },
         {
           "pattern": "nativeButtons",
-          "line": 699
+          "line": 682
         },
         {
           "pattern": "nativeButtons",
-          "line": 729
+          "line": 712
         },
         {
           "pattern": "nativeButtons",
-          "line": 739
+          "line": 722
         },
         {
           "pattern": "nativeButtons",
-          "line": 758
+          "line": 741
         },
         {
           "pattern": "nativeButtons",
-          "line": 773
+          "line": 756
         },
         {
           "pattern": "nativeButtons",
-          "line": 781
+          "line": 764
         },
         {
           "pattern": "nativeButtons",
-          "line": 821
+          "line": 804
         },
         {
           "pattern": "nativeButtons",
-          "line": 854
+          "line": 837
         },
         {
           "pattern": "nativeButtons",
-          "line": 901
+          "line": 884
         },
         {
           "pattern": "nativeButtons",
-          "line": 911
+          "line": 894
         },
         {
           "pattern": "nativeButtons",
-          "line": 924
+          "line": 907
         },
         {
           "pattern": "nativeButtons",
-          "line": 957
+          "line": 940
         },
         {
           "pattern": "nativeButtons",
-          "line": 991
+          "line": 974
         },
         {
           "pattern": "nativeButtons",
-          "line": 1004
+          "line": 987
         },
         {
           "pattern": "nativeButtons",
-          "line": 1041
+          "line": 1024
         },
         {
           "pattern": "nativeButtons",
-          "line": 1103
+          "line": 1086
         },
         {
           "pattern": "nativeButtons",
-          "line": 1106
+          "line": 1089
         },
         {
           "pattern": "nativeButtons",
-          "line": 1109
+          "line": 1092
         },
         {
           "pattern": "nativeButtons",
-          "line": 1281
+          "line": 1264
         },
         {
           "pattern": "nativeButtons",
-          "line": 1309
+          "line": 1292
         },
         {
           "pattern": "nativeButtons",
-          "line": 1319
+          "line": 1302
         },
         {
           "pattern": "nativeButtons",
-          "line": 1328
+          "line": 1311
         },
         {
           "pattern": "checkboxes",
@@ -11239,7 +11267,7 @@
         },
         {
           "pattern": "radios",
-          "line": 1170
+          "line": 1153
         },
         {
           "pattern": "selects",
@@ -11255,11 +11283,11 @@
         },
         {
           "pattern": "selects",
-          "line": 546
+          "line": 529
         },
         {
           "pattern": "selects",
-          "line": 889
+          "line": 872
         },
         {
           "pattern": "legacyPills",
@@ -11315,79 +11343,79 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 581
+          "line": 564
         },
         {
           "pattern": "legacyPills",
-          "line": 661
+          "line": 644
         },
         {
           "pattern": "legacyPills",
-          "line": 692
+          "line": 675
         },
         {
           "pattern": "legacyPills",
-          "line": 700
+          "line": 683
         },
         {
           "pattern": "legacyPills",
-          "line": 731
+          "line": 714
         },
         {
           "pattern": "legacyPills",
-          "line": 739
+          "line": 722
         },
         {
           "pattern": "legacyPills",
-          "line": 774
+          "line": 757
         },
         {
           "pattern": "legacyPills",
-          "line": 782
+          "line": 765
         },
         {
           "pattern": "legacyPills",
-          "line": 822
+          "line": 805
         },
         {
           "pattern": "legacyPills",
-          "line": 854
+          "line": 837
         },
         {
           "pattern": "legacyPills",
-          "line": 901
+          "line": 884
         },
         {
           "pattern": "legacyPills",
-          "line": 1103
+          "line": 1086
         },
         {
           "pattern": "legacyPills",
-          "line": 1106
+          "line": 1089
         },
         {
           "pattern": "legacyPills",
-          "line": 1110
+          "line": 1093
         },
         {
           "pattern": "legacyPills",
-          "line": 1310
+          "line": 1293
         },
         {
           "pattern": "legacyPills",
-          "line": 1320
+          "line": 1303
         },
         {
           "pattern": "legacyPills",
-          "line": 1329
+          "line": 1312
         },
         {
           "pattern": "overlays",
-          "line": 1134
+          "line": 1117
         },
         {
           "pattern": "overlays",
-          "line": 1384
+          "line": 1367
         }
       ]
     },
@@ -11428,6 +11456,88 @@
         {
           "pattern": "shared",
           "line": 20
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/post-permissions/post-permissions.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 58
+        },
+        {
+          "pattern": "shared",
+          "line": 60
+        },
+        {
+          "pattern": "shared",
+          "line": 74
+        },
+        {
+          "pattern": "shared",
+          "line": 76
+        },
+        {
+          "pattern": "shared",
+          "line": 87
+        },
+        {
+          "pattern": "shared",
+          "line": 89
+        },
+        {
+          "pattern": "shared",
+          "line": 102
+        },
+        {
+          "pattern": "shared",
+          "line": 104
+        },
+        {
+          "pattern": "shared",
+          "line": 108
+        },
+        {
+          "pattern": "shared",
+          "line": 111
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 108
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 111
+        },
+        {
+          "pattern": "selects",
+          "line": 46
+        },
+        {
+          "pattern": "selects",
+          "line": 59
+        },
+        {
+          "pattern": "selects",
+          "line": 75
+        },
+        {
+          "pattern": "selects",
+          "line": 88
         }
       ]
     },
@@ -11790,6 +11900,16 @@
         {
           "pattern": "legacyPills",
           "line": 44
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/report-history/report-history.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 63
         }
       ]
     },
@@ -12303,23 +12423,19 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 480
+          "line": 487
         },
         {
           "pattern": "shared",
-          "line": 490
+          "line": 497
         },
         {
           "pattern": "shared",
-          "line": 499
+          "line": 506
         },
         {
           "pattern": "shared",
-          "line": 509
-        },
-        {
-          "pattern": "shared",
-          "line": 522
+          "line": 516
         },
         {
           "pattern": "shared",
@@ -12327,187 +12443,207 @@
         },
         {
           "pattern": "shared",
-          "line": 542
+          "line": 536
         },
         {
           "pattern": "shared",
-          "line": 547
+          "line": 549
         },
         {
           "pattern": "shared",
-          "line": 574
+          "line": 554
         },
         {
           "pattern": "shared",
-          "line": 583
+          "line": 581
         },
         {
           "pattern": "shared",
-          "line": 595
+          "line": 590
         },
         {
           "pattern": "shared",
-          "line": 617
+          "line": 602
         },
         {
           "pattern": "shared",
-          "line": 699
+          "line": 624
         },
         {
           "pattern": "shared",
-          "line": 721
+          "line": 706
         },
         {
           "pattern": "shared",
-          "line": 731
+          "line": 728
         },
         {
           "pattern": "shared",
-          "line": 746
+          "line": 738
         },
         {
           "pattern": "shared",
-          "line": 750
+          "line": 753
         },
         {
           "pattern": "shared",
-          "line": 765
+          "line": 757
         },
         {
           "pattern": "shared",
-          "line": 778
+          "line": 772
         },
         {
           "pattern": "shared",
-          "line": 788
+          "line": 785
         },
         {
           "pattern": "shared",
-          "line": 799
+          "line": 795
         },
         {
           "pattern": "shared",
-          "line": 801
+          "line": 806
         },
         {
           "pattern": "shared",
-          "line": 817
+          "line": 808
         },
         {
           "pattern": "shared",
-          "line": 820
+          "line": 824
         },
         {
           "pattern": "shared",
-          "line": 834
+          "line": 827
         },
         {
           "pattern": "shared",
-          "line": 842
+          "line": 841
         },
         {
           "pattern": "shared",
-          "line": 852
+          "line": 849
         },
         {
           "pattern": "shared",
-          "line": 886
+          "line": 859
         },
         {
           "pattern": "shared",
-          "line": 905
+          "line": 893
         },
         {
           "pattern": "shared",
-          "line": 929
+          "line": 912
         },
         {
           "pattern": "shared",
-          "line": 937
+          "line": 936
         },
         {
           "pattern": "shared",
-          "line": 955
+          "line": 944
         },
         {
           "pattern": "shared",
-          "line": 964
+          "line": 962
         },
         {
           "pattern": "shared",
-          "line": 979
+          "line": 971
         },
         {
           "pattern": "shared",
-          "line": 981
+          "line": 986
         },
         {
           "pattern": "shared",
-          "line": 1000
+          "line": 988
         },
         {
           "pattern": "shared",
-          "line": 1005
+          "line": 1007
         },
         {
           "pattern": "shared",
-          "line": 1026
+          "line": 1012
         },
         {
           "pattern": "shared",
-          "line": 1041
+          "line": 1033
         },
         {
           "pattern": "shared",
-          "line": 1062
+          "line": 1048
         },
         {
           "pattern": "shared",
-          "line": 1095
+          "line": 1069
         },
         {
           "pattern": "shared",
-          "line": 1116
+          "line": 1102
         },
         {
           "pattern": "shared",
-          "line": 1132
+          "line": 1123
         },
         {
           "pattern": "shared",
-          "line": 1145
+          "line": 1139
         },
         {
           "pattern": "shared",
-          "line": 1157
+          "line": 1152
         },
         {
           "pattern": "shared",
-          "line": 1170
+          "line": 1164
         },
         {
           "pattern": "shared",
-          "line": 1198
+          "line": 1177
         },
         {
           "pattern": "shared",
-          "line": 1208
+          "line": 1189
         },
         {
           "pattern": "shared",
-          "line": 1219
+          "line": 1199
         },
         {
           "pattern": "shared",
-          "line": 1369
+          "line": 1210
         },
         {
           "pattern": "shared",
-          "line": 1462
+          "line": 1236
         },
         {
           "pattern": "shared",
-          "line": 1465
+          "line": 1253
+        },
+        {
+          "pattern": "shared",
+          "line": 1264
+        },
+        {
+          "pattern": "shared",
+          "line": 1268
+        },
+        {
+          "pattern": "shared",
+          "line": 1398
+        },
+        {
+          "pattern": "shared",
+          "line": 1491
+        },
+        {
+          "pattern": "shared",
+          "line": 1494
         },
         {
           "pattern": "nativeButtons",
@@ -12515,223 +12651,223 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 160
+          "line": 167
         },
         {
           "pattern": "nativeButtons",
-          "line": 163
+          "line": 170
         },
         {
           "pattern": "nativeButtons",
-          "line": 179
+          "line": 186
         },
         {
           "pattern": "nativeButtons",
-          "line": 254
+          "line": 261
         },
         {
           "pattern": "nativeButtons",
-          "line": 259
+          "line": 266
         },
         {
           "pattern": "nativeButtons",
-          "line": 290
+          "line": 297
         },
         {
           "pattern": "nativeButtons",
-          "line": 337
+          "line": 344
         },
         {
           "pattern": "nativeButtons",
-          "line": 379
+          "line": 386
         },
         {
           "pattern": "nativeButtons",
-          "line": 402
+          "line": 409
         },
         {
           "pattern": "nativeButtons",
-          "line": 420
+          "line": 427
         },
         {
           "pattern": "nativeButtons",
-          "line": 451
+          "line": 458
         },
         {
           "pattern": "nativeButtons",
-          "line": 478
+          "line": 485
         },
         {
           "pattern": "nativeButtons",
-          "line": 497
+          "line": 504
         },
         {
           "pattern": "nativeButtons",
-          "line": 616
+          "line": 623
         },
         {
           "pattern": "nativeButtons",
-          "line": 652
+          "line": 659
         },
         {
           "pattern": "nativeButtons",
-          "line": 662
+          "line": 669
         },
         {
           "pattern": "nativeButtons",
-          "line": 674
+          "line": 681
         },
         {
           "pattern": "nativeButtons",
-          "line": 687
+          "line": 694
         },
         {
           "pattern": "nativeButtons",
-          "line": 697
+          "line": 704
         },
         {
           "pattern": "nativeButtons",
-          "line": 720
+          "line": 727
         },
         {
           "pattern": "nativeButtons",
-          "line": 763
+          "line": 770
         },
         {
           "pattern": "nativeButtons",
-          "line": 776
+          "line": 783
         },
         {
           "pattern": "nativeButtons",
-          "line": 850
+          "line": 857
         },
         {
           "pattern": "nativeButtons",
-          "line": 884
+          "line": 891
         },
         {
           "pattern": "nativeButtons",
-          "line": 903
+          "line": 910
         },
         {
           "pattern": "nativeButtons",
-          "line": 928
+          "line": 935
         },
         {
           "pattern": "nativeButtons",
-          "line": 953
+          "line": 960
         },
         {
           "pattern": "nativeButtons",
-          "line": 1060
+          "line": 1067
         },
         {
           "pattern": "nativeButtons",
-          "line": 1093
+          "line": 1100
         },
         {
           "pattern": "nativeButtons",
-          "line": 1114
+          "line": 1121
         },
         {
           "pattern": "nativeButtons",
-          "line": 1130
+          "line": 1137
         },
         {
           "pattern": "nativeButtons",
-          "line": 1143
+          "line": 1150
         },
         {
           "pattern": "nativeButtons",
-          "line": 1155
+          "line": 1162
         },
         {
           "pattern": "nativeButtons",
-          "line": 1168
+          "line": 1175
         },
         {
           "pattern": "nativeButtons",
-          "line": 1184
+          "line": 1187
         },
         {
           "pattern": "nativeButtons",
-          "line": 1196
+          "line": 1197
         },
         {
           "pattern": "nativeButtons",
-          "line": 1206
+          "line": 1208
         },
         {
           "pattern": "nativeButtons",
-          "line": 1217
+          "line": 1234
         },
         {
           "pattern": "nativeButtons",
-          "line": 1246
+          "line": 1251
         },
         {
           "pattern": "nativeButtons",
-          "line": 1270
+          "line": 1264
         },
         {
           "pattern": "nativeButtons",
-          "line": 1296
+          "line": 1268
         },
         {
           "pattern": "nativeButtons",
-          "line": 1320
+          "line": 1275
         },
         {
           "pattern": "nativeButtons",
-          "line": 1330
+          "line": 1299
         },
         {
           "pattern": "nativeButtons",
-          "line": 1343
+          "line": 1325
         },
         {
           "pattern": "nativeButtons",
-          "line": 1348
+          "line": 1349
         },
         {
           "pattern": "nativeButtons",
-          "line": 1353
+          "line": 1359
         },
         {
           "pattern": "nativeButtons",
-          "line": 1357
+          "line": 1372
         },
         {
           "pattern": "nativeButtons",
-          "line": 1367
+          "line": 1377
         },
         {
           "pattern": "nativeButtons",
-          "line": 1393
+          "line": 1382
         },
         {
           "pattern": "nativeButtons",
-          "line": 1417
+          "line": 1386
         },
         {
           "pattern": "nativeButtons",
-          "line": 1425
+          "line": 1396
         },
         {
           "pattern": "nativeButtons",
-          "line": 1438
+          "line": 1422
         },
         {
           "pattern": "nativeButtons",
-          "line": 1443
+          "line": 1446
         },
         {
           "pattern": "nativeButtons",
-          "line": 1448
+          "line": 1454
         },
         {
           "pattern": "nativeButtons",
-          "line": 1452
+          "line": 1467
         },
         {
           "pattern": "nativeButtons",
@@ -12739,19 +12875,31 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 1619
+          "line": 1477
         },
         {
           "pattern": "nativeButtons",
-          "line": 1627
+          "line": 1481
         },
         {
           "pattern": "nativeButtons",
-          "line": 1653
+          "line": 1501
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1649
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1657
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1683
         },
         {
           "pattern": "checkboxes",
-          "line": 1636
+          "line": 1666
         },
         {
           "pattern": "legacyPills",
@@ -12759,31 +12907,23 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 160
+          "line": 167
         },
         {
           "pattern": "legacyPills",
-          "line": 163
+          "line": 170
         },
         {
           "pattern": "legacyPills",
-          "line": 181
+          "line": 188
         },
         {
           "pattern": "legacyPills",
-          "line": 291
+          "line": 298
         },
         {
           "pattern": "legacyPills",
-          "line": 337
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 1620
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 1627
+          "line": 344
         },
         {
           "pattern": "legacyPills",
@@ -12791,27 +12931,35 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 1653
+          "line": 1657
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 1680
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 1683
         },
         {
           "pattern": "overlays",
-          "line": 648
+          "line": 655
         },
         {
           "pattern": "overlays",
-          "line": 1611
+          "line": 1641
         },
         {
           "pattern": "disclosure",
-          "line": 1231
+          "line": 1222
         },
         {
           "pattern": "disclosure",
-          "line": 1281
+          "line": 1310
         },
         {
           "pattern": "disclosure",
-          "line": 1378
+          "line": 1407
         }
       ]
     },
@@ -12821,11 +12969,11 @@
       "findings": [
         {
           "pattern": "nativeButtons",
-          "line": 271
+          "line": 279
         },
         {
           "pattern": "disclosure",
-          "line": 1215
+          "line": 1262
         }
       ]
     },

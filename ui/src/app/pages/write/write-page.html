@@ -519,26 +519,9 @@
             <!-- The compact composer squeezes this into a <select>. Here there
                  is room to show every choice and what it costs, which is the
                  whole reason the writing page exists. -->
-            <div
-              class="write-visibility"
-              role="radiogroup"
-              [aria-label]="'pages.write.aria.whoCanSee' | transloco"
-            >
-              @for (option of visibilities; track option) {
-                <button
-                  class="write-tool write-visibility-option"
-                  type="button"
-                  role="radio"
-                  [class.active]="visibility() === option"
-                  [attr.aria-checked]="visibility() === option"
-                  [disabled]="!!visibilityLockReason()"
-                  [title]="visibilityHint(option) | transloco"
-                  (click)="setVisibility(option)"
-                >
-                  {{ visibilityIcon(option) }} {{ visibilityLabel(option) | transloco }}
-                </button>
-              }
-            </div>
+            <button type="button" mbButton variant="outline" (click)="permissionsOpen.set(true)">
+              {{ 'permissions.title' | transloco }}
+            </button>
             @if (visibilityLockReason(); as reason) {
               <span class="write-visibility-locked muted small">🔒 {{ reason | transloco }}</span>
             }
@@ -1407,4 +1390,18 @@
       }}</a>
     }
   </p>
+}
+
+@if (permissionsOpen()) {
+  <app-post-permissions
+    [initial]="{
+      visibility: visibility(),
+      quoteApprovalPolicy: quoteApprovalPolicy(),
+      muteNotifications: muteNotifications(),
+    }"
+    [locked]="!!visibilityLockReason()"
+    [mastodon]="wizardTarget() === 'fedi' || wizardTarget() === 'both'"
+    (saved)="applyPermissions($event)"
+    (closed)="permissionsOpen.set(false)"
+  />
 }

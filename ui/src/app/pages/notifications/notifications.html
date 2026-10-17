@@ -1,3 +1,6 @@
+@if (dismissError()) {
+  <p role="alert">{{ 'pages.notifications.hideFailed' | transloco }}</p>
+}
 <div class="live-toggle">
   <div class="notif-filters">
     <!-- Only configured networks are offered; two networks start on Both. -->
@@ -152,12 +155,24 @@
 } @else {
   @for (row of rows(); track row.key) {
     @if (row.kind === 'group') {
+      @if (!row.status.id.startsWith('bsky:')) {
+        <button
+          type="button"
+          mbButton
+          variant="outline"
+          [disabled]="dismissing()"
+          (click)="dismiss(row)"
+        >
+          {{ 'pages.notifications.hide' | transloco }}
+        </button>
+      }
       <div class="notif notif-group">
         <div class="group-avatars">
           @for (g of row.sample; track g.account.id) {
             <a [routerLink]="accountProfilePath(g.account)" [attr.aria-label]="g.account.acct">
               <img
                 class="notif-avatar"
+                [style.filter]="blurAvatar(g.account) ? 'blur(12px)' : null"
                 [ngSrc]="g.account.avatar_static || g.account.avatar || 'favicon-32x32.png'"
                 [alt]="g.account.username"
                 width="40"
@@ -212,12 +227,24 @@
       </div>
     } @else {
       <div class="notif">
+        @if (!row.notif.id.startsWith('bsky:')) {
+          <button
+            type="button"
+            mbButton
+            variant="outline"
+            [disabled]="dismissing()"
+            (click)="dismiss(row)"
+          >
+            {{ 'pages.notifications.hide' | transloco }}
+          </button>
+        }
         <a [routerLink]="accountProfilePath(row.notif.account)">
           <img
             class="notif-avatar"
             [ngSrc]="
               row.notif.account.avatar_static || row.notif.account.avatar || 'favicon-32x32.png'
             "
+            [style.filter]="blurAvatar(row.notif.account) ? 'blur(12px)' : null"
             [alt]="row.notif.account.username"
             width="40"
             height="40"

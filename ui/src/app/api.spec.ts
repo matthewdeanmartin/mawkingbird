@@ -1,7 +1,8 @@
+import { AppDialogs } from './app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api, nextMaxIdFrom } from './api';
 import { Relationship, Status } from './models';
 
@@ -36,6 +37,56 @@ describe('Api service (HTTP isolated)', () => {
   function relStub(overrides: Partial<Relationship> = {}): Relationship {
     return { id: '7', following: false, blocking: false, ...overrides } as Relationship;
   }
+
+  it('publishes quote policy and mutes notifications only after the post exists', () => {
+    let result: Status | undefined;
+    api
+      .postStatus('hi', {
+        visibility: 'unlisted',
+        quoteApprovalPolicy: 'nobody',
+        muteNotifications: true,
+      })
+      .subscribe((s) => (result = s));
+    const create = httpMock.expectOne('/api/v1/statuses');
+    expect(create.request.body).toMatchObject({
+      visibility: 'unlisted',
+      quote_approval_policy: 'nobody',
+    });
+    httpMock.expectNone('/api/v1/statuses/99/mute');
+    create.flush(statusStub());
+    httpMock.expectOne('/api/v1/statuses/99/mute').flush(statusStub({ muted: true }));
+    expect(result?.muted).toBe(true);
+  });
+
+  it('keeps a successfully published post when its notification mute fails', () => {
+    const alert = vi.spyOn(TestBed.inject(AppDialogs), 'alert').mockResolvedValue();
+    let result: Status | undefined;
+    api.postStatus('hi', { muteNotifications: true }).subscribe((s) => (result = s));
+    httpMock.expectOne('/api/v1/statuses').flush(statusStub());
+    httpMock
+      .expectOne('/api/v1/statuses/99/mute')
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    expect(result?.id).toBe('99');
+    expect(alert).toHaveBeenCalledOnce();
+    httpMock.expectNone('/api/v1/statuses');
+  });
+
+  it('does not mute an unrelated account after switching accounts during publishing', () => {
+    vi.spyOn(TestBed.inject(AppDialogs), 'alert').mockResolvedValue();
+    localStorage.setItem('mastodon_mock_token', 'before');
+    api.postStatus('hi', { muteNotifications: true }).subscribe();
+    localStorage.setItem('mastodon_mock_token', 'after');
+    httpMock.expectOne('/api/v1/statuses').flush(statusStub());
+    httpMock.expectNone('/api/v1/statuses/99/mute');
+    localStorage.removeItem('mastodon_mock_token');
+  });
+
+  it('dismisses only the specified notification', () => {
+    api.dismissNotification('42').subscribe();
+    const request = httpMock.expectOne('/api/v1/notifications/42/dismiss');
+    expect(request.request.method).toBe('POST');
+    request.flush({});
+  });
 
   it('homeTimelinePage follows Link on a short page and reports an explicit end', () => {
     let page: { nextMaxId: string | null; cursorSource: string } | undefined;

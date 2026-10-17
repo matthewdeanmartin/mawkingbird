@@ -74,6 +74,11 @@
     <div class="profile-top">
       <img
         class="avatar"
+        [style.filter]="
+          relationship()?.blocking || relationship()?.muting || localBlocked() || localMuted()
+            ? 'blur(12px)'
+            : null
+        "
         [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
         [alt]="a.username"
         width="80"
@@ -1085,6 +1090,7 @@
 
   @if (showReport()) {
     <app-report-dialog
+      [account]="a"
       [username]="a.username"
       [accountId]="a.id"
       [provider]="isBluesky() ? 'bluesky' : 'mastodon'"

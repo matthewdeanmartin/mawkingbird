@@ -1,3 +1,7 @@
+import { LocalModeration } from '../../local-moderation';
+import { accountScopeSuffix } from '../../account-scope';
+import { MbButton } from '../../design-system/button/button';
+import { firstValueFrom } from 'rxjs';
 import { accountProfilePath } from '../../account-route';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
@@ -35,6 +39,8 @@ export interface NewAccountCandidate {
 }
 
 /** English source strings; see scripts/extract-i18n.mjs. */
+// i18n pages.notifications.hide: Hide notification
+// i18n pages.notifications.hideFailed: Could not hide the notification. Try again.
 // i18n pages.notifications.sourceAriaLabel: Notification source
 // i18n pages.notifications.source.mastodon: 🐘 Mastodon
 // i18n pages.notifications.source.bluesky: 🦋 Bluesky
@@ -255,6 +261,7 @@ export function accountsNewToMe(
 @Component({
   selector: 'app-notifications',
   imports: [
+    MbButton,
     CustomEmojiPipe,
     MbPostAction,
     PollResults,
@@ -269,6 +276,40 @@ export function accountsNewToMe(
   styleUrl: './notifications.css',
 })
 export class Notifications implements OnInit, OnDestroy {
+  private localModeration = inject(LocalModeration);
+  protected blurAvatar(account: Account): boolean {
+    const relationship = this.rels().get(account.id);
+    return !!(
+      relationship?.blocking ||
+      relationship?.muting ||
+      this.localModeration.isSuppressed(account)
+    );
+  }
+
+  protected dismissing = signal(false);
+  protected dismissError = signal(false);
+  async dismiss(row: NotifRow): Promise<void> {
+    if (this.dismissing()) return;
+    const scope = accountScopeSuffix();
+    this.dismissing.set(true);
+    this.dismissError.set(false);
+    const notifications =
+      row.kind === 'single'
+        ? [row.notif]
+        : this.items().filter((n) => n.type === row.type && n.status?.id === row.status.id);
+    for (const notification of notifications) {
+      if (scope !== accountScopeSuffix()) break;
+      try {
+        await firstValueFrom(this.api.dismissNotification(notification.id));
+        if (scope !== accountScopeSuffix()) break;
+        this.items.update((items) => items.filter((n) => n.id !== notification.id));
+      } catch {
+        this.dismissError.set(true);
+      }
+    }
+    this.dismissing.set(false);
+  }
+
   protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
   private statusActions = inject(StatusActions);

@@ -442,23 +442,21 @@
         <span class="visibility-locked" [title]="'compose.visibilityFixed' | transloco"
           >🔒 {{ targetIncludesBlog() ? 'public' : visibility() }}</span
         >
-      } @else {
+      } @else if (targetIncludesPaste()) {
         <select
           class="visibility-select"
           [ngModel]="visibility()"
           (ngModelChange)="onVisibilityChange($event)"
           [title]="'compose.visibility' | transloco"
         >
-          @if (targetIncludesPaste()) {
-            @for (v of selectedPasteProvider().visibilities; track v) {
-              <option [value]="v">{{ v }}</option>
-            }
-          } @else {
-            @for (v of visibilities; track v) {
-              <option [value]="v">{{ v }}</option>
-            }
+          @for (v of selectedPasteProvider().visibilities; track v) {
+            <option [value]="v">{{ v }}</option>
           }
         </select>
+      } @else {
+        <button type="button" mbButton variant="outline" (click)="permissionsOpen.set(true)">
+          {{ 'permissions.title' | transloco }}
+        </button>
       }
 
       @if (targetIncludesBsky()) {
@@ -806,6 +804,9 @@
   @if (scheduledFlash(); as flash) {
     <div class="thread-hint muted">{{ flash }}</div>
   }
+  @if (scheduleActive() && muteNotifications()) {
+    <p role="alert">{{ 'permissions.scheduleMute' | transloco }}</p>
+  }
   @if (scheduleTooSoon()) {
     <div class="thread-hint muted">
       {{ 'compose.warn.scheduleTooSoon' | transloco }}
@@ -903,5 +904,19 @@
     [carriesCredential]="prompt.carriesCredential"
     (accepted)="acceptShortenerConsent()"
     (cancelled)="declineShortenerConsent()"
+  />
+}
+
+@if (permissionsOpen()) {
+  <app-post-permissions
+    [initial]="{
+      visibility: visibility(),
+      quoteApprovalPolicy: quoteApprovalPolicy(),
+      muteNotifications: muteNotifications(),
+    }"
+    [locked]="lockVisibility()"
+    [mastodon]="targetIncludesFedi()"
+    (saved)="applyPermissions($event)"
+    (closed)="permissionsOpen.set(false)"
   />
 }

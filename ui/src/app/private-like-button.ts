@@ -41,7 +41,7 @@ import { PrivateLikes } from './private-likes';
       text-align: left;
       cursor: pointer;
       font: inherit;
-      color: inherit;
+      color: var(--text);
       background: none;
       border: 0;
       padding: 7px 9px;

@@ -573,50 +573,6 @@ summary.action {
   margin-top: 2px;
 }
 
-/* --- interaction policy menu --- */
-.policy-wrap {
-  position: relative;
-}
-
-.policy-menu {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  z-index: 50;
-  background: var(--col-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 8px;
-  min-width: 140px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-.policy-title {
-  margin-bottom: 6px;
-}
-
-.policy-option {
-  display: block;
-  width: 100%;
-  text-align: left;
-  border: none;
-  background: none;
-  padding: 6px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  text-transform: capitalize;
-  color: var(--text);
-}
-
-.policy-option:hover {
-  background: var(--border);
-}
-
-.policy-option.active {
-  color: var(--accent);
-  font-weight: 600;
-}
-
 .inline-compose {
   margin-top: 8px;
   padding-top: 8px;
@@ -733,7 +689,7 @@ summary.action {
   border: 0;
   border-radius: 6px;
   background: none;
-  color: #e0245e;
+  color: var(--text);
   text-align: left;
   cursor: pointer;
 }
@@ -941,4 +897,8 @@ a.open-original {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
+}
+
+.danger-menu-panel button.destructive {
+  color: var(--danger, #e0245e);
 }

@@ -138,6 +138,7 @@
         <a class="account-link" [routerLink]="accountProfilePath(a)">
           <img
             class="avatar"
+            style="filter: blur(12px)"
             [src]="a.avatar_static || a.avatar"
             [alt]="a.username"
             loading="lazy"

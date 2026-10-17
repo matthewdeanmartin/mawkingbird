@@ -1,5 +1,20 @@
 # Sprint 6 opening consolidation audit
 
+## Post permissions and moderation, 2026-10-17
+
+Reviewed 1,132 maintained sources and 231 candidate files. Two new app
+components reuse the existing widgets: PostPermissions uses Dialog, Field/Control,
+Button, Help and Notice; report history uses Help and ordinary navigation.
+Both have explicit ledger entries. Composer and Write replace their audience
+pickers with the same dialog. StatusCard replaces its quote popup with that
+dialog and adds MenuItem commands; its remaining legacy menu remains partial
+adoption. Notification dismissal uses Button. Neutral post-menu commands and
+private likes no longer inherit danger coloring; report and block retain it.
+Unused quote-popup CSS was removed, keeping StatusCard below its CSS budget.
+Existing candidate line changes were reviewed; no scanner exemptions changed.
+Storybook and browser assertions cover cancellation, focus restoration, narrow
+layout and the immutable audience of a published post.
+
 ## Observability timing and scope, 2026-10-16
 
 Reviewed the inventory after observability changes: still 1,130 sources and 229

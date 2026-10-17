@@ -1,3 +1,6 @@
+import { accountProfilePath } from '../account-route';
+import { Account } from '../models';
+import { SubmittedReports } from '../report-history/report-history';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -34,12 +37,14 @@ const CATEGORIES = ['spam', 'violation', 'other'] as const;
   styleUrl: './report-dialog.css',
 })
 export class ReportDialog {
+  private history = inject(SubmittedReports);
   private api = inject(Api);
   private blueskyApi = inject(BlueskyApi);
   private transloco = inject(TranslocoService);
 
   /** Username shown in the heading. */
   readonly username = input.required<string>();
+  readonly account = input<Account | undefined>(undefined);
   readonly accountId = input.required<string>();
   /** Optional status being reported (a "report this post" flow). */
   readonly statusId = input<string | undefined>(undefined);
@@ -61,6 +66,14 @@ export class ReportDialog {
     }
     this.submitting.set(true);
     this.error.set('');
+    const scope = this.history.scope();
+    const receipt = {
+      accountId: this.accountId(),
+      profilePath: this.account() ? accountProfilePath(this.account()!) : undefined,
+      username: this.username(),
+      statusId: this.statusId(),
+      category: this.category(),
+    };
     if (this.provider() === 'bluesky') {
       const reason = BLUESKY_REASONS[this.category()] ?? BLUESKY_REASONS['other'];
       const ref = this.statusRef();
@@ -81,6 +94,7 @@ export class ReportDialog {
       call.subscribe({
         next: () => {
           this.submitting.set(false);
+          this.history.record(receipt, scope);
           this.submitted.emit();
         },
         error: () => {
@@ -94,6 +108,7 @@ export class ReportDialog {
     this.api.report(this.accountId(), this.category(), this.comment(), statusIds).subscribe({
       next: () => {
         this.submitting.set(false);
+        this.history.record(receipt, scope);
         this.submitted.emit();
       },
       error: () => {

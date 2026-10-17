@@ -239,6 +239,8 @@ export interface Translation {
 
 /** Options accepted by the composer's status-create path. */
 export interface ComposeOptions {
+  quoteApprovalPolicy?: string;
+  muteNotifications?: boolean;
   inReplyToId?: string;
   /** Quote another status (Mastodon 4.5+ `quoted_status_id`). */
   quotedStatusId?: string;

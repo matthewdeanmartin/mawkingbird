@@ -197,7 +197,11 @@ export default {
         },
         {
           provide: Auth,
-          useValue: { isAnonymous: false, isBlueskyPrimary: false },
+          useValue: {
+            isAnonymous: false,
+            isBlueskyPrimary: false,
+            account: signal(null),
+          },
         },
         {
           provide: Server,

@@ -1,3 +1,4 @@
+import { PostPermissions, PostPermissionsValue } from '../../post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { Pseudonymity } from '../../pseudonymity';
@@ -292,6 +293,7 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    PostPermissions,
     CustomEmojiPipe,
     MbPostAction,
     PostingLanguageDialog,
@@ -312,6 +314,16 @@ export interface Notice {
   providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication],
 })
 export class WritePage implements OnInit, OnDestroy {
+  protected permissionsOpen = signal(false);
+  protected quoteApprovalPolicy = signal<string | undefined>(undefined);
+  protected muteNotifications = signal(false);
+  applyPermissions(value: PostPermissionsValue): void {
+    this.setVisibility(value.visibility);
+    this.quoteApprovalPolicy.set(value.quoteApprovalPolicy);
+    this.muteNotifications.set(!!value.muteNotifications);
+    this.permissionsOpen.set(false);
+  }
+
   private readonly postingLanguageDefaults = inject(PostingLanguage);
   private readonly privateMedia = inject(PrivateMedia);
   protected readonly languagePromptOpen = signal(false);
@@ -1280,6 +1292,8 @@ export class WritePage implements OnInit, OnDestroy {
       spoilerText: this.cwOpen() ? this.spoilerText() : '',
       sensitive: this.sensitive(),
       visibility: this.visibility(),
+      quoteApprovalPolicy: this.quoteApprovalPolicy(),
+      muteNotifications: this.muteNotifications(),
       poll: this.pollOpen()
         ? {
             options: this.pollOptions(),
@@ -1297,6 +1311,8 @@ export class WritePage implements OnInit, OnDestroy {
     // A saved visibility is a deliberate choice and outranks the account
     // default; dropping it here is what used to silently widen private drafts.
     this.visibilityState.choose(snapshot.visibility);
+    this.quoteApprovalPolicy.set(snapshot.quoteApprovalPolicy);
+    this.muteNotifications.set(!!snapshot.muteNotifications);
     this.spoilerText.set(snapshot.spoilerText);
     this.cwOpen.set(!!snapshot.spoilerText);
     this.sensitive.set(snapshot.sensitive);
@@ -1562,6 +1578,8 @@ export class WritePage implements OnInit, OnDestroy {
     const hasPoll = this.pollOpen();
     const hasCw = this.cwOpen() && !!this.spoilerText().trim();
     const hasLanguage = !!this.postLanguage() && this.languageExplicit();
+    if (scheduled && this.muteNotifications())
+      return this.transloco.translate('permissions.scheduleMute');
     if (scheduled && threaded) {
       return 'Scheduling supports one post, not a thread.';
     }

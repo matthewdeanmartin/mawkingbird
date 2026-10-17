@@ -47,7 +47,14 @@
       <a class="avatar-link" [routerLink]="accountLink" tabindex="-1" aria-hidden="true">
         @if (avatarSrc(display.account); as avatar) {
           @if (avatar.optimizable) {
-            <img class="avatar" [ngSrc]="avatar.url" alt="" width="48" height="48" />
+            <img
+              class="avatar"
+              [style.filter]="authorBlockedLocally() || authorMutedLocally() ? 'blur(12px)' : null"
+              [ngSrc]="avatar.url"
+              alt=""
+              width="48"
+              height="48"
+            />
           } @else {
             <!-- A data: URI (an RSS feed's inline icon). NgOptimizedImage
                  refuses these outright — see `avatarSrc`. -->
@@ -1175,22 +1182,6 @@
                   >
                     <span aria-hidden="true">💬🔒</span>
                   </button>
-                  @if (showPolicyMenu()) {
-                    <div class="policy-menu" (click)="$event.stopPropagation()">
-                      <div class="policy-title muted small">
-                        {{ 'statusCard.whoCanQuote' | transloco }}
-                      </div>
-                      @for (p of quotePolicies; track p) {
-                        <button
-                          class="policy-option"
-                          [class.active]="display.quote_approval_policy === p"
-                          (click)="setPolicy(p)"
-                        >
-                          {{ quotePolicyLabel(p) }}
-                        </button>
-                      }
-                    </div>
-                  }
                 </div>
               }
               <button
@@ -1227,7 +1218,7 @@
                   <span aria-hidden="true">♻️</span>
                 </button>
               }
-              @if (display.url || display.account.url) {
+              @if (display.id) {
                 <details class="danger-menu" (click)="$event.stopPropagation()">
                   <summary
                     class="action"
@@ -1239,6 +1230,44 @@
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
+                    @if (display.provider !== 'bluesky') {
+                      <button
+                        type="button"
+                        mbMenuItem
+                        (click)="
+                          applyPermissions({
+                            visibility: display.visibility,
+                            muteNotifications: !display.muted,
+                          })
+                        "
+                      >
+                        {{
+                          (display.muted
+                            ? 'statusCard.notificationsOn'
+                            : 'statusCard.notificationsOff'
+                          ) | transloco
+                        }}
+                      </button>
+                      <button
+                        type="button"
+                        mbMenuItem
+                        (click)="
+                          applyPermissions({
+                            visibility: display.visibility,
+                            quoteApprovalPolicy: 'nobody',
+                            muteNotifications: display.muted,
+                          })
+                        "
+                      >
+                        {{ 'statusCard.quotesOff' | transloco }}
+                      </button>
+                      <button type="button" mbMenuItem (click)="permissionsOpen.set(true)">
+                        {{ 'statusCard.permissions' | transloco }}
+                      </button>
+                    }
+                    <button type="button" mbMenuItem (click)="mutePost($event)">
+                      {{ 'statusCard.muteThisPost' | transloco }}
+                    </button>
                     <app-private-like-button [status]="display" />
                     <!-- "Reply to this later." Parks a local draft; publishes
                        nothing, so it works anonymously too. -->
@@ -1345,12 +1374,12 @@
                         </button>
                       }
                     </div>
-                    <button type="button" (click)="blockAuthorLocally($event)">
+                    <button type="button" class="destructive" (click)="blockAuthorLocally($event)">
                       {{ 'statusCard.blockAccount' | transloco: { acct: display.account.acct } }}
                     </button>
                   }
                   @if (canReport) {
-                    <button type="button" (click)="openReport($event)">
+                    <button type="button" class="destructive" (click)="openReport($event)">
                       {{ 'statusCard.reportPost' | transloco }}
                     </button>
                   }
@@ -1440,12 +1469,12 @@
                       </button>
                     }
                   </div>
-                  <button type="button" (click)="blockAuthorLocally($event)">
+                  <button type="button" class="destructive" (click)="blockAuthorLocally($event)">
                     {{ 'statusCard.blockAccount' | transloco: { acct: display.account.acct } }}
                   </button>
                 }
                 @if (canReport) {
-                  <button type="button" (click)="openReport($event)">
+                  <button type="button" class="destructive" (click)="openReport($event)">
                     {{ 'statusCard.reportPost' | transloco }}
                   </button>
                 }
@@ -1539,6 +1568,7 @@
 
   @if (showReport()) {
     <app-report-dialog
+      [account]="display.account"
       [username]="display.account.username"
       [accountId]="display.account.id"
       [statusId]="display.id"
@@ -1658,4 +1688,19 @@
       </div>
     </div>
   }
+}
+
+@if (permissionsOpen()) {
+  <app-post-permissions
+    [initial]="{
+      visibility: display.visibility,
+      quoteApprovalPolicy: display.quote_approval_policy || undefined,
+      muteNotifications: display.muted,
+    }"
+    [published]="true"
+    [busy]="permissionsBusy()"
+    [error]="actionError() || ''"
+    (closed)="permissionsOpen.set(false)"
+    (saved)="applyPermissions($event)"
+  />
 }

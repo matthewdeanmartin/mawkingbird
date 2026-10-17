@@ -16,6 +16,8 @@ export interface DraftPoll {
  * only exist server-side as transient ids, so they can't survive in a draft.
  */
 export interface Draft {
+  quoteApprovalPolicy?: string;
+  muteNotifications?: boolean;
   id: string;
   updatedAt: string;
   /** Thread segments; index 0 is the primary post. */

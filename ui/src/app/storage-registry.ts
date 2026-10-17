@@ -504,6 +504,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Recent query strings and selected search tabs. Account-scoped and private because search history reveals interests.',
   },
   {
+    base: 'mockingbird_submitted_reports',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Receipts of reports submitted in this browser, without report comments.',
+  },
+  {
     base: 'mockingbird_local_moderation',
     storage: 'local',
     suffix: 'none',

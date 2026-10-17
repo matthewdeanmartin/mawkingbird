@@ -98,6 +98,8 @@ export class WritePublication {
     const initialIdentity = identity();
     const options: ComposeOptions = {
       visibility: snapshot.visibility,
+      quoteApprovalPolicy: snapshot.quoteApprovalPolicy,
+      muteNotifications: snapshot.muteNotifications,
       spoilerText: snapshot.spoilerText,
       sensitive: snapshot.sensitive,
       language: snapshot.postLanguage || undefined,
@@ -149,6 +151,8 @@ export class WritePublication {
               ? options
               : {
                   visibility: options.visibility,
+                  quoteApprovalPolicy: options.quoteApprovalPolicy,
+                  muteNotifications: options.muteNotifications,
                   language: options.language,
                   spoilerText: options.spoilerText,
                   inReplyToId: operation.confirmed[index - 1],

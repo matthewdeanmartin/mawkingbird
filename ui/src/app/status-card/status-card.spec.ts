@@ -47,6 +47,7 @@ interface StatusCardInternals {
   translating: WritableSignal<boolean>;
   pollSelection: WritableSignal<number[]>;
   showPolicyMenu: WritableSignal<boolean>;
+  permissionsOpen: WritableSignal<boolean>;
   showHistory: WritableSignal<boolean>;
   lightboxIndex: WritableSignal<number | null>;
   openLightbox(index: number, event: Event): void;
@@ -1819,6 +1820,34 @@ describe('StatusCard', () => {
     expect(internals(f).showPolicyMenu()).toBe(true);
     f.componentInstance.togglePolicyMenu(fakeEvent());
     expect(internals(f).showPolicyMenu()).toBe(false);
+  });
+
+  it('togglePolicyMenu: opens the shared permissions dialog', () => {
+    const f = setUp();
+    expect(internals(f).permissionsOpen()).toBe(false);
+    f.componentInstance.togglePolicyMenu(fakeEvent());
+    expect(internals(f).permissionsOpen()).toBe(true);
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('app-post-permissions')).not.toBeNull();
+  });
+
+  it('changes private-thread notifications without requesting an unnecessary quote policy', async () => {
+    const status = makeStatus({
+      id: '15',
+      visibility: 'private',
+      quote_approval_policy: null,
+      muted: false,
+    });
+    const fixture = setUp(status);
+    const applied = fixture.componentInstance.applyPermissions({
+      visibility: 'private',
+      quoteApprovalPolicy: 'nobody',
+      muteNotifications: true,
+    });
+    httpMock.expectNone('/api/v1/statuses/15/interaction_policy');
+    httpMock.expectOne('/api/v1/statuses/15/mute').flush({ ...status, muted: true });
+    await applied;
+    expect(internals(fixture).permissionsOpen()).toBe(false);
   });
 
   // ---------------------------------------------------------------- setPolicy

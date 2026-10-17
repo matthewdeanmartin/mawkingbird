@@ -1,3 +1,4 @@
+import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { MbHelp } from '../design-system/help/help';
 import { Pseudonymity } from '../pseudonymity';
 import {
@@ -480,11 +481,13 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.switchTo: Switch to {{language}}
 // i18n compose.pkmWarning: This is tagged <strong>{{label}}</strong>. Publishing posts it to your followers.
 // i18n compose.warn.pasteDisabled: This paste draft cannot be published while Pastebin is disabled in Settings → Feature flags.
+// i18n permissions.scheduleMute: Notifications cannot be turned off in advance for a scheduled post. Publish now or leave notifications on.
 // i18n compose.warn.scheduleTooSoon: Times less than ~5 minutes out publish immediately instead of scheduling.
 
 @Component({
   selector: 'app-compose',
   imports: [
+    PostPermissions,
     MbHelp,
     MbButton,
     MbPostAction,
@@ -504,6 +507,16 @@ function dragHasFiles(event: DragEvent): boolean {
   providers: [VisibilityState, LinkShortening],
 })
 export class Compose implements OnDestroy {
+  protected permissionsOpen = signal(false);
+  protected quoteApprovalPolicy = signal<string | undefined>(undefined);
+  protected muteNotifications = signal(false);
+  applyPermissions(value: PostPermissionsValue): void {
+    this.onVisibilityChange(value.visibility);
+    this.quoteApprovalPolicy.set(value.quoteApprovalPolicy);
+    this.muteNotifications.set(!!value.muteNotifications);
+    this.permissionsOpen.set(false);
+  }
+
   private videoPreviews = new Map<File, string>();
   protected previewVideo(item: PendingMedia): VideoSource | null {
     const uploaded = attachmentSource({ ...item.media, description: item.description });
@@ -1367,7 +1380,11 @@ export class Compose implements OnDestroy {
     }
     if (this.scheduleActive()) {
       // Scheduling covers exactly one post: no threads, no Bluesky leg.
-      if (this.thread().some((t) => t.trim()) || this.targetIncludesBsky()) {
+      if (
+        this.thread().some((t) => t.trim()) ||
+        this.targetIncludesBsky() ||
+        this.muteNotifications()
+      ) {
         return false;
       }
     }
@@ -1486,6 +1503,8 @@ export class Compose implements OnDestroy {
       language: this.pasteLanguage(),
       expiry: this.pasteExpiry(),
       visibility: this.visibility(),
+      quoteApprovalPolicy: this.quoteApprovalPolicy(),
+      muteNotifications: this.muteNotifications(),
     });
   }
 
@@ -1912,6 +1931,8 @@ export class Compose implements OnDestroy {
       spoilerText: this.cwOpen() ? this.spoilerText() : '',
       sensitive: this.sensitive(),
       visibility: this.visibility(),
+      quoteApprovalPolicy: this.quoteApprovalPolicy(),
+      muteNotifications: this.muteNotifications(),
       poll: this.pollOpen()
         ? {
             options: this.pollOptions(),
@@ -1967,6 +1988,8 @@ export class Compose implements OnDestroy {
       // A saved draft's visibility is a real choice, so it outranks anything a
       // paste clamp stashed on the way here.
       this.visibilityState.choose(d.visibility);
+      this.quoteApprovalPolicy.set(d.quoteApprovalPolicy);
+      this.muteNotifications.set(!!d.muteNotifications);
     }
     this.target.set(
       this.blueskyReplyRef() || this.blueskyQuoteRef()
@@ -2328,6 +2351,8 @@ export class Compose implements OnDestroy {
       inReplyToId: this.inReplyToId(),
       quotedStatusId: this.quotedStatusId(),
       visibility: this.visibility(),
+      quoteApprovalPolicy: this.quoteApprovalPolicy(),
+      muteNotifications: this.muteNotifications(),
     };
     if (this.postLanguage()) {
       options.language = this.postLanguage();
@@ -2477,7 +2502,12 @@ export class Compose implements OnDestroy {
     const options: ComposeOptions =
       index === 0
         ? operation.options
-        : { inReplyToId: previous.id, visibility: operation.options.visibility };
+        : {
+            inReplyToId: previous.id,
+            visibility: operation.options.visibility,
+            quoteApprovalPolicy: operation.options.quoteApprovalPolicy,
+            muteNotifications: operation.options.muteNotifications,
+          };
     operation.fedi.inFlight = true;
     this.api
       .postStatus(operation.parts[index], options, `${operation.id}:fedi:${index}`)

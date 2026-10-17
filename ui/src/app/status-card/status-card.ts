@@ -1,3 +1,6 @@
+import { accountScopeSuffix } from '../account-scope';
+import { MbMenuItem } from '../design-system/menu/menu-item';
+import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
 import { MbNotice } from '../design-system/notice/notice';
 import {
@@ -196,7 +199,12 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.openProfileOriginal: Open profile on original site ↗
 // i18n statusCard.closeMenu: Close menu
 // i18n statusCard.reported: 🚩 reported
-// i18n statusCard.muteThisPost: Mute this post
+// i18n statusCard.muteThisPost: Hide this post for 30 days
+// i18n statusCard.notificationsOff: Turn off notifications
+// i18n statusCard.notificationsOn: Turn on notifications
+// i18n statusCard.quotesOff: Turn off quote posts
+// i18n statusCard.permissions: Change permissions
+// i18n statusCard.permissionsFailed: Could not save all permissions. Any successful changes remain applied; please try again.
 // i18n statusCard.unblock: Unblock
 // i18n statusCard.unmute: Unmute
 // i18n statusCard.muteAccountFor: Mute @{{acct}} for…
@@ -343,6 +351,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    PostPermissions,
+    MbMenuItem,
     CustomEmojiPipe,
     MbNotice,
     MbPostActions,
@@ -378,6 +388,43 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
   styleUrl: './status-card.css',
 })
 export class StatusCard {
+  protected permissionsOpen = signal(false);
+  protected permissionsBusy = signal(false);
+  async applyPermissions(value: PostPermissionsValue): Promise<void> {
+    if (this.permissionsBusy()) return;
+    this.permissionsBusy.set(true);
+    const scope = accountScopeSuffix();
+    this.actionError.set(null);
+    try {
+      let status = this.display;
+      if (
+        value.quoteApprovalPolicy &&
+        value.quoteApprovalPolicy !== status.quote_approval_policy &&
+        status.visibility !== 'private' &&
+        status.visibility !== 'direct'
+      ) {
+        status = await firstValueFrom(
+          this.api.setInteractionPolicy(status.id, value.quoteApprovalPolicy),
+        );
+        this.changed.emit(status);
+      }
+      if (scope !== accountScopeSuffix()) throw new Error('Account changed');
+      if (!!value.muteNotifications !== !!status.muted) {
+        status = await firstValueFrom(
+          value.muteNotifications
+            ? this.api.muteStatus(status.id)
+            : this.api.unmuteStatus(status.id),
+        );
+        this.changed.emit(status);
+      }
+      this.permissionsOpen.set(false);
+    } catch {
+      this.actionError.set(this.transloco.translate('statusCard.permissionsFailed'));
+    } finally {
+      this.permissionsBusy.set(false);
+    }
+  }
+
   readonly showMedia = input(true);
   protected attachmentVideo = attachmentSource;
   protected safeMediaUrl = mediaUrl;
@@ -797,7 +844,7 @@ export class StatusCard {
   // Dialogs.
   protected accountListMode = signal<AccountListMode | null>(null);
   protected showHistory = signal(false);
-  protected showPolicyMenu = signal(false);
+  protected showPolicyMenu = this.permissionsOpen;
 
   // Image lightbox: the index of the attachment being viewed, or null when closed.
   protected lightboxIndex = signal<number | null>(null);
@@ -2543,7 +2590,7 @@ export class StatusCard {
   // --- interaction policy / quote revoke ---
   togglePolicyMenu(event: Event): void {
     event.stopPropagation();
-    this.showPolicyMenu.update((v) => !v);
+    this.permissionsOpen.update((open) => !open);
   }
 
   setPolicy(policy: string): void {

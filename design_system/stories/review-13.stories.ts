@@ -1,3 +1,4 @@
+import { SubmittedReports } from "../../ui/src/app/report-history/report-history";
 import {
   Component,
   Injectable,
@@ -181,6 +182,10 @@ export default {
     applicationConfig({
       providers: [
         Responses,
+        {
+          provide: SubmittedReports,
+          useValue: { scope: () => "preview", record: () => undefined },
+        },
         importProvidersFrom(translocoTesting()),
         {
           provide: Api,
