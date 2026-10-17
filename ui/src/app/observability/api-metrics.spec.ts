@@ -149,6 +149,49 @@ describe('ApiMetrics', () => {
     return metrics.stats().find((s) => s.key === key);
   }
 
+  it('defaults to the active server and follows account server changes', () => {
+    expect(metrics.scope()).toBe('https://mastodon.social');
+    metrics.selectScope(ALL_SCOPES);
+    server.setBaseUrl('https://other.social');
+    expect(metrics.scope()).toBe('https://other.social');
+  });
+
+  it('counts stalled failures without using them as latency samples', () => {
+    metrics.record('GET', '/api/v1/conversations', 20, 200, true);
+    for (const elapsed of [48_838_656, NaN, Infinity, -1]) {
+      metrics.record('GET', '/api/v1/conversations', elapsed, 0, false);
+    }
+    const stat = row('GET /api/v1/conversations')!;
+    expect(stat.count).toBe(5);
+    expect(stat.errors).toBe(4);
+    expect(stat.timedCount).toBe(1);
+    expect(stat.minMs).toBe(20);
+    expect(stat.maxMs).toBe(20);
+    expect(ApiMetrics.mean(stat)).toBe(20);
+    expect(ApiMetrics.stddev(stat)).toBe(0);
+    expect(metrics.totals().avgMs).toBe(20);
+  });
+
+  it('repairs contaminated saved latency while preserving request and error counts', () => {
+    localStorage.setItem(
+      storageKey('https://mastodon.social'),
+      JSON.stringify({
+        v: 2,
+        e: [['GET /api/v1/conversations', 988, 12, 169609960, 15, 48838656, 1e16, 200, 1000]],
+        b: [],
+        x: [],
+      }),
+    );
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: [ApiMetrics, Server] });
+    TestBed.inject(Server).setBaseUrl('https://mastodon.social');
+    const reloaded = TestBed.inject(ApiMetrics);
+    expect(reloaded.stats()[0]).toMatchObject({ count: 988, errors: 12, timedCount: 0, maxMs: 0 });
+    reloaded.record('GET', '/api/v1/conversations', 25, 200, true);
+    expect(reloaded.stats()[0]).toMatchObject({ count: 989, timedCount: 1, minMs: 25, maxMs: 25 });
+    expect(reloaded.totals().avgMs).toBe(25);
+  });
+
   it('aggregates repeated calls to one endpoint into a single row', () => {
     metrics.record('GET', '/api/v1/accounts/1/followers', 100, 200, true);
     metrics.record('GET', '/api/v1/accounts/2/followers', 200, 200, true);

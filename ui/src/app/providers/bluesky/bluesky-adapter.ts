@@ -176,7 +176,19 @@ export function postUrl(handle: string, uri: string): string {
   return `https://bsky.app/profile/${handle}/post/${uri.split('/').pop()}`;
 }
 
-function adaptImages(embed: BskyEmbedView | undefined, postUri: string): MediaAttachment[] {
+function adaptMedia(embed: BskyEmbedView | undefined, postUri: string): MediaAttachment[] {
+  const media = embed?.media ?? embed;
+  if (media?.$type === 'app.bsky.embed.video#view' && media.playlist) {
+    return [
+      {
+        id: `bsky-media:${postUri}:0`,
+        type: 'video',
+        url: media.playlist,
+        preview_url: media.thumbnail ?? '',
+        description: media.alt || null,
+      },
+    ];
+  }
   const images = embed?.images ?? embed?.media?.images ?? [];
   return images.map((img, i) => ({
     id: `bsky-media:${postUri}:${i}`,
@@ -291,7 +303,7 @@ export function adaptPost(post: BskyPostView): Status {
     // per-language filter) reads the single value. Absent on plenty of posts,
     // which is a real null rather than a default worth inventing.
     language: post.record.langs?.[0] ?? null,
-    media_attachments: adaptImages(post.embed, post.uri),
+    media_attachments: adaptMedia(post.embed, post.uri),
   };
 }
 

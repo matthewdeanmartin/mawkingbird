@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
 import { Server } from '../server';
 import { documentedTemplate } from './api-docs';
 import {
@@ -79,6 +79,8 @@ export function latencyFamily(key: string): LatencyFamily {
 
 /** Aggregate stats for one endpoint template (method + normalized path). */
 export interface EndpointStat {
+  /** Usable latency samples; omitted in legacy snapshots where every call was timed. */
+  timedCount?: number;
   /** e.g. "GET /api/v1/accounts/:id/followers". */
   key: string;
   count: number;
@@ -190,7 +192,7 @@ interface StoredMetrics {
   /** version */
   v: 1 | 2;
   /** endpoints: [key, count, errors, total, min, max, sumSq, lastStatus, lastAt][] */
-  e: [string, number, number, number, number, number, number, number, number][];
+  e: [string, number, number, number, number, number, number, number, number, number?][];
   /** buckets: [t, count, errors][] */
   b: [number, number, number][];
   /** errors: [at, method, endpoint, status, message][] */
@@ -206,6 +208,9 @@ interface StoredMetrics {
    */
   d?: [number, number, number, number[], number[]][];
 }
+
+// Beyond ten minutes a browser suspension/stalled request is not a useful latency sample.
+export const MAX_REQUEST_LATENCY_MS = 10 * 60_000;
 
 const LEGACY_STORAGE_KEY = 'mockingbird_api_metrics';
 const STORAGE_PREFIX = 'mockingbird_api_metrics:';
@@ -522,11 +527,13 @@ function mergeStates(states: MetricsState[]): MetricsState {
         out.endpoints.set(s.key, { ...s });
         continue;
       }
+      const previousTimed = prev.timedCount ?? prev.count;
+      prev.timedCount = previousTimed + (s.timedCount ?? s.count);
       prev.count += s.count;
       prev.errors += s.errors;
       prev.totalMs += s.totalMs;
       prev.sumSqMs += s.sumSqMs;
-      prev.minMs = Math.min(prev.minMs, s.minMs);
+      if (s.timedCount !== 0) prev.minMs = previousTimed ? Math.min(prev.minMs, s.minMs) : s.minMs;
       prev.maxMs = Math.max(prev.maxMs, s.maxMs);
       if (s.lastAt > prev.lastAt) {
         prev.lastAt = s.lastAt;
@@ -614,7 +621,7 @@ export class ApiMetrics {
    * always filed under the server it was made against, so switching the picker
    * changes what you are looking at and never what is collected.
    */
-  private readonly selected = signal<string>(ALL_SCOPES);
+  private readonly selected = linkedSignal(() => this.serverLabel());
 
   /** Server scopes with stored metrics, plus any server seen this session. */
   readonly scopes = computed<string[]>(() => {
@@ -664,13 +671,17 @@ export class ApiMetrics {
     const state = this.state(scope);
     const endpoint = normalizeEndpoint(url);
     const key = `${method.toUpperCase()} ${endpoint}`;
-    const ms = Math.max(0, Math.round(durationMs));
+    const measured =
+      Number.isFinite(durationMs) && durationMs >= 0 && durationMs <= MAX_REQUEST_LATENCY_MS;
+    const ms = measured ? Math.round(durationMs) : 0;
 
     const prev = state.endpoints.get(key);
     if (prev) {
+      const timed = prev.timedCount ?? prev.count;
+      prev.timedCount = timed + Number(measured);
       prev.count++;
       prev.totalMs += ms;
-      prev.minMs = Math.min(prev.minMs, ms);
+      if (measured) prev.minMs = timed ? Math.min(prev.minMs, ms) : ms;
       prev.maxMs = Math.max(prev.maxMs, ms);
       prev.sumSqMs += ms * ms;
       prev.lastStatus = status;
@@ -682,6 +693,7 @@ export class ApiMetrics {
       state.endpoints.set(key, {
         key,
         count: 1,
+        timedCount: Number(measured),
         errors: ok ? 0 : 1,
         totalMs: ms,
         minMs: ms,
@@ -693,9 +705,9 @@ export class ApiMetrics {
     }
 
     this.bumpBucket(state, !ok);
-    this.bumpDay(state, key, ms, !ok);
+    this.bumpDay(state, key, ms, !ok, measured);
     if (!ok) {
-      this.pushError(state, method, endpoint, status, ms);
+      this.pushError(state, method, endpoint, status, measured ? ms : null);
     }
     this.version.update((v) => v + 1);
     this.scheduleFlush(scope);
@@ -707,7 +719,13 @@ export class ApiMetrics {
    * The latency sample is taken only for a successful call, and only into its
    * endpoint's family. See {@link DayBucket} for why errors are excluded.
    */
-  private bumpDay(state: MetricsState, key: string, ms: number, isError: boolean): void {
+  private bumpDay(
+    state: MetricsState,
+    key: string,
+    ms: number,
+    isError: boolean,
+    measured = true,
+  ): void {
     const t = dayStart(Date.now());
     let day = state.days[state.days.length - 1];
     if (!day || day.t !== t) {
@@ -722,6 +740,7 @@ export class ApiMetrics {
       day.errors++;
       return;
     }
+    if (!measured) return;
     addSample(latencyFamily(key) === 'slow' ? day.slow : day.fast, ms);
   }
 
@@ -746,7 +765,7 @@ export class ApiMetrics {
     method: string,
     endpoint: string,
     status: number,
-    ms: number,
+    ms: number | null,
   ): void {
     const message = this.statusMessage(status, ms).slice(0, MAX_MSG_LEN);
     state.errorRing.push({
@@ -819,7 +838,11 @@ export class ApiMetrics {
     }
   }
 
-  private statusMessage(status: number, ms: number): string {
+  private statusMessage(status: number, ms: number | null): string {
+    if (ms === null)
+      return status === 0
+        ? 'Network failure (no response); timing unavailable'
+        : `HTTP ${status}; timing unavailable`;
     if (status === 0) {
       return `Network failure (no response) after ${ms}ms`;
     }
@@ -904,32 +927,34 @@ export class ApiMetrics {
     let count = 0;
     let errors = 0;
     let totalMs = 0;
+    let timedCount = 0;
     for (const s of state.endpoints.values()) {
       count += s.count;
       errors += s.errors;
       totalMs += s.totalMs;
+      timedCount += s.timedCount ?? s.count;
     }
     return {
       count,
       errors,
       endpoints: state.endpoints.size,
-      avgMs: count ? Math.round(totalMs / count) : 0,
+      avgMs: timedCount ? Math.round(totalMs / timedCount) : 0,
       errorRate: count ? errors / count : 0,
     };
   });
 
   /** Standard deviation of response time for one endpoint row (ms). */
   static stddev(s: EndpointStat): number {
-    if (s.count < 2) {
+    if ((s.timedCount ?? s.count) < 2) {
       return 0;
     }
-    const mean = s.totalMs / s.count;
-    const variance = Math.max(0, s.sumSqMs / s.count - mean * mean);
+    const mean = s.totalMs / (s.timedCount ?? s.count);
+    const variance = Math.max(0, s.sumSqMs / (s.timedCount ?? s.count) - mean * mean);
     return Math.sqrt(variance);
   }
 
   static mean(s: EndpointStat): number {
-    return s.count ? s.totalMs / s.count : 0;
+    return (s.timedCount ?? s.count) ? s.totalMs / (s.timedCount ?? s.count) : 0;
   }
 
   // ------------------------------------------------------------------- reset
@@ -980,6 +1005,7 @@ export class ApiMetrics {
         s.sumSqMs,
         s.lastStatus,
         s.lastAt,
+        s.timedCount ?? s.count,
       ]),
       b: state.buckets.map((b) => [b.t, b.count, b.errors]),
       x: state.errorRing.map((e) => [e.at, e.method, e.endpoint, e.status, e.message]),
@@ -1046,7 +1072,28 @@ export class ApiMetrics {
       return state;
     }
     for (const row of blob.e ?? []) {
-      const [storedKey, count, errors, totalMs, minMs, maxMs, sumSqMs, lastStatus, lastAt] = row;
+      const [
+        storedKey,
+        count,
+        errors,
+        storedTotal,
+        storedMin,
+        storedMax,
+        storedSumSq,
+        lastStatus,
+        lastAt,
+        storedTimed = count,
+      ] = row;
+      // Individual samples cannot be recovered from an aggregate. Keep traffic/error
+      // history, but restart only contaminated latency aggregates rather than inventing values.
+      const valid =
+        [storedTotal, storedMin, storedMax, storedSumSq].every(Number.isFinite) &&
+        storedMax <= MAX_REQUEST_LATENCY_MS &&
+        storedMin >= 0;
+      const timedCount = valid ? storedTimed : 0;
+      const [totalMs, minMs, maxMs, sumSqMs] = valid
+        ? [storedTotal, storedMin, storedMax, storedSumSq]
+        : [0, 0, 0, 0];
       // Re-normalize on the way in. Rows written before `normalizeEndpoint`
       // consulted the documented templates have tag and list *names* baked into
       // their keys, and loading them verbatim would keep those lookups in
@@ -1059,11 +1106,13 @@ export class ApiMetrics {
       const key = renormalizeKey(storedKey);
       const prev = state.endpoints.get(key);
       if (prev) {
+        const previousTimed = prev.timedCount ?? prev.count;
+        prev.timedCount = previousTimed + timedCount;
         prev.count += count;
         prev.errors += errors;
         prev.totalMs += totalMs;
         prev.sumSqMs += sumSqMs;
-        prev.minMs = Math.min(prev.minMs, minMs);
+        if (timedCount) prev.minMs = previousTimed ? Math.min(prev.minMs, minMs) : minMs;
         prev.maxMs = Math.max(prev.maxMs, maxMs);
         if (lastAt > prev.lastAt) {
           prev.lastAt = lastAt;
@@ -1074,6 +1123,7 @@ export class ApiMetrics {
       state.endpoints.set(key, {
         key,
         count,
+        timedCount,
         errors,
         totalMs,
         minMs,

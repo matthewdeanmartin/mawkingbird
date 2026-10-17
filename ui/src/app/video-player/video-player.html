@@ -9,7 +9,6 @@
     @for (key of [source().key]; track key) {
       <video
         #native
-        [src]="source().url"
         [poster]="source().poster || ''"
         controls
         playsinline

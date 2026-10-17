@@ -8,6 +8,27 @@ import { VideoPlayer } from './video-player';
 import { Playback } from './playback';
 import { VideoSource, youtubeSource } from './media-source';
 
+const streaming = vi.hoisted(() => ({
+  startLoad: vi.fn(),
+  loadSource: vi.fn(),
+  attachMedia: vi.fn(),
+  destroy: vi.fn(),
+  on: vi.fn(),
+}));
+vi.mock('hls.js', () => ({
+  default: class {
+    static isSupported() {
+      return true;
+    }
+    static Events = { ERROR: 'error' };
+    startLoad = streaming.startLoad;
+    loadSource = streaming.loadSource;
+    attachMedia = streaming.attachMedia;
+    destroy = streaming.destroy;
+    on = streaming.on;
+  },
+}));
+
 describe('VideoPlayer user control', () => {
   let fixture: ComponentFixture<VideoPlayer>;
   const source: VideoSource = {
@@ -19,6 +40,7 @@ describe('VideoPlayer user control', () => {
   let play: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => undefined);
     vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
     play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
@@ -50,6 +72,27 @@ describe('VideoPlayer user control', () => {
     fixture.detectChanges();
     return fixture.nativeElement.querySelector('video');
   }
+
+  it('loads HLS without autoplay, starts on Play, and releases the stream on removal', async () => {
+    vi.spyOn(HTMLMediaElement.prototype, 'canPlayType').mockReturnValue('');
+    const url = 'https://video.bsky.app/watch/clip/playlist.m3u8';
+    const video = mount({ ...source, url });
+    await vi.waitFor(() => expect(streaming.attachMedia).toHaveBeenCalledWith(video));
+    expect(streaming.loadSource).toHaveBeenCalledWith(url);
+    expect(streaming.startLoad).not.toHaveBeenCalled();
+    expect(play).not.toHaveBeenCalled();
+    video.dispatchEvent(new Event('play'));
+    expect(streaming.startLoad).toHaveBeenCalledOnce();
+    fixture.destroy();
+    expect(streaming.destroy).toHaveBeenCalledOnce();
+  });
+
+  it('uses native HLS when the browser supports it', () => {
+    vi.spyOn(HTMLMediaElement.prototype, 'canPlayType').mockReturnValue('probably');
+    const url = 'https://video.bsky.app/watch/clip/playlist.m3u8';
+    expect(mount({ ...source, url }).src).toBe(url);
+    expect(streaming.attachMedia).not.toHaveBeenCalled();
+  });
 
   it('opening, metadata readiness and ending never play, loop or advance a video', () => {
     const video = mount();

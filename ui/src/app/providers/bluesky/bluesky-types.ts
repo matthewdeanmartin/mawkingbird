@@ -138,6 +138,11 @@ export interface BskyImagesEmbed {
 
 /** A post embed view; `$type` discriminates (images / external / record / recordWithMedia). */
 export interface BskyEmbedView {
+  playlist?: string;
+  thumbnail?: string;
+  alt?: string;
+  presentation?: string;
+  aspectRatio?: { width: number; height: number };
   $type: string;
   images?: BskyImage[];
   external?: { uri: string; title: string; description: string; thumb?: string };

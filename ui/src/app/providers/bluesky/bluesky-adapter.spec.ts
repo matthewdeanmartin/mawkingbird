@@ -297,3 +297,28 @@ describe('adaptRelationship', () => {
     expect(rel.requested).toBe(false);
   });
 });
+
+describe('Bluesky streaming media', () => {
+  it.each(['default', 'audio'])(
+    'keeps %s video streams playable, including alongside quotes',
+    (presentation) => {
+      const video = {
+        $type: 'app.bsky.embed.video#view',
+        playlist: 'https://video.bsky.app/watch/test/playlist.m3u8',
+        thumbnail: 'https://video.bsky.app/thumb.jpg',
+        alt: 'A performance',
+        presentation,
+      };
+      for (const embed of [video, { $type: 'app.bsky.embed.recordWithMedia#view', media: video }]) {
+        expect(adaptPost(makePost({ embed })).media_attachments).toEqual([
+          expect.objectContaining({
+            type: 'video',
+            url: video.playlist,
+            preview_url: video.thumbnail,
+            description: video.alt,
+          }),
+        ]);
+      }
+    },
+  );
+});

@@ -1,5 +1,25 @@
 # Sprint 6 opening consolidation audit
 
+## Observability timing and scope, 2026-10-16
+
+Reviewed the inventory after observability changes: still 1,130 sources and 229
+candidates, with no additions or removals. Observability retains its existing
+controls and reconciliation disposition; unavailable latency values display as
+dashes, and the changed findings only move line numbers. Timing sample validation,
+server selection and stored route normalization introduce no new controls.
+
+## Composer help and Bluesky media, 2026-10-16
+
+Reviewed the regenerated inventory: 1,130 maintained source files and 229
+candidate files, with no added or removed candidates. Compose replaces its
+inline Bluesky audience explanation with the shared Help popover; its remaining
+controls retain their existing reconciliation disposition. The compact editor
+now offers four rows. List conversion uses the existing AppDialogs confirmation
+with an explicit notification warning. VideoPlayer retains its existing controls
+and shared Help; its findings only move by one line as media source assignment
+moves into the playback lifecycle. No shared widget implementations, scanner
+patterns, exemptions or reconciliation dispositions changed.
+
 ## Profile actions and Bluesky parity, 2026-10-16
 
 Reviewed the regenerated inventory: 1,130 maintained source files and 229

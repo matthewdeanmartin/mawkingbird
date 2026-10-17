@@ -125,7 +125,8 @@
           }}</span>
           <code>{{ h.slowest.key }}</code>
           <span class="muted small"
-            >{{ round(mean(h.slowest)) }} {{ 'pages.observability.chart.unitMs' | transloco }}</span
+            >{{ h.slowest.timedCount === 0 ? '—' : round(mean(h.slowest)) }}
+            {{ 'pages.observability.chart.unitMs' | transloco }}</span
           >
         </div>
         <div class="hl">
@@ -134,7 +135,8 @@
           }}</span>
           <code>{{ h.fastest.key }}</code>
           <span class="muted small"
-            >{{ round(mean(h.fastest)) }} {{ 'pages.observability.chart.unitMs' | transloco }}</span
+            >{{ h.fastest.timedCount === 0 ? '—' : round(mean(h.fastest)) }}
+            {{ 'pages.observability.chart.unitMs' | transloco }}</span
           >
         </div>
         @if (h.worst.errors > 0) {
@@ -339,11 +341,12 @@
                 </td>
                 <td class="num">{{ s.count.toLocaleString() }}</td>
                 <td class="num">
-                  {{ round(mean(s)) }} {{ 'pages.observability.chart.unitMs' | transloco }}
+                  {{ s.timedCount === 0 ? '—' : round(mean(s)) }}
+                  {{ 'pages.observability.chart.unitMs' | transloco }}
                 </td>
-                <td class="num muted">{{ round(stddev(s)) }}</td>
-                <td class="num muted">{{ s.minMs }}</td>
-                <td class="num">{{ s.maxMs }}</td>
+                <td class="num muted">{{ s.timedCount === 0 ? '—' : round(stddev(s)) }}</td>
+                <td class="num muted">{{ s.timedCount === 0 ? '—' : s.minMs }}</td>
+                <td class="num">{{ s.timedCount === 0 ? '—' : s.maxMs }}</td>
                 <td class="num" [class.err]="s.errors > 0">{{ s.errors }}</td>
                 <td class="num muted">{{ s.lastStatus }}</td>
               </tr>

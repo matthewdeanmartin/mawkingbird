@@ -233,7 +233,14 @@ export class RouteLog {
       return;
     }
     for (const [path, visits, totalMs, lastAt] of blob.r ?? []) {
-      this.routes.set(path, { path, visits, totalMs, lastAt });
+      const normalized = sanitizePath(path);
+      const previous = this.routes.get(normalized);
+      this.routes.set(normalized, {
+        path: normalized,
+        visits: (previous?.visits ?? 0) + visits,
+        totalMs: (previous?.totalMs ?? 0) + totalMs,
+        lastAt: Math.max(previous?.lastAt ?? 0, lastAt),
+      });
     }
   }
 }

@@ -54,6 +54,7 @@ export class VideoPlayer implements OnDestroy {
   private identity = computed(() => `${this.source().key}:${this.source().start ?? 0}`);
   protected activated = linkedSignal({ source: this.identity, computation: () => false });
   protected failed = linkedSignal({ source: this.identity, computation: () => false });
+  private retryVersion = signal(0);
   protected ready = signal(false);
   protected rate = signal(1);
   protected restoring = signal(false);
@@ -97,11 +98,45 @@ export class VideoPlayer implements OnDestroy {
       this.identity();
       const video = this.native()?.nativeElement;
       if (!video) return;
+      this.retryVersion();
+      const source = untracked(this.source);
+      let disposed = false;
+      let hls: import('hls.js').default | undefined;
+      const startStreaming = () => hls?.startLoad();
+      if (
+        /\.m3u8(?:[?#]|$)/i.test(source.url) &&
+        !video.canPlayType('application/vnd.apple.mpegurl')
+      ) {
+        void import('hls.js')
+          .then(({ default: Hls }) => {
+            if (disposed) return;
+            if (!Hls.isSupported()) {
+              this.failed.set(true);
+              return;
+            }
+            hls = new Hls({ autoStartLoad: false });
+            hls.on(Hls.Events.ERROR, (_event, data) => {
+              if (data.fatal) this.failed.set(true);
+            });
+            hls.loadSource(source.url);
+            hls.attachMedia(video);
+            video.addEventListener('play', startStreaming);
+            if (!video.paused || this.saved) hls.startLoad();
+          })
+          .catch(() => {
+            if (!disposed) this.failed.set(true);
+          });
+      } else {
+        video.src = source.url;
+      }
       const handle = this.nativeHandle(video);
       const unregister = this.playback.register(handle);
       const started = () => this.playback.started(handle);
       video.addEventListener('play', started);
       onCleanup(() => {
+        disposed = true;
+        video.removeEventListener('play', startStreaming);
+        hls?.destroy();
         video.removeEventListener('play', started);
         unregister();
         video.removeAttribute('src');
@@ -199,7 +234,7 @@ export class VideoPlayer implements OnDestroy {
     this.failed.set(false);
     this.ready.set(false);
     if (this.source().kind === 'youtube') this.activated.set(false);
-    else this.native()?.nativeElement.load();
+    else this.retryVersion.update((value) => value + 1);
   }
 
   protected setRate(event: Event): void {

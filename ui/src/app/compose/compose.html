@@ -74,7 +74,7 @@
     [ngModel]="text()"
     (ngModelChange)="text.set($event)"
     [placeholder]="placeholderText()"
-    [rows]="chatMode() ? 1 : compact() ? 2 : 3"
+    [rows]="chatMode() ? 1 : compact() ? 4 : 3"
     (focus)="onBoxFocus(0, $event)"
     (keydown)="onBoxKeydown($event)"
     (paste)="onPaste($event)"
@@ -462,7 +462,9 @@
       }
 
       @if (targetIncludesBsky()) {
-        <p class="compose-warning" role="status">{{ 'compose.bskyAudience' | transloco }}</p>
+        <mb-help [label]="'compose.bskyAudienceHelp' | transloco">{{
+          'compose.bskyAudience' | transloco
+        }}</mb-help>
       }
 
       @if (!targetIncludesPaste() && !targetIncludesBlog() && !targetIncludesBsky()) {

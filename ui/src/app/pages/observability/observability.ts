@@ -419,6 +419,7 @@ export class Observability {
   }
 
   constructor() {
+    this.metrics.selectScope(this.metrics.serverLabel());
     // Bank the time spent getting here, so this page's own row isn't stale.
     this.routeLog.refresh();
   }
@@ -451,8 +452,10 @@ export class Observability {
       return null;
     }
     const busiest = stats.reduce((a, b) => (b.count > a.count ? b : a));
-    const slowest = stats.reduce((a, b) => (ApiMetrics.mean(b) > ApiMetrics.mean(a) ? b : a));
-    const fastest = stats.reduce((a, b) => (ApiMetrics.mean(b) < ApiMetrics.mean(a) ? b : a));
+    const timed = stats.filter((s) => s.timedCount !== 0);
+    if (!timed.length) timed.push(busiest);
+    const slowest = timed.reduce((a, b) => (ApiMetrics.mean(b) > ApiMetrics.mean(a) ? b : a));
+    const fastest = timed.reduce((a, b) => (ApiMetrics.mean(b) < ApiMetrics.mean(a) ? b : a));
     const worst = stats.reduce((a, b) => (this.rate(b) > this.rate(a) ? b : a));
     return { busiest, slowest, fastest, worst };
   });

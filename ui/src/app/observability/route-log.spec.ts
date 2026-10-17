@@ -47,6 +47,36 @@ describe('RouteLog', () => {
     return log.stats().find((s) => s.path === path);
   }
 
+  it('merges old article identities into a single reader route on load', () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        v: 1,
+        r: [
+          [
+            '/read/rss:https:%2F%2Fexample.com%2Ffeed::https:%2F%2Fexample.com%2Fone',
+            7,
+            74000,
+            1000,
+          ],
+          [
+            '/read/rss:https:%2F%2Fexample.com%2Ffeed::https:%2F%2Fexample.com%2Ftwo?x=1',
+            2,
+            11000,
+            2000,
+          ],
+        ],
+      }),
+    );
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [RouteLog, { provide: Router, useValue: new FakeRouter() }],
+    });
+    expect(TestBed.inject(RouteLog).stats()).toEqual([
+      { path: '/read/:id', visits: 9, totalMs: 85000, lastAt: 2000 },
+    ]);
+  });
+
   it('counts a visit per navigation', () => {
     router.navigate('/home');
     router.navigate('/notifications');

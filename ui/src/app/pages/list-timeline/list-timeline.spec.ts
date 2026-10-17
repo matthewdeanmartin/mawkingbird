@@ -1,10 +1,12 @@
+import { AppDialogs } from '../../app-dialogs';
+import { ListCollectionConverter } from '../../list-collection-converter';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status, UserList } from '../../models';
 import { ListTimeline } from './list-timeline';
 import { Auth } from '../../auth';
@@ -89,6 +91,25 @@ describe('ListTimeline', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('warns before conversion and only converts after explicit confirmation', async () => {
+    const fixture = setUpWithList('42');
+    httpMock.expectOne('/api/v1/lists/42').flush(makeList('42', 'Dev Friends'));
+    httpMock.expectOne((r) => r.url === '/api/v1/timelines/list/42').flush([]);
+    const confirm = vi.spyOn(TestBed.inject(AppDialogs), 'confirm').mockResolvedValue(false);
+    const convert = vi
+      .spyOn(TestBed.inject(ListCollectionConverter), 'convertListToCollection')
+      .mockReturnValue(of({ targetId: 'c', added: 1, existing: 0, failed: 0, needsFollow: false }));
+    await fixture.componentInstance.convertToCollection();
+    expect(confirm).toHaveBeenCalledWith(
+      expect.stringContaining('notification'),
+      expect.anything(),
+    );
+    expect(convert).not.toHaveBeenCalled();
+    confirm.mockResolvedValue(true);
+    await fixture.componentInstance.convertToCollection();
+    expect(convert).toHaveBeenCalledExactlyOnceWith('42', 'Dev Friends');
   });
 
   // ---------------------------------------------------------------- initial load

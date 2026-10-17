@@ -1,3 +1,4 @@
+import { AppDialogs } from '../../app-dialogs';
 import { accountProfilePath } from '../../account-route';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
@@ -40,6 +41,7 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n lists.listOnlyExplanation: An exclusive list keeps all its members out of Home. You still follow these friends and can read their posts in lists. This applies to everyone on the list.
 // i18n listTimeline.exclusiveError: Could not change List only. {{detail}}
 // i18n listTimeline.converting: Converting…
+// i18n listTimeline.convertConfirm: Convert this list to a collection? People will receive a notification when they are added to the collection.
 // i18n listTimeline.convertToCollection: Convert to collection
 // i18n listTimeline.tabs.posts: Posts
 // i18n listTimeline.tabs.members: Members
@@ -85,6 +87,7 @@ export class ListTimeline implements OnInit {
   private api = inject(Api);
   private diagnostics = inject(PageDiagnostics);
   private route = inject(ActivatedRoute);
+  private dialogs = inject(AppDialogs);
   private converter = inject(ListCollectionConverter);
   private transloco = inject(TranslocoService);
   protected auth = inject(Auth);
@@ -447,13 +450,23 @@ export class ListTimeline implements OnInit {
     this.statuses.update((list) => list.filter((s) => s.id !== removed.id));
   }
 
-  convertToCollection(): void {
+  async convertToCollection(): Promise<void> {
     if (this.converting() || !this.title()) {
       return;
     }
     this.converting.set(true);
+    const listId = this.listId();
+    const title = this.title();
+    const confirmed = await this.dialogs.confirm(
+      this.transloco.translate('listTimeline.convertConfirm'),
+      { confirmLabel: this.transloco.translate('listTimeline.convertToCollection') },
+    );
+    if (!confirmed) {
+      this.converting.set(false);
+      return;
+    }
     this.conversionMessage.set('');
-    this.converter.convertListToCollection(this.listId(), this.title()).subscribe({
+    this.converter.convertListToCollection(listId, title).subscribe({
       next: (result) => {
         this.converting.set(false);
         this.conversionMessage.set(

@@ -1,3 +1,4 @@
+import { MbHelp } from '../design-system/help/help';
 import { Pseudonymity } from '../pseudonymity';
 import {
   Component,
@@ -443,6 +444,7 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.titlePrefix: Title:
 // i18n compose.togglePreview: Toggle preview
 // i18n compose.visibility: Visibility
+// i18n compose.bskyAudienceHelp: About Bluesky visibility
 // i18n compose.bskyAudience: Bluesky posts are public. Choose public visibility to publish to Bluesky, or select Fedi to keep a restricted audience.
 // i18n compose.visibilityFixed: Visibility is fixed here
 // i18n compose.warn.blogOneDoc: Blog posts accept one titled Markdown document here — remove media, polls, thread boxes, or scheduling.
@@ -483,6 +485,7 @@ function dragHasFiles(event: DragEvent): boolean {
 @Component({
   selector: 'app-compose',
   imports: [
+    MbHelp,
     MbButton,
     MbPostAction,
     MbPostActions,
