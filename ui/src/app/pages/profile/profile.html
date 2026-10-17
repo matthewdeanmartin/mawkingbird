@@ -138,6 +138,9 @@
         </div>
       } @else if (isRss()) {
         <div class="profile-buttons">
+          <a mbButton variant="outline" routerLink="/rss" [queryParams]="{ feed: rssFeedUrl() }">{{
+            'pages.profile.rss.openReader' | transloco
+          }}</a>
           @if (a.url) {
             <a class="btn btn-outline" [href]="a.url" target="_blank" rel="noopener noreferrer">
               {{ 'pages.profile.actions.visitSite' | transloco }}

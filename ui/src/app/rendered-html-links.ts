@@ -1,3 +1,4 @@
+import { blueskyRouteFor } from './bluesky-links';
 import { Directive, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { accountRoutePath } from './account-route';
@@ -125,7 +126,7 @@ export class RenderedHtmlLinks {
     }
     // A pasted link to somebody's profile — common in bios, where "my other
     // account" is half the genre. See mastodonProfileHandle.
-    const profile = profileRouteFor(href);
+    const profile = blueskyRouteFor(href) ?? profileRouteFor(href);
     if (profile) {
       event.preventDefault();
       event.stopPropagation();

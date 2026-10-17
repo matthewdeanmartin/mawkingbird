@@ -112,7 +112,7 @@
 }
 
 <!-- Bluesky trends are *topics* linking to generated feeds, not hashtags linking
-     to tag timelines. Separate card, separate service, absolute bsky.app links —
+     to tag timelines. Separate card, separate service, internal feed links when supported —
      forcing them into the Mastodon tag UI would produce dead links. Hidden
      entirely when the unspecced endpoints refuse. -->
 @if (usableBluesky() && bskyTrends.trends().length) {
@@ -120,19 +120,31 @@
     <h2 class="card-title">{{ 'shell.rail.trendingBluesky' | transloco }}</h2>
     <nav mbNavigation presentation="rail" [label]="'shell.rail.trendingBluesky' | transloco">
       @for (trend of bskyTrends.trends(); track trend.url) {
-        <a
-          mbNavLink
-          class="rail-link bsky-trend"
-          [href]="trend.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          [title]="trend.description || trend.displayName"
-        >
-          <span class="bsky-trend-name">{{ trend.displayName }}</span>
-          @if (trend.postCount) {
-            <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
-          }
-        </a>
+        @if (blueskyRouteFor(trend.url); as route) {
+          <a
+            mbNavLink
+            class="rail-link bsky-trend"
+            [routerLink]="route"
+            [title]="trend.description || trend.displayName"
+            ><span class="bsky-trend-name">{{ trend.displayName }}</span>
+            @if (trend.postCount) {
+              <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
+            }
+          </a>
+        } @else {
+          <a
+            mbNavLink
+            class="rail-link bsky-trend"
+            [href]="trend.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            [title]="trend.description || trend.displayName"
+            ><span class="bsky-trend-name">{{ trend.displayName }}</span>
+            @if (trend.postCount) {
+              <span class="muted small">{{ trend.postCount }} {{ words().posts }}</span>
+            }
+          </a>
+        }
       }
     </nav>
   </section>

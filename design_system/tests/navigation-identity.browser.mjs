@@ -52,15 +52,23 @@ for (const [width, theme, direction] of [
     await expect(stack.locator(".stat-value")).toContainText("1.2");
     const controls = page.getByRole("region", { name: "Account controls" });
     const preview = controls.locator("app-account-preview");
-    const previewButton = preview.getByRole("button", {
-      name: "Preview profile",
-      exact: true,
-    });
-    // Finish scrolling the narrow story before opening a surface that dismisses
-    // on window scroll. This models scrolling to the trigger, then tapping it.
+    await expect(
+      preview.getByRole("button", { name: "Preview profile", exact: true }),
+    ).toHaveCount(0);
+    const previewButton = preview.locator(".summary");
     await previewButton.scrollIntoViewIfNeeded();
     await page.evaluate(() => new Promise(requestAnimationFrame));
-    await previewButton.click();
+    await previewButton.hover();
+    await expect(preview.locator("[mbAccountCard]")).toBeVisible();
+    const bounds = await preview.locator("[popover]").boundingBox();
+    await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + 18, {
+      steps: 15,
+    });
+    await page.waitForTimeout(500);
+    await expect(preview.locator("[mbAccountCard]")).toBeVisible();
+    await page.mouse.move(1, 1);
+    await expect(preview.locator("[mbAccountCard]")).toHaveCount(0);
+    await previewButton.focus();
     await expect(preview.locator("[mbAccountCard]")).toBeVisible();
     await expect(preview.locator(".pinned-post")).toHaveCount(3);
     const request = preview.getByRole("button", {
@@ -76,9 +84,7 @@ for (const [width, theme, direction] of [
       .getByRole("button", { name: "Requested", exact: true })
       .press("Escape");
     await expect(preview.locator("[mbAccountCard]")).toHaveCount(0);
-    await expect(
-      preview.getByRole("button", { name: "Preview profile", exact: true }),
-    ).toBeFocused();
+    await expect(previewButton).toBeFocused();
     await controls
       .getByRole("button", { name: "Follow @new-person", exact: true })
       .click();

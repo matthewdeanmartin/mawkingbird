@@ -68,7 +68,14 @@ test("hovering the author loads Following before the popup is entered", async ({
   await expect(
     card.getByRole("button", { name: "Following", exact: true }),
   ).toBeVisible();
+  await card.getByRole("button", { name: "Following", exact: true }).hover();
+  await page.waitForTimeout(500);
+  await expect(
+    card.getByRole("button", { name: "Following", exact: true }),
+  ).toBeVisible();
   await page.screenshot({ path: info.outputPath("hover-following.png") });
+  await page.mouse.move(1, 1);
+  await expect(card).not.toBeVisible();
 });
 
 for (const appTheme of ["light", "dark"]) {

@@ -17,54 +17,56 @@ let nextId = 0;
   selector: 'mb-popover',
   imports: [MbButton, MbPostAction],
   template: `
-    @if (icon() === 'more') {
-      <button
-        #trigger
-        mbPostAction
-        type="button"
-        [active]="opened()"
-        [attr.aria-label]="label()"
-        [attr.aria-haspopup]="kind()"
-        [attr.aria-expanded]="opened()"
-        [attr.aria-controls]="id"
-        (click)="toggle()"
-        (keydown)="triggerKey.emit($event)"
-      >
-        <span aria-hidden="true">•••</span>
-      </button>
-    } @else {
-      <button
-        #trigger
-        mbButton
-        variant="outline"
-        size="small"
-        type="button"
-        [class.help-trigger]="icon() === 'help'"
-        [attr.aria-label]="label()"
-        [attr.aria-haspopup]="kind()"
-        [attr.aria-expanded]="opened()"
-        [attr.aria-controls]="id"
-        (click)="toggle()"
-        (keydown)="triggerKey.emit($event)"
-      >
-        @if (icon() === 'help') {
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            width="22"
-            height="22"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="M9.5 9a2.5 2.5 0 0 1 5 .3c0 1.7-2.5 1.8-2.5 3.7" />
-            <circle cx="12" cy="16.5" r=".8" fill="currentColor" stroke="none" />
-          </svg>
-        } @else {
-          {{ label() }}
-        }
-      </button>
+    @if (!anchor()) {
+      @if (icon() === 'more') {
+        <button
+          #trigger
+          mbPostAction
+          type="button"
+          [active]="opened()"
+          [attr.aria-label]="label()"
+          [attr.aria-haspopup]="kind()"
+          [attr.aria-expanded]="opened()"
+          [attr.aria-controls]="id"
+          (click)="toggle()"
+          (keydown)="triggerKey.emit($event)"
+        >
+          <span aria-hidden="true">•••</span>
+        </button>
+      } @else {
+        <button
+          #trigger
+          mbButton
+          variant="outline"
+          size="small"
+          type="button"
+          [class.help-trigger]="icon() === 'help'"
+          [attr.aria-label]="label()"
+          [attr.aria-haspopup]="kind()"
+          [attr.aria-expanded]="opened()"
+          [attr.aria-controls]="id"
+          (click)="toggle()"
+          (keydown)="triggerKey.emit($event)"
+        >
+          @if (icon() === 'help') {
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9a2.5 2.5 0 0 1 5 .3c0 1.7-2.5 1.8-2.5 3.7" />
+              <circle cx="12" cy="16.5" r=".8" fill="currentColor" stroke="none" />
+            </svg>
+          } @else {
+            {{ label() }}
+          }
+        </button>
+      }
     }
     <div
       #panel
@@ -78,6 +80,8 @@ let nextId = 0;
       [style.left.px]="position().x"
       [style.top.px]="position().y"
       [style.max-height.px]="position().maxHeight"
+      (pointerenter)="panelEntered.emit()"
+      (pointerleave)="panelLeft.emit()"
       (toggle)="sync($event)"
       (keydown)="keys($event)"
       (focusout)="leave($event)"
@@ -86,10 +90,12 @@ let nextId = 0;
     </div>
   `,
   styleUrl: './popover.css',
-  host: { '(window:resize)': 'close()', '(window:scroll)': 'close()' },
+  host: { '(window:resize)': 'close(false)', '(window:scroll)': 'close(false)' },
 })
 export class MbPopover {
   readonly label = input.required<string>();
+  /** An existing profile or control may anchor the surface without adding a button. */
+  readonly anchor = input<HTMLElement | null>(null);
   readonly kind = input<'dialog' | 'menu'>('dialog');
   readonly roomy = input(false);
   /** `more` renders a compact PostAction showing •••, for post overflow menus. */
@@ -97,6 +103,8 @@ export class MbPopover {
   /** `list` is for rows of commands: tighter padding, and a height capped to the
    *  space beside the trigger so a tall menu never covers the control that opened it. */
   readonly layout = input<'content' | 'list'>('content');
+  readonly panelEntered = output<void>();
+  readonly panelLeft = output<void>();
   readonly openedChange = output<boolean>();
   readonly triggerKey = output<KeyboardEvent>();
   readonly opened = signal(false);
@@ -107,7 +115,7 @@ export class MbPopover {
   });
   readonly id = `mb-popover-${nextId++}`;
   readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
-  readonly trigger = viewChild.required('trigger', { read: ElementRef<HTMLButtonElement> });
+  readonly trigger = viewChild('trigger', { read: ElementRef<HTMLButtonElement> });
 
   private observer?: ResizeObserver;
   constructor() {
@@ -117,7 +125,7 @@ export class MbPopover {
   private reposition(): void {
     if (!this.opened()) return;
     const panel = this.panel().nativeElement;
-    const anchor = this.trigger().nativeElement.getBoundingClientRect();
+    const anchor = (this.anchor() ?? this.trigger()!.nativeElement).getBoundingClientRect();
     const box = panel.getBoundingClientRect();
     const rtl = getComputedStyle(panel).direction === 'rtl';
     const x = Math.max(
@@ -181,7 +189,7 @@ export class MbPopover {
     this.panel().nativeElement.hidePopover();
     this.opened.set(false);
     this.observer?.disconnect();
-    if (restore) this.trigger().nativeElement.focus({ preventScroll: true });
+    if (restore) (this.anchor() ?? this.trigger()?.nativeElement)?.focus({ preventScroll: true });
     this.openedChange.emit(false);
   }
 
@@ -206,7 +214,7 @@ export class MbPopover {
     if (
       target &&
       !this.panel().nativeElement.contains(target) &&
-      target !== this.trigger().nativeElement
+      target !== (this.anchor() ?? this.trigger()?.nativeElement)
     )
       this.close(false);
   }

@@ -2645,6 +2645,7 @@
     "profile.relationship.thisAccountFollowsYou": "This account follows you",
     "profile.relationship.unfollowTitle": "Click to unfollow.",
     "profile.rss.confirmUnsubscribe": "Unsubscribe from {{feed}}? Saved articles and reading history will be kept.",
+    "profile.rss.openReader": "Open in Reader",
     "profile.rss.subscribe": "📡 Subscribe",
     "profile.rss.subscribed": "📡 Subscribed",
     "profile.rss.unsubscribe": "Unsubscribe",

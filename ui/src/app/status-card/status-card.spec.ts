@@ -1951,6 +1951,23 @@ describe('StatusCard', () => {
     return event;
   }
 
+  it('onContentClick: opens Bluesky mention profiles and generated feeds in-app', () => {
+    const fixture = setUp();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    internals(fixture).onContentClick(clickOnAnchor('https://bsky.app/profile/did:plc:example'));
+    expect(navigate).toHaveBeenLastCalledWith(['/accounts', 'bsky:did:plc:example']);
+    internals(fixture).onContentClick(
+      clickOnAnchor('https://bsky.app/profile/did:plc:example/feed/topic'),
+    );
+    expect(navigate).toHaveBeenLastCalledWith([
+      '/feeds/bluesky',
+      'feed:at://did:plc:example/app.bsky.feed.generator/topic',
+    ]);
+    expect(open).not.toHaveBeenCalled();
+    open.mockRestore();
+  });
+
   it('onContentClick: opens http(s) links in a new tab and prevents in-app nav', () => {
     const f = setUp();
     const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);

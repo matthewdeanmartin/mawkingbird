@@ -128,6 +128,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.actions.moreAccountActions: More account actions
 // i18n pages.profile.actions.cancel: Cancel
 // i18n pages.profile.actions.homeFeed: Home feed
+// i18n pages.profile.rss.openReader: Open in Reader
 // i18n pages.profile.rss.subscribed: 📡 Subscribed
 // i18n pages.profile.rss.unsubscribe: Unsubscribe
 // i18n pages.profile.rss.confirmUnsubscribe: Unsubscribe from {{feed}}? Saved articles and reading history will be kept.
@@ -502,7 +503,7 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   /** The feed URL behind an RSS profile, for the subscribe toggle. */
-  private rssFeedUrl = signal<string | null>(null);
+  protected rssFeedUrl = signal<string | null>(null);
   /** Whether the viewer is currently subscribed to this feed. */
   protected rssSubscribed = computed(() => {
     const url = this.rssFeedUrl();

@@ -152,6 +152,13 @@ function didOf(account: Account): string {
     </div>
   `,
   styles: `
+    /* Keep the four-pixel visual gap inside the pointer's hover region. */
+    :host:not(.inline)::before {
+      content: '';
+      position: absolute;
+      inset: -6px 0 auto;
+      height: 6px;
+    }
     :host {
       position: absolute;
       top: calc(100% + 4px);

@@ -75,7 +75,8 @@
   align-self: flex-start;
 }
 
-.hover-anchor:hover app-account-hover-card {
+.hover-anchor:hover app-account-hover-card,
+.hover-anchor:focus-within app-account-hover-card {
   visibility: visible;
   opacity: 1;
   transition-delay: 0.45s;

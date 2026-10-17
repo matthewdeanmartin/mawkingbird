@@ -1,3 +1,4 @@
+import { blueskyRouteFor } from '../../bluesky-links';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback';
 import { MbField, MbControl } from '../../design-system/field/field';
@@ -103,6 +104,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrl: './right-rail.css',
 })
 export class RightRail implements OnInit {
+  protected readonly blueskyRouteFor = blueskyRouteFor;
   private api = inject(Api);
   protected announcements = inject(AnnouncementStore);
   protected auth = inject(Auth);

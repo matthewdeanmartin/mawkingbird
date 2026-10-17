@@ -342,10 +342,13 @@ describe('RightRail', () => {
 
       const trend = el.querySelector<HTMLAnchorElement>('a.bsky-trend');
       expect(trend?.textContent).toContain('A topic');
-      // A Bluesky trend links to a generated feed, not a tag timeline, and the
+      // A Bluesky trend opens the existing in-app generated-feed route. The
       // API returns a site-relative path — resolving it against Mawkingbird's
       // own origin would 404.
-      expect(trend?.getAttribute('href')).toBe('https://bsky.app/profile/did:plc:x/feed/y');
+      expect(trend?.getAttribute('href')).toBe(
+        '/feeds/bluesky/feed:at:%2F%2Fdid:plc:x%2Fapp.bsky.feed.generator%2Fy',
+      );
+      expect(trend?.getAttribute('target')).toBeNull();
     });
 
     it('gives the Mastodon widgets back once the connector is opted into', () => {
@@ -408,13 +411,11 @@ describe('RightRail', () => {
     TestBed.inject(Auth).account.set({ id: '1', acct: 'me@fast.example' } as Account);
     const fixture = TestBed.createComponent(RightRail);
     fixture.detectChanges();
-    httpMock
-      .expectOne('/api/v2/instance')
-      .flush({
-        domain: 'fast.example',
-        title: 'Old server title',
-        usage: { users: { active_month: 99 } },
-      });
+    httpMock.expectOne('/api/v2/instance').flush({
+      domain: 'fast.example',
+      title: 'Old server title',
+      usage: { users: { active_month: 99 } },
+    });
     httpMock
       .match(() => true)
       .forEach((request) => request.flush([], { status: 200, statusText: 'OK' }));

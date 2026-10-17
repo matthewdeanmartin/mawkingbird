@@ -22,17 +22,30 @@ import { AccountHoverCard } from './account-hover-card';
   selector: 'app-account-preview',
   imports: [MbPopover, AccountHoverCard, TranslocoPipe, RouterLink, RenderedHtmlLinks],
   template: `
-    <div class="summary" (pointerenter)="enter($event)" (pointerleave)="leave()">
+    <div
+      #anchor
+      class="summary"
+      tabindex="0"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="opened()"
+      [attr.aria-label]="'accountPreview.open' | transloco"
+      (pointerenter)="enter($event)"
+      (pointerleave)="leave()"
+      (focusin)="focusIn($event)"
+      (focusout)="focusOut($event)"
+      (keydown)="anchorKey($event)"
+    >
       <ng-content />
       <mb-popover
         [label]="'accountPreview.open' | transloco"
         [roomy]="true"
+        [anchor]="anchor"
         (openedChange)="changed($event)"
-        (click)="pinned = opened()"
-        (triggerKey)="triggerKey($event)"
+        (panelEntered)="cancelClose()"
+        (panelLeft)="leave()"
       >
         @if (opened()) {
-          <div (pointerenter)="cancelClose()" (pointerleave)="leave()" (focusin)="pinned = true">
+          <div>
             <app-account-hover-card [account]="account()" inline embedded />
             @if (pinnedPosts().length) {
               <h3>{{ 'accountPreview.pinned' | transloco }}</h3>
@@ -79,7 +92,6 @@ export class AccountPreview {
   readonly account = input.required<Account>();
   protected readonly popover = viewChild.required(MbPopover);
   protected opened = signal(false);
-  protected pinned = false;
   protected pinnedPosts = signal<Status[]>([]);
   protected pinnedError = signal(false);
   private loadedFor?: string;
@@ -102,7 +114,34 @@ export class AccountPreview {
         : post.id,
     ];
   }
-  protected triggerKey(event: KeyboardEvent): void {
+  protected focusIn(event: FocusEvent): void {
+    this.cancelClose();
+    // Escape returning focus from the card must not immediately reopen it.
+    if (
+      event.relatedTarget &&
+      this.popover()
+        .panel()
+        .nativeElement.contains(event.relatedTarget as Node)
+    )
+      return;
+    this.popover().show(false);
+  }
+  protected focusOut(event: FocusEvent): void {
+    // Disabling a busy Follow button can blur it with no next target.
+    // That is not a request to dismiss the profile the user is interacting with.
+    if (
+      event.relatedTarget &&
+      !(event.currentTarget as HTMLElement).contains(event.relatedTarget as Node)
+    )
+      this.leave();
+  }
+  protected anchorKey(event: KeyboardEvent): void {
+    if (event.target === event.currentTarget && ['Enter', ' ', 'ArrowDown'].includes(event.key)) {
+      event.preventDefault();
+      if (this.opened()) this.popover().panel().nativeElement.focus({ preventScroll: true });
+      else this.popover().show();
+    }
+
     if (event.key === 'Escape') {
       this.popover().close();
       event.stopPropagation();
@@ -118,12 +157,16 @@ export class AccountPreview {
   }
   protected leave(): void {
     this.cancelClose();
-    if (!this.pinned) this.timer = setTimeout(() => this.popover().close(false), 400);
+    this.timer = setTimeout(() => {
+      const popover = this.popover();
+      if (popover.panel().nativeElement.matches(':hover') || popover.anchor()?.matches(':hover'))
+        return;
+      popover.close(false);
+    }, 400);
   }
   protected changed(open: boolean): void {
     this.opened.set(open);
     if (!open) {
-      this.pinned = false;
       this.cancelClose();
       return;
     }

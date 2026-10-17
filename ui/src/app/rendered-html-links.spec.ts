@@ -57,6 +57,17 @@ describe('RenderedHtmlLinks', () => {
     expect(navigate).toHaveBeenCalledWith(['/tags', 'books']);
   });
 
+  it('keeps Bluesky profile mentions in the application', () => {
+    const fixture = render(
+      '<a href="https://bsky.app/profile/did:plc:example">@reader.example</a>',
+    );
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    fixture.nativeElement.querySelector('a').click();
+    expect(navigate).toHaveBeenCalledWith(['/accounts', 'bsky:did:plc:example']);
+    expect(open).not.toHaveBeenCalled();
+  });
+
   it('opens an ordinary external link in a new tab instead of navigating away', () => {
     const fixture = render('<a href="https://example.com/post">a link</a>');
     const open = vi.spyOn(window, 'open').mockReturnValue(null);

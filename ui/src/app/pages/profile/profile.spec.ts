@@ -127,6 +127,9 @@ describe('self profile local actions', () => {
       (button) => (button as HTMLButtonElement).textContent?.trim() === 'Unsubscribe',
     ) as HTMLButtonElement;
     expect(unsubscribe).toBeDefined();
+    const reader = fixture.nativeElement.querySelector('a[href^="/rss?"]') as HTMLAnchorElement;
+    expect(reader.textContent).toContain('Open in Reader');
+    expect(new URL(reader.href).searchParams.get('feed')).toBe(url);
     vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
     unsubscribe.click();
     await Promise.resolve();

@@ -35,11 +35,12 @@ describe('Member account preview', () => {
     } as Account);
     fixture.detectChanges();
     http.expectNone((request) => request.url.includes('relationships'));
-    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+    const button = fixture.nativeElement.querySelector('.summary') as HTMLElement;
     const panel = fixture.nativeElement.querySelector('[popover]') as HTMLElement;
     panel.showPopover = vi.fn();
     panel.hidePopover = vi.fn();
-    button.click();
+    button.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     fixture.detectChanges();
     http
       .expectOne((request) => request.url.includes('relationships'))
@@ -62,6 +63,15 @@ describe('Member account preview', () => {
     expect(card.querySelector('a')?.getAttribute('href')).toContain(
       '/accounts/123/@alice@social.example',
     );
+    vi.useFakeTimers();
+    try {
+      button.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+      vi.advanceTimersByTime(450);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('app-account-hover-card')).not.toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
     button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-account-hover-card')).toBeNull();

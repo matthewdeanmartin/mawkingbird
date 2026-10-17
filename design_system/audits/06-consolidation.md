@@ -1,5 +1,19 @@
 # Sprint 6 opening consolidation audit
 
+## Reachable profile previews and internal destinations, 2026-10-17
+
+AccountPreview uses the existing profile summary as an external anchor for the
+shared Popover, with no additional visible trigger. Pointer entry opens the card;
+leaving starts a cancellable 400 ms dismissal delay so the card can be reached
+across its gap. Keyboard focus opens it, Escape returns focus and moving away
+closes it. Window scrolling/resizing dismisses without stealing focus. Browser
+checks cover pointer traversal, departure, keyboard access and follow actions.
+RSS profile headers use the shared Button for Open in Reader with the original
+feed URL in query parameters. Supported Bluesky trend/profile links use existing
+Router destinations; unsupported external links keep their existing behavior.
+Reviewed 1,133 source files and 231 candidates: line shifts plus shared Button/NavLink
+usage; no candidate additions or removals, so reconciliation remains unchanged.
+
 ## Video feed actions and My tags default, 2026-10-17
 
 Home and Appearance reuse their existing default-view selects for My tags. Video

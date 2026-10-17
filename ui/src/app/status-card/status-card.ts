@@ -1,3 +1,4 @@
+import { blueskyRouteFor } from '../bluesky-links';
 import { accountScopeSuffix } from '../account-scope';
 import { MbMenuItem } from '../design-system/menu/menu-item';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
@@ -1340,7 +1341,7 @@ export class StatusCard {
       this.router.navigate(['/tags', tag]);
       return;
     }
-    const mention = this.mentionLink(anchor, href);
+    const mention = blueskyRouteFor(href) ?? this.mentionLink(anchor, href);
     if (mention) {
       event.preventDefault();
       event.stopPropagation();
