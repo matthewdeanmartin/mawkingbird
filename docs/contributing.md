@@ -54,14 +54,28 @@ npm run test:subset -- src/app/pages/search
 ```
 
 Before handing off a client change, run the full test gate, lint, and standalone
-build. The test gate checks the source inventory and runtime manifest as well
-as running tests with coverage; do not skip, focus, or remove tests to pass it.
+build. The test gate checks the design control inventory and reconciliation,
+test source inventory, and runtime manifest as well as running tests with
+coverage; do not skip, focus, or remove tests to pass it.
 
 ```bash
 make test
 npm run lint
 npm run build:mockingbird
 ```
+
+The design inventory tracks source line numbers, so HTML, TypeScript and CSS
+edits can require a refresh even when they do not change a control's appearance.
+If `design:inventory-check` reports drift, run `npm run design:audit-controls`,
+review `design_system/audits/06-control-inventory.json`, and record the semantic
+changes in `design_system/audits/06-consolidation.md` (paths are from the repository
+root). Reconcile added or removed candidate files in
+`design_system/audits/11-reconciliation.json`, then rerun
+`npm run design:inventory-check`. Regeneration alone is not design review.
+
+Inspect the applicable `.github/workflows` and `ui/package.json` when choosing
+checks: CI also runs the separate design-system job. Shared widget changes
+require `make design-verify`, including Storybook browser assertions.
 
 `make check` runs the broader UI gate, including formatting, storage, subpath
 routing, translations, the starter catalogue, both builds, and dependency audit.

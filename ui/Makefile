@@ -124,6 +124,7 @@ i18n-traps:
 	@node scripts/i18n-traps.mjs $(L) $(P)
 
 test:
+	npm run design:inventory-check
 	npm run test:source-integrity
 	npm run test:ci
 

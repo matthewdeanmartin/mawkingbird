@@ -395,7 +395,7 @@
     {
       "file": "ui/src/app/pages/conversations/conversations.html",
       "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "nextStep": "Private chat startup adds a native retry action. Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
       "file": "ui/src/app/pages/directory/directory.html",
@@ -530,7 +530,7 @@
     {
       "file": "ui/src/app/pages/profile/profile.html",
       "disposition": "partial adoption",
-      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "nextStep": "Profile Reply adopts shared Dialog and the existing compact Compose. Reply, Chat and retry retain native action styling; Lists and Open on Bluesky use existing disclosure menus. Review remaining native actions and menu focus/dismissal semantics before adopting shared controls."
     },
     {
       "file": "ui/src/app/pages/public-timeline/public-timeline.html",
@@ -979,11 +979,6 @@
     },
     {
       "file": "ui/src/app/providers/account/plus-promotion.ts",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
-    },
-    {
-      "file": "ui/src/app/providers/bluesky/bluesky-reply.ts",
       "disposition": "backlog",
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },

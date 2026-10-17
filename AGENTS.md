@@ -9,6 +9,17 @@ Pack translations and app-wide UI locales are separate; preserve script tags.
 
 Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
 Run targeted specs during development, then the complete gate: cd ui && make test.
+This gate includes design:inventory-check before the test inventory and coverage suite.
+For every client change, inspect ui/package.json, ui/Makefile and the applicable
+.github/workflows checks; unit tests and a production build alone do not cover CI.
+The design inventory records source line numbers, so even nonvisual HTML/TS/CSS
+edits can change it. If it is stale, run `cd ui && npm run design:audit-controls`,
+review design_system/audits/06-control-inventory.json, update
+design_system/audits/06-consolidation.md, and reconcile added/removed candidate
+files in design_system/audits/11-reconciliation.json. Then rerun
+`npm run design:inventory-check`. Never bypass the check or regenerate without review.
+Shared design-widget changes also require `cd ui && make design-verify`, including
+the browser assertions. Report exactly which gates passed and which were not run.
 Do not skip, focus, delete, or weaken tests; preserve the test inventory checks.
 Angular tests run locally; GitHub Actions builds and checks deployment layout.
 For UI runtime changes, also run `cd ui && npm run build:mockingbird` locally.

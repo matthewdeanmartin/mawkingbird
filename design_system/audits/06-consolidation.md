@@ -1,5 +1,28 @@
 # Sprint 6 opening consolidation audit
 
+## Profile actions and Bluesky parity, 2026-10-16
+
+Reviewed the regenerated inventory: 1,130 maintained source files and 229
+candidate files. Profile adds the shared Dialog for its compact Reply composer;
+Reply, Chat and retry actions retain the surrounding native button styling.
+Lists and the external Bluesky profile link move into the existing disclosure
+menus. Profile remains partial adoption; the native actions and menu focus and
+dismissal behavior remain explicit migration work.
+
+Conversations adds a native retry action for starting a private chat and retains
+its backlog disposition. StatusCard adds two shared ActionCount placements for
+Bluesky engagement and retains partial adoption. The Bluesky reply component now
+delegates to the shared app Compose component and owns no lexical control/style
+candidates; remove its stale reconciliation entry. This is reuse of the app
+composer, not a claim that the composer has completed design-system adoption.
+The remaining changed candidates (Compose, import/export and StatusCard
+TypeScript) only move finding line numbers. No scanner patterns or exemptions
+changed.
+
+The local `make test` gate now runs `design:inventory-check` first, and the
+contributor instructions document the regeneration, semantic review and ledger
+steps so this CI check is also encountered during ordinary local validation.
+
 ## Sprint 19 checkpoint A: post menu widgets, 2026-10-13
 
 Refreshed inventory: 1,130 maintained source files and 230 candidate files.
