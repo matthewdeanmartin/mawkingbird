@@ -150,8 +150,11 @@ describe('self profile local actions', () => {
     const el = fixture.nativeElement as HTMLElement;
     const menu = el.querySelector('.account-danger-panel')!;
     expect(menu.querySelector('a')?.textContent).toContain('Edit local profile');
-    expect(menu.querySelectorAll('button')).toHaveLength(3);
-    expect([...menu.querySelectorAll('button')].every((button) => button.disabled)).toBe(true);
+    const buttons = [...menu.querySelectorAll('button')];
+    expect(buttons).toHaveLength(4);
+    expect(buttons[0].textContent).toContain('View as Slide Show');
+    expect(buttons[0].disabled).toBe(false);
+    expect(buttons.slice(1).every((button) => button.disabled)).toBe(true);
     expect(el.querySelector('[aria-label="Profile sections"]')?.textContent).toContain('Following');
   });
 
@@ -167,7 +170,9 @@ describe('self profile local actions', () => {
     twitter.add({ username: 'friend', displayName: 'Friend' });
     const invalidate = vi.spyOn(TestBed.inject(AnonymousHomeFeedCache), 'invalidate');
     fixture.detectChanges();
-    const buttons = fixture.nativeElement.querySelectorAll('.account-danger-panel button');
+    const buttons = [
+      ...fixture.nativeElement.querySelectorAll('.account-danger-panel button'),
+    ].slice(1);
     buttons[0].click();
     await Promise.resolve();
     expect(follows.count()).toBe(0);
@@ -188,6 +193,26 @@ describe('self profile local actions', () => {
     TestBed.inject(HttpTestingController).expectNone(() => true);
   });
 
+  it('shows bot identity and opens the slideshow from the profile menu', () => {
+    const fixture = setUp(false);
+    fixture.componentInstance['account'].update((account) => ({ ...account!, bot: true }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('h2 > .badge')?.textContent).toContain('Bot');
+    el.querySelector<HTMLButtonElement>('.account-danger-panel button')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-profile-slideshow')).not.toBeNull();
+    const close = [...el.querySelectorAll<HTMLButtonElement>('app-profile-slideshow button')].find(
+      (button) => button.textContent?.trim() === 'Back to profile',
+    );
+    close!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-profile-slideshow')).toBeNull();
+    fixture.componentInstance['account'].update((account) => ({ ...account!, bot: false }));
+    fixture.detectChanges();
+    expect(el.querySelector('h2 > .badge')).toBeNull();
+  });
+
   it('clears only the signed-in account local follows, preserving anonymous and other account data', async () => {
     const fixture = setUp(false);
     const anonymous = TestBed.inject(AnonymousFollows);
@@ -201,7 +226,9 @@ describe('self profile local actions', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('a[href="/settings/profile"]')?.textContent).toContain('Edit profile');
-    const buttons = el.querySelectorAll<HTMLButtonElement>('.account-danger-panel button');
+    const buttons = [
+      ...el.querySelectorAll<HTMLButtonElement>('.account-danger-panel button'),
+    ].slice(1);
     expect(buttons[1].disabled).toBe(true);
     buttons[0].click();
     await Promise.resolve();
@@ -1482,7 +1509,10 @@ describe('Profile cross-server recovery', () => {
     settleSiblings('900');
     fixture.detectChanges();
     const actions = (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons')!;
-    expect(actions.querySelector('details button')?.textContent).toContain('Lists');
+    expect(actions.querySelectorAll('details button')[0]?.textContent).toContain(
+      'View as Slide Show',
+    );
+    expect(actions.querySelectorAll('details button')[1]?.textContent).toContain('Lists');
     const reply = Array.from(actions.querySelectorAll('button')).find(
       (b) => b.textContent?.trim() === 'Reply',
     )!;

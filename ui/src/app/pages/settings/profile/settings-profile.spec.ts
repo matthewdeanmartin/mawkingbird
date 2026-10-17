@@ -12,6 +12,7 @@ import { By } from '@angular/platform-browser';
 import { ProfileLinkDialog } from './profile-link-dialog';
 
 interface SettingsProfileInternals {
+  bot: WritableSignal<boolean>;
   displayName: WritableSignal<string>;
   username: WritableSignal<string>;
   note: WritableSignal<string>;
@@ -102,6 +103,24 @@ describe('SettingsProfile', () => {
     expect(c.displayName()).toBe('Alice');
     expect(c.note()).toBe('source note');
     expect(c.fields()).toEqual([{ name: 'Web', value: 'example.com' }]);
+  });
+
+  it('loads and saves the server bot flag in both directions', () => {
+    const fixture = TestBed.createComponent(SettingsProfile);
+    fixture.detectChanges();
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ ...makeAccount(), bot: true });
+    const c = internals(fixture);
+    expect(c.bot()).toBe(true);
+    for (const bot of [false, true]) {
+      c.bot.set(bot);
+      c.saveProfile();
+      const req = httpMock.expectOne('/api/v1/accounts/update_credentials');
+      expect((req.request.body as FormData).get('bot')).toBe(String(bot));
+      req.flush({ ...makeAccount(), bot });
+      expect(TestBed.inject(Auth).account()?.bot).toBe(bot);
+    }
   });
 
   it('adds a guided link to a blank row and only publishes it when Save changes is chosen', () => {

@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -20,6 +21,8 @@ import { ProfileLinkDialog } from './profile-link-dialog';
 /** Public profile: display name, bio, metadata fields, avatar/header. */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.profile.title: Public profile
+// i18n settings.profile.bot: I'm a bot!
+// i18n settings.profile.bot.hint: Mark this as an automated account. A bot badge will appear on your profile.
 // i18n settings.profile.intro: How you appear to other people on this server.
 // i18n settings.profile.intro.anonymous: Your browser-local identity. Nothing here is published to {{server}}.
 // i18n settings.profile.intro.bluesky: How you appear to people on Bluesky.
@@ -42,7 +45,16 @@ import { ProfileLinkDialog } from './profile-link-dialog';
 // i18n settings.profile.resetLocal: Reset local profile
 @Component({
   selector: 'app-settings-profile',
-  imports: [DatePipe, FormsModule, TranslocoPipe, MbButton, MbField, MbControl, ProfileLinkDialog],
+  imports: [
+    MbCheckbox,
+    DatePipe,
+    FormsModule,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    ProfileLinkDialog,
+  ],
   templateUrl: './settings-profile.html',
   styleUrl: './settings-profile.css',
 })
@@ -58,6 +70,7 @@ export class SettingsProfile implements OnInit {
   protected displayName = signal('');
   protected username = signal('');
   protected note = signal('');
+  protected bot = signal(false);
   protected fields = signal<AccountField[]>([]);
   protected readonly linkDialog = signal<'link' | 'profile' | null>(null);
   protected readonly canAddLink = computed(
@@ -103,6 +116,7 @@ export class SettingsProfile implements OnInit {
   }
 
   private loadAccount(acc: import('../../../models').Account): void {
+    this.bot.set(acc.bot === true);
     this.displayName.set(acc.display_name);
     this.username.set(acc.username);
     this.note.set(acc.source?.note ?? acc.note ?? '');
@@ -174,6 +188,7 @@ export class SettingsProfile implements OnInit {
     const form = new FormData();
     form.append('display_name', this.displayName());
     form.append('note', this.note());
+    form.append('bot', String(this.bot()));
 
     // Profile metadata fields use indexed form keys.
     const fields = this.fields().filter((f) => f.name.trim() || f.value.trim());

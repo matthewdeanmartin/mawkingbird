@@ -1,0 +1,95 @@
+<div class="toolbar" role="group" [attr.aria-label]="'pages.profile.slideshow.open' | transloco">
+  <button mbButton variant="outline" (click)="start()" [disabled]="!slides().length">
+    {{ 'pages.profile.slideshow.start' | transloco }}
+  </button>
+  <button mbButton variant="outline" (click)="step(-1)" [disabled]="!slides().length">
+    {{ 'pages.profile.slideshow.prev' | transloco }}
+  </button>
+  <button mbButton variant="outline" (click)="playing.set(false)" [disabled]="!playing()">
+    {{ 'pages.profile.slideshow.stop' | transloco }}
+  </button>
+  <button mbButton variant="outline" (click)="step(1)" [disabled]="!slides().length">
+    {{ 'pages.profile.slideshow.next' | transloco }}
+  </button>
+  <button mbButton variant="outline" (click)="last()" [disabled]="!slides().length">
+    {{ 'pages.profile.slideshow.last' | transloco }}
+  </button>
+  <button
+    mbButton
+    variant="outline"
+    (click)="speed(0.5)"
+    [disabled]="seconds() >= 30"
+    [attr.aria-label]="'pages.profile.slideshow.slower' | transloco"
+  >
+    −
+  </button>
+  <span>{{ 'pages.profile.slideshow.speed' | transloco: { seconds: seconds() } }}</span>
+  <button
+    mbButton
+    variant="outline"
+    (click)="speed(-0.5)"
+    [disabled]="seconds() <= 0.5"
+    [attr.aria-label]="'pages.profile.slideshow.faster' | transloco"
+  >
+    +
+  </button>
+  <button mbButton variant="outline" (click)="toggleFullscreen()">
+    {{
+      (fullscreen()
+        ? 'pages.profile.slideshow.exitFullscreen'
+        : 'pages.profile.slideshow.fullscreen'
+      ) | transloco
+    }}
+  </button>
+  <button mbButton variant="outline" (click)="closed.emit()">
+    {{ 'pages.profile.slideshow.close' | transloco }}
+  </button>
+</div>
+<div class="details">
+  <span>{{
+    'pages.profile.slideshow.position'
+      | transloco: { current: slides().length ? index() + 1 : 0, total: slides().length }
+  }}</span>
+  @if (!exhausted()) {
+    <button mbButton variant="outline" size="small" (click)="older()" [disabled]="loading()">
+      {{
+        (loading() ? 'pages.profile.slideshow.loading' : 'pages.profile.slideshow.older')
+          | transloco
+      }}
+    </button>
+  }
+</div>
+<div #viewport class="viewport">
+  @if (current(); as post) {
+    <article #content class="slide" [class.emoji-art]="emojiArt()">
+      @if ((post.spoiler_text || post.sensitive) && revealed() !== post.id) {
+        <p>{{ post.spoiler_text }}</p>
+        <button mbButton (click)="revealed.set(post.id)">
+          {{ 'pages.profile.slideshow.reveal' | transloco }}
+        </button>
+      } @else {
+        <div class="post-text" [innerHTML]="post.content | customEmoji: post.emojis"></div>
+        @for (media of post.media_attachments; track media.id) {
+          @if (media.type === 'image' || media.type === 'gifv') {
+            <img
+              [src]="media.type === 'image' ? media.url : media.preview_url"
+              [alt]="media.description || ''"
+              (load)="fit()"
+            />
+          } @else {
+            <a [href]="media.url" target="_blank" rel="noopener noreferrer">{{
+              media.description || media.type
+            }}</a>
+          }
+        }
+      }
+    </article>
+  } @else {
+    <p>
+      {{
+        (loading() ? 'pages.profile.slideshow.loading' : 'pages.profile.slideshow.empty')
+          | transloco
+      }}
+    </p>
+  }
+</div>

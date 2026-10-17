@@ -527,3 +527,14 @@ Reply favourites reuse the small PostAction at the end of the existing mention
 toolbar, with a visible Star/Like label and the configured star/heart icon.
 No count is rendered. Regenerated the control inventory while retaining the
 existing notification-page disposition.
+
+## Profile slideshow and bot identity, 2026-10-17
+
+The profile slideshow uses shared Button controls for playback, speed, full screen,
+history loading and content-warning reveal. Profile overflow entries retain the
+existing native menu pattern. Public profile settings use Checkbox for the server
+bot flag; the profile heading renders the existing badge class. Reviewed the
+regenerated inventory: the slideshow template is the only new candidate file;
+profile and settings changes otherwise shift existing source locations. No shared
+widget implementation changed. Preserve keyboard navigation, Zen hold cleanup,
+readable overflow and the sensitive-content boundary during subsequent changes.

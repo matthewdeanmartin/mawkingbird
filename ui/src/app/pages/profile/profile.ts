@@ -1,3 +1,4 @@
+import { ProfileSlideshow } from './profile-slideshow';
 import { Compose } from '../../compose/compose';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { accountProfilePath } from '../../account-route';
@@ -234,6 +235,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    ProfileSlideshow,
     CustomEmojiPipe,
     MbButton,
     NgTemplateOutlet,
@@ -265,6 +267,7 @@ export class Profile implements OnInit, OnDestroy {
   // i18n pages.profile.actions.chat: Chat
   // i18n pages.profile.actions.retry: Retry
   protected showReply = signal(false);
+  protected showSlideshow = signal(false);
   protected readonly qualifiedHandle = qualifiedHandle;
   protected canContact = computed(() =>
     this.isBluesky() ? this.bskySession.linked() : this.capabilities.canUseServerActions,
@@ -952,6 +955,7 @@ export class Profile implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.showSlideshow.set(false);
       const id = params.get('id');
       if (!id) {
         return;

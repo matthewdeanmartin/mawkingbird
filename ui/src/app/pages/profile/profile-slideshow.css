@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 100px);
+  min-height: 360px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: var(--col-bg);
+  color: var(--text);
+}
+:host.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  height: 100dvh;
+  min-height: 0;
+}
+.toolbar,
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.details {
+  margin-block: 8px;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.slide {
+  display: flow-root;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.slide img {
+  max-width: 100%;
+  max-height: 45dvh;
+  object-fit: contain;
+}
+.post-text {
+  white-space: pre-wrap;
+}
+.emoji-art .post-text {
+  white-space: pre;
+}
