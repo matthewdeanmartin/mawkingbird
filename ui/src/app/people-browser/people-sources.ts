@@ -1,5 +1,6 @@
+import { accountProfilePath } from '../account-route';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { forkJoin, switchMap, map, Observable, of } from 'rxjs';
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { Account, Relationship } from '../models';
@@ -77,7 +78,7 @@ class MastodonPeopleSource implements PeopleSource {
   }
 
   accountLink(account: Account): (string | number)[] {
-    return ['/accounts', account.id];
+    return accountProfilePath(account);
   }
 }
 
@@ -172,7 +173,7 @@ class LocalAnonymousPeopleSource implements PeopleSource {
   }
 
   accountLink(account: Account): (string | number)[] {
-    return ['/accounts', account.id];
+    return accountProfilePath(account);
   }
 }
 
@@ -211,6 +212,23 @@ class BlueskyPeopleSource implements PeopleSource {
             .getFollows(this.did, cursor)
             .pipe(map((r) => ({ profiles: r.follows, cursor: r.cursor })));
     return page.pipe(
+      switchMap((page) => {
+        if (!page.profiles.length) return of(page);
+        const batches = [];
+        for (let i = 0; i < page.profiles.length; i += 25) {
+          batches.push(this.api.getProfiles(page.profiles.slice(i, i + 25).map((p) => p.did)));
+        }
+        return forkJoin(batches).pipe(
+          map((results) => {
+            const details = new Map(results.flatMap((r) => r.profiles).map((p) => [p.did, p]));
+            return {
+              ...page,
+              profiles: page.profiles.map((p) => ({ ...p, ...details.get(p.did) })),
+            };
+          }),
+        );
+      }),
+
       map((result) => {
         for (const profile of result.profiles) {
           if (profile.viewer) {
@@ -254,7 +272,7 @@ class BlueskyPeopleSource implements PeopleSource {
   }
 
   accountLink(account: Account): (string | number)[] {
-    return ['/accounts', account.id];
+    return accountProfilePath(account);
   }
 }
 

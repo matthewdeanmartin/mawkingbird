@@ -23,7 +23,7 @@
     <ul class="account-list">
       @for (a of accounts(); track a.id) {
         <li>
-          <a class="account-row" [routerLink]="['/accounts', a.id]" (click)="closed.emit()">
+          <a class="account-row" [routerLink]="accountProfilePath(a)" (click)="closed.emit()">
             <img
               class="avatar"
               [src]="a.avatar_static || a.avatar"

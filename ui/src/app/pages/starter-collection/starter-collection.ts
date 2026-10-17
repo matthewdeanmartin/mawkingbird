@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StarterPackTextPipe } from '../../starter-pack-text';
@@ -160,7 +161,7 @@ export class StarterCollection implements OnInit, OnDestroy {
           }),
         ]);
       } else {
-        await this.router.navigate(['/accounts', account.id]);
+        await this.router.navigate(accountProfilePath(account));
       }
     } catch {
       // Leave the row usable so a transient lookup failure can be retried.

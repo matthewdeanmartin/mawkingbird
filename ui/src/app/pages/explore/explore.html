@@ -17,7 +17,7 @@
           <dt>{{ 'pages.explore.administeredBy' | transloco }}</dt>
           <dd>
             @if (inst.contact.account; as admin) {
-              <a [routerLink]="['/accounts', admin.id]" class="admin">
+              <a [routerLink]="accountProfilePath(admin)" class="admin">
                 <img [src]="admin.avatar_static || admin.avatar" alt="" decoding="async" />
                 <span>
                   {{ admin.display_name || admin.username }}

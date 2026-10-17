@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { AccountPreview } from '../../account-hover-card/account-preview';
 import { FollowBundleTags } from '../../tag-actions/follow-bundle-tags';
 import { Component, inject, OnInit, signal } from '@angular/core';
@@ -48,6 +49,7 @@ import { StatusCard } from '../../status-card/status-card';
   styleUrl: './tag-bundle-page.css',
 })
 export class TagBundlePage implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private route = inject(ActivatedRoute);
   private resolver = inject(ListFeedResolver);
   private diagnostics = inject(PageDiagnostics);

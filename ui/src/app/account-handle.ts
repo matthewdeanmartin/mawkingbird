@@ -20,7 +20,7 @@ import { Account } from './models';
  * a wrong handle would send a lookup to the wrong person, which is worse than
  * no hint at all.
  */
-export function qualifiedHandle(account: Account): string | null {
+export function qualifiedHandle(account: Pick<Account, 'acct' | 'url'>): string | null {
   const acct = account.acct?.replace(/^@/, '').trim();
   if (!acct) {
     return null;

@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbMetadata, MbContentLink } from '../../design-system/metadata/metadata';
 import { MbTabs, MbTab } from '../../design-system/tabs/tabs';
@@ -49,6 +50,7 @@ import { PageDiagnostics } from '../../page-diagnostics';
   styleUrl: './client-list-page.css',
 })
 export class ClientListPage implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private route = inject(ActivatedRoute);
   private store = inject(ClientLists);
   private profileLists = inject(ProfileLists);

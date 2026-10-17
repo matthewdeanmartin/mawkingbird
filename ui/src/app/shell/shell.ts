@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
 import { FeatureUseHistory } from '../feature-use-history';
@@ -172,6 +173,7 @@ function isWideUrl(url: string): boolean {
   styleUrl: './shell.css',
 })
 export class Shell implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);
   protected auth = inject(Auth);

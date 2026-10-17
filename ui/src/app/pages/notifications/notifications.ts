@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { StatusActions } from '../../providers/status-actions';
@@ -268,6 +269,7 @@ export function accountsNewToMe(
   styleUrl: './notifications.css',
 })
 export class Notifications implements OnInit, OnDestroy {
+  protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
   private statusActions = inject(StatusActions);
   protected likeBusy = signal(new Set<string>());

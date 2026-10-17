@@ -44,7 +44,12 @@ import { BlueskyApi, tidFromSeed } from '../providers/bluesky/bluesky-api';
 import { detectFacets, graphemeLength } from '../providers/bluesky/bluesky-facets';
 import { buildLocalBskyStatus } from '../providers/bluesky/bluesky-local-status';
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
-import { BskyFacet, BskyImagesEmbed } from '../providers/bluesky/bluesky-types';
+import {
+  BskyFacet,
+  BskyImagesEmbed,
+  BskyPostEmbed,
+  BskyRef,
+} from '../providers/bluesky/bluesky-types';
 import { prepareImageForBluesky } from '../providers/bluesky/bluesky-image';
 import { PasteHistory } from '../providers/paste/paste-history';
 import { PasteExpiry } from '../providers/paste/paste-provider';
@@ -177,7 +182,9 @@ interface PostingOperation {
     parts: PostedBskyPart[];
     createdAt: string[];
     preparedFacets: (BskyFacet[] | undefined)[];
-    embed?: BskyImagesEmbed;
+    embed?: BskyPostEmbed;
+    replyTo?: BskyRef;
+    quote?: BskyRef;
     complete: boolean;
     inFlight: boolean;
     failedAt: number | null;
@@ -554,7 +561,17 @@ export class Compose implements OnDestroy {
   });
 
   readonly inReplyToId = input<string | undefined>(undefined);
-  /** When set, the composed status quotes this status id. */
+  private restoredBskyReply = signal<BskyRef | undefined>(undefined);
+  private restoredBskyQuote = signal<BskyRef | undefined>(undefined);
+  private blueskyReplyRef = computed(
+    () => this.blueskyReplyTo() ?? this.initialDraft()?.blueskyReplyTo ?? this.restoredBskyReply(),
+  );
+  private blueskyQuoteRef = computed(
+    () => this.blueskyQuote() ?? this.initialDraft()?.blueskyQuote ?? this.restoredBskyQuote(),
+  );
+  readonly blueskyReplyTo = input<BskyRef | undefined>(undefined);
+  readonly blueskyQuote = input<BskyRef | undefined>(undefined);
+  /** When set, the composed Mastodon status quotes this status id. */
   readonly quotedStatusId = input<string | undefined>(undefined);
   /**
    * The box's prompt. Empty means "use the default", which is a translation key
@@ -569,6 +586,8 @@ export class Compose implements OnDestroy {
   );
   /** Optional pre-seeded body (e.g. @mentions for a direct reply). */
   readonly initialText = input('');
+  /** Isolate drafts for profile mentions and new private chats. */
+  readonly draftContext = input('');
   /**
    * The parent author's handle (bare `acct`, e.g. `alice@dmv.community`) for a
    * reply. When set and no explicit {@link initialText} is given, the composer
@@ -646,10 +665,10 @@ export class Compose implements OnDestroy {
     if (this.gated()) {
       return 'compose.submit.saveDraft';
     }
-    if (this.inReplyToId()) {
+    if (this.inReplyToId() || this.blueskyReplyRef()) {
       return 'compose.submit.reply';
     }
-    if (this.quotedStatusId()) {
+    if (this.quotedStatusId() || this.blueskyQuoteRef()) {
       return 'compose.submit.quote';
     }
     if (this.scheduleActive()) {
@@ -856,6 +875,11 @@ export class Compose implements OnDestroy {
       // No caller opinion means a top-level compose: open on the account's own
       // posting default rather than assuming `public`.
       this.visibilityState.seed(initialVisibility);
+      // Inputs arrive after field initializers. Honor the caller's destination
+      // here, before any restored draft, rather than reading it only at construction.
+      if (this.initialTarget())
+        this.target.set(this.restorableTarget(this.initialTarget() as PostTarget));
+      if (this.blueskyReplyRef() || this.blueskyQuoteRef()) this.target.set('bsky');
       // A handoff from "Edit for post" outranks a stale autosave: the user just
       // asked for this specific post, and it only ever seeds once. An explicitly
       // opened draft still wins over both.
@@ -870,6 +894,7 @@ export class Compose implements OnDestroy {
           provider: saved.pasteProviderId ?? this.pasteProviders.default.id,
         });
         this.applySnapshot(saved);
+        this.seededKey = `${this.contextKey()}|${draft?.id ?? ''}`;
       }
       if (handoff?.media?.length) {
         this.media.set(handoff.media);
@@ -1075,7 +1100,7 @@ export class Compose implements OnDestroy {
   /** The box (index + element) that last had focus, for emoji insertion. */
   private lastFocusedBox: { index: number; el: HTMLTextAreaElement } | null = null;
 
-  // Post target (top-level composes only; replies/quotes always stay on Fedi).
+  // Replies and quotes stay on the network that owns their parent post.
   protected target = signal<PostTarget>(
     // A parked Hugo edit decides the target before anything else can: the user
     // clicked "Edit" on a specific file, so opening on Fedi would offer to post
@@ -1103,13 +1128,25 @@ export class Compose implements OnDestroy {
             ? restorableTarget('bsky', this.availability.current())
             : 'fedi',
   );
-  protected showTargetPicker = computed(() => !this.inReplyToId() && !this.quotedStatusId());
-  protected targetIncludesBsky = computed(
-    () => this.showTargetPicker() && (this.target() === 'bsky' || this.target() === 'both'),
+  protected showTargetPicker = computed(
+    () =>
+      !this.inReplyToId() &&
+      !this.quotedStatusId() &&
+      !this.blueskyReplyRef() &&
+      !this.blueskyQuoteRef(),
   );
-  /** Replies/quotes always use Fedi; top-level Fedi and Both targets include it. */
+  protected targetIncludesBsky = computed(
+    () =>
+      !!this.blueskyReplyRef() ||
+      !!this.blueskyQuoteRef() ||
+      (this.showTargetPicker() && (this.target() === 'bsky' || this.target() === 'both')),
+  );
+  /** Mastodon replies/quotes and the top-level Fedi/Both targets include Fedi. */
   protected targetIncludesFedi = computed(
-    () => !this.showTargetPicker() || this.target() === 'fedi' || this.target() === 'both',
+    () =>
+      !this.blueskyReplyRef() &&
+      !this.blueskyQuoteRef() &&
+      (!this.showTargetPicker() || this.target() === 'fedi' || this.target() === 'both'),
   );
   protected readonly bskyAudienceBlocked = computed(
     () => this.targetIncludesBsky() && this.visibility() !== 'public',
@@ -1659,6 +1696,12 @@ export class Compose implements OnDestroy {
   /** Pasting an image (screenshot, copied file) attaches it; plain text pastes normally. */
   onPaste(event: ClipboardEvent): void {
     const files = Array.from(event.clipboardData?.files ?? []);
+    if (!files.length) {
+      for (const item of Array.from(event.clipboardData?.items ?? [])) {
+        const file = item.kind === 'file' ? item.getAsFile() : null;
+        if (file) files.push(file);
+      }
+    }
     const media = files.filter((f) => isAttachable(f));
     if (!media.length) {
       return;
@@ -1764,7 +1807,7 @@ export class Compose implements OnDestroy {
       // it there would spend a call and store a file nothing will reference.
       // Held locally instead and sent to Bluesky at submit time, which is when
       // the blob has to exist in that repo anyway.
-      if (this.target() === 'bsky') {
+      if (this.targetIncludesBsky() && !this.targetIncludesFedi()) {
         this.media.update((list) => [...list, { media: localMedia(file), description: '', file }]);
         continue;
       }
@@ -1836,11 +1879,12 @@ export class Compose implements OnDestroy {
 
   /** 'new', 'reply:<id>' or 'quote:<id>' — each context autosaves separately. */
   private contextKey(): string {
-    const reply = this.inReplyToId();
+    if (this.draftContext()) return this.draftContext();
+    const reply = this.blueskyReplyRef()?.uri ?? this.inReplyToId();
     if (reply) {
       return `reply:${reply}`;
     }
-    const quote = this.quotedStatusId();
+    const quote = this.blueskyQuoteRef()?.uri ?? this.quotedStatusId();
     if (quote) {
       return `quote:${quote}`;
     }
@@ -1874,6 +1918,8 @@ export class Compose implements OnDestroy {
         : null,
       postLanguage: this.postLanguage(),
       postLanguageExplicit: this.languageExplicit(),
+      blueskyReplyTo: this.blueskyReplyRef(),
+      blueskyQuote: this.blueskyQuoteRef(),
       inReplyToId: this.inReplyToId(),
       quotedStatusId: this.quotedStatusId(),
       target: this.target(),
@@ -1903,6 +1949,8 @@ export class Compose implements OnDestroy {
   }
 
   private applySnapshot(d: DraftSnapshot): void {
+    this.restoredBskyReply.set(d.blueskyReplyTo);
+    this.restoredBskyQuote.set(d.blueskyQuote);
     this.text.set(d.segments[0] ?? '');
     this.thread.set(d.segments.slice(1));
     this.spoilerText.set(d.spoilerText);
@@ -1917,7 +1965,11 @@ export class Compose implements OnDestroy {
       // paste clamp stashed on the way here.
       this.visibilityState.choose(d.visibility);
     }
-    this.target.set(this.restorableTarget(d.target ?? 'fedi'));
+    this.target.set(
+      this.blueskyReplyRef() || this.blueskyQuoteRef()
+        ? 'bsky'
+        : this.restorableTarget(d.target ?? 'fedi'),
+    );
     this.onPasteProviderChange(d.pasteProviderId ?? this.pasteProviders.default.id);
     const provider = this.selectedPasteProvider();
     this.pasteLanguage.set(
@@ -2377,6 +2429,8 @@ export class Compose implements OnDestroy {
         parts: [],
         createdAt: [],
         preparedFacets: [],
+        replyTo: this.blueskyReplyRef(),
+        quote: this.blueskyQuoteRef(),
         complete: false,
         inFlight: false,
         failedAt: null,
@@ -2688,6 +2742,7 @@ export class Compose implements OnDestroy {
       .filter((m) => m.file && isBlueskyAttachable(m.file))
       .slice(0, BSKY_MAX_IMAGES);
     if (!images.length) {
+      operation.bsky.embed = this.quoteEmbed(operation);
       this.postBskyPart(operation);
       return;
     }
@@ -2701,7 +2756,7 @@ export class Compose implements OnDestroy {
         this.settlePosting(operation);
         return;
       }
-      operation.bsky.embed = embed;
+      operation.bsky.embed = this.quoteEmbed(operation, embed);
       this.postBskyPart(operation);
     });
   }
@@ -2748,11 +2803,24 @@ export class Compose implements OnDestroy {
    * threaded through unchanged: Bluesky wants every reply to name the thread
    * root as well as its immediate parent.
    */
+  private quoteEmbed(
+    operation: PostingOperation,
+    media?: BskyImagesEmbed,
+  ): BskyPostEmbed | undefined {
+    const quote = operation.bsky.quote;
+    if (!quote) return media;
+    const record = {
+      $type: 'app.bsky.embed.record' as const,
+      record: { uri: quote.uri, cid: quote.cid },
+    };
+    return media ? { $type: 'app.bsky.embed.recordWithMedia', record, media } : record;
+  }
+
   private postBskyPart(operation: PostingOperation): void {
     const index = operation.bsky.parts.length;
     const text = operation.parts[index];
-    const root = operation.bsky.parts[0]?.ref ?? null;
-    const parent = operation.bsky.parts[index - 1]?.ref ?? null;
+    const root = operation.bsky.replyTo?.replyRoot ?? operation.bsky.parts[0]?.ref ?? null;
+    const parent = operation.bsky.parts[index - 1]?.ref ?? operation.bsky.replyTo ?? null;
     let sentFacets: BskyFacet[] = [];
     const prepared = operation.bsky.preparedFacets[index];
     (prepared ? of(prepared) : detectFacets(text, (handle) => this.bskyApi.resolveHandle(handle)))
@@ -2767,7 +2835,8 @@ export class Compose implements OnDestroy {
             {
               text,
               facets: facets.length ? facets : undefined,
-              reply: root && parent ? { root, parent } : undefined,
+              reply:
+                root && parent ? { root, parent: { uri: parent.uri, cid: parent.cid } } : undefined,
               // First post only. Uploaded blob refs are retained on the
               // operation so an ambiguous record retry is byte-equivalent.
               embed: index === 0 ? operation.bsky.embed : undefined,
@@ -2858,6 +2927,7 @@ export class Compose implements OnDestroy {
         root.ref.cid,
         operation.parts[0],
         root.facets,
+        operation.bsky.replyTo,
       );
     } else if (operation.scheduledFor) {
       if ('params' in operation.fedi.statuses[0]) {

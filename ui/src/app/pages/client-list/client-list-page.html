@@ -56,7 +56,7 @@
           <p class="muted center small">{{ 'pagesClientList.members.unresolved' | transloco }}</p>
         } @else {
           @for (m of members(); track m.id) {
-            <a mbContentLink class="member-link" [routerLink]="['/accounts', m.id]">
+            <a mbContentLink class="member-link" [routerLink]="accountProfilePath(m)">
               <span>{{ m.display_name || m.username }}</span>
               <mb-metadata>&#64;{{ m.acct }}</mb-metadata>
             </a>

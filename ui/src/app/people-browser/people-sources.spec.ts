@@ -85,6 +85,15 @@ describe('PeopleSourceFactory — Bluesky', () => {
         cursor: 'cur-1',
       });
 
+    httpMock
+      .expectOne((r) => r.url.endsWith('/app.bsky.actor.getProfiles'))
+      .flush({
+        profiles: [
+          { ...profile('did:plc:a', 'a.bsky.social'), followersCount: 123, followsCount: 45 },
+        ],
+      });
+    expect(page!.accounts[0].followers_count).toBe(123);
+    expect(page!.accounts[0].following_count).toBe(45);
     expect(page!.accounts[0].id).toBe('bsky:did:plc:a');
     expect(page!.accounts[0].acct).toBe('a.bsky.social');
     expect(page!.cursor).toBe('cur-1');
@@ -111,6 +120,11 @@ describe('PeopleSourceFactory — Bluesky', () => {
         ],
       });
 
+    httpMock
+      .expectOne((r) => r.url.endsWith('/app.bsky.actor.getProfiles'))
+      .flush({
+        profiles: [{ ...profile('did:plc:a', 'a.bsky.social'), followersCount: 123 }],
+      });
     let rels = new Map<string, Relationship>();
     source.relationships(accounts).subscribe((r) => (rels = r));
     // No further HTTP; httpMock.verify() in afterEach proves it.
@@ -132,6 +146,11 @@ describe('PeopleSourceFactory — Bluesky', () => {
         followers: [profile('did:plc:a', 'a.bsky.social')],
       });
 
+    httpMock
+      .expectOne((r) => r.url === `${PUBLIC}/xrpc/app.bsky.actor.getProfiles`)
+      .flush({
+        profiles: [{ ...profile('did:plc:a', 'a.bsky.social'), followersCount: 12 }],
+      });
     let rels = new Map<string, Relationship>();
     source.relationships(accounts).subscribe((r) => (rels = r));
     // Unknown, not "not following" — there is no viewer block at all.

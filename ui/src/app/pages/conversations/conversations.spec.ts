@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../auth';
@@ -297,6 +297,21 @@ describe('Conversations', () => {
     expect(realChats(fixture).some((c) => c.key === 'pub:alice')).toBe(true);
     expect(internals(fixture).selected()?.key).toBe('pub:alice');
     expect(internals(fixture).messages()).toEqual([]);
+  });
+
+  it('opens a profile Chat as a private draft addressed to that account', () => {
+    Object.defineProperty(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', {
+      value: convertToParamMap({ visibility: 'direct' }),
+    });
+    const fixture = setUp();
+    internals(fixture).pendingOpen.set('priv:alice');
+    internals(fixture).pendingWith.set('2');
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/accounts/2').flush(makeAccount('2', 'alice'));
+    fixture.detectChanges();
+    expect(internals(fixture).selected()?.kind).toBe('private');
+    expect(internals(fixture).replyVisibility()).toBe('direct');
+    expect(internals(fixture).replyMentions()).toBe('@alice ');
   });
 
   it('shows the originating post when a deep link drafts a chat with no history', () => {

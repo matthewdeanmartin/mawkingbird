@@ -135,7 +135,7 @@
         <app-account-result-card
           [item]="newAccountItem(candidate)"
           [relationship]="candidate.relationship"
-          [profileLink]="['/accounts', candidate.account.id]"
+          [profileLink]="accountProfilePath(candidate.account)"
           [reason]="newAccountReason(candidate)"
           [reasonLink]="newAccountReasonLink(candidate)"
           [followBusy]="isAccountActionBusy(candidate.account.id)"
@@ -155,7 +155,7 @@
       <div class="notif notif-group">
         <div class="group-avatars">
           @for (g of row.sample; track g.account.id) {
-            <a [routerLink]="['/accounts', g.account.id]" [attr.aria-label]="g.account.acct">
+            <a [routerLink]="accountProfilePath(g.account)" [attr.aria-label]="g.account.acct">
               <img
                 class="notif-avatar"
                 [ngSrc]="g.account.avatar_static || g.account.avatar || 'favicon-32x32.png'"
@@ -169,7 +169,7 @@
         <div class="notif-body">
           <span class="group-summary">
             @for (g of row.sample; track g.account.id; let last = $last) {
-              <a class="who" [routerLink]="['/accounts', g.account.id]">{{
+              <a class="who" [routerLink]="accountProfilePath(g.account)">{{
                 g.account.display_name || g.account.username
               }}</a
               >{{ last ? '' : ', ' }}
@@ -212,7 +212,7 @@
       </div>
     } @else {
       <div class="notif">
-        <a [routerLink]="['/accounts', row.notif.account.id]">
+        <a [routerLink]="accountProfilePath(row.notif.account)">
           <img
             class="notif-avatar"
             [ngSrc]="
@@ -224,7 +224,7 @@
           />
         </a>
         <div class="notif-body">
-          <a class="who" [routerLink]="['/accounts', row.notif.account.id]">{{
+          <a class="who" [routerLink]="accountProfilePath(row.notif.account)">{{
             row.notif.account.display_name || row.notif.account.username
           }}</a>
           <span class="what muted">{{ label(row.notif.type) }}</span>

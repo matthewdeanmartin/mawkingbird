@@ -1,3 +1,5 @@
+import { qualifiedHandle } from './account-handle';
+
 /**
  * Account URLs that survive changing servers.
  *
@@ -25,6 +27,16 @@ export interface AccountRouteRef {
   id?: string;
   /** Fully-qualified `user@host` handle, without the leading '@'. */
   handle?: string;
+}
+
+/** Preserve provider-owned ids; qualify Mastodon links wherever an account is available. */
+export function accountProfilePath(
+  account: Pick<import('./models').Account, 'id' | 'acct' | 'url'>,
+): (string | number)[] {
+  return accountRoutePath({
+    id: account.id,
+    handle: /^\d+$/.test(account.id) ? (qualifiedHandle(account) ?? undefined) : undefined,
+  });
 }
 
 /** True for a segment that is a bare Mastodon-style id (digits only). */

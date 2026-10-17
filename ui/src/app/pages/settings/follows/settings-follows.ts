@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../../account-route';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../../api';
@@ -74,7 +75,7 @@ export class SettingsFollows implements OnInit {
             originalUrl: follow.profileUrl,
           }),
         ]
-      : ['/accounts', account.id];
+      : accountProfilePath(account);
   }
 
   protected sourceStatus(follow: AnonymousFollow): string {

@@ -21,6 +21,7 @@ describe('Conversations configured networks', () => {
   const listConvos = vi.fn();
   const getMessages = vi.fn();
   const sendMessage = vi.fn();
+  const getConvoForMembers = vi.fn();
   const convo = {
     id: 'one',
     rev: '1',
@@ -51,6 +52,7 @@ describe('Conversations configured networks', () => {
     listConvos.mockReset().mockReturnValue(of({ convos: [convo] }));
     getMessages.mockReset().mockReturnValue(of({ messages: [] }));
     sendMessage.mockReset().mockReturnValue(of(message));
+    getConvoForMembers.mockReset().mockReturnValue(of({ convo }));
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -60,7 +62,13 @@ describe('Conversations configured networks', () => {
         { provide: BlueskySession, useValue: { linked, session: signal({ did: 'did:plc:me' }) } },
         {
           provide: BlueskyChatApi,
-          useValue: { listConvos, getMessages, sendMessage, updateRead: () => of(undefined) },
+          useValue: {
+            listConvos,
+            getMessages,
+            sendMessage,
+            getConvoForMembers,
+            updateRead: () => of(undefined),
+          },
         },
       ],
     });
@@ -83,6 +91,18 @@ describe('Conversations configured networks', () => {
     );
     fixture.detectChanges();
   }
+
+  it('opens the private Bluesky conversation for a profile Chat link without posting', () => {
+    listConvos.mockReturnValue(of({ convos: [] }));
+    create();
+    fixture.componentInstance['pendingOpen'].set('bsky-person:bsky:did:plc:peer');
+    fixture.componentInstance['pendingWith'].set('bsky:did:plc:peer');
+    fixture.detectChanges();
+    expect(getConvoForMembers).toHaveBeenCalledWith('did:plc:peer');
+    expect(fixture.componentInstance['selected']()?.convoId).toBe('one');
+    expect(sendMessage).not.toHaveBeenCalled();
+    http.expectNone((r) => r.url.startsWith('/api/'));
+  });
 
   it('loads Bluesky alone, without Mastodon requests, streams, or unavailable filters', () => {
     const prefs = TestBed.inject(ClientPrefs);

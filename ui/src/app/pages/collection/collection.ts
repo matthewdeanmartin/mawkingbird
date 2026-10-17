@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { catchError, forkJoin, of } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
@@ -132,6 +133,7 @@ interface Member {
   styleUrl: './collection.css',
 })
 export class CollectionPage implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
   private auth = inject(Auth);
   private route = inject(ActivatedRoute);
@@ -328,7 +330,7 @@ export class CollectionPage implements OnInit {
    */
   protected memberLink(account: Account): (string | number)[] {
     if (!this.shipped() || !account.url) {
-      return ['/accounts', account.id];
+      return accountProfilePath(account);
     }
     try {
       return [
@@ -340,7 +342,7 @@ export class CollectionPage implements OnInit {
         }),
       ];
     } catch {
-      return ['/accounts', account.id];
+      return accountProfilePath(account);
     }
   }
 

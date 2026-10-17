@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../../account-route';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -100,6 +101,7 @@ const DOMAIN_PAGE_SIZE = 100;
   styleUrl: './settings-account-list.css',
 })
 export class SettingsAccountList implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
   private route = inject(ActivatedRoute);
   private bulk = inject(BulkActions);

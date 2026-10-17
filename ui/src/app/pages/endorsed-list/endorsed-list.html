@@ -2,7 +2,7 @@
 @if (owner(); as o) {
   <p class="muted small page-sub">
     {{ 'endorsedList.managedOn' | transloco }}
-    <a [routerLink]="['/accounts', o.id]">{{ o.display_name || o.username }}</a
+    <a [routerLink]="accountProfilePath(o)">{{ o.display_name || o.username }}</a
     >{{ 'endorsedList.profileSuffix' | transloco }}
   </p>
 }
@@ -46,7 +46,7 @@
 } @else {
   @for (a of members(); track a.id) {
     <div class="member-row">
-      <a class="member-link" [routerLink]="['/accounts', a.id]">
+      <a class="member-link" [routerLink]="accountProfilePath(a)">
         <img
           class="avatar"
           [src]="a.avatar_static || a.avatar"

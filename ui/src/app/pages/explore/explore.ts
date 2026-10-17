@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -42,6 +43,7 @@ type ExploreTab = 'posts' | 'hashtags';
   styleUrl: './explore.css',
 })
 export class Explore implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 

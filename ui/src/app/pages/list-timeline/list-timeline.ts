@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbNotice } from '../../design-system/notice/notice';
@@ -311,7 +312,7 @@ export class ListTimeline implements OnInit {
             originalUrl: follow.profileUrl,
           }),
         ]
-      : ['/accounts', account.id];
+      : accountProfilePath(account);
   }
 
   // ---------------------------------------------------- bulk member actions

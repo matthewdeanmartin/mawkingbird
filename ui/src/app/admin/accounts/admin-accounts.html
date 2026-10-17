@@ -16,7 +16,7 @@
   @for (a of accounts(); track a.id) {
     <div class="admin-row">
       <div class="who">
-        <a [routerLink]="['/accounts', a.id]"
+        <a [routerLink]="accountProfilePath(a.account)"
           ><strong>{{ a.username }}</strong></a
         >
         @if (a.role.name) {

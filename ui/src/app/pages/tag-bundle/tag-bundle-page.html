@@ -99,7 +99,7 @@
       @for (m of members(); track m.id) {
         <div class="list-row">
           <app-account-preview [account]="m"
-            ><a [routerLink]="['/accounts', m.id]">
+            ><a [routerLink]="accountProfilePath(m)">
               <span>
                 {{ m.display_name || m.username }}
                 <span class="muted small">· &#64;{{ m.acct }}</span>

@@ -1,3 +1,5 @@
+import { By } from '@angular/platform-browser';
+import { Compose } from '../compose/compose';
 import { AppDialogs } from '../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -2328,6 +2330,13 @@ describe('StatusCard', () => {
     });
 
     it('Bluesky posts get reply/boost/favourite plus Open original, but no Mastodon extras', () => {
+      seedBskySession({
+        service: 'https://bsky.social',
+        handle: 'me.bsky.social',
+        did: 'did:plc:me',
+        accessJwt: 'access',
+        refreshJwt: 'refresh',
+      });
       const f = setUp(
         makeStatus({
           id: 'bsky:at://did:plc:x/app.bsky.feed.post/1',
@@ -2346,7 +2355,12 @@ describe('StatusCard', () => {
       );
       const el = f.nativeElement as HTMLElement;
       expect(el.querySelector('button[title="Reply"]')).toBeTruthy();
-      expect(el.querySelector('button[title="Boost"]')).toBeTruthy();
+      const share = el.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+      expect(share).toBeTruthy();
+      share!.click();
+      f.detectChanges();
+      expect(el.querySelector('.share-menu')?.textContent).toContain('Boost');
+      expect(el.querySelector('.share-menu')?.textContent).toContain('Quote');
       expect(el.querySelector('button[title="Favourite"]')).toBeTruthy();
       expect(el.querySelector('a.open-original')).toBeTruthy();
       // Bookmark is now a Bluesky-native action; Mastodon-only actions stay hidden.
@@ -2429,7 +2443,9 @@ describe('StatusCard', () => {
       f.detectChanges();
       const el = f.nativeElement as HTMLElement;
       expect(el.querySelector('app-bsky-reply')).toBeTruthy();
-      expect(el.querySelector('app-compose')).toBeNull();
+      const composer = f.debugElement.query(By.directive(Compose)).componentInstance as Compose;
+      expect(composer.initialTarget()).toBe('bsky');
+      expect(composer.blueskyReplyTo()?.uri).toBe('at://did:plc:x/app.bsky.feed.post/1');
     });
   });
 });

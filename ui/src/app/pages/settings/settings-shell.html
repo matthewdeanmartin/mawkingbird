@@ -42,7 +42,7 @@
 
 <ng-template #settingsNavigation>
   @if (auth.account(); as acc) {
-    <a class="side-profile" (click)="drawerOpen.set(false)" [routerLink]="['/accounts', acc.id]">
+    <a class="side-profile" (click)="drawerOpen.set(false)" [routerLink]="accountProfilePath(acc)">
       <div class="side-header" [style.background-image]="'url(' + acc.header + ')'"></div>
       <div class="side-identity">
         <img class="side-avatar" [src]="acc.avatar_static || acc.avatar" alt="" decoding="async" />

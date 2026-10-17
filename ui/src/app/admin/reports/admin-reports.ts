@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -26,6 +27,7 @@ import { AdminReport } from '../../models';
   styleUrl: './admin-reports.css',
 })
 export class AdminReports implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private api = inject(AdminApi);
 
   protected resolved = signal(false);

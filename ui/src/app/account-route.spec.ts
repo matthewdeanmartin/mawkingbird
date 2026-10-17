@@ -1,5 +1,29 @@
 import { describe, expect, it } from 'vitest';
-import { accountRoutePath, parseAccountRoute } from './account-route';
+import { accountProfilePath, accountRoutePath, parseAccountRoute } from './account-route';
+
+describe('accountProfilePath', () => {
+  it('qualifies a local Mastodon handle using the profile origin', () => {
+    expect(
+      accountProfilePath({ id: '123', acct: 'alice', url: 'https://example.social/@alice' }),
+    ).toEqual(['/accounts', '123', '@alice@example.social']);
+  });
+  it('preserves a remote handle across server-specific ids', () => {
+    expect(accountProfilePath({ id: '456', acct: 'alice@example.social', url: '' })).toEqual([
+      '/accounts',
+      '456',
+      '@alice@example.social',
+    ]);
+  });
+  it('keeps provider-owned identifiers out of Mastodon handle lookup', () => {
+    expect(
+      accountProfilePath({
+        id: 'bsky:did:plc:alice',
+        acct: 'alice.bsky.social',
+        url: 'https://bsky.app/profile/alice.bsky.social',
+      }),
+    ).toEqual(['/accounts', 'bsky:did:plc:alice']);
+  });
+});
 
 describe('parseAccountRoute', () => {
   it('reads a bare id', () => {

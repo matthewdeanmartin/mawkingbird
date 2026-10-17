@@ -1,3 +1,9 @@
+@if (startChatError()) {
+  <p role="alert">{{ 'pages.conversations.startFailed' | transloco }}</p>
+  <button type="button" class="btn" (click)="retryStartChat()">
+    {{ 'pages.profile.actions.retry' | transloco }}
+  </button>
+}
 <div class="chat-page" [class.list-open]="listOpen()">
   <!-- Narrow screens only: the chat list is a drawer, so the transcript keeps
        the screen. Hidden above the breakpoint, where both panes fit. -->
@@ -241,7 +247,7 @@
             }
           } @else {
             @for (a of chat.accounts.slice(0, 4); track a.id) {
-              <a [routerLink]="['/accounts', a.id]" [attr.aria-label]="a.display_name"
+              <a [routerLink]="accountProfilePath(a)" [attr.aria-label]="a.display_name"
                 ><img [src]="a.avatar_static || a.avatar" alt="" loading="lazy" decoding="async"
               /></a>
             }
@@ -435,7 +441,7 @@
           <div class="bubble-row" [class.mine]="isMine(m)">
             @if (!isMine(m)) {
               <a
-                [routerLink]="['/accounts', m.account.id]"
+                [routerLink]="accountProfilePath(m.account)"
                 class="bubble-avatar"
                 [attr.aria-label]="m.account.acct"
               >
@@ -563,6 +569,7 @@
             [chatMode]="true"
             [inReplyToId]="replyToId()"
             [initialText]="replyMentions()"
+            [draftContext]="'chat:' + chat.key"
             [initialVisibility]="replyVisibility()"
             [lockVisibility]="chat.kind === 'private'"
             [placeholder]="

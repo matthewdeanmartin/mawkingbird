@@ -251,7 +251,7 @@
       <h3 class="chart-title muted">{{ 'feedAnalytics.accounts.topAuthors' | transloco }}</h3>
       <div class="share-list">
         @for (row of visible(tableKeys.authors, report().accounts.authors); track row.account.id) {
-          <a class="share-row linked" [routerLink]="['/accounts', row.account.id]">
+          <a class="share-row linked" [routerLink]="accountProfilePath(row.account)">
             <img
               class="row-avatar"
               [src]="row.account.avatar_static || row.account.avatar"
@@ -494,7 +494,7 @@
               row of visible(tableKeys.linkers, report().links.linkHeavyAuthors);
               track row.account.id
             ) {
-              <a class="chip" [routerLink]="['/accounts', row.account.id]">
+              <a class="chip" [routerLink]="accountProfilePath(row.account)">
                 &#64;{{ row.account.acct }} <small>{{ pct(row.share) }}%</small>
               </a>
             }
@@ -539,7 +539,7 @@
               row of visible(tableKeys.media, report().media.topMediaAuthors);
               track row.account.id
             ) {
-              <a class="chip" [routerLink]="['/accounts', row.account.id]">
+              <a class="chip" [routerLink]="accountProfilePath(row.account)">
                 &#64;{{ row.account.acct }} <small>{{ row.count }}</small>
               </a>
             }
@@ -663,7 +663,7 @@
             row of visible(tableKeys.participants, report().conversations.topParticipants);
             track row.account.id
           ) {
-            <a class="chip" [routerLink]="['/accounts', row.account.id]">
+            <a class="chip" [routerLink]="accountProfilePath(row.account)">
               &#64;{{ row.account.acct }} <small>{{ row.count }}</small>
             </a>
           }
@@ -755,7 +755,7 @@
             row of visible(tableKeys.bursts, report().recency.burstAuthors);
             track row.account.id
           ) {
-            <a class="chip" [routerLink]="['/accounts', row.account.id]">
+            <a class="chip" [routerLink]="accountProfilePath(row.account)">
               &#64;{{ row.account.acct }} <small>{{ row.count }}</small>
             </a>
           }

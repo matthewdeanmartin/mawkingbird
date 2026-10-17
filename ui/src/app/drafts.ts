@@ -27,6 +27,8 @@ export interface Draft {
   /** ISO 639-1 code, or empty/absent to let the server infer it. */
   postLanguage?: string;
   postLanguageExplicit?: boolean;
+  blueskyReplyTo?: import('./providers/bluesky/bluesky-types').BskyRef;
+  blueskyQuote?: import('./providers/bluesky/bluesky-types').BskyRef;
   inReplyToId?: string;
   quotedStatusId?: string;
   /**

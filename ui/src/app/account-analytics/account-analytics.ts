@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../account-route';
 import { MbButton } from '../design-system/button/button';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -151,6 +152,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
   styleUrl: './account-analytics.css',
 })
 export class AccountAnalytics implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 
@@ -463,6 +465,13 @@ export class AccountAnalytics implements OnInit {
   protected topPartners = computed<CountedItem[]>(() =>
     topConversationPartners(this.posts(), this.publicRef()?.id ?? this.account().id),
   );
+
+  protected partnerLink(id: string): (string | number)[] | null {
+    const mention = this.posts()
+      .flatMap((p) => p.mentions ?? [])
+      .find((m) => m.id === id);
+    return mention ? accountProfilePath(mention) : null;
+  }
 
   /** Most-used hashtags in the sample. */
   protected topTags = computed<CountedItem[]>(() => topHashtags(this.posts()));

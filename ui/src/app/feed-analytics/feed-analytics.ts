@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../account-route';
 import { MbButton } from '../design-system/button/button';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PostingCalendar } from './posting-calendar';
@@ -185,6 +186,7 @@ const PREVIEW_ROWS = 8;
   styleUrl: './feed-analytics.css',
 })
 export class FeedAnalytics {
+  protected readonly accountProfilePath = accountProfilePath;
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
   private transloco = inject(TranslocoService);

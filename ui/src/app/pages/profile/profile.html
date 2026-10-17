@@ -1,3 +1,13 @@
+<ng-template #contactButtons>
+  @if (canContact()) {
+    <button type="button" class="btn btn-outline" (click)="showReply.set(true)">
+      {{ 'pages.profile.actions.reply' | transloco }}
+    </button>
+    <button type="button" class="btn btn-outline" (click)="chat()">
+      {{ 'pages.profile.actions.chat' | transloco }}
+    </button>
+  }
+</ng-template>
 <ng-template #privateFollowMenu>
   @if (canPrivateFollow()) {
     <button
@@ -39,6 +49,22 @@
     <button mbButton variant="outline" class="back-button" type="button" (click)="goBack()">
       {{ 'pages.profile.actions.back' | transloco }}
     </button>
+  }
+  @if (showReply()) {
+    <mb-dialog
+      [title]="'pages.profile.actions.reply' | transloco"
+      [closeLabel]="'pages.profile.actions.cancel' | transloco"
+      (dismissed)="showReply.set(false)"
+    >
+      <app-compose
+        [draftContext]="'profile-reply:' + a.id"
+        [compact]="true"
+        [initialTarget]="isBluesky() ? 'bsky' : 'fedi'"
+        initialVisibility="public"
+        [initialText]="'@' + (isBluesky() ? a.acct : qualifiedHandle(a) || a.acct) + ' '"
+        (posted)="showReply.set(false)"
+      />
+    </mb-dialog>
   }
   <header class="profile-header">
     <div
@@ -156,29 +182,7 @@
              the viewer holds a Bluesky session, so this writes a follow record
              and the other account is notified. -->
         <div class="profile-buttons">
-          @if (a.url) {
-            <a class="btn btn-outline" [href]="a.url" target="_blank" rel="noopener noreferrer">
-              {{ 'pages.profile.actions.openOnBluesky' | transloco }}
-            </a>
-          }
           @if (bskySession.linked() && !isSelf()) {
-            <button
-              class="btn"
-              [class.btn-outline]="relationship()?.following"
-              [disabled]="bskyFollowBusy()"
-              (click)="toggleBlueskyFollow()"
-            >
-              @if (bskyFollowBusy()) {
-                …
-              } @else {
-                {{
-                  (relationship()?.following
-                    ? 'pages.profile.bluesky.following'
-                    : 'pages.profile.bluesky.follow'
-                  ) | transloco
-                }}
-              }
-            </button>
             <!-- Real Bluesky mutes and blocks, written on their network. A timed
                  mute has no Bluesky equivalent, so those stay local — see
                  Profile.mute. Reporting is not offered: it needs a labeler
@@ -240,7 +244,25 @@
                 </button>
               </div>
             </details>
-          } @else if (canPrivateFollow()) {
+            <ng-container [ngTemplateOutlet]="contactButtons" />
+            <button
+              class="btn"
+              [class.btn-outline]="relationship()?.following"
+              [disabled]="bskyFollowBusy()"
+              (click)="toggleBlueskyFollow()"
+            >
+              @if (bskyFollowBusy()) {
+                …
+              } @else {
+                {{
+                  (relationship()?.following
+                    ? 'pages.profile.bluesky.following'
+                    : 'pages.profile.bluesky.follow'
+                  ) | transloco
+                }}
+              }
+            </button>
+          } @else if (a.url || canPrivateFollow()) {
             <details class="account-danger-menu">
               <summary
                 class="btn btn-outline"
@@ -249,6 +271,11 @@
                 •••
               </summary>
               <div class="account-danger-panel">
+                @if (a.url) {
+                  <a [href]="a.url" target="_blank" rel="noopener noreferrer">{{
+                    'pages.profile.actions.openOnBskyApp' | transloco
+                  }}</a>
+                }
                 <ng-container [ngTemplateOutlet]="privateFollowMenu" />
               </div>
             </details>
@@ -271,18 +298,6 @@
         </div>
       } @else if (!isSelf()) {
         <div class="profile-buttons">
-          @if (capabilities.canManageLists) {
-            <!-- "Lists", not "Lists & collections": this sits in a row that
-                 already competes for width with •••, the relationship badge and
-                 Follow, and the longer label was the one pushing that row into a
-                 second line on a phone. The dialog itself still covers both. -->
-            <button class="btn btn-outline" (click)="showLists.set(true)">
-              {{
-                (auth.isAnonymous ? 'pages.profile.lists.local' : 'pages.profile.lists.lists')
-                  | transloco
-              }}
-            </button>
-          }
           <details class="account-danger-menu">
             <summary
               class="btn btn-outline"
@@ -291,6 +306,15 @@
               •••
             </summary>
             <div class="account-danger-panel">
+              @if (capabilities.canManageLists) {
+                <button type="button" (click)="showLists.set(true)">
+                  {{
+                    (auth.isAnonymous ? 'pages.profile.lists.local' : 'pages.profile.lists.lists')
+                      | transloco
+                  }}
+                </button>
+              }
+
               <!-- Two groups, split by a rule: things that make something appear in
                    your app, then things that make someone disappear. The split is
                    load-bearing rather than decorative — this panel was a flush stack
@@ -392,6 +416,7 @@
               }
             </div>
           </details>
+          <ng-container [ngTemplateOutlet]="contactButtons" />
           <!-- Which way the relationship runs. "Following" only says what *you*
                did; without this there is no way to tell a mutual from someone who
                has never heard of you.
@@ -568,7 +593,7 @@
       </p>
       @for (f of featured(); track f.id) {
         <div class="featured-row">
-          <a class="featured-avatar" [routerLink]="['/accounts', f.id]">
+          <a class="featured-avatar" [routerLink]="accountProfilePath(f)">
             <img
               [ngSrc]="f.avatar_static || f.avatar || 'favicon-32x32.png'"
               alt=""
@@ -576,7 +601,7 @@
               height="36"
             />
           </a>
-          <a class="featured-name" [routerLink]="['/accounts', f.id]">
+          <a class="featured-name" [routerLink]="accountProfilePath(f)">
             <span class="featured-display">{{ f.display_name || f.username }}</span>
             <span class="muted">&#64;{{ f.acct }}</span>
           </a>
@@ -1185,6 +1210,9 @@
        exist" — the fallback below would send the reader to check a handle that
        was never the problem. -->
   <p class="muted center">{{ error }}</p>
+  <button class="btn" type="button" (click)="retryProfile()">
+    {{ 'pages.profile.actions.retry' | transloco }}
+  </button>
 } @else if (loadError(); as error) {
   <!-- Account ids belong to the server that issued them, so a profile URL from
        one server 404s on another. Say which server refused, and offer the two
@@ -1192,6 +1220,9 @@
        back to where the working link came from. -->
   <div class="profile-error">
     <p class="profile-error-msg">{{ error }}</p>
+    <button class="btn" type="button" (click)="retryProfile()">
+      {{ 'pages.profile.actions.retry' | transloco }}
+    </button>
     @if (routeHandle(); as handle) {
       @if (recoveryFailed()) {
         <p class="muted small">

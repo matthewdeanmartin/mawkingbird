@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
@@ -150,6 +151,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
   styleUrl: './settings-shell.css',
 })
 export class SettingsShell {
+  protected readonly accountProfilePath = accountProfilePath;
   protected auth = inject(Auth);
   protected readonly drawerOpen = signal(false);
   protected readonly phone = signal(false);

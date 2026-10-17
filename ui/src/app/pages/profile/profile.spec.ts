@@ -1,4 +1,6 @@
 import { AppDialogs } from '../../app-dialogs';
+import { By } from '@angular/platform-browser';
+import { Compose } from '../../compose/compose';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -44,6 +46,8 @@ function makeStatuses(n: number, base: number): Status[] {
  */
 beforeEach(() => {
   vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+  // These component tests mount without route definitions; assert navigation rather than activating it.
+  vi.spyOn(Router.prototype, 'navigate').mockResolvedValue(true).mockClear();
 });
 
 describe('self profile local actions', () => {
@@ -1454,12 +1458,85 @@ describe('Profile cross-server recovery', () => {
     httpMock
       .expectOne((r) => r.url === '/api/v1/accounts/lookup')
       .flush('nope', { status: 404, statusText: 'Not Found' });
+    const search = httpMock.expectOne(
+      (r) => r.url === '/api/v2/search' && r.params.get('resolve') === 'true',
+    );
+    expect(search.request.params.get('q')).toBe('ghost@nowhere.example');
+    search.flush({ accounts: [] });
     fixture.detectChanges();
 
     const internals = fixture.componentInstance as unknown as ProfileInternals;
     expect(internals.recovering()).toBe(false);
     expect(internals.recoveryFailed()).toBe(true);
     expect(internals.loadError()).toContain('ghost@nowhere.example');
+  });
+
+  it('offers public Reply and private Chat with lists inside the overflow menu', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush({ id: '900', acct: 'alice@example.social', username: 'alice', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    const actions = (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons')!;
+    expect(actions.querySelector('details button')?.textContent).toContain('Lists');
+    const reply = Array.from(actions.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'Reply',
+    )!;
+    const chat = Array.from(actions.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'Chat',
+    )!;
+    expect(reply.closest('details')).toBeNull();
+    expect(chat.closest('details')).toBeNull();
+    reply.click();
+    fixture.detectChanges();
+    const composer = fixture.debugElement.query(By.directive(Compose)).componentInstance as Compose;
+    expect(composer.initialText()).toBe('@alice@example.social ');
+    expect(composer.initialVisibility()).toBe('public');
+    expect(composer.initialTarget()).toBe('fedi');
+    fixture.componentInstance['showReply'].set(false);
+    fixture.detectChanges();
+    chat.click();
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/conversations'], {
+      queryParams: { open: 'priv:alice@example.social', with: '900', visibility: 'direct' },
+    });
+  });
+
+  it('retries a transient profile failure from the error screen', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush('timeout', { status: 504, statusText: 'Timeout' });
+    settleSiblings('900');
+    fixture.detectChanges();
+    const retry = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('button'),
+    ).find((b) => b.textContent?.trim() === 'Retry');
+    expect(retry).toBeTruthy();
+    retry!.click();
+    httpMock.expectOne('/api/v1/accounts/900').flush({ id: '900', username: 'person', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    expect(fixture.componentInstance['account']()?.id).toBe('900');
+    expect(fixture.componentInstance['loadError']()).toBeNull();
+  });
+
+  it('resolves a previously unknown remote handle and keeps the followers tab', () => {
+    const fixture = setUp('900', 'alice@example.social');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    httpMock.expectOne('/api/v1/accounts/900').flush('', { status: 404, statusText: 'Not Found' });
+    settleSiblings('900');
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/lookup')
+      .flush('', { status: 404, statusText: 'Not Found' });
+    const search = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    expect(search.request.params.get('resolve')).toBe('true');
+    search.flush({ accounts: [{ id: '901', acct: 'alice@example.social', username: 'alice' }] });
+    fixture.detectChanges();
+    expect(navigate).toHaveBeenCalledWith(['/accounts', '901', '@alice@example.social'], {
+      replaceUrl: true,
+      queryParamsHandling: 'preserve',
+    });
   });
 
   it('does not attempt a lookup when the link carried no handle', () => {

@@ -21,7 +21,7 @@
         @if (r.target_account) {
           <span>
             {{ 'adminReports.item.against' | transloco }}
-            <a [routerLink]="['/accounts', r.target_account.id]"
+            <a [routerLink]="accountProfilePath(r.target_account.account)"
               ><strong>{{ r.target_account.username }}</strong></a
             >
           </span>

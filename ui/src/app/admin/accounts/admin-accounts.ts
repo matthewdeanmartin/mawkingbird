@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -34,6 +35,7 @@ const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as c
   styleUrl: './admin-accounts.css',
 })
 export class AdminAccounts implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private readonly dialogs = inject(AppDialogs);
 
   private api = inject(AdminApi);

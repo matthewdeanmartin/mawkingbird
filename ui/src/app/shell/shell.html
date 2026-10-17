@@ -405,7 +405,7 @@
                 </svg>
               </summary>
               <div class="menu-panel account-panel">
-                <a [routerLink]="['/accounts', acc.id]" class="menu-current">
+                <a [routerLink]="accountProfilePath(acc)" class="menu-current">
                   <img
                     [ngSrc]="acc.avatar_static || acc.avatar || 'favicon-32x32.png'"
                     alt=""

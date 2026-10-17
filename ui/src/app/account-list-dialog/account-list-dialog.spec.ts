@@ -46,21 +46,19 @@ describe('AccountListDialog shared states', () => {
     const f = render('reblogged_by');
     const closed = vi.fn();
     f.componentInstance.closed.subscribe(closed);
-    http
-      .expectOne('/api/v1/statuses/42/reblogged_by')
-      .flush([
-        {
-          id: '7',
-          username: 'reader',
-          acct: 'reader@example.test',
-          display_name: 'Reader',
-          avatar_static: '',
-          avatar: '',
-        },
-      ]);
+    http.expectOne('/api/v1/statuses/42/reblogged_by').flush([
+      {
+        id: '7',
+        username: 'reader',
+        acct: 'reader@example.test',
+        display_name: 'Reader',
+        avatar_static: '',
+        avatar: '',
+      },
+    ]);
     f.detectChanges();
     const link = (f.nativeElement as HTMLElement).querySelector('a')!;
-    expect(link.getAttribute('href')).toBe('/accounts/7');
+    expect(link.getAttribute('href')).toBe('/accounts/7/@reader@example.test');
     // Preserve native navigation while testing the component's dismissal output.
     link.dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }));
     expect(closed).toHaveBeenCalledOnce();

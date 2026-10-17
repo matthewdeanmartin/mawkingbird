@@ -60,7 +60,7 @@
   @for (row of authors(); track row.account.id) {
     <div class="member-row">
       <app-account-preview [account]="row.account">
-        <a class="member-link" [routerLink]="['/accounts', row.account.id]">
+        <a class="member-link" [routerLink]="accountProfilePath(row.account)">
           <img
             class="avatar"
             [src]="row.account.avatar_static || row.account.avatar"

@@ -5,7 +5,7 @@ import { externalFetch } from '../external-fetch';
 import { BlueskyApi } from './bluesky-api';
 import { detectFacets } from './bluesky-facets';
 import { BlueskySession } from './bluesky-session';
-import { BskyChatLogEntry, BskyConvoList, BskyMessageView } from './bluesky-types';
+import { BskyConvoView, BskyChatLogEntry, BskyConvoList, BskyMessageView } from './bluesky-types';
 import { IndicatorEvents } from '../../indicator-events';
 
 /**
@@ -38,6 +38,13 @@ export class BlueskyChatApi {
   private http = inject(HttpClient);
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
+
+  getConvoForMembers(did: string): Observable<{ convo: BskyConvoView }> {
+    return this.chatGet(
+      'chat.bsky.convo.getConvoForMembers',
+      new HttpParams().append('members', did),
+    );
+  }
 
   listConvos(cursor?: string): Observable<BskyConvoList> {
     let params = new HttpParams().set('limit', '50');

@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -33,6 +34,7 @@ import { ListFeedResolver, MERGE_MEMBER_CAP } from '../../lists/list-feed-resolv
   styleUrl: './endorsed-list.css',
 })
 export class EndorsedList implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
   private route = inject(ActivatedRoute);
   private resolver = inject(ListFeedResolver);

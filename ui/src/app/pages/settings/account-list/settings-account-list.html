@@ -135,7 +135,7 @@
   <ul class="account-list">
     @for (a of accounts(); track a.id) {
       <li class="account-row">
-        <a class="account-link" [routerLink]="['/accounts', a.id]">
+        <a class="account-link" [routerLink]="accountProfilePath(a)">
           <img
             class="avatar"
             [src]="a.avatar_static || a.avatar"

@@ -23,7 +23,7 @@ import {
   BskyThreadNode,
   BskyTimeline,
   BlobUploadResponse,
-  BskyImagesEmbed,
+  BskyPostEmbed,
   BskyProfileRecord,
   BskyRepoRecord,
   BskyBookmarks,
@@ -523,7 +523,7 @@ export class BlueskyApi {
       text: string;
       facets?: BskyFacet[];
       reply?: { root: { uri: string; cid: string }; parent: { uri: string; cid: string } };
-      embed?: BskyImagesEmbed;
+      embed?: BskyPostEmbed;
     },
     identity?: { rkey: string; createdAt: string },
   ): Observable<CreateRecordResponse> {

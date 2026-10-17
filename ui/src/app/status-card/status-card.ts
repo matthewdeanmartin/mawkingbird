@@ -546,7 +546,9 @@ export class StatusCard {
    * narrow screens, so this trades three controls for one rather than adding a
    * fourth — see the `unified-share` flag.
    */
-  protected readonly unifiedShare = computed(() => this.featureFlags.enabled('unified-share'));
+  protected readonly unifiedShare = computed(
+    () => this.display.provider === 'bluesky' || this.featureFlags.enabled('unified-share'),
+  );
 
   /**
    * The actions the unified menu would actually offer, in menu order.
@@ -559,7 +561,7 @@ export class StatusCard {
     if (this.caps.reblog) {
       actions.push('boost');
     }
-    if (!this.foreign && this.capabilities.canCompose) {
+    if (this.canQuote) {
       actions.push('quote');
     }
     // Record-a-boost-on-my-own-blog. On a feed item this is the only thing the
@@ -859,7 +861,7 @@ export class StatusCard {
         }
         return true;
       case 'q':
-        if (!this.foreign && this.capabilities.canCompose) {
+        if (this.canQuote) {
           this.toggleQuote(event);
         }
         return true;
@@ -1453,7 +1455,11 @@ export class StatusCard {
    * answer was wrong. RSS and paste genuinely have nothing to show; X has a lot.
    */
   protected get readOnlyStats(): boolean {
-    return this.display.provider === 'twitter' || this.remoteMastodonReadOnly;
+    return (
+      this.display.provider === 'twitter' ||
+      this.display.provider === 'bluesky' ||
+      this.remoteMastodonReadOnly
+    );
   }
 
   /**
@@ -1723,9 +1729,18 @@ export class StatusCard {
     this.replying.update((v) => !v);
   }
 
+  protected get canQuote(): boolean {
+    return this.display.provider === 'bluesky'
+      ? this.blueskySession.linked()
+      : !this.foreign && this.capabilities.canCompose;
+  }
+  protected get blueskyQuoteRef(): BskyRef | undefined {
+    return this.display.provider === 'bluesky' ? (this.display.providerRef as BskyRef) : undefined;
+  }
+
   toggleQuote(event: Event): void {
     event.stopPropagation();
-    if (!this.capabilities.canCompose) {
+    if (!this.canQuote) {
       return;
     }
     this.replying.set(false);

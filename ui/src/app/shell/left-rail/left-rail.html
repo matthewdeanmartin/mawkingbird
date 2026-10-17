@@ -6,7 +6,7 @@
     @for (account of suggestions().slice(0, 5); track account.id) {
       <div mbIdentityRow class="suggestion">
         <app-account-preview [account]="account">
-          <a class="suggestion-avatar" [routerLink]="['/accounts', account.id]">
+          <a class="suggestion-avatar" [routerLink]="accountProfilePath(account)">
             <img
               [src]="account.avatar_static || account.avatar"
               alt=""
@@ -15,7 +15,7 @@
             />
           </a>
 
-          <a class="suggestion-name" [routerLink]="['/accounts', account.id]">
+          <a class="suggestion-name" [routerLink]="accountProfilePath(account)">
             <span class="suggestion-display">{{ account.display_name || account.username }}</span>
             <span class="muted">&#64;{{ account.acct }}</span>
           </a>

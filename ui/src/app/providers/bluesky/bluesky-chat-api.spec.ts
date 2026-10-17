@@ -43,6 +43,20 @@ describe('BlueskyChatApi', () => {
     return TestBed.inject(BlueskyChatApi);
   }
 
+  it('opens a conversation for a profile DID through the private chat proxy', () => {
+    const chat = seed();
+    let id: string | undefined;
+    chat.getConvoForMembers('did:plc:peer').subscribe((r) => (id = r.convo.id));
+    const request = httpMock.expectOne(
+      (r) => r.url === `${PDS}/xrpc/chat.bsky.convo.getConvoForMembers`,
+    );
+    expect(request.request.method).toBe('GET');
+    expect(request.request.params.getAll('members')).toEqual(['did:plc:peer']);
+    expect(request.request.headers.get('atproto-proxy')).toBe(PROXY);
+    request.flush({ convo: { id: 'private-chat', members: [] } });
+    expect(id).toBe('private-chat');
+  });
+
   it('listConvos hits the real PDS with the chat service-proxy header', () => {
     const chat = seed();
     let result: BskyConvoList | undefined;

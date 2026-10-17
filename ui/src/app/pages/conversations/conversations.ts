@@ -1,3 +1,5 @@
+// i18n pages.conversations.startFailed: Could not start this chat. Check your chat permissions and try again.
+import { accountProfilePath } from '../../account-route';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import {
   Component,
@@ -195,6 +197,7 @@ export function stripLeadingMentions(html: string): string {
   styleUrl: './conversations.css',
 })
 export class Conversations implements OnInit, OnDestroy {
+  protected readonly accountProfilePath = accountProfilePath;
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 
@@ -892,8 +895,33 @@ export class Conversations implements OnInit, OnDestroy {
    * the real row transparently takes over from this stub (see `addPublicStatus`
    * and `chats()`).
    */
+  protected startChatError = signal(false);
+  protected retryStartChat(): void {
+    const key = this.pendingOpen();
+    const id = this.pendingWith();
+    if (key && id) this.draftFor(key, id, this.pendingContext());
+  }
+
   private draftFor(key: string, withId: string, contextId: string | null): void {
-    if (!this.mastodonAvailable() || withId.startsWith('bsky:')) return;
+    this.startChatError.set(false);
+    if (withId.startsWith('bsky:')) {
+      this.bskyChat.getConvoForMembers(withId.slice(5)).subscribe({
+        next: ({ convo }) => {
+          this.bskyConvos.update((rows) => [...rows.filter((r) => r.id !== convo.id), convo]);
+          const chat = this.chats().find((c) => c.convoId === convo.id);
+          if (chat) {
+            this.prefs.setChatKind('all');
+            this.selectWithContext(chat, null);
+          }
+        },
+        error: (error: unknown) => {
+          this.startChatError.set(true);
+          this.blueskyLoadFailed(error);
+        },
+      });
+      return;
+    }
+    if (!this.mastodonAvailable()) return;
     this.api.getAccount(withId).subscribe({
       next: (account) => {
         // Guard the race: a real row for this key may have arrived while the
@@ -906,7 +934,8 @@ export class Conversations implements OnInit, OnDestroy {
         }
         const draft: Chat = {
           key,
-          kind: 'public',
+          kind:
+            this.route.snapshot.queryParamMap.get('visibility') === 'direct' ? 'private' : 'public',
           convIds: [],
           accounts: [account],
           handles: [account.acct],
@@ -916,12 +945,11 @@ export class Conversations implements OnInit, OnDestroy {
         this.draftChat.set(draft);
         // Make sure the kind filter doesn't hide the freshly drafted row.
         if (this.prefs.chatKind() !== 'all') {
-          this.prefs.setChatKind('public');
+          this.prefs.setChatKind(draft.kind);
         }
         this.selectWithContext(draft, contextId);
       },
-      // A failed lookup leaves the normal "select a conversation" empty state.
-      error: () => undefined,
+      error: () => this.startChatError.set(true),
     });
   }
 

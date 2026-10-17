@@ -7,7 +7,7 @@ import { TranslocoService } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../client-prefs';
 import { Pseudonymity } from '../pseudonymity';
-import { Drafts } from '../drafts';
+import { Drafts, emptyDraftSnapshot } from '../drafts';
 import { Status } from '../models';
 import { Auth } from '../auth';
 import { Server } from '../server';
@@ -1925,6 +1925,118 @@ describe('Compose', () => {
         },
       ]);
     }
+
+    it('pastes an image into a Bluesky reply and retains the parent and thread root', async () => {
+      linkBsky();
+      const f = setUp();
+      const ref = {
+        uri: 'at://did:plc:peer/app.bsky.feed.post/parent',
+        cid: 'parent-cid',
+        replyRoot: { uri: 'at://did:plc:peer/app.bsky.feed.post/root', cid: 'root-cid' },
+        likeUri: null,
+        repostUri: null,
+        replyParentUri: null,
+        externalUri: null,
+      };
+      f.componentRef.setInput('initialTarget', 'bsky');
+      f.componentRef.setInput('initialVisibility', 'public');
+      f.componentRef.setInput('blueskyReplyTo', ref);
+      f.detectChanges();
+      internals(f).text.set('A screenshot');
+      const preventDefault = vi.fn();
+      f.componentInstance.onPaste({
+        clipboardData: {
+          files: [],
+          items: [
+            {
+              kind: 'file',
+              getAsFile: () => new File(['image'], 'clip.jpg', { type: 'image/jpeg' }),
+            },
+          ],
+        },
+        preventDefault,
+      } as unknown as ClipboardEvent);
+      expect(preventDefault).toHaveBeenCalledOnce();
+      expect(internals(f).media()).toHaveLength(1);
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+      httpMock.expectOne(UPLOAD_BLOB).flush(blobRef('reply-image'));
+      await new Promise((r) => setTimeout(r, 0));
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.reply).toEqual({
+        root: ref.replyRoot,
+        parent: { uri: ref.uri, cid: ref.cid },
+      });
+      expect(post.request.body.record.embed.images[0].image.ref.$link).toBe('reply-image');
+      httpMock.expectNone('/api/v1/statuses');
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/reply', cid: 'reply-cid' });
+    });
+
+    it('posts a native Bluesky quote with an attached image', async () => {
+      linkBsky();
+      const f = setUp();
+      const ref = {
+        uri: 'at://did:plc:peer/app.bsky.feed.post/quoted',
+        cid: 'quoted-cid',
+        replyRoot: { uri: 'at://root', cid: 'root' },
+        likeUri: null,
+        repostUri: null,
+        replyParentUri: null,
+        externalUri: null,
+      };
+      f.componentRef.setInput('initialTarget', 'bsky');
+      f.componentRef.setInput('initialVisibility', 'public');
+      f.componentRef.setInput('blueskyQuote', ref);
+      f.detectChanges();
+      internals(f).text.set('My comment');
+      attach(f, 'quote.jpg', 'Description');
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+      httpMock.expectOne(UPLOAD_BLOB).flush(blobRef('quote-image'));
+      await new Promise((r) => setTimeout(r, 0));
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.embed).toMatchObject({
+        $type: 'app.bsky.embed.recordWithMedia',
+        record: { $type: 'app.bsky.embed.record', record: { uri: ref.uri, cid: ref.cid } },
+        media: { $type: 'app.bsky.embed.images', images: [{ alt: 'Description' }] },
+      });
+      expect(post.request.body.record.reply).toBeUndefined();
+      httpMock.expectNone('/api/v1/statuses');
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/quote', cid: 'quote-cid' });
+    });
+
+    it('restores a saved Bluesky quote without losing its destination or quoted record', () => {
+      linkBsky();
+      const f = setUp();
+      const ref = {
+        uri: 'at://did:plc:peer/app.bsky.feed.post/saved',
+        cid: 'saved-cid',
+        replyRoot: { uri: 'at://root', cid: 'root' },
+        likeUri: null,
+        repostUri: null,
+        replyParentUri: null,
+        externalUri: null,
+      };
+      f.componentRef.setInput('initialDraft', {
+        ...emptyDraftSnapshot('public'),
+        id: 'saved-quote',
+        updatedAt: '2026-10-16T12:00:00Z',
+        segments: ['Restored comment'],
+        target: 'bsky',
+        blueskyQuote: ref,
+      });
+      f.detectChanges();
+      expect(internals(f).text()).toBe('Restored comment');
+      expect(internals(f).target()).toBe('bsky');
+      internals(f).submit();
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.embed).toEqual({
+        $type: 'app.bsky.embed.record',
+        record: { uri: ref.uri, cid: ref.cid },
+      });
+      httpMock.expectNone('/api/v1/statuses');
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/restored', cid: 'restored-cid' });
+    });
 
     it('uploads the blob, then posts a record embedding it', async () => {
       linkBsky();

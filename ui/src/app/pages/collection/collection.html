@@ -27,7 +27,7 @@
     <p class="muted small">
       @if (curator(); as c) {
         {{ 'pages.collection.curatedBy' | transloco }}
-        <a [routerLink]="['/accounts', c.id]">{{ c.display_name || c.username }}</a>
+        <a [routerLink]="accountProfilePath(c)">{{ c.display_name || c.username }}</a>
         ·
       }
       {{
@@ -228,7 +228,7 @@
       </div>
       @for (a of results(); track a.id) {
         <div class="member-row">
-          <a class="member-link" [routerLink]="['/accounts', a.id]">
+          <a class="member-link" [routerLink]="accountProfilePath(a)">
             <img
               class="avatar"
               [src]="a.avatar_static || a.avatar"

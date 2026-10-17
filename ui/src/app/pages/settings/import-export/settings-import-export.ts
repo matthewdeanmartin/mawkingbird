@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../../account-route';
 import { Component, computed, inject, Injectable, signal } from '@angular/core';
 import { MbButton } from '../../../design-system/button/button';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
@@ -288,6 +289,7 @@ export class SuggestedTagImporter extends ImportTags {}
   styleUrl: './settings-import-export.css',
 })
 export class SettingsImportExport {
+  protected readonly accountProfilePath = accountProfilePath;
   private readonly diagnostics = inject(PageDiagnostics);
   private transloco = inject(TranslocoService);
   private api = inject(Api);

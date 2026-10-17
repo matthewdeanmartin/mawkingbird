@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../../account-route';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Api } from '../../../api';
 import { Auth } from '../../../auth';
@@ -173,18 +174,18 @@ export class RailProfiles {
               {
                 label: this.words().Posts,
                 value: active.statuses_count,
-                link: ['/accounts', active.id],
+                link: accountProfilePath(active),
               },
               {
                 label: 'Following',
                 value: this.followingCount(),
-                link: ['/accounts', active.id],
+                link: accountProfilePath(active),
                 queryParams: { tab: 'following' },
               },
               {
                 label: 'Followers',
                 value: active.followers_count,
-                link: ['/accounts', active.id],
+                link: accountProfilePath(active),
                 queryParams: { tab: 'followers' },
               },
               {
@@ -193,7 +194,7 @@ export class RailProfiles {
                 link: ['/feeds/tags'],
               },
             ],
-        link: ['/accounts', active.id],
+        link: accountProfilePath(active),
         account: active,
         active: true,
       });

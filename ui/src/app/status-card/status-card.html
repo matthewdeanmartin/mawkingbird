@@ -715,7 +715,7 @@
         @if (unifiedShare()) {
           <!-- The menu above already carries boost, quote and share; the
                per-audience branches below would duplicate all three. -->
-        } @else if (auth.isAnonymous) {
+        } @else if (auth.isAnonymous && display.provider !== 'bluesky') {
           @if (display.url) {
             <button
               mbPostAction
@@ -828,6 +828,24 @@
             ></span
           >
         }
+        @if (display.provider === 'bluesky') {
+          <span
+            class="action action-static"
+            mbActionCount
+            [count]="display.reblogs_count"
+            [label]="countWords().boosts"
+            [locale]="countLocale"
+            >{{ display.reblogs_count }} {{ countWords().boosts }}</span
+          >
+          <span
+            class="action action-static"
+            mbActionCount
+            [count]="display.favourites_count"
+            [label]="'statusCard.likes' | transloco"
+            [locale]="countLocale"
+            >{{ display.favourites_count }} {{ 'statusCard.likes' | transloco }}</span
+          >
+        }
         @if (caps.favourite) {
           <button
             type="button"
@@ -901,7 +919,7 @@
             }
           </button>
         }
-        @if (auth.isAnonymous) {
+        @if (auth.isAnonymous && display.provider !== 'bluesky') {
           <!-- Liking needs an identity on the post's own server, so this cannot
                act. It used to be an inert span wearing `.action`, which gave it a
                pointer cursor and a hover highlight — a control in every visible
@@ -975,7 +993,7 @@
               ></span
             >
           }
-        } @else if (!caps.favourite && readOnlyStats) {
+        } @else if (!caps.favourite && readOnlyStats && display.provider !== 'bluesky') {
           <!-- Same pairing as the boost fallback above: only stand in for the
                button when there is no button. -->
           <span
@@ -1489,7 +1507,10 @@
           <!-- A quote is a fresh statement to your own audience, not a reply to
                a conversation, so it goes through Drafts like any other post. -->
           <app-compose
-            [quotedStatusId]="display.id"
+            [quotedStatusId]="display.provider === 'bluesky' ? undefined : display.id"
+            [blueskyQuote]="blueskyQuoteRef"
+            [initialTarget]="display.provider === 'bluesky' ? 'bsky' : 'fedi'"
+            initialVisibility="public"
             [gateable]="true"
             [compact]="true"
             [placeholder]="'statusCard.addComment' | transloco"

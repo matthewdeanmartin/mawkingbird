@@ -433,7 +433,7 @@
       <section class="section">
         <h2>{{ 'accountAnalytics.topFollower.heading' | transloco }}</h2>
         <p class="muted small">{{ 'accountAnalytics.topFollower.explain' | transloco }}</p>
-        <a class="fan" [routerLink]="['/accounts', fan.id]">
+        <a class="fan" [routerLink]="accountProfilePath(fan)">
           <img
             class="fan-avatar"
             [src]="fan.avatar_static || fan.avatar"
@@ -461,7 +461,11 @@
         <ol class="counted">
           @for (p of topPartners(); track p.key) {
             <li class="counted-row">
-              <a class="counted-label" [routerLink]="['/accounts', p.key]">{{ p.label }}</a>
+              @if (partnerLink(p.key); as link) {
+                <a class="counted-label" [routerLink]="link">{{ p.label }}</a>
+              } @else {
+                <span class="counted-label">{{ p.label }}</span>
+              }
               <span class="counted-count muted">{{
                 (p.count === 1
                   ? 'accountAnalytics.replyCount.one'

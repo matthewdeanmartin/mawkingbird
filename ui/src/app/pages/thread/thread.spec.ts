@@ -1,4 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
+import { By } from '@angular/platform-browser';
+import { Compose } from '../../compose/compose';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
@@ -404,7 +406,9 @@ describe('Thread', () => {
 
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('app-bsky-reply')).not.toBeNull();
-    expect(el.querySelector('app-compose')).toBeNull();
+    const composer = fixture.debugElement.query(By.directive(Compose)).componentInstance as Compose;
+    expect(composer.initialTarget()).toBe('bsky');
+    expect(composer.blueskyReplyTo()).toEqual(makeBskyStatus().providerRef);
   });
 
   // ---------------------------------------------------------------------- RSS

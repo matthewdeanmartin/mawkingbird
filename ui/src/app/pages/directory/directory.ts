@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -259,7 +260,7 @@ export class Directory implements OnInit {
             originalUrl: account.url || undefined,
           }),
         ]
-      : ['/accounts', account.id];
+      : accountProfilePath(account);
   }
 
   onFollow(account: Account): void {

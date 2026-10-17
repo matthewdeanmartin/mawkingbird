@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
@@ -388,7 +389,7 @@ export class BlueskySearchPanel {
   }
 
   protected profileLink(account: Account): (string | number)[] {
-    return ['/accounts', account.id];
+    return accountProfilePath(account);
   }
 
   protected isFollowBusy(account: Account): boolean {

@@ -1,3 +1,6 @@
+import { Compose } from '../../compose/compose';
+import { MbDialog } from '../../design-system/dialog/dialog';
+import { accountProfilePath } from '../../account-route';
 import { CustomEmojiPipe } from '../../custom-emoji.pipe';
 import { reconcileStatus } from '../../reconcile-status';
 import { MbButton } from '../../design-system/button/button';
@@ -15,7 +18,16 @@ import { PrivateFollows } from '../../private-follows';
 import { Pseudonymity } from '../../pseudonymity';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { firstValueFrom, map, of, Subscription, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  throwError,
+  firstValueFrom,
+  map,
+  of,
+  Subscription,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { Api } from '../../api';
 import { accountRoutePath, parseAccountRoute } from '../../account-route';
 import { qualifiedHandle } from '../../account-handle';
@@ -233,6 +245,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     VerifiedBadge,
     HumanCountPipe,
     PeopleBrowser,
+    Compose,
+    MbDialog,
     AccountAnalytics,
     NgOptimizedImage,
     CopyAccountDialog,
@@ -244,7 +258,40 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit, OnDestroy {
+  protected readonly accountProfilePath = accountProfilePath;
   private readonly dialogs = inject(AppDialogs);
+  // i18n pages.profile.actions.reply: Reply
+  // i18n pages.profile.actions.chat: Chat
+  // i18n pages.profile.actions.retry: Retry
+  protected showReply = signal(false);
+  protected readonly qualifiedHandle = qualifiedHandle;
+  protected canContact = computed(() =>
+    this.isBluesky() ? this.bskySession.linked() : this.capabilities.canUseServerActions,
+  );
+
+  protected chat(): void {
+    const account = this.account();
+    if (!account) return;
+    void this.router.navigate(['/conversations'], {
+      queryParams: {
+        open: this.isBluesky() ? `bsky-person:${account.id}` : `priv:${account.acct}`,
+        with: account.id,
+        visibility: 'direct',
+      },
+    });
+  }
+
+  protected retryProfile(): void {
+    this.loadError.set(null);
+    this.recoveryFailed.set(false);
+    const id = this.route.snapshot.paramMap?.get('id') ?? this.loadedId;
+    if (id) {
+      const ref = parseAccountRoute([id, this.route.snapshot.paramMap?.get('handle') ?? '']);
+      const handle = this.routeHandle();
+      if (handle) this.loadByHandle(handle, ref?.id ?? null);
+      else this.load(id);
+    }
+  }
 
   private readonly followConfirmation = inject(BulkFollowConfirmation);
   private transloco = inject(TranslocoService);
@@ -1001,29 +1048,58 @@ export class Profile implements OnInit, OnDestroy {
 
   /** Resolve a handle to this server's id for that account, then load it. */
   private resolveHandle(handle: string): void {
+    this.account.set(null);
+    this.loadError.set(null);
     this.loading.set(true);
     this.recovering.set(true);
     this.routeLoadSub.add(
-      this.api.lookupAccount(handle).subscribe({
-        next: (account) => {
-          this.recovering.set(false);
-          void this.router.navigate(accountRoutePath({ id: account.id, handle }), {
-            replaceUrl: true,
-          });
-        },
-        error: (error: unknown) => {
-          this.diagnostics.error('Profile', 'recover:failed', error, { handle });
-          this.recovering.set(false);
-          this.recoveryFailed.set(true);
-          this.loading.set(false);
-          this.loadError.set(
-            this.transloco.translate<string>('pages.profile.errors.serverDoesNotKnow', {
-              server: this.currentServerLabel(),
-              handle,
-            }),
-          );
-        },
-      }),
+      this.api
+        .lookupAccount(handle)
+        .pipe(
+          catchError((error: unknown) => {
+            if ((error as { status?: number })?.status !== 404 || this.auth.isAnonymous)
+              return throwError(() => error);
+            return this.api.resolveReplyMention(handle).pipe(
+              map((result) => {
+                const account = result.accounts.find(
+                  (a) => qualifiedHandle(a)?.toLowerCase() === handle.toLowerCase(),
+                );
+                if (!account) throw error;
+                return account;
+              }),
+            );
+          }),
+        )
+        .subscribe({
+          next: (account) => {
+            this.recovering.set(false);
+            if (this.loadedId === account.id) {
+              this.expectedHandle = handle;
+              this.load(account.id);
+            }
+            void this.router.navigate(accountRoutePath({ id: account.id, handle }), {
+              replaceUrl: true,
+              queryParamsHandling: 'preserve',
+            });
+          },
+          error: (error: unknown) => {
+            this.diagnostics.error('Profile', 'recover:failed', error, { handle });
+            this.recovering.set(false);
+            this.recoveryFailed.set((error as { status?: number })?.status === 404);
+            this.loading.set(false);
+            this.loadError.set(
+              this.transloco.translate<string>(
+                this.recoveryFailed()
+                  ? 'pages.profile.errors.serverDoesNotKnow'
+                  : 'pages.profile.errors.profileLoadFailed',
+                {
+                  server: this.currentServerLabel(),
+                  handle,
+                },
+              ),
+            );
+          },
+        }),
     );
   }
 
@@ -1033,7 +1109,10 @@ export class Profile implements OnInit, OnDestroy {
     this.mediaSub.unsubscribe();
   }
 
+  private loadedId: string | null = null;
+
   load(id: string): void {
+    this.loadedId = id;
     this.routeLoadSub.unsubscribe();
     this.routeLoadSub = new Subscription();
     this.statusLoadSub.unsubscribe();
@@ -1152,6 +1231,12 @@ export class Profile implements OnInit, OnDestroy {
             return;
           }
           this.account.set(a);
+          if (!this.routeHandle() && /^\d+$/.test(a.id) && qualifiedHandle(a)) {
+            void this.router.navigate(accountProfilePath(a), {
+              replaceUrl: true,
+              queryParamsHandling: 'preserve',
+            });
+          }
           if (
             profileToken === this.auth.token() &&
             a.id === this.auth.account()?.id &&

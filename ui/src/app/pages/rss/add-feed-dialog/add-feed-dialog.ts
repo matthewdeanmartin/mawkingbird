@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../../account-route';
 import { Component, computed, inject, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -196,7 +197,7 @@ export class AddFeedDialog {
 
   viewAccount(account: Account): void {
     this.closed.emit();
-    void this.router.navigate(['/accounts', account.id]);
+    void this.router.navigate(accountProfilePath(account));
   }
 
   retryViaProxy(): void {

@@ -123,7 +123,7 @@
         @for (row of importer.rows(); track row.handle) {
           <li class="import-row" [class]="'row-' + row.status">
             @if (row.account; as account) {
-              <a [routerLink]="['/accounts', account.id]">
+              <a [routerLink]="accountProfilePath(account)">
                 {{ account.display_name || account.username }}
                 <span class="muted">&#64;{{ account.acct }}</span>
               </a>
@@ -684,7 +684,7 @@
                         <li class="contact-match">
                           <img [src]="match.account.avatar_static || match.account.avatar" alt="" />
                           <div class="match-main">
-                            <a [routerLink]="['/accounts', match.account.id]">
+                            <a [routerLink]="accountProfilePath(match.account)">
                               <strong>{{
                                 match.account.display_name || match.account.username
                               }}</strong>
@@ -1052,7 +1052,7 @@
                         <li class="contact-match">
                           <img [src]="match.account.avatar_static || match.account.avatar" alt="" />
                           <div class="match-main">
-                            <a [routerLink]="['/accounts', match.account.id]">
+                            <a [routerLink]="accountProfilePath(match.account)">
                               <strong>{{
                                 match.account.display_name || match.account.username
                               }}</strong>
@@ -1373,7 +1373,10 @@
                             >
                           </label>
                         }
-                        <a class="bridge-match-name" [routerLink]="['/accounts', match.account.id]">
+                        <a
+                          class="bridge-match-name"
+                          [routerLink]="accountProfilePath(match.account)"
+                        >
                           {{ match.account.display_name || match.account.username }}
                           <span class="muted">&#64;{{ match.account.acct }}</span>
                         </a>
@@ -1572,7 +1575,7 @@
                     <li class="contact-match">
                       <img [src]="match.account.avatar_static || match.account.avatar" alt="" />
                       <div class="match-main">
-                        <a [routerLink]="['/accounts', match.account.id]">
+                        <a [routerLink]="accountProfilePath(match.account)">
                           <strong>{{
                             match.account.display_name || match.account.username
                           }}</strong>

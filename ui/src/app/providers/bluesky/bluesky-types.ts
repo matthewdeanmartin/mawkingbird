@@ -113,6 +113,19 @@ export interface BlobUploadResponse {
  * carries blob references. They are not interchangeable, and conflating them is
  * how an embed that looks right fails to publish.
  */
+export type BskyPostEmbed =
+  | BskyImagesEmbed
+  | BskyRecordEmbed
+  | {
+      $type: 'app.bsky.embed.recordWithMedia';
+      record: BskyRecordEmbed;
+      media: BskyImagesEmbed;
+    };
+export interface BskyRecordEmbed {
+  $type: 'app.bsky.embed.record';
+  record: { uri: string; cid: string };
+}
+
 export interface BskyImagesEmbed {
   $type: 'app.bsky.embed.images';
   images: {

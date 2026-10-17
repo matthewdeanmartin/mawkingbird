@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../account-route';
 import { MbButton } from '../design-system/button/button';
 import { AccountPreview } from '../account-hover-card/account-preview';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
@@ -57,6 +58,7 @@ const MAX_RESOLVED_AUTHORS = 80;
   styleUrl: './feed-members.css',
 })
 export class FeedMembers {
+  protected readonly accountProfilePath = accountProfilePath;
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 

@@ -1,3 +1,4 @@
+import { accountProfilePath } from '../../account-route';
 import { Server } from '../../server';
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
@@ -58,6 +59,7 @@ function accountKey(account: Account): string {
   styleUrl: './left-rail.css',
 })
 export class LeftRail implements OnInit {
+  protected readonly accountProfilePath = accountProfilePath;
   protected auth = inject(Auth);
   private api = inject(Api);
   private server = inject(Server);
