@@ -1,3 +1,4 @@
+import { accountScopeSuffix } from '../account-scope';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
 import { MbAccountCard } from '../design-system/identity/account-card';
 import { MbButton } from '../design-system/button/button';
@@ -7,6 +8,9 @@ import { accountRoutePath } from '../account-route';
 import { TranslocoPipe } from '@jsverse/transloco';
 // i18n accountPreview.fullProfile: View full profile
 import {
+  afterNextRender,
+  ElementRef,
+  Renderer2,
   booleanAttribute,
   Component,
   computed,
@@ -218,8 +222,32 @@ export class AccountHoverCard {
     }),
   );
   constructor() {
+    const element = inject(ElementRef<HTMLElement>);
+    const renderer = inject(Renderer2);
+    afterNextRender(() => {
+      const anchor = element.nativeElement.closest('.hover-anchor');
+      if (!anchor) return;
+      const enter = renderer.listen(anchor, 'mouseenter', () => this.loadRelationship());
+      const focus = renderer.listen(anchor, 'focusin', () => this.loadRelationship());
+      this.destroyRef.onDestroy(() => {
+        enter();
+        focus();
+      });
+    });
     effect(() => {
-      if (this.inline()) untracked(() => this.loadRelationship());
+      this.account();
+      this.auth.account();
+      const inline = this.inline();
+      untracked(() => {
+        this.relationshipLoadedFor = null;
+        this.relationship.set(null);
+        this.relationshipLoading.set(false);
+        if (
+          inline ||
+          element.nativeElement.closest('.hover-anchor')?.matches(':hover, :focus-within')
+        )
+          this.loadRelationship();
+      });
     });
   }
   readonly allowFollow = input(true, { transform: booleanAttribute });
@@ -277,10 +305,16 @@ export class AccountHoverCard {
     return this.account().locked ? 'Request' : 'Follow';
   });
 
+  private relationshipKey(): string {
+    return `${accountScopeSuffix()}:${this.auth.account()?.id ?? ''}:${this.account().id}`;
+  }
+
   protected loadRelationship(): void {
     const account = this.account();
-    if (!this.showFollowButton() || this.relationshipLoadedFor === account.id) return;
-    this.relationshipLoadedFor = account.id;
+    const key = this.relationshipKey();
+    if (!this.showFollowButton() || this.relationshipLoadedFor === key) return;
+    this.relationshipLoadedFor = key;
+    const current = () => this.relationshipLoadedFor === key && this.relationshipKey() === key;
     if (this.isBluesky()) {
       // One getProfile per newly hovered account, cached by the guard above for
       // as long as the card stays mounted on the same person.
@@ -289,13 +323,18 @@ export class AccountHoverCard {
         .relationship(didOf(account))
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: (relationship) => this.relationship.set(relationship),
+          next: (relationship) => {
+            if (current()) this.relationship.set(relationship);
+          },
           error: () => {
+            if (!current()) return;
             // Let a later hover retry rather than caching the failure.
             this.relationshipLoadedFor = null;
             this.relationshipLoading.set(false);
           },
-          complete: () => this.relationshipLoading.set(false),
+          complete: () => {
+            if (current()) this.relationshipLoading.set(false);
+          },
         });
       return;
     }
@@ -308,12 +347,17 @@ export class AccountHoverCard {
       .relationships([account.id])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (relationships) => this.relationship.set(relationships[0] ?? null),
+        next: (relationships) => {
+          if (current()) this.relationship.set(relationships[0] ?? null);
+        },
         error: () => {
+          if (!current()) return;
           this.relationshipLoadedFor = null;
           this.relationshipLoading.set(false);
         },
-        complete: () => this.relationshipLoading.set(false),
+        complete: () => {
+          if (current()) this.relationshipLoading.set(false);
+        },
       });
   }
 

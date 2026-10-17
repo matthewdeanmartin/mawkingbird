@@ -36,7 +36,7 @@ import { SaveToLibrary } from '../pages/read/save-to-library/save-to-library';
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { hashtagNameFrom, profileRouteFor } from '../rendered-html-links';
-import { ClientPrefs } from '../client-prefs';
+import { ClientPrefs, READER_THEMES } from '../client-prefs';
 import { Terminology } from '../terminology';
 import { Compose } from '../compose/compose';
 import { Drafts } from '../drafts';
@@ -445,6 +445,13 @@ export class StatusCard {
   private api = inject(Api);
   protected auth = inject(Auth);
   private prefs = inject(ClientPrefs);
+  protected readerPaper = computed(() =>
+    this.prefs.feedReader() ? this.prefs.readerTheme() : null,
+  );
+  protected readerColors = computed(() => {
+    const paper = this.readerPaper();
+    return paper && paper !== 'app' ? READER_THEMES[paper] : null;
+  });
   /** Accounts whose CWs and sensitive flags this viewer has opted out of. */
   private trusted = inject(TrustedAccounts);
   /** Resolves the "everyone I follow" trust levels; read for its revision. */

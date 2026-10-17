@@ -58,28 +58,30 @@ export class SubmittedReports {
   selector: 'app-report-history',
   imports: [DatePipe, RouterLink, TranslocoPipe, MbHelp],
   template: `
-    <h2>
-      {{ 'reportHistory.title' | transloco }}
-      <mb-help [label]="'reportHistory.help' | transloco">{{
-        'reportHistory.explanation' | transloco
-      }}</mb-help>
-    </h2>
-    @for (report of history.entries(); track $index) {
-      <p>
-        {{ report.at | date: 'medium' }} · {{ report.username }} · {{ report.category }}
-        @if (report.statusId) {
-          <a [routerLink]="['/statuses', report.statusId]">{{
-            'reportHistory.post' | transloco
-          }}</a>
-        } @else if (report.profilePath) {
-          <a [routerLink]="report.profilePath">{{ 'reportHistory.account' | transloco }}</a>
-        } @else {
-          {{ 'reportHistory.account' | transloco }}
-        }
-      </p>
-    } @empty {
-      <p>{{ 'reportHistory.empty' | transloco }}</p>
-    }
+    <section class="ssection">
+      <h2>
+        {{ 'reportHistory.title' | transloco }}
+        <mb-help [label]="'reportHistory.help' | transloco">{{
+          'reportHistory.explanation' | transloco
+        }}</mb-help>
+      </h2>
+      @for (report of history.entries(); track $index) {
+        <p>
+          {{ report.at | date: 'medium' }} · {{ report.username }} · {{ report.category }}
+          @if (report.statusId) {
+            <a [routerLink]="['/statuses', report.statusId]">{{
+              'reportHistory.post' | transloco
+            }}</a>
+          } @else if (report.profilePath) {
+            <a [routerLink]="report.profilePath">{{ 'reportHistory.account' | transloco }}</a>
+          } @else {
+            {{ 'reportHistory.account' | transloco }}
+          }
+        </p>
+      } @empty {
+        <p>{{ 'reportHistory.empty' | transloco }}</p>
+      }
+    </section>
   `,
 })
 export class ReportHistory {

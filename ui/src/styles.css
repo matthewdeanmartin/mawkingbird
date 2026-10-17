@@ -139,6 +139,39 @@
   text-decoration: underline;
 }
 
+/* Reader paper supplies a complete local palette; application chrome keeps its theme.
+   Mutual backgrounds blend this same foreground/background pair in StatusCard. */
+.status[data-reader-paper]:not([data-reader-paper='app']) {
+  --col-bg: var(--reader-bg);
+  --text: var(--reader-fg);
+  --muted: var(--text);
+  --border: color-mix(in srgb, var(--reader-fg) 25%, var(--reader-bg));
+  --accent: var(--text);
+  --accent-hover: var(--text);
+  --accent-soft: color-mix(in srgb, var(--reader-fg) 10%, var(--reader-bg));
+  --hover: color-mix(in srgb, var(--reader-fg) 8%, var(--reader-bg));
+  --ds-action-fill: var(--text);
+  --ds-action-text: var(--text);
+  --ds-action-ink: var(--reader-bg);
+  --ds-action-hover: color-mix(in srgb, var(--reader-fg) 90%, var(--reader-bg));
+  --ds-error-text: #a41037;
+  --ds-danger-fill: #a41037;
+  color-scheme: light;
+}
+.status[data-reader-paper='dark'] {
+  --ds-error-text: #ff9db4;
+  --ds-danger-fill: #ff9db4;
+  color-scheme: dark;
+}
+.status[data-reader-paper]:not([data-reader-paper='app']) .content a {
+  text-decoration: underline;
+}
+
+/* Slightly stronger ink preserves contrast on tinted light reader papers. */
+.status.mutual[data-reader-paper]:not([data-reader-paper='app']):not([data-reader-paper='dark']) {
+  --text: color-mix(in srgb, var(--reader-fg) 90%, #000);
+}
+
 /* Feed reader mode: every timeline's post text takes the reader typography.
    The --reader-* variables are set on <html> by ClientPrefs. */
 :root[data-feed-reader='on'] .status .content {

@@ -1,3 +1,5 @@
+import { MbButton } from '../../design-system/button/button';
+import { statusHashtags, normalizeHashtag } from '../../hashtag';
 import { reconcileStatus } from '../../reconcile-status';
 import { FeedCtaStore } from '../../feed-cta-store';
 import { accountScopeSuffix } from '../../account-scope';
@@ -12,7 +14,7 @@ import {
   RouterLink,
 } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { map, Observable, Subscription } from 'rxjs';
+import { firstValueFrom, map, Observable, Subscription } from 'rxjs';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { Drafts, draftHasContent } from '../../drafts';
@@ -79,6 +81,12 @@ import { isVideoStatus } from '../../video-player/video-discovery';
 // i18n pages.home.defaultView.legacy: Home Default
 // i18n pages.home.defaultView.all: All Default
 // i18n pages.home.defaultView.text: Text Default
+// i18n pages.home.myTags.loading: Loading your followed tags…
+// i18n pages.home.myTags.failed: Could not load your followed tags.
+// i18n pages.home.myTags.retry: Retry
+// i18n pages.home.myTags.empty: No loaded posts match your followed tags. Load more posts or turn off My tags.
+// i18n pages.home.myTags.none: You are not following any tags yet.
+// i18n pages.home.myTags.off: Turn off My tags
 // i18n pages.home.defaultView.media: Media Default
 // i18n pages.home.defaultView.video: Video Default
 // i18n pages.home.defaultView.articles: Articles Default
@@ -181,6 +189,7 @@ const ARTICLE_TARGET = 10;
     ConfirmDialog,
     DiscoveryCard,
     CommandBar,
+    MbButton,
     Compose,
     StatusCard,
     Announcements,
@@ -508,12 +517,58 @@ export class Home implements OnInit, OnDestroy {
   protected view = signal<FeedView>('feed');
   protected homeDefaults = inject(HomeDefaults);
   protected homeTextFocus = signal(false);
+  protected myTags = signal(false);
+  protected myTagsLoading = signal(false);
+  protected myTagsError = signal(false);
+  private serverTagNames = signal<string[]>([]);
+  private myTagsGeneration = 0;
+  protected followedTagNames = computed(() =>
+    (this.auth.isAnonymous || this.auth.isBlueskyPrimary
+      ? this.anonymousTags.tags()
+      : this.serverTagNames()
+    )
+      .map((name) => normalizeHashtag(name)?.toLocaleLowerCase())
+      .filter((name): name is string => !!name),
+  );
+  private followedTagSet = computed(() => new Set(this.followedTagNames()));
+
+  protected async setMyTags(enabled: boolean): Promise<void> {
+    const generation = ++this.myTagsGeneration;
+    this.myTags.set(enabled);
+    this.myTagsError.set(false);
+    this.myTagsLoading.set(false);
+    this.serverTagNames.set([]);
+    if (!enabled || this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    this.myTagsLoading.set(true);
+    const scope = accountScopeSuffix();
+    const names: string[] = [];
+    const seen = new Set<string>();
+    let cursor: string | undefined;
+    try {
+      do {
+        const page = await firstValueFrom(this.api.followedTagsPage(cursor));
+        if (generation !== this.myTagsGeneration || scope !== accountScopeSuffix()) return;
+        names.push(...page.tags.map((tag) => tag.name));
+        cursor = page.nextMaxId ?? undefined;
+        if (cursor && seen.has(cursor)) throw new Error('Repeated followed-tag cursor');
+        if (cursor) seen.add(cursor);
+      } while (cursor);
+      this.serverTagNames.set(names);
+    } catch {
+      if (generation === this.myTagsGeneration && scope === accountScopeSuffix())
+        this.myTagsError.set(true);
+    } finally {
+      if (generation === this.myTagsGeneration) this.myTagsLoading.set(false);
+    }
+  }
+
   protected videos = computed(() => this.visible().filter(isVideoStatus));
   private homeScope = '';
   private readonly homeDefaultEffect = effect(() => {
     const scope = this.homeDefaults.scope();
     if (!this.initialized || this.homeScope === scope) return;
     this.homeScope = scope;
+    void this.setMyTags(false);
     this.applyHomeDefault(this.homeDefaults.value());
   });
 
@@ -566,6 +621,10 @@ export class Home implements OnInit, OnDestroy {
   protected openPhoto = signal<string | null>(null);
 
   protected setView(view: FeedView): void {
+    if (view === 'media' || view === 'video') {
+      this.prefs.setFeedReader(false);
+      this.homeTextFocus.set(false);
+    }
     this.view.set(view);
     this.saveHomeVisit();
     if (view !== 'media') {
@@ -727,6 +786,10 @@ export class Home implements OnInit, OnDestroy {
   private applyTimelineFilters(statuses: Status[]): Status[] {
     return statuses.filter(
       (status) =>
+        (!this.myTags() ||
+          statusHashtags(status).some((tag) =>
+            this.followedTagSet().has(tag.toLocaleLowerCase()),
+          )) &&
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
         !(this.prefs.algoCalm() && this.calm.hidden(status)) &&
@@ -933,6 +996,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.myTagsGeneration++;
     this.homeNavigationSub?.unsubscribe();
     this.liveSub?.unsubscribe();
     this.pageSub?.unsubscribe();

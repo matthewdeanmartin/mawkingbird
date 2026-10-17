@@ -139,6 +139,22 @@ describe('StatusCard', () => {
     httpMock.verify();
   });
 
+  it('applies the selected reader paper only while Reader is enabled', () => {
+    const fixture = setUp();
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.setReaderTheme('sepia');
+    prefs.setFeedReader(true);
+    fixture.detectChanges();
+    const article = fixture.nativeElement.querySelector('article.status') as HTMLElement;
+    expect(article.getAttribute('data-reader-paper')).toBe('sepia');
+    expect(article.style.getPropertyValue('--reader-bg')).toBe('#f4ecd8');
+    expect(article.style.getPropertyValue('--reader-fg')).toBe('#3b2f1e');
+    prefs.setFeedReader(false);
+    fixture.detectChanges();
+    expect(article.hasAttribute('data-reader-paper')).toBe(false);
+    expect(article.style.getPropertyValue('--reader-bg')).toBe('');
+  });
+
   it('tints the displayed author only when the relationship is mutual', () => {
     const fixture = setUp();
     expect(fixture.nativeElement.querySelector('article.status').classList.contains('mutual')).toBe(

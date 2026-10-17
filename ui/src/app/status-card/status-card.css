@@ -25,6 +25,8 @@
 }
 
 .status {
+  background: var(--col-bg);
+  color: var(--text);
   display: flex;
   gap: 12px;
   padding: 12px 16px;

@@ -13,6 +13,8 @@ import { ProviderRegistry } from '../providers/provider-registry';
 /** What the host page is showing in place of its timeline. */
 export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles';
 
+// i18n commandBar.myTags: My tags
+// i18n commandBar.myTagsHint: Show only posts with hashtags I follow
 // i18n commandBar.textFocus.label: Text
 // i18n commandBar.video: Video
 // i18n commandBar.tweetView: Tweets
@@ -89,7 +91,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
           <button
             mbToolbarButton
             [pressed]="prefs.feedReader()"
-            (click)="prefs.setFeedReader(!prefs.feedReader())"
+            (click)="toggleReader()"
             title="Reader mode for the feed: reader typography, no pictures"
           >
             📖 Reader
@@ -124,6 +126,16 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
                 (click)="setView('video')"
               >
                 🎬 {{ 'commandBar.video' | transloco }}
+              </button>
+            }
+            @if (showMyTags()) {
+              <button
+                mbToolbarButton
+                [pressed]="myTags()"
+                (click)="myTagsChange.emit(!myTags())"
+                [title]="'commandBar.myTagsHint' | transloco"
+              >
+                # {{ 'commandBar.myTags' | transloco }}
               </button>
             }
             <button
@@ -300,6 +312,9 @@ export class CommandBar {
   /** Which view the host page is currently showing. */
   readonly view = input<FeedView>('feed');
   readonly showVideo = input(false);
+  readonly showMyTags = input(false);
+  readonly myTags = input(false);
+  readonly myTagsChange = output<boolean>();
   /** Home can keep its text presentation local, without changing other accounts/pages. */
   readonly localTextFocus = input<boolean | null>(null);
   readonly textFocusChange = output<boolean>();
@@ -310,7 +325,15 @@ export class CommandBar {
   readonly viewChange = output<FeedView>();
 
   /** Clicking the active view returns to the feed, so both buttons toggle. */
+  protected toggleReader(): void {
+    const enabled = !this.prefs.feedReader();
+    if (enabled && (this.view() === 'media' || this.view() === 'video'))
+      this.viewChange.emit('feed');
+    this.prefs.setFeedReader(enabled);
+  }
+
   protected setView(view: FeedView): void {
+    if (view === 'media' || view === 'video') this.prefs.setFeedReader(false);
     this.viewChange.emit(this.view() === view ? 'feed' : view);
   }
 

@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -17,6 +18,16 @@ const ACCOUNT = {
   statuses_count: 6789,
 } as Account;
 
+@Component({
+  imports: [AccountHoverCard],
+  template: `<span class="hover-anchor"
+    ><a href="#profile">Kay</a><app-account-hover-card [account]="account"
+  /></span>`,
+})
+class HoverHost {
+  account = ACCOUNT;
+}
+
 describe('AccountHoverCard', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -31,6 +42,44 @@ describe('AccountHoverCard', () => {
     fixture.detectChanges();
     return fixture.nativeElement as HTMLElement;
   }
+
+  it('loads Following when the profile trigger is hovered, before entering the popup', async () => {
+    const fixture = TestBed.createComponent(HoverHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector('.hover-anchor')!.dispatchEvent(new MouseEvent('mouseenter'));
+    fixture.detectChanges();
+    expect(root.querySelector<HTMLButtonElement>('.hc-follow')!.disabled).toBe(true);
+    const http = TestBed.inject(HttpTestingController);
+    http
+      .expectOne('/api/v1/accounts/relationships?id%5B%5D=42')
+      .flush([{ id: '42', following: true, followed_by: true }]);
+    fixture.detectChanges();
+    expect(root.querySelector('.hc-follow')!.textContent).toContain('Following');
+    root.querySelector('a')!.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    http.verify();
+  });
+
+  it('ignores a previous profile response after the card is reused', () => {
+    const fixture = TestBed.createComponent(AccountHoverCard);
+    fixture.componentRef.setInput('account', ACCOUNT);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const http = TestBed.inject(HttpTestingController);
+    root.querySelector('.hover-card')!.dispatchEvent(new MouseEvent('mouseenter'));
+    const old = http.expectOne('/api/v1/accounts/relationships?id%5B%5D=42');
+    fixture.componentRef.setInput('account', { ...ACCOUNT, id: '43' });
+    fixture.detectChanges();
+    root.querySelector('.hover-card')!.dispatchEvent(new MouseEvent('mouseenter'));
+    http
+      .expectOne('/api/v1/accounts/relationships?id%5B%5D=43')
+      .flush([{ id: '43', following: true }]);
+    old.flush([{ id: '42', following: false }]);
+    fixture.detectChanges();
+    expect(root.querySelector('.hc-follow')!.textContent).toContain('Following');
+    http.verify();
+  });
 
   it('shows name, handle, bio and the three stats', () => {
     const el = render(ACCOUNT);

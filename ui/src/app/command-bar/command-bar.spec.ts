@@ -11,6 +11,31 @@ import { RssSubscriptions } from '../providers/rss/rss-subscriptions';
 import { CommandBar } from './command-bar';
 
 describe('CommandBar', () => {
+  it('makes visual views and Reader mutually exclusive without changing image preferences', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showVideo', true);
+    const prefs = TestBed.inject(ClientPrefs);
+    const views: string[] = [];
+    fixture.componentInstance.viewChange.subscribe((view) => views.push(view));
+    fixture.detectChanges();
+    const button = (text: string) =>
+      [...fixture.nativeElement.querySelectorAll('button')].find((b) =>
+        (b as HTMLButtonElement).textContent?.includes(text),
+      ) as HTMLButtonElement;
+    for (const label of ['Media', 'Video']) {
+      prefs.setFeedReader(true);
+      button(label).click();
+      expect(prefs.feedReader()).toBe(false);
+      expect(prefs.showImages()).toBe(true);
+    }
+    fixture.componentRef.setInput('view', 'video');
+    fixture.detectChanges();
+    button('Reader').click();
+    expect(prefs.feedReader()).toBe(true);
+    expect(views.at(-1)).toBe('feed');
+  });
+
   it('offers Video next to Media on Home and emits local text focus without changing global preferences', () => {
     const fixture = setUp();
     fixture.componentRef.setInput('showFeedViews', true);

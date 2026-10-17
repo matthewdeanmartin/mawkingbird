@@ -1,5 +1,22 @@
 # Sprint 6 opening consolidation audit
 
+## Reports, profile previews and Home filters, 2026-10-17
+
+My reports now sits within the standard settings body and section, sharing the
+heading scale and padding used by What this app counts. Help popover content
+explicitly uses body typography instead of inheriting a surrounding heading.
+Home adds a My tags toggle using ToolbarButton, with Button controls for retry,
+turning the filter off and loading more. Reader and visual feed views are mutually
+exclusive. Profile preview lookups begin at the existing hover/focus anchor.
+Reviewed 1,132 sources and 231 candidates: existing source line shifts and shared
+controls only; no candidate additions or reconciliation changes. Browser checks
+cover report alignment/help typography, feed toggles and the hover follow label.
+Reader feed posts now use the existing paper foreground/background pairs as a
+local palette, including links, metadata, focus and action colors. Mutual tint
+uses that same palette; light papers strengthen mutual-post ink to preserve
+contrast. Match app continues to inherit the application theme. Browser coverage
+checks every reader paper on both light and dark app backgrounds.
+
 ## Compact actions and mutual posts, 2026-10-17
 
 Notification dismissal now uses small outline Buttons within the existing wrapping

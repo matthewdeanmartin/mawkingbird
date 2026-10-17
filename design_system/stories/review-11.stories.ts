@@ -1,3 +1,4 @@
+import { ReaderToolbar } from "../../ui/src/app/reader-toolbar/reader-toolbar";
 import {
   Component,
   Injectable,
@@ -149,7 +150,7 @@ function flags() {
 }
 @Component({
   selector: "ds-post-adoption-review",
-  imports: [StatusCard, MbToolbar, MbToolbarButton],
+  imports: [StatusCard, ReaderToolbar, MbToolbar, MbToolbarButton],
   template: `<article class="ds-sheet">
     <h1>Real post tools, compact counts.</h1>
     <p class="ds-intro">
@@ -198,6 +199,18 @@ function flags() {
         Small counts
       </button>
     </mb-toolbar>
+    <mb-toolbar label="Reader preview" density="compact">
+      <button
+        mbToolbarButton
+        [pressed]="prefs.feedReader()"
+        (click)="prefs.setFeedReader(!prefs.feedReader())"
+      >
+        Reader
+      </button>
+    </mb-toolbar>
+    @if (prefs.feedReader()) {
+      <app-reader-toolbar />
+    }
     <section aria-label="Real post">
       @for (key of [selected()]; track key) {
         <app-status-card [status]="status()" (changed)="status.set($event)" />
@@ -212,6 +225,7 @@ function flags() {
   </article>`,
 })
 class PostAdoptionReview {
+  readonly prefs = inject(ClientPrefs);
   readonly actions = inject(ReviewActions);
   private readonly auth = inject(Auth);
   private readonly flags = inject(FeatureFlags);

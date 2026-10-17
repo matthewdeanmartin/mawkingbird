@@ -79,6 +79,10 @@ function preferences() {
           [showFilters]="stacked()"
           [showRefresh]="true"
           [showFeedViews]="true"
+          [showVideo]="true"
+          [showMyTags]="true"
+          [myTags]="myTags()"
+          (myTagsChange)="myTags.set($event)"
           [showFeedDoctor]="true"
           [providerChips]="true"
           [showReaderControls]="false"
@@ -123,6 +127,7 @@ function preferences() {
   `,
 })
 class ToolbarIntegrationDemo {
+  readonly myTags = signal(false);
   readonly stacked = input(false);
   readonly analytics = signal(true);
   readonly view = signal<FeedView>("feed");

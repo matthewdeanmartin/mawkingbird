@@ -33,6 +33,9 @@
        one clickable control would make it *harder* to use, not easier. -->
   <article
     class="status"
+    [attr.data-reader-paper]="readerPaper()"
+    [style.--reader-bg]="readerColors()?.bg"
+    [style.--reader-fg]="readerColors()?.fg"
     [class.mutual]="mutualAuthor"
     [class.status-clickable]="threadLink"
     tabindex="-1"

@@ -107,6 +107,9 @@
     [showRefresh]="!live()"
     [showFeedViews]="true"
     [showVideo]="true"
+    [showMyTags]="true"
+    [myTags]="myTags()"
+    (myTagsChange)="setMyTags($event)"
     [localTextFocus]="homeTextFocus()"
     (textFocusChange)="setHomeTextFocus($event)"
     [showFeedDoctor]="true"
@@ -196,6 +199,42 @@
      timeline rather than navigating away — the command bar toggles back. -->
 @if (nothingFollowed()) {
   <!-- The invitation is above all other Home content. -->
+} @else if (myTags() && (myTagsLoading() || myTagsError() || !visible().length)) {
+  <div class="feed-all-hidden">
+    @if (myTagsLoading()) {
+      <p role="status">{{ 'pages.home.myTags.loading' | transloco }}</p>
+    } @else if (myTagsError()) {
+      <p role="alert">{{ 'pages.home.myTags.failed' | transloco }}</p>
+    } @else {
+      <p>
+        {{
+          (followedTagNames().length ? 'pages.home.myTags.empty' : 'pages.home.myTags.none')
+            | transloco
+        }}
+      </p>
+    }
+    <div class="feed-more-actions">
+      @if (myTagsError()) {
+        <button mbButton variant="outline" size="small" (click)="setMyTags(true)">
+          {{ 'pages.home.myTags.retry' | transloco }}
+        </button>
+      }
+      @if (!myTagsLoading() && !myTagsError() && followedTagNames().length && canLoadMore()) {
+        <button
+          mbButton
+          variant="outline"
+          size="small"
+          [disabled]="loading() || autoLoading()"
+          (click)="loadMore()"
+        >
+          {{ 'pages.home.loadMore.button' | transloco }}
+        </button>
+      }
+      <button mbButton variant="outline" size="small" (click)="setMyTags(false)">
+        {{ 'pages.home.myTags.off' | transloco }}
+      </button>
+    </div>
+  </div>
 } @else if (view() === 'members') {
   <app-feed-members [source]="feedSource()" />
 } @else if (view() === 'analytics') {

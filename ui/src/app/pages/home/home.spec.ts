@@ -60,6 +60,8 @@ interface HomeInternals {
   view: WritableSignal<'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles'>;
   videos: Signal<Status[]>;
   homeTextFocus: WritableSignal<boolean>;
+  setMyTags(enabled: boolean): Promise<void>;
+  myTagsError: Signal<boolean>;
   setHomeDefault(value: string): void;
   noNewPosts: WritableSignal<boolean>;
   refreshHome(): void;
@@ -182,6 +184,45 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+  it('filters by every page of followed tags, including boosted posts, and restores the feed when disabled', async () => {
+    const fixture = setUp();
+    const home = internals(fixture);
+    const tagged = { ...makeStatus('tagged'), tags: [{ name: 'Cats', url: '' }] };
+    const boosted = {
+      ...makeStatus('boost'),
+      reblog: { ...makeStatus('original'), tags: [{ name: 'Dogs', url: '' }] },
+    };
+    home.statuses.set([tagged, boosted, makeStatus('untagged')]);
+    const enabled = home.setMyTags(true);
+    httpMock.expectOne('/api/v1/followed_tags?limit=100').flush([{ name: 'cats' }], {
+      headers: { Link: '<https://example.social/api/v1/followed_tags?max_id=next>; rel="next"' },
+    });
+    await Promise.resolve();
+    httpMock.expectOne('/api/v1/followed_tags?limit=100&max_id=next').flush([{ name: 'dogs' }]);
+    await enabled;
+    expect(home.visible().map((s) => s.id)).toEqual(['tagged', 'boost']);
+    await home.setMyTags(false);
+    expect(home.visible()).toHaveLength(3);
+  });
+
+  it('keeps tag lookup failures retryable and ignores a result after the filter is turned off', async () => {
+    const home = internals(setUp());
+    const first = home.setMyTags(true);
+    httpMock
+      .expectOne('/api/v1/followed_tags?limit=100')
+      .flush('offline', { status: 503, statusText: 'Unavailable' });
+    await first;
+    expect(home.myTagsError()).toBe(true);
+    const retry = home.setMyTags(true);
+    const pending = httpMock.expectOne('/api/v1/followed_tags?limit=100');
+    await home.setMyTags(false);
+    pending.flush([{ name: 'cats' }]);
+    await retry;
+    expect(home.myTagsError()).toBe(false);
+    home.statuses.set([makeStatus('untagged')]);
+    expect(home.visible()).toHaveLength(1);
+  });
+
   it('applies a saved Home layout and leaves toolbar changes temporary', () => {
     const defaults = TestBed.inject(HomeDefaults);
     defaults.set('media');
