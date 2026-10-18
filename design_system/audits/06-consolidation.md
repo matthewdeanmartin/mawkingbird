@@ -1,5 +1,18 @@
 # Sprint 6 opening consolidation audit
 
+## App-mode top menu, 2026-10-18
+
+Reviewed 1,140 source files and 234 candidate files. The flagged app-mode nav
+(spec/top_level_menu.md) adds one candidate, `shell/mode-switch.ts`: the mode
+menu is an anchored Popover of MenuItem links with a MenuSeparator before feed
+management, so the surface, Escape, light dismissal and viewport flipping
+(upward from the phone bottom bar) are shared. Its trigger stays a native
+button styled as a peer of the primary-nav tab links, as the shell More summary
+is, because MbButton presentation would not read as a nav tab. With the flag off
+the shell renders its original nav unchanged. The RSS Videos link is wrapped in
+a flag check. Remaining inventory changes are source line shifts; no shared
+widget changed, so design-verify is not required for this change.
+
 ## Video and media usability, 2026-10-18
 
 Reviewed 1,137 source files and 233 candidate files. Subscription diagnostics and

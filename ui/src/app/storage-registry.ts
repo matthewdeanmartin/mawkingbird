@@ -962,6 +962,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'In-flight Mastodon OAuth attempt: client secret, PKCE verifier and state.',
   },
   {
+    base: 'mockingbird_app_mode',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Which app mode (Mastodon, RSS or Video) the top menu is showing in this tab.',
+  },
+  {
     // Unscoped on purpose, unlike every other credential here. An LLM key
     // belongs to the human, not to a Mastodon persona: it is the same key
     // whether you are signed in as your main, your alt, or Anonymous, so

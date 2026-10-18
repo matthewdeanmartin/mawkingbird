@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/shell/mode-switch.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Popover, MenuItem and MenuSeparator own the mode menu surface, rows, dismissal and above/below placement. The trigger remains a native button styled as a primary-nav tab peer. Preserve the light-dismiss toggle guard, focus return to the trigger, link rows to each mode landing route, the current-mode marker and the flag-off rollback to the original shell nav."
+    },
+    {
       "file": "ui/src/app/pages/settings/profile/profile-bio-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Text-only profile editing uses Dialog, Field/Control and Button with the Bookmarks tab style for Edit and Preview. Preserve keyboard tab selection, bounded panels, source text and selection across views, rendered preview, Unicode counting, oversized-content editing, emoji insertion, explicit Apply/Cancel, focus return and narrow-screen wrapping."

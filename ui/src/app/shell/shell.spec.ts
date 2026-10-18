@@ -26,6 +26,7 @@ import {
   type PlusBadgeState,
 } from '../providers/account/plus-badge-entitlement';
 import { FeatureFlags } from '../feature-flags';
+import { AppModeService } from '../app-mode';
 
 class FakePlusBadgeEntitlement {
   readonly state = signal<PlusBadgeState>('free');
@@ -162,6 +163,27 @@ describe('Shell account switching', () => {
     ).toBeNull();
     drainRailRequests();
   });
+  it('keeps both menu signals on their Mastodon tabs with app modes on', () => {
+    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+    const fixture = createShell();
+    const indicators = TestBed.inject(MenuIndicators);
+    indicators.chat.set(true);
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('a[href="/conversations"] .activity-dot')).toBeTruthy();
+    expect(host.querySelector('a[href="/notifications"] .activity-dot')).toBeNull();
+    indicators.ordinary.set(true);
+    indicators.chat.set(false);
+    fixture.detectChanges();
+    expect(host.querySelector('a[href="/notifications"] .activity-dot')).toBeTruthy();
+
+    // Outside Mastodon the dots have no tab to sit on, and none is borrowed.
+    TestBed.inject(AppModeService).set('rss');
+    fixture.detectChanges();
+    expect(host.querySelector('.primary-nav .activity-dot')).toBeNull();
+    drainRailRequests();
+  });
+
   // on a loaded machine; the work is synchronous, just heavy.
   it('switching restores the target instance and verifies against it', { timeout: 20_000 }, () => {
     const fixture = createShell();
@@ -549,6 +571,109 @@ describe('Shell account switching', () => {
  * writing zen hides a strict superset, so the result must be indistinguishable
  * from writing zen alone.
  */
+describe('Shell app-mode nav', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([serverInterceptor])),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
+        { provide: PlusBadgeEntitlement, useValue: new FakePlusBadgeEntitlement() },
+        { provide: MenuIndicators, useFactory: fakeIndicators },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).mode.set('anonymous');
+  });
+
+  afterEach(() => {
+    httpMock.match(() => true);
+    httpMock.verify();
+  });
+
+  function render() {
+    const fixture = TestBed.createComponent(Shell);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  function tabs(fixture: ReturnType<typeof render>): string[] {
+    const nav = (fixture.nativeElement as HTMLElement).querySelector('.primary-nav')!;
+    return [...nav.children].map((child) =>
+      child.tagName === 'APP-MODE-SWITCH' ? 'switch' : (child.getAttribute('href') ?? ''),
+    );
+  }
+
+  it('flag off renders the original nav, RSS tab and all', () => {
+    // The rollback path: this must stay the nav that shipped before app modes.
+    TestBed.inject(FeatureFlags).setState('mode-nav', 'off');
+    const fixture = render();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('app-mode-switch')).toBeNull();
+    expect(tabs(fixture)).toEqual(
+      expect.arrayContaining(['/home', '/algo', '/search', '/feeds', '/rss']),
+    );
+    expect(host.querySelector('.menu-panel a[href="/videos"]')).toBeTruthy();
+  });
+
+  it('flag on puts Home first and the switcher last in every mode', () => {
+    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+    const fixture = render();
+    const mode = TestBed.inject(AppModeService);
+    const login = TestBed.inject(Auth).shouldOfferLogin ? ['/login'] : [];
+
+    const mastodon = tabs(fixture);
+    expect(mastodon[0]).toBe('/home');
+    expect(mastodon).toContain('/search');
+    expect(mastodon).not.toContain('/rss');
+    expect(mastodon.slice(-1 - login.length)).toEqual([...login, 'switch']);
+
+    mode.set('rss');
+    fixture.detectChanges();
+    expect(tabs(fixture)).toEqual(['/home', '/rss', '/rss?view=kits', ...login, 'switch']);
+    expect(fixture.nativeElement.querySelector('.primary-nav').textContent).toContain('Reader');
+
+    mode.set('video');
+    fixture.detectChanges();
+    expect(tabs(fixture)).toEqual(['/home', '/videos', ...login, 'switch']);
+  });
+
+  it('the switcher offers RSS from Mastodon and Mastodon from elsewhere', () => {
+    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+    const fixture = render();
+    const face = () =>
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('.mode-switch .label')!
+        .textContent!.trim();
+    expect(face()).toBe('RSS');
+    TestBed.inject(AppModeService).set('video');
+    fixture.detectChanges();
+    expect(face()).toBe('Mastodon');
+  });
+
+  it('the switcher lists every mode, marks the current one, and adds feed management', () => {
+    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+    TestBed.inject(AppModeService).set('rss');
+    const fixture = render();
+    const host = fixture.nativeElement as HTMLElement;
+    const rows = [...host.querySelectorAll('app-mode-switch [popover] a')];
+    expect(rows.map((row) => row.getAttribute('href'))).toEqual([
+      '/home',
+      '/rss',
+      '/videos',
+      '/settings/rss',
+    ]);
+    expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
+    expect(rows[1].getAttribute('aria-current')).toBe('true');
+    expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');
+  });
+});
+
 describe('Shell zen modes', () => {
   let httpMock: HttpTestingController;
 

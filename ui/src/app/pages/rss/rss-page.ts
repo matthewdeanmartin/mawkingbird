@@ -28,6 +28,7 @@ import { SeenWhenScrolled } from './seen-when-scrolled';
 import { FriendFeedsDialog } from '../../friend-feeds-dialog/friend-feeds-dialog';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RssFeedActions } from './feed-actions/feed-actions';
+import { FeatureFlags } from '../../feature-flags';
 import { rssSourceUrl } from '../../providers/rss/rss-source';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { feedToStatuses } from '../../providers/rss/rss-adapter';
@@ -108,6 +109,10 @@ type Selection =
  * them the wrong list.
  */
 const UNFILED_PARAM = 'unfiled';
+
+/** `?view=kits` shows the starter kits in place of the reading list. */
+const VIEW_PARAM = 'view';
+const KITS_VIEW = 'kits';
 
 /** One group of feeds in the left rail. `name` is null for the unfiled group. */
 interface RailGroup {
@@ -262,6 +267,22 @@ export class RssPage {
    */
   protected readonly showKits = signal(false);
 
+  /**
+   * `?view=kits`: the top menu's Starter kits tab, and a linkable kits pane.
+   *
+   * Only an edge in the URL moves the pane, so the no-feeds default above still
+   * opens the kits on a bare `/rss`, and leaving `?view=kits` (the Reader tab,
+   * back) puts the reading list back.
+   */
+  private readonly kitsInUrl = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get(VIEW_PARAM) === KITS_VIEW)),
+    { initialValue: false },
+  );
+
+  /** The app-mode menu replaces this page's Videos cross-link while it is on. */
+  protected readonly modeNav = computed(() => this.featureFlags.enabled('mode-nav'));
+  private readonly featureFlags = inject(FeatureFlags);
+
   /** The friends'-blogs dialog. Mounted only while open: it is a lot of
    * machinery for a button most sessions never press. */
   protected readonly showFriendFeeds = signal(false);
@@ -273,6 +294,15 @@ export class RssPage {
 
   constructor() {
     this.showKits.set(this.subs.feeds().length === 0 && !this.readState.starredCount());
+
+    let kitsWereInUrl = false;
+    effect(() => {
+      const requested = this.kitsInUrl();
+      if (requested !== kitsWereInUrl) {
+        untracked(() => this.showKits.set(requested));
+      }
+      kitsWereInUrl = requested;
+    });
 
     // The pane follows the URL *and* the subscription list, so one effect covers
     // first paint, rail clicks, back/forward, a reload on a deep link, and a
@@ -525,6 +555,14 @@ export class RssPage {
   protected toggleKits(): void {
     const next = !this.showKits();
     this.showKits.set(next);
+    // Keep the URL saying what the pane shows, so the menu's tabs agree with it.
+    if ((this.route.snapshot.queryParamMap.get(VIEW_PARAM) === KITS_VIEW) !== next) {
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { [VIEW_PARAM]: next ? KITS_VIEW : null },
+        queryParamsHandling: 'merge',
+      });
+    }
     this.diagnostics.info('RssPage', 'user:toggle-kits', { open: next });
   }
 

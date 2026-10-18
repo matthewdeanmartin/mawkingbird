@@ -19,9 +19,13 @@
         >
           {{ (showKits() ? 'pages.rss.readerView' : 'pages.rss.starterKits') | transloco }}
         </button>
-        <a class="btn btn-small btn-outline" routerLink="/videos">{{
-          'videos.title' | transloco
-        }}</a>
+        <!-- The app-mode switcher is the way to Video while mode-nav is on; with
+             it off this stays, so turning the flag off never strands Videos. -->
+        @if (!modeNav()) {
+          <a class="btn btn-small btn-outline" routerLink="/videos">{{
+            'videos.title' | transloco
+          }}</a>
+        }
         <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
           {{ 'pages.rss.friendFeeds' | transloco }}
         </button>

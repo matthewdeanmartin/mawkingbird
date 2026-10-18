@@ -207,93 +207,137 @@
           }
         </div>
 
-        <nav class="primary-nav" [attr.aria-label]="'shell.nav.primary' | transloco">
-          <a routerLink="/home" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
-            </svg>
-            <span>{{ 'shell.nav.home' | transloco }}</span>
-          </a>
-          <a routerLink="/algo" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M11 4l1.8 4.7L17.5 10.5l-4.7 1.8L11 17l-1.8-4.7L4.5 10.5l4.7-1.8zM18.5 14l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"
-              />
-            </svg>
-            <span>{{ 'shell.nav.algo' | transloco }}</span>
-          </a>
-          @if (!auth.isAnonymous) {
-            <a
-              routerLink="/notifications"
-              routerLinkActive="active"
-              [class.has-activity]="indicators.ordinary()"
-            >
+        <!-- App modes (spec/top_level_menu.md): Home, then the current mode's own
+           tabs, then the switcher. Flag off renders the original nav below,
+           unchanged — that branch is the rollback, so leave it alone. -->
+        @if (featureFlags.enabled('mode-nav')) {
+          <nav
+            class="primary-nav"
+            [attr.data-mode]="appMode.mode()"
+            [attr.aria-label]="'shell.nav.primary' | transloco"
+          >
+            <a routerLink="/home" routerLinkActive="active">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9.5 21h5" />
+                <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
               </svg>
-              <span>{{ 'shell.nav.inbox' | transloco }}</span>
-              @if (indicators.ordinary()) {
-                <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
-                  >●</span
-                >
-              }
+              <span>{{ 'shell.nav.home' | transloco }}</span>
             </a>
-            <a
-              routerLink="/conversations"
-              routerLinkActive="active"
-              [class.has-activity]="indicators.chat()"
-            >
+            @for (item of modeItems(); track item.id) {
+              <a
+                [routerLink]="item.link"
+                [queryParams]="item.queryParams ?? null"
+                [class.active]="item.active(currentUrl())"
+                [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
+                [class.has-activity]="hasActivity(item)"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+                <span>{{ item.labelKey | transloco }}</span>
+                @if (hasActivity(item)) {
+                  <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                    >●</span
+                  >
+                }
+              </a>
+            }
+            @if (auth.shouldOfferLogin) {
+              <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
+                </svg>
+                <span>{{ 'shell.nav.login' | transloco }}</span>
+              </a>
+            }
+            <app-mode-switch />
+          </nav>
+        } @else {
+          <nav class="primary-nav" [attr.aria-label]="'shell.nav.primary' | transloco">
+            <a routerLink="/home" routerLinkActive="active">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 5h16v12H8l-4 4z" />
+                <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
               </svg>
-              <span>{{ 'shell.nav.chat' | transloco }}</span>
-              @if (indicators.chat()) {
-                <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
-                  >●</span
-                >
-              }
+              <span>{{ 'shell.nav.home' | transloco }}</span>
             </a>
-          }
-          <!-- Anonymous visitors get Chat too, and it is the same page signed-in
+            <a routerLink="/algo" routerLinkActive="active">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M11 4l1.8 4.7L17.5 10.5l-4.7 1.8L11 17l-1.8-4.7L4.5 10.5l4.7-1.8zM18.5 14l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"
+                />
+              </svg>
+              <span>{{ 'shell.nav.algo' | transloco }}</span>
+            </a>
+            @if (!auth.isAnonymous) {
+              <a
+                routerLink="/notifications"
+                routerLinkActive="active"
+                [class.has-activity]="indicators.ordinary()"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9.5 21h5" />
+                </svg>
+                <span>{{ 'shell.nav.inbox' | transloco }}</span>
+                @if (indicators.ordinary()) {
+                  <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                    >●</span
+                  >
+                }
+              </a>
+              <a
+                routerLink="/conversations"
+                routerLinkActive="active"
+                [class.has-activity]="indicators.chat()"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 5h16v12H8l-4 4z" />
+                </svg>
+                <span>{{ 'shell.nav.chat' | transloco }}</span>
+                @if (indicators.chat()) {
+                  <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                    >●</span
+                  >
+                }
+              </a>
+            }
+            <!-- Anonymous visitors get Chat too, and it is the same page signed-in
            users see. There is no notification badge any more: Eliza no longer
            generates notifications, which is the point of removing her inbox. -->
-          @if (auth.isAnonymous && hasLocalChat()) {
-            <a routerLink="/conversations" routerLinkActive="active">
+            @if (auth.isAnonymous && hasLocalChat()) {
+              <a routerLink="/conversations" routerLinkActive="active">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 5h16v12H8l-4 4z" />
+                </svg>
+                <span>{{ 'shell.nav.chat' | transloco }}</span>
+              </a>
+            }
+            <a routerLink="/search" routerLinkActive="active">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 5h16v12H8l-4 4z" />
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m15.5 15.5 5 5" />
               </svg>
-              <span>{{ 'shell.nav.chat' | transloco }}</span>
+              <span>{{ 'shell.nav.search' | transloco }}</span>
             </a>
-          }
-          <a routerLink="/search" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="10.5" cy="10.5" r="6.5" />
-              <path d="m15.5 15.5 5 5" />
-            </svg>
-            <span>{{ 'shell.nav.search' | transloco }}</span>
-          </a>
-          <a routerLink="/feeds" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
-            </svg>
-            <span>{{ 'shell.nav.feeds' | transloco }}</span>
-          </a>
-          <a routerLink="/rss" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 4a16 16 0 0 1 16 16M4 4v6a10 10 0 0 1 10 10h6A16 16 0 0 0 4 4Z" />
-              <circle cx="6.5" cy="17.5" r="2" />
-            </svg>
-            <span>{{ 'shell.nav.rss' | transloco }}</span>
-          </a>
-          @if (auth.shouldOfferLogin) {
-            <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
+            <a routerLink="/feeds" routerLinkActive="active">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
+                <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
               </svg>
-              <span>{{ 'shell.nav.login' | transloco }}</span>
+              <span>{{ 'shell.nav.feeds' | transloco }}</span>
             </a>
-          }
-        </nav>
+            <a routerLink="/rss" routerLinkActive="active">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 4a16 16 0 0 1 16 16M4 4v6a10 10 0 0 1 10 10h6A16 16 0 0 0 4 4Z" />
+                <circle cx="6.5" cy="17.5" r="2" />
+              </svg>
+              <span>{{ 'shell.nav.rss' | transloco }}</span>
+            </a>
+            @if (auth.shouldOfferLogin) {
+              <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
+                </svg>
+                <span>{{ 'shell.nav.login' | transloco }}</span>
+              </a>
+            }
+          </nav>
+        }
 
         <div class="header-actions">
           <details class="more-menu" (toggle)="onMoreToggle($event)">

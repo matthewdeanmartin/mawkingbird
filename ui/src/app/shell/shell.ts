@@ -47,6 +47,9 @@ import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
 import { PlusBadgeEntitlement } from '../providers/account/plus-badge-entitlement';
 import { visiblePlusBenefits } from '../plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
+import { AppModeService } from '../app-mode';
+import { MODE_NAV, ModeNavItem } from './mode-nav';
+import { ModeSwitch } from './mode-switch';
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
 // i18n shell.deployment.canary: Canary
@@ -171,6 +174,7 @@ function isWideUrl(url: string): boolean {
     FirstRunModal,
     NgComponentOutlet,
     TranslocoPipe,
+    ModeSwitch,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.css',
@@ -344,6 +348,33 @@ export class Shell implements OnInit {
     const role = this.auth.account()?.role;
     return !!role && role.name !== '';
   });
+
+  /** Which app the primary nav serves — see spec/top_level_menu.md. */
+  protected readonly appMode = inject(AppModeService);
+
+  /** The router URL, for mode tabs whose 'current' depends on query params. */
+  protected readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  /** The current mode's tabs, less any this visitor cannot use. */
+  protected readonly modeItems = computed(() =>
+    MODE_NAV[this.appMode.mode()].filter((item) => {
+      if (item.requires === 'signedIn') return !this.auth.isAnonymous;
+      if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
+      return true;
+    }),
+  );
+
+  /** Activity dots are a signed-in Mastodon thing; Anonymous chat has none. */
+  protected hasActivity(item: ModeNavItem): boolean {
+    if (!item.activity || this.auth.isAnonymous) return false;
+    return item.activity === 'ordinary' ? this.indicators.ordinary() : this.indicators.chat();
+  }
 
   /** Settings and chat take the full width below the top bar (no rails), like 2018 Twitter. */
   protected wide = toSignal(

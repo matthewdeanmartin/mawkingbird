@@ -1,0 +1,58 @@
+import { describe, expect, it } from 'vitest';
+import { APP_MODES } from '../app-mode';
+import { MODE_ENTRIES, MODE_NAV, suggestedMode } from './mode-nav';
+
+describe('MODE_NAV', () => {
+  it('leaves Home to the shell, as the fixed first slot of every mode', () => {
+    for (const mode of APP_MODES) {
+      expect(MODE_NAV[mode].map((item) => item.link)).not.toContain('/home');
+    }
+  });
+
+  it('gives every icon one meaning across the whole menu', () => {
+    // spec/top_level_menu.md rule 3: a bell must not mean Mastodon
+    // notifications in one mode and "new upload" in another.
+    const meaning = new Map<string, string>();
+    const glyphs = [
+      ...APP_MODES.flatMap((mode) => MODE_NAV[mode]),
+      ...APP_MODES.map((mode) => MODE_ENTRIES[mode]),
+    ];
+    for (const { icon, labelKey } of glyphs) {
+      expect(meaning.get(icon) ?? labelKey, `${labelKey} reuses ${meaning.get(icon)}`).toBe(
+        labelKey,
+      );
+      meaning.set(icon, labelKey);
+    }
+  });
+
+  it('keeps item ids unique within a mode', () => {
+    for (const mode of APP_MODES) {
+      const ids = MODE_NAV[mode].map((item) => item.id);
+      expect(new Set(ids).size).toBe(ids.length);
+    }
+  });
+
+  it('marks exactly one RSS tab current, whether or not the kits are showing', () => {
+    const active = (url: string) =>
+      MODE_NAV.rss.filter((item) => item.active(url)).map((item) => item.id);
+    expect(active('/rss')).toEqual(['reader']);
+    expect(active('/rss?folder=News')).toEqual(['reader']);
+    expect(active('/rss?view=kits')).toEqual(['kits']);
+    expect(active('/rss?folder=News&view=kits')).toEqual(['kits']);
+  });
+
+  it('does not claim lookalike paths', () => {
+    expect(MODE_NAV.mastodon.find((item) => item.id === 'feeds')!.active('/feedsx')).toBe(false);
+    expect(MODE_NAV.mastodon.find((item) => item.id === 'feeds')!.active('/feeds/lists')).toBe(
+      true,
+    );
+  });
+});
+
+describe('suggestedMode', () => {
+  it('offers RSS from Mastodon and Mastodon from everywhere else', () => {
+    expect(suggestedMode('mastodon')).toBe('rss');
+    expect(suggestedMode('rss')).toBe('mastodon');
+    expect(suggestedMode('video')).toBe('mastodon');
+  });
+});

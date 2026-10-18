@@ -528,6 +528,45 @@ describe('RssPage', () => {
   });
 
   describe('starter kit toggle', () => {
+    async function withFeed() {
+      const url = 'https://a.example.com/f.xml';
+      feeds.set(url, feed('A', 'Alpha item', '2026-08-20T00:00:00Z'));
+      TestBed.inject(RssSubscriptions).add(url, 'A');
+    }
+
+    it('opens the kits from ?view=kits and closes them when the URL leaves it', async () => {
+      // The top menu's Starter kits and Reader tabs are these two URLs.
+      await withFeed();
+      const router = TestBed.inject(Router);
+      await router.navigate(['/rss'], { queryParams: { view: 'kits' } });
+      const fixture = setUp();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(fixture.componentInstance['showKits']()).toBe(true);
+
+      await router.navigate(['/rss']);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(fixture.componentInstance['showKits']()).toBe(false);
+      expect(textOf(fixture)).toContain('Alpha item');
+    });
+
+    it('keeps ?view=kits in step with the in-page toggle', async () => {
+      await withFeed();
+      const router = TestBed.inject(Router);
+      await router.navigate(['/rss']);
+      const fixture = setUp();
+      await fixture.whenStable();
+
+      fixture.componentInstance['toggleKits']();
+      await fixture.whenStable();
+      expect(router.url).toBe('/rss?view=kits');
+      fixture.componentInstance['toggleKits']();
+      await fixture.whenStable();
+      expect(router.url).toBe('/rss');
+      expect(fixture.componentInstance['showKits']()).toBe(false);
+    });
+
     it('opens showing kits when there are no feeds at all', () => {
       const fixture = setUp();
       expect(fixture.componentInstance['showKits']()).toBe(true);
