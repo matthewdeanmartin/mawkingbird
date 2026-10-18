@@ -39,6 +39,8 @@ import { FeatureFlags } from '../feature-flags';
 import { LeaveChoice, LeaveDialog } from '../leave-dialog/leave-dialog';
 import { WritingZen } from '../writing-zen';
 import { ReadingZen } from '../reading-zen';
+import { qualifiedHandle } from '../account-handle';
+import { Account } from '../models';
 import { FirstRunChoice, FirstRunModal } from '../first-run/first-run-modal';
 import { PreviewSeed } from '../first-run/preview-seed';
 import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
@@ -113,7 +115,7 @@ import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.menu.admin: Admin
 // i18n shell.account.switch: Switch account
 // i18n shell.account.anonymous: Anonymous
-// i18n shell.account.saved: Saved account
+// i18n shell.account.unavailable: Account details unavailable
 // i18n shell.account.addMastodon: + Add Mastodon account
 // i18n shell.account.addBluesky: + Add Bluesky account
 // i18n shell.account.exitAnonymous: Exit anonymous
@@ -625,6 +627,14 @@ export class Shell implements OnInit {
           },
         });
     }
+  }
+
+  protected accountName(account: Account | null): string {
+    if (!account) return '';
+    const name = account.display_name?.trim();
+    if (name) return name;
+    const handle = qualifiedHandle(account) || account.acct?.trim() || account.username?.trim();
+    return handle ? `@${handle.replace(/^@/, '')}` : '';
   }
 
   /**

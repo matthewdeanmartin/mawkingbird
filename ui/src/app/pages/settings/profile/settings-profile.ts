@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
+import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -22,6 +23,8 @@ import { ProfileLinkDialog } from './profile-link-dialog';
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.profile.title: Public profile
 // i18n settings.profile.bot: I'm a bot!
+// i18n settings.profile.accountType: Account type
+// i18n settings.profile.automation: Automation
 // i18n settings.profile.bot.hint: Mark this as an automated account. A bot badge will appear on your profile.
 // i18n settings.profile.intro: How you appear to other people on this server.
 // i18n settings.profile.intro.anonymous: Your browser-local identity. Nothing here is published to {{server}}.
@@ -47,6 +50,7 @@ import { ProfileLinkDialog } from './profile-link-dialog';
   selector: 'app-settings-profile',
   imports: [
     MbCheckbox,
+    MbSettingsRow,
     DatePipe,
     FormsModule,
     TranslocoPipe,

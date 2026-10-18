@@ -10,17 +10,6 @@
 </div>
 
 <form class="spage-body" (ngSubmit)="saveProfile()">
-  @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
-    <div class="ssection">
-      <mb-checkbox
-        [label]="'settings.profile.bot' | transloco"
-        [hint]="'settings.profile.bot.hint' | transloco"
-        [checked]="bot()"
-        (checkedChange)="bot.set($event)"
-        [disabled]="saving()"
-      />
-    </div>
-  }
   <div class="ssection">
     <div class="srow">
       <span class="slabel">{{ 'settings.profile.displayName' | transloco }}</span>
@@ -169,6 +158,21 @@
       </div>
     </div>
   </div>
+
+  @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
+    <div class="ssection">
+      <h2>{{ 'settings.profile.accountType' | transloco }}</h2>
+      <mb-settings-row [heading]="'settings.profile.automation' | transloco">
+        <mb-checkbox
+          [label]="'settings.profile.bot' | transloco"
+          [hint]="'settings.profile.bot.hint' | transloco"
+          [checked]="bot()"
+          (checkedChange)="bot.set($event)"
+          [disabled]="saving()"
+        />
+      </mb-settings-row>
+    </div>
+  }
 
   <div class="sactions">
     @if (saveError(); as error) {

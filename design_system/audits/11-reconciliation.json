@@ -855,7 +855,7 @@
     {
       "file": "ui/src/app/pages/settings/profile/settings-profile.html",
       "disposition": "partial adoption",
-      "nextStep": "Profile link helpers and metadata rows use shared buttons and labelled Field/Control pairs. Display name, bio, image uploads and overall save feedback remain a separate migration."
+      "nextStep": "Profile link helpers and metadata rows use shared buttons and labelled Field/Control pairs. The final Account type section uses SettingsRow and Checkbox for automation. Display name, bio, image uploads and overall save feedback remain a separate migration."
     },
     {
       "file": "ui/src/app/pages/settings/profile/profile-link-dialog.html",

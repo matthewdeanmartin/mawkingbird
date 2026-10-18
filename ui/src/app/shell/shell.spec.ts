@@ -89,6 +89,57 @@ describe('Shell account switching', () => {
   }
 
   // Rendering the full Shell (rails and all) can exceed the default 5s timeout
+  it('uses handles for empty display names and refreshes the saved name after verification', () => {
+    const fixture = createShell();
+    const saved = {
+      id: '2',
+      username: 'socialite',
+      acct: 'socialite',
+      url: 'https://mastodon.social/@socialite',
+      display_name: '   ',
+    };
+    auth.sessions.update((sessions) =>
+      sessions.map((session) =>
+        session.token === 'social-token' ? { ...session, account: saved as never } : session,
+      ),
+    );
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.account-pill')?.textContent).toContain('@arty');
+    expect(el.querySelector('.switch-name')?.textContent).toContain('@socialite@mastodon.social');
+    const social = auth.sessions().find((session) => session.token === 'social-token')!;
+    fixture.componentInstance.switchTo(social);
+    httpMock
+      .expectOne('https://mastodon.social/api/v1/accounts/verify_credentials')
+      .flush({ ...saved, display_name: 'New pretty name' });
+    expect(
+      auth.sessions().find((session) => session.token === 'social-token')?.account?.display_name,
+    ).toBe('New pretty name');
+    expect(
+      JSON.parse(localStorage.getItem('mastodon_mock_sessions')!).find(
+        (session: { id: string }) => session.id === social.id,
+      ).account.display_name,
+    ).toBe('New pretty name');
+    drainRailRequests();
+  });
+
+  it('only uses the unavailable label when a saved profile has no name or handle', () => {
+    const fixture = createShell();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.switch-name').textContent).toContain(
+      'Account details unavailable',
+    );
+    const shell = fixture.componentInstance;
+    expect(shell['accountName']({ username: 'local', display_name: '' } as never)).toBe('@local');
+    expect(shell['accountName']({ acct: 'remote@example.social', display_name: '' } as never)).toBe(
+      '@remote@example.social',
+    );
+    expect(shell['accountName']({ display_name: 'Pretty name', username: 'local' } as never)).toBe(
+      'Pretty name',
+    );
+    drainRailRequests();
+  });
+
   it('renders the two menu signals independently', () => {
     const fixture = createShell();
     const indicators = TestBed.inject(MenuIndicators);

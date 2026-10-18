@@ -538,3 +538,12 @@ regenerated inventory: the slideshow template is the only new candidate file;
 profile and settings changes otherwise shift existing source locations. No shared
 widget implementation changed. Preserve keyboard navigation, Zen hold cleanup,
 readable overflow and the sensitive-content boundary during subsequent changes.
+
+## Profile automation layout and account labels, 2026-10-17
+
+Moved the bot checkbox into the final Account type section, using SettingsRow
+for the Automation heading and the shared Checkbox in its control column.
+Reviewed the regenerated inventory: only profile-settings control locations and
+the added SettingsRow finding changed; no candidate files were added or removed.
+The account menu now prefers display names and then handles, with an explicit
+unavailable label only when neither is known. Shared widget code is unchanged.
