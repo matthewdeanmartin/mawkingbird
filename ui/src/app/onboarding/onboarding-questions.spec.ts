@@ -67,6 +67,15 @@ describe('onboarding questions', () => {
     });
   });
 
+  it('starts with alt text required and allows opting out during onboarding', () => {
+    const ctx = context();
+    const altText = question('alt-text');
+    expect(altText.read?.(ctx)).toBe(true);
+    altText.apply?.(ctx, false);
+    expect(altText.read?.(ctx)).toBe(false);
+    expect(ctx.prefs.requireAltText()).toBe(false);
+  });
+
   describe('signed in to Mastodon', () => {
     beforeEach(() => {
       localStorage.setItem('mastodon_mock_account_mode', 'mastodon');

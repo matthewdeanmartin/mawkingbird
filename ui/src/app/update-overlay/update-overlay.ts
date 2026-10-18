@@ -1,5 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
-import { BugReportDialog } from '../bug-report-dialog/bug-report-dialog';
+import { Component, inject } from '@angular/core';
 import { UpdateRecovery } from '../update-recovery';
 
 /**
@@ -15,26 +14,26 @@ import { UpdateRecovery } from '../update-recovery';
  */
 @Component({
   selector: 'app-update-overlay',
-  imports: [BugReportDialog],
   template: `
     @if (recovery.failed()) {
       <div class="update-overlay" role="alertdialog" aria-labelledby="update-title">
         <div class="spinner-slot">⚠️</div>
         <h1 id="update-title">Couldn't finish updating</h1>
         <p class="muted">
-          A new version was released, but this tab couldn't load it — usually a temporary deployment
-          or caching hiccup. Try again in a moment.
+          This tab couldn't load part of Mawkingbird. Check your connection and try again, or open
+          Mawkingbird in a new tab to start from the homepage.
         </p>
         <div class="overlay-actions">
-          <button class="btn btn-outline" type="button" (click)="reporting.set(true)">
-            Report this
-          </button>
+          <a
+            class="btn btn-outline"
+            href="https://mawkingbird.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Open Mawkingbird in a new tab</a
+          >
           <button class="btn" type="button" (click)="recovery.retry()">Try again</button>
         </div>
       </div>
-      @if (reporting()) {
-        <app-bug-report-dialog (closed)="reporting.set(false)" />
-      }
     } @else if (recovery.updating()) {
       <div class="update-overlay" role="status" aria-live="polite">
         <div class="spinner" aria-hidden="true"></div>
@@ -47,5 +46,4 @@ import { UpdateRecovery } from '../update-recovery';
 })
 export class UpdateOverlay {
   protected recovery = inject(UpdateRecovery);
-  protected reporting = signal(false);
 }

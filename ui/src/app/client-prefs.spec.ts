@@ -19,6 +19,20 @@ describe('ClientPrefs', () => {
     return prefs;
   }
 
+  it('requires alt text when a new or existing preference record has no choice', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ themeMode: 'light' }));
+    expect(create().requireAltText()).toBe(true);
+  });
+
+  it('preserves an explicit alt-text opt-out and persists changes', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ requireAltText: false }));
+    const prefs = create();
+    expect(prefs.requireAltText()).toBe(false);
+    prefs.setRequireAltText(true);
+    TestBed.tick();
+    expect(JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}').requireAltText).toBe(true);
+  });
+
   it('defaults to auto theme, blue accent, posting guards off, fixed blue checks', () => {
     const prefs = create();
     expect(prefs.themeMode()).toBe('auto');
@@ -26,6 +40,7 @@ describe('ClientPrefs', () => {
     expect(prefs.confirmBeforePost()).toBe(false);
     expect(prefs.delayedSend()).toBe(false);
     expect(prefs.verifiedMode()).toBe('fixed');
+    expect(prefs.requireAltText()).toBe(true);
   });
 
   it('defaults to the hand-drawn illustrations and round-trips the choice', () => {

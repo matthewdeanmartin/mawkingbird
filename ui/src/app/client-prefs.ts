@@ -757,7 +757,7 @@ export class ClientPrefs {
    */
   readonly analytics = signal<boolean>(true);
   /** Opt-in: refuse to post while any attached image lacks alt text. */
-  readonly requireAltText = signal<boolean>(false);
+  readonly requireAltText = signal<boolean>(true);
 
   /**
    * Thoughtful posting: nothing publishes straight from a text box.

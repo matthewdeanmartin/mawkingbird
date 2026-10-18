@@ -687,6 +687,8 @@ describe('Compose', () => {
 
   it('submit() includes media_ids when media is attached', () => {
     const f = setUp();
+    // This case exercises attachment IDs when the writer explicitly opts out of descriptions.
+    TestBed.inject(ClientPrefs).setRequireAltText(false);
     internals(f).text.set('Photo post');
     internals(f).media.set([
       { media: { id: 'media-1' }, description: '' },
@@ -1888,7 +1890,7 @@ describe('Compose', () => {
     internals(f).media.set([
       {
         media: { id: 'm1' },
-        description: '',
+        description: 'A photo attached to the post',
         file: new File([''], 'a.png', { type: 'image/png' }),
       },
     ]);
@@ -1914,7 +1916,7 @@ describe('Compose', () => {
 
     afterEach(() => vi.unstubAllGlobals());
 
-    function attach(f: ComponentFixture<Compose>, name = 'a.jpg', description = ''): void {
+    function attach(f: ComponentFixture<Compose>, name = 'a.jpg', description = 'A photo'): void {
       internals(f).media.update((list) => [
         ...list,
         {
@@ -1958,6 +1960,7 @@ describe('Compose', () => {
       } as unknown as ClipboardEvent);
       expect(preventDefault).toHaveBeenCalledOnce();
       expect(internals(f).media()).toHaveLength(1);
+      f.componentInstance.setMediaDescription(0, 'A screenshot');
       internals(f).submit();
       await new Promise((r) => setTimeout(r, 0));
       httpMock.expectOne(UPLOAD_BLOB).flush(blobRef('reply-image'));

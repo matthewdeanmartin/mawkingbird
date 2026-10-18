@@ -199,6 +199,9 @@ describe('self profile local actions', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('h2 > .badge')?.textContent).toContain('Bot');
+    const menu = el.querySelector('.account-danger-menu summary');
+    expect(menu?.textContent?.trim()).toBe('•••');
+    expect(menu?.getAttribute('aria-label')).toBe('More account actions');
     el.querySelector<HTMLButtonElement>('.account-danger-panel button')!.click();
     fixture.detectChanges();
     expect(el.querySelector('app-profile-slideshow')).not.toBeNull();
@@ -417,6 +420,12 @@ describe('Profile block/unblock', () => {
       // Here the badge earns its place: the button says "Follow", so without it
       // there is nothing to distinguish a follower from a stranger.
       expect(badgeText(fixture)).toBe('Follows you');
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('h2 .badge.follows-you'),
+      ).not.toBeNull();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons .badge.follows-you'),
+      ).toBeNull();
       expect(labelsIn(fixture)).toContain('Follow');
     });
 

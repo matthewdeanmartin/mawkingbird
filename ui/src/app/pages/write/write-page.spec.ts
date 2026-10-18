@@ -1215,6 +1215,7 @@ describe('WritePage', () => {
       clipboardData: { files: [new File(['png'], 'shot.png', { type: 'image/png' })] },
       preventDefault: vi.fn(),
     } as unknown as ClipboardEvent);
+    page.media.update((items) => items.map((item) => ({ ...item, description: 'A screenshot' })));
 
     page.publish();
 
@@ -1298,6 +1299,7 @@ describe('WritePage', () => {
       clipboardData: { files: [new File(['png'], 'shot.png', { type: 'image/png' })] },
       preventDefault: vi.fn(),
     } as unknown as ClipboardEvent);
+    page.media.update((items) => items.map((item) => ({ ...item, description: 'A screenshot' })));
     page.publish();
     page.wizardForward();
     expect(page.wizardStep()).toBe('targets');

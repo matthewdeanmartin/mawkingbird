@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { stubLocation } from './testing/stub-location';
 import { UpdateRecovery } from './update-recovery';
+import { UpdateOverlay } from './update-overlay/update-overlay';
 
 /**
  * These tests exercise the chunk-error detection and the reload-loop guard.
@@ -123,6 +124,24 @@ describe('UpdateRecovery', () => {
   });
 
   describe('retry', () => {
+    it('offers a clean homepage in a separate tab after a callback chunk fails', () => {
+      window.history.replaceState(null, '', '/login?code=one-use-code&state=oauth-state');
+      sessionStorage.setItem(storageKey, JSON.stringify({ attemptedAt: Date.now() }));
+      recovery.recover(new Error('error loading dynamically imported module'));
+      const fixture = TestBed.createComponent(UpdateOverlay);
+      fixture.detectChanges();
+      const panel: HTMLElement = fixture.nativeElement;
+      const link = panel.querySelector('a');
+      expect(link?.getAttribute('href')).toBe('https://mawkingbird.com/');
+      expect(link?.target).toBe('_blank');
+      expect(link?.rel).toContain('noopener');
+      expect(link?.rel).toContain('noreferrer');
+      expect(panel.textContent).not.toContain('Report this');
+      panel.querySelector('button')?.click();
+      expect(reloadSpy).toHaveBeenCalledTimes(1);
+      window.history.replaceState(null, '', '/');
+    });
+
     it('clears the guard, drops the failed state, and reloads', () => {
       sessionStorage.setItem(storageKey, JSON.stringify({ attemptedAt: Date.now() }));
       recovery.recover(new Error('error loading dynamically imported module'));

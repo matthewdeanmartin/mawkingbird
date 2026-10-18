@@ -97,8 +97,11 @@
         @if (isSelf()) {
           <div class="profile-buttons">
             <details class="account-danger-menu">
-              <summary class="btn btn-outline">
-                {{ 'pages.profile.actions.localActions' | transloco }}
+              <summary
+                class="btn btn-outline"
+                [attr.aria-label]="'pages.profile.actions.moreAccountActions' | transloco"
+              >
+                •••
               </summary>
               <div class="account-danger-panel">
                 <button type="button" (click)="showSlideshow.set(true)">
@@ -486,13 +489,6 @@
                "Mutuals" is not: it duplicates a button that would sit right
                beside it saying "Following", so the button says "Mutuals" instead
                and the badge stands down. See mutualsLabel below. -->
-            @if (!isSelf() && relationship()?.followed_by && !isMutual()) {
-              <span
-                class="badge follows-you"
-                [title]="'pages.profile.relationship.thisAccountFollowsYou' | transloco"
-                >{{ 'pages.profile.relationship.followsYou' | transloco }}</span
-              >
-            }
             @if (capabilities.canFollow) {
               <button
                 class="btn"
@@ -534,6 +530,13 @@
       <h2>
         <span [innerHTML]="a.display_name || a.username | customEmoji: a.emojis : true"></span>
         <app-verified-badge [account]="a" />
+        @if (!isSelf() && relationship()?.followed_by && !isMutual()) {
+          <span
+            class="badge follows-you"
+            [title]="'pages.profile.relationship.thisAccountFollowsYou' | transloco"
+            >{{ 'pages.profile.relationship.followsYou' | transloco }}</span
+          >
+        }
         @if (a.bot) {
           <span class="badge">{{ 'pages.profile.bot' | transloco }}</span>
         }

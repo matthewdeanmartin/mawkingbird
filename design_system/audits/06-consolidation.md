@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Recovery and profile usability, 2026-10-18
+
+The update recovery panel replaces its report button with a native external link
+to the production homepage in a new tab, retaining the existing button styling
+and retry action. Profile follows-you badges now share the name row with bot
+badges, and the self-profile menu uses the existing accessible ellipsis pattern.
+Reviewed the regenerated inventory: 1,137 source files and 233 candidate files;
+one fewer native button in UpdateOverlay and profile source line shifts. No
+candidate files were added or removed, so 11-reconciliation.json needs no changes.
+No shared widget implementations changed.
+
 ## Compact bio Edit and Preview tabs, 2026-10-18
 
 The bio dialog reuses the Bookmarks tabs/tab/active styling for mutually exclusive
