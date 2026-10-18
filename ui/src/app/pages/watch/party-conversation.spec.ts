@@ -118,6 +118,23 @@ describe('Temporary party conversations', () => {
     streams.get('Anime2000')!.next({ event: 'delete', payload: '1' });
     expect(items()).toHaveLength(0);
   });
+  it('joins the party tags as each session starts, skipping invalid ones', () => {
+    // A party opened from the finder: /watch?…&tags=Debate,Live
+    fixture.componentRef.setInput('initialTags', ['Debate', 'not-a-tag', 'Live']);
+    fixture.componentRef.setInput('session', 'party');
+    fixture.detectChanges();
+    expect([...feeds.keys()]).toEqual(['Debate', 'Live']);
+    // Tags the reader did not type are skipped quietly, not reported as invalid.
+    const state = fixture.componentInstance as unknown as { validation(): boolean };
+    expect(state.validation()).toBe(false);
+
+    // A new session clears them and joins its own.
+    fixture.componentRef.setInput('initialTags', ['Other']);
+    fixture.componentRef.setInput('session', 'next');
+    fixture.detectChanges();
+    expect(feeds.get('Debate')!.observed).toBe(false);
+    expect(feeds.get('Other')!.observed).toBe(true);
+  });
   it('clears tags and cancels requests/streams when the watch session changes', () => {
     fixture.componentInstance.addTag('Anime2000');
     const feed = feeds.get('Anime2000')!;

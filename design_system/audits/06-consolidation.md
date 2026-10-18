@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Video search, watch parties and menu cleanup, 2026-10-18
+
+Reviewed 1,147 source files and 238 candidate files. One candidate is added:
+`pages/videos/watch-parties-page.ts`, a hashtag finder built from Field,
+Control, MbButton and Content State that reuses StatusCard for results. The
+video search page replaces its stub with real fediverse and YouTube results,
+reusing StatusCard and the video player controls. The mode-nav flag is gone, so
+the shell keeps one nav. The RSS header loses its Customize link (now the Manage
+tab), and Write gains a Manage link beside New in the drafts pane. Remaining
+inventory changes are source line shifts. No shared widget changed.
+
 ## Five-tab app modes and video search, 2026-10-18
 
 Reviewed 1,144 source files and 237 candidate files. One candidate is added:

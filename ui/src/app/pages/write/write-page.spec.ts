@@ -263,6 +263,17 @@ describe('WritePage', () => {
     expect(page.sources.items().map((i) => i.kind)).toEqual(['local']);
   });
 
+  it('links Manage beside New in the drafts pane, to the Drafts page', () => {
+    // Drafts left the ... menu; this is its way in from where people write.
+    TestBed.inject(Auth).mode.set('anonymous');
+    const host = setUp().nativeElement as HTMLElement;
+    const head = host.querySelector('.pane-left .pane-head')!;
+    const manage = head.querySelector('a') as HTMLAnchorElement;
+    expect(manage.textContent?.trim()).toBe('Manage');
+    expect(manage.getAttribute('href')).toBe('/drafts');
+    expect(manage.previousElementSibling?.textContent?.trim()).toBe('New');
+  });
+
   it('continues a local draft in place — the same draft, not a copy', () => {
     saveLocal(['the original text']);
     const fixture = setUp();

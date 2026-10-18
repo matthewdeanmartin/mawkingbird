@@ -19,7 +19,6 @@ import { YoutubeFeeds, YoutubeSearchItem } from '../../providers/videos/youtube-
 import { VideoPlayer } from '../../video-player/video-player';
 import { youtubeSource } from '../../video-player/media-source';
 import { VideoSubscriptionsPanel } from './video-subscriptions-panel';
-import { FeatureFlags } from '../../feature-flags';
 import {
   feedVideos,
   newestVideos,
@@ -30,9 +29,6 @@ import {
 } from './video-items';
 
 // i18n videos.heading: YouTube
-// i18n videos.fedi: Fedi videos
-// i18n videos.queue: Watch queue
-// i18n videos.searchVideo: Search video
 // i18n videos.main: Main feed
 // i18n videos.customize: Customize
 // i18n videos.autoLoadWatch: Automatically load YouTube players on Watch
@@ -98,9 +94,6 @@ export class VideosPage {
   private router = inject(Router);
   private auth = inject(Auth);
   private bsky = inject(BlueskySession);
-  private featureFlags = inject(FeatureFlags);
-  /** The app-mode menu has Fedi videos and Queue tabs; without it they are linked here. */
-  protected readonly modeNav = computed(() => this.featureFlags.enabled('mode-nav'));
   protected responseTarget = computed(() =>
     this.auth.isBlueskyPrimary || (this.auth.isAnonymous && this.bsky.linked())
       ? ('bsky' as const)

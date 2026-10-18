@@ -70,6 +70,7 @@
           [root]="status"
           [comments]="loader.descendants()"
           [session]="partySession()"
+          [initialTags]="partyTags()"
           (changed)="onCommentChanged($event)"
           (deleted)="onCommentDeleted($event)"
           (replied)="onReply($event)"
@@ -82,7 +83,7 @@
         tabindex="0"
         [attr.aria-label]="'watch.conversation' | transloco"
       >
-        <app-party-conversation [session]="partySession()" />
+        <app-party-conversation [session]="partySession()" [initialTags]="partyTags()" />
       </aside>
     }
   </div>

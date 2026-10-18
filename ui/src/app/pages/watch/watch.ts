@@ -182,6 +182,15 @@ export class Watch {
     });
   }
 
+  /** `?tags=a,b`: hashtags a party opened from the finder starts with. */
+  protected readonly partyTags = computed(() =>
+    (this.params()['tags'] ?? '')
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .slice(0, 8),
+  );
+
   protected readonly queue = inject(WatchQueue);
 
   /** This video's place in the queue, whether or not it is queued or loads. */

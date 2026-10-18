@@ -1,8 +1,8 @@
 # Top-level menu: app modes (Mastodon / RSS / Video)
 
-Status: Sprints 1 and 2 shipped behind `mode-nav` (canary: 37e326e2, 103fb646).
-The five-tab menus, the YouTube page alignment and the video search stub are
-implemented and uncommitted. The rest of Sprint 3 has not started · 2026-10-18.
+Status: in production; the `mode-nav` flag is removed. Sprints 1–2 and the
+five-tab menus are committed. Video search, watch parties and the menu cleanup
+are implemented and uncommitted · 2026-10-18.
 
 ## Problem
 
@@ -34,28 +34,30 @@ icon still means something in Mastodon.
   the words the destination page already uses.
 - **Labels are aggressively short** (owner, 2026-10-18): one short word per new
   tab, so the bar fits in long languages too. Mastodon's original tabs and the
-  mode names are unchanged.
+  mode names are unchanged, except that the Mastodon mode is labelled **Fedi**
+  (Bluesky lives there too) and the fediverse video tab is **Posts**. Internal
+  ids (`mastodon`, `/videos/fedi`) are unchanged.
 
 ## Menus
 
 ```
 mastodon: Home | Algo  Inbox  Chat  Search  Feeds | [RSS ▾]
-rss:      Home | Read  Later  Shelf  Kits  Manage | [Mastodon ▾]
-video:    Home | Fedi  YouTube  Queue  Search  Saved | [Mastodon ▾]
+rss:      Home | Read  Later  Shelf  Kits  Manage | [Fedi ▾]
+video:    Home | Posts  YouTube  Queue  Search  Saved | [Fedi ▾]
 ```
 
-| Tab               | Destination                 | Notes                                                                           |
-| ----------------- | --------------------------- | ------------------------------------------------------------------------------- |
-| RSS Reader        | `/rss`                      |                                                                                 |
-| RSS Read later    | `/rss?filter=starred`       | The RSS page calls its starred list "Read later"; the URL keeps the internal id |
-| RSS Library       | `/bookmarks?tab=read-later` | The Reader library; named apart from the list above                             |
-| RSS Starter kits  | `/rss?view=kits`            |                                                                                 |
-| RSS Manage feeds  | `/settings/rss`             | Was a switcher row                                                              |
-| Video Fedi videos | `/videos/fedi`              | Home locked to its Video view                                                   |
-| Video YouTube     | `/videos`                   |                                                                                 |
-| Video Queue       | `/videos/queue`             |                                                                                 |
-| Video Search      | `/videos/search`            | Stub: Google with `site:youtube.com` prefilled                                  |
-| Video Saved       | `/bookmarks?view=video`     | Bookmarks, With video view                                                      |
+| Tab              | Destination                 | Notes                                                                           |
+| ---------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| RSS Reader       | `/rss`                      |                                                                                 |
+| RSS Read later   | `/rss?filter=starred`       | The RSS page calls its starred list "Read later"; the URL keeps the internal id |
+| RSS Library      | `/bookmarks?tab=read-later` | The Reader library; named apart from the list above                             |
+| RSS Starter kits | `/rss?view=kits`            |                                                                                 |
+| RSS Manage feeds | `/settings/rss`             | Was a switcher row                                                              |
+| Video Posts      | `/videos/fedi`              | Home locked to its Video view                                                   |
+| Video YouTube    | `/videos`                   |                                                                                 |
+| Video Queue      | `/videos/queue`             |                                                                                 |
+| Video Search     | `/videos/search`            | Stub: Google with `site:youtube.com` prefilled                                  |
+| Video Saved      | `/bookmarks?view=video`     | Bookmarks, With video view                                                      |
 
 Rules:
 
@@ -94,39 +96,12 @@ The mode is kept in `sessionStorage` (`mockingbird_app_mode`, registered in
 `storage-registry.ts` as a session-only `setting`). Every access is wrapped in
 try/catch. A reload keeps the tab in its mode. A new tab starts in Mastodon.
 
-## Rollback
+## Rollback (retired)
 
-There are three levels, from cheapest to most thorough:
-
-1. **Per user, right away.** `mode-nav` is a normal `FeatureFlagId`. Anyone
-   can switch it off in Settings → Features and get the old nav back, with no
-   deploy. **Caveat:** flag overrides are tied to the build's commit SHA
-   (`FeatureFlags.load`), so a personal opt-out resets to the default on the
-   next deploy. If users need an opt-out that survives deploys, add a saved
-   `ClientPrefs` setting that the flag check also consults (with a
-   storage-registry row). That is not built yet.
-2. **For everyone, with a one-line deploy.** It ships with
-   `defaultState: 'canary'`. Promote it to `'production'` when ready. To roll
-   back, set it to `'off'`. With the flag off, the shell renders the
-   **original nav markup unchanged** (`@else` branch). Rolling back runs the
-   same code and CSS that runs today.
-3. **Remove it entirely.** Delete the `@if` branch, `app-mode.ts`,
-   `shell/mode-nav.ts`, `shell/mode-switch.ts`, the flag entry, the
-   storage-registry row and the `shell.modeNav.*` keys. The only state is in
-   sessionStorage, so nothing needs migrating.
-
-Guard rails:
-
-- **Page buttons depend on the flag.** Buttons that the mode menu replaces
-  (the RSS page's "Videos" cross-link, for example) disappear only while
-  `mode-nav` is on. Removing them outright would strand people who turn the
-  flag off.
-- **New screens stay reachable with the flag off.** Each new Video screen also
-  gets a link from `/videos`, so turning the flag off never orphans a feature.
-- **Videos stays in the More menu in both branches** until the flag has
-  shipped to production.
-- **New CSS only uses new class names** (`.mode-switch`, `.primary-nav[data-mode]`),
-  so the old branch never matches them.
+The `mode-nav` flag shipped to canary and was promoted by the owner on
+2026-10-18, then removed with the old nav branch and the flag-off fallback
+links. No durable per-user opt-out was wanted. Going back now means reverting
+the commits; the only state is the session-only `mockingbird_app_mode` key.
 
 ---
 
@@ -202,40 +177,56 @@ addedAt }`, with a size cap and de-duplication by source.
 
 ## Sprint 3: video search and the watch-party finder
 
-**Done early (2026-10-18):** the `/videos/search` page and URL exist as a stub.
-The form sits in the rail column, and the results area spans the centre and right
-columns (the page goes wide). It is prefilled with `site:youtube.com `, submits to
-Google in a new tab (`webSearchUrl`), keeps `q` in the URL, and links to `/search`
-with the `site:` operators removed. The regular Search page is unchanged; it
-deliberately keeps engines out of its URL. Real results below replace the stub
-at the same URL.
+### As built (2026-10-18)
 
-- **Video search** (`/videos/search?q=`): one focused input and a grid of
-  video results:
-  - Mastodon status search and hashtag timelines, kept only when a post
-    carries video (an attachment, or a link to a recognised video host).
-  - YouTube results as a second source for Plus subscribers, with the same
-    gate and upsell as `/videos` today.
-  - Every result has Watch and Queue.
-  - The YouTube search now in the `/videos` header moves here once the flag
-    reaches production. Until then it stays on `/videos` as well.
-- **Watch parties** (`/videos/parties`): parties are hashtags, so this is a
-  hashtag browser tuned for parties:
-  - Enter a tag, or pick from followed tags, trending tags, and parties you
-    have opened before (session-local first; persist only if asked).
-  - For each tag, show the recent posts that carry video and how active the
-    tag is.
-  - **Open party** goes to `/watch?post=…&tags=tag1,tag2`.
-- **Watch** learns a `tags` query parameter, which pre-fills the party
-  hashtags. It is validated with the existing rules (at most eight tags, valid
-  hashtags), and the tags remain for this visit only, as `spec/watch-party.md`
-  requires.
-- Video mode reaches its final form: Home | Fedi videos | YouTube | Queue |
-  Parties | Search.
+- **Video search** (`/videos/search?q=`): the form sits in the rail column and
+  the results span the centre and right columns. **Fediverse** results combine
+  the hashtag timeline for each query word (up to four) with the server's post
+  search when signed in, keeping posts with video (`isVideoStatus`), newest
+  first. Anonymous visitors get the hashtag half through their public server.
+  `site:` operators are stripped, so they do not become hashtags. **YouTube**
+  results (videos or channels) are for Plus subscribers, with Watch and
+  Subscribe; inline players carry Queue. Google (`site:youtube.com`) and the
+  regular post search remain as hand-offs. A newer search discards older
+  answers.
+- **YouTube search on `/videos` stays.** Removing it would delete protected
+  tests in `videos-page.spec.ts`; that is an owner decision.
+- **Watch parties** (`/videos/parties?tags=a,b`), reached from the ... menu:
+  enter tags, or pick from followed or trending tags (signed in), or the
+  anonymous followed tags. Shows the chosen tags' recent public posts that carry
+  video, newest first, with a count and the latest time. **Open party** opens
+  Watch for that video with `&tags=`. Posts whose video Watch cannot play say
+  so instead of offering the link.
+- **Watch `tags`**: Watch passes `?tags=` to the party conversation, which joins
+  them as each session starts. They are checked with `normalizeHashtag`, capped
+  at eight, skipped quietly when invalid, and kept for the visit only. They are
+  not part of the queue key.
+- **Known rough edges** (the owner expects these: Mastodon has no rooms):
+  - A party is only a hashtag, so unrelated posts under a broad tag show up.
+  - Results are one page of 40 per tag, with no paging.
+  - There are no trending suggestions for Anonymous.
+  - Parties opened before are not remembered.
+  - Hashtag timelines show only what the reader's server has federated.
+  - The visibility limits in `spec/watch-party.md` still apply.
+
+### Menu cleanup (2026-10-18)
+
+- The ... menu drops **Manage RSS feeds** (it is RSS's Manage tab) and
+  **Drafts**, and gains **Watch parties**. Videos stays, because a protected
+  shell test expects it. Drafts is reachable from Write's new **Manage**
+  button beside **New**. While the `write` flag exists, Drafts reappears in
+  the menu for anyone who has switched Write off.
+- The RSS header loses **Customize** (the Manage tab). The starter-kit toggle
+  stays: a protected test expects it, and it is also the way back to the reader.
 
 ## Still open
 
-- Should the switcher say "Mastodon" or "Social"? Bluesky shows up in the same
-  mode. Sprint 1 uses "Mastodon", and renaming it later is a change to the
-  translation strings only.
-- Whether to promote the flag to production: decide after canary feedback.
+- **Remove the `write` flag** (owner request). This is blocked on three
+  protected tests in `app.routes.spec.ts` and `feed-cta-store.spec.ts` that
+  assert the flag guard. It needs the owner's go-ahead to retire them.
+- **`/feeds/lists` drill-down.** It has always skipped the landing list and
+  stacked every list-type section, by design and covered by a protected test.
+  It now looks broken because Other servers and Video feeds made the stack
+  long. Changing it reverses that decision.
+- Dropping the YouTube search box from `/videos` (protected tests).
+- `test:audit:update` once the owner accepts the added and retired tests.

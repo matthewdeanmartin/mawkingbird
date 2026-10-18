@@ -3,10 +3,10 @@
   <aside class="rss-rail" [attr.aria-label]="'pages.rss.subscriptions' | transloco">
     <div class="rss-rail-head">
       <h1>{{ 'pages.rss.title' | transloco }}</h1>
+      <!-- Customize (feed management) and Videos left this row: they are the
+           RSS Manage tab and the mode switcher. The kits toggle stays — it is
+           also the pane's way back to the reader. -->
       <span class="head-actions">
-        <a class="btn btn-small btn-outline" routerLink="/settings/rss">{{
-          'videos.customize' | transloco
-        }}</a>
         <button class="btn btn-small" type="button" (click)="openAddDialog()">
           {{ 'pages.rss.pasteLink' | transloco }}
         </button>
@@ -19,13 +19,6 @@
         >
           {{ (showKits() ? 'pages.rss.readerView' : 'pages.rss.starterKits') | transloco }}
         </button>
-        <!-- The app-mode switcher is the way to Video while mode-nav is on; with
-             it off this stays, so turning the flag off never strands Videos. -->
-        @if (!modeNav()) {
-          <a class="btn btn-small btn-outline" routerLink="/videos">{{
-            'videos.title' | transloco
-          }}</a>
-        }
         <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
           {{ 'pages.rss.friendFeeds' | transloco }}
         </button>

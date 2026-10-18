@@ -7,6 +7,7 @@ import {
   OnDestroy,
   output,
   signal,
+  untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -146,6 +147,13 @@ export class PartyConversation implements OnDestroy {
   readonly comments = input<Status[]>([]);
   readonly root = input<Status | null>(null);
   readonly session = input.required<string>();
+  /**
+   * Tags to join as each session starts — a party opened from the finder
+   * (`/watch?…&tags=a,b`). Still visit-only, like tags added by hand: nothing
+   * is followed or saved. Invalid ones are skipped rather than reported, since
+   * the reader did not type them.
+   */
+  readonly initialTags = input<readonly string[]>([]);
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
@@ -203,6 +211,12 @@ export class PartyConversation implements OnDestroy {
     effect(() => {
       this.session();
       this.clear();
+      untracked(() =>
+        this.initialTags()
+          .filter((tag) => normalizeHashtag(tag))
+          .slice(0, 8)
+          .forEach((tag) => this.addTag(tag)),
+      );
     });
   }
   addTag(raw: string): void {

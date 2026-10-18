@@ -163,8 +163,7 @@ describe('Shell account switching', () => {
     ).toBeNull();
     drainRailRequests();
   });
-  it('keeps both menu signals on their Mastodon tabs with app modes on', () => {
-    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+  it('keeps both menu signals on their Mastodon tabs and off the other modes', () => {
     const fixture = createShell();
     const indicators = TestBed.inject(MenuIndicators);
     indicators.chat.set(true);
@@ -609,20 +608,25 @@ describe('Shell app-mode nav', () => {
     );
   }
 
-  it('flag off renders the original nav, RSS tab and all', () => {
-    // The rollback path: this must stay the nav that shipped before app modes.
-    TestBed.inject(FeatureFlags).setState('mode-nav', 'off');
-    const fixture = render();
-    const host = fixture.nativeElement as HTMLElement;
-    expect(host.querySelector('app-mode-switch')).toBeNull();
-    expect(tabs(fixture)).toEqual(
-      expect.arrayContaining(['/home', '/algo', '/search', '/feeds', '/rss']),
-    );
-    expect(host.querySelector('.menu-panel a[href="/videos"]')).toBeTruthy();
+  it('adds Watch parties to the ... menu and drops Manage RSS feeds and Drafts', () => {
+    const host = render().nativeElement as HTMLElement;
+    const links = [...host.querySelectorAll('.menu-panel a')].map((a) => a.getAttribute('href'));
+    expect(links).toContain('/videos/parties');
+    // Manage is RSS's tab; Drafts is Write's Manage button.
+    expect(links).not.toContain('/settings/rss');
+    expect(links).not.toContain('/drafts');
+    expect(links).toContain('/write');
   });
 
-  it('flag on puts Home first and the switcher last in every mode', () => {
-    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
+  it('keeps Drafts reachable from the ... menu when Write is switched off', () => {
+    TestBed.inject(FeatureFlags).setState('write', 'off');
+    const host = render().nativeElement as HTMLElement;
+    const links = [...host.querySelectorAll('.menu-panel a')].map((a) => a.getAttribute('href'));
+    expect(links).toContain('/drafts');
+    expect(links).not.toContain('/write');
+  });
+
+  it('puts Home first and the switcher last in every mode', () => {
     const fixture = render();
     const mode = TestBed.inject(AppModeService);
     const login = TestBed.inject(Auth).shouldOfferLogin ? ['/login'] : [];
@@ -662,7 +666,6 @@ describe('Shell app-mode nav', () => {
   });
 
   it('the switcher offers RSS from Mastodon and Mastodon from elsewhere', () => {
-    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
     const fixture = render();
     const face = () =>
       (fixture.nativeElement as HTMLElement)
@@ -671,11 +674,10 @@ describe('Shell app-mode nav', () => {
     expect(face()).toBe('RSS');
     TestBed.inject(AppModeService).set('video');
     fixture.detectChanges();
-    expect(face()).toBe('Mastodon');
+    expect(face()).toBe('Fedi');
   });
 
   it('the switcher lists every mode and marks the current one', () => {
-    TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
     TestBed.inject(AppModeService).set('rss');
     const fixture = render();
     const host = fixture.nativeElement as HTMLElement;

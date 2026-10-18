@@ -3,9 +3,14 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/videos/watch-parties-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Field, Control, MbButton and Content State build the watch-party finder; tag suggestions are native links and results reuse StatusCard. Preserve tags in the URL, quiet skipping of invalid tags with an alert only for typed input, Open party links built from validated Watch params, and the plain note when Watch cannot play a post."
+    },
+    {
       "file": "ui/src/app/pages/videos/video-search-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Field, Control and MbButton build the stubbed video search: a labelled search input prefilled with site:youtube.com, a Google hand-off and a link to post search. Preserve the disabled submit until there is more than an operator, q in the URL, the noopener new tab and the rail/results grid on the header tracks."
+      "nextStep": "Field, Control, MbButton and Content State build the video search; fediverse results reuse StatusCard and YouTube results reuse the video player controls. Preserve q in the URL, discarding answers to superseded searches, the Plus gate on YouTube, the noopener Google hand-off and the rail/results grid on the header tracks."
     },
     {
       "file": "ui/src/app/video-player/queue-button.ts",

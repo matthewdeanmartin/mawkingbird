@@ -102,6 +102,7 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.menu.likes: Likes
 // i18n shell.menu.bookmarks: Bookmarks
 // i18n shell.menu.manageRss: Manage RSS feeds
+// i18n shell.menu.watchParties: Watch parties
 // i18n shell.menu.write: Write
 // i18n shell.menu.drafts: Drafts
 // i18n shell.menu.waitingToPublish: Waiting to publish
@@ -151,7 +152,8 @@ function isWideUrl(url: string): boolean {
     url.startsWith('/rss') ||
     url === '/videos' ||
     url.startsWith('/videos?') ||
-    url.startsWith('/videos/search')
+    url.startsWith('/videos/search') ||
+    url.startsWith('/videos/parties')
   );
 }
 

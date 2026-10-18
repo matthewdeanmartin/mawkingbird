@@ -1,6 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WatchQueue } from '../../providers/videos/watch-queue';
@@ -34,6 +35,7 @@ class PartyStub {
   readonly root = input<Status | null>(null);
   readonly comments = input<Status[]>([]);
   readonly session = input('');
+  readonly initialTags = input<readonly string[]>([]);
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
@@ -163,6 +165,15 @@ describe('Watch post access and reveal gates', () => {
 
       expect(queue.items().map((item) => item.title)).toEqual(['Second']);
       expect(navigate).toHaveBeenCalledWith(['/watch'], { queryParams: { youtube: B } });
+    });
+
+    it('hands ?tags= to the party conversation, without counting them in the queue key', () => {
+      params.next(convertToParamMap({ youtube: A, tags: 'Debate,Live' }));
+      mount();
+      const party = fixture.debugElement.query(By.directive(PartyStub))
+        .componentInstance as PartyStub;
+      expect(party.initialTags()).toEqual(['Debate', 'Live']);
+      expect(fixture.componentInstance['currentKey']()).toBe('youtube:' + A);
     });
 
     it('never advances by itself and offers nothing when the queue is empty', () => {

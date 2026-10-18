@@ -716,7 +716,7 @@ export const routes: Routes = [
         // and filters are Home's, so fediverse video is not a second timeline.
         // See spec/top_level_menu.md, Sprint 2.
         path: 'videos/fedi',
-        title: 'Fedi videos',
+        title: 'Video posts',
         data: { videoOnly: true },
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
       },
@@ -725,6 +725,14 @@ export const routes: Routes = [
         title: 'Search video',
         loadComponent: () =>
           import('./pages/videos/video-search-page').then((m) => m.VideoSearchPage),
+      },
+      {
+        // A hashtag finder for watch parties, which Mastodon has only as a
+        // convention. Reached from the ... menu; see spec/top_level_menu.md.
+        path: 'videos/parties',
+        title: 'Watch parties',
+        loadComponent: () =>
+          import('./pages/videos/watch-parties-page').then((m) => m.WatchPartiesPage),
       },
       {
         path: 'videos/queue',

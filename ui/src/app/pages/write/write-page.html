@@ -137,6 +137,11 @@
           <button class="btn btn-sm" type="button" (click)="newDraft()">
             {{ 'pages.write.newDraftButton' | transloco }}
           </button>
+          <!-- The Drafts page (filters, bulk actions, scheduled posts). It used to
+               be a row in the ... menu; this is where people writing look for it. -->
+          <a class="btn btn-sm btn-outline" routerLink="/drafts">{{
+            'pages.write.manageDrafts' | transloco
+          }}</a>
         </div>
 
         <div

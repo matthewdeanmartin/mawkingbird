@@ -146,6 +146,7 @@ export interface Notice {
 // i18n pages.write.pageNote: Drafts, editor and notes, side by side. Nothing else.
 // i18n pages.write.aria.drafts: Drafts
 // i18n pages.write.newDraftButton: New
+// i18n pages.write.manageDrafts: Manage
 // i18n pages.write.publishedHere: Published.
 // i18n pages.write.scheduledHere: Scheduled.
 // i18n pages.write.openPublished: Open published post

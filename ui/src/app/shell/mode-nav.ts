@@ -5,12 +5,12 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.rss.library: Shelf
 // i18n shell.modeNav.rss.kits: Kits
 // i18n shell.modeNav.rss.manage: Manage
-// i18n shell.modeNav.video.fedi: Fedi
+// i18n shell.modeNav.video.fedi: Posts
 // i18n shell.modeNav.video.youtube: YouTube
 // i18n shell.modeNav.video.queue: Queue
 // i18n shell.modeNav.video.search: Search
 // i18n shell.modeNav.video.saved: Saved
-// i18n shell.modeNav.mode.mastodon: Mastodon
+// i18n shell.modeNav.mode.mastodon: Fedi
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}

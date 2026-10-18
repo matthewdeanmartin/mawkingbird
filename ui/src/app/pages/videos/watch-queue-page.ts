@@ -10,7 +10,7 @@ import { QueuedVideo, WATCH_QUEUE_LIMIT, WatchQueue } from '../../providers/vide
 // i18n videoQueue.title: Watch queue
 // i18n videoQueue.description: Videos you saved to watch, in order. Next on Watch plays the next one and takes the finished one off the list.
 // i18n videoQueue.empty: Nothing queued yet
-// i18n videoQueue.emptyHint: Use Queue on any video — in Fedi videos, YouTube or a post — to line it up here.
+// i18n videoQueue.emptyHint: Use Queue on any video — in Posts, on YouTube or in your feed — to line it up here.
 // i18n videoQueue.watch: Watch
 // i18n videoQueue.up: Move up
 // i18n videoQueue.down: Move down

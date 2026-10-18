@@ -147,6 +147,8 @@
 
 .pane-head h3 {
   margin: 0;
+  /* Keeps a pane's buttons together at the end (Drafts has New and Manage). */
+  margin-inline-end: auto;
   font-size: 15px;
 }
 

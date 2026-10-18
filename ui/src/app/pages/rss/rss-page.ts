@@ -28,7 +28,6 @@ import { SeenWhenScrolled } from './seen-when-scrolled';
 import { FriendFeedsDialog } from '../../friend-feeds-dialog/friend-feeds-dialog';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RssFeedActions } from './feed-actions/feed-actions';
-import { FeatureFlags } from '../../feature-flags';
 import { rssSourceUrl } from '../../providers/rss/rss-source';
 import { RssCache } from '../../providers/rss/rss-cache';
 import { feedToStatuses } from '../../providers/rss/rss-adapter';
@@ -291,10 +290,6 @@ export class RssPage {
     this.route.queryParamMap.pipe(map((params) => params.get(VIEW_PARAM) === KITS_VIEW)),
     { initialValue: false },
   );
-
-  /** The app-mode menu replaces this page's Videos cross-link while it is on. */
-  protected readonly modeNav = computed(() => this.featureFlags.enabled('mode-nav'));
-  private readonly featureFlags = inject(FeatureFlags);
 
   /** The friends'-blogs dialog. Mounted only while open: it is a lot of
    * machinery for a button most sessions never press. */

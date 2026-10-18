@@ -10,7 +10,6 @@ export type FeatureFlagId =
   | 'links'
   | 'write'
   | 'unified-share'
-  | 'mode-nav'
   | 'mawkingbird-plus'
   | 'connector-mastodon'
   | 'connector-bluesky'
@@ -81,8 +80,6 @@ interface StoredFeatureFlags {
 // i18n flags.write.description: The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.
 // i18n flags.unifiedShare.label: Unified share menu
 // i18n flags.unifiedShare.description: Collapse Boost, Quote and Share into one button on every post, opening a menu instead. Frees a slot on an action bar that already wraps on narrow screens.
-// i18n flags.modeNav.label: App modes in the top menu
-// i18n flags.modeNav.description: Swap the top menu for RSS and Video when you use them, with a switcher in the last slot. Off keeps one menu for everything.
 // i18n flags.mawkingbirdPlus.label: Mawkingbird Plus
 // i18n flags.mawkingbirdPlus.description: The Mawkingbird account tab in Settings, where you sign in to your Mawkingbird account.
 // i18n flags.connectorMastodon.label: Mastodon
@@ -153,16 +150,6 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     // app, which is the most-used surface there is. It earns its way up rather
     // than starting at the top.
     defaultState: 'test',
-    group: 'features',
-  },
-  {
-    id: 'mode-nav',
-    labelKey: 'flags.modeNav.label',
-    descriptionKey: 'flags.modeNav.description',
-    // `canary` first: this replaces the nav on every screen. Off renders the
-    // original nav markup untouched, which is what makes it a safe rollback.
-    // See spec/top_level_menu.md.
-    defaultState: 'canary',
     group: 'features',
   },
   {
