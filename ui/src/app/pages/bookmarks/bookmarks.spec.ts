@@ -6,7 +6,9 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, RouterLink } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { ReaderLibrary } from '../../providers/read/reader-library';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../../models';
 import {
@@ -25,7 +27,7 @@ interface BookmarksInternals {
   loading: WritableSignal<boolean>;
   exhausted: WritableSignal<boolean>;
   nativePage: WritableSignal<number>;
-  provider: WritableSignal<'native' | 'raindrop'>;
+  provider: WritableSignal<'native' | 'raindrop' | 'read-later'>;
   collections: WritableSignal<RaindropCollection[]>;
   raindropBookmarks: WritableSignal<RaindropBookmark[]>;
   raindropPage: WritableSignal<number>;
@@ -38,7 +40,7 @@ interface BookmarksInternals {
   nextPage(): void;
   previousPage(): void;
   firstPage(): void;
-  selectProvider(provider: 'native' | 'raindrop'): void;
+  selectProvider(provider: 'native' | 'raindrop' | 'read-later'): void;
   selectRaindropCollection(id: number): void;
   applyFilter(event?: Event): void;
   clearFilter(): void;
@@ -116,6 +118,48 @@ describe('Bookmarks', () => {
     expect(internals(fixture).loading()).toBe(true);
     expect(internals(fixture).statuses()).toEqual([]);
     httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([]);
+  });
+
+  it('always offers Read Later and shows existing Reader shelves even if Native fails', () => {
+    const library = TestBed.inject(ReaderLibrary);
+    library.save({ id: 'saved', title: 'Saved article', url: 'https://example.org/saved' });
+    library.open({ id: 'reading', title: 'In progress', url: 'https://example.org/reading' });
+    const fixture = setUp();
+    httpMock
+      .expectOne('/api/v1/bookmarks?limit=20')
+      .flush({}, { status: 503, statusText: 'Offline' });
+    const tabs = [
+      ...fixture.nativeElement.querySelectorAll('.provider-tabs button'),
+    ] as HTMLButtonElement[];
+    expect(tabs.map((button) => button.textContent?.trim())).toEqual(['Native', 'Read Later']);
+    tabs[1].click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Saved article');
+    expect(fixture.nativeElement.textContent).toContain('In progress');
+    expect(fixture.nativeElement.querySelector('.bookmark-filter')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.pager')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.library-head button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+    const link = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
+    expect(link.replaceUrl).toBe(false);
+    library.remove('saved');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Saved article');
+  });
+
+  it('opens Read Later directly without fetching Native bookmarks and loads Native only on selection', () => {
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', 'get').mockReturnValue(
+      convertToParamMap({ tab: 'read-later' }),
+    );
+    const fixture = setUp();
+    expect(internals(fixture).provider()).toBe('read-later');
+    expect(fixture.nativeElement.querySelector('.library-empty')).not.toBeNull();
+    httpMock.expectNone((request) => request.url.includes('/bookmarks'));
+    internals(fixture).selectProvider('native');
+    httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([]);
+    internals(fixture).selectProvider('read-later');
+    internals(fixture).selectProvider('native');
+    httpMock.expectNone((request) => request.url.includes('/bookmarks'));
   });
 
   it('populates statuses and clears loading on successful fetch', () => {

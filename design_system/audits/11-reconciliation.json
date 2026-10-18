@@ -5,7 +5,7 @@
     {
       "file": "ui/src/app/pages/settings/profile/profile-bio-dialog.ts",
       "disposition": "adopted scope",
-      "nextStep": "Text-only profile editing uses Dialog, Field/Control and Button. Preserve source text, rendered preview, Unicode character counting, oversized-content editing, selection-aware emoji insertion, explicit Apply/Cancel, focus return and narrow-screen wrapping."
+      "nextStep": "Text-only profile editing uses Dialog, Field/Control and Button with the Bookmarks tab style for Edit and Preview. Preserve keyboard tab selection, bounded panels, source text and selection across views, rendered preview, Unicode counting, oversized-content editing, emoji insertion, explicit Apply/Cancel, focus return and narrow-screen wrapping."
     },
     {
       "file": "ui/src/app/pages/profile/profile-slideshow.html",
@@ -555,7 +555,7 @@
     {
       "file": "ui/src/app/pages/read/library-panel/library-panel.html",
       "disposition": "adopted scope",
-      "nextStep": "Library chrome, shelves, current-document rows and row menus use MbReaderLibrary with MbPostAction commands. Preserve native replaceUrl links, stable shelf order, disclosure, clear confirmation and storage behavior."
+      "nextStep": "Library chrome, shelves, current-document rows and row menus use MbReaderLibrary with MbPostAction commands. Preserve replaceUrl links inside Reader and normal history links in the embedded Bookmarks Read Later tab, stable shelf order, disclosure, clear confirmation and storage behavior. Embedded mode fills the column and omits Close."
     },
     {
       "file": "ui/src/app/pages/read/notes-rail/notes-rail.html",

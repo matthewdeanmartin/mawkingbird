@@ -1,5 +1,37 @@
 # Sprint 6 opening consolidation audit
 
+## Compact bio Edit and Preview tabs, 2026-10-18
+
+The bio dialog reuses the Bookmarks tabs/tab/active styling for mutually exclusive
+Edit and Preview panels. The native tabs expose selected state, panel associations,
+roving focus and arrow/Home/End keyboard handling. Keeping the textarea mounted
+preserves its draft, selection and undo history. Both panel heights are bounded;
+long previews and the emoji picker scroll within the panel. Dialog, Field/Control
+and Button remain unchanged shared widgets. Reviewed the regenerated inventory:
+two added native tab buttons and source line shifts, still 1,137 source files and
+233 candidates, with no candidate additions or removals.
+
+Production-browser checks used a 14,000+ character bio at 1,366×768, 1,280×720
+and 390×844. Edit and Preview both fit without outer dialog scrolling, long preview
+content scrolls internally, and Apply stays in view. Keyboard tab changes preserve
+the edited draft; Escape dismisses the dialog. Screenshots were reviewed for both
+desktop panels.
+
+## Bookmarks Read Later destination, 2026-10-18
+
+Bookmarks adds Read Later beside the existing provider tabs, available without a
+Raindrop connection. It reuses the Reader Library panel and its existing ReaderLibrary
+and PostAction widgets. Embedded mode removes Close, fills the available width and
+uses normal history navigation so Back returns to Bookmarks; Reader mode retains
+replaceUrl navigation. Reviewed 1,137 source files and 233 candidates: one added
+native tab and line shifts in the two existing templates, with no new or removed
+candidate files. No shared widget implementations changed.
+
+Production-browser checks passed at 1,440px and 390px: all three tabs with Raindrop
+connected, existing shelves, direct access without a Native bookmarks request,
+opening an article and returning to Read Later with Back, and removal surviving a
+reload. The existing Reader panel's history behavior remains covered by its specs.
+
 ## Notification parity and profile controls, 2026-10-18
 
 Reviewed the regenerated inventory: 1,137 maintained source files and 233 candidate

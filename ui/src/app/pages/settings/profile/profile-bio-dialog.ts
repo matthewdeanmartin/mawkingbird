@@ -19,7 +19,9 @@ import { CustomEmoji } from '../../../models';
 
 // i18n settings.profile.bio.edit: Edit bio
 // i18n settings.profile.bio.cancel: Cancel
-// i18n settings.profile.bio.editorHint: Write your bio as plain text. Links, line breaks and emoji are supported. Apply returns to your profile settings; Save changes publishes it.
+// i18n settings.profile.bio.editorHint: Plain text, links and emoji. Apply keeps edits; Save changes publishes them.
+// i18n settings.profile.bio.editTab: Edit
+// i18n settings.profile.bio.tabs: Bio editor view
 // i18n settings.profile.bio.apply: Apply
 // i18n settings.profile.bio.preview: Preview
 // i18n settings.profile.bio.emoji: Emoji
@@ -29,6 +31,8 @@ import { CustomEmoji } from '../../../models';
 // i18n settings.profile.bio.tooLong: Shorten your bio to {{limit}} characters before applying.
 
 /** Text-only sibling of Write's editor: no post, media, scheduling or publishing state. */
+let nextBioEditorId = 0;
+
 @Component({
   selector: 'app-profile-bio-dialog',
   imports: [FormsModule, TranslocoPipe, MbButton, MbDialog, MbControl, MbField, EmojiPicker],
@@ -39,47 +43,96 @@ import { CustomEmoji } from '../../../models';
       [description]="'settings.profile.bio.editorHint' | transloco"
       (dismissed)="cancelled.emit()"
     >
-      <div class="tools">
+      <div class="tabs" role="tablist" [attr.aria-label]="'settings.profile.bio.tabs' | transloco">
         <button
-          mbButton
+          #editTabButton
+          class="tab"
           type="button"
-          variant="outline"
-          size="small"
-          [attr.aria-expanded]="showEmoji()"
-          (click)="showEmoji.set(!showEmoji())"
+          role="tab"
+          [id]="id + '-edit-tab'"
+          [class.active]="tab() === 'edit'"
+          [attr.aria-selected]="tab() === 'edit'"
+          [tabIndex]="tab() === 'edit' ? 0 : -1"
+          [attr.aria-controls]="id + '-edit'"
+          (click)="tab.set('edit')"
+          (keydown)="tabKey($event)"
         >
-          {{ 'settings.profile.bio.emoji' | transloco }}
+          {{ 'settings.profile.bio.editTab' | transloco }}
         </button>
-        <button mbButton type="button" variant="outline" size="small" (click)="insert('• ')">
-          {{ 'settings.profile.bio.bullet' | transloco }}
+        <button
+          #previewTabButton
+          class="tab"
+          type="button"
+          role="tab"
+          [id]="id + '-preview-tab'"
+          [class.active]="tab() === 'preview'"
+          [attr.aria-selected]="tab() === 'preview'"
+          [tabIndex]="tab() === 'preview' ? 0 : -1"
+          [attr.aria-controls]="id + '-preview'"
+          (click)="tab.set('preview')"
+          (keydown)="tabKey($event)"
+        >
+          {{ 'settings.profile.bio.preview' | transloco }}
         </button>
       </div>
-      @if (showEmoji()) {
-        <app-emoji-picker (picked)="insert($event); showEmoji.set(false)" />
-      }
-      <mb-field
-        [label]="'settings.profile.bio' | transloco"
-        [hint]="
-          (limit() === null ? 'settings.profile.bio.characters' : 'settings.profile.bio.limit')
-            | transloco: { count: count(), limit: limit() }
-        "
-        [error]="tooLong() ? ('settings.profile.bio.tooLong' | transloco: { limit: limit() }) : ''"
+      <div
+        class="bio-panel"
+        role="tabpanel"
+        [id]="id + '-edit'"
+        [attr.aria-labelledby]="id + '-edit-tab'"
+        [hidden]="tab() !== 'edit'"
       >
-        <textarea
-          #editor
-          mbControl
-          rows="12"
-          [ngModel]="draft()"
-          (ngModelChange)="draft.set($event)"
-          [ngModelOptions]="{ standalone: true }"
-          (select)="rememberSelection()"
-          (click)="rememberSelection()"
-          (keyup)="rememberSelection()"
-          (blur)="rememberSelection()"
-        ></textarea>
-      </mb-field>
-      <h3>{{ 'settings.profile.bio.preview' | transloco }}</h3>
-      <div class="bio-preview" [innerHTML]="preview()"></div>
+        <div class="tools">
+          <button
+            mbButton
+            type="button"
+            variant="outline"
+            size="small"
+            [attr.aria-expanded]="showEmoji()"
+            (click)="showEmoji.set(!showEmoji())"
+          >
+            {{ 'settings.profile.bio.emoji' | transloco }}
+          </button>
+          <button mbButton type="button" variant="outline" size="small" (click)="insert('• ')">
+            {{ 'settings.profile.bio.bullet' | transloco }}
+          </button>
+        </div>
+        @if (showEmoji()) {
+          <app-emoji-picker (picked)="insert($event); showEmoji.set(false)" />
+        }
+        <mb-field
+          [label]="'settings.profile.bio' | transloco"
+          [hint]="
+            (limit() === null ? 'settings.profile.bio.characters' : 'settings.profile.bio.limit')
+              | transloco: { count: count(), limit: limit() }
+          "
+          [error]="
+            tooLong() ? ('settings.profile.bio.tooLong' | transloco: { limit: limit() }) : ''
+          "
+        >
+          <textarea
+            #editor
+            mbControl
+            rows="8"
+            [ngModel]="draft()"
+            (ngModelChange)="draft.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            (select)="rememberSelection()"
+            (click)="rememberSelection()"
+            (keyup)="rememberSelection()"
+            (blur)="rememberSelection()"
+          ></textarea>
+        </mb-field>
+      </div>
+      <div
+        class="bio-panel bio-preview"
+        role="tabpanel"
+        tabindex="0"
+        [id]="id + '-preview'"
+        [attr.aria-labelledby]="id + '-preview-tab'"
+        [hidden]="tab() !== 'preview'"
+        [innerHTML]="preview()"
+      ></div>
       <div mbDialogActions>
         <button mbButton type="button" variant="outline" (click)="cancelled.emit()">
           {{ 'settings.profile.bio.cancel' | transloco }}
@@ -99,15 +152,21 @@ import { CustomEmoji } from '../../../models';
       margin-bottom: 12px;
     }
     textarea {
-      min-height: 32vh;
+      height: min(32dvh, 260px);
+      min-height: 100px;
+      max-height: min(40dvh, 320px);
       resize: vertical;
       line-height: 1.5;
     }
-    h3 {
-      font-size: 1rem;
-      margin-bottom: 8px;
+    .tabs {
+      margin-bottom: 12px;
+    }
+    .bio-panel {
+      max-height: clamp(100px, calc(100dvh - 380px), 420px);
+      overflow-y: auto;
     }
     .bio-preview {
+      height: min(32dvh, 260px);
       overflow-wrap: anywhere;
       line-height: 1.5;
     }
@@ -120,6 +179,10 @@ export class ProfileBioDialog implements OnInit {
   readonly applied = output<string>();
   readonly cancelled = output<void>();
   protected draft = signal('');
+  protected readonly id = `profile-bio-${nextBioEditorId++}`;
+  protected tab = signal<'edit' | 'preview'>('edit');
+  private editTabButton = viewChild.required<ElementRef<HTMLButtonElement>>('editTabButton');
+  private previewTabButton = viewChild.required<ElementRef<HTMLButtonElement>>('previewTabButton');
   protected showEmoji = signal(false);
   private editor = viewChild.required<ElementRef<HTMLTextAreaElement>>('editor');
   private selection = { start: 0, end: 0 };
@@ -132,6 +195,20 @@ export class ProfileBioDialog implements OnInit {
 
   ngOnInit(): void {
     this.draft.set(this.text());
+  }
+  protected tabKey(event: KeyboardEvent): void {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const next =
+      event.key === 'Home'
+        ? 'edit'
+        : event.key === 'End'
+          ? 'preview'
+          : this.tab() === 'edit'
+            ? 'preview'
+            : 'edit';
+    this.tab.set(next);
+    (next === 'edit' ? this.editTabButton() : this.previewTabButton()).nativeElement.focus();
   }
   protected rememberSelection(): void {
     const editor = this.editor().nativeElement;

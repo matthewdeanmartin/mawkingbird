@@ -138,6 +138,43 @@ describe('SettingsProfile', () => {
     expect(preview.querySelector('a').href).toBe('https://example.org/');
   });
 
+  it('switches bio Edit and Preview tabs without losing edits or selection and applies from Preview', async () => {
+    const fixture = TestBed.createComponent(ProfileBioDialog);
+    fixture.componentRef.setInput('text', 'Original bio');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    const [edit, preview] = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const [editPanel, previewPanel] = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const textarea = root.querySelector('textarea')!;
+    expect(edit.getAttribute('aria-selected')).toBe('true');
+    expect(previewPanel.hidden).toBe(true);
+    textarea.value = 'Updated bio\nhttps://example.org';
+    textarea.dispatchEvent(new Event('input'));
+    textarea.setSelectionRange(3, 7);
+    textarea.dispatchEvent(new Event('select'));
+    fixture.detectChanges();
+    edit.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(preview);
+    expect(editPanel.hidden).toBe(true);
+    expect(previewPanel.hidden).toBe(false);
+    expect(previewPanel.querySelector('a')?.href).toBe('https://example.org/');
+    preview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(edit);
+    expect(textarea.value).toBe('Updated bio\nhttps://example.org');
+    expect([textarea.selectionStart, textarea.selectionEnd]).toEqual([3, 7]);
+    preview.click();
+    fixture.detectChanges();
+    let applied = '';
+    fixture.componentInstance.applied.subscribe((value) => {
+      applied = value;
+    });
+    root.querySelector<HTMLButtonElement>('[mbDialogActions] button:last-child')!.click();
+    expect(applied).toBe(textarea.value);
+  });
+
   it('renders the bio and edits plain source in a separate dialog without saving on Apply', async () => {
     const fixture = TestBed.createComponent(SettingsProfile);
     fixture.detectChanges();

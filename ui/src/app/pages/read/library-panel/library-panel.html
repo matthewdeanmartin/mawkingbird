@@ -1,9 +1,16 @@
-<aside mbReaderLibrary class="library" [attr.aria-label]="'reader.library.title' | transloco">
+<aside
+  mbReaderLibrary
+  class="library"
+  [class.embedded]="embedded()"
+  [attr.aria-label]="'reader.library.title' | transloco"
+>
   <div class="library-head">
     <h2>{{ 'reader.library.title' | transloco }}</h2>
-    <button mbPostAction size="small" class="tool" type="button" (click)="closed.emit()">
-      {{ 'reader.library.close' | transloco }}
-    </button>
+    @if (!embedded()) {
+      <button mbPostAction size="small" class="tool" type="button" (click)="closed.emit()">
+        {{ 'reader.library.close' | transloco }}
+      </button>
+    }
   </div>
 
   <nav class="library-body">
@@ -36,7 +43,7 @@
               <a
                 class="rail-row rail-feed nested"
                 [routerLink]="['/read', row.id]"
-                replaceUrl
+                [replaceUrl]="!embedded()"
                 [attr.aria-current]="row.id === currentId() ? 'true' : null"
               >
                 <span class="names">

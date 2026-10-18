@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, RouterLink } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { LibraryPanel } from './library-panel';
 import { ReaderLibrary } from '../../../providers/read/reader-library';
@@ -245,8 +246,15 @@ describe('LibraryPanel navigation and history', () => {
   });
 
   it('replaces the history entry rather than pushing a new one', () => {
-    const link = (fixture.nativeElement as HTMLElement).querySelector('.rail-feed');
-    // The attribute is how `RouterLink` is told; its presence is the contract.
-    expect(link?.hasAttribute('replaceurl')).toBe(true);
+    const link = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
+    expect(link.replaceUrl).toBe(true);
+  });
+
+  it('preserves the Bookmarks entry in history when embedded', () => {
+    fixture.componentRef.setInput('embedded', true);
+    fixture.detectChanges();
+    const link = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
+    expect(link.replaceUrl).toBe(false);
+    expect(fixture.nativeElement.querySelector('.library-head button')).toBeNull();
   });
 });

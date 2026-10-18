@@ -74,6 +74,8 @@ export class LibraryPanel {
 
   /** The document being read right now, so its row can say so. */
   readonly currentId = input('');
+  /** A full-width Bookmarks destination, with normal back navigation and no Close action. */
+  readonly embedded = input(false);
 
   readonly closed = output<void>();
 

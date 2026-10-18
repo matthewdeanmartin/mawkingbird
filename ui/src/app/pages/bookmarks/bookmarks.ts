@@ -1,4 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LibraryPanel } from '../read/library-panel/library-panel';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../api';
@@ -17,7 +19,7 @@ import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptPost } from '../../providers/bluesky/bluesky-adapter';
 import { BskyRef, isBskyPostView } from '../../providers/bluesky/bluesky-types';
 
-type BookmarkProvider = 'native' | 'raindrop';
+type BookmarkProvider = 'native' | 'raindrop' | 'read-later';
 type LibraryView = 'all' | 'authors' | 'hashtags' | 'media';
 
 const PAGE_SIZE = 20;
@@ -25,6 +27,8 @@ const PAGE_SIZE = 20;
 // i18n pages.bookmarks.provider: Bookmark provider
 // i18n pages.bookmarks.native: Native
 // i18n pages.bookmarks.raindrop: Raindrop
+// i18n pages.bookmarks.readLater: Read Later
+// i18n pages.bookmarks.readLaterHint: Your Reader library: articles saved for later, in progress, and finished. Use the book button on an article or long post to save it here.
 // i18n pages.bookmarks.filterLabel: Filter bookmarks
 // i18n pages.bookmarks.filter: Filter
 // i18n pages.bookmarks.clear: Clear
@@ -49,10 +53,10 @@ const PAGE_SIZE = 20;
 // i18n pages.bookmarks.pageNumber: Page {{page}}
 // i18n pages.bookmarks.placeholder.native: Words or author on this page
 // i18n pages.bookmarks.placeholder.raindrop: Search Raindrop
-/** A bounded, two-provider bookmark library with client-side shelves for Native. */
+/** Native bookmarks, Raindrop and the Reader's reading shelves in one destination. */
 @Component({
   selector: 'app-bookmarks',
-  imports: [StatusCard, TranslocoPipe],
+  imports: [StatusCard, TranslocoPipe, LibraryPanel],
   templateUrl: './bookmarks.html',
   styleUrl: './bookmarks.css',
 })
@@ -63,6 +67,9 @@ export class Bookmarks implements OnInit {
   protected raindrop = inject(RaindropSession);
   private diagnostics = inject(PageDiagnostics);
   private blueskyApi = inject(BlueskyApi);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private nativeStarted = false;
 
   protected provider = signal<BookmarkProvider>('native');
   protected statuses = signal<Status[]>([]);
@@ -116,6 +123,18 @@ export class Bookmarks implements OnInit {
   });
 
   ngOnInit(): void {
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    this.selectProvider(
+      tab === 'read-later' ? tab : tab === 'raindrop' && this.raindrop.connected() ? tab : 'native',
+    );
+    if (this.raindrop.connected()) {
+      void this.loadRaindropCollections();
+    }
+  }
+
+  private ensureNativeLoaded(): void {
+    if (this.nativeStarted) return;
+    this.nativeStarted = true;
     if (this.auth.isAnonymous) {
       const bookmarks = this.anonymousBookmarks.bookmarks().slice(0, PAGE_SIZE);
       this.nativePages.set([bookmarks]);
@@ -125,13 +144,20 @@ export class Bookmarks implements OnInit {
     } else {
       this.loadNativePage(0);
     }
-    if (this.raindrop.connected()) {
-      void this.loadRaindropCollections();
-    }
   }
 
   protected selectProvider(provider: BookmarkProvider): void {
     this.provider.set(provider);
+    if (provider === 'native') this.ensureNativeLoaded();
+    const tab = provider === 'native' ? null : provider;
+    if (this.route.snapshot.queryParamMap.get('tab') !== tab) {
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { tab },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
     this.filterDraft.set(provider === 'native' ? this.nativeFilter() : this.raindropFilter());
     this.message.set(null);
     this.error.set(null);
