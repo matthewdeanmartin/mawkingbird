@@ -635,7 +635,16 @@ describe('Shell app-mode nav', () => {
 
     mode.set('rss');
     fixture.detectChanges();
-    expect(tabs(fixture)).toEqual(['/home', '/rss', '/rss?view=kits', ...login, 'switch']);
+    expect(tabs(fixture)).toEqual([
+      '/home',
+      '/rss',
+      '/rss?filter=starred',
+      '/bookmarks?tab=read-later',
+      '/rss?view=kits',
+      '/settings/rss',
+      ...login,
+      'switch',
+    ]);
     expect(fixture.nativeElement.querySelector('.primary-nav').textContent).toContain('Reader');
 
     mode.set('video');
@@ -645,6 +654,8 @@ describe('Shell app-mode nav', () => {
       '/videos/fedi',
       '/videos',
       '/videos/queue',
+      '/videos/search',
+      '/bookmarks?view=video',
       ...login,
       'switch',
     ]);
@@ -663,18 +674,14 @@ describe('Shell app-mode nav', () => {
     expect(face()).toBe('Mastodon');
   });
 
-  it('the switcher lists every mode, marks the current one, and adds feed management', () => {
+  it('the switcher lists every mode and marks the current one', () => {
     TestBed.inject(FeatureFlags).setState('mode-nav', 'production');
     TestBed.inject(AppModeService).set('rss');
     const fixture = render();
     const host = fixture.nativeElement as HTMLElement;
     const rows = [...host.querySelectorAll('app-mode-switch [popover] a')];
-    expect(rows.map((row) => row.getAttribute('href'))).toEqual([
-      '/home',
-      '/rss',
-      '/videos',
-      '/settings/rss',
-    ]);
+    // Feed management is RSS's fifth tab now, not a switcher row.
+    expect(rows.map((row) => row.getAttribute('href'))).toEqual(['/home', '/rss', '/videos']);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
     expect(rows[1].getAttribute('aria-current')).toBe('true');
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');

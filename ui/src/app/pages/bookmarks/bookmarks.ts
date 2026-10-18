@@ -1,7 +1,8 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LibraryPanel } from '../read/library-panel/library-panel';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, skip } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -18,9 +19,10 @@ import { PageDiagnostics } from '../../page-diagnostics';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptPost } from '../../providers/bluesky/bluesky-adapter';
 import { BskyRef, isBskyPostView } from '../../providers/bluesky/bluesky-types';
+import { isVideoStatus } from '../../video-player/video-discovery';
 
 type BookmarkProvider = 'native' | 'raindrop' | 'read-later';
-type LibraryView = 'all' | 'authors' | 'hashtags' | 'media';
+type LibraryView = 'all' | 'authors' | 'hashtags' | 'media' | 'video';
 
 const PAGE_SIZE = 20;
 
@@ -69,6 +71,7 @@ export class Bookmarks implements OnInit {
   private blueskyApi = inject(BlueskyApi);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
   private nativeStarted = false;
 
   protected provider = signal<BookmarkProvider>('native');
@@ -100,6 +103,7 @@ export class Bookmarks implements OnInit {
     { id: 'authors', label: 'By author' },
     { id: 'hashtags', label: 'By hashtag' },
     { id: 'media', label: 'With media' },
+    { id: 'video', label: 'With video' },
   ];
 
   protected filteredStatuses = computed(() => {
@@ -117,19 +121,38 @@ export class Bookmarks implements OnInit {
         return groupByHashtag(this.filteredStatuses());
       case 'media':
         return [{ label: 'With media', statuses: withMedia(this.filteredStatuses()) }];
+      case 'video':
+        return [{ label: 'With video', statuses: this.filteredStatuses().filter(isVideoStatus) }];
       default:
         return [{ label: '', statuses: this.filteredStatuses() }];
     }
   });
 
   ngOnInit(): void {
-    const tab = this.route.snapshot.queryParamMap.get('tab');
-    this.selectProvider(
-      tab === 'read-later' ? tab : tab === 'raindrop' && this.raindrop.connected() ? tab : 'native',
-    );
+    // Followed, not read once: the top menu links here as Read later
+    // (`?tab=read-later`) and Saved (`?view=video`), and either can be pressed
+    // while this page is already open.
+    this.applyParams(this.route.snapshot.queryParamMap);
+    this.route.queryParamMap
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.applyParams(params));
     if (this.raindrop.connected()) {
       void this.loadRaindropCollections();
     }
+  }
+
+  private applyParams(params: ParamMap): void {
+    const tab = params.get('tab');
+    const provider: BookmarkProvider =
+      tab === 'read-later' ? tab : tab === 'raindrop' && this.raindrop.connected() ? tab : 'native';
+    if (provider !== this.provider() || !this.providerChosen) {
+      this.providerChosen = true;
+      this.selectProvider(provider);
+    }
+    // Only `video` is linkable; leaving it falls back to All, other views stay put.
+    const view = params.get('view');
+    if (view === 'video') this.view.set('video');
+    else if (this.view() === 'video') this.view.set('all');
   }
 
   private ensureNativeLoaded(): void {
@@ -143,6 +166,22 @@ export class Bookmarks implements OnInit {
       this.exhausted.set(true);
     } else {
       this.loadNativePage(0);
+    }
+  }
+
+  private providerChosen = false;
+
+  /** The library view; With video is linkable as `?view=video` (the menu's Saved tab). */
+  protected setView(view: LibraryView): void {
+    this.view.set(view);
+    const param = view === 'video' ? view : null;
+    if (this.route.snapshot.queryParamMap.get('view') !== param) {
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { view: param },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     }
   }
 

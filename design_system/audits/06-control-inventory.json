@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1143,
-  "filesWithCandidates": 236,
+  "filesScanned": 1144,
+  "filesWithCandidates": 237,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -11034,6 +11034,32 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/videos/video-search-page.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 44
+        },
+        {
+          "pattern": "shared",
+          "line": 46
+        },
+        {
+          "pattern": "shared",
+          "line": 55
+        },
+        {
+          "pattern": "shared",
+          "line": 60
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 55
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/videos/video-subscriptions-panel.ts",
       "status": "needs semantic review",
       "findings": [
@@ -11109,55 +11135,59 @@
         },
         {
           "pattern": "shared",
-          "line": 42
+          "line": 38
         },
         {
           "pattern": "shared",
-          "line": 43
+          "line": 45
         },
         {
           "pattern": "shared",
-          "line": 70
+          "line": 46
         },
         {
           "pattern": "shared",
-          "line": 83
+          "line": 73
         },
         {
           "pattern": "shared",
-          "line": 94
+          "line": 86
         },
         {
           "pattern": "shared",
-          "line": 102
+          "line": 97
         },
         {
           "pattern": "shared",
-          "line": 121
+          "line": 105
         },
         {
           "pattern": "shared",
-          "line": 159
+          "line": 124
         },
         {
           "pattern": "shared",
-          "line": 169
+          "line": 162
         },
         {
           "pattern": "shared",
-          "line": 179
+          "line": 172
         },
         {
           "pattern": "shared",
-          "line": 187
+          "line": 182
         },
         {
           "pattern": "shared",
-          "line": 207
+          "line": 190
         },
         {
           "pattern": "shared",
-          "line": 224
+          "line": 210
+        },
+        {
+          "pattern": "shared",
+          "line": 227
         },
         {
           "pattern": "nativeButtons",
@@ -11177,43 +11207,43 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 70
+          "line": 73
         },
         {
           "pattern": "nativeButtons",
-          "line": 83
+          "line": 86
         },
         {
           "pattern": "nativeButtons",
-          "line": 101
+          "line": 104
         },
         {
           "pattern": "nativeButtons",
-          "line": 120
+          "line": 123
         },
         {
           "pattern": "nativeButtons",
-          "line": 158
+          "line": 161
         },
         {
           "pattern": "nativeButtons",
-          "line": 168
+          "line": 171
         },
         {
           "pattern": "nativeButtons",
-          "line": 186
+          "line": 189
         },
         {
           "pattern": "checkboxes",
-          "line": 231
+          "line": 234
         },
         {
           "pattern": "selects",
-          "line": 43
+          "line": 46
         },
         {
           "pattern": "selects",
-          "line": 62
+          "line": 65
         }
       ]
     },
@@ -12577,27 +12607,19 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 43
+          "line": 42
         },
         {
           "pattern": "shared",
-          "line": 46
-        },
-        {
-          "pattern": "shared",
-          "line": 56
-        },
-        {
-          "pattern": "shared",
-          "line": 57
+          "line": 45
         },
         {
           "pattern": "nativeButtons",
-          "line": 26
+          "line": 25
         },
         {
           "pattern": "disclosure",
-          "line": 15
+          "line": 14
         }
       ]
     },

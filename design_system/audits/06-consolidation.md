@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Five-tab app modes and video search, 2026-10-18
+
+Reviewed 1,144 source files and 237 candidate files. One candidate is added:
+`pages/videos/video-search-page.ts` uses Field and Control for its search input
+and MbButton for the Google hand-off and post-search link. The mode switcher
+drops its MenuSeparator and Manage feeds row because feed management is now an
+RSS tab. Bookmarks gains a With video view on its existing native tab buttons,
+with no new control type. The YouTube page moves onto the header tracks used by
+/rss. Remaining inventory changes are source line shifts. No shared widget changed.
+
 ## Fedi videos and watch queue, 2026-10-18
 
 Reviewed 1,143 source files and 236 candidate files for Sprint 2 of

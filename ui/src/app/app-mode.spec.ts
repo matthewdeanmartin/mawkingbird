@@ -28,6 +28,8 @@ describe('modeForUrl', () => {
   it.each([
     '/watch',
     '/watch?youtube=abc',
+    '/bookmarks?tab=read-later',
+    '/bookmarks?view=video',
     '/read/rss:abc',
     '/statuses/rss:abc',
     '/accounts/rss:https%3A%2F%2Fa.example%2Ff.xml',

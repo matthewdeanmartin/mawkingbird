@@ -150,7 +150,8 @@ function isWideUrl(url: string): boolean {
     url.startsWith('/watch?') ||
     url.startsWith('/rss') ||
     url === '/videos' ||
-    url.startsWith('/videos?')
+    url.startsWith('/videos?') ||
+    url.startsWith('/videos/search')
   );
 }
 

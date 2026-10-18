@@ -113,6 +113,9 @@ const UNFILED_PARAM = 'unfiled';
 /** `?view=kits` shows the starter kits in place of the reading list. */
 const VIEW_PARAM = 'view';
 const KITS_VIEW = 'kits';
+/** `?filter=starred` narrows the pane to starred items. */
+const FILTER_PARAM = 'filter';
+const STARRED_FILTER = 'starred';
 
 /** One group of feeds in the left rail. `name` is null for the unfiled group. */
 interface RailGroup {
@@ -253,8 +256,18 @@ export class RssPage {
     return sel.kind === 'feed' ? sel.url : null;
   });
 
-  /** All vs. Starred. Per-visit, not persisted: a filter is a momentary intent. */
+  /**
+   * All vs. Starred. Not persisted: a filter is a momentary intent. It lives in
+   * the URL (`?filter=starred`) so the top menu's Starred tab can open it and
+   * Back undoes it.
+   */
   protected readonly filter = signal<'all' | 'starred'>('all');
+  private readonly filterInUrl = toSignal(
+    this.route.queryParamMap.pipe(
+      map((params) => (params.get(FILTER_PARAM) === STARRED_FILTER ? 'starred' : 'all')),
+    ),
+    { initialValue: 'all' as const },
+  );
 
   /**
    * Whether the pane is showing starter kits instead of the reading list.
@@ -294,6 +307,11 @@ export class RssPage {
 
   constructor() {
     this.showKits.set(this.subs.feeds().length === 0 && !this.readState.starredCount());
+
+    effect(() => {
+      const filter = this.filterInUrl();
+      untracked(() => this.filter.set(filter));
+    });
 
     let kitsWereInUrl = false;
     effect(() => {
@@ -475,7 +493,11 @@ export class RssPage {
     this.diagnostics.info('RssPage', 'user:select', { kind: sel.kind });
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: selectionParams(sel),
+      // Changing what is read keeps the All/Starred choice; it is not a selection.
+      queryParams: {
+        ...selectionParams(sel),
+        [FILTER_PARAM]: this.filter() === 'starred' ? STARRED_FILTER : null,
+      },
       replaceUrl: false,
     });
   }
@@ -573,6 +595,11 @@ export class RssPage {
 
   protected setFilter(filter: 'all' | 'starred'): void {
     this.filter.set(filter);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [FILTER_PARAM]: filter === 'starred' ? STARRED_FILTER : null },
+      queryParamsHandling: 'merge',
+    });
   }
 
   /**

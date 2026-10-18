@@ -721,6 +721,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
       },
       {
+        path: 'videos/search',
+        title: 'Search video',
+        loadComponent: () =>
+          import('./pages/videos/video-search-page').then((m) => m.VideoSearchPage),
+      },
+      {
         path: 'videos/queue',
         title: 'Watch queue',
         loadComponent: () =>

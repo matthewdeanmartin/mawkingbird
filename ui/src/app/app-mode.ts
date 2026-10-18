@@ -34,6 +34,7 @@ export function modeForUrl(url: string): AppMode | null {
   }
   if (
     path === '/watch' ||
+    path === '/bookmarks' ||
     path.startsWith('/read/') ||
     path.startsWith('/statuses/rss:') ||
     path.startsWith('/accounts/rss:') ||

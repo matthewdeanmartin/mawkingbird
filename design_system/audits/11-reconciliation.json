@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/videos/video-search-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Field, Control and MbButton build the stubbed video search: a labelled search input prefilled with site:youtube.com, a Google hand-off and a link to post search. Preserve the disabled submit until there is more than an operator, q in the URL, the noopener new tab and the rail/results grid on the header tracks."
+    },
+    {
       "file": "ui/src/app/video-player/queue-button.ts",
       "disposition": "adopted scope",
       "nextStep": "One MbButton toggle with aria-pressed and a video-specific label adds to or removes from the watch queue, disabled when the queue is full. Preserve the per-video label and the absence of the control when a source cannot be replayed from Watch."
@@ -15,7 +20,7 @@
     {
       "file": "ui/src/app/shell/mode-switch.ts",
       "disposition": "partial adoption",
-      "nextStep": "Popover, MenuItem and MenuSeparator own the mode menu surface, rows, dismissal and above/below placement. The trigger remains a native button styled as a primary-nav tab peer. Preserve the light-dismiss toggle guard, focus return to the trigger, link rows to each mode landing route, the current-mode marker and the flag-off rollback to the original shell nav."
+      "nextStep": "Popover and MenuItem own the mode menu surface, rows, dismissal and above/below placement. The trigger remains a native button styled as a primary-nav tab peer. Preserve the light-dismiss toggle guard, focus return to the trigger, link rows to each mode landing route, the current-mode marker and the flag-off rollback to the original shell nav."
     },
     {
       "file": "ui/src/app/pages/settings/profile/profile-bio-dialog.ts",

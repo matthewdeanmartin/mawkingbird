@@ -6,7 +6,13 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute, convertToParamMap, provideRouter, RouterLink } from '@angular/router';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  provideRouter,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { ReaderLibrary } from '../../providers/read/reader-library';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -35,7 +41,8 @@ interface BookmarksInternals {
   nativeFilter: WritableSignal<string>;
   raindropFilter: WritableSignal<string>;
   filteredStatuses: Signal<Status[]>;
-  view: WritableSignal<'all' | 'authors' | 'hashtags' | 'media'>;
+  view: WritableSignal<'all' | 'authors' | 'hashtags' | 'media' | 'video'>;
+  setView(view: 'all' | 'authors' | 'hashtags' | 'media' | 'video'): void;
   groups: Signal<BookmarkGroup[]>;
   nextPage(): void;
   previousPage(): void;
@@ -160,6 +167,46 @@ describe('Bookmarks', () => {
     internals(fixture).selectProvider('read-later');
     internals(fixture).selectProvider('native');
     httpMock.expectNone((request) => request.url.includes('/bookmarks'));
+  });
+
+  describe('With video', () => {
+    const video = (): Status =>
+      ({
+        ...makeStatus('v'),
+        media_attachments: [{ id: 'm', type: 'video', url: 'https://a.example/v.mp4' }],
+      }) as Status;
+
+    it('keeps only bookmarks that carry video and opens from ?view=video', async () => {
+      // The top menu's Video "Saved" tab is this URL.
+      const router = TestBed.inject(Router);
+      await router.navigate([], { queryParams: { view: 'video' } });
+      const fixture = setUp();
+      httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([makeStatus('1'), video()]);
+      expect(internals(fixture).view()).toBe('video');
+      expect(
+        internals(fixture)
+          .groups()[0]
+          .statuses.map((s) => s.id),
+      ).toEqual(['v']);
+
+      // Pressed again while open (from Read later, say) the page follows.
+      await router.navigate([], { queryParams: { tab: 'read-later', view: null } });
+      expect(internals(fixture).provider()).toBe('read-later');
+      expect(internals(fixture).view()).toBe('all');
+    });
+
+    it('writes only the video view to the URL', async () => {
+      const router = TestBed.inject(Router);
+      const fixture = setUp();
+      httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([]);
+      internals(fixture).setView('video');
+      await fixture.whenStable();
+      expect(router.url).toContain('view=video');
+      internals(fixture).setView('authors');
+      await fixture.whenStable();
+      expect(router.url).not.toContain('view=');
+      expect(internals(fixture).view()).toBe('authors');
+    });
   });
 
   it('populates statuses and clears loading on successful fetch', () => {

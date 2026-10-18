@@ -39,6 +39,30 @@ describe('MODE_NAV', () => {
     expect(active('/rss?folder=News')).toEqual(['reader']);
     expect(active('/rss?view=kits')).toEqual(['kits']);
     expect(active('/rss?folder=News&view=kits')).toEqual(['kits']);
+    expect(active('/rss?filter=starred')).toEqual(['readLater']);
+    expect(active('/rss?folder=News&filter=starred')).toEqual(['readLater']);
+    expect(active('/bookmarks?tab=read-later')).toEqual(['library']);
+    expect(active('/bookmarks')).toEqual([]);
+    expect(active('/settings/rss')).toEqual(['manage']);
+  });
+
+  it('marks exactly one Video tab current', () => {
+    const active = (url: string) =>
+      MODE_NAV.video.filter((item) => item.active(url)).map((item) => item.id);
+    expect(active('/videos')).toEqual(['youtube']);
+    expect(active('/videos?channel=UC123')).toEqual(['youtube']);
+    expect(active('/videos/fedi')).toEqual(['fedi']);
+    expect(active('/videos/queue')).toEqual(['queue']);
+    expect(active('/videos/search?q=cats')).toEqual(['search']);
+    expect(active('/bookmarks?view=video')).toEqual(['saved']);
+    expect(active('/bookmarks?view=media')).toEqual([]);
+  });
+
+  it('gives every mode five tabs, and puts Search in the same slot wherever there is one', () => {
+    // The owner asked for symmetry: Home, five tabs, the switcher.
+    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(5);
+    expect(MODE_NAV.mastodon[3].id).toBe('search');
+    expect(MODE_NAV.video[3].id).toBe('search');
   });
 
   it('does not claim lookalike paths', () => {

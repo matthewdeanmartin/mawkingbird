@@ -29,8 +29,10 @@ import {
   VideoSort,
 } from './video-items';
 
+// i18n videos.heading: YouTube
 // i18n videos.fedi: Fedi videos
 // i18n videos.queue: Watch queue
+// i18n videos.searchVideo: Search video
 // i18n videos.main: Main feed
 // i18n videos.customize: Customize
 // i18n videos.autoLoadWatch: Automatically load YouTube players on Watch

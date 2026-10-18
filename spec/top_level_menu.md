@@ -1,7 +1,8 @@
 # Top-level menu: app modes (Mastodon / RSS / Video)
 
-Status: Sprint 1 shipped behind `mode-nav` (canary, commit 37e326e2). Sprint 2
-is implemented and uncommitted. Sprint 3 has not started · 2026-10-18.
+Status: Sprints 1 and 2 shipped behind `mode-nav` (canary: 37e326e2, 103fb646).
+The five-tab menus, the YouTube page alignment and the video search stub are
+implemented and uncommitted. The rest of Sprint 3 has not started · 2026-10-18.
 
 ## Problem
 
@@ -25,14 +26,33 @@ icon still means something in Mastodon.
   video), a **watch queue**, and a **watch-party finder** (like hashtags, but
   tuned for finding parties; opening one goes to the Watch page).
 - The menu must be easy to roll back (see Rollback).
+- **Symmetry:** every mode has Home, five tabs, then the switcher. Search sits
+  in slot 4 wherever a mode has one. Watch parties wait in Sprint 3 for a slot
+  or a switcher row.
+- **"Saved" synonyms** (private likes, stars, bookmarks, read later, the watch
+  queue) are a known muddle, and we are not solving it now. Tab labels reuse
+  the words the destination page already uses.
 
 ## Menus
 
 ```
 mastodon: Home | Algo  Inbox  Chat  Search  Feeds | [RSS ▾]
-rss:      Home | Reader  Starter kits | [Mastodon ▾]
-video:    Home | Fedi videos  YouTube  Queue  Parties  Search | [Mastodon ▾]
+rss:      Home | Reader  Read later  Library  Starter kits  Manage feeds | [Mastodon ▾]
+video:    Home | Fedi videos  YouTube  Queue  Search  Saved | [Mastodon ▾]
 ```
+
+| Tab               | Destination                 | Notes                                                                           |
+| ----------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| RSS Reader        | `/rss`                      |                                                                                 |
+| RSS Read later    | `/rss?filter=starred`       | The RSS page calls its starred list "Read later"; the URL keeps the internal id |
+| RSS Library       | `/bookmarks?tab=read-later` | The Reader library; named apart from the list above                             |
+| RSS Starter kits  | `/rss?view=kits`            |                                                                                 |
+| RSS Manage feeds  | `/settings/rss`             | Was a switcher row                                                              |
+| Video Fedi videos | `/videos/fedi`              | Home locked to its Video view                                                   |
+| Video YouTube     | `/videos`                   |                                                                                 |
+| Video Queue       | `/videos/queue`             |                                                                                 |
+| Video Search      | `/videos/search`            | Stub: Google with `site:youtube.com` prefilled                                  |
+| Video Saved       | `/bookmarks?view=video`     | Bookmarks, With video view                                                      |
 
 Rules:
 
@@ -42,8 +62,7 @@ Rules:
    you would most likely go to next: RSS from Mastodon, and Mastodon from
    anywhere else. A caret marks it as a menu. The menu lists all three modes
    as links to each mode's landing page (`/home`, `/rss`, `/videos`), with the
-   current mode marked. In RSS and Video modes it also has a "Manage feeds"
-   link (`/settings/rss`). The menu is an anchored `MbPopover`. It opens
+   current mode marked. The menu is an anchored `MbPopover`. It opens
    above or below the switcher depending on space, which gives a drop-up on
    mobile without any special CSS.
 3. **Each mode has its own icons.** An icon path may not appear in two
@@ -63,6 +82,7 @@ Most pages decide the mode. A shared page keeps whatever mode you were in
 | `/rss…`, `/settings/rss`                        | rss                                                             |
 | `/videos…`                                      | video                                                           |
 | `/watch…`                                       | sticky (it plays YouTube and Mastodon video, and hosts parties) |
+| `/bookmarks…`                                   | sticky (RSS Library and Video Saved live there)                 |
 | `/read/…`, `/statuses/rss:…`, `/accounts/rss:…` | sticky                                                          |
 | `/settings…` (other than rss)                   | sticky                                                          |
 | everything else                                 | mastodon                                                        |
@@ -178,6 +198,14 @@ addedAt }`, with a size cap and de-duplication by source.
   current video from the queue and opens the next one.
 
 ## Sprint 3: video search and the watch-party finder
+
+**Done early (2026-10-18):** the `/videos/search` page and URL exist as a stub.
+The form sits in the rail column, and the results area spans the centre and right
+columns (the page goes wide). It is prefilled with `site:youtube.com `, submits to
+Google in a new tab (`webSearchUrl`), keeps `q` in the URL, and links to `/search`
+with the `site:` operators removed. The regular Search page is unchanged; it
+deliberately keeps engines out of its URL. Real results below replace the stub
+at the same URL.
 
 - **Video search** (`/videos/search?q=`): one focused input and a grid of
   video results:

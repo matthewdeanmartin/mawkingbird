@@ -1,6 +1,6 @@
 <div class="videos-page">
   <aside class="subscriptions">
-    <h1>{{ 'videos.title' | transloco }}</h1>
+    <h1>{{ 'videos.heading' | transloco }}</h1>
     <app-video-subscriptions-panel [selected]="selected()" (opened)="results.set(null)" />
   </aside>
   <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
@@ -34,6 +34,9 @@
         <a mbButton variant="outline" routerLink="/videos/fedi">{{ 'videos.fedi' | transloco }}</a>
         <a mbButton variant="outline" routerLink="/videos/queue">{{
           'videos.queue' | transloco
+        }}</a>
+        <a mbButton variant="outline" routerLink="/videos/search">{{
+          'videos.searchVideo' | transloco
         }}</a>
       }
     </header>

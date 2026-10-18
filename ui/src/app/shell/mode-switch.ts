@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { APP_MODES, AppModeService } from '../app-mode';
 import { MbMenuItem } from '../design-system/menu/menu-item';
-import { MbMenuSeparator } from '../design-system/menu/menu-separator';
 import { MB_MENU_SURFACE, MbMenuSurface } from '../design-system/menu/menu-surface';
 import { MbPopover } from '../design-system/popover/popover';
 import { MODE_ENTRIES, suggestedMode } from './mode-nav';
@@ -20,7 +19,7 @@ import { MODE_ENTRIES, suggestedMode } from './mode-nav';
  */
 @Component({
   selector: 'app-mode-switch',
-  imports: [RouterLink, TranslocoPipe, MbPopover, MbMenuItem, MbMenuSeparator],
+  imports: [RouterLink, TranslocoPipe, MbPopover, MbMenuItem],
   providers: [{ provide: MB_MENU_SURFACE, useExisting: ModeSwitch }],
   template: `
     <button
@@ -51,10 +50,6 @@ import { MODE_ENTRIES, suggestedMode } from './mode-nav';
           <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="entry.icon" /></svg>
           {{ entry.labelKey | transloco }}
         </a>
-      }
-      @if (mode.mode() !== 'mastodon') {
-        <mb-menu-separator />
-        <a mbMenuItem routerLink="/settings/rss">{{ 'shell.modeNav.manageFeeds' | transloco }}</a>
       }
     </mb-popover>
   `,

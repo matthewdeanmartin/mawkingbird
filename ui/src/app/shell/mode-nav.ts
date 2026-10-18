@@ -1,16 +1,20 @@
 import { AppMode } from '../app-mode';
 
 // i18n shell.modeNav.rss.reader: Reader
+// i18n shell.modeNav.rss.readLater: Read later
+// i18n shell.modeNav.rss.library: Library
 // i18n shell.modeNav.rss.kits: Starter kits
+// i18n shell.modeNav.rss.manage: Manage feeds
 // i18n shell.modeNav.video.fedi: Fedi videos
 // i18n shell.modeNav.video.youtube: YouTube
 // i18n shell.modeNav.video.queue: Queue
+// i18n shell.modeNav.video.search: Search
+// i18n shell.modeNav.video.saved: Saved
 // i18n shell.modeNav.mode.mastodon: Mastodon
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
-// i18n shell.modeNav.manageFeeds: Manage feeds
 
 /**
  * One tab of a mode's primary nav, as data rather than markup.
@@ -44,9 +48,9 @@ function onPath(prefix: string): (url: string) => boolean {
   };
 }
 
-function rssView(url: string): string | null {
+function param(url: string, name: string): string | null {
   const query = url.split('#', 1)[0].split('?')[1] ?? '';
-  return new URLSearchParams(query).get('view');
+  return new URLSearchParams(query).get(name);
 }
 
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
@@ -98,7 +102,28 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       labelKey: 'shell.modeNav.rss.reader',
       icon: 'M5 4h11v16H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1zM16 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3',
       link: '/rss',
-      active: (url) => onPath('/rss')(url) && rssView(url) !== 'kits',
+      active: (url) =>
+        onPath('/rss')(url) && param(url, 'view') !== 'kits' && param(url, 'filter') !== 'starred',
+    },
+    {
+      // The RSS page's own name for its starred list (see rss-page.html): "Read
+      // later", not "Starred". The URL keeps the internal id.
+      id: 'readLater',
+      labelKey: 'shell.modeNav.rss.readLater',
+      icon: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0M12 7v5l3 2',
+      link: '/rss',
+      queryParams: { filter: 'starred' },
+      active: (url) =>
+        onPath('/rss')(url) && param(url, 'filter') === 'starred' && param(url, 'view') !== 'kits',
+    },
+    {
+      // The Reader library (Bookmarks → Read Later), named apart from the list above.
+      id: 'library',
+      labelKey: 'shell.modeNav.rss.library',
+      icon: 'M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z',
+      link: '/bookmarks',
+      queryParams: { tab: 'read-later' },
+      active: (url) => pathOf(url) === '/bookmarks' && param(url, 'tab') === 'read-later',
     },
     {
       id: 'kits',
@@ -106,7 +131,14 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M3 8l9-4 9 4-9 4zM3 8v8l9 4 9-4V8M12 12v8',
       link: '/rss',
       queryParams: { view: 'kits' },
-      active: (url) => onPath('/rss')(url) && rssView(url) === 'kits',
+      active: (url) => onPath('/rss')(url) && param(url, 'view') === 'kits',
+    },
+    {
+      id: 'manage',
+      labelKey: 'shell.modeNav.rss.manage',
+      icon: 'M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1M15 4v4M9 10v4M17 16v4',
+      link: '/settings/rss',
+      active: onPath('/settings/rss'),
     },
   ],
   video: [
@@ -130,6 +162,23 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M4 6h11M4 12h11M4 18h7M17 14v6l5-3z',
       link: '/videos/queue',
       active: onPath('/videos/queue'),
+    },
+    {
+      // Slot 4, where Search is in Mastodon, so the magnifier stays put across
+      // modes. Its own glyph (a play mark inside) because it is its own search.
+      id: 'search',
+      labelKey: 'shell.modeNav.video.search',
+      icon: 'M4 10.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0M15.5 15.5l5 5M9.2 8.2v4.6l3.8-2.3z',
+      link: '/videos/search',
+      active: onPath('/videos/search'),
+    },
+    {
+      id: 'saved',
+      labelKey: 'shell.modeNav.video.saved',
+      icon: 'M6 3h12v18l-6-4-6 4zM10 7.5v5l4-2.5z',
+      link: '/bookmarks',
+      queryParams: { view: 'video' },
+      active: (url) => pathOf(url) === '/bookmarks' && param(url, 'view') === 'video',
     },
   ],
 };

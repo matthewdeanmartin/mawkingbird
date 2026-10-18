@@ -3,13 +3,25 @@
 }
 .videos-page {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(0, 680px);
-  max-width: 1040px;
-  margin: 0 auto;
+  /* The header's tracks, as on /rss (see rss-page.css): the subscriptions
+     column sits under the brand and ends where Home begins, and the feed runs
+     under the tabs to the far edge. A centred max-width grid here is what
+     knocked the page out of register with the header. */
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px 0;
+  align-items: start;
 }
 .subscriptions {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 90px);
+  max-height: calc(100dvh - 90px);
+  overflow: auto;
   padding: 1.2rem;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
 }
 h1 {
   font-size: 1.4rem;
@@ -67,12 +79,15 @@ footer {
 .feed-error {
   padding: 1rem;
 }
-@media (max-width: 700px) {
+/* 1000px, the shell's own breakpoint: below it the header has no rail column
+   to line up with, so the rail stacks above the feed and stops sticking. */
+@media (max-width: 1000px) {
   .videos-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 12px;
   }
   .subscriptions {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
+    position: static;
+    max-height: 60vh;
   }
 }

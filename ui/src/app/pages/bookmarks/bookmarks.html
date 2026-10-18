@@ -69,7 +69,7 @@
     } @else {
       <nav class="tabs folder-tabs" [aria-label]="'pages.bookmarks.nativeFolders' | transloco">
         @for (v of views; track v.id) {
-          <button class="tab" [class.active]="view() === v.id" (click)="view.set(v.id)">
+          <button class="tab" [class.active]="view() === v.id" (click)="setView(v.id)">
             {{ v.label }}
           </button>
         }

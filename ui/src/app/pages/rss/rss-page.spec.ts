@@ -461,6 +461,27 @@ describe('RssPage', () => {
       expect(text).not.toContain('Beta item');
     });
 
+    it('opens the Read later filter from ?filter=starred and keeps it across rail clicks', async () => {
+      // The top menu's RSS "Read later" tab is this URL.
+      const router = TestBed.inject(Router);
+      await router.navigate(['/rss'], { queryParams: { filter: 'starred' } });
+      const fixture = await twoFolders();
+      TestBed.inject(RssReadState).setStarred(idOf(URL_A, 'A-Alpha item'), true);
+      fixture.detectChanges();
+      expect(fixture.componentInstance['filter']()).toBe('starred');
+      expect(textOf(fixture)).not.toContain('Beta item');
+
+      fixture.componentInstance['selectAll']();
+      await fixture.whenStable();
+      expect(router.url).toContain('filter=starred');
+      expect(fixture.componentInstance['filter']()).toBe('starred');
+
+      fixture.componentInstance['setFilter']('all');
+      await fixture.whenStable();
+      expect(router.url).not.toContain('filter=');
+      expect(fixture.componentInstance['filter']()).toBe('all');
+    });
+
     it('calls the saved list "Read later" while keeping the stored key', async () => {
       // The rename is copy-only and deliberately so: `starred` stays the
       // internal id and `mockingbird_rss_starred` stays the storage key,
