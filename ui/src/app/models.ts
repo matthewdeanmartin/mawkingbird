@@ -299,6 +299,8 @@ export interface Relationship {
 }
 
 export interface MastodonNotification {
+  /** Viewer relationship supplied by the source network, when available. */
+  relationship?: Relationship;
   id: string;
   type: string;
   created_at: string;

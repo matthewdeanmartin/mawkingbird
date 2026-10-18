@@ -199,6 +199,9 @@ export class RightRail implements OnInit {
     return this.instance()?.domain ?? null;
   });
 
+  /** The configured server's homepage, including a same-origin server. */
+  protected serverHomeUrl = computed(() => this.server.baseUrl() || '/');
+
   /** The user's server's /about page, where Mastodon instances put donation info. */
   protected donateServerUrl = computed<string>(() => {
     const host = this.homeHost();

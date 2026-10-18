@@ -18,6 +18,10 @@ import { BskyBlobRef, BskyProfile } from '../../../providers/bluesky/bluesky-typ
 import { MbButton } from '../../../design-system/button/button';
 import { MbControl, MbField } from '../../../design-system/field/field';
 import { ProfileLinkDialog } from './profile-link-dialog';
+import { ProfileBioDialog } from './profile-bio-dialog';
+import { renderStatusText } from '../../../compose/status-text';
+import { CustomEmojiPipe } from '../../../custom-emoji.pipe';
+import { CustomEmoji } from '../../../models';
 
 /** Public profile: display name, bio, metadata fields, avatar/header. */
 /** English source strings; see scripts/extract-i18n.mjs. */
@@ -58,6 +62,8 @@ import { ProfileLinkDialog } from './profile-link-dialog';
     MbField,
     MbControl,
     ProfileLinkDialog,
+    ProfileBioDialog,
+    CustomEmojiPipe,
   ],
   templateUrl: './settings-profile.html',
   styleUrl: './settings-profile.css',
@@ -74,6 +80,9 @@ export class SettingsProfile implements OnInit {
   protected displayName = signal('');
   protected username = signal('');
   protected note = signal('');
+  protected renderedNote = signal('');
+  protected profileEmojis = signal<CustomEmoji[]>([]);
+  protected bioDialog = signal(false);
   protected bot = signal(false);
   protected fields = signal<AccountField[]>([]);
   protected readonly linkDialog = signal<'link' | 'profile' | null>(null);
@@ -115,6 +124,7 @@ export class SettingsProfile implements OnInit {
     this.displayName.set(profile.displayName ?? profile.handle);
     this.username.set(profile.handle);
     this.note.set(profile.description ?? '');
+    this.renderedNote.set(renderStatusText(this.note()));
     this.fields.set([]);
     this.verifiedAt.set({});
   }
@@ -123,7 +133,17 @@ export class SettingsProfile implements OnInit {
     this.bot.set(acc.bot === true);
     this.displayName.set(acc.display_name);
     this.username.set(acc.username);
-    this.note.set(acc.source?.note ?? acc.note ?? '');
+    const html = acc.note ?? '';
+    const plain =
+      new DOMParser()
+        .parseFromString(
+          html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(?:p|div)>/gi, '\n\n'),
+          'text/html',
+        )
+        .body.textContent?.trim() ?? '';
+    this.note.set(acc.source?.note ?? plain);
+    this.renderedNote.set(html || renderStatusText(this.note(), acc.emojis));
+    this.profileEmojis.set(acc.emojis ?? []);
     const fields = (acc.source?.fields ?? acc.fields ?? []).map((f) => ({
       name: f.name,
       value: f.value,
@@ -140,6 +160,13 @@ export class SettingsProfile implements OnInit {
 
   setField(index: number, key: 'name' | 'value', value: string): void {
     this.fields.update((list) => list.map((f, i) => (i === index ? { ...f, [key]: value } : f)));
+  }
+
+  protected applyBio(note: string): void {
+    this.note.set(note);
+    this.renderedNote.set(renderStatusText(note, this.profileEmojis()));
+    this.saved.set(false);
+    this.bioDialog.set(false);
   }
 
   addField(): void {
@@ -211,6 +238,7 @@ export class SettingsProfile implements OnInit {
     this.api.updateCredentials(form).subscribe({
       next: (acc) => {
         this.auth.setAccount(acc);
+        this.renderedNote.set(acc.note || renderStatusText(this.note(), acc.emojis));
         this.saving.set(false);
         this.saved.set(true);
       },

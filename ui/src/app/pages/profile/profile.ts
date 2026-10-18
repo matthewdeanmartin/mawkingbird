@@ -2354,6 +2354,19 @@ export class Profile implements OnInit, OnDestroy {
     }
   }
 
+  // i18n pages.profile.moderation.trustRetweets: Trust account and retweets
+  // i18n pages.profile.moderation.trustOnly: Trust only this account
+  // i18n pages.profile.moderation.retweetsOpen: CWs and sensitive images are also shown automatically on their retweets.
+  protected trustsRetweets = computed(() => {
+    const account = this.account();
+    return !!account && this.trusted.includesBoosts(account);
+  });
+
+  protected toggleRetweetTrust(): void {
+    const account = this.account();
+    if (account) this.trusted.trust(account, !this.trustsRetweets());
+  }
+
   /**
    * Server-side moderation on Bluesky, where the account lives.
    *

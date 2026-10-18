@@ -54,6 +54,12 @@
   white-space: nowrap;
 }
 
+.audience-seg {
+  flex-wrap: wrap;
+  max-width: 100%;
+  border-radius: 12px;
+}
+
 .seg button + button {
   border-left: 1px solid var(--border);
 }

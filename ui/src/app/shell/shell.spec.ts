@@ -379,7 +379,7 @@ describe('Shell account switching', () => {
       ) as HTMLAnchorElement;
       expect(findFriends.textContent).toContain('Find Friends');
       expect(fixture.nativeElement.querySelector('.anonymous-post-login')).toBeNull();
-      expect(fixture.nativeElement.querySelector('.profile-stats')?.textContent).toContain('Posts');
+      expect(fixture.nativeElement.querySelector('app-profile-stack .stack')).toBeNull();
     },
   );
 

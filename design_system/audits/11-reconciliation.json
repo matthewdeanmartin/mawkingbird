@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/settings/profile/profile-bio-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Text-only profile editing uses Dialog, Field/Control and Button. Preserve source text, rendered preview, Unicode character counting, oversized-content editing, selection-aware emoji insertion, explicit Apply/Cancel, focus return and narrow-screen wrapping."
+    },
+    {
       "file": "ui/src/app/pages/profile/profile-slideshow.html",
       "disposition": "adopted scope",
       "nextStep": "Slideshow playback, speed, fullscreen, history and content-warning actions use MbButton. Preserve keyboard access, bounded presentation layout, chronological playback, readable overflow and explicit sensitive-content reveal."

@@ -237,6 +237,19 @@
                       ) | transloco
                     }}
                   </button>
+                  <button class="menu-trust" type="button" (click)="toggleRetweetTrust()">
+                    {{
+                      (trustsRetweets()
+                        ? 'pages.profile.moderation.trustOnly'
+                        : 'pages.profile.moderation.trustRetweets'
+                      ) | transloco
+                    }}
+                  </button>
+                  @if (trustsRetweets()) {
+                    <div class="menu-note muted small">
+                      {{ 'pages.profile.moderation.retweetsOpen' | transloco }}
+                    </div>
+                  }
                   <div class="menu-note muted small">
                     {{
                       isTrusted()
@@ -402,6 +415,19 @@
                     ) | transloco
                   }}
                 </button>
+                <button class="menu-trust" type="button" (click)="toggleRetweetTrust()">
+                  {{
+                    (trustsRetweets()
+                      ? 'pages.profile.moderation.trustOnly'
+                      : 'pages.profile.moderation.trustRetweets'
+                    ) | transloco
+                  }}
+                </button>
+                @if (trustsRetweets()) {
+                  <div class="menu-note muted small">
+                    {{ 'pages.profile.moderation.retweetsOpen' | transloco }}
+                  </div>
+                }
                 <div class="menu-note muted small">
                   {{
                     isTrusted()

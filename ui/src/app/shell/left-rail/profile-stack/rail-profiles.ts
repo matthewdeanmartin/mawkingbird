@@ -3,7 +3,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Api } from '../../../api';
 import { Auth } from '../../../auth';
 import { Terminology } from '../../../terminology';
-import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
+import { MastodonConnector } from '../../../providers/mastodon/mastodon-connector';
 import { AnonymousFollows } from '../../../providers/anonymous/anonymous-follows';
 import { AnonymousTags } from '../../../providers/anonymous/anonymous-tags';
 import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
@@ -13,9 +13,6 @@ import { RailProfile } from './rail-profile';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, auditTime, expand, filter, groupBy, mergeMap, reduce } from 'rxjs';
 import { accountScopeSuffix } from '../../../account-scope';
-
-/** Where the local identity's card sits when it isn't the active one. */
-const MOCKINGBIRD_BADGE = '🎭';
 
 /**
  * Assembles the left rail's stack of identity cards — one per network the
@@ -32,7 +29,7 @@ const MOCKINGBIRD_BADGE = '🎭';
 export class RailProfiles {
   private auth = inject(Auth);
   private api = inject(Api);
-  private anonymous = inject(AnonymousAccount);
+  private mastodonConnector = inject(MastodonConnector);
   private anonymousFollows = inject(AnonymousFollows);
   private anonymousTags = inject(AnonymousTags);
   private blueskySession = inject(BlueskySession);
@@ -142,21 +139,16 @@ export class RailProfiles {
   readonly profiles = computed<RailProfile[]>(() => {
     const cards: RailProfile[] = [];
     const active = this.auth.account();
-    if (active) {
-      const anonymousActive = this.auth.isAnonymous;
+    if (active && !this.auth.isAnonymous) {
       // The active card names the network the app is signed in *to*. Before
       // Bluesky could be an identity this was a two-way choice, and anything
       // that was not Anonymous was Mastodon by definition — which labelled a
       // Bluesky-primary account "🐘 Mastodon" under its own bsky.social handle.
       const blueskyActive = this.auth.isBlueskyPrimary;
       cards.push({
-        key: anonymousActive
-          ? 'anonymous'
-          : blueskyActive
-            ? `bluesky:${active.id}`
-            : `mastodon:${active.id}`,
-        badge: anonymousActive ? MOCKINGBIRD_BADGE : blueskyActive ? '🦋' : '🐘',
-        network: anonymousActive ? 'Local' : blueskyActive ? 'Bluesky' : 'Mastodon',
+        key: blueskyActive ? `bluesky:${active.id}` : `mastodon:${active.id}`,
+        badge: blueskyActive ? '🦋' : '🐘',
+        network: blueskyActive ? 'Bluesky' : 'Mastodon',
         displayName: active.display_name || active.username,
         handle: active.username,
         avatar: active.avatar_static || active.avatar,
@@ -190,7 +182,7 @@ export class RailProfiles {
               },
               {
                 label: 'Hashtags',
-                value: anonymousActive ? this.anonymousTags.count() : this.hashtagCount(),
+                value: this.hashtagCount(),
                 link: ['/feeds/tags'],
               },
             ],
@@ -228,25 +220,25 @@ export class RailProfiles {
         active: false,
       });
     }
-    // The browser-local identity, when it exists but isn't the one in use. Its
-    // counts are client-side and unscoped, so they are right either way.
-    if (!this.auth.isAnonymous && this.anonymous.activated()) {
-      const local = this.anonymous.account();
+    const connector = this.mastodonConnector.current();
+    if (this.auth.isBlueskyPrimary && connector.state === 'signed-in' && connector.account) {
+      const local = connector.account;
       cards.push({
-        key: 'anonymous',
-        badge: MOCKINGBIRD_BADGE,
-        network: 'Local',
+        key: `mastodon:${local.id}`,
+        badge: '🐘',
+        network: 'Mastodon',
         displayName: local.display_name || local.username,
         handle: local.username,
         avatar: local.avatar_static || local.avatar,
         header: local.header_static || local.header,
         bioHtml: local.note || undefined,
         stats: [
-          { label: 'Following', value: this.anonymousFollows.count() },
-          { label: 'Hashtags', value: this.anonymousTags.count() },
+          { label: this.words().Posts, value: local.statuses_count },
+          { label: 'Following', value: local.following_count },
+          { label: 'Followers', value: local.followers_count },
         ],
         active: false,
-        switchTo: 'anonymous',
+        href: local.url,
       });
     }
     return cards;

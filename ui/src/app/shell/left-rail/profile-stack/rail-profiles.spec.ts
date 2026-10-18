@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../../../api';
 import { AnonymousTags } from '../../../providers/anonymous/anonymous-tags';
+import { MastodonConnector } from '../../../providers/mastodon/mastodon-connector';
 import { Auth } from '../../../auth';
 import { Account } from '../../../models';
 import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
@@ -177,7 +178,7 @@ describe('RailProfiles', () => {
     expect(bsky.stats).toEqual([]);
   });
 
-  it('offers the browser-local identity as its own card when it is not active', () => {
+  it('omits the browser-local identity card even when it has been used', () => {
     TestBed.inject(AnonymousAccount).activate('https://mastodon.social');
     TestBed.inject(Auth).account.set(ME);
     const rail = TestBed.inject(RailProfiles);
@@ -185,11 +186,8 @@ describe('RailProfiles', () => {
     rail.load();
     flushFollowedTags();
 
-    const local = rail.profiles()[1];
-    expect(local.key).toBe('anonymous');
-    expect(local.badge).toBe('🎭');
-    expect(local.active).toBe(false);
-    expect(local.switchTo).toBe('anonymous');
+    expect(rail.profiles()).toHaveLength(1);
+    expect(rail.profiles()[0].key).toBe('mastodon:7');
   });
 
   it('does not advertise a local identity that has never been used', () => {
@@ -210,12 +208,20 @@ describe('RailProfiles', () => {
     rail.load();
     httpMock.expectNone((req) => req.url.includes('followed_tags'));
 
-    const [card] = rail.profiles();
-    expect(rail.profiles()).toHaveLength(1);
-    expect(card.key).toBe('anonymous');
-    expect(card.active).toBe(true);
-    expect(card.badge).toBe('🎭');
+    expect(rail.profiles()).toHaveLength(0);
     TestBed.inject(AnonymousTags).follow('caturday');
-    expect(rail.profiles()[0].stats[3].value).toBe(1);
+    expect(TestBed.inject(AnonymousTags).count()).toBe(1);
+    expect(rail.profiles()).toHaveLength(0);
+  });
+
+  it('shows the signed-in Mastodon connector beside a Bluesky primary identity', () => {
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('bluesky');
+    auth.account.set({ ...ME, id: 'bsky:did:plc:matt' });
+    TestBed.inject(MastodonConnector).signIn('connector', 'https://example.social', ME);
+    const cards = TestBed.inject(RailProfiles).profiles();
+    expect(cards.map((card) => card.network)).toEqual(['Bluesky', 'Mastodon']);
+    expect(cards[1].displayName).toBe('Matt');
+    expect(cards[1].active).toBe(false);
   });
 });

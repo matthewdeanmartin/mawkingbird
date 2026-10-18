@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, Subject, throwError } from 'rxjs';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { BlueskyNotifications } from '../../providers/bluesky/bluesky-notifications';
 import { Account, MastodonNotification, Relationship, Status } from '../../models';
 import { Auth } from '../../auth';
@@ -15,6 +16,8 @@ import { FakeStreaming } from '../../testing/fake-streaming';
 import { accountsNewToMe, groupNotifications, isSameAccount, Notifications } from './notifications';
 
 interface NotificationsInternals {
+  audience: WritableSignal<'all' | 'friends' | 'followers' | 'mutuals' | 'not-following'>;
+  visible: Signal<MastodonNotification[]>;
   items: Signal<MastodonNotification[]>;
   live: WritableSignal<boolean>;
   source: Signal<'all' | 'mastodon' | 'bluesky'>;
@@ -103,6 +106,86 @@ describe('Notifications across primary networks', () => {
     return { ...n, created_at: date, account: { ...makeAccount(id), id } };
   }
 
+  it('keeps mutuals, following and not-following filters across both networks', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    const bsky = ['mutual', 'following', 'stranger'].map((name) => ({
+      ...notification(`bsky:${name}`, '2026-09-10T10:00:00Z'),
+      relationship: relationship(`bsky:${name}`, {
+        following: name !== 'stranger',
+        followed_by: name === 'mutual',
+      }),
+    }));
+    page.mockReturnValue(of({ notifications: bsky, cursor: null }));
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http
+      .expectOne('/api/v1/notifications')
+      .flush(
+        ['mutual', 'following', 'stranger'].map((name) =>
+          notification(name, '2026-09-09T10:00:00Z'),
+        ),
+      );
+    const c = internals(fixture);
+    c.audience.set('mutuals');
+    fixture.detectChanges();
+    const request = http.expectOne((r) => r.url === '/api/v1/accounts/relationships');
+    expect(request.request.params.getAll('id[]')).toEqual(['mutual', 'following', 'stranger']);
+    request.flush(
+      ['mutual', 'following', 'stranger'].map((name) =>
+        relationship(name, { following: name !== 'stranger', followed_by: name === 'mutual' }),
+      ),
+    );
+    fixture.detectChanges();
+    expect(c.visible().map((n) => n.id)).toEqual(['bsky:mutual', 'mutual']);
+    expect(fixture.nativeElement.textContent).toContain('Not following');
+    c.audience.set('friends');
+    expect(c.visible().map((n) => n.id)).toEqual([
+      'bsky:mutual',
+      'bsky:following',
+      'mutual',
+      'following',
+    ]);
+    c.audience.set('not-following');
+    expect(c.visible().map((n) => n.id)).toEqual(['bsky:stranger', 'stranger']);
+    fixture.componentInstance.setSource('bluesky');
+    fixture.detectChanges();
+    expect(c.audience()).toBe('not-following');
+    expect(c.visible().map((n) => n.id)).toEqual(['bsky:stranger']);
+    fixture.destroy();
+  });
+
+  it('looks up missing Bluesky viewer relationships without sending their ids to Mastodon', () => {
+    TestBed.inject(Auth).kind.set('bluesky');
+    const profiles = new Subject<{
+      profiles: {
+        did: string;
+        handle: string;
+        viewer: { following?: string; followedBy?: string };
+      }[];
+    }>();
+    const lookup = vi.spyOn(TestBed.inject(BlueskyApi), 'getProfiles').mockReturnValue(profiles);
+    page.mockReturnValue(
+      of({
+        notifications: [notification('bsky:did:plc:friend', '2026-09-10T10:00:00Z')],
+        cursor: null,
+      }),
+    );
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const c = internals(fixture);
+    c.audience.set('not-following');
+    fixture.detectChanges();
+    expect(c.visible()).toEqual([]);
+    expect(lookup).toHaveBeenCalledWith(['did:plc:friend']);
+    profiles.next({
+      profiles: [{ did: 'did:plc:friend', handle: 'friend.bsky.social', viewer: {} }],
+    });
+    profiles.complete();
+    expect(c.visible()).toHaveLength(1);
+    http.expectNone((r) => r.url.includes('/relationships'));
+    fixture.destroy();
+  });
+
   it('defaults to Bluesky alone without a Mastodon token or stream', () => {
     TestBed.inject(Auth).kind.set('bluesky');
     TestBed.inject(ClientPrefs).setAutoRefreshTimeline(true);
@@ -115,6 +198,31 @@ describe('Notifications across primary networks', () => {
     const buttons = fixture.nativeElement.querySelectorAll('.source-seg button');
     expect(buttons.length).toBe(1);
     expect(buttons[0].textContent).toContain('Bluesky');
+    fixture.destroy();
+  });
+
+  it('keeps Mastodon audience results when the Bluesky relationship lookup fails', () => {
+    TestBed.inject(Auth).setToken('m-token');
+    vi.spyOn(TestBed.inject(BlueskyApi), 'getProfiles').mockReturnValue(
+      throwError(() => new Error('offline')),
+    );
+    page.mockReturnValue(
+      of({
+        notifications: [notification('bsky:did:plc:friend', '2026-09-10T10:00:00Z')],
+        cursor: null,
+      }),
+    );
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    http.expectOne('/api/v1/notifications').flush([notification('mutual', '2026-09-09T10:00:00Z')]);
+    const c = internals(fixture);
+    c.audience.set('mutuals');
+    fixture.detectChanges();
+    http
+      .expectOne((r) => r.url === '/api/v1/accounts/relationships')
+      .flush([relationship('mutual', { following: true, followed_by: true })]);
+    fixture.detectChanges();
+    expect(c.visible().map((n) => n.id)).toEqual(['mutual']);
     fixture.destroy();
   });
 

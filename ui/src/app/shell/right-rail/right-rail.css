@@ -306,3 +306,12 @@
 .spotlight-dismiss {
   flex: none;
 }
+.server-home {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.server-home:hover .server-title,
+.server-home:focus-visible .server-title {
+  text-decoration: underline;
+}

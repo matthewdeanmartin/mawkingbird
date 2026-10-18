@@ -45,6 +45,7 @@ export interface ProfileTrustEntry {
   acct: string;
   /** When they were trusted, epoch-ms. */
   since: number;
+  includeBoosts?: boolean;
 }
 
 /** The level and flags that apply beyond the named list. */

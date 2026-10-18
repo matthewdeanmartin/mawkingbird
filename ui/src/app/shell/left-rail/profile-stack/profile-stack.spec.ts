@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../../auth';
 import { Account } from '../../../models';
 import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
+import { seedBskySession } from '../../../testing/seed-storage';
 import { stubLocation } from '../../../testing/stub-location';
 import { ProfileStack } from './profile-stack';
 
@@ -39,9 +40,17 @@ describe('ProfileStack', () => {
     httpMock.verify();
   });
 
-  /** The active account plus the browser-local identity: a two-card deck. */
+  /** The active Mastodon account plus its Bluesky connector: a two-card deck. */
   function setUp(): ComponentFixture<ProfileStack> {
     TestBed.inject(AnonymousAccount).activate('https://mastodon.social');
+    seedBskySession({
+      service: 'https://bsky.social',
+      did: 'did:plc:matt',
+      handle: 'matt.bsky.social',
+      displayName: 'Matt on Bluesky',
+      accessJwt: 'test-access',
+      refreshJwt: 'test-refresh',
+    });
     TestBed.inject(Auth).account.set(ME);
     const fixture = TestBed.createComponent(ProfileStack);
     fixture.detectChanges();
@@ -59,7 +68,7 @@ describe('ProfileStack', () => {
 
     const peeks = fixture.nativeElement.querySelectorAll('.peek');
     expect(peeks).toHaveLength(1);
-    expect(peeks[0].textContent).toContain('Anonymous');
+    expect(peeks[0].textContent).toContain('Matt on Bluesky');
     expect(text(fixture, '.profile-name')).toContain('Matt');
   });
 
@@ -69,17 +78,17 @@ describe('ProfileStack', () => {
     fixture.nativeElement.querySelector('.peek').click();
     fixture.detectChanges();
 
-    expect(text(fixture, '.profile-name')).toContain('Anonymous');
+    expect(text(fixture, '.profile-name')).toContain('Matt on Bluesky');
     expect(fixture.nativeElement.querySelector('.peek').textContent).toContain('Matt');
-    expect(localStorage.getItem('mockingbird_rail_profile')).toBe('anonymous');
+    expect(localStorage.getItem('mockingbird_rail_profile')).toBe('bluesky:did:plc:matt');
   });
 
   it('reopens the card chosen last time', () => {
-    localStorage.setItem('mockingbird_rail_profile', 'anonymous');
+    localStorage.setItem('mockingbird_rail_profile', 'bluesky:did:plc:matt');
 
     const fixture = setUp();
 
-    expect(text(fixture, '.profile-name')).toContain('Anonymous');
+    expect(text(fixture, '.profile-name')).toContain('Matt on Bluesky');
   });
 
   it('falls back to the first card when the remembered one is gone', () => {
@@ -94,10 +103,8 @@ describe('ProfileStack', () => {
     const reload = vi.fn();
     stubLocation({ onReload: reload });
     const fixture = setUp();
-    fixture.nativeElement.querySelector('.peek').click();
-    fixture.detectChanges();
-
-    fixture.nativeElement.querySelector('.switch-btn').click();
+    expect(fixture.nativeElement.querySelector('.switch-btn')).toBeNull();
+    fixture.componentInstance.switchToLocal();
 
     expect(TestBed.inject(Auth).isAnonymous).toBe(true);
     expect(reload).toHaveBeenCalled();

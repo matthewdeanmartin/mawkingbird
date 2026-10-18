@@ -1,7 +1,7 @@
 // Adapts app.bsky notifications into Mastodon-shaped MastodonNotification.
 
 import { MastodonNotification, Status } from '../../models';
-import { adaptAuthor, adaptPost } from './bluesky-adapter';
+import { adaptAuthor, adaptPost, adaptRelationship } from './bluesky-adapter';
 import { BskyNotification, BskyPostRecord, BskyPostView } from './bluesky-types';
 
 /**
@@ -103,6 +103,7 @@ export function adaptNotification(
     type: notificationType(notification.reason),
     created_at: notification.indexedAt,
     account: adaptAuthor(notification.author),
+    ...(notification.author.viewer ? { relationship: adaptRelationship(notification.author) } : {}),
     status: notificationStatus(notification, subjects),
   };
 }

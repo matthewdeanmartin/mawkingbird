@@ -44,26 +44,30 @@
       </div>
     }
     @if (view() === 'notifications') {
-      <!-- Friends/Followers batches api.relationships() over account ids this
-           server issued. A `bsky:` id can only 400 there, so the filter is
-           hidden rather than shown and broken. -->
-      @if (source() === 'mastodon') {
-        <div
-          class="seg"
-          role="group"
-          [attr.aria-label]="'pages.notifications.audience.from' | transloco"
+      <div
+        class="seg audience-seg"
+        role="group"
+        [attr.aria-label]="'pages.notifications.audience.from' | transloco"
+      >
+        <button [class.active]="audience() === 'all'" (click)="audience.set('all')">
+          {{ 'pages.notifications.audience.all' | transloco }}
+        </button>
+        <button [class.active]="audience() === 'friends'" (click)="audience.set('friends')">
+          {{ 'pages.notifications.audience.following' | transloco }}
+        </button>
+        <button [class.active]="audience() === 'followers'" (click)="audience.set('followers')">
+          {{ 'pages.notifications.audience.followers' | transloco }}
+        </button>
+        <button [class.active]="audience() === 'mutuals'" (click)="audience.set('mutuals')">
+          {{ 'pages.notifications.audience.mutuals' | transloco }}
+        </button>
+        <button
+          [class.active]="audience() === 'not-following'"
+          (click)="audience.set('not-following')"
         >
-          <button [class.active]="audience() === 'all'" (click)="audience.set('all')">
-            {{ 'pages.notifications.audience.all' | transloco }}
-          </button>
-          <button [class.active]="audience() === 'friends'" (click)="audience.set('friends')">
-            {{ 'pages.notifications.audience.friends' | transloco }}
-          </button>
-          <button [class.active]="audience() === 'followers'" (click)="audience.set('followers')">
-            {{ 'pages.notifications.audience.followers' | transloco }}
-          </button>
-        </div>
-      }
+          {{ 'pages.notifications.audience.notFollowing' | transloco }}
+        </button>
+      </div>
       <!-- The type dropdown is built from whatever arrived, so it works for
            either source with no changes. -->
       <select
@@ -151,7 +155,15 @@
     </div>
   }
 } @else if (!visible().length) {
-  <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
+  @if (relationshipChecksPending()) {
+    <p class="muted center">{{ 'pages.notifications.checkingRelationships' | transloco }}</p>
+  } @else if (relationshipCheckFailed()) {
+    <p class="muted center" role="alert">
+      {{ 'pages.notifications.relationshipCheckFailed' | transloco }}
+    </p>
+  } @else {
+    <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
+  }
 } @else {
   @for (row of rows(); track row.key) {
     @if (row.kind === 'group') {

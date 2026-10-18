@@ -214,11 +214,15 @@
     @if (instance() || homeHost()) {
       <div class="server-info">
         @if (instance(); as info) {
-          <p class="server-title">{{ info.title }}</p>
-          <p class="muted server-line">{{ info.domain }} &middot; v{{ info.version }}</p>
-          <p class="muted server-line">
-            {{ 'shell.rail.activeThisMonth' | transloco: { count: info.usage.users.active_month } }}
-          </p>
+          <a class="server-home" [href]="serverHomeUrl()" target="_blank" rel="noopener noreferrer">
+            <p class="server-title">{{ info.title }}</p>
+            <p class="muted server-line">{{ info.domain }} &middot; v{{ info.version }}</p>
+            <p class="muted server-line">
+              {{
+                'shell.rail.activeThisMonth' | transloco: { count: info.usage.users.active_month }
+              }}
+            </p>
+          </a>
         }
 
         <!-- Two servers are in play, so the card names two rather than one.

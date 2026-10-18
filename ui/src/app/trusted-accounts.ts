@@ -37,6 +37,8 @@ export interface Entry {
   acct: string;
   /** When they were trusted, epoch-ms — lets the list sort by most recent. */
   since: number;
+  /** Also trust content this account retweets, regardless of its author. */
+  includeBoosts?: boolean;
 }
 
 interface StoredState {
@@ -172,12 +174,19 @@ export class TrustedAccounts {
   /**
    * Does a boost carry trust from the booster to the boosted post?
    *
-   * Only at `follows-boosts`, and only when the *booster* is someone the rule
-   * covers. Everywhere else a boost is someone else's content passing through a
-   * friend, and gets judged on its own author.
+   * Explicit per-account retweet trust applies at every enabled level. The
+   * broader `follows-boosts` level also covers boosters trusted by that rule.
    */
   private boostCarriesTrust(booster: Pick<Account, 'acct' | 'url' | 'id'> | null | undefined) {
-    return this.trustsBoosts() && !!booster && this.trusts(booster);
+    return (
+      this.level() !== 'none' &&
+      !!booster &&
+      (this.includesBoosts(booster) || (this.trustsBoosts() && this.trusts(booster)))
+    );
+  }
+
+  includesBoosts(account: Pick<Account, 'acct' | 'url' | 'id'>): boolean {
+    return this.entries()[accountKey(account)]?.includeBoosts === true;
   }
 
   /**
@@ -188,9 +197,8 @@ export class TrustedAccounts {
    * the booster) — trusting someone is about what they write, and a boost is
    * someone else's content passing through.
    *
-   * `booster` is that passer-through, and matters only at `follows-boosts`,
-   * where the point of the level is precisely that a friend's boost vouches for
-   * what it carries.
+   * `booster` vouches for the displayed content when their retweets are explicitly
+   * trusted or the broader `follows-boosts` level covers them.
    */
   cwExpanded(
     account: Pick<Account, 'acct' | 'url' | 'id'> | null | undefined,
@@ -207,11 +215,12 @@ export class TrustedAccounts {
     return this.showAllSensitive() || this.trusts(account) || this.boostCarriesTrust(booster);
   }
 
-  trust(account: Pick<Account, 'acct' | 'url' | 'id'>): void {
+  trust(account: Pick<Account, 'acct' | 'url' | 'id'>, includeBoosts = false): void {
     const key = accountKey(account);
     const entry: Entry = {
       acct: account.acct || account.url || account.id,
       since: Date.now(),
+      ...(includeBoosts ? { includeBoosts: true } : {}),
     };
     this.state.update((prev) =>
       this.persist({ ...prev, entries: { ...prev.entries, [key]: entry } }),
@@ -359,6 +368,7 @@ function load(): StoredState {
         entries[key] = {
           acct: typeof entry.acct === 'string' ? entry.acct : key,
           since: typeof entry.since === 'number' ? entry.since : 0,
+          ...(entry.includeBoosts === true ? { includeBoosts: true } : {}),
         };
       }
     }

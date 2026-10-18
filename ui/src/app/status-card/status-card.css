@@ -24,6 +24,10 @@
   background: color-mix(in srgb, var(--col-bg) 90%, var(--text) 10%);
 }
 
+:host-context([data-theme='dark']) .status.mutual {
+  background: color-mix(in srgb, var(--col-bg) 94%, var(--text) 6%);
+}
+
 .status {
   background: var(--col-bg);
   color: var(--text);

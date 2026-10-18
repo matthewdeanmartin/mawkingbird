@@ -26,3 +26,8 @@
 .add-field {
   align-self: flex-start;
 }
+
+.profile-bio {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}

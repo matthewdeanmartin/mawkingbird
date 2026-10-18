@@ -43,13 +43,17 @@
     <div class="srow">
       <span class="slabel">{{ 'settings.profile.bio' | transloco }}</span>
       <div class="scontrol">
-        <textarea
-          rows="3"
-          [ngModel]="note()"
-          (ngModelChange)="note.set($event)"
-          name="note"
-          [maxlength]="auth.isBlueskyPrimary ? 256 : null"
-        ></textarea>
+        <div class="profile-bio" [innerHTML]="renderedNote() | customEmoji: profileEmojis()"></div>
+        <button
+          mbButton
+          type="button"
+          variant="outline"
+          size="small"
+          [disabled]="saving()"
+          (click)="bioDialog.set(true)"
+        >
+          {{ 'settings.profile.bio.edit' | transloco }}
+        </button>
         <span class="hint">{{ 'settings.profile.bio.hint' | transloco }}</span>
       </div>
     </div>
@@ -191,6 +195,15 @@
     </button>
   </div>
 </form>
+@if (bioDialog()) {
+  <app-profile-bio-dialog
+    [text]="note()"
+    [emojis]="profileEmojis()"
+    [limit]="auth.isBlueskyPrimary ? 256 : null"
+    (cancelled)="bioDialog.set(false)"
+    (applied)="applyBio($event)"
+  />
+}
 
 @if (linkDialog(); as mode) {
   <app-profile-link-dialog

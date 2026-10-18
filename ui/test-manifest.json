@@ -6084,7 +6084,7 @@
     "src/app/shell/left-rail/profile-stack/rail-profiles.spec.ts :: RailProfiles counts local follows and hashtags instead of asking the server in local mode",
     "src/app/shell/left-rail/profile-stack/rail-profiles.spec.ts :: RailProfiles does not advertise a local identity that has never been used",
     "src/app/shell/left-rail/profile-stack/rail-profiles.spec.ts :: RailProfiles keeps the Bluesky card, without counts, when its profile fetch fails",
-    "src/app/shell/left-rail/profile-stack/rail-profiles.spec.ts :: RailProfiles offers the browser-local identity as its own card when it is not active",
+    "src/app/shell/left-rail/profile-stack/rail-profiles.spec.ts :: RailProfiles omits the browser-local identity card even when it has been used",
     "src/app/shell/right-rail/right-rail.spec.ts :: RightRail \"Share this server\" opens a dialog instead of navigating",
     "src/app/shell/right-rail/right-rail.spec.ts :: RightRail by account kind falls back to getTrendingTopics when getTrends refuses",
     "src/app/shell/right-rail/right-rail.spec.ts :: RightRail by account kind gives the Mastodon widgets back once the connector is opted into",

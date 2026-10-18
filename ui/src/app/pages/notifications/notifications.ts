@@ -23,9 +23,11 @@ import { PageDiagnostics } from '../../page-diagnostics';
 import { Auth } from '../../auth';
 import { BlueskyNotifications } from '../../providers/bluesky/bluesky-notifications';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
+import { adaptRelationship } from '../../providers/bluesky/bluesky-adapter';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
-type NotifAudience = 'all' | 'friends' | 'followers';
+type NotifAudience = 'all' | 'friends' | 'followers' | 'mutuals' | 'not-following';
 type NotificationView = 'notifications' | 'new-accounts';
 
 /** Each network keeps its own cursor; rows can be merged by creation time. */
@@ -52,6 +54,9 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.audience.from: From
 // i18n pages.notifications.audience.all: All
 // i18n pages.notifications.audience.friends: Friends
+// i18n pages.notifications.audience.following: Following
+// i18n pages.notifications.audience.mutuals: Mutuals
+// i18n pages.notifications.audience.notFollowing: Not following
 // i18n pages.notifications.audience.followers: Followers
 // i18n pages.notifications.type.title: Notification type
 // i18n pages.notifications.type.all: All types
@@ -62,6 +67,7 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.loading: Loading…
 // i18n pages.notifications.empty: No notifications yet.
 // i18n pages.notifications.checkingAccounts: Checking which accounts are new to you…
+// i18n pages.notifications.checkingRelationships: Checking account relationships…
 // i18n pages.notifications.relationshipCheckFailed: Couldn’t check account relationships. Try this view again.
 // i18n pages.notifications.noUnfamiliarAccounts: No unfamiliar accounts in the notifications loaded so far.
 // i18n pages.notifications.noMatch: No notifications match the filters.
@@ -418,8 +424,18 @@ export class Notifications implements OnInit, OnDestroy {
       if (audience === 'all') {
         return true;
       }
-      const r = rels.get(n.account.id);
-      return audience === 'friends' ? !!r?.following : !!r?.followed_by;
+      const r = rels.get(n.account.id) ?? n.relationship;
+      if (!r) return false;
+      switch (audience) {
+        case 'friends':
+          return r.following;
+        case 'followers':
+          return r.followed_by;
+        case 'mutuals':
+          return r.following && r.followed_by;
+        case 'not-following':
+          return !r.following;
+      }
     });
   });
 
@@ -435,14 +451,8 @@ export class Notifications implements OnInit, OnDestroy {
   protected listTarget = signal<{ statusId: string; mode: AccountListMode } | null>(null);
 
   constructor() {
+    const blueskyApi = inject(BlueskyApi);
     effect(() => {
-      // `bsky:` ids name nothing this server issued, so batching them into
-      // /api/v1/accounts/relationships can only 400. The controls that need
-      // relationships are hidden for Bluesky anyway; this stops the effect
-      // firing at all.
-      if (this.source() !== 'mastodon') {
-        return;
-      }
       if (this.audience() === 'all' && this.view() !== 'new-accounts') {
         return;
       }
@@ -450,6 +460,7 @@ export class Notifications implements OnInit, OnDestroy {
         ...new Set(
           this.items()
             .filter((notification) => !isSameAccount(notification.account, this.auth.account()))
+            .filter((notification) => !notification.relationship)
             .map((n) => n.account.id)
             .filter((id) => !this.requestedRels.has(id)),
         ),
@@ -462,28 +473,59 @@ export class Notifications implements OnInit, OnDestroy {
       }
       this.relationshipChecksPending.update((count) => count + 1);
       this.relationshipCheckFailed.set(false);
-      this.api.relationships(missing).subscribe({
-        next: (list) => {
-          this.rels.update((map) => {
-            const next = new Map(map);
-            for (const r of list) {
-              next.set(r.id, r);
+      const mastodonIds = missing.filter((id) => !id.startsWith('bsky:'));
+      const blueskyIds = missing.filter((id) => id.startsWith('bsky:'));
+      const requests: Observable<Relationship[]>[] = [];
+      if (mastodonIds.length) requests.push(this.api.relationships(mastodonIds));
+      for (let offset = 0; offset < blueskyIds.length; offset += 25) {
+        requests.push(
+          blueskyApi
+            .getProfiles(blueskyIds.slice(offset, offset + 25).map((id) => id.slice(5)))
+            .pipe(
+              map(({ profiles }) =>
+                profiles.filter((profile) => !!profile.viewer).map(adaptRelationship),
+              ),
+            ),
+        );
+      }
+      forkJoin(
+        requests.map((request) =>
+          request.pipe(
+            timeout(15_000),
+            catchError((error: unknown) => {
+              for (const id of missing) this.requestedRels.delete(id);
+              this.relationshipCheckFailed.set(true);
+              this.diagnostics.error('Notifications', 'load:relationships-error', error, {
+                accounts: missing.length,
+              });
+              return of([] as Relationship[]);
+            }),
+          ),
+        ),
+      )
+        .pipe(map((batches) => batches.flat()))
+        .subscribe({
+          next: (list) => {
+            this.rels.update((map) => {
+              const next = new Map(map);
+              for (const r of list) {
+                next.set(r.id, r);
+              }
+              return next;
+            });
+            this.relationshipChecksPending.update((count) => Math.max(0, count - 1));
+          },
+          error: (error: unknown) => {
+            for (const id of missing) {
+              this.requestedRels.delete(id);
             }
-            return next;
-          });
-          this.relationshipChecksPending.update((count) => Math.max(0, count - 1));
-        },
-        error: (error: unknown) => {
-          for (const id of missing) {
-            this.requestedRels.delete(id);
-          }
-          this.relationshipChecksPending.update((count) => Math.max(0, count - 1));
-          this.relationshipCheckFailed.set(true);
-          this.diagnostics.error('Notifications', 'load:relationships-error', error, {
-            accounts: missing.length,
-          });
-        },
-      });
+            this.relationshipChecksPending.update((count) => Math.max(0, count - 1));
+            this.relationshipCheckFailed.set(true);
+            this.diagnostics.error('Notifications', 'load:relationships-error', error, {
+              accounts: missing.length,
+            });
+          },
+        });
     });
   }
 
@@ -530,9 +572,7 @@ export class Notifications implements OnInit, OnDestroy {
       return;
     }
     this.source.set(source);
-    // Mastodon-only controls do not survive the switch; reset them so coming
-    // back does not land on a filter the other list could not honour.
-    this.audience.set('all');
+    // Keep the audience filter when moving between networks.
     this.typeFilter.set('all');
     this.view.set('notifications');
     // No explicit stop: `syncLive` reads `source()`, so switching to Bluesky

@@ -1,5 +1,26 @@
 # Sprint 6 opening consolidation audit
 
+## Notification parity and profile controls, 2026-10-18
+
+Reviewed the regenerated inventory: 1,137 maintained source files and 233 candidate
+files. The sole new candidate, ProfileBioDialog, reuses Dialog, Field/Control and
+Button for an isolated plain-text editor, emoji insertion, preview and Apply/Cancel.
+The profile settings bio now renders its content and opens that dialog with Button.
+Notification audience filters retain the existing segmented control layout across
+networks, adding Mutuals and Not following. Profile retweet-trust actions retain the
+existing menu-row pattern. The server summary is one native external link, and the
+mutual-post background uses a darker theme-specific token mix. Remaining inventory
+changes are source line shifts; no candidate files were removed. Reconciled the new
+dialog in 11-reconciliation.json. No shared widget implementations changed.
+
+Production-browser checks passed at desktop and 390px widths for bio source text,
+preview, Cancel/Escape, focus return and overflow. The notification audience controls
+fit the phone viewport. The server summary links to the configured homepage. Profile
+menu checks confirmed account-only trust leaves retweets collapsed, explicit retweet
+trust opens CWs and reveals media, reload preserves it, and account-only trust revokes
+that extension. Dark mutual-card contrast measured 13.23:1 for text and 6.87:1 for
+muted text with the default dark palette.
+
 ## Reachable profile previews and internal destinations, 2026-10-17
 
 AccountPreview uses the existing profile summary as an external anchor for the

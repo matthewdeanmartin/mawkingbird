@@ -208,6 +208,7 @@ export class CollectionAdoptionRunner {
       key,
       acct: entry.acct,
       since: entry.since,
+      ...(entry.includeBoosts ? { includeBoosts: true } : {}),
     }));
     const plan = planAdoption(local, this.profileTrust.entries(), choice, (entry) => entry.key);
 
@@ -233,7 +234,11 @@ export class CollectionAdoptionRunner {
 
     const entries: Record<string, Entry> = {};
     for (const entry of plan.local) {
-      entries[entry.key] = { acct: entry.acct, since: entry.since };
+      entries[entry.key] = {
+        acct: entry.acct,
+        since: entry.since,
+        ...(entry.includeBoosts ? { includeBoosts: true } : {}),
+      };
     }
     this.localTrust.adoptAll(entries, settings);
     return true;

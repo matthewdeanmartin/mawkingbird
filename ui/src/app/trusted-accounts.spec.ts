@@ -58,6 +58,32 @@ describe('TrustedAccounts', () => {
     expect(trusted.isTrusted(account('alice'))).toBe(false);
   });
 
+  it('extends individual trust to retweeted content only when explicitly selected, and persists it', () => {
+    const alice = account('alice');
+    const stranger = account('stranger');
+    trusted.trust(alice);
+    expect(trusted.cwExpanded(stranger, alice)).toBe(false);
+    expect(trusted.sensitiveShown(stranger, alice)).toBe(false);
+    trusted.trust(alice, true);
+    expect(trusted.cwExpanded(stranger, alice)).toBe(true);
+    expect(trusted.sensitiveShown(stranger, alice)).toBe(true);
+    expect(trusted.cwExpanded(stranger)).toBe(false);
+    expect(trusted.sensitiveShown(stranger, account('bob'))).toBe(false);
+    const restored = withFollows();
+    expect(restored.includesBoosts(alice)).toBe(true);
+    expect(restored.sensitiveShown(stranger, alice)).toBe(true);
+    restored.setLevel('none');
+    expect(restored.cwExpanded(stranger, alice)).toBe(false);
+    expect(restored.sensitiveShown(stranger, alice)).toBe(false);
+    restored.setLevel('individuals');
+    restored.trust(alice, false);
+    expect(restored.cwExpanded(alice)).toBe(true);
+    expect(restored.cwExpanded(stranger, alice)).toBe(false);
+    restored.trust(alice, true);
+    restored.untrust(alice);
+    expect(restored.sensitiveShown(stranger, alice)).toBe(false);
+  });
+
   it('trusts and untrusts an account', () => {
     const alice = account('alice');
     trusted.trust(alice);

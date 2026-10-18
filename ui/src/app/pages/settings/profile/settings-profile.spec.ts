@@ -10,8 +10,10 @@ import { seedBskyIdentity } from '../../../testing/seed-storage';
 import { SettingsProfile } from './settings-profile';
 import { By } from '@angular/platform-browser';
 import { ProfileLinkDialog } from './profile-link-dialog';
+import { ProfileBioDialog } from './profile-bio-dialog';
 
 interface SettingsProfileInternals {
+  bioDialog: WritableSignal<boolean>;
   bot: WritableSignal<boolean>;
   displayName: WritableSignal<string>;
   username: WritableSignal<string>;
@@ -103,6 +105,71 @@ describe('SettingsProfile', () => {
     expect(c.displayName()).toBe('Alice');
     expect(c.note()).toBe('source note');
     expect(c.fields()).toEqual([{ name: 'Web', value: 'example.com' }]);
+  });
+
+  it('counts complete emoji in the bio editor and preserves oversized content for editing', async () => {
+    const fixture = TestBed.createComponent(ProfileBioDialog);
+    fixture.componentRef.setInput('text', '🐟'.repeat(257));
+    fixture.componentRef.setInput('limit', 256);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+    const apply = fixture.nativeElement.querySelector(
+      '[mbDialogActions] button:last-child',
+    ) as HTMLButtonElement;
+    expect(textarea.value).toBe('🐟'.repeat(257));
+    expect(apply.disabled).toBe(true);
+    textarea.value = '🐟'.repeat(256);
+    textarea.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(apply.disabled).toBe(false);
+    let applied = '';
+    fixture.componentInstance.applied.subscribe((value) => {
+      applied = value;
+    });
+    apply.click();
+    expect(applied).toBe('🐟'.repeat(256));
+    textarea.value = '<script>alert(1)</script>\nhttps://example.org';
+    textarea.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const preview = fixture.nativeElement.querySelector('.bio-preview');
+    expect(preview.querySelector('script')).toBeNull();
+    expect(preview.textContent).toContain('<script>alert(1)</script>');
+    expect(preview.querySelector('a').href).toBe('https://example.org/');
+  });
+
+  it('renders the bio and edits plain source in a separate dialog without saving on Apply', async () => {
+    const fixture = TestBed.createComponent(SettingsProfile);
+    fixture.detectChanges();
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ ...makeAccount(), note: '<p>Visit <a href="https://example.org">my site</a></p>' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.profile-bio a').href).toBe('https://example.org/');
+    expect(fixture.nativeElement.querySelector('textarea')).toBeNull();
+    const c = internals(fixture);
+    c.bioDialog.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let dialog = fixture.debugElement.query(By.directive(ProfileBioDialog))
+      .componentInstance as ProfileBioDialog;
+    expect(dialog.text()).toBe('source note');
+    dialog.cancelled.emit();
+    fixture.detectChanges();
+    expect(c.note()).toBe('source note');
+    expect(c.bioDialog()).toBe(false);
+    c.bioDialog.set(true);
+    fixture.detectChanges();
+    dialog = fixture.debugElement.query(By.directive(ProfileBioDialog)).componentInstance;
+    dialog.applied.emit('New bio\nhttps://example.net');
+    fixture.detectChanges();
+    expect(c.note()).toBe('New bio\nhttps://example.net');
+    expect(fixture.nativeElement.querySelector('.profile-bio a').href).toBe('https://example.net/');
+    httpMock.expectNone('/api/v1/accounts/update_credentials');
+    c.saveProfile();
+    const save = httpMock.expectOne('/api/v1/accounts/update_credentials');
+    expect(save.request.body.get('note')).toBe('New bio\nhttps://example.net');
+    save.flush(makeAccount());
   });
 
   it('loads and saves the server bot flag in both directions', () => {

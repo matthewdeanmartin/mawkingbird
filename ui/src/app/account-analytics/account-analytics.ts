@@ -78,7 +78,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.tiles.estReachPerPost: Est. reach / post
 // i18n accountAnalytics.tiles.liveliness: Liveliness
 // i18n accountAnalytics.tiles.recentPostsPerDay: Recent posts / day
-// i18n accountAnalytics.audience.heading: Effective friends &amp; followers
+// i18n accountAnalytics.audience.heading: Effective friends & followers
 // i18n accountAnalytics.audience.explain: How much of the audience is still posting. Counts marked ~ are estimated from a partial scan.
 // i18n accountAnalytics.audience.friends: Friends
 // i18n accountAnalytics.audience.effectiveFriends: Effective friends
