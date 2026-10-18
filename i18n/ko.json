@@ -5562,7 +5562,6 @@
     "account.exitAnonymous": "익명 탐색 종료",
     "account.logout": "로그아웃",
     "account.menuFor": "{{name}}의 계정 메뉴",
-    "account.saved": "저장된 계정",
     "account.switch": "계정 전환",
     "brandHome": "{{brand}} 홈",
     "dead.cancel": "취소",
