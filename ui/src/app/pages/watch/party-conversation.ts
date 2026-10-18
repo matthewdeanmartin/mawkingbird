@@ -26,6 +26,7 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbHelp } from '../../design-system/help/help';
 
 // i18n watch.party.add: Add hashtag to party
+// i18n watch.party.addShort: Add
 // i18n watch.party.tags: Party hashtags
 // i18n watch.party.help: About party hashtags
 // i18n watch.party.temporary: These tags mix public posts with the video's comments for this visit only. Nothing is followed or saved. Updates come from your server's hashtag feeds; refresh retries unavailable feeds.
@@ -42,7 +43,7 @@ import { MbHelp } from '../../design-system/help/help';
   imports: [FormsModule, TranslocoPipe, StatusCard, MbButton, MbField, MbControl, MbHelp],
   template: `
     <form (ngSubmit)="addInput()">
-      <mb-field [label]="'watch.party.tags' | transloco">
+      <mb-field density="compact" [hideLabel]="true" [label]="'watch.party.tags' | transloco">
         <input
           mbControl
           name="tags"
@@ -51,8 +52,14 @@ import { MbHelp } from '../../design-system/help/help';
           [placeholder]="'watch.party.placeholder' | transloco"
         />
       </mb-field>
-      <button mbButton type="submit" size="small" [disabled]="!draft().trim()">
-        {{ 'watch.party.add' | transloco }}
+      <button
+        mbButton
+        type="submit"
+        size="small"
+        [attr.aria-label]="'watch.party.add' | transloco"
+        [disabled]="!draft().trim()"
+      >
+        {{ 'watch.party.addShort' | transloco }}
       </button>
       <mb-help [label]="'watch.party.help' | transloco"
         ><p>{{ 'watch.party.temporary' | transloco }}</p></mb-help
@@ -115,11 +122,23 @@ import { MbHelp } from '../../design-system/help/help';
     .party-tags {
       display: flex;
       gap: 0.3rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       margin-block: 0.5rem;
     }
     form {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
       margin-block: 0.75rem;
+    }
+    mb-field {
+      flex: 1;
+      min-width: 0;
+    }
+    .party-tags button {
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
   `,
 })

@@ -21,6 +21,9 @@
   background: var(--col-bg);
   color: var(--ds-action-text);
 }
+[mbButton][data-shape='rounded'] {
+  border-radius: 8px;
+}
 
 :is(.btn, [mbButton]):is(.btn-sm, .btn-small, [data-size='small']) {
   min-height: 30px;

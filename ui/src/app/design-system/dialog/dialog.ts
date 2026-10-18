@@ -20,6 +20,7 @@ const locks = new WeakMap<HTMLElement, { count: number; overflow: string; gutter
     <dialog
       #dialog
       [attr.data-presentation]="presentation()"
+      [attr.data-size]="size()"
       [attr.role]="dialogRole()"
       [attr.aria-labelledby]="id"
       [attr.aria-describedby]="description() ? id + '-description' : null"
@@ -54,6 +55,7 @@ export class MbDialog implements OnDestroy {
   readonly closeLabel = input.required<string>();
   readonly description = input('');
   readonly presentation = input<'dialog' | 'drawer'>('dialog');
+  readonly size = input<'standard' | 'wide'>('standard');
   readonly dialogRole = input<'dialog' | 'alertdialog'>('dialog');
   readonly showClose = input(true);
   readonly busy = input(false);

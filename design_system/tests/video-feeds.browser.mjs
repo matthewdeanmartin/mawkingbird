@@ -18,7 +18,15 @@ for (const theme of ["light", "dark"]) {
       `/iframe.html?id=start-here-video-feeds--subscriptions&viewMode=story&globals=theme:${theme}`,
     );
     const feed = page.locator(".video-feed");
+    const sort = page.getByLabel("Sort videos", { exact: true });
+    await expect(sort).toHaveCSS("appearance", "auto");
+    await expect(sort).toHaveCSS("border-top-style", "solid");
+    await expect(page.locator(".youtube-preview").first()).toHaveCSS(
+      "border-radius",
+      "8px",
+    );
     await expect(feed.locator("header button")).toHaveText([
+      "Customize",
       "Refresh",
       "Main feed",
       "Saved videos",
@@ -57,6 +65,10 @@ for (const theme of ["light", "dark"]) {
       .click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
+    await page.setViewportSize({ width: 1280, height: 900 });
+    expect((await dialog.boundingBox()).width).toBeGreaterThan(700);
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect((await dialog.boundingBox()).width).toBeLessThanOrEqual(390);
     const body = dialog.locator("textarea").first();
     await expect(body).toHaveValue(/How lamps work/);
     await expect(body).toHaveValue(/#TechnologyConnections/);

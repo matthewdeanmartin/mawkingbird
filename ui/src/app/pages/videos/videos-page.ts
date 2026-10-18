@@ -8,6 +8,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbField, MbControl } from '../../design-system/field/field';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { Compose } from '../../compose/compose';
+import { ClientPrefs } from '../../client-prefs';
 import { Auth } from '../../auth';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { MbButton } from '../../design-system/button/button';
@@ -28,6 +29,10 @@ import {
 } from './video-items';
 
 // i18n videos.main: Main feed
+// i18n videos.customize: Customize
+// i18n videos.autoLoadWatch: Automatically load YouTube players on Watch
+// i18n videos.autoLoadWatchHint: Connect to YouTube when opening Watch. Videos still start paused; feed previews load only when clicked.
+// i18n videos.feedSettings: Feed and cache settings
 // i18n videos.sort: Sort videos
 // i18n videos.oldest: Oldest first
 // i18n videos.titleSort: Title A–Z
@@ -78,6 +83,8 @@ import {
   styleUrl: './videos-page.css',
 })
 export class VideosPage {
+  protected prefs = inject(ClientPrefs);
+  protected customizing = signal(false);
   protected subs = inject(VideoSubscriptions);
   protected supporter = inject(SupporterStatus);
   protected reads = inject(RssReadState);

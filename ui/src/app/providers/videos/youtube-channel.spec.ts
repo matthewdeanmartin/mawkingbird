@@ -27,11 +27,17 @@ describe('YouTube channel resolution', () => {
     'javascript:alert(1)',
     'https://youtube.com:444/@x',
     'https://youtube.com/watch?v=0KoeY54M5VA',
-    'cats',
+    'cats and dogs',
     `https://youtube.com/channel/${id}/../../watch`,
   ])('rejects non-channel and hostile input %s', (input) => {
     expect(channelInput(input)).toBeNull();
   });
+  it.each(['pdina', 'youtube.com/pdina', 'https://youtube.com/pdina'])(
+    'accepts a bare channel alias %s',
+    (input) => {
+      expect(channelInput(input)).toEqual({ url: 'https://www.youtube.com/c/pdina' });
+    },
+  );
   it('reads RSS and display metadata without executing scripts', () => {
     const html = `<meta property="og:title" content="Example &amp; Co"><link rel="alternate" href="${videoFeedUrl(id)}"><script>throw new Error('must not execute')</script>`;
     expect(channelFromHtml(html)).toEqual({ id, title: 'Example & Co' });

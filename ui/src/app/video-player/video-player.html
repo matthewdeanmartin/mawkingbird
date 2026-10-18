@@ -29,11 +29,18 @@
       </label>
     }
   } @else if (!activated()) {
-    @if (source().poster; as poster) {
-      <img [src]="poster" alt="" loading="lazy" />
-    }
-    <button type="button" mbButton (click)="activated.set(true)">
-      {{ 'videoPlayer.loadYoutube' | transloco }}
+    <button
+      class="youtube-preview"
+      type="button"
+      mbButton
+      variant="outline"
+      shape="rounded"
+      (click)="activated.set(true)"
+    >
+      @if (source().poster; as poster) {
+        <img [src]="poster" alt="" loading="lazy" />
+      }
+      <span>{{ 'videoPlayer.loadYoutube' | transloco }}</span>
     </button>
   } @else if (!failed()) {
     <iframe

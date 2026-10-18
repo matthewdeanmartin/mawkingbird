@@ -43,6 +43,9 @@ mb-field textarea.mb-control {
   min-height: 96px;
   resize: vertical;
 }
+mb-field select.mb-control {
+  appearance: auto;
+}
 
 mb-field .mb-control::placeholder {
   color: var(--muted);

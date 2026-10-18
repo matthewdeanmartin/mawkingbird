@@ -432,6 +432,7 @@ interface StoredPrefs {
   zenMode?: boolean;
   analytics?: boolean;
   requireAltText?: boolean;
+  autoLoadYoutubeWatch?: boolean;
   thoughtfulPosting?: boolean;
   autoShowMiniComposer?: boolean;
   warnOnPkmPublish?: boolean;
@@ -758,6 +759,7 @@ export class ClientPrefs {
   readonly analytics = signal<boolean>(true);
   /** Opt-in: refuse to post while any attached image lacks alt text. */
   readonly requireAltText = signal<boolean>(true);
+  readonly autoLoadYoutubeWatch = signal<boolean>(false);
 
   /**
    * Thoughtful posting: nothing publishes straight from a text box.
@@ -1499,6 +1501,7 @@ export class ClientPrefs {
     this.loadBool(stored.zenMode, this.zenMode);
     this.loadBool(stored.analytics, this.analytics);
     this.loadBool(stored.requireAltText, this.requireAltText);
+    this.loadBool(stored.autoLoadYoutubeWatch, this.autoLoadYoutubeWatch);
     this.loadBool(stored.thoughtfulPosting, this.thoughtfulPosting);
     this.loadBool(stored.autoShowMiniComposer, this.autoShowMiniComposer);
     this.customBg.set(normalizeColor(stored.customBg ?? null));
@@ -1576,6 +1579,7 @@ export class ClientPrefs {
       zenMode: this.zenMode(),
       analytics: this.analytics(),
       requireAltText: this.requireAltText(),
+      autoLoadYoutubeWatch: this.autoLoadYoutubeWatch(),
       thoughtfulPosting: this.thoughtfulPosting(),
       autoShowMiniComposer: this.autoShowMiniComposer(),
       warnOnPkmPublish: this.warnOnPkmPublish(),

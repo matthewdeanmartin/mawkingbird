@@ -5,6 +5,9 @@
   </aside>
   <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
     <header>
+      <button mbButton variant="outline" type="button" (click)="customizing.set(true)">
+        {{ 'videos.customize' | transloco }}
+      </button>
       <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load(true)">
         {{ 'videos.refresh' | transloco }}
       </button>
@@ -29,7 +32,7 @@
     </header>
     @if (results() === null) {
       <div class="sort-bar">
-        <mb-field density="compact" [hideLabel]="true" [label]="'videos.sort' | transloco">
+        <mb-field [label]="'videos.sort' | transloco">
           <select mbControl [ngModel]="sort()" (ngModelChange)="sort.set($event)">
             @for (option of sortOptions; track option) {
               <option [value]="option">{{ sortLabels[option] | transloco }}</option>
@@ -195,17 +198,36 @@
 
 @if (response(); as draft) {
   <mb-dialog
+    size="wide"
     [title]="'videos.response' | transloco"
     [closeLabel]="'videos.cancel' | transloco"
     (dismissed)="response.set(null)"
   >
     <app-compose
-      [compact]="true"
+      [compact]="false"
       [draftContext]="'video-response:' + draft.id"
       [initialText]="draft.text"
       [initialTarget]="responseTarget()"
       initialVisibility="public"
       (posted)="response.set(null)"
     />
+  </mb-dialog>
+}
+@if (customizing()) {
+  <mb-dialog
+    [title]="'videos.customize' | transloco"
+    [closeLabel]="'videos.closeDetails' | transloco"
+    (dismissed)="customizing.set(false)"
+  >
+    <label
+      ><input
+        type="checkbox"
+        [checked]="prefs.autoLoadYoutubeWatch()"
+        (change)="prefs.autoLoadYoutubeWatch.set($any($event.target).checked)"
+      />
+      {{ 'videos.autoLoadWatch' | transloco }}</label
+    >
+    <p>{{ 'videos.autoLoadWatchHint' | transloco }}</p>
+    <a routerLink="/settings/rss">{{ 'videos.feedSettings' | transloco }}</a>
   </mb-dialog>
 }

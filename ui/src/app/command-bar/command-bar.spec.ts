@@ -34,6 +34,11 @@ describe('CommandBar', () => {
     button('Reader').click();
     expect(prefs.feedReader()).toBe(true);
     expect(views.at(-1)).toBe('feed');
+    fixture.componentRef.setInput('view', 'analytics');
+    fixture.detectChanges();
+    button('Reader').click();
+    expect(views.at(-1)).toBe('feed');
+    expect(prefs.feedReader()).toBe(false);
   });
 
   it('offers Video next to Media on Home and emits local text focus without changing global preferences', () => {
@@ -56,6 +61,18 @@ describe('CommandBar', () => {
     buttons.find((button) => button.textContent?.includes('Text'))!.click();
     expect(focus).toEqual([true]);
     expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
+    fixture.componentRef.setInput('showMyTags', true);
+    fixture.componentRef.setInput('myTags', true);
+    fixture.componentRef.setInput('view', 'members');
+    fixture.detectChanges();
+    const tags: boolean[] = [];
+    fixture.componentInstance.myTagsChange.subscribe((value) => tags.push(value));
+    const tagButton = [...row.querySelectorAll('button')].find((button) =>
+      (button as HTMLButtonElement).textContent?.includes('My tags'),
+    ) as HTMLButtonElement;
+    tagButton.click();
+    expect(tags).toEqual([false]);
+    expect(views.at(-1)).toBe('feed');
   });
   it('uses independent toolbar focus groups and leaves navigation links outside them', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });

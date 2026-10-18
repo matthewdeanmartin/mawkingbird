@@ -6,6 +6,7 @@ import { Auth } from '../auth';
 import { Server } from '../server';
 import { VideoPlayer } from './video-player';
 import { Playback } from './playback';
+import { ClientPrefs } from '../client-prefs';
 import { VideoSource, youtubeSource } from './media-source';
 
 const streaming = vi.hoisted(() => ({
@@ -40,6 +41,7 @@ describe('VideoPlayer user control', () => {
   let play: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    localStorage.clear();
     vi.clearAllMocks();
     vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => undefined);
     vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
@@ -72,6 +74,25 @@ describe('VideoPlayer user control', () => {
     fixture.detectChanges();
     return fixture.nativeElement.querySelector('video');
   }
+  it('activates YouTube by clicking its preview image', () => {
+    mount({
+      ...youtubeSource('https://youtu.be/0KoeY54M5VA')!,
+      poster: 'https://example.test/poster.jpg',
+    });
+    fixture.nativeElement.querySelector('.youtube-preview img').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('iframe')).not.toBeNull();
+    expect(play).not.toHaveBeenCalled();
+  });
+  it('optionally loads Watch paused while leaving feed previews unactivated', () => {
+    TestBed.inject(ClientPrefs).autoLoadYoutubeWatch.set(true);
+    mount(youtubeSource('https://youtu.be/0KoeY54M5VA')!);
+    expect(fixture.nativeElement.querySelector('iframe').src).toContain('autoplay=0');
+    fixture.componentRef.setInput('inline', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
+    expect(play).not.toHaveBeenCalled();
+  });
 
   it('loads HLS without autoplay, starts on Play, and releases the stream on removal', async () => {
     vi.spyOn(HTMLMediaElement.prototype, 'canPlayType').mockReturnValue('');

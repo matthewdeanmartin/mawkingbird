@@ -7,6 +7,10 @@
   gap: 0.6rem;
   min-width: 0;
 }
+.youtube-preview {
+  flex-direction: column;
+  width: 100%;
+}
 video,
 iframe,
 img {

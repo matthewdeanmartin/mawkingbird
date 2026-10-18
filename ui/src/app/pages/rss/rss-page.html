@@ -4,6 +4,9 @@
     <div class="rss-rail-head">
       <h1>{{ 'pages.rss.title' | transloco }}</h1>
       <span class="head-actions">
+        <a class="btn btn-small btn-outline" routerLink="/settings/rss">{{
+          'videos.customize' | transloco
+        }}</a>
         <button class="btn btn-small" type="button" (click)="openAddDialog()">
           {{ 'pages.rss.pasteLink' | transloco }}
         </button>

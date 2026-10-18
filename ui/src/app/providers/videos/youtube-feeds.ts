@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
 import { corsProxyOrigin } from '../../build-flavor';
@@ -84,9 +84,24 @@ export class YoutubeFeeds {
         return { id: parsed.id, title: parsed.id };
       }
     }
-    const channel = channelFromHtml(await this.request(parsed.url));
-    if (!channel) throw new Error('This page did not provide a YouTube channel.');
-    return channel;
+    const candidates = [parsed.url];
+    const alias = /^https:\/\/www\.youtube\.com\/(?:c|user)\/([A-Za-z0-9_-]+)$/.exec(
+      parsed.url,
+    )?.[1];
+    if (alias) candidates.push(`https://www.youtube.com/@${alias}`);
+    let failure: unknown;
+    for (const url of candidates) {
+      try {
+        const channel = channelFromHtml(await this.request(url));
+        if (channel) return channel;
+        failure = new Error('This page did not provide a YouTube channel.');
+      } catch (error) {
+        failure = error;
+        // An alternate alias cannot fix connection settings, throttling or an outage.
+        if (!(error instanceof HttpErrorResponse) || error.status !== 404) throw error;
+      }
+    }
+    throw failure;
   }
 
   async feed(id: string, refresh = false): Promise<ParsedFeed> {

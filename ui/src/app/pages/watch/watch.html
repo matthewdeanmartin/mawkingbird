@@ -46,8 +46,6 @@
           (deleted)="loader.status.set(null)"
           (replied)="onReply($event)"
         />
-        <a [routerLink]="['/statuses', params()['post']]">{{ 'watch.thread' | transloco }}</a>
-        <h2>{{ 'watch.conversation' | transloco }}</h2>
         @if (loader.publicContextUnavailable()) {
           <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
         }
@@ -67,7 +65,6 @@
         tabindex="0"
         [attr.aria-label]="'watch.conversation' | transloco"
       >
-        <h2>{{ 'watch.conversation' | transloco }}</h2>
         <app-party-conversation [session]="partySession()" />
       </aside>
     }

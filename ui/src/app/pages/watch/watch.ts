@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ThreadLoader } from '../read/thread-loader';
@@ -42,7 +42,7 @@ import { PartyConversation } from './party-conversation';
 // i18n watch.thread: Open full thread
 @Component({
   selector: 'app-watch',
-  imports: [VideoPlayer, StatusCard, TranslocoPipe, RouterLink, MbButton, PartyConversation],
+  imports: [VideoPlayer, StatusCard, TranslocoPipe, MbButton, PartyConversation],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
   styleUrl: './watch.css',

@@ -534,6 +534,7 @@ export class Home implements OnInit, OnDestroy {
   private followedTagSet = computed(() => new Set(this.followedTagNames()));
 
   protected async setMyTags(enabled: boolean): Promise<void> {
+    if (enabled) this.setView('feed');
     const generation = ++this.myTagsGeneration;
     this.myTags.set(enabled);
     this.saveHomeVisit();
@@ -588,6 +589,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   protected setHomeTextFocus(value: boolean): void {
+    this.setView('feed');
     this.homeTextFocus.set(value);
     this.saveHomeVisit();
   }
@@ -625,6 +627,9 @@ export class Home implements OnInit, OnDestroy {
   protected openPhoto = signal<string | null>(null);
 
   protected setView(view: FeedView): void {
+    if (view === 'media' || view === 'video' || view === 'articles') {
+      void this.setMyTags(false);
+    }
     if (view === 'media' || view === 'video') {
       this.prefs.setFeedReader(false);
       this.homeTextFocus.set(false);

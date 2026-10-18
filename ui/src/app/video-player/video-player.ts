@@ -19,6 +19,7 @@ import { MbButton } from '../design-system/button/button';
 import { MbHelp } from '../design-system/help/help';
 import { Playback, PlaybackHandle, PlaybackPosition } from './playback';
 import { VideoSource } from './media-source';
+import { ClientPrefs } from '../client-prefs';
 
 // i18n videoPlayer.video: Video
 // i18n videoPlayer.audio: Audio
@@ -47,12 +48,19 @@ export class VideoPlayer implements OnDestroy {
   readonly inline = input(false);
   readonly compact = input(false);
   private playback = inject(Playback);
+  private prefs = inject(ClientPrefs);
   private sanitizer = inject(DomSanitizer);
   private element = inject<ElementRef<HTMLElement>>(ElementRef);
   private native = viewChild<ElementRef<HTMLVideoElement>>('native');
   private frame = viewChild<ElementRef<HTMLIFrameElement>>('frame');
   private identity = computed(() => `${this.source().key}:${this.source().start ?? 0}`);
-  protected activated = linkedSignal({ source: this.identity, computation: () => false });
+  protected activated = linkedSignal({
+    source: () => ({
+      identity: this.identity(),
+      automatic: !this.inline() && this.prefs.autoLoadYoutubeWatch(),
+    }),
+    computation: ({ automatic }) => automatic,
+  });
   protected failed = linkedSignal({ source: this.identity, computation: () => false });
   private retryVersion = signal(0);
   protected ready = signal(false);

@@ -8,10 +8,12 @@ import { Component, input } from '@angular/core';
     '[attr.data-variant]': 'variant()',
     '[attr.data-size]': 'size()',
     '[attr.data-tone]': 'tone()',
+    '[attr.data-shape]': 'shape()',
   },
 })
 export class MbButton {
   readonly variant = input<'solid' | 'outline'>('solid');
   readonly size = input<'regular' | 'small'>('regular');
   readonly tone = input<'accent' | 'danger'>('accent');
+  readonly shape = input<'pill' | 'rounded'>('pill');
 }

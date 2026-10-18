@@ -1,4 +1,5 @@
 import { Component, inject, input, output, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -6,6 +7,8 @@ import { MbHelp } from '../../design-system/help/help';
 import { MbButton } from '../../design-system/button/button';
 import { VideoSubscriptions } from '../../providers/videos/video-subscriptions';
 import { YoutubeFeeds } from '../../providers/videos/youtube-feeds';
+import { channelInput } from '../../providers/videos/youtube-channel';
+import { MbDialog } from '../../design-system/dialog/dialog';
 
 // i18n videos.title: Video feeds
 // i18n videos.proxyHelp: About video subscriptions
@@ -19,9 +22,13 @@ import { YoutubeFeeds } from '../../providers/videos/youtube-feeds';
 // i18n videos.resolveFailed: Couldn't find that channel. Check the link or try its UC channel ID.
 // i18n videos.savedSub: Channel subscribed.
 // i18n videos.all: All videos
+// i18n videos.checkChannel: Check channel on YouTube
+// i18n videos.failureDetails: Subscription details
+// i18n videos.retrySubscription: Retry subscription
+// i18n videos.closeDetails: Close
 @Component({
   selector: 'app-video-subscriptions-panel',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbHelp],
+  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbHelp, MbDialog],
   template: `
     <h2>
       {{ 'videos.subscriptions' | transloco }}
@@ -38,6 +45,25 @@ import { YoutubeFeeds } from '../../providers/videos/youtube-feeds';
     </form>
     @if (message()) {
       <p role="status">{{ message() | transloco }}</p>
+    }
+    @if (failure(); as error) {
+      <mb-dialog
+        [title]="'videos.failureDetails' | transloco"
+        [closeLabel]="'videos.closeDetails' | transloco"
+        (dismissed)="failure.set(null)"
+      >
+        <p>{{ 'videos.resolveFailed' | transloco }}</p>
+        <p>{{ error.input }}</p>
+        <p>{{ error.detail }}</p>
+        @if (error.url) {
+          <a [href]="error.url" target="_blank" rel="noopener noreferrer">{{
+            'videos.checkChannel' | transloco
+          }}</a>
+        }
+        <button mbButton type="button" mbDialogActions (click)="channel = error.input; subscribe()">
+          {{ 'videos.retrySubscription' | transloco }}
+        </button>
+      </mb-dialog>
     }
     <nav [attr.aria-label]="'videos.subscriptions' | transloco">
       <a
@@ -128,17 +154,33 @@ export class VideoSubscriptionsPanel {
   protected channel = '';
   protected busy = signal(false);
   protected message = signal('');
+  protected failure = signal<{ input: string; detail: string; url: string | null } | null>(null);
   protected async subscribe(): Promise<void> {
     if (this.busy() || !this.channel.trim()) return;
     this.busy.set(true);
     this.message.set('');
+    this.failure.set(null);
+    const input = this.channel.trim();
     try {
-      const channel = await this.youtube.resolve(this.channel);
+      const channel = await this.youtube.resolve(input);
       this.subs.add(channel.id, channel.title);
       this.channel = '';
       this.message.set('videos.savedSub');
-    } catch {
+    } catch (error) {
       this.message.set('videos.resolveFailed');
+      const parsed = channelInput(input);
+      this.failure.set({
+        input,
+        detail:
+          error instanceof Error || error instanceof HttpErrorResponse
+            ? error.message
+            : String(error),
+        url: parsed
+          ? 'url' in parsed
+            ? parsed.url
+            : `https://www.youtube.com/channel/${parsed.id}`
+          : null,
+      });
     } finally {
       this.busy.set(false);
     }

@@ -8,7 +8,9 @@ export function channelInput(input: string): { id: string } | { url: string } | 
     ? `https://www.youtube.com/${value}`
     : /^(?:www\.|m\.)?youtube\.com\//i.test(value)
       ? `https://${value}`
-      : value;
+      : /^[A-Za-z0-9_-]+$/.test(value)
+        ? `https://www.youtube.com/c/${value}`
+        : value;
   try {
     const url = new URL(raw);
     if (
@@ -31,7 +33,24 @@ export function channelInput(input: string): { id: string } | { url: string } | 
     const handle = /^(\/@[^/]+)(?:\/(?:videos|shorts|streams|featured|about))?\/?$/.exec(
       url.pathname,
     );
-    const path = handle?.[1] ?? (match ? `/${match[1]}/${match[2]}` : null);
+    const alias = /^\/([A-Za-z0-9_-]+)\/?$/.exec(url.pathname)?.[1];
+    const reserved = new Set([
+      'watch',
+      'playlist',
+      'results',
+      'shorts',
+      'feed',
+      'channel',
+      'user',
+      'c',
+    ]);
+    const path =
+      handle?.[1] ??
+      (match
+        ? `/${match[1]}/${match[2]}`
+        : alias && !reserved.has(alias.toLowerCase())
+          ? `/c/${alias}`
+          : null);
     return path ? { url: `https://www.youtube.com${path}` } : null;
   } catch {
     return null;

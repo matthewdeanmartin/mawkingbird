@@ -132,7 +132,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
               <button
                 mbToolbarButton
                 [pressed]="myTags()"
-                (click)="myTagsChange.emit(!myTags())"
+                (click)="viewChange.emit('feed'); myTagsChange.emit(!myTags())"
                 [title]="'commandBar.myTagsHint' | transloco"
               >
                 # {{ 'commandBar.myTags' | transloco }}
@@ -327,8 +327,7 @@ export class CommandBar {
   /** Clicking the active view returns to the feed, so both buttons toggle. */
   protected toggleReader(): void {
     const enabled = !this.prefs.feedReader();
-    if (enabled && (this.view() === 'media' || this.view() === 'video'))
-      this.viewChange.emit('feed');
+    this.viewChange.emit('feed');
     this.prefs.setFeedReader(enabled);
   }
 

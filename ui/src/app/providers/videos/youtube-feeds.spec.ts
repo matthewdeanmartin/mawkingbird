@@ -44,6 +44,32 @@ describe('YouTube feed transport', () => {
     expect(cache.put).toHaveBeenCalled();
     http.verify();
   });
+  it('tries one handle fallback for a missing legacy channel alias', async () => {
+    const result = TestBed.inject(YoutubeFeeds).resolve('https://youtube.com/pdina');
+    const http = TestBed.inject(HttpTestingController);
+    http
+      .expectOne(
+        (req) => new URL(req.url).searchParams.get('url') === 'https://www.youtube.com/c/pdina',
+      )
+      .flush('Missing', { status: 404, statusText: 'Not found' });
+    await vi.waitFor(() => {
+      http
+        .expectOne(
+          (req) => new URL(req.url).searchParams.get('url') === 'https://www.youtube.com/@pdina',
+        )
+        .flush(`<meta itemprop="channelId" content="${id}"><title>PDina - YouTube</title>`);
+    });
+    expect(await result).toEqual({ id, title: 'PDina' });
+    http.verify();
+  });
+  it('does not retry alternate aliases for upstream rate limits', async () => {
+    const result = TestBed.inject(YoutubeFeeds).resolve('pdina');
+    const rejected = expect(result).rejects.toMatchObject({ status: 429 });
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne(() => true).flush('Slow down', { status: 429, statusText: 'Too many requests' });
+    await rejected;
+    http.verify();
+  });
   it('serves cached content when refresh fails without removing subscriptions', async () => {
     const feed = parseFeed('<feed xmlns="http://www.w3.org/2005/Atom"><title>Saved</title></feed>');
     cache.get.mockResolvedValue({ stale: true, feed });

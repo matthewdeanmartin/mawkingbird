@@ -193,7 +193,9 @@ describe('Home', () => {
       reblog: { ...makeStatus('original'), tags: [{ name: 'Dogs', url: '' }] },
     };
     home.statuses.set([tagged, boosted, makeStatus('untagged')]);
+    home.setView('video');
     const enabled = home.setMyTags(true);
+    expect(home.view()).toBe('feed');
     httpMock.expectOne('/api/v1/followed_tags?limit=100').flush([{ name: 'cats' }], {
       headers: { Link: '<https://example.social/api/v1/followed_tags?max_id=next>; rel="next"' },
     });
@@ -201,7 +203,7 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/followed_tags?limit=100&max_id=next').flush([{ name: 'dogs' }]);
     await enabled;
     expect(home.visible().map((s) => s.id)).toEqual(['tagged', 'boost']);
-    await home.setMyTags(false);
+    home.setView('articles');
     expect(home.visible()).toHaveLength(3);
   });
 

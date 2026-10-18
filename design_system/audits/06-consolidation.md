@@ -1,5 +1,18 @@
 # Sprint 6 opening consolidation audit
 
+## Video and media usability, 2026-10-18
+
+Reviewed 1,137 source files and 233 candidate files. Subscription diagnostics and
+video customization reuse Dialog and Button; video responses select the new wide
+Dialog size. Video sorting uses regular Field styling and a native dropdown
+indicator. The YouTube preview image is inside its activation button, using the
+shared Button's new rounded shape with outline styling. Party post actions replace
+repeated buttons with one labeled select; the party tag input uses compact Field
+and Button with a horizontally scrollable tag list. RSS adds a settings link.
+Remaining inventory changes are source line shifts. No candidate files were added
+or removed, so 11-reconciliation.json retains the same dispositions. Shared Dialog,
+Button and Field changes require complete design verification and browser assertions.
+
 ## Recovery and profile usability, 2026-10-18
 
 The update recovery panel replaces its report button with a native external link

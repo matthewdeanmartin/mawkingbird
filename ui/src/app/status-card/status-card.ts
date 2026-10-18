@@ -99,7 +99,6 @@ import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
 import { statusHashtags } from '../hashtag';
 import { TagMuteMenu } from '../tag-filter-dialog/tag-mute-menu';
-import { MbButton } from '../design-system/button/button';
 // i18n watch.addPostTag: Add #{{tag}} to party
 import { HumanTimePipe } from '../human-time.pipe';
 import { VerifiedBadge } from '../verified-badge/verified-badge';
@@ -366,7 +365,6 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     AccountHoverCard,
     ReportDialog,
     TagMuteMenu,
-    MbButton,
     AccountListDialog,
     HistoryDialog,
     FormsModule,
