@@ -32,13 +32,16 @@ icon still means something in Mastodon.
 - **"Saved" synonyms** (private likes, stars, bookmarks, read later, the watch
   queue) are a known muddle, and we are not solving it now. Tab labels reuse
   the words the destination page already uses.
+- **Labels are aggressively short** (owner, 2026-10-18): one short word per new
+  tab, so the bar fits in long languages too. Mastodon's original tabs and the
+  mode names are unchanged.
 
 ## Menus
 
 ```
 mastodon: Home | Algo  Inbox  Chat  Search  Feeds | [RSS ▾]
-rss:      Home | Reader  Read later  Library  Starter kits  Manage feeds | [Mastodon ▾]
-video:    Home | Fedi videos  YouTube  Queue  Search  Saved | [Mastodon ▾]
+rss:      Home | Read  Later  Shelf  Kits  Manage | [Mastodon ▾]
+video:    Home | Fedi  YouTube  Queue  Search  Saved | [Mastodon ▾]
 ```
 
 | Tab               | Destination                 | Notes                                                                           |

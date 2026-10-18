@@ -1,11 +1,11 @@
 import { AppMode } from '../app-mode';
 
-// i18n shell.modeNav.rss.reader: Reader
-// i18n shell.modeNav.rss.readLater: Read later
-// i18n shell.modeNav.rss.library: Library
-// i18n shell.modeNav.rss.kits: Starter kits
-// i18n shell.modeNav.rss.manage: Manage feeds
-// i18n shell.modeNav.video.fedi: Fedi videos
+// i18n shell.modeNav.rss.reader: Read
+// i18n shell.modeNav.rss.readLater: Later
+// i18n shell.modeNav.rss.library: Shelf
+// i18n shell.modeNav.rss.kits: Kits
+// i18n shell.modeNav.rss.manage: Manage
+// i18n shell.modeNav.video.fedi: Fedi
 // i18n shell.modeNav.video.youtube: YouTube
 // i18n shell.modeNav.video.queue: Queue
 // i18n shell.modeNav.video.search: Search

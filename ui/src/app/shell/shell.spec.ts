@@ -645,7 +645,7 @@ describe('Shell app-mode nav', () => {
       ...login,
       'switch',
     ]);
-    expect(fixture.nativeElement.querySelector('.primary-nav').textContent).toContain('Reader');
+    expect(fixture.nativeElement.querySelector('.primary-nav').textContent).toContain('Read');
 
     mode.set('video');
     fixture.detectChanges();
