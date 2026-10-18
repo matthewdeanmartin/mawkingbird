@@ -105,9 +105,9 @@
     [showImages]="true"
     [showReaderControls]="false"
     [showRefresh]="!live()"
-    [showFeedViews]="true"
+    [showFeedViews]="!videoOnly"
     [showVideo]="true"
-    [showMyTags]="true"
+    [showMyTags]="!videoOnly"
     [myTags]="myTags()"
     (myTagsChange)="setMyTags($event)"
     [localTextFocus]="homeTextFocus()"
@@ -118,25 +118,27 @@
     (providerVisibilityChanged)="load()"
     (viewChange)="setView($event)"
   >
-    <mb-field
-      presentationControl
-      hideLabel
-      class="home-default"
-      density="compact"
-      [label]="'pages.home.defaultView.label' | transloco"
-    >
-      <select
-        mbControl
-        [attr.aria-label]="'pages.home.defaultView.label' | transloco"
-        [ngModel]="homeDefaults.value() || ''"
-        (ngModelChange)="setHomeDefault($event)"
+    @if (!videoOnly) {
+      <mb-field
+        presentationControl
+        hideLabel
+        class="home-default"
+        density="compact"
+        [label]="'pages.home.defaultView.label' | transloco"
       >
-        <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
-        @for (choice of ['all', 'text', 'media', 'video', 'articles', 'tags']; track choice) {
-          <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
-        }
-      </select>
-    </mb-field>
+        <select
+          mbControl
+          [attr.aria-label]="'pages.home.defaultView.label' | transloco"
+          [ngModel]="homeDefaults.value() || ''"
+          (ngModelChange)="setHomeDefault($event)"
+        >
+          <option value="" disabled>{{ 'pages.home.defaultView.legacy' | transloco }}</option>
+          @for (choice of ['all', 'text', 'media', 'video', 'articles', 'tags']; track choice) {
+            <option [value]="choice">{{ 'pages.home.defaultView.' + choice | transloco }}</option>
+          }
+        </select>
+      </mb-field>
+    }
     <div
       class="home-filters"
       role="group"

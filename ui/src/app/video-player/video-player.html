@@ -82,6 +82,9 @@
         {{ 'videoPlayer.openWatch' | transloco }}
       </a>
     }
+    @if (queueItem(); as entry) {
+      <app-queue-button [entry]="entry" />
+    }
     <a [href]="source().url" target="_blank" rel="noopener noreferrer">
       {{
         (source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal')

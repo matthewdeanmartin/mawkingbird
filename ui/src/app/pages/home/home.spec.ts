@@ -15,6 +15,7 @@ import {
   provideRouter,
   Router,
 } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../../client-prefs';
 import { Drafts, emptyDraftSnapshot } from '../../drafts';
@@ -258,6 +259,24 @@ describe('Home', () => {
     expect(defaults.value()).toBe('articles');
     expect(internals(fixture).view()).toBe('articles');
   });
+  it('holds the Video view on /videos/fedi and leaves the saved default alone', async () => {
+    const defaults = TestBed.inject(HomeDefaults);
+    defaults.set('media');
+    TestBed.inject(Router).resetConfig([
+      { path: 'videos/fedi', component: Home, data: { videoOnly: true } },
+    ]);
+    const harness = await RouterTestingHarness.create();
+    const home = (await harness.navigateByUrl('/videos/fedi', Home)) as unknown as HomeInternals;
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), []);
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    harness.detectChanges();
+
+    expect(home.view()).toBe('video');
+    expect(defaults.value()).toBe('media');
+    // The route is the choice of view, so the per-account default picker is not offered.
+    expect(harness.routeNativeElement!.querySelector('.home-default')).toBeNull();
+  });
+
   for (const trigger of ['popstate', 'imperative'] as const) {
     it(`restores a visit only for Back navigation, not a fresh entry: ${trigger}`, () => {
       const defaults = TestBed.inject(HomeDefaults);

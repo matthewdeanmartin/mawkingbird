@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ThreadLoader } from '../read/thread-loader';
@@ -27,6 +27,14 @@ import { MbButton } from '../../design-system/button/button';
 import { parseAnonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { Status } from '../../models';
 import { PartyConversation } from './party-conversation';
+import { QueueButton } from '../../video-player/queue-button';
+import {
+  pickWatchParams,
+  QueuedVideo,
+  queueKey,
+  validWatchParams,
+  WatchQueue,
+} from '../../providers/videos/watch-queue';
 
 // i18n watch.title: Watch
 // i18n watch.back: Back
@@ -40,9 +48,20 @@ import { PartyConversation } from './party-conversation';
 // i18n watch.conversation: Conversation
 // i18n watch.noComments: No comments yet.
 // i18n watch.thread: Open full thread
+// i18n watch.queue.next: Next: {{title}}
+// i18n watch.queue.nextUntitled: Next in queue
+// i18n watch.queue.open: Queue ({{count}})
 @Component({
   selector: 'app-watch',
-  imports: [VideoPlayer, StatusCard, TranslocoPipe, MbButton, PartyConversation],
+  imports: [
+    VideoPlayer,
+    StatusCard,
+    TranslocoPipe,
+    MbButton,
+    PartyConversation,
+    QueueButton,
+    RouterLink,
+  ],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
   styleUrl: './watch.css',
@@ -161,6 +180,43 @@ export class Watch {
       }
       identity = next;
     });
+  }
+
+  protected readonly queue = inject(WatchQueue);
+
+  /** This video's place in the queue, whether or not it is queued or loads. */
+  protected readonly currentKey = computed(() => {
+    const params = pickWatchParams(this.params());
+    return validWatchParams(params) ? queueKey(params) : null;
+  });
+
+  /** The current video as a queue entry, once there is a source to name it. */
+  protected readonly currentEntry = computed<Omit<QueuedVideo, 'addedAt'> | null>(() => {
+    const key = this.currentKey();
+    const source = this.source();
+    if (!key || !source) return null;
+    return {
+      key,
+      title: source.title && source.title !== 'YouTube' ? source.title : '',
+      ...(source.poster ? { poster: source.poster } : {}),
+      params: pickWatchParams(this.params()),
+    };
+  });
+
+  protected readonly upNext = computed(() => this.queue.next(this.currentKey()));
+
+  /**
+   * Play the next queued video, retiring this one from the queue.
+   *
+   * Explicit rather than on `ended`: the player never advances by itself (see
+   * video-player.spec.ts), and Watch keeps that promise.
+   */
+  protected playNext(): void {
+    const next = this.upNext();
+    if (!next) return;
+    const current = this.currentKey();
+    if (current) this.queue.remove(current);
+    void this.router.navigate(['/watch'], { queryParams: next.params });
   }
 
   protected back(): void {

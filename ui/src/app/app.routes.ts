@@ -712,6 +712,21 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),
       },
       {
+        // Home's own timeline, held in its Video view: the merged feed, paging
+        // and filters are Home's, so fediverse video is not a second timeline.
+        // See spec/top_level_menu.md, Sprint 2.
+        path: 'videos/fedi',
+        title: 'Fedi videos',
+        data: { videoOnly: true },
+        loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+      },
+      {
+        path: 'videos/queue',
+        title: 'Watch queue',
+        loadComponent: () =>
+          import('./pages/videos/watch-queue-page').then((m) => m.WatchQueuePage),
+      },
+      {
         path: 'search',
         title: 'Search',
         loadComponent: () => import('./pages/search/search').then((m) => m.Search),

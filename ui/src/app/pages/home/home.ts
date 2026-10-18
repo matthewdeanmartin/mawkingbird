@@ -328,6 +328,12 @@ export class Home implements OnInit, OnDestroy {
   protected eliza = inject(ElizaService);
   protected localPosts = inject(LocalPostStore);
   private route = inject(ActivatedRoute);
+  /**
+   * `/videos/fedi`: this timeline held in its Video view. The view toggles and
+   * the saved Home default are hidden there, and neither is applied — the
+   * route *is* the choice of view. See spec/top_level_menu.md, Sprint 2.
+   */
+  protected readonly videoOnly = this.route.snapshot.data['videoOnly'] === true;
   private drafts = inject(Drafts).forCurrentAccount();
   private router = inject(Router);
   private homeNavigationSub?: Subscription;
@@ -572,7 +578,8 @@ export class Home implements OnInit, OnDestroy {
     if (!this.initialized || this.homeScope === scope) return;
     this.homeScope = scope;
     void this.setMyTags(false);
-    this.applyHomeDefault(this.homeDefaults.value());
+    if (this.videoOnly) this.setView('video');
+    else this.applyHomeDefault(this.homeDefaults.value());
   });
 
   protected setHomeDefault(raw: string): void {
@@ -972,7 +979,9 @@ export class Home implements OnInit, OnDestroy {
     const visit = (navigation?.extras.state?.['homePresentation'] ??
       history.state?.homePresentation) as
       { scope?: string; view?: FeedView; text?: boolean; tags?: boolean } | undefined;
-    if (
+    if (this.videoOnly) {
+      this.setView('video');
+    } else if (
       navigation?.trigger === 'popstate' &&
       visit?.scope === this.homeScope &&
       ['feed', 'media', 'video', 'members', 'analytics', 'articles'].includes(visit.view ?? '')

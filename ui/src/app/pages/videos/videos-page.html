@@ -29,6 +29,13 @@
       >
         {{ 'videos.saved' | transloco }}
       </button>
+      <!-- Kept reachable with mode-nav off: there, these pages have no tab. -->
+      @if (!modeNav()) {
+        <a mbButton variant="outline" routerLink="/videos/fedi">{{ 'videos.fedi' | transloco }}</a>
+        <a mbButton variant="outline" routerLink="/videos/queue">{{
+          'videos.queue' | transloco
+        }}</a>
+      }
     </header>
     @if (results() === null) {
       <div class="sort-bar">

@@ -378,6 +378,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Account-scoped YouTube channel subscriptions for Video feeds. Public channel IDs reveal what the reader follows; included only in personal backups.',
   },
   {
+    base: 'mockingbird_watch_queue',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Account-scoped watch queue: Watch-page params (post ids, servers, YouTube ids) plus titles and posters of videos saved to watch. Reveals viewing intent; included only in personal backups.',
+  },
+  {
     base: 'mockingbird_rss_feeds',
     storage: 'local',
     suffix: 'account',

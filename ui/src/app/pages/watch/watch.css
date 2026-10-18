@@ -9,9 +9,19 @@
 }
 .watch-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   padding-bottom: 0.75rem;
+}
+/* Queue controls sit at the far end and wrap rather than squeeze the title. */
+.watch-queue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-inline-start: auto;
 }
 h1 {
   font-size: 1.4rem;

@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { Server } from '../server';
 import { VideoPlayer } from './video-player';
+import { WatchQueue } from '../providers/videos/watch-queue';
 import { Playback } from './playback';
 import { ClientPrefs } from '../client-prefs';
 import { VideoSource, youtubeSource } from './media-source';
@@ -74,6 +75,35 @@ describe('VideoPlayer user control', () => {
     fixture.detectChanges();
     return fixture.nativeElement.querySelector('video');
   }
+  it('offers Queue on inline players only, carrying the post Watch params', () => {
+    const video = { ...youtubeSource('https://youtu.be/0KoeY54M5VA')!, title: 'A talk' };
+    mount(video);
+    // The Watch stage has its own queue controls in the header.
+    expect(fixture.nativeElement.querySelector('app-queue-button')).toBeNull();
+
+    fixture.componentRef.setInput('inline', true);
+    fixture.componentRef.setInput('watch', {
+      post: '42',
+      server: 'https://home.test',
+      youtube: '0KoeY54M5VA',
+    });
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('app-queue-button button').click();
+    expect(TestBed.inject(WatchQueue).items()).toEqual([
+      expect.objectContaining({
+        title: 'A talk',
+        params: { post: '42', server: 'https://home.test', youtube: '0KoeY54M5VA' },
+      }),
+    ]);
+  });
+
+  it('cannot queue an upload that has no Watch link to come back to', () => {
+    mount();
+    fixture.componentRef.setInput('inline', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-queue-button')).toBeNull();
+  });
+
   it('activates YouTube by clicking its preview image', () => {
     mount({
       ...youtubeSource('https://youtu.be/0KoeY54M5VA')!,

@@ -1,5 +1,18 @@
 # Sprint 6 opening consolidation audit
 
+## Fedi videos and watch queue, 2026-10-18
+
+Reviewed 1,143 source files and 236 candidate files for Sprint 2 of
+spec/top_level_menu.md. Two candidates are added. `video-player/queue-button.ts`
+is one MbButton toggle with aria-pressed, used beside Open Watch on inline
+players and in the Watch header. `pages/videos/watch-queue-page.ts` uses Page
+Header, Content State for the empty queue and MbButton for Watch, reorder,
+remove and clear; clearing confirms through AppDialogs. Watch adds a wrapping
+header group of MbButton controls. Fedi videos reuses Home and hides its view
+toggles and default picker there. `/videos` adds two MbButton links that
+appear only while mode-nav is off. Remaining inventory changes are source line
+shifts. No shared widget changed.
+
 ## App-mode top menu, 2026-10-18
 
 Reviewed 1,140 source files and 234 candidate files. The flagged app-mode nav

@@ -3,6 +3,23 @@
     {{ 'watch.back' | transloco }}
   </button>
   <h1>{{ 'watch.title' | transloco }}</h1>
+  <div class="watch-queue">
+    <app-queue-button [entry]="currentEntry()" />
+    @if (upNext(); as next) {
+      <button mbButton size="small" type="button" (click)="playNext()">
+        {{
+          next.title
+            ? ('watch.queue.next' | transloco: { title: next.title })
+            : ('watch.queue.nextUntitled' | transloco)
+        }}
+      </button>
+    }
+    @if (queue.items().length) {
+      <a routerLink="/videos/queue">{{
+        'watch.queue.open' | transloco: { count: queue.items().length }
+      }}</a>
+    }
+  </div>
 </header>
 @if (error()) {
   <p role="alert">{{ error() | transloco }}</p>

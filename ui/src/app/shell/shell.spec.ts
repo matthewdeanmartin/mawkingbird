@@ -640,7 +640,14 @@ describe('Shell app-mode nav', () => {
 
     mode.set('video');
     fixture.detectChanges();
-    expect(tabs(fixture)).toEqual(['/home', '/videos', ...login, 'switch']);
+    expect(tabs(fixture)).toEqual([
+      '/home',
+      '/videos/fedi',
+      '/videos',
+      '/videos/queue',
+      ...login,
+      'switch',
+    ]);
   });
 
   it('the switcher offers RSS from Mastodon and Mastodon from elsewhere', () => {

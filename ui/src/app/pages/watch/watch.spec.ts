@@ -1,8 +1,9 @@
 import { Component, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { WatchQueue } from '../../providers/videos/watch-queue';
 import { Watch } from './watch';
 import { PartyConversation } from './party-conversation';
 import { ThreadLoader } from '../read/thread-loader';
@@ -102,7 +103,14 @@ describe('Watch post access and reveal gates', () => {
           },
         },
         { provide: Server, useValue: { baseUrl: signal('https://home.test') } },
-        { provide: ClientPrefs, useValue: { showImages: images, feedReader: signal(false) } },
+        {
+          provide: ClientPrefs,
+          useValue: {
+            showImages: images,
+            feedReader: signal(false),
+            autoLoadYoutubeWatch: signal(false),
+          },
+        },
         {
           provide: StatusVisibility,
           useValue: { rendersNothing: () => blocked(), activeFilters: () => [] },
@@ -131,6 +139,53 @@ describe('Watch post access and reveal gates', () => {
     fixture = TestBed.createComponent(Watch);
     fixture.detectChanges();
   }
+
+  describe('watch queue', () => {
+    const A = 'aaaaaaaaaaa';
+    const B = 'bbbbbbbbbbb';
+    const nextButton = () =>
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.watch-queue button')].find(
+        (button) => button.textContent?.includes('Next'),
+      ) as HTMLButtonElement | undefined;
+
+    beforeEach(() => localStorage.clear());
+
+    it('plays the next queued video on request and retires the finished one', () => {
+      const queue = TestBed.inject(WatchQueue);
+      queue.add({ title: 'First', params: { youtube: A } });
+      queue.add({ title: 'Second', params: { youtube: B } });
+      params.next(convertToParamMap({ youtube: A, tags: 'Party' }));
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      mount();
+
+      expect(nextButton()?.textContent).toContain('Next: Second');
+      nextButton()!.click();
+
+      expect(queue.items().map((item) => item.title)).toEqual(['Second']);
+      expect(navigate).toHaveBeenCalledWith(['/watch'], { queryParams: { youtube: B } });
+    });
+
+    it('never advances by itself and offers nothing when the queue is empty', () => {
+      params.next(convertToParamMap({ youtube: A }));
+      mount();
+      expect(nextButton()).toBeUndefined();
+      expect(fixture.nativeElement.querySelector('.watch-queue a')).toBeNull();
+    });
+
+    it('queues the video being watched from the header', () => {
+      params.next(convertToParamMap({ youtube: A }));
+      mount();
+      const queueButton = fixture.nativeElement.querySelector(
+        '.watch-queue app-queue-button button',
+      ) as HTMLButtonElement;
+      queueButton.click();
+      fixture.detectChanges();
+      expect(TestBed.inject(WatchQueue).has('youtube:' + A)).toBe(true);
+      expect(queueButton.getAttribute('aria-pressed')).toBe('true');
+      // The stage player does not repeat the control.
+      expect(fixture.nativeElement.querySelectorAll('app-queue-button')).toHaveLength(1);
+    });
+  });
 
   it('holds the full viewport while open and releases the app chrome on leaving', () => {
     const zen = TestBed.inject(ReadingZen);

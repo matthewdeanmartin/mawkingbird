@@ -2,7 +2,9 @@ import { AppMode } from '../app-mode';
 
 // i18n shell.modeNav.rss.reader: Reader
 // i18n shell.modeNav.rss.kits: Starter kits
+// i18n shell.modeNav.video.fedi: Fedi videos
 // i18n shell.modeNav.video.youtube: YouTube
+// i18n shell.modeNav.video.queue: Queue
 // i18n shell.modeNav.mode.mastodon: Mastodon
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
@@ -109,11 +111,25 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
   ],
   video: [
     {
+      id: 'fedi',
+      labelKey: 'shell.modeNav.video.fedi',
+      icon: 'M4 4h16v16H4zM8 4v16M16 4v16M4 8h4M4 12h4M4 16h4M16 8h4M16 12h4M16 16h4',
+      link: '/videos/fedi',
+      active: onPath('/videos/fedi'),
+    },
+    {
       id: 'youtube',
       labelKey: 'shell.modeNav.video.youtube',
       icon: 'M3 6h18v12H3zM10 9.5v5l4-2.5z',
       link: '/videos',
       active: (url) => pathOf(url) === '/videos',
+    },
+    {
+      id: 'queue',
+      labelKey: 'shell.modeNav.video.queue',
+      icon: 'M4 6h11M4 12h11M4 18h7M17 14v6l5-3z',
+      link: '/videos/queue',
+      active: onPath('/videos/queue'),
     },
   ],
 };

@@ -1,7 +1,7 @@
 # Top-level menu: app modes (Mastodon / RSS / Video)
 
-Status: Sprint 1 implemented behind `mode-nav` (canary), uncommitted ·
-2026-10-18. Sprints 2 and 3 have not started.
+Status: Sprint 1 shipped behind `mode-nav` (canary, commit 37e326e2). Sprint 2
+is implemented and uncommitted. Sprint 3 has not started · 2026-10-18.
 
 ## Problem
 
@@ -157,6 +157,25 @@ addedAt }`, with a size cap and de-duplication by source.
 - Video mode becomes Home | Fedi videos | YouTube | Queue.
 - `/videos` gets in-page links to Fedi videos and Queue (the guard rail
   above).
+
+### As built (2026-10-18)
+
+- `/videos/fedi` routes to `Home` with `data: { videoOnly: true }`. Home
+  applies its Video view on entry, never applies the saved Home default there,
+  and hides the view toggles, My tags and the default picker. `/home` is
+  unchanged. Like Home's own Video view, entering it turns the reader-mode pref
+  off.
+- The queue stores **Watch query params**, not media URLs:
+  `{ key, title, poster?, params, addedAt }`. The params are validated against
+  the shapes Watch accepts (`post`/`server` plus `youtube` or `attachment`,
+  or `youtube` alone), and keys are recomputed on read. The cap is 200.
+  Storage failures are tolerated.
+- Queue appears on every **inline** player (feed posts and `/videos`) beside
+  Open Watch, and in the Watch header. An upload with no Watch link cannot be
+  queued.
+- There is no auto-advance. The player promises never to advance on `ended`
+  (`video-player.spec.ts`). Watch shows **Next: <title>**, which removes the
+  current video from the queue and opens the next one.
 
 ## Sprint 3: video search and the watch-party finder
 

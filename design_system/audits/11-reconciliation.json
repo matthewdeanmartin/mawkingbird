@@ -3,6 +3,16 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/video-player/queue-button.ts",
+      "disposition": "adopted scope",
+      "nextStep": "One MbButton toggle with aria-pressed and a video-specific label adds to or removes from the watch queue, disabled when the queue is full. Preserve the per-video label and the absence of the control when a source cannot be replayed from Watch."
+    },
+    {
+      "file": "ui/src/app/pages/videos/watch-queue-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Page Header, Content State and MbButton cover the queue page; rows are a native ordered list. Preserve play order, disabled Move up/down at the ends, confirmation before Clear, Watch links built only from validated Watch params and the untitled fallback."
+    },
+    {
       "file": "ui/src/app/shell/mode-switch.ts",
       "disposition": "partial adoption",
       "nextStep": "Popover, MenuItem and MenuSeparator own the mode menu surface, rows, dismissal and above/below placement. The trigger remains a native button styled as a primary-nav tab peer. Preserve the light-dismiss toggle guard, focus return to the trigger, link rows to each mode landing route, the current-mode marker and the flag-off rollback to the original shell nav."

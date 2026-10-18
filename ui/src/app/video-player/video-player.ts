@@ -19,6 +19,8 @@ import { MbButton } from '../design-system/button/button';
 import { MbHelp } from '../design-system/help/help';
 import { Playback, PlaybackHandle, PlaybackPosition } from './playback';
 import { VideoSource } from './media-source';
+import { queueEntry } from '../providers/videos/watch-queue';
+import { QueueButton } from './queue-button';
 import { ClientPrefs } from '../client-prefs';
 
 // i18n videoPlayer.video: Video
@@ -37,7 +39,7 @@ import { ClientPrefs } from '../client-prefs';
 // i18n videoPlayer.youtubeStopped: This YouTube player closes when another video starts or it scrolls out of view. Reload it to watch again.
 @Component({
   selector: 'app-video-player-controls',
-  imports: [TranslocoPipe, RouterLink, MbButton, MbHelp],
+  imports: [TranslocoPipe, RouterLink, MbButton, MbHelp, QueueButton],
   templateUrl: './video-player.html',
   styleUrl: './video-player.css',
   host: { '(click)': '$event.stopPropagation()' },
@@ -70,6 +72,13 @@ export class VideoPlayer implements OnDestroy {
   private youtubeHandle?: PlaybackHandle;
 
   protected title = computed(() => this.source().title || '');
+  /**
+   * Inline players offer Queue beside Open Watch. Watch itself has its own
+   * queue controls in the header, so the stage player does not repeat them.
+   */
+  protected queueItem = computed(() =>
+    this.inline() ? queueEntry(this.source(), this.watch()) : null,
+  );
   protected duration = computed(() => {
     const seconds = this.source().duration;
     if (!seconds) return '';
