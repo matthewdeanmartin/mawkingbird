@@ -287,6 +287,7 @@ export class Thread implements OnInit {
 
   /** Latest route id and `?reader` value. `currentId` is read by the Reader link. */
   protected readonly currentId = signal('');
+  protected readonly threadCwOpen = signal<boolean | null>(null);
   protected readonly threadReader = signal(false);
   private readerParam: string | null = null;
   /** True once a hand-off to the reader page is under way. See `applyReaderMode`. */
@@ -308,6 +309,7 @@ export class Thread implements OnInit {
       if (!id) {
         return;
       }
+      if (id !== this.currentId()) this.threadCwOpen.set(null);
       this.currentId.set(id);
       // RSS items are articles, so they hand off unless the link opts out with
       // ?reader=0 — and that decision needs the id, which only arrives here.

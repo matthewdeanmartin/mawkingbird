@@ -101,6 +101,8 @@
     @for (a of ancestors(); track a.id) {
       <app-status-card
         [status]="a"
+        [threadCwOpen]="threadCwOpen()"
+        (cwToggled)="threadCwOpen.set($event)"
         filterContext="thread"
         [showSource]="true"
         (changed)="onContextChanged($event)"
@@ -110,6 +112,8 @@
     }
     <app-status-card
       [status]="s"
+      [threadCwOpen]="threadCwOpen()"
+      (cwToggled)="threadCwOpen.set($event)"
       filterContext="thread"
       [showSource]="true"
       (changed)="onChanged($event)"
@@ -149,6 +153,8 @@
   @for (d of threadReader() ? comments() : descendants(); track d.id) {
     <app-status-card
       [status]="d"
+      [threadCwOpen]="threadCwOpen()"
+      (cwToggled)="threadCwOpen.set($event)"
       filterContext="thread"
       [showSource]="true"
       (changed)="onContextChanged($event)"

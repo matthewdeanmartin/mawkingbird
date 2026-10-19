@@ -169,6 +169,40 @@ describe('Thread', () => {
     expect(internals(fixture).loading()).toBe(false);
   });
 
+  it('expands and collapses CWs throughout a conversation, including other authors and new replies', () => {
+    const fixture = setUpWithId('100');
+    const warning = (id: string, author: string) => ({
+      ...makeStatusBy(id, author, author),
+      spoiler_text: `Warning ${id}`,
+    });
+    httpMock.expectOne('/api/v1/statuses/100').flush(warning('100', '1'));
+    httpMock
+      .expectOne('/api/v1/statuses/100/context')
+      .flush(makeContext([warning('99', 'them')], [warning('101', 'other')]));
+    fixture.detectChanges();
+    const buttons = () =>
+      Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.cw-toggle'),
+      );
+    expect(buttons().map((button) => button.getAttribute('aria-expanded'))).toEqual([
+      'false',
+      'false',
+      'false',
+    ]);
+    buttons()[1].click();
+    fixture.detectChanges();
+    expect(buttons().every((button) => button.getAttribute('aria-expanded') === 'true')).toBe(true);
+    internals(fixture).descendants.update((posts) => [...posts, warning('102', 'me')]);
+    fixture.detectChanges();
+    expect(buttons()).toHaveLength(4);
+    expect(buttons().every((button) => button.getAttribute('aria-expanded') === 'true')).toBe(true);
+    buttons()[0].click();
+    fixture.detectChanges();
+    expect(buttons().every((button) => button.getAttribute('aria-expanded') === 'false')).toBe(
+      true,
+    );
+  });
+
   it('loads an anonymous public thread from the source instance', () => {
     const id = anonymousStatusRouteRef({
       server: 'https://social.example',

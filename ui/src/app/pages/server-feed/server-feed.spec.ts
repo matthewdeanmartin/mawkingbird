@@ -45,6 +45,7 @@ describe('ServerFeed', () => {
   let params: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   beforeEach(() => {
+    localStorage.clear();
     params = new BehaviorSubject(convertToParamMap({ feed: 'trending' }));
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
@@ -73,6 +74,28 @@ describe('ServerFeed', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it('records a home server feed on arrival and pins and unpins it from the page', () => {
+    const fixture = setUp('trending');
+    http.expectOne('/api/v1/trends/statuses').flush([]);
+    const recent = TestBed.inject(RecentFeeds);
+    expect(recent.entries()).toEqual([
+      { url: '/feeds/trending', label: 'Trending posts', pinned: false },
+    ]);
+    const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      '.page-head button',
+    )!;
+    button.click();
+    fixture.detectChanges();
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    const restored = new RecentFeeds();
+    restored.refresh();
+    expect(restored.entries()[0].pinned).toBe(true);
+    button.click();
+    fixture.detectChanges();
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(recent.entries()[0].pinned).toBe(false);
+  });
 
   it('browses another server anonymously, pins its distinct label, and pages using native ids', () => {
     TestBed.inject(Auth).enterAnonymous();

@@ -699,6 +699,10 @@ export class StatusCard {
 
   // --- content warnings ---
 
+  /** A thread can coordinate its folds without changing feed-wide preferences. */
+  readonly threadCwOpen = input<boolean | null>(null);
+  readonly cwToggled = output<boolean>();
+
   /** CW revealed by the viewer; resets whenever a different status is bound. */
   protected cwOpen = linkedSignal({ source: this.status, computation: (): boolean | null => null });
 
@@ -728,13 +732,23 @@ export class StatusCard {
   protected cwCollapsed = computed(
     () =>
       !!this.spoilerText() &&
-      !(this.cwOpen() ?? (this.prefs.feedReader() || this.authorTrustedForCw())),
+      !(
+        this.threadCwOpen() ??
+        this.cwOpen() ??
+        (this.prefs.feedReader() || this.authorTrustedForCw())
+      ),
   );
 
   toggleCw(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.cwOpen.set(this.cwCollapsed());
+    this.setCwOpen();
+  }
+
+  private setCwOpen(): void {
+    const open = this.cwCollapsed();
+    this.cwOpen.set(open);
+    this.cwToggled.emit(open);
   }
 
   // --- sensitive media ---
@@ -937,7 +951,7 @@ export class StatusCard {
       case 'x':
         // Mastodon's shortcut: toggle the content-warning fold.
         if (this.spoilerText()) {
-          this.cwOpen.set(this.cwCollapsed());
+          this.setCwOpen();
         }
         return true;
       default:

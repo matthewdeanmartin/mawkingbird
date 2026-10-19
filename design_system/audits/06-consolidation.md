@@ -671,3 +671,12 @@ Reviewed the regenerated inventory: only profile-settings control locations and
 the added SettingsRow finding changed; no candidate files were added or removed.
 The account menu now prefers display names and then handles, with an explicit
 unavailable label only when neither is known. Shared widget code is unchanged.
+
+## Thread warnings and profile overflow, 2026-10-19
+
+Thread cards share the viewer's CW fold choice across ancestors and replies,
+including other authors. Profile overflow panels anchor to the full profile-top
+row and wrap within its width. Reviewed the regenerated control inventory: only
+existing thread template and status-card source locations moved. All 238 candidate
+files retain their existing dispositions; no reconciliation entries were added or
+removed. Shared design-system widgets are unchanged.

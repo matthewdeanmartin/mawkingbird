@@ -205,6 +205,7 @@
 }
 
 .profile-top {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -219,7 +220,7 @@
 }
 
 .account-danger-menu {
-  position: relative;
+  position: static;
 }
 
 .account-danger-menu summary {
@@ -243,6 +244,9 @@
   display: grid;
   gap: 2px;
   min-width: 200px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
   padding: 6px 5px;
   border: 1px solid var(--border);
   border-radius: 8px;
