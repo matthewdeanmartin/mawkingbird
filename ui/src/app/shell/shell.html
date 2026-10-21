@@ -345,7 +345,7 @@
           </details>
 
           @if (auth.account(); as acc) {
-            <details class="account-menu">
+            <details class="account-menu" (toggle)="onAccountMenuToggle($event)">
               <summary
                 class="account-pill"
                 [attr.aria-label]="'shell.account.menuFor' | transloco: { name: accountName(acc) }"
@@ -378,28 +378,59 @@
                 @if (auth.otherSessions().length) {
                   <div class="menu-divider"></div>
                   <p class="menu-label">{{ 'shell.account.switch' | transloco }}</p>
-                  @for (s of auth.otherSessions(); track s.key) {
-                    <button type="button" class="switch-row" (click)="switchTo(s)">
-                      <img
-                        [src]="s.account?.avatar_static || s.account?.avatar || ''"
-                        alt=""
-                        width="36"
-                        height="36"
-                        loading="lazy"
-                        decoding="async"
+                  @if (manyAccounts()) {
+                    <mb-field
+                      class="switch-filter"
+                      density="compact"
+                      hideLabel
+                      [label]="'shell.account.filter' | transloco"
+                    >
+                      <input
+                        mbControl
+                        type="search"
+                        autocomplete="off"
+                        [value]="accountQuery()"
+                        (input)="setAccountQuery($event)"
+                        (keydown.enter)="switchToOnlyMatch()"
+                        [placeholder]="'shell.account.filterPlaceholder' | transloco"
                       />
-                      <span class="switch-name">
-                        {{
-                          accountName(s.account) ||
-                            (s.kind === 'anonymous'
-                              ? ('shell.account.anonymous' | transloco)
-                              : ('shell.account.unavailable' | transloco))
-                        }}
-                        @if (s.account?.username) {
-                          <small class="muted">&#64;{{ s.account?.username }}</small>
-                        }
-                      </span>
-                    </button>
+                    </mb-field>
+                  }
+                  <!-- Scrolls on its own so the current account and the add/log-out
+                       actions stay reachable however many accounts are saved. -->
+                  <div class="switch-list">
+                    @for (s of visibleOtherSessions(); track s.key) {
+                      <button type="button" class="switch-row" (click)="switchTo(s)">
+                        <img
+                          [src]="s.account?.avatar_static || s.account?.avatar || ''"
+                          alt=""
+                          width="36"
+                          height="36"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span class="switch-name">
+                          {{
+                            accountName(s.account) ||
+                              (s.kind === 'anonymous'
+                                ? ('shell.account.anonymous' | transloco)
+                                : ('shell.account.unavailable' | transloco))
+                          }}
+                          @if (s.account?.username) {
+                            <small class="muted">&#64;{{ s.account?.username }}</small>
+                          }
+                        </span>
+                      </button>
+                    } @empty {
+                      <p class="muted small switch-empty">
+                        {{ 'shell.account.noMatch' | transloco }}
+                      </p>
+                    }
+                  </div>
+                  @if (manyAccounts()) {
+                    <a routerLink="/switch-account" class="switch-all" (click)="closeMenu($event)">
+                      {{ 'shell.account.all' | transloco: { count: auth.otherSessions().length } }}
+                    </a>
                   }
                 }
 

@@ -124,6 +124,56 @@ describe('Shell account switching', () => {
     drainRailRequests();
   });
 
+  it('filters a long switch list and links to the full account picker', () => {
+    for (const name of ['alpha', 'bravo', 'charlie', 'delta', 'echo']) {
+      server.setBaseUrl(`https://${name}.example`);
+      auth.setToken(`${name}-token`);
+    }
+    auth.sessions.update((sessions) =>
+      sessions.map((s) =>
+        s.server?.endsWith('.example')
+          ? { ...s, account: { id: s.id, username: s.token.replace('-token', '') } as never }
+          : s,
+      ),
+    );
+    server.setBaseUrl('https://mastodon.art');
+    auth.switchTo('art-token');
+    const fixture = createShell();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const filter = el.querySelector<HTMLInputElement>('.switch-filter input');
+    expect(filter).not.toBeNull();
+    expect(el.querySelector('a.switch-all')?.getAttribute('href')).toBe('/switch-account');
+    const before = el.querySelectorAll('.switch-list .switch-row').length;
+    expect(before).toBe(auth.otherSessions().length);
+
+    filter!.value = 'delta';
+    filter!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const rows = el.querySelectorAll('.switch-list .switch-row');
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain('@delta');
+
+    filter!.value = 'nobody-here';
+    filter!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(el.querySelectorAll('.switch-list .switch-row').length).toBe(0);
+    expect(el.querySelector('.switch-empty')).not.toBeNull();
+    drainRailRequests();
+  });
+
+  it('keeps the plain switch list for a handful of accounts', () => {
+    const fixture = createShell();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.switch-filter')).toBeNull();
+    expect(el.querySelector('a.switch-all')).toBeNull();
+    expect(el.querySelectorAll('.switch-list .switch-row').length).toBe(
+      auth.otherSessions().length,
+    );
+    drainRailRequests();
+  });
+
   it('only uses the unavailable label when a saved profile has no name or handle', () => {
     const fixture = createShell();
     fixture.detectChanges();

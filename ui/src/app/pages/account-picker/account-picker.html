@@ -1,0 +1,90 @@
+<mb-page-header
+  [title]="'accountPicker.title' | transloco"
+  [description]="'accountPicker.intro' | transloco"
+/>
+
+<div class="picker">
+  @if (auth.account(); as acc) {
+    <div class="picker-current">
+      <img
+        [src]="acc.avatar_static || acc.avatar || 'favicon-32x32.png'"
+        alt=""
+        width="44"
+        height="44"
+        decoding="async"
+      />
+      <span class="picker-name">
+        <span class="picker-display">{{ label(acc) }}</span>
+        <small class="muted">&#64;{{ acc.username }}</small>
+      </span>
+      <span class="picker-badge">{{ 'accountPicker.current' | transloco }}</span>
+    </div>
+  }
+
+  <mb-field class="picker-search" [label]="'accountPicker.search' | transloco">
+    <input
+      mbControl
+      type="search"
+      autocomplete="off"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      (keydown.enter)="chooseOnlyMatch()"
+      [placeholder]="'accountPicker.searchPlaceholder' | transloco"
+    />
+  </mb-field>
+
+  <p class="muted small picker-count" aria-live="polite">
+    {{
+      (auth.otherSessions().length === 1 ? 'accountPicker.count.one' : 'accountPicker.count.other')
+        | transloco: { shown: matches().length, total: auth.otherSessions().length }
+    }}
+  </p>
+
+  @if (matches().length) {
+    <ul class="picker-list">
+      @for (s of matches(); track s.key) {
+        <li>
+          <button type="button" class="picker-row" (click)="choose(s)">
+            @if (avatar(s); as src) {
+              <img [src]="src" alt="" width="44" height="44" loading="lazy" decoding="async" />
+            } @else {
+              <span class="picker-blank" aria-hidden="true">?</span>
+            }
+            <span class="picker-name">
+              <span class="picker-display">
+                {{
+                  label(s.account) ||
+                    (s.kind === 'anonymous'
+                      ? ('accountPicker.anonymous' | transloco)
+                      : ('accountPicker.unavailable' | transloco))
+                }}
+              </span>
+              @if (s.account?.username) {
+                <small class="muted">&#64;{{ s.account?.username }}</small>
+              }
+              <small class="muted picker-server">
+                {{ 'accountPicker.kind.' + s.kind | transloco }} ·
+                {{ host(s) || ('accountPicker.thisServer' | transloco) }}
+              </small>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (query().trim()) {
+    <p class="muted center picker-empty">
+      {{ 'accountPicker.none' | transloco: { query: query().trim() } }}
+    </p>
+  }
+
+  @if (!auth.isAnonymous || auth.shouldOfferLogin) {
+    <div class="picker-add">
+      <button mbButton variant="outline" size="small" type="button" (click)="addMastodonAccount()">
+        {{ 'accountPicker.addMastodon' | transloco }}
+      </button>
+      <button mbButton variant="outline" size="small" type="button" (click)="addBlueskyAccount()">
+        {{ 'accountPicker.addBluesky' | transloco }}
+      </button>
+    </div>
+  }
+</div>

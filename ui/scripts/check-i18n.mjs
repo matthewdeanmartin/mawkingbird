@@ -55,6 +55,7 @@ const CONTEXT_PATH = join(ROOT, 'i18n-context', 'en.context.json');
 const MIGRATED = [
   'shell/app-footer',
   'locale-picker',
+  'pages/account-picker',
   'pages/settings/anonymous',
   'pages/settings/development',
   'pages/settings/follows',

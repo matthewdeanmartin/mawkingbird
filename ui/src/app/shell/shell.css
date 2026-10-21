@@ -268,8 +268,40 @@
   z-index: -1;
 }
 
+/* Capped to the viewport (less the header above and the phone tab bar below) so
+   a long account list scrolls inside .switch-list instead of running off-screen. */
 .account-panel {
   width: 260px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 136px);
+  display: flex;
+  flex-direction: column;
+}
+
+.account-panel > * {
+  flex: 0 0 auto;
+}
+
+.account-panel > .switch-list {
+  flex: 1 1 auto;
+  min-height: 72px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.switch-filter {
+  display: block;
+  margin: 0 4px 6px;
+}
+
+.switch-empty {
+  margin: 8px 12px;
+}
+
+.menu-panel a.switch-all {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--accent, var(--text));
 }
 
 .menu-label {

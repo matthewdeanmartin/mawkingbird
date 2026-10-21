@@ -680,3 +680,15 @@ row and wrap within its width. Reviewed the regenerated control inventory: only
 existing thread template and status-card source locations moved. All 238 candidate
 files retain their existing dispositions; no reconciliation entries were added or
 removed. Shared design-system widgets are unchanged.
+
+## Account picker and scrolling account menu, 2026-10-21
+
+The shell account menu caps its height to the viewport and scrolls the switch
+list alone, keeping the current account and add/log-out actions in view. With
+six or more saved choices it adds a compact Field/Control (label visually hidden)
+filter and a link to the new full-page picker at `/switch-account`. The picker
+uses Page Header, Field/Control and Button; account rows stay native buttons like
+the menu's switch rows. Reviewed the regenerated inventory: the picker template is
+the only new candidate file (reconciled as partial adoption); shell findings gain
+the filter field and otherwise shift source locations. Shared design-system widget
+code is unchanged.

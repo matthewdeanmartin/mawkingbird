@@ -1,6 +1,7 @@
 import { accountProfilePath } from '../account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
+import { MbControl, MbField } from '../design-system/field/field';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PlusPrice } from '../providers/account/plus-price';
 import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
@@ -10,6 +11,7 @@ import {
   computed,
   effect,
   ElementRef,
+  forwardRef,
   HostListener,
   inject,
   OnInit,
@@ -39,7 +41,12 @@ import { FeatureFlags } from '../feature-flags';
 import { LeaveChoice, LeaveDialog } from '../leave-dialog/leave-dialog';
 import { WritingZen } from '../writing-zen';
 import { ReadingZen } from '../reading-zen';
-import { qualifiedHandle } from '../account-handle';
+import {
+  ACCOUNT_FILTER_THRESHOLD,
+  AccountSwitcher,
+  accountLabel,
+  filterAccountChoices,
+} from '../account-switcher';
 import { Account } from '../models';
 import { FirstRunChoice, FirstRunModal } from '../first-run/first-run-modal';
 import { PreviewSeed } from '../first-run/preview-seed';
@@ -118,6 +125,10 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.menu.apiDocs: API Docs ↗
 // i18n shell.menu.admin: Admin
 // i18n shell.account.switch: Switch account
+// i18n shell.account.filter: Filter accounts
+// i18n shell.account.filterPlaceholder: Filter by name, @handle or server
+// i18n shell.account.noMatch: No account matches.
+// i18n shell.account.all: All accounts ({{count}})…
 // i18n shell.account.anonymous: Anonymous
 // i18n shell.account.unavailable: Account details unavailable
 // i18n shell.account.addMastodon: + Add Mastodon account
@@ -178,11 +189,15 @@ function isWideUrl(url: string): boolean {
     NgComponentOutlet,
     TranslocoPipe,
     ModeSwitch,
+    MbField,
+    MbControl,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.css',
+  // Lets routed pages (the full account picker) reuse this switch flow.
+  providers: [{ provide: AccountSwitcher, useExisting: forwardRef(() => Shell) }],
 })
-export class Shell implements OnInit {
+export class Shell implements OnInit, AccountSwitcher {
   protected readonly accountProfilePath = accountProfilePath;
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);
@@ -664,11 +679,38 @@ export class Shell implements OnInit {
   }
 
   protected accountName(account: Account | null): string {
-    if (!account) return '';
-    const name = account.display_name?.trim();
-    if (name) return name;
-    const handle = qualifiedHandle(account) || account.acct?.trim() || account.username?.trim();
-    return handle ? `@${handle.replace(/^@/, '')}` : '';
+    return accountLabel(account);
+  }
+
+  /**
+   * Narrows the account menu's switch list. Only offered once there are enough
+   * saved accounts that scanning the list is slower than typing.
+   */
+  protected readonly accountQuery = signal('');
+  protected readonly manyAccounts = computed(
+    () => this.auth.otherSessions().length >= ACCOUNT_FILTER_THRESHOLD,
+  );
+  protected readonly visibleOtherSessions = computed(() =>
+    filterAccountChoices(this.auth.otherSessions(), this.accountQuery()),
+  );
+
+  protected setAccountQuery(event: Event): void {
+    this.accountQuery.set((event.target as HTMLInputElement).value);
+  }
+
+  /** A stale filter would hide accounts the next time the menu opens. */
+  protected onAccountMenuToggle(event: Event): void {
+    if (!(event.target as HTMLDetailsElement).open) this.accountQuery.set('');
+  }
+
+  /** Enter in the filter switches when exactly one account is left. */
+  protected switchToOnlyMatch(): void {
+    const matches = this.visibleOtherSessions();
+    if (matches.length === 1) this.switchTo(matches[0]);
+  }
+
+  protected closeMenu(event: Event): void {
+    (event.currentTarget as HTMLElement).closest('details')?.removeAttribute('open');
   }
 
   /**

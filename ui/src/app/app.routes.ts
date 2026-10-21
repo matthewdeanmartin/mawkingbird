@@ -166,6 +166,14 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
       },
       {
+        // Not `accounts`: `/accounts/:id` is a profile. This is the full-page
+        // counterpart to the header account menu, for people with many accounts.
+        path: 'switch-account',
+        title: 'Switch account',
+        loadComponent: () =>
+          import('./pages/account-picker/account-picker').then((m) => m.AccountPicker),
+      },
+      {
         path: 'algo',
         title: 'Algo',
         loadComponent: () => import('./pages/algo/algo').then((m) => m.Algo),

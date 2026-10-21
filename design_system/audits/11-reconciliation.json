@@ -43,6 +43,11 @@
       "nextStep": "Server search and custom-domain inputs use Field/Control; the browse action uses Button. Preserve native router links, accessible field labels, domain-specific destinations and narrow wrapping. Directory rows and back links retain the existing Feeds navigation pattern pending a bounded navigation review."
     },
     {
+      "file": "ui/src/app/pages/account-picker/account-picker.html",
+      "disposition": "partial adoption",
+      "nextStep": "Page Header frames the full account picker, the account filter uses Field/Control and add-account actions use Button. Account rows remain native full-width buttons matching the shell account menu's switch rows pending a shared identity-row action. Preserve the visible filter label, Enter-to-switch on a single match, the live result count, the shell's AccountSwitcher flow and the single-column wrap at phone width."
+    },
+    {
       "file": "ui/src/app/pages/watch/party-conversation.ts",
       "disposition": "adopted scope",
       "nextStep": "Temporary party tags use Field/Control, Button and Help. Preserve label associations, removable tag names, keyboard access and bounded narrow layouts; feed posts reuse StatusCard."
