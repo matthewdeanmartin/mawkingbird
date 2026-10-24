@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Preserve attachments when editing posts, 2026-10-24
+
+Reviewed 1,151 source files and 239 candidate files. The only inventory change
+is a disclosure source-line shift in `status-card/status-card.ts` after retaining
+media IDs on Mastodon edits. No controls or shared widgets changed, and no
+candidate files were added or removed. The dispositions in
+`11-reconciliation.json` remain unchanged.
+
 ## Video search, watch parties and menu cleanup, 2026-10-18
 
 Reviewed 1,147 source files and 238 candidate files. One candidate is added:

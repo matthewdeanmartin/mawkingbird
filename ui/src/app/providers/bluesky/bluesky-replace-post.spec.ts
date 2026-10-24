@@ -57,6 +57,41 @@ describe('Bluesky post replacement', () => {
     expect(request).not.toHaveBeenCalled();
   });
 
+  it.each(['app.bsky.embed.images', 'app.bsky.embed.recordWithMedia'])(
+    'keeps all image blobs, alt text and dimensions in %s',
+    async (type) => {
+      const images = {
+        $type: 'app.bsky.embed.images',
+        images: ['First bird', 'Second bird'].map((alt, index) => ({
+          image: {
+            $type: 'blob',
+            ref: { $link: `blob-${index}` },
+            mimeType: 'image/jpeg',
+            size: 123,
+          },
+          alt,
+          aspectRatio: { width: 640, height: 480 },
+        })),
+      };
+      const embed =
+        type === 'app.bsky.embed.images'
+          ? images
+          : {
+              $type: type,
+              record: {
+                $type: 'app.bsky.embed.record',
+                record: { uri: 'quoted', cid: 'quoted-cid' },
+              },
+              media: images,
+            };
+      const original = { ...post, record: { ...post.record, embed } } as BskyPostView;
+      const request = vi.fn().mockReturnValue(of({}));
+      await replaceBlueskyPost({ request } as unknown as BlueskyApi, original, 'New caption', 'op');
+      expect(request.mock.calls[0][1].writes[0].value.embed).toEqual(embed);
+      expect(original.record).toMatchObject({ embed });
+    },
+  );
+
   it('propagates transaction failure without a separate destructive delete', async () => {
     const request = vi.fn().mockReturnValue(throwError(() => new Error('offline')));
     await expect(

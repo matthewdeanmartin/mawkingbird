@@ -549,7 +549,7 @@ export const ONBOARDING_QUESTIONS: readonly OnboardingQuestion[] = [
       kind: 'choice',
       options: () => [
         { value: 'public', label: 'Public' },
-        { value: 'unlisted', label: 'Quiet public' },
+        { value: 'unlisted', label: 'Post unindexed' },
         { value: 'private', label: 'Followers only' },
       ],
     },

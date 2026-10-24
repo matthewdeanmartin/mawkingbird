@@ -1133,7 +1133,10 @@ export class StatusCard {
       return;
     }
     this.saving.set(true);
-    this.api.editStatus(this.display.id, text).subscribe({
+    // Reattach the existing media IDs: a text-only PUT can detach the images.
+    // Reusing the media objects also preserves their descriptions and focal points.
+    const mediaIds = this.display.media_attachments.map((media) => media.id);
+    this.api.editStatus(this.display.id, text, undefined, mediaIds).subscribe({
       next: (updated) => {
         this.saving.set(false);
         this.editing.set(false);

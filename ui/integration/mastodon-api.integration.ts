@@ -8,6 +8,8 @@ import { authInterceptor } from '../src/app/auth.interceptor';
 import { Server } from '../src/app/server';
 import { serverInterceptor } from '../src/app/server.interceptor';
 import { environment } from '../src/environments/environment';
+import { Buffer } from 'node:buffer';
+import { MediaAttachment } from '../src/app/models';
 
 describe('Mawkingbird client against the PyPI Mastodon mock', () => {
   let api: Api;
@@ -63,6 +65,49 @@ describe('Mawkingbird client against the PyPI Mastodon mock', () => {
     await firstValueFrom(api.unbookmark(post.id));
     expect((await firstValueFrom(api.favourites())).map((item) => item.id)).not.toContain(post.id);
     expect((await firstValueFrom(api.bookmarks())).map((item) => item.id)).not.toContain(post.id);
+  });
+
+  it('preserves multiple images and their alt text when editing a post', async () => {
+    const png = Uint8Array.from(
+      atob(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aX1sAAAAASUVORK5CYII=',
+      ),
+      (char) => char.charCodeAt(0),
+    );
+    const attachments: MediaAttachment[] = [];
+    for (const description of ['First bird', 'Second bird']) {
+      // Seed real uploads with multipart bytes: Node fetch cannot serialize
+      // jsdom's FormData. Post creation, editing and reads use the Angular Api.
+      const boundary = 'image-edit-fixture';
+      const response = await fetch(`${process.env['MASTODON_MOCK_URL']}/api/v2/media`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer alice_token',
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        },
+        body: Buffer.concat([
+          Buffer.from(
+            `--${boundary}\r\nContent-Disposition: form-data; name="description"\r\n\r\n${description}\r\n--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="bird.png"\r\nContent-Type: image/png\r\n\r\n`,
+          ),
+          Buffer.from(png),
+          Buffer.from(`\r\n--${boundary}--\r\n`),
+        ]),
+      });
+      expect(response.ok).toBe(true);
+      attachments.push(await response.json());
+    }
+    const mediaIds = attachments.map((media) => media.id);
+    const post = await firstValueFrom(api.postStatus('Original caption', { mediaIds }));
+    await firstValueFrom(api.editStatus(post.id, 'Corrected caption', undefined, mediaIds));
+    const saved = await firstValueFrom(api.getStatus(post.id));
+    expect(saved.content).toContain('Corrected caption');
+    expect(
+      saved.media_attachments.map((media) => ({ id: media.id, description: media.description })),
+    ).toEqual(attachments.map((media) => ({ id: media.id, description: media.description })));
+    expect(saved.media_attachments.map((media) => media.description)).toEqual([
+      'First bird',
+      'Second bird',
+    ]);
   });
 
   it('surfaces invalid credentials from the server', async () => {

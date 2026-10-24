@@ -512,12 +512,20 @@ export class Api {
     return this.http.get<StatusSource>(`/api/v1/statuses/${id}/source`);
   }
 
-  editStatus(id: string, status: string, spoilerText?: string): Observable<Status> {
-    const body: Record<string, string> = {
+  editStatus(
+    id: string,
+    status: string,
+    spoilerText?: string,
+    mediaIds?: string[],
+  ): Observable<Status> {
+    const body: Record<string, string | string[]> = {
       status: this.pseudonymity.cleanLinks() ? cleanPostLinks(status).text : status,
     };
     if (spoilerText !== undefined) {
       body['spoiler_text'] = spoilerText;
+    }
+    if (mediaIds !== undefined) {
+      body['media_ids'] = mediaIds;
     }
     return this.http.put<Status>(`/api/v1/statuses/${id}`, body);
   }

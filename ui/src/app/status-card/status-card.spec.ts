@@ -1339,6 +1339,39 @@ describe('StatusCard', () => {
     httpMock.expectNone('/api/v1/statuses/1');
   });
 
+  it('saveEdit: retains every image and its alt text through a text edit', () => {
+    const media = [
+      { ...makeMedia('a'), description: 'A red bird' },
+      { ...makeMedia('b'), description: 'Two blue birds' },
+    ];
+    const f = setUp(makeStatus({ media_attachments: media }));
+    const changed = vi.fn();
+    f.componentInstance.changed.subscribe(changed);
+    f.componentInstance.startEdit(fakeEvent());
+    httpMock.expectOne('/api/v1/statuses/1/source').flush({
+      id: '1',
+      text: 'old',
+      spoiler_text: '',
+    });
+    f.detectChanges();
+    expect(f.nativeElement.querySelectorAll('.media-thumb')).toHaveLength(2);
+    internals(f).editText.set('new content');
+    f.componentInstance.saveEdit();
+    const req = httpMock.expectOne('/api/v1/statuses/1');
+    expect(req.request.body).toEqual({ status: 'new content', media_ids: ['a', 'b'] });
+    // Model the server retaining only explicitly attached media.
+    const updated = makeStatus({
+      content: '<p>new content</p>',
+      media_attachments: media.filter((item) => req.request.body.media_ids.includes(item.id)),
+    });
+    req.flush(updated);
+    expect(changed).toHaveBeenCalledWith(updated);
+    f.componentRef.setInput('status', updated);
+    f.detectChanges();
+    const images = [...f.nativeElement.querySelectorAll('.media-thumb img')] as HTMLImageElement[];
+    expect(images.map((image) => image.alt)).toEqual(['A red bird', 'Two blue birds']);
+  });
+
   it('saveEdit: clears saving flag on HTTP error', () => {
     const f = setUp();
     f.componentInstance.startEdit(fakeEvent());

@@ -186,6 +186,16 @@ describe('Api service (HTTP isolated)', () => {
 
   // ---------------------------------------------------------------- favorite
 
+  it('edit: includes the existing attachment IDs in their original order', () => {
+    api.editStatus('77', 'edited text', undefined, ['image-2', 'image-1']).subscribe();
+    const req = httpMock.expectOne('/api/v1/statuses/77');
+    expect(req.request.body).toEqual({
+      status: 'edited text',
+      media_ids: ['image-2', 'image-1'],
+    });
+    req.flush(statusStub({ id: '77' }));
+  });
+
   it('favorite: POSTs to /favourite with an empty body', () => {
     let result: Status | undefined;
     api.favourite('12').subscribe((s) => (result = s));
