@@ -1151,6 +1151,7 @@ export class StatusCard {
     if (!(await this.dialogs.confirm(this.transloco.translate('statusCard.deletePostConfirm')))) {
       return;
     }
+    this.actionError.set(null);
     if (this.display.provider === 'bluesky') {
       const ref = this.display.providerRef as BskyRef;
       this.blueskyApi.deleteRecord(ref.uri).subscribe({
@@ -1159,7 +1160,10 @@ export class StatusCard {
       });
       return;
     }
-    this.api.deleteStatus(this.display.id).subscribe(() => this.deleted.emit(this.status()));
+    this.api.deleteStatus(this.display.id).subscribe({
+      next: () => this.deleted.emit(this.status()),
+      error: () => this.actionError.set(this.actionFailureMessage('delete this post')),
+    });
   }
 
   // --- save as to-do ---

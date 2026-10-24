@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Post lifecycle regression tests and delete failure handling, 2026-10-24
+
+Reviewed 1,151 source files and 239 candidate files. The delete failure handler
+in `status-card/status-card.ts` shifts one disclosure source line. It reuses the
+existing action error display; no control or shared widget changed. No candidate
+files were added or removed, so `11-reconciliation.json` keeps its dispositions.
+
 ## Preserve attachments when editing posts, 2026-10-24
 
 Reviewed 1,151 source files and 239 candidate files. The only inventory change
