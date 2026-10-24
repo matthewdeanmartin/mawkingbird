@@ -1,3 +1,4 @@
+import { HomeAlgoSettings, ALGO_FACTORY, AlgoOptions } from './home-algo-settings';
 import { effect, inject, Injectable, Injector, signal } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Api } from './api';
@@ -19,8 +20,8 @@ export interface AlgoPost {
   score: number;
 }
 
-/** Hard budget: never more than this many API calls per build. */
-export const ALGO_MAX_CALLS = 28;
+/** Factory call budget; each build obeys the account’s configured maximum. */
+export const ALGO_MAX_CALLS = ALGO_FACTORY.maxCalls;
 /**
  * Stop gathering once this many candidate posts are in the pool. Oversized on
  * purpose (~40% above what the page comfortably shows): the client-side calm /
@@ -28,14 +29,7 @@ export const ALGO_MAX_CALLS = 28;
  * ~30% — and an over-full pool is what keeps the filtered feed from going
  * anemic.
  */
-export const ALGO_TARGET_POSTS = 140;
-
-const HOME_PAGES_MAX = 7;
-const MUTUAL_SAMPLE_MAX = 11;
-const HASHTAG_PAGES_MAX = 3;
-const MUTUAL_STATUS_LIMIT = 28;
-/** Calls held back from the mutual bucket so the hashtag bucket can run. */
-const HASHTAG_RESERVE = 3;
+export const ALGO_TARGET_POSTS = ALGO_FACTORY.targetPosts;
 
 /** A metered fetch: counts against the build's call budget, never throws. */
 type BudgetFetch = <T>(fallback: T, fetch: () => Observable<T>) => Observable<T>;
@@ -49,10 +43,19 @@ type BudgetFetch = <T>(fallback: T, fetch: () => Observable<T>) => Observable<T>
  * the {@link ALGO_TARGET_POSTS} cutoff at the expense of genuinely liked
  * posts. Favs and boosts are endorsements; replies are merely attention.
  */
-export function engagementScore(status: Status): number {
+export function engagementScore(status: Status, options: AlgoOptions = ALGO_FACTORY): number {
   const target = status.reblog ?? status;
   return (
-    (target.favourites_count + 1) * (target.reblogs_count + 1) * Math.sqrt(target.replies_count + 1)
+    Math.pow(target.favourites_count + 1, options.likeWeight) *
+    Math.pow(target.reblogs_count + 1, options.boostWeight) *
+    Math.pow(target.replies_count + 1, options.replyWeight) *
+    (options.recencyHalfLife > 0
+      ? Math.pow(
+          0.5,
+          Math.max(0, Date.now() - Date.parse(target.created_at)) /
+            (options.recencyHalfLife * 3600000),
+        )
+      : 1)
   );
 }
 
@@ -80,6 +83,10 @@ function shuffle<T>(items: T[]): T[] {
  */
 @Injectable({ providedIn: 'root' })
 export class AlgoFeed {
+  private settings = inject(HomeAlgoSettings);
+  private get options(): AlgoOptions {
+    return this.settings.value().algo;
+  }
   private api = inject(Api);
   private auth = inject(Auth);
   private injector = inject(Injector);
@@ -138,7 +145,7 @@ export class AlgoFeed {
     // the build funnels through here, so this is the one place that sees them.
     this.callsUsed.set(0);
     const budget: BudgetFetch = (fallback, fetch) => {
-      if (calls >= ALGO_MAX_CALLS) {
+      if (calls >= this.options.maxCalls) {
         return of(fallback);
       }
       calls++;
@@ -153,25 +160,25 @@ export class AlgoFeed {
       .pipe(
         switchMap(({ following, followers }) => {
           const followerIds = new Set(followers.map((a) => a.id));
-          const mutuals = following.filter((a) => followerIds.has(a.id));
-          return this.fetchPages(HOME_PAGES_MAX, budget, (maxId) =>
+          const mutuals = this.options.mutual ? following.filter((a) => followerIds.has(a.id)) : [];
+          return this.fetchPages(this.options.homePages, budget, (maxId) =>
             this.api.homeTimeline(maxId),
           ).pipe(map((home) => ({ following, mutuals, home })));
         }),
         switchMap(({ following, mutuals, home }) => {
           // Reserve calls for the hashtag bucket; sample what the budget allows.
-          const room = Math.max(0, ALGO_MAX_CALLS - calls - HASHTAG_RESERVE);
+          const room = Math.max(0, this.options.maxCalls - calls - this.options.hashtagReserve);
           const sample =
-            home.length >= ALGO_TARGET_POSTS
+            home.length >= this.options.targetPosts
               ? []
-              : shuffle(mutuals).slice(0, Math.min(MUTUAL_SAMPLE_MAX, room));
+              : shuffle(mutuals).slice(0, Math.min(this.options.mutualSample, room));
           const mutual$ = sample.length
             ? forkJoin(
                 sample.map((a) =>
                   budget<Status[]>([], () =>
                     this.api.getAccountStatuses(a.id, {
-                      excludeReplies: true,
-                      limit: MUTUAL_STATUS_LIMIT,
+                      excludeReplies: this.options.excludeReplies,
+                      limit: this.options.mutualStatusLimit,
                     }),
                   ),
                 ),
@@ -187,7 +194,10 @@ export class AlgoFeed {
             tagName: null as string | null,
             tagStatuses: [] as Status[],
           };
-          if (home.length + mutualStatuses.length >= ALGO_TARGET_POSTS) {
+          if (
+            !this.options.hashtag ||
+            home.length + mutualStatuses.length >= this.options.targetPosts
+          ) {
             return of(done);
           }
           return budget<Tag[]>([], () => this.api.followedTags()).pipe(
@@ -195,10 +205,23 @@ export class AlgoFeed {
               if (!tags.length) {
                 return of(done);
               }
-              const tag = tags[Math.floor(Math.random() * tags.length)];
-              return this.fetchPages(HASHTAG_PAGES_MAX, budget, (maxId) =>
-                this.api.tagTimeline(tag.name, maxId),
-              ).pipe(map((tagStatuses) => ({ ...done, tagName: tag.name, tagStatuses })));
+              const selected =
+                this.options.hashtagCount === 1
+                  ? [tags[Math.floor(Math.random() * tags.length)]]
+                  : shuffle(tags).slice(0, this.options.hashtagCount);
+              return forkJoin(
+                selected.map((tag) =>
+                  this.fetchPages(this.options.hashtagPages, budget, (maxId) =>
+                    this.api.tagTimeline(tag.name, maxId),
+                  ),
+                ),
+              ).pipe(
+                map((pages) => ({
+                  ...done,
+                  tagName: selected.map((tag) => tag.name).join(', '),
+                  tagStatuses: pages.flat(),
+                })),
+              );
             }),
           );
         }),
@@ -256,7 +279,8 @@ export class AlgoFeed {
             : friend
               ? 'original'
               : 'hashtag';
-      pool.set(key, { status, source, friend, score: engagementScore(status) });
+      if (!this.options[source]) continue;
+      pool.set(key, { status, source, friend, score: this.score(status, source) });
     }
     this.posts.set(
       [...pool.values()]
@@ -264,8 +288,19 @@ export class AlgoFeed {
           (a, b) =>
             b.score - a.score || Date.parse(b.status.created_at) - Date.parse(a.status.created_at),
         )
-        .slice(0, ALGO_TARGET_POSTS),
+        .slice(0, this.options.targetPosts),
     );
+  }
+
+  private score(status: Status, source: AlgoSource): number {
+    const weights = {
+      mutual: this.options.mutualWeight,
+      boost: this.options.boostSourceWeight,
+      original: this.options.originalWeight,
+      hashtag: this.options.hashtagWeight,
+      rss: this.options.rssWeight,
+    };
+    return engagementScore(status, this.options) * weights[source];
   }
 
   /** Up to `remaining` consecutive pages, chained on max_id, budget permitting. */
@@ -305,32 +340,36 @@ export class AlgoFeed {
     const add = (status: Status, source: AlgoSource, friend: boolean): void => {
       const target = status.reblog ?? status;
       // This is the good stuff: no likes, no entry.
-      if (target.favourites_count < 1) {
+      if (
+        (this.options.requireLikes && target.favourites_count < 1) ||
+        !this.options[source] ||
+        (this.options.excludeReplies && target.in_reply_to_id !== null)
+      ) {
         return;
       }
       if (!pool.has(target.id)) {
-        pool.set(target.id, { status, source, friend, score: engagementScore(status) });
+        pool.set(target.id, { status, source, friend, score: this.score(status, source) });
       }
     };
 
     // Most specific source first — a mutual's post found twice stays "mutual".
     for (const s of mutualStatuses) {
-      if (!s.reblog && s.account.id !== myId) {
+      if (!s.reblog && (!this.options.excludeOwn || s.account.id !== myId)) {
         add(s, 'mutual', true);
       }
     }
     for (const s of home) {
-      if (s.account.id === myId) {
+      if (this.options.excludeOwn && s.account.id === myId) {
         continue; // my own posts aren't "the good stuff"
       }
       if (s.reblog) {
         add(s, 'boost', true);
-      } else if (!s.in_reply_to_id) {
+      } else if (!this.options.excludeReplies || !s.in_reply_to_id) {
         add(s, 'original', true);
       }
     }
     for (const s of tagStatuses) {
-      if (!s.reblog && s.account.id !== myId) {
+      if (!s.reblog && (!this.options.excludeOwn || s.account.id !== myId)) {
         add(s, 'hashtag', followingIds.has(s.account.id));
       }
     }
@@ -340,7 +379,7 @@ export class AlgoFeed {
         (a, b) =>
           b.score - a.score || Date.parse(b.status.created_at) - Date.parse(a.status.created_at),
       )
-      .slice(0, ALGO_TARGET_POSTS);
+      .slice(0, this.options.targetPosts);
     this.posts.set(ranked);
   }
 }

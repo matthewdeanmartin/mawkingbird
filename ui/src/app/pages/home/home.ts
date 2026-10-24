@@ -1,3 +1,6 @@
+// i18n pages.home.sourceFailed: Could not load the selected Home source. Retry or choose another feed in Settings → Home and Algo.
+import { HomeSource } from '../../home-source';
+import { HomeSession } from '../../home-session';
 import { MbButton } from '../../design-system/button/button';
 import { statusHashtags, normalizeHashtag } from '../../hashtag';
 import { reconcileStatus } from '../../reconcile-status';
@@ -181,6 +184,7 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.feedSource.query: your home timeline
 @Component({
   selector: 'app-home',
+  providers: [HomeSource],
   imports: [
     MbField,
     MbControl,
@@ -413,8 +417,10 @@ export class Home implements OnInit, OnDestroy {
   protected loading = signal(true);
   protected live = signal(false);
   /** Home timeline presentation filters, matching the profile-feed controls. */
-  protected showBoosts = signal(true);
-  protected showReplies = signal(false);
+  protected homeSession = inject(HomeSession);
+  protected homeSource = inject(HomeSource);
+  protected showBoosts = this.homeSession.boosts;
+  protected showReplies = this.homeSession.replies;
   /** True while auto-loading pages to reach the configured minimum feed size. */
   protected autoLoading = signal(false);
 
@@ -471,7 +477,8 @@ export class Home implements OnInit, OnDestroy {
               : (s.provider ?? 'mastodon'),
           ),
         );
-    if (serverOnly) return this.applyTimelineFilters(feed);
+    if (serverOnly || this.homeSource.settings.value().mode !== 'friends')
+      return this.applyTimelineFilters(feed);
     const injected: Status[] = [...this.localPosts.posts()];
     if (this.eliza.following()) {
       injected.push(...this.eliza.timeline(this.now()));
@@ -701,7 +708,7 @@ export class Home implements OnInit, OnDestroy {
         return false;
       }
       return (
-        !(this.prefs.algoCalm() && this.calm.hidden(status)) &&
+        !(this.homeSession.calm() && this.calm.hidden(status)) &&
         this.feedLangFilter.shouldShow(status)
       );
     }).length;
@@ -720,7 +727,7 @@ export class Home implements OnInit, OnDestroy {
    * click cannot deliver on.
    */
   protected hiddenByCalm = computed(() => {
-    if (!this.prefs.algoCalm()) {
+    if (!this.homeSession.calm()) {
       return 0;
     }
     return this.statuses().filter((status) => {
@@ -750,7 +757,7 @@ export class Home implements OnInit, OnDestroy {
       return (
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
-        !(this.prefs.algoCalm() && this.calm.hidden(status))
+        !(this.homeSession.calm() && this.calm.hidden(status))
       );
     }).length;
   });
@@ -769,7 +776,7 @@ export class Home implements OnInit, OnDestroy {
 
   /** Stop hiding calm-filtered posts, from the end-of-feed note. */
   protected showCalmHidden(): void {
-    this.prefs.setAlgoCalm(false);
+    this.homeSession.calm.set(false);
   }
 
   /** Turn both chips back on from the end-of-feed prompt, in one click. */
@@ -803,12 +810,14 @@ export class Home implements OnInit, OnDestroy {
     return statuses.filter(
       (status) =>
         (!this.myTags() ||
-          statusHashtags(status).some((tag) =>
-            this.followedTagSet().has(tag.toLocaleLowerCase()),
+          statusHashtags(status).some(
+            (tag) =>
+              this.followedTagSet().has(tag.toLocaleLowerCase()) ||
+              this.homeSource.tags().some((t) => t.toLocaleLowerCase() === tag.toLocaleLowerCase()),
           )) &&
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
-        !(this.prefs.algoCalm() && this.calm.hidden(status)) &&
+        !(this.homeSession.calm() && this.calm.hidden(status)) &&
         this.feedLangFilter.shouldShow(status),
     );
   }
@@ -884,7 +893,11 @@ export class Home implements OnInit, OnDestroy {
 
   /** A persisted on-state waits for list discovery instead of flashing the normal feed. */
   protected waitingForServerList = computed(
-    () => this.auth.isAuthenticated && this.justMyServer.enabled() && !this.justMyServer.ready(),
+    () =>
+      this.homeSource.settings.value().mode === 'friends' &&
+      this.auth.isAuthenticated &&
+      this.justMyServer.enabled() &&
+      !this.justMyServer.ready(),
   );
 
   private nudgeDismissed = signal(localStorage.getItem(NUDGE_DISMISSED_KEY) === 'true');
@@ -974,6 +987,7 @@ export class Home implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.homeSession.ensure();
     this.homeScope = this.homeDefaults.scope();
     const navigation = this.router.currentNavigation() ?? this.router.lastSuccessfulNavigation();
     const visit = (navigation?.extras.state?.['homePresentation'] ??
@@ -1035,6 +1049,11 @@ export class Home implements OnInit, OnDestroy {
    * token and have no stream to open, so they stay off whatever the pref says.
    */
   private syncLive(): void {
+    if (this.homeSource.settings.value().mode !== 'friends') {
+      this.liveSub?.unsubscribe();
+      this.live.set(false);
+      return;
+    }
     // Bluesky-primary excluded too: this opens a *Mastodon* streaming
     // connection, which such an account has no token to authenticate.
     const wanted =
@@ -1103,6 +1122,7 @@ export class Home implements OnInit, OnDestroy {
     this.autoLoading.set(false);
     this.loading.set(true);
     this.syntheticAnchors.clear();
+    this.homeSource.reset();
     // A real reload is the one moment Calm should re-judge: a post whose ratio
     // genuinely moved gets recategorised here, and nowhere else. Language
     // detection is cached for the same reason and cleared at the same moment —
@@ -1113,12 +1133,15 @@ export class Home implements OnInit, OnDestroy {
     this.bookmarkReview.set([]);
     this.bookmarksExhausted.set(false);
     this.loadingBookmarks.set(false);
-    if (this.waitingForServerList()) {
+    if (this.homeSource.settings.value().mode === 'friends' && this.waitingForServerList()) {
       this.statuses.set([]);
       this.refreshBaseline = null;
       return;
     }
-    if (this.justMyServer.effectiveEnabled()) {
+    if (
+      this.homeSource.settings.value().mode === 'friends' &&
+      this.justMyServer.effectiveEnabled()
+    ) {
       this.justMyServer.resetFeed();
     } else {
       this.aggregator.reset();
@@ -1132,6 +1155,7 @@ export class Home implements OnInit, OnDestroy {
       cache: this.anonymousHomeCache.loadReport,
     });
     if (
+      this.homeSource.settings.value().mode === 'friends' &&
       this.auth.isAnonymous &&
       !this.justMyServer.effectiveEnabled() &&
       !forceRefresh &&
@@ -1162,7 +1186,7 @@ export class Home implements OnInit, OnDestroy {
       feedMin: this.prefs.feedMin(),
       feedMax: this.prefs.feedMax(),
     });
-    if (this.auth.isAnonymous) {
+    if (this.auth.isAnonymous && this.homeSource.settings.value().mode === 'friends') {
       if (this.justMyServer.effectiveEnabled()) {
         this.loadAnonymousServerList();
         return;
@@ -1172,7 +1196,7 @@ export class Home implements OnInit, OnDestroy {
     }
     this.pageSub = this.nextFeedPage().subscribe({
       next: (s) => {
-        this.statuses.set(s);
+        this.statuses.set(s.slice(0, this.prefs.feedMax()));
         this.noteMaximum();
         this.finishRefresh();
         const details = {
@@ -1295,6 +1319,7 @@ export class Home implements OnInit, OnDestroy {
    * "Load more" available (see {@link canLoadMore}) so the reader decides.
    */
   private fillToMinimum(): void {
+    if (this.homeSource.settings.value().mode !== 'friends') return;
     if (
       this.statuses().length >= this.prefs.feedMin() ||
       this.statuses().length >= this.prefs.feedMax() ||
@@ -1518,6 +1543,9 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private feedHasMore(): boolean {
+    if (this.homeSource.settings.value().mode === 'favorite') return this.homeSource.hasMore();
+    if (this.homeSource.settings.value().mode === 'interests')
+      return this.homeSource.hasMore() || this.aggregator.hasMore();
     return this.justMyServer.effectiveEnabled()
       ? this.justMyServer.hasMore()
       : this.aggregator.hasMore();
@@ -1529,6 +1557,8 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private nextFeedPage(): Observable<Status[]> {
+    if (this.homeSource.settings.value().mode !== 'friends')
+      return this.homeSource.page(() => this.aggregator.nextPage());
     return this.justMyServer.effectiveEnabled()
       ? this.justMyServer.nextPage()
       : this.aggregator.nextPage();
@@ -1656,6 +1686,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private cacheAnonymousHome(): void {
+    if (this.homeSource.settings.value().mode !== 'friends') return;
     if (this.auth.isAnonymous) {
       this.anonymousHomeCache.store(
         this.statuses(),
@@ -1725,6 +1756,7 @@ export class Home implements OnInit, OnDestroy {
   /** A quiet or filtered feed is different from having no followed sources. */
   protected readonly nothingFollowed = computed(
     () =>
+      this.homeSource.settings.value().mode === 'friends' &&
       !this.blueskyFeedFailed() &&
       this.noLoadedPosts() &&
       this.noLocalSources() &&

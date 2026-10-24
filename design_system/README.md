@@ -1,5 +1,8 @@
 # Mawkingbird design system
 
+**Adding a Settings page?** Start with the [Settings page recipe](settings-pages.md)
+and the accepted `settings/profile` layout before consulting individual widgets.
+
 Navigation/identity follow-up: **Adoption / Navigation and identity** previews
 the real rails, profile stack, account cards and follow controls across providers.
 **Adoption / Server selection** covers the picker and both discovery flows.

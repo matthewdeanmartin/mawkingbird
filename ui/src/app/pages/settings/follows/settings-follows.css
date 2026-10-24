@@ -43,7 +43,7 @@
 
 /* Pointer to the bulk boost switches, which live on their own page. */
 .follows-crosslink {
-  margin: 0 0 12px;
+  margin: 12px 22px;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;

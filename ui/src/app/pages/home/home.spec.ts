@@ -1,3 +1,4 @@
+import { HomeSession } from '../../home-session';
 import { FEED_CTA_INTERVAL } from '../../feed-ctas';
 import { provideHttpClient } from '@angular/common/http';
 import {
@@ -1699,7 +1700,7 @@ describe('Home, end-of-feed honesty', () => {
     // The worst case in this class: posts were fetched, Calm hid all of them,
     // and Home told the reader to go find friends to follow — sending them to
     // fix follows that were working fine.
-    TestBed.inject(ClientPrefs).setAlgoCalm(true);
+    TestBed.inject(HomeSession).calm.set(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
@@ -1719,7 +1720,7 @@ describe('Home, end-of-feed honesty', () => {
   it('names Calm at the end of a feed it only partly hid', () => {
     // The partial case, which reaches the end-of-feed note rather than the
     // all-hidden state: one post survives, two are held back.
-    TestBed.inject(ClientPrefs).setAlgoCalm(true);
+    TestBed.inject(HomeSession).calm.set(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [

@@ -65,6 +65,7 @@ describe('Home defaults per account', () => {
       throw new Error('denied');
     });
     expect(() => defaults.set('video')).not.toThrow();
+    expect(defaults.set('video')).toBe(false);
     expect(defaults.value()).toBe('video');
   });
   it('persists My tags as an account-scoped starting view', () => {

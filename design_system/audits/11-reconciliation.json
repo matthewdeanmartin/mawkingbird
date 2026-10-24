@@ -1196,6 +1196,11 @@
       "file": "ui/src/app/report-history/report-history.ts",
       "disposition": "adopted scope",
       "nextStep": "Report receipts use shared Help and ordinary router links. History is scoped to the active account and limited to successful local submissions; keep that limitation explicit."
+    },
+    {
+      "file": "ui/src/app/pages/settings/home-algo/settings-home-algo.html",
+      "disposition": "adopted scope",
+      "nextStep": "Preserve the Profile page header/body inset and divider sections, shared SettingsRow/Field/Control/Checkbox/Button, staged Save and factory reset, account-scoped defaults, dependent feed picker with loading/error states, and narrow-screen browser checks."
     }
   ]
 }

@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Home and Algo Settings, 2026-10-24
+
+Reviewed 1,159 source files and 240 candidate files. Added one candidate:
+`pages/settings/home-algo/settings-home-algo.html`, composed from the Profile
+header/body/section pattern with SettingsRow, Field/Control, Checkbox and Button.
+Home adds a shared retry action and source-line shifts. Storage truncates labels
+while keeping full-key titles and accessible delete labels; its actions cannot
+shrink or wrap mid-word. Follows retains a 22px outer inset around its note.
+No candidates were removed and no shared widget internals changed. The ledger
+records the new page; the Settings recipe makes page composition explicit.
+
 ## Post lifecycle regression tests and delete failure handling, 2026-10-24
 
 Reviewed 1,151 source files and 239 candidate files. The delete failure handler

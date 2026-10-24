@@ -1,3 +1,11 @@
+@if (homeSource.error()) {
+  <div class="spage-body" role="alert">
+    <p>{{ 'pages.home.sourceFailed' | transloco }}</p>
+    <button mbButton type="button" variant="outline" (click)="load(true)">
+      {{ 'pages.home.myTags.retry' | transloco }}
+    </button>
+  </div>
+}
 @if (nothingFollowed()) {
   <div class="home-empty">
     <p class="home-empty-lead">{{ 'pages.home.empty.sourcesLead' | transloco }}</p>
@@ -154,8 +162,8 @@
         <button
           type="button"
           mbToolbarButton
-          [pressed]="prefs.algoCalm()"
-          (click)="prefs.setAlgoCalm(!prefs.algoCalm())"
+          [pressed]="homeSession.calm()"
+          (click)="homeSession.calm.set(!homeSession.calm())"
           [title]="'pages.home.filters.calm.title' | transloco: { posts: words().posts }"
         >
           😌 {{ 'pages.home.filters.calm.label' | transloco }}

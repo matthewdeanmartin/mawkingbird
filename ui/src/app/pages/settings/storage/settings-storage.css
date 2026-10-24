@@ -130,3 +130,11 @@ h2 {
     flex-direction: column;
   }
 }
+
+.storage-row > div {
+  min-width: 0;
+}
+.storage-row button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}

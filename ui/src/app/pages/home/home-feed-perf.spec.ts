@@ -1,3 +1,4 @@
+import { HomeSession } from '../../home-session';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CalmVerdicts } from '../../calm-verdicts';
@@ -144,7 +145,7 @@ describe('Home feed filter cost', () => {
    */
   it('re-reads Calm verdicts from cache rather than re-scoring', () => {
     const feed = makeFeed(400);
-    prefs.algoCalm.set(true);
+    TestBed.inject(HomeSession).calm.set(true);
 
     const first = medianMs(1, () => {
       for (const status of feed) {

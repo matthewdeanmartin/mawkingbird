@@ -1,0 +1,153 @@
+<div class="spage-head">
+  <h1>{{ 'settings.homeAlgo.title' | transloco }}</h1>
+  <p>{{ 'settings.homeAlgo.intro' | transloco }}</p>
+</div>
+<form class="spage-body" (ngSubmit)="save()">
+  <div class="ssection">
+    <h2>{{ 'settings.homeAlgo.home' | transloco }}</h2>
+    <mb-settings-row [heading]="'settings.homeAlgo.mode' | transloco">
+      <mb-field
+        [label]="'settings.homeAlgo.mode' | transloco"
+        hideLabel
+        [hint]="'settings.homeAlgo.modeHint' | transloco"
+      >
+        <select
+          mbControl
+          name="mode"
+          [(ngModel)]="draft.mode"
+          (ngModelChange)="changed(); $event === 'favorite' && loadChoices()"
+        >
+          <option value="friends">{{ 'settings.homeAlgo.friends' | transloco }}</option>
+          <option value="interests">{{ 'settings.homeAlgo.interests' | transloco }}</option>
+          <option value="favorite">{{ 'settings.homeAlgo.favorite' | transloco }}</option>
+        </select>
+      </mb-field>
+    </mb-settings-row>
+    @if (draft.mode === 'favorite') {
+      <mb-settings-row [heading]="'settings.homeAlgo.favorite' | transloco">
+        <mb-field [label]="'settings.homeAlgo.type' | transloco">
+          <select
+            mbControl
+            name="type"
+            [(ngModel)]="type"
+            (ngModelChange)="draft.favorite = null; loadChoices()"
+          >
+            @for (entry of types; track entry.id) {
+              <option [value]="entry.id">{{ entry.key | transloco }}</option>
+            }
+          </select>
+        </mb-field>
+        <mb-field [label]="'settings.homeAlgo.feed' | transloco">
+          <select
+            mbControl
+            name="favorite"
+            [ngModel]="draft.favorite?.id ?? ''"
+            (ngModelChange)="choose($event)"
+            [disabled]="loading()"
+          >
+            <option value="">{{ 'settings.homeAlgo.choose' | transloco }}</option>
+            @for (entry of choices(); track entry.id) {
+              <option [value]="entry.id">{{ entry.label }}</option>
+            }
+          </select>
+        </mb-field>
+        @if (loading()) {
+          <p role="status">{{ 'pages.lists.loading' | transloco }}</p>
+        } @else if (loadError()) {
+          <p role="alert">{{ 'settings.homeAlgo.loadError' | transloco }}</p>
+          <button mbButton type="button" variant="outline" size="small" (click)="loadChoices()">
+            {{ 'pages.home.myTags.retry' | transloco }}
+          </button>
+        } @else if (!choices().length) {
+          <p class="hint">{{ 'settings.homeAlgo.empty' | transloco }}</p>
+        }
+      </mb-settings-row>
+    }
+    <mb-settings-row [heading]="'settings.homeAlgo.session' | transloco">
+      <p class="hint">{{ 'settings.homeAlgo.sessionHint' | transloco }}</p>
+      <mb-checkbox
+        [label]="'pages.home.filters.calm.label' | transloco"
+        [checked]="draft.calm"
+        (checkedChange)="draft.calm = $event; changed()"
+      />
+      <mb-checkbox
+        [label]="'pages.home.filters.retweets' | transloco"
+        [checked]="draft.boosts"
+        (checkedChange)="draft.boosts = $event; changed()"
+      />
+      <mb-checkbox
+        [label]="'pages.home.filters.replies' | transloco"
+        [checked]="draft.replies"
+        (checkedChange)="draft.replies = $event; changed()"
+      />
+    </mb-settings-row>
+    <mb-settings-row [heading]="'settings.homeAlgo.presentation' | transloco">
+      <mb-field
+        [label]="'pages.home.defaultView.label' | transloco"
+        [hint]="'settings.homeAlgo.presentationHint' | transloco"
+      >
+        <select
+          mbControl
+          name="presentation"
+          [(ngModel)]="presentation"
+          (ngModelChange)="changed()"
+        >
+          @for (view of views; track view) {
+            <option [value]="view">{{ 'pages.home.defaultView.' + view | transloco }}</option>
+          }
+        </select>
+      </mb-field>
+    </mb-settings-row>
+  </div>
+  <div class="ssection">
+    <h2>{{ 'settings.homeAlgo.algo' | transloco }}</h2>
+    <p class="hint">{{ 'settings.homeAlgo.algoHint' | transloco }}</p>
+    <mb-settings-row [heading]="'settings.homeAlgo.sources' | transloco">
+      @for (key of sourceRules; track key) {
+        <mb-checkbox
+          [label]="'settings.homeAlgo.algo.' + key | transloco"
+          [checked]="bool(key)"
+          (checkedChange)="setAlgo(key, $event)"
+        />
+      }
+    </mb-settings-row>
+    <mb-settings-row [heading]="'settings.homeAlgo.rules' | transloco">
+      @for (key of rules; track key) {
+        <mb-checkbox
+          [label]="'settings.homeAlgo.algo.' + key | transloco"
+          [checked]="bool(key)"
+          (checkedChange)="setAlgo(key, $event)"
+        />
+      }
+    </mb-settings-row>
+    @for (option of numbers; track option.key) {
+      <mb-settings-row [heading]="'settings.homeAlgo.algo.' + option.key | transloco">
+        <mb-field hideLabel [label]="'settings.homeAlgo.algo.' + option.key | transloco">
+          <input
+            mbControl
+            type="number"
+            [name]="option.key"
+            [min]="option.min"
+            [max]="option.max"
+            [step]="option.step"
+            [ngModel]="number(option.key)"
+            (ngModelChange)="setAlgo(option.key, $event)"
+            required
+          />
+        </mb-field>
+      </mb-settings-row>
+    }
+    <button mbButton type="button" variant="outline" (click)="reset()">
+      {{ 'settings.homeAlgo.reset' | transloco }}
+    </button>
+  </div>
+  <div class="sactions">
+    @if (error()) {
+      <span class="error" role="alert">{{ error() | transloco }}</span>
+    }
+    @if (saved()) {
+      <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+    }
+    <button mbButton type="submit">{{ 'common.saveChanges' | transloco }}</button>
+  </div>
+</form>

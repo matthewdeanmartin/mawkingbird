@@ -43,7 +43,9 @@
         @for (entry of storage().entries; track entry.key) {
           <div class="storage-row">
             <div>
-              <code>{{ entry.key }}</code>
+              <code [title]="entry.key">{{
+                entry.key.length > 30 ? entry.key.slice(0, 30) + '…' : entry.key
+              }}</code>
               <span class="muted small">{{ formatBytes(entry.bytes) }}</span>
             </div>
             <button

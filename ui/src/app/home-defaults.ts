@@ -37,8 +37,9 @@ export class HomeDefaults {
       return null;
     }
   });
-  set(value: HomeDefault): void {
-    if (!asHomeDefault(value)) return;
+  set(value: HomeDefault): boolean {
+    if (!asHomeDefault(value)) return false;
+    let persisted = true;
     const scope = this.scope();
     try {
       localStorage.setItem(this.scope(), value);
@@ -47,7 +48,9 @@ export class HomeDefaults {
     } catch {
       /* An unavailable store must not break the current Home visit. */
       this.fallback.set(scope, value);
+      persisted = false;
     }
     this.revision.update((value) => value + 1);
+    return persisted;
   }
 }

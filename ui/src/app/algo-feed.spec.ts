@@ -1,3 +1,4 @@
+import { HomeAlgoSettings, HOME_FACTORY } from './home-algo-settings';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -74,6 +75,7 @@ describe('AlgoFeed', () => {
     account = signal<Account | null>(makeAccount('me'));
     TestBed.configureTestingModule({
       providers: [
+        { provide: HomeAlgoSettings, useValue: { value: () => HOME_FACTORY } },
         { provide: Api, useValue: api },
         { provide: Auth, useValue: { account } },
       ],
@@ -280,6 +282,7 @@ describe('AlgoFeed Anonymous corpus path', () => {
     });
     TestBed.configureTestingModule({
       providers: [
+        { provide: HomeAlgoSettings, useValue: { value: () => HOME_FACTORY } },
         { provide: Api, useValue: {} },
         { provide: Auth, useValue: { account, isAnonymous: true } },
         {
@@ -330,5 +333,55 @@ describe('engagementScore', () => {
     const target = withEngagement(makeStatus('t'), 5, 2, 0);
     const wrapper = makeStatus('w', { reblog: target });
     expect(engagementScore(wrapper)).toBe(engagementScore(target));
+  });
+});
+
+describe('Algo tuning', () => {
+  it('weights sources, disables rules, and obeys the configured call budget', () => {
+    const originals = [
+      makeStatus('liked', { favourites_count: 10 }),
+      makeStatus('unliked', { favourites_count: 0 }),
+    ];
+    const api = {
+      accountFollowing: vi.fn(() => of([])),
+      accountFollowers: vi.fn(() => of([])),
+      homeTimeline: vi.fn(() => of(originals)),
+      followedTags: vi.fn(() => of([])),
+    };
+    const value = signal({
+      ...HOME_FACTORY,
+      algo: { ...HOME_FACTORY.algo, requireLikes: false, originalWeight: 2, maxCalls: 3 },
+    });
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Api, useValue: api },
+        { provide: Auth, useValue: { account: signal(makeAccount('me')) } },
+        { provide: HomeAlgoSettings, useValue: { value } },
+      ],
+    });
+    const feed = TestBed.inject(AlgoFeed);
+    feed.refresh();
+    expect(feed.posts().map((p) => p.status.id)).toEqual(['liked', 'unliked']);
+    expect(feed.posts()[0].score).toBe(22);
+    expect(feed.callsUsed()).toBe(3);
+    expect(api.followedTags).not.toHaveBeenCalled();
+    value.set({ ...value(), algo: { ...value().algo, original: false } });
+    feed.refresh();
+    expect(feed.posts()).toEqual([]);
+  });
+  it('can disable engagement factors and enable recency decay', () => {
+    const status = makeStatus('old', {
+      created_at: new Date(Date.now() - 24 * 3600000).toISOString(),
+      favourites_count: 100,
+      replies_count: 100,
+    });
+    expect(
+      engagementScore(status, {
+        ...HOME_FACTORY.algo,
+        likeWeight: 0,
+        replyWeight: 0,
+        recencyHalfLife: 24,
+      }),
+    ).toBeCloseTo(0.5, 3);
   });
 });

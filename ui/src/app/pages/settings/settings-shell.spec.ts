@@ -86,6 +86,7 @@ describe('SettingsShell', () => {
     expect(new Set(labels)).toEqual(
       new Set([
         'Public profile',
+        'Home and Algo',
         'Server',
         'Connections',
         // Anonymous-capable: a note can be a browser-local draft, so the PKM tag

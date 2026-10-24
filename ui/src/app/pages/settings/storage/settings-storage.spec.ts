@@ -44,7 +44,12 @@ describe('SettingsStorage', () => {
     fixture.detectChanges();
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    expect(text).toContain(`mockingbird_rss_feeds${scopeSuffixForToken('token-other')}`);
+    expect((fixture.nativeElement as HTMLElement).querySelector('code')?.title).toBe(
+      `mockingbird_rss_feeds${scopeSuffixForToken('token-other')}`,
+    );
+    expect(text).toContain(
+      `mockingbird_rss_feeds${scopeSuffixForToken('token-other')}`.slice(0, 30),
+    );
     expect(text).not.toContain('mockingbird_anonymous_follows');
     expect(localStorage.getItem('mastodon_mock_account_mode')).toBe('anonymous');
     expect(localStorage.getItem('mastodon_mock_token')).toBeNull();
@@ -53,7 +58,11 @@ describe('SettingsStorage', () => {
   it('shows only storage belonging to the active account', () => {
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('mockingbird_anonymous_follows');
-    expect(text).toContain('mockingbird_rss_feeds_anonymous');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector(
+        'code[title="mockingbird_rss_feeds_anonymous"]',
+      ),
+    ).not.toBeNull();
     expect(text).not.toContain('mockingbird_rss_feeds_other');
     expect(text).not.toContain('mastodon_mock_sessions');
   });

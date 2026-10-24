@@ -207,6 +207,14 @@ export const routes: Routes = [
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'profile' },
           {
+            path: 'home-algo',
+            title: 'Home and Algo',
+            loadComponent: () =>
+              import('./pages/settings/home-algo/settings-home-algo').then(
+                (m) => m.SettingsHomeAlgo,
+              ),
+          },
+          {
             path: 'profile',
             title: 'Profile',
             data: { preloadSettings: true },
