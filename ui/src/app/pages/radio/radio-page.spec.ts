@@ -1,7 +1,12 @@
 import { Component, input, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { of, Subject } from 'rxjs';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
+import {
+  adaptAnonymousAccount,
+  adaptAnonymousStatus,
+} from '../../providers/anonymous/anonymous-mastodon-provider';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -18,6 +23,72 @@ class CardStub {
 }
 
 describe('RadioPage', () => {
+  it('opens a shared post anonymously, queues it without autoplay, and responds to a new link', async () => {
+    const params = new BehaviorSubject(
+      convertToParamMap({ post: 'https://sea.example/@singer/123' }),
+    );
+    const getStatus = vi.fn((ref: { id: string }) =>
+      of({
+        ...audio,
+        id: ref.id,
+        visibility: 'public',
+        url: `https://sea.example/@singer/${ref.id}`,
+        media_attachments: [{ id: 'clip', type: 'audio', url: 'https://sea.example/song.mp3' }],
+      } as Status),
+    );
+    auth.isAnonymous = true;
+    TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: {}, queryParamMap: params } });
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    await fixture.componentInstance.scan.whenIdle();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.player.queue()).toHaveLength(1);
+    expect(fixture.componentInstance.player.active()).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Copy Radio link');
+    expect(api.lookupAccount).not.toHaveBeenCalled();
+    params.next(convertToParamMap({ post: 'https://sea.example/@singer/456' }));
+    await fixture.componentInstance.scan.whenIdle();
+    expect(fixture.componentInstance.scan.posts().map((post) => post.id)).toEqual(['456']);
+    expect(fixture.componentInstance.shareParams()).toEqual({
+      post: 'https://sea.example/@singer/456',
+    });
+  });
+
+  it('resolves a shared account at its origin and paginates with raw server IDs', async () => {
+    const accountRef = { server: 'https://sea.example', id: '17' };
+    const publicApi = {
+      lookupAccount: vi.fn(() =>
+        of(
+          adaptAnonymousAccount(
+            { id: '17', acct: 'singer', username: 'singer' } as Status['account'],
+            accountRef.server,
+          ),
+        ),
+      ),
+      getAccountStatuses: vi.fn((_: unknown, opts: { maxId?: string }) =>
+        of(opts.maxId ? [] : [adaptAnonymousStatus({ ...audio, id: '123' }, accountRef.server)]),
+      ),
+    };
+    auth.isAnonymous = true;
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ acct: 'singer@sea.example' })),
+      },
+    });
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: publicApi });
+    const fixture = TestBed.createComponent(RadioPage);
+    await fixture.componentInstance.scan.whenIdle();
+    expect(publicApi.lookupAccount).toHaveBeenCalledWith('https://sea.example', 'singer');
+    expect(publicApi.getAccountStatuses).toHaveBeenNthCalledWith(
+      2,
+      accountRef,
+      expect.objectContaining({ maxId: '123' }),
+    );
+    expect(fixture.componentInstance.player.active()).toBe(false);
+    expect(fixture.componentInstance.shareParams()).toEqual({ acct: 'singer@sea.example' });
+  });
   const audio = {
     id: 'audio',
     account: { acct: 'music' },
@@ -98,7 +169,14 @@ describe('RadioPage', () => {
       id: 'video',
       content: '<a href="https://youtu.be/abcdefghijk">Video</a>',
     };
-    api.homeTimelinePage.mockReturnValue(of({ statuses: [audio, linked, video], nextMaxId: null }));
+    const music = {
+      ...linked,
+      id: 'music',
+      content: '<a href="https://music.youtube.com/watch?v=z71d3cWLwsw">Sea shanty</a>',
+    };
+    api.homeTimelinePage.mockReturnValue(
+      of({ statuses: [audio, linked, video, music], nextMaxId: null }),
+    );
     const fixture = TestBed.createComponent(RadioPage);
     const page = fixture.componentInstance;
     fixture.detectChanges();
@@ -106,7 +184,7 @@ describe('RadioPage', () => {
     page.chooseSource('home');
     page.discover();
     await fixture.whenStable();
-    expect(page.scan.posts()).toEqual([audio, linked]);
+    expect(page.scan.posts()).toEqual([audio, linked, music]);
     page.changeNativeOnly(true);
     expect(page.scan.posts()).toEqual([]);
     expect(page.started()).toBe(false);

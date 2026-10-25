@@ -235,6 +235,28 @@ describe('StatusCard', () => {
     return fixture;
   }
 
+  it('offers a portable Radio link for audio and removes it for private posts and video', () => {
+    const status = makeStatus({
+      url: 'https://sea.example/@singer/123',
+      content: '<a href="https://www.deezer.com/track/3135556">Sea shanty</a>',
+    });
+    const fixture = setUp(status);
+    const link = () =>
+      Array.from(fixture.nativeElement.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>).find(
+        (a) => a.textContent?.includes('Open in Radio'),
+      );
+    expect(new URL(link()!.href).searchParams.get('post')).toBe(status.url);
+    fixture.componentRef.setInput('status', { ...status, visibility: 'private' });
+    fixture.detectChanges();
+    expect(link()).toBeUndefined();
+    fixture.componentRef.setInput('status', {
+      ...status,
+      content: '<a href="https://youtu.be/abcdefghijk">Video</a>',
+    });
+    fixture.detectChanges();
+    expect(link()).toBeUndefined();
+  });
+
   /**
    * Clicking the card's own whitespace opens the thread.
    *

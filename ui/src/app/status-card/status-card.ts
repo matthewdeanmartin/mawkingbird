@@ -47,6 +47,7 @@ import { Lightbox } from '../lightbox/lightbox';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { MbButton } from '../design-system/button/button';
+import { radioPostRef } from '../radio-links';
 import { postExternalMedia } from '../audio-embeds/providers';
 import {
   attachmentSource,
@@ -431,6 +432,18 @@ export class StatusCard {
   }
 
   readonly showMedia = input(true);
+  // i18n statusCard.openInRadio: Open in Radio
+  readonly radioPost = computed(() => {
+    const post = this.display;
+    if (!['public', 'unlisted'].includes(post.visibility)) return null;
+    if (
+      !post.media_attachments?.some((media) => media.type === 'audio') &&
+      !postExternalMedia(post).some((media) => media.embed && media.type !== 'video')
+    )
+      return null;
+    return radioPostRef(post.url)?.originalUrl ?? null;
+  });
+
   protected externalPlayers = computed(() =>
     postExternalMedia(this.display).filter((s) => s.provider !== 'youtube'),
   );

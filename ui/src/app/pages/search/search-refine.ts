@@ -134,30 +134,6 @@ export function buildFacets(statuses: Status[]): Facet[] {
   }
 
   const facets: Facet[] = [];
-  for (const kind of ['provider', 'delivery'] as const) {
-    const counts = new Map<string, FacetValue>();
-    for (const status of statuses) {
-      const external = postExternalMedia(status);
-      const values =
-        kind === 'provider'
-          ? external.map((s) => ({ value: s.provider, text: s.label, labelKey: null }))
-          : deliveryKinds(status).map((value) => ({
-              value,
-              labelKey: `pages.search.delivery.${value}`,
-            }));
-      for (const item of new Map(values.map((v) => [v.value, v])).values()) {
-        const previous = counts.get(item.value);
-        counts.set(item.value, { ...item, count: (previous?.count ?? 0) + 1 });
-      }
-    }
-    if (counts.size)
-      facets.push({
-        kind,
-        labelKey: `pages.search.facet.${kind}`,
-        values: [...counts.values()].sort((a, b) => b.count - a.count),
-      });
-  }
-
   const tally = (
     kind: FacetKind,
     labelKey: string,
@@ -188,14 +164,14 @@ export function buildFacets(statuses: Status[]): Facet[] {
     }
   };
 
-  tally('language', 'pages.search.facet.language', (s) =>
-    s.language ? { value: s.language, labelKey: null, text: s.language.toUpperCase() } : null,
-  );
   tally('author', 'pages.search.facet.author', (s) => ({
     value: s.account.acct,
     labelKey: null,
     text: s.account.display_name || s.account.acct,
   }));
+  tally('language', 'pages.search.facet.language', (s) =>
+    s.language ? { value: s.language, labelKey: null, text: s.language.toUpperCase() } : null,
+  );
   const mediaCounts = new Map<string, number>();
   for (const status of statuses) {
     for (const kind of mediaKinds(status)) mediaCounts.set(kind, (mediaCounts.get(kind) ?? 0) + 1);
@@ -207,6 +183,30 @@ export function buildFacets(statuses: Status[]): Facet[] {
       .map(([value, count]) => ({ value, count, labelKey: mediaKindLabel(value) }))
       .sort((a, b) => b.count - a.count),
   });
+  for (const kind of ['provider', 'delivery'] as const) {
+    const counts = new Map<string, FacetValue>();
+    for (const status of statuses) {
+      const external = postExternalMedia(status);
+      const values =
+        kind === 'provider'
+          ? external.map((s) => ({ value: s.provider, text: s.label, labelKey: null }))
+          : deliveryKinds(status).map((value) => ({
+              value,
+              labelKey: `pages.search.delivery.${value}`,
+            }));
+      for (const item of new Map(values.map((v) => [v.value, v])).values()) {
+        const previous = counts.get(item.value);
+        counts.set(item.value, { ...item, count: (previous?.count ?? 0) + 1 });
+      }
+    }
+    if (counts.size)
+      facets.push({
+        kind,
+        labelKey: `pages.search.facet.${kind}`,
+        values: [...counts.values()].sort((a, b) => b.count - a.count),
+      });
+  }
+
   tally('replies', 'pages.search.facet.type', (s) =>
     s.in_reply_to_id
       ? { value: 'reply', labelKey: 'pages.search.facet.replies' }

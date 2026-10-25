@@ -1257,6 +1257,16 @@
                     •••
                   </summary>
                   <div class="danger-menu-panel">
+                    @if (radioPost(); as postUrl) {
+                      <a
+                        mbMenuItem
+                        routerLink="/radio"
+                        [queryParams]="{ post: postUrl }"
+                        (click)="closeMenu($event)"
+                      >
+                        {{ 'statusCard.openInRadio' | transloco }}
+                      </a>
+                    }
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
@@ -1345,6 +1355,16 @@
                   •••
                 </summary>
                 <div class="danger-menu-panel">
+                  @if (radioPost(); as postUrl) {
+                    <a
+                      mbMenuItem
+                      routerLink="/radio"
+                      [queryParams]="{ post: postUrl }"
+                      (click)="closeMenu($event)"
+                    >
+                      {{ 'statusCard.openInRadio' | transloco }}
+                    </a>
+                  }
                   @if (canMuteTags() && postTags().length) {
                     <app-tag-mute-menu [tags]="postTags()" />
                   }
@@ -1442,6 +1462,16 @@
                 •••
               </summary>
               <div class="danger-menu-panel">
+                @if (radioPost(); as postUrl) {
+                  <a
+                    mbMenuItem
+                    routerLink="/radio"
+                    [queryParams]="{ post: postUrl }"
+                    (click)="closeMenu($event)"
+                  >
+                    {{ 'statusCard.openInRadio' | transloco }}
+                  </a>
+                }
                 @if (canMuteTags() && postTags().length) {
                   <app-tag-mute-menu [tags]="postTags()" />
                 }

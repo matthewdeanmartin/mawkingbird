@@ -1,4 +1,8 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
+import { qualifiedHandle } from '../../account-handle';
+import { radioAccount, radioLink, radioPostRef } from '../../radio-links';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -61,6 +65,12 @@ import { StatusCard } from '../../status-card/status-card';
   styleUrl: './radio-page.css',
 })
 export class RadioPage {
+  private readonly document = inject(DOCUMENT);
+  private readonly publicApi = inject(AnonymousPublicApi);
+  private readonly route = inject(ActivatedRoute);
+  readonly shared = signal(false);
+  readonly shareParams = signal<{ acct?: string; post?: string } | null>(null);
+  readonly copyState = signal('');
   private readonly api = inject(Api);
   private readonly destroy = inject(DestroyRef);
   readonly auth = inject(Auth);
@@ -80,6 +90,34 @@ export class RadioPage {
 
   constructor() {
     this.player.installDock(RadioDock);
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
+      if (this.studio) return;
+      const post = radioPostRef(params.get('post'));
+      const account = radioAccount(params.get('acct'));
+      if (!post && !account) return;
+      this.shared.set(true);
+      this.cancel();
+      this.player.stop();
+      this.player.nativeOnly.set(false);
+      this.started.set(true);
+      this.failed.set(false);
+      this.scanReady.set(true);
+      if (post) {
+        this.shareParams.set({ post: post.originalUrl });
+        void this.scan.start(() =>
+          this.publicApi.getStatus(post).pipe(
+            map((status) => ({
+              statuses: [status],
+              next: null,
+            })),
+          ),
+        );
+      } else if (account) {
+        this.source.set('account');
+        this.handle.set(account.acct);
+        this.discoverPublicAccount(account);
+      }
+    });
     if (this.source() === 'list') this.chooseSource('list');
     this.destroy.onDestroy(() => {
       this.lookup?.unsubscribe();
@@ -123,10 +161,16 @@ export class RadioPage {
   }
 
   discover(): void {
+    if (!this.signedIn && this.shared() && this.source() === 'account') {
+      const account = radioAccount(this.handle());
+      if (account) this.discoverPublicAccount(account);
+      return;
+    }
     if (!this.signedIn || Date.now() < this.scan.retryAt()) return;
     this.cancel();
     this.player.stop();
     this.failed.set(false);
+    this.shareParams.set(null);
     this.started.set(true);
     this.scanReady.set(false);
     const source = this.source();
@@ -152,6 +196,8 @@ export class RadioPage {
         .pipe(timeout(30_000), takeUntilDestroyed(this.destroy))
         .subscribe({
           next: (account) => {
+            const acct = qualifiedHandle(account);
+            this.shareParams.set(acct ? { acct } : null);
             this.resolving.set(false);
             this.scanReady.set(true);
             void this.scan.start((cursor) =>
@@ -170,6 +216,62 @@ export class RadioPage {
             this.failed.set(true);
           },
         });
+    }
+  }
+
+  private discoverPublicAccount(account: { acct: string; server: string }): void {
+    if (Date.now() < this.scan.retryAt()) return;
+    this.cancel();
+    this.player.stop();
+    this.scan.clear();
+    this.started.set(true);
+    this.failed.set(false);
+    this.resolving.set(true);
+    this.shareParams.set({ acct: account.acct });
+    this.lookup = this.publicApi
+      .lookupAccount(account.server, account.acct.split('@')[0])
+      .pipe(takeUntilDestroyed(this.destroy))
+      .subscribe({
+        next: (resolved) => {
+          this.resolving.set(false);
+          const ref = { server: account.server, id: resolved.id };
+          this.scanReady.set(true);
+          void this.scan.start((cursor) =>
+            this.publicApi
+              .getAccountStatuses(ref, {
+                maxId: cursor,
+                limit: 40,
+                excludeReblogs: true,
+                onlyMedia: this.player.nativeOnly(),
+              })
+              .pipe(
+                map((statuses) => ({
+                  statuses,
+                  next:
+                    (statuses.at(-1)?.providerRef as { statusId?: string } | undefined)?.statusId ??
+                    null,
+                })),
+              ),
+          );
+        },
+        error: () => {
+          this.resolving.set(false);
+          this.failed.set(true);
+        },
+      });
+  }
+
+  // i18n radio.copyLink: Copy Radio link
+  // i18n radio.linkCopied: Radio link copied
+  // i18n radio.copyFailed: Could not copy the Radio link. Try again.
+  async copyLink(): Promise<void> {
+    const params = this.shareParams();
+    if (!params) return;
+    try {
+      await navigator.clipboard.writeText(radioLink(this.document.baseURI, params));
+      this.copyState.set('radio.linkCopied');
+    } catch {
+      this.copyState.set('radio.copyFailed');
     }
   }
 

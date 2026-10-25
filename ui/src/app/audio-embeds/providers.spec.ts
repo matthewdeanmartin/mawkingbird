@@ -13,6 +13,44 @@ function post(content: string): Status {
   } as unknown as Status;
 }
 describe('external media providers', () => {
+  it('constructs Amazon and Deezer players without tracking parameters', () => {
+    expect(
+      externalMedia('https://music.amazon.com/albums/B0FT4N23VX?trackAsin=B0FT4N23VY&ref=tracking'),
+    ).toMatchObject({
+      provider: 'amazon-music',
+      type: 'audio',
+      controllable: false,
+      embed: 'https://music.amazon.com/embed/B0FT4N23VY/',
+    });
+    expect(externalMedia('https://www.deezer.com/en/track/3135556?utm_source=test')).toMatchObject({
+      provider: 'deezer',
+      type: 'audio',
+      embed: 'https://widget.deezer.com/widget/dark/track/3135556',
+    });
+    expect(externalMedia('https://music.amazon.com.evil.test/albums/B0FT4N23VX')).toBeNull();
+    expect(externalMedia('https://deezer.com/track/not-an-id')).toBeNull();
+  });
+  it('offers Archive embeds without misclassifying movies and books as audio', () => {
+    expect(externalMedia('https://archive.org/details/shanties')).toMatchObject({
+      type: 'unknown',
+      embed: 'https://archive.org/embed/shanties',
+      controllable: false,
+    });
+    expect(externalMedia('https://archive.org/details/shanties/song.mp3')?.type).toBe('audio');
+    expect(externalMedia('https://archive.org/details/shanties/movie.mp4')?.type).toBe('video');
+    expect(externalMedia('https://archive.org/details/shanties/book.pdf')?.type).toBe('unknown');
+  });
+  it('keeps author first and provider/delivery immediately below media', () => {
+    const facets = buildFacets([
+      post('<a href="https://www.deezer.com/track/3135556">Music</a>'),
+    ]).map((f) => f.kind);
+    expect(facets[0]).toBe('author');
+    expect(facets.slice(facets.indexOf('media'), facets.indexOf('media') + 3)).toEqual([
+      'media',
+      'provider',
+      'delivery',
+    ]);
+  });
   it('extracts every alternative and deduplicates card and body links', () => {
     const status = post(
       '<a href="https://open.spotify.com/track/abc?si=one">Spotify</a><a href="https://soundcloud.com/artist/track">SC</a><a href="https://open.spotify.com/track/abc?si=two">again</a>',
@@ -31,14 +69,26 @@ describe('external media providers', () => {
     expect(statusMatchesFacet(status, 'delivery', 'embed')).toBe(true);
     expect(statusMatchesFacet(status, 'provider', 'soundcloud')).toBe(true);
   });
-  it.each([
-    'https://youtube.com/watch?v=abcdefghijk',
-    'https://music.youtube.com/watch?v=abcdefghijk',
-    'https://youtu.be/abcdefghijk',
-  ])('keeps %s exclusively video', (url) => {
-    const status = post(`<a href="${url}">A song</a>`);
-    expect(matchesMedia(status, ['video', 'embed'])).toBe(true);
-    expect(matchesMedia(status, ['audio'])).toBe(false);
+  it.each(['https://youtube.com/watch?v=abcdefghijk', 'https://youtu.be/abcdefghijk'])(
+    'keeps %s exclusively video',
+    (url) => {
+      const status = post(`<a href="${url}">A song</a>`);
+      expect(matchesMedia(status, ['video', 'embed'])).toBe(true);
+      expect(matchesMedia(status, ['audio'])).toBe(false);
+    },
+  );
+  it('classifies YouTube Music as audio and supplies an explicitly loaded visible player', () => {
+    const url = 'https://music.youtube.com/watch?v=z71d3cWLwsw&si=6w5bILhLDRVOXzUO';
+    expect(externalMedia(url)).toMatchObject({
+      provider: 'youtube-music',
+      type: 'audio',
+      controllable: false,
+      embed: 'https://www.youtube-nocookie.com/embed/z71d3cWLwsw?autoplay=0',
+    });
+    const status = post(`<a href="${url}">Sea shanty</a>`);
+    expect(matchesMedia(status, ['audio', 'embed'])).toBe(true);
+    expect(matchesMedia(status, ['video'])).toBe(false);
+    expect(externalMedia('https://music.youtube.com.evil.test/watch?v=z71d3cWLwsw')).toBeNull();
   });
   it.each([
     'https://open.spotify.com.evil.test/track/abc',

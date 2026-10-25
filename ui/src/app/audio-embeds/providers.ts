@@ -42,8 +42,75 @@ export function externalMedia(raw: string): ExternalMedia | null {
     controllable,
     height,
   });
+  // The music service is an audio source even though its visible player uses
+  // YouTube's iframe internally. Ordinary YouTube URLs remain video.
+  if (host === 'music.youtube.com' && path === '/watch') {
+    const music = youtubeSource(`https://www.youtube.com${path}${url.search}`);
+    if (music)
+      return source(
+        'youtube-music',
+        'YouTube Music',
+        music.videoId!,
+        `https://www.youtube-nocookie.com/embed/${music.videoId}?autoplay=0${music.start ? `&start=${music.start}` : ''}`,
+        'audio',
+        false,
+        225,
+      );
+  }
   const youtube = youtubeSource(raw);
   if (youtube) return source('youtube', 'YouTube', youtube.videoId!, undefined, 'video');
+  if (host === 'music.amazon.com') {
+    const match = /^\/(albums|tracks|embed)\/([A-Z0-9]{10})\/?$/.exec(path);
+    if (match) {
+      const track = url.searchParams.get('trackAsin');
+      const id = track && /^[A-Z0-9]{10}$/.test(track) ? track : match[2];
+      return source(
+        'amazon-music',
+        'Amazon Music',
+        id,
+        `https://music.amazon.com/embed/${id}/`,
+        'audio',
+        false,
+        352,
+      );
+    }
+  }
+  if (['deezer.com', 'www.deezer.com'].includes(host)) {
+    const match = /^\/(?:[a-z]{2}\/)?(track|album|playlist|artist|podcast|episode)\/(\d+)\/?$/.exec(
+      path,
+    );
+    if (match)
+      return source(
+        'deezer',
+        'Deezer',
+        `${match[1]}:${match[2]}`,
+        `https://widget.deezer.com/widget/dark/${match[1]}/${match[2]}`,
+        'audio',
+        false,
+        300,
+      );
+  }
+  if (['archive.org', 'www.archive.org'].includes(host)) {
+    const match = /^\/(?:details|embed)\/([\w.-]+)(?:\/([^/]+))?\/?$/.exec(path);
+    if (match && !['.', '..'].includes(match[1])) {
+      const file = match[2] ?? '';
+      // Archive also hosts films, books and software. An item URL alone does not prove audio.
+      const type = /\.(mp3|ogg|oga|flac|wav|m4a)$/i.test(file)
+        ? 'audio'
+        : /\.(mp4|webm|ogv|mov)$/i.test(file)
+          ? 'video'
+          : 'unknown';
+      return source(
+        'internet-archive',
+        'Internet Archive',
+        `${match[1]}:${file}`,
+        `https://archive.org/embed/${match[1]}${file ? `/${file}` : ''}`,
+        type,
+        false,
+        300,
+      );
+    }
+  }
   if (host === 'open.spotify.com') {
     const match =
       /^\/(?:intl-[a-z-]+\/)?(track|album|playlist|episode|show)\/([A-Za-z0-9]+)\/?$/.exec(path);

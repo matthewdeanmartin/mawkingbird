@@ -28,7 +28,7 @@ cannot set headers. The load-bearing directive is **`script-src 'self'`** — no
 third-party origin at all — with no `'unsafe-inline'` and no `'unsafe-eval'`.
 
 `frame-src` permits the explicit player origins for YouTube, SoundCloud,
-Mixcloud, Spotify, Apple Music/Podcasts, TIDAL, Bandcamp and Audio.com, listed in
+Mixcloud, Spotify, Apple Music/Podcasts, TIDAL, Bandcamp, Audio.com, Amazon Music, Deezer and Internet Archive, listed in
 `src/index.html`. Players execute only in cross-origin iframes created after
 activation. No provider SDK runs in the parent document. SoundCloud and Mixcloud
 controls use a small local message bridge, checking both the exact message

@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from './auth';
+import { radioAccount, radioPostRef } from './radio-links';
 import { Server } from './server';
 
 export const authGuard: CanActivateFn = (_route, state) => {
@@ -11,7 +12,11 @@ export const authGuard: CanActivateFn = (_route, state) => {
   }
   // Public content links must also work on a fresh browser. Preserve a chosen
   // instance for legacy numeric IDs; portable public references carry their own.
-  if (/^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')) {
+  const link = new URL(state.url ?? '/', 'https://app.invalid');
+  const publicRadio =
+    link.pathname === '/radio' &&
+    !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
+  if (publicRadio || /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')) {
     auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');
     return true;
   }

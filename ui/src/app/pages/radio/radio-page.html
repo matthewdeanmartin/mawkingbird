@@ -1,6 +1,6 @@
 <section class="radio-page">
   <h1>{{ (studio ? 'radio.studioTitle' : 'radio.title') | transloco }}</h1>
-  @if (!signedIn) {
+  @if (!signedIn && (!shared() || studio)) {
     <mb-content-state [title]="'radio.signIn' | transloco" />
   } @else if (studio) {
     <app-radio-studio />
@@ -9,12 +9,22 @@
     @if (player.active()) {
       <app-radio-controls />
     }
+    @if (shareParams()) {
+      <button mbButton variant="outline" type="button" (click)="copyLink()">
+        {{ 'radio.copyLink' | transloco }}
+      </button>
+      @if (copyState()) {
+        <p role="status">{{ copyState() | transloco }}</p>
+      }
+    }
     <form (ngSubmit)="discover()">
       <mb-field [label]="'radio.source' | transloco">
         <select mbControl name="source" [ngModel]="source()" (ngModelChange)="chooseSource($event)">
           <option value="account">{{ 'radio.account' | transloco }}</option>
-          <option value="home">{{ 'radio.home' | transloco }}</option>
-          <option value="list">{{ 'radio.list' | transloco }}</option>
+          @if (signedIn) {
+            <option value="home">{{ 'radio.home' | transloco }}</option>
+            <option value="list">{{ 'radio.list' | transloco }}</option>
+          }
         </select>
       </mb-field>
       @if (source() === 'account') {

@@ -83,7 +83,7 @@ describe('RadioPlayer', () => {
       {
         ...post('2'),
         media_attachments: [],
-        content: '<a href="https://music.youtube.com/watch?v=abcdefghijk">Music</a>',
+        content: '<a href="https://www.youtube.com/watch?v=abcdefghijk">Music</a>',
       },
     ]);
     expect(player.queue()).toHaveLength(1);

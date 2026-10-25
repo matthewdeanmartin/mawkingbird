@@ -777,3 +777,16 @@ Reviewed the regenerated inventory: external-player-host.ts and external-player.
 are the two new candidate files, reconciled as adopted scope. Radio gains provider
 choices, StatusCard gains reveal controls, and other findings move with source
 lines. No candidates were removed. Shared design-system widget code is unchanged.
+
+## Shareable Radio and additional players, 2026-10-25
+
+Radio sharing reuses Button with a live status message. Public audio post menus
+reuse MenuItem router links, preserving keyboard and normal link behavior.
+Author again leads search facets; provider and delivery follow Media. Amazon
+Music, Deezer and Internet Archive reuse the existing explicit-load player.
+
+Reviewed the regenerated inventory: the Radio page adds one shared copy action;
+StatusCard adds three menu links and remaining findings shift with source lines.
+No candidate files were added or removed; reconciliation remains complete.
+The new pure URL helper adds one scanned file without controls. Shared widget
+implementations are unchanged.
