@@ -17,7 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { catchError, EMPTY, Observable, of, Subscription } from 'rxjs';
+import { catchError, EMPTY, map, Observable, of, Subscription } from 'rxjs';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { Account, Relationship, SearchResults, Status, Tag } from '../../models';
@@ -1097,6 +1097,9 @@ export class Search implements OnInit, OnDestroy {
   protected tagsDropped = signal(0);
   protected missingTag = signal<string | null>(null);
   protected readonly mediaFilters = signal<SearchMediaType[]>([]);
+  // i18n pages.search.mediaHome: No search terms: scanning your home feed for matching media. Add keywords to search indexed posts instead.
+  protected readonly mediaHome = signal(false);
+  private mediaHomeCursor: string | null = null;
   protected readonly mediaMatches = computed(() =>
     (this.results()?.statuses ?? []).filter((post) => matchesMedia(post, this.mediaFilters())),
   );
@@ -2411,6 +2414,10 @@ export class Search implements OnInit, OnDestroy {
     this.stopSearchClock();
     const media = type === 'statuses' ? parseMediaQuery(q) : { query: q, types: [] };
     this.mediaFilters.set(media.types);
+    this.mediaHome.set(
+      type === 'statuses' && media.types.length > 0 && !media.query && !this.capabilities.active,
+    );
+    this.mediaHomeCursor = null;
     this.scanExhausted.set(false);
     this.scanFailed.set(false);
     this.scanCancelled.set(false);
@@ -2476,7 +2483,13 @@ export class Search implements OnInit, OnDestroy {
             maxTags: this.apiBudget(),
           })
         : this.anonymousPublic.search(this.searchHost(), q, type)
-      : this.api.search(media.query, type, type === 'statuses' ? { limit: PAGE_SIZE } : undefined);
+      : this.mediaHome()
+        ? this.mediaHomePage()
+        : this.api.search(
+            media.query,
+            type,
+            type === 'statuses' ? { limit: PAGE_SIZE } : undefined,
+          );
     this.startSearchClock(() => this.activeSearch?.unsubscribe());
     this.activeSearch = request.subscribe({
       next: (r) => {
@@ -2698,12 +2711,25 @@ export class Search implements OnInit, OnDestroy {
     }
   }
 
+  private mediaHomePage(): Observable<SearchResults> {
+    return this.api.homeTimelinePage(this.mediaHomeCursor ?? undefined).pipe(
+      map((page) => {
+        this.mediaHomeCursor = page.nextMaxId;
+        return { accounts: [], hashtags: [], statuses: page.statuses };
+      }),
+    );
+  }
+
   /**
    * Fetch one more page and append it. Used both by the eager budget auto-fill
    * and the manual "Load more" button. `manual` clicks keep working past the
    * budget (the user asked to keep loading) up to a hard safety cap.
    */
   loadMore(manual = false): void {
+    if (this.mediaHome() && this.callsUsed() > 0 && !this.mediaHomeCursor) {
+      this.scanExhausted.set(true);
+      return;
+    }
     if (this.searching()) {
       return;
     }
@@ -2737,10 +2763,12 @@ export class Search implements OnInit, OnDestroy {
               (this.firstPageTags ?? []).map((t) => [t, this.oldestId]).filter(([, v]) => v),
             ) as Record<string, string>,
           })
-        : this.api.search(q, this.executedType, {
-            offset: this.nextOffset,
-            limit: PAGE_SIZE,
-          });
+        : this.mediaHome()
+          ? this.mediaHomePage()
+          : this.api.search(q, this.executedType, {
+              offset: this.nextOffset,
+              limit: PAGE_SIZE,
+            });
     this.startSearchClock(() => this.activeSearch?.unsubscribe());
     this.activeSearch = request.subscribe({
       next: (r) => {

@@ -7,6 +7,7 @@ import { map, Subscription, timeout } from 'rxjs';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
 import { MbButton } from '../../design-system/button/button';
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { RadioPlayer } from './radio-player';
@@ -38,6 +39,9 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n radio.studioTitle: Radio Studio
 // i18n radio.studioHint: Your audio catalogue and publication workspace will appear here.
 // i18n radio.playerHint: Choose audio from an account, your home feed or a list. Radio keeps playing as you explore the app.
+// i18n radio.listenProvider: Listen on {{provider}} in Radio
+// i18n radio.nativeOnly: Native Mastodon audio only
+// i18n radio.nativeOnlyHint: Otherwise, also find links to supported external audio players.
 
 @Component({
   selector: 'app-radio-page',
@@ -45,6 +49,7 @@ import { StatusCard } from '../../status-card/status-card';
     FormsModule,
     TranslocoPipe,
     MbButton,
+    MbCheckbox,
     MbContentState,
     MbField,
     MbControl,
@@ -107,6 +112,16 @@ export class RadioPage {
     this.scan.cancel();
   }
 
+  changeNativeOnly(value: boolean): void {
+    this.cancel();
+    this.player.stop();
+    this.scan.clear();
+    this.player.nativeOnly.set(value);
+    this.started.set(false);
+    this.scanReady.set(false);
+    this.failed.set(false);
+  }
+
   discover(): void {
     if (!this.signedIn || Date.now() < this.scan.retryAt()) return;
     this.cancel();
@@ -115,6 +130,7 @@ export class RadioPage {
     this.started.set(true);
     this.scanReady.set(false);
     const source = this.source();
+    const nativeOnly = this.player.nativeOnly();
     if (source === 'home') {
       this.scanReady.set(true);
       void this.scan.start((cursor) =>
@@ -143,7 +159,7 @@ export class RadioPage {
                 .getAccountStatuses(account.id, {
                   maxId: cursor,
                   limit: 40,
-                  onlyMedia: true,
+                  onlyMedia: nativeOnly,
                   excludeReblogs: true,
                 })
                 .pipe(map(feedPage)),
@@ -163,6 +179,9 @@ export class RadioPage {
 
   playPost(post: Status): void {
     this.player.select(this.player.queue().findIndex((track) => track.post.id === post.id));
+  }
+  canQueue(post: Status): boolean {
+    return this.player.queue().some((track) => track.post.id === post.id);
   }
 }
 

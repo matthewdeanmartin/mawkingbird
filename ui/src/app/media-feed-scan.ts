@@ -24,7 +24,10 @@ export class MediaFeedScan {
   private fetch?: (cursor?: string) => Observable<MediaFeedPage>;
   private running?: Promise<void>;
 
-  constructor(private readonly types: readonly SearchMediaType[] = ['audio']) {}
+  constructor(
+    private readonly types: readonly SearchMediaType[] = ['audio'],
+    private readonly accepts?: (post: Status) => boolean,
+  ) {}
 
   clear(): void {
     this.cancel();
@@ -89,7 +92,7 @@ export class MediaFeedScan {
           if (this.seen.has(key)) continue;
           this.seen.add(key);
           this.scanned.update((n) => n + 1);
-          if (matchesMedia(post, this.types)) fresh.push(post);
+          if (this.accepts ? this.accepts(post) : matchesMedia(post, this.types)) fresh.push(post);
         }
         this.posts.update((posts) => [...posts, ...fresh]);
         if (!page.next || this.cursors.has(page.next)) {

@@ -79,11 +79,48 @@ describe('RadioPage', () => {
     expect(api.getAccountStatuses).toHaveBeenNthCalledWith(1, 'account', {
       maxId: undefined,
       limit: 40,
-      onlyMedia: true,
+      onlyMedia: false,
       excludeReblogs: true,
     });
     expect(page.scan.posts()).toEqual([audio]);
     expect(fixture.nativeElement.textContent).toContain('Reached the end');
+  });
+
+  it('finds external players by default and restricts every feed to native audio on request', async () => {
+    const linked = {
+      ...audio,
+      id: 'linked',
+      media_attachments: [],
+      content: '<a href="https://open.spotify.com/track/abc123">Music</a>',
+    } as Status;
+    const video = {
+      ...linked,
+      id: 'video',
+      content: '<a href="https://youtu.be/abcdefghijk">Video</a>',
+    };
+    api.homeTimelinePage.mockReturnValue(of({ statuses: [audio, linked, video], nextMaxId: null }));
+    const fixture = TestBed.createComponent(RadioPage);
+    const page = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input[type="checkbox"]').checked).toBe(false);
+    page.chooseSource('home');
+    page.discover();
+    await fixture.whenStable();
+    expect(page.scan.posts()).toEqual([audio, linked]);
+    page.changeNativeOnly(true);
+    expect(page.scan.posts()).toEqual([]);
+    expect(page.started()).toBe(false);
+    page.discover();
+    await fixture.whenStable();
+    expect(page.scan.posts()).toEqual([audio]);
+    page.chooseSource('account');
+    page.handle.set('music');
+    page.discover();
+    await fixture.whenStable();
+    expect(api.getAccountStatuses).toHaveBeenCalledWith(
+      'account',
+      expect.objectContaining({ onlyMedia: true }),
+    );
   });
 
   it('uses the home pagination cursor and loads lists only on selection', async () => {

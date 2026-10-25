@@ -1353,6 +1353,9 @@
           </p>
         }
 
+        @if (mediaHome()) {
+          <p role="status">{{ 'pages.search.mediaHome' | transloco }}</p>
+        }
         @if (type() === 'statuses' && mediaFilters().length) {
           <p role="status">
             {{

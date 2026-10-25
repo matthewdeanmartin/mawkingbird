@@ -60,8 +60,8 @@
       so the hosts cannot be enumerated in advance. http: and ws: are allowed so
       a localhost instance still works during development.
 
-      YouTube playback is confined to the privacy-enhanced cross-origin iframe
-      below, created only after the user loads it. No provider SDK executes in
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
       our document; script-src remains self-only.
     -->
     <meta
@@ -79,7 +79,7 @@
         form-action 'self';
         base-uri 'self';
         object-src 'none';
-        frame-src https://www.youtube-nocookie.com;
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com;
       "
     />
 

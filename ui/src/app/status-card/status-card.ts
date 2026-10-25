@@ -45,12 +45,16 @@ import { withPkmTag } from '../pkm/pkm-tags';
 import { HistoryDialog } from '../history-dialog/history-dialog';
 import { Lightbox } from '../lightbox/lightbox';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
+import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
+import { MbButton } from '../design-system/button/button';
+import { postExternalMedia } from '../audio-embeds/providers';
 import {
   attachmentSource,
   mediaUrl,
   statusVideo,
   VideoSource,
   watchParams,
+  youtubeSource,
 } from '../video-player/media-source';
 import { applyMinimalMarkdown } from '../markdown';
 import {
@@ -351,6 +355,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
 @Component({
   selector: 'app-status-card',
   imports: [
+    ExternalPlayerHost,
+    MbButton,
     PostPermissions,
     MbMenuItem,
     CustomEmojiPipe,
@@ -425,6 +431,20 @@ export class StatusCard {
   }
 
   readonly showMedia = input(true);
+  protected externalPlayers = computed(() =>
+    postExternalMedia(this.display).filter((s) => s.provider !== 'youtube'),
+  );
+  protected additionalYoutube = computed(() =>
+    postExternalMedia(this.display)
+      .filter(
+        (source) =>
+          source.provider === 'youtube' &&
+          source.key !== this.youtubeVideo()?.key &&
+          !this.display.media_attachments.some((media) => attachmentSource(media)),
+      )
+      .map((source) => youtubeSource(source.url))
+      .filter((source): source is VideoSource => source !== null),
+  );
   protected attachmentVideo = attachmentSource;
   protected safeMediaUrl = mediaUrl;
   protected youtubeVideo = computed(() =>

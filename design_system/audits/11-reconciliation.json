@@ -3,6 +3,16 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/audio-embeds/external-player-host.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Lazy external player entry uses Button for explicit provider activation and native original links. Preserve per-provider consent, independent alternatives, local-only recognition, and bounded failure fallback."
+    },
+    {
+      "file": "ui/src/app/audio-embeds/external-player.ts",
+      "disposition": "adopted scope",
+      "nextStep": "External player uses Button for load and close, labelled cross-origin iframes and visible error text. Preserve narrow viewport sizing, no autoplay on initial load, content-warning boundaries in callers, and teardown of widget listeners. Persistent Radio widgets remain visible in the dock."
+    },
+    {
       "file": "ui/src/app/pages/radio/radio-studio.html",
       "disposition": "adopted scope",
       "nextStep": "Studio reuses Field/Control for file selection and publication fields, Button for scanning, previews and publishing, and Content State for failures. Preserve labelled native audio preview, bounded catalogue scrolling, explicit publication, retained failed drafts and account-isolated scan checkpoints."

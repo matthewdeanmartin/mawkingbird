@@ -64,6 +64,85 @@ describe('RadioPlayer', () => {
     TestBed.tick();
   });
 
+  function externalPost(id: string, provider = 'soundcloud'): Status {
+    return {
+      ...post(id),
+      media_attachments: [],
+      content: `<a href="https://${provider}.com/artist/track-${id}">Listen</a>`,
+    };
+  }
+  function controller() {
+    return { play: vi.fn(), pause: vi.fn(), seek: vi.fn(), volume: vi.fn(), destroy: vi.fn() };
+  }
+
+  it('queues one controllable alternative per post and never treats YouTube as radio audio', () => {
+    const first = externalPost('1');
+    first.content += '<a href="https://mixcloud.com/artist/mix/">Alternative</a>';
+    player.scan.posts.set([
+      first,
+      {
+        ...post('2'),
+        media_attachments: [],
+        content: '<a href="https://music.youtube.com/watch?v=abcdefghijk">Music</a>',
+      },
+    ]);
+    expect(player.queue()).toHaveLength(1);
+    expect(player.queue()[0].external?.provider).toBe('soundcloud');
+    player.chooseExternal(first, player.radioSources(first)[1]);
+    expect(player.queue()).toHaveLength(1);
+    expect(player.current()?.external?.provider).toBe('mixcloud');
+    expect(audios).toHaveLength(0);
+  });
+
+  it('requires activation, advances through an authorized provider, and ignores stale widget events', () => {
+    player.scan.posts.set([externalPost('1'), externalPost('2'), externalPost('3', 'mixcloud')]);
+    player.scan.exhausted.set(true);
+    player.select(0);
+    expect(player.externalAllowed().size).toBe(0);
+    const firstKey = player.current()!.key;
+    const first = controller();
+    player.attachWidget(firstKey, first);
+    expect(first.play).not.toHaveBeenCalled();
+    player.play();
+    expect(first.play).toHaveBeenCalledOnce();
+    player.widgetState(firstKey, { playing: true, duration: 90, time: 10 });
+    player.seek(20);
+    expect(first.seek).toHaveBeenCalledWith(20);
+    player.widgetState(firstKey, { ended: true });
+    expect(player.current()?.post.id).toBe('2');
+    const secondKey = player.current()!.key;
+    const second = controller();
+    player.attachWidget(secondKey, second);
+    expect(second.play).toHaveBeenCalledOnce();
+    player.widgetState(firstKey, { ended: true, time: 80 });
+    expect(player.current()?.post.id).toBe('2');
+    expect(player.time()).toBe(0);
+    player.widgetState(secondKey, { ended: true });
+    expect(player.current()?.post.id).toBe('3');
+    const third = controller();
+    player.attachWidget(player.current()!.key, third);
+    expect(third.play).not.toHaveBeenCalled();
+  });
+
+  it('does not advance after pausing an external player or load content behind a warning', () => {
+    player.scan.posts.set([externalPost('1'), externalPost('2')]);
+    player.select(0);
+    const key = player.current()!.key;
+    const widget = controller();
+    player.attachWidget(key, widget);
+    player.play();
+    player.pause();
+    player.widgetState(key, { ended: true });
+    expect(player.selected()).toBe(0);
+    const hidden = { ...externalPost('3'), spoiler_text: 'Warning' };
+    player.scan.posts.set([hidden]);
+    player.select(0);
+    const stale = controller();
+    player.attachWidget(player.current()!.key, stale);
+    expect(stale.destroy).toHaveBeenCalledOnce();
+    expect(player.externalReady()).toBe(false);
+  });
+
   it('plays each attachment in feed order, advances on ended, and never loops', async () => {
     const first = post('1');
     first.media_attachments.push({

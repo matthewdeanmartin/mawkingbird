@@ -10,7 +10,12 @@
       >
         {{ 'radio.previous' | transloco }}
       </button>
-      <button mbButton type="button" (click)="player.toggle()" [disabled]="player.hidden()">
+      <button
+        mbButton
+        type="button"
+        (click)="player.toggle()"
+        [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
+      >
         {{ (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco }}
       </button>
       <button mbButton variant="outline" type="button" (click)="player.next()">
@@ -66,6 +71,7 @@
           step="0.05"
           [ngModel]="player.volume()"
           (ngModelChange)="player.setVolume(+$event)"
+          [disabled]="track.external?.provider === 'mixcloud'"
         />
       </mb-field>
     </div>

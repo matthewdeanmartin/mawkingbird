@@ -56,6 +56,12 @@
         {{ 'radio.discover' | transloco }}
       </button>
     </form>
+    <mb-checkbox
+      [label]="'radio.nativeOnly' | transloco"
+      [hint]="'radio.nativeOnlyHint' | transloco"
+      [checked]="player.nativeOnly()"
+      (checkedChange)="changeNativeOnly($event)"
+    />
     @if (started()) {
       <p role="status">
         {{
@@ -90,11 +96,23 @@
       }
     }
     @for (post of scan.posts(); track post.id) {
-      <button mbButton variant="outline" type="button" (click)="playPost(post)">
-        {{
-          'radio.playPost' | transloco: { author: post.account.display_name || post.account.acct }
-        }}
-      </button>
+      @if (canQueue(post)) {
+        <button mbButton variant="outline" type="button" (click)="playPost(post)">
+          {{
+            'radio.playPost' | transloco: { author: post.account.display_name || post.account.acct }
+          }}
+        </button>
+      }
+      @for (source of player.radioSources(post); track source.key) {
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          (click)="player.chooseExternal(post, source)"
+        >
+          {{ 'radio.listenProvider' | transloco: { provider: source.label } }}
+        </button>
+      }
       <app-status-card [status]="post" />
     }
   }

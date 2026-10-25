@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { firstValueFrom, Observable, Subject, takeUntil, timeout } from 'rxjs';
 import { Status } from '../../models';
+import { matchesMedia } from '../../media-query';
 
 export interface AudioPointer {
   id: string;
@@ -9,7 +10,7 @@ export interface AudioPointer {
   unavailable?: boolean;
 }
 export interface AudioCatalogueData {
-  version: 1;
+  version: 1 | 2;
   posts: AudioPointer[];
   cursor?: string;
   newest?: string;
@@ -21,7 +22,7 @@ export interface AudioCatalogueData {
 /** Only references and scan checkpoints are durable; media bytes and URLs are not. */
 export class AudioCatalogue {
   readonly data = signal<AudioCatalogueData>({
-    version: 1,
+    version: 2,
     posts: [],
     exhausted: false,
     scanned: 0,
@@ -39,7 +40,7 @@ export class AudioCatalogue {
     try {
       const d = JSON.parse(raw) as AudioCatalogueData;
       if (
-        d.version !== 1 ||
+        ![1, 2].includes(d.version) ||
         !Array.isArray(d.posts) ||
         !Number.isFinite(d.scanned) ||
         typeof d.exhausted !== 'boolean' ||
@@ -55,14 +56,17 @@ export class AudioCatalogue {
         )
       )
         return;
-      this.data.set(d);
+      // Legacy scans excluded link-only posts. Keep pointers, restart discovery once.
+      this.data.set(
+        d.version === 1 ? { version: 2, posts: d.posts, exhausted: false, scanned: 0 } : d,
+      );
     } catch {
       /* A malformed cache can be rebuilt. */
     }
   }
 
   remember(post: Status): void {
-    if (!post.media_attachments.some((m) => m.type === 'audio')) return;
+    if (!matchesMedia(post, ['audio'])) return;
     const pointer = {
       id: post.id,
       date: post.created_at,
@@ -119,7 +123,7 @@ export class AudioCatalogue {
         const fresh = index < 0 ? posts : posts.slice(0, index);
         const pointers = new Map(d.posts.map((p) => [p.id, p]));
         for (const post of fresh) {
-          if (post.media_attachments.some((m) => m.type === 'audio')) {
+          if (matchesMedia(post, ['audio'])) {
             pointers.set(post.id, {
               id: post.id,
               date: post.created_at,

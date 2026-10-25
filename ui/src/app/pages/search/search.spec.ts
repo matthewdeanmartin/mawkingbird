@@ -753,6 +753,32 @@ describe('Search', () => {
     fixture.destroy();
   });
 
+  it('scans home feed cursors for bare external-media filters instead of excluding links', () => {
+    const fixture = setUp();
+    (internals(fixture) as unknown as { apiBudget: WritableSignal<number> }).apiBudget.set(1);
+    search(fixture, 'has:audio has:embed');
+    const linked = {
+      ...makeStatus('10'),
+      media_attachments: [],
+      content: '<a href="https://soundcloud.com/artist/track">Listen</a>',
+    };
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/timelines/home')
+      .flush([linked], {
+        headers: { Link: '<https://example.com/api/v1/timelines/home?max_id=10>; rel="next"' },
+      });
+    expect((internals(fixture) as unknown as { mediaMatches(): Status[] }).mediaMatches()).toEqual([
+      linked,
+    ]);
+    fixture.componentInstance.loadMore(true);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/timelines/home' && r.params.get('max_id') === '10')
+      .flush([]);
+    fixture.componentInstance.loadMore(true);
+    httpMock.expectNone((r) => r.url === '/api/v2/search');
+    fixture.destroy();
+  });
+
   it('run() calls GET /api/v2/search?q=... and populates results', () => {
     const fixture = setUp();
     const s1 = makeStatus('1');

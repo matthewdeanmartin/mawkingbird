@@ -483,6 +483,34 @@
         </div>
       }
 
+      @if (showMedia() && !cwCollapsed() && additionalYoutube().length) {
+        @if (mediaBlurred()) {
+          <button mbButton variant="outline" type="button" (click)="revealSensitive($event)">
+            {{ 'statusCard.showSensitiveContent' | transloco }}
+          </button>
+        } @else {
+          @for (video of additionalYoutube(); track video.key) {
+            @if (imagesVisible()) {
+              <app-video-player [source]="video" [inline]="true" [watch]="videoWatch(video)" />
+            } @else {
+              <a routerLink="/watch" [queryParams]="videoWatch(video)"
+                >{{ video.title }} · {{ 'videoPlayer.openWatch' | transloco }}</a
+              >
+            }
+          }
+        }
+      }
+      @if (showMedia() && !cwCollapsed() && externalPlayers().length) {
+        @if (mediaBlurred()) {
+          <button mbButton variant="outline" type="button" (click)="revealSensitive($event)">
+            {{ 'statusCard.showSensitiveContent' | transloco }}
+          </button>
+        } @else {
+          @for (source of externalPlayers(); track source.key) {
+            <app-external-player [source]="source" />
+          }
+        }
+      }
       @if (partyTagsEnabled() && !cwCollapsed() && postTags().length) {
         <div class="party-tag-actions" (click)="$event.stopPropagation()">
           <label

@@ -14,6 +14,25 @@ function post(id: string, type = 'audio'): Status {
 }
 
 describe('AudioCatalogue', () => {
+  it('preserves saved pointers but restarts legacy attachment-only scans for external audio', () => {
+    const scan = new AudioCatalogue(vi.fn());
+    scan.restore(
+      JSON.stringify({
+        version: 1,
+        posts: [{ id: '9', title: 'Saved', date: '2026-10-09' }],
+        newest: '9',
+        cursor: '1',
+        exhausted: true,
+        scanned: 100,
+      }),
+    );
+    expect(scan.data()).toEqual({
+      version: 2,
+      posts: [{ id: '9', title: 'Saved', date: '2026-10-09' }],
+      exhausted: false,
+      scanned: 0,
+    });
+  });
   it('can refresh an account that had no posts on the first scan', async () => {
     const scan = new AudioCatalogue(vi.fn());
     await scan.scan(() => of([]));
@@ -42,7 +61,7 @@ describe('AudioCatalogue', () => {
     const scan = new AudioCatalogue(vi.fn());
     scan.restore(
       JSON.stringify({
-        version: 1,
+        version: 2,
         posts: [],
         newest: '20',
         cursor: '10',
@@ -63,7 +82,7 @@ describe('AudioCatalogue', () => {
     const scan = new AudioCatalogue((d) => (saved = JSON.stringify(d)));
     scan.restore(
       JSON.stringify({
-        version: 1,
+        version: 2,
         posts: [],
         newest: '10',
         cursor: '1',

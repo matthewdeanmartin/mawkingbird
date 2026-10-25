@@ -68,14 +68,15 @@ export type SyntaxNetwork = 'mastodon' | 'bluesky';
  * people to write queries that quietly lie to them (see the DSL trust bet in
  * `sprint/search-2-serializer-and-explain.md`).
  */
-// i18n pages.search.syntax.syntheticMedia: Attachment types (post search only)
-// i18n pages.search.syntax.syntheticMediaNote: Mawkingbird checks these locally while scanning result pages within your request budget. Load more continues the scan. Multiple types must all be present; GIFs are separate from video.
+// i18n pages.search.syntax.syntheticMedia: Media types (post search only)
+// i18n pages.search.syntax.syntheticMediaNote: Mawkingbird checks attachments and recognized external links locally within your request budget. Without keywords, audio, video and embed filters scan your home feed. Load more continues the scan. Multiple types must all be present; GIFs are separate from video and YouTube is always video.
 const GROUPS: SyntaxGroup[] = [
   {
     title: 'pages.search.syntax.syntheticMedia',
     note: 'pages.search.syntax.syntheticMediaNote',
     rows: [
       { syntax: 'has:audio', label: 'pages.search.mediaType.audio' },
+      { syntax: 'has:embed', label: 'pages.search.mediaType.embed' },
       { syntax: 'has:video', label: 'pages.search.mediaType.video' },
       { syntax: 'has:image', label: 'pages.search.mediaType.image' },
     ],

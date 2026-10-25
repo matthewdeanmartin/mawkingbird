@@ -7,6 +7,7 @@ import { Server } from '../../server';
 import { scopeSuffixForMastodonAccount } from '../../account-scope';
 import { MediaAttachment, Status } from '../../models';
 import { AudioCatalogue } from './audio-catalogue';
+import { matchesMedia } from '../../media-query';
 
 const CATALOGUE_KEY = 'mockingbird_radio_catalogue';
 interface UploadLimits {
@@ -104,7 +105,7 @@ export class RadioStudioSession {
         this.api.getAccountStatuses(id, {
           maxId,
           limit: 40,
-          onlyMedia: true,
+          onlyMedia: false,
           excludeReblogs: true,
         }),
       refresh,
@@ -120,10 +121,7 @@ export class RadioStudioSession {
     try {
       const post = await this.request(this.api.getStatus(id));
       if (!this.isCurrent(identity)) return;
-      if (
-        post.account.id !== this.accountId ||
-        !post.media_attachments.some((m) => m.type === 'audio')
-      ) {
+      if (post.account.id !== this.accountId || !matchesMedia(post, ['audio'])) {
         this.catalogue().unavailable(id);
         return;
       }

@@ -10,6 +10,7 @@
 
 import { Status } from '../../models';
 import { mediaTypes } from '../../media-query';
+import { postExternalMedia } from '../../audio-embeds/providers';
 
 // Facet/group labels are translation keys, not English — see the
 // `migrate-i18n` skill's "indirect keys" idiom.
@@ -21,6 +22,12 @@ import { mediaTypes } from '../../media-query';
 // i18n pages.search.mediaType.video: Video
 // i18n pages.search.mediaType.gifv: GIF
 // i18n pages.search.mediaType.audio: Audio
+// i18n pages.search.mediaType.embed: External player
+// i18n pages.search.facet.provider: Media provider
+// i18n pages.search.facet.delivery: Media delivery
+// i18n pages.search.delivery.native: Attachment
+// i18n pages.search.delivery.embed: External player
+// i18n pages.search.delivery.link: Provider link
 // i18n pages.search.facet.type: Type
 // i18n pages.search.facet.replies: Replies
 // i18n pages.search.facet.originalPosts: Original posts
@@ -82,7 +89,8 @@ export interface FacetValue {
   count: number;
 }
 
-export type FacetKind = 'language' | 'author' | 'media' | 'replies' | 'sensitive' | 'domain';
+export type FacetKind =
+  'language' | 'author' | 'media' | 'replies' | 'sensitive' | 'domain' | 'provider' | 'delivery';
 
 export interface Facet {
   kind: FacetKind;
@@ -104,6 +112,7 @@ const MEDIA_TYPE_KEYS: Record<string, string> = {
   video: 'pages.search.mediaType.video',
   gifv: 'pages.search.mediaType.gifv',
   audio: 'pages.search.mediaType.audio',
+  embed: 'pages.search.mediaType.embed',
 };
 
 function mediaKindLabel(kind: string): string {
@@ -125,6 +134,29 @@ export function buildFacets(statuses: Status[]): Facet[] {
   }
 
   const facets: Facet[] = [];
+  for (const kind of ['provider', 'delivery'] as const) {
+    const counts = new Map<string, FacetValue>();
+    for (const status of statuses) {
+      const external = postExternalMedia(status);
+      const values =
+        kind === 'provider'
+          ? external.map((s) => ({ value: s.provider, text: s.label, labelKey: null }))
+          : deliveryKinds(status).map((value) => ({
+              value,
+              labelKey: `pages.search.delivery.${value}`,
+            }));
+      for (const item of new Map(values.map((v) => [v.value, v])).values()) {
+        const previous = counts.get(item.value);
+        counts.set(item.value, { ...item, count: (previous?.count ?? 0) + 1 });
+      }
+    }
+    if (counts.size)
+      facets.push({
+        kind,
+        labelKey: `pages.search.facet.${kind}`,
+        values: [...counts.values()].sort((a, b) => b.count - a.count),
+      });
+  }
 
   const tally = (
     kind: FacetKind,
@@ -198,6 +230,10 @@ export function buildFacets(statuses: Status[]): Facet[] {
 /** Does a status match a chosen facet value? Mirrors `buildFacets`'s buckets. */
 export function statusMatchesFacet(s: Status, kind: FacetKind, value: string): boolean {
   switch (kind) {
+    case 'provider':
+      return postExternalMedia(s).some((source) => source.provider === value);
+    case 'delivery':
+      return deliveryKinds(s).includes(value);
     case 'language':
       return s.language === value;
     case 'author':
@@ -211,6 +247,18 @@ export function statusMatchesFacet(s: Status, kind: FacetKind, value: string): b
     case 'domain':
       return (acctDomain(s.account.acct) || 'local') === value;
   }
+}
+
+function deliveryKinds(status: Status): string[] {
+  const post = status.reblog ?? status;
+  return [
+    ...new Set([
+      ...(post.media_attachments?.length ? ['native'] : []),
+      ...postExternalMedia(post).map((s) =>
+        s.embed || s.provider === 'youtube' ? 'embed' : 'link',
+      ),
+    ]),
+  ];
 }
 
 // ---------------------------------------------------------------------------

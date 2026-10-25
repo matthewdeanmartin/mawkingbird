@@ -761,3 +761,19 @@ Reviewed the regenerated control inventory: Studio's template is the sole new
 candidate file, reconciled as adopted scope. The Radio page removes its Studio
 placeholder and otherwise shifts source locations. No candidates were removed.
 Shared design-system widget implementations are unchanged.
+
+## External audio discovery and players, 2026-10-25
+
+Provider activation and close actions reuse Button. External frames remain
+labelled, responsive and explicitly loaded, with original-link fallbacks and
+visible errors. StatusCard preserves content-warning and sensitive-media gates;
+Radio offers provider choices using Button and keeps active controllable widgets
+visible in its persistent dock. The dock measures its height to reserve content
+space. Search adds provider and delivery facets through existing facet controls.
+Radio discovery defaults to external players as well as native audio; the shared
+Checkbox offers an explicit native-only filter and clears previous scan results.
+
+Reviewed the regenerated inventory: external-player-host.ts and external-player.ts
+are the two new candidate files, reconciled as adopted scope. Radio gains provider
+choices, StatusCard gains reveal controls, and other findings move with source
+lines. No candidates were removed. Shared design-system widget code is unchanged.
