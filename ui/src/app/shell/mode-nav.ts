@@ -13,6 +13,9 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.mode.mastodon: Fedi
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
+// i18n shell.modeNav.mode.radio: Radio
+// i18n shell.modeNav.radio.player: Player
+// i18n shell.modeNav.radio.studio: Studio
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 
@@ -55,6 +58,22 @@ function param(url: string, name: string): string | null {
 
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
+  radio: [
+    {
+      id: 'player',
+      labelKey: 'shell.modeNav.radio.player',
+      icon: 'M5 12a7 7 0 0 1 14 0M5 12v7H3v-7zM19 12v7h2v-7z',
+      link: '/radio',
+      active: (url) => pathOf(url) === '/radio',
+    },
+    {
+      id: 'studio',
+      labelKey: 'shell.modeNav.radio.studio',
+      icon: 'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0zM6 11v1a6 6 0 0 0 12 0v-1M12 18v4M8 22h8',
+      link: '/radio/studio',
+      active: onPath('/radio/studio'),
+    },
+  ],
   mastodon: [
     {
       id: 'algo',
@@ -192,6 +211,12 @@ export interface ModeEntry {
 }
 
 export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
+  radio: {
+    mode: 'radio',
+    labelKey: 'shell.modeNav.mode.radio',
+    icon: 'M4 8h16v13H4zM6 8l12-5M7 15a3 3 0 1 0 6 0a3 3 0 1 0-6 0M16 12h1M16 16h1',
+    link: '/radio',
+  },
   mastodon: {
     mode: 'mastodon',
     labelKey: 'shell.modeNav.mode.mastodon',

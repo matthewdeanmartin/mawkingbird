@@ -708,6 +708,51 @@ describe('Search', () => {
     httpMock.expectOne((req) => req.url === '/api/v2/search').flush(makeResults());
   });
 
+  it('scans raw search pages for synthetic media, cancels, and resumes the raw offset', () => {
+    const fixture = setUp();
+    const state = fixture.componentInstance as unknown as {
+      apiBudget: WritableSignal<number>;
+      mediaMatches(): Status[];
+      scanExhausted(): boolean;
+    };
+    state.apiBudget.set(5);
+    search(fixture, 'birds has:audio');
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search' && r.params.get('q') === 'birds')
+      .flush(makeResults([makeStatus('3'), makeStatus('2')]));
+    const pending = httpMock.expectOne(
+      (r) => r.url === '/api/v2/search' && r.params.get('offset') === '2',
+    );
+    expect(state.mediaMatches()).toEqual([]);
+    fixture.componentInstance.cancelMediaScan();
+    expect(pending.cancelled).toBe(true);
+    fixture.componentInstance.loadMore(true);
+    const audio = { ...makeStatus('1'), media_attachments: [{ type: 'audio' }] } as Status;
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url === '/api/v2/search' &&
+          r.params.get('offset') === '2' &&
+          r.params.get('q') === 'birds',
+      )
+      .flush(makeResults([audio]));
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search' && r.params.get('offset') === '3')
+      .flush(makeResults());
+    expect(state.mediaMatches()).toEqual([audio]);
+    expect(state.scanExhausted()).toBe(true);
+    fixture.destroy();
+  });
+
+  it('uses native has:media for a synthetic media-only search', () => {
+    const fixture = setUp();
+    search(fixture, 'has:image');
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search' && r.params.get('q') === 'has:media')
+      .flush(makeResults());
+    fixture.destroy();
+  });
+
   it('run() calls GET /api/v2/search?q=... and populates results', () => {
     const fixture = setUp();
     const s1 = makeStatus('1');

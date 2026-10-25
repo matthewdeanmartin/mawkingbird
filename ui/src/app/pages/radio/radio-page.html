@@ -1,0 +1,96 @@
+<section class="radio-page">
+  <h1>{{ (studio ? 'radio.studioTitle' : 'radio.title') | transloco }}</h1>
+  @if (!signedIn) {
+    <mb-content-state [title]="'radio.signIn' | transloco" />
+  } @else if (studio) {
+    <mb-content-state
+      [title]="'radio.studioTitle' | transloco"
+      [description]="'radio.studioHint' | transloco"
+    />
+  } @else {
+    <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
+    <form (ngSubmit)="discover()">
+      <mb-field [label]="'radio.source' | transloco">
+        <select mbControl name="source" [ngModel]="source()" (ngModelChange)="chooseSource($event)">
+          <option value="account">{{ 'radio.account' | transloco }}</option>
+          <option value="home">{{ 'radio.home' | transloco }}</option>
+          <option value="list">{{ 'radio.list' | transloco }}</option>
+        </select>
+      </mb-field>
+      @if (source() === 'account') {
+        <mb-field [label]="'radio.handle' | transloco" [hint]="'radio.handleHint' | transloco">
+          <input
+            mbControl
+            name="handle"
+            required
+            [ngModel]="handle()"
+            (ngModelChange)="handle.set($event)"
+          />
+        </mb-field>
+      } @else if (source() === 'list') {
+        <mb-field [label]="'radio.list' | transloco">
+          <select
+            mbControl
+            name="list"
+            required
+            [ngModel]="listId()"
+            (ngModelChange)="listId.set($event)"
+          >
+            <option value="">{{ 'radio.chooseList' | transloco }}</option>
+            @for (list of lists(); track list.id) {
+              <option [value]="list.id">{{ list.title }}</option>
+            }
+          </select>
+        </mb-field>
+      }
+      <button
+        mbButton
+        type="submit"
+        [disabled]="
+          resolving() ||
+          scan.loading() ||
+          (source() === 'account' && !handle().trim()) ||
+          (source() === 'list' && !listId())
+        "
+      >
+        {{ 'radio.discover' | transloco }}
+      </button>
+    </form>
+    @if (started()) {
+      <p role="status">
+        {{
+          'radio.progress' | transloco: { scanned: scan.scanned(), matches: scan.posts().length }
+        }}
+      </p>
+      @if (resolving() || scan.loading()) {
+        <mb-content-state
+          kind="loading"
+          announcement="status"
+          [title]="'radio.loading' | transloco"
+        >
+          <button mbButton variant="outline" type="button" (click)="cancel()">
+            {{ 'radio.cancel' | transloco }}
+          </button>
+        </mb-content-state>
+      } @else if (scan.exhausted()) {
+        <p>{{ 'radio.exhausted' | transloco }}</p>
+      } @else if (!failed() && scanReady()) {
+        <p>{{ 'radio.paused' | transloco }}</p>
+        <button mbButton variant="outline" type="button" (click)="scan.more()">
+          {{ 'radio.more' | transloco }}
+        </button>
+      }
+    } @else {
+      <mb-content-state [title]="'radio.empty' | transloco" />
+    }
+    @if (failed() || scan.failed()) {
+      <mb-content-state kind="error" announcement="alert" [title]="'radio.failed' | transloco" />
+      @if (scan.retryAt()) {
+        <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
+      }
+    }
+    @for (post of scan.posts(); track post.id) {
+      <app-status-card [status]="post" />
+    }
+  }
+</section>

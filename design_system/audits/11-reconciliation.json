@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/radio/radio-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure and bounded pagination. Player and Studio use the existing mode navigation."
+    },
+    {
       "file": "ui/src/app/pages/videos/watch-parties-page.ts",
       "disposition": "adopted scope",
       "nextStep": "Field, Control, MbButton and Content State build the watch-party finder; tag suggestions are native links and results reuse StatusCard. Preserve tags in the URL, quiet skipping of invalid tags with an alert only for typed input, Open party links built from validated Watch params, and the plain note when Watch cannot play a post."

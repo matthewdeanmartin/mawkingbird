@@ -60,12 +60,20 @@ describe('MODE_NAV', () => {
 
   it('gives every mode five tabs, and puts Search in the same slot wherever there is one', () => {
     // The owner asked for symmetry: Home, five tabs, the switcher.
-    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(5);
+    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 2 : 5);
+    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['player', 'studio']);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');
   });
 
   it('does not claim lookalike paths', () => {
+    expect(MODE_NAV.radio.filter((tab) => tab.active('/radio')).map((tab) => tab.id)).toEqual([
+      'player',
+    ]);
+    expect(
+      MODE_NAV.radio.filter((tab) => tab.active('/radio/studio')).map((tab) => tab.id),
+    ).toEqual(['studio']);
+    expect(MODE_NAV.radio.some((tab) => tab.active('/radiofoo'))).toBe(false);
     expect(MODE_NAV.mastodon.find((item) => item.id === 'feeds')!.active('/feedsx')).toBe(false);
     expect(MODE_NAV.mastodon.find((item) => item.id === 'feeds')!.active('/feeds/lists')).toBe(
       true,

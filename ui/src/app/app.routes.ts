@@ -723,6 +723,16 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/rss/rss-page').then((m) => m.RssPage),
       },
       {
+        path: 'radio',
+        title: 'Radio',
+        loadComponent: () => import('./pages/radio/radio-page').then((m) => m.RadioPage),
+      },
+      {
+        path: 'radio/studio',
+        title: 'Radio Studio',
+        loadComponent: () => import('./pages/radio/radio-page').then((m) => m.RadioPage),
+      },
+      {
         path: 'videos',
         title: 'Video feeds',
         loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),

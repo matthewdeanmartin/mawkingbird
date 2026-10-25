@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1159,
-  "filesWithCandidates": 240,
+  "filesScanned": 1164,
+  "filesWithCandidates": 241,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5680,6 +5680,88 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/radio/radio-page.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 14
+        },
+        {
+          "pattern": "shared",
+          "line": 21
+        },
+        {
+          "pattern": "shared",
+          "line": 23
+        },
+        {
+          "pattern": "shared",
+          "line": 31
+        },
+        {
+          "pattern": "shared",
+          "line": 33
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 66
+        },
+        {
+          "pattern": "shared",
+          "line": 71
+        },
+        {
+          "pattern": "shared",
+          "line": 79
+        },
+        {
+          "pattern": "shared",
+          "line": 84
+        },
+        {
+          "pattern": "shared",
+          "line": 87
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 46
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 71
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 79
+        },
+        {
+          "pattern": "selects",
+          "line": 14
+        },
+        {
+          "pattern": "selects",
+          "line": 32
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/read/document-search/document-search-dialog.html",
       "status": "needs semantic review",
       "findings": [
@@ -6541,15 +6623,15 @@
       "findings": [
         {
           "pattern": "nativeButtons",
-          "line": 256
+          "line": 267
         },
         {
           "pattern": "legacyPills",
-          "line": 256
+          "line": 267
         },
         {
           "pattern": "overlays",
-          "line": 249
+          "line": 260
         }
       ]
     },
@@ -6657,15 +6739,23 @@
         },
         {
           "pattern": "shared",
-          "line": 1437
+          "line": 1365
         },
         {
           "pattern": "shared",
-          "line": 1482
+          "line": 1379
         },
         {
           "pattern": "shared",
-          "line": 1493
+          "line": 1465
+        },
+        {
+          "pattern": "shared",
+          "line": 1510
+        },
+        {
+          "pattern": "shared",
+          "line": 1521
         },
         {
           "pattern": "nativeButtons",
@@ -6809,15 +6899,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 1403
+          "line": 1365
         },
         {
           "pattern": "nativeButtons",
-          "line": 1435
+          "line": 1379
         },
         {
           "pattern": "nativeButtons",
-          "line": 1493
+          "line": 1431
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1463
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1521
         },
         {
           "pattern": "checkboxes",
@@ -6889,7 +6987,7 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 1403
+          "line": 1431
         },
         {
           "pattern": "disclosure",
@@ -6919,7 +7017,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 1006
+          "line": 1013
         }
       ]
     },

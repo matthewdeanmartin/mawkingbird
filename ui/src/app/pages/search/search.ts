@@ -1,6 +1,7 @@
 import { TagActions } from '../../tag-actions/tag-actions';
 import { MbButton } from '../../design-system/button/button';
 import { searchPanelOpenByDefault } from './search-panel-default';
+import { matchesMedia, parseMediaQuery, SearchMediaType } from '../../media-query';
 import {
   Component,
   DestroyRef,
@@ -241,6 +242,11 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.savedNamePlaceholder: Name this search
 // i18n pages.search.savedNameLabel: Saved search name
 // i18n pages.search.action.cancel: Cancel
+// i18n pages.search.media.progress: Scanned {{scanned}} posts · {{matches}} media matches
+// i18n pages.search.media.hint: has:audio, has:video and has:image filter attachments here. Search scans more pages within your request budget; Load more continues the scan.
+// i18n pages.search.media.exhausted: No more results returned by this search server.
+// i18n pages.search.media.paused: Scan paused. Load more to continue.
+// i18n pages.search.media.failed: Could not load the next page. Your results are retained; try Load more again later.
 // i18n pages.search.action.applyAndSearch: Apply &amp; search
 // i18n pages.search.budget.maximumApiCalls: Maximum API calls
 // i18n pages.search.budget.onePage: 1 page (~40 posts)
@@ -712,6 +718,7 @@ export class Search implements OnInit, OnDestroy {
    * search is a *guess* about intent; a leading `@` is a statement of it.
    */
   private inferTypeFor(query: string): SearchType | null {
+    if (parseMediaQuery(query).types.length) return 'statuses';
     const raw = query.trim();
     if (!raw || /\s/.test(raw)) {
       return null;
@@ -1089,6 +1096,20 @@ export class Search implements OnInit, OnDestroy {
   /** How many statuses were requested but capped away by the budget (anon fan-out). */
   protected tagsDropped = signal(0);
   protected missingTag = signal<string | null>(null);
+  protected readonly mediaFilters = signal<SearchMediaType[]>([]);
+  protected readonly mediaMatches = computed(() =>
+    (this.results()?.statuses ?? []).filter((post) => matchesMedia(post, this.mediaFilters())),
+  );
+  protected readonly scanExhausted = signal(false);
+  protected readonly scanFailed = signal(false);
+  private scanCancelled = signal(false);
+
+  cancelMediaScan(): void {
+    this.scanCancelled.set(true);
+    this.activeSearch?.unsubscribe();
+    this.stopSearchClock();
+    this.searching.set(false);
+  }
 
   // Pagination cursors for "load more": authenticated search pages by offset;
   // anonymous merges per-tag timelines paged by the oldest seen status id.
@@ -1112,6 +1133,9 @@ export class Search implements OnInit, OnDestroy {
   protected autoFillWants = computed(
     () =>
       this.executedType === 'statuses' &&
+      !this.scanCancelled() &&
+      !this.scanExhausted() &&
+      (!this.mediaFilters().length || this.mediaMatches().length < PAGE_SIZE) &&
       !!this.results()?.statuses.length &&
       this.callsUsed() + this.nextPageCost() <= this.apiBudget(),
   );
@@ -1121,6 +1145,7 @@ export class Search implements OnInit, OnDestroy {
   protected canLoadMore = computed(
     () =>
       this.executedType === 'statuses' &&
+      !this.scanExhausted() &&
       !!this.results()?.statuses.length &&
       this.callsUsed() < LOAD_MORE_HARD_CAP,
   );
@@ -1367,7 +1392,7 @@ export class Search implements OnInit, OnDestroy {
    * repeat-collapsing, which produces rows rather than statuses.
    */
   private refinedStatuses = computed<Status[]>(() => {
-    const all = this.results()?.statuses ?? [];
+    const all = this.mediaMatches();
     const facets = this.selectedFacets();
     // Facets of different kinds AND together; values within a kind OR together.
     const byKind = new Map<FacetKind, string[]>();
@@ -1524,7 +1549,7 @@ export class Search implements OnInit, OnDestroy {
   );
 
   /** Facets computed from all loaded statuses (counts reflect the full load). */
-  protected facets = computed<Facet[]>(() => buildFacets(this.results()?.statuses ?? []));
+  protected facets = computed<Facet[]>(() => buildFacets(this.mediaMatches()));
 
   /**
    * The author facet, reused by the exclusion list.
@@ -2383,6 +2408,12 @@ export class Search implements OnInit, OnDestroy {
       anonymous: this.capabilities.active,
     });
     this.activeSearch?.unsubscribe();
+    this.stopSearchClock();
+    const media = type === 'statuses' ? parseMediaQuery(q) : { query: q, types: [] };
+    this.mediaFilters.set(media.types);
+    this.scanExhausted.set(false);
+    this.scanFailed.set(false);
+    this.scanCancelled.set(false);
     this.resetRefinements();
     // Account cards carry per-result state (relationships, expansion) that must
     // not leak across searches.
@@ -2445,12 +2476,13 @@ export class Search implements OnInit, OnDestroy {
             maxTags: this.apiBudget(),
           })
         : this.anonymousPublic.search(this.searchHost(), q, type)
-      : this.api.search(q, type, type === 'statuses' ? { limit: PAGE_SIZE } : undefined);
+      : this.api.search(media.query, type, type === 'statuses' ? { limit: PAGE_SIZE } : undefined);
     this.startSearchClock(() => this.activeSearch?.unsubscribe());
     this.activeSearch = request.subscribe({
       next: (r) => {
         this.stopSearchClock();
         this.results.set(r);
+        this.scanExhausted.set(type === 'statuses' && r.statuses.length === 0);
         // Keep an exact, valid tag followable before the server indexes it.
         const tag = q.trim().replace(/^#/, '');
         if (
@@ -2483,6 +2515,7 @@ export class Search implements OnInit, OnDestroy {
         this.stopSearchClock();
         this.searching.set(false);
         this.diagnostics.error('Search', 'load:error', error, { type });
+        this.scanFailed.set(true);
         // A failed search is the other way to end up with an empty page, and the
         // reason is just as worth naming.
         void this.explainEmptyResult();
@@ -2675,6 +2708,7 @@ export class Search implements OnInit, OnDestroy {
       return;
     }
     if (manual) {
+      this.scanCancelled.set(false);
       if (this.callsUsed() >= LOAD_MORE_HARD_CAP) {
         return;
       }
@@ -2689,8 +2723,12 @@ export class Search implements OnInit, OnDestroy {
       });
     }
     this.searching.set(true);
+    this.scanFailed.set(false);
     const cost = this.nextPageCost();
-    const q = this.executedQuery;
+    const q =
+      this.executedType === 'statuses'
+        ? parseMediaQuery(this.executedQuery).query
+        : this.executedQuery;
     const request =
       this.capabilities.active && this.executedType === 'statuses'
         ? this.anonymousPublic.searchPostsByHashtags(this.searchHost(), q, {
@@ -2703,9 +2741,12 @@ export class Search implements OnInit, OnDestroy {
             offset: this.nextOffset,
             limit: PAGE_SIZE,
           });
+    this.startSearchClock(() => this.activeSearch?.unsubscribe());
     this.activeSearch = request.subscribe({
       next: (r) => {
+        this.stopSearchClock();
         const added = this.appendResults(r);
+        this.scanExhausted.set(added === 0);
         this.callsUsed.update((c) => c + cost);
         this.rememberCursors(r);
         this.searching.set(false);
@@ -2719,6 +2760,8 @@ export class Search implements OnInit, OnDestroy {
         this.maybeAutoFill(added > 0);
       },
       error: (error: unknown) => {
+        this.stopSearchClock();
+        this.scanFailed.set(true);
         this.searching.set(false);
         if (manual) {
           this.diagnostics.error('Search', 'load-more:error', error, {
@@ -2739,7 +2782,12 @@ export class Search implements OnInit, OnDestroy {
         return page;
       }
       const seen = new Set(cur.statuses.map((s) => s.url || s.id));
-      const fresh = page.statuses.filter((s) => !seen.has(s.url || s.id));
+      const fresh = page.statuses.filter((s) => {
+        const key = s.url || s.id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
       added = fresh.length;
       return { ...cur, statuses: [...cur.statuses, ...fresh] };
     });

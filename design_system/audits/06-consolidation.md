@@ -718,3 +718,17 @@ the menu's switch rows. Reviewed the regenerated inventory: the picker template 
 the only new candidate file (reconciled as partial adoption); shell findings gain
 the filter field and otherwise shift source locations. Shared design-system widget
 code is unchanged.
+
+## Radio discovery and synthetic media search, 2026-10-25
+
+Radio uses the existing mode switcher and primary navigation for Player and
+Studio. Its source form uses Field/Control, actions use Button, and loading,
+empty and failure messages use Content State. Results reuse StatusCard, including
+audio previews and content-warning handling. Synthetic search adds a shared
+Button for scan cancellation, a retry action for an interrupted first page, and
+live progress text.
+
+Reviewed the regenerated inventory: Radio's template is the sole new candidate
+file; no candidate files were removed. Search gains cancel and retry actions; remaining
+changes shift search and syntax-help source locations. Reconciled Radio as
+adopted scope. Shared design-system widget implementations are unchanged.

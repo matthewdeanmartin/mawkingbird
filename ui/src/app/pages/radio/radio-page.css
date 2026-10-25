@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.radio-page {
+  padding: 16px;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+mb-field {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+app-status-card {
+  display: block;
+}

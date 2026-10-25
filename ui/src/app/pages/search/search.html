@@ -1353,6 +1353,34 @@
           </p>
         }
 
+        @if (type() === 'statuses' && mediaFilters().length) {
+          <p role="status">
+            {{
+              'pages.search.media.progress'
+                | transloco: { scanned: loadedCount(), matches: mediaMatches().length }
+            }}
+          </p>
+          <p class="muted small">{{ 'pages.search.media.hint' | transloco }}</p>
+          @if (searching()) {
+            <button type="button" mbButton variant="outline" (click)="cancelMediaScan()">
+              {{ 'pages.search.action.cancel' | transloco }}
+            </button>
+          } @else if (scanFailed()) {
+            <p role="alert">{{ 'pages.search.media.failed' | transloco }}</p>
+          } @else {
+            <p class="muted small">
+              {{
+                (scanExhausted() ? 'pages.search.media.exhausted' : 'pages.search.media.paused')
+                  | transloco
+              }}
+            </p>
+          }
+          @if (!searching() && !loadedCount() && !scanExhausted()) {
+            <button type="button" mbButton variant="outline" (click)="retrySearch()">
+              {{ 'pages.search.results.tryAgain' | transloco }}
+            </button>
+          }
+        }
         @if (results(); as r) {
           @if (r.hashtags.length) {
             <div class="page-head">{{ 'pages.search.results.hashtags' | transloco }}</div>

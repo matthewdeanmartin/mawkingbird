@@ -733,7 +733,12 @@ describe('Shell app-mode nav', () => {
     const host = fixture.nativeElement as HTMLElement;
     const rows = [...host.querySelectorAll('app-mode-switch [popover] a')];
     // Feed management is RSS's fifth tab now, not a switcher row.
-    expect(rows.map((row) => row.getAttribute('href'))).toEqual(['/home', '/rss', '/videos']);
+    expect(rows.map((row) => row.getAttribute('href'))).toEqual([
+      '/home',
+      '/rss',
+      '/videos',
+      '/radio',
+    ]);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
     expect(rows[1].getAttribute('aria-current')).toBe('true');
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');

@@ -9,6 +9,7 @@
  */
 
 import { Status } from '../../models';
+import { mediaTypes } from '../../media-query';
 
 // Facet/group labels are translation keys, not English — see the
 // `migrate-i18n` skill's "indirect keys" idiom.
@@ -89,10 +90,10 @@ export interface Facet {
   values: FacetValue[];
 }
 
-/** Media bucket for a status: its first attachment's type, else 'none'. */
-function mediaKind(s: Status): string {
-  const first = s.media_attachments?.[0];
-  return first ? first.type : 'none';
+/** One membership per attachment type, including mixed-media posts and boosts. */
+function mediaKinds(s: Status): string[] {
+  const types = mediaTypes(s);
+  return types.length ? types : ['none'];
 }
 
 /** Known Mastodon attachment types translated by key; anything else falls back
@@ -163,9 +164,16 @@ export function buildFacets(statuses: Status[]): Facet[] {
     labelKey: null,
     text: s.account.display_name || s.account.acct,
   }));
-  tally('media', 'pages.search.facet.media', (s) => {
-    const k = mediaKind(s);
-    return { value: k, labelKey: mediaKindLabel(k) };
+  const mediaCounts = new Map<string, number>();
+  for (const status of statuses) {
+    for (const kind of mediaKinds(status)) mediaCounts.set(kind, (mediaCounts.get(kind) ?? 0) + 1);
+  }
+  facets.push({
+    kind: 'media',
+    labelKey: 'pages.search.facet.media',
+    values: [...mediaCounts]
+      .map(([value, count]) => ({ value, count, labelKey: mediaKindLabel(value) }))
+      .sort((a, b) => b.count - a.count),
   });
   tally('replies', 'pages.search.facet.type', (s) =>
     s.in_reply_to_id
@@ -195,7 +203,7 @@ export function statusMatchesFacet(s: Status, kind: FacetKind, value: string): b
     case 'author':
       return s.account.acct === value;
     case 'media':
-      return mediaKind(s) === value;
+      return mediaKinds(s).includes(value);
     case 'replies':
       return value === 'reply' ? !!s.in_reply_to_id : !s.in_reply_to_id;
     case 'sensitive':
