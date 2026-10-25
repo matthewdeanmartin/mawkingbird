@@ -64,8 +64,7 @@ export const PRODUCTION_LOCALES = [
 export const IN_PROGRESS_LOCALES = ['vi', 'hi', 'sv'] as const;
 
 export type SupportedLocale =
-  | (typeof PRODUCTION_LOCALES)[number]
-  | (typeof IN_PROGRESS_LOCALES)[number];
+  (typeof PRODUCTION_LOCALES)[number] | (typeof IN_PROGRESS_LOCALES)[number];
 
 /**
  * Locales exposed by a deployment.

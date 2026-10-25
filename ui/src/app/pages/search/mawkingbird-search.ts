@@ -22,14 +22,7 @@ export type ResultGrouping = 'none' | 'author' | 'date';
 export type AccountLocation = 'any' | 'local' | 'remote';
 
 export type PostContentType =
-  | 'any'
-  | 'media'
-  | 'image'
-  | 'video'
-  | 'audio'
-  | 'poll'
-  | 'link'
-  | 'text';
+  'any' | 'media' | 'image' | 'video' | 'audio' | 'poll' | 'link' | 'text';
 
 /** include = default; only = require it; exclude = drop it. */
 export type Tristate = 'include' | 'only' | 'exclude';

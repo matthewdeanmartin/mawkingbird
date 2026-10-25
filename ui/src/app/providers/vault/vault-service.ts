@@ -71,16 +71,11 @@ export type VaultState =
 
 /** Why the vault cannot be used, when the state is `unavailable`. */
 export type UnavailableReason =
-  | 'signed-out'
-  | 'needs-plus'
-  | 'needs-idp'
-  | 'not-a-tester'
-  | 'offline';
+  'signed-out' | 'needs-plus' | 'needs-idp' | 'not-a-tester' | 'offline';
 
 /** What happened to a write. */
 export type WriteOutcome =
-  | { ok: true; overwritten: { base: string; device: string }[] }
-  | { ok: false; message: string };
+  { ok: true; overwritten: { base: string; device: string }[] } | { ok: false; message: string };
 
 /** A device label, so a conflict can name where the other copy came from. */
 const DEVICE_KEY = 'mockingbird_vault_device';

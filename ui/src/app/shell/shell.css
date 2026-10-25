@@ -1,3 +1,6 @@
+.column.radio-active {
+  padding-bottom: 210px;
+}
 .topbar {
   position: sticky;
   top: 0;

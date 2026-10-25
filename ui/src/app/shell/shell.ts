@@ -55,6 +55,7 @@ import { PlusBadgeEntitlement } from '../providers/account/plus-badge-entitlemen
 import { visiblePlusBenefits } from '../plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 import { AppModeService } from '../app-mode';
+import { RadioOutlet } from '../radio-outlet';
 import { MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
 
@@ -198,6 +199,7 @@ function isWideUrl(url: string): boolean {
   providers: [{ provide: AccountSwitcher, useExisting: forwardRef(() => Shell) }],
 })
 export class Shell implements OnInit, AccountSwitcher {
+  protected readonly radioOutlet = inject(RadioOutlet);
   protected readonly accountProfilePath = accountProfilePath;
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);

@@ -400,21 +400,19 @@ export class BlueskySession implements ExpiringConnection {
         { context: externalFetch() },
       )
       .pipe(
-        map(
-          (res): LegacyBskySession => ({
-            authMethod: 'app-password',
-            service: BSKY_SERVICE,
-            handle: res.handle,
-            did: res.did,
-            accessJwt: res.accessJwt,
-            refreshJwt: res.refreshJwt,
-            // Kept so `persist` can vault it — see BskyCredentials.appPassword.
-            appPassword,
-            // Retention starts here and is carried through every later
-            // persist() (refresh, PDS discovery) untouched.
-            connectedAt: Date.now(),
-          }),
-        ),
+        map((res): LegacyBskySession => ({
+          authMethod: 'app-password',
+          service: BSKY_SERVICE,
+          handle: res.handle,
+          did: res.did,
+          accessJwt: res.accessJwt,
+          refreshJwt: res.refreshJwt,
+          // Kept so `persist` can vault it — see BskyCredentials.appPassword.
+          appPassword,
+          // Retention starts here and is carried through every later
+          // persist() (refresh, PDS discovery) untouched.
+          connectedAt: Date.now(),
+        })),
         // Grab display name + avatar so the UI can attribute the viewer's own replies.
         switchMap((session) =>
           this.http

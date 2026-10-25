@@ -104,11 +104,7 @@ export function isDefaultHandle(handle: string): boolean {
  * the same rows. `handleType` and `handleDomain` are Bluesky-only.
  */
 export type BlueskyAccountFacetKind =
-  | 'handleType'
-  | 'handleDomain'
-  | 'followers'
-  | 'statuses'
-  | 'activity';
+  'handleType' | 'handleDomain' | 'followers' | 'statuses' | 'activity';
 
 export interface BlueskyAccountFacet {
   kind: BlueskyAccountFacetKind;
@@ -357,13 +353,7 @@ export function blueskyAccountMatchesFacet(
  * conversation and a pile-on.
  */
 export type BlueskyPostFacetKind =
-  | 'likes'
-  | 'reposts'
-  | 'replyCount'
-  | 'altText'
-  | 'quote'
-  | 'linkDomain'
-  | 'threadPosition';
+  'likes' | 'reposts' | 'replyCount' | 'altText' | 'quote' | 'linkDomain' | 'threadPosition';
 
 export interface BlueskyPostFacet {
   kind: BlueskyPostFacetKind;

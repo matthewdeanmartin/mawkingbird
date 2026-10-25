@@ -1047,7 +1047,7 @@ function analyzeRecency(subjects: Status[], now: number): RecencyMetrics {
   );
   let bursts = 0;
   const burstCounts = new Map<string, { account: Account; count: number }>();
-  for (let i = 0; i < chronological.length; ) {
+  for (let i = 0; i < chronological.length;) {
     const start = new Date(chronological[i].created_at).getTime();
     let end = i;
     while (

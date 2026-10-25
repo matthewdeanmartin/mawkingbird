@@ -732,3 +732,18 @@ Reviewed the regenerated inventory: Radio's template is the sole new candidate
 file; no candidate files were removed. Search gains cancel and retry actions; remaining
 changes shift search and syntax-help source locations. Reconciled Radio as
 adopted scope. Shared design-system widget implementations are unchanged.
+
+## Continuous Radio playback and formatting, 2026-10-25
+
+The full Radio player and persistent dock reuse Button; seek and volume use
+native ranges within Field/Control. Fullscreen follows the slideshow's viewport
+fallback and ReadingZen hold, released when the view closes while audio remains
+owned by the session. Transport keyboard shortcuts apply within the player;
+native controls retain their own keyboard handling. The compact dock wraps at
+phone width and clears the bottom navigation; the shell reserves content space.
+
+Reviewed the regenerated inventory: the controls template and dock are the two
+new candidate files, both reconciled as adopted scope. Radio discovery adds the
+play action and shell template findings only shift source locations. No files
+were removed. The authorized formatting cleanup has no further inventory
+changes. Shared design-system widget implementations are unchanged.

@@ -9,7 +9,9 @@ import { Auth } from '../../auth';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
-import { MediaFeedScan } from '../../media-feed-scan';
+import { RadioPlayer } from './radio-player';
+import { RadioControls } from './radio-controls';
+import { RadioDock } from './radio-dock';
 import { Status, UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 
@@ -34,11 +36,20 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n radio.signIn: Sign in with a Mastodon account to use Radio.
 // i18n radio.studioTitle: Radio Studio
 // i18n radio.studioHint: Your audio catalogue and publication workspace will appear here.
-// i18n radio.playerHint: Discover audio from an account, your home feed or a list. Preview individual posts below.
+// i18n radio.playerHint: Choose audio from an account, your home feed or a list. Radio keeps playing as you explore the app.
 
 @Component({
   selector: 'app-radio-page',
-  imports: [FormsModule, TranslocoPipe, MbButton, MbContentState, MbField, MbControl, StatusCard],
+  imports: [
+    FormsModule,
+    TranslocoPipe,
+    MbButton,
+    MbContentState,
+    MbField,
+    MbControl,
+    StatusCard,
+    RadioControls,
+  ],
   templateUrl: './radio-page.html',
   styleUrl: './radio-page.css',
 })
@@ -47,20 +58,26 @@ export class RadioPage {
   private readonly destroy = inject(DestroyRef);
   readonly auth = inject(Auth);
   readonly studio = inject(ActivatedRoute).snapshot.routeConfig?.path === 'radio/studio';
-  readonly scan = new MediaFeedScan();
-  readonly source = signal<'account' | 'home' | 'list'>('account');
-  readonly handle = signal('');
-  readonly listId = signal('');
+  readonly player = inject(RadioPlayer);
+  readonly scan = this.player.scan;
+  readonly source = this.player.source;
+  readonly handle = this.player.handle;
+  readonly listId = this.player.listId;
   readonly lists = signal<UserList[]>([]);
   readonly resolving = signal(false);
   readonly failed = signal(false);
-  readonly started = signal(false);
-  readonly scanReady = signal(false);
+  readonly started = this.player.started;
+  readonly scanReady = this.player.scanReady;
   private lookup?: Subscription;
   private listRequest?: Subscription;
 
   constructor() {
-    this.destroy.onDestroy(() => this.cancel());
+    this.player.installDock(RadioDock);
+    if (this.source() === 'list') this.chooseSource('list');
+    this.destroy.onDestroy(() => {
+      this.lookup?.unsubscribe();
+      if (!this.player.active()) this.scan.cancel();
+    });
   }
 
   get signedIn(): boolean {
@@ -91,6 +108,7 @@ export class RadioPage {
   discover(): void {
     if (!this.signedIn || Date.now() < this.scan.retryAt()) return;
     this.cancel();
+    this.player.stop();
     this.failed.set(false);
     this.started.set(true);
     this.scanReady.set(false);
@@ -139,6 +157,10 @@ export class RadioPage {
 
   retryTime(): string {
     return new Date(this.scan.retryAt()).toLocaleTimeString();
+  }
+
+  playPost(post: Status): void {
+    this.player.select(this.player.queue().findIndex((track) => track.post.id === post.id));
   }
 }
 

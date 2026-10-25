@@ -1,0 +1,107 @@
+@if (player.current(); as track) {
+  <section tabindex="0" (keydown)="key($event)" [attr.aria-label]="'radio.title' | transloco">
+    <div class="toolbar">
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        (click)="player.previous()"
+        [disabled]="player.selected() === 0"
+      >
+        {{ 'radio.previous' | transloco }}
+      </button>
+      <button mbButton type="button" (click)="player.toggle()" [disabled]="player.hidden()">
+        {{ (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco }}
+      </button>
+      <button mbButton variant="outline" type="button" (click)="player.next()">
+        {{ 'radio.next' | transloco }}
+      </button>
+      <button mbButton variant="outline" type="button" (click)="toggleFullscreen()">
+        {{ (fullscreen() ? 'radio.exitFullscreen' : 'radio.fullscreen') | transloco }}
+      </button>
+    </div>
+    <p role="status">
+      {{
+        'radio.position'
+          | transloco: { current: player.selected() + 1, total: player.queue().length }
+      }}
+    </p>
+    <h2>{{ track.post.account.display_name || track.post.account.acct }}</h2>
+    @if (player.hidden()) {
+      <p>{{ track.post.spoiler_text || ('radio.hidden' | transloco) }}</p>
+      <button mbButton type="button" (click)="player.reveal()">
+        {{ 'radio.reveal' | transloco }}
+      </button>
+    } @else {
+      @if (track.media.preview_url) {
+        <img class="artwork" [src]="track.media.preview_url" alt="" />
+      }
+      <div class="post-text" [innerHTML]="track.post.content"></div>
+      @if (track.media.description) {
+        <p>{{ track.media.description }}</p>
+      }
+    }
+    <div class="fields">
+      <mb-field
+        [label]="'radio.seek' | transloco"
+        [hint]="clock(player.time()) + ' / ' + clock(player.duration())"
+      >
+        <input
+          mbControl
+          type="range"
+          min="0"
+          [max]="player.duration() || 1"
+          step="0.1"
+          [ngModel]="player.time()"
+          (ngModelChange)="player.seek(+$event)"
+          [disabled]="!player.duration() || player.hidden()"
+        />
+      </mb-field>
+      <mb-field [label]="'radio.volume' | transloco">
+        <input
+          mbControl
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          [ngModel]="player.volume()"
+          (ngModelChange)="player.setVolume(+$event)"
+        />
+      </mb-field>
+    </div>
+    @if (player.waiting()) {
+      <p role="status">{{ 'radio.waiting' | transloco }}</p>
+    }
+    @if (player.blocked()) {
+      <p role="alert">{{ 'radio.blocked' | transloco }}</p>
+    }
+    @if (player.skipped()) {
+      <p role="status">{{ 'radio.skipped' | transloco: { count: player.skipped() } }}</p>
+    }
+    <a [routerLink]="['/statuses', track.post.id]">{{ 'radio.post' | transloco }}</a>
+    <h3>{{ 'radio.queue' | transloco }}</h3>
+    <ol class="queue">
+      @for (item of player.queue(); track item.key; let i = $index) {
+        <li>
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            [attr.aria-current]="i === player.selected() ? 'true' : null"
+            (click)="player.select(i)"
+          >
+            {{
+              'radio.playTrack'
+                | transloco
+                  : {
+                      number: i + 1,
+                      author: item.post.account.display_name || item.post.account.acct,
+                    }
+            }}
+          </button>
+        </li>
+      }
+    </ol>
+  </section>
+}

@@ -79,29 +79,27 @@ export const STARTER_COLLECTION: readonly StarterAccount[] = [
 ];
 
 export const STARTER_KITS: readonly StarterKit[] = [
-  ...catalog.packs.map(
-    (pack): StarterKit => ({
-      slug: `catalog-${pack.lang}-${pack.slug}`,
-      lang: pack.lang,
-      title: pack.title.en,
-      blurb: pack.blurb.en,
-      titles: pack.title,
-      blurbs: pack.blurb,
-      accounts: pack.accounts.map((profile) => ({
-        name: profile.displayName || profile.acct.split('@')[0],
-        handle: profile.acct,
-        account: {
-          ...starter(profile.displayName, profile.acct, profile.id).account,
-          note: profile.note,
-          url: profile.url,
-          avatar: profile.avatar,
-          avatar_static: profile.avatar,
-          followers_count: profile.followers,
-          bot: profile.bot,
-        },
-      })),
-    }),
-  ),
+  ...catalog.packs.map((pack): StarterKit => ({
+    slug: `catalog-${pack.lang}-${pack.slug}`,
+    lang: pack.lang,
+    title: pack.title.en,
+    blurb: pack.blurb.en,
+    titles: pack.title,
+    blurbs: pack.blurb,
+    accounts: pack.accounts.map((profile) => ({
+      name: profile.displayName || profile.acct.split('@')[0],
+      handle: profile.acct,
+      account: {
+        ...starter(profile.displayName, profile.acct, profile.id).account,
+        note: profile.note,
+        url: profile.url,
+        avatar: profile.avatar,
+        avatar_static: profile.avatar,
+        followers_count: profile.followers,
+        bot: profile.bot,
+      },
+    })),
+  })),
   {
     slug: 'starter',
     title: 'Universal starter kit',

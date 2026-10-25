@@ -117,15 +117,13 @@ export class OpenRouterModels {
       const body = (await response.json()) as ModelsResponse;
       const models = (body.data ?? [])
         .filter((entry): entry is { id: string } & typeof entry => typeof entry.id === 'string')
-        .map(
-          (entry): OpenRouterModel => ({
-            id: entry.id,
-            name: entry.name ?? entry.id,
-            contextLength: entry.context_length ?? null,
-            promptPrice: parsePrice(entry.pricing?.prompt),
-            completionPrice: parsePrice(entry.pricing?.completion),
-          }),
-        );
+        .map((entry): OpenRouterModel => ({
+          id: entry.id,
+          name: entry.name ?? entry.id,
+          contextLength: entry.context_length ?? null,
+          promptPrice: parsePrice(entry.pricing?.prompt),
+          completionPrice: parsePrice(entry.pricing?.completion),
+        }));
       this.cache.set(cacheKey, models);
       return models;
     } finally {

@@ -9,6 +9,9 @@
     />
   } @else {
     <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
+    @if (player.active()) {
+      <app-radio-controls />
+    }
     <form (ngSubmit)="discover()">
       <mb-field [label]="'radio.source' | transloco">
         <select mbControl name="source" [ngModel]="source()" (ngModelChange)="chooseSource($event)">
@@ -90,6 +93,11 @@
       }
     }
     @for (post of scan.posts(); track post.id) {
+      <button mbButton variant="outline" type="button" (click)="playPost(post)">
+        {{
+          'radio.playPost' | transloco: { author: post.account.display_name || post.account.acct }
+        }}
+      </button>
       <app-status-card [status]="post" />
     }
   }

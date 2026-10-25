@@ -31,8 +31,7 @@ export interface BlueskyOAuthIdentityCredentials {
 }
 
 export type BlueskyIdentityCredentials =
-  | BlueskyLegacyIdentityCredentials
-  | BlueskyOAuthIdentityCredentials;
+  BlueskyLegacyIdentityCredentials | BlueskyOAuthIdentityCredentials;
 
 export interface BlueskyIdentity {
   profile: BlueskyIdentityProfile;

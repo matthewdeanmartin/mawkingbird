@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  background: var(--col-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-block: 16px;
+}
+:host.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  margin: 0;
+  border-radius: 0;
+  overflow: auto;
+}
+section {
+  max-width: 850px;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}
+section:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+.toolbar,
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fields {
+  margin-block: 16px;
+}
+mb-field {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.artwork {
+  display: block;
+  max-width: 100%;
+  max-height: 40dvh;
+  object-fit: contain;
+  margin-inline: auto;
+}
+.post-text {
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+.queue {
+  max-height: 240px;
+  overflow: auto;
+  padding-inline-start: 28px;
+}
+li {
+  margin-block: 8px;
+}
+[aria-current='true'] {
+  font-weight: 700;
+  outline: 2px solid var(--accent);
+}

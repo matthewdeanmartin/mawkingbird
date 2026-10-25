@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1164,
-  "filesWithCandidates": 241,
+  "filesScanned": 1170,
+  "filesWithCandidates": 243,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5680,6 +5680,106 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/radio/radio-controls.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 16
+        },
+        {
+          "pattern": "shared",
+          "line": 19
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 60
+        },
+        {
+          "pattern": "shared",
+          "line": 62
+        },
+        {
+          "pattern": "shared",
+          "line": 87
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 4
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 13
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 16
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 19
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 32
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 86
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/radio/radio-dock.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 33
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 21
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 30
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 33
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/radio/radio-page.html",
       "status": "needs semantic review",
       "findings": [
@@ -5693,71 +5793,79 @@
         },
         {
           "pattern": "shared",
-          "line": 13
+          "line": 16
         },
         {
           "pattern": "shared",
-          "line": 14
+          "line": 17
         },
         {
           "pattern": "shared",
-          "line": 21
+          "line": 24
         },
         {
           "pattern": "shared",
-          "line": 23
+          "line": 26
         },
         {
           "pattern": "shared",
-          "line": 31
+          "line": 34
         },
         {
           "pattern": "shared",
-          "line": 33
+          "line": 36
         },
         {
           "pattern": "shared",
-          "line": 47
+          "line": 50
         },
         {
           "pattern": "shared",
-          "line": 66
+          "line": 69
         },
         {
           "pattern": "shared",
-          "line": 71
+          "line": 74
         },
         {
           "pattern": "shared",
-          "line": 79
-        },
-        {
-          "pattern": "shared",
-          "line": 84
+          "line": 82
         },
         {
           "pattern": "shared",
           "line": 87
         },
         {
-          "pattern": "nativeButtons",
-          "line": 46
+          "pattern": "shared",
+          "line": 90
+        },
+        {
+          "pattern": "shared",
+          "line": 96
         },
         {
           "pattern": "nativeButtons",
-          "line": 71
+          "line": 49
         },
         {
           "pattern": "nativeButtons",
-          "line": 79
+          "line": 74
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 82
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 96
         },
         {
           "pattern": "selects",
-          "line": 14
+          "line": 17
         },
         {
           "pattern": "selects",
-          "line": 32
+          "line": 35
         }
       ]
     },
@@ -13131,31 +13239,31 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 511
+          "line": 520
         },
         {
           "pattern": "nativeButtons",
-          "line": 545
+          "line": 554
         },
         {
           "pattern": "nativeButtons",
-          "line": 548
+          "line": 557
         },
         {
           "pattern": "nativeButtons",
-          "line": 551
+          "line": 560
         },
         {
           "pattern": "legacyPills",
-          "line": 545
+          "line": 554
         },
         {
           "pattern": "legacyPills",
-          "line": 548
+          "line": 557
         },
         {
           "pattern": "legacyPills",
-          "line": 551
+          "line": 560
         },
         {
           "pattern": "disclosure",

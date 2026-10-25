@@ -62,7 +62,9 @@ describe('Tag media', () => {
   it('continues after a full page without pictures, keeping the raw cursor', () => {
     const viewport = TestBed.inject(ViewportScroller);
     vi.spyOn(viewport, 'getScrollPosition').mockReturnValue([0, 700]);
-    const restoreScroll = vi.spyOn(viewport, 'scrollToPosition').mockImplementation(() => undefined);
+    const restoreScroll = vi
+      .spyOn(viewport, 'scrollToPosition')
+      .mockImplementation(() => undefined);
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
       callback(0);
       return 1;

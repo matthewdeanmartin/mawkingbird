@@ -79,8 +79,7 @@ export type CollectionResult<T> =
 
 /** One mutation in a batch. */
 export type BatchOperation<T = unknown> =
-  | { op: 'put'; id: string; value: T }
-  | { op: 'delete'; id: string };
+  { op: 'put'; id: string; value: T } | { op: 'delete'; id: string };
 
 @Injectable({ providedIn: 'root' })
 export class ProfileCollections {

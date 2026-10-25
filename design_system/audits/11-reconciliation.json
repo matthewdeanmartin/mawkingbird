@@ -3,6 +3,16 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/pages/radio/radio-controls.html",
+      "disposition": "adopted scope",
+      "nextStep": "Radio uses Button for transport, reveal, fullscreen and queue selection, and Field/Control for native seek and volume ranges. Preserve player-scoped shortcuts, native range keyboard behavior, explicit content-warning reveal, bounded queue scrolling, and fullscreen Zen cleanup without stopping session playback."
+    },
+    {
+      "file": "ui/src/app/pages/radio/radio-dock.ts",
+      "disposition": "adopted scope",
+      "nextStep": "The persistent Radio dock uses Button for pause/play, next and stop, and a native router link to the full player. Preserve mobile navigation clearance, wrapping, content-warning privacy and the shared session across route changes."
+    },
+    {
       "file": "ui/src/app/pages/radio/radio-page.html",
       "disposition": "adopted scope",
       "nextStep": "Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure and bounded pagination. Player and Studio use the existing mode navigation."

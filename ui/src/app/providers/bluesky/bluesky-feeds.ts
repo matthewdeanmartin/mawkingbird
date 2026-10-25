@@ -100,18 +100,16 @@ export class BlueskyFeeds {
     );
     return forkJoin(batches).pipe(
       map((results) =>
-        results.flat().map(
-          (generator): BlueskyFeedEntry => ({
-            uri: generator.uri,
-            kind: 'feed',
-            displayName: generator.displayName,
-            description: generator.description ?? '',
-            avatar: generator.avatar ?? null,
-            creatorHandle: generator.creator.handle,
-            pinned: pinnedByUri.get(generator.uri) ?? false,
-            memberCount: null,
-          }),
-        ),
+        results.flat().map((generator): BlueskyFeedEntry => ({
+          uri: generator.uri,
+          kind: 'feed',
+          displayName: generator.displayName,
+          description: generator.description ?? '',
+          avatar: generator.avatar ?? null,
+          creatorHandle: generator.creator.handle,
+          pinned: pinnedByUri.get(generator.uri) ?? false,
+          memberCount: null,
+        })),
       ),
     );
   }
@@ -199,20 +197,18 @@ export class BlueskyFeeds {
     }
     return this.api.getPopularFeedGenerators(POPULAR_LIMIT).pipe(
       map(({ feeds }) =>
-        feeds.map(
-          (generator): BlueskyFeedEntry => ({
-            uri: generator.uri,
-            kind: 'feed',
-            displayName: generator.displayName,
-            description: generator.description ?? '',
-            avatar: generator.avatar ?? null,
-            creatorHandle: generator.creator.handle,
-            // Popularity is not pinning. These are other people's feeds that the
-            // reader has not saved, so nothing here is promoted to a tab.
-            pinned: false,
-            memberCount: null,
-          }),
-        ),
+        feeds.map((generator): BlueskyFeedEntry => ({
+          uri: generator.uri,
+          kind: 'feed',
+          displayName: generator.displayName,
+          description: generator.description ?? '',
+          avatar: generator.avatar ?? null,
+          creatorHandle: generator.creator.handle,
+          // Popularity is not pinning. These are other people's feeds that the
+          // reader has not saved, so nothing here is promoted to a tab.
+          pinned: false,
+          memberCount: null,
+        })),
       ),
       tap((entries) => this.popularCache.set(entries)),
       catchError(() => of([] as BlueskyFeedEntry[])),

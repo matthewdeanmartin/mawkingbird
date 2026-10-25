@@ -49,11 +49,7 @@ import { Server } from './server';
 
 /** The feeds worth asking about, each one somewhere we render a link. */
 export type FeedKind =
-  | 'public-local'
-  | 'public-federated'
-  | 'trending-links'
-  | 'trending-tags'
-  | 'trending-statuses';
+  'public-local' | 'public-federated' | 'trending-links' | 'trending-tags' | 'trending-statuses';
 
 export const FEED_KINDS: readonly FeedKind[] = [
   'public-local',

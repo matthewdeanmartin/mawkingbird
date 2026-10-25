@@ -32,8 +32,7 @@ interface StoredAccount {
 
 /** What the open confirmation dialog would do. */
 type PendingAction =
-  | { kind: 'data'; target: StoredAccount }
-  | { kind: 'data-and-logout'; target: StoredAccount };
+  { kind: 'data'; target: StoredAccount } | { kind: 'data-and-logout'; target: StoredAccount };
 
 /**
  * Signed-in accounts: list every credential saved in this browser and clean them up.

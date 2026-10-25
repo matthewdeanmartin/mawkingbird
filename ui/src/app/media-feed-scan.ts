@@ -22,8 +22,19 @@ export class MediaFeedScan {
   private cancelRequest = new Subject<void>();
   private generation = 0;
   private fetch?: (cursor?: string) => Observable<MediaFeedPage>;
+  private running?: Promise<void>;
 
   constructor(private readonly types: readonly SearchMediaType[] = ['audio']) {}
+
+  clear(): void {
+    this.cancel();
+    this.fetch = undefined;
+    this.posts.set([]);
+    this.scanned.set(0);
+    this.failed.set(false);
+    this.exhausted.set(false);
+    this.retryAt.set(0);
+  }
 
   start(fetch: (cursor?: string) => Observable<MediaFeedPage>): Promise<void> {
     this.cancel();
@@ -44,7 +55,21 @@ export class MediaFeedScan {
     this.loading.set(false);
   }
 
-  async more(): Promise<void> {
+  more(): Promise<void> {
+    if (this.loading()) return this.whenIdle();
+    const running = this.scanMore();
+    this.running = running;
+    void running.finally(() => {
+      if (this.running === running) this.running = undefined;
+    });
+    return running;
+  }
+
+  whenIdle(): Promise<void> {
+    return this.running ?? Promise.resolve();
+  }
+
+  private async scanMore(): Promise<void> {
     if (!this.fetch || this.loading() || this.exhausted() || Date.now() < this.retryAt()) return;
     const generation = ++this.generation;
     this.loading.set(true);

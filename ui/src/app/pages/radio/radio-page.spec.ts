@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, Subject } from 'rxjs';
@@ -8,6 +8,9 @@ import { Auth } from '../../auth';
 import { Status } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 import { RadioPage } from './radio-page';
+import { Playback } from '../../video-player/playback';
+import { TrustedAccounts } from '../../trusted-accounts';
+import { FollowTrust } from '../../follow-trust';
 
 @Component({ selector: 'app-status-card', template: '{{ status().id }}' })
 class CardStub {
@@ -15,7 +18,11 @@ class CardStub {
 }
 
 describe('RadioPage', () => {
-  const audio = { id: 'audio', media_attachments: [{ type: 'audio' }] } as Status;
+  const audio = {
+    id: 'audio',
+    account: { acct: 'music' },
+    media_attachments: [{ type: 'audio' }],
+  } as Status;
   let api: {
     lookupAccount: ReturnType<typeof vi.fn>;
     getAccountStatuses: ReturnType<typeof vi.fn>;
@@ -40,7 +47,16 @@ describe('RadioPage', () => {
       providers: [
         provideRouter([]),
         { provide: Api, useValue: api },
-        { provide: Auth, useValue: auth },
+        {
+          provide: Auth,
+          useValue: Object.assign(auth, { kind: signal('mastodon'), token: signal('test') }),
+        },
+        { provide: Playback, useValue: { register: () => () => undefined, started: vi.fn() } },
+        {
+          provide: TrustedAccounts,
+          useValue: { cwExpanded: () => false, sensitiveShown: () => false },
+        },
+        { provide: FollowTrust, useValue: { revision: signal(0) } },
       ],
     });
     TestBed.overrideComponent(RadioPage, {
