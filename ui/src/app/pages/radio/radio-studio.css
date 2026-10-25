@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+form {
+  display: grid;
+  gap: 16px;
+  margin-block: 16px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.catalogue {
+  padding: 0;
+  list-style: none;
+  max-height: 28rem;
+  overflow: auto;
+}
+.catalogue li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-block: 8px;
+}
+.catalogue li > span:first-child {
+  flex: 1 1 200px;
+  overflow-wrap: anywhere;
+}
+.filename {
+  overflow-wrap: anywhere;
+}
+audio {
+  width: 100%;
+}

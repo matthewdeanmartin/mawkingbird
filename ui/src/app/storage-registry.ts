@@ -105,6 +105,13 @@ export interface StorageKeySpec {
  */
 export const STORAGE_KEYS: readonly StorageKeySpec[] = [
   {
+    base: 'mockingbird_radio_catalogue',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'cache',
+    note: 'Own audio post references and resumable scan checkpoints; never exported. Audio drafts remain in memory.',
+  },
+  {
     base: 'mockingbird_recent_feeds',
     storage: 'local',
     suffix: 'account',

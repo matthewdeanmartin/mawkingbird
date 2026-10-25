@@ -135,20 +135,47 @@ try {
       { ...audio.media_attachments[0], id: 'audio-2', url: `${base}/sample-9.wav` },
     ],
   };
+  let accountPages = 0;
+  let uploads = 0;
+  let publications = 0;
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     let body = [];
-    if (url.pathname.includes('verify_credentials') || url.pathname.endsWith('/lookup'))
+    if (url.pathname === '/api/v2/media') {
+      uploads++;
+      body = audio.media_attachments[0];
+    } else if (url.pathname === '/api/v1/statuses' && route.request().method() === 'POST') {
+      publications++;
+      const draft = route.request().postDataJSON();
+      assert.equal(draft.status, 'Prepared locally');
+      assert.equal(draft.visibility, 'private');
+      assert.deepEqual(draft.media_ids, ['audio-1']);
+      assert.ok(route.request().headers()['idempotency-key']);
+      body = audio;
+    } else if (/\/api\/v1\/statuses\/\d+$/.test(url.pathname)) body = audio;
+    else if (url.pathname.includes('verify_credentials') || url.pathname.endsWith('/lookup'))
       body = account;
-    else if (url.pathname.endsWith('/statuses') || url.pathname.endsWith('/timelines/home'))
+    else if (url.pathname.endsWith('/statuses') || url.pathname.endsWith('/timelines/home')) {
+      if (url.pathname.includes('/accounts/')) accountPages++;
       body = url.searchParams.has('max_id') ? [] : [audio, second];
-    else if (url.pathname.endsWith('/lists')) body = [{ id: '2', title: 'Music makers' }];
+    } else if (url.pathname.endsWith('/lists')) body = [{ id: '2', title: 'Music makers' }];
     else if (url.pathname.includes('/instance'))
-      body = { domain: 'localhost', title: 'Radio fixture', version: '4.5.0', configuration: {} };
+      body = {
+        domain: 'localhost',
+        title: 'Radio fixture',
+        version: '4.5.0',
+        configuration: {
+          media_attachments: { supported_mime_types: ['audio/wav'], video_size_limit: 100_000_000 },
+          statuses: { max_characters: 500 },
+        },
+      };
     await route.fulfill({ json: body });
   });
   await page.goto(`${base}/radio`);
   await page.getByRole('heading', { name: 'Radio', exact: true }).waitFor();
+  const sourceLabel = await page.locator('app-radio-page mb-field label').nth(0).boundingBox();
+  const handleLabel = await page.locator('app-radio-page mb-field label').nth(1).boundingBox();
+  assert.ok(Math.abs(sourceLabel.y - handleLabel.y) < 2, 'Radio source labels align');
   await page.getByLabel(/Account handle/).fill('music');
   await page.getByRole('button', { name: 'Find audio', exact: true }).click();
   await page.getByText('Reached the end of the available feed.').waitFor();
@@ -178,16 +205,14 @@ try {
     .catch(async (error) => {
       console.log(
         'audio diagnostic',
-        await page
-          .locator('audio[data-radio]')
-          .evaluate((audio) => ({
-            time: audio.currentTime,
-            duration: audio.duration,
-            paused: audio.paused,
-            src: audio.src,
-            ended: audio.ended,
-            error: audio.error?.message,
-          })),
+        await page.locator('audio[data-radio]').evaluate((audio) => ({
+          time: audio.currentTime,
+          duration: audio.duration,
+          paused: audio.paused,
+          src: audio.src,
+          ended: audio.ended,
+          error: audio.error?.message,
+        })),
         errors,
       );
       throw error;
@@ -219,9 +244,54 @@ try {
     .getByRole('button', { name: 'Stop Radio', exact: true })
     .click();
   assert.equal(await page.locator('audio[data-radio]').count(), 0);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.getByRole('link', { name: 'Studio', exact: true }).click();
+  await page.getByRole('button', { name: 'Find all my audio', exact: true }).click();
+  await page.getByText('All available history has been scanned.').waitFor();
+  assert.equal(await page.locator('.catalogue li').count(), 2);
+  await page.getByRole('button', { name: 'Preview post', exact: true }).first().click();
+  await page.locator('app-radio-studio app-status-card').waitFor();
+  await page
+    .getByLabel('Audio file', { exact: true })
+    .setInputFiles({ name: 'recording.wav', mimeType: 'audio/wav', buffer: wav });
+  await page.getByLabel('Post text', { exact: true }).fill('Prepared locally');
+  await page.getByLabel('Audio description or transcript').fill('A local recording');
+  assert.equal(uploads, 0, 'Staging never uploads');
+  await page.getByRole('link', { name: 'Player', exact: true }).click();
+  await page.getByRole('link', { name: 'Studio', exact: true }).click();
+  assert.equal(
+    await page.getByLabel('Post text', { exact: true }).inputValue(),
+    'Prepared locally',
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: '.test-results/radio-studio-mobile.png', fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.screenshot({ path: '.test-results/radio-studio-desktop.png', fullPage: true });
+  const pagesBeforeReload = accountPages;
+  await page.reload();
+  await page.getByText('All available history has been scanned.').waitFor();
+  assert.equal(await page.locator('.catalogue li').count(), 2);
+  assert.equal(accountPages, pagesBeforeReload, 'Cached catalogue avoids rescanning on reload');
+  assert.equal(
+    await page.getByLabel('Post text', { exact: true }).count(),
+    0,
+    'Staged draft is session-only',
+  );
+  await page.getByRole('button', { name: 'Check for newer audio', exact: true }).click();
+  await page.getByText('All available history has been scanned.').waitFor();
+  assert.equal(accountPages, pagesBeforeReload + 1, 'Refresh stops at known history');
+  await page
+    .getByLabel('Audio file', { exact: true })
+    .setInputFiles({ name: 'recording.wav', mimeType: 'audio/wav', buffer: wav });
+  await page.getByLabel('Post text', { exact: true }).fill('Prepared locally');
+  await page.getByRole('button', { name: 'Publish audio post', exact: true }).click();
+  await page.getByText('Your audio post was published.', { exact: true }).waitFor();
+  assert.equal(uploads, 1);
+  assert.equal(publications, 1);
   assert.deepEqual(errors, []);
   console.log(
-    'Radio browser checks passed: discovery, real audio, navigation continuity, automatic advance, pause, fullscreen, mobile overflow and stop; no page errors.',
+    'Radio browser checks passed: aligned labels, discovery, real audio, navigation continuity, automatic advance, pause, fullscreen, mobile overflow, stop, Studio catalogue caching and refresh, local staging, draft lifetime, and explicit publication; no page errors.',
   );
 } finally {
   await browser.close();

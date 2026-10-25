@@ -12,6 +12,7 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { RadioPlayer } from './radio-player';
 import { RadioControls } from './radio-controls';
 import { RadioDock } from './radio-dock';
+import { RadioStudio } from './radio-studio';
 import { Status, UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 
@@ -49,6 +50,7 @@ import { StatusCard } from '../../status-card/status-card';
     MbControl,
     StatusCard,
     RadioControls,
+    RadioStudio,
   ],
   templateUrl: './radio-page.html',
   styleUrl: './radio-page.css',

@@ -8,7 +8,7 @@
 form {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: start;
   gap: 12px;
 }
 mb-field {
@@ -17,4 +17,7 @@ mb-field {
 }
 app-status-card {
   display: block;
+}
+form > button {
+  margin-top: 26px;
 }

@@ -747,3 +747,17 @@ new candidate files, both reconciled as adopted scope. Radio discovery adds the
 play action and shell template findings only shift source locations. No files
 were removed. The authorized formatting cleanup has no further inventory
 changes. Shared design-system widget implementations are unchanged.
+
+## Radio Studio and source alignment, 2026-10-25
+
+Studio uses Field/Control for local audio selection, post text, description,
+content warning and visibility; Button for scanning, refreshing, previews and
+publication; and Content State for errors. Native audio provides seekable local
+preview. Saved post references form a bounded scrolling list, and post previews
+reuse StatusCard. Radio source fields now align at their labels so account help
+text does not push the adjacent source label down.
+
+Reviewed the regenerated control inventory: Studio's template is the sole new
+candidate file, reconciled as adopted scope. The Radio page removes its Studio
+placeholder and otherwise shifts source locations. No candidates were removed.
+Shared design-system widget implementations are unchanged.

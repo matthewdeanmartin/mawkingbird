@@ -3,10 +3,7 @@
   @if (!signedIn) {
     <mb-content-state [title]="'radio.signIn' | transloco" />
   } @else if (studio) {
-    <mb-content-state
-      [title]="'radio.studioTitle' | transloco"
-      [description]="'radio.studioHint' | transloco"
-    />
+    <app-radio-studio />
   } @else {
     <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
     @if (player.active()) {

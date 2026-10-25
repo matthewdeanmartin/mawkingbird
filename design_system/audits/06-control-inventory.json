@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1170,
-  "filesWithCandidates": 243,
+  "filesScanned": 1175,
+  "filesWithCandidates": 244,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5789,47 +5789,47 @@
         },
         {
           "pattern": "shared",
-          "line": 6
+          "line": 13
         },
         {
           "pattern": "shared",
-          "line": 16
+          "line": 14
         },
         {
           "pattern": "shared",
-          "line": 17
+          "line": 21
         },
         {
           "pattern": "shared",
-          "line": 24
+          "line": 23
         },
         {
           "pattern": "shared",
-          "line": 26
+          "line": 31
         },
         {
           "pattern": "shared",
-          "line": 34
+          "line": 33
         },
         {
           "pattern": "shared",
-          "line": 36
+          "line": 47
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 66
         },
         {
           "pattern": "shared",
-          "line": 69
+          "line": 71
         },
         {
           "pattern": "shared",
-          "line": 74
+          "line": 79
         },
         {
           "pattern": "shared",
-          "line": 82
+          "line": 84
         },
         {
           "pattern": "shared",
@@ -5837,35 +5837,149 @@
         },
         {
           "pattern": "shared",
-          "line": 90
+          "line": 93
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 46
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 71
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 79
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 93
+        },
+        {
+          "pattern": "selects",
+          "line": 14
+        },
+        {
+          "pattern": "selects",
+          "line": 32
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/radio/radio-studio.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 96
+          "line": 21
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 58
+        },
+        {
+          "pattern": "shared",
+          "line": 71
+        },
+        {
+          "pattern": "shared",
+          "line": 87
+        },
+        {
+          "pattern": "shared",
+          "line": 89
+        },
+        {
+          "pattern": "shared",
+          "line": 100
+        },
+        {
+          "pattern": "shared",
+          "line": 102
+        },
+        {
+          "pattern": "shared",
+          "line": 110
+        },
+        {
+          "pattern": "shared",
+          "line": 112
+        },
+        {
+          "pattern": "shared",
+          "line": 120
+        },
+        {
+          "pattern": "shared",
+          "line": 122
+        },
+        {
+          "pattern": "shared",
+          "line": 128
+        },
+        {
+          "pattern": "shared",
+          "line": 130
+        },
+        {
+          "pattern": "shared",
+          "line": 145
+        },
+        {
+          "pattern": "shared",
+          "line": 149
+        },
+        {
+          "pattern": "shared",
+          "line": 164
+        },
+        {
+          "pattern": "shared",
+          "line": 166
         },
         {
           "pattern": "nativeButtons",
-          "line": 49
+          "line": 5
         },
         {
           "pattern": "nativeButtons",
-          "line": 74
+          "line": 20
         },
         {
           "pattern": "nativeButtons",
-          "line": 82
+          "line": 30
         },
         {
           "pattern": "nativeButtons",
-          "line": 96
+          "line": 70
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 145
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 148
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 166
         },
         {
           "pattern": "selects",
-          "line": 17
-        },
-        {
-          "pattern": "selects",
-          "line": 35
+          "line": 129
         }
       ]
     },

@@ -1,0 +1,174 @@
+<h2>{{ 'radio.catalogue' | transloco }}</h2>
+<p>{{ 'radio.catalogueHint' | transloco }}</p>
+@let catalogue = session.catalogue();
+<div class="actions">
+  <button
+    mbButton
+    type="button"
+    [disabled]="
+      !session.ready() ||
+      catalogue.loading() ||
+      (catalogue.data().exhausted && !catalogue.data().refresh)
+    "
+    (click)="session.scan()"
+  >
+    {{
+      (catalogue.data().scanned && !catalogue.data().exhausted ? 'radio.more' : 'radio.findMine')
+        | transloco
+    }}
+  </button>
+  <button
+    mbButton
+    variant="outline"
+    type="button"
+    [disabled]="!session.ready() || catalogue.loading()"
+    (click)="session.scan(true)"
+  >
+    {{ 'radio.refreshMine' | transloco }}
+  </button>
+  @if (catalogue.loading()) {
+    <button mbButton variant="outline" type="button" (click)="catalogue.cancel()">
+      {{ 'radio.cancel' | transloco }}
+    </button>
+  }
+</div>
+<p role="status">
+  {{
+    'radio.progress'
+      | transloco: { scanned: catalogue.data().scanned, matches: catalogue.data().posts.length }
+  }}
+</p>
+@if (!catalogue.loading()) {
+  <p>
+    {{
+      (catalogue.data().exhausted && !catalogue.data().refresh
+        ? 'radio.catalogueComplete'
+        : 'radio.cataloguePaused'
+      ) | transloco
+    }}
+  </p>
+}
+@if (catalogue.failed()) {
+  <mb-content-state kind="error" [title]="'radio.failed' | transloco" />
+  @if (catalogue.retryAt()) {
+    <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
+  }
+}
+@if (session.storageFailed()) {
+  <mb-content-state kind="error" [title]="'radio.storageFailed' | transloco" />
+}
+@if (!catalogue.data().posts.length) {
+  <p>{{ 'radio.catalogueEmpty' | transloco }}</p>
+}
+<ul class="catalogue">
+  @for (post of catalogue.data().posts; track post.id) {
+    <li>
+      <span>{{ post.title }}</span>
+      @if (post.unavailable) {
+        <span>{{ 'radio.unavailable' | transloco }}</span>
+      }
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [disabled]="session.opening()"
+        (click)="session.open(post.id)"
+      >
+        {{ 'radio.catalogueOpen' | transloco }}
+      </button>
+    </li>
+  }
+</ul>
+@if (session.opened(); as post) {
+  <app-status-card [status]="post" />
+}
+<h2>{{ 'radio.prepareAudio' | transloco }}</h2>
+<p>{{ 'radio.stageHint' | transloco }}</p>
+<mb-field [label]="'radio.audioFile' | transloco">
+  <input
+    mbControl
+    type="file"
+    accept="audio/*"
+    [disabled]="session.busy() || session.locked()"
+    (change)="pick($event)"
+  />
+</mb-field>
+@if (session.file(); as file) {
+  <p class="filename">{{ file.name }} · {{ (file.size / 1048576).toFixed(1) }} MB</p>
+  <audio controls preload="metadata" [src]="session.preview()"></audio>
+  <form (ngSubmit)="session.publish()">
+    <mb-field [label]="'radio.postText' | transloco">
+      <textarea
+        mbControl
+        name="text"
+        rows="4"
+        [disabled]="session.busy() || session.locked()"
+        [ngModel]="session.text()"
+        (ngModelChange)="session.text.set($event)"
+      ></textarea>
+    </mb-field>
+    <mb-field [label]="'radio.audioDescription' | transloco">
+      <textarea
+        mbControl
+        name="description"
+        rows="3"
+        [disabled]="session.busy() || session.locked()"
+        [ngModel]="session.description()"
+        (ngModelChange)="session.description.set($event)"
+      ></textarea>
+    </mb-field>
+    <mb-field [label]="'radio.postWarning' | transloco"
+      ><input
+        mbControl
+        name="warning"
+        [disabled]="session.busy() || session.locked()"
+        [ngModel]="session.warning()"
+        (ngModelChange)="session.warning.set($event)"
+    /></mb-field>
+    <mb-field [label]="'radio.postVisibility' | transloco"
+      ><select
+        mbControl
+        name="visibility"
+        [disabled]="session.busy() || session.locked()"
+        [ngModel]="session.visibility()"
+        (ngModelChange)="session.visibility.set($event)"
+      >
+        <option value="private">{{ 'radio.followers' | transloco }}</option>
+        <option value="unlisted">{{ 'radio.unlisted' | transloco }}</option>
+        <option value="public">{{ 'radio.public' | transloco }}</option>
+      </select></mb-field
+    >
+    @if (session.locked()) {
+      <p>{{ 'radio.draftLocked' | transloco }}</p>
+    }
+    <div class="actions">
+      <button mbButton type="submit" [disabled]="session.busy() || !session.ready()">
+        {{ 'radio.publishAudio' | transloco }}
+      </button>
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [disabled]="session.busy()"
+        (click)="session.discard()"
+      >
+        {{ 'radio.discardAudio' | transloco }}
+      </button>
+    </div>
+  </form>
+}
+@if (session.busy()) {
+  <p role="status">{{ 'radio.publishingAudio' | transloco }}</p>
+}
+@if (session.error()) {
+  <mb-content-state kind="error" announcement="alert" [title]="session.error() | transloco" />
+  @if (!session.ready()) {
+    <button mbButton type="button" (click)="session.initialize()">
+      {{ 'radio.retryStudio' | transloco }}
+    </button>
+  }
+}
+@if (session.published(); as post) {
+  <p role="status">{{ 'radio.publishedAudio' | transloco }}</p>
+  <app-status-card [status]="post" />
+}
