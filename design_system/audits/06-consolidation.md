@@ -790,3 +790,31 @@ StatusCard adds three menu links and remaining findings shift with source lines.
 No candidate files were added or removed; reconciliation remains complete.
 The new pure URL helper adds one scanned file without controls. Shared widget
 implementations are unchanged.
+
+## Discoverable Radio entry actions, 2026-10-25
+
+Profile account menus use MenuItem for a qualified-account Radio link. Eligibility
+excludes non-Mastodon profiles. Posts now also expose a visible Button link beside
+media, preserving content-warning and sensitive-media boundaries and the existing
+menu entry. Both routes remain shareable and preserve the deployment base.
+
+Reviewed the control inventory: profile menu links and the visible post link are
+the added controls; other findings shift source locations in those components.
+No candidate files were added or removed, so reconciliation remains complete.
+Shared design widgets are unchanged.
+
+## Compact audio toolbars and aligned dock, 2026-10-25
+
+Post audio actions now use the same compact Toolbar/ToolbarButton as Home,
+between content/media and Post Actions. Radio passes queue commands into that
+row; lazy external players expose load/close/open commands without duplicating
+pill buttons. Content-warning and sensitive gates remain intact. Scan continuation
+precedes its progress count. The dock and full player use compact transport
+controls, with provider open/close in the dock row; close follows Stop Radio.
+The fixed dock measures the centre column across rail and viewport changes.
+
+Reviewed the regenerated inventory: control replacements and location shifts
+are confined to the audio/player surfaces, plus the preceding profile/post entry
+changes. No candidate files were added or removed; reconciliation stays complete.
+Shared design-widget implementations are unchanged. Browser checks cover toolbar
+placement, dock bounds on desktop/tablet/mobile, control order and continued playback.

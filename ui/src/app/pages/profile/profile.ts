@@ -31,6 +31,8 @@ import {
 } from 'rxjs';
 import { Api } from '../../api';
 import { accountRoutePath, parseAccountRoute } from '../../account-route';
+import { radioAccount } from '../../radio-links';
+import { MbMenuItem } from '../../design-system/menu/menu-item';
 import { qualifiedHandle } from '../../account-handle';
 import { Server } from '../../server';
 import { SearchServer } from '../../search-server';
@@ -242,6 +244,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     TranslocoPipe,
     FormsModule,
     RouterLink,
+    MbMenuItem,
     StatusCard,
     ReportDialog,
     ListDialog,
@@ -269,6 +272,13 @@ export class Profile implements OnInit, OnDestroy {
   protected showReply = signal(false);
   protected showSlideshow = signal(false);
   protected readonly qualifiedHandle = qualifiedHandle;
+  // i18n pages.profile.actions.openInRadio: Open in Radio
+  protected radioHandle = computed(() => {
+    const account = this.account();
+    if (!account || this.isRss() || this.isTwitter() || this.isBluesky() || this.isOpenRouter())
+      return null;
+    return radioAccount(qualifiedHandle(account))?.acct ?? null;
+  });
   protected canContact = computed(() =>
     this.isBluesky() ? this.bskySession.linked() : this.capabilities.canUseServerActions,
   );

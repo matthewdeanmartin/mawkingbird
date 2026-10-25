@@ -1,4 +1,5 @@
-import { Component, input, signal } from '@angular/core';
+import { ExternalMedia } from '../../audio-embeds/providers';
+import { Component, input, output, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
@@ -20,6 +21,10 @@ import { FollowTrust } from '../../follow-trust';
 @Component({ selector: 'app-status-card', template: '{{ status().id }}' })
 class CardStub {
   readonly status = input.required<Status>();
+  readonly radioQueue = input(false);
+  readonly radioSources = input<ExternalMedia[]>([]);
+  readonly playAudio = output<void>();
+  readonly listenRadio = output<ExternalMedia>();
 }
 
 describe('RadioPage', () => {
@@ -199,6 +204,19 @@ describe('RadioPage', () => {
       'account',
       expect.objectContaining({ onlyMedia: true }),
     );
+  });
+
+  it('places scan continuation before the progress count', () => {
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.componentInstance.started.set(true);
+    fixture.componentInstance.scanReady.set(true);
+    fixture.detectChanges();
+    const more = Array.from(
+      fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>,
+    ).find((button) => button.textContent?.includes('Continue scanning'))!;
+    const progress = fixture.nativeElement.querySelector('section.radio-page > p[role="status"]');
+    expect(progress.textContent).toContain('Scanned');
+    expect(more.compareDocumentPosition(progress) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('uses the home pagination cursor and loads lists only on selection', async () => {

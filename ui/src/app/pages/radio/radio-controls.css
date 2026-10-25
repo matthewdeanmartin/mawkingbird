@@ -24,7 +24,6 @@ section:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 4px;
 }
-.toolbar,
 .fields {
   display: flex;
   flex-wrap: wrap;

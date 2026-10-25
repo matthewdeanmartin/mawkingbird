@@ -1,3 +1,4 @@
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, inject, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -31,7 +32,16 @@ import { RadioPlayer } from './radio-player';
 
 @Component({
   selector: 'app-radio-controls',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbField, MbControl],
+  imports: [
+    MbToolbar,
+    MbToolbarButton,
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+  ],
   templateUrl: './radio-controls.html',
   styleUrl: './radio-controls.css',
   host: { '[class.fullscreen]': 'fullscreen()', '(document:fullscreenchange)': 'syncFullscreen()' },

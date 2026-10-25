@@ -1,27 +1,42 @@
 import { NgComponentOutlet } from '@angular/common';
-import { Component, computed, DestroyRef, inject, input, signal, Type } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+  Type,
+  viewChild,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { MbButton } from '../design-system/button/button';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
+import type { ExternalPlayer } from './external-player';
 import { ExternalMedia } from './providers';
 
 /** Timeline cards keep widget SDKs and Radio out of eager application imports. */
 @Component({
   selector: 'app-external-player',
-  imports: [NgComponentOutlet, TranslocoPipe, MbButton],
+  imports: [NgComponentOutlet, TranslocoPipe, MbToolbar, MbToolbarButton],
   template: `
     @if (component(); as player) {
       <ng-container [ngComponentOutlet]="player" [ngComponentOutletInputs]="inputs()" />
-    } @else {
-      @if (source().embed) {
-        <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load()">
-          {{ 'external.load' | transloco: { provider: source().label } }}
+    }
+    @if (!toolbar()) {
+      <mb-toolbar density="compact" embedded [label]="source().label">
+        @if (source().embed) {
+          <button mbToolbarButton [disabled]="loading()" (click)="active() ? close() : load()">
+            {{
+              active()
+                ? ('external.close' | transloco)
+                : ('external.load' | transloco: { provider: source().label })
+            }}
+          </button>
+        }
+        <button mbToolbarButton (click)="openOriginal()">
+          {{ 'external.open' | transloco: { provider: source().label } }}
         </button>
-      } @else {
-        <p>{{ 'external.unresolved' | transloco }}</p>
-      }
-      <a [href]="source().url" target="_blank" rel="noopener noreferrer">{{
-        'external.open' | transloco: { provider: source().label }
-      }}</a>
+      </mb-toolbar>
     }
     @if (failed()) {
       <p role="alert">{{ 'external.failed' | transloco }}</p>
@@ -30,22 +45,38 @@ import { ExternalMedia } from './providers';
   styles: `
     :host {
       display: block;
+      margin-block: 0;
+    }
+    :host(.active) {
       margin-block: 12px;
     }
-    a {
-      margin-inline: 8px;
-    }
   `,
-  host: { '(click)': '$event.stopPropagation()' },
+  host: { '(click)': '$event.stopPropagation()', '[class.active]': 'active()' },
 })
 export class ExternalPlayerHost {
+  readonly toolbar = input(false);
+  private readonly outlet = viewChild(NgComponentOutlet);
+  active(): boolean {
+    return !!(this.outlet()?.componentInstance as ExternalPlayer | null)?.activated();
+  }
+  close(): void {
+    this.component.set(null);
+  }
+  openOriginal(): void {
+    window.open(this.source().url, '_blank', 'noopener,noreferrer');
+  }
   readonly source = input.required<ExternalMedia>();
   readonly component = signal<Type<unknown> | null>(null);
   readonly failed = signal(false);
   readonly loading = signal(false);
-  readonly inputs = computed(() => ({ source: this.source(), activate: true }));
+  readonly inputs = computed(() => ({ source: this.source(), activate: true, hideActions: true }));
   private readonly destroy = inject(DestroyRef);
   load(): void {
+    const existing = this.outlet()?.componentInstance as ExternalPlayer | null;
+    if (existing) {
+      existing.activated.set(true);
+      return;
+    }
     this.failed.set(false);
     this.loading.set(true);
     void import('./external-player')

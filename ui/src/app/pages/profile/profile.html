@@ -104,6 +104,12 @@
                 •••
               </summary>
               <div class="account-danger-panel">
+                @if (radioHandle(); as handle) {
+                  <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                    'pages.profile.actions.openInRadio' | transloco
+                  }}</a>
+                }
+
                 <button type="button" (click)="showSlideshow.set(true)">
                   {{ 'pages.profile.slideshow.open' | transloco }}
                 </button>
@@ -222,6 +228,12 @@
                   •••
                 </summary>
                 <div class="account-danger-panel">
+                  @if (radioHandle(); as handle) {
+                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                      'pages.profile.actions.openInRadio' | transloco
+                    }}</a>
+                  }
+
                   <button type="button" (click)="showSlideshow.set(true)">
                     {{ 'pages.profile.slideshow.open' | transloco }}
                   </button>
@@ -314,6 +326,12 @@
                   •••
                 </summary>
                 <div class="account-danger-panel">
+                  @if (radioHandle(); as handle) {
+                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                      'pages.profile.actions.openInRadio' | transloco
+                    }}</a>
+                  }
+
                   <button type="button" (click)="showSlideshow.set(true)">
                     {{ 'pages.profile.slideshow.open' | transloco }}
                   </button>
@@ -352,6 +370,12 @@
                 •••
               </summary>
               <div class="account-danger-panel">
+                @if (radioHandle(); as handle) {
+                  <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                    'pages.profile.actions.openInRadio' | transloco
+                  }}</a>
+                }
+
                 <button type="button" (click)="showSlideshow.set(true)">
                   {{ 'pages.profile.slideshow.open' | transloco }}
                 </button>

@@ -24,6 +24,7 @@ import {
   linkedSignal,
   output,
   signal,
+  viewChildren,
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -48,7 +49,8 @@ import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-hos
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { MbButton } from '../design-system/button/button';
 import { radioPostRef } from '../radio-links';
-import { postExternalMedia } from '../audio-embeds/providers';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
+import { ExternalMedia, postExternalMedia } from '../audio-embeds/providers';
 import {
   attachmentSource,
   mediaUrl,
@@ -360,6 +362,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     MbButton,
     PostPermissions,
     MbMenuItem,
+    MbToolbar,
+    MbToolbarButton,
     CustomEmojiPipe,
     MbNotice,
     MbPostActions,
@@ -431,6 +435,12 @@ export class StatusCard {
     }
   }
 
+  // i18n statusCard.audioActions: Audio actions
+  readonly radioQueue = input(false);
+  readonly radioSources = input<ExternalMedia[]>([]);
+  readonly playAudio = output<void>();
+  readonly listenRadio = output<ExternalMedia>();
+  readonly externalHosts = viewChildren(ExternalPlayerHost);
   readonly showMedia = input(true);
   // i18n statusCard.openInRadio: Open in Radio
   readonly radioPost = computed(() => {

@@ -9,7 +9,7 @@ import { TranslocoService } from '@jsverse/transloco';
 import korean from '../../../public/i18n/ko.json';
 import { FeatureFlags } from '../feature-flags';
 import { Signal, WritableSignal } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, RouterLink } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { ClientPrefs } from '../client-prefs';
@@ -246,6 +246,14 @@ describe('StatusCard', () => {
         (a) => a.textContent?.includes('Open in Radio'),
       );
     expect(new URL(link()!.href).searchParams.get('post')).toBe(status.url);
+    const visible = fixture.nativeElement.querySelector(
+      'mb-toolbar.audio-toolbar button[mbToolbarButton][routerLink="/radio"]',
+    ) as HTMLAnchorElement;
+    expect(visible.textContent).toContain('Open in Radio');
+    const route = fixture.debugElement
+      .query(By.css('mb-toolbar.audio-toolbar button[routerLink]'))
+      .injector.get(RouterLink);
+    expect(route.queryParams).toEqual({ post: status.url });
     fixture.componentRef.setInput('status', { ...status, visibility: 'private' });
     fixture.detectChanges();
     expect(link()).toBeUndefined();

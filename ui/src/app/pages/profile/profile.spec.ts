@@ -90,6 +90,28 @@ describe('self profile local actions', () => {
     return fixture;
   }
 
+  it.each([true, false])(
+    'opens a Mastodon profile in Radio with its qualified account (anonymous=%s)',
+    (anonymous) => {
+      const fixture = setUp(anonymous);
+      fixture.componentInstance['account'].set({
+        ...friend,
+        acct: 'MaQuest',
+        username: 'MaQuest',
+        url: 'https://djs.social/@MaQuest',
+      });
+      fixture.detectChanges();
+      const link = fixture.nativeElement.querySelector(
+        'a[mbMenuItem][href^="/radio?"]',
+      ) as HTMLAnchorElement;
+      expect(link.textContent).toContain('Open in Radio');
+      expect(new URL(link.href).searchParams.get('acct')).toBe('MaQuest@djs.social');
+      fixture.componentInstance['isBluesky'].set(true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('a[href^="/radio?"]')).toBeNull();
+    },
+  );
+
   it.each(['following', 'followers'] as const)(
     'opens the %s badge destination and follows Back to posts',
     (tab) => {

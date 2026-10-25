@@ -1,9 +1,8 @@
 @if (player.current(); as track) {
   <section tabindex="0" (keydown)="key($event)" [attr.aria-label]="'radio.title' | transloco">
-    <div class="toolbar">
+    <mb-toolbar density="compact" embedded [label]="'radio.title' | transloco">
       <button
-        mbButton
-        variant="outline"
+        mbToolbarButton
         type="button"
         (click)="player.previous()"
         [disabled]="player.selected() === 0"
@@ -11,20 +10,20 @@
         {{ 'radio.previous' | transloco }}
       </button>
       <button
-        mbButton
+        mbToolbarButton
         type="button"
         (click)="player.toggle()"
         [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
       >
         {{ (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco }}
       </button>
-      <button mbButton variant="outline" type="button" (click)="player.next()">
+      <button mbToolbarButton type="button" (click)="player.next()">
         {{ 'radio.next' | transloco }}
       </button>
-      <button mbButton variant="outline" type="button" (click)="toggleFullscreen()">
+      <button mbToolbarButton type="button" (click)="toggleFullscreen()">
         {{ (fullscreen() ? 'radio.exitFullscreen' : 'radio.fullscreen') | transloco }}
       </button>
-    </div>
+    </mb-toolbar>
     <p role="status">
       {{
         'radio.position'

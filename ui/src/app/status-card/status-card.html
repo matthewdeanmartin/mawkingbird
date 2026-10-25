@@ -507,7 +507,7 @@
           </button>
         } @else {
           @for (source of externalPlayers(); track source.key) {
-            <app-external-player [source]="source" />
+            <app-external-player [source]="source" [toolbar]="true" />
           }
         }
       }
@@ -523,6 +523,57 @@
             </select>
           </label>
         </div>
+      }
+      @if (
+        showMedia() &&
+        !cwCollapsed() &&
+        !mediaBlurred() &&
+        (radioQueue() || radioPost() || externalHosts().length)
+      ) {
+        <mb-toolbar
+          density="compact"
+          embedded
+          class="audio-toolbar"
+          [label]="'statusCard.audioActions' | transloco"
+          (click)="$event.stopPropagation()"
+        >
+          @if (radioQueue()) {
+            <button mbToolbarButton (click)="playAudio.emit()">
+              {{
+                'radio.playPost'
+                  | transloco: { author: display.account.display_name || display.account.acct }
+              }}
+            </button>
+          }
+          @for (source of radioSources(); track source.key) {
+            <button mbToolbarButton (click)="listenRadio.emit(source)">
+              {{ 'radio.listenProvider' | transloco: { provider: source.label } }}
+            </button>
+          }
+          @if (radioPost(); as postUrl) {
+            <button mbToolbarButton routerLink="/radio" [queryParams]="{ post: postUrl }">
+              {{ 'statusCard.openInRadio' | transloco }}
+            </button>
+          }
+          @for (host of externalHosts(); track host.source().key) {
+            @if (host.source().embed) {
+              <button
+                mbToolbarButton
+                [disabled]="host.loading()"
+                (click)="host.active() ? host.close() : host.load()"
+              >
+                {{
+                  host.active()
+                    ? ('external.close' | transloco)
+                    : ('external.load' | transloco: { provider: host.source().label })
+                }}
+              </button>
+            }
+            <button mbToolbarButton (click)="host.openOriginal()">
+              {{ 'external.open' | transloco: { provider: host.source().label } }}
+            </button>
+          }
+        </mb-toolbar>
       }
       <mb-post-actions
         density="compact"

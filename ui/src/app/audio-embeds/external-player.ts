@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { MbButton } from '../design-system/button/button';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Playback } from '../video-player/playback';
 import { ExternalMedia } from './providers';
 import { connectWidget, WidgetController, WidgetState } from './widget-api';
@@ -29,13 +29,9 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
 
 @Component({
   selector: 'app-external-player-controls',
-  imports: [TranslocoPipe, MbButton],
+  imports: [TranslocoPipe, MbToolbar, MbToolbarButton],
   template: `
-    @if (!activated()) {
-      <button mbButton variant="outline" type="button" (click)="activated.set(true)">
-        {{ 'external.load' | transloco: { provider: source().label } }}
-      </button>
-    } @else {
+    @if (activated()) {
       <iframe
         #frame
         [src]="safeSource()"
@@ -45,17 +41,27 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
         referrerpolicy="strict-origin-when-cross-origin"
         (error)="failed.set(true)"
       ></iframe>
-      <button mbButton size="small" variant="outline" type="button" (click)="close()">
-        {{ 'external.close' | transloco }}
-      </button>
     }
-    <p>{{ 'external.notice' | transloco: { provider: source().label } }}</p>
+    @if (!hideActions()) {
+      <mb-toolbar density="compact" embedded [label]="source().label">
+        <button mbToolbarButton (click)="activated() ? close() : activated.set(true)">
+          {{
+            activated()
+              ? ('external.close' | transloco)
+              : ('external.load' | transloco: { provider: source().label })
+          }}
+        </button>
+        <button mbToolbarButton (click)="openOriginal()">
+          {{ 'external.open' | transloco: { provider: source().label } }}
+        </button>
+      </mb-toolbar>
+    }
+    @if (activated() || !hideActions()) {
+      <p>{{ 'external.notice' | transloco: { provider: source().label } }}</p>
+    }
     @if (failed()) {
       <p role="alert">{{ 'external.failed' | transloco }}</p>
     }
-    <a [href]="source().url" target="_blank" rel="noopener noreferrer">{{
-      'external.open' | transloco: { provider: source().label }
-    }}</a>
   `,
   styles: `
     :host {
@@ -74,6 +80,10 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
   host: { '(click)': '$event.stopPropagation()' },
 })
 export class ExternalPlayer {
+  readonly hideActions = input(false);
+  openOriginal(): void {
+    window.open(this.source().url, '_blank', 'noopener,noreferrer');
+  }
   readonly source = input.required<ExternalMedia>();
   readonly activate = input(false);
   readonly managed = input(false);

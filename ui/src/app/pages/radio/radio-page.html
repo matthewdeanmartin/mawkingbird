@@ -73,6 +73,12 @@
       (checkedChange)="changeNativeOnly($event)"
     />
     @if (started()) {
+      @if (!resolving() && !scan.loading() && !scan.exhausted() && !failed() && scanReady()) {
+        <button mbButton variant="outline" type="button" (click)="scan.more()">
+          {{ 'radio.more' | transloco }}
+        </button>
+      }
+
       <p role="status">
         {{
           'radio.progress' | transloco: { scanned: scan.scanned(), matches: scan.posts().length }
@@ -92,9 +98,6 @@
         <p>{{ 'radio.exhausted' | transloco }}</p>
       } @else if (!failed() && scanReady()) {
         <p>{{ 'radio.paused' | transloco }}</p>
-        <button mbButton variant="outline" type="button" (click)="scan.more()">
-          {{ 'radio.more' | transloco }}
-        </button>
       }
     } @else {
       <mb-content-state [title]="'radio.empty' | transloco" />
@@ -106,24 +109,13 @@
       }
     }
     @for (post of scan.posts(); track post.id) {
-      @if (canQueue(post)) {
-        <button mbButton variant="outline" type="button" (click)="playPost(post)">
-          {{
-            'radio.playPost' | transloco: { author: post.account.display_name || post.account.acct }
-          }}
-        </button>
-      }
-      @for (source of player.radioSources(post); track source.key) {
-        <button
-          mbButton
-          variant="outline"
-          type="button"
-          (click)="player.chooseExternal(post, source)"
-        >
-          {{ 'radio.listenProvider' | transloco: { provider: source.label } }}
-        </button>
-      }
-      <app-status-card [status]="post" />
+      <app-status-card
+        [status]="post"
+        [radioQueue]="canQueue(post)"
+        [radioSources]="player.radioSources(post)"
+        (playAudio)="playPost(post)"
+        (listenRadio)="player.chooseExternal(post, $event)"
+      />
     }
   }
 </section>
