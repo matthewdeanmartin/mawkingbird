@@ -1,0 +1,59 @@
+/* Starter-kit pages; layout and type come from features.css. */
+.kit-intro {
+  padding: 40px 0 16px;
+}
+.kit-list,
+.people,
+.kit-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.kit-list li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.kit-list p {
+  margin: 4px 0 0;
+}
+.kit-list a {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.kit-count,
+.handle,
+.kit-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.kit-list .kit-count {
+  margin-left: 10px;
+}
+.people li {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.people img {
+  border-radius: 50%;
+  background: var(--border);
+  object-fit: cover;
+}
+.people a {
+  font-weight: 700;
+}
+.people .handle {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.people p {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.kit-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}

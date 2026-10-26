@@ -13,10 +13,12 @@ import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
 import { audienceRoutes } from './pages/features/audience-routes';
+import { followRoutes } from './pages/features/follow-routes';
 import { ABOUT_DESCRIPTION, BLOG_DESCRIPTION, FUNDING_DESCRIPTION } from './seo';
 
 export const routes: Routes = [
   ...audienceRoutes,
+  ...followRoutes,
   {
     path: 'features',
     title: 'Mastodon, reading and writing features',

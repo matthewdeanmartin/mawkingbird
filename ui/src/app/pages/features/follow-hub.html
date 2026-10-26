@@ -1,0 +1,48 @@
+<main class="features" lang="en">
+  <header>
+    <a mbContentLink routerLink="/features">Mawkingbird · Features</a>
+    <a mbButton routerLink="/">Open the app</a>
+  </header>
+  <div class="intro">
+    <div>
+      <p class="eyebrow">Starter kits</p>
+      <h1>Who to follow on Mastodon</h1>
+      <p>
+        Mastodon shows you posts from the people you follow, in order, without an algorithm filling
+        the gaps. That makes a brand-new account quiet. A starter kit is a short, hand-picked list
+        of people around one interest, so your Home feed has something to read on day one.
+      </p>
+      <p>
+        Everyone listed asked their own server to make them discoverable. You can try a kit before
+        you have an account: Mawkingbird keeps those follows in this browser.
+      </p>
+    </div>
+    <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
+  </div>
+  <section>
+    <h2>Pick an interest</h2>
+    <ul class="kit-list">
+      @for (kit of kits; track kit.slug) {
+        <li>
+          <a mbContentLink [routerLink]="['/follow', kit.slug]">{{ kit.title }}</a>
+          <span class="kit-count">{{ kit.accounts.length }} people</span>
+          <p>{{ kit.blurb }}</p>
+        </li>
+      }
+    </ul>
+  </section>
+  <aside>
+    <h2>New to Mastodon?</h2>
+    <p>
+      Short guides explain servers, handles and following, one task at a time. Start with
+      <a mbContentLink href="/help/start/welcome/">Welcome to Mawkingbird</a> or read
+      <a mbContentLink href="/help/finding-people/starter-kits/">how starter kits work</a>.
+    </p>
+  </aside>
+  <footer>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter / X</a>
+    <a mbContentLink routerLink="/for/bluesky">For Bluesky users</a>
+    <a mbContentLink href="/help/">Help</a>
+  </footer>
+</main>

@@ -174,6 +174,9 @@ class HelpBuilder:
         self.base = base
         self.noindex = noindex
         self.by_source = {page.source.as_posix(): page for page in pages}
+        # The app this help belongs to: /help/ -> /, /canary/help/ -> /canary/.
+        parent = PurePosixPath(base).parent.as_posix()
+        self.app_base = parent if parent.endswith("/") else parent + "/"
         self.current: Page = pages[0]
 
     def slug_for(self, source: PurePosixPath) -> str:
@@ -254,6 +257,7 @@ class HelpBuilder:
         e = html.escape
         crumb = f'<p class="eyebrow">{e(page.section)}</p>' if page.section else ""
         nav = self._nav(page)
+        app = self.app_base
         return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -273,15 +277,15 @@ class HelpBuilder:
 <meta property="og:image" content="{SHARE_IMAGE}">
 <meta property="og:image:alt" content="The hand-drawn Mawkingbird">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="32x32" href="{app}favicon-32x32.png">
 <link rel="stylesheet" href="{self.base}help.css">
 </head>
 <body>
 <a class="skip" href="#guide">Skip to guide</a>
 <header class="topbar"><div class="topbar-inner">
-<a class="brand" href="/"><img class="brand-mark" src="/mockingbird_hand_104.png" width="36" height="36" alt="">Mawkingbird</a>
+<a class="brand" href="{app}"><img class="brand-mark" src="{app}mockingbird_hand_104.png" width="36" height="36" alt="">Mawkingbird</a>
 <a class="section-name" href="{self.base}">Help</a>
-<a class="open-app" href="/">Open the app</a>
+<a class="open-app" href="{app}">Open the app</a>
 </div></header>
 <div class="layout">
 <nav class="rail" aria-label="Help topics">
@@ -301,9 +305,9 @@ class HelpBuilder:
 </main>
 </div>
 <footer class="site-footer">
-<a href="/features/">Features</a>
-<a href="/blog/">Blog</a>
-<a href="/about/">About</a>
+<a href="{app}features/">Features</a>
+<a href="{app}blog/">Blog</a>
+<a href="{app}about/">About</a>
 <a href="https://github.com/matthewdeanmartin/mawkingbird" rel="noopener">Source code</a>
 </footer>
 </body>

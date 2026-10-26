@@ -1,0 +1,63 @@
+<main class="features" lang="en">
+  <header>
+    <a mbContentLink routerLink="/follow">Mawkingbird · Who to follow</a>
+    <a mbButton routerLink="/">Open the app</a>
+  </header>
+  @if (kit(); as kit) {
+    <div class="kit-intro">
+      <p class="eyebrow">Mastodon starter kit</p>
+      <h1>{{ kit.heading }}</h1>
+      <p>{{ kit.blurb }}</p>
+      <div class="feature-actions">
+        <a mbButton [routerLink]="['/collections/starter', kit.slug]">
+          Follow this kit in Mawkingbird
+        </a>
+        <a mbContentLink href="/help/finding-people/starter-kits/">How starter kits work</a>
+      </div>
+      <p class="kit-note">
+        No account yet? You can still follow the kit; the follows are kept in this browser.
+      </p>
+    </div>
+    <section>
+      <h2>People in this kit</h2>
+      <ul class="people">
+        @for (person of kit.accounts; track person.handle) {
+          <li>
+            <img [src]="person.avatar" width="48" height="48" alt="" loading="lazy" />
+            <div>
+              <a mbContentLink [href]="person.url" rel="noopener">{{ person.name }}</a>
+              <span class="handle">{{ person.handle }}</span>
+              @if (person.bio) {
+                <p>{{ person.bio }}</p>
+              }
+              <span class="kit-count">{{ person.followers | number }} followers</span>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  } @else {
+    <div class="kit-intro">
+      <h1>Starter kit not found</h1>
+      <p>This kit may have been renamed or retired.</p>
+    </div>
+  }
+  <section>
+    <h2>More starter kits</h2>
+    <ul class="kit-links">
+      @for (other of kits; track other.slug) {
+        @if (other.slug !== kit()?.slug) {
+          <li>
+            <a mbContentLink [routerLink]="['/follow', other.slug]">{{ other.title }}</a>
+          </li>
+        }
+      }
+    </ul>
+  </section>
+  <footer>
+    <a mbContentLink routerLink="/follow">All starter kits</a>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter / X</a>
+    <a mbContentLink href="/help/">Help</a>
+  </footer>
+</main>

@@ -12,6 +12,7 @@ import {
 } from './app/seo';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
 import { audienceRoutes } from './app/pages/features/audience-routes';
+import { followRoutes } from './app/pages/features/follow-routes';
 
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
@@ -40,6 +41,7 @@ export default (context: BootstrapContext) =>
       providers: [
         provideRouter([
           ...audienceRoutes,
+          ...followRoutes,
           { path: '', pathMatch: 'full', component: ClientEntry },
           {
             path: 'features',
@@ -60,6 +62,15 @@ export default (context: BootstrapContext) =>
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
+            { path: 'follow', renderMode: RenderMode.Prerender },
+            {
+              path: 'follow/:slug',
+              renderMode: RenderMode.Prerender,
+              getPrerenderParams: async () =>
+                (await import('./app/pages/features/follow-kits')).PUBLIC_KITS.map(({ slug }) => ({
+                  slug,
+                })),
+            },
             ...audienceRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,

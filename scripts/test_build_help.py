@@ -88,6 +88,10 @@ class BuildHelpTest(unittest.TestCase):
         self.assertIn('content="noindex, follow"', self.read("index.html"))
         self.assertIn('href="/canary/help/start/welcome/"', self.read("index.html"))
         self.assertFalse((self.out / "sitemap.xml").exists())
+        home = self.read("index.html")
+        self.assertIn('<a class="open-app" href="/canary/">', home)
+        self.assertIn('href="/canary/features/"', home)
+        self.assertNotIn('href="/features/"', home)
 
     def test_guide_missing_from_nav_fails(self) -> None:
         (self.docs / "planning.md").write_text("# Internal\n\nNotes.\n", encoding="utf-8")

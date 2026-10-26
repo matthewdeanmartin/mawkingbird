@@ -14,6 +14,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n firstRun.bluesky: Bluesky
 // i18n firstRun.mastodon: Mastodon
 // i18n firstRun.back: Back
+// i18n firstRun.featuresLink: What can it do? ↗
+// i18n firstRun.helpLink: Read the guides ↗
 
 /** Which network a visitor picked, or that they declined to sign in at all. */
 export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky';

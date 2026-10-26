@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 
@@ -400,6 +400,65 @@ try {
       assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
       await context.close();
     }
+  }
+  // Starter-kit pages: static and client copies agree, and the follow-all link
+  // reaches the in-app kit for a fresh visitor instead of the Home dispatcher.
+  const kitSlug = (await readdir(path.join(root, 'follow'), { withFileTypes: true })).find(
+    (entry) => entry.isDirectory(),
+  ).name;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled });
+    await context.route('**/vendor/count.js', (route) =>
+      route.fulfill({ contentType: 'text/javascript', body: '' }),
+    );
+    // Avatars and the anonymous shell stay off real servers.
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [url, canonical] of [
+      [`${origin}/follow/`, 'https://mawkingbird.com/follow/'],
+      [`${origin}/follow/${kitSlug}/`, `https://mawkingbird.com/follow/${kitSlug}/`],
+    ]) {
+      await page.goto(url);
+      await page.getByRole('heading', { level: 1 }).waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), canonical);
+      assert.equal(
+        await page.locator('meta[name="robots"]').getAttribute('content'),
+        'index, follow',
+      );
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${url} has no overflow at ${width}px`,
+        );
+      }
+      await page.screenshot({
+        path: path.join(
+          results,
+          `seo-${url.includes(kitSlug) ? 'follow-kit' : 'follow'}-${javaScriptEnabled ? 'client' : 'static'}.png`,
+        ),
+        fullPage: true,
+      });
+    }
+    const heading = await page.getByRole('heading', { level: 1 }).textContent();
+    assert.match(heading, /on Mastodon: \d+ accounts to follow/);
+    assert.ok((await page.title()).startsWith(heading.trim()));
+    if (javaScriptEnabled) {
+      await page.getByRole('link', { name: 'Follow this kit in Mawkingbird' }).click();
+      await page.waitForURL(`${origin}/collections/starter/${kitSlug}`);
+      await page.waitForTimeout(500);
+      assert.equal(new URL(page.url()).pathname, `/collections/starter/${kitSlug}`);
+    }
+    assert.deepEqual(errors, [], `starter-kit pages have no runtime errors`);
+    await context.close();
   }
   console.log(
     'SEO browser checks passed with JavaScript enabled and disabled, desktop and mobile.',

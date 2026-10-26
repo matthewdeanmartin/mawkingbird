@@ -29,12 +29,15 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: ui/package-lock.json
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - name: Stamp build info
         run: node ui/scripts/gen-build-info.mjs
       - name: Build Canary
         run: make mockingbird MOCKINGBIRD_BASE_HREF=/canary/
       - name: Stamp Canary Bluesky OAuth metadata
         run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/canary/
+      - name: Build /canary/help/ preview (noindex)
+        run: make help-site HELP_ARGS="--base /canary/help/ --noindex"
       - name: Add canary marker
         run: printf '%s\n' "$GITHUB_SHA" > ui/dist-mockingbird/browser/canary-commit.txt
       - name: Publish /canary/ to gh-pages
@@ -65,12 +68,15 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: ui/package-lock.json
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - name: Stamp build info
         run: node ui/scripts/gen-build-info.mjs
       - name: Build /test/
         run: make mockingbird MOCKINGBIRD_BASE_HREF=/test/
       - name: Stamp test Bluesky OAuth metadata
         run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/test/
+      - name: Build /test/help/ preview (noindex)
+        run: make help-site HELP_ARGS="--base /test/help/ --noindex"
       - name: Add test marker
         run: printf '%s\n' "$GITHUB_SHA" > ui/dist-mockingbird/browser/test-commit.txt
       - name: Verify this really is a test build

@@ -808,8 +808,12 @@ describe('Shell zen modes', () => {
       'Server rules & terms · Privacy',
       'Source · MIT License',
       'Report a bug · Fail whale',
-      'Discover · ? Keyboard',
+      'Discover · Help · ? Keyboard',
     ]);
+    // The static help site is outside the Angular app: a base-relative plain href.
+    expect(footer.querySelector('a[href="help/"]:not([routerLink])')?.textContent?.trim()).toBe(
+      'Help',
+    );
     expect(
       footer.querySelector('a[href="https://github.com/matthewdeanmartin/mawkingbird/"]'),
     ).not.toBeNull();

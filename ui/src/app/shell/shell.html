@@ -321,6 +321,9 @@
               <!-- Docs & grab-bag -->
               <div class="menu-divider"></div>
               <a routerLink="/blog">{{ 'shell.menu.docs' | transloco }}</a>
+              <!-- The static help site lives outside the Angular app, so a plain href
+               relative to <base href> (/help/ in production, /canary/help/ on canary). -->
+              <a href="help/">{{ 'shell.menu.help' | transloco }}</a>
               @if (!isCanary) {
                 <!-- Relative to <base href>: /canary/ on the custom domain and
                  /mawkingbird/canary/ on the github.io fallback. -->

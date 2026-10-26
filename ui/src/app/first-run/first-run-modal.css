@@ -89,3 +89,22 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.first-run-links {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--muted, #6b7785);
+}
+
+.first-run-links a {
+  color: var(--muted, #6b7785);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.first-run-links a:hover {
+  color: var(--accent);
+}

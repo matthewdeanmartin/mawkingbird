@@ -28,6 +28,17 @@
           {{ 'firstRun.continueAnonymous' | transloco }}
         </button>
       </div>
+      <!--
+        New tabs, so the two buttons stay the only ways out of this modal and the
+        preview behind it survives. Plain hrefs relative to <base href>.
+      -->
+      <p class="first-run-links">
+        <a href="features/" target="_blank" rel="noopener">{{
+          'firstRun.featuresLink' | transloco
+        }}</a>
+        <span aria-hidden="true">·</span>
+        <a href="help/" target="_blank" rel="noopener">{{ 'firstRun.helpLink' | transloco }}</a>
+      </p>
     } @else {
       <h2 id="first-run-title">{{ 'firstRun.accountQuestion' | transloco }}</h2>
       <p class="first-run-pitch">{{ 'firstRun.pickNetwork' | transloco }}</p>

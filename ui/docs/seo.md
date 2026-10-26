@@ -62,7 +62,9 @@ Utilities default to `noindex, follow` after client navigation. The static SPA
 fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
 contains `/`, `/features/`, the five audience URLs and the three project pages
-below; the help site publishes its own. Do not add account feeds or arbitrary remote
+below, then `/follow/` and one URL per published starter kit, which
+`prepare-seo-index.mjs` appends from the prerendered output. The help site
+publishes its own. Do not add account feeds or arbitrary remote
 posts to the sitemap. Do not use robots.txt blocking as a substitute for noindex.
 When adding another public page, keep its client route, server route, sitemap
 entry and HTML checks in sync.
@@ -85,6 +87,26 @@ into `/home`, so the article vanished. `authGuard` now enters Anonymous for
 profiles and tags. Such a visitor skips the welcome modal, exactly like someone
 arriving on a shared post link.
 
+## Starter kits: /follow/
+
+`/follow/` and `/follow/<slug>/` are public pages built from the hand-picked
+bundled kits (`bundled-starter-kits.generated.ts`) by `pages/features/follow-kits.ts`.
+They are routed outside the shell like `/features`, prerendered once per kit
+(`getPrerenderParams` in `main.server.ts`), and their per-kit titles and
+descriptions come from lazy resolvers so the data stays out of the startup bundle
+(`report-bundle.mjs` enforces this).
+
+Consent: a person appears only when their home-instance snapshot says
+`discoverable: true` and neither `noindex: true` nor `indexable: false`. That is
+stricter than in-app listing, because these pages exist for search engines. A
+kit with fewer than three such people gets no page. The larger multilingual
+starter catalogue and snapshots of other people's collections are never
+published here: the catalogue deliberately does not act on `noindex`, and its
+UI snapshot does not carry the flags. Publishing it would need both changed.
+
+"Follow this kit in Mawkingbird" opens `/collections/starter/<slug>`, which
+`authGuard` lets a fresh visitor reach anonymously.
+
 ## Help site: /help/
 
 The guides in `/docs` are published twice: to Read the Docs (mkdocs) and as
@@ -97,13 +119,18 @@ column widths: topics over the left rail, the guide across the centre column and
 right rail. Production runs it from `make mockingbird MOCKINGBIRD_SEO=true`;
 `make help-site` and `make help-site-test` run it locally (from the repository
 root). It is a real directory, so GitHub Pages serves it directly and it needs
-no entry in the 404 shim's `SUBPATHS`. Canary and test do not build it yet.
+no entry in the 404 shim's `SUBPATHS`. Canary and test build previews at
+`/canary/help/` and `/test/help/` with `--noindex` and no sitemap; links back to
+the app stay inside that deployment.
 
 The build fails when a file in `docs/` is missing from the `mkdocs.yml` nav, a
 nav entry has no file, an internal link targets a missing guide, or two guides
 share a title. Keep `docs/` for end-user guides only; internal planning belongs
 in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
-`routerLink`, because `/help/` is outside the Angular app.
+`routerLink`, because `/help/` is outside the Angular app. They are relative
+(`help/`) so `<base href>` sends canary to its own preview. The footer, the More
+menu and the welcome modal link to it; the modal's links open new tabs so its
+two answers stay the only way out.
 
 ## Share image, verification and deployment checks
 

@@ -16,9 +16,12 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicRadio =
     link.pathname === '/radio' &&
     !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
-  // The project's own pages are prerendered for search engines. Sending them to
-  // `/` would make the dispatcher land a fresh visitor (or crawler) on /home.
-  const projectPage = /^\/(about|funding|blog|credits)\/?$/.test(link.pathname);
+  // The project's own pages are prerendered for search engines, and the public
+  // starter-kit pages link to the in-app kit. Sending either to `/` would make the
+  // dispatcher land a fresh visitor (or crawler) on /home instead.
+  const projectPage = /^\/(about|funding|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(
+    link.pathname,
+  );
   if (
     publicRadio ||
     projectPage ||

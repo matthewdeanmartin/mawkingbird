@@ -117,6 +117,20 @@ describe('FirstRunModal', () => {
     expect(labels).not.toContain('skip');
   });
 
+  it('offers features and help only in new tabs, so the buttons stay the only exits', () => {
+    const { fixture, chosen } = open();
+    const links = Array.from(
+      fixture.nativeElement.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>,
+    );
+
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(['features/', 'help/']);
+    for (const link of links) {
+      expect(link.target).toBe('_blank');
+      expect(link.rel).toContain('noopener');
+    }
+    expect(chosen).toEqual([]);
+  });
+
   it('is a labelled modal dialog', () => {
     const { fixture } = open();
     const host = fixture.nativeElement as HTMLElement;

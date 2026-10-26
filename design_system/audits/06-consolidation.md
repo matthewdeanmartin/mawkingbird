@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Public starter-kit pages and help links, 2026-10-26
+
+Reviewed 1,191 source files and 249 candidate files. Added two candidates:
+`pages/features/follow-hub.html` and `follow-kit.html`, the prerendered `/follow/`
+pages. Both use MbButton and MbContentLink over the feature-page layout plus a
+small list stylesheet; no control is restyled. The footer gains a plain Help link
+(line shifts only, no new pattern). The welcome modal's two new-tab links are
+native anchors styled like the footer's, not buttons, so the two answers remain
+its only controls. The More menu's Help row reuses the existing menu link style.
+
 ## Prerendered project pages, 2026-10-26
 
 The prerendered project pages (About, Funding, Blog) add one candidate template:

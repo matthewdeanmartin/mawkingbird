@@ -43,6 +43,8 @@ describe('authGuard', () => {
     '/funding/',
     '/blog',
     '/credits',
+    '/collections/starter',
+    '/collections/starter/infosec',
   ])('opens public content anonymously on a fresh browser: %s', (url) => {
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
     expect(result).toBe(true);
@@ -67,7 +69,7 @@ describe('authGuard', () => {
     expect(TestBed.inject(Auth).isAnonymous).toBe(false);
   });
 
-  it.each(['/aboutness', '/blog/drafts', '/plans'])(
+  it.each(['/aboutness', '/blog/drafts', '/plans', '/collections/123', '/collections/starter/a/b'])(
     'keeps paths that only resemble project pages private: %s',
     (url) => {
       const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));

@@ -17,9 +17,11 @@ mockingbird: install
 	$(if $(filter true,$(MOCKINGBIRD_SEO)),"$(MAKE)" help-site,)
 # The help site is static HTML built from docs/ with mkdocs.yml's nav; see
 # scripts/build_help.py. Production builds it into the published root.
+# Previews: HELP_ARGS="--base /canary/help/ --noindex".
 HELP_OUT ?= ui/dist-mockingbird/browser/help
+HELP_ARGS ?=
 help-site:
-	uv run --locked --no-build scripts/build_help.py --out "$(HELP_OUT)"
+	uv run --locked --no-build scripts/build_help.py --out "$(HELP_OUT)" $(HELP_ARGS)
 help-site-test:
 	uv run --locked --no-build scripts/test_build_help.py
 test:

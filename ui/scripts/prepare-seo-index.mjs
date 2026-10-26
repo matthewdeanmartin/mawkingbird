@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 
 // Angular's static output names its client-rendered entry index.csr.html.
 // GitHub Pages needs index.html at /. Preserve the client entry and its head
@@ -22,9 +22,23 @@ const fallback = `<noscript>
       <li><a href="/for/instagram/">Photo viewing</a></li>
       <li><a href="/for/creators/">Writing and photography</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
+      <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
       <li><a href="/about/">Why Mawkingbird exists</a></li>
       <li><a href="/blog/">Blog</a></li>
     </ul>
   </main>
 </noscript>`;
 await writeFile(new URL('index.html', root), html.replace('</body>', `${fallback}</body>`));
+
+// Starter-kit pages follow the bundled kits, which change with catalogue
+// refreshes, so their sitemap entries come from what was actually prerendered.
+const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort();
+const sitemapUrl = new URL('sitemap.xml', root);
+const entries = ['follow/', ...kits.map((slug) => `follow/${slug}/`)]
+  .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc></url>`)
+  .join('\n');
+const sitemap = await readFile(sitemapUrl, 'utf8');
+await writeFile(sitemapUrl, sitemap.replace('</urlset>', `${entries}\n</urlset>`));

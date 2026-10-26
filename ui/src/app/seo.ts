@@ -12,6 +12,8 @@ export const ABOUT_DESCRIPTION =
   'Why Mawkingbird exists: a 2018-Twitter-style client for Mastodon, Bluesky and RSS with a finite feed, an honest algorithm, bookmarks and analytics.';
 export const FUNDING_DESCRIPTION =
   'How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.';
+export const FOLLOW_DESCRIPTION =
+  'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 

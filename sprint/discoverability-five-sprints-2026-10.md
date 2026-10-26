@@ -1,7 +1,8 @@
 # Discoverability: five-sprint plan
 
-Created 2026-10-26. Sprint 1 implemented and validated locally (evidence below);
-Sprints 2–5 are planned. Nothing has been deployed by this work.
+Created 2026-10-26. Sprint 1 implemented and pushed by the owner on 2026-10-26.
+Sprint 2 implemented and validated locally (evidence below); Sprints 3–5 are
+planned.
 
 ## Where we start
 
@@ -60,9 +61,18 @@ useful page that leads into the app.
 | ID | Work | Acceptance |
 | --- | --- | --- |
 | S2-1 | Prerender `/follow/` (hub) and `/follow/<slug>/` for each bundled starter kit (10 today), at a public URL outside the shell, like `/for/*`. Each page lists the kit's people with name, handle, short plain-text bio and profile link, and offers "Follow them all in Mawkingbird" (`/collections/starter/<slug>`). | Unique title/description per kit, canonical, sitemap entries, static and client SEO checks. Kit data stays out of the root bundle. |
-| S2-2 | Respect opt-outs at build time: exclude any account whose snapshot has `noindex: true`, `discoverable: false/null` or `indexable: false/null`, and fail the build if a kit would drop below a minimum size. Never publish snapshots of other people's collections. | All 65 accounts are currently opted in; a test proves an opted-out account is omitted. Consent rules in `ui/docs/starter-catalog.md` are referenced, not duplicated. |
+| S2-2 | Respect opt-outs at build time: list a person only if `discoverable: true` and neither `noindex: true` nor `indexable: false`. A kit left with fewer than three people gets no page (skipped, not a build failure, so a monthly consent refresh cannot break deploys). Never publish the catalogue or snapshots of other people's collections. | All 65 accounts currently qualify; tests prove opted-out people and undersized kits are omitted. |
 | S2-3 | Link Help from the app: footer, More menu and the welcome modal (a "What is Mawkingbird?" link to `/features/` and "Help" to `/help/`). Plain `href`s, not `routerLink`. | Links appear in the rendered DOM of `/home`, ahead of the feed's third-party links; the modal stays a two-button decision. |
 | S2-4 | Build Help for canary at `/canary/help/` with `--noindex` so guide changes can be previewed. | Canary help pages are `noindex` and have no sitemap. |
+
+### Owner decision raised by Sprint 2
+
+The 128-pack multilingual starter catalogue (21 languages) would be the larger
+search opportunity, but it is not published. Its consent gate lists people for
+in-app following and deliberately ignores `noindex`/`indexable`; its own site is
+`noindex, nofollow`; and the UI snapshot does not carry the flags. Publishing it
+would need the importer to carry those flags and the stricter search rule applied,
+plus a decision that the catalogue is reviewed enough to be indexed.
 
 ## Sprint 3 — Pages for the three audiences
 
@@ -131,3 +141,31 @@ uses 3.13 and is unaffected.
 
 Not run: the wheel-backed `make test-integration` suite and `make design-verify`
 (no shared design widgets changed). Nothing was deployed.
+
+## Sprint 2 evidence
+
+Validated locally on 2026-10-26 with Node 24.18.0, Git Bash and Make:
+
+- `/follow/` plus 10 kit pages (65 people, all passing the search-listing rule)
+  prerender alongside the Sprint 1 pages: 20 routes in total. The built
+  `sitemap.xml` lists 21 URLs; the build check compares it with the prerendered
+  kit directories in both directions.
+- `cd ui && make test` passed: design inventory 1,191 files, 249 candidates, all
+  dispositioned; runtime manifest 8,303 tests present, 0 missing, 0 skipped. New
+  specs cover the consent filter, undersized kits, bio cleanup, description length,
+  the guard for `/collections/starter`, the footer Help link and the modal's
+  new-tab links. The footer spec's expected row was updated for the new Help link.
+- `npm run test:seo:browser` passed, including: kit pages at 1280 and 390 px with
+  and without JavaScript; per-kit title and canonical after the app boots; and a
+  fresh visitor's "Follow this kit in Mawkingbird" reaching
+  `/collections/starter/<slug>` rather than Home.
+- `npm run build:mockingbird`: initial bundle 840.41 kB (+0.77 kB, route metadata
+  and links); `report-bundle.mjs` confirms kit snapshots stay lazy.
+- Lint, format, i18n (4 new English keys, other locales fall back), subpaths,
+  storage and `git diff --check` pass. `make help-site-test` passes, including
+  preview builds whose app links stay under `/canary/`.
+- Canary and test workflows build `/canary/help/` and `/test/help/` with `noindex`
+  and no sitemap. Not exercised in Actions yet; the next main push will.
+
+Not run: `make test-integration` and `make design-verify` (no shared design
+widget changed). Nothing was deployed.

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { JSDOM } from 'jsdom';
 
@@ -16,6 +16,13 @@ const pages = [
   'funding',
   'blog',
 ];
+// One prerendered page per published starter kit; follow-kits.ts decides which.
+const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort();
+assert.ok(kitSlugs.length > 0, 'at least one starter kit is published');
+pages.push('follow', ...kitSlugs.map((slug) => `follow/${slug}`));
 const articles = new Map([
   ['about', /Why I asked a bot to create this/],
   ['funding', /Nothing below is a revenue model/],
@@ -31,7 +38,19 @@ for (const page of pages) {
     '/',
     'SEO publishing uses root base href',
   );
-  if (articles.has(page)) {
+  if (page === 'follow') {
+    assert.equal(doc.querySelectorAll('h1').length, 1);
+    for (const slug of kitSlugs)
+      assert.ok(doc.querySelector(`a[href="/follow/${slug}"]`), `hub links to ${slug}`);
+  } else if (page.startsWith('follow/')) {
+    assert.match(doc.querySelector('h1')?.textContent ?? '', /on Mastodon: \d+ accounts to follow/);
+    assert.ok(doc.querySelectorAll('.people li').length >= 3, `${page} lists its people`);
+    assert.ok(
+      doc.querySelector(`a[href="/collections/starter/${page.slice('follow/'.length)}"]`),
+      `${page} links to the in-app kit`,
+    );
+    assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
+  } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));
     assert.ok(doc.querySelector('a[href="/help/"]'), `${page} links to the help site`);

@@ -41,6 +41,13 @@ on its card. Legacy unlabelled sets and curator-authored titles retain their own
 Kit routes include language and slug, so a refresh preserves links; removed kits show
 an unavailable message in the language encoded in the link.
 
+## Public search pages
+
+The catalogue is not published to search engines. Its consent rule lists people
+for in-app following and deliberately ignores `noindex`/`indexable`, and this
+snapshot does not carry those flags. Only the hand-picked bundled kits get public
+`/follow/` pages, filtered by a stricter rule; see `ui/docs/seo.md`.
+
 ## Translation ownership
 
 - **Pack names and descriptions:** edit locale maps in
