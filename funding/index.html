@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Funding · Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.">
+    <link rel="canonical" href="https://mawkingbird.com/funding/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Funding · Mawkingbird">
+    <meta property="og:description" content="How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.">
+    <meta property="og:url" content="https://mawkingbird.com/funding/">
+    <meta property="og:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="3580">
+    <meta property="og:image:height" content="2508">
+    <meta property="og:image:alt" content="The hand-drawn Mawkingbird">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Funding · Mawkingbird">
+    <meta name="twitter:description" content="How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.">
+    <meta name="twitter:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta name="twitter:image:alt" content="The hand-drawn Mawkingbird">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-TBAVDGIW.css"><style ng-app-id="ng">[_nghost-ng-c3958944588]{display:block}.features[_ngcontent-ng-c3958944588]{max-width:960px;margin:auto;padding:32px 24px;color:var(--text)}header[_ngcontent-ng-c3958944588], footer[_ngcontent-ng-c3958944588]{display:flex;align-items:center;flex-wrap:wrap;gap:24px}header[_ngcontent-ng-c3958944588]{justify-content:space-between}.intro[_ngcontent-ng-c3958944588]{display:grid;grid-template-columns:1.5fr 1fr;align-items:center;gap:32px;padding:48px 0}.intro[_ngcontent-ng-c3958944588]   img[_ngcontent-ng-c3958944588]{width:100%;height:auto;border-radius:24px;background:var(--col-bg)}h1[_ngcontent-ng-c3958944588]{font-size:clamp(2rem,5vw,3.3rem);line-height:1.12;margin:12px 0 24px}h2[_ngcontent-ng-c3958944588]{font-size:1.65rem;line-height:1.3}p[_ngcontent-ng-c3958944588], li[_ngcontent-ng-c3958944588]{line-height:1.75}.eyebrow[_ngcontent-ng-c3958944588]{font-weight:700;color:var(--muted)}nav[_ngcontent-ng-c3958944588]{margin-block:24px}section[_ngcontent-ng-c3958944588]{padding:28px 0;border-bottom:1px solid var(--border);scroll-margin-top:24px}aside[_ngcontent-ng-c3958944588]{padding:24px;margin-block:32px;background:var(--col-bg);border:1px solid var(--border);border-radius:16px}.feature-actions[_ngcontent-ng-c3958944588]{display:flex;flex-wrap:wrap;align-items:center;gap:16px}footer[_ngcontent-ng-c3958944588]{padding-top:24px;font-size:.9rem}@media(max-width:640px){.intro[_ngcontent-ng-c3958944588]{grid-template-columns:1fr}.intro[_ngcontent-ng-c3958944588]   img[_ngcontent-ng-c3958944588]{max-width:280px;justify-self:center}}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.23" ng-server-context="ssg"><router-outlet></router-outlet><app-public-article _nghost-ng-c3958944588=""><main _ngcontent-ng-c3958944588="" lang="en" class="features"><header _ngcontent-ng-c3958944588=""><a _ngcontent-ng-c3958944588="" mbcontentlink="" routerlink="/blog" _nghost-ng-c3172328079="" href="/blog">Mawkingbird · Blog</a><a _ngcontent-ng-c3958944588="" mbbutton="" routerlink="/" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/">Open the app</a></header><article _ngcontent-ng-c3958944588=""><h1 _ngcontent-ng-c3958944588="">How Mawkingbird is funded</h1><div _ngcontent-ng-c3958944588="">
+<p><strong>Funding.</strong></p>
+<p>Mawkingbird is free and open source. Nothing below is a revenue model — it's a list of who pays for what.</p>
+<p>· I may sign up for Liberapay donations.<br>
+· Donations, grants and sponsorship are all welcome. None are in place today.<br>
+· GitHub hosting is free, hopefully forever. This would be trivial for someone to fork and host somewhere else.<br>
+· I pay for the domain out of pocket.</p>
+<p><strong>How it's built.</strong> The code is written with an LLM on three $20-a-month plans. If that bothers you, you don't have to use it. Quality is assured with an enormous number of unit tests and manual testing. Code deploys to a canary site first, then gets promoted to production. Feature flags hold back some features until the flag is enabled. At the moment, I accept merge requests from no one.</p>
+<p><strong>What things cost you.</strong></p>
+<p>· The connections cost money. You pay them directly to the third party, or use their free tier.<br>
+· Some free APIs will not work without a CORS proxy. It is not a VPN, but it is similar to one in that some of your network traffic passes through a third party.<br>
+· Connectors to the third-party Twitter API are accomplished through screen scraping. No claims are made about the legal status of screen scraping; I presume it is fair use. The Mawkingbird static client hosts no third-party content.</p>
+<p><strong>Roadmap.</strong> Possibly someday, a paid option for:</p>
+<p>· CORS proxying.<br>
+· A non-federating, accountless posting experience.<br>
+· · Possibly with integrated link shortener and paste support.</p>
+<p>These features can't be provided on a static-only website, and the free options have a lot of drawbacks.</p>
+</div><!----><!----></article><footer _ngcontent-ng-c3958944588=""><a _ngcontent-ng-c3958944588="" mbcontentlink="" routerlink="/blog" _nghost-ng-c3172328079="" href="/blog">Blog</a><a _ngcontent-ng-c3958944588="" mbcontentlink="" routerlink="/about" _nghost-ng-c3172328079="" href="/about">Design</a><a _ngcontent-ng-c3958944588="" mbcontentlink="" routerlink="/funding" _nghost-ng-c3172328079="" href="/funding">Funding</a><a _ngcontent-ng-c3958944588="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features">Features</a><a _ngcontent-ng-c3958944588="" mbcontentlink="" href="/help/" _nghost-ng-c3172328079="">Help</a></footer></main></app-public-article><!----></app-root>
+  <link rel="modulepreload" href="chunk-GWGP4MOU.js"><link rel="modulepreload" href="chunk-IS26LWKM.js"><link rel="modulepreload" href="chunk-OZFUTVSE.js"><link rel="modulepreload" href="chunk-AAJQUJWJ.js"><link rel="modulepreload" href="chunk-NDVE4GHL.js"><link rel="modulepreload" href="chunk-HF4VRXRZ.js"><link rel="modulepreload" href="chunk-ML47DYHK.js"><link rel="modulepreload" href="chunk-SJOAVRQE.js"><link rel="modulepreload" href="chunk-UIUESNCM.js"><link rel="modulepreload" href="chunk-FFZJB6FM.js"><script src="main-XZEE7UAC.js" type="module"></script>
+
+</body></html>

@@ -1,0 +1,353 @@
+/*
+ * Static help pages (scripts/build_help.py). Mirrors the app shell's geometry
+ * in ui/src/styles.css and ui/src/app/shell/shell.css so Help lines up with
+ * Home: the topic list sits over the left rail, and the guide spans the centre
+ * column plus the right rail. Keep the widths and colours below in step with
+ * those files. No JavaScript, so dark mode follows the operating system rather
+ * than the in-app theme preference.
+ */
+:root {
+  --bg: #f7f9f9;
+  --col-bg: #ffffff;
+  --border: #e1e8ed;
+  --text: #14171a;
+  --muted: #46535e;
+  --accent: #1da1f2;
+  --action: #0b4a70;
+  --hover: #eff3f4;
+  --rail-left-width: 290px;
+  --col-width: 600px;
+  --rail-right-width: 320px;
+  --layout-gap: 16px;
+  --guide-width: calc(var(--col-width) + var(--rail-right-width) + var(--layout-gap));
+  --app-font-family:
+    'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10171e;
+    --col-bg: #15202b;
+    --border: #38444d;
+    --text: #f7f9f9;
+    --muted: #a8b8c4;
+    --accent: #4fb6f5;
+    --action: #8fd0f8;
+    --hover: #1c2732;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--app-font-family);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+a {
+  color: var(--action);
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+
+.skip:focus {
+  left: 16px;
+  top: 8px;
+  z-index: 20;
+  padding: 8px 12px;
+  background: var(--col-bg);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--col-bg) 95%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner,
+.layout {
+  width: min(1460px, 100%);
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: var(--rail-left-width) minmax(0, var(--guide-width));
+  justify-content: center;
+  gap: var(--layout-gap);
+}
+
+.topbar-inner {
+  min-height: 64px;
+  align-items: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.topbar-inner .section-name {
+  display: none;
+}
+
+.open-app {
+  justify-self: end;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--col-bg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.layout {
+  align-items: start;
+}
+
+.rail {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 76px);
+  overflow-y: auto;
+  padding: 12px 0 24px;
+}
+
+.rail h2,
+.topics h2 {
+  margin: 18px 12px 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.rail ul,
+.topics ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rail a,
+.topics a {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.rail a:hover,
+.topics a:hover {
+  background: var(--hover);
+}
+
+.rail a[aria-current='page'],
+.topics a[aria-current='page'] {
+  font-weight: 700;
+  background: var(--hover);
+}
+
+.column {
+  min-width: 0;
+  min-height: calc(100vh - 65px);
+  padding: 8px 32px 48px;
+  background: var(--col-bg);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.topics {
+  display: none;
+}
+
+article {
+  max-width: 72ch;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+article h1 {
+  margin: 8px 0 20px;
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+  line-height: 1.15;
+}
+
+article h2 {
+  margin-top: 2em;
+  font-size: 1.35rem;
+}
+
+article h3 {
+  margin-top: 1.6em;
+  font-size: 1.1rem;
+}
+
+.headerlink {
+  margin-left: 0.35em;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+}
+
+:is(h2, h3, h4):hover > .headerlink,
+.headerlink:focus {
+  opacity: 1;
+}
+
+.eyebrow {
+  margin: 16px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+article code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 0.92em;
+}
+
+article table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+article th,
+article td {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+article .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--col-bg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 72ch;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.pager a[rel='next'] {
+  margin-left: auto;
+  text-align: right;
+}
+
+.pager span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px 16px 40px;
+  font-size: 14px;
+}
+
+.site-footer a {
+  color: var(--muted);
+}
+
+/* Matches the shell's 1000px breakpoint, where both rails disappear. */
+@media (max-width: 1000px) {
+  .topbar-inner {
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+  }
+
+  .topbar-inner .section-name {
+    display: inline;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .topics {
+    display: block;
+    margin: 8px 0 0;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topics summary {
+    padding: 10px 0;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .column {
+    padding: 4px 16px 40px;
+    border: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .open-app {
+    padding: 8px 14px;
+  }
+}
