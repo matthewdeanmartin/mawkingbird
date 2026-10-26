@@ -16,7 +16,14 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicRadio =
     link.pathname === '/radio' &&
     !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
-  if (publicRadio || /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')) {
+  // The project's own pages are prerendered for search engines. Sending them to
+  // `/` would make the dispatcher land a fresh visitor (or crawler) on /home.
+  const projectPage = /^\/(about|funding|blog|credits)\/?$/.test(link.pathname);
+  if (
+    publicRadio ||
+    projectPage ||
+    /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
+  ) {
     auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');
     return true;
   }

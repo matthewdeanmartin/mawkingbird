@@ -93,6 +93,11 @@
       "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's \u2022\u2022\u2022 menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
     },
     {
+      "file": "ui/src/app/pages/features/public-article.html",
+      "disposition": "adopted scope",
+      "nextStep": "Build-time copies of About, Funding and the Blog hub reuse the feature layout and MbButton/MbContentLink controls. Keep the essay text shared with the in-app virtual tweets and the help link a plain href to the static site."
+    },
+    {
       "file": "ui/src/app/pages/features/audience-page.html",
       "disposition": "adopted scope",
       "nextStep": "Five public audience pages reuse the feature layout and MbButton/MbContentLink controls. Preserve native links, mobile wrapping, focused audience copy and metadata without rendering a landing page on the home route."

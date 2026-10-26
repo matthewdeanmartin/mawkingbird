@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Static help site preview (make help-site HELP_OUT=.help-site)
+/.help-site

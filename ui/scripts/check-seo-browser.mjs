@@ -357,6 +357,50 @@ try {
     }
     await context.close();
   }
+  // The project's own pages: prerendered copy without JavaScript; with it, a
+  // fresh visitor must stay on the article inside the app rather than being
+  // dispatched to /home, and the metadata must stay indexable.
+  for (const [slug, heading, inApp] of [
+    ['about', 'Why Mawkingbird exists', 'Why I asked a bot to create this.'],
+    ['funding', 'How Mawkingbird is funded', 'Nothing below is a revenue model'],
+    ['blog', 'Mawkingbird blog', 'Credits & Privacy'],
+  ]) {
+    for (const javaScriptEnabled of [false, true]) {
+      const context = await browser.newContext({ javaScriptEnabled });
+      await context.route('**/vendor/count.js', (route) =>
+        route.fulfill({ contentType: 'text/javascript', body: '' }),
+      );
+      // Keep the anonymous shell off real Mastodon servers.
+      await context.route('https://**/*', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+      );
+      const page = await context.newPage();
+      const errors = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled) {
+        await page.getByText(inApp).first().waitFor();
+        assert.equal(new URL(page.url()).pathname.replace(/\/$/, ''), `/${slug}`);
+      } else {
+        await page.getByRole('heading', { name: heading, exact: true }).waitFor();
+        assert.ok((await page.locator('main').textContent()).includes(inApp));
+      }
+      assert.equal(
+        await page.locator('meta[name="robots"]').getAttribute('content'),
+        'index, follow',
+      );
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      await page.screenshot({
+        path: path.join(results, `seo-${slug}-${javaScriptEnabled ? 'client' : 'static'}.png`),
+        fullPage: true,
+      });
+      assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
+      await context.close();
+    }
+  }
   console.log(
     'SEO browser checks passed with JavaScript enabled and disabled, desktop and mobile.',
   );

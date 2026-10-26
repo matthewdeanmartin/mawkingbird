@@ -12,7 +12,15 @@ const pages = [
   'for/twitter-exodus',
   'for/instagram',
   'for/creators',
+  'about',
+  'funding',
+  'blog',
 ];
+const articles = new Map([
+  ['about', /Why I asked a bot to create this/],
+  ['funding', /Nothing below is a revenue model/],
+  ['blog', /Credits & Privacy/],
+]);
 const titles = new Set();
 const descriptions = new Set();
 for (const page of pages) {
@@ -23,7 +31,11 @@ for (const page of pages) {
     '/',
     'SEO publishing uses root base href',
   );
-  if (page) {
+  if (articles.has(page)) {
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
+    assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));
+    assert.ok(doc.querySelector('a[href="/help/"]'), `${page} links to the help site`);
+  } else if (page) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.ok(doc.querySelectorAll('section').length >= 3);
     if (page === 'features') {
@@ -97,8 +109,8 @@ assert.deepEqual(
   [...sitemap.querySelectorAll('loc')].map((node) => node.textContent),
   pages.map((page) => `https://mawkingbird.com/${page ? page + '/' : ''}`),
 );
-assert.match(
-  await readFile(path.join(root, 'robots.txt'), 'utf8'),
-  /Sitemap: https:\/\/mawkingbird.com\/sitemap.xml/,
-);
+const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
+assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/sitemap.xml/);
+// The static help site (scripts/build_help.py) publishes its own sitemap.
+assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/help\/sitemap.xml/);
 console.log('SEO HTML checks passed: content, canonicals, cards, verification links and sitemap.');

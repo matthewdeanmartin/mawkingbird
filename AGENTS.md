@@ -30,6 +30,16 @@ The separate `make test-integration` suite exercises the real client against a
 PyPI-installed mastodon-mock wheel in CI and locally. Never point this suite at
 the sibling source checkout or an editable install. See docs/contributing.md.
 
+Where documents go: docs/ holds end-user help guides only. Every file there
+must be in the mkdocs.yml nav; it is published to Read the Docs and as static
+pages at mawkingbird.com/help/ by scripts/build_help.py. Internal plans,
+inventories and feature specs go in spec/; sprint plans and their evidence go
+in sprint/; client engineering notes go in ui/docs/. After editing docs/ or
+mkdocs.yml, run `make help-site-test` and `make help-site` from the repository
+root (uv, wheels only). Public, indexable pages and their sitemaps are described
+in ui/docs/seo.md; keep a page's client route, server route, sitemap entry and
+SEO checks in sync, and run `cd ui && make test-seo && npm run test:seo:browser`.
+
 Read MIGRATION.md before modifying publishing. Keep all public origins, OAuth
 redirect URLs, and persisted storage key names stable. This repository now hosts
 mawkingbird.com; production must use base href `/`. Do not publish a project-path

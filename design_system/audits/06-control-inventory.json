@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1181,
-  "filesWithCandidates": 246,
+  "filesScanned": 1184,
+  "filesWithCandidates": 247,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3616,6 +3616,60 @@
         {
           "pattern": "shared",
           "line": 116
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/features/public-article.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 12
+        },
+        {
+          "pattern": "shared",
+          "line": 14
+        },
+        {
+          "pattern": "shared",
+          "line": 18
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 25
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 31
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 33
+        },
+        {
+          "pattern": "shared",
+          "line": 34
         }
       ]
     },

@@ -1,0 +1,36 @@
+<main class="features" lang="en">
+  <header>
+    <a mbContentLink routerLink="/blog">Mawkingbird · Blog</a>
+    <a mbButton routerLink="/">Open the app</a>
+  </header>
+  <article>
+    <h1>{{ content.heading }}</h1>
+    @if (content.body) {
+      <div [innerHTML]="content.body"></div>
+    } @else {
+      <ul>
+        <li><a mbContentLink routerLink="/about">Design</a> — why this client exists.</li>
+        <li>
+          <a mbContentLink routerLink="/funding">Funding</a> — what this costs, who pays for it, and
+          where it's going.
+        </li>
+        <li>
+          <a mbContentLink routerLink="/credits">Credits &amp; Privacy</a> — the software this
+          client ships, and how it handles data.
+        </li>
+        <li>
+          <a mbContentLink routerLink="/features">Features</a> — everything Mawkingbird can do
+          today.
+        </li>
+        <li><a mbContentLink href="/help/">Help</a> — short guides, one task at a time.</li>
+      </ul>
+    }
+  </article>
+  <footer>
+    <a mbContentLink routerLink="/blog">Blog</a>
+    <a mbContentLink routerLink="/about">Design</a>
+    <a mbContentLink routerLink="/funding">Funding</a>
+    <a mbContentLink routerLink="/features">Features</a>
+    <a mbContentLink href="/help/">Help</a>
+  </footer>
+</main>

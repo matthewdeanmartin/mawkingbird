@@ -21,6 +21,9 @@ const fallback = `<noscript>
       <li><a href="/for/twitter-exodus/">A fresh start after Twitter / X</a></li>
       <li><a href="/for/instagram/">Photo viewing</a></li>
       <li><a href="/for/creators/">Writing and photography</a></li>
+      <li><a href="/help/">Help: short guides, one task at a time</a></li>
+      <li><a href="/about/">Why Mawkingbird exists</a></li>
+      <li><a href="/blog/">Blog</a></li>
     </ul>
   </main>
 </noscript>`;

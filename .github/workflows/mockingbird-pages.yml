@@ -39,6 +39,8 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: ui/package-lock.json
+      # The SEO build also writes the static help site with scripts/build_help.py.
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - name: Stamp build info
         run: node ui/scripts/gen-build-info.mjs
       - name: Build Mocking Bird
@@ -50,7 +52,10 @@ jobs:
       - name: Add custom domain
         run: printf '%s' "$CUSTOM_DOMAIN" > ui/dist-mockingbird/browser/CNAME
       - name: Verify production layout
-        run: node ui/scripts/check-production-layout.mjs ui/dist-mockingbird/browser
+        run: |
+          test -f ui/dist-mockingbird/browser/help/index.html
+          test -f ui/dist-mockingbird/browser/help/sitemap.xml
+          node ui/scripts/check-production-layout.mjs ui/dist-mockingbird/browser
       - name: Publish production to gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,6 +71,7 @@ jobs:
         run: |
           test -f .pages-site/canary/index.html
           test -f .pages-site/test/index.html
+          test -f .pages-site/help/index.html
           node ui/scripts/check-production-layout.mjs .pages-site
           test "$(cat .pages-site/CNAME)" = "$CUSTOM_DOMAIN"
       - name: Upload complete Pages site

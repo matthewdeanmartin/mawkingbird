@@ -8,6 +8,12 @@ export const SITE_DESCRIPTION =
   'Mawkingbird brings Mastodon, Bluesky and RSS together with bookmarks, readable articles, writing tools and advanced account controls.';
 export const FEATURES_DESCRIPTION =
   'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.';
+export const ABOUT_DESCRIPTION =
+  'Why Mawkingbird exists: a 2018-Twitter-style client for Mastodon, Bluesky and RSS with a finite feed, an honest algorithm, bookmarks and analytics.';
+export const FUNDING_DESCRIPTION =
+  'How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.';
+export const BLOG_DESCRIPTION =
+  'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 
 /** One owner for metadata: navigation must never leave a previous page's tags behind. */
 @Injectable({ providedIn: 'root' })

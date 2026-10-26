@@ -34,8 +34,11 @@ Mawkingbird changes here rather than synchronizing the two copies.
 | Public assets and interface dictionaries | `ui/public/` |
 | Translation context and glossaries | `ui/i18n-context/` |
 | Developer guides | `ui/docs/` |
-| Published help pages | `docs/` |
+| Published help pages (end-user guides only) | `docs/` |
 | Help navigation | `mkdocs.yml` |
+| Static help site builder (Python, run with `uv`) | `scripts/build_help.py` |
+| Feature specs and internal plans | `spec/` |
+| Sprint plans and their results | `sprint/` |
 | Build and publishing automation | `.github/workflows/` |
 
 Read the [UI design and contribution rules](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/contributing.md)

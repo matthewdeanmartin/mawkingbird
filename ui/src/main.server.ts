@@ -4,7 +4,13 @@ import { provideRouter, RouterOutlet, TitleStrategy } from '@angular/router';
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { PageTitleStrategy } from './app/a11y/page-title-strategy';
 import { Features } from './app/pages/features/features';
-import { FEATURES_DESCRIPTION } from './app/seo';
+import {
+  ABOUT_DESCRIPTION,
+  BLOG_DESCRIPTION,
+  FEATURES_DESCRIPTION,
+  FUNDING_DESCRIPTION,
+} from './app/seo';
+import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 
 // Only public content executes at build time. The browser still bootstraps the
@@ -18,6 +24,14 @@ class PublicRoot {}
 // the real EntryPage and its existing preview dispatcher.
 @Component({ selector: 'app-client-entry', template: '' })
 class ClientEntry {}
+
+// Titles match the browser routes in app.routes.ts, which take over these URLs
+// once the app boots and must keep the same title and indexability.
+const articles: { path: PublicArticleKind; title: string; description: string }[] = [
+  { path: 'about', title: 'About', description: ABOUT_DESCRIPTION },
+  { path: 'funding', title: 'Funding', description: FUNDING_DESCRIPTION },
+  { path: 'blog', title: 'Blog', description: BLOG_DESCRIPTION },
+];
 
 export default (context: BootstrapContext) =>
   bootstrapApplication(
@@ -33,12 +47,19 @@ export default (context: BootstrapContext) =>
             title: 'Mastodon, reading and writing features',
             data: { seoIndexable: true, seoDescription: FEATURES_DESCRIPTION },
           },
+          ...articles.map(({ path, title, description }) => ({
+            path,
+            component: PublicArticle,
+            title,
+            data: { article: path, seoIndexable: true, seoDescription: description },
+          })),
         ]),
         { provide: TitleStrategy, useClass: PageTitleStrategy },
         provideServerRendering(
           withRoutes([
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
+            ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             ...audienceRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,

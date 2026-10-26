@@ -13,6 +13,7 @@ import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
 import { audienceRoutes } from './pages/features/audience-routes';
+import { ABOUT_DESCRIPTION, BLOG_DESCRIPTION, FUNDING_DESCRIPTION } from './seo';
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -831,12 +832,16 @@ export const routes: Routes = [
         // `/docs`, so an in-app `/docs` route would be shadowed on hard-nav.
         path: 'blog',
         title: 'Blog',
+        // Prerendered for search engines; see main.server.ts and docs/seo.md.
+        data: { seoIndexable: true, seoDescription: BLOG_DESCRIPTION },
         loadComponent: () => import('./pages/docs/docs').then((m) => m.Docs),
       },
       {
         // "Design" — the project story, as a virtual tweet in the centre column.
         path: 'about',
         title: 'About',
+        // Prerendered for search engines; see main.server.ts and docs/seo.md.
+        data: { seoIndexable: true, seoDescription: ABOUT_DESCRIPTION },
         loadComponent: () => import('./pages/about/about').then((m) => m.About),
       },
       {
@@ -844,6 +849,8 @@ export const routes: Routes = [
         // rather than a tail section of Design, so it can be linked to.
         path: 'funding',
         title: 'Funding',
+        // Prerendered for search engines; see main.server.ts and docs/seo.md.
+        data: { seoIndexable: true, seoDescription: FUNDING_DESCRIPTION },
         loadComponent: () => import('./pages/funding/funding').then((m) => m.Funding),
       },
       {

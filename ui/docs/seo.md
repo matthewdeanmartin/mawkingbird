@@ -61,10 +61,51 @@ their build stamping handles both ordinary and self-closing robots meta tags.
 Utilities default to `noindex, follow` after client navigation. The static SPA
 fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
-contains `/`, `/features/` and the five audience URLs. Do not add account feeds or arbitrary remote
+contains `/`, `/features/`, the five audience URLs and the three project pages
+below; the help site publishes its own. Do not add account feeds or arbitrary remote
 posts to the sitemap. Do not use robots.txt blocking as a substitute for noindex.
 When adding another public page, keep its client route, server route, sitemap
 entry and HTML checks in sync.
+
+
+## Project pages: About, Funding and Blog
+
+`/about/`, `/funding/` and `/blog/` are prerendered by `PublicArticle`
+(`pages/features/public-article.ts`), registered only in `main.server.ts`. In the
+browser the same URLs belong to the signed-in shell and render the essays as
+virtual tweets; the essay text lives once in `pages/docs/public-copy.ts`, so the
+indexed copy and the in-app copy cannot drift. Their browser routes carry
+`seoIndexable` and the same descriptions (from `seo.ts`), otherwise executing
+JavaScript would turn the prerendered page into `noindex`.
+
+These routes sit under the shell's `authGuard`. A fresh visitor (or a crawler
+running JavaScript) used to be sent to `/`, which the entry dispatcher turns
+into `/home`, so the article vanished. `authGuard` now enters Anonymous for
+`/about`, `/funding`, `/blog` and `/credits`, as it already did for public posts,
+profiles and tags. Such a visitor skips the welcome modal, exactly like someone
+arriving on a shared post link.
+
+## Help site: /help/
+
+The guides in `/docs` are published twice: to Read the Docs (mkdocs) and as
+static pages at `https://mawkingbird.com/help/`, so the domain itself carries
+the help content. `scripts/build_help.py` (Python, `uv`, wheels only) reads the
+nav from `mkdocs.yml`, converts each guide with Python-Markdown and writes plain
+HTML with no JavaScript into `dist-mockingbird/browser/help/`, plus
+`help/sitemap.xml`, which `robots.txt` announces. The layout reuses the shell's
+column widths: topics over the left rail, the guide across the centre column and
+right rail. Production runs it from `make mockingbird MOCKINGBIRD_SEO=true`;
+`make help-site` and `make help-site-test` run it locally (from the repository
+root). It is a real directory, so GitHub Pages serves it directly and it needs
+no entry in the 404 shim's `SUBPATHS`. Canary and test do not build it yet.
+
+The build fails when a file in `docs/` is missing from the `mkdocs.yml` nav, a
+nav entry has no file, an internal link targets a missing guide, or two guides
+share a title. Keep `docs/` for end-user guides only; internal planning belongs
+in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
+`routerLink`, because `/help/` is outside the Angular app.
+
+## Share image, verification and deployment checks
 
 The original hand-drawn `public/mockingbird_hand.png` is the share image.
 Absolute production URLs in `src/index.html` allow unfurling without JavaScript.
@@ -75,5 +116,5 @@ field to link back to `https://mawkingbird.com/`.
 
 After deployment, inspect the actual HTML for `/` and `/features/`, fetch the
 image and sitemap, then test new shares in Mastodon and Bluesky. Existing cards
-may be cached by the sharing service. Submit the sitemap in Google Search
-Console once access to the domain is available; this does not guarantee ranking.
+may be cached by the sharing service. Both `sitemap.xml` and `help/sitemap.xml`
+should be submitted in Google Search Console; this does not guarantee ranking.

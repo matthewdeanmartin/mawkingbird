@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Prerendered project pages, 2026-10-26
+
+The prerendered project pages (About, Funding, Blog) add one candidate template:
+1,184 scanned files and 247 candidate files. `pages/features/public-article.html` is
+build-time only, uses MbButton and MbContentLink, and reuses the feature-page
+stylesheet without control restyling. In the browser the same URLs still render
+the in-app virtual tweets, so no shell control changes. Static and client SEO
+browser checks cover all three URLs, including a fresh visitor staying on the
+article rather than being dispatched to Home.
+
 ## Home and Algo Settings, 2026-10-24
 
 Reviewed 1,159 source files and 240 candidate files. Added one candidate:

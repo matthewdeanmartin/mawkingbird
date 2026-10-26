@@ -15,7 +15,7 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
+  - Help home: index.md
   - Start here:
       - Welcome to Mawkingbird: start/welcome.md
       - Look around without an account: start/look-around.md
@@ -58,6 +58,7 @@ nav:
       - Connect Mastodon: connections/mastodon.md
       - Connect Bluesky: connections/bluesky.md
       - Read public Twitter accounts: connections/twitter.md
+      - Follow YouTube channels as video feeds: connections/video-feeds.md
       - Connect GitHub: connections/github.md
       - Save bookmarks to Raindrop.io: connections/raindrop.md
       - Connect Dropbox: connections/dropbox.md
