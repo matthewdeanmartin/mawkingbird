@@ -24,6 +24,13 @@ nav:
       - Sign in with Bluesky: start/sign-in-bluesky.md
       - Your first ten minutes: start/first-ten-minutes.md
       - A quick tour of the screen: start/screen-tour.md
+  - New to Mastodon:
+      - What Mastodon is: new-to-mastodon/what-is-mastodon.md
+      - Choose a Mastodon server: new-to-mastodon/choose-a-server.md
+      - Create a Mastodon account: new-to-mastodon/create-an-account.md
+      - Coming to Mastodon from X: new-to-mastodon/coming-from-x.md
+      - Mastodon customs worth knowing: new-to-mastodon/customs.md
+      - Use Bluesky and Mastodon together: new-to-mastodon/from-bluesky.md
   - Reading:
       - Understand your Home feed: reading/home-feed.md
   - Finding people:

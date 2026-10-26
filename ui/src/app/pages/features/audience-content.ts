@@ -11,6 +11,8 @@ export interface AudienceContent {
   sections: readonly AudienceSection[];
   gettingStarted: string;
   expectation: string;
+  /** Help guides at /help/, linked as plain hrefs because the help site is static. */
+  guides?: readonly { label: string; href: string }[];
 }
 
 /** Public copy describes shipped capabilities; no account or remote API is needed. */
@@ -57,43 +59,48 @@ export const audienceContent: Record<string, AudienceContent> = {
   },
   bluesky: {
     eyebrow: 'For Bluesky users',
-    heading: 'Bring your Bluesky conversations into a familiar home',
+    heading: 'Read Bluesky and Mastodon in one place',
     intro:
-      'Keep your Bluesky account and the people you follow. Mawkingbird is another way to read, reply and post from your browser, with room for custom feeds, saved reading and your other interests.',
-    action: 'Try Mawkingbird for Bluesky',
+      'Keep your Bluesky account and add Mastodon beside it. Mawkingbird shows both timelines in one Home feed, sends each reply back to the right network, and can publish the same post to both.',
+    action: 'Try Mawkingbird with Bluesky',
     sections: [
       {
-        heading: 'Stay with the people and feeds you chose',
-        text: 'Sign in with Bluesky to read your timeline and explore custom feeds. Search for people and posts, visit profiles and follow conversations from one browser workspace.',
+        heading: 'Your Bluesky timeline, with Mastodon beside it',
+        text: 'Sign in with Bluesky and your timeline becomes Home. Connect a Mastodon account and its timeline joins in, newest first. Bluesky posts carry a badge, so you always know which network a reply will go to.',
         points: [
           'Read Bluesky timelines, custom feeds and profile feeds.',
-          'Search posts and accounts, and follow or unfollow people.',
-          'Use supported mute and block controls to shape your experience.',
+          'See notifications from both networks together, or one at a time.',
+          'Search for posts and accounts on either network.',
         ],
       },
       {
-        heading: 'Join the conversation, with pictures too',
-        text: 'Reply, like and repost from the client. When you have something to share, compose text or a thread and include images with descriptions for people who cannot see them.',
+        heading: 'Look at Mastodon before you join it',
+        text: 'You do not need a Mastodon account to see what it is like. Pick a server and read its trending posts, Explore page and hashtag timelines from the same client you use for Bluesky.',
         points: [
-          'Read replies, quotes, external cards and image embeds.',
-          'Compose image posts with alt text and image compression.',
-          'Keep unfinished ideas in drafts and return when they are ready.',
+          "Read a Mastodon server's public timelines without an account.",
+          'Browse hand-picked starter kits to see who you would follow.',
+          'Sign in to Mastodon later without signing out of Bluesky.',
         ],
       },
       {
-        heading: 'Keep reading beyond the timeline',
-        text: 'Your interests do not stop at Bluesky. Use RSS subscriptions and the reading tools in the same browser client, or connect Mastodon when you want to keep up with another community.',
+        heading: 'Write once, post to both',
+        text: 'With both accounts connected, choose Both and the same post goes to Bluesky and Mastodon. Mawkingbird holds the text to the shorter length limit and says when an attachment or option cannot go to both.',
         points: [
-          'Follow RSS sources without giving up your Bluesky account.',
-          'Save useful discoveries for later reading.',
-          'Switch between connected accounts without moving your social identity.',
+          'Post text, threads and images to both networks at once.',
+          'Add image descriptions for people who cannot see the picture.',
+          'Keep unfinished posts in drafts until they are ready.',
         ],
       },
     ],
     gettingStarted:
-      'Try the app preview first, then choose Bluesky on the sign-in screen and connect your existing account. Start with your timeline or a custom feed you already enjoy.',
+      'Open the preview, choose Log in, then Bluesky. Once your timeline is in Home, add Mastodon under Settings → Connections, either read-only from a server or with your own account.',
     expectation:
-      'Mawkingbird is an independent client, not Bluesky itself. Provider capabilities differ; image publishing is supported, but this page does not promise Bluesky video publishing or complete feature parity.',
+      'Mawkingbird is an independent client, not Bluesky or Mastodon. The Bluesky copy of a cross-post is always public, polls and content warnings stay on the Mastodon copy, and video publishing to Bluesky is not promised.',
+    guides: [
+      { label: 'Use Bluesky and Mastodon together', href: '/help/new-to-mastodon/from-bluesky/' },
+      { label: 'Sign in with Bluesky', href: '/help/start/sign-in-bluesky/' },
+      { label: 'Choose where a post is published', href: '/help/posting/destinations/' },
+    ],
   },
   'twitter-exodus': {
     eyebrow: 'For people leaving Twitter / X',
@@ -134,6 +141,12 @@ export const audienceContent: Record<string, AudienceContent> = {
       'Start with the preview and browse a starter collection. Choose Mastodon or Bluesky, connect or create an account with that network, then follow a few people whose posts you want to see again.',
     expectation:
       'Mawkingbird does not automatically transfer your Twitter/X followers, posts or identity. Its optional Twitter connector needs separate configuration and API access; you do not need it to explore Mastodon or Bluesky.',
+    guides: [
+      { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },
+      { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
+      { label: 'Coming to Mastodon from X', href: '/help/new-to-mastodon/coming-from-x/' },
+      { label: 'Who to follow: starter kits', href: '/follow/' },
+    ],
   },
   instagram: {
     eyebrow: 'For Instagram users who love photographs',
@@ -214,5 +227,69 @@ export const audienceContent: Record<string, AudienceContent> = {
       'Explore the app, connect a supported social account, and save a first draft. For photography, try an image post with alt text. Set up a publishing connection when your longer work needs one.',
     expectation:
       'Publishing requires the relevant account and service configuration. Some writing tools depend on deployment settings. Posting and media limits follow the connected network’s rules.',
+  },
+  'power-users': {
+    eyebrow: 'For Mastodon power users',
+    heading: 'Controls most Mastodon clients leave out',
+    intro:
+      'Mawkingbird is for people who live on Mastodon and want more say over their feed, their follows and their posts. It runs in your browser and works with the account you already have.',
+    action: 'Open Mawkingbird',
+    sections: [
+      {
+        heading: 'A feed you can reason about',
+        text: 'Home loads in pages and stops when it runs out, instead of scrolling forever. When it stops, it says why, and Feed Doctor shows which sources contributed posts and which failed.',
+        points: [
+          'Calm mode hides heated wording, quote-dunks and ratioed posts, detected on your device.',
+          'Algo sorts posts from the people and tags you follow by replies, boosts and favourites. It adds no strangers.',
+          'Just My Server mode limits Home to the people you follow on your own server.',
+        ],
+      },
+      {
+        heading: 'Do the tedious things once',
+        text: 'Changes that would otherwise mean visiting accounts one by one are a single confirmed action here. Each one counts what it will change before it starts, then shows its progress.',
+        points: [
+          'Turn boosts off or on for everyone you follow, or follow or unfollow everyone on a list.',
+          'Unmute or unblock everyone at once.',
+          'Import a follow list from handles, profile links or a Mastodon CSV export.',
+        ],
+      },
+      {
+        heading: 'Know who you are reading',
+        text: "Analytics in the style Twitter once offered, for your account and for anyone else's. Before following someone, see their top posts, when they post, who they talk to most and what they post about.",
+        points: [
+          'Open analytics for your account, or as a tab on any profile.',
+          'Merge several hashtags into one feed with tag bundles, and keep saved searches.',
+          'Filter Mastodon notifications to friends, followers or accounts new to you.',
+        ],
+      },
+      {
+        heading: 'Post where you mean to',
+        text: 'Schedule Mastodon posts, keep drafts and write threads. If you run your own site, the POSSE queue records interactions there and sends webmentions once your site has rebuilt.',
+        points: [
+          'Schedule posts, and turn a draft into a scheduled post.',
+          'Send the same post to Mastodon and Bluesky with one choice.',
+          'Publish longer writing to Blogger, Hugo or Mataroa.',
+        ],
+      },
+      {
+        heading: 'Keep some things to yourself',
+        text: 'Pseudonymity mode helps keep a second account apart from your real name. It applies to one account in one browser.',
+        points: [
+          "Private follows add someone's public posts to Home without a network follow.",
+          'Private likes save a post in your browser without telling anyone.',
+          'Known tracking parameters such as utm_ and fbclid are removed from links when you post.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Sign in with Mastodon. Algo is in the top navigation and Feed Doctor at the end of Home. Analytics is a tab on every profile and under More → Observability. Bulk actions and Pseudonymity are under Settings, and the check-mark options under Settings → Appearance.',
+    expectation:
+      'Most of these preferences are kept in your browser, not on your server, so they stay on this device unless you export them. Bulk actions and analytics need a signed-in Mastodon account; publishing connections need your own accounts with those services.',
+    guides: [
+      { label: 'Import a follow list', href: '/help/finding-people/import-follow-list/' },
+      { label: 'Schedule a post', href: '/help/posting/schedule/' },
+      { label: 'Choose where a post is published', href: '/help/posting/destinations/' },
+      { label: 'Publish to a blog', href: '/help/connections/blogs/' },
+    ],
   },
 };

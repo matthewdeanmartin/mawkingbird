@@ -12,6 +12,7 @@ const pages = [
   'for/twitter-exodus',
   'for/instagram',
   'for/creators',
+  'for/power-users',
   'about',
   'funding',
   'blog',

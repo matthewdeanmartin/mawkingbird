@@ -27,6 +27,17 @@
     <h2>Make it your own</h2>
     <p>{{ content.gettingStarted }}</p>
     <p>{{ content.expectation }}</p>
+    @if (content.guides?.length) {
+      <h3>Read next</h3>
+      <ul class="guides">
+        @for (guide of content.guides; track guide.href) {
+          <!-- Plain hrefs: the help site and kit pages are separate documents. -->
+          <li>
+            <a mbContentLink [href]="guide.href">{{ guide.label }}</a>
+          </li>
+        }
+      </ul>
+    }
     <div class="feature-actions">
       <a mbButton routerLink="/">{{ content.action }}</a>
       <a mbContentLink routerLink="/login">Sign in</a>
@@ -39,5 +50,6 @@
     <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter / X</a>
     <a mbContentLink routerLink="/for/instagram">For photo lovers</a>
     <a mbContentLink routerLink="/for/creators">For creators</a>
+    <a mbContentLink routerLink="/for/power-users">For power users</a>
   </footer>
 </main>

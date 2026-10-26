@@ -1,8 +1,8 @@
 # Discoverability: five-sprint plan
 
-Created 2026-10-26. Sprint 1 implemented and pushed by the owner on 2026-10-26.
-Sprint 2 implemented and validated locally (evidence below); Sprints 3–5 are
-planned.
+Created 2026-10-26. Sprints 1–2 implemented and pushed by the owner on 2026-10-26.
+Sprint 3 implemented and validated locally (evidence below), except S3-4, which
+waits for Search Console data. Sprints 4–5 are planned.
 
 ## Where we start
 
@@ -74,7 +74,7 @@ in-app following and deliberately ignores `noindex`/`indexable`; its own site is
 would need the importer to carry those flags and the stricter search rule applied,
 plus a decision that the catalogue is reviewed enough to be indexed.
 
-## Sprint 3 — Pages for the three audiences
+## Sprint 3 — Pages for the three audiences (implemented)
 
 Outcome: each audience has a page that answers its first question in plain words.
 
@@ -169,3 +169,45 @@ Validated locally on 2026-10-26 with Node 24.18.0, Git Bash and Make:
 
 Not run: `make test-integration` and `make design-verify` (no shared design
 widget changed). Nothing was deployed.
+
+## Sprint 3 evidence
+
+Written 2026-10-26 from the shipped app, not from plans: every UI label, menu
+path and limit in the new copy was checked against templates, `en.json` and the
+existing guides.
+
+- S3-1: six guides under `docs/new-to-mastodon/` (what Mastodon is, choosing a
+  server, creating an account, coming from X, customs, Bluesky and Mastodon
+  together), a "New to Mastodon" nav section and a block on the help home page.
+  `/for/twitter-exodus/` links to them and to `/follow/`.
+- S3-2: `/for/bluesky/` rewritten around using both networks: combined Home and
+  notifications, reading Mastodon without an account, and cross-posting with its
+  real limits. Title and description changed to "Bluesky and Mastodon in one
+  client". Help guide: `new-to-mastodon/from-bluesky.md`.
+- S3-3: `/for/power-users/` covers Feed Doctor, Calm, Algo, Just My Server, bulk
+  actions, profile analytics, tag bundles, scheduling, POSSE and Pseudonymity.
+  Mawkingbird Plus is not mentioned (its flag is test-only). Audience pages gained
+  an optional "Read next" list of help guides.
+- S3-4: deferred. No Search Console query data has arrived yet.
+
+Corrections found while checking claims: the new-account path is **I need an
+account** (not "I'm new here", which is the heading after it); Analytics is reached
+from profiles and More → Observability, not the More menu; check-mark options are
+under Settings → Appearance; the composer's visibility labels are public,
+unlisted, private and direct.
+
+Editing pass with the no-ai-slop checklist (applied after drafting, as the owner
+asked): removed two "X, not Y" headings, three colon reveals, a "that is calm"
+aside, a recap ending, and three unsupported claims ("more follow-backs", "a few
+days", "an afternoon of clicking"); replaced "not the only one" with a named
+example (Pixelfed); softened "The controls other Mastodon clients leave out" to
+"Controls most Mastodon clients leave out". No banned words or em dashes were
+present in the new copy.
+
+Validation, 2026-10-26: `cd ui && make test` passed (design inventory 1,191 files,
+249 candidates; runtime manifest 8,303 present, 0 missing, 0 skipped).
+`make mockingbird MOCKINGBIRD_SEO=true` prerendered 21 routes, passed the SEO HTML
+checks, wrote 59 help guides and a 22-URL root sitemap; `npm run test:seo:browser`
+passed, including the new and renamed audience pages at 1280 and 390 px. Initial
+bundle 840.74 kB. Lint, format, i18n, `make help-site-test` and mkdocs (Python
+3.13, no warnings) pass. Not run: `make test-integration`, `make design-verify`.

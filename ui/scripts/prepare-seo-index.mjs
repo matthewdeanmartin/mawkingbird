@@ -17,10 +17,11 @@ const fallback = `<noscript>
     <ul>
       <li><a href="/features/">Discover Mawkingbird features</a></li>
       <li><a href="/for/readers/">News, RSS and reading lists</a></li>
-      <li><a href="/for/bluesky/">Bluesky feeds and conversations</a></li>
+      <li><a href="/for/bluesky/">Bluesky and Mastodon in one place</a></li>
       <li><a href="/for/twitter-exodus/">A fresh start after Twitter / X</a></li>
       <li><a href="/for/instagram/">Photo viewing</a></li>
       <li><a href="/for/creators/">Writing and photography</a></li>
+      <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
       <li><a href="/about/">Why Mawkingbird exists</a></li>

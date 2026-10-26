@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Audience copy and power-user page, 2026-10-26
+
+Reviewed 1,191 source files and 249 candidate files; no candidate file added or
+removed. `audience-page.html` gains a "Read next" list of help guides and both it
+and `features.html` link the new `/for/power-users` page. All four new findings are
+MbContentLink anchors (plain `href` for the static help site), so the existing
+dispositions stand.
+
 ## Public starter-kit pages and help links, 2026-10-26
 
 Reviewed 1,191 source files and 249 candidate files. Added two candidates:

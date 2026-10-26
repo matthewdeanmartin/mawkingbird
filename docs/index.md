@@ -10,6 +10,15 @@ Start with [Welcome to Mawkingbird](start/welcome.md). It explains what you are 
 
 If you want to get moving immediately, follow [Your first ten minutes](start/first-ten-minutes.md).
 
+## New to Mastodon?
+
+Mastodon is not one website but many connected servers. These guides explain it from the start:
+
+- [What Mastodon is](new-to-mastodon/what-is-mastodon.md)
+- [Choose a Mastodon server](new-to-mastodon/choose-a-server.md) and [create an account](new-to-mastodon/create-an-account.md)
+- [Coming to Mastodon from X](new-to-mastodon/coming-from-x.md)
+- [Use Bluesky and Mastodon together](new-to-mastodon/from-bluesky.md)
+
 ## Find an answer
 
 - [Look around without an account](start/look-around.md)

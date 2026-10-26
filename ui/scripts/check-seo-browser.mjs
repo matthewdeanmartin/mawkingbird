@@ -8,10 +8,11 @@ const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
 const results = path.resolve(import.meta.dirname, '../.test-results');
 const audiencePages = [
   ['readers', 'Make room for the stories you want to read'],
-  ['bluesky', 'Bring your Bluesky conversations into a familiar home'],
+  ['bluesky', 'Read Bluesky and Mastodon in one place'],
   ['twitter-exodus', 'Find your next conversation without starting from an empty feed'],
   ['instagram', 'Give the pictures their own space'],
   ['creators', 'Keep the idea, shape the post, share the work'],
+  ['power-users', 'Controls most Mastodon clients leave out'],
 ];
 const types = {
   '.html': 'text/html',
@@ -139,6 +140,7 @@ try {
     assert.equal(await page.locator('footer a[href="/for/twitter-exodus"]').count(), 1);
     assert.equal(await page.locator('footer a[href="/for/instagram"]').count(), 1);
     assert.equal(await page.locator('footer a[href="/for/creators"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/power-users"]').count(), 1);
     if (javaScriptEnabled)
       assert.deepEqual(
         await page.evaluate(() => window.__seoPageViews.map((path) => path.replace(/\/$/, ''))),

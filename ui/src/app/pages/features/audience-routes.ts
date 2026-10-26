@@ -16,12 +16,12 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/bluesky',
-    title: 'A browser client for Bluesky users',
+    title: 'Bluesky and Mastodon in one client',
     data: {
       audience: 'bluesky',
       seoIndexable: true,
       seoDescription:
-        'Use Mawkingbird with Bluesky for timelines, custom feeds, conversations, search and image posts, with reading tools in the same browser client.',
+        'Use Bluesky and Mastodon together in Mawkingbird: one Home feed for both, shared notifications, Mastodon reading without an account, and posting to both at once.',
     },
     loadComponent: loadAudience,
   },
@@ -55,6 +55,17 @@ export const audienceRoutes: Routes = [
       seoIndexable: true,
       seoDescription:
         'Create with Mawkingbird: social posts, saved drafts, image uploads and alt text, plus a focused writing workspace and supported publishing connections.',
+    },
+    loadComponent: loadAudience,
+  },
+  {
+    path: 'for/power-users',
+    title: 'Advanced Mastodon client for power users',
+    data: {
+      audience: 'power-users',
+      seoIndexable: true,
+      seoDescription:
+        'A Mastodon client for power users: a finite feed with Feed Doctor, Calm mode, bulk follow and mute tools, profile analytics, scheduling and private follows.',
     },
     loadComponent: loadAudience,
   },
