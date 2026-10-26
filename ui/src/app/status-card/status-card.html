@@ -538,6 +538,9 @@
           (click)="$event.stopPropagation()"
         >
           @if (radioQueue()) {
+            <button mbToolbarButton type="button" (click)="addAudio.emit()">
+              {{ 'radio.addPlaylist' | transloco }}
+            </button>
             <button mbToolbarButton (click)="playAudio.emit()">
               {{
                 'radio.playPost'
@@ -551,6 +554,17 @@
             </button>
           }
           @if (radioPost(); as postUrl) {
+            @if (!radioQueue() && playlistable()) {
+              <button
+                mbToolbarButton
+                type="button"
+                routerLink="/radio"
+                [queryParams]="{ post: postUrl, add: '1', view: 'playlist' }"
+              >
+                {{ 'radio.addPlaylist' | transloco }}
+              </button>
+            }
+
             <button mbToolbarButton routerLink="/radio" [queryParams]="{ post: postUrl }">
               {{ 'statusCard.openInRadio' | transloco }}
             </button>

@@ -3,58 +3,75 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  effect,
   inject,
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { RadioControls } from './radio-controls';
 import { RadioPlayer } from './radio-player';
 import { ExternalPlayer } from '../../audio-embeds/external-player';
 
 @Component({
   selector: 'app-radio-dock',
-  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton, ExternalPlayer],
+  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton, ExternalPlayer, RadioControls],
+  host: { '[class.full-view]': 'player.fullView()' },
   template: `
     @if (player.current(); as track) {
-      <aside [attr.aria-label]="'radio.title' | transloco">
-        <a routerLink="/radio"
-          >{{ 'radio.openPlayer' | transloco }} ·
-          {{ track.post.account.display_name || track.post.account.acct }}</a
-        >
+      @if (player.fullView()) {
+        <app-radio-controls [externalPlayer]="external()" />
+      }
+      <aside
+        [class.empty]="player.fullView() && !track.external"
+        [attr.aria-label]="'radio.title' | transloco"
+      >
+        @if (!player.fullView()) {
+          <a routerLink="/radio" [queryParams]="{ view: 'radio' }"
+            >{{ 'radio.openPlayer' | transloco }} ·
+            {{ track.post.account.display_name || track.post.account.acct }}</a
+          >
+        }
         @if (player.hidden()) {
           <span role="status">{{ 'radio.hidden' | transloco }}</span>
         }
-        <mb-toolbar density="compact" embedded [label]="'radio.title' | transloco">
-          <button
-            mbToolbarButton
-            type="button"
-            [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
-            (click)="player.toggle()"
-          >
-            {{ (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco }}
-          </button>
-          <button mbToolbarButton type="button" (click)="player.next()">
-            {{ 'radio.next' | transloco }}
-          </button>
-          <button mbToolbarButton type="button" (click)="player.stop()">
-            {{ 'radio.stop' | transloco }}
-          </button>
-          @if (!player.hidden() && track.external; as source) {
-            @if (external()?.activated()) {
-              <button mbToolbarButton type="button" (click)="external()?.close()">
-                {{ 'external.close' | transloco }}
+        @if (!player.fullView()) {
+          <mb-toolbar density="compact" embedded [label]="'radio.title' | transloco">
+            @if (!player.fullView()) {
+              <button
+                mbToolbarButton
+                type="button"
+                [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
+                (click)="player.toggle()"
+              >
+                {{
+                  (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco
+                }}
               </button>
-            } @else {
-              <button mbToolbarButton type="button" (click)="loadExternal()">
-                {{ 'external.load' | transloco: { provider: source.label } }}
+              <button mbToolbarButton type="button" (click)="player.next()">
+                {{ 'radio.next' | transloco }}
               </button>
             }
-            <button mbToolbarButton type="button" (click)="external()?.openOriginal()">
-              {{ 'external.open' | transloco: { provider: source.label } }}
+            <button mbToolbarButton type="button" (click)="player.stop()">
+              {{ 'radio.stop' | transloco }}
             </button>
-          }
-        </mb-toolbar>
+            @if (!player.hidden() && track.external; as source) {
+              @if (external()?.activated()) {
+                <button mbToolbarButton type="button" (click)="external()?.close()">
+                  {{ 'external.close' | transloco }}
+                </button>
+              } @else {
+                <button mbToolbarButton type="button" (click)="loadExternal()">
+                  {{ 'external.load' | transloco: { provider: source.label } }}
+                </button>
+              }
+              <button mbToolbarButton type="button" (click)="external()?.openOriginal()">
+                {{ 'external.open' | transloco: { provider: source.label } }}
+              </button>
+            }
+          </mb-toolbar>
+        }
         @if (player.blocked()) {
           <span role="alert">{{ 'radio.blocked' | transloco }}</span>
         }
@@ -82,6 +99,18 @@ import { ExternalPlayer } from '../../audio-embeds/external-player';
       width: calc(100% - 32px);
       z-index: 30;
       box-sizing: border-box;
+    }
+    :host.full-view {
+      position: static;
+      display: block;
+      width: auto !important;
+      margin: 16px;
+    }
+    :host.full-view aside {
+      box-shadow: none;
+    }
+    aside.empty {
+      display: none;
     }
     aside {
       display: flex;
@@ -127,6 +156,12 @@ export class RadioDock {
     let observer: ResizeObserver | undefined;
     let frame = 0;
     const align = () => {
+      if (this.player.fullView()) {
+        this.host.nativeElement.style.removeProperty('left');
+        this.host.nativeElement.style.removeProperty('width');
+        document.documentElement.style.setProperty('--radio-dock-space', '0px');
+        return;
+      }
       const main = document.getElementById('main');
       if (!main) return;
       const bounds = main.getBoundingClientRect();
@@ -144,6 +179,10 @@ export class RadioDock {
           align();
         });
     };
+    effect(() => {
+      this.player.fullView();
+      scheduleAlign();
+    });
     afterNextRender(() => {
       observer = new ResizeObserver(scheduleAlign);
       observer.observe(this.host.nativeElement);

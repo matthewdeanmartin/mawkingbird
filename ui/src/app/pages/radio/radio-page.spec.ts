@@ -2,7 +2,8 @@ import { ExternalMedia } from '../../audio-embeds/providers';
 import { Component, input, output, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { PageDiagnostics } from '../../page-diagnostics';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import {
   adaptAnonymousAccount,
@@ -24,10 +25,51 @@ class CardStub {
   readonly radioQueue = input(false);
   readonly radioSources = input<ExternalMedia[]>([]);
   readonly playAudio = output<void>();
+  readonly addAudio = output<void>();
   readonly listenRadio = output<ExternalMedia>();
 }
 
 describe('RadioPage', () => {
+  it('automatically scans a profile through the signed-in server, using the same path as Find audio', async () => {
+    const publicLookup = vi.fn(() => throwError(() => new Error('origin blocks browser requests')));
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { lookupAccount: publicLookup } });
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ acct: 'MaQuest@djs.social' })),
+      },
+    });
+    const fixture = TestBed.createComponent(RadioPage);
+    await fixture.componentInstance.scan.whenIdle();
+    fixture.detectChanges();
+    expect(api.lookupAccount).toHaveBeenCalledWith('MaQuest@djs.social');
+    expect(publicLookup).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.view()).toBe('playlist');
+    expect(fixture.componentInstance.player.queue()).toHaveLength(1);
+    expect(fixture.componentInstance.failed()).toBe(false);
+    expect(fixture.componentInstance.player.active()).toBe(false);
+  });
+  it('logs an automatic lookup failure and gives a plain retry message', () => {
+    const error = { status: 503, url: 'https://home.example/api/v1/accounts/lookup' };
+    api.lookupAccount.mockReturnValue(throwError(() => error));
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ acct: 'music@sea.example' })),
+      },
+    });
+    const diagnostics = vi.spyOn(TestBed.inject(PageDiagnostics), 'error');
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain(
+      'Could not load audio. Try Find audio again.',
+    );
+    expect(fixture.nativeElement.textContent).not.toContain('results are retained');
+    expect(diagnostics).toHaveBeenCalledWith('Radio', 'account-lookup:failed', error, {
+      transport: 'signed-in',
+      handle: 'music@sea.example',
+    });
+  });
   it('opens a shared post anonymously, queues it without autoplay, and responds to a new link', async () => {
     const params = new BehaviorSubject(
       convertToParamMap({ post: 'https://sea.example/@singer/123' }),
@@ -46,14 +88,15 @@ describe('RadioPage', () => {
     TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
     const fixture = TestBed.createComponent(RadioPage);
     fixture.detectChanges();
-    await fixture.componentInstance.scan.whenIdle();
+    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
     fixture.detectChanges();
     expect(fixture.componentInstance.player.queue()).toHaveLength(1);
     expect(fixture.componentInstance.player.active()).toBe(false);
-    expect(fixture.nativeElement.textContent).toContain('Copy Radio link');
+    expect(fixture.nativeElement.textContent).not.toContain('Copy Radio link');
+    expect(fixture.componentInstance.view()).toBe('playlist');
     expect(api.lookupAccount).not.toHaveBeenCalled();
     params.next(convertToParamMap({ post: 'https://sea.example/@singer/456' }));
-    await fixture.componentInstance.scan.whenIdle();
+    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
     expect(fixture.componentInstance.scan.posts().map((post) => post.id)).toEqual(['456']);
     expect(fixture.componentInstance.shareParams()).toEqual({
       post: 'https://sea.example/@singer/456',
@@ -97,7 +140,7 @@ describe('RadioPage', () => {
   const audio = {
     id: 'audio',
     account: { acct: 'music' },
-    media_attachments: [{ type: 'audio' }],
+    media_attachments: [{ type: 'audio', url: 'https://audio.example/song.mp3' }],
   } as Status;
   let api: {
     lookupAccount: ReturnType<typeof vi.fn>;
@@ -251,6 +294,6 @@ describe('RadioPage', () => {
     anonymous.componentInstance.chooseSource('list');
     anonymous.componentInstance.discover();
     expect(api.lists).not.toHaveBeenCalled();
-    expect(anonymous.nativeElement.textContent).toContain('Sign in');
+    expect(anonymous.nativeElement.textContent).toContain('Account handle');
   });
 });

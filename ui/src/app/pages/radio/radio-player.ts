@@ -38,6 +38,8 @@ export interface RadioTrack {
 @Injectable({ providedIn: 'root' })
 export class RadioPlayer {
   readonly nativeOnly = signal(false);
+  readonly fullView = signal(false);
+  readonly playlist = signal<RadioTrack[] | null>(null);
   readonly scan = new MediaFeedScan(
     ['audio'],
     (post) =>
@@ -64,32 +66,34 @@ export class RadioPlayer {
   private widget?: WidgetController;
   private autoExternalPlay = false;
   readonly externalReady = signal(false);
-  readonly queue = computed<RadioTrack[]>(() =>
-    this.scan.posts().flatMap((post) => {
-      const native = post.media_attachments
-        .filter((media) => media.type === 'audio' && /^https?:\/\//i.test(media.url))
-        .map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media }));
-      const candidates = this.radioSources(post);
-      const chosen = candidates.find((s) => s.key === this.alternatives().get(post.id));
-      if (native.length && !chosen) return native;
-      const external = chosen ?? candidates[0];
-      return external
-        ? [
-            {
-              key: `${post.id}:${external.key}`,
-              post,
-              external,
-              media: {
-                id: external.key,
-                type: 'audio',
-                url: '',
-                preview_url: '',
-                description: external.label,
-              } as MediaAttachment,
-            },
-          ]
-        : native;
-    }),
+  readonly queue = computed<RadioTrack[]>(
+    () =>
+      this.playlist() ??
+      this.scan.posts().flatMap((post) => {
+        const native = post.media_attachments
+          .filter((media) => media.type === 'audio' && /^https?:\/\//i.test(media.url))
+          .map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media }));
+        const candidates = this.radioSources(post);
+        const chosen = candidates.find((s) => s.key === this.alternatives().get(post.id));
+        if (native.length && !chosen) return native;
+        const external = chosen ?? candidates[0];
+        return external
+          ? [
+              {
+                key: `${post.id}:${external.key}`,
+                post,
+                external,
+                media: {
+                  id: external.key,
+                  type: 'audio',
+                  url: '',
+                  preview_url: '',
+                  description: external.label,
+                } as MediaAttachment,
+              },
+            ]
+          : native;
+      }),
   );
   readonly current = computed(() => this.queue()[this.selected()]);
   private readonly trusted = inject(TrustedAccounts);
@@ -139,6 +143,7 @@ export class RadioPlayer {
         identity = next;
         this.stop();
         this.scan.clear();
+        this.playlist.set(null);
         this.started.set(false);
         this.scanReady.set(false);
         this.nativeOnly.set(false);
@@ -160,6 +165,58 @@ export class RadioPlayer {
     return `${this.auth.kind()}:${this.auth.token()}:${this.server.baseUrl()}`;
   }
 
+  /** Freeze the current queue before discovery changes its source. */
+  editPlaylist(): void {
+    if (this.playlist() === null) this.playlist.set([...this.queue()]);
+  }
+  tracks(post: Status): RadioTrack[] {
+    const native = post.media_attachments
+      .filter((m) => m.type === 'audio' && /^https?:\/\//i.test(m.url))
+      .map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media }));
+    return [
+      ...native,
+      ...this.radioSources(post).map((external) => ({
+        key: `${post.id}:${external.key}`,
+        post,
+        external,
+        media: {
+          id: external.key,
+          type: 'audio',
+          url: '',
+          preview_url: '',
+          description: external.label,
+        } as MediaAttachment,
+      })),
+    ];
+  }
+  addTracks(tracks: RadioTrack[]): void {
+    this.editPlaylist();
+    this.playlist.update((items) => {
+      const keys = new Set(items!.map((item) => item.key));
+      return [...items!, ...tracks.filter((item) => !keys.has(item.key) && !!keys.add(item.key))];
+    });
+  }
+  replacePlaylist(tracks: RadioTrack[]): void {
+    this.stop();
+    this.playlist.set([...tracks]);
+  }
+  moveTrack(index: number, offset: number): void {
+    this.editPlaylist();
+    const items = [...this.queue()];
+    const next = index + offset;
+    if (!items[index] || !items[next]) return;
+    const current = this.current()?.key;
+    [items[index], items[next]] = [items[next], items[index]];
+    this.playlist.set(items);
+    this.selected.set(items.findIndex((item) => item.key === current));
+  }
+  removeTrack(index: number): void {
+    this.editPlaylist();
+    const current = this.current()?.key;
+    if (this.queue()[index]?.key === current) this.stop();
+    this.playlist.set(this.queue().filter((_, i) => i !== index));
+    this.selected.set(this.queue().findIndex((item) => item.key === current));
+  }
   select(index: number): void {
     if (!this.queue()[index]) return;
     this.failures = 0;
@@ -170,6 +227,16 @@ export class RadioPlayer {
   }
   chooseExternal(post: Status, source: ExternalMedia): void {
     if (!this.radioSources(post).some((s) => s.key === source.key)) return;
+    if (this.playlist() !== null) {
+      const track = this.tracks(post).find((item) => item.external?.key === source.key);
+      if (track) this.addTracks([track]);
+      this.select(
+        this.queue().findIndex(
+          (item) => item.external?.key === source.key && item.post.id === post.id,
+        ),
+      );
+      return;
+    }
     this.alternatives.update((values) => new Map([...values, [post.id, source.key]]));
     this.select(this.queue().findIndex((track) => track.post.id === post.id));
   }
@@ -314,6 +381,7 @@ export class RadioPlayer {
     if (this.queue()[index]) this.activate(index, true);
   }
   private prefetch(): Promise<void> {
+    if (this.playlist() !== null) return Promise.resolve();
     if (this.more) return this.more;
     if (this.scan.loading()) return this.scan.whenIdle();
     const queue = this.queue();

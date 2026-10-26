@@ -818,3 +818,21 @@ are confined to the audio/player surfaces, plus the preceding profile/post entry
 changes. No candidate files were added or removed; reconciliation stays complete.
 Shared design-widget implementations are unchanged. Browser checks cover toolbar
 placement, dock bounds on desktop/tablet/mobile, control order and continued playback.
+
+## Radio discovery, saved playlists and player views, 2026-10-25
+
+Radio now uses Navigation/NavLink text tabs for Search, Playlist, Radio and Studio.
+Playlist editing reuses Field, Button, compact Toolbar and ToolbarButton; source
+eligibility uses Checkbox and the existing Help popover. Post actions separate
+adding from playing. The Copy Radio Link button is removed in favor of the URL.
+The persistent dock remains mounted inside the centre column and becomes an
+ordinary in-flow full player on the Radio tab, preserving the provider iframe.
+Full-player queue choices and transport actions use the compact toolbar style.
+
+Reviewed the regenerated inventory: the added controls are the playlist forms,
+navigation, help/filter controls and post Add action. Other findings are source
+line shifts in these same audio surfaces. There are still 246 candidate files;
+none were added or removed, so 11-reconciliation.json needs no candidate changes.
+The new playlist service has no controls. Shared widget implementations remain
+unchanged. Browser checks exercise the tabs, help/filter, saved playlists, URL
+sharing, centre-column bounds and playback continuity without a duplicate overlay.

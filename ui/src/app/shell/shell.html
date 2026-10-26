@@ -487,6 +487,9 @@
     >
       <app-proxy-limit-notice />
       <router-outlet />
+      @if (radioOutlet.component(); as radioDock) {
+        <ng-container *ngComponentOutlet="radioDock" />
+      }
       @if (!chromeHidden()) {
         <app-app-footer />
       }
@@ -501,9 +504,6 @@
     }
   </div>
 
-  @if (radioOutlet.component(); as radioDock) {
-    <ng-container *ngComponentOutlet="radioDock" />
-  }
   <!-- Lazy: the wizard and its questions load only when the card opens, and
      never over the blocking first-run modal. -->
   @if (onboarding.mode() && !firstRun() && onboardingCard(); as card) {

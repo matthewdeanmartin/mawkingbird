@@ -1,22 +1,154 @@
 <section class="radio-page">
   <h1>{{ (studio ? 'radio.studioTitle' : 'radio.title') | transloco }}</h1>
-  @if (!signedIn && (!shared() || studio)) {
+  <nav mbNavigation presentation="tabs" [label]="'radio.title' | transloco">
+    @for (tab of ['search', 'playlist', 'radio']; track tab) {
+      <a
+        mbNavLink
+        routerLink="/radio"
+        [queryParams]="{ view: tab }"
+        queryParamsHandling="merge"
+        [preserveFragment]="true"
+        [current]="!studio && view() === tab"
+        >{{ 'radio.tab.' + tab | transloco }}</a
+      >
+    }
+    <a mbNavLink routerLink="/radio/studio" [current]="studio">{{
+      'shell.modeNav.radio.studio' | transloco
+    }}</a>
+  </nav>
+  @if (!signedIn && studio) {
     <mb-content-state [title]="'radio.signIn' | transloco" />
   } @else if (studio) {
     <app-radio-studio />
-  } @else {
-    <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
-    @if (player.active()) {
-      <app-radio-controls />
+  } @else if (view() === 'radio') {
+    @if (!player.active()) {
+      <mb-content-state [title]="'radio.chooseTrack' | transloco">
+        <button mbButton (click)="playQueue()" [disabled]="!player.queue().length">
+          {{ 'radio.playPlaylist' | transloco }}
+        </button>
+      </mb-content-state>
     }
-    @if (shareParams()) {
-      <button mbButton variant="outline" type="button" (click)="copyLink()">
-        {{ 'radio.copyLink' | transloco }}
-      </button>
-      @if (copyState()) {
-        <p role="status">{{ copyState() | transloco }}</p>
+  } @else {
+    @if (view() === 'playlist') {
+      <h2>
+        {{ 'radio.tab.playlist' | transloco }}
+        <mb-help [label]="'radio.sourcesHelp' | transloco">{{
+          'radio.sourcesHint' | transloco
+        }}</mb-help>
+      </h2>
+      <form (ngSubmit)="save()">
+        <mb-field [label]="'radio.playlistName' | transloco"
+          ><input
+            mbControl
+            name="playlistName"
+            [ngModel]="playlistName()"
+            (ngModelChange)="playlistName.set($event)"
+        /></mb-field>
+        <button
+          mbButton
+          type="submit"
+          [disabled]="!playlistName().trim() || !player.queue().length"
+        >
+          {{ 'radio.savePlaylist' | transloco }}
+        </button>
+      </form>
+      <mb-toolbar density="compact" embedded [label]="'radio.tab.playlist' | transloco">
+        <button mbToolbarButton (click)="playQueue()" [disabled]="!player.queue().length">
+          {{ 'radio.playPlaylist' | transloco }}
+        </button>
+        <button mbToolbarButton (click)="addResults()" [disabled]="!results().length">
+          {{ 'radio.addResults' | transloco }}
+        </button>
+        @if (signedIn) {
+          <button mbToolbarButton (click)="publish(false)" [disabled]="!shareable()">
+            {{ 'radio.draftPost' | transloco }}
+          </button>
+          <button mbToolbarButton (click)="publish(true)" [disabled]="!shareable()">
+            {{ 'radio.draftThread' | transloco }}
+          </button>
+        }
+      </mb-toolbar>
+      <p class="muted">{{ 'radio.shareHint' | transloco }}</p>
+      @if (player.queue().length && !shareable()) {
+        <p>{{ 'radio.privatePlaylist' | transloco }}</p>
+      }
+      <ol class="playlist">
+        @for (track of player.queue(); track track.key; let i = $index) {
+          <li>
+            <span>{{
+              track.media.description ||
+                track.external?.label ||
+                track.post.account.display_name ||
+                track.post.account.acct
+            }}</span>
+            <mb-toolbar
+              density="compact"
+              embedded
+              [label]="'radio.trackActions' | transloco: { number: i + 1 }"
+            >
+              <button mbToolbarButton (click)="player.select(i); switchView('radio')">
+                {{ 'radio.play' | transloco }}
+              </button>
+              <button mbToolbarButton (click)="move(i, -1)" [disabled]="i === 0">
+                {{ 'radio.moveUp' | transloco }}
+              </button>
+              <button
+                mbToolbarButton
+                (click)="move(i, 1)"
+                [disabled]="i === player.queue().length - 1"
+              >
+                {{ 'radio.moveDown' | transloco }}
+              </button>
+              <button mbToolbarButton (click)="remove(i)">
+                {{ 'radio.removeTrack' | transloco }}
+              </button>
+            </mb-toolbar>
+          </li>
+        }
+      </ol>
+      @if (message()) {
+        <p role="status">{{ message() | transloco }}</p>
+      }
+      @if (playlists.error()) {
+        <p role="alert">{{ 'radio.saveFailed' | transloco }}</p>
+      }
+      <h3>{{ 'radio.savedPlaylists' | transloco }}</h3>
+      @for (saved of playlists.saved(); track saved.id) {
+        <mb-toolbar density="compact" embedded [label]="saved.name">
+          <button mbToolbarButton (click)="load(saved.tracks)">
+            {{ 'radio.loadPlaylist' | transloco: { name: saved.name } }}
+          </button>
+          <button mbToolbarButton (click)="playlists.remove(saved.id)">
+            {{ 'radio.deletePlaylist' | transloco }}
+          </button>
+        </mb-toolbar>
+      }
+      <form (ngSubmit)="importLinks()">
+        <mb-field [label]="'radio.importUrls' | transloco" [hint]="'radio.importHint' | transloco">
+          <textarea
+            mbControl
+            name="urls"
+            [ngModel]="importText()"
+            (ngModelChange)="importText.set($event)"
+          ></textarea>
+        </mb-field>
+        <button mbButton type="submit" [disabled]="importing() || !importText().trim()">
+          {{ 'radio.importPlaylist' | transloco }}
+        </button>
+      </form>
+      <mb-checkbox
+        [label]="'radio.includeThread' | transloco"
+        [checked]="includeThread()"
+        (checkedChange)="includeThread.set($event)"
+      />
+      @if (importing()) {
+        <p role="status">{{ 'radio.importing' | transloco }}</p>
+      }
+      @if (importSkipped() !== null) {
+        <p role="status">{{ 'radio.importResult' | transloco: { count: importSkipped() } }}</p>
       }
     }
+    <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
     <form (ngSubmit)="discover()">
       <mb-field [label]="'radio.source' | transloco">
         <select mbControl name="source" [ngModel]="source()" (ngModelChange)="chooseSource($event)">
@@ -72,6 +204,17 @@
       [checked]="player.nativeOnly()"
       (checkedChange)="changeNativeOnly($event)"
     />
+    <div class="playlist-filter">
+      <mb-checkbox
+        [label]="'radio.playlistableOnly' | transloco"
+        [checked]="view() === 'playlist' || playlistableOnly()"
+        [disabled]="view() === 'playlist'"
+        (checkedChange)="playlistableOnly.set($event)"
+      />
+      <mb-help [label]="'radio.sourcesHelp' | transloco">{{
+        'radio.sourcesHint' | transloco
+      }}</mb-help>
+    </div>
     @if (started()) {
       @if (!resolving() && !scan.loading() && !scan.exhausted() && !failed() && scanReady()) {
         <button mbButton variant="outline" type="button" (click)="scan.more()">
@@ -80,9 +223,7 @@
       }
 
       <p role="status">
-        {{
-          'radio.progress' | transloco: { scanned: scan.scanned(), matches: scan.posts().length }
-        }}
+        {{ 'radio.progress' | transloco: { scanned: scan.scanned(), matches: results().length } }}
       </p>
       @if (resolving() || scan.loading()) {
         <mb-content-state
@@ -108,13 +249,14 @@
         <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
       }
     }
-    @for (post of scan.posts(); track post.id) {
+    @for (post of results(); track post.id) {
       <app-status-card
         [status]="post"
         [radioQueue]="canQueue(post)"
         [radioSources]="player.radioSources(post)"
         (playAudio)="playPost(post)"
-        (listenRadio)="player.chooseExternal(post, $event)"
+        (addAudio)="addPost(post)"
+        (listenRadio)="player.chooseExternal(post, $event); switchView('radio')"
       />
     }
   }

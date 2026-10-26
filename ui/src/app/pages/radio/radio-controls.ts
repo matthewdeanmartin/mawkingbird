@@ -1,6 +1,7 @@
+import type { ExternalPlayer } from '../../audio-embeds/external-player';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -48,6 +49,10 @@ import { RadioPlayer } from './radio-player';
 })
 export class RadioControls implements OnDestroy {
   readonly player = inject(RadioPlayer);
+  readonly externalPlayer = input<ExternalPlayer>();
+  loadExternal(): void {
+    this.externalPlayer()?.activated.set(true);
+  }
   readonly fullscreen = signal(false);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly document = inject(DOCUMENT);

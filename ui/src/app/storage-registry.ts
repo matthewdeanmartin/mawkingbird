@@ -105,6 +105,13 @@ export interface StorageKeySpec {
  */
 export const STORAGE_KEYS: readonly StorageKeySpec[] = [
   {
+    base: 'mockingbird_radio_playlists',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Named audio playlists and post metadata, per account. Excluded from shareable settings.',
+  },
+  {
     base: 'mockingbird_radio_catalogue',
     storage: 'local',
     suffix: 'account',

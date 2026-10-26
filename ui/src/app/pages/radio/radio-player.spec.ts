@@ -71,6 +71,28 @@ describe('RadioPlayer', () => {
       content: `<a href="https://${provider}.com/artist/track-${id}">Listen</a>`,
     };
   }
+  it('keeps an explicit playlist independent of scans and preserves the current audio while adding and reordering', () => {
+    const first = post('first');
+    const second = post('second');
+    player.replacePlaylist(player.tracks(first));
+    player.select(0);
+    const currentAudio = audios[0];
+    player.scan.posts.set([post('unrelated')]);
+    player.addTracks(player.tracks(second));
+    expect(player.queue().map((track) => track.post.id)).toEqual(['first', 'second']);
+    expect(player.current()?.post.id).toBe('first');
+    expect(audios).toEqual([currentAudio]);
+    player.moveTrack(0, 1);
+    expect(player.current()?.post.id).toBe('first');
+    expect(player.selected()).toBe(1);
+    expect(audios).toEqual([currentAudio]);
+    player.removeTrack(0);
+    expect(player.current()?.post.id).toBe('first');
+    expect(player.selected()).toBe(0);
+    player.removeTrack(0);
+    expect(player.active()).toBe(false);
+    expect(player.queue()).toEqual([]);
+  });
   function controller() {
     return { play: vi.fn(), pause: vi.fn(), seek: vi.fn(), volume: vi.fn(), destroy: vi.fn() };
   }

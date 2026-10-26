@@ -439,6 +439,7 @@ export class StatusCard {
   readonly radioQueue = input(false);
   readonly radioSources = input<ExternalMedia[]>([]);
   readonly playAudio = output<void>();
+  readonly addAudio = output<void>();
   readonly listenRadio = output<ExternalMedia>();
   readonly externalHosts = viewChildren(ExternalPlayerHost);
   readonly showMedia = input(true);
@@ -453,6 +454,13 @@ export class StatusCard {
       return null;
     return radioPostRef(post.url)?.originalUrl ?? null;
   });
+  readonly playlistable = computed(
+    () =>
+      this.display.media_attachments.some((media) => media.type === 'audio') ||
+      postExternalMedia(this.display).some(
+        (media) => media.type === 'audio' && media.controllable && media.embed,
+      ),
+  );
 
   protected externalPlayers = computed(() =>
     postExternalMedia(this.display).filter((s) => s.provider !== 'youtube'),

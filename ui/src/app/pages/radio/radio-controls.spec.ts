@@ -32,10 +32,34 @@ describe('RadioControls', () => {
       select: vi.fn(),
       seek: vi.fn(),
       setVolume: vi.fn(),
+      stop: vi.fn(),
+      externalReady: signal(true),
     };
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: RadioPlayer, useValue: player }],
     });
+  });
+  it('renders Stop and provider actions in the full-player toolbar with Close immediately after Stop', () => {
+    player['current'] = signal({
+      ...track,
+      external: { provider: 'soundcloud', label: 'SoundCloud' },
+    });
+    const external = { activated: signal(true), close: vi.fn(), openOriginal: vi.fn() };
+    const fixture = TestBed.createComponent(RadioControls);
+    fixture.componentRef.setInput('externalPlayer', external);
+    fixture.detectChanges();
+    const buttons = Array.from(
+      fixture.nativeElement.querySelector('mb-toolbar').querySelectorAll('button'),
+    ) as HTMLButtonElement[];
+    const stop = buttons.findIndex((button) => button.textContent?.trim() === 'Stop Radio');
+    expect(stop).toBeGreaterThan(-1);
+    expect(buttons[stop + 1].textContent?.trim()).toBe('Close player');
+    buttons[stop + 1].click();
+    expect(external.close).toHaveBeenCalledOnce();
+    buttons.find((button) => button.textContent?.trim() === 'Open on SoundCloud')!.click();
+    expect(external.openOriginal).toHaveBeenCalledOnce();
+    buttons[stop].click();
+    expect(player['stop']).toHaveBeenCalledOnce();
   });
   it('scopes shortcuts to the player and leaves native range keys alone', () => {
     const fixture = TestBed.createComponent(RadioControls);

@@ -14,7 +14,7 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.mode.radio: Radio
-// i18n shell.modeNav.radio.player: Player
+// i18n shell.modeNav.radio.player: Radio
 // i18n shell.modeNav.radio.studio: Studio
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
@@ -64,6 +64,7 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       labelKey: 'shell.modeNav.radio.player',
       icon: 'M5 12a7 7 0 0 1 14 0M5 12v7H3v-7zM19 12v7h2v-7z',
       link: '/radio',
+      queryParams: { view: 'radio' },
       active: (url) => pathOf(url) === '/radio',
     },
     {
