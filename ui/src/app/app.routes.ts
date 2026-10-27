@@ -732,8 +732,8 @@ export const routes: Routes = [
       },
       {
         path: 'radio/studio',
-        title: 'Radio Studio',
-        loadComponent: () => import('./pages/radio/radio-page').then((m) => m.RadioPage),
+        title: 'Studio',
+        loadComponent: () => import('./pages/radio/studio-page').then((m) => m.StudioPage),
       },
       {
         path: 'videos',

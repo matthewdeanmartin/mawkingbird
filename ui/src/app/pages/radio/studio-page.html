@@ -1,0 +1,113 @@
+<section class="studio-page">
+  <h1>{{ 'studio.title' | transloco }}</h1>
+  @if (!signedIn) {
+    <mb-content-state [title]="'radio.signIn' | transloco" />
+  } @else {
+    <nav mbNavigation presentation="tabs" [label]="'studio.title' | transloco">
+      <a mbNavLink routerLink="/radio/studio" [current]="view() === 'compose'">{{
+        'studio.tab.compose' | transloco
+      }}</a>
+      <a
+        mbNavLink
+        routerLink="/radio/studio"
+        [queryParams]="{ view: 'catalogue' }"
+        [current]="view() === 'catalogue'"
+        >{{ 'studio.tab.catalogue' | transloco }}</a
+      >
+    </nav>
+    @if (view() === 'catalogue') {
+      <app-radio-studio />
+    } @else {
+      <section class="recording" [attr.aria-label]="'studio.recording' | transloco">
+        <h2>{{ 'radio.prepareAudio' | transloco }}</h2>
+        <p class="hint">{{ 'radio.stageHint' | transloco }}</p>
+        <mb-field [label]="'radio.audioFile' | transloco">
+          <input
+            mbControl
+            type="file"
+            accept="audio/*"
+            [disabled]="session.busy() || session.locked()"
+            (change)="pick($event)"
+          />
+        </mb-field>
+        @if (session.file(); as file) {
+          <p class="filename">{{ file.name }}</p>
+          @if (details(); as info) {
+            <dl class="details">
+              <div>
+                <dt>{{ 'radio.fileType' | transloco }}</dt>
+                <dd>{{ info.type }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'radio.fileSize' | transloco }}</dt>
+                <dd>{{ info.size }}</dd>
+              </div>
+              @if (duration()) {
+                <div>
+                  <dt>{{ 'radio.fileDuration' | transloco }}</dt>
+                  <dd>{{ clock(duration()) }}</dd>
+                </div>
+              }
+            </dl>
+          }
+          <audio
+            controls
+            preload="metadata"
+            [src]="session.preview()"
+            (loadedmetadata)="metadata($event)"
+          ></audio>
+          <div class="actions">
+            @if (session.attached()) {
+              <p role="status" class="attached">{{ 'radio.attached' | transloco }}</p>
+            } @else {
+              <button
+                mbButton
+                type="button"
+                [disabled]="session.busy() || !session.ready()"
+                (click)="attach()"
+              >
+                {{ 'radio.attach' | transloco }}
+              </button>
+            }
+            <button
+              mbButton
+              variant="outline"
+              type="button"
+              [disabled]="session.busy()"
+              (click)="discard()"
+            >
+              {{ 'radio.discardAudio' | transloco }}
+            </button>
+          </div>
+        }
+        @if (session.busy()) {
+          <p role="status">{{ 'radio.attaching' | transloco }}</p>
+        }
+        @if (refused()) {
+          <p role="alert">{{ 'radio.cannotAttach' | transloco }}</p>
+        }
+        @if (session.error()) {
+          <mb-content-state
+            kind="error"
+            announcement="alert"
+            [title]="session.error() | transloco"
+          />
+          @if (!session.ready()) {
+            <button mbButton type="button" (click)="session.initialize()">
+              {{ 'radio.retryStudio' | transloco }}
+            </button>
+          }
+        }
+      </section>
+      <app-compose
+        draftContext="studio"
+        [placeholder]="'studio.placeholder' | transloco"
+        (posted)="posted($event)"
+      />
+      @if (session.published(); as post) {
+        <p role="status">{{ 'radio.publishedAudio' | transloco }}</p>
+        <app-status-card [status]="post" />
+      }
+    }
+  }
+</section>

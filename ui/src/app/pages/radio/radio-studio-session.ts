@@ -17,7 +17,6 @@ interface UploadLimits {
       video_size_limit?: number;
       audio_size_limit?: number;
     };
-    statuses?: { max_characters?: number };
   };
 }
 
@@ -38,17 +37,13 @@ export class RadioStudioSession {
   readonly catalogue = signal(this.newCatalogue());
   readonly file = signal<File | null>(null);
   readonly preview = signal('');
-  readonly text = signal('');
-  readonly description = signal('');
-  readonly warning = signal('');
-  readonly visibility = signal('private');
   readonly busy = signal(false);
   readonly locked = signal(false);
   readonly published = signal<Status | null>(null);
   readonly opened = signal<Status | null>(null);
   readonly opening = signal(false);
+  readonly attached = signal<MediaAttachment | null>(null);
   private media?: MediaAttachment;
-  private publishKey = '';
 
   constructor() {
     inject(DestroyRef).onDestroy(() => {
@@ -153,87 +148,80 @@ export class RadioStudioSession {
   discard(): void {
     this.releasePreview();
     this.file.set(null);
-    this.text.set('');
-    this.description.set('');
-    this.warning.set('');
-    this.visibility.set('private');
     this.busy.set(false);
     this.locked.set(false);
     this.media = undefined;
-    this.publishKey = '';
+    this.attached.set(null);
     this.error.set('');
     this.published.set(null);
   }
 
-  async publish(): Promise<void> {
+  /**
+   * Upload the staged recording and wait until the server finishes processing
+   * it, so the composer can publish it. Nothing uploads before this explicit step;
+   * a retry after a failure reuses the upload rather than sending the bytes again.
+   */
+  async attach(): Promise<MediaAttachment | null> {
     const file = this.file();
-    if (!file || this.busy() || !this.ready() || !this.isCurrent(this.identity)) return;
+    if (!file || this.busy() || !this.ready() || !this.isCurrent(this.identity)) return null;
+    if (this.attached()) return this.attached();
     const identity = this.identity;
     this.busy.set(true);
     this.error.set('');
     try {
-      // Home server: background-role instance info may target a different configured server.
-      const info = await this.request(this.http.get<UploadLimits>('/api/v2/instance'));
-      if (!this.isCurrent(identity)) return;
-      const limits = info.configuration?.media_attachments;
-      const max = limits?.audio_size_limit ?? limits?.video_size_limit;
-      if (!max || !limits?.supported_mime_types) {
-        this.error.set('radio.limitsUnavailable');
-        return;
-      }
-      if (file.size > max || !limits.supported_mime_types.includes(file.type)) {
-        this.error.set('radio.unsupportedAudio');
-        return;
-      }
-      const maxText = info.configuration?.statuses?.max_characters;
-      if (maxText && [...this.text(), ...this.warning()].length > maxText) {
-        this.error.set('radio.textTooLong');
-        return;
-      }
-      this.locked.set(true);
-      this.publishKey ||= crypto.randomUUID();
       if (!this.media) {
-        const uploaded = await this.request(
-          this.api.uploadMedia(file, this.description()),
-          180_000,
-        );
-        if (!this.isCurrent(identity)) return;
+        // Home server: background-role instance info may target a different configured server.
+        const info = await this.request(this.http.get<UploadLimits>('/api/v2/instance'));
+        if (!this.isCurrent(identity)) return null;
+        const limits = info.configuration?.media_attachments;
+        const max = limits?.audio_size_limit ?? limits?.video_size_limit;
+        if (!max || !limits?.supported_mime_types) {
+          this.error.set('radio.limitsUnavailable');
+          return null;
+        }
+        if (file.size > max || !limits.supported_mime_types.includes(file.type)) {
+          this.error.set('radio.unsupportedAudio');
+          return null;
+        }
+        this.locked.set(true);
+        const uploaded = await this.request(this.api.uploadMedia(file), 180_000);
+        if (!this.isCurrent(identity)) return null;
         this.media = uploaded;
       }
-      if (!this.isCurrent(identity)) return;
-      // Audio processing is asynchronous; never submit a status with unfinished media.
+      // Audio processing is asynchronous; never hand over unfinished media.
       let attachment: MediaAttachment = this.media;
       for (let poll = 0; !attachment.url && poll < 120; poll++) {
         await this.request(timer(1000));
         const media: MediaAttachment = await this.request(
           this.http.get<MediaAttachment>(`/api/v1/media/${encodeURIComponent(attachment.id)}`),
         );
-        if (!this.isCurrent(identity)) return;
+        if (!this.isCurrent(identity)) return null;
         if (media?.id) this.media = attachment = media;
       }
       if (!attachment.url) throw new Error('Processing pending');
-      const post = await this.request(
-        this.api.postStatus(
-          this.text(),
-          {
-            mediaIds: [attachment.id],
-            spoilerText: this.warning(),
-            sensitive: !!this.warning(),
-            visibility: this.visibility(),
-          },
-          this.publishKey,
-        ),
-        60_000,
-      );
-      if (!this.isCurrent(identity)) return;
-      this.catalogue().remember(post);
-      this.discard();
-      this.published.set(post);
+      this.attached.set(attachment);
+      return attachment;
     } catch {
-      if (this.isCurrent(identity)) this.error.set('radio.publishFailed');
+      if (this.isCurrent(identity)) this.error.set('radio.attachFailed');
+      return null;
     } finally {
       if (this.isCurrent(identity)) this.busy.set(false);
     }
+  }
+
+  /** The composer dropped the attachment; the staged file may be replaced again. */
+  detach(): void {
+    if (!this.attached()) return;
+    this.attached.set(null);
+    this.media = undefined;
+    this.locked.set(false);
+  }
+
+  /** The composer published the post; record it and release the staged bytes. */
+  posted(post: Status): void {
+    this.catalogue().remember(post);
+    this.discard();
+    this.published.set(post);
   }
 
   private request<T>(source: Observable<T>, milliseconds = 30_000): Promise<T> {

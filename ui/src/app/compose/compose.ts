@@ -1863,6 +1863,22 @@ export class Compose implements OnDestroy {
     this.media.update((list) => list.map((m, i) => (i === index ? { ...m, description } : m)));
   }
 
+  /** Ids of the attachments the composer will publish, for hosts that supply them. */
+  readonly attachmentIds = computed(() => this.media().map((item) => item.media.id));
+
+  /**
+   * Attach media a host workspace already uploaded and finished processing, as
+   * Studio does for long recordings. The composer then owns its description,
+   * removal and publication exactly as for its own uploads.
+   */
+  attachUploaded(media: MediaAttachment, file?: File): boolean {
+    if (!this.canAttachMedia() || this.media().some((item) => item.media.id === media.id))
+      return false;
+    this.media.update((list) => [...list, { media, description: media.description ?? '', file }]);
+    this.noteBlueskyMediaLimits();
+    return true;
+  }
+
   removeMedia(index: number): void {
     this.media.update((list) => {
       const going = list[index];

@@ -177,6 +177,26 @@ describe('RadioPlayer', () => {
     expect(player.externalAllowed().size).toBe(0);
   });
 
+  it('stops after each recording when continuous play is off, and remembers volume', async () => {
+    player.scan.posts.set([post('1'), post('2')]);
+    player.setContinuous(false);
+    player.setVolume(0.4);
+    player.select(0);
+    expect(audios[0].volume).toBe(0.4);
+    audios[0].dispatchEvent(new Event('ended'));
+    await Promise.resolve();
+    expect(player.selected()).toBe(0);
+    expect(player.playing()).toBe(false);
+    player.setContinuous(true);
+    player.play();
+    audios[0].dispatchEvent(new Event('ended'));
+    await vi.waitFor(() => expect(player.selected()).toBe(1));
+    token.set('other');
+    TestBed.tick();
+    expect(player.volume()).toBe(0.4);
+    expect(player.continuous()).toBe(true);
+  });
+
   it('reports widget titles through the title cascade', () => {
     const external = {
       ...externalPost('1'),

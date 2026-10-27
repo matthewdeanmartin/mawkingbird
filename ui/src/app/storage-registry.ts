@@ -119,6 +119,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'External audio providers the account allowed to load and autoplay in Radio. Feed embeds still load on click.',
   },
   {
+    base: 'mockingbird_radio_settings',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'setting',
+    note: 'Radio listening preferences: continuous play and default volume.',
+  },
+  {
     base: 'mockingbird_radio_catalogue',
     storage: 'local',
     suffix: 'account',

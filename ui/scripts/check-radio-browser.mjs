@@ -240,7 +240,6 @@ try {
       publications++;
       const draft = route.request().postDataJSON();
       assert.equal(draft.status, 'Prepared locally');
-      assert.equal(draft.visibility, 'private');
       assert.deepEqual(draft.media_ids, ['audio-1']);
       assert.ok(route.request().headers()['idempotency-key']);
       body = audio;
@@ -312,11 +311,13 @@ try {
   });
   await dockFitsColumn();
   const startedAt = await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime);
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Studio', exact: true })
-    .click();
-  await page.getByRole('heading', { name: 'Radio Studio', exact: true }).waitFor();
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await page.getByRole('heading', { name: 'Studio', exact: true }).waitFor();
+  assert.equal(
+    await page.locator('app-radio-page nav').count(),
+    0,
+    'Studio is its own page, not a Radio tab',
+  );
   assert.equal(await page.locator('audio[data-radio]').evaluate((audio) => audio.paused), false);
   assert.ok(
     (await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime)) >= startedAt,
@@ -373,9 +374,10 @@ try {
     .click();
   assert.equal(await page.locator('audio[data-radio]').count(), 0);
   await page.setViewportSize({ width: 1280, height: 900 });
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
   await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Studio', exact: true })
+    .locator('app-studio-page nav')
+    .getByRole('link', { name: 'My audio', exact: true })
     .click();
   await page.getByRole('button', { name: 'Find all my audio', exact: true }).click();
   await page.getByText('All available history has been scanned.').waitFor();
@@ -383,50 +385,56 @@ try {
   await page.getByRole('button', { name: 'Preview post', exact: true }).first().click();
   await page.locator('app-radio-studio app-status-card').waitFor();
   await page
+    .locator('app-studio-page nav')
+    .getByRole('link', { name: 'New audio post', exact: true })
+    .click();
+  const composer = page.locator('app-studio-page app-compose textarea').first();
+  await page
     .getByLabel('Audio file', { exact: true })
     .setInputFiles({ name: 'recording.wav', mimeType: 'audio/wav', buffer: wav });
-  await page.getByLabel('Post text', { exact: true }).fill('Prepared locally');
-  await page.getByLabel('Audio description or transcript').fill('A local recording');
+  await page.locator('.details').getByText('WAV', { exact: true }).waitFor();
+  await composer.fill('Prepared locally');
   assert.equal(uploads, 0, 'Staging never uploads');
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Search', exact: true })
-    .click();
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Studio', exact: true })
-    .click();
-  assert.equal(
-    await page.getByLabel('Post text', { exact: true }).inputValue(),
-    'Prepared locally',
-  );
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
+  await page.locator('app-radio-page').waitFor();
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await page.locator('.filename').getByText('recording.wav', { exact: true }).waitFor();
+  assert.equal(await composer.inputValue(), 'Prepared locally');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: '.test-results/radio-studio-mobile.png', fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.screenshot({ path: '.test-results/radio-studio-desktop.png', fullPage: true });
   const pagesBeforeReload = accountPages;
-  await page.reload();
+  await page.goto(`${base}/radio/studio?view=catalogue`);
   await page.getByText('All available history has been scanned.').waitFor();
   assert.equal(await page.locator('.catalogue li').count(), 2);
   assert.equal(accountPages, pagesBeforeReload, 'Cached catalogue avoids rescanning on reload');
-  assert.equal(
-    await page.getByLabel('Post text', { exact: true }).count(),
-    0,
-    'Staged draft is session-only',
-  );
   await page.getByRole('button', { name: 'Check for newer audio', exact: true }).click();
   await page.getByText('All available history has been scanned.').waitFor();
   assert.equal(accountPages, pagesBeforeReload + 1, 'Refresh stops at known history');
   await page
+    .locator('app-studio-page nav')
+    .getByRole('link', { name: 'New audio post', exact: true })
+    .click();
+  assert.equal(await page.locator('.filename').count(), 0, 'Staged recordings are session-only');
+  await page
     .getByLabel('Audio file', { exact: true })
     .setInputFiles({ name: 'recording.wav', mimeType: 'audio/wav', buffer: wav });
-  await page.getByLabel('Post text', { exact: true }).fill('Prepared locally');
-  await page.getByRole('button', { name: 'Publish audio post', exact: true }).click();
+  await page.getByRole('button', { name: 'Attach to post', exact: true }).click();
+  await page.getByText(/Attached and processed/).waitFor();
+  assert.equal(uploads, 1, 'Attaching uploads once');
+  assert.equal(publications, 0, 'Attaching never publishes');
+  await composer.fill('Prepared locally');
+  await page
+    .locator('app-studio-page app-compose')
+    .getByRole('button', { name: 'Post', exact: true })
+    .click();
   await page.getByText('Your audio post was published.', { exact: true }).waitFor();
   assert.equal(uploads, 1);
   assert.equal(publications, 1);
   externalScenario = true;
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
   await page
     .locator('app-radio-page nav')
     .getByRole('link', { name: 'Search', exact: true })
@@ -524,10 +532,7 @@ try {
     'Radio closes an opaque inline player',
   );
   const requestsBeforeNavigation = providerRequests;
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Studio', exact: true })
-    .click();
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
   assert.equal(
     providerRequests,
@@ -556,6 +561,24 @@ try {
   await page.locator('app-radio-dock').waitFor({ state: 'detached' });
   assert.equal(await page.locator('app-radio-dock iframe').count(), 0);
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
+  await page
+    .locator('app-radio-page nav')
+    .getByRole('link', { name: 'Settings', exact: true })
+    .click();
+  await page.screenshot({ path: '.test-results/radio-settings.png', fullPage: true });
+  await page.getByRole('button', { name: 'Remove SoundCloud', exact: true }).click();
+  await page.getByText(/No services are allowed yet/).waitFor();
+  assert.equal(
+    await page.evaluate(() =>
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith('mockingbird_radio_providers'))
+        .map((key) => localStorage.getItem(key))
+        .join(),
+    ),
+    '[]',
+    'Revoking a provider is remembered',
+  );
   await page
     .locator('app-radio-page nav')
     .getByRole('link', { name: 'Search', exact: true })

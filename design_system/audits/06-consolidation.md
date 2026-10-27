@@ -883,3 +883,21 @@ have no candidates, so 11-reconciliation.json needs no candidate changes. Shared
 design-widget implementations are unchanged. Browser checks cover dock bounds on
 desktop, tablet, and mobile; provider consent and autoplay; the folded frame; and
 control order.
+
+## Radio settings and Studio composer, 2026-10-26
+
+Radio gains a Settings tab that reuses Settings Row, Checkbox, Button and a
+Field/Control range. Page-level playlist actions use Button, with drafting moved
+into the existing post-menu overflow. Saved playlists use the same icon-row
+treatment as playlist tracks. Studio leaves the Radio tabs for its own
+top-level page. That page has Navigation tabs for the new post and the
+catalogue, a recording panel (Field/Control, Button, Content State), and the
+shared Compose component in place of Studio's own text, warning and visibility
+fields.
+
+Reviewed the regenerated inventory. `radio-studio.html` loses the publication
+fields now owned by Compose, and `radio-page.html` loses the Studio tab and the
+text toolbar. `studio-page.html` and `radio-settings.ts` are new candidate files
+(251 in total), each reconciled as adopted scope in `11-reconciliation.json`.
+Shared design-widget implementations are unchanged; Compose gains only a public
+method for attaching already-processed media.

@@ -73,8 +73,6 @@ describe('RadioStudioSession', () => {
   function stage(): File {
     const file = new File(['audio'], 'recording.wav', { type: 'audio/wav' });
     session.stage(file);
-    session.text.set('My recording');
-    session.description.set('Transcript');
     return file;
   }
 
@@ -103,41 +101,64 @@ describe('RadioStudioSession', () => {
     expect(session.catalogue().data().posts[0].id).toBe('9');
   });
 
-  it('stages locally, validates limits, publishes explicitly and releases the blob', async () => {
+  it('stages locally, validates limits, uploads only when attached and releases the blob once posted', async () => {
     const file = stage();
     expect(api.uploadMedia).not.toHaveBeenCalled();
     expect(localStorage.length).toBe(0);
-    await session.publish();
-    expect(api.uploadMedia).toHaveBeenCalledWith(file, 'Transcript');
-    expect(api.postStatus).toHaveBeenCalledWith(
-      'My recording',
-      { mediaIds: ['media'], spoilerText: '', sensitive: false, visibility: 'private' },
-      expect.any(String),
-    );
+    const media = await session.attach();
+    expect(api.uploadMedia).toHaveBeenCalledWith(file);
+    expect(media).toEqual({ id: 'media', url: 'https://example.com/audio' });
+    expect(session.attached()).toEqual(media);
+    expect(session.locked()).toBe(true);
+    // The composer, not the session, creates the status.
+    expect(api.postStatus).not.toHaveBeenCalled();
+    expect(await session.attach()).toBe(media);
+    expect(api.uploadMedia).toHaveBeenCalledTimes(1);
+    session.posted(post);
     expect(session.file()).toBeNull();
+    expect(session.attached()).toBeNull();
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:preview');
     expect(session.published()).toEqual(post);
     expect(session.catalogue().data().posts[0].id).toBe('9');
-    expect(localStorage.getItem(localStorage.key(0)!)).not.toContain('Transcript');
   });
 
-  it('retains failed drafts and retries the same publication without uploading again', async () => {
+  it('lets a detached recording be replaced and uploads the replacement afresh', async () => {
     stage();
-    api.postStatus.mockReturnValueOnce(throwError(() => new Error('timeout')));
-    await session.publish();
-    const key = api.postStatus.mock.calls[0][2];
+    await session.attach();
+    session.stage(new File(['other'], 'other.wav', { type: 'audio/wav' }));
+    expect(session.file()?.name).toBe('recording.wav');
+    session.detach();
+    expect(session.locked()).toBe(false);
+    session.stage(new File(['other'], 'other.wav', { type: 'audio/wav' }));
+    expect(session.file()?.name).toBe('other.wav');
+    await session.attach();
+    expect(api.uploadMedia).toHaveBeenCalledTimes(2);
+  });
+
+  it('retains a failed attachment and retries processing without uploading again', async () => {
+    stage();
+    api.uploadMedia.mockReturnValueOnce(of({ id: 'media', url: null }));
+    http.get.mockImplementation((url: string) =>
+      url.endsWith('/instance') ? of(limits) : throwError(() => new Error('timeout')),
+    );
+    expect(await session.attach()).toBeNull();
     expect(session.file()).not.toBeNull();
     expect(session.locked()).toBe(true);
-    expect(session.error()).toBe('radio.publishFailed');
-    await session.publish();
+    expect(session.error()).toBe('radio.attachFailed');
+    http.get.mockImplementation((url: string) =>
+      of(url.endsWith('/instance') ? limits : { id: 'media', url: 'https://example.com/ready' }),
+    );
+    vi.useFakeTimers();
+    const retry = session.attach();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect((await retry)?.url).toBe('https://example.com/ready');
     expect(api.uploadMedia).toHaveBeenCalledTimes(1);
-    expect(api.postStatus.mock.calls[1][2]).toBe(key);
   });
 
   it('rejects unavailable limits and oversized files before uploading', async () => {
     stage();
     http.get.mockReturnValueOnce(of({}));
-    await session.publish();
+    await session.attach();
     expect(session.error()).toBe('radio.limitsUnavailable');
     http.get.mockReturnValueOnce(
       of({
@@ -146,41 +167,41 @@ describe('RadioStudioSession', () => {
         },
       }),
     );
-    await session.publish();
+    await session.attach();
     expect(session.error()).toBe('radio.unsupportedAudio');
     expect(session.locked()).toBe(false);
     expect(api.uploadMedia).not.toHaveBeenCalled();
   });
 
-  it('waits for asynchronous audio processing before creating the post', async () => {
+  it('waits for asynchronous audio processing before handing the attachment to the composer', async () => {
     vi.useFakeTimers();
     stage();
     api.uploadMedia.mockReturnValueOnce(of({ id: 'media', url: null }));
     http.get.mockImplementation((url: string) =>
       of(url.endsWith('/instance') ? limits : { id: 'media', url: 'https://example.com/ready' }),
     );
-    const publishing = session.publish();
+    const attaching = session.attach();
     await Promise.resolve();
     await Promise.resolve();
-    expect(api.postStatus).not.toHaveBeenCalled();
+    expect(session.attached()).toBeNull();
     await vi.advanceTimersByTimeAsync(1000);
-    await publishing;
-    expect(api.postStatus).toHaveBeenCalledTimes(1);
+    expect((await attaching)?.url).toBe('https://example.com/ready');
+    expect(session.attached()?.url).toBe('https://example.com/ready');
   });
 
-  it('clears local drafts and cancels publication when the account changes', async () => {
+  it('clears local drafts and cancels an attachment upload when the account changes', async () => {
     stage();
     const uploading = new Subject<unknown>();
     api.uploadMedia.mockReturnValueOnce(uploading);
-    const publishing = session.publish();
+    const attaching = session.attach();
     await Promise.resolve();
     token.set('second');
     TestBed.tick();
-    await publishing;
+    expect(await attaching).toBeNull();
     expect(uploading.observed).toBe(false);
     expect(session.file()).toBeNull();
+    expect(session.attached()).toBeNull();
     expect(session.catalogue().data().posts).toEqual([]);
-    expect(api.postStatus).not.toHaveBeenCalled();
   });
 
   it('records missing posts without treating transient errors as deletion', async () => {

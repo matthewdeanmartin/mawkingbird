@@ -23,6 +23,7 @@ import { accountScopeSuffix } from '../../account-scope';
 import { trackTitle } from './track-title';
 
 const PROVIDERS_KEY = 'mockingbird_radio_providers';
+const SETTINGS_KEY = 'mockingbird_radio_settings';
 
 export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio audio factory', {
   providedIn: 'root',
@@ -64,6 +65,8 @@ export class RadioPlayer {
   readonly time = signal(0);
   readonly duration = signal(0);
   readonly volume = signal(1);
+  /** Advance to the next track when one ends; off stops after each recording. */
+  readonly continuous = signal(true);
   readonly selected = signal(-1);
   private readonly alternatives = signal<ReadonlyMap<string, string>>(new Map());
   /** Providers this account allowed to load and autoplay inside Radio. */
@@ -148,11 +151,13 @@ export class RadioPlayer {
     this.document.addEventListener('play', otherStarted, true);
     let identity = this.identity();
     this.loadAllowed();
+    this.loadSettings();
     effect(() => {
       const next = this.identity();
       if (identity !== next) {
         identity = next;
         this.loadAllowed();
+        this.loadSettings();
         this.stop();
         this.scan.clear();
         this.playlist.set(null);
@@ -322,7 +327,7 @@ export class RadioPlayer {
         if (current() && this.wantsPlay) this.waiting.set(true);
       });
       audio.addEventListener('ended', () => {
-        if (current() && this.wantsPlay) void this.advance();
+        if (current() && this.wantsPlay) this.ended();
       });
       audio.addEventListener('error', () => {
         this.unavailable(audio);
@@ -428,6 +433,36 @@ export class RadioPlayer {
     this.volume.set(Math.max(0, Math.min(1, value)));
     if (this.audio) this.audio.volume = this.volume();
     this.widget?.volume(this.volume());
+    this.saveSettings();
+  }
+  setContinuous(value: boolean): void {
+    this.continuous.set(value);
+    this.saveSettings();
+  }
+  private ended(): void {
+    if (this.continuous()) void this.advance();
+    else this.pause();
+  }
+  private loadSettings(): void {
+    let data: { continuous?: unknown; volume?: unknown } | null;
+    try {
+      data = JSON.parse(localStorage.getItem(SETTINGS_KEY + accountScopeSuffix()) ?? 'null');
+    } catch {
+      data = null;
+    }
+    this.continuous.set(data?.continuous !== false);
+    const volume = typeof data?.volume === 'number' ? data.volume : 1;
+    this.volume.set(Number.isFinite(volume) ? Math.max(0, Math.min(1, volume)) : 1);
+  }
+  private saveSettings(): void {
+    try {
+      localStorage.setItem(
+        SETTINGS_KEY + accountScopeSuffix(),
+        JSON.stringify({ continuous: this.continuous(), volume: this.volume() }),
+      );
+    } catch {
+      /* Settings still apply for this tab. */
+    }
   }
   stop(): void {
     this.releaseAudio();
@@ -462,6 +497,7 @@ export class RadioPlayer {
     }
     this.widget = controller;
     this.externalReady.set(true);
+    controller.volume(this.volume());
     if (this.autoExternalPlay && this.externalAllowed().has(this.current()!.external!.provider))
       this.play();
   }
@@ -510,7 +546,7 @@ export class RadioPlayer {
     if (typeof state.duration === 'number' && Number.isFinite(state.duration))
       this.duration.set(Math.max(0, state.duration));
     if (state.ended && this.wantsPlay) {
-      void this.advance();
+      this.ended();
       return;
     }
     if (state.playing !== undefined) {

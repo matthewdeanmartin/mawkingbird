@@ -114,23 +114,24 @@ startup budget, and browser checks with real SoundCloud/Mixcloud frames.
   native description, then post text, then author. It's used in the dock, the
   full player heading, the queue and playlist rows.
 
-Not yet done in sprint 1:
+Completed after the first trial:
 
-- Page-level Radio toolbars (Play playlist, Add results, Draft post/thread,
-  saved-playlist Load/Delete) still render as text-only buttons. Planned
-  treatment: icon buttons plus a ⋯ overflow menu.
-- A Settings or Playlist control to revoke a provider.
-- Mixcloud titles (its widget has no title method; oEmbed would contact the
-  provider before consent).
-- Translations of the new strings (they fall back to English).
+- **Radio Settings tab** (Search · Playlist · Radio · Settings), using the
+  settings design language (`mb-settings-row`, checkbox, field). It lists
+  allowed players with **Remove {provider}**, **Play the next track
+  automatically** (off stops after each recording, for podcasts), and
+  **Starting volume**. Stored in `mockingbird_radio_settings` (per account,
+  registered); provider widgets receive the volume when they attach.
+- **Page-level actions.** Play playlist is a primary Button and Add results is
+  an outline Button; drafting a post or thread moves into a ••• menu. Saved
+  playlists use the icon-row treatment (load as list, delete), with titles and
+  track counts.
+- Mixcloud titles already fall back to post text through the cascade (clipped
+  to about 80 characters; the bar truncates visually). No change needed.
+- Translations: deliberately out of scope until Radio is complete. All i18n is
+  done globally at the end.
 
-Validation: `cd ui && make test` (includes `design:inventory-check`, test
-inventory and coverage), `npm run check:static`, `ng lint`,
-`npm run build:mockingbird` (initial total 840.94 kB),
-`npm run test:radio:browser` (passed twice), and `make design-verify`
-(418 browser assertions). The inventory was regenerated and reviewed (one
-styling escape removed). `make test-integration` was not run; no API calls
-changed.
+Sprint 1 validation is recorded with sprint 2 below.
 
 ## Sprint 2 — Studio as Write-plus-audio, and the taxonomy
 
@@ -144,8 +145,37 @@ changed.
    later.
 4. Keep the catalogue as a secondary Studio view.
 
-Read `MIGRATION.md` before touching publishing. Keep explicit publication,
-upload limits and duplicate-submit protection.
+Keep explicit publication, upload limits and duplicate-submit protection.
+(`MIGRATION.md` covers site deployment, which this sprint does not touch.)
+
+### Sprint 2 progress (2026-10-26) — ready for a user trial
+
+- **Taxonomy.** Studio is no longer a Radio tab. `/radio/studio` (same URL) is
+  its own page, reached from the top-level mode navigation, with tabs **New
+  audio post** and **My audio** (catalogue, `?view=catalogue`).
+- **Composer.** The page hosts the shared `app-compose` (`draftContext="studio"`),
+  so the post gets the full composer: text, content warning, visibility,
+  language, targets, proofreader, tags, alt text and drafts. Compose gained only
+  `attachUploaded(media, file)` and a read-only `attachmentIds`; nothing is
+  forked.
+- **Recording panel.** Choose a file and see its format, size and duration
+  (from the preview's metadata), plus a preview player. **Attach to post** runs
+  the session's existing pipeline (server limit check, upload, wait for
+  processing) and then hands the processed attachment to the composer. Removing
+  it in the composer releases it in Studio; returning to Studio reattaches it.
+  **Discard recording** removes it from both.
+- **Session.** `publish()` became `attach()` / `detach()` / `posted()`. The
+  composer now creates the status, so Studio's own text, warning and visibility
+  fields are gone. Retrying a failed attach still reuses the upload.
+- **Behaviour change:** Studio previously defaulted to Followers-only
+  visibility; the composer now uses the account's normal default.
+
+Still to do (moved to a later sprint): the trim/fade/inspection tools from the
+Studio spec, Phase 1. Recording bytes remain session-only.
+
+Validation (sprints 1 and 2 together): see the final report in this file's
+history; targeted specs, `make test`, `check:static`, `ng lint`,
+`build:mockingbird`, `test:radio:browser` and `make design-verify`.
 
 ## Sprint 3 — more sources and better titles
 
@@ -175,13 +205,18 @@ upload limits and duplicate-submit protection.
    share a playlist.
 5. Per-entry titles, editable in the playlist and carried in the reply text.
 
-## Sprint 5 — single-recording page
+## Sprint 5 — Listen: the single-recording page
 
 A video-page-style view for one recording: a large player, the post, and
 threaded comments with an inline reply composer (reusing the mini composer).
 Add to queue / play next. Comments must stay readable while playback continues;
 the dock keeps playing when you navigate away. Podcast-length items get resume
 (from the player spec, Phase 1).
+
+Name: **Listen**, the audio counterpart of Watch (route `/listen?post=…`). It is
+also where inline-only providers (Deezer, Apple Music/Podcasts, Spotify,
+Bandcamp…) go. Their cards get **Open in Listen** instead of Open in Radio, because
+a single recording does not need continuous advance.
 
 ## Resolved questions (2026-10-26)
 

@@ -1,25 +1,20 @@
 <section class="radio-page">
-  <h1>{{ (studio ? 'radio.studioTitle' : 'radio.title') | transloco }}</h1>
+  <h1>{{ 'radio.title' | transloco }}</h1>
   <nav mbNavigation presentation="tabs" [label]="'radio.title' | transloco">
-    @for (tab of ['search', 'playlist', 'radio']; track tab) {
+    @for (tab of views; track tab) {
       <a
         mbNavLink
         routerLink="/radio"
         [queryParams]="{ view: tab }"
         queryParamsHandling="merge"
         [preserveFragment]="true"
-        [current]="!studio && view() === tab"
+        [current]="view() === tab"
         >{{ 'radio.tab.' + tab | transloco }}</a
       >
     }
-    <a mbNavLink routerLink="/radio/studio" [current]="studio">{{
-      'shell.modeNav.radio.studio' | transloco
-    }}</a>
   </nav>
-  @if (!signedIn && studio) {
-    <mb-content-state [title]="'radio.signIn' | transloco" />
-  } @else if (studio) {
-    <app-radio-studio />
+  @if (view() === 'settings') {
+    <app-radio-settings />
   } @else if (view() === 'radio') {
     @if (!player.active()) {
       <mb-content-state [title]="'radio.chooseTrack' | transloco">
@@ -52,22 +47,34 @@
           {{ 'radio.savePlaylist' | transloco }}
         </button>
       </form>
-      <mb-toolbar density="compact" embedded [label]="'radio.tab.playlist' | transloco">
-        <button mbToolbarButton (click)="playQueue()" [disabled]="!player.queue().length">
+      <div class="playlist-actions">
+        <button mbButton type="button" (click)="playQueue()" [disabled]="!player.queue().length">
+          <app-radio-icon name="play" />
           {{ 'radio.playPlaylist' | transloco }}
         </button>
-        <button mbToolbarButton (click)="addResults()" [disabled]="!results().length">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          (click)="addResults()"
+          [disabled]="!results().length"
+        >
           {{ 'radio.addResults' | transloco }}
         </button>
         @if (signedIn) {
-          <button mbToolbarButton (click)="publish(false)" [disabled]="!shareable()">
-            {{ 'radio.draftPost' | transloco }}
-          </button>
-          <button mbToolbarButton (click)="publish(true)" [disabled]="!shareable()">
-            {{ 'radio.draftThread' | transloco }}
-          </button>
+          <mb-post-menu
+            [label]="'radio.moreActions' | transloco"
+            [closeLabel]="'radio.closeMenu' | transloco"
+          >
+            <button mbMenuItem type="button" (click)="publish(false)" [disabled]="!shareable()">
+              {{ 'radio.draftPost' | transloco }}
+            </button>
+            <button mbMenuItem type="button" (click)="publish(true)" [disabled]="!shareable()">
+              {{ 'radio.draftThread' | transloco }}
+            </button>
+          </mb-post-menu>
         }
-      </mb-toolbar>
+      </div>
       <p class="muted">{{ 'radio.shareHint' | transloco }}</p>
       @if (player.queue().length && !shareable()) {
         <p>{{ 'radio.privatePlaylist' | transloco }}</p>
@@ -137,16 +144,39 @@
         <p role="alert">{{ 'radio.saveFailed' | transloco }}</p>
       }
       <h3>{{ 'radio.savedPlaylists' | transloco }}</h3>
-      @for (saved of playlists.saved(); track saved.id) {
-        <mb-toolbar density="compact" embedded [label]="saved.name">
-          <button mbToolbarButton (click)="load(saved.tracks)">
-            {{ 'radio.loadPlaylist' | transloco: { name: saved.name } }}
-          </button>
-          <button mbToolbarButton (click)="playlists.remove(saved.id)">
-            {{ 'radio.deletePlaylist' | transloco }}
-          </button>
-        </mb-toolbar>
-      }
+      <ul class="saved">
+        @for (saved of playlists.saved(); track saved.id) {
+          <li>
+            <div class="row">
+              <span class="track"
+                ><span class="track-title">{{ saved.name }}</span>
+                <span class="muted">{{
+                  'radio.trackCount' | transloco: { count: saved.tracks.length }
+                }}</span></span
+              >
+              <mb-toolbar class="row-actions" density="compact" embedded [label]="saved.name">
+                @let loadLabel = 'radio.loadPlaylist' | transloco: { name: saved.name };
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="loadLabel"
+                  [title]="loadLabel"
+                  (click)="load(saved.tracks)"
+                >
+                  <app-radio-icon name="list" />
+                </button>
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.deletePlaylist' | transloco"
+                  [title]="'radio.deletePlaylist' | transloco"
+                  (click)="playlists.remove(saved.id)"
+                >
+                  <app-radio-icon name="remove" />
+                </button>
+              </mb-toolbar>
+            </div>
+          </li>
+        }
+      </ul>
       <form (ngSubmit)="importLinks()">
         <mb-field [label]="'radio.importUrls' | transloco" [hint]="'radio.importHint' | transloco">
           <textarea

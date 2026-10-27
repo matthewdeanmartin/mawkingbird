@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.studio-page {
+  padding: 16px;
+}
+.recording {
+  display: grid;
+  gap: 12px;
+  margin-block: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.recording h2 {
+  margin: 0;
+}
+.hint {
+  margin: 0;
+  color: var(--muted);
+}
+.filename {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+}
+.details dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+.details dd {
+  margin: 0;
+}
+audio {
+  width: 100%;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.attached {
+  flex: 1 1 240px;
+  margin: 0;
+}
+app-compose,
+app-status-card {
+  display: block;
+}

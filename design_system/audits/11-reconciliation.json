@@ -15,7 +15,7 @@
     {
       "file": "ui/src/app/pages/radio/radio-studio.html",
       "disposition": "adopted scope",
-      "nextStep": "Studio reuses Field/Control for file selection and publication fields, Button for scanning, previews and publishing, and Content State for failures. Preserve labelled native audio preview, bounded catalogue scrolling, explicit publication, retained failed drafts and account-isolated scan checkpoints."
+      "nextStep": "The Studio catalogue uses Button for scanning, refreshing, cancelling and previews, and Content State for failures. Preserve bounded catalogue scrolling, account-isolated scan checkpoints, cached reloads and distinct missing-post handling."
     },
     {
       "file": "ui/src/app/pages/radio/radio-controls.html",
@@ -30,7 +30,7 @@
     {
       "file": "ui/src/app/pages/radio/radio-page.html",
       "disposition": "adopted scope",
-      "nextStep": "Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure and bounded pagination. Player and Studio use the existing mode navigation."
+      "nextStep": "Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Playlist actions use Button with a post-menu overflow for drafting, and icon ToolbarButtons with accessible names for rows. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure and bounded pagination. Studio is a separate top-level page."
     },
     {
       "file": "ui/src/app/pages/videos/watch-parties-page.ts",
@@ -90,7 +90,7 @@
     {
       "file": "ui/src/app/tag-filter-dialog/tag-mute-menu.ts",
       "disposition": "partial adoption",
-      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's \u2022\u2022\u2022 menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
+      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's ••• menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
     },
     {
       "file": "ui/src/app/pages/features/follow-hub.html",
@@ -415,7 +415,7 @@
     {
       "file": "ui/src/app/history-dialog/history-dialog.html",
       "disposition": "adopted scope",
-      "nextStep": "Sprint 12 adopts modal/read states/actions; Sprints 17\u201318 adopt shared version metadata and native time elements. Preserve specialized snapshot content and failure/retry behavior."
+      "nextStep": "Sprint 12 adopts modal/read states/actions; Sprints 17–18 adopt shared version metadata and native time elements. Preserve specialized snapshot content and failure/retry behavior."
     },
     {
       "file": "ui/src/app/leave-dialog/leave-dialog.html",
@@ -470,7 +470,7 @@
     {
       "file": "ui/src/app/pages/client-list/client-list-page.html",
       "disposition": "partial adoption",
-      "nextStep": "Combined Sprints 17\u201318 adopt page header, local tabs, native member/back links and identity metadata. Preserve post unmount semantics and no tab-triggered fetch. Plain read states and existing failed-read/racing-route semantics remain a separate behavior pass."
+      "nextStep": "Combined Sprints 17–18 adopt page header, local tabs, native member/back links and identity metadata. Preserve post unmount semantics and no tab-triggered fetch. Plain read states and existing failed-read/racing-route semantics remain a separate behavior pass."
     },
     {
       "file": "ui/src/app/pages/collection/collection.html",
@@ -665,7 +665,7 @@
     {
       "file": "ui/src/app/pages/rss/feed-actions/feed-actions.ts",
       "disposition": "adopted scope",
-      "nextStep": "Sprints 17\u201318 remove the unnecessary popup after user review: View feed is a direct native link; subscribed feeds also expose compact Unsubscribe with existing confirmation. Focus returns to View feed after confirmed removal when the component remains mounted."
+      "nextStep": "Sprints 17–18 remove the unnecessary popup after user review: View feed is a direct native link; subscribed feeds also expose compact Unsubscribe with existing confirmation. Focus returns to View feed after confirmed removal when the component remains mounted."
     },
     {
       "file": "ui/src/app/pages/rss/headline-row/headline-row.html",
@@ -1150,7 +1150,7 @@
     {
       "file": "ui/src/app/status-card/status-card.html",
       "disposition": "partial adoption",
-      "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers. Each \u2022\u2022\u2022 panel ends with a Close menu row; keep it when the menus migrate, since the phone sheet can cover its trigger."
+      "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers. Each ••• panel ends with a Close menu row; keep it when the menus migrate, since the phone sheet can cover its trigger."
     },
     {
       "file": "ui/src/app/status-card/status-card.ts",
@@ -1246,6 +1246,16 @@
       "file": "ui/src/app/pages/settings/home-algo/settings-home-algo.html",
       "disposition": "adopted scope",
       "nextStep": "Preserve the Profile page header/body inset and divider sections, shared SettingsRow/Field/Control/Checkbox/Button, staged Save and factory reset, account-scoped defaults, dependent feed picker with loading/error states, and narrow-screen browser checks."
+    },
+    {
+      "file": "ui/src/app/pages/radio/studio-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Studio uses Navigation/NavLink tabs, Field/Control for file selection, Button for attaching and discarding, Content State for failures, and the shared Compose component for the post itself. Preserve local-only staging, explicit upload on Attach, waiting for audio processing, one attached recording kept in step with the composer, and session-only draft bytes."
+    },
+    {
+      "file": "ui/src/app/pages/radio/radio-settings.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation, continuous-play and starting-volume preferences, and keep these settings beside Radio rather than in the main settings."
     }
   ]
 }

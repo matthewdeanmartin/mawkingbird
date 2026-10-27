@@ -18,6 +18,8 @@ import { RadioPlayer } from './radio-player';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbHelp } from '../../design-system/help/help';
+import { MbPostMenu } from '../../design-system/menu/post-menu';
+import { MbMenuItem } from '../../design-system/menu/menu-item';
 import { Drafts } from '../../drafts';
 import { RadioHandoff } from '../../radio-handoff';
 import {
@@ -29,7 +31,10 @@ import {
 import { RadioTrack } from './radio-player';
 import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
-import { RadioStudio } from './radio-studio';
+import { RadioSettings } from './radio-settings';
+
+export const RADIO_VIEWS = ['search', 'playlist', 'radio', 'settings'] as const;
+export type RadioView = (typeof RADIO_VIEWS)[number];
 import { Status, UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 
@@ -52,8 +57,6 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n radio.paused: Scan paused. Continue to look for older audio posts.
 // i18n radio.empty: Choose a feed to find audio posts.
 // i18n radio.signIn: Sign in with a Mastodon account to use Radio.
-// i18n radio.studioTitle: Radio Studio
-// i18n radio.studioHint: Your audio catalogue and publication workspace will appear here.
 // i18n radio.playerHint: Choose audio from an account, your home feed or a list. Radio keeps playing as you explore the app.
 // i18n radio.listenProvider: Listen on {{provider}} in Radio
 // i18n radio.nativeOnly: Native Mastodon audio only
@@ -76,8 +79,10 @@ import { StatusCard } from '../../status-card/status-card';
     MbToolbar,
     MbToolbarButton,
     MbHelp,
-    RadioStudio,
     RadioIcon,
+    RadioSettings,
+    MbPostMenu,
+    MbMenuItem,
   ],
   templateUrl: './radio-page.html',
   styleUrl: './radio-page.css',
@@ -86,7 +91,8 @@ export class RadioPage {
   private readonly diagnostics = inject(PageDiagnostics);
   private readonly publicApi = inject(AnonymousPublicApi);
   private readonly route = inject(ActivatedRoute);
-  readonly view = signal<'search' | 'playlist' | 'radio'>('search');
+  readonly view = signal<RadioView>('search');
+  readonly views = RADIO_VIEWS;
   readonly playlists = inject(RadioPlaylists);
   private readonly router = inject(Router);
   private readonly drafts = inject(Drafts);
@@ -118,7 +124,6 @@ export class RadioPage {
   private readonly api = inject(Api);
   private readonly destroy = inject(DestroyRef);
   readonly auth = inject(Auth);
-  readonly studio = inject(ActivatedRoute).snapshot.routeConfig?.path === 'radio/studio';
   readonly player = inject(RadioPlayer);
   readonly scan = this.player.scan;
   readonly source = this.player.source;
@@ -146,13 +151,12 @@ export class RadioPage {
         untracked(() => this.player.addTracks(posts.flatMap((post) => this.player.tracks(post))));
     });
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
-      if (this.studio) return;
       const post = radioPostRef(params.get('post'));
       const account = radioAccount(params.get('acct'));
       const view = params.get('view');
       this.view.set(
-        view === 'search' || view === 'radio' || view === 'playlist'
-          ? view
+        RADIO_VIEWS.includes(view as RadioView)
+          ? (view as RadioView)
           : post || account
             ? 'playlist'
             : 'search',
@@ -373,7 +377,7 @@ export class RadioPage {
       replaceUrl: true,
     });
   }
-  switchView(view: 'search' | 'playlist' | 'radio'): void {
+  switchView(view: RadioView): void {
     void this.router.navigate(['/radio'], {
       queryParams: { view },
       queryParamsHandling: 'merge',
@@ -512,6 +516,10 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.tab.search: Search
 // i18n radio.tab.playlist: Playlist
 // i18n radio.tab.radio: Radio
+// i18n radio.tab.settings: Settings
+// i18n radio.moreActions: More playlist actions
+// i18n radio.closeMenu: Close menu
+// i18n radio.trackCount: {{count}} tracks
 // i18n radio.chooseTrack: Choose a playlist or track to start Radio.
 // i18n radio.sourcesHelp: Which sources can join a playlist?
 // i18n radio.sourcesHint: Playlists support native Mastodon audio, SoundCloud, and Mixcloud. Other music embeds are available in Search, but cannot join continuous Radio playback.

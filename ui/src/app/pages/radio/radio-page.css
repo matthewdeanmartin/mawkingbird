@@ -30,11 +30,12 @@ form > button {
 .playlist {
   padding-inline-start: 24px;
 }
-.playlist li {
+.playlist li,
+.saved li {
   margin-block: 8px;
   overflow-wrap: anywhere;
 }
-.playlist .row {
+.row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -54,4 +55,15 @@ form > button {
 }
 .row-actions {
   flex: none;
+}
+.playlist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block: 12px;
+}
+.saved {
+  list-style: none;
+  padding-inline-start: 0;
 }
