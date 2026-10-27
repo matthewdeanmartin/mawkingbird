@@ -59,3 +59,26 @@ li {
   font-weight: 700;
   outline: 2px solid var(--accent);
 }
+.transport button {
+  min-width: 40px;
+  border-radius: 999px;
+}
+.transport button.primary {
+  background: var(--accent-soft);
+  color: var(--ds-action-text);
+}
+h2 {
+  margin-block-end: 0;
+}
+.author {
+  color: var(--muted);
+}
+.queue button {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+.queue .author {
+  font-size: 12px;
+  font-weight: 400;
+}

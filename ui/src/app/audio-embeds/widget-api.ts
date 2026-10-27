@@ -4,6 +4,9 @@ export interface WidgetState {
   duration?: number;
   ended?: boolean;
   error?: boolean;
+  /** Recording metadata reported by the widget itself, when the protocol offers it. */
+  title?: string;
+  artist?: string;
 }
 export interface WidgetController {
   play(): void;
@@ -112,11 +115,23 @@ export function connectWidget(
             for (const name of soundEvents) send({ method: 'addEventListener', value: name });
             complete();
             command('getDuration');
+            command('getCurrentSound');
             break;
           case 'play':
             update({ playing: true });
             command('getDuration');
             break;
+          case 'getCurrentSound': {
+            const sound = message.value as { title?: unknown; user?: { username?: unknown } };
+            const title = typeof sound?.title === 'string' ? sound.title.trim().slice(0, 200) : '';
+            const artist = sound?.user?.username;
+            if (title)
+              update({
+                title,
+                ...(typeof artist === 'string' && artist ? { artist: artist.slice(0, 100) } : {}),
+              });
+            break;
+          }
           case 'pause':
             update({ playing: false });
             break;

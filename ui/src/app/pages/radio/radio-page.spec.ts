@@ -15,6 +15,8 @@ import { Auth } from '../../auth';
 import { Status } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 import { RadioPage } from './radio-page';
+import { RadioPlayer } from './radio-player';
+import { RadioHandoff } from '../../radio-handoff';
 import { Playback } from '../../video-player/playback';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { FollowTrust } from '../../follow-trust';
@@ -101,6 +103,65 @@ describe('RadioPage', () => {
     expect(fixture.componentInstance.shareParams()).toEqual({
       post: 'https://sea.example/@singer/456',
     });
+  });
+
+  it('plays an in-app Open in Radio post from the handoff, keeping the current queue', async () => {
+    const url = 'https://sea.example/@singer/789';
+    const offered = {
+      ...audio,
+      id: '789',
+      visibility: 'public',
+      url,
+      media_attachments: [{ id: 'new', type: 'audio', url: 'https://sea.example/new.mp3' }],
+    } as Status;
+    const getStatus = vi.fn(() => throwError(() => new Error('origin refuses anonymous reads')));
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ post: url, add: '1', view: 'radio' })),
+      },
+    });
+    TestBed.inject(RadioHandoff).offer(offered);
+    const player = TestBed.inject(RadioPlayer);
+    player.replacePlaylist(player.tracks(audio));
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
+    expect(getStatus).not.toHaveBeenCalled();
+    expect(player.queue().map((track) => track.post.id)).toEqual(['audio', '789']);
+    expect(player.current()?.post.id).toBe('789');
+    expect(player.active()).toBe(true);
+    expect(fixture.componentInstance.view()).toBe('radio');
+    player.stop();
+  });
+
+  it('explains a post Radio cannot continue through instead of silently showing Search', async () => {
+    const url = 'https://sea.example/@singer/790';
+    const inline = {
+      ...audio,
+      id: '790',
+      visibility: 'public',
+      url,
+      media_attachments: [],
+      content: '<a href="https://open.spotify.com/track/abc123">Music</a>',
+    } as Status;
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus: () => of(inline) } });
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ post: url, add: '1', view: 'radio' })),
+      },
+    });
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.view()).toBe('search');
+    expect(fixture.nativeElement.textContent).toContain(
+      'This post has no audio that Radio can play continuously.',
+    );
+    expect(fixture.componentInstance.scan.posts().map((post) => post.id)).toEqual(['790']);
   });
 
   it('resolves a shared account at its origin and paginates with raw server IDs', async () => {

@@ -112,6 +112,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Named audio playlists and post metadata, per account. Excluded from shareable settings.',
   },
   {
+    base: 'mockingbird_radio_providers',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'setting',
+    note: 'External audio providers the account allowed to load and autoplay in Radio. Feed embeds still load on click.',
+  },
+  {
     base: 'mockingbird_radio_catalogue',
     storage: 'local',
     suffix: 'account',

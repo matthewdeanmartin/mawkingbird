@@ -55,6 +55,29 @@ describe('external widget adapters', () => {
       'https://w.soundcloud.com',
     );
   });
+  it('asks SoundCloud for the current sound and reports a bounded title and artist', async () => {
+    const f = frame();
+    const send = vi.spyOn(f.contentWindow!, 'postMessage');
+    const update = vi.fn();
+    const connecting = connectWidget('soundcloud', f, update);
+    message(f, { method: 'ready' });
+    await connecting;
+    expect(send).toHaveBeenCalledWith(
+      JSON.stringify({ method: 'getCurrentSound', value: null }),
+      'https://w.soundcloud.com',
+    );
+    message(f, { method: 'getCurrentSound', value: { title: ' Night Drive ', user: {} } });
+    expect(update).toHaveBeenLastCalledWith({ title: 'Night Drive' });
+    message(f, {
+      method: 'getCurrentSound',
+      value: { title: 'x'.repeat(300), user: { username: 'synth' } },
+    });
+    expect(update).toHaveBeenLastCalledWith({ title: 'x'.repeat(200), artist: 'synth' });
+    update.mockClear();
+    message(f, { method: 'getCurrentSound', value: { title: 7 } });
+    message(f, { method: 'getCurrentSound', value: null });
+    expect(update).not.toHaveBeenCalled();
+  });
   it('translates Mixcloud events and handles rejected playback without an unhandled promise', async () => {
     const f = frame();
     const send = vi.spyOn(f.contentWindow!, 'postMessage');

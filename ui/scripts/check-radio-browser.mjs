@@ -43,9 +43,10 @@ try {
       const element = document.querySelector('app-radio-dock');
       const dock = element?.getBoundingClientRect();
       const column = document.getElementById('main');
-      const inset = element?.classList.contains('full-view')
-        ? 16 + parseFloat(getComputedStyle(column).borderLeftWidth)
-        : 0;
+      // The dock is in the column's flow: inside its borders, plus a margin in full view.
+      const inset =
+        (element?.classList.contains('full-view') ? 16 : 0) +
+        parseFloat(getComputedStyle(column).borderLeftWidth);
       const main = column?.getBoundingClientRect();
       return (
         dock &&
@@ -213,6 +214,7 @@ try {
           if (data.method === 'play') { send('play'); send('playProgress', {currentPosition: 5000}); }
           if (data.method === 'pause') send('pause');
           if (data.method === 'getDuration') send('getDuration', 90000);
+          if (data.method === 'getCurrentSound') send('getCurrentSound', {title: 'Widget title ' + location.search.includes('track-two'), user: {username: 'artist'}});
           if (data.method === 'seekTo') send('playProgress', {currentPosition: data.value});
         });
         document.getElementById('finish').onclick = () => send('finish');
@@ -495,13 +497,16 @@ try {
     .first()
     .click();
   const dock = page.locator('app-radio-dock');
-  await dock.getByRole('button', { name: 'Load SoundCloud player', exact: true }).click();
+  assert.equal(providerRequests, 1, 'Radio asks before contacting a new provider');
+  // One consent per provider loads the frame and starts it: no Load, no in-frame Play.
+  await dock.getByRole('button', { name: 'Allow SoundCloud in Radio', exact: true }).click();
   await dock.locator('iframe[title="SoundCloud"]').waitFor();
-  const controls = await dock.locator('mb-toolbar button').allTextContents();
-  assert.equal(
-    controls.findIndex((text) => text.trim() === 'Close player'),
-    controls.findIndex((text) => text.trim() === 'Stop Radio') + 1,
-  );
+  await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
+  await dock.getByRole('heading', { name: 'Widget title false', exact: true }).waitFor();
+  const controls = await dock
+    .locator('mb-toolbar button')
+    .evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-label')));
+  assert.equal(controls.indexOf('Close player'), controls.indexOf('Stop Radio') + 1);
   await dock
     .locator('mb-toolbar')
     .getByRole('button', { name: 'Open on SoundCloud', exact: true })
@@ -512,7 +517,6 @@ try {
   await page.screenshot({ path: '.test-results/radio-dock-tablet.png', fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await dockFitsColumn();
-  await dock.getByRole('button', { name: 'Play', exact: true }).click();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
   assert.equal(
     await page.locator('iframe[title="Spotify"]').count(),
@@ -530,6 +534,13 @@ try {
     requestsBeforeNavigation,
     'Navigation keeps the same provider frame',
   );
+  // The compact bar folds the frame away without unloading it.
+  await page.locator('app-radio-dock:not(.full-view)').waitFor();
+  assert.equal(
+    await dock.locator('.frame').evaluate((frame) => frame.getBoundingClientRect().height),
+    0,
+  );
+  await dock.getByRole('button', { name: 'Show SoundCloud player', exact: true }).click();
   await dock.frameLocator('iframe').getByRole('button', { name: 'Finish recording' }).click();
   await page.waitForFunction(() =>
     document.querySelector('app-radio-dock iframe')?.getAttribute('src')?.includes('track-two'),

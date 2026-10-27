@@ -75,34 +75,58 @@
       <ol class="playlist">
         @for (track of player.queue(); track track.key; let i = $index) {
           <li>
-            <span>{{
-              track.media.description ||
-                track.external?.label ||
-                track.post.account.display_name ||
-                track.post.account.acct
-            }}</span>
-            <mb-toolbar
-              density="compact"
-              embedded
-              [label]="'radio.trackActions' | transloco: { number: i + 1 }"
-            >
-              <button mbToolbarButton (click)="player.select(i); switchView('radio')">
-                {{ 'radio.play' | transloco }}
-              </button>
-              <button mbToolbarButton (click)="move(i, -1)" [disabled]="i === 0">
-                {{ 'radio.moveUp' | transloco }}
-              </button>
-              <button
-                mbToolbarButton
-                (click)="move(i, 1)"
-                [disabled]="i === player.queue().length - 1"
+            <div class="row">
+              <span class="track"
+                ><span class="track-title">{{ player.title(track) }}</span>
+                <span class="muted"
+                  >{{ track.post.account.display_name || track.post.account.acct }}
+                  @if (track.external) {
+                    · {{ track.external.label }}
+                  }
+                </span></span
               >
-                {{ 'radio.moveDown' | transloco }}
-              </button>
-              <button mbToolbarButton (click)="remove(i)">
-                {{ 'radio.removeTrack' | transloco }}
-              </button>
-            </mb-toolbar>
+              <mb-toolbar
+                class="row-actions"
+                density="compact"
+                embedded
+                [label]="'radio.trackActions' | transloco: { number: i + 1 }"
+              >
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.play' | transloco"
+                  [title]="'radio.play' | transloco"
+                  (click)="player.select(i); switchView('radio')"
+                >
+                  <app-radio-icon name="play" />
+                </button>
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.moveUp' | transloco"
+                  [title]="'radio.moveUp' | transloco"
+                  (click)="move(i, -1)"
+                  [disabled]="i === 0"
+                >
+                  <app-radio-icon name="up" />
+                </button>
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.moveDown' | transloco"
+                  [title]="'radio.moveDown' | transloco"
+                  (click)="move(i, 1)"
+                  [disabled]="i === player.queue().length - 1"
+                >
+                  <app-radio-icon name="down" />
+                </button>
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.removeTrack' | transloco"
+                  [title]="'radio.removeTrack' | transloco"
+                  (click)="remove(i)"
+                >
+                  <app-radio-icon name="remove" />
+                </button>
+              </mb-toolbar>
+            </div>
           </li>
         }
       </ol>
@@ -147,6 +171,9 @@
       @if (importSkipped() !== null) {
         <p role="status">{{ 'radio.importResult' | transloco: { count: importSkipped() } }}</p>
       }
+    }
+    @if (view() !== 'playlist' && message()) {
+      <p role="status">{{ message() | transloco }}</p>
     }
     <p class="muted">{{ 'radio.playerHint' | transloco }}</p>
     <form (ngSubmit)="discover()">

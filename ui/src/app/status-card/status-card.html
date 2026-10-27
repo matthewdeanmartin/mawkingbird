@@ -565,7 +565,12 @@
               </button>
             }
 
-            <button mbToolbarButton routerLink="/radio" [queryParams]="{ post: postUrl }">
+            <button
+              mbToolbarButton
+              routerLink="/radio"
+              [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+              (click)="offerRadio()"
+            >
               {{ 'statusCard.openInRadio' | transloco }}
             </button>
           }
@@ -1326,8 +1331,8 @@
                       <a
                         mbMenuItem
                         routerLink="/radio"
-                        [queryParams]="{ post: postUrl }"
-                        (click)="closeMenu($event)"
+                        [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+                        (click)="offerRadio(); closeMenu($event)"
                       >
                         {{ 'statusCard.openInRadio' | transloco }}
                       </a>
@@ -1424,8 +1429,8 @@
                     <a
                       mbMenuItem
                       routerLink="/radio"
-                      [queryParams]="{ post: postUrl }"
-                      (click)="closeMenu($event)"
+                      [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+                      (click)="offerRadio(); closeMenu($event)"
                     >
                       {{ 'statusCard.openInRadio' | transloco }}
                     </a>

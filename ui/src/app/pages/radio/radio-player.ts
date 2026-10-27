@@ -19,6 +19,10 @@ import { Playback, PlaybackHandle } from '../../video-player/playback';
 import { RadioOutlet } from '../../radio-outlet';
 import { ExternalMedia, postExternalMedia } from '../../audio-embeds/providers';
 import type { WidgetController, WidgetState } from '../../audio-embeds/widget-api';
+import { accountScopeSuffix } from '../../account-scope';
+import { trackTitle } from './track-title';
+
+const PROVIDERS_KEY = 'mockingbird_radio_providers';
 
 export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio audio factory', {
   providedIn: 'root',
@@ -62,6 +66,7 @@ export class RadioPlayer {
   readonly volume = signal(1);
   readonly selected = signal(-1);
   private readonly alternatives = signal<ReadonlyMap<string, string>>(new Map());
+  /** Providers this account allowed to load and autoplay inside Radio. */
   readonly externalAllowed = signal<ReadonlySet<string>>(new Set());
   private widget?: WidgetController;
   private autoExternalPlay = false;
@@ -96,6 +101,11 @@ export class RadioPlayer {
       }),
   );
   readonly current = computed(() => this.queue()[this.selected()]);
+  /** Titles reported by loaded provider widgets, by track key; memory only. */
+  private readonly reported = signal<ReadonlyMap<string, string>>(new Map());
+  title(track: RadioTrack): string {
+    return trackTitle(track, this.reported().get(track.key));
+  }
   private readonly trusted = inject(TrustedAccounts);
   private readonly follows = inject(FollowTrust);
   private readonly revealed = signal<ReadonlySet<string>>(new Set());
@@ -137,10 +147,12 @@ export class RadioPlayer {
     };
     this.document.addEventListener('play', otherStarted, true);
     let identity = this.identity();
+    this.loadAllowed();
     effect(() => {
       const next = this.identity();
       if (identity !== next) {
         identity = next;
+        this.loadAllowed();
         this.stop();
         this.scan.clear();
         this.playlist.set(null);
@@ -243,7 +255,7 @@ export class RadioPlayer {
   installDock(component: Type<unknown>): void {
     this.dock = component;
   }
-  private activate(index: number, automatic = false): void {
+  private activate(index: number): void {
     this.releaseAudio();
     this.selected.set(index);
     this.active.set(true);
@@ -251,7 +263,8 @@ export class RadioPlayer {
     this.time.set(0);
     this.duration.set(0);
     this.outlet.component.set(this.dock ?? null);
-    this.autoExternalPlay = automatic;
+    // Selecting or advancing is the request to listen; an allowed widget plays on load.
+    this.autoExternalPlay = true;
     if (!this.hidden() && !this.current()?.external) this.play();
   }
   reveal(): void {
@@ -378,7 +391,7 @@ export class RadioPlayer {
       if (generation !== this.generation) return;
       this.waiting.set(false);
     }
-    if (this.queue()[index]) this.activate(index, true);
+    if (this.queue()[index]) this.activate(index);
   }
   private prefetch(): Promise<void> {
     if (this.playlist() !== null) return Promise.resolve();
@@ -425,7 +438,6 @@ export class RadioPlayer {
     this.skipped.set(0);
     this.revealed.set(new Set());
     this.prefetchTail = '';
-    this.externalAllowed.set(new Set());
     this.alternatives.set(new Map());
     this.outlet.component.set(null);
   }
@@ -450,13 +462,44 @@ export class RadioPlayer {
     }
     this.widget = controller;
     this.externalReady.set(true);
-    const provider = this.current()!.external!.provider;
-    const permitted = this.externalAllowed().has(provider);
-    this.externalAllowed.update((values) => new Set([...values, provider]));
-    if (this.autoExternalPlay && permitted) this.play();
+    if (this.autoExternalPlay && this.externalAllowed().has(this.current()!.external!.provider))
+      this.play();
+  }
+  /** Remember consent for a provider and start the current track from this click. */
+  allowProvider(provider: string): void {
+    this.saveAllowed(new Set([...this.externalAllowed(), provider]));
+    if (this.current()?.external?.provider === provider) this.autoExternalPlay = true;
+  }
+  forgetProvider(provider: string): void {
+    this.saveAllowed(new Set([...this.externalAllowed()].filter((p) => p !== provider)));
+    if (this.current()?.external?.provider === provider) this.closeWidget();
+  }
+  private loadAllowed(): void {
+    try {
+      const data: unknown = JSON.parse(
+        localStorage.getItem(PROVIDERS_KEY + accountScopeSuffix()) ?? '[]',
+      );
+      this.externalAllowed.set(
+        new Set(Array.isArray(data) ? data.filter((p) => typeof p === 'string') : []),
+      );
+    } catch {
+      this.externalAllowed.set(new Set());
+    }
+  }
+  private saveAllowed(values: ReadonlySet<string>): void {
+    this.externalAllowed.set(values);
+    try {
+      localStorage.setItem(PROVIDERS_KEY + accountScopeSuffix(), JSON.stringify([...values]));
+    } catch {
+      /* Consent still applies for this tab. */
+    }
   }
   widgetState(key: string, state: WidgetState): void {
     if (key !== this.current()?.key || this.hidden()) return;
+    if (state.title) {
+      const title = state.title;
+      this.reported.update((titles) => new Map([...titles, [key, title]]));
+    }
     if (state.error) {
       this.pause();
       this.blocked.set(true);
@@ -480,11 +523,10 @@ export class RadioPlayer {
       } else this.wantsPlay = false;
     }
   }
+  /** Closing unloads this track's frame; the provider stays allowed. */
   closeWidget(): void {
     this.pause();
     this.widget = undefined;
     this.externalReady.set(false);
-    const provider = this.current()?.external?.provider;
-    this.externalAllowed.update((values) => new Set([...values].filter((p) => p !== provider)));
   }
 }

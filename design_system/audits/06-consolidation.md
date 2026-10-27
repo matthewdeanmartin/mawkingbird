@@ -864,3 +864,22 @@ none were added or removed, so 11-reconciliation.json needs no candidate changes
 The new playlist service has no controls. Shared widget implementations remain
 unchanged. Browser checks exercise the tabs, help/filter, saved playlists, URL
 sharing, centre-column bounds and playback continuity without a duplicate overlay.
+
+## Radio listening flow, 2026-10-26
+
+The persistent dock is now an opaque, sticky now-playing bar at the bottom of
+the centre column, in normal flow. The fixed overlay, its ResizeObserver
+alignment, the `--radio-dock-space` padding and its `!important` width override
+are removed; the dock's former styling escape disappears from the inventory.
+Transport and playlist-row actions remain compact ToolbarButtons, now holding a
+local decorative SVG icon (`radio-icon.ts`), with the accessible name in
+`aria-label` and a matching tooltip. Provider consent uses Button. The text-only
+page-level Radio toolbars are unchanged and remain a follow-up.
+
+Reviewed the regenerated inventory: apart from line shifts in the audio, status
+card and shell surfaces, the only change is the removed dock styling escape.
+There are 249 candidate files, as before; the new icon, title, and handoff files
+have no candidates, so 11-reconciliation.json needs no candidate changes. Shared
+design-widget implementations are unchanged. Browser checks cover dock bounds on
+desktop, tablet, and mobile; provider consent and autoplay; the folded frame; and
+control order.

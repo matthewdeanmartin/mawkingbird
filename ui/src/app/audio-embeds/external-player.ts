@@ -56,7 +56,7 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
         </button>
       </mb-toolbar>
     }
-    @if (activated() || !hideActions()) {
+    @if (!managed() && (activated() || !hideActions())) {
       <p>{{ 'external.notice' | transloco: { provider: source().label } }}</p>
     }
     @if (failed()) {

@@ -29,6 +29,7 @@ describe('RadioPlayer', () => {
   let reportPlaying: boolean;
   let token: ReturnType<typeof signal<string>>;
   beforeEach(() => {
+    localStorage.clear();
     audios = [];
     reportPlaying = true;
     token = signal('first');
@@ -127,6 +128,7 @@ describe('RadioPlayer', () => {
     expect(first.play).not.toHaveBeenCalled();
     player.play();
     expect(first.play).toHaveBeenCalledOnce();
+    player.allowProvider('soundcloud');
     player.widgetState(firstKey, { playing: true, duration: 90, time: 10 });
     player.seek(20);
     expect(first.seek).toHaveBeenCalledWith(20);
@@ -144,6 +146,48 @@ describe('RadioPlayer', () => {
     const third = controller();
     player.attachWidget(player.current()!.key, third);
     expect(third.play).not.toHaveBeenCalled();
+  });
+
+  it('remembers provider consent per account and autoplays a selected allowed track on load', () => {
+    localStorage.setItem('mastodon_mock_token', 'first');
+    player.scan.posts.set([externalPost('1'), externalPost('2')]);
+    player.select(0);
+    const first = controller();
+    player.attachWidget(player.current()!.key, first);
+    expect(first.play).not.toHaveBeenCalled();
+    player.allowProvider('soundcloud');
+    expect([...player.externalAllowed()]).toEqual(['soundcloud']);
+    // Closing a frame unloads this track only; Stop keeps the consent too.
+    player.closeWidget();
+    player.stop();
+    expect(player.externalAllowed().has('soundcloud')).toBe(true);
+    player.select(1);
+    const second = controller();
+    player.attachWidget(player.current()!.key, second);
+    expect(second.play).toHaveBeenCalledOnce();
+    localStorage.setItem('mastodon_mock_token', 'second');
+    token.set('second');
+    TestBed.tick();
+    expect(player.externalAllowed().size).toBe(0);
+    localStorage.setItem('mastodon_mock_token', 'first');
+    token.set('first');
+    TestBed.tick();
+    expect(player.externalAllowed().has('soundcloud')).toBe(true);
+    player.forgetProvider('soundcloud');
+    expect(player.externalAllowed().size).toBe(0);
+  });
+
+  it('reports widget titles through the title cascade', () => {
+    const external = {
+      ...externalPost('1'),
+      content: '<p>Post words</p>' + externalPost('1').content,
+    };
+    player.scan.posts.set([external]);
+    player.select(0);
+    const track = player.current()!;
+    expect(player.title(track)).toBe('Post words');
+    player.widgetState(track.key, { title: 'Night Drive' });
+    expect(player.title(track)).toBe('Night Drive');
   });
 
   it('does not advance after pausing an external player or load content behind a warning', () => {

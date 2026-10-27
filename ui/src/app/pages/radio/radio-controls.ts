@@ -9,6 +9,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { ReadingZen } from '../../reading-zen';
 import { RadioPlayer } from './radio-player';
+import { RadioIcon } from './radio-icon';
 
 // i18n radio.play: Play
 // i18n radio.pause: Pause
@@ -28,7 +29,7 @@ import { RadioPlayer } from './radio-player';
 // i18n radio.fullscreen: Full screen
 // i18n radio.exitFullscreen: Exit full screen
 // i18n radio.queue: Audio queue
-// i18n radio.playTrack: Play track {{number}} by {{author}}
+// i18n radio.playTrack: Play track {{number}}, {{title}}, by {{author}}
 // i18n radio.playPost: Play audio by {{author}}
 
 @Component({
@@ -42,6 +43,7 @@ import { RadioPlayer } from './radio-player';
     MbButton,
     MbField,
     MbControl,
+    RadioIcon,
   ],
   templateUrl: './radio-controls.html',
   styleUrl: './radio-controls.css',
@@ -50,6 +52,7 @@ import { RadioPlayer } from './radio-player';
 export class RadioControls implements OnDestroy {
   readonly player = inject(RadioPlayer);
   readonly externalPlayer = input<ExternalPlayer>();
+  /** Reopens a closed frame for an allowed provider. */
   loadExternal(): void {
     this.externalPlayer()?.activated.set(true);
   }

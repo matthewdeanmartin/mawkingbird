@@ -25,7 +25,7 @@
     {
       "file": "ui/src/app/pages/radio/radio-dock.ts",
       "disposition": "adopted scope",
-      "nextStep": "The persistent Radio dock uses Button for pause/play, next and stop, and a native router link to the full player. Preserve mobile navigation clearance, wrapping, content-warning privacy and the shared session across route changes."
+      "nextStep": "The persistent Radio dock is a sticky in-flow bar in the centre column. It uses icon ToolbarButtons with accessible names for pause/play, next, frame folding and stop; Button for provider consent and loading; and a native router link to the full player. Preserve mobile navigation clearance, the loaded-but-folded provider frame, content-warning privacy and the shared session across route changes."
     },
     {
       "file": "ui/src/app/pages/radio/radio-page.html",

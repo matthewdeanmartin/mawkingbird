@@ -1,43 +1,90 @@
 @if (player.current(); as track) {
   <section tabindex="0" (keydown)="key($event)" [attr.aria-label]="'radio.title' | transloco">
-    <mb-toolbar density="compact" embedded [label]="'radio.title' | transloco">
+    <mb-toolbar class="transport" density="compact" embedded [label]="'radio.title' | transloco">
       <button
         mbToolbarButton
         type="button"
+        [attr.aria-label]="'radio.previous' | transloco"
+        [title]="'radio.previous' | transloco"
         (click)="player.previous()"
         [disabled]="player.selected() === 0"
       >
-        {{ 'radio.previous' | transloco }}
+        <app-radio-icon name="previous" />
+      </button>
+      @let label =
+        (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco;
+      <button
+        mbToolbarButton
+        class="primary"
+        type="button"
+        [attr.aria-label]="label"
+        [title]="label"
+        (click)="player.toggle()"
+        [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
+      >
+        <app-radio-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
       </button>
       <button
         mbToolbarButton
         type="button"
-        (click)="player.toggle()"
-        [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
+        [attr.aria-label]="'radio.next' | transloco"
+        [title]="'radio.next' | transloco"
+        (click)="player.next()"
       >
-        {{ (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco }}
+        <app-radio-icon name="next" />
       </button>
-      <button mbToolbarButton type="button" (click)="player.next()">
-        {{ 'radio.next' | transloco }}
+      @let screen = (fullscreen() ? 'radio.exitFullscreen' : 'radio.fullscreen') | transloco;
+      <button
+        mbToolbarButton
+        type="button"
+        [attr.aria-label]="screen"
+        [title]="screen"
+        (click)="toggleFullscreen()"
+      >
+        <app-radio-icon [name]="fullscreen() ? 'exitFullscreen' : 'fullscreen'" />
       </button>
-      <button mbToolbarButton type="button" (click)="toggleFullscreen()">
-        {{ (fullscreen() ? 'radio.exitFullscreen' : 'radio.fullscreen') | transloco }}
-      </button>
-      <button mbToolbarButton type="button" (click)="player.stop()">
-        {{ 'radio.stop' | transloco }}
+      <button
+        mbToolbarButton
+        type="button"
+        [attr.aria-label]="'radio.stop' | transloco"
+        [title]="'radio.stop' | transloco"
+        (click)="player.stop()"
+      >
+        <app-radio-icon name="stop" />
       </button>
       @if (!player.hidden() && track.external; as source) {
         @if (externalPlayer()?.activated()) {
-          <button mbToolbarButton type="button" (click)="externalPlayer()?.close()">
-            {{ 'external.close' | transloco }}
+          <button
+            mbToolbarButton
+            type="button"
+            [attr.aria-label]="'external.close' | transloco"
+            [title]="'external.close' | transloco"
+            (click)="externalPlayer()?.close()"
+          >
+            <app-radio-icon name="close" />
           </button>
-        } @else {
-          <button mbToolbarButton type="button" (click)="loadExternal()">
-            {{ 'external.load' | transloco: { provider: source.label } }}
+        } @else if (player.externalAllowed().has(source.provider)) {
+          <!-- Before consent, the prompt beside the player asks once instead. -->
+          @let load = 'external.load' | transloco: { provider: source.label };
+          <button
+            mbToolbarButton
+            type="button"
+            [attr.aria-label]="load"
+            [title]="load"
+            (click)="loadExternal()"
+          >
+            <app-radio-icon name="load" />
           </button>
         }
-        <button mbToolbarButton type="button" (click)="externalPlayer()?.openOriginal()">
-          {{ 'external.open' | transloco: { provider: source.label } }}
+        @let open = 'external.open' | transloco: { provider: source.label };
+        <button
+          mbToolbarButton
+          type="button"
+          [attr.aria-label]="open"
+          [title]="open"
+          (click)="externalPlayer()?.openOriginal()"
+        >
+          <app-radio-icon name="open" />
         </button>
       }
     </mb-toolbar>
@@ -47,7 +94,14 @@
           | transloco: { current: player.selected() + 1, total: player.queue().length }
       }}
     </p>
-    <h2>{{ track.post.account.display_name || track.post.account.acct }}</h2>
+    <h2>
+      {{
+        player.hidden()
+          ? track.post.account.display_name || track.post.account.acct
+          : player.title(track)
+      }}
+    </h2>
+    <p class="author">{{ track.post.account.display_name || track.post.account.acct }}</p>
     @if (player.hidden()) {
       <p>{{ track.post.spoiler_text || ('radio.hidden' | transloco) }}</p>
       <button mbButton type="button" (click)="player.reveal()">
@@ -110,16 +164,21 @@
               mbToolbarButton
               type="button"
               [attr.aria-current]="i === player.selected() ? 'true' : null"
-              (click)="player.select(i)"
-            >
-              {{
+              [attr.aria-label]="
                 'radio.playTrack'
                   | transloco
                     : {
                         number: i + 1,
+                        title: player.title(item),
                         author: item.post.account.display_name || item.post.account.acct,
                       }
-              }}
+              "
+              (click)="player.select(i)"
+            >
+              <span class="track-title">{{ player.title(item) }}</span>
+              <span class="author">{{
+                item.post.account.display_name || item.post.account.acct
+              }}</span>
             </button>
           </mb-toolbar>
         </li>

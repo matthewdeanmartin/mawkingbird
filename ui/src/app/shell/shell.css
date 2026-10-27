@@ -1,6 +1,3 @@
-.column.radio-active {
-  padding-bottom: var(--radio-dock-space, 210px);
-}
 .topbar {
   position: sticky;
   top: 0;

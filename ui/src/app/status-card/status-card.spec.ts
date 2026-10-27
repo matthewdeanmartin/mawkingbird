@@ -17,6 +17,7 @@ import { TrustedAccounts } from '../trusted-accounts';
 import { Server } from '../server';
 import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
+import { RadioHandoff } from '../radio-handoff';
 import { StatusCard } from './status-card';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { of, throwError } from 'rxjs';
@@ -235,10 +236,10 @@ describe('StatusCard', () => {
     return fixture;
   }
 
-  it('offers a portable Radio link for audio and removes it for private posts and video', () => {
+  it('offers a portable Radio link for continuous audio and removes it for private posts, video and inline-only players', () => {
     const status = makeStatus({
       url: 'https://sea.example/@singer/123',
-      content: '<a href="https://www.deezer.com/track/3135556">Sea shanty</a>',
+      content: '<a href="https://soundcloud.com/singer/sea-shanty">Sea shanty</a>',
     });
     const fixture = setUp(status);
     const link = () =>
@@ -246,20 +247,31 @@ describe('StatusCard', () => {
         (a) => a.textContent?.includes('Open in Radio'),
       );
     expect(new URL(link()!.href).searchParams.get('post')).toBe(status.url);
-    const visible = fixture.nativeElement.querySelector(
-      'mb-toolbar.audio-toolbar button[mbToolbarButton][routerLink="/radio"]',
-    ) as HTMLAnchorElement;
-    expect(visible.textContent).toContain('Open in Radio');
-    const route = fixture.debugElement
-      .query(By.css('mb-toolbar.audio-toolbar button[routerLink]'))
-      .injector.get(RouterLink);
-    expect(route.queryParams).toEqual({ post: status.url });
+    const radioButtons = fixture.debugElement.queryAll(
+      By.css('mb-toolbar.audio-toolbar button[mbToolbarButton][routerLink="/radio"]'),
+    );
+    const open = radioButtons.find((button) =>
+      button.nativeElement.textContent.includes('Open in Radio'),
+    )!;
+    const visible = open.nativeElement as HTMLButtonElement;
+    const route = open.injector.get(RouterLink);
+    expect(route.queryParams).toEqual({ post: status.url, add: '1', view: 'radio' });
+    vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    visible.click();
+    expect(TestBed.inject(RadioHandoff).take(status.url!)?.id).toBe(status.id);
     fixture.componentRef.setInput('status', { ...status, visibility: 'private' });
     fixture.detectChanges();
     expect(link()).toBeUndefined();
     fixture.componentRef.setInput('status', {
       ...status,
       content: '<a href="https://youtu.be/abcdefghijk">Video</a>',
+    });
+    fixture.detectChanges();
+    expect(link()).toBeUndefined();
+    // Deezer plays inline but cannot report its end, so Radio could not continue.
+    fixture.componentRef.setInput('status', {
+      ...status,
+      content: '<a href="https://www.deezer.com/track/3135556">Sea shanty</a>',
     });
     fixture.detectChanges();
     expect(link()).toBeUndefined();

@@ -123,6 +123,7 @@ import {
 import { firstExternalLink, RaindropSession } from '../providers/raindrop/raindrop-session';
 import { TranslatedText } from '../i18n/translated';
 import { Server } from '../server';
+import { RadioHandoff } from '../radio-handoff';
 import {
   anonymousAccountRouteRef,
   anonymousStatusRouteRef,
@@ -444,16 +445,16 @@ export class StatusCard {
   readonly externalHosts = viewChildren(ExternalPlayerHost);
   readonly showMedia = input(true);
   // i18n statusCard.openInRadio: Open in Radio
+  // Radio only continues through sources that report their end; other players stay inline.
   readonly radioPost = computed(() => {
     const post = this.display;
-    if (!['public', 'unlisted'].includes(post.visibility)) return null;
-    if (
-      !post.media_attachments?.some((media) => media.type === 'audio') &&
-      !postExternalMedia(post).some((media) => media.embed && media.type !== 'video')
-    )
-      return null;
+    if (!['public', 'unlisted'].includes(post.visibility) || !this.playlistable()) return null;
     return radioPostRef(post.url)?.originalUrl ?? null;
   });
+  private readonly radioHandoff = inject(RadioHandoff);
+  protected offerRadio(): void {
+    this.radioHandoff.offer(this.display);
+  }
   readonly playlistable = computed(
     () =>
       this.display.media_attachments.some((media) => media.type === 'audio') ||

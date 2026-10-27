@@ -19,6 +19,7 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbHelp } from '../../design-system/help/help';
 import { Drafts } from '../../drafts';
+import { RadioHandoff } from '../../radio-handoff';
 import {
   playlistFragment,
   playlistUrls,
@@ -27,6 +28,7 @@ import {
 } from './radio-playlists';
 import { RadioTrack } from './radio-player';
 import { RadioDock } from './radio-dock';
+import { RadioIcon } from './radio-icon';
 import { RadioStudio } from './radio-studio';
 import { Status, UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
@@ -75,6 +77,7 @@ import { StatusCard } from '../../status-card/status-card';
     MbToolbarButton,
     MbHelp,
     RadioStudio,
+    RadioIcon,
   ],
   templateUrl: './radio-page.html',
   styleUrl: './radio-page.css',
@@ -87,6 +90,7 @@ export class RadioPage {
   readonly playlists = inject(RadioPlaylists);
   private readonly router = inject(Router);
   private readonly drafts = inject(Drafts);
+  private readonly handoff = inject(RadioHandoff);
   readonly playlistName = signal('');
   readonly importText = signal('');
   readonly includeThread = signal(true);
@@ -169,7 +173,7 @@ export class RadioPage {
       this.scanReady.set(true);
       if (post) {
         this.shareParams.set({ post: post.originalUrl });
-        void this.loadPost(post.originalUrl!, params.get('add') === '1');
+        void this.loadPost(post.originalUrl!, params.get('add') === '1', view === 'radio');
       } else if (account) {
         this.buildScan = true;
         this.source.set('account');
@@ -412,18 +416,30 @@ export class RadioPage {
     this.player.replacePlaylist(tracks);
     this.syncPlaylistUrl();
   }
-  async loadPost(url: string, append: boolean): Promise<void> {
+  /** `play` comes from an in-app Open in Radio action; shared links never autoplay. */
+  async loadPost(url: string, append: boolean, play = false): Promise<void> {
     const generation = ++this.importGeneration;
     this.importing.set(true);
     try {
-      const post = await firstValueFrom(this.publicApi.getStatus(radioPostRef(url)!));
+      const post =
+        this.handoff.take(url) ??
+        (await firstValueFrom(this.publicApi.getStatus(radioPostRef(url)!)));
       if (generation !== this.importGeneration) return;
       await this.scan.start(() => of({ statuses: [post], next: null }));
       if (generation !== this.importGeneration) return;
       const tracks = this.player.tracks(post);
       if (append) this.player.addTracks(tracks);
       else this.player.replacePlaylist(tracks);
-      if (!tracks.length) this.view.set('search');
+      if (!tracks.length) {
+        this.message.set('radio.notQueueable');
+        this.view.set('search');
+        this.player.fullView.set(false);
+      } else if (play) {
+        const key = tracks[0].key;
+        this.player.select(this.player.queue().findIndex((track) => track.key === key));
+        // Drop add/play parameters so a reload does not queue the post again.
+        this.syncPlaylistUrl('radio');
+      }
     } catch (error) {
       if (generation === this.importGeneration) {
         this.diagnostics.error('Radio', 'post:failed', error, { transport: 'public-origin', url });
@@ -525,3 +541,4 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.added: Added to playlist.
 // i18n radio.addPlaylist: Add to playlist
 // i18n radio.playlistableOnly: Playlistable only
+// i18n radio.notQueueable: This post has no audio that Radio can play continuously. Its player is shown below.
