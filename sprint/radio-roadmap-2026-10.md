@@ -206,6 +206,7 @@ https file. CORS matters only for reading bytes ourselves.
 
   Links are memoized per post object. http, credentialed, ported, wiki-article
   and category links are refused.
+
 - **Radio.** Linked files are native queueable tracks; the track's post copy
   carries the file, so saved playlists keep it. Scans include posts with linked
   files unless the search is limited to native Mastodon audio.
@@ -275,6 +276,7 @@ file name are adequate for now), and podcast RSS enclosures (backlog).
 
   There's a warning above Mastodon's roughly 30 deletions per half hour.
   Threads not laid out one track per reply can be appended to but not pruned.
+
 - **Local model.** The same `mockingbird_radio_playlists` key, with new optional
   `description` and `published` fields; old rows load unchanged. Saving updates
   the loaded playlist (a renamed published one keeps its thread). "Save as a new
@@ -309,6 +311,41 @@ Name: **Listen**, the audio counterpart of Watch (route `/listen?post=…`). It 
 also where inline-only providers (Deezer, Apple Music/Podcasts, Spotify,
 Bandcamp…) go. Their cards get **Open in Listen** instead of Open in Radio, because
 a single recording does not need continuous advance.
+
+### Sprint 5 progress (2026-10-27) — ready for a user trial
+
+- **Route.** `/listen?post=<id or portable ref>&server=<origin>[&media=<id>]`,
+  the same parameters and server check as Watch (`listenParams` in
+  `radio-links.ts`). It belongs to Radio mode.
+- **Stage.** Artwork or a placeholder, title (cascade) and author, then **Play**;
+  for a recording with a saved position, **Resume from 12:34** and **Start from
+  the beginning**. Also **Play next in Radio** and **Add to Radio queue**, and a
+  picker when a post holds several recordings. Content-warning, filter and
+  text-only gates match Watch.
+- **Playback through Radio.** `playNow` inserts after the current track and
+  keeps the queue. While Listen shows the playing native recording, the dock is
+  hidden and the page has its own transport: play/pause, −15/+30 for anything
+  over two minutes, and a position range. Leaving the page hands back to the
+  dock and playback continues. Provider recordings (SoundCloud/Mixcloud) keep
+  their frame in the dock, and the page says so.
+- **Inline-only providers** (Deezer, Apple, Spotify, Bandcamp, Archive embeds…)
+  play in the page through the lazy player host, labelled as stopping when you
+  leave. Their cards now offer **Open in Listen** where Open in Radio is not
+  available.
+- **Conversation.** The post's card (the reply composer is inline, as on every
+  card), then replies indented by depth up to three levels. New replies,
+  edits and deletions update in place.
+- **Resume** (player spec, Phase 1). `mockingbird_radio_positions` (per account,
+  registered, private, 100 entries) keeps positions for recordings of 10 minutes
+  or more. It saves every 15 s and on pause or track change, and is cleared near
+  the end. Restoring never autoplays: it is offered as a button.
+- **Fix found by the browser check:** returning to a Radio address whose
+  `#playlist=` fragment matches the playing queue (browser Back from Listen,
+  for one) re-imported it, replacing the queue and stopping playback. A matching
+  fragment is now left alone.
+- **Entry points.** Card ••• menus (all three) and the audio toolbar for
+  inline-only posts; in Radio, the full player's "Open post" became **Open in
+  Listen** (not shown for pasted links, which have no post).
 
 ## Resolved questions (2026-10-26)
 

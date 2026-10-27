@@ -995,6 +995,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/unavailable/unavailable').then((m) => m.Unavailable),
       },
       {
+        path: 'listen',
+        title: 'Listen',
+        loadComponent: () => import('./pages/radio/listen-page').then((m) => m.ListenPage),
+      },
+      {
         path: 'watch',
         title: 'Watch',
         loadComponent: () => import('./pages/watch/watch').then((m) => m.Watch),

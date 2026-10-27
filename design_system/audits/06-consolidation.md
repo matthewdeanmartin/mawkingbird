@@ -925,3 +925,16 @@ Reviewed the regenerated inventory: the added candidates are these controls in
 `radio-controls.html` and `radio-page.html`, with line shifts elsewhere. There
 are still 251 candidate files, both entries are updated in
 `11-reconciliation.json`, and shared widgets are unchanged.
+
+## Listen page, 2026-10-27
+
+The new single-recording page `listen-page.html` reuses Button, Field/Control
+(the position range), StatusCard (the post and its indented comments) and the
+lazy external-player host. Status cards add "Open in Listen" as menu items in
+their three ••• menus, and as one compact ToolbarButton on audio posts that
+Radio cannot play continuously.
+
+Reviewed the regenerated inventory: the added candidates are those entries in
+`status-card.html` and the new `listen-page.html` (now 252 candidate files),
+reconciled as adopted scope in `11-reconciliation.json`. Shared widgets are
+unchanged.

@@ -590,6 +590,12 @@
               {{ 'statusCard.openInRadio' | transloco }}
             </button>
           }
+          @if (!radioPost() && listenLink(); as params) {
+            <!-- A recording Radio cannot continue through still gets a page of its own. -->
+            <button mbToolbarButton type="button" routerLink="/listen" [queryParams]="params">
+              {{ 'statusCard.openInListen' | transloco }}
+            </button>
+          }
           @for (host of externalHosts(); track host.source().key) {
             @if (host.source().embed) {
               <button
@@ -1354,6 +1360,16 @@
                         {{ 'statusCard.openInRadio' | transloco }}
                       </a>
                     }
+                    @if (listenLink(); as params) {
+                      <a
+                        mbMenuItem
+                        routerLink="/listen"
+                        [queryParams]="params"
+                        (click)="closeMenu($event)"
+                      >
+                        {{ 'statusCard.openInListen' | transloco }}
+                      </a>
+                    }
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
@@ -1450,6 +1466,16 @@
                       (click)="offerRadio(); closeMenu($event)"
                     >
                       {{ 'statusCard.openInRadio' | transloco }}
+                    </a>
+                  }
+                  @if (listenLink(); as params) {
+                    <a
+                      mbMenuItem
+                      routerLink="/listen"
+                      [queryParams]="params"
+                      (click)="closeMenu($event)"
+                    >
+                      {{ 'statusCard.openInListen' | transloco }}
                     </a>
                   }
                   @if (canMuteTags() && postTags().length) {
@@ -1553,10 +1579,20 @@
                   <a
                     mbMenuItem
                     routerLink="/radio"
-                    [queryParams]="{ post: postUrl }"
-                    (click)="closeMenu($event)"
+                    [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+                    (click)="offerRadio(); closeMenu($event)"
                   >
                     {{ 'statusCard.openInRadio' | transloco }}
+                  </a>
+                }
+                @if (listenLink(); as params) {
+                  <a
+                    mbMenuItem
+                    routerLink="/listen"
+                    [queryParams]="params"
+                    (click)="closeMenu($event)"
+                  >
+                    {{ 'statusCard.openInListen' | transloco }}
                   </a>
                 }
                 @if (canMuteTags() && postTags().length) {

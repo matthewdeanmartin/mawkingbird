@@ -47,7 +47,7 @@ describe('RadioPlayer', () => {
           provide: RADIO_AUDIO,
           useValue: () => {
             const audio = document.createElement('audio');
-            Object.defineProperty(audio, 'duration', { value: 90 });
+            Object.defineProperty(audio, 'duration', { value: 90, configurable: true });
             vi.spyOn(audio, 'play').mockImplementation(async () => {
               if (reportPlaying) audio.dispatchEvent(new Event('playing'));
             });
@@ -215,6 +215,44 @@ describe('RadioPlayer', () => {
     expect(player.title(track)).toBe('Archive find');
     player.select(0);
     expect(audios[0].src).toBe(track.media.url);
+  });
+
+  it('plays a recording now or next without replacing the queue', () => {
+    player.scan.posts.set([post('1'), post('2')]);
+    player.select(0);
+    const [extra] = player.tracks(post('9'));
+    player.playNext([extra]);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['1', '9', '2']);
+    expect(player.current()?.post.id).toBe('1');
+    const [second] = player.tracks(post('2'));
+    player.playNow(second);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['1', '2', '9']);
+    expect(player.current()?.post.id).toBe('2');
+  });
+
+  it('remembers where a long recording stopped and resumes there', () => {
+    localStorage.setItem('mastodon_mock_token', 'first');
+    const long = post('long');
+    const [track] = player.tracks(long);
+    player.playNow(track, 600);
+    const audio = audios.at(-1)!;
+    Object.defineProperty(audio, 'duration', { value: 3600 });
+    audio.dispatchEvent(new Event('loadedmetadata'));
+    expect(audio.currentTime).toBe(600);
+    audio.currentTime = 1200;
+    audio.dispatchEvent(new Event('timeupdate'));
+    player.pause();
+    expect(player.positions().get(track.key)?.time).toBe(1200);
+    token.set('second');
+    TestBed.tick();
+    localStorage.setItem('mastodon_mock_token', 'second');
+    token.set('third');
+    TestBed.tick();
+    expect(player.positions().size).toBe(0);
+    localStorage.setItem('mastodon_mock_token', 'first');
+    token.set('first');
+    TestBed.tick();
+    expect(player.positions().get(track.key)?.time).toBe(1200);
   });
 
   it('reports widget titles through the title cascade', () => {

@@ -29,7 +29,11 @@ import { ExternalPlayer } from '../../audio-embeds/external-player';
     RadioControls,
     RadioIcon,
   ],
-  host: { '[class.full-view]': 'player.fullView()' },
+  host: {
+    '[class.full-view]': 'player.fullView()',
+    // Listen shows its own controls for a native recording; provider frames still live here.
+    '[class.suppressed]': 'player.dockSuppressed() && !player.current()?.external',
+  },
   template: `
     @if (player.current(); as track) {
       @if (player.fullView()) {
@@ -158,6 +162,9 @@ import { ExternalPlayer } from '../../audio-embeds/external-player';
       bottom: 0;
       z-index: 5;
       display: block;
+    }
+    :host.suppressed {
+      display: none;
     }
     :host.full-view {
       position: static;

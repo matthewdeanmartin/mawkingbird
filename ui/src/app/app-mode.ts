@@ -26,7 +26,7 @@ const MODE_KEY = 'mockingbird_app_mode';
  */
 export function modeForUrl(url: string): AppMode | null {
   const path = url.split(/[?#]/, 1)[0];
-  if (path === '/radio' || path.startsWith('/radio/')) return 'radio';
+  if (path === '/radio' || path.startsWith('/radio/') || path === '/listen') return 'radio';
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }

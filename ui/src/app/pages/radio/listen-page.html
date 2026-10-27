@@ -1,0 +1,205 @@
+<section class="listen-page">
+  <header class="listen-header">
+    <button type="button" mbButton variant="outline" size="small" (click)="back()">
+      {{ 'listen.back' | transloco }}
+    </button>
+    <h1>{{ 'listen.title' | transloco }}</h1>
+  </header>
+  @if (error()) {
+    <p role="alert">{{ error() | transloco }}</p>
+  } @else if (loader.loading()) {
+    <p role="status">{{ 'listen.loading' | transloco }}</p>
+  } @else if (loader.loadError() || hidden() || !loader.status()) {
+    <p role="alert">{{ 'listen.unavailable' | transloco }}</p>
+  } @else {
+    @let status = loader.status()!;
+    <section class="stage" [attr.aria-label]="'listen.title' | transloco">
+      @if (gated()) {
+        @if (warning()) {
+          <p>{{ status.spoiler_text || ('listen.warning' | transloco) }}</p>
+        }
+        @if (filterWarning()) {
+          <p>{{ 'listen.filterWarning' | transloco }}</p>
+        }
+        @if (textOnly()) {
+          <p>{{ 'listen.hiddenMedia' | transloco }}</p>
+        }
+        <button type="button" mbButton (click)="revealed.set(true)">
+          {{ 'listen.reveal' | transloco }}
+        </button>
+      } @else {
+        @if (chosen(); as track) {
+          <div class="now">
+            @if (track.media.preview_url) {
+              <img class="artwork" [src]="track.media.preview_url" alt="" />
+            } @else {
+              <div class="artwork placeholder" aria-hidden="true">
+                <app-radio-icon name="play" />
+              </div>
+            }
+            <div class="meta">
+              <h2>{{ player.title(track) }}</h2>
+              <p class="author">
+                {{ track.post.account.display_name || track.post.account.acct }}
+              </p>
+            </div>
+          </div>
+          @if (playing()) {
+            @if (track.external) {
+              <p class="hint">
+                {{ 'listen.providerBar' | transloco: { provider: track.external.label } }}
+              </p>
+            }
+            <div class="transport">
+              @if (long()) {
+                <button
+                  mbButton
+                  variant="outline"
+                  type="button"
+                  [attr.aria-label]="'listen.back15' | transloco"
+                  [title]="'listen.back15' | transloco"
+                  [disabled]="!player.duration()"
+                  (click)="player.skip(-15)"
+                >
+                  −15
+                </button>
+              }
+              @let label =
+                (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco;
+              <button
+                mbButton
+                class="primary"
+                type="button"
+                [attr.aria-label]="label"
+                [title]="label"
+                [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
+                (click)="player.toggle()"
+              >
+                <app-radio-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
+              </button>
+              @if (long()) {
+                <button
+                  mbButton
+                  variant="outline"
+                  type="button"
+                  [attr.aria-label]="'listen.forward30' | transloco"
+                  [title]="'listen.forward30' | transloco"
+                  [disabled]="!player.duration()"
+                  (click)="player.skip(30)"
+                >
+                  +30
+                </button>
+              }
+            </div>
+            <mb-field
+              [label]="'listen.position' | transloco"
+              [hint]="clock(player.time()) + ' / ' + clock(player.duration())"
+            >
+              <input
+                mbControl
+                type="range"
+                min="0"
+                name="position"
+                [max]="player.duration() || 1"
+                step="1"
+                [ngModel]="player.time()"
+                (ngModelChange)="player.seek(+$event)"
+                [disabled]="!player.duration()"
+              />
+            </mb-field>
+            @if (player.blocked()) {
+              <p role="alert">{{ 'radio.blocked' | transloco }}</p>
+            }
+          } @else {
+            <div class="actions">
+              @if (resumeAt()) {
+                <button mbButton type="button" (click)="play(resumeAt())">
+                  <app-radio-icon name="play" />
+                  {{ 'listen.resume' | transloco: { time: clock(resumeAt()) } }}
+                </button>
+                <button mbButton variant="outline" type="button" (click)="play()">
+                  {{ 'listen.startOver' | transloco }}
+                </button>
+              } @else {
+                <button mbButton type="button" (click)="play()">
+                  <app-radio-icon name="play" />
+                  {{ 'listen.play' | transloco }}
+                </button>
+              }
+            </div>
+          }
+          <div class="actions secondary">
+            <button mbButton variant="outline" size="small" type="button" (click)="playNext()">
+              {{ 'listen.playNext' | transloco }}
+            </button>
+            <button mbButton variant="outline" size="small" type="button" (click)="addToQueue()">
+              {{ 'listen.addQueue' | transloco }}
+            </button>
+          </div>
+          @if (message()) {
+            <p role="status">{{ message() | transloco }}</p>
+          }
+          @if (recordings().length > 1) {
+            <h3>{{ 'listen.recordings' | transloco }}</h3>
+            <ol class="recordings">
+              @for (item of recordings(); track item.key) {
+                <li>
+                  <button
+                    mbButton
+                    size="small"
+                    [variant]="item.key === track.key ? 'solid' : 'outline'"
+                    type="button"
+                    [attr.aria-current]="item.key === track.key ? 'true' : null"
+                    (click)="chosen.set(item)"
+                  >
+                    {{ player.title(item) }}
+                  </button>
+                </li>
+              }
+            </ol>
+          }
+        } @else if (!inline().length) {
+          <p>{{ 'listen.noAudio' | transloco }}</p>
+        }
+        @if (inline().length) {
+          <section class="inline" [attr.aria-label]="'listen.inline' | transloco">
+            @if (chosen()) {
+              <h3>{{ 'listen.inline' | transloco }}</h3>
+            }
+            <p class="hint">{{ 'listen.inlineHint' | transloco }}</p>
+            @for (source of inline(); track source.key) {
+              <app-external-player [source]="source" />
+            }
+          </section>
+        }
+      }
+    </section>
+    <section class="conversation" [attr.aria-label]="'listen.conversation' | transloco">
+      <app-status-card
+        [status]="status"
+        [showMedia]="false"
+        filterContext="thread"
+        (changed)="loader.status.set($event)"
+        (deleted)="loader.status.set(null)"
+        (replied)="onReply($event)"
+      />
+      @if (loader.publicContextUnavailable()) {
+        <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
+      }
+      <h2>{{ 'listen.conversation' | transloco }}</h2>
+      @for (comment of comments(); track comment.post.id) {
+        <div class="comment" [style.--depth]="comment.level">
+          <app-status-card
+            [status]="comment.post"
+            filterContext="thread"
+            (changed)="onCommentChanged($event)"
+            (deleted)="onCommentDeleted($event)"
+            (replied)="onReply($event)"
+          />
+        </div>
+      } @empty {
+        <p class="hint">{{ 'listen.noComments' | transloco }}</p>
+      }
+    </section>
+  }
+</section>

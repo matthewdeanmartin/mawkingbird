@@ -8,7 +8,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { ReadingZen } from '../../reading-zen';
-import { RadioPlayer } from './radio-player';
+import { RadioPlayer, RadioTrack } from './radio-player';
+import { Server } from '../../server';
+import { listenParams } from '../../radio-links';
 import { RadioIcon } from './radio-icon';
 
 // i18n radio.play: Play
@@ -25,7 +27,6 @@ import { RadioIcon } from './radio-icon';
 // i18n radio.skipped: Unavailable tracks skipped: {{count}}
 // i18n radio.waiting: Waiting for audio…
 // i18n radio.openPlayer: Open Radio player
-// i18n radio.post: Open post
 // i18n radio.fullscreen: Full screen
 // i18n radio.exitFullscreen: Exit full screen
 // i18n radio.queue: Audio queue
@@ -71,6 +72,13 @@ export class RadioControls implements OnDestroy {
   private readonly zen = inject(ReadingZen);
   private release?: () => void;
 
+  private readonly server = inject(Server);
+  /** The recording's Listen page; pasted links have no post to show. */
+  listenLink(track: RadioTrack): Record<string, string> | null {
+    return /^https?:/i.test(track.post.id)
+      ? null
+      : listenParams(track.post, this.server.baseUrl(), track.media.id);
+  }
   clock(seconds: number): string {
     const value = Math.max(0, Math.floor(seconds));
     return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, '0')}`;

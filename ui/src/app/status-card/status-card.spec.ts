@@ -275,6 +275,12 @@ describe('StatusCard', () => {
     });
     fixture.detectChanges();
     expect(link()).toBeUndefined();
+    // It still gets its own Listen page.
+    const listen = fixture.debugElement
+      .queryAll(By.css('mb-toolbar.audio-toolbar button[routerLink="/listen"]'))
+      .map((button) => button.injector.get(RouterLink));
+    expect(listen).toHaveLength(1);
+    expect(listen[0].queryParams).toEqual({ post: status.id, server: expect.any(String) });
   });
 
   it('plays linked audio files inline without preloading and offers them to Radio', () => {

@@ -171,7 +171,9 @@
     @if (player.skipped()) {
       <p role="status">{{ 'radio.skipped' | transloco: { count: player.skipped() } }}</p>
     }
-    <a [routerLink]="['/statuses', track.post.id]">{{ 'radio.post' | transloco }}</a>
+    @if (listenLink(track); as params) {
+      <a routerLink="/listen" [queryParams]="params">{{ 'statusCard.openInListen' | transloco }}</a>
+    }
     <h3>{{ 'radio.queue' | transloco }}</h3>
     <ol class="queue">
       @for (item of player.queue(); track item.key; let i = $index) {

@@ -1,4 +1,8 @@
-import { AnonymousPublicRef } from './providers/anonymous/anonymous-route-ref';
+import { Status } from './models';
+import {
+  AnonymousPublicRef,
+  anonymousStatusRouteRef,
+} from './providers/anonymous/anonymous-route-ref';
 
 /** Portable public identifiers; never share server-local IDs or private list state. */
 export function radioPostRef(raw: string | null): AnonymousPublicRef | null {
@@ -28,4 +32,29 @@ export function radioLink(base: string, params: { acct?: string; post?: string }
   if (params.post) url.searchParams.set('post', params.post);
   else if (params.acct) url.searchParams.set('acct', params.acct);
   return url.href;
+}
+
+/**
+ * Query parameters for the Listen page, matching Watch: the post as this client
+ * reached it and the server it came from. `media` picks one recording of several.
+ */
+export function listenParams(
+  status: Status,
+  server: string,
+  media?: string,
+): Record<string, string> {
+  const post = status.reblog ?? status;
+  const ref = post.providerRef as { server?: string; statusId?: string } | undefined;
+  return {
+    post:
+      post.provider === 'anonymous-mastodon' && ref?.server && ref.statusId
+        ? anonymousStatusRouteRef({
+            server: ref.server,
+            id: ref.statusId,
+            originalUrl: post.url ?? undefined,
+          })
+        : post.id,
+    server: new URL(server || location.origin).origin,
+    ...(media ? { media } : {}),
+  };
 }

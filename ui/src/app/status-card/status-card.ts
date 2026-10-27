@@ -48,7 +48,7 @@ import { Lightbox } from '../lightbox/lightbox';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { MbButton } from '../design-system/button/button';
-import { radioPostRef } from '../radio-links';
+import { listenParams, radioPostRef } from '../radio-links';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { ExternalMedia, externalMedia, postExternalMedia } from '../audio-embeds/providers';
 import { linkedAudio, locItems } from '../audio-embeds/linked-audio';
@@ -451,6 +451,17 @@ export class StatusCard {
     const post = this.display;
     if (!['public', 'unlisted'].includes(post.visibility) || !this.playlistable()) return null;
     return radioPostRef(post.url)?.originalUrl ?? null;
+  });
+  // i18n statusCard.openInListen: Open in Listen
+  /** Listen page parameters for any post with a recording, including inline-only players. */
+  readonly listenLink = computed(() => {
+    const post = this.display;
+    const audio =
+      post.media_attachments.some((media) => media.type === 'audio') ||
+      linkedAudio(post).length > 0 ||
+      locItems(post).length > 0 ||
+      postExternalMedia(post).some((media) => media.type === 'audio' && !!media.embed);
+    return audio ? listenParams(post, this.server.baseUrl()) : null;
   });
   private readonly radioHandoff = inject(RadioHandoff);
   protected offerRadio(): void {

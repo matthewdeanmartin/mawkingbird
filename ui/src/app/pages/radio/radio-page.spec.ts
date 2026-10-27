@@ -16,6 +16,7 @@ import { Status } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 import { RadioPage } from './radio-page';
 import { RadioPlayer } from './radio-player';
+import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
 import { RadioHandoff } from '../../radio-handoff';
 import { Playback } from '../../video-player/playback';
 import { TrustedAccounts } from '../../trusted-accounts';
@@ -134,6 +135,34 @@ describe('RadioPage', () => {
     expect(player.active()).toBe(true);
     expect(fixture.componentInstance.view()).toBe('radio');
     player.stop();
+  });
+
+  it('keeps playing when returning to a Radio address whose fragment is the current queue', () => {
+    const fragment = new BehaviorSubject('');
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: {
+        snapshot: {},
+        queryParamMap: of(convertToParamMap({ view: 'radio' })),
+        fragment,
+      },
+    });
+    const player = TestBed.inject(RadioPlayer);
+    const song = {
+      ...audio,
+      id: 'song',
+      visibility: 'public',
+      url: 'https://sea.example/@singer/1',
+      media_attachments: [{ id: 'm', type: 'audio', url: 'https://sea.example/song.mp3' }],
+    } as Status;
+    player.replacePlaylist(player.tracks(song));
+    const queue = player.queue();
+    const importUrls = vi.spyOn(TestBed.inject(RadioPlaylists), 'importUrls');
+    fragment.next(playlistFragment(playlistUrls(queue)));
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.importing()).toBe(false);
+    expect(importUrls).not.toHaveBeenCalled();
+    expect(player.queue()).toBe(queue);
   });
 
   it('explains a post Radio cannot continue through instead of silently showing Search', async () => {

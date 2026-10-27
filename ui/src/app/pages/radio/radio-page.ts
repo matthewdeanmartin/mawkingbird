@@ -33,7 +33,6 @@ import {
   RadioPlaylists,
   SavedRadioPlaylist,
 } from './radio-playlists';
-import { RadioTrack } from './radio-player';
 import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
 import { RadioSettings } from './radio-settings';
@@ -213,6 +212,10 @@ export class RadioPage {
       const urls = readPlaylistFragment(fragment ?? '');
       if (urls && fragment !== this.lastFragment) {
         this.lastFragment = fragment ?? '';
+        // Returning to Radio (Back, or a link that kept the fragment) shows the
+        // queue that is already playing; re-importing it would stop playback.
+        const queued = playlistUrls(this.player.queue());
+        if (queued.length === urls.length && queued.every((url, i) => url === urls[i])) return;
         this.shared.set(true);
         void this.importLinks(urls, false, true);
       }

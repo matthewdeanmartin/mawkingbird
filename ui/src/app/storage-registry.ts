@@ -126,6 +126,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Radio listening preferences: continuous play and default volume.',
   },
   {
+    base: 'mockingbird_radio_positions',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Where listening stopped in long recordings (track key, seconds), for Resume. At most 100 entries; never exported.',
+  },
+  {
     base: 'mockingbird_radio_catalogue',
     storage: 'local',
     suffix: 'account',

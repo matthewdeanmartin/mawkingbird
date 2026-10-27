@@ -26,6 +26,15 @@ import { trackTitle } from './track-title';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 
 const SETTINGS_KEY = 'mockingbird_radio_settings';
+const POSITIONS_KEY = 'mockingbird_radio_positions';
+/** Recordings at least this long (seconds) remember where listening stopped. */
+export const RESUME_MINIMUM = 600;
+const POSITION_LIMIT = 100;
+interface SavedPosition {
+  time: number;
+  duration: number;
+  at: number;
+}
 
 export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio audio factory', {
   providedIn: 'root',
@@ -73,6 +82,12 @@ export class RadioPlayer {
   readonly volume = signal(1);
   /** Advance to the next track when one ends; off stops after each recording. */
   readonly continuous = signal(true);
+  /** A page showing its own controls for the current recording hides the dock. */
+  readonly dockSuppressed = signal(false);
+  /** Where long recordings were left off, by track key, for this account. */
+  readonly positions = signal<ReadonlyMap<string, SavedPosition>>(new Map());
+  private pendingSeek = 0;
+  private positionSavedAt = 0;
   readonly selected = signal(-1);
   private readonly alternatives = signal<ReadonlyMap<string, string>>(new Map());
   /** Providers this account allowed to load and autoplay inside Radio. */
@@ -160,11 +175,13 @@ export class RadioPlayer {
     this.document.addEventListener('play', otherStarted, true);
     let identity = this.identity();
     this.loadSettings();
+    this.loadPositions();
     effect(() => {
       const next = this.identity();
       if (identity !== next) {
         identity = next;
         this.loadSettings();
+        this.loadPositions();
         this.stop();
         this.scan.clear();
         this.playlist.set(null);
@@ -287,7 +304,70 @@ export class RadioPlayer {
   select(index: number): void {
     if (!this.queue()[index]) return;
     this.failures = 0;
+    this.pendingSeek = 0;
     this.activate(index);
+  }
+  /**
+   * Play this recording now, inserted after the current track so the rest of
+   * the queue is kept; `at` resumes from a saved position.
+   */
+  playNow(track: RadioTrack, at = 0): void {
+    this.playNext([track]);
+    this.select(this.queue().findIndex((item) => item.key === track.key));
+    this.pendingSeek = at > 0 ? at : 0;
+  }
+  /** Queue recordings right after the current track; ones already queued move there. */
+  playNext(tracks: RadioTrack[]): void {
+    this.editPlaylist();
+    const keys = new Set(tracks.map((track) => track.key));
+    const current = this.current()?.key;
+    const rest = this.queue().filter((item) => !keys.has(item.key) || item.key === current);
+    const at = rest.findIndex((item) => item.key === current) + 1;
+    const inserted = tracks.filter((track) => track.key !== current);
+    this.playlist.set([...rest.slice(0, at), ...inserted, ...rest.slice(at)]);
+    this.selected.set(this.queue().findIndex((item) => item.key === current));
+  }
+  /** Seek the current track by an offset, e.g. back 15 or ahead 30 seconds. */
+  skip(seconds: number): void {
+    this.seek(this.time() + seconds);
+  }
+  private remember(time: number, final = false): void {
+    const track = this.current();
+    const duration = this.duration();
+    if (!track || duration < RESUME_MINIMUM) return;
+    if (!final && Date.now() - this.positionSavedAt < 15_000) return;
+    this.positionSavedAt = Date.now();
+    const next = new Map(this.positions());
+    next.delete(track.key);
+    // Near the end counts as finished: there is nothing left to resume.
+    if (time > 5 && time < duration - 30) next.set(track.key, { time, duration, at: Date.now() });
+    while (next.size > POSITION_LIMIT) next.delete(next.keys().next().value!);
+    this.positions.set(next);
+    try {
+      localStorage.setItem(POSITIONS_KEY + accountScopeSuffix(), JSON.stringify([...next]));
+    } catch {
+      /* Resume still works for this tab. */
+    }
+  }
+  private loadPositions(): void {
+    try {
+      const data: unknown = JSON.parse(
+        localStorage.getItem(POSITIONS_KEY + accountScopeSuffix()) ?? '[]',
+      );
+      this.positions.set(
+        new Map(
+          (Array.isArray(data) ? data : []).filter(
+            (row): row is [string, SavedPosition] =>
+              Array.isArray(row) &&
+              typeof row[0] === 'string' &&
+              Number.isFinite(row[1]?.time) &&
+              Number.isFinite(row[1]?.duration),
+          ),
+        ),
+      );
+    } catch {
+      this.positions.set(new Map());
+    }
   }
   radioSources(post: Status): ExternalMedia[] {
     return postExternalMedia(post).filter((s) => s.type === 'audio' && s.controllable && s.embed);
@@ -353,10 +433,18 @@ export class RadioPlayer {
       audio.volume = this.volume();
       const current = () => this.audio === audio;
       audio.addEventListener('timeupdate', () => {
-        if (current()) this.time.set(audio.currentTime);
+        if (!current()) return;
+        this.time.set(audio.currentTime);
+        this.remember(audio.currentTime);
       });
       audio.addEventListener('loadedmetadata', () => {
-        if (current()) this.duration.set(Number.isFinite(audio.duration) ? audio.duration : 0);
+        if (!current()) return;
+        this.duration.set(Number.isFinite(audio.duration) ? audio.duration : 0);
+        if (this.pendingSeek && this.pendingSeek < this.duration()) {
+          audio.currentTime = this.pendingSeek;
+          this.time.set(audio.currentTime);
+        }
+        this.pendingSeek = 0;
       });
       audio.addEventListener('playing', () => {
         if (!current()) return;
@@ -417,6 +505,7 @@ export class RadioPlayer {
     } else void this.advance();
   }
   pause(): void {
+    if (this.wantsPlay) this.remember(this.time(), true);
     this.generation++;
     this.autoExternalPlay = false;
     this.wantsPlay = false;
@@ -490,6 +579,7 @@ export class RadioPlayer {
     this.saveSettings();
   }
   private ended(): void {
+    this.remember(this.duration(), true);
     if (this.continuous()) void this.advance();
     else this.pause();
   }
@@ -571,8 +661,10 @@ export class RadioPlayer {
       this.blocked.set(true);
       return;
     }
-    if (typeof state.time === 'number' && Number.isFinite(state.time))
+    if (typeof state.time === 'number' && Number.isFinite(state.time)) {
       this.time.set(Math.max(0, state.time));
+      this.remember(this.time());
+    }
     if (typeof state.duration === 'number' && Number.isFinite(state.duration))
       this.duration.set(Math.max(0, state.duration));
     if (state.ended && this.wantsPlay) {

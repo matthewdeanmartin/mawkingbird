@@ -243,7 +243,9 @@ try {
       assert.deepEqual(draft.media_ids, ['audio-1']);
       assert.ok(route.request().headers()['idempotency-key']);
       body = audio;
-    } else if (/\/api\/v1\/statuses\/\d+$/.test(url.pathname))
+    } else if (/\/api\/v1\/statuses\/\d+\/context$/.test(url.pathname))
+      body = { ancestors: [], descendants: [] };
+    else if (/\/api\/v1\/statuses\/\d+$/.test(url.pathname))
       body = url.pathname.endsWith('/9') ? second : audio;
     else if (url.pathname.includes('verify_credentials') || url.pathname.endsWith('/lookup'))
       body = account;
@@ -310,6 +312,18 @@ try {
     return audio && !audio.paused && audio.currentTime > 0.1;
   });
   await dockFitsColumn();
+  // Listen: one recording with its conversation; playback continues through Radio.
+  await page.locator('app-radio-controls').getByRole('link', { name: 'Open in Listen' }).click();
+  await page.getByRole('heading', { name: 'Listen', exact: true }).waitFor();
+  await page
+    .locator('app-listen-page')
+    .getByRole('button', { name: 'Pause', exact: true })
+    .waitFor();
+  assert.equal(await page.locator('app-radio-dock').isVisible(), false, 'Listen replaces the dock');
+  assert.equal(await page.locator('audio[data-radio]').evaluate((audio) => audio.paused), false);
+  await page.screenshot({ path: '.test-results/listen-desktop.png', fullPage: true });
+  await page.goBack();
+  await page.locator('app-radio-dock.full-view').waitFor();
   const startedAt = await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime);
   await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
   await page.getByRole('heading', { name: 'Studio', exact: true }).waitFor();
@@ -618,6 +632,10 @@ try {
     .getByRole('link', { name: 'Open in Radio', exact: true });
   assert.equal(new URL(await open.getAttribute('href'), base).searchParams.get('post'), audio.url);
   await open.click();
+  // Open in Radio plays the post in the player view; Back returns to the shared post.
+  await shared.locator('app-radio-dock.full-view').waitFor();
+  assert.equal(new URL(shared.url()).searchParams.get('view'), 'radio');
+  await shared.goBack();
   await shared.locator('app-status-card a[href*="/accounts/"]').first().click();
   await shared.locator('details.account-danger-menu summary').click();
   const accountRadio = shared
