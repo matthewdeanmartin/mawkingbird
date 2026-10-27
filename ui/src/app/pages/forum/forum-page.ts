@@ -23,7 +23,6 @@ import { MbPageHeader } from '../../design-system/page-header/page-header';
 import {
   compareSummaries,
   DiscussionSummary,
-  filterSummaries,
   FORUM_FILTERS,
   ForumFilter,
   ForumSort,
@@ -38,9 +37,15 @@ import {
   parseSource,
   sourceParam,
 } from '../../forum/forum-scan';
+import { MbDisclosure } from '../../design-system/disclosure/disclosure';
+import { FacetChoice, FACET_KINDS, hasFacets } from '../../forum/discussion-facets';
+import { ForumView } from '../../forum/forum-view';
 import { HumanTimePipe } from '../../human-time.pipe';
 import { UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
+import { ForumFacets } from './forum-facets';
+import { ForumMembers } from './forum-members';
+import { useForumRails } from './forum-rails';
 
 // i18n forum.title: Forum
 // i18n forum.intro.talk: Conversations in your feed, traced back to where they started.
@@ -73,6 +78,9 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n forum.empty.title: No discussions here yet
 // i18n forum.empty.description: A discussion needs at least two people. Scanning deeper reads more of the feed.
 // i18n forum.empty.filtered: None of the discussions found so far fit this tab.
+// i18n forum.empty.faceted: None of the discussions found so far match these filters.
+// i18n forum.filters: Filters
+// i18n forum.people: People
 // i18n forum.mastodonOnly: Forum needs a Mastodon account: it follows replies across servers.
 // i18n forum.card.question: Question
 // i18n forum.card.partial: Partial thread
@@ -111,6 +119,9 @@ function asSort(value: string | null): ForumSort {
     MbPageHeader,
     HumanTimePipe,
     StatusCard,
+    MbDisclosure,
+    ForumFacets,
+    ForumMembers,
   ],
   templateUrl: './forum-page.html',
   styleUrl: './forum-page.css',
@@ -131,6 +142,16 @@ export class ForumPage {
   protected filter = computed(() => asFilter(this.params().get('filter')));
   protected sort = computed(() => asSort(this.params().get('sort')));
   private source = computed(() => parseSource(this.params().get('source')));
+  private choice = computed<FacetChoice>(() => {
+    const params = this.params();
+    return Object.fromEntries(
+      FACET_KINDS.map((kind) => [kind, params.getAll(kind)]),
+    ) as unknown as FacetChoice;
+  });
+  protected faceted = computed(() => hasFacets(this.choice()));
+  private view = inject(ForumView);
+  /** The rails' contents, offered inline when the window hides the rails. */
+  protected rails = useForumRails();
 
   /** The picker's draft, applied by Scan. */
   protected draftKind = signal<'home' | 'tag' | string>('home');
@@ -140,9 +161,7 @@ export class ForumPage {
   });
 
   /** Every discussion in this tab, in its ideal order. */
-  private ideal = computed(() =>
-    filterSummaries(this.scan.summaries(), this.filter()).sort(compareSummaries(this.sort())),
-  );
+  private ideal = computed(() => [...this.view.visible()].sort(compareSummaries(this.sort())));
   /**
    * The order on screen. Results land while the reader is looking, so rows
    * already shown keep their place and new ones join at the end; "Sort the
@@ -184,13 +203,23 @@ export class ForumPage {
   });
 
   constructor() {
+    // The rails sit outside the router outlet; tell them what this page shows.
+    effect(() => {
+      const filter = this.filter();
+      const choice = this.choice();
+      untracked(() => {
+        this.view.filter.set(filter);
+        this.view.choice.set(choice);
+        this.view.focus.set(null);
+      });
+    });
     // Back from a discussion returns here: remember the query, and put the
     // reader back where they were once the router's scroll-to-top has run.
     effect(() => {
       const params = this.params();
       untracked(() => {
         this.scan.listParams = Object.fromEntries(
-          params.keys.map((key) => [key, params.get(key) ?? '']),
+          params.keys.map((key) => [key, params.getAll(key)]),
         );
       });
     });

@@ -1,13 +1,17 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { map } from 'rxjs';
+import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { MbNotice } from '../../design-system/notice/notice';
 import { threadOrder } from '../../forum/discussion';
 import { ForumScan } from '../../forum/forum-scan';
+import { ForumView } from '../../forum/forum-view';
 import { ThreadPreload } from '../read/thread-preload';
 import { Thread } from '../thread/thread';
+import { ForumMembers } from './forum-members';
+import { useForumRails } from './forum-rails';
 
 // i18n forum.discussion.back: ← Back to discussions
 // i18n forum.discussion.partial: The start of this conversation could not be reached. This is as far back as it goes.
@@ -23,7 +27,7 @@ import { Thread } from '../thread/thread';
  */
 @Component({
   selector: 'app-forum-discussion-page',
-  imports: [RouterLink, TranslocoPipe, MbNotice, Thread],
+  imports: [RouterLink, TranslocoPipe, MbDisclosure, MbNotice, ForumMembers, Thread],
   template: `
     <nav class="back">
       <a routerLink="/forum" [queryParams]="scan.listParams">{{
@@ -32,6 +36,11 @@ import { Thread } from '../thread/thread';
     </nav>
     @if (discussion()?.partial) {
       <mb-notice>{{ 'forum.discussion.partial' | transloco }}</mb-notice>
+    }
+    @if (rails.rightHidden()) {
+      <mb-disclosure [label]="'forum.people' | transloco">
+        <app-forum-members />
+      </mb-disclosure>
     }
     <app-thread />
   `,
@@ -48,6 +57,8 @@ export class ForumDiscussionPage {
   protected scan = inject(ForumScan);
   private preload = inject(ThreadPreload);
   private route = inject(ActivatedRoute);
+  private view = inject(ForumView);
+  protected rails = useForumRails();
 
   private id = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))), {
     initialValue: this.route.snapshot.paramMap.get('id'),
@@ -58,6 +69,14 @@ export class ForumDiscussionPage {
   });
 
   constructor() {
+    // The Members rail lists this discussion's people while it is open.
+    effect(() => {
+      const id = this.id();
+      untracked(() => this.view.focus.set(id));
+    });
+    inject(DestroyRef).onDestroy(() => {
+      if (this.view.focus() === this.id()) this.view.focus.set(null);
+    });
     // Subscribed before the thread page's own paramMap subscription, so each
     // offer is in place before it loads.
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {

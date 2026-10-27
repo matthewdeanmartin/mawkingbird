@@ -67,8 +67,13 @@ export interface BulkTarget {
    * accounts, followed or unfollowed in bulk. Only {@link fetchListMembers}
    * cares which, so this rides along rather than doubling the action list.
    * Defaults to `list` so every existing caller is unchanged.
+   *
+   * A discussion (Forum) has no server-side membership to read: the people
+   * in it are already in hand, so they travel in {@link accounts}.
    */
-  kind?: 'list' | 'collection';
+  kind?: 'list' | 'collection' | 'discussion';
+  /** The members, for a `discussion`: my server's account records only. */
+  accounts?: Account[];
 }
 
 /** True for the actions that require a {@link BulkTarget}. */
@@ -159,6 +164,7 @@ export interface BulkActionSpec {
 // i18n bulk.unit.listMembers: list members
 // i18n bulk.source.list: list
 // i18n bulk.source.collection: collection
+// i18n bulk.source.discussion: discussion
 // i18n bulk.processed: {{unit}} processed
 export const BULK_ACTIONS: readonly BulkActionSpec[] = [
   {
@@ -819,6 +825,7 @@ export class BulkActions {
    * page endpoint — so it is read and returned rather than walked.
    */
   private async fetchMembers(target: BulkTarget): Promise<Account[]> {
+    if (target.kind === 'discussion') return [...(target.accounts ?? [])];
     if (target.kind === 'collection') {
       const data = await firstValueFrom(this.api.getCollection(target.listId));
       const ids = new Set(

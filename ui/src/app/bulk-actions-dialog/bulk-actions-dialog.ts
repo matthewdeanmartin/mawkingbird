@@ -152,11 +152,16 @@ export class BulkActionsDialog implements OnInit {
    */
   private transloco = inject(TranslocoService);
 
-  protected readonly sourceNoun = computed(() =>
-    this.target()?.kind === 'collection'
-      ? this.transloco.translate<string>('bulk.source.collection')
-      : this.transloco.translate<string>('bulk.source.list'),
-  );
+  protected readonly sourceNoun = computed(() => {
+    const kind = this.target()?.kind;
+    return this.transloco.translate<string>(
+      kind === 'collection'
+        ? 'bulk.source.collection'
+        : kind === 'discussion'
+          ? 'bulk.source.discussion'
+          : 'bulk.source.list',
+    );
+  });
 
   /**
    * The dialog heading, with the noun supplied as a parameter.

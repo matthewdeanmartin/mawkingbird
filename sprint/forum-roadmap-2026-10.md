@@ -157,6 +157,39 @@ Acceptance: facet counts match a hand-computed fixture. Choosing a member
 narrows the list to discussions that person is in. Forum mode never shows
 ads or server cards in the right rail, and every other mode is unchanged.
 
+### Sprint 3 progress (2026-10-27): ready for a user trial
+
+- **Rail outlet** (`rail-outlet.ts`). Pages claim the shell's rails as lazy
+  components with their own `aria-label`. Only the current owner can release
+  them, because the router creates the next page before destroying the last.
+  The default rails come back everywhere else.
+- **Facets** (`forum/discussion-facets.ts`, `pages/forum/forum-facets.ts`).
+  The facets are hashtags, starting server, and declared root language (base
+  code; nothing is detected). Counts are taken over the tab before any
+  choice, choices combine with AND across facets and OR within one, and
+  each facet shows its top 20. Choices live in `?tag=&instance=&lang=&person=`;
+  a choice made beside a discussion lands on the list with its source and tab
+  kept. `ForumView` carries the tab, the choices, and the open discussion from
+  the pages to the rails, which sit outside the router outlet.
+- **Members** (`pages/forum/forum-members.ts`). Beside a discussion it lists
+  everyone, starter first, with Started it / You / Following badges, posts and
+  last time, a profile link, and the shared FollowButton (other servers'
+  people go through webfinger). **Follow everyone** reuses the bulk-actions
+  dialog and progress through a new `discussion` target kind, which carries
+  its accounts so nothing is re-read. **Add everyone to a list**
+  (`forum-list-dialog.ts`) checks follow state first, because Mastodon lists
+  only hold followed accounts, and says how many can go in. It adds to an
+  existing list or a new one, in batches, falling back to one at a time.
+  Beside the list it shows Most active (by discussions, then posts) with no
+  group actions. Choosing a person toggles the People facet.
+- **Moderation.** People muted or blocked in Mawkingbird are left out of
+  discussions, facets and members, and a discussion they started is dropped.
+  My server already filters its own mutes from context. Posts read from other
+  servers are filtered only by Mawkingbird's local list.
+- **Narrow screens.** When the window hides the left rail, the list shows a
+  Filters disclosure. When it hides the right rail, the list and the
+  discussion show a People disclosure. Each holds the same components.
+
 ## Sprint 4: completion
 
 1. **Help page** in `docs/` (Forum: what a scan costs, what partial means,

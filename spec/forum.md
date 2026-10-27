@@ -188,7 +188,7 @@ for it (owner, 2026-10-27).
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | Hashtags      | Union of `status.tags` across the discussion (fallback: hashtag links in the content, as in lite). |
 | Root instance | Domain of the root author's `acct`.                                                                |
-| Language      | Root language, from `status-language.ts`.                                                          |
+| Language      | The root's declared language, as a base code (`en-GB` → `en`); nothing is detected.                |
 | People        | Set by choosing a member in the right rail: discussions that person is in.                         |
 
 Choices live in the URL (`?tag=…&instance=…&lang=…&person=…`), so
@@ -225,9 +225,10 @@ on leave. The facet and member components stay in the lazy Forum chunk,
 outside the startup bundle (`npm run build:mockingbird` size report). The
 service is generic, but in v1 only Forum uses it.
 
-Below the shell's rail breakpoint the rails disappear. Facets then open from a
-**Filters** button as an `MbPopover`/sheet in the center. Members become a
-collapsible section above the discussion and a "people" row on the list.
+Below each rail's breakpoint (right at 1240px, left at 1000px) that rail
+disappears, and the page offers the same component in a disclosure above its
+content: **Filters** on the list, **People** on the list and beside a
+discussion.
 
 ## Code layout
 

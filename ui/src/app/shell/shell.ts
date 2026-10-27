@@ -56,6 +56,7 @@ import { visiblePlusBenefits } from '../plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 import { AppModeService } from '../app-mode';
 import { RadioOutlet } from '../radio-outlet';
+import { RailOutlet } from '../rail-outlet';
 import { MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
 
@@ -201,6 +202,8 @@ function isWideUrl(url: string): boolean {
 })
 export class Shell implements OnInit, AccountSwitcher {
   protected readonly radioOutlet = inject(RadioOutlet);
+  /** A page's own rails (Forum), shown in place of the defaults while set. */
+  protected readonly railOutlet = inject(RailOutlet);
   protected readonly accountProfilePath = accountProfilePath;
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);

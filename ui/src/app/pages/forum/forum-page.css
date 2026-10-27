@@ -89,3 +89,7 @@
 .meta a {
   margin-inline-start: auto;
 }
+
+.inline-rail {
+  display: block;
+}

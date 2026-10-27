@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../../api';
+import { RailOutlet } from '../../rail-outlet';
 import { Auth } from '../../auth';
 import { Discussion, summarize } from '../../forum/discussion';
 import { ForumScan, ForumSource, ScanState } from '../../forum/forum-scan';
@@ -124,6 +125,29 @@ describe('ForumPage', () => {
     expect(cards(await mount({ filter: 'asked' }))).toEqual(['1']);
     fixture.destroy();
     expect(cards(await mount({ filter: 'joined' }))).toEqual(['3']);
+  });
+
+  it('applies the facet choices in the URL, and says when none match', async () => {
+    scan.source.set({ kind: 'home' });
+    scan.state.set('spent');
+    scan.found.set([
+      thread('1', 'a', 'b', { tags: [{ name: 'rust', url: '' }] }),
+      thread('2', 'c', 'd'),
+    ]);
+    expect(cards(await mount({ tag: 'rust' }))).toEqual(['1']);
+    fixture.destroy();
+    const host = await mount({ tag: 'go' });
+    expect(cards(host)).toEqual([]);
+    expect(host.textContent).toContain('match these filters');
+  });
+
+  it('claims the shell’s rails for Forum, and gives them back on leaving', async () => {
+    await mount();
+    const outlet = TestBed.inject(RailOutlet);
+    expect(outlet.left()?.labelKey).toBe('forum.facets.rail');
+    expect(outlet.right()?.labelKey).toBe('forum.members.rail');
+    fixture.destroy();
+    expect(outlet.left()).toBeNull();
   });
 
   it('keeps rows in place as results arrive, and re-sorts on request', async () => {

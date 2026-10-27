@@ -1,8 +1,9 @@
+import { RailOutlet } from '../rail-outlet';
 import { PlusCatalogue } from '../providers/account/plus-catalogue';
 import { fakePlusCatalogue } from '../testing/plus-catalogue';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -620,6 +621,9 @@ describe('Shell account switching', () => {
  * writing zen hides a strict superset, so the result must be indistinguishable
  * from writing zen alone.
  */
+@Component({ selector: 'app-page-rail', template: '<p class="page-rail">page rail</p>' })
+class PageRail {}
+
 describe('Shell app-mode nav', () => {
   let httpMock: HttpTestingController;
 
@@ -743,6 +747,23 @@ describe('Shell app-mode nav', () => {
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
     expect(rows[1].getAttribute('aria-current')).toBe('true');
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');
+  });
+
+  it('shows a page’s own rail in place of the default, and the default again after', () => {
+    const outlet = TestBed.inject(RailOutlet);
+    const page = {};
+    outlet.show(page, { left: { component: PageRail, labelKey: 'forum.facets.rail' } });
+    const fixture = render();
+    const host = fixture.nativeElement as HTMLElement;
+    const left = host.querySelector('.rail-left')!;
+    expect(left.querySelector('.page-rail')).not.toBeNull();
+    expect(left.querySelector('app-left-rail')).toBeNull();
+    expect(left.getAttribute('aria-label')).toBe('Discussion filters');
+    expect(host.querySelector('.rail-right app-right-rail')).not.toBeNull();
+
+    outlet.release(page);
+    fixture.detectChanges();
+    expect(left.querySelector('app-left-rail')).not.toBeNull();
   });
 });
 

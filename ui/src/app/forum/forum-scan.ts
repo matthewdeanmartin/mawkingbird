@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { defaultIfEmpty, firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
 import { Api } from '../api';
 import { Auth } from '../auth';
+import { LocalModeration } from '../local-moderation';
 import { Context, Relationship, Status } from '../models';
 import { adaptAnonymousStatus } from '../providers/anonymous/anonymous-mastodon-provider';
 import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
@@ -154,6 +155,7 @@ export class ForumScan {
   private api = inject(Api);
   private auth = inject(Auth);
   private anonymousPublic = inject(AnonymousPublicApi);
+  private moderation = inject(LocalModeration);
 
   readonly source = signal<ForumSource | null>(null);
   readonly state = signal<ScanState>('idle');
@@ -165,12 +167,24 @@ export class ForumScan {
   /** {@link personKey}s of participants the viewer follows, among those asked about. */
   readonly following = signal<ReadonlySet<string>>(new Set());
 
-  /** Discussions only: two posts, two people. */
+  /**
+   * Discussions only: two posts, two people. People muted or blocked here
+   * are left out (posts read from other servers were never filtered by mine),
+   * and a discussion they started is dropped, as MIMB drops muted starters.
+   */
   readonly summaries = computed<DiscussionSummary[]>(() => {
     const account = this.auth.account();
     const me = account ? personKey(account) : null;
     const following = this.following();
+    this.moderation.entries();
+    const hidden = (post: Status) => this.moderation.isSuppressed(post.account);
     return this.found()
+      .filter((discussion) => !hidden(discussion.anchor))
+      .map((discussion) =>
+        discussion.posts.some(hidden)
+          ? { ...discussion, posts: discussion.posts.filter((post) => !hidden(post)) }
+          : discussion,
+      )
       .filter(isDiscussion)
       .map((discussion) => summarize(discussion, me, following));
   });
@@ -188,7 +202,7 @@ export class ForumScan {
   );
 
   /** Where the list was left (its query and scroll), so Back from a discussion returns there. */
-  listParams: Record<string, string> = {};
+  listParams: Record<string, string[]> = {};
   listScroll = 0;
 
   private sample: Status[] = [];

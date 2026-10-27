@@ -27,6 +27,8 @@ export interface Participant {
   account: Account;
   posts: number;
   lastAt: string;
+  /** `account` is my server's record, so its id works for follows and lists. */
+  local: boolean;
 }
 
 /** What the list, the filters and the rails read from a discussion. */
@@ -182,7 +184,7 @@ export function summarize(
   following: ReadonlySet<string>,
 ): DiscussionSummary {
   const starter = personKey(discussion.anchor.account);
-  const people = new Map<string, Participant & { post: Status }>();
+  const people = new Map<string, Omit<Participant, 'local'> & { post: Status }>();
   const hashtags = new Set<string>();
   let friendReplyCount = 0;
   let latestAt = discussion.anchor.created_at;
@@ -211,7 +213,12 @@ export function summarize(
         right.posts - left.posts ||
         right.lastAt.localeCompare(left.lastAt),
     )
-    .map(([, { account, posts, lastAt }]) => ({ account, posts, lastAt }));
+    .map(([, { account, posts, lastAt, post }]) => ({
+      account,
+      posts,
+      lastAt,
+      local: !isForeignCopy(post),
+    }));
   const iStarted = me !== null && starter === me;
   return {
     discussion,

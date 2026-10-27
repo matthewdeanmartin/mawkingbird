@@ -100,6 +100,17 @@
     }
   </section>
 
+  @if (rails.leftHidden()) {
+    <mb-disclosure class="inline-rail" [label]="'forum.filters' | transloco">
+      <app-forum-facets />
+    </mb-disclosure>
+  }
+  @if (rails.rightHidden()) {
+    <mb-disclosure class="inline-rail" [label]="'forum.people' | transloco">
+      <app-forum-members />
+    </mb-disclosure>
+  }
+
   @if (unsorted()) {
     <button mbButton type="button" size="small" variant="outline" class="resort" (click)="resort()">
       {{ 'forum.resort' | transloco }}
@@ -159,7 +170,12 @@
     <mb-content-state
       [title]="'forum.empty.title' | transloco"
       [description]="
-        (scan.summaries().length ? 'forum.empty.filtered' : 'forum.empty.description') | transloco
+        (faceted()
+          ? 'forum.empty.faceted'
+          : scan.summaries().length
+            ? 'forum.empty.filtered'
+            : 'forum.empty.description'
+        ) | transloco
       "
     />
   }

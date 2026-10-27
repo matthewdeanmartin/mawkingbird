@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../api';
+import { LocalModeration } from '../local-moderation';
 import { Auth } from '../auth';
 import { Account, Context, Status } from '../models';
 import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
@@ -406,6 +407,22 @@ describe('ForumScan', () => {
     expect(summaries.filter((s) => s.iStarted)).toHaveLength(1);
     expect(summaries.filter((s) => s.iJoined)).toHaveLength(0);
     expect(summaries).toHaveLength(2);
+  });
+
+  it('leaves out people muted or blocked here, and what they started', async () => {
+    localStorage.clear();
+    feed(2);
+    const scan = scanner();
+    scan.start({ kind: 'home' });
+    await settled(scan);
+    expect(scan.summaries()).toHaveLength(2);
+    const moderation = TestBed.inject(LocalModeration);
+    moderation.block(account('a1'));
+    moderation.mute(account('b2'), null);
+    expect(scan.summaries()).toEqual([]);
+    moderation.clear(account('b2'));
+    expect(scan.summaries().map((s) => s.discussion.anchor.account.id)).toEqual(['a2']);
+    moderation.clear(account('a1'));
   });
 
   it('tracks follows by person, so a friend counts on any server', async () => {

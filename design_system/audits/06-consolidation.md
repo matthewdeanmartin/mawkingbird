@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Forum mode, sprint 3: rails, 2026-10-27
+
+Reviewed 1,227 source files and 258 candidate files. Three
+candidates are added, all built from shared components: `pages/forum/forum-facets.ts`
+(Rail Card, MbButton toggle chips), `pages/forum/forum-members.ts` (Rail Card,
+MbButton toggles, Badge, the shared FollowButton, the bulk-actions dialog and
+progress) and `pages/forum/forum-list-dialog.ts` (Dialog, Field and Control,
+MbButton). The shell's rails gain a page-owned outlet branch (`RailOutlet`), so
+`shell/shell.html` findings move by lines with no new control. The forum list
+gains Filters and People disclosures for narrow screens. The bulk-actions dialog
+gains a "discussion" noun in TypeScript only. No shared widget changed.
+
 ## Forum mode, sprint 2, 2026-10-27
 
 Reviewed 1,220 source files and 255 candidate files. One candidate

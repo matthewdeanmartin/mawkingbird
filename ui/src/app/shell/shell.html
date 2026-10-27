@@ -476,9 +476,15 @@
     @if (!wide() && !railsHidden() && !chromeHidden()) {
       <aside
         class="rail rail-left"
-        [attr.aria-label]="'shell.sidebar.accountsDiscovery' | transloco"
+        [attr.aria-label]="
+          railOutlet.left()?.labelKey ?? 'shell.sidebar.accountsDiscovery' | transloco
+        "
       >
-        <app-left-rail />
+        @if (railOutlet.left(); as rail) {
+          <ng-container *ngComponentOutlet="rail.component" />
+        } @else {
+          <app-left-rail />
+        }
       </aside>
     }
     <main class="column" id="main" tabindex="-1" #mainColumn>
@@ -494,9 +500,15 @@
     @if (!wide() && !railsHidden() && !chromeHidden()) {
       <aside
         class="rail rail-right"
-        [attr.aria-label]="'shell.sidebar.serverRecommendations' | transloco"
+        [attr.aria-label]="
+          railOutlet.right()?.labelKey ?? 'shell.sidebar.serverRecommendations' | transloco
+        "
       >
-        <app-right-rail />
+        @if (railOutlet.right(); as rail) {
+          <ng-container *ngComponentOutlet="rail.component" />
+        } @else {
+          <app-right-rail />
+        }
       </aside>
     }
   </div>

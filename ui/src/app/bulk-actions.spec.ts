@@ -419,6 +419,21 @@ describe('BulkActions', () => {
     expect(api.listAccountsPage).not.toHaveBeenCalled();
   });
 
+  it('follows the people of a Forum discussion from the accounts it was handed', async () => {
+    api.relationships.mockReturnValueOnce(of([follows('1', false), follows('2', true)]));
+
+    const preview = await bulk.preview('list-follow', {
+      listId: 'https://origin.example/statuses/1',
+      listTitle: 'A discussion',
+      kind: 'discussion',
+      accounts: [account('1'), account('2')],
+    });
+
+    expect(preview).toMatchObject({ targets: 1, alreadyCorrect: 1 });
+    expect(api.listAccountsPage).not.toHaveBeenCalled();
+    expect(api.getCollection).not.toHaveBeenCalled();
+  });
+
   // ---------------------------------------------------------------- lists
 
   it('follows only the list members that are not already followed', async () => {
