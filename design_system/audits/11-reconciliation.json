@@ -13,6 +13,11 @@
       "nextStep": "External player uses Button for load and close, labelled cross-origin iframes and visible error text. Preserve narrow viewport sizing, no autoplay on initial load, content-warning boundaries in callers, and teardown of widget listeners. Persistent Radio widgets remain visible in the dock."
     },
     {
+      "file": "ui/src/app/pages/forum/forum-discussion-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "One Forum discussion: a native router link back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."
+    },
+    {
       "file": "ui/src/app/pages/forum/forum-page.html",
       "disposition": "adopted scope",
       "nextStep": "Forum's discussion list: Page Header, Field/Control for the source picker (select and hashtag input), MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers, and Content State for empty and Mastodon-only states. Discussion roots reuse StatusCard and its content-warning boundary. Preserve the visible call count, Stop keeping found results, the stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."

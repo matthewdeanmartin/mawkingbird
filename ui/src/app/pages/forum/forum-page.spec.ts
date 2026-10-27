@@ -9,7 +9,7 @@ import { Discussion, summarize } from '../../forum/discussion';
 import { ForumScan, ForumSource, ScanState } from '../../forum/forum-scan';
 import { Status } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
-import { post, reply } from '../../testing/forum-fixtures';
+import { post, reply, who } from '../../testing/forum-fixtures';
 import { ForumPage } from './forum-page';
 
 @Component({ selector: 'app-status-card', template: '<p class="card">{{ status().id }}</p>' })
@@ -39,7 +39,7 @@ class FakeScan {
   found = signal<Discussion[]>([]);
   following = signal<ReadonlySet<string>>(new Set());
   summaries = computed(() =>
-    this.found().map((discussion) => summarize(discussion, 'me', this.following())),
+    this.found().map((discussion) => summarize(discussion, who('me'), this.following())),
   );
   scanning = computed(() => this.state() === 'scanning');
   headroom = computed(() => 50 - this.callsUsed());

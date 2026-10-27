@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { Status } from '../models';
-import { post, reply, account } from '../testing/forum-fixtures';
+import { account, originCopy, post, reply, who } from '../testing/forum-fixtures';
 import {
+  combine,
   compareSummaries,
   Discussion,
   discussionKey,
@@ -11,6 +12,7 @@ import {
   isDiscussion,
   mergePosts,
   summarize,
+  threadOrder,
 } from './discussion';
 
 function discussion(posts: Status[], overrides: Partial<Discussion> = {}): Discussion {
@@ -85,7 +87,7 @@ describe('summarize', () => {
   const all = discussion([root, r1, r2, r3]);
 
   it('puts the starter first, then people by how much they posted', () => {
-    const summary = summarize(all, 'me', new Set());
+    const summary = summarize(all, who('me'), new Set());
     expect(summary.participants.map((p) => [p.account.id, p.posts])).toEqual([
       ['a', 1],
       ['b', 2],
@@ -97,7 +99,7 @@ describe('summarize', () => {
   });
 
   it('counts friends replies, but not the root', () => {
-    expect(summarize(all, 'me', new Set(['a', 'b'])).friendReplyCount).toBe(2);
+    expect(summarize(all, who('me'), new Set([who('a'), who('b')])).friendReplyCount).toBe(2);
   });
 
   it('takes the server reply count when it knows of more than were seen', () => {
@@ -107,9 +109,9 @@ describe('summarize', () => {
   });
 
   it('tells starting from joining', () => {
-    expect(summarize(all, 'me', new Set())).toMatchObject({ iStarted: false, iJoined: true });
-    expect(summarize(all, 'a', new Set())).toMatchObject({ iStarted: true, iJoined: false });
-    expect(summarize(all, 'x', new Set())).toMatchObject({ iStarted: false, iJoined: false });
+    expect(summarize(all, who('me'), new Set())).toMatchObject({ iStarted: false, iJoined: true });
+    expect(summarize(all, who('a'), new Set())).toMatchObject({ iStarted: true, iJoined: false });
+    expect(summarize(all, who('x'), new Set())).toMatchObject({ iStarted: false, iJoined: false });
   });
 });
 
@@ -118,12 +120,12 @@ describe('filterSummaries and compareSummaries', () => {
   const mine = post('2', 'me');
   const other = post('3', 'x');
   const summaries = [
-    summarize(discussion([asked, reply('11', 'x', asked)]), 'me', new Set(['friend'])),
-    summarize(discussion([mine, reply('12', 'x', mine)]), 'me', new Set(['friend'])),
+    summarize(discussion([asked, reply('11', 'x', asked)]), who('me'), new Set([who('friend')])),
+    summarize(discussion([mine, reply('12', 'x', mine)]), who('me'), new Set([who('friend')])),
     summarize(
       discussion([other, reply('13', 'me', other), reply('14', 'friend', other)]),
-      'me',
-      new Set(['friend']),
+      who('me'),
+      new Set([who('friend')]),
     ),
   ];
   const ids = (list: typeof summaries) => list.map((s) => s.discussion.anchor.id);
@@ -185,5 +187,48 @@ describe('findCandidates', () => {
     const boosted = post('7', 'b', { replies_count: 2 });
     const wrapper = post('70', 'z', { reblog: boosted });
     expect(findCandidates([wrapper], null, new Set())[0].probe.id).toBe('7');
+  });
+});
+
+describe('across servers', () => {
+  const root = post('1', 'a', { account: account('a', 'ua@origin.example') });
+  const local = reply('2', 'b', root);
+  const fromOrigin = originCopy(root);
+  const originReply = originCopy(reply('3', 'c', root), fromOrigin);
+
+  it("keeps one copy of each post, mine over the origin server's", () => {
+    const posts = combine([fromOrigin, originReply, root, local]);
+    expect(posts.map((p) => p.id)).toEqual(['1', '2', originReply.id]);
+  });
+
+  it('re-points replies at the copy that was kept', () => {
+    const posts = combine([fromOrigin, originReply, root]);
+    expect(posts.find((p) => p.id === originReply.id)!.in_reply_to_id).toBe('1');
+  });
+
+  it('counts a person once, whichever server their post came from', () => {
+    const only = discussion([fromOrigin, originCopy(reply('5', 'a', root), fromOrigin)]);
+    expect(isDiscussion(only)).toBe(false);
+    const both = mergePosts(discussion([root]), [fromOrigin, originReply, local]);
+    const summary = summarize(both, null, new Set([who('c')]));
+    expect(summary.participants.map((p) => p.account.id)).toEqual(['a', 'o-c', 'b']);
+    expect(summary.friendReplyCount).toBe(1);
+  });
+
+  it("prefers my server's account record for a person", () => {
+    const both = mergePosts(discussion([fromOrigin]), [root, local]);
+    expect(summarize(both, null, new Set()).participants[0].account.id).toBe('a');
+  });
+});
+
+describe('threadOrder', () => {
+  it('reads depth first, siblings oldest first, orphans last', () => {
+    const root = post('1', 'a');
+    const first = reply('2', 'b', root);
+    const second = reply('3', 'c', root);
+    const deep = reply('4', 'a', first);
+    const orphan = reply('5', 'd', post('9', 'z'));
+    const order = threadOrder(discussion([root, first, second, deep, orphan]));
+    expect(order.map((p) => p.id)).toEqual(['1', '2', '4', '3', '5']);
   });
 });

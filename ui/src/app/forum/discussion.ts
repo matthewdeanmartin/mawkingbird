@@ -13,7 +13,7 @@ export interface Discussion {
   key: string;
   anchor: Status;
   partial: boolean;
-  /** Oldest first, unique by id, anchor included. */
+  /** Oldest first, one copy per post (by {@link discussionKey}), anchor included. */
   posts: Status[];
   /** The anchor's own context was fetched, so sibling branches are in. */
   treeLoaded: boolean;
@@ -61,6 +61,15 @@ export function discussionKey(status: Status): string {
 }
 
 /**
+ * The same person on every server. Account ids are per server, and an origin
+ * server's copy of a thread carries that server's ids, so people are matched
+ * by profile URL, then by full handle.
+ */
+export function personKey(account: Account): string {
+  return account.url || account.acct;
+}
+
+/**
  * MIMB's rule (`HAVING COUNT(*) >= 2 AND COUNT(DISTINCT author) >= 2`): two
  * posts by two people. So a tweet storm is not a discussion, and neither is a
  * lone post, however many question marks it has.
@@ -68,7 +77,7 @@ export function discussionKey(status: Status): string {
 export function isDiscussion(discussion: Discussion): boolean {
   return (
     discussion.posts.length >= 2 &&
-    new Set(discussion.posts.map((post) => post.account.id)).size >= 2
+    new Set(discussion.posts.map((post) => personKey(post.account))).size >= 2
   );
 }
 
@@ -76,18 +85,76 @@ function byTime(left: Status, right: Status): number {
   return left.created_at.localeCompare(right.created_at) || left.id.localeCompare(right.id);
 }
 
-/** Add posts to a discussion, keeping it ordered and free of duplicates. */
-export function mergePosts(discussion: Discussion, statuses: readonly Status[]): Discussion {
-  const byId = new Map(discussion.posts.map((post) => [post.id, post]));
-  let changed = false;
+/** Read from another server anonymously: readable, but not ours to act on. */
+export function isForeignCopy(post: Status): boolean {
+  return post.provider === 'anonymous-mastodon';
+}
+
+/**
+ * Posts from any mix of servers as one thread: one copy per post (my
+ * server's copy wins, since it can be replied to and liked), ordered by time,
+ * with every `in_reply_to_id` pointing at the copy that was kept. Without the
+ * re-pointing, a reply read from an origin server would hang off a parent id
+ * that no longer exists.
+ */
+export function combine(statuses: readonly Status[]): Status[] {
+  const kept = new Map<string, Status>();
+  const alias = new Map<string, string>();
   for (const status of statuses) {
     const post = unwrap(status);
-    if (!byId.has(post.id)) {
-      byId.set(post.id, post);
-      changed = true;
+    const key = discussionKey(post);
+    const earlier = kept.get(key);
+    if (!earlier) {
+      kept.set(key, post);
+    } else if (earlier.id !== post.id) {
+      const winner = isForeignCopy(earlier) && !isForeignCopy(post) ? post : earlier;
+      const loser = winner === post ? earlier : post;
+      kept.set(key, winner);
+      alias.set(loser.id, winner.id);
     }
   }
-  return changed ? { ...discussion, posts: [...byId.values()].sort(byTime) } : discussion;
+  return [...kept.values()]
+    .map((post) => {
+      const parent = post.in_reply_to_id && alias.get(post.in_reply_to_id);
+      return parent ? { ...post, in_reply_to_id: parent } : post;
+    })
+    .sort(byTime);
+}
+
+/** Add posts to a discussion, keeping it ordered and free of duplicates. */
+export function mergePosts(discussion: Discussion, statuses: readonly Status[]): Discussion {
+  const posts = combine([...discussion.posts, ...statuses]);
+  const unchanged =
+    posts.length === discussion.posts.length &&
+    posts.every((post, index) => post === discussion.posts[index]);
+  if (unchanged) return discussion;
+  const anchorKey = discussionKey(discussion.anchor);
+  const anchor = posts.find((post) => discussionKey(post) === anchorKey) ?? discussion.anchor;
+  return { ...discussion, anchor, posts };
+}
+
+/**
+ * The thread in reading order: depth first from the anchor, each reply under
+ * its parent, siblings oldest first. Posts whose parent is missing follow,
+ * oldest first, so nothing found is dropped.
+ */
+export function threadOrder(discussion: Discussion): Status[] {
+  const children = new Map<string, Status[]>();
+  for (const post of discussion.posts) {
+    if (post.id === discussion.anchor.id || !post.in_reply_to_id) continue;
+    children.set(post.in_reply_to_id, [...(children.get(post.in_reply_to_id) ?? []), post]);
+  }
+  const ordered: Status[] = [];
+  const seen = new Set<string>();
+  const visit = (post: Status) => {
+    if (seen.has(post.id)) return;
+    seen.add(post.id);
+    ordered.push(post);
+    for (const child of children.get(post.id) ?? []) visit(child);
+  };
+  visit(discussion.anchor);
+  for (const post of discussion.posts) if (!seen.has(post.id)) visit(post);
+  return ordered;
 }
 
 /** The server an account lives on: from `user@host`, else from its profile URL. */
@@ -105,34 +172,46 @@ function hashtagsOf(post: Status): string[] {
   return (post.tags ?? []).map((tag) => tag.name.toLowerCase());
 }
 
+/**
+ * `me` and `following` are {@link personKey}s, so a person counts once
+ * whichever server's copy of their post was found.
+ */
 export function summarize(
   discussion: Discussion,
   me: string | null,
   following: ReadonlySet<string>,
 ): DiscussionSummary {
-  const starter = discussion.anchor.account.id;
-  const people = new Map<string, Participant>();
+  const starter = personKey(discussion.anchor.account);
+  const people = new Map<string, Participant & { post: Status }>();
   const hashtags = new Set<string>();
   let friendReplyCount = 0;
   let latestAt = discussion.anchor.created_at;
   for (const post of discussion.posts) {
-    const seen = people.get(post.account.id);
+    const person = personKey(post.account);
+    const seen = people.get(person);
     if (seen) {
       seen.posts++;
       if (post.created_at > seen.lastAt) seen.lastAt = post.created_at;
+      // Prefer my server's account record: its id works for follow and lists.
+      if (isForeignCopy(seen.post) && !isForeignCopy(post)) {
+        seen.account = post.account;
+        seen.post = post;
+      }
     } else {
-      people.set(post.account.id, { account: post.account, posts: 1, lastAt: post.created_at });
+      people.set(person, { account: post.account, posts: 1, lastAt: post.created_at, post });
     }
     for (const tag of hashtagsOf(post)) hashtags.add(tag);
-    if (post.id !== discussion.anchor.id && following.has(post.account.id)) friendReplyCount++;
+    if (post.id !== discussion.anchor.id && following.has(person)) friendReplyCount++;
     if (post.created_at > latestAt) latestAt = post.created_at;
   }
-  const participants = [...people.values()].sort(
-    (left, right) =>
-      Number(right.account.id === starter) - Number(left.account.id === starter) ||
-      right.posts - left.posts ||
-      right.lastAt.localeCompare(left.lastAt),
-  );
+  const participants = [...people.entries()]
+    .sort(
+      ([leftKey, left], [rightKey, right]) =>
+        Number(rightKey === starter) - Number(leftKey === starter) ||
+        right.posts - left.posts ||
+        right.lastAt.localeCompare(left.lastAt),
+    )
+    .map(([, { account, posts, lastAt }]) => ({ account, posts, lastAt }));
   const iStarted = me !== null && starter === me;
   return {
     discussion,

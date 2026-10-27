@@ -22,21 +22,21 @@ analytics already do: a small default budget and an explicit "spend more".
 
 ## Owner decisions (2026-10-27)
 
-| Topic           | Decision                                                                                                                                                                                                                  |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Shape           | A fifth app mode, **Forum**, with its own top-line menu, like Video and Radio.                                                                                                                                            |
-| Top menu        | Filters become tabs: `Home \| Talk  Asked  Friends  Mine  Joined \| [switcher]`. Recent / Popular is a sort inside each tab.                                                                                              |
-| Sources (v1)    | Home timeline, a list, a hashtag, and **Me** (my own posts plus mention notifications).                                                                                                                                   |
-| Starting budget | About 5–10 API calls. The reader can ask for more, in steps.                                                                                                                                                              |
-| Root hunt       | Walk back to the root. When my server's ancestors stop short of the real root, ask my server to resolve it, then try the origin server's public context, all within the budget. If that still fails, mark it **partial**. |
-| Layout          | Facets in the left rail; discussions in the center (close to today's thread view); a new **Members** widget in the right rail ("who is in this discussion") in place of ads and server cards.                             |
-| Persistence     | Session only for v1: in memory, lost on reload. **No new storage keys.** An IndexedDB cache is a later candidate.                                                                                                         |
-| Budget ceiling  | **50 calls per scan**, hard. Even that is a lot.                                                                                                                                                                          |
-| Interrupt       | Prioritised spending only makes sense with a **Stop** button. Stopping keeps and shows everything found so far.                                                                                                           |
-| Not discussions | Tweet storms (self-reply monologues) and lone posts, even ones asking a question, are not discussions.                                                                                                                    |
-| Facets          | **No uncommon or topic words.** A short browser function cannot stand in for spaCy.                                                                                                                                       |
-| Members actions | **Follow everyone** and **add everyone to a list** are in scope (the existing `bulk-actions` flow).                                                                                                                       |
-| Anonymous       | Out of scope; the experience would be rough.                                                                                                                                                                              |
+| Topic           | Decision                                                                                                                                                                                                                                                                                                              |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shape           | A fifth app mode, **Forum**, with its own top-line menu, like Video and Radio.                                                                                                                                                                                                                                        |
+| Top menu        | Filters become tabs: `Home \| Talk  Asked  Friends  Mine  Joined \| [switcher]`. Recent / Popular is a sort inside each tab.                                                                                                                                                                                          |
+| Sources (v1)    | Home timeline, a list, a hashtag, and **Me** (my own posts plus mention notifications).                                                                                                                                                                                                                               |
+| Starting budget | About 5–10 API calls. The reader can ask for more, in steps.                                                                                                                                                                                                                                                          |
+| Root hunt       | Walk back to the root. When my server's ancestors stop short of the real root, ask my server to resolve it, then try the origin server's public context, all within the budget. If that still fails, mark it **partial**. Revised in sprint 2 to the origin server only (see The scan, step 5); pending owner review. |
+| Layout          | Facets in the left rail; discussions in the center (close to today's thread view); a new **Members** widget in the right rail ("who is in this discussion") in place of ads and server cards.                                                                                                                         |
+| Persistence     | Session only for v1: in memory, lost on reload. **No new storage keys.** An IndexedDB cache is a later candidate.                                                                                                                                                                                                     |
+| Budget ceiling  | **50 calls per scan**, hard. Even that is a lot.                                                                                                                                                                                                                                                                      |
+| Interrupt       | Prioritised spending only makes sense with a **Stop** button. Stopping keeps and shows everything found so far.                                                                                                                                                                                                       |
+| Not discussions | Tweet storms (self-reply monologues) and lone posts, even ones asking a question, are not discussions.                                                                                                                                                                                                                |
+| Facets          | **No uncommon or topic words.** A short browser function cannot stand in for spaCy.                                                                                                                                                                                                                                   |
+| Members actions | **Follow everyone** and **add everyone to a list** are in scope (the existing `bulk-actions` flow).                                                                                                                                                                                                                   |
+| Anonymous       | Out of scope; the experience would be rough.                                                                                                                                                                                                                                                                          |
 
 ## Vocabulary
 
@@ -107,21 +107,28 @@ calls used out of calls allowed.
 4. **Find the root** (1 call). `getContext(candidate)`. If `ancestors[0]` has
    no `in_reply_to_id`, it is the root. If the candidate has no parent, it is
    its own root, and this step costs nothing.
-5. **Gap** (1–2 calls, only when `ancestors[0].in_reply_to_id` is set). Reuse
-   the thread page's cross-server path, extracted from
-   `pages/read/thread-loader.ts` into a shared helper rather than copied:
-   - `search(url, 'statuses', { resolve: true })` on my server, then
-     `getContext` on the local copy;
-   - otherwise `anonymousPublic.getContext(ref)` on the origin server
-     (unauthenticated, public posts only);
-   - otherwise mark the discussion partial at the furthest ancestor reached.
-6. **Load the tree** (1 call). `getContext(root)` gives every reply the server
-   can see. Context on a reply returns only that reply's own subtree, so the
-   root's context is what fills in sibling branches. The scan does this for
-   ranked discussions while the budget allows. Any other discussion gets it
-   on demand when opened.
+5. **Widen** (1 call, a discussion whose anchor lives on another server).
+   Ask the anchor's own server for its public context
+   (`anonymousPublic.getContext`, unauthenticated). Replies are delivered to
+   the author's server, so it holds replies mine never received. It also
+   holds the parent mine never fetched, which matters because Mastodon shows
+   such a reply as `in_reply_to_id: null`: a gap my server cannot even report.
+   Widening goes first to known gaps (partial), then to the biggest shortfall
+   between the anchor's `replies_count` and the replies seen, then to anchors
+   that start with a mention. One slot per wave goes to widening while
+   candidates remain. A refusal (signed fetch, timeout) leaves the discussion
+   as it was. Partial means no server we asked could reach further.
+   (2026-10-27: this replaces "resolve on my server, then origin". Resolving
+   costs 2 calls and cannot find a parent that my server reports as a root.)
+6. **Load the tree**. The probe of a root, or the widening of an anchor,
+   returns its whole subtree (`treeLoaded`). Context on a reply returns only
+   that reply's own subtree. A discussion whose tree was not loaded is loaded
+   by the thread page when it is opened, outside the scan budget, like
+   opening any post.
 7. **Qualify** (0 calls). Apply the 2-posts / 2-people rule, dedupe by root
-   `uri`, merge any posts that newly join, and compute derived fields:
+   `uri` (my server's copy wins; replies are re-pointed at the kept copy),
+   match people by profile URL (account ids are per server), merge any posts
+   that newly join, and compute derived fields:
    question, hashtags, root instance, language, participants with post
    counts, friend reply count, me as author or participant, and latest
    activity.
@@ -159,12 +166,12 @@ calls used out of calls allowed.
   avatars of up to 5 participants (friends first), "3 friends replied ·
   12 replies · 6 people", and latest activity. Activating the card opens the
   discussion.
-- Discussion view (`/forum/d/<rootId>`): close to today's thread view. Before
-  choosing, investigate whether the `Thread` page and `ThreadLoader` can be
-  hosted with a handoff of the context already fetched (as `radio-handoff.ts`
-  does), with no refetch. Do not fork the thread renderer. Add only
-  forum-specific chrome: back to the list (with its scroll position and
-  filters intact), and "Load full discussion" when the tree was not fetched.
+- Discussion view (`/forum/d/<rootId>`): the unchanged thread page, in
+  Forum mode. When the scan holds the whole tree, it is handed over in
+  reading order through `ThreadPreload` (no request, and replies from other
+  servers included). Otherwise the thread page loads it as usual. Forum adds
+  only a back link to the list (query and scroll restored) and a notice when
+  the root could not be reached.
 - Empty and thin states explain what was scanned and offer Scan deeper.
   Showing zero discussions after 10 calls is normal, not an error.
 
@@ -231,8 +238,8 @@ ui/src/app/forum/
   question.ts          pure: port of MIMB has_human_question (strip tags and URLs)
   forum-scan.ts        budgeted pipeline (sample → candidates → root → gap → tree)
   forum-sources.ts     Home / List / Tag / Me samplers on the PagedFeedSource shape
-  thread-context.ts    shared cross-server context helper, extracted from thread-loader
 ui/src/app/pages/forum/  list page, discussion page, facets rail, members rail
+ui/src/app/pages/read/thread-preload.ts  one-shot hand-off read by ThreadLoader
 ```
 
 `ForumScan` is provided on the lazy `forum` parent route, so it lives for the

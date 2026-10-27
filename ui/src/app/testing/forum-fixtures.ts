@@ -51,3 +51,25 @@ export function reply(id: string, author: string, parent: Status, overrides: Par
     ...overrides,
   });
 }
+
+/** A fixture account's person key (its profile URL), as Forum matches people. */
+export function who(id: string): string {
+  return account(id).url;
+}
+
+/**
+ * The copy of `local` that its own server serves anonymously: the same post
+ * (same uri), under that server's namespaced ids, as `adaptAnonymousStatus`
+ * produces. `parent` is the origin copy it replies to, if any.
+ */
+export function originCopy(local: Status, parent?: Status): Status {
+  const raw = local.id.replace(/^anonymous-mastodon:[^:]+:/, '');
+  return {
+    ...local,
+    id: `anonymous-mastodon:origin.example:${raw}`,
+    in_reply_to_id: parent ? parent.id : local.in_reply_to_id,
+    provider: 'anonymous-mastodon',
+    providerRef: { server: 'https://origin.example', statusId: raw, accountId: 'o' },
+    account: { ...local.account, id: `o-${local.account.id}` },
+  };
+}

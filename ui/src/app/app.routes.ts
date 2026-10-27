@@ -745,6 +745,14 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/forum/forum-page').then((m) => m.ForumPage),
       },
       {
+        path: 'forum/d/:id',
+        title: 'Discussion',
+        canActivate: [anonymousUnavailableGuard],
+        data: { anonymousFeature: 'Forum' },
+        loadComponent: () =>
+          import('./pages/forum/forum-discussion-page').then((m) => m.ForumDiscussionPage),
+      },
+      {
         path: 'videos',
         title: 'Video feeds',
         loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),

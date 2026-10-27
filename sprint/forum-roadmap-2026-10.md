@@ -104,6 +104,31 @@ partial with the furthest ancestor reached. The discussion opens without
 refetching what the scan already holds. The thread page's own specs are
 unchanged and passing.
 
+### Sprint 2 progress (2026-10-27): ready for a user trial
+
+- **Widening instead of resolve-then-context** (decision, recorded in the
+  spec). One unauthenticated call to the anchor's own server, metered and
+  ranked: known gaps, then reply shortfall, then anchors that open with a
+  mention. It finds parents my server shows as roots (`in_reply_to_id:
+null`), which no resolve can detect, and the replies only the author's
+  server received. `ThreadLoader`'s resolve path is untouched, so item 1 (the
+  extraction) was dropped as unneeded.
+- **Across servers.** Origin posts come back with namespaced ids and parent
+  ids. `combine()` keeps one copy per `uri` (mine wins), and re-points
+  replies at it. The origin's copy of the anchor is rebuilt with
+  `adaptAnonymousStatus` so its replies attach. People are matched by
+  profile URL, so following, Mine and Joined hold whichever server's copy
+  was found. Relationships are asked only for my server's account ids.
+- **Me source** (`?source=me`). My statuses (no boosts) and mention
+  notifications (`types[]=mention`, 40 a page) take turns as one source.
+  `api.notifications` gained optional `types` and `limit`.
+- **Discussion view** at `/forum/d/:id`: the unchanged thread page.
+  `ThreadPreload` hands it the scan's tree in depth-first reading order, so
+  there is no request. A discussion without its tree loads as any post would
+  (the planned "Load full discussion" button is unnecessary). The back link
+  restores the list's query; the list restores its scroll. A notice explains
+  a partial root.
+
 ## Sprint 3: the rails (facets and Members)
 
 1. **Rail outlet.** A `RailOutlet` service like `radio-outlet.ts`, with lazy

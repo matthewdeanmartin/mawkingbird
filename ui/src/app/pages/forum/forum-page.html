@@ -16,6 +16,7 @@
           (ngModelChange)="draftKind.set($event)"
         >
           <option value="home">{{ 'forum.source.home' | transloco }}</option>
+          <option value="me">{{ 'forum.source.me' | transloco }}</option>
           @for (list of lists(); track list.id) {
             <option [value]="'list:' + list.id">
               {{ 'forum.source.list' | transloco: { title: list.title } }}
@@ -146,7 +147,7 @@
             }
             · {{ 'forum.card.latest' | transloco: { time: (summary.latestAt | humanTime) } }}
           </span>
-          <a mbButton size="small" [routerLink]="['/statuses', summary.discussion.anchor.id]">
+          <a mbButton size="small" [routerLink]="['/forum/d', summary.discussion.anchor.id]">
             {{ 'forum.card.open' | transloco }}
           </a>
         </footer>

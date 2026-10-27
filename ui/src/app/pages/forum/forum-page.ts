@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,6 +28,7 @@ import {
   ForumFilter,
   ForumSort,
   Participant,
+  personKey,
 } from '../../forum/discussion';
 import {
   DEEPER_STEPS,
@@ -40,6 +50,7 @@ import { StatusCard } from '../../status-card/status-card';
 // i18n forum.intro.joined: Discussions you replied to.
 // i18n forum.source.label: Look in
 // i18n forum.source.home: Home timeline
+// i18n forum.source.me: My posts and mentions
 // i18n forum.source.tag: A hashtag
 // i18n forum.source.list: List: {{title}}
 // i18n forum.source.tagLabel: Hashtag
@@ -173,6 +184,21 @@ export class ForumPage {
   });
 
   constructor() {
+    // Back from a discussion returns here: remember the query, and put the
+    // reader back where they were once the router's scroll-to-top has run.
+    effect(() => {
+      const params = this.params();
+      untracked(() => {
+        this.scan.listParams = Object.fromEntries(
+          params.keys.map((key) => [key, params.get(key) ?? '']),
+        );
+      });
+    });
+    const returnTo = this.scan.listScroll;
+    afterNextRender(() => {
+      if (returnTo) requestAnimationFrame(() => window.scrollTo(0, returnTo));
+    });
+    inject(DestroyRef).onDestroy(() => (this.scan.listScroll = window.scrollY));
     // The scan outlives the page: switching tabs or coming back is free. Only
     // a different source starts over.
     effect(() => {
@@ -212,7 +238,7 @@ export class ForumPage {
       this.draftKind.set('tag');
       this.draftTag.set(source.name);
     } else {
-      this.draftKind.set(source.kind === 'list' ? `list:${source.id}` : 'home');
+      this.draftKind.set(sourceParam(source));
     }
   }
 
@@ -253,7 +279,8 @@ export class ForumPage {
     return [...summary.participants]
       .sort(
         (left, right) =>
-          Number(following.has(right.account.id)) - Number(following.has(left.account.id)),
+          Number(following.has(personKey(right.account))) -
+          Number(following.has(personKey(left.account))),
       )
       .slice(0, 5);
   }

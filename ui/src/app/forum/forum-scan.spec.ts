@@ -5,7 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { Account, Context, Status } from '../models';
-import { account, post, reply } from '../testing/forum-fixtures';
+import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
+import { account, originCopy, post, reply, who } from '../testing/forum-fixtures';
 import {
   FIRST_SCAN_CALLS,
   ForumScan,
@@ -28,7 +29,10 @@ describe('ForumScan', () => {
     tagTimeline: ReturnType<typeof vi.fn>;
     getContext: ReturnType<typeof vi.fn>;
     relationships: ReturnType<typeof vi.fn>;
+    getAccountStatuses: ReturnType<typeof vi.fn>;
+    notifications: ReturnType<typeof vi.fn>;
   };
+  let origin: { getContext: ReturnType<typeof vi.fn> };
   let contexts: Map<string, Observable<Context>>;
   let pages: Status[][];
 
@@ -66,10 +70,14 @@ describe('ForumScan', () => {
       relationships: vi.fn((ids: string[]) =>
         of(ids.map((id) => ({ id, following: id.startsWith('b') }))),
       ),
+      getAccountStatuses: vi.fn(() => of([])),
+      notifications: vi.fn(() => of([])),
     };
+    origin = { getContext: vi.fn(() => throwError(() => ({ status: 401 }))) };
     TestBed.configureTestingModule({
       providers: [
         { provide: Api, useValue: api },
+        { provide: AnonymousPublicApi, useValue: origin },
         { provide: Auth, useValue: { account: signal<Account | null>(account('me')) } },
       ],
     });
@@ -267,11 +275,151 @@ describe('ForumScan', () => {
     expect(scan.found()).toEqual([]);
     expect(scan.callsUsed()).toBe(1);
   });
+
+  describe('widening on the anchor’s own server', () => {
+    const remote = account('a', 'ua@origin.example');
+    function remoteRoot(overrides: Partial<Status> = {}): Status {
+      return post('1', 'a', {
+        account: remote,
+        url: 'https://origin.example/@ua/1',
+        replies_count: 3,
+        ...overrides,
+      });
+    }
+
+    it('adds the replies only the origin server received, once each', async () => {
+      const root = remoteRoot();
+      const seen = reply('2', 'b', root);
+      const originRoot = originCopy(root);
+      pages = [[root]];
+      contexts.set('1', of({ ancestors: [], descendants: [seen] }));
+      origin.getContext.mockReturnValue(
+        of({
+          ancestors: [],
+          descendants: [
+            originCopy(seen, originRoot),
+            originCopy(reply('3', 'c', root), originRoot),
+          ],
+        }),
+      );
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+
+      expect(origin.getContext).toHaveBeenCalledWith(
+        expect.objectContaining({ server: 'https://origin.example', id: '1' }),
+      );
+      const [only] = scan.found();
+      expect(only.posts.map((p) => p.id)).toEqual([
+        '1',
+        '2',
+        'anonymous-mastodon:origin.example:3',
+      ]);
+      expect(only.posts[2].in_reply_to_id).toBe('1');
+      expect(only.treeLoaded).toBe(true);
+    });
+
+    it('finds the root my server never fetched, above what looked like one', async () => {
+      const hidden = post('0', 'z', { account: account('z', 'uz@origin.example') });
+      const looksLikeRoot = remoteRoot({ content: '<p>@uz agreed</p>', replies_count: 1 });
+      const answer = reply('2', 'b', looksLikeRoot);
+      pages = [[looksLikeRoot]];
+      contexts.set('1', of({ ancestors: [], descendants: [answer] }));
+      origin.getContext.mockReturnValue(of({ ancestors: [originCopy(hidden)], descendants: [] }));
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+
+      const [only] = scan.found();
+      expect(only.anchor.id).toBe('anonymous-mastodon:origin.example:0');
+      expect(only.posts).toHaveLength(3);
+      expect(scan.discussion(only.anchor.id)).toBe(only);
+    });
+
+    it('leaves a discussion as it was when the origin refuses', async () => {
+      pages = [[remoteRoot()]];
+      contexts.set('1', of({ ancestors: [], descendants: [reply('2', 'b', remoteRoot())] }));
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+      expect(origin.getContext).toHaveBeenCalledTimes(1);
+      expect(scan.summaries()).toHaveLength(1);
+      expect(scan.state()).toBe('exhausted');
+    });
+
+    it('never asks about a thread that started on my own server', async () => {
+      feed(3);
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+      expect(origin.getContext).not.toHaveBeenCalled();
+    });
+
+    it('counts widening against the budget', async () => {
+      const roots = Array.from({ length: 20 }, (_, n) =>
+        post(`${n + 1}00`, `a${n}`, {
+          account: account(`a${n}`, `ua${n}@origin.example`),
+          url: `https://origin.example/@ua${n}/${n + 1}00`,
+          replies_count: 4,
+        }),
+      );
+      pages = [roots];
+      for (const root of roots) {
+        contexts.set(
+          root.id,
+          of({ ancestors: [], descendants: [reply(`${root.id}1`, 'b', root)] }),
+        );
+      }
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+      expect(scan.callsUsed()).toBe(10);
+      expect(origin.getContext.mock.calls.length).toBeGreaterThan(0);
+      expect(api.getContext.mock.calls.length).toBeGreaterThan(origin.getContext.mock.calls.length);
+    });
+  });
+
+  it('reads my posts and my mentions in turn for the Me source', async () => {
+    const mine = post('1', 'me', { replies_count: 1 });
+    const theirs = post('5', 'x', { replies_count: 0 });
+    const mention = reply('6', 'y', theirs, { in_reply_to_account_id: 'me' });
+    api.getAccountStatuses.mockReturnValueOnce(of([mine])).mockReturnValue(of([]));
+    api.notifications
+      .mockReturnValueOnce(of([{ id: 'n1', type: 'mention', status: mention }]))
+      .mockReturnValue(of([]));
+    contexts.set('1', of({ ancestors: [], descendants: [reply('2', 'b', mine)] }));
+    contexts.set('6', of({ ancestors: [theirs], descendants: [] }));
+    const scan = scanner();
+    scan.start({ kind: 'me' });
+    await settled(scan);
+
+    expect(api.getAccountStatuses).toHaveBeenCalledWith('me', {
+      excludeReblogs: true,
+      maxId: undefined,
+      limit: PAGE_SIZE,
+    });
+    expect(api.notifications).toHaveBeenCalledWith(undefined, {
+      types: ['mention'],
+      limit: PAGE_SIZE,
+    });
+    const summaries = scan.summaries();
+    expect(summaries.filter((s) => s.iStarted)).toHaveLength(1);
+    expect(summaries.filter((s) => s.iJoined)).toHaveLength(0);
+    expect(summaries).toHaveLength(2);
+  });
+
+  it('tracks follows by person, so a friend counts on any server', async () => {
+    feed(2);
+    const scan = scanner();
+    scan.start({ kind: 'home' });
+    await settled(scan);
+    expect([...scan.following()]).toEqual(expect.arrayContaining([who('b1'), who('b2')]));
+  });
 });
 
 describe('source parameters', () => {
   it('round-trips each kind and falls back to Home', () => {
-    for (const param of ['home', 'list:42', 'tag:rust']) {
+    for (const param of ['home', 'me', 'list:42', 'tag:rust']) {
       expect(sourceParam(parseSource(param))).toBe(param);
     }
     expect(parseSource('tag:#Rust')).toEqual({ kind: 'tag', name: 'rust' });

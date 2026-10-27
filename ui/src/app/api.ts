@@ -600,11 +600,16 @@ export class Api {
   }
 
   // --- notifications ---
-  notifications(maxId?: string): Observable<MastodonNotification[]> {
+  notifications(
+    maxId?: string,
+    opts: { types?: string[]; limit?: number } = {},
+  ): Observable<MastodonNotification[]> {
     let params = new HttpParams();
     if (maxId) {
       params = params.set('max_id', maxId);
     }
+    for (const type of opts.types ?? []) params = params.append('types[]', type);
+    if (opts.limit) params = params.set('limit', String(opts.limit));
     return this.http.get<MastodonNotification[]>('/api/v1/notifications', { params });
   }
 

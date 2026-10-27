@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ThreadLoader } from './thread-loader';
+import { ThreadPreload } from './thread-preload';
 import { Auth } from '../../auth';
 import { SearchServer } from '../../search-server';
 import { Status } from '../../models';
@@ -158,5 +159,44 @@ describe('ThreadLoader resolving a remote post through the home server', () => {
     expect(httpMock.match((r) => r.url.startsWith('https://graz.social')).length).toBeGreaterThan(
       0,
     );
+  });
+});
+
+describe('ThreadLoader with a preloaded thread', () => {
+  let httpMock: HttpTestingController;
+  let loader: ThreadLoader;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ThreadLoader,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: Auth, useValue: { lacksMastodonToken: false } },
+        { provide: SearchServer, useValue: { active: () => false } },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    loader = TestBed.inject(ThreadLoader);
+  });
+
+  it('shows what it was handed without asking any server', () => {
+    const root = localStatus('1');
+    const reply = { ...localStatus('2'), in_reply_to_id: '1' };
+    TestBed.inject(ThreadPreload).offer('1', { status: root, ancestors: [], descendants: [reply] });
+    loader.load('1');
+
+    httpMock.expectNone(() => true);
+    expect(loader.loading()).toBe(false);
+    expect(loader.thread().map((post) => post.id)).toEqual(['1', '2']);
+  });
+
+  it('uses an offer once, and only for its own id', () => {
+    const preload = TestBed.inject(ThreadPreload);
+    preload.offer('1', { status: localStatus('1'), ancestors: [], descendants: [] });
+    loader.load('9');
+    httpMock.expectOne('/api/v1/statuses/9');
+    loader.load('1');
+    httpMock.expectOne('/api/v1/statuses/1');
   });
 });

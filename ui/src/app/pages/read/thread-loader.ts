@@ -21,6 +21,7 @@ import { ElizaService } from '../../eliza/eliza.service';
 import { LocalPostStore } from '../../eliza/local-post-store';
 import { isElizaId } from '../../eliza/eliza-identity';
 import { messageStatus, parseMessageStatusRouteRef } from '../../providers/paste/message-payload';
+import { ThreadPreload } from './thread-preload';
 
 /**
  * Resolving a status id into a post and its conversation, whatever it is a
@@ -64,6 +65,7 @@ export class ThreadLoader {
   private eliza = inject(ElizaService);
   private localPosts = inject(LocalPostStore);
   private transloco = inject(TranslocoService);
+  private preload = inject(ThreadPreload);
 
   private sub = new Subscription();
 
@@ -138,6 +140,15 @@ export class ThreadLoader {
     this.publicOriginalUrl.set(null);
     this.rssHasCommentFeed.set(false);
     this.rssCommentsUnavailable.set(false);
+
+    const preloaded = this.preload.take(id);
+    if (preloaded) {
+      this.status.set(preloaded.status);
+      this.ancestors.set(preloaded.ancestors);
+      this.descendants.set(preloaded.descendants);
+      this.loading.set(false);
+      return;
+    }
 
     if (id.startsWith('bsky:')) {
       this.loadBsky(id.slice('bsky:'.length));

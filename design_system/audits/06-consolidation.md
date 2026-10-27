@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Forum mode, sprint 2, 2026-10-27
+
+Reviewed 1,220 source files and 255 candidate files. One candidate
+is added: `pages/forum/forum-discussion-page.ts`, whose one finding is Notice.
+It wraps the unchanged thread page with a back link. The Forum list gains a
+Me option in its existing source select, so its findings move by a line. No
+control type or shared widget changed.
+
 ## Forum mode, sprint 1, 2026-10-27
 
 Reviewed 1,218 source files and 254 candidate files. One candidate
