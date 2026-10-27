@@ -600,7 +600,8 @@
                 {{
                   host.active()
                     ? ('external.close' | transloco)
-                    : ('external.load' | transloco: { provider: host.source().label })
+                    : ((host.allowed() ? 'external.play' : 'external.load')
+                      | transloco: { provider: host.source().label })
                 }}
               </button>
             }

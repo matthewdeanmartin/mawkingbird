@@ -65,26 +65,38 @@ describe('RadioControls', () => {
     buttons[stop].click();
     expect(player['stop']).toHaveBeenCalledOnce();
   });
-  it('leaves consent to the player prompt and reopens only an allowed provider', () => {
+  it('covers unusable controls with one consent or load step until the provider player is ready', () => {
     player['current'] = signal({
       ...track,
-      external: { provider: 'mixcloud', label: 'Mixcloud' },
+      external: { provider: 'mixcloud', label: 'Mixcloud', url: 'https://mixcloud.com/a/b/' },
     });
+    player['externalReady'] = signal(false);
+    player['externalAllowed'] = signal(new Set<string>());
+    player['allowProvider'] = vi.fn();
     const external = { activated: signal(false), close: vi.fn(), openOriginal: vi.fn() };
     const fixture = TestBed.createComponent(RadioControls);
     fixture.componentRef.setInput('externalPlayer', external);
     fixture.detectChanges();
-    const load = () =>
-      fixture.nativeElement.querySelector(
-        'button[aria-label="Load Mixcloud player"]',
-      ) as HTMLButtonElement | null;
-    expect(load()).toBeNull();
+    const overlay = () => fixture.nativeElement.querySelector('.overlay') as HTMLElement | null;
+    const button = (text: string) =>
+      Array.from(overlay()!.querySelectorAll('button')).find(
+        (item) => item.textContent?.trim() === text,
+      ) as HTMLButtonElement;
+    expect(fixture.nativeElement.querySelector('.stage').inert).toBe(true);
+    button('Allow Mixcloud in Radio').click();
+    expect(player['allowProvider']).toHaveBeenCalledWith('mixcloud');
     (player['externalAllowed'] as ReturnType<typeof signal<Set<string>>>).set(
       new Set(['mixcloud']),
     );
     fixture.detectChanges();
-    load()!.click();
+    button('Load Mixcloud player').click();
     expect(external.activated()).toBe(true);
+    fixture.detectChanges();
+    expect(overlay()!.textContent).toContain('Loading the Mixcloud player');
+    (player['externalReady'] as ReturnType<typeof signal<boolean>>).set(true);
+    fixture.detectChanges();
+    expect(overlay()).toBeNull();
+    expect(fixture.nativeElement.querySelector('.stage').inert).toBe(false);
   });
   it('scopes shortcuts to the player and leaves native range keys alone', () => {
     const fixture = TestBed.createComponent(RadioControls);

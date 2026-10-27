@@ -92,6 +92,30 @@ describe('ExternalPlayer activation', () => {
     expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
     fixture.destroy();
   });
+  it('starts an allowed feed player as soon as it is ready, without the press-Play notice', async () => {
+    const fixture = TestBed.createComponent(ExternalPlayer);
+    fixture.componentRef.setInput('source', externalMedia('https://soundcloud.com/artist/track'));
+    fixture.componentRef.setInput('activate', true);
+    fixture.componentRef.setInput('autoplay', true);
+    fixture.detectChanges();
+    TestBed.tick();
+    expect(fixture.nativeElement.textContent).not.toContain('Press Play in the player');
+    const frame = fixture.nativeElement.querySelector('iframe') as HTMLIFrameElement;
+    const send = vi.spyOn(frame.contentWindow!, 'postMessage');
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        source: frame.contentWindow,
+        origin: 'https://w.soundcloud.com',
+        data: JSON.stringify({ method: 'ready' }),
+      }),
+    );
+    await fixture.whenStable();
+    expect(send).toHaveBeenCalledWith(
+      JSON.stringify({ method: 'play', value: null }),
+      'https://w.soundcloud.com',
+    );
+    fixture.destroy();
+  });
   it('closes an opaque external frame when native audio starts elsewhere', async () => {
     const fixture = TestBed.createComponent(ExternalPlayer);
     fixture.componentRef.setInput('source', externalMedia('https://open.spotify.com/track/abc'));

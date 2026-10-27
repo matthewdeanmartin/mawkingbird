@@ -56,7 +56,7 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
         </button>
       </mb-toolbar>
     }
-    @if (!managed() && (activated() || !hideActions())) {
+    @if (!managed() && !autoplay() && (activated() || !hideActions())) {
       <p>{{ 'external.notice' | transloco: { provider: source().label } }}</p>
     }
     @if (failed()) {
@@ -87,6 +87,8 @@ export class ExternalPlayer {
   readonly source = input.required<ExternalMedia>();
   readonly activate = input(false);
   readonly managed = input(false);
+  /** Start as soon as the widget is ready: the click that loaded it asked to play. */
+  readonly autoplay = input(false);
   readonly ready = output<WidgetController>();
   readonly state = output<WidgetState>();
   readonly closed = output<void>();
@@ -172,6 +174,7 @@ export class ExternalPlayer {
             }
             this.controller = controller;
             this.ready.emit(controller);
+            if (!managed && this.autoplay()) controller.play();
           })
           .catch(() => {
             if (alive) {

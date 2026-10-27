@@ -39,6 +39,15 @@
             [ngModel]="playlistName()"
             (ngModelChange)="playlistName.set($event)"
         /></mb-field>
+        <mb-field [label]="'radio.playlistDescription' | transloco">
+          <textarea
+            mbControl
+            name="playlistDescription"
+            rows="2"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+          ></textarea>
+        </mb-field>
         <button
           mbButton
           type="submit"
@@ -66,6 +75,14 @@
             [label]="'radio.moreActions' | transloco"
             [closeLabel]="'radio.closeMenu' | transloco"
           >
+            <button
+              mbMenuItem
+              type="button"
+              (click)="save(true)"
+              [disabled]="!playlistName().trim() || !player.queue().length"
+            >
+              {{ 'radio.saveAsNew' | transloco }}
+            </button>
             <button mbMenuItem type="button" (click)="publish(false)" [disabled]="!shareable()">
               {{ 'radio.draftPost' | transloco }}
             </button>
@@ -108,6 +125,14 @@
                 </button>
                 <button
                   mbToolbarButton
+                  [attr.aria-label]="'radio.renameTrack' | transloco"
+                  [title]="'radio.renameTrack' | transloco"
+                  (click)="rename(i)"
+                >
+                  <app-radio-icon name="edit" />
+                </button>
+                <button
+                  mbToolbarButton
                   [attr.aria-label]="'radio.moveUp' | transloco"
                   [title]="'radio.moveUp' | transloco"
                   (click)="move(i, -1)"
@@ -143,6 +168,77 @@
       @if (playlists.error()) {
         <p role="alert">{{ 'radio.saveFailed' | transloco }}</p>
       }
+      @if (signedIn && player.queue().length) {
+        <section class="publish" [attr.aria-label]="'radio.publishThread' | transloco">
+          <h3>{{ 'radio.publishThread' | transloco }}</h3>
+          @let row = activeRow();
+          @let changes = plan();
+          @if (row?.published; as published) {
+            <p>
+              <a [href]="published.url" target="_blank" rel="noopener noreferrer">{{
+                'radio.viewThread' | transloco
+              }}</a>
+            </p>
+          } @else {
+            <p class="muted">{{ 'radio.publishHint' | transloco }}</p>
+            <mb-field [label]="'radio.threadVisibility' | transloco">
+              <select
+                mbControl
+                name="threadVisibility"
+                [ngModel]="visibility()"
+                (ngModelChange)="visibility.set($event)"
+              >
+                <option value="public">{{ 'radio.public' | transloco }}</option>
+                <option value="unlisted">{{ 'radio.unlisted' | transloco }}</option>
+                <option value="private">{{ 'radio.followers' | transloco }}</option>
+              </select>
+            </mb-field>
+          }
+          @if (changes.blocked === 'private') {
+            <p>{{ 'radio.privatePlaylist' | transloco }}</p>
+          } @else if (changes.blocked === 'notEditable') {
+            <p>{{ 'radio.threadNotEditable' | transloco }}</p>
+          } @else if (!publisher.cost(changes)) {
+            <p role="status">{{ 'radio.threadCurrent' | transloco }}</p>
+          } @else {
+            <p>
+              {{
+                'radio.threadPlan'
+                  | transloco
+                    : {
+                        posts: changes.post.length + (changes.createRoot ? 1 : 0),
+                        edits: changes.edit.length + (changes.editRoot ? 1 : 0),
+                        deletions: changes.remove.length,
+                      }
+              }}
+            </p>
+            @if (changes.remove.length > deleteBudget) {
+              <p role="alert">
+                {{ 'radio.threadDeleteLimit' | transloco: { limit: deleteBudget } }}
+              </p>
+            }
+            <button
+              mbButton
+              type="button"
+              [disabled]="publisher.busy() || !playlistName().trim()"
+              (click)="publishThread()"
+            >
+              {{ (row?.published ? 'radio.updateThread' : 'radio.publishAsThread') | transloco }}
+            </button>
+            @if (!playlistName().trim()) {
+              <p class="muted">{{ 'radio.nameToPublish' | transloco }}</p>
+            }
+          }
+          @if (publisher.progress(); as progress) {
+            <p role="status">
+              {{ 'radio.threadProgress' | transloco: progress }}
+            </p>
+          }
+          @if (publisher.failed()) {
+            <p role="alert">{{ 'radio.threadFailed' | transloco }}</p>
+          }
+        </section>
+      }
       <h3>{{ 'radio.savedPlaylists' | transloco }}</h3>
       <ul class="saved">
         @for (saved of playlists.saved(); track saved.id) {
@@ -150,9 +246,15 @@
             <div class="row">
               <span class="track"
                 ><span class="track-title">{{ saved.name }}</span>
-                <span class="muted">{{
-                  'radio.trackCount' | transloco: { count: saved.tracks.length }
-                }}</span></span
+                <span class="muted"
+                  >{{ 'radio.trackCount' | transloco: { count: saved.tracks.length } }}
+                  @if (saved.published; as published) {
+                    ·
+                    <a [href]="published.url" target="_blank" rel="noopener noreferrer">{{
+                      'radio.published' | transloco
+                    }}</a>
+                  }
+                </span></span
               >
               <mb-toolbar class="row-actions" density="compact" embedded [label]="saved.name">
                 @let loadLabel = 'radio.loadPlaylist' | transloco: { name: saved.name };
@@ -160,7 +262,7 @@
                   mbToolbarButton
                   [attr.aria-label]="loadLabel"
                   [title]="loadLabel"
-                  (click)="load(saved.tracks)"
+                  (click)="load(saved)"
                 >
                   <app-radio-icon name="list" />
                 </button>
@@ -177,6 +279,52 @@
           </li>
         }
       </ul>
+      @if (signedIn) {
+        <div class="playlist-actions">
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="publisher.finding()"
+            (click)="publisher.find()"
+          >
+            {{ 'radio.findThreads' | transloco }}
+          </button>
+          @if (publisher.finding()) {
+            <span role="status">{{ 'radio.findingThreads' | transloco }}</span>
+          }
+        </div>
+        @if (publisher.found(); as found) {
+          <ul class="saved found">
+            @for (thread of found; track thread.root.id) {
+              <li>
+                <div class="row">
+                  <span class="track"
+                    ><span class="track-title">{{ threadTitle(thread) }}</span>
+                    <span class="muted"
+                      >{{ 'radio.trackCount' | transloco: { count: thread.recordings } }} ·
+                      <a [href]="thread.root.url" target="_blank" rel="noopener noreferrer">{{
+                        'radio.viewThread' | transloco
+                      }}</a></span
+                    ></span
+                  >
+                  <button
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    type="button"
+                    (click)="adopt(thread)"
+                  >
+                    {{ 'radio.adoptThread' | transloco }}
+                  </button>
+                </div>
+              </li>
+            } @empty {
+              <li>{{ 'radio.noThreads' | transloco }}</li>
+            }
+          </ul>
+        }
+      }
       <form (ngSubmit)="importLinks()">
         <mb-field [label]="'radio.importUrls' | transloco" [hint]="'radio.importHint' | transloco">
           <textarea

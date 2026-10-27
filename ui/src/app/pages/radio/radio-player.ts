@@ -21,10 +21,10 @@ import { RadioOutlet } from '../../radio-outlet';
 import { ExternalMedia, postExternalMedia } from '../../audio-embeds/providers';
 import type { WidgetController, WidgetState } from '../../audio-embeds/widget-api';
 import { accountScopeSuffix } from '../../account-scope';
+import { ProviderConsent } from '../../audio-embeds/provider-consent';
 import { trackTitle } from './track-title';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 
-const PROVIDERS_KEY = 'mockingbird_radio_providers';
 const SETTINGS_KEY = 'mockingbird_radio_settings';
 
 export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio audio factory', {
@@ -39,6 +39,8 @@ export interface RadioTrack {
   post: Status;
   media: MediaAttachment;
   external?: ExternalMedia;
+  /** A title the listener gave this playlist entry. */
+  title?: string;
 }
 
 /** Tab-lived audio and queue. Route components are only views of this session. */
@@ -74,7 +76,8 @@ export class RadioPlayer {
   readonly selected = signal(-1);
   private readonly alternatives = signal<ReadonlyMap<string, string>>(new Map());
   /** Providers this account allowed to load and autoplay inside Radio. */
-  readonly externalAllowed = signal<ReadonlySet<string>>(new Set());
+  private readonly consent = inject(ProviderConsent);
+  readonly externalAllowed = this.consent.allowed.asReadonly();
   private widget?: WidgetController;
   private autoExternalPlay = false;
   readonly externalReady = signal(false);
@@ -156,13 +159,11 @@ export class RadioPlayer {
     };
     this.document.addEventListener('play', otherStarted, true);
     let identity = this.identity();
-    this.loadAllowed();
     this.loadSettings();
     effect(() => {
       const next = this.identity();
       if (identity !== next) {
         identity = next;
-        this.loadAllowed();
         this.loadSettings();
         this.stop();
         this.scan.clear();
@@ -264,6 +265,17 @@ export class RadioPlayer {
     [items[index], items[next]] = [items[next], items[index]];
     this.playlist.set(items);
     this.selected.set(items.findIndex((item) => item.key === current));
+  }
+  /** Name a playlist entry; an empty title restores the automatic one. */
+  renameTrack(index: number, title: string): void {
+    this.editPlaylist();
+    this.playlist.update((items) =>
+      items!.map((item, i) => {
+        if (i !== index) return item;
+        const { title: _old, ...rest } = item;
+        return title.trim() ? { ...rest, title: title.trim().slice(0, 200) } : rest;
+      }),
+    );
   }
   removeTrack(index: number): void {
     this.editPlaylist();
@@ -541,32 +553,12 @@ export class RadioPlayer {
   }
   /** Remember consent for a provider and start the current track from this click. */
   allowProvider(provider: string): void {
-    this.saveAllowed(new Set([...this.externalAllowed(), provider]));
+    this.consent.allow(provider);
     if (this.current()?.external?.provider === provider) this.autoExternalPlay = true;
   }
   forgetProvider(provider: string): void {
-    this.saveAllowed(new Set([...this.externalAllowed()].filter((p) => p !== provider)));
+    this.consent.forget(provider);
     if (this.current()?.external?.provider === provider) this.closeWidget();
-  }
-  private loadAllowed(): void {
-    try {
-      const data: unknown = JSON.parse(
-        localStorage.getItem(PROVIDERS_KEY + accountScopeSuffix()) ?? '[]',
-      );
-      this.externalAllowed.set(
-        new Set(Array.isArray(data) ? data.filter((p) => typeof p === 'string') : []),
-      );
-    } catch {
-      this.externalAllowed.set(new Set());
-    }
-  }
-  private saveAllowed(values: ReadonlySet<string>): void {
-    this.externalAllowed.set(values);
-    try {
-      localStorage.setItem(PROVIDERS_KEY + accountScopeSuffix(), JSON.stringify([...values]));
-    } catch {
-      /* Consent still applies for this tab. */
-    }
   }
   widgetState(key: string, state: WidgetState): void {
     if (key !== this.current()?.key || this.hidden()) return;

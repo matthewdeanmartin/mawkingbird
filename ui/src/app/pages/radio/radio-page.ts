@@ -5,7 +5,7 @@ import { radioAccount, radioPostRef } from '../../radio-links';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, map, of, Subscription, tap, timeout } from 'rxjs';
 import { PageDiagnostics } from '../../page-diagnostics';
 import { Api } from '../../api';
@@ -22,11 +22,16 @@ import { MbPostMenu } from '../../design-system/menu/post-menu';
 import { MbMenuItem } from '../../design-system/menu/menu-item';
 import { Drafts } from '../../drafts';
 import { RadioHandoff } from '../../radio-handoff';
+import { AppDialogs } from '../../app-dialogs';
+import { DELETE_BUDGET, PlaylistPublisher } from './playlist-publisher';
+import { PlaylistThread } from './playlist-thread';
+import { postTitle } from './track-title';
 import {
   playlistFragment,
   playlistUrls,
   readPlaylistFragment,
   RadioPlaylists,
+  SavedRadioPlaylist,
 } from './radio-playlists';
 import { RadioTrack } from './radio-player';
 import { RadioDock } from './radio-dock';
@@ -98,6 +103,24 @@ export class RadioPage {
   private readonly drafts = inject(Drafts);
   private readonly handoff = inject(RadioHandoff);
   readonly playlistName = signal('');
+  readonly description = signal('');
+  readonly visibility = signal('public');
+  readonly publisher = inject(PlaylistPublisher);
+  readonly deleteBudget = DELETE_BUDGET;
+  private readonly dialogs = inject(AppDialogs);
+  private readonly transloco = inject(TranslocoService);
+  readonly activeRow = computed(
+    () => this.playlists.saved().find((row) => row.id === this.playlists.active()) ?? null,
+  );
+  /** What publishing the queue as it stands would do to the active playlist's thread. */
+  readonly plan = computed(() =>
+    this.publisher.plan({
+      ...(this.activeRow() ?? { id: '' }),
+      name: this.playlistName().trim() || this.activeRow()?.name || '',
+      description: this.description().trim(),
+      tracks: this.player.queue(),
+    }),
+  );
   readonly importText = signal('');
   readonly includeThread = signal(true);
   readonly importing = signal(false);
@@ -411,14 +434,42 @@ export class RadioPage {
     this.player.removeTrack(index);
     this.syncPlaylistUrl();
   }
-  save(): void {
-    this.playlists.save(this.playlistName(), this.player.queue());
+  save(asNew = false): void {
+    this.playlists.save(this.playlistName(), this.player.queue(), this.description(), asNew);
     this.message.set(this.playlists.error() ? 'radio.saveFailed' : 'radio.saved');
     this.syncPlaylistUrl();
   }
-  load(tracks: RadioTrack[]): void {
-    this.player.replacePlaylist(tracks);
+  load(row: SavedRadioPlaylist): void {
+    this.player.replacePlaylist(row.tracks);
+    this.playlists.active.set(row.id);
+    this.playlistName.set(row.name);
+    this.description.set(row.description ?? '');
     this.syncPlaylistUrl();
+  }
+  async rename(index: number): Promise<void> {
+    const track = this.player.queue()[index];
+    if (!track) return;
+    const title = await this.dialogs.prompt(
+      this.transloco.translate('radio.renamePrompt'),
+      this.player.title(track),
+    );
+    if (title === null) return;
+    this.player.renameTrack(index, title);
+    this.syncPlaylistUrl();
+  }
+  /** Save the queue as the active playlist, then publish or update its thread. */
+  async publishThread(): Promise<void> {
+    const id = this.playlists.save(this.playlistName(), this.player.queue(), this.description());
+    if (!id) return;
+    await this.publisher.publish(id, this.visibility());
+  }
+  threadTitle(thread: PlaylistThread): string {
+    return postTitle(thread.root) || this.transloco.translate('radio.thread.untitled');
+  }
+  async adopt(thread: PlaylistThread): Promise<void> {
+    const id = await this.publisher.adopt(thread);
+    const row = this.playlists.saved().find((item) => item.id === id);
+    if (row) this.load(row);
   }
   /** `play` comes from an in-app Open in Radio action; shared links never autoplay. */
   async loadPost(url: string, append: boolean, play = false): Promise<void> {
@@ -520,6 +571,31 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.moreActions: More playlist actions
 // i18n radio.closeMenu: Close menu
 // i18n radio.trackCount: {{count}} tracks
+// i18n radio.playlistDescription: Description (optional)
+// i18n radio.saveAsNew: Save as a new playlist
+// i18n radio.renameTrack: Rename
+// i18n radio.renamePrompt: Title for this playlist entry. Leave it empty to use the automatic title.
+// i18n radio.publishThread: Publish as a Mastodon thread
+// i18n radio.publishHint: The playlist becomes a post with its name, followed by one reply per track. Replies under a public post are unlisted so they do not fill your followers’ timelines.
+// i18n radio.threadVisibility: Visibility
+// i18n radio.public: Public
+// i18n radio.unlisted: Unlisted
+// i18n radio.followers: Followers only
+// i18n radio.threadPlan: This will create {{posts}} posts, edit {{edits}} and delete {{deletions}}.
+// i18n radio.threadDeleteLimit: Mastodon allows about {{limit}} deletions per half hour. Larger changes may stop part way; Update thread resumes where it stopped.
+// i18n radio.threadNotEditable: This thread was not written one track per reply, so tracks cannot be removed or reordered here. You can still add tracks at the end.
+// i18n radio.threadCurrent: The published thread matches this playlist.
+// i18n radio.publishAsThread: Publish thread
+// i18n radio.updateThread: Update thread
+// i18n radio.nameToPublish: Name the playlist to publish it.
+// i18n radio.threadProgress: Sent {{done}} of {{total}}…
+// i18n radio.threadFailed: Publishing stopped. Progress so far is saved; Update thread continues from there.
+// i18n radio.viewThread: View thread
+// i18n radio.published: Published
+// i18n radio.findThreads: Find my playlist threads
+// i18n radio.findingThreads: Looking through your recent posts…
+// i18n radio.noThreads: No playlist threads found in your recent posts.
+// i18n radio.adoptThread: Add to saved playlists
 // i18n radio.chooseTrack: Choose a playlist or track to start Radio.
 // i18n radio.sourcesHelp: Which sources can join a playlist?
 // i18n radio.sourcesHint: Playlists support native Mastodon audio, SoundCloud, and Mixcloud. Other music embeds are available in Search, but cannot join continuous Radio playback.

@@ -1,7 +1,7 @@
 import type { ExternalPlayer } from '../../audio-embeds/external-player';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { DOCUMENT } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, input, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, OnDestroy, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -31,6 +31,7 @@ import { RadioIcon } from './radio-icon';
 // i18n radio.queue: Audio queue
 // i18n radio.playTrack: Play track {{number}}, {{title}}, by {{author}}
 // i18n radio.playPost: Play audio by {{author}}
+// i18n radio.loadingPlayer: Loading the {{provider}} player…
 
 @Component({
   selector: 'app-radio-controls',
@@ -57,6 +58,14 @@ export class RadioControls implements OnDestroy {
     this.externalPlayer()?.activated.set(true);
   }
   readonly fullscreen = signal(false);
+  /**
+   * An external track whose player is not ready yet: its controls cannot act, so
+   * an overlay offers the one step that makes them work.
+   */
+  readonly gated = computed(() => {
+    const source = this.player.current()?.external;
+    return source && !this.player.hidden() && !this.player.externalReady() ? source : null;
+  });
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly document = inject(DOCUMENT);
   private readonly zen = inject(ReadingZen);

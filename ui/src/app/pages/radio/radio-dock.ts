@@ -116,7 +116,8 @@ import { ExternalPlayer } from '../../audio-embeds/external-player';
           <p class="note" role="alert">{{ 'radio.blocked' | transloco }}</p>
         }
         @if (!player.hidden() && track.external; as source) {
-          @if (!player.externalAllowed().has(source.provider)) {
+          <!-- In the full player, an overlay on its controls asks instead. -->
+          @if (!player.fullView() && !player.externalAllowed().has(source.provider)) {
             <div class="consent">
               <p class="note">{{ 'radio.allowHint' | transloco: { provider: source.label } }}</p>
               <button mbButton type="button" (click)="player.allowProvider(source.provider)">

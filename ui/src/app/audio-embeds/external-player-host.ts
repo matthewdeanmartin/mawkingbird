@@ -13,6 +13,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import type { ExternalPlayer } from './external-player';
 import { ExternalMedia } from './providers';
+import { ProviderConsent } from './provider-consent';
+
+// i18n external.play: Play on {{provider}}
 
 /** Timeline cards keep widget SDKs and Radio out of eager application imports. */
 @Component({
@@ -29,7 +32,8 @@ import { ExternalMedia } from './providers';
             {{
               active()
                 ? ('external.close' | transloco)
-                : ('external.load' | transloco: { provider: source().label })
+                : ((allowed() ? 'external.play' : 'external.load')
+                  | transloco: { provider: source().label })
             }}
           </button>
         }
@@ -69,7 +73,17 @@ export class ExternalPlayerHost {
   readonly component = signal<Type<unknown> | null>(null);
   readonly failed = signal(false);
   readonly loading = signal(false);
-  readonly inputs = computed(() => ({ source: this.source(), activate: true, hideActions: true }));
+  private readonly consent = inject(ProviderConsent);
+  /** Allowed in Radio: one click loads and starts the player. */
+  readonly allowed = computed(
+    () => this.source().controllable && this.consent.has(this.source().provider),
+  );
+  readonly inputs = computed(() => ({
+    source: this.source(),
+    activate: true,
+    hideActions: true,
+    autoplay: this.allowed(),
+  }));
   private readonly destroy = inject(DestroyRef);
   load(): void {
     const existing = this.outlet()?.componentInstance as ExternalPlayer | null;

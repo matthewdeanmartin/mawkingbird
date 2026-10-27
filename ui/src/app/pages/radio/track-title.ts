@@ -16,6 +16,8 @@ export function postTitle(post: Status): string {
   const text = new DOMParser().parseFromString(html, 'text/html').body.textContent ?? '';
   for (const raw of text.split('\n')) {
     const line = raw
+      // A playlist entry's number is not part of its title.
+      .replace(/^\s*\d{1,3}[.)]\s+/, '')
       .replace(/https?:\/\/\S+/gi, ' ')
       .replace(/(^|\s)[@#][\w.@-]+/g, ' ')
       .trim();
@@ -35,7 +37,7 @@ export function fileTitle(url: string): string {
 }
 
 /**
- * Title cascade: what the provider or file tags reported, then a native
+ * Title cascade: a title the listener gave the entry, what the provider or file tags reported, then a native
  * attachment's description, then the post's own words, then a linked file's
  * name, then its author. Server-assigned attachment names are never titles.
  */
@@ -44,6 +46,7 @@ export function trackTitle(
     post: Status;
     media: { id?: string; url?: string; description?: string | null };
     external?: unknown;
+    title?: string;
   },
   reported?: string,
 ): string {
@@ -51,6 +54,7 @@ export function trackTitle(
     ? ''
     : ((track.media.description ?? '').split('\n').find((line) => line.trim()) ?? '');
   return (
+    (track.title?.trim() && clip(track.title)) ||
     (reported && clip(reported)) ||
     (description && clip(description)) ||
     postTitle(track.post) ||

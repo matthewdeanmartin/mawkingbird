@@ -250,6 +250,53 @@ file name are adequate for now), and podcast RSS enclosures (backlog).
    share a playlist.
 5. Per-entry titles, editable in the playlist and carried in the reply text.
 
+### Sprint 4 progress (2026-10-27) — ready for a user trial
+
+- **Thread format** (`playlist-thread.ts`). The root post holds the name,
+  optional description and "N tracks, one per reply…". Each reply is
+  `n. Title` with the link on the next line. Replies under a public root are
+  unlisted; otherwise they match the root.
+- **Detection without a marker.** A self-reply thread is a playlist when it holds
+  two or more distinct recordings, using these rules:
+  - each audio attachment counts as one recording;
+  - all audio links in one post count as one recording (alternatives such as
+    Spotify, Apple and SoundCloud for the same song);
+  - except numbered lines (`3. Title`, or `3) Title`, with the link on the same
+    or the next line), where each line is its own recording.
+- **Publishing** (`playlist-publisher.ts`) runs from the Playlist tab: choose a
+  visibility, review the plan ("create N posts, edit M, delete K"), then Publish
+  thread. Progress is saved after every request, with deterministic idempotency
+  keys, so a failure resumes with **Update thread** without duplicating posts.
+- **Updating.** Diffed against the published entries:
+  - a common prefix is kept;
+  - removed or reordered entries after it are deleted and reposted;
+  - a renamed entry becomes an edit of its reply;
+  - a renamed playlist, or a change in track count, edits the root.
+
+  There's a warning above Mastodon's roughly 30 deletions per half hour.
+  Threads not laid out one track per reply can be appended to but not pruned.
+- **Local model.** The same `mockingbird_radio_playlists` key, with new optional
+  `description` and `published` fields; old rows load unchanged. Saving updates
+  the loaded playlist (a renamed published one keeps its thread). "Save as a new
+  playlist" is in the ••• menu.
+- **Find my playlist threads** scans the five most recent pages of your own
+  posts (up to 200) and lists qualifying threads. **Add to saved playlists**
+  links one to its replies, so it can be edited in place.
+- **Rename** on each entry (AppDialogs prompt). The user's title leads the
+  title cascade, and numbered prefixes are stripped from post-text titles.
+- **Full player:** while an external player is not ready, an overlay covers the
+  inert controls with the one step needed: Allow, Load, or a loading status.
+- **Feeds:** a provider allowed in Radio gets **Play on {provider}** on cards,
+  which loads and starts the player in one click. Players still load only when
+  asked. Permission now lives in the shared `ProviderConsent` service.
+
+Not done:
+
+- Opening someone else's playlist thread from its card. Open in Radio loads
+  only that post; pasting the root URL into Import, with "Include the author's
+  self-reply thread", loads the whole thread.
+- Paging the thread finder beyond 200 posts.
+
 ## Sprint 5 — Listen: the single-recording page
 
 A video-page-style view for one recording: a large player, the post, and

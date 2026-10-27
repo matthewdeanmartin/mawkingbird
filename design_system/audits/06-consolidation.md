@@ -910,3 +910,18 @@ attachments, with `preload="none"`. Radio resolves Library of Congress items
 without new controls. Reviewed the regenerated inventory: only source-line
 shifts in the status card and Radio surfaces. There are still 251 candidate
 files, and shared widgets are unchanged.
+
+## Playlist threads and the full-player gate, 2026-10-27
+
+The full player covers its controls with an overlay while an external provider
+player is not ready, offering one Button (allow or load) or a status line, and
+makes the controls below `inert`. The Playlist tab adds a description
+Field/Control, a Rename icon ToolbarButton per entry, a thread-publication
+section (visibility select, plan text, publish/update Button, progress and alert
+lines), and Find/Adopt Buttons for existing playlist threads. "Save as a new
+playlist" joins the post-menu overflow.
+
+Reviewed the regenerated inventory: the added candidates are these controls in
+`radio-controls.html` and `radio-page.html`, with line shifts elsewhere. There
+are still 251 candidate files, both entries are updated in
+`11-reconciliation.json`, and shared widgets are unchanged.

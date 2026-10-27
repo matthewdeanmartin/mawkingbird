@@ -9,15 +9,60 @@ import {
   locItems,
 } from '../../audio-embeds/linked-audio';
 import { LinkedAudioResolver } from './linked-audio-resolver';
+import { fileTitle } from './track-title';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { radioPostRef } from '../../radio-links';
 import { Status } from '../../models';
 import { RadioPlayer, RadioTrack } from './radio-player';
 
+/** One published entry: the reply that carries a track, and the title it shows. */
+export interface PublishedEntry {
+  key: string;
+  postId: string;
+  title: string;
+}
+/** The Mastodon thread a saved playlist is published as. */
+export interface PublishedPlaylist {
+  rootId: string;
+  url: string;
+  visibility: string;
+  name: string;
+  description: string;
+  entries: PublishedEntry[];
+  /** One track per reply, so entries can be edited or deleted individually. */
+  editable: boolean;
+}
 export interface SavedRadioPlaylist {
   id: string;
   name: string;
+  description?: string;
   tracks: RadioTrack[];
+  published?: PublishedPlaylist;
+}
+
+function publishedRecord(value: unknown): PublishedPlaylist | undefined {
+  const data = value as Partial<PublishedPlaylist> | null;
+  if (
+    !data ||
+    typeof data.rootId !== 'string' ||
+    typeof data.url !== 'string' ||
+    !Array.isArray(data.entries)
+  )
+    return undefined;
+  return {
+    rootId: data.rootId,
+    url: data.url,
+    visibility: typeof data.visibility === 'string' ? data.visibility : 'public',
+    name: typeof data.name === 'string' ? data.name : '',
+    description: typeof data.description === 'string' ? data.description : '',
+    editable: data.editable === true,
+    entries: data.entries.filter(
+      (entry): entry is PublishedEntry =>
+        typeof entry?.key === 'string' &&
+        typeof entry?.postId === 'string' &&
+        typeof entry?.title === 'string',
+    ),
+  };
 }
 const KEY = 'mockingbird_radio_playlists';
 export const PLAYLIST_LIMIT = 200;
@@ -77,7 +122,17 @@ export class RadioPlaylists {
                   typeof item?.name === 'string' &&
                   Array.isArray(item?.tracks),
               )
-              .map((item) => ({ id: item.id, name: item.name, tracks: this.validate(item.tracks) }))
+              .map((item) => ({
+                id: item.id,
+                name: item.name,
+                ...(typeof item.description === 'string' && item.description
+                  ? { description: item.description }
+                  : {}),
+                tracks: this.validate(item.tracks),
+                ...(publishedRecord(item.published)
+                  ? { published: publishedRecord(item.published) }
+                  : {}),
+              }))
           : [],
       );
     } catch {
@@ -88,18 +143,57 @@ export class RadioPlaylists {
   private validate(items: RadioTrack[]): RadioTrack[] {
     return items.flatMap((item) => {
       if (!item?.post?.account || !Array.isArray(item.post.media_attachments)) return [];
-      return this.player.tracks(item.post).filter((track) => track.key === item.key);
+      return this.player
+        .tracks(item.post)
+        .filter((track) => track.key === item.key)
+        .map((track) =>
+          typeof item.title === 'string' && item.title.trim()
+            ? { ...track, title: item.title.trim().slice(0, 200) }
+            : track,
+        );
     });
   }
-  save(name: string, tracks: RadioTrack[]): void {
+  /** The saved playlist the queue was loaded from or last saved as. */
+  readonly active = signal<string | null>(null);
+  /**
+   * Save the queue. The active playlist is updated in place under the same name,
+   * and a published one also when renamed (the thread follows); otherwise a new
+   * name, or `asNew`, starts a separate playlist.
+   */
+  save(name: string, tracks: RadioTrack[], description = '', asNew = false): string | null {
     this.refresh();
-    if (!name.trim() || !tracks.length) return;
-    const row = { id: crypto.randomUUID(), name: name.trim(), tracks: this.validate(tracks) };
-    this.write([...this.saved(), row]);
+    if (!name.trim() || !tracks.length) return null;
+    const active = this.saved().find((row) => row.id === this.active());
+    const current =
+      !asNew && active && (active.name === name.trim() || active.published) ? active : undefined;
+    const row: SavedRadioPlaylist = {
+      ...(current ?? {}),
+      id: current?.id ?? crypto.randomUUID(),
+      name: name.trim(),
+      tracks: this.validate(tracks),
+    };
+    if (description.trim()) row.description = description.trim().slice(0, 1000);
+    else delete row.description;
+    this.write(
+      this.saved().some((item) => item.id === row.id)
+        ? this.saved().map((item) => (item.id === row.id ? row : item))
+        : [...this.saved(), row],
+    );
+    if (!this.error()) this.active.set(row.id);
+    return this.error() ? null : row.id;
+  }
+  /** Replace one saved row, as publication progresses. */
+  update(id: string, change: (row: SavedRadioPlaylist) => SavedRadioPlaylist): boolean {
+    this.refresh();
+    const rows = this.saved();
+    if (!rows.some((row) => row.id === id)) return false;
+    this.write(rows.map((row) => (row.id === id ? change(row) : row)));
+    return !this.error();
   }
   remove(id: string): void {
     this.refresh();
     this.write(this.saved().filter((item) => item.id !== id));
+    if (this.active() === id) this.active.set(null);
   }
   private write(rows: SavedRadioPlaylist[]): void {
     try {
@@ -238,7 +332,7 @@ export class RadioPlaylists {
         : '',
       spoiler_text: '',
       sensitive: false,
-      media_attachments: direct ? [linkedAttachment(direct, '', url.href)] : [],
+      media_attachments: direct ? [linkedAttachment(direct, fileTitle(direct), url.href)] : [],
     } as Status;
     return this.player.tracks(post);
   }
