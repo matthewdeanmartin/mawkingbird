@@ -50,7 +50,8 @@ import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { MbButton } from '../design-system/button/button';
 import { radioPostRef } from '../radio-links';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
-import { ExternalMedia, postExternalMedia } from '../audio-embeds/providers';
+import { ExternalMedia, externalMedia, postExternalMedia } from '../audio-embeds/providers';
+import { linkedAudio, locItems } from '../audio-embeds/linked-audio';
 import {
   attachmentSource,
   mediaUrl,
@@ -455,9 +456,18 @@ export class StatusCard {
   protected offerRadio(): void {
     this.radioHandoff.offer(this.display);
   }
+  // i18n statusCard.linkedAudio: Linked audio: {{name}}
+  /** Linked audio files no provider player already covers, with a readable name. */
+  protected readonly linkedFiles = computed(() =>
+    linkedAudio(this.display)
+      .filter((item) => !externalMedia(item.link))
+      .map((item) => ({ ...item, name: linkedName(item.media.url) })),
+  );
   readonly playlistable = computed(
     () =>
       this.display.media_attachments.some((media) => media.type === 'audio') ||
+      linkedAudio(this.display).length > 0 ||
+      locItems(this.display).length > 0 ||
       postExternalMedia(this.display).some(
         (media) => media.type === 'audio' && media.controllable && media.embed,
       ),
@@ -2699,5 +2709,13 @@ export class StatusCard {
     this.api
       .revokeQuote(quoted.id, this.display.id)
       .subscribe((updated) => this.changed.emit(updated));
+  }
+}
+
+function linkedName(url: string): string {
+  try {
+    return decodeURIComponent(new URL(url).pathname.split('/').at(-1) ?? '').replaceAll('_', ' ');
+  } catch {
+    return url;
   }
 }

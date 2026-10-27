@@ -277,6 +277,25 @@ describe('StatusCard', () => {
     expect(link()).toBeUndefined();
   });
 
+  it('plays linked audio files inline without preloading and offers them to Radio', () => {
+    const status = makeStatus({
+      url: 'https://sea.example/@singer/124',
+      content:
+        '<a href="https://upload.wikimedia.org/wikipedia/commons/c/c8/Sea_Shanty.ogg">Sea</a> <a href="https://archive.org/details/78_x/a.mp3">Archive</a>',
+    });
+    const fixture = setUp(status);
+    const audio = Array.from(
+      fixture.nativeElement.querySelectorAll('.media-audio audio') as NodeListOf<HTMLAudioElement>,
+    );
+    // The Archive page already has its own player; only the bare file gets one.
+    expect(audio.map((element) => element.getAttribute('src'))).toEqual([
+      'https://upload.wikimedia.org/wikipedia/commons/c/c8/Sea_Shanty.ogg',
+    ]);
+    expect(audio[0].getAttribute('preload')).toBe('none');
+    expect(fixture.nativeElement.textContent).toContain('Sea Shanty.ogg');
+    expect(fixture.nativeElement.textContent).toContain('Open in Radio');
+  });
+
   /**
    * Clicking the card's own whitespace opens the thread.
    *

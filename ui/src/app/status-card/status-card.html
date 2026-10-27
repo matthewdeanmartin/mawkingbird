@@ -524,6 +524,22 @@
           </label>
         </div>
       }
+      @if (showMedia() && !cwCollapsed() && !mediaBlurred() && linkedFiles().length) {
+        <!-- Linked audio files play from their own host; nothing loads until Play. -->
+        <div class="media">
+          @for (item of linkedFiles(); track item.media.id) {
+            <div class="media-audio" (click)="$event.stopPropagation()">
+              <audio
+                [src]="safeMediaUrl(item.media.url)"
+                controls
+                preload="none"
+                [attr.aria-label]="'statusCard.linkedAudio' | transloco: { name: item.name }"
+              ></audio>
+              <p class="muted">{{ item.name }}</p>
+            </div>
+          }
+        </div>
+      }
       @if (
         showMedia() &&
         !cwCollapsed() &&

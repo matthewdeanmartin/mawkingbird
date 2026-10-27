@@ -190,6 +190,51 @@ history; targeted specs, `make test`, `check:static`, `ng lint`,
 4. ID3 title/artist reads for CORS-readable native files, using byte-range
    requests and lazy loading; keep this out of the root bundle.
 
+Owner constraint (2026-10-26): never send audio or video bytes through the
+Mawkingbird Plus proxy. Playback needs no CORS: an `audio` element plays any
+https file. CORS matters only for reading bytes ourselves.
+
+### Sprint 3 progress (2026-10-26) — ready for a user trial
+
+- **Recognition** (`audio-embeds/linked-audio.ts`, pure, no requests). These
+  links become playable files:
+  - direct https links ending in mp3/ogg/oga/opus/m4a/aac/flac/wav;
+  - Commons and Wikipedia `File:`/`Media:` pages, via `Special:FilePath`, a
+    redirect to upload.wikimedia.org that needs no API or hash;
+  - Archive `/details/<item>/<file>` and `/download/…` file links, via the
+    `/download/` address.
+
+  Links are memoized per post object. http, credentialed, ported, wiki-article
+  and category links are refused.
+- **Radio.** Linked files are native queueable tracks; the track's post copy
+  carries the file, so saved playlists keep it. Scans include posts with linked
+  files unless the search is limited to native Mastodon audio.
+- **Library of Congress** (`linked-audio-resolver.ts`, lazy Radio chunk).
+  `loc.gov/item/<id>` and `item/playlist?tracks=a|b` resolve through
+  `?fo=json&at=item,resources` (about 11 KB, ACAO `*`). Requests use `fetch`
+  with credentials omitted and no referrer; the app's authenticated HTTP client
+  is never used for another origin. At most 2 lookups run at once, results
+  (including failures) are cached up to 500 entries, and only `tile.loc.gov`
+  https files are accepted. Titles come from the item title and first
+  contributor. The LoC iframe was not shipped and `frame-src` is unchanged.
+- **ID3 titles.** One 64 KB `Range` read for the current and next three MP3
+  tracks. It needs the host to allow cross-origin reads; a server that ignores
+  Range is cut off after 64 KB. Parser `audio-embeds/id3.ts` handles v2.2–v2.4.
+  Verified live: LoC MP3s carry only an encoder frame, so their titles come from
+  the JSON instead.
+- **Title cascade:** widget metadata → ID3 → native description → post text →
+  linked file name → author.
+- **Status cards** play linked files inline with `preload="none"` (no bytes until
+  Play), except where a provider player already covers the link (Archive item
+  pages). Posts with linked files or LoC items get Open in Radio and Add to
+  playlist.
+- **Playlist import:** Commons pages now import as their file, not the HTML page
+  (an older bug). LoC item links import after resolution, and thread imports no
+  longer count linked files twice.
+
+Not done: Commons licence/artist metadata (the API supports CORS; titles from the
+file name are adequate for now), and podcast RSS enclosures (backlog).
+
 ## Sprint 4 — playlists as threads
 
 1. Model: a playlist = a root post (name and description) plus self-replies,

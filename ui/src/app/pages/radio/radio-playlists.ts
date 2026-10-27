@@ -2,6 +2,13 @@ import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { accountScopeSuffix } from '../../account-scope';
 import { externalMedia } from '../../audio-embeds/providers';
+import {
+  directAudioUrl,
+  linkedAttachment,
+  locItemIds,
+  locItems,
+} from '../../audio-embeds/linked-audio';
+import { LinkedAudioResolver } from './linked-audio-resolver';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { radioPostRef } from '../../radio-links';
 import { Status } from '../../models';
@@ -52,6 +59,7 @@ export function readPlaylistFragment(fragment: string): string[] | null {
 export class RadioPlaylists {
   private readonly player = inject(RadioPlayer);
   private readonly api = inject(AnonymousPublicApi);
+  private readonly linked = inject(LinkedAudioResolver);
   readonly saved = signal<SavedRadioPlaylist[]>([]);
   readonly error = signal(false);
   private key = '';
@@ -126,6 +134,7 @@ export class RadioPlaylists {
         }
       }
     }
+    await this.linked.ready(posts);
     const tracks = posts.flatMap((post) => this.player.tracks(post));
     const visited = new Set([url]);
     for (const post of posts) {
@@ -144,7 +153,7 @@ export class RadioPlaylists {
           } catch {
             /* A deleted linked post does not discard the rest of the thread. */
           }
-        } else if (!externalMedia(href)) {
+        } else if (!externalMedia(href) && !directAudioUrl(href) && !locItemIds(href).length) {
           tracks.push(
             ...this.fromUrl(href).map((track) => ({
               ...track,
@@ -165,7 +174,9 @@ export class RadioPlaylists {
     let skipped = Math.max(0, urls.length - PLAYLIST_LIMIT);
     for (const url of urls.slice(0, PLAYLIST_LIMIT)) {
       try {
-        const items = radioPostRef(url) ? await this.importPost(url, thread) : this.fromUrl(url);
+        const items = radioPostRef(url)
+          ? await this.importPost(url, thread)
+          : await this.fromLink(url);
         if (!items.length) skipped++;
         tracks.push(...items);
       } catch {
@@ -175,6 +186,35 @@ export class RadioPlaylists {
     const unique = new Map(tracks.map((track) => [track.key, track]));
     return { tracks: [...unique.values()].slice(0, PLAYLIST_LIMIT), skipped };
   }
+  /** A pasted link: a file, a controllable provider or a Library of Congress item. */
+  private async fromLink(raw: string): Promise<RadioTrack[]> {
+    const tracks = this.fromUrl(raw);
+    if (tracks.length) return tracks;
+    const post = this.linkPost(raw);
+    if (!post || !locItems(post).length) return [];
+    await this.linked.ready([post]);
+    return this.player.tracks(post);
+  }
+  private linkPost(raw: string): Status | null {
+    let url: URL;
+    try {
+      url = new URL(raw);
+    } catch {
+      return null;
+    }
+    if (url.protocol !== 'https:') return null;
+    const href = url.href.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
+    return {
+      id: url.href,
+      url: url.href,
+      visibility: 'public',
+      account: { id: url.hostname, acct: url.hostname, display_name: url.hostname },
+      content: `<a href="${href}">Audio</a>`,
+      spoiler_text: '',
+      sensitive: false,
+      media_attachments: [],
+    } as unknown as Status;
+  }
   fromUrl(raw: string): RadioTrack[] {
     let url: URL;
     try {
@@ -183,8 +223,8 @@ export class RadioPlaylists {
       return [];
     }
     if (url.protocol !== 'https:' || url.username || url.password || url.port) return [];
-    const source = externalMedia(url.href);
-    const direct = /\.(mp3|ogg|oga|wav|m4a|flac|opus|aac)$/i.test(url.pathname);
+    const direct = directAudioUrl(url.href);
+    const source = direct ? null : externalMedia(url.href);
     if (!direct && !(source?.type === 'audio' && source.controllable && source.embed)) return [];
     const post = {
       id: url.href,
@@ -198,17 +238,7 @@ export class RadioPlaylists {
         : '',
       spoiler_text: '',
       sensitive: false,
-      media_attachments: direct
-        ? [
-            {
-              id: url.href,
-              type: 'audio',
-              url: url.href,
-              preview_url: '',
-              description: decodeURIComponent(url.pathname.split('/').at(-1) ?? ''),
-            },
-          ]
-        : [],
+      media_attachments: direct ? [linkedAttachment(direct, '', url.href)] : [],
     } as Status;
     return this.player.tracks(post);
   }

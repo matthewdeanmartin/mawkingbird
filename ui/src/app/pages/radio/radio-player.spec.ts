@@ -197,6 +197,26 @@ describe('RadioPlayer', () => {
     expect(player.continuous()).toBe(true);
   });
 
+  it('queues linked audio files as native tracks that survive in saved posts', () => {
+    const linked = {
+      ...post('linked'),
+      media_attachments: [],
+      content:
+        '<p>Archive find</p><a href="https://commons.wikimedia.org/wiki/File:Sea_shanty.ogg">file</a>',
+    } as Status;
+    player.scan.posts.set([linked]);
+    expect(player.scan).toBeTruthy();
+    const [track] = player.queue();
+    expect(track.media.url).toBe(
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Sea_shanty.ogg',
+    );
+    expect(track.post.media_attachments).toContain(track.media);
+    expect(player.tracks(track.post).map((item) => item.key)).toEqual([track.key]);
+    expect(player.title(track)).toBe('Archive find');
+    player.select(0);
+    expect(audios[0].src).toBe(track.media.url);
+  });
+
   it('reports widget titles through the title cascade', () => {
     const external = {
       ...externalPost('1'),

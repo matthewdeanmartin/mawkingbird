@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import {
   computed,
   DestroyRef,
+  untracked,
   effect,
   inject,
   Injectable,
@@ -21,6 +22,7 @@ import { ExternalMedia, postExternalMedia } from '../../audio-embeds/providers';
 import type { WidgetController, WidgetState } from '../../audio-embeds/widget-api';
 import { accountScopeSuffix } from '../../account-scope';
 import { trackTitle } from './track-title';
+import { LinkedAudioResolver } from './linked-audio-resolver';
 
 const PROVIDERS_KEY = 'mockingbird_radio_providers';
 const SETTINGS_KEY = 'mockingbird_radio_settings';
@@ -45,12 +47,14 @@ export class RadioPlayer {
   readonly nativeOnly = signal(false);
   readonly fullView = signal(false);
   readonly playlist = signal<RadioTrack[] | null>(null);
+  private readonly linked = inject(LinkedAudioResolver);
   readonly scan = new MediaFeedScan(
     ['audio'],
     (post) =>
       post.media_attachments.some((media) => media.type === 'audio') ||
       (!this.nativeOnly() &&
-        postExternalMedia(post).some((source) => !!source.embed && source.type !== 'video')),
+        (this.linked.candidate(post) ||
+          postExternalMedia(post).some((source) => !!source.embed && source.type !== 'video'))),
   );
   readonly source = signal<'account' | 'home' | 'list'>('account');
   readonly handle = signal('');
@@ -78,9 +82,7 @@ export class RadioPlayer {
     () =>
       this.playlist() ??
       this.scan.posts().flatMap((post) => {
-        const native = post.media_attachments
-          .filter((media) => media.type === 'audio' && /^https?:\/\//i.test(media.url))
-          .map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media }));
+        const native = this.nativeTracks(post);
         const candidates = this.radioSources(post);
         const chosen = candidates.find((s) => s.key === this.alternatives().get(post.id));
         if (native.length && !chosen) return native;
@@ -107,7 +109,11 @@ export class RadioPlayer {
   /** Titles reported by loaded provider widgets, by track key; memory only. */
   private readonly reported = signal<ReadonlyMap<string, string>>(new Map());
   title(track: RadioTrack): string {
-    return trackTitle(track, this.reported().get(track.key));
+    return trackTitle(
+      track,
+      this.reported().get(track.key) ??
+        (track.external ? undefined : this.linked.tags(track.media.url)?.title),
+    );
   }
   private readonly trusted = inject(TrustedAccounts);
   private readonly follows = inject(FollowTrust);
@@ -171,6 +177,19 @@ export class RadioPlayer {
     effect(() => {
       if (this.hidden() && this.playing()) this.pause();
     });
+    // Library of Congress links need a metadata lookup before they can play.
+    effect(() => {
+      const posts = [...this.scan.posts(), ...(this.playlist() ?? []).map((track) => track.post)];
+      untracked(() => this.linked.resolve(posts));
+    });
+    // Titles from ID3 tags: the current track and the next few, one small range each.
+    effect(() => {
+      const queue = this.queue();
+      const start = Math.max(0, this.selected());
+      for (const track of queue.slice(start, start + 4))
+        if (!track.external && !this.hidden())
+          untracked(() => this.linked.readTags(track.media.url));
+    });
     inject(DestroyRef).onDestroy(() => {
       this.stop();
       this.scan.cancel();
@@ -186,10 +205,29 @@ export class RadioPlayer {
   editPlaylist(): void {
     if (this.playlist() === null) this.playlist.set([...this.queue()]);
   }
+  /**
+   * Attachments plus linked files the audio element can play directly. A linked
+   * track carries its file in its post copy, so saved playlists keep it.
+   */
+  private nativeTracks(post: Status): RadioTrack[] {
+    const own = post.media_attachments.filter(
+      (media) => media.type === 'audio' && /^https?:\/\//i.test(media.url),
+    );
+    const ids = new Set(own.map((media) => media.id));
+    return [
+      ...own.map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media })),
+      ...this.linked
+        .attachments(post)
+        .filter((media) => !ids.has(media.id) && !!ids.add(media.id))
+        .map((media) => ({
+          key: `${post.id}:${media.id}`,
+          post: { ...post, media_attachments: [...post.media_attachments, media] },
+          media,
+        })),
+    ];
+  }
   tracks(post: Status): RadioTrack[] {
-    const native = post.media_attachments
-      .filter((m) => m.type === 'audio' && /^https?:\/\//i.test(m.url))
-      .map((media, index) => ({ key: `${post.id}:${media.id || index}`, post, media }));
+    const native = this.nativeTracks(post);
     return [
       ...native,
       ...this.radioSources(post).map((external) => ({

@@ -24,12 +24,27 @@ export function postTitle(post: Status): string {
   return '';
 }
 
+/** A readable name from a linked file's address: `Sea_Shanty_(1925).ogg` → `Sea Shanty (1925)`. */
+export function fileTitle(url: string): string {
+  try {
+    const name = decodeURIComponent(new URL(url).pathname.split('/').at(-1) ?? '');
+    return clip(name.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/[_+]+/g, ' '));
+  } catch {
+    return '';
+  }
+}
+
 /**
- * Title cascade: what the provider reported, then a native attachment's
- * description, then the post's own words, then its author.
+ * Title cascade: what the provider or file tags reported, then a native
+ * attachment's description, then the post's own words, then a linked file's
+ * name, then its author. Server-assigned attachment names are never titles.
  */
 export function trackTitle(
-  track: { post: Status; media: { description?: string | null }; external?: unknown },
+  track: {
+    post: Status;
+    media: { id?: string; url?: string; description?: string | null };
+    external?: unknown;
+  },
   reported?: string,
 ): string {
   const description = track.external
@@ -39,6 +54,7 @@ export function trackTitle(
     (reported && clip(reported)) ||
     (description && clip(description)) ||
     postTitle(track.post) ||
+    (track.media.id?.startsWith('link:') && track.media.url ? fileTitle(track.media.url) : '') ||
     track.post.account.display_name ||
     track.post.account.acct
   );

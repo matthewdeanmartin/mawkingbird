@@ -55,6 +55,34 @@ describe('Radio playlists', () => {
       expect(lists.fromUrl(url)).toEqual([]);
     }
   });
+  it('imports Wikimedia file pages as their files and Library of Congress items through the API', async () => {
+    const fetch = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            item: { title: 'Song' },
+            resources: [{ audio: 'https://tile.loc.gov/a/default.mp3' }],
+          }),
+        ),
+    );
+    vi.stubGlobal('fetch', fetch);
+    try {
+      const [file] = lists.fromUrl('https://commons.wikimedia.org/wiki/File:Sea_shanty.ogg');
+      expect(file.media.url).toBe(
+        'https://commons.wikimedia.org/wiki/Special:FilePath/Sea_shanty.ogg',
+      );
+      expect(lists.fromUrl('https://en.wikipedia.org/wiki/Sea_shanty.ogg')).toEqual([]);
+      const result = await lists.importUrls(['https://www.loc.gov/item/jukebox-19856/']);
+      expect(result.skipped).toBe(0);
+      expect(result.tracks.map((track) => track.media.url)).toEqual([
+        'https://tile.loc.gov/a/default.mp3',
+      ]);
+      expect(result.tracks[0].media.description).toBe('Song');
+      expect(fetch).toHaveBeenCalledOnce();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
   it('round-trips ordered public URLs without including private posts', () => {
     const tracks = [
       ...lists.fromUrl('https://audio.example/one.mp3'),

@@ -901,3 +901,12 @@ text toolbar. `studio-page.html` and `radio-settings.ts` are new candidate files
 (251 in total), each reconciled as adopted scope in `11-reconciliation.json`.
 Shared design-widget implementations are unchanged; Compose gains only a public
 method for attaching already-processed media.
+
+## Linked audio files, 2026-10-26
+
+Status cards play linked audio files (direct files, Wikimedia file pages and
+Internet Archive downloads) through the same native `audio` markup as
+attachments, with `preload="none"`. Radio resolves Library of Congress items
+without new controls. Reviewed the regenerated inventory: only source-line
+shifts in the status card and Radio surfaces. There are still 251 candidate
+files, and shared widgets are unchanged.
