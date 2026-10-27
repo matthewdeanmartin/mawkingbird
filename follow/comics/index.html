@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Comics on Mastodon: 6 accounts to follow · Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="6 Comics accounts to follow on Mastodon, hand-picked by Mawkingbird. Cartoonists, webcomics, independent comics, illustration, and comics journalism.">
+    <link rel="canonical" href="https://mawkingbird.com/follow/comics/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Comics on Mastodon: 6 accounts to follow · Mawkingbird">
+    <meta property="og:description" content="6 Comics accounts to follow on Mastodon, hand-picked by Mawkingbird. Cartoonists, webcomics, independent comics, illustration, and comics journalism.">
+    <meta property="og:url" content="https://mawkingbird.com/follow/comics/">
+    <meta property="og:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="3580">
+    <meta property="og:image:height" content="2508">
+    <meta property="og:image:alt" content="The hand-drawn Mawkingbird">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Comics on Mastodon: 6 accounts to follow · Mawkingbird">
+    <meta name="twitter:description" content="6 Comics accounts to follow on Mastodon, hand-picked by Mawkingbird. Cartoonists, webcomics, independent comics, illustration, and comics journalism.">
+    <meta name="twitter:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta name="twitter:image:alt" content="The hand-drawn Mawkingbird">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-TBAVDGIW.css"><style ng-app-id="ng">[_nghost-ng-c1002404812]{display:block}.features[_ngcontent-ng-c1002404812]{max-width:960px;margin:auto;padding:32px 24px;color:var(--text)}header[_ngcontent-ng-c1002404812], footer[_ngcontent-ng-c1002404812]{display:flex;align-items:center;flex-wrap:wrap;gap:24px}header[_ngcontent-ng-c1002404812]{justify-content:space-between}.intro[_ngcontent-ng-c1002404812]{display:grid;grid-template-columns:1.5fr 1fr;align-items:center;gap:32px;padding:48px 0}.intro[_ngcontent-ng-c1002404812]   img[_ngcontent-ng-c1002404812]{width:100%;height:auto;border-radius:24px;background:var(--col-bg)}h1[_ngcontent-ng-c1002404812]{font-size:clamp(2rem,5vw,3.3rem);line-height:1.12;margin:12px 0 24px}h2[_ngcontent-ng-c1002404812]{font-size:1.65rem;line-height:1.3}p[_ngcontent-ng-c1002404812], li[_ngcontent-ng-c1002404812]{line-height:1.75}.eyebrow[_ngcontent-ng-c1002404812]{font-weight:700;color:var(--muted)}nav[_ngcontent-ng-c1002404812]{margin-block:24px}section[_ngcontent-ng-c1002404812]{padding:28px 0;border-bottom:1px solid var(--border);scroll-margin-top:24px}aside[_ngcontent-ng-c1002404812]{padding:24px;margin-block:32px;background:var(--col-bg);border:1px solid var(--border);border-radius:16px}.feature-actions[_ngcontent-ng-c1002404812]{display:flex;flex-wrap:wrap;align-items:center;gap:16px}footer[_ngcontent-ng-c1002404812]{padding-top:24px;font-size:.9rem}@media(max-width:640px){.intro[_ngcontent-ng-c1002404812]{grid-template-columns:1fr}.intro[_ngcontent-ng-c1002404812]   img[_ngcontent-ng-c1002404812]{max-width:280px;justify-self:center}}</style><style ng-app-id="ng">.kit-intro[_ngcontent-ng-c1002404812]{padding:40px 0 16px}.kit-list[_ngcontent-ng-c1002404812], .people[_ngcontent-ng-c1002404812], .kit-links[_ngcontent-ng-c1002404812]{list-style:none;padding:0;margin:0}.kit-list[_ngcontent-ng-c1002404812]   li[_ngcontent-ng-c1002404812]{padding:14px 0;border-bottom:1px solid var(--border)}.kit-list[_ngcontent-ng-c1002404812]   p[_ngcontent-ng-c1002404812]{margin:4px 0 0}.kit-list[_ngcontent-ng-c1002404812]   a[_ngcontent-ng-c1002404812]{font-size:1.15rem;font-weight:700}.kit-count[_ngcontent-ng-c1002404812], .handle[_ngcontent-ng-c1002404812], .kit-note[_ngcontent-ng-c1002404812]{color:var(--muted);font-size:.9rem}.kit-list[_ngcontent-ng-c1002404812]   .kit-count[_ngcontent-ng-c1002404812]{margin-left:10px}.people[_ngcontent-ng-c1002404812]   li[_ngcontent-ng-c1002404812]{display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}.people[_ngcontent-ng-c1002404812]   img[_ngcontent-ng-c1002404812]{border-radius:50%;background:var(--border);object-fit:cover}.people[_ngcontent-ng-c1002404812]   a[_ngcontent-ng-c1002404812]{font-weight:700}.people[_ngcontent-ng-c1002404812]   .handle[_ngcontent-ng-c1002404812]{display:block;overflow-wrap:anywhere}.people[_ngcontent-ng-c1002404812]   p[_ngcontent-ng-c1002404812]{margin:6px 0;overflow-wrap:anywhere}.kit-links[_ngcontent-ng-c1002404812]{display:flex;flex-wrap:wrap;gap:10px 24px}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.23" ng-server-context="ssg"><router-outlet></router-outlet><app-follow-kit _nghost-ng-c1002404812=""><main _ngcontent-ng-c1002404812="" lang="en" class="features"><header _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" routerlink="/follow" _nghost-ng-c3172328079="" href="/follow">Mawkingbird · Who to follow</a><a _ngcontent-ng-c1002404812="" mbbutton="" routerlink="/" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/">Open the app</a></header><div _ngcontent-ng-c1002404812="" class="kit-intro"><p _ngcontent-ng-c1002404812="" class="eyebrow">Mastodon starter kit</p><h1 _ngcontent-ng-c1002404812="">Comics on Mastodon: 6 accounts to follow</h1><p _ngcontent-ng-c1002404812="">Cartoonists, webcomics, independent comics, illustration, and comics journalism.</p><div _ngcontent-ng-c1002404812="" class="feature-actions"><a _ngcontent-ng-c1002404812="" mbbutton="" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/collections/starter/comics"> Follow this kit in Mawkingbird </a><a _ngcontent-ng-c1002404812="" mbcontentlink="" href="/help/finding-people/starter-kits/" _nghost-ng-c3172328079="">How starter kits work</a></div><p _ngcontent-ng-c1002404812="" class="kit-note"> No account yet? You can still follow the kit; the follows are kept in this browser. </p></div><section _ngcontent-ng-c1002404812=""><h2 _ngcontent-ng-c1002404812="">People in this kit</h2><ul _ngcontent-ng-c1002404812="" class="people"><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/mastodonart/accounts/avatars/110/120/753/623/915/500/original/7fbc1d3c79ecf449.png"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://mastodon.art/@cabtastic">Cab</a><span _ngcontent-ng-c1002404812="" class="handle">@cabtastic@mastodon.art</span><p _ngcontent-ng-c1002404812="">Montreal-based comic book artist and illustrator. Author of Hiver Nucléaire and Utown. Amateur photographer et enthousiaste de cossins analogues. Would love to eat a sandwich right now. 🥪 Français et/or English…</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">1,224 followers</span></div></li><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/comicstown/accounts/avatars/111/485/669/228/974/127/original/8540a10f1764450e.png"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://comics.town/@beyondtheend">Beyond the End</a><span _ngcontent-ng-c1002404812="" class="handle">@beyondtheend@comics.town</span><p _ngcontent-ng-c1002404812="">An angel falls from Heaven and learns about the world that lay beyond. #comics #webcomics #comic #webcomic #indiecomics</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">9 followers</span></div></li><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/comicstown/accounts/avatars/112/007/085/635/448/121/original/bdab8b8d65d15337.png"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://comics.town/@noo">Noo</a><span _ngcontent-ng-c1002404812="" class="handle">@noo@comics.town</span><p _ngcontent-ng-c1002404812="">Yoo, I'm Noo, an indie comic author and artist with a taste for absurd bullshit! [My posts, content and other intellectual property are not permitted for use in the training of machine learning models]</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">24 followers</span></div></li><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/mastodonart/accounts/avatars/113/984/476/415/624/988/original/b5dbf26e492ea2cf.jpeg"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://mastodon.art/@art_of_goulwenr">Art of Goulwen R</a><span _ngcontent-ng-c1002404812="" class="handle">@art_of_goulwenr@mastodon.art</span><p _ngcontent-ng-c1002404812="">All my stories came from dreams so I literally make my dreams come true ! ☺️(thanks @AnnaSaultron for pointing this) On Mastodon since 2017 but on this instance since 2025 - Ko-fi for supporting my comics…</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">280 followers</span></div></li><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/comicstown/accounts/avatars/113/620/145/112/079/682/original/4c840b3a7ad2b97c.jpeg"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://comics.town/@Azurewhitewind">ִֶָ☾Azurry✧🐧</a><span _ngcontent-ng-c1002404812="" class="handle">@Azurewhitewind@comics.town</span><p _ngcontent-ng-c1002404812="">30+🏳️‍🌈 ISTP|Black|Crafter|Caregiver|Pastel Goth🔞 I'm a Gothic rainbow artist. I'm struggling with chronic pain, but I try my best! I love Linux, Krita, dark fantasy, kawaii, and drawing pretty men! I'm currently…</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">12 followers</span></div></li><li _ngcontent-ng-c1002404812=""><img _ngcontent-ng-c1002404812="" width="48" height="48" alt="" loading="lazy" src="https://cdn.masto.host/mastodonart/accounts/avatars/109/297/898/437/268/247/original/dc703dc61d197bf1.png"><div _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" rel="noopener" _nghost-ng-c3172328079="" href="https://mastodon.art/@inarticulatequilter">CeaselesslyShriekingQuilter</a><span _ngcontent-ng-c1002404812="" class="handle">@inarticulatequilter@mastodon.art</span><p _ngcontent-ng-c1002404812="">My quilts speak for me: see gallery of recent quilts in pinned posts below (she/her)</p><!----><span _ngcontent-ng-c1002404812="" class="kit-count">1,293 followers</span></div></li><!----></ul></section><!----><!----><section _ngcontent-ng-c1002404812=""><h2 _ngcontent-ng-c1002404812="">More starter kits</h2><ul _ngcontent-ng-c1002404812="" class="kit-links"><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/us-journalists">US Journalists</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/retro-computing">Retro Computing</a></li><!----><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/visual-arts">Visual Arts</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/infosec">InfoSec</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/sci-fi">Sci-Fi</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/canadian-politics">Canadian Politics</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/books">Books</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/mastodon-activitypub">Mastodon and ActivityPub</a></li><!----><li _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" _nghost-ng-c3172328079="" href="/follow/war-in-ukraine">War in Ukraine</a></li><!----><!----></ul></section><footer _ngcontent-ng-c1002404812=""><a _ngcontent-ng-c1002404812="" mbcontentlink="" routerlink="/follow" _nghost-ng-c3172328079="" href="/follow">All starter kits</a><a _ngcontent-ng-c1002404812="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features">Discover all Mawkingbird features</a><a _ngcontent-ng-c1002404812="" mbcontentlink="" routerlink="/for/twitter-exodus" _nghost-ng-c3172328079="" href="/for/twitter-exodus">Leaving Twitter / X</a><a _ngcontent-ng-c1002404812="" mbcontentlink="" href="/help/" _nghost-ng-c3172328079="">Help</a></footer></main></app-follow-kit><!----></app-root>
+  <link rel="modulepreload" href="chunk-XR7QLF3I.js"><link rel="modulepreload" href="chunk-CEPHNUTE.js"><link rel="modulepreload" href="chunk-OZFUTVSE.js"><link rel="modulepreload" href="chunk-NDVE4GHL.js"><link rel="modulepreload" href="chunk-MKGEHEMS.js"><link rel="modulepreload" href="chunk-AAJQUJWJ.js"><link rel="modulepreload" href="chunk-SJOAVRQE.js"><link rel="modulepreload" href="chunk-HF4VRXRZ.js"><link rel="modulepreload" href="chunk-A5BRFUL5.js"><link rel="modulepreload" href="chunk-IC5KUYS2.js"><script src="main-M3SKUDLE.js" type="module"></script>
+<link rel="modulepreload" href="chunk-AQYER4PR.js">
+<link rel="modulepreload" href="chunk-ELQJ6PHX.js">
+<link rel="modulepreload" href="chunk-YJCKKFD3.js">
+
+
+</body></html>
