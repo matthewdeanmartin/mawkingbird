@@ -19,6 +19,7 @@ const PATHS = {
   close: 'M5 12h14',
   list: 'M4 6h16M4 12h16M4 18h10',
   edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+  share: 'M4 13v7h16v-7M12 3v12M7 8l5-5 5 5',
 } as const;
 export type RadioIconName = keyof typeof PATHS;
 

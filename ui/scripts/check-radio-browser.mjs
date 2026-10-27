@@ -198,6 +198,36 @@ try {
     providerRequests++;
     await route.fulfill({ contentType: 'text/html', body: '<p>Spotify fixture</p>' });
   });
+  // Library of Congress search and item JSON for Studio's Find Shareable.
+  let catalogueRequests = 0;
+  await page.route('https://www.loc.gov/**', async (route) => {
+    catalogueRequests++;
+    const url = new URL(route.request().url());
+    assert.equal(
+      route.request().headers().authorization,
+      undefined,
+      'Catalogue requests omit credentials',
+    );
+    await route.fulfill({
+      json: url.pathname.startsWith('/audio')
+        ? {
+            results: [
+              {
+                url: 'https://www.loc.gov/item/2017701737/',
+                title: 'Whiskey Johnny',
+                contributor: ['brodeur, arthur'],
+                date: '1939',
+                rights: ['No known restrictions'],
+              },
+            ],
+            pagination: {},
+          }
+        : {
+            item: { title: 'Whiskey Johnny' },
+            resources: [{ audio: 'https://tile.loc.gov/fixture/default.mp3' }],
+          },
+    });
+  });
   await page.route('https://w.soundcloud.com/**', async (route) => {
     providerRequests++;
     assert.ok(!route.request().url().endsWith('api.js'), 'No provider SDK executes in the app');
@@ -458,6 +488,30 @@ try {
   await page.getByText('Your audio post was published.', { exact: true }).waitFor();
   assert.equal(uploads, 1);
   assert.equal(publications, 1);
+  // Find Shareable: search a public catalogue and share a recording into the composer.
+  await page
+    .locator('app-studio-page nav')
+    .getByRole('link', { name: 'Find Shareable', exact: true })
+    .click();
+  await page.getByLabel('Search recordings', { exact: false }).fill('whiskey');
+  await page
+    .locator('app-catalogue-panel')
+    .getByRole('button', { name: 'Search', exact: true })
+    .click();
+  await page.getByText('No known restrictions', { exact: false }).waitFor();
+  await page
+    .locator('app-catalogue-panel')
+    .getByRole('button', { name: 'Share', exact: true })
+    .click();
+  await page.locator('app-studio-page app-compose textarea').first().waitFor();
+  const sharedText = await page
+    .locator('app-studio-page app-compose textarea')
+    .first()
+    .inputValue();
+  assert.match(sharedText, /Whiskey Johnny/);
+  assert.match(sharedText, /https:\/\/www\.loc\.gov\/item\/2017701737\//);
+  assert.ok(catalogueRequests >= 2, 'Search, then the item lookup');
+  await page.locator('app-studio-page app-compose textarea').first().fill('');
   externalScenario = true;
   await page
     .locator('nav.primary-nav')
@@ -518,7 +572,7 @@ try {
       .click();
   await page
     .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Search', exact: true })
+    .getByRole('link', { name: 'Build Playlist', exact: true })
     .click();
   const addButtons = page
     .locator('app-status-card')
@@ -534,7 +588,7 @@ try {
   await alternative.getByRole('button', { name: 'Remove', exact: true }).click();
   await page
     .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Search', exact: true })
+    .getByRole('link', { name: 'Build Playlist', exact: true })
     .click();
   await page
     .getByRole('button', { name: 'Listen on SoundCloud in Radio', exact: true })

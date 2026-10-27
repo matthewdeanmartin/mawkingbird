@@ -60,5 +60,8 @@ describe('linked audio', () => {
         ),
       ),
     ).toEqual(['jukebox-19856', 'jukebox-202039']);
+    expect(
+      locItems(post('<a href="https://www.loc.gov/item/podcasts/2021-01-29/sea-shanties/">p</a>')),
+    ).toEqual(['podcasts/2021-01-29/sea-shanties']);
   });
 });

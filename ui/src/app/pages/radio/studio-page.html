@@ -14,9 +14,19 @@
         [current]="view() === 'catalogue'"
         >{{ 'studio.tab.catalogue' | transloco }}</a
       >
+      <a
+        mbNavLink
+        routerLink="/radio/studio"
+        [queryParams]="{ view: 'shareable' }"
+        [current]="view() === 'shareable'"
+        >{{ 'studio.tab.shareable' | transloco }}</a
+      >
     </nav>
     @if (view() === 'catalogue') {
       <app-radio-studio />
+    } @else if (view() === 'shareable') {
+      <h2>{{ 'studio.tab.shareable' | transloco }}</h2>
+      <app-catalogue-panel mode="share" />
     } @else {
       <section class="recording" [attr.aria-label]="'studio.recording' | transloco">
         <h2>{{ 'radio.prepareAudio' | transloco }}</h2>
@@ -101,6 +111,7 @@
       </section>
       <app-compose
         draftContext="studio"
+        [acceptHandoff]="true"
         [placeholder]="'studio.placeholder' | transloco"
         (posted)="posted($event)"
       />

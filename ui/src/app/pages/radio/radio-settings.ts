@@ -6,7 +6,6 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
 import { RadioPlayer } from './radio-player';
-import { RadioSearches } from './radio-searches';
 import { AUDIO_SERVICES, ProviderPreferences } from '../../audio-embeds/provider-preferences';
 
 // i18n radio.settings.title: Radio settings
@@ -25,7 +24,6 @@ import { AUDIO_SERVICES, ProviderPreferences } from '../../audio-embeds/provider
 // i18n radio.settings.hide: Hide {{service}} players
 // i18n radio.settings.showAll: Show all players, including services I don't subscribe to
 // i18n radio.settings.showAllHint: Hidden services stay hidden.
-// i18n radio.settings.noSearches: No saved searches yet. Use Save this search in the Search tab.
 
 const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixcloud: 'Mixcloud' };
 
@@ -83,24 +81,6 @@ const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixc
         [disabled]="!prefs.prefs().subscribed.length"
         (checkedChange)="prefs.setShowAll($event)"
       />
-    </mb-settings-row>
-    <mb-settings-row [heading]="'radio.savedSearches' | transloco">
-      @for (search of searches.saved(); track search.id) {
-        <div class="provider">
-          <span>{{ search.name }}</span>
-          <button
-            mbButton
-            variant="outline"
-            size="small"
-            type="button"
-            (click)="searches.remove(search.id)"
-          >
-            {{ 'radio.settings.forget' | transloco: { provider: search.name } }}
-          </button>
-        </div>
-      } @empty {
-        <p>{{ 'radio.settings.noSearches' | transloco }}</p>
-      }
     </mb-settings-row>
     <mb-settings-row [heading]="'radio.settings.playback' | transloco">
       <mb-checkbox
@@ -166,11 +146,7 @@ const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixc
 export class RadioSettings {
   readonly player = inject(RadioPlayer);
   readonly prefs = inject(ProviderPreferences);
-  readonly searches = inject(RadioSearches);
   readonly services = AUDIO_SERVICES;
-  constructor() {
-    this.searches.refresh();
-  }
   readonly providers = computed(() =>
     [...this.player.externalAllowed()]
       .sort()

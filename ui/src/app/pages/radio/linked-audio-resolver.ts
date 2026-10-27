@@ -128,7 +128,7 @@ export class LinkedAudioResolver {
 
   private async fetchItem(id: string): Promise<MediaAttachment[] | null> {
     const response = await fetch(
-      `https://www.loc.gov/item/${encodeURIComponent(id)}/?fo=json&at=item,resources`,
+      `https://www.loc.gov/item/${id.split('/').map(encodeURIComponent).join('/')}/?fo=json&at=item,resources`,
       { credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(15_000) },
     );
     if (!response.ok) return null;

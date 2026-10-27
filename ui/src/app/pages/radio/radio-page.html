@@ -28,11 +28,19 @@
     <app-radio-settings />
   } @else if (view() === 'radio') {
     @if (!player.active()) {
-      <mb-content-state [title]="'radio.chooseTrack' | transloco">
-        <button mbButton (click)="playQueue()" [disabled]="!player.queue().length">
-          {{ 'radio.playPlaylist' | transloco }}
-        </button>
-      </mb-content-state>
+      @if (player.queue().length) {
+        <mb-content-state [title]="'radio.chooseTrack' | transloco">
+          <button mbButton (click)="playQueue()">
+            {{ 'radio.playPlaylist' | transloco }}
+          </button>
+        </mb-content-state>
+      } @else {
+        <mb-content-state [title]="'radio.buildFirst' | transloco">
+          <button mbButton (click)="switchView('search')">
+            {{ 'radio.buildPlaylist' | transloco }}
+          </button>
+        </mb-content-state>
+      }
     }
   } @else {
     @if (message()) {
@@ -139,6 +147,14 @@
                   (click)="player.select(i); switchView('radio')"
                 >
                   <app-radio-icon name="play" />
+                </button>
+                <button
+                  mbToolbarButton
+                  [attr.aria-label]="'radio.catalogue.share' | transloco"
+                  [title]="'radio.catalogue.share' | transloco"
+                  (click)="actions.share(track)"
+                >
+                  <app-radio-icon name="share" />
                 </button>
                 <button
                   mbToolbarButton
@@ -383,7 +399,7 @@
           <select
             mbControl
             name="source"
-            [ngModel]="source()"
+            [ngModel]="sourceChoice()"
             (ngModelChange)="chooseSource($event)"
           >
             <option value="account">{{ 'radio.account' | transloco }}</option>
@@ -392,6 +408,10 @@
               <option value="home">{{ 'radio.home' | transloco }}</option>
               <option value="list">{{ 'radio.list' | transloco }}</option>
             }
+            <optgroup [label]="'radio.catalogues' | transloco">
+              <option value="loc">{{ 'radio.catalogue.loc' | transloco }}</option>
+              <option value="archive">{{ 'radio.catalogue.archive' | transloco }}</option>
+            </optgroup>
             @if (savedSearches().length) {
               <optgroup [label]="'radio.savedSearches' | transloco">
                 @for (search of savedSearches(); track search.id) {
@@ -437,78 +457,85 @@
             </select>
           </mb-field>
         }
-        <button mbButton type="submit" [disabled]="resolving() || scan.loading() || !searchReady()">
-          {{ 'radio.discover' | transloco }}
-        </button>
-        <button
-          mbButton
-          variant="outline"
-          type="button"
-          [disabled]="!searchReady()"
-          (click)="saveSearch()"
-        >
-          {{ 'radio.saveSearch' | transloco }}
-        </button>
-      </form>
-      <mb-checkbox
-        [label]="'radio.nativeOnly' | transloco"
-        [hint]="'radio.nativeOnlyHint' | transloco"
-        [checked]="player.nativeOnly()"
-        (checkedChange)="changeNativeOnly($event)"
-      />
-      <div class="playlist-filter">
-        <mb-checkbox
-          [label]="'radio.playlistableOnly' | transloco"
-          [checked]="playlistableOnly()"
-          (checkedChange)="playlistableOnly.set($event)"
-        />
-        <mb-help [label]="'radio.sourcesHelp' | transloco">{{
-          'radio.sourcesHint' | transloco
-        }}</mb-help>
-      </div>
-      @if (started()) {
-        @if (!resolving() && !scan.loading() && !scan.exhausted() && !failed() && scanReady()) {
-          <button mbButton variant="outline" type="button" (click)="scan.more()">
-            {{ 'radio.more' | transloco }}
+        @if (!catalogueSource()) {
+          <button
+            mbButton
+            type="submit"
+            [disabled]="resolving() || scan.loading() || !searchReady()"
+          >
+            {{ 'radio.discover' | transloco }}
           </button>
         }
-
-        <p role="status">
-          {{ 'radio.progress' | transloco: { scanned: scan.scanned(), matches: results().length } }}
-        </p>
-        @if (resolving() || scan.loading()) {
-          <mb-content-state
-            kind="loading"
-            announcement="status"
-            [title]="'radio.loading' | transloco"
-          >
-            <button mbButton variant="outline" type="button" (click)="cancel()">
-              {{ 'radio.cancel' | transloco }}
-            </button>
-          </mb-content-state>
-        } @else if (scan.exhausted()) {
-          <p>{{ 'radio.exhausted' | transloco }}</p>
-        } @else if (!failed() && scanReady()) {
-          <p>{{ 'radio.paused' | transloco }}</p>
-        }
+      </form>
+      @if (catalogueSource(); as catalogue) {
+        <app-catalogue-panel [source]="catalogue" />
       } @else {
-        <mb-content-state [title]="'radio.empty' | transloco" />
-      }
-      @if (failed() || scan.failed()) {
-        <mb-content-state kind="error" announcement="alert" [title]="'radio.failed' | transloco" />
-        @if (scan.retryAt()) {
-          <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
-        }
-      }
-      @for (post of results(); track post.id) {
-        <app-status-card
-          [status]="post"
-          [radioQueue]="canQueue(post)"
-          [radioSources]="player.radioSources(post)"
-          (playAudio)="playPost(post)"
-          (addAudio)="addPost(post)"
-          (listenRadio)="player.chooseExternal(post, $event); switchView('radio')"
+        <mb-checkbox
+          [label]="'radio.nativeOnly' | transloco"
+          [hint]="'radio.nativeOnlyHint' | transloco"
+          [checked]="player.nativeOnly()"
+          (checkedChange)="changeNativeOnly($event)"
         />
+        <div class="playlist-filter">
+          <mb-checkbox
+            [label]="'radio.playlistableOnly' | transloco"
+            [checked]="playlistableOnly()"
+            (checkedChange)="playlistableOnly.set($event)"
+          />
+          <mb-help [label]="'radio.sourcesHelp' | transloco">{{
+            'radio.sourcesHint' | transloco
+          }}</mb-help>
+        </div>
+        @if (started()) {
+          @if (!resolving() && !scan.loading() && !scan.exhausted() && !failed() && scanReady()) {
+            <button mbButton variant="outline" type="button" (click)="scan.more()">
+              {{ 'radio.more' | transloco }}
+            </button>
+          }
+
+          <p role="status">
+            {{
+              'radio.progress' | transloco: { scanned: scan.scanned(), matches: results().length }
+            }}
+          </p>
+          @if (resolving() || scan.loading()) {
+            <mb-content-state
+              kind="loading"
+              announcement="status"
+              [title]="'radio.loading' | transloco"
+            >
+              <button mbButton variant="outline" type="button" (click)="cancel()">
+                {{ 'radio.cancel' | transloco }}
+              </button>
+            </mb-content-state>
+          } @else if (scan.exhausted()) {
+            <p>{{ 'radio.exhausted' | transloco }}</p>
+          } @else if (!failed() && scanReady()) {
+            <p>{{ 'radio.paused' | transloco }}</p>
+          }
+        } @else {
+          <mb-content-state [title]="'radio.empty' | transloco" />
+        }
+        @if (failed() || scan.failed()) {
+          <mb-content-state
+            kind="error"
+            announcement="alert"
+            [title]="'radio.failed' | transloco"
+          />
+          @if (scan.retryAt()) {
+            <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
+          }
+        }
+        @for (post of results(); track post.id) {
+          <app-status-card
+            [status]="post"
+            [radioQueue]="canQueue(post)"
+            [radioSources]="player.radioSources(post)"
+            (playAudio)="playPost(post)"
+            (addAudio)="addPost(post)"
+            (listenRadio)="player.chooseExternal(post, $event); switchView('radio')"
+          />
+        }
       }
     }
   }

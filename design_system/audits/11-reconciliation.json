@@ -1255,12 +1255,17 @@
     {
       "file": "ui/src/app/pages/radio/radio-settings.ts",
       "disposition": "adopted scope",
-      "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation; audio-service subscriptions and hidden services as mutually exclusive checkboxes, with Show all disabled until a subscription exists; saved-search removal; continuous-play and starting-volume preferences. Keep these settings beside Radio rather than in the main settings."
+      "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation; audio-service subscriptions and hidden services as mutually exclusive checkboxes, with Show all disabled until a subscription exists; continuous-play and starting-volume preferences. Keep these settings beside Radio rather than in the main settings."
     },
     {
       "file": "ui/src/app/pages/radio/listen-page.html",
       "disposition": "adopted scope",
       "nextStep": "Listen uses Button for back, play/resume/start over, skip, play-next, queue and recording choice; icon content with accessible names for transport; Field/Control for the native position range; StatusCard for the post and comments; and the lazy external-player host for inline-only providers. Preserve warning/filter/text-only reveal gates, server-local id checks, playback through Radio (dock hidden only while this page shows the same native recording), resume of long recordings, and indented conversation capped at three levels."
+    },
+    {
+      "file": "ui/src/app/pages/radio/catalogue-panel.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Catalogue search uses Field/Control for the catalogue select and query, Checkbox for selection, Button for search, play, share, add and bulk actions, and the post-menu overflow with menu items for appending to published playlists. Preserve credential-free catalogue requests, visible rights text, one resolution per item, confirmation before replacing the queue, and lazy, referrer-free thumbnails."
     }
   ]
 }

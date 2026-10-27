@@ -18,7 +18,9 @@ import { RadioPage } from './radio-page';
 import { RadioPlayer } from './radio-player';
 import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
 import { RadioHandoff } from '../../radio-handoff';
-import { AppDialogs } from '../../app-dialogs';
+import { SavedSearches } from '../search/saved-searches';
+import { emptySearch } from '../search/mawkingbird-search';
+import { serializeMastodonQuery } from '../search/mastodon-query-serializer';
 import { Playback } from '../../video-player/playback';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { FollowTrust } from '../../follow-trust';
@@ -46,7 +48,7 @@ describe('RadioPage', () => {
     show('search');
     expect(
       Array.from(element.querySelectorAll('nav a'), (link) => link.textContent?.trim()),
-    ).toEqual(['Search', 'Publish', 'Saved', 'My Playlists']);
+    ).toEqual(['Build Playlist', 'Publish', 'Saved', 'My Playlists']);
     expect(element.querySelector('[name="source"]')).not.toBeNull();
     expect(element.querySelector('[name="playlistName"]')).toBeNull();
     expect(element.querySelector('.saved')).toBeNull();
@@ -212,24 +214,75 @@ describe('RadioPage', () => {
     expect(api.tagTimeline).not.toHaveBeenCalled();
   });
 
-  it('saves a search and runs it again from Audio source', async () => {
-    localStorage.clear();
+  it('offers the main Search screen’s saved searches and keeps only playable posts', async () => {
+    const saved = TestBed.inject(SavedSearches);
+    const hashtag = saved.save(
+      'Robot music',
+      { ...emptySearch('hashtags'), hashtag: { text: '#robotmusic' } },
+      {
+        instance: 'https://home.example',
+        authenticated: true,
+      },
+    );
+    const posts = saved.save(
+      'Banjo posts',
+      { ...emptySearch('posts'), post: { words: 'banjo' } },
+      {
+        instance: 'https://home.example',
+        authenticated: true,
+      },
+    );
+    saved.save('People', emptySearch('accounts'), { instance: '', authenticated: true });
+    if (!hashtag.ok || !posts.ok) throw new Error('save failed');
+    api.search.mockImplementation((_q: string, _type: string, options: { offset: number }) =>
+      of({ accounts: [], hashtags: [], statuses: options.offset ? [] : [audio] }),
+    );
     const fixture = TestBed.createComponent(RadioPage);
     const page = fixture.componentInstance;
     fixture.detectChanges();
-    page.chooseSource('tag');
-    page.tag.set('robotmusic');
-    vi.spyOn(TestBed.inject(AppDialogs), 'prompt').mockResolvedValue('Robot music');
-    await page.saveSearch();
-    const [saved] = page.savedSearches();
-    expect(saved).toMatchObject({ name: 'Robot music', source: 'tag', value: 'robotmusic' });
-    page.chooseSource('account');
-    page.tag.set('');
-    page.chooseSource(`saved:${saved.id}`);
+    // Account searches cannot find posts, so they are not offered.
+    expect(page.savedSearches().map((item) => item.name)).toEqual(['Banjo posts', 'Robot music']);
+    page.chooseSource(`saved:${hashtag.saved.id}`);
     await page.scan.whenIdle();
     expect(page.source()).toBe('tag');
-    expect(page.tag()).toBe('robotmusic');
     expect(api.tagTimeline).toHaveBeenCalledWith('robotmusic', undefined, 40, false);
+    page.chooseSource(`saved:${posts.saved.id}`);
+    await page.scan.whenIdle();
+    expect(page.sourceChoice()).toBe(`saved:${posts.saved.id}`);
+    // The same serialization the main Search screen sends.
+    expect(api.search).toHaveBeenCalledWith(
+      serializeMastodonQuery({ words: 'banjo' }),
+      'statuses',
+      { limit: 40, offset: 0 },
+    );
+    expect(page.scan.posts().map((post) => post.id)).toEqual(['audio']);
+    for (const item of saved.all()) saved.delete(item.id);
+  });
+
+  it('shows the catalogue search in place of feed results for a catalogue source', () => {
+    const fixture = TestBed.createComponent(RadioPage);
+    const page = fixture.componentInstance;
+    fixture.detectChanges();
+    page.chooseSource('loc');
+    fixture.detectChanges();
+    expect(page.catalogueSource()).toBe('loc');
+    expect(fixture.nativeElement.querySelector('app-catalogue-panel')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).not.toContain('Find audio');
+  });
+
+  it('asks for a playlist first when Radio has nothing to play', () => {
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: { snapshot: {}, queryParamMap: of(convertToParamMap({ view: 'radio' })) },
+    });
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.componentInstance.player.replacePlaylist([]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Build a playlist first.');
+    expect(
+      Array.from(
+        fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>,
+      ).some((button) => button.textContent?.trim() === 'Build a playlist'),
+    ).toBe(true);
   });
 
   it('keeps playing when returning to a Radio address whose fragment is the current queue', () => {
@@ -334,6 +387,7 @@ describe('RadioPage', () => {
     listTimeline: ReturnType<typeof vi.fn>;
     lists: ReturnType<typeof vi.fn>;
     tagTimeline: ReturnType<typeof vi.fn>;
+    search: ReturnType<typeof vi.fn>;
   };
   let auth: { isAnonymous: boolean; isBlueskyPrimary: boolean };
 
@@ -347,6 +401,7 @@ describe('RadioPage', () => {
       homeTimelinePage: vi.fn(() => of({ statuses: [audio], nextMaxId: null })),
       listTimeline: vi.fn((_: string, cursor?: string) => of(cursor ? [] : [audio])),
       lists: vi.fn(() => of([{ id: 'list', title: 'Music' }])),
+      search: vi.fn(() => of({ accounts: [], hashtags: [], statuses: [] })),
       tagTimeline: vi.fn((_: string, cursor?: string) =>
         of(
           cursor

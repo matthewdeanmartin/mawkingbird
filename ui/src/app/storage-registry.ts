@@ -140,13 +140,6 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Audio services the account subscribes to or hides, and whether to show every player. Shapes which embeds cards, Listen and Radio offer.',
   },
   {
-    base: 'mockingbird_radio_searches',
-    storage: 'local',
-    suffix: 'account',
-    sensitivity: 'private',
-    note: 'Saved Radio searches: source kind, account handle, list id or hashtag, and a name.',
-  },
-  {
     base: 'mockingbird_radio_catalogue',
     storage: 'local',
     suffix: 'account',

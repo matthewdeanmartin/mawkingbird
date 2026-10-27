@@ -99,8 +99,9 @@ export function locItemIds(raw: string): string[] {
       .slice(0, 20)
       .filter((id) => /^[a-z0-9-]{3,80}$/i.test(id))
       .map((id) => id.toLowerCase());
-  const item = /^\/item\/([a-z0-9-]{3,80})\/?$/i.exec(url.pathname);
-  return item ? [item[1].toLowerCase()] : [];
+  // Most ids are one segment; collections such as podcasts nest a few (`podcasts/2021-01-29/x`).
+  const item = /^\/item\/([a-z0-9-]{1,80}(?:\/[a-z0-9-]{1,80}){0,3})\/?$/i.exec(url.pathname);
+  return item && item[1].length >= 3 ? [item[1].toLowerCase()] : [];
 }
 
 /**

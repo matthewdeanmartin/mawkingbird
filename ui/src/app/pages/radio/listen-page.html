@@ -135,9 +135,30 @@
             <button mbButton variant="outline" size="small" type="button" (click)="addToQueue()">
               {{ 'listen.addQueue' | transloco }}
             </button>
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="actions.share(track)"
+            >
+              {{ 'radio.catalogue.share' | transloco }}
+            </button>
+            @if (actions.published().length) {
+              <mb-post-menu
+                [label]="'radio.catalogue.append' | transloco"
+                [closeLabel]="'radio.closeMenu' | transloco"
+              >
+                @for (row of actions.published(); track row.id) {
+                  <button mbMenuItem type="button" (click)="append(track, row.id)">
+                    {{ row.name }}
+                  </button>
+                }
+              </mb-post-menu>
+            }
           </div>
           @if (message()) {
-            <p role="status">{{ message() | transloco }}</p>
+            <p role="status">{{ message() }}</p>
           }
           @if (recordings().length > 1) {
             <h3>{{ 'listen.recordings' | transloco }}</h3>

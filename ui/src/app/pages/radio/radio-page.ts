@@ -15,7 +15,10 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { RadioPlayer, RadioSource, radioTag } from './radio-player';
-import { RadioSearches, SavedRadioSearch } from './radio-searches';
+import { isMastodonSaved, SavedSearches } from '../search/saved-searches';
+import { serializeMastodonQuery } from '../search/mastodon-query-serializer';
+import { CataloguePanel } from './catalogue-panel';
+import { TrackActions } from './track-actions';
 import { Server } from '../../server';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
@@ -89,6 +92,7 @@ import { StatusCard } from '../../status-card/status-card';
     RadioSettings,
     MbPostMenu,
     MbMenuItem,
+    CataloguePanel,
   ],
   templateUrl: './radio-page.html',
   styleUrl: './radio-page.css',
@@ -153,7 +157,9 @@ export class RadioPage {
   readonly scan = this.player.scan;
   readonly source = this.player.source;
   readonly tag = this.player.tag;
-  readonly searches = inject(RadioSearches);
+  private readonly mainSearches = inject(SavedSearches);
+  readonly actions = inject(TrackActions);
+  readonly savedId = signal('');
   private readonly server = inject(Server);
   readonly handle = this.player.handle;
   readonly listId = this.player.listId;
@@ -168,12 +174,10 @@ export class RadioPage {
   constructor() {
     this.player.installDock(RadioDock);
     this.playlists.refresh();
-    this.searches.refresh();
     effect(() => {
       this.auth.kind();
       this.auth.token();
       this.playlists.refresh();
-      this.searches.refresh();
     });
     effect(() => {
       const posts = this.scan.posts();
@@ -237,8 +241,17 @@ export class RadioPage {
 
   chooseSource(choice: string): void {
     if (choice.startsWith('saved:')) {
-      const search = this.searches.saved().find((item) => item.id === choice.slice(6));
-      if (search) this.runSaved(search);
+      const saved = this.savedSearches().find((item) => item.id === choice.slice(6));
+      if (!saved) return;
+      // A hashtag search is the hashtag source; a post search runs as itself.
+      if (saved.search.target === 'hashtags') {
+        this.source.set('tag');
+        this.tag.set(radioTag(saved.search.hashtag?.text ?? '') ?? '');
+      } else {
+        this.source.set('saved');
+        this.savedId.set(saved.id);
+      }
+      this.discover();
       return;
     }
     const source = choice as RadioSource;
@@ -257,19 +270,6 @@ export class RadioPage {
           },
         });
     }
-  }
-
-  /** A saved search fills in its source and runs at once. */
-  private runSaved(search: SavedRadioSearch): void {
-    this.source.set(search.source);
-    if (search.source === 'tag') this.tag.set(search.value);
-    if (search.source === 'account') this.handle.set(search.value);
-    if (search.source === 'list') {
-      this.listId.set(search.value);
-      this.chooseSource('list');
-    }
-    if (this.player.nativeOnly() !== search.nativeOnly) this.changeNativeOnly(search.nativeOnly);
-    this.discover();
   }
 
   cancel(): void {
@@ -294,6 +294,11 @@ export class RadioPage {
       this.discoverTag();
       return;
     }
+    if (this.source() === 'saved') {
+      this.discoverSaved();
+      return;
+    }
+    if (this.catalogueSource()) return;
     if (!this.signedIn && this.source() === 'account') {
       const account = radioAccount(this.handle());
       if (account) {
@@ -409,43 +414,58 @@ export class RadioPage {
     if (source === 'tag') return !!radioTag(this.tag());
     if (source === 'account') return !!this.handle().trim();
     if (source === 'list') return !!this.listId();
-    return true;
+    if (source === 'saved') return !!this.savedId();
+    return !this.catalogueSource();
   });
+  /**
+   * Saved searches from the main Search screen that can find posts: post
+   * searches (signed in, through the server's search) and hashtag searches.
+   * Running one keeps only posts with playable audio, like any other source.
+   */
   readonly savedSearches = computed(() =>
-    this.searches
-      .saved()
-      .filter((search) => this.signedIn || search.source === 'account' || search.source === 'tag'),
+    this.mainSearches
+      .all()
+      .filter(isMastodonSaved)
+      .filter(
+        (saved) =>
+          (saved.search.target === 'posts' && this.signedIn) ||
+          (saved.search.target === 'hashtags' && !!radioTag(saved.search.hashtag?.text ?? '')),
+      ),
   );
-  /** Save the current source under a name, suggesting one from what it searches. */
-  async saveSearch(): Promise<void> {
-    if (!this.searchReady()) return;
+  /** The select's value: a saved search shows as itself rather than its kind. */
+  readonly sourceChoice = computed(() =>
+    this.source() === 'saved' ? `saved:${this.savedId()}` : this.source(),
+  );
+  readonly catalogueSource = computed(() => {
     const source = this.source();
-    const value =
-      source === 'tag'
-        ? radioTag(this.tag())!
-        : source === 'account'
-          ? this.handle().trim().replace(/^@/, '')
-          : source === 'list'
-            ? this.listId()
-            : '';
-    const suggested =
-      source === 'tag'
-        ? `#${value}`
-        : source === 'account'
-          ? `@${value}`
-          : source === 'list'
-            ? (this.lists().find((list) => list.id === value)?.title ?? value)
-            : this.transloco.translate('radio.home');
-    const name = await this.dialogs.prompt(
-      this.transloco.translate('radio.saveSearchPrompt'),
-      suggested,
+    return source === 'loc' || source === 'archive' ? source : null;
+  });
+
+  /** A saved post search runs through the server's search, paging by offset. */
+  private discoverSaved(): void {
+    const saved = this.savedSearches().find((item) => item.id === this.savedId());
+    const criteria = saved?.search.post;
+    if (!saved || !criteria || !this.signedIn || Date.now() < this.scan.retryAt()) return;
+    this.cancel();
+    this.player.editPlaylist();
+    this.scan.clear();
+    this.failed.set(false);
+    this.shareParams.set(null);
+    this.started.set(true);
+    this.scanReady.set(true);
+    const query = serializeMastodonQuery(
+      this.player.nativeOnly() ? { ...criteria, contentType: 'audio' } : criteria,
     );
-    if (!name?.trim()) return;
-    this.message.set(
-      this.searches.save({ name, source, value, nativeOnly: this.player.nativeOnly() })
-        ? 'radio.searchSaved'
-        : 'radio.saveFailed',
-    );
+    void this.scan.start((cursor) => {
+      const offset = Number(cursor ?? 0);
+      return this.api.search(query, 'statuses', { limit: 40, offset }).pipe(
+        tap({ error: (error) => this.scanError(error, 'signed-in') }),
+        map((results) => ({
+          statuses: results.statuses,
+          next: results.statuses.length ? String(offset + results.statuses.length) : null,
+        })),
+      );
+    });
   }
 
   private discoverPublicAccount(account: { acct: string; server: string }): void {
@@ -674,16 +694,16 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
   return { statuses, next: statuses.at(-1)?.id ?? null };
 }
 
-// i18n radio.tab.search: Search
+// i18n radio.tab.search: Build Playlist
 // i18n radio.tab.playlist: Playlist
 // i18n radio.tab.radio: Radio
 // i18n radio.tab.settings: Settings
 // i18n radio.hashtag: Hashtag
 // i18n radio.hashtagHint: For example #robotmusic. Posts linking music players count, not only attached audio.
 // i18n radio.savedSearches: Saved searches
-// i18n radio.saveSearch: Save this search
-// i18n radio.saveSearchPrompt: Name this search. It will appear under Saved searches in Audio source.
-// i18n radio.searchSaved: Search saved. Choose it from Audio source to run it again.
+// i18n radio.catalogues: Public catalogues
+// i18n radio.buildFirst: Build a playlist first. Find recordings, add them, then play them here.
+// i18n radio.buildPlaylist: Build a playlist
 // i18n radio.moreActions: More playlist actions
 // i18n radio.closeMenu: Close menu
 // i18n radio.trackCount: {{count}} tracks

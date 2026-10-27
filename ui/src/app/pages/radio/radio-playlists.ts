@@ -10,6 +10,7 @@ import {
 } from '../../audio-embeds/linked-audio';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 import { fileTitle } from './track-title';
+import { CATALOGUE_POST } from './catalogue-search';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { radioPostRef } from '../../radio-links';
 import { Status } from '../../models';
@@ -69,6 +70,13 @@ export const PLAYLIST_LIMIT = 200;
 
 /** Public URL lists are portable; local playlists retain private post metadata locally. */
 export function trackUrl(track: RadioTrack): string | null {
+  // Catalogue recordings link their item page: credit, licence and context travel with it.
+  if (track.post.id.startsWith(CATALOGUE_POST)) {
+    const file = /^ia:([\w.-]+)\/(.+)$/.exec(track.media.id);
+    return file
+      ? `https://archive.org/details/${file[1]}/${file[2].split('/').map(encodeURIComponent).join('/')}`
+      : track.post.url || null;
+  }
   if (!['public', 'unlisted'].includes(track.post.visibility)) return null;
   if (track.post.spoiler_text || track.post.sensitive) return track.post.url || null;
   return (

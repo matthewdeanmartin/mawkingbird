@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it, vi } from 'vitest';
 import { RadioPlayer } from './radio-player';
 import { RadioSettings } from './radio-settings';
-import { RadioSearches } from './radio-searches';
 import { ProviderPreferences } from '../../audio-embeds/provider-preferences';
 
 function checkbox(root: HTMLElement, label: string): HTMLInputElement {
@@ -30,18 +29,10 @@ describe('RadioSettings', () => {
       setHidden: vi.fn(),
       setShowAll: vi.fn(),
     };
-    const searches = {
-      saved: signal([
-        { id: 's', name: '#robotmusic', source: 'tag', value: 'robotmusic', nativeOnly: false },
-      ]),
-      refresh: vi.fn(),
-      remove: vi.fn(),
-    };
     TestBed.configureTestingModule({
       providers: [
         { provide: RadioPlayer, useValue: player },
         { provide: ProviderPreferences, useValue: prefs },
-        { provide: RadioSearches, useValue: searches },
       ],
     });
     const fixture = TestBed.createComponent(RadioSettings);
@@ -50,7 +41,6 @@ describe('RadioSettings', () => {
       fixture,
       player,
       prefs,
-      searches,
       text: () => fixture.nativeElement.textContent as string,
     };
   }
@@ -76,8 +66,8 @@ describe('RadioSettings', () => {
     expect(player.setContinuous).toHaveBeenCalledWith(false);
   });
 
-  it('records subscriptions and hidden services, and removes saved searches', () => {
-    const { fixture, prefs, searches, text } = setUp([]);
+  it('records subscriptions and hidden services', () => {
+    const { fixture, prefs, text } = setUp([]);
     const root = fixture.nativeElement as HTMLElement;
     expect(checkbox(root, 'I subscribe to Apple Music').checked).toBe(true);
     // Free services have nothing to subscribe to.
@@ -86,9 +76,5 @@ describe('RadioSettings', () => {
     expect(prefs.setHidden).toHaveBeenCalledWith('spotify', true);
     checkbox(root, 'I subscribe to TIDAL').click();
     expect(prefs.setSubscribed).toHaveBeenCalledWith('tidal', true);
-    Array.from(root.querySelectorAll('button'))
-      .find((button) => button.textContent?.trim() === 'Remove #robotmusic')!
-      .click();
-    expect(searches.remove).toHaveBeenCalledWith('s');
   });
 });

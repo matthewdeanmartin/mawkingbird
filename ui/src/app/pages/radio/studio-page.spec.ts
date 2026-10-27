@@ -18,6 +18,7 @@ import { StudioPage } from './studio-page';
 class ComposeStub {
   readonly draftContext = input('');
   readonly placeholder = input('');
+  readonly acceptHandoff = input(false);
   readonly posted = output<Status>();
   readonly media = signal<MediaAttachment[]>([]);
   readonly attachmentIds = computed(() => this.media().map((media) => media.id));

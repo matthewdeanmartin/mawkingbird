@@ -605,6 +605,11 @@ export class Compose implements OnDestroy {
   /** Isolate drafts for profile mentions and new private chats. */
   readonly draftContext = input('');
   /**
+   * A workspace's own composer that should still take a parked handoff, such as
+   * Studio receiving "Share this track". Only one such composer is ever mounted.
+   */
+  readonly acceptHandoff = input(false);
+  /**
    * The parent author's handle (bare `acct`, e.g. `alice@dmv.community`) for a
    * reply. When set and no explicit {@link initialText} is given, the composer
    * seeds `@handle ` into the box so the reply actually notifies them — matching
@@ -1938,7 +1943,7 @@ export class Compose implements OnDestroy {
    * to seed would silently swallow it.
    */
   private acceptsHandoff(): boolean {
-    return this.contextKey() === 'new';
+    return this.contextKey() === 'new' || this.acceptHandoff();
   }
 
   private snapshot(): DraftSnapshot {

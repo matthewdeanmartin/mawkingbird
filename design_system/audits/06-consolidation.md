@@ -963,3 +963,17 @@ Reviewed the regenerated inventory: the added candidates are these controls in
 `radio-page.html` and `radio-settings.ts`. There are still 252 candidate files,
 the settings entry is updated in `11-reconciliation.json`, and shared widgets
 are unchanged.
+
+## Catalogue search, sharing and Build Playlist, 2026-10-27
+
+The new `catalogue-panel.ts` (Studio → Find Shareable, and Build Playlist's
+Public catalogues source) reuses Field/Control, Checkbox, Button and the
+post-menu overflow. Listen adds Share and an append menu, Build Playlist rows
+add an icon Share ToolbarButton, and Studio adds a third Navigation tab. The
+Radio tab's empty state gains a Build a playlist Button. Removing Radio's own
+saved searches drops the "Save this search" Button and the Settings list.
+
+Reviewed the regenerated inventory: the changes are in those files, with line
+shifts elsewhere. `catalogue-panel.ts` is a new candidate (253 in total),
+reconciled as adopted scope. Shared widget implementations are unchanged;
+Compose gains only an `acceptHandoff` input.

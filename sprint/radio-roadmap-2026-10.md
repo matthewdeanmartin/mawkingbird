@@ -393,3 +393,164 @@ a single recording does not need continuous advance.
      what is offered (cards, Listen, Radio's choice of alternative, discovery).
   7. "Show all players" is disabled until a subscription exists, since it has
      no effect without one.
+
+## Next phase: finding music and creator tools (planned 2026-10-27; on ice for user trials)
+
+### What early users are telling us
+
+- **Finding music is hard; filling a playlist is very hard.** Radio searches
+  the posts a person already reads (their account, home, lists, a hashtag).
+  Few posts carry playable audio, so a scan of hundreds of posts may yield a
+  handful of tracks, while a playlist wants 10–30.
+- **The common use is one clip:** find a track, listen once. Listen serves
+  this, but people have to find it first.
+- **The supply has to grow.** Discovery can only surface what exists; the
+  fediverse needs more well-formed music posts, which means creator tools.
+
+### Principles carried forward
+
+- No media bytes through the Plus proxy. Catalogue and metadata JSON go
+  straight from the browser when the API allows it (verified below); anything
+  needing a secret key is a separate owner decision.
+- Results become ordinary Radio tracks and can be published with the existing
+  playlist-thread publisher. Avoid inventing a second playlist format.
+- Prefer sources that are public domain or freely licensed and queueable
+  (native, linked files, LoC, Commons, Archive): they play fully, advance
+  automatically, and are safe to repost.
+
+### API checks (curl with an `Origin` header, 2026-10-27)
+
+| API                                                        | Browser use                                                             |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Internet Archive `advancedsearch.php` and `/metadata/<id>` | 200, ACAO `*`: search by collection or subject, then list files         |
+| Library of Congress `/audio/?q=…&fo=json`                  | 200, ACAO `*`: keyword search of audio items (item lookup already used) |
+| Wikimedia Commons `list=search` with `filetype:audio`      | 200, ACAO `*` (`origin=*`)                                              |
+| song.link / Odesli `v1-alpha.1/links`                      | **401 without a key**: cross-service matching needs an API key          |
+
+Spotify, Apple Music and YouTube playlist contents need provider
+authorization (OAuth, MusicKit or Data API keys). None can be read
+anonymously from the browser.
+
+### Proposed sprints (in priority order)
+
+**Sprint 6 — catalogue search as a Radio source (biggest supply gain).**
+
+- New Audio source choices: Library of Congress, Internet Archive (audio
+  collections such as 78rpm, etree, podcasts) and Wikimedia Commons. A keyword
+  search returns tracks directly, with no Mastodon post needed, titled from
+  catalogue metadata, with licence or rights text shown.
+- Select several results, then add them to the playlist ("Add 12 selected").
+  Results stream in pages; results already queued are marked.
+- **Fill to N:** a scan option to keep reading a feed or hashtag until N
+  playable tracks are found or a page budget runs out, reporting density
+  ("found 6 in 400 posts").
+
+**Sprint 7 — stations: out of scope (owner decision, 2026-10-27).**
+Mawkingbird is a static client. A station built from feeds would have to
+download a very large number of posts to find the few with usable audio, so
+stations, hashtag fan-out across servers and feed-derived "more like this" are
+dropped. Catalogue search (Sprint 6) is the supply answer instead.
+
+**Sprint 8 — share and creator tools inside Mawkingbird.**
+
+- **Share a track** from Listen, Radio rows and catalogue results. This opens
+  the composer prefilled with a title line, the link, optional
+  `#nowplaying`/genre tags and attribution (and licence for catalogue items).
+  Quote-posting is offered where the server supports it.
+- **Catalogue playlist composer:** search LoC, Archive or Commons, pick N
+  items, review titles, then publish as a playlist thread. One step from
+  "I found good public-domain recordings" to a shareable playlist.
+- **Append to my playlist** from any card or result. This adds a reply to a
+  chosen published playlist through the existing update plan, with its cost
+  shown.
+- **Post a song list:** paste a text track list (`Artist – Title` lines, or an
+  exported CSV) and link each line to a recording the user picks from
+  catalogue or provider search results. Unmatched lines stay as text.
+- Studio: optional tracklist and chapters for mixes, in the composer text.
+
+**Sprint 9 — Connectors (on the roadmap, not scheduled).** Cross-platform playlists:
+
+- Reading a Spotify, Apple or YouTube playlist needs that provider's
+  authorization. Options:
+  - (a) The user signs in to the provider in the browser (PKCE OAuth where the
+    provider allows public clients; Spotify does). No secret is stored, but
+    each provider needs its own app registration.
+  - (b) A Mawkingbird Plus server-side integration holding keys. JSON only,
+    never media, but a cost and privacy decision.
+  - (c) Rely on user exports (Exportify, TuneMyMusic CSV) through "Post a song
+    list".
+
+  Recommend (c) first, then (a) for Spotify if trials show demand.
+
+- Cross-service track matching (offering the Apple link for a Spotify track)
+  needs song.link's key or an equivalent. Same owner decision as (b).
+  Without it, alternatives come only from what the poster linked, plus the
+  catalogue searches above.
+
+### What to learn from the trial before Sprint 6
+
+- Time to the first 10 playable tracks, and which source produced them.
+- How often people open Listen versus Radio, and whether single clips lead
+  to a second track.
+- Whether testers published playlist threads, and where publishing stalled
+  (plan cost, rate limits, private tracks).
+- Which services testers subscribe to and hide, which tests whether the
+  audio-services defaults are right.
+- Error reports: provider frames that failed, LoC lookups that found nothing,
+  CORS failures on direct files.
+
+Gates still owed before release: `make design-verify` (held for the end of this
+work by owner request; no shared design-system widgets changed since the last
+run) and `make test-integration`.
+
+### Sprints 6 and 8 progress (2026-10-27) — ready for a user trial
+
+Owner decisions:
+
+- Radio's Search tab is now **Build Playlist**.
+- Radio's own saved searches and "Save this search" are removed. Build
+  Playlist's Audio source lists the main Search screen's saved searches
+  instead: post searches (signed in, through the server's search, offset
+  paging) and hashtag searches (as the hashtag source). Account searches are
+  not offered. The old `mockingbird_radio_searches` data is dropped. Music
+  search (must contain a song) versus regular search (a wide net) is still open.
+- Catalogue search is one component in two places: Studio → **Find Shareable**
+  (leads with Share) and Build Playlist's Audio source → Public catalogues
+  (leads with collecting).
+- Sprint 8 today: Share a track, Catalogue playlist, and Append to my playlist.
+  Post a song list is deferred.
+
+Implemented:
+
+- **Catalogues** (`catalogue-search.ts`, `catalogue-panel.ts`):
+  - Library of Congress `/audio/?fa=online-format:audio`, keeping only
+    `www.loc.gov/item/…` results. Nested ids such as `podcasts/2021-01-29/x` are
+    now recognised everywhere.
+  - Internet Archive `advancedsearch` with `mediatype:audio`, then
+    `/metadata/<id>/files`, keeping one MP3 per recording (low-bitrate
+    derivatives are dropped).
+  - Requests use `fetch` with credentials omitted and no referrer. There is no
+    proxy.
+
+  Results show title, creator, date, rights and the item page, with Play,
+  Share, Add to playlist and Add to a published playlist. You can also select
+  several, then **Add N selected** or **Make a playlist from N selected**
+  (replaces the queue after a confirmation and opens Publish).
+
+- **Catalogue tracks** are ordinary Radio tracks on synthetic `catalogue:`
+  posts: they play, queue, save and publish. Published and shared links point
+  at the item page (`loc.gov/item/…`, `archive.org/details/<id>/<file>`), and
+  those pages are themselves queueable when re-imported.
+- **Share a track** (`track-actions.ts`) on Listen, Build Playlist rows and
+  catalogue results. It opens Studio's composer, which now accepts a handoff
+  (Compose `acceptHandoff`), prefilled with the title, credit ("via the Library
+  of Congress", or "shared by @acct"), link and `#nowplaying`.
+- **Append to my playlist** on Listen and catalogue results lists published
+  playlists. It confirms the cost ("create 1 posts and edit 1"), then posts the
+  reply and edits the root's count through the existing publisher. Private
+  recordings are refused.
+- **The Radio tab with nothing queued** shows "Build a playlist first" with a
+  **Build a playlist** button.
+
+Not done: Wikimedia Commons in the catalogue panel, Post a song list, and
+Append on feed cards (feeds reach it through Open in Listen).

@@ -44,7 +44,8 @@ export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio aud
     return () => document.createElement('audio');
   },
 });
-export type RadioSource = 'account' | 'home' | 'list' | 'tag';
+/** Feeds and hashtags scan posts; `saved` runs a main-Search saved search; `loc` and `archive` search catalogues. */
+export type RadioSource = 'account' | 'home' | 'list' | 'tag' | 'saved' | 'loc' | 'archive';
 /** `#robotmusic`, `robotmusic` or a pasted tag URL → `robotmusic`; null if not a tag. */
 export function radioTag(raw: string): string | null {
   const value = raw

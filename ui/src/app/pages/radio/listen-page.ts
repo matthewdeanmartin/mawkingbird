@@ -11,7 +11,7 @@ import { Location } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ExternalPlayerHost } from '../../audio-embeds/external-player-host';
 import { postExternalMedia } from '../../audio-embeds/providers';
 import { ProviderPreferences } from '../../audio-embeds/provider-preferences';
@@ -31,6 +31,10 @@ import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
 import { RadioPlayer, RadioTrack } from './radio-player';
+import { RadioPlaylists } from './radio-playlists';
+import { TrackActions } from './track-actions';
+import { MbPostMenu } from '../../design-system/menu/post-menu';
+import { MbMenuItem } from '../../design-system/menu/menu-item';
 
 // i18n listen.title: Listen
 // i18n listen.back: Back
@@ -74,6 +78,8 @@ import { RadioPlayer, RadioTrack } from './radio-player';
     StatusCard,
     ExternalPlayerHost,
     RadioIcon,
+    MbPostMenu,
+    MbMenuItem,
   ],
   providers: [ThreadLoader],
   templateUrl: './listen-page.html',
@@ -82,6 +88,8 @@ import { RadioPlayer, RadioTrack } from './radio-player';
 export class ListenPage {
   protected readonly loader = inject(ThreadLoader);
   protected readonly player = inject(RadioPlayer);
+  protected readonly actions = inject(TrackActions);
+  private readonly transloco = inject(TranslocoService);
   private readonly linked = inject(LinkedAudioResolver);
   private readonly services = inject(ProviderPreferences);
   private readonly route = inject(ActivatedRoute);
@@ -171,6 +179,7 @@ export class ListenPage {
 
   constructor() {
     this.player.installDock(RadioDock);
+    inject(RadioPlaylists).refresh();
     const destroy = inject(DestroyRef);
     destroy.onDestroy(() => {
       this.loader.destroy();
@@ -236,13 +245,17 @@ export class ListenPage {
     const track = this.chosen();
     if (!track) return;
     this.player.playNext([track]);
-    this.message.set('listen.queued');
+    this.message.set(this.transloco.translate('listen.queued'));
+  }
+  protected async append(track: RadioTrack, rowId: string): Promise<void> {
+    const result = await this.actions.append(track, rowId);
+    if (result) this.message.set(result);
   }
   protected addToQueue(): void {
     const track = this.chosen();
     if (!track) return;
     this.player.addTracks([track]);
-    this.message.set('listen.queued');
+    this.message.set(this.transloco.translate('listen.queued'));
   }
   protected clock(seconds: number): string {
     const value = Math.max(0, Math.floor(seconds));
