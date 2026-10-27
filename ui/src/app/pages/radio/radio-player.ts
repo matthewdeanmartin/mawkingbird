@@ -22,6 +22,7 @@ import { ExternalMedia, postExternalMedia } from '../../audio-embeds/providers';
 import type { WidgetController, WidgetState } from '../../audio-embeds/widget-api';
 import { accountScopeSuffix } from '../../account-scope';
 import { ProviderConsent } from '../../audio-embeds/provider-consent';
+import { ProviderPreferences } from '../../audio-embeds/provider-preferences';
 import { trackTitle } from './track-title';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 
@@ -43,6 +44,15 @@ export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio aud
     return () => document.createElement('audio');
   },
 });
+export type RadioSource = 'account' | 'home' | 'list' | 'tag';
+/** `#robotmusic`, `robotmusic` or a pasted tag URL → `robotmusic`; null if not a tag. */
+export function radioTag(raw: string): string | null {
+  const value = raw
+    .trim()
+    .replace(/^https?:\/\/[^/]+\/tags\//i, '')
+    .replace(/^#/, '');
+  return /^[\p{L}\p{N}_]{1,100}$/u.test(value) ? value : null;
+}
 export interface RadioTrack {
   key: string;
   post: Status;
@@ -59,15 +69,19 @@ export class RadioPlayer {
   readonly fullView = signal(false);
   readonly playlist = signal<RadioTrack[] | null>(null);
   private readonly linked = inject(LinkedAudioResolver);
+  private readonly services = inject(ProviderPreferences);
   readonly scan = new MediaFeedScan(
     ['audio'],
     (post) =>
       post.media_attachments.some((media) => media.type === 'audio') ||
       (!this.nativeOnly() &&
         (this.linked.candidate(post) ||
-          postExternalMedia(post).some((source) => !!source.embed && source.type !== 'video'))),
+          this.services
+            .arrange(postExternalMedia(post))
+            .some((source) => !!source.embed && source.type !== 'video'))),
   );
-  readonly source = signal<'account' | 'home' | 'list'>('account');
+  readonly source = signal<RadioSource>('account');
+  readonly tag = signal('');
   readonly handle = signal('');
   readonly listId = signal('');
   readonly started = signal(false);
@@ -190,6 +204,7 @@ export class RadioPlayer {
         this.nativeOnly.set(false);
         this.handle.set('');
         this.listId.set('');
+        this.tag.set('');
       }
     });
     effect(() => {
@@ -244,11 +259,15 @@ export class RadioPlayer {
         })),
     ];
   }
+  /**
+   * Every track a post offers. Preferences do not apply here: a hidden service's
+   * track that was saved in a playlist on purpose stays playable.
+   */
   tracks(post: Status): RadioTrack[] {
     const native = this.nativeTracks(post);
     return [
       ...native,
-      ...this.radioSources(post).map((external) => ({
+      ...this.allRadioSources(post).map((external) => ({
         key: `${post.id}:${external.key}`,
         post,
         external,
@@ -369,8 +388,13 @@ export class RadioPlayer {
       this.positions.set(new Map());
     }
   }
-  radioSources(post: Status): ExternalMedia[] {
+  /** Every continuous provider source a post links, regardless of preferences. */
+  private allRadioSources(post: Status): ExternalMedia[] {
     return postExternalMedia(post).filter((s) => s.type === 'audio' && s.controllable && s.embed);
+  }
+  /** The sources to offer, ordered and pruned by the listener's service preferences. */
+  radioSources(post: Status): ExternalMedia[] {
+    return this.services.arrange(this.allRadioSources(post));
   }
   chooseExternal(post: Status, source: ExternalMedia): void {
     if (!this.radioSources(post).some((s) => s.key === source.key)) return;

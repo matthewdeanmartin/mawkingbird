@@ -387,9 +387,17 @@
             (ngModelChange)="chooseSource($event)"
           >
             <option value="account">{{ 'radio.account' | transloco }}</option>
+            <option value="tag">{{ 'radio.hashtag' | transloco }}</option>
             @if (signedIn) {
               <option value="home">{{ 'radio.home' | transloco }}</option>
               <option value="list">{{ 'radio.list' | transloco }}</option>
+            }
+            @if (savedSearches().length) {
+              <optgroup [label]="'radio.savedSearches' | transloco">
+                @for (search of savedSearches(); track search.id) {
+                  <option [value]="'saved:' + search.id">{{ search.name }}</option>
+                }
+              </optgroup>
             }
           </select>
         </mb-field>
@@ -401,6 +409,16 @@
               required
               [ngModel]="handle()"
               (ngModelChange)="handle.set($event)"
+            />
+          </mb-field>
+        } @else if (source() === 'tag') {
+          <mb-field [label]="'radio.hashtag' | transloco" [hint]="'radio.hashtagHint' | transloco">
+            <input
+              mbControl
+              name="tag"
+              required
+              [ngModel]="tag()"
+              (ngModelChange)="tag.set($event)"
             />
           </mb-field>
         } @else if (source() === 'list') {
@@ -419,17 +437,17 @@
             </select>
           </mb-field>
         }
+        <button mbButton type="submit" [disabled]="resolving() || scan.loading() || !searchReady()">
+          {{ 'radio.discover' | transloco }}
+        </button>
         <button
           mbButton
-          type="submit"
-          [disabled]="
-            resolving() ||
-            scan.loading() ||
-            (source() === 'account' && !handle().trim()) ||
-            (source() === 'list' && !listId())
-          "
+          variant="outline"
+          type="button"
+          [disabled]="!searchReady()"
+          (click)="saveSearch()"
         >
-          {{ 'radio.discover' | transloco }}
+          {{ 'radio.saveSearch' | transloco }}
         </button>
       </form>
       <mb-checkbox

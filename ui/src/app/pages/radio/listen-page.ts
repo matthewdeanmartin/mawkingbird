@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ExternalPlayerHost } from '../../audio-embeds/external-player-host';
 import { postExternalMedia } from '../../audio-embeds/providers';
+import { ProviderPreferences } from '../../audio-embeds/provider-preferences';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
 import { MbButton } from '../../design-system/button/button';
@@ -82,6 +83,7 @@ export class ListenPage {
   protected readonly loader = inject(ThreadLoader);
   protected readonly player = inject(RadioPlayer);
   private readonly linked = inject(LinkedAudioResolver);
+  private readonly services = inject(ProviderPreferences);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
@@ -135,9 +137,9 @@ export class ListenPage {
   protected readonly inline = computed(() => {
     const status = this.loader.status();
     return status
-      ? postExternalMedia(status).filter(
-          (source) => source.embed && source.type === 'audio' && !source.controllable,
-        )
+      ? this.services
+          .arrange(postExternalMedia(status))
+          .filter((source) => source.embed && source.type === 'audio' && !source.controllable)
       : [];
   });
   protected readonly chosen = linkedSignal(() => {

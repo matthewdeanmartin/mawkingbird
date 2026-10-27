@@ -1255,7 +1255,7 @@
     {
       "file": "ui/src/app/pages/radio/radio-settings.ts",
       "disposition": "adopted scope",
-      "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation, continuous-play and starting-volume preferences, and keep these settings beside Radio rather than in the main settings."
+      "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation; audio-service subscriptions and hidden services as mutually exclusive checkboxes, with Show all disabled until a subscription exists; saved-search removal; continuous-play and starting-volume preferences. Keep these settings beside Radio rather than in the main settings."
     },
     {
       "file": "ui/src/app/pages/radio/listen-page.html",

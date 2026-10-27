@@ -357,3 +357,39 @@ a single recording does not need continuous advance.
   without other per-link text, are alternatives. Refine it in sprint 4.
 - Manual-advance tracks are not Radio. Only sources that report their end can
   join the queue; others stay inline players in feeds.
+
+## Follow-up (2026-10-27): hashtag search, saved searches, audio services
+
+- **Hashtag source** in Search (the playlist builder). `#robotmusic`,
+  `robotmusic` or a pasted `/tags/` URL are accepted. Signed in, it reads the
+  home server's tag timeline; signed out, the public timeline of the browsing
+  server. The server-side media filter applies only to native-only searches,
+  because tagged music posts are usually links.
+- **Saved searches** (`mockingbird_radio_searches`, per account). **Save this
+  search** stores the source with its handle, list or tag and the native-only
+  choice, under a suggested name (`#tag`, `@handle`, the list title). Saved
+  searches appear in an optgroup of **Audio source**; choosing one fills the
+  form and runs it. Signed out, only account and hashtag searches are offered.
+  They're removed in Radio → Settings.
+- **Audio services** (`mockingbird_audio_services`, per account; shared by
+  cards, Listen and Radio). The rules, implemented as one pure function
+  (`arrangeSources`) so every surface agrees:
+  1. Hidden services never show a player, even as a post's only option or with
+     Show all on. The post text still links them.
+  2. Subscribing and hiding are mutually exclusive, enforced in the setters and
+     repaired on load. Only paid services (Apple Music, Spotify, YouTube Music,
+     Amazon Music, TIDAL, Deezer) can be subscribed to.
+  3. With subscriptions recorded and Show all off, unsubscribed paid services
+     are dropped only when the post also offers a subscribed or free service
+     (SoundCloud, Mixcloud, Bandcamp, Apple Podcasts, Internet Archive,
+     Audio.com, and services outside the catalogue). A post offering only
+     unsubscribed paid services keeps them: they may play previews, and
+     nothing better exists.
+  4. With subscriptions, the order is subscribed, then free, then the rest;
+     without any, the post's order stands.
+  5. Native attachments and linked files are never affected.
+  6. Saved playlist entries are never removed by preferences: a hidden
+     service's track saved on purpose stays playable. Preferences decide only
+     what is offered (cards, Listen, Radio's choice of alternative, discovery).
+  7. "Show all players" is disabled until a subscription exists, since it has
+     no effect without one.

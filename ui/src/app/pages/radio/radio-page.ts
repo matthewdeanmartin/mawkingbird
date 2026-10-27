@@ -14,7 +14,9 @@ import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
-import { RadioPlayer } from './radio-player';
+import { RadioPlayer, RadioSource, radioTag } from './radio-player';
+import { RadioSearches, SavedRadioSearch } from './radio-searches';
+import { Server } from '../../server';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbHelp } from '../../design-system/help/help';
@@ -150,6 +152,9 @@ export class RadioPage {
   readonly player = inject(RadioPlayer);
   readonly scan = this.player.scan;
   readonly source = this.player.source;
+  readonly tag = this.player.tag;
+  readonly searches = inject(RadioSearches);
+  private readonly server = inject(Server);
   readonly handle = this.player.handle;
   readonly listId = this.player.listId;
   readonly lists = signal<UserList[]>([]);
@@ -163,10 +168,12 @@ export class RadioPage {
   constructor() {
     this.player.installDock(RadioDock);
     this.playlists.refresh();
+    this.searches.refresh();
     effect(() => {
       this.auth.kind();
       this.auth.token();
       this.playlists.refresh();
+      this.searches.refresh();
     });
     effect(() => {
       const posts = this.scan.posts();
@@ -228,7 +235,13 @@ export class RadioPage {
     return !this.auth.isAnonymous && !this.auth.isBlueskyPrimary;
   }
 
-  chooseSource(source: 'account' | 'home' | 'list'): void {
+  chooseSource(choice: string): void {
+    if (choice.startsWith('saved:')) {
+      const search = this.searches.saved().find((item) => item.id === choice.slice(6));
+      if (search) this.runSaved(search);
+      return;
+    }
+    const source = choice as RadioSource;
     this.source.set(source);
     if (source === 'list' && !this.lists().length && this.signedIn) {
       this.listRequest?.unsubscribe();
@@ -244,6 +257,19 @@ export class RadioPage {
           },
         });
     }
+  }
+
+  /** A saved search fills in its source and runs at once. */
+  private runSaved(search: SavedRadioSearch): void {
+    this.source.set(search.source);
+    if (search.source === 'tag') this.tag.set(search.value);
+    if (search.source === 'account') this.handle.set(search.value);
+    if (search.source === 'list') {
+      this.listId.set(search.value);
+      this.chooseSource('list');
+    }
+    if (this.player.nativeOnly() !== search.nativeOnly) this.changeNativeOnly(search.nativeOnly);
+    this.discover();
   }
 
   cancel(): void {
@@ -264,6 +290,10 @@ export class RadioPage {
 
   discover(collect = false): void {
     this.buildScan = collect;
+    if (this.source() === 'tag') {
+      this.discoverTag();
+      return;
+    }
     if (!this.signedIn && this.source() === 'account') {
       const account = radioAccount(this.handle());
       if (account) {
@@ -334,6 +364,88 @@ export class RadioPage {
           },
         });
     }
+  }
+
+  /**
+   * A hashtag timeline: posts are usually links to players rather than attached
+   * audio, so the server-side media filter applies only to native-only searches.
+   * Signed out, the public timeline of the browsing server is read anonymously.
+   */
+  private discoverTag(): void {
+    const tag = radioTag(this.tag());
+    if (!tag || Date.now() < this.scan.retryAt()) return;
+    this.cancel();
+    this.player.editPlaylist();
+    this.scan.clear();
+    this.failed.set(false);
+    this.shareParams.set(null);
+    this.started.set(true);
+    this.scanReady.set(true);
+    const nativeOnly = this.player.nativeOnly();
+    if (this.signedIn) {
+      void this.scan.start((cursor) =>
+        this.api
+          .tagTimeline(tag, cursor, 40, nativeOnly)
+          .pipe(tap({ error: (error) => this.scanError(error, 'signed-in') }), map(feedPage)),
+      );
+      return;
+    }
+    const server = this.server.baseUrl() || 'https://mastodon.social';
+    void this.scan.start((cursor) =>
+      this.publicApi.getTagTimeline(server, tag, cursor, 40, nativeOnly).pipe(
+        tap({ error: (error) => this.scanError(error, 'public-origin') }),
+        map((statuses) => ({
+          statuses,
+          next:
+            (statuses.at(-1)?.providerRef as { statusId?: string } | undefined)?.statusId ?? null,
+        })),
+      ),
+    );
+  }
+
+  /** Whether the chosen source has what it needs to search. */
+  readonly searchReady = computed(() => {
+    const source = this.source();
+    if (source === 'tag') return !!radioTag(this.tag());
+    if (source === 'account') return !!this.handle().trim();
+    if (source === 'list') return !!this.listId();
+    return true;
+  });
+  readonly savedSearches = computed(() =>
+    this.searches
+      .saved()
+      .filter((search) => this.signedIn || search.source === 'account' || search.source === 'tag'),
+  );
+  /** Save the current source under a name, suggesting one from what it searches. */
+  async saveSearch(): Promise<void> {
+    if (!this.searchReady()) return;
+    const source = this.source();
+    const value =
+      source === 'tag'
+        ? radioTag(this.tag())!
+        : source === 'account'
+          ? this.handle().trim().replace(/^@/, '')
+          : source === 'list'
+            ? this.listId()
+            : '';
+    const suggested =
+      source === 'tag'
+        ? `#${value}`
+        : source === 'account'
+          ? `@${value}`
+          : source === 'list'
+            ? (this.lists().find((list) => list.id === value)?.title ?? value)
+            : this.transloco.translate('radio.home');
+    const name = await this.dialogs.prompt(
+      this.transloco.translate('radio.saveSearchPrompt'),
+      suggested,
+    );
+    if (!name?.trim()) return;
+    this.message.set(
+      this.searches.save({ name, source, value, nativeOnly: this.player.nativeOnly() })
+        ? 'radio.searchSaved'
+        : 'radio.saveFailed',
+    );
   }
 
   private discoverPublicAccount(account: { acct: string; server: string }): void {
@@ -566,6 +678,12 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.tab.playlist: Playlist
 // i18n radio.tab.radio: Radio
 // i18n radio.tab.settings: Settings
+// i18n radio.hashtag: Hashtag
+// i18n radio.hashtagHint: For example #robotmusic. Posts linking music players count, not only attached audio.
+// i18n radio.savedSearches: Saved searches
+// i18n radio.saveSearch: Save this search
+// i18n radio.saveSearchPrompt: Name this search. It will appear under Saved searches in Audio source.
+// i18n radio.searchSaved: Search saved. Choose it from Audio source to run it again.
 // i18n radio.moreActions: More playlist actions
 // i18n radio.closeMenu: Close menu
 // i18n radio.trackCount: {{count}} tracks

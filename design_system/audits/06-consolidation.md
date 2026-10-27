@@ -949,3 +949,17 @@ Reviewed the regenerated control inventory: radio-page.html gains these shared
 controls and an anonymous ContentState, with source-line shifts for existing controls.
 The 252 candidate files are unchanged, so reconciliation membership is unchanged.
 No shared widget implementations changed.
+
+## Hashtag search, saved searches and audio services, 2026-10-27
+
+The Radio search form adds a Hashtag source with a Field/Control input, a Saved
+searches optgroup in the existing source select, and an outline "Save this
+search" Button (named through the AppDialogs prompt). Radio settings add an
+Audio services Settings Row: one Checkbox per paid service to record a
+subscription, one per service to hide its players, and a Show all Checkbox,
+plus a Saved searches row with Remove Buttons.
+
+Reviewed the regenerated inventory: the added candidates are these controls in
+`radio-page.html` and `radio-settings.ts`. There are still 252 candidate files,
+the settings entry is updated in `11-reconciliation.json`, and shared widgets
+are unchanged.

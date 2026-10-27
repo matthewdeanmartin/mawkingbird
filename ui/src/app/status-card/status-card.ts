@@ -52,6 +52,7 @@ import { listenParams, radioPostRef } from '../radio-links';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { ExternalMedia, externalMedia, postExternalMedia } from '../audio-embeds/providers';
 import { linkedAudio, locItems } from '../audio-embeds/linked-audio';
+import { ProviderPreferences } from '../audio-embeds/provider-preferences';
 import {
   attachmentSource,
   mediaUrl,
@@ -460,7 +461,7 @@ export class StatusCard {
       post.media_attachments.some((media) => media.type === 'audio') ||
       linkedAudio(post).length > 0 ||
       locItems(post).length > 0 ||
-      postExternalMedia(post).some((media) => media.type === 'audio' && !!media.embed);
+      this.externalPlayers().some((media) => media.type === 'audio' && !!media.embed);
     return audio ? listenParams(post, this.server.baseUrl()) : null;
   });
   private readonly radioHandoff = inject(RadioHandoff);
@@ -479,13 +480,15 @@ export class StatusCard {
       this.display.media_attachments.some((media) => media.type === 'audio') ||
       linkedAudio(this.display).length > 0 ||
       locItems(this.display).length > 0 ||
-      postExternalMedia(this.display).some(
-        (media) => media.type === 'audio' && media.controllable && media.embed,
+      this.externalPlayers().some(
+        (media) => media.type === 'audio' && media.controllable && !!media.embed,
       ),
   );
 
+  private readonly services = inject(ProviderPreferences);
+  /** Players the listener's service preferences leave, best first. */
   protected externalPlayers = computed(() =>
-    postExternalMedia(this.display).filter((s) => s.provider !== 'youtube'),
+    this.services.arrange(postExternalMedia(this.display).filter((s) => s.provider !== 'youtube')),
   );
   protected additionalYoutube = computed(() =>
     postExternalMedia(this.display)

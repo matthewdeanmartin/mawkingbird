@@ -6,6 +6,8 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
 import { RadioPlayer } from './radio-player';
+import { RadioSearches } from './radio-searches';
+import { AUDIO_SERVICES, ProviderPreferences } from '../../audio-embeds/provider-preferences';
 
 // i18n radio.settings.title: Radio settings
 // i18n radio.settings.intro: These choices apply to Radio for this account in this browser.
@@ -17,6 +19,13 @@ import { RadioPlayer } from './radio-player';
 // i18n radio.settings.continuous: Play the next track automatically
 // i18n radio.settings.continuousHint: Turn off to stop after each recording, for example while listening to podcasts.
 // i18n radio.settings.volume: Starting volume
+// i18n radio.settings.services: Audio services
+// i18n radio.settings.servicesHint: When a post links the same music on several services, players for services you subscribe to come first, and players for paid services you don't subscribe to are left out, as long as the post offers one you can play fully. Hidden services never show a player.
+// i18n radio.settings.subscribe: I subscribe to {{service}}
+// i18n radio.settings.hide: Hide {{service}} players
+// i18n radio.settings.showAll: Show all players, including services I don't subscribe to
+// i18n radio.settings.showAllHint: Hidden services stay hidden.
+// i18n radio.settings.noSearches: No saved searches yet. Use Save this search in the Search tab.
 
 const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixcloud: 'Mixcloud' };
 
@@ -44,6 +53,53 @@ const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixc
         </div>
       } @empty {
         <p>{{ 'radio.settings.noPlayers' | transloco }}</p>
+      }
+    </mb-settings-row>
+    <mb-settings-row [heading]="'radio.settings.services' | transloco">
+      <p class="hint">{{ 'radio.settings.servicesHint' | transloco }}</p>
+      <ul class="services">
+        @for (service of services; track service.id) {
+          <li>
+            <span class="name">{{ service.label }}</span>
+            @if (service.paid) {
+              <mb-checkbox
+                [label]="'radio.settings.subscribe' | transloco: { service: service.label }"
+                [checked]="prefs.prefs().subscribed.includes(service.id)"
+                (checkedChange)="prefs.setSubscribed(service.id, $event)"
+              />
+            }
+            <mb-checkbox
+              [label]="'radio.settings.hide' | transloco: { service: service.label }"
+              [checked]="prefs.prefs().hidden.includes(service.id)"
+              (checkedChange)="prefs.setHidden(service.id, $event)"
+            />
+          </li>
+        }
+      </ul>
+      <mb-checkbox
+        [label]="'radio.settings.showAll' | transloco"
+        [hint]="'radio.settings.showAllHint' | transloco"
+        [checked]="prefs.prefs().showAll"
+        [disabled]="!prefs.prefs().subscribed.length"
+        (checkedChange)="prefs.setShowAll($event)"
+      />
+    </mb-settings-row>
+    <mb-settings-row [heading]="'radio.savedSearches' | transloco">
+      @for (search of searches.saved(); track search.id) {
+        <div class="provider">
+          <span>{{ search.name }}</span>
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            (click)="searches.remove(search.id)"
+          >
+            {{ 'radio.settings.forget' | transloco: { provider: search.name } }}
+          </button>
+        </div>
+      } @empty {
+        <p>{{ 'radio.settings.noSearches' | transloco }}</p>
       }
     </mb-settings-row>
     <mb-settings-row [heading]="'radio.settings.playback' | transloco">
@@ -88,10 +144,33 @@ const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixc
     p {
       margin: 0;
     }
+    .services {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .services li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 16px;
+    }
+    .name {
+      flex: 0 0 9rem;
+      font-weight: 600;
+    }
   `,
 })
 export class RadioSettings {
   readonly player = inject(RadioPlayer);
+  readonly prefs = inject(ProviderPreferences);
+  readonly searches = inject(RadioSearches);
+  readonly services = AUDIO_SERVICES;
+  constructor() {
+    this.searches.refresh();
+  }
   readonly providers = computed(() =>
     [...this.player.externalAllowed()]
       .sort()

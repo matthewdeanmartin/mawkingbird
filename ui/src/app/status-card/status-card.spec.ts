@@ -18,6 +18,7 @@ import { Server } from '../server';
 import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
 import { RadioHandoff } from '../radio-handoff';
+import { ProviderPreferences } from '../audio-embeds/provider-preferences';
 import { StatusCard } from './status-card';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { of, throwError } from 'rxjs';
@@ -281,6 +282,29 @@ describe('StatusCard', () => {
       .map((button) => button.injector.get(RouterLink));
     expect(listen).toHaveLength(1);
     expect(listen[0].queryParams).toEqual({ post: status.id, server: expect.any(String) });
+  });
+
+  it('offers only the subscribed service when a post links the same song on several', () => {
+    const prefs = TestBed.inject(ProviderPreferences);
+    prefs.setSubscribed('apple-music', true);
+    const fixture = setUp(
+      makeStatus({
+        content:
+          '<a href="https://open.spotify.com/track/abc123">Spotify</a> <a href="https://music.apple.com/us/album/record/123?i=456">Apple</a>',
+      }),
+    );
+    const text = () => fixture.nativeElement.textContent as string;
+    expect(text()).toContain('Load Apple Music player');
+    expect(text()).not.toContain('Load Spotify player');
+    prefs.setShowAll(true);
+    fixture.detectChanges();
+    expect(text()).toContain('Load Spotify player');
+    prefs.setHidden('spotify', true);
+    fixture.detectChanges();
+    expect(text()).not.toContain('Load Spotify player');
+    prefs.setHidden('spotify', false);
+    prefs.setShowAll(false);
+    prefs.setSubscribed('apple-music', false);
   });
 
   it('plays linked audio files inline without preloading and offers them to Radio', () => {

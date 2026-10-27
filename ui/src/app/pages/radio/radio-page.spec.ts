@@ -18,6 +18,7 @@ import { RadioPage } from './radio-page';
 import { RadioPlayer } from './radio-player';
 import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
 import { RadioHandoff } from '../../radio-handoff';
+import { AppDialogs } from '../../app-dialogs';
 import { Playback } from '../../video-player/playback';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { FollowTrust } from '../../follow-trust';
@@ -175,6 +176,62 @@ describe('RadioPage', () => {
     player.stop();
   });
 
+  it('searches a hashtag, keeping link posts unless only native audio is wanted', async () => {
+    const fixture = TestBed.createComponent(RadioPage);
+    const page = fixture.componentInstance;
+    fixture.detectChanges();
+    page.chooseSource('tag');
+    page.tag.set('#robotmusic');
+    expect(page.searchReady()).toBe(true);
+    page.discover();
+    await page.scan.whenIdle();
+    expect(api.tagTimeline).toHaveBeenCalledWith('robotmusic', undefined, 40, false);
+    expect(page.scan.posts().map((post) => post.id)).toEqual(['tagged']);
+    page.tag.set('not a tag!');
+    expect(page.searchReady()).toBe(false);
+  });
+
+  it('reads a hashtag anonymously from the browsing server', async () => {
+    auth.isAnonymous = true;
+    const getTagTimeline = vi.fn(() => of([]));
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getTagTimeline } });
+    const fixture = TestBed.createComponent(RadioPage);
+    const page = fixture.componentInstance;
+    fixture.detectChanges();
+    page.chooseSource('tag');
+    page.tag.set('robotmusic');
+    page.discover();
+    await page.scan.whenIdle();
+    expect(getTagTimeline).toHaveBeenCalledWith(
+      expect.stringMatching(/^https:/),
+      'robotmusic',
+      undefined,
+      40,
+      false,
+    );
+    expect(api.tagTimeline).not.toHaveBeenCalled();
+  });
+
+  it('saves a search and runs it again from Audio source', async () => {
+    localStorage.clear();
+    const fixture = TestBed.createComponent(RadioPage);
+    const page = fixture.componentInstance;
+    fixture.detectChanges();
+    page.chooseSource('tag');
+    page.tag.set('robotmusic');
+    vi.spyOn(TestBed.inject(AppDialogs), 'prompt').mockResolvedValue('Robot music');
+    await page.saveSearch();
+    const [saved] = page.savedSearches();
+    expect(saved).toMatchObject({ name: 'Robot music', source: 'tag', value: 'robotmusic' });
+    page.chooseSource('account');
+    page.tag.set('');
+    page.chooseSource(`saved:${saved.id}`);
+    await page.scan.whenIdle();
+    expect(page.source()).toBe('tag');
+    expect(page.tag()).toBe('robotmusic');
+    expect(api.tagTimeline).toHaveBeenCalledWith('robotmusic', undefined, 40, false);
+  });
+
   it('keeps playing when returning to a Radio address whose fragment is the current queue', () => {
     const fragment = new BehaviorSubject('');
     TestBed.overrideProvider(ActivatedRoute, {
@@ -276,6 +333,7 @@ describe('RadioPage', () => {
     homeTimelinePage: ReturnType<typeof vi.fn>;
     listTimeline: ReturnType<typeof vi.fn>;
     lists: ReturnType<typeof vi.fn>;
+    tagTimeline: ReturnType<typeof vi.fn>;
   };
   let auth: { isAnonymous: boolean; isBlueskyPrimary: boolean };
 
@@ -289,6 +347,13 @@ describe('RadioPage', () => {
       homeTimelinePage: vi.fn(() => of({ statuses: [audio], nextMaxId: null })),
       listTimeline: vi.fn((_: string, cursor?: string) => of(cursor ? [] : [audio])),
       lists: vi.fn(() => of([{ id: 'list', title: 'Music' }])),
+      tagTimeline: vi.fn((_: string, cursor?: string) =>
+        of(
+          cursor
+            ? []
+            : [{ ...audio, id: 'tagged', content: '<a href="https://soundcloud.com/a/b">x</a>' }],
+        ),
+      ),
     };
     TestBed.configureTestingModule({
       providers: [
