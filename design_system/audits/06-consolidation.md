@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Forum mode, sprint 1, 2026-10-27
+
+Reviewed 1,218 source files and 254 candidate files. One candidate
+is added: `pages/forum/forum-page.html`, the Forum discussion list. Its 21
+lexical findings are all shared components: Page Header, Field and Control for
+the source picker, MbButton for Scan, the sort toggle, Stop and Scan deeper,
+Badge for question and partial markers, and Content State for empty states.
+Roots reuse StatusCard. The mode nav gains five Forum tabs and a switcher entry
+as data in `shell/mode-nav.ts`, with no new control type. No shared widget
+changed.
+
 ## Audience copy and power-user page, 2026-10-26
 
 Reviewed 1,191 source files and 249 candidate files; no candidate file added or

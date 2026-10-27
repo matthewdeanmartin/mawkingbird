@@ -21,6 +21,9 @@ describe('modeForUrl', () => {
     ['/videos', 'video'],
     ['/videos?channel=abc', 'video'],
     ['/videos/queue', 'video'],
+    ['/forum', 'forum'],
+    ['/forum?filter=asked&source=tag:rust', 'forum'],
+    ['/forum/d/123', 'forum'],
   ] as const)('%s is %s', (url, mode) => {
     expect(modeForUrl(url)).toBe(mode);
   });
@@ -42,6 +45,7 @@ describe('modeForUrl', () => {
   it('does not mistake a lookalike path for a mode', () => {
     expect(modeForUrl('/rssfeeds')).toBe('mastodon');
     expect(modeForUrl('/videosfoo')).toBe('mastodon');
+    expect(modeForUrl('/forums')).toBe('mastodon');
   });
 });
 

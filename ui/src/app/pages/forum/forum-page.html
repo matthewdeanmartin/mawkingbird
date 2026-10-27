@@ -1,0 +1,165 @@
+<mb-page-header
+  [title]="'forum.title' | transloco"
+  [description]="'forum.intro.' + filter() | transloco"
+/>
+
+@if (auth.lacksMastodonToken) {
+  <mb-content-state [title]="'forum.mastodonOnly' | transloco" />
+} @else {
+  <section class="controls">
+    <form class="source" (ngSubmit)="applySource()">
+      <mb-field [label]="'forum.source.label' | transloco">
+        <select
+          mbControl
+          name="source"
+          [ngModel]="draftKind()"
+          (ngModelChange)="draftKind.set($event)"
+        >
+          <option value="home">{{ 'forum.source.home' | transloco }}</option>
+          @for (list of lists(); track list.id) {
+            <option [value]="'list:' + list.id">
+              {{ 'forum.source.list' | transloco: { title: list.title } }}
+            </option>
+          }
+          <option value="tag">{{ 'forum.source.tag' | transloco }}</option>
+        </select>
+      </mb-field>
+      @if (draftKind() === 'tag') {
+        <mb-field [label]="'forum.source.tagLabel' | transloco">
+          <input
+            mbControl
+            name="tag"
+            autocomplete="off"
+            maxlength="100"
+            placeholder="#"
+            [ngModel]="draftTag()"
+            (ngModelChange)="draftTag.set($event)"
+          />
+        </mb-field>
+      }
+      <button mbButton type="submit" variant="outline" [disabled]="scan.scanning()">
+        {{ 'forum.source.scan' | transloco }}
+      </button>
+    </form>
+
+    <div class="sort" role="group" [attr.aria-label]="'forum.sort.label' | transloco">
+      @for (option of sorts; track option) {
+        <button
+          mbButton
+          type="button"
+          size="small"
+          [variant]="sort() === option ? 'solid' : 'outline'"
+          [attr.aria-pressed]="sort() === option"
+          (click)="setSort(option)"
+        >
+          {{ 'forum.sort.' + option | transloco }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="progress" aria-live="polite">
+    <p class="muted small">
+      {{
+        'forum.progress'
+          | transloco
+            : {
+                posts: scan.postsSampled(),
+                discussions: scan.summaries().length,
+                calls: scan.callsUsed(),
+                allowance: scan.allowance(),
+              }
+      }}
+    </p>
+    @if (scan.scanning()) {
+      <p role="status">{{ 'forum.scanning' | transloco }}</p>
+      <button mbButton type="button" size="small" tone="danger" (click)="scan.stop()">
+        {{ 'forum.stop' | transloco }}
+      </button>
+    } @else {
+      @if (stateMessage(); as message) {
+        <p>{{ message | transloco: { max: maxCalls } }}</p>
+      }
+      @if (scan.canGoDeeper()) {
+        <div class="deeper">
+          @for (calls of deeperOptions(); track calls) {
+            <button
+              mbButton
+              type="button"
+              size="small"
+              variant="outline"
+              [title]="'forum.deeperTitle' | transloco: { count: calls, max: maxCalls }"
+              (click)="scan.deeper(calls)"
+            >
+              {{ 'forum.deeper' | transloco: { count: calls } }}
+            </button>
+          }
+        </div>
+      }
+    }
+  </section>
+
+  @if (unsorted()) {
+    <button mbButton type="button" size="small" variant="outline" class="resort" (click)="resort()">
+      {{ 'forum.resort' | transloco }}
+    </button>
+  }
+
+  <ol class="discussions">
+    @for (summary of shown(); track summary.discussion.key) {
+      <li class="discussion">
+        @if (summary.question || summary.discussion.partial) {
+          <p class="badges">
+            @if (summary.question) {
+              <mb-badge>{{ 'forum.card.question' | transloco }}</mb-badge>
+            }
+            @if (summary.discussion.partial) {
+              <mb-badge tone="attention" [attr.title]="'forum.card.partialTitle' | transloco">
+                {{ 'forum.card.partial' | transloco }}
+              </mb-badge>
+            }
+          </p>
+        }
+        <app-status-card [status]="summary.discussion.anchor" />
+        <footer class="meta">
+          <ul class="faces" [attr.aria-label]="'forum.card.participants' | transloco">
+            @for (person of faces(summary); track person.account.id) {
+              <li>
+                <img
+                  [src]="person.account.avatar"
+                  [alt]="person.account.display_name || person.account.acct"
+                  [title]="person.account.display_name || person.account.acct"
+                  width="28"
+                  height="28"
+                  loading="lazy"
+                />
+              </li>
+            }
+          </ul>
+          <span class="small muted">
+            {{
+              'forum.card.stats'
+                | transloco: { replies: summary.replyCount, people: summary.participants.length }
+            }}
+            @if (summary.friendReplyCount) {
+              · {{ 'forum.card.friends' | transloco: { count: summary.friendReplyCount } }}
+            }
+            · {{ 'forum.card.latest' | transloco: { time: (summary.latestAt | humanTime) } }}
+          </span>
+          <a mbButton size="small" [routerLink]="['/statuses', summary.discussion.anchor.id]">
+            {{ 'forum.card.open' | transloco }}
+          </a>
+        </footer>
+      </li>
+    }
+  </ol>
+
+  @if (!scan.scanning() && !shown().length) {
+    <mb-content-state
+      [title]="'forum.empty.title' | transloco"
+      [description]="
+        (scan.summaries().length ? 'forum.empty.filtered' : 'forum.empty.description') | transloco
+      "
+    />
+  }
+}

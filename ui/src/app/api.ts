@@ -339,8 +339,11 @@ export class Api {
   }
 
   // --- timelines ---
-  homeTimeline(maxId?: string): Observable<Status[]> {
-    return this.http.get<Status[]>('/api/v1/timelines/home', { params: this.pageParams(maxId) });
+  /** `limit` is capped at 40 by Mastodon; the default page is 20. */
+  homeTimeline(maxId?: string, limit?: number): Observable<Status[]> {
+    let params = this.pageParams(maxId);
+    if (limit) params = params.set('limit', String(limit));
+    return this.http.get<Status[]>('/api/v1/timelines/home', { params });
   }
 
   /** Home must follow pagination, not infer exhaustion from response length. */

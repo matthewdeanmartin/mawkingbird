@@ -13,6 +13,11 @@
       "nextStep": "External player uses Button for load and close, labelled cross-origin iframes and visible error text. Preserve narrow viewport sizing, no autoplay on initial load, content-warning boundaries in callers, and teardown of widget listeners. Persistent Radio widgets remain visible in the dock."
     },
     {
+      "file": "ui/src/app/pages/forum/forum-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Forum's discussion list: Page Header, Field/Control for the source picker (select and hashtag input), MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers, and Content State for empty and Mastodon-only states. Discussion roots reuse StatusCard and its content-warning boundary. Preserve the visible call count, Stop keeping found results, the stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
+    },
+    {
       "file": "ui/src/app/pages/radio/radio-studio.html",
       "disposition": "adopted scope",
       "nextStep": "The Studio catalogue uses Button for scanning, refreshing, cancelling and previews, and Content State for failures. Preserve bounded catalogue scrolling, account-isolated scan checkpoints, cached reloads and distinct missing-post handling."

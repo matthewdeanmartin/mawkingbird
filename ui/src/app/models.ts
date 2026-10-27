@@ -141,6 +141,8 @@ export interface Status {
   /** Opaque handle the owning provider needs for interactions (uri/cid etc.). */
   providerRef?: unknown;
   id: string;
+  /** ActivityPub id: the same on every server, unlike `id`. Absent on synthetic posts. */
+  uri?: string;
   created_at: string;
   edited_at: string | null;
   content: string;

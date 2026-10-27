@@ -1,0 +1,91 @@
+:host {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.sort,
+.deeper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.progress p {
+  margin: 0;
+}
+
+.resort {
+  justify-self: start;
+}
+
+.discussions {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.discussion {
+  display: grid;
+  gap: 0.4rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.badges {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.faces {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faces li + li {
+  margin-inline-start: -6px;
+}
+
+.faces img {
+  display: block;
+  border: 2px solid var(--col-bg);
+  border-radius: 50%;
+}
+
+.meta a {
+  margin-inline-start: auto;
+}

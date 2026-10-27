@@ -81,6 +81,22 @@ describe('MODE_NAV', () => {
     expect(active('/radio?view=settings')).toEqual(['settings']);
   });
 
+  it('marks exactly one Forum tab current, whatever the sort or source', () => {
+    const active = (url: string) =>
+      MODE_NAV.forum.filter((item) => item.active(url)).map((item) => item.id);
+    expect(active('/forum')).toEqual(['talk']);
+    expect(active('/forum?sort=popular&source=tag:rust')).toEqual(['talk']);
+    expect(active('/forum?filter=talk')).toEqual(['talk']);
+    expect(active('/forum?filter=asked')).toEqual(['asked']);
+    expect(active('/forum?source=list:7&filter=friends')).toEqual(['friends']);
+    expect(active('/forum?filter=mine')).toEqual(['mine']);
+    expect(active('/forum?filter=joined')).toEqual(['joined']);
+    expect(active('/forums')).toEqual([]);
+    expect(
+      MODE_NAV.forum.filter((item) => item.requires === 'signedIn').map((item) => item.id),
+    ).toEqual(['mine', 'joined']);
+  });
+
   it('does not claim lookalike paths', () => {
     expect(MODE_NAV.radio.filter((tab) => tab.active('/radio')).map((tab) => tab.id)).toEqual([
       'playlist',

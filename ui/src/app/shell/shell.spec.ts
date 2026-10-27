@@ -738,6 +738,7 @@ describe('Shell app-mode nav', () => {
       '/rss',
       '/videos',
       '/radio',
+      '/forum',
     ]);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
     expect(rows[1].getAttribute('aria-current')).toBe('true');

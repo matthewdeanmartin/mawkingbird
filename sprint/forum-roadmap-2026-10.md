@@ -1,0 +1,159 @@
+# Forum roadmap, October 2026
+
+Status: planned · 2026-10-27. Spec: [Forum](../spec/forum.md). The owner
+decisions are recorded there; this file holds the sprints and their evidence.
+
+Each sprint ends with a user trial. As with Radio, translations wait until the
+mode is complete: new keys get `// i18n` declarations as they are added, and
+the locale pass happens in sprint 4.
+
+## Sprint 1: the mode and the scan engine
+
+Goal: Forum appears in the switcher, scans Home, a list or a hashtag within a
+budget, and lists discussions in the center. Opening one goes to the existing
+thread page for now.
+
+1. **Mode.** `AppMode` gains `forum`, and `modeForUrl` sends `/forum…` to it.
+   Add `MODE_NAV.forum` (Talk, Asked, Friends, Mine, Joined) and a
+   `MODE_ENTRIES.forum` with unique icons. Routes `/forum` (lazy) and
+   `/forum/d/:id` (a placeholder that redirects to `/statuses/:id`).
+2. **Pure model** (`forum/discussion.ts`, `forum/question.ts`). Grouping,
+   discussion keys by root `uri`, the 2-posts / 2-people rule, derived fields,
+   the five filters and the Recent / Popular sorts. Port the MIMB rules, with
+   specs that use MIMB's own cases where they exist (`has_human_question`, the
+   `forum.py` filters).
+3. **Scan engine** (`forum/forum-scan.ts`, `forum/forum-sources.ts`). Sample,
+   then candidates, then ranking, then root, then tree, all through one
+   metered budget. The first scan is 10 calls; Scan deeper adds 10 or 25
+   up to a 50-call ceiling. At most 3 requests in flight. **Stop** keeps and
+   shows everything found so far; 429s stop the same way, and
+   a gap is marked **partial** for now; the
+   cross-server hunt comes in sprint 2. Sources: Home, a list, a hashtag.
+4. **List page.** Source picker, sort, provenance line ("posts · discussions
+   · calls"), cards (author, instance, excerpt with the content warning
+   respected, ? badge, partial badge, participant avatars, reply and people
+   counts, latest activity), progressive results with an "N new" pill, and
+   empty and thin states.
+
+Acceptance: from Home with the default 10 calls, the list shows the
+discussions those calls can reach; each card's root is the true root or is
+marked partial; Scan deeper continues without duplicates; and the counter
+never exceeds the budget. Specs: `discussion.spec.ts`, `question.spec.ts`,
+`forum-scan.spec.ts` (budget arithmetic, ranking order, dedupe by `uri`, Stop,
+429), `app-mode.spec.ts` and `mode-nav.spec.ts` cases.
+
+### Sprint 1 progress (2026-10-27): ready for a user trial
+
+- **Mode.** `forum` is a fifth `AppMode` (`/forum…`). `MODE_NAV.forum` has
+  Talk, Asked, Friends, Mine and Joined, each a `?filter=`, with Mine and
+  Joined requiring sign-in. The switcher gains a Forum entry. Every icon is
+  new and unique. The `/forum` route is lazy and anonymous-guarded; a
+  Bluesky-only session gets a "needs Mastodon" state instead of a scan.
+- **Model** (`forum/discussion.ts`, `forum/question.ts`). A discussion is
+  two posts by two people, keyed by root `uri`. `has_human_question` is
+  ported, URLs dropped first. The five filters and the Recent and Popular
+  sorts follow MIMB.
+  Candidates are grouped under their top-most sampled post, so one call
+  covers a thread. Ranking: me, replies to someone else, reported replies,
+  people, question; storms sink.
+- **Scan** (`forum/forum-scan.ts`, root-provided, session only). It runs
+  10 calls first, then Scan deeper +10 or +25, up to a 50-call ceiling. Each
+  page holds 40 posts, and a second page is read only when candidates are
+  short. At most 3 contexts are in flight. **Stop** cancels in-flight
+  requests and keeps the results, a 429 stops the same way, and a failed
+  probe is skipped. Discussions are joined whenever they connect, so a root
+  found later swallows the partial threads beneath it.
+- **Friends and Popular.** Follow state comes from
+  `/accounts/relationships` on discussion participants, starters first, 40
+  ids a call, with one call per step reserved for it. This replaces paging
+  the whole following list, which costs a call per 80 follows.
+- **Page.** It has a source picker (Home, your lists, a hashtag), the sort
+  toggle, and the progress line ("posts · discussions · calls of
+  allowance"), with Stop / Scan deeper. Rows keep their place as results
+  land, and **Sort the list again** restores the order. Cards reuse
+  StatusCard for the root, with Question and Partial badges, up to five
+  faces (friends first), counts, and latest activity.
+- **Deferred to sprint 2, as planned:** the cross-server gap hunt (gaps are
+  marked partial for now), the Me source, and `/forum/d/:id`. Cards open
+  `/statuses/:id`, today's thread page.
+- **Model change:** `Status.uri` is now declared (optional), and
+  `api.homeTimeline` takes an optional `limit`.
+- Translations wait for sprint 4, as with Radio; the English keys are
+  extracted.
+
+## Sprint 2: the root hunt, the Me source, and the discussion view
+
+1. **Shared cross-server context.** Extract the resolve-then-public-context
+   path from `pages/read/thread-loader.ts` into `forum/thread-context.ts` (or
+   a neutral shared location), and switch `ThreadLoader` over to it. Thread
+   page behavior and specs must stay unchanged. Forum uses it for gaps, with
+   every request metered.
+2. **Me source.** My statuses (no reblogs) interleaved with mention
+   notifications. This fills Mine and Joined.
+3. **Discussion view** at `/forum/d/:id`. First investigate hosting `Thread`
+   and `ThreadLoader` with a handoff of the already-fetched context (the
+   `radio-handoff.ts` pattern), so there is no refetch and no fork. Add Back
+   to the list (keeping scroll, filters and source) and "Load full discussion"
+   (one call) when the tree was not fetched during the scan.
+4. ~~Friends and Popular follow state~~: done in sprint 1 with batched
+   relationships for participants.
+
+Acceptance: a reply whose root lives on a server mine does not fully know
+resolves to the real root through my server or the origin, or is shown as
+partial with the furthest ancestor reached. The discussion opens without
+refetching what the scan already holds. The thread page's own specs are
+unchanged and passing.
+
+## Sprint 3: the rails (facets and Members)
+
+1. **Rail outlet.** A `RailOutlet` service like `radio-outlet.ts`, with lazy
+   `left` and `right` components that the shell shows in place of the default
+   rails. Forum sets them on entry and clears them on leave. Shell spec cases
+   cover set, clear and zen modes. Verify that the facet and member code
+   stays out of the startup bundle.
+2. **Facets** (`forum/discussion-facets.ts` plus the left-rail component).
+   Hashtags, root instance and
+   language (no uncommon words; see spec). Counts come before choices; choices combine with AND across
+   types and OR within a type; the top 20 of each are shown. Choices live in
+   the URL.
+3. **Members widget** (right rail). In a discussion: participants with post
+   counts, last post time, the Started it / You / Following badges, a
+   follow button, and **Follow everyone** / **Add everyone to a list** through
+   the bulk-actions flow. In the list: Most active across the visible discussions.
+   Choosing a member toggles the People facet. Mutes and blocks are dropped
+   everywhere.
+4. **Narrow screens.** A Filters button opens the facets in a popover or
+   sheet, and Members collapse above the discussion.
+
+If the rail cards or chips change a shared design-system widget, run
+`make design-verify`, including the browser assertions.
+
+Acceptance: facet counts match a hand-computed fixture. Choosing a member
+narrows the list to discussions that person is in. Forum mode never shows
+ads or server cards in the right rail, and every other mode is unchanged.
+
+## Sprint 4: completion
+
+1. **Help page** in `docs/` (Forum: what a scan costs, what partial means,
+   facets, Members), added to the `mkdocs.yml` nav. Run `make help-site-test`
+   and `make help-site`.
+2. **i18n pass** for every Forum key across the app locales; `check:i18n`.
+3. **Accessibility.** Cards are a list of links with readable names; facets
+   are toggle buttons with `aria-pressed`; progress is announced politely;
+   Stop is reachable by keyboard.
+4. **Browser checks.** A Playwright script against the mock API: scan, Scan
+   deeper, partial root, facet AND/OR, member filter, and the mobile layout.
+5. **Decide on the later candidates** in the spec (IndexedDB cache and
+   Bluesky).
+
+## Gates (every sprint)
+
+Targeted specs while working, then `cd ui && make test`, which includes
+`design:inventory-check`. Every new HTML, TS or CSS file moves the inventory,
+so when it is stale run `npm run design:audit-controls`, review it, and
+reconcile `06-consolidation.md` and `11-reconciliation.json`. Also run
+`npm run build:mockingbird` (check the size report: Forum must be a lazy
+chunk, and the 1 MB initial budget must not be raised), `check:storage` (it
+should report no new keys), `ng lint`, and the applicable `.github/workflows`
+checks. Slow browser gates run once, at the end of each sprint. Report exactly
+which gates ran.

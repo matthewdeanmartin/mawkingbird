@@ -736,6 +736,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/radio/studio-page').then((m) => m.StudioPage),
       },
       {
+        // Discussions found by a budgeted scan of one feed; the mode's tabs
+        // are `?filter=`. See spec/forum.md.
+        path: 'forum',
+        title: 'Forum',
+        canActivate: [anonymousUnavailableGuard],
+        data: { anonymousFeature: 'Forum' },
+        loadComponent: () => import('./pages/forum/forum-page').then((m) => m.ForumPage),
+      },
+      {
         path: 'videos',
         title: 'Video feeds',
         loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),

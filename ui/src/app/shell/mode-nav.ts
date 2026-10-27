@@ -18,6 +18,12 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.radio.studio: Studio
 // i18n shell.modeNav.radio.playlist: Playlist
 // i18n shell.modeNav.radio.settings: Settings
+// i18n shell.modeNav.mode.forum: Forum
+// i18n shell.modeNav.forum.talk: Talk
+// i18n shell.modeNav.forum.asked: Asked
+// i18n shell.modeNav.forum.friends: Friends
+// i18n shell.modeNav.forum.mine: Mine
+// i18n shell.modeNav.forum.joined: Joined
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 
@@ -92,6 +98,50 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       link: '/radio',
       queryParams: { view: 'settings' },
       active: (url) => pathOf(url) === '/radio' && param(url, 'view') === 'settings',
+    },
+  ],
+  forum: [
+    // The tabs are the filters (spec/forum.md): one list, five cuts of it.
+    {
+      id: 'talk',
+      labelKey: 'shell.modeNav.forum.talk',
+      icon: 'M3 4h12v9H8l-4 3v-3H3zM17 8h4v9h-1v3l-3-3h-6v-2',
+      link: '/forum',
+      active: (url) => pathOf(url) === '/forum' && (param(url, 'filter') ?? 'talk') === 'talk',
+    },
+    {
+      id: 'asked',
+      labelKey: 'shell.modeNav.forum.asked',
+      icon: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01',
+      link: '/forum',
+      queryParams: { filter: 'asked' },
+      active: (url) => pathOf(url) === '/forum' && param(url, 'filter') === 'asked',
+    },
+    {
+      id: 'friends',
+      labelKey: 'shell.modeNav.forum.friends',
+      icon: 'M5 8a3 3 0 1 0 6 0a3 3 0 1 0-6 0M2 20a6 6 0 0 1 12 0M14 5a3 3 0 1 1 3 6M16 14a6 6 0 0 1 6 6',
+      link: '/forum',
+      queryParams: { filter: 'friends' },
+      active: (url) => pathOf(url) === '/forum' && param(url, 'filter') === 'friends',
+    },
+    {
+      id: 'mine',
+      labelKey: 'shell.modeNav.forum.mine',
+      icon: 'M4 20h4L19 9l-4-4L4 16zM13 7l4 4',
+      link: '/forum',
+      queryParams: { filter: 'mine' },
+      active: (url) => pathOf(url) === '/forum' && param(url, 'filter') === 'mine',
+      requires: 'signedIn',
+    },
+    {
+      id: 'joined',
+      labelKey: 'shell.modeNav.forum.joined',
+      icon: 'M10 6L5 11l5 5M5 11h9a5 5 0 0 1 5 5v3',
+      link: '/forum',
+      queryParams: { filter: 'joined' },
+      active: (url) => pathOf(url) === '/forum' && param(url, 'filter') === 'joined',
+      requires: 'signedIn',
     },
   ],
   mastodon: [
@@ -236,6 +286,12 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     labelKey: 'shell.modeNav.mode.radio',
     icon: 'M4 8h16v13H4zM6 8l12-5M7 15a3 3 0 1 0 6 0a3 3 0 1 0-6 0M16 12h1M16 16h1',
     link: '/radio',
+  },
+  forum: {
+    mode: 'forum',
+    labelKey: 'shell.modeNav.mode.forum',
+    icon: 'M4 4h16v12H9l-5 4zM8 8h8M8 12h5',
+    link: '/forum',
   },
   mastodon: {
     mode: 'mastodon',

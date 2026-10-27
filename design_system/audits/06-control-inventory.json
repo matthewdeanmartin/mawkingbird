@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1211,
-  "filesWithCandidates": 253,
+  "filesScanned": 1218,
+  "filesWithCandidates": 254,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3837,6 +3837,96 @@
         },
         {
           "pattern": "nativeButtons",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/forum/forum-page.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 1
+        },
+        {
+          "pattern": "shared",
+          "line": 7
+        },
+        {
+          "pattern": "shared",
+          "line": 11
+        },
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 76
+        },
+        {
+          "pattern": "shared",
+          "line": 87
+        },
+        {
+          "pattern": "shared",
+          "line": 103
+        },
+        {
+          "pattern": "shared",
+          "line": 114
+        },
+        {
+          "pattern": "shared",
+          "line": 117
+        },
+        {
+          "pattern": "shared",
+          "line": 149
+        },
+        {
+          "pattern": "shared",
+          "line": 158
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 47
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 76
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 86
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 103
+        },
+        {
+          "pattern": "selects",
           "line": 12
         }
       ]

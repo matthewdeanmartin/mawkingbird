@@ -7,9 +7,9 @@ import { filter } from 'rxjs';
  * Which app the primary nav is serving: the social client, the RSS reader, or
  * video. See spec/top_level_menu.md.
  */
-export type AppMode = 'mastodon' | 'rss' | 'video' | 'radio';
+export type AppMode = 'mastodon' | 'rss' | 'video' | 'radio' | 'forum';
 
-export const APP_MODES: readonly AppMode[] = ['mastodon', 'rss', 'video', 'radio'];
+export const APP_MODES: readonly AppMode[] = ['mastodon', 'rss', 'video', 'radio', 'forum'];
 
 /**
  * Tab-lived, not saved: a reload keeps the menu where it was, a new tab starts
@@ -27,6 +27,7 @@ const MODE_KEY = 'mockingbird_app_mode';
 export function modeForUrl(url: string): AppMode | null {
   const path = url.split(/[?#]/, 1)[0];
   if (path === '/radio' || path.startsWith('/radio/') || path === '/listen') return 'radio';
+  if (path === '/forum' || path.startsWith('/forum/')) return 'forum';
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }
