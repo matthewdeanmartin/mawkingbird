@@ -6709,6 +6709,7 @@
     "likeFromBlogRecord": "Remove this like from your blog record",
     "likes": "likes",
     "likesTitle": "Likes",
+    "linkedAudio": "Linked audio: {{name}}",
     "modelTranslateFailed": "The model couldn't translate this.",
     "moreActions": "More {{post}} actions",
     "muteAccountFor": "Mute @{{acct}} for…",
