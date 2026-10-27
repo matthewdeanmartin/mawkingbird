@@ -30,7 +30,7 @@
     {
       "file": "ui/src/app/pages/radio/radio-page.html",
       "disposition": "adopted scope",
-      "nextStep": "Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Playlist actions use Button with a post-menu overflow; rows use icon ToolbarButtons with accessible names, including Rename (AppDialogs prompt). Thread publication uses Field/Control for visibility, Button for publish/update/find/adopt, and status/alert text for plans, progress and failures. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure, bounded pagination and visible publication cost."
+      "nextStep": "Playlist uses Navigation/NavLink tabs to separate Search, Publish, Saved and My Playlists, with compact ToolbarButtons for search queue actions. Radio discovery uses Field/Control, Button and Content State; audio results reuse StatusCard and its content-warning boundary. Playlist actions use Button with a post-menu overflow; rows use icon ToolbarButtons with accessible names, including Rename (AppDialogs prompt). Thread publication uses Field/Control for visibility, Button for publish/update/find/adopt, and status/alert text for plans, progress and failures. Preserve explicit source selection, labelled controls, scan progress, cancellation, retained results on failure, bounded pagination and visible publication cost."
     },
     {
       "file": "ui/src/app/pages/videos/watch-parties-page.ts",

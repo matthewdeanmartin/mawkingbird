@@ -16,6 +16,8 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.mode.radio: Radio
 // i18n shell.modeNav.radio.player: Radio
 // i18n shell.modeNav.radio.studio: Studio
+// i18n shell.modeNav.radio.playlist: Playlist
+// i18n shell.modeNav.radio.settings: Settings
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 
@@ -60,12 +62,21 @@ function param(url: string, name: string): string | null {
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
   radio: [
     {
+      id: 'playlist',
+      labelKey: 'shell.modeNav.radio.playlist',
+      icon: 'M4 5h13M4 10h13M4 15h7M16 14v7M12.5 17.5h7',
+      link: '/radio',
+      queryParams: { view: 'search' },
+      active: (url) =>
+        pathOf(url) === '/radio' && !['radio', 'settings'].includes(param(url, 'view') ?? ''),
+    },
+    {
       id: 'player',
       labelKey: 'shell.modeNav.radio.player',
       icon: 'M5 12a7 7 0 0 1 14 0M5 12v7H3v-7zM19 12v7h2v-7z',
       link: '/radio',
       queryParams: { view: 'radio' },
-      active: (url) => pathOf(url) === '/radio',
+      active: (url) => pathOf(url) === '/radio' && param(url, 'view') === 'radio',
     },
     {
       id: 'studio',
@@ -73,6 +84,14 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0zM6 11v1a6 6 0 0 0 12 0v-1M12 18v4M8 22h8',
       link: '/radio/studio',
       active: onPath('/radio/studio'),
+    },
+    {
+      id: 'settings',
+      labelKey: 'shell.modeNav.radio.settings',
+      icon: 'M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8',
+      link: '/radio',
+      queryParams: { view: 'settings' },
+      active: (url) => pathOf(url) === '/radio' && param(url, 'view') === 'settings',
     },
   ],
   mastodon: [

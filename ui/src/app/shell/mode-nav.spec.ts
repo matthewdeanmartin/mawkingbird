@@ -58,17 +58,32 @@ describe('MODE_NAV', () => {
     expect(active('/bookmarks?view=media')).toEqual([]);
   });
 
-  it('gives every mode five tabs, and puts Search in the same slot wherever there is one', () => {
-    // The owner asked for symmetry: Home, five tabs, the switcher.
-    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 2 : 5);
-    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['player', 'studio']);
+  it('keeps the mode navigation slots and promotes Playlist and Settings in Radio', () => {
+    // Radio has dedicated Playlist, player, Studio, and Settings destinations.
+    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 4 : 5);
+    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual([
+      'playlist',
+      'player',
+      'studio',
+      'settings',
+    ]);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');
   });
 
+  it('selects a single top-level destination for every Radio view', () => {
+    const active = (url: string) =>
+      MODE_NAV.radio.filter((tab) => tab.active(url)).map((tab) => tab.id);
+    for (const view of ['search', 'publish', 'saved', 'mine', 'playlist']) {
+      expect(active('/radio?view=' + view)).toEqual(['playlist']);
+    }
+    expect(active('/radio?view=radio')).toEqual(['player']);
+    expect(active('/radio?view=settings')).toEqual(['settings']);
+  });
+
   it('does not claim lookalike paths', () => {
     expect(MODE_NAV.radio.filter((tab) => tab.active('/radio')).map((tab) => tab.id)).toEqual([
-      'player',
+      'playlist',
     ]);
     expect(
       MODE_NAV.radio.filter((tab) => tab.active('/radio/studio')).map((tab) => tab.id),

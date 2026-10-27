@@ -938,3 +938,14 @@ Reviewed the regenerated inventory: the added candidates are those entries in
 `status-card.html` and the new `listen-page.html` (now 252 candidate files),
 reconciled as adopted scope in `11-reconciliation.json`. Shared widgets are
 unchanged.
+
+## Playlist navigation, 2026-10-27
+
+Playlist and Radio Settings now have top-level navigation entries. Playlist
+uses the existing Navigation/NavLink tabs for Search, Publish, Saved, and
+My Playlists. Search adds a compact Toolbar with three ToolbarButtons;
+the existing editor, saved list, and thread finder occupy separate tabs.
+Reviewed the regenerated control inventory: radio-page.html gains these shared
+controls and an anonymous ContentState, with source-line shifts for existing controls.
+The 252 candidate files are unchanged, so reconciliation membership is unchanged.
+No shared widget implementations changed.

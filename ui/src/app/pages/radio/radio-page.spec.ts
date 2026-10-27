@@ -33,6 +33,44 @@ class CardStub {
 }
 
 describe('RadioPage', () => {
+  it('separates playlist workflows and removes nested navigation from Radio and Settings', () => {
+    const params = new BehaviorSubject(convertToParamMap({ view: 'search' }));
+    TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: {}, queryParamMap: params } });
+    const fixture = TestBed.createComponent(RadioPage);
+    const element: HTMLElement = fixture.nativeElement;
+    const show = (view: string) => {
+      params.next(convertToParamMap({ view }));
+      fixture.detectChanges();
+    };
+    show('search');
+    expect(
+      Array.from(element.querySelectorAll('nav a'), (link) => link.textContent?.trim()),
+    ).toEqual(['Search', 'Publish', 'Saved', 'My Playlists']);
+    expect(element.querySelector('[name="source"]')).not.toBeNull();
+    expect(element.querySelector('[name="playlistName"]')).toBeNull();
+    expect(element.querySelector('.saved')).toBeNull();
+    show('publish');
+    expect(element.querySelector('[name="playlistName"]')).not.toBeNull();
+    expect(element.querySelector('[name="source"]')).toBeNull();
+    expect(element.querySelector('.saved')).toBeNull();
+    expect(element.textContent).not.toContain('Find my playlist threads');
+    show('saved');
+    expect(element.querySelector('.saved')).not.toBeNull();
+    expect(element.querySelector('[name="playlistName"]')).toBeNull();
+    expect(element.querySelector('[name="source"]')).toBeNull();
+    show('mine');
+    expect(element.textContent).toContain('Find my playlist threads');
+    expect(element.querySelector('[name="playlistName"]')).toBeNull();
+    expect(element.querySelector('[name="source"]')).toBeNull();
+    for (const view of ['radio', 'settings']) {
+      show(view);
+      expect(element.querySelector('nav')).toBeNull();
+    }
+    show('playlist');
+    expect(fixture.componentInstance.view()).toBe('publish');
+    expect(element.querySelector('[name="playlistName"]')).not.toBeNull();
+  });
+
   it('automatically scans a profile through the signed-in server, using the same path as Find audio', async () => {
     const publicLookup = vi.fn(() => throwError(() => new Error('origin blocks browser requests')));
     TestBed.overrideProvider(AnonymousPublicApi, { useValue: { lookupAccount: publicLookup } });
@@ -47,7 +85,7 @@ describe('RadioPage', () => {
     fixture.detectChanges();
     expect(api.lookupAccount).toHaveBeenCalledWith('MaQuest@djs.social');
     expect(publicLookup).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.view()).toBe('playlist');
+    expect(fixture.componentInstance.view()).toBe('search');
     expect(fixture.componentInstance.player.queue()).toHaveLength(1);
     expect(fixture.componentInstance.failed()).toBe(false);
     expect(fixture.componentInstance.player.active()).toBe(false);
@@ -96,7 +134,7 @@ describe('RadioPage', () => {
     expect(fixture.componentInstance.player.queue()).toHaveLength(1);
     expect(fixture.componentInstance.player.active()).toBe(false);
     expect(fixture.nativeElement.textContent).not.toContain('Copy Radio link');
-    expect(fixture.componentInstance.view()).toBe('playlist');
+    expect(fixture.componentInstance.view()).toBe('search');
     expect(api.lookupAccount).not.toHaveBeenCalled();
     params.next(convertToParamMap({ post: 'https://sea.example/@singer/456' }));
     await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
@@ -318,7 +356,10 @@ describe('RadioPage', () => {
     const fixture = TestBed.createComponent(RadioPage);
     const page = fixture.componentInstance;
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('input[type="checkbox"]').checked).toBe(false);
+    const nativeFilter = Array.from(
+      fixture.nativeElement.querySelectorAll('mb-checkbox') as NodeListOf<HTMLElement>,
+    ).find((checkbox) => checkbox.textContent?.includes('Native Mastodon audio only'))!;
+    expect(nativeFilter.querySelector('input')!.checked).toBe(false);
     page.chooseSource('home');
     page.discover();
     await fixture.whenStable();

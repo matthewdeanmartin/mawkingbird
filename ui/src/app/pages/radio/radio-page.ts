@@ -37,7 +37,7 @@ import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
 import { RadioSettings } from './radio-settings';
 
-export const RADIO_VIEWS = ['search', 'playlist', 'radio', 'settings'] as const;
+export const RADIO_VIEWS = ['search', 'publish', 'saved', 'mine', 'radio', 'settings'] as const;
 export type RadioView = (typeof RADIO_VIEWS)[number];
 import { Status, UserList } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
@@ -96,7 +96,8 @@ export class RadioPage {
   private readonly publicApi = inject(AnonymousPublicApi);
   private readonly route = inject(ActivatedRoute);
   readonly view = signal<RadioView>('search');
-  readonly views = RADIO_VIEWS;
+  readonly playlistViews = ['search', 'publish', 'saved', 'mine'] as const;
+  readonly playlistView = computed(() => this.view() !== 'radio' && this.view() !== 'settings');
   readonly playlists = inject(RadioPlaylists);
   private readonly router = inject(Router);
   private readonly drafts = inject(Drafts);
@@ -130,7 +131,7 @@ export class RadioPage {
   private buildScan = false;
   readonly playlistableOnly = signal(false);
   readonly results = computed(() =>
-    this.view() === 'playlist' || this.playlistableOnly()
+    this.playlistableOnly()
       ? this.scan.posts().filter((post) => this.player.tracks(post).length)
       : this.scan.posts(),
   );
@@ -175,14 +176,8 @@ export class RadioPage {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
       const post = radioPostRef(params.get('post'));
       const account = radioAccount(params.get('acct'));
-      const view = params.get('view');
-      this.view.set(
-        RADIO_VIEWS.includes(view as RadioView)
-          ? (view as RadioView)
-          : post || account
-            ? 'playlist'
-            : 'search',
-      );
+      const view = params.get('view') === 'playlist' ? 'publish' : params.get('view');
+      this.view.set(RADIO_VIEWS.includes(view as RadioView) ? (view as RadioView) : 'search');
       this.player.fullView.set(this.view() === 'radio');
       const key = JSON.stringify([post?.originalUrl, account?.acct, params.get('add')]);
       if (key === this.sourceKey) return;
@@ -204,7 +199,7 @@ export class RadioPage {
         this.buildScan = true;
         this.source.set('account');
         this.handle.set(account.acct);
-        if (this.signedIn) this.discover();
+        if (this.signedIn) this.discover(true);
         else this.discoverPublicAccount(account);
       }
     });
@@ -267,8 +262,8 @@ export class RadioPage {
     this.failed.set(false);
   }
 
-  discover(): void {
-    this.buildScan = this.view() === 'playlist';
+  discover(collect = false): void {
+    this.buildScan = collect;
     if (!this.signedIn && this.source() === 'account') {
       const account = radioAccount(this.handle());
       if (account) {
@@ -447,7 +442,7 @@ export class RadioPage {
     this.playlists.active.set(row.id);
     this.playlistName.set(row.name);
     this.description.set(row.description ?? '');
-    this.syncPlaylistUrl();
+    this.syncPlaylistUrl('publish');
   }
   async rename(index: number): Promise<void> {
     const track = this.player.queue()[index];
@@ -629,3 +624,8 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.addPlaylist: Add to playlist
 // i18n radio.playlistableOnly: Playlistable only
 // i18n radio.notQueueable: This post has no audio that Radio can play continuously. Its player is shown below.
+
+// i18n radio.tab.publish: Publish
+// i18n radio.tab.saved: Saved
+// i18n radio.tab.mine: My Playlists
+// i18n radio.editPlaylist: Edit current playlist

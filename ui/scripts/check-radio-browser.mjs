@@ -273,9 +273,15 @@ try {
   };
   await page.route('**/api/**', apiFixture);
   await page.goto(`${base}/radio`);
-  await page.getByRole('heading', { name: 'Radio', exact: true }).waitFor();
-  const sourceLabel = await page.locator('app-radio-page mb-field label').nth(0).boundingBox();
-  const handleLabel = await page.locator('app-radio-page mb-field label').nth(1).boundingBox();
+  await page.getByRole('heading', { name: 'Playlist', exact: true }).waitFor();
+  const sourceLabel = await page
+    .locator('app-radio-page form:has(select[name=source]) mb-field label')
+    .nth(0)
+    .boundingBox();
+  const handleLabel = await page
+    .locator('app-radio-page form:has(select[name=source]) mb-field label')
+    .nth(1)
+    .boundingBox();
   assert.ok(Math.abs(sourceLabel.y - handleLabel.y) < 2, 'Radio source labels align');
   await page.getByLabel(/Account handle/).fill('music');
   await page.getByRole('button', { name: 'Find audio', exact: true }).click();
@@ -284,7 +290,7 @@ try {
   assert.equal(await page.locator('.radio-page audio').count(), 2);
   await page
     .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Playlist', exact: true })
+    .getByRole('link', { name: 'Publish', exact: true })
     .click();
   await page.getByRole('button', { name: 'Add results to playlist', exact: true }).click();
   await page.getByLabel('Playlist name', { exact: true }).fill('Sea songs');
@@ -297,7 +303,12 @@ try {
   await restored.route('**/api/**', apiFixture);
   await restored.goto(page.url());
   await restored.waitForFunction(() => document.querySelectorAll('.playlist > li').length === 2);
-  await restored.getByRole('button', { name: 'Load Sea songs', exact: true }).waitFor();
+  await restored
+    .locator('app-radio-page nav')
+    .getByRole('link', { name: 'Saved', exact: true })
+    .click();
+  await restored.getByRole('button', { name: 'Load Sea songs', exact: true }).click();
+  await restored.getByLabel('Playlist name', { exact: true }).waitFor();
   assert.equal(
     await restored.locator('audio[data-radio]').count(),
     0,
@@ -448,10 +459,9 @@ try {
   assert.equal(uploads, 1);
   assert.equal(publications, 1);
   externalScenario = true;
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
   await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Search', exact: true })
+    .locator('nav.primary-nav')
+    .getByRole('link', { name: 'Playlist', exact: true })
     .click();
   await page.getByLabel('Account handle', { exact: false }).fill('music');
   await page.getByRole('button', { name: 'Find audio', exact: true }).click();
@@ -495,7 +505,7 @@ try {
   assert.equal(providerRequests, 1, 'Only the chosen provider loads');
   await page
     .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Playlist', exact: true })
+    .getByRole('link', { name: 'Publish', exact: true })
     .click();
   // Start a new queue by removing the earlier native playlist, then add one source per post.
   while (
@@ -506,14 +516,26 @@ try {
       .getByRole('button', { name: 'Remove', exact: true })
       .first()
       .click();
+  await page
+    .locator('app-radio-page nav')
+    .getByRole('link', { name: 'Search', exact: true })
+    .click();
   const addButtons = page
     .locator('app-status-card')
     .getByRole('button', { name: 'Add to playlist', exact: true });
   await addButtons.nth(0).click();
   await addButtons.nth(1).click();
+  await page
+    .locator('app-radio-page nav')
+    .getByRole('link', { name: 'Publish', exact: true })
+    .click();
   // Remove the alternative Mixcloud source to exercise SoundCloud auto-advance.
   const alternative = page.locator('.playlist li').filter({ hasText: 'Mixcloud' });
   await alternative.getByRole('button', { name: 'Remove', exact: true }).click();
+  await page
+    .locator('app-radio-page nav')
+    .getByRole('link', { name: 'Search', exact: true })
+    .click();
   await page
     .getByRole('button', { name: 'Listen on SoundCloud in Radio', exact: true })
     .first()
@@ -575,11 +597,11 @@ try {
   await page.locator('app-radio-dock').waitFor({ state: 'detached' });
   assert.equal(await page.locator('app-radio-dock iframe').count(), 0);
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
   await page
-    .locator('app-radio-page nav')
+    .locator('nav.primary-nav')
     .getByRole('link', { name: 'Settings', exact: true })
     .click();
+  assert.equal(await page.locator('app-radio-page nav').count(), 0);
   await page.screenshot({ path: '.test-results/radio-settings.png', fullPage: true });
   await page.getByRole('button', { name: 'Remove SoundCloud', exact: true }).click();
   await page.getByText(/No services are allowed yet/).waitFor();
@@ -594,8 +616,8 @@ try {
     'Revoking a provider is remembered',
   );
   await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Search', exact: true })
+    .locator('nav.primary-nav')
+    .getByRole('link', { name: 'Playlist', exact: true })
     .click();
   const musicCard = page.locator('app-status-card').filter({ hasText: 'Sea shanty' });
   assert.equal(
