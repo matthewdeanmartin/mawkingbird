@@ -23,12 +23,15 @@ function text(frame: Uint8Array): string {
   const label =
     encoding === 1 ? 'utf-16' : encoding === 2 ? 'utf-16be' : encoding === 3 ? 'utf-8' : 'latin1';
   try {
-    return new TextDecoder(label)
-      .decode(body)
-      .split('\0')[0]
-      .replace(/[\u0000-\u001f\u007f]/g, '')
-      .trim()
-      .slice(0, 200);
+    return (
+      new TextDecoder(label)
+        .decode(body)
+        .split('\0')[0]
+        // Drop control characters, which some taggers leave in text frames.
+        .replace(/./gsu, (char) => (char < ' ' || char === '\u007f' ? '' : char))
+        .trim()
+        .slice(0, 200)
+    );
   } catch {
     return '';
   }
