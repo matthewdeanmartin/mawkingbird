@@ -1,5 +1,19 @@
 # Sprint 6 opening consolidation audit
 
+## Twitter importer mini-app, 2026-10-28
+
+Reviewed 1,236 source files and 259 candidate files. Two candidates are added.
+`pages/settings/import-export/twitter-archive-import.html` is the Twitter
+archive section moved out of `settings-import-export.html` unchanged (its 25
+findings move with it; Settings drops from 134 to 109) so Settings and the new
+`/twitter-to-mastodon` page share one component. Its only new control is the
+signed-out "Sign in with Mastodon" MbButton. `pages/twitter-to-mastodon/
+twitter-to-mastodon.html` is the public page: MbContentLink and MbButton in the
+feature-page header, no new pattern. `features.html` gains one MbContentLink.
+The shell's focused nav (Home · Import · Invite) is data in `shell/mode-nav.ts`
+reusing the mode-tab markup, so `shell.html` changes by line shifts only. No
+shared widget changed.
+
 ## Button weights: compact and link, 2026-10-27
 
 Reviewed 1,228 source files and 257 candidate files. MbButton gains

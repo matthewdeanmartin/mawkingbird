@@ -14,6 +14,8 @@ export const FUNDING_DESCRIPTION =
   'How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.';
 export const FOLLOW_DESCRIPTION =
   'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
+export const TWITTER_TO_MASTODON_DESCRIPTION =
+  'Find the people you followed on Twitter who are now on Mastodon and follow them again. Your archive is read in your browser; nothing is uploaded.';
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 
@@ -87,9 +89,7 @@ export class Seo {
       link?.remove();
     }
     // A JSON-LD data block is never executed, so script-src 'self' allows it.
-    let data = this.document.querySelector<HTMLScriptElement>(
-      'script[type="application/ld+json"]',
-    );
+    let data = this.document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]');
     if (structuredData && indexable && !preview) {
       if (!data) {
         data = this.document.createElement('script');

@@ -26,6 +26,7 @@ const fallback = `<noscript>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
+      <li><a href="/twitter-to-mastodon/">Import your Twitter follows to Mastodon</a></li>
       <li><a href="/about/">Why Mawkingbird exists</a></li>
       <li><a href="/blog/">Blog</a></li>
     </ul>
@@ -71,6 +72,7 @@ function withLastmod(xml) {
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'blog/') return ['src/app/pages/docs/'];
+    if (page === 'twitter-to-mastodon/') return ['src/app/pages/twitter-to-mastodon/'];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
     throw new Error(`prepare-seo-index: no lastmod sources for sitemap page "${page}"`);
@@ -89,13 +91,14 @@ function withLastmod(xml) {
   // A shallow clone would date every page to its one commit; leave dates out.
   const fullHistory = git('rev-parse', '--is-shallow-repository') === 'false';
   if (!fullHistory) console.warn('prepare-seo-index: no full git history; sitemap has no lastmod');
-  return xml.replace(
-    /<loc>https:\/\/mawkingbird\.com\/([^<]*)<\/loc><\/url>/g,
-    (entry, page) => {
-      const paths = sources(page);
-      if (!fullHistory) return entry;
-      const date = git('log', '-1', '--format=%cs', '--', ...paths, ':(exclude)*.spec.ts');
-      return date ? entry.replace('</url>', `<lastmod>${date}</lastmod></url>`) : entry;
-    },
-  );
+  return xml.replace(/<loc>https:\/\/mawkingbird\.com\/([^<]*)<\/loc><\/url>/g, (entry, page) => {
+    const paths = sources(page);
+    if (!fullHistory) return entry;
+    const spec = ['--', ...paths, ':(exclude)*.spec.ts'];
+    // Uncommitted edits (a local build) make the page newer than any commit.
+    const date = git('status', '--porcelain', ...spec)
+      ? new Date().toISOString().slice(0, 10)
+      : git('log', '-1', '--format=%cs', ...spec);
+    return date ? entry.replace('</url>', `<lastmod>${date}</lastmod></url>`) : entry;
+  });
 }

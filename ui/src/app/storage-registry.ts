@@ -1025,6 +1025,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which app mode (Mastodon, RSS or Video) the top menu is showing in this tab.',
   },
   {
+    base: 'mockingbird_twitter_archive_handoff',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'A read Twitter archive (contacts only) carried across the Mastodon sign-in redirect; consumed on return.',
+  },
+  {
     // Unscoped on purpose, unlike every other credential here. An LLM key
     // belongs to the human, not to a Mastodon persona: it is the same key
     // whether you are signed in as your main, your alt, or Anonymous, so

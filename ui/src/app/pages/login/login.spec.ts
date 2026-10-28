@@ -7,7 +7,7 @@ import { Auth } from '../../auth';
 import { Server } from '../../server';
 import { sha256Base64Url } from '../../pkce';
 import { stubLocation } from '../../testing/stub-location';
-import { Login } from './login';
+import { Login, loginDestination } from './login';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 
@@ -531,5 +531,45 @@ describe('Login', () => {
     verifyReq.flush({ id: '1', username: 'alan', display_name: 'Alan Turing' } as never);
 
     expect(TestBed.inject(Auth).token()).toBe('fresh_token');
+  });
+
+  it('returns to an allowlisted page named when the sign-in started', () => {
+    sessionStorage.setItem(
+      OAUTH_APP_KEY,
+      JSON.stringify({
+        clientId: 'client-abc',
+        clientSecret: 'secret-xyz',
+        redirectUri: 'http://localhost/_ui/login',
+        state: PENDING_STATE,
+        codeVerifier: 'pending-verifier',
+        server: '',
+        next: '/twitter-to-mastodon',
+      }),
+    );
+    const fixture = setUp({ code: 'mockcode_alan', state: PENDING_STATE });
+    const navigateByUrlSpy = vi
+      .spyOn(TestBed.inject(Router), 'navigateByUrl')
+      .mockResolvedValue(true);
+
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    httpMock.expectOne('/oauth/token').flush({
+      access_token: 'fresh-token',
+      token_type: 'Bearer',
+      scope: 'read write',
+      created_at: 0,
+    });
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ id: '1', username: 'alan', display_name: 'Alan Turing' } as never);
+
+    expect(navigateByUrlSpy).toHaveBeenCalledWith('/twitter-to-mastodon', { replaceUrl: true });
+  });
+
+  it('sends every other ?next home, so a crafted link cannot redirect a sign-in', () => {
+    expect(loginDestination('/twitter-to-mastodon')).toBe('/twitter-to-mastodon');
+    for (const next of [null, '', '/settings', 'https://evil.example/', '//evil.example']) {
+      expect(loginDestination(next)).toBe('/home');
+    }
   });
 });

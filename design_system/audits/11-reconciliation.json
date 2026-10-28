@@ -923,6 +923,11 @@
       "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
+      "file": "ui/src/app/pages/settings/import-export/twitter-archive-import.html",
+      "disposition": "partial adoption",
+      "nextStep": "Moved out of settings-import-export.html unchanged and shared with /twitter-to-mastodon; same scope as its origin. Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
       "file": "ui/src/app/pages/settings/invites/settings-invites.html",
       "disposition": "backlog",
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
@@ -1286,6 +1291,11 @@
       "file": "ui/src/app/pages/radio/catalogue-panel.ts",
       "disposition": "adopted scope",
       "nextStep": "Catalogue search uses Field/Control for the catalogue select and query, Checkbox for selection, Button for search, play, share, add and bulk actions, and the post-menu overflow with menu items for appending to published playlists. Preserve credential-free catalogue requests, visible rights text, one resolution per item, confirmation before replacing the queue, and lazy, referrer-free thumbnails."
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered page using MbContentLink and MbButton in the feature-page header; the importer is the shared twitter-archive-import component. Keep new controls on shared widgets."
     }
   ]
 }

@@ -6705,6 +6705,8 @@
     "modeNav.rss.readLater": "Later",
     "modeNav.rss.reader": "Read",
     "modeNav.switchAria": "Switch app — now in {{mode}}",
+    "modeNav.twitterImport.import": "Import",
+    "modeNav.twitterImport.invite": "Invite",
     "modeNav.video.fedi": "Posts",
     "modeNav.video.queue": "Queue",
     "modeNav.video.saved": "Saved",
@@ -7132,6 +7134,11 @@
     "consent.titleWarn": "{{proxy}} will be able to read your {{source}} key",
     "consent.useMyProxy": "Use my proxy",
     "consent.whoHeading": "Who you would be trusting"
+  },
+  "twitterImport": {
+    "signIn.action": "Sign in with Mastodon",
+    "signIn.body": "Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. Your archive stays in this browser.",
+    "signIn.title": "Next: find them on Mastodon."
   },
   "unreachableServer": {
     "explanation": "It may be blocked on this network, or having a bad day. Mawkingbird reads from any Mastodon server, so it’s looking for one that answers — you don’t need an account on it to read.",

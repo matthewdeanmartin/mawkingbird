@@ -1,0 +1,68 @@
+<main class="twitter-to-mastodon" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter to Mastodon</p>
+    <h1>Import your Twitter follows to Mastodon</h1>
+    <p>
+      Find the people you followed on Twitter who are already on Mastodon, and follow them again in
+      a few clicks. Your archive is read in this browser; nothing is uploaded.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Download your Twitter archive</h2>
+      <p>
+        On Twitter or X, open Settings → Your account → Download an archive of your data. It can
+        take a day or more to arrive. Unzip it when it does.
+      </p>
+    </li>
+    <li>
+      <h2>Choose the archive here</h2>
+      <p>
+        Pick the unzipped folder, or just its <code>data/following.js</code> and
+        <code>data/tweets.js</code> files. Mawkingbird counts the people you followed, replied to
+        and mentioned.
+      </p>
+    </li>
+    <li>
+      <h2>Sign in with Mastodon and follow</h2>
+      <p>
+        Mawkingbird searches your Mastodon server for each handle and shows likely matches with the
+        evidence for each one, so you decide who to follow.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Loading the importer…</p>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Is my archive uploaded anywhere?</h3>
+    <p>
+      No. The files are read by this page in your browser. Only the handle searches go to your own
+      Mastodon server, and only after you sign in.
+    </p>
+    <h3>Does it follow anyone automatically?</h3>
+    <p>
+      No. A matching username is a likely match, not proof, so every follow is a button you press.
+      You can also download the list as a CSV and keep it.
+    </p>
+  </section>
+</main>

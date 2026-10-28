@@ -26,6 +26,8 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.forum.joined: Joined
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
+// i18n shell.modeNav.twitterImport.import: Import
+// i18n shell.modeNav.twitterImport.invite: Invite
 
 /**
  * One tab of a mode's primary nav, as data rather than markup.
@@ -271,6 +273,46 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
     },
   ],
 };
+
+/**
+ * A focused mini-app: a single task given the shell, its account menu and its
+ * … menu, but only its own tabs after Home and no mode switcher or rails.
+ * Not an {@link AppMode}: nothing switches into one; a URL is inside it or not.
+ */
+export interface FocusedApp {
+  id: string;
+  /** Every URL at or below this path belongs to the mini-app. */
+  root: string;
+  items: readonly ModeNavItem[];
+}
+
+export const FOCUSED_APPS: readonly FocusedApp[] = [
+  {
+    id: 'twitter-import',
+    root: '/twitter-to-mastodon',
+    items: [
+      {
+        id: 'import',
+        labelKey: 'shell.modeNav.twitterImport.import',
+        icon: 'M12 3v12M7 10l5 5 5-5M4 17v3h16v-3',
+        link: '/twitter-to-mastodon',
+        active: (url) => pathOf(url).replace(/\/$/, '') === '/twitter-to-mastodon',
+      },
+      {
+        id: 'invite',
+        labelKey: 'shell.modeNav.twitterImport.invite',
+        icon: 'M3 6h18v12H3zM3 6l9 7 9-7',
+        link: '/twitter-to-mastodon/invite',
+        active: onPath('/twitter-to-mastodon/invite'),
+      },
+    ],
+  },
+];
+
+/** The mini-app a URL belongs to, or null for the ordinary app. */
+export function focusedAppFor(url: string): FocusedApp | null {
+  return FOCUSED_APPS.find((app) => onPath(app.root)(url)) ?? null;
+}
 
 /** A mode as the switcher offers it: where it lands, and how it looks. */
 export interface ModeEntry {

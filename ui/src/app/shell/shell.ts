@@ -57,7 +57,7 @@ import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
 import { AppModeService } from '../app-mode';
 import { RadioOutlet } from '../radio-outlet';
 import { RailOutlet } from '../rail-outlet';
-import { MODE_NAV, ModeNavItem } from './mode-nav';
+import { focusedAppFor, MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
@@ -167,7 +167,9 @@ function isWideUrl(url: string): boolean {
     url === '/videos' ||
     url.startsWith('/videos?') ||
     url.startsWith('/videos/search') ||
-    url.startsWith('/videos/parties')
+    url.startsWith('/videos/parties') ||
+    // Focused mini-apps keep to one task: no rails competing with it.
+    focusedAppFor(url) !== null
   );
 }
 
@@ -385,9 +387,12 @@ export class Shell implements OnInit, AccountSwitcher {
     { initialValue: this.router.url },
   );
 
-  /** The current mode's tabs, less any this visitor cannot use. */
+  /** A focused mini-app replaces the mode's tabs and hides the mode switcher. */
+  protected readonly focusedApp = computed(() => focusedAppFor(this.currentUrl()));
+
+  /** The current mode's (or mini-app's) tabs, less any this visitor cannot use. */
   protected readonly modeItems = computed(() =>
-    MODE_NAV[this.appMode.mode()].filter((item) => {
+    (this.focusedApp()?.items ?? MODE_NAV[this.appMode.mode()]).filter((item) => {
       if (item.requires === 'signedIn') return !this.auth.isAnonymous;
       if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
       return true;

@@ -10,7 +10,9 @@ import {
   BLOG_DESCRIPTION,
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
+  TWITTER_TO_MASTODON_DESCRIPTION,
 } from './app/seo';
+import { TwitterToMastodon } from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
@@ -54,6 +56,12 @@ export default (context: BootstrapContext) =>
               seoStructuredData: APP_STRUCTURED_DATA,
             },
           },
+          {
+            path: 'twitter-to-mastodon',
+            component: TwitterToMastodon,
+            title: 'Import your Twitter follows to Mastodon',
+            data: { seoIndexable: true, seoDescription: TWITTER_TO_MASTODON_DESCRIPTION },
+          },
           ...articles.map(({ path, title, description }) => ({
             path,
             component: PublicArticle,
@@ -67,6 +75,7 @@ export default (context: BootstrapContext) =>
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
+            { path: 'twitter-to-mastodon', renderMode: RenderMode.Prerender },
             { path: 'follow', renderMode: RenderMode.Prerender },
             {
               path: 'follow/:slug',

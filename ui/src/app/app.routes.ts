@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './auth.guard';
+import { authGuard, mastodonSignedInMatch } from './auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
   anonymousChatGuard,
@@ -20,6 +20,7 @@ import {
   APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
+  TWITTER_TO_MASTODON_DESCRIPTION,
 } from './seo';
 
 export const routes: Routes = [
@@ -125,6 +126,44 @@ export const routes: Routes = [
       },
     ],
   },
+  // The Twitter importer as a focused mini-app. Signed in with Mastodon it runs
+  // in the shell with only Home · Import · Invite (see FOCUSED_NAV); otherwise
+  // the same page stands alone and is public, so search visitors can read
+  // their archive before they are asked to sign in.
+  {
+    path: 'twitter-to-mastodon',
+    canMatch: [mastodonSignedInMatch],
+    canActivateChild: [justMyServerUpdateGuard],
+    canDeactivate: [justMyServerUpdateCanDeactivate],
+    loadComponent: () => import('./shell/shell').then((m) => m.Shell),
+    children: [
+      {
+        path: '',
+        title: 'Import your Twitter follows to Mastodon',
+        data: { inShell: true },
+        loadComponent: () =>
+          import('./pages/twitter-to-mastodon/twitter-to-mastodon').then(
+            (m) => m.TwitterToMastodon,
+          ),
+      },
+      {
+        path: 'invite',
+        title: 'Invite friends',
+        loadComponent: () => import('./pages/invites/invites').then((m) => m.Invites),
+      },
+    ],
+  },
+  {
+    path: 'twitter-to-mastodon',
+    pathMatch: 'full',
+    title: 'Import your Twitter follows to Mastodon',
+    // Prerendered for search engines; see main.server.ts and docs/seo.md.
+    data: { seoIndexable: true, seoDescription: TWITTER_TO_MASTODON_DESCRIPTION },
+    loadComponent: () =>
+      import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodon),
+  },
+  // The invite tab is for signed-in Mastodon accounts; anyone else starts at the import.
+  { path: 'twitter-to-mastodon/invite', redirectTo: 'twitter-to-mastodon' },
   // A message shared as a TinyURL short link. Un-guarded so a shared link opens
   // for anyone, signed in or not.
   {

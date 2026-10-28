@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { APP_MODES } from '../app-mode';
-import { MODE_ENTRIES, MODE_NAV, suggestedMode } from './mode-nav';
+import { FOCUSED_APPS, focusedAppFor, MODE_ENTRIES, MODE_NAV, suggestedMode } from './mode-nav';
 
 describe('MODE_NAV', () => {
   it('leaves Home to the shell, as the fixed first slot of every mode', () => {
@@ -117,5 +117,42 @@ describe('suggestedMode', () => {
     expect(suggestedMode('mastodon')).toBe('rss');
     expect(suggestedMode('rss')).toBe('mastodon');
     expect(suggestedMode('video')).toBe('mastodon');
+  });
+});
+
+describe('FOCUSED_APPS', () => {
+  it('claims its own pages and nothing that merely looks like them', () => {
+    expect(focusedAppFor('/twitter-to-mastodon')?.id).toBe('twitter-import');
+    expect(focusedAppFor('/twitter-to-mastodon/invite?x=1')?.id).toBe('twitter-import');
+    expect(focusedAppFor('/twitter-to-mastodon-old')).toBeNull();
+    expect(focusedAppFor('/home')).toBeNull();
+  });
+
+  it('marks exactly one Twitter importer tab current', () => {
+    const [app] = FOCUSED_APPS;
+    for (const url of ['/twitter-to-mastodon', '/twitter-to-mastodon/invite']) {
+      expect(
+        app.items.filter((item) => item.active(url)),
+        url,
+      ).toHaveLength(1);
+    }
+  });
+
+  it('leaves Home to the shell and keeps every icon to one meaning', () => {
+    const meaning = new Map<string, string>();
+    const glyphs = [
+      ...APP_MODES.flatMap((mode) => MODE_NAV[mode]),
+      ...APP_MODES.map((mode) => MODE_ENTRIES[mode]),
+      ...FOCUSED_APPS.flatMap((app) => app.items),
+    ];
+    for (const { icon, labelKey } of glyphs) {
+      expect(meaning.get(icon) ?? labelKey, `${labelKey} reuses ${meaning.get(icon)}`).toBe(
+        labelKey,
+      );
+      meaning.set(icon, labelKey);
+    }
+    for (const app of FOCUSED_APPS) {
+      expect(app.items.map((item) => item.link)).not.toContain('/home');
+    }
   });
 });

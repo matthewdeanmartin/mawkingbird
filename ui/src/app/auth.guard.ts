@@ -1,8 +1,20 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { Auth } from './auth';
 import { radioAccount, radioPostRef } from './radio-links';
 import { Server } from './server';
+
+/**
+ * Matches only a signed-in Mastodon account with its own token.
+ *
+ * For routes that have a public twin under the same path: everyone else —
+ * signed out, Anonymous, Bluesky-primary — falls through to the public route
+ * rather than being redirected away from the page they asked for.
+ */
+export const mastodonSignedInMatch: CanMatchFn = () => {
+  const auth = inject(Auth);
+  return !auth.lacksMastodonToken && !auth.isAnonymous;
+};
 
 export const authGuard: CanActivateFn = (_route, state) => {
   const auth = inject(Auth);

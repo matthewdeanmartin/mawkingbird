@@ -142,6 +142,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     expectation:
       'Mawkingbird does not automatically transfer your Twitter/X followers, posts or identity. Its optional Twitter connector needs separate configuration and API access; you do not need it to explore Mastodon or Bluesky.',
     guides: [
+      { label: 'Import your Twitter follows to Mastodon', href: '/twitter-to-mastodon/' },
       { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },
       { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
       { label: 'Coming to Mastodon from X', href: '/help/new-to-mastodon/coming-from-x/' },

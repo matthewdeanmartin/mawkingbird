@@ -26,6 +26,7 @@ entry has no file, or an internal link points at a guide that does not exist.
 from __future__ import annotations
 
 import argparse
+import datetime
 import html
 import re
 import shutil
@@ -89,7 +90,8 @@ def last_commit_dates(docs: Path, pages: list[Page]) -> None:
 
     A shallow clone would date every guide to its single commit, which tells
     search engines that everything changed; the dates are left out instead.
-    Guides outside a repository or not yet committed get no date either.
+    A guide with uncommitted edits is newer than any commit, so it is dated
+    today; guides outside a repository get no date.
     """
 
     def git(*args: str) -> str:
@@ -102,8 +104,11 @@ def last_commit_dates(docs: Path, pages: list[Page]) -> None:
     if git("rev-parse", "--is-shallow-repository") != "false":
         print("help site: no full git history; sitemap has no lastmod", file=sys.stderr)
         return
+    today = datetime.date.today().isoformat()
     for page in pages:
-        page.lastmod = git("log", "-1", "--format=%cs", "--", page.source.as_posix()) or None
+        source = page.source.as_posix()
+        edited = git("status", "--porcelain", "--", source)
+        page.lastmod = today if edited else git("log", "-1", "--format=%cs", "--", source) or None
 
 
 def _yaml() -> YAML:

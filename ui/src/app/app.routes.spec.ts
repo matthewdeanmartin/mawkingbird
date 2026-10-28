@@ -155,4 +155,20 @@ describe('application routes', () => {
     expect(shellChild('write')?.canActivate).toHaveLength(1);
     expect(shellChild('drafts')?.canActivate).toBeUndefined();
   });
+
+  it('runs the Twitter importer in the shell for Mastodon accounts and alone for everyone else', () => {
+    const twins = routes.filter((route) => route.path === 'twitter-to-mastodon');
+    expect(twins).toHaveLength(2);
+    const [signedIn, publicPage] = twins;
+    // The shell instance is chosen by canMatch, so a signed-out search visitor
+    // falls through to the public page instead of being redirected away.
+    expect(signedIn.canMatch).toHaveLength(1);
+    expect(signedIn.children?.map((child) => child.path)).toEqual(['', 'invite']);
+    expect(publicPage.canMatch).toBeUndefined();
+    expect(publicPage.data?.['seoIndexable']).toBe(true);
+    expect(routes.find((route) => route.path === 'twitter-to-mastodon/invite')?.redirectTo).toBe(
+      'twitter-to-mastodon',
+    );
+    expect(routes.indexOf(signedIn)).toBeLessThan(routes.indexOf(shellRoute()!));
+  });
 });

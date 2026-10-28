@@ -91,7 +91,7 @@ class BuildHelpTest(unittest.TestCase):
         pages = build_help.load_nav()
         build_help.last_commit_dates(build_help.DOCS, pages)
         if any(page.lastmod is None for page in pages):
-            self.skipTest("guides without full git history (shallow clone or uncommitted)")
+            self.skipTest("guides without full git history (shallow clone)")
         for page in pages:
             self.assertRegex(page.lastmod, r"^\d{4}-\d{2}-\d{2}$", page.source)
 

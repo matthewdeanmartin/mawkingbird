@@ -43,6 +43,21 @@ interface StoredApp {
   codeVerifier: string;
   /** Instance the flow was started against; the code is only valid there. */
   server: string;
+  /** Where to land after signing in, already checked by {@link loginDestination}. */
+  next?: string;
+}
+
+/**
+ * In-app pages a sign-in may return to instead of Home.
+ *
+ * An allowlist, not a same-origin check: `?next=` arrives in a URL anyone can
+ * craft, and only pages built to pick up after sign-in belong here.
+ */
+const LOGIN_RETURN_PATHS: readonly string[] = ['/twitter-to-mastodon'];
+
+/** The page to open after signing in: an allowlisted `next`, else Home. */
+export function loginDestination(next: string | null | undefined): string {
+  return next && LOGIN_RETURN_PATHS.includes(next) ? next : '/home';
 }
 
 type Tab = 'signin' | 'mock' | 'init';
@@ -312,6 +327,8 @@ export class Login implements OnInit, OnDestroy {
   protected connectionFailed = signal(false);
   protected checking = signal(false);
   protected enteringHome = signal(false);
+  /** Home, or the allowlisted page that sent the visitor here (`?next=`). */
+  private destination = '/home';
 
   // --- Register (mock server only: never proxy a real server's credentials) ---
   protected regUsername = signal('');
@@ -369,9 +386,10 @@ export class Login implements OnInit, OnDestroy {
     // An OAuth callback (?code=) and the explicit add-account flow (?add=1) still show the
     // page so that a saved session cannot intercept a new sign-in.
     const params = this.route.snapshot.queryParamMap;
+    this.destination = loginDestination(params.get('next'));
     if (!params.get('code') && !params.get('add') && this.auth.isAuthenticated) {
       this.enteringHome.set(true);
-      void this.router.navigateByUrl('/home', { replaceUrl: true });
+      void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;
     }
     // Onboarding default: Mocking Bird has no "this server", so rather than greeting
@@ -582,7 +600,7 @@ export class Login implements OnInit, OnDestroy {
         }
         this.enteringHome.set(true);
         this.checking.set(false);
-        this.router.navigateByUrl('/home', { replaceUrl: true });
+        this.router.navigateByUrl(this.destination, { replaceUrl: true });
       },
       error: () => {
         this.auth.removeSession(value);
@@ -782,6 +800,7 @@ export class Login implements OnInit, OnDestroy {
       this.oauthError.set('That sign-in link is no longer valid. Start again from this page.');
       return;
     }
+    this.destination = loginDestination(app.next);
     if (!statesMatch(app.state, params.get('state'))) {
       this.oauthError.set(
         'Sign-in could not be verified (state mismatch) and was stopped. Start again from this page.',
@@ -862,6 +881,7 @@ export class Login implements OnInit, OnDestroy {
               state,
               codeVerifier,
               server,
+              ...(this.destination !== '/home' && { next: this.destination }),
             };
             sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
             const params = new URLSearchParams({

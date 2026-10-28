@@ -749,6 +749,24 @@ describe('Shell app-mode nav', () => {
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');
   });
 
+  it('gives a focused mini-app only Home and its own tabs, without switcher or rails', async () => {
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: '**', component: PageRail }]);
+    const fixture = render();
+    await router.navigateByUrl('/twitter-to-mastodon/invite');
+    fixture.detectChanges();
+
+    expect(tabs(fixture)).toEqual(['/home', '/twitter-to-mastodon', '/twitter-to-mastodon/invite']);
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('.primary-nav a[aria-current="page"]')?.getAttribute('href')).toBe(
+      '/twitter-to-mastodon/invite',
+    );
+    expect(host.querySelector('.rail-left')).toBeNull();
+    expect(host.querySelector('.rail-right')).toBeNull();
+    // The account menu and the … menu are the app's own, unchanged.
+    expect(host.querySelector('.more-menu')).not.toBeNull();
+  });
+
   it('shows a page’s own rail in place of the default, and the default again after', () => {
     const outlet = TestBed.inject(RailOutlet);
     const page = {};

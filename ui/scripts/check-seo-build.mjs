@@ -16,6 +16,7 @@ const pages = [
   'about',
   'funding',
   'blog',
+  'twitter-to-mastodon',
 ];
 // One prerendered page per published starter kit; follow-kits.ts decides which.
 const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
@@ -51,6 +52,12 @@ for (const page of pages) {
       `${page} links to the in-app kit`,
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
+  } else if (page === 'twitter-to-mastodon') {
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
+    assert.match(doc.querySelector('h1')?.textContent ?? '', /Import your Twitter follows/);
+    assert.match(doc.body.textContent, /Download your Twitter archive/);
+    // The importer itself is deferred: it needs the browser, not the prerender.
+    assert.equal(doc.querySelector('app-twitter-archive-import'), null);
   } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));

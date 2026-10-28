@@ -9,7 +9,6 @@ import { Auth } from '../../../auth';
 import { parseHandles } from '../../../import-follows';
 import { followingAccountsCsv, SettingsImportExport } from './settings-import-export';
 import { GitHubFriendDiscovery } from './github-friend-discovery';
-import { TwitterArchiveSummary } from '../../../twitter-archive';
 import { TwitterFriendDiscovery } from './twitter-friend-discovery';
 import { TagSources } from './tag-sources';
 import { seedGitHubConnection } from '../../../testing/seed-storage';
@@ -28,7 +27,6 @@ interface SettingsImportExportInternals {
   suggestTagsFromFavourites(): Promise<void>;
   exportTags(): Promise<void>;
   hideGithubFollowed: WritableSignal<boolean>;
-  twitterArchive: WritableSignal<TwitterArchiveSummary | null>;
   download(kind: 'following' | 'mutes' | 'blocks'): void;
   upload(): void;
   exportFriends(): Promise<void>;
@@ -265,7 +263,7 @@ describe('SettingsImportExport', () => {
       locked: false,
       fields: [],
     } as Account;
-    internals(fixture).twitterArchive.set({
+    discovery.archive.set({
       files: ['following.js', 'tweets.js'],
       people: [person],
       currentFollowingCount: 1,

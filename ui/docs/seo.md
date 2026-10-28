@@ -132,6 +132,21 @@ in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
 menu and the welcome modal link to it; the modal's links open new tabs so its
 two answers stay the only way out.
 
+## Twitter importer: /twitter-to-mastodon/
+
+A public, prerendered page for people searching for exactly this task. Two
+routes share the path: signed in with Mastodon (`mastodonSignedInMatch`), it
+runs in the shell as a focused mini-app (`FOCUSED_APPS` in `shell/mode-nav.ts`:
+Home · Import · Invite, the usual … and account menus, no rails or mode
+switcher); for anyone else it stands alone with its own header. The importer is
+the shared `TwitterArchiveImport` (also in Settings → Import/Export), inside
+`@defer`, so the prerender holds only the static copy. A signed-out visitor
+reads the archive first; "Sign in with Mastodon" stashes it in sessionStorage
+and opens `/login/mastodon?next=/twitter-to-mastodon`. `next` travels in the
+pending OAuth record and only allowlisted paths (`loginDestination`) are
+honoured. Links into the rest of the app appear only after a search has run.
+Onboarding still opens on the first Home visit, never here.
+
 ## Titles, structured data and sitemap dates
 
 Pages titled through a route read "Page · Mawkingbird". The untitled front
@@ -153,8 +168,9 @@ microdata `<meta>`/`<link>` elements instead.
 Both sitemaps give each URL a `<lastmod>` from the last git commit to its
 sources: the guide's file for help pages, and a page-to-files table in
 `prepare-seo-index.mjs` for the app pages. That table fails the build for an
-unmapped page. A shallow clone would date everything to one commit, so the
-dates are left out there. The Pages workflow checks out full history and
+unmapped page. Pages whose sources have uncommitted edits are dated today. A
+shallow clone would date everything to one commit, so the dates are left out
+there. The Pages workflow checks out full history and
 fails if either sitemap lacks dates.
 
 ## Share image, verification and deployment checks

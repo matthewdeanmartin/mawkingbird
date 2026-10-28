@@ -19,21 +19,10 @@ import { ContactDiscovery } from './contact-discovery';
 import { contactPickerAvailable, pickContacts } from './contact-picker';
 import { GitHubSession } from '../../../providers/github/github-session';
 import { GitHubFriendDiscovery, GitHubFriendStatus } from './github-friend-discovery';
-import {
-  extractArchiveHashtags,
-  extractTwitterArchive,
-  TwitterArchiveSummary,
-  twitterArchiveCsv,
-} from '../../../twitter-archive';
+import { extractArchiveHashtags } from '../../../twitter-archive';
 import { SAMPLE_SIZE, TagSources } from './tag-sources';
-import {
-  isBotOrMirrorTwitterCandidate,
-  isInactiveTwitterCandidate,
-  isIncompleteTwitterCandidate,
-  isStaleTwitterCandidate,
-  TwitterFriendDiscovery,
-  TwitterFriendStatus,
-} from './twitter-friend-discovery';
+import { saveCsv } from './save-csv';
+import { TwitterArchiveImport } from './twitter-archive-import';
 import { BridgeFinder, BridgeRow } from './bridge-finder';
 import { BridgeNetwork } from './bridge-matching';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
@@ -56,16 +45,6 @@ function exportHandle(account: Account): string {
   } catch {
     return acct;
   }
-}
-
-function saveCsv(csv: string, filename: string): void {
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  URL.revokeObjectURL(url);
 }
 
 /** Client-side friend import/export, plus mock-server graph tools in mock builds. */
@@ -233,43 +212,10 @@ function saveCsv(csv: string, filename: string): void {
 // i18n settings.importExport.tags.exporting: Exporting {{count}}…
 // i18n settings.importExport.tags.textareaLabel: Hashtags to follow
 // i18n settings.importExport.title: Import/Export Friends & Tags
-// i18n settings.importExport.twitter.archiveHint.a: Choose your unzipped archive folder. Mawkingbird reads only
-// i18n settings.importExport.twitter.archiveHint.b: , and
-// i18n settings.importExport.twitter.archiveHint.c: in your browser; nothing is uploaded. You can also select those files directly from the archive's
-// i18n settings.importExport.twitter.candidates.one: {{count}} Mastodon candidate
-// i18n settings.importExport.twitter.candidates.other: {{count}} Mastodon candidates
-// i18n settings.importExport.twitter.candidatesShown: Mastodon candidates shown
-// i18n settings.importExport.twitter.chooseArchive: Choose unzipped archive…
-// i18n settings.importExport.twitter.chooseFiles: Choose data files…
-// i18n settings.importExport.twitter.currentlyFollowed: currently followed ·
-// i18n settings.importExport.twitter.downloadCsv: Download contacts CSV
-// i18n settings.importExport.twitter.folder: folder.
-// i18n settings.importExport.twitter.handleRecovered: of those have a handle recovered from your tweets
-// i18n settings.importExport.twitter.hide.bots: Bots or mirrors
-// i18n settings.importExport.twitter.hide.inactive: Inactive (&lt;10 combined posts, following, and followers)
-// i18n settings.importExport.twitter.hide.incomplete: Missing a bio or avatar
-// i18n settings.importExport.twitter.hide.stale: No posts, or last activity over a year ago (when known)
-// i18n settings.importExport.twitter.hideTitle: Hide candidates that are…
-// i18n settings.importExport.twitter.inviteLink: invite them from Twitter
-// i18n settings.importExport.twitter.mentions: mentions
-// i18n settings.importExport.twitter.missing.a: No
-// i18n settings.importExport.twitter.missing.following: was selected, so this export contains interactions only.
-// i18n settings.importExport.twitter.missing.tweets: was selected. Add it to recover reply/mention history and handles for some followed IDs.
-// i18n settings.importExport.twitter.notJoined: The ones you don’t find here haven’t joined yet —
-// i18n settings.importExport.twitter.read: Read
-// i18n settings.importExport.twitter.readNote: . The CSV keeps numeric Twitter IDs even when Twitter omitted the handle.
-// i18n settings.importExport.twitter.readingLocally: Reading the archive locally…
-// i18n settings.importExport.twitter.readyToExport: unique Twitter accounts ready to export
-// i18n settings.importExport.twitter.readyToSearch: Twitter handles ready to search ·
-// i18n settings.importExport.twitter.repliedTo: people replied to in
-// i18n settings.importExport.twitter.replies: replies ·
-// i18n settings.importExport.twitter.searchNote: username-search calls used. Same-handle accounts are likely matches, not confirmed identities; a matching display name or profile link back to Twitter is shown as extra evidence.
-// i18n settings.importExport.twitter.seenIn: people seen in
 
 // i18n settings.importExport.bridge.following: Following…
 // i18n settings.importExport.tags.importTitle: Import hashtags
 // i18n settings.importExport.tags.seeAll: See every hashtag you follow →
-// i18n settings.importExport.twitter.title: Extract contacts from Twitter/Twitter
 
 // i18n settings.importExport.friends.found.one: Found {{count}} account to follow.
 // i18n settings.importExport.friends.found.other: Found {{count}} accounts to follow.
@@ -283,10 +229,18 @@ export class SuggestedTagImporter extends ImportTags {}
 
 @Component({
   selector: 'app-settings-import-export',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbCheckbox, MbRadioGroup],
+  imports: [
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+    MbButton,
+    MbCheckbox,
+    MbRadioGroup,
+    TwitterArchiveImport,
+  ],
   providers: [SuggestedTagImporter],
   templateUrl: './settings-import-export.html',
-  styleUrl: './settings-import-export.css',
+  styleUrls: ['./friend-finder.css', './settings-import-export.css'],
 })
 export class SettingsImportExport {
   protected readonly accountProfilePath = accountProfilePath;
@@ -305,7 +259,6 @@ export class SettingsImportExport {
   protected contactDiscovery = inject(ContactDiscovery);
   protected github = inject(GitHubSession);
   protected githubDiscovery = inject(GitHubFriendDiscovery);
-  protected twitterDiscovery = inject(TwitterFriendDiscovery);
   protected bridge = inject(BridgeFinder);
   protected bsky = inject(BlueskySession);
   protected mastodonConnector = inject(MastodonConnector);
@@ -341,15 +294,6 @@ export class SettingsImportExport {
   protected contactCallLimit = signal(20);
   protected githubCallLimit = signal(20);
   protected hideGithubFollowed = signal(false);
-  protected twitterArchive = signal<TwitterArchiveSummary | null>(null);
-  protected twitterArchiveReading = signal(false);
-  protected twitterArchiveError = signal<string | null>(null);
-  protected twitterCallLimit = signal(20);
-  protected hideTwitterFollowed = signal(false);
-  protected hideTwitterInactive = signal(false);
-  protected hideTwitterIncomplete = signal(false);
-  protected hideTwitterBots = signal(false);
-  protected hideTwitterStale = signal(false);
 
   protected doneCount = computed(
     () =>
@@ -436,40 +380,6 @@ export class SettingsImportExport {
           row.matches.some(
             (match) => !this.githubDiscovery.relationship(match.account.id)?.following,
           ))
-      );
-    }),
-  );
-  protected twitterFoundCount = computed(() =>
-    this.twitterDiscovery.rows().reduce((count, row) => count + row.matches.length, 0),
-  );
-  protected twitterPendingCount = computed(
-    () => this.twitterDiscovery.rows().filter((row) => row.status === 'pending').length,
-  );
-  protected twitterFiltersActive = computed(
-    () =>
-      this.hideTwitterInactive() ||
-      this.hideTwitterIncomplete() ||
-      this.hideTwitterBots() ||
-      this.hideTwitterStale() ||
-      this.hideTwitterFollowed(),
-  );
-  protected twitterVisibleMatchCount = computed(() =>
-    this.twitterDiscovery
-      .rows()
-      .reduce(
-        (count, row) =>
-          count + row.matches.filter((match) => this.twitterMatchVisible(match.account)).length,
-        0,
-      ),
-  );
-  protected twitterVisibleRows = computed(() =>
-    this.twitterDiscovery.rows().filter((row) => {
-      const renderable =
-        row.matches.length || row.status === 'searching' || row.status === 'failed';
-      return (
-        renderable &&
-        (!row.matches.length ||
-          row.matches.some((match) => this.twitterMatchVisible(match.account)))
       );
     }),
   );
@@ -616,90 +526,6 @@ export class SettingsImportExport {
       this.previewFriends();
     });
     input.value = '';
-  }
-
-  protected async onTwitterArchive(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const files = [...(input.files ?? [])].filter((file) =>
-      ['following.js', 'tweets.js', 'deleted-tweets.js'].includes(file.name.toLowerCase()),
-    );
-    input.value = '';
-    this.twitterArchive.set(null);
-    this.twitterArchiveError.set(null);
-    this.twitterDiscovery.reset();
-    if (!files.length) {
-      this.twitterArchiveError.set(
-        'No archive data found. Choose the unzipped archive folder or its data/following.js and data/tweets.js files.',
-      );
-      return;
-    }
-    this.twitterArchiveReading.set(true);
-    try {
-      const sources = await Promise.all(
-        files.map(async (file) => ({
-          name: file.webkitRelativePath || file.name,
-          text: await file.text(),
-        })),
-      );
-      const archive = extractTwitterArchive(sources);
-      this.twitterArchive.set(archive);
-      this.twitterDiscovery.load(archive.people);
-    } catch (error) {
-      this.diagnostics.error('ImportExport', 'twitter-archive:read-error', error);
-      this.twitterArchiveError.set(
-        error instanceof Error ? error.message : 'The Twitter archive could not be read.',
-      );
-    } finally {
-      this.twitterArchiveReading.set(false);
-    }
-  }
-
-  protected downloadTwitterArchive(): void {
-    const archive = this.twitterArchive();
-    if (!archive) {
-      return;
-    }
-    saveCsv(twitterArchiveCsv(archive.people), 'mawkingbird-twitter-contacts.csv');
-  }
-
-  protected clearTwitterArchive(): void {
-    this.twitterArchive.set(null);
-    this.twitterArchiveError.set(null);
-    this.twitterDiscovery.reset();
-  }
-
-  protected startTwitterSearch(): void {
-    void this.twitterDiscovery.start(this.twitterCallLimit());
-  }
-
-  protected setTwitterCallLimit(value: number | string): void {
-    const parsed = Number(value);
-    this.twitterCallLimit.set(
-      Number.isFinite(parsed) ? Math.min(5000, Math.max(1, Math.floor(parsed))) : 20,
-    );
-  }
-
-  protected twitterStatusLabel(status: TwitterFriendStatus): string {
-    switch (status) {
-      case 'pending':
-        return 'waiting';
-      case 'searching':
-        return 'searching…';
-      case 'complete':
-        return 'checked';
-      default:
-        return 'failed';
-    }
-  }
-
-  protected twitterMatchVisible(account: Account): boolean {
-    if (this.hideTwitterInactive() && isInactiveTwitterCandidate(account)) return false;
-    if (this.hideTwitterIncomplete() && isIncompleteTwitterCandidate(account)) return false;
-    if (this.hideTwitterBots() && isBotOrMirrorTwitterCandidate(account)) return false;
-    if (this.hideTwitterStale() && isStaleTwitterCandidate(account)) return false;
-    return !(
-      this.hideTwitterFollowed() && this.twitterDiscovery.relationship(account.id)?.following
-    );
   }
 
   protected onContactFile(event: Event): void {

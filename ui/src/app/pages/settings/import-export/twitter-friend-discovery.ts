@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../../api';
 import { Account, Relationship } from '../../../models';
-import { TwitterArchivePerson } from '../../../twitter-archive';
+import { TwitterArchivePerson, TwitterArchiveSummary } from '../../../twitter-archive';
 
 export type TwitterFriendStatus = 'pending' | 'searching' | 'complete' | 'failed';
 export type TwitterFriendConfidence = 'likely' | 'possible';
@@ -92,6 +92,8 @@ export class TwitterFriendDiscovery {
   private api = inject(Api);
   private stopRequested = false;
 
+  /** The archive these rows came from, for its counts and CSV; null when cleared. */
+  readonly archive = signal<TwitterArchiveSummary | null>(null);
   readonly rows = signal<TwitterFriendRow[]>([]);
   readonly running = signal(false);
   readonly callCount = signal(0);
@@ -101,7 +103,11 @@ export class TwitterFriendDiscovery {
   /** Small courtesy delay between Mastodon searches; tests set this to zero. */
   delayMs = 350;
 
-  load(people: readonly TwitterArchivePerson[]): void {
+  load(
+    people: readonly TwitterArchivePerson[],
+    archive: TwitterArchiveSummary | null = null,
+  ): void {
+    this.archive.set(archive);
     const seenHandles = new Set<string>();
     const searchable = people.filter((person) => {
       const handle = person.twitter_handle?.toLowerCase();
@@ -126,6 +132,7 @@ export class TwitterFriendDiscovery {
 
   reset(): void {
     this.stopRequested = true;
+    this.archive.set(null);
     this.rows.set([]);
     this.running.set(false);
     this.callCount.set(0);
