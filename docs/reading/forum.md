@@ -26,7 +26,9 @@ Mastodon has no "show me conversations" feature, so Forum asks your server one q
 
 - The first scan uses up to **10 calls**.
 - **Scan deeper** adds 10 or 25 more, continuing where the last scan stopped.
-- One scan never uses more than **50 calls**.
+- One scan never uses more than **50 calls** to your server.
+- Calls to other servers are counted separately, each server with its own
+  allowance, and shown as "more on other servers".
 - **Stop** ends a scan at once and keeps everything found so far. If your server asks Forum to slow down, it stops the same way.
 
 The most promising posts are asked about first: conversations you are in, then replies between different people, then posts with many replies.
@@ -35,7 +37,9 @@ Finding nothing after the first scan is normal. Try **Scan deeper** or a differe
 
 ## Conversations from other servers
 
-When a conversation started on another server, Forum may also ask that server for its public view. That server usually has replies yours never received, and sometimes the post that started it all. This uses one call and only reads what that server shows publicly. Whenever your own server also has a post, Forum shows your server's copy.
+When a conversation started on another server, Forum may also ask that server for its public view. That server usually has replies yours never received, and sometimes the post that started it all. This uses one call to that server and only reads what it shows publicly.
+
+When that turns up a post your server did not have, Forum asks your server to fetch it too. Then you get your server's own copy, which you can reply to, and replies only your followers can see. This uses two calls to your server. Whenever your own server has a post, Forum shows your server's copy.
 
 A discussion marked **Partial thread** is one where no server Forum asked could reach the post that started it. You see as far back as it goes.
 

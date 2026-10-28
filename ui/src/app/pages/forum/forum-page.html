@@ -79,6 +79,13 @@
                 allowance: scan.allowance(),
               }
       }}
+      @if (scan.elsewhereCalls()) {
+        ·
+        {{
+          (scan.elsewhere().size === 1 ? 'forum.elsewhereOne' : 'forum.elsewhereOther')
+            | transloco: { calls: scan.elsewhereCalls(), servers: scan.elsewhere().size }
+        }}
+      }
     </p>
     @if (scan.scanning()) {
       <p>{{ 'forum.scanning' | transloco }}</p>

@@ -65,6 +65,8 @@ import { useForumRails } from './forum-rails';
 // i18n forum.sort.recent: Recent
 // i18n forum.sort.popular: Popular
 // i18n forum.progress: {{posts}} posts read · {{discussions}} discussions · {{calls}} of {{allowance}} calls
+// i18n forum.elsewhereOne: {{calls}} more on 1 other server
+// i18n forum.elsewhereOther: {{calls}} more on {{servers}} other servers
 // i18n forum.scanning: Looking for discussions…
 // i18n forum.stop: Stop
 // i18n forum.foundOne: 1 discussion found.

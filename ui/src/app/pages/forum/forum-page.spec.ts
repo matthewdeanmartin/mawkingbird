@@ -36,6 +36,8 @@ class FakeScan {
   state = signal<ScanState>('idle');
   callsUsed = signal(0);
   allowance = signal(10);
+  elsewhere = signal<ReadonlyMap<string, number>>(new Map());
+  elsewhereCalls = computed(() => [...this.elsewhere().values()].reduce((a, b) => a + b, 0));
   postsSampled = signal(0);
   found = signal<Discussion[]>([]);
   following = signal<ReadonlySet<string>>(new Set());
@@ -196,6 +198,22 @@ describe('ForumPage', () => {
     scan.state.set('spent');
     fixture.detectChanges();
     expect(status()).toBe('Calls used up for now. 1 discussion found.');
+  });
+
+  it('shows calls to other servers apart from my server’s budget', async () => {
+    scan.source.set({ kind: 'home' });
+    scan.state.set('spent');
+    scan.callsUsed.set(10);
+    scan.elsewhere.set(
+      new Map([
+        ['a.example', 2],
+        ['b.example', 1],
+      ]),
+    );
+    const host = await mount();
+    expect(host.querySelector('.progress p')!.textContent!.replace(/\s+/g, ' ')).toContain(
+      '10 of 10 calls · 3 more on 2 other servers',
+    );
   });
 
   it('explains an empty result rather than showing nothing', async () => {

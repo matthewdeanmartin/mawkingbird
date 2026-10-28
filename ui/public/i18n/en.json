@@ -1146,6 +1146,8 @@
     "deeperTitle": "Spend up to {{count}} more calls on this feed. A scan stops at {{max}}.",
     "discussion.back": "← Back to discussions",
     "discussion.partial": "The start of this conversation could not be reached. This is as far back as it goes.",
+    "elsewhereOne": "{{calls}} more on 1 other server",
+    "elsewhereOther": "{{calls}} more on {{servers}} other servers",
     "empty.description": "A discussion needs at least two people. Scanning deeper reads more of the feed.",
     "empty.faceted": "None of the discussions found so far match these filters.",
     "empty.filtered": "None of the discussions found so far fit this tab.",

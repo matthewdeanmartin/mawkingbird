@@ -242,6 +242,13 @@ ads or server cards in the right rail, and every other mode is unchanged.
   `/statuses/:id` redirecting into Forum; the 1100px (People inline) and
   800px (Filters inline, no sideways scroll) layouts; and no page errors.
   Screenshots go to `.test-results/forum-*.png`.
+- **Root hunt settled** (owner, 2026-10-27: resolve whatever ActivityPub can
+  find, and give other servers their own budget). After widening on the
+  origin, a foreign anchor is resolved through my server (`search` with
+  `resolve`, then its context: 2 calls), so the thread carries my server's
+  ids. Every server has its own budget under the same allowance and ceiling.
+  The progress line adds "N more on M other servers". Skipped with a separate
+  search server, as in ThreadLoader.
 - **Found, not fixed (shared shell):** at 800px the top menu's icons overlap
   the next tab's label in every mode (Mastodon and Video too), not only Forum.
 

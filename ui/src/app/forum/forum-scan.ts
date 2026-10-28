@@ -3,7 +3,8 @@ import { defaultIfEmpty, firstValueFrom, map, Observable, Subject, takeUntil } f
 import { Api } from '../api';
 import { Auth } from '../auth';
 import { LocalModeration } from '../local-moderation';
-import { Context, Relationship, Status } from '../models';
+import { SearchServer } from '../search-server';
+import { Context, Relationship, SearchResults, Status } from '../models';
 import { adaptAnonymousStatus } from '../providers/anonymous/anonymous-mastodon-provider';
 import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
 import { AnonymousPublicRef } from '../providers/anonymous/anonymous-route-ref';
@@ -116,6 +117,14 @@ export function originRef(post: Status): AnonymousPublicRef | null {
   return mastodonPostRef(post.url);
 }
 
+function hostOf(server: string): string {
+  try {
+    return new URL(server).host;
+  } catch {
+    return server;
+  }
+}
+
 /** The post nothing else in the set replies to: the root, or the furthest reached. */
 function topOf(posts: readonly Status[]): Status {
   const ids = new Set(posts.map((post) => post.id));
@@ -143,10 +152,16 @@ interface Person {
  * and keeps everything found; so does a 429. Results are published as each
  * request lands, so an impatient reader always has something.
  *
- * Calls go to three kinds of work, in waves of up to {@link IN_FLIGHT}:
+ * Calls go to four kinds of work, in waves of up to {@link IN_FLIGHT}:
  * reading pages of the source, probing candidates (my server's context of a
- * sampled post) and widening discussions (the anchor's own server's context,
- * which finds roots my server never fetched and replies it never received).
+ * sampled post), widening discussions (the anchor's own server's context,
+ * which finds roots my server never fetched and replies it never received),
+ * and resolving what widening found (ActivityPub: my server fetches the post
+ * and returns its own copy, which can be replied to, followed and listed).
+ *
+ * Every server has its own budget (owner, 2026-10-27): `allowance` calls to
+ * mine, and as many again to each other server asked. Spending on
+ * mastodon.social does not use up what is left for my server.
  *
  * Session only: the service lives for the tab, nothing is stored.
  */
@@ -156,11 +171,19 @@ export class ForumScan {
   private auth = inject(Auth);
   private anonymousPublic = inject(AnonymousPublicApi);
   private moderation = inject(LocalModeration);
+  private searchServer = inject(SearchServer);
 
   readonly source = signal<ForumSource | null>(null);
   readonly state = signal<ScanState>('idle');
+  /** Calls to my server. */
   readonly callsUsed = signal(0);
+  /** The per-server budget: my server's, and each other server's. */
   readonly allowance = signal(0);
+  /** Calls to other servers, by host. */
+  readonly elsewhere = signal<ReadonlyMap<string, number>>(new Map());
+  readonly elsewhereCalls = computed(() =>
+    [...this.elsewhere().values()].reduce((total, used) => total + used, 0),
+  );
   readonly postsSampled = signal(0);
   /** Everything found, qualifying or not; the list reads {@link summaries}. */
   readonly found = signal<readonly Discussion[]>([]);
@@ -212,6 +235,8 @@ export class ForumScan {
   private probed = new Set<string>();
   /** Discussion keys whose anchor's own server was asked. */
   private widened = new Set<string>();
+  /** Discussion keys whose foreign anchor my server was asked to resolve. */
+  private resolved = new Set<string>();
   private asked = new Set<string>();
   private stop$ = new Subject<void>();
   private stopped = false;
@@ -239,12 +264,14 @@ export class ForumScan {
     this.found.set([]);
     this.following.set(new Set());
     this.callsUsed.set(0);
+    this.elsewhere.set(new Map());
     this.postsSampled.set(0);
     this.sample = [];
     this.pagers = this.pagersFor(source);
     this.nextPager = 0;
     this.probed.clear();
     this.widened.clear();
+    this.resolved.clear();
     this.asked.clear();
     this.allowance.set(FIRST_SCAN_CALLS);
     void this.run(this.generation);
@@ -283,10 +310,22 @@ export class ForumScan {
         const unknown = this.unknownPeople();
         const reserve = unknown.length ? 1 : 0;
         const candidates = this.candidates();
-        const widenable = this.widenable();
         const room = this.remaining() - reserve;
+        // Resolving costs two calls to my server; widening, one to another.
+        const resolvable = room >= 2 ? this.resolvable() : [];
+        const widenable = this.widenable();
+        /** Each completion and what it costs at my server. */
+        const completions = [
+          ...resolvable.map((discussion) => ({ mine: 2, run: () => this.resolve(discussion) })),
+          ...widenable.map((discussion) => ({ mine: 0, run: () => this.widen(discussion) })),
+        ];
 
         if (room <= 0) {
+          // My server's budget is spent; other servers may still have theirs.
+          if (widenable.length) {
+            await Promise.all(widenable.slice(0, IN_FLIGHT).map((each) => this.widen(each)));
+            continue;
+          }
           if (reserve && this.remaining() > 0) await this.relationships(unknown);
           if (live()) this.state.set('spent');
           return;
@@ -299,18 +338,27 @@ export class ForumScan {
           }
           continue;
         }
-        if (!candidates.length && !widenable.length) {
+        if (!candidates.length && !completions.length) {
           if (reserve) await this.relationships(unknown);
           if (live()) this.state.set('exhausted');
           return;
         }
-        // Completing a discussion already on screen is worth one slot a wave;
-        // the rest go to finding new ones, until there are none left to find.
+        // Completing a discussion already on screen is worth one slot a wave
+        // (resolving first: it makes posts actionable); the rest go to finding
+        // new ones, until there are none left to find.
         const wave = Math.min(IN_FLIGHT, room);
-        const widen = widenable.slice(0, candidates.length ? 1 : wave);
+        let mine = 0;
+        const complete: (typeof completions)[number][] = [];
+        for (const task of completions) {
+          if (complete.length >= (candidates.length ? 1 : IN_FLIGHT)) break;
+          if (mine + task.mine > room) continue;
+          complete.push(task);
+          mine += task.mine;
+        }
+        const probes = Math.max(0, Math.min(wave - complete.length, room - mine));
         await Promise.all([
-          ...widen.map((discussion) => this.widen(discussion)),
-          ...candidates.slice(0, wave - widen.length).map((candidate) => this.probe(candidate)),
+          ...complete.map((task) => task.run()),
+          ...candidates.slice(0, probes).map((candidate) => this.probe(candidate)),
         ]);
       }
     } catch (error) {
@@ -366,16 +414,49 @@ export class ForumScan {
     };
     return this.found()
       .filter((discussion) => !this.widened.has(discussion.key))
-      .filter((discussion) => originRef(discussion.anchor) !== null)
+      .filter((discussion) => {
+        const ref = originRef(discussion.anchor);
+        return ref !== null && this.roomAt(hostOf(ref.server)) > 0;
+      })
       .map((discussion) => ({ discussion, need: needs(discussion) }))
       .filter(({ need }) => need > 0)
       .sort((left, right) => right.need - left.need)
       .map(({ discussion }) => discussion);
   }
 
-  /** A metered request: counted on dispatch, cancelled by Stop. */
-  private call<T>(request: Observable<T>): Promise<T | typeof STOPPED> {
-    this.callsUsed.update((used) => used + 1);
+  /**
+   * Discussions whose anchor is a copy read from another server, which my
+   * server has not been asked to resolve. Not with a separate search server
+   * configured: resolving is my server's own ActivityPub fetch, and search
+   * would go elsewhere (as in ThreadLoader).
+   */
+  private resolvable(): Discussion[] {
+    if (this.searchServer.active() || this.auth.lacksMastodonToken) return [];
+    return this.found().filter(
+      (discussion) =>
+        isForeignCopy(discussion.anchor) &&
+        !!discussion.anchor.url &&
+        !this.resolved.has(discussion.key),
+    );
+  }
+
+  /** Calls left at another server, under the same per-server allowance. */
+  private roomAt(host: string): number {
+    return this.allowance() - (this.elsewhere().get(host) ?? 0);
+  }
+
+  /**
+   * A metered request: counted on dispatch against its server's budget (mine
+   * unless `host` names another), cancelled by Stop.
+   */
+  private call<T>(request: Observable<T>, host?: string): Promise<T | typeof STOPPED> {
+    if (host) {
+      const elsewhere = new Map(this.elsewhere());
+      elsewhere.set(host, (elsewhere.get(host) ?? 0) + 1);
+      this.elsewhere.set(elsewhere);
+    } else {
+      this.callsUsed.update((used) => used + 1);
+    }
     return firstValueFrom(
       request.pipe(
         takeUntil(this.stop$),
@@ -478,7 +559,7 @@ export class ForumScan {
     if (!ref) return;
     let context: Context | typeof STOPPED;
     try {
-      context = await this.call(this.anonymousPublic.getContext(ref));
+      context = await this.call(this.anonymousPublic.getContext(ref), hostOf(ref.server));
     } catch (error) {
       if ((error as { status?: number })?.status === 429) throw error;
       return;
@@ -496,6 +577,43 @@ export class ForumScan {
     this.absorb(
       [...context.ancestors, anchorThere, ...discussion.posts, ...context.descendants],
       discussion.key,
+    );
+  }
+
+  /**
+   * Ask my server for its own copy of a foreign anchor (`search` with
+   * `resolve`, an ActivityPub fetch under my identity), then for that copy's
+   * context. The result has my server's ids, so it can be replied to, liked,
+   * followed and listed, and it includes followers-only replies a public read
+   * of the origin never shows. combine() keeps my copy over the foreign one.
+   * If my server cannot fetch it, the readable foreign copy stays.
+   */
+  private async resolve(discussion: Discussion): Promise<void> {
+    this.resolved.add(discussion.key);
+    let results: SearchResults | typeof STOPPED;
+    try {
+      results = await this.call(
+        this.api.search(discussion.anchor.url!, 'statuses', { resolve: true, limit: 1 }),
+      );
+    } catch (error) {
+      if ((error as { status?: number })?.status === 429) throw error;
+      return;
+    }
+    if (results === STOPPED) return;
+    const local = results.statuses.find((each) => discussionKey(each) === discussion.key);
+    if (!local) return;
+    let context: Context | typeof STOPPED;
+    try {
+      context = await this.call(this.api.getContext(local.id));
+    } catch (error) {
+      if ((error as { status?: number })?.status === 429) throw error;
+      this.absorb([local, ...discussion.posts], discussion.key);
+      return;
+    }
+    if (context === STOPPED) return;
+    this.absorb(
+      [...context.ancestors, local, ...context.descendants, ...discussion.posts],
+      discussionKey(local),
     );
   }
 

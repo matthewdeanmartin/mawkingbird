@@ -4,6 +4,7 @@ import { NEVER, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../api';
 import { LocalModeration } from '../local-moderation';
+import { SearchServer } from '../search-server';
 import { Auth } from '../auth';
 import { Account, Context, Status } from '../models';
 import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
@@ -32,7 +33,9 @@ describe('ForumScan', () => {
     relationships: ReturnType<typeof vi.fn>;
     getAccountStatuses: ReturnType<typeof vi.fn>;
     notifications: ReturnType<typeof vi.fn>;
+    search: ReturnType<typeof vi.fn>;
   };
+  let searchServerActive: boolean;
   let origin: { getContext: ReturnType<typeof vi.fn> };
   let contexts: Map<string, Observable<Context>>;
   let pages: Status[][];
@@ -60,6 +63,7 @@ describe('ForumScan', () => {
   beforeEach(() => {
     contexts = new Map();
     pages = [];
+    searchServerActive = false;
     api = {
       homeTimeline: vi.fn((maxId?: string) => {
         const index = maxId ? pages.findIndex((page) => page.at(-1)?.id === maxId) + 1 : 0;
@@ -72,6 +76,7 @@ describe('ForumScan', () => {
         of(ids.map((id) => ({ id, following: id.startsWith('b') }))),
       ),
       getAccountStatuses: vi.fn(() => of([])),
+      search: vi.fn(() => of({ accounts: [], statuses: [], hashtags: [] })),
       notifications: vi.fn(() => of([])),
     };
     origin = { getContext: vi.fn(() => throwError(() => ({ status: 401 }))) };
@@ -79,6 +84,7 @@ describe('ForumScan', () => {
       providers: [
         { provide: Api, useValue: api },
         { provide: AnonymousPublicApi, useValue: origin },
+        { provide: SearchServer, useValue: { active: () => searchServerActive } },
         { provide: Auth, useValue: { account: signal<Account | null>(account('me')) } },
       ],
     });
@@ -356,7 +362,7 @@ describe('ForumScan', () => {
       expect(origin.getContext).not.toHaveBeenCalled();
     });
 
-    it('counts widening against the budget', async () => {
+    it('gives each server its own budget (owner, 2026-10-27)', async () => {
       const roots = Array.from({ length: 20 }, (_, n) =>
         post(`${n + 1}00`, `a${n}`, {
           account: account(`a${n}`, `ua${n}@origin.example`),
@@ -374,9 +380,77 @@ describe('ForumScan', () => {
       const scan = scanner();
       scan.start({ kind: 'home' });
       await settled(scan);
+      // My server spent its ten; origin.example has its own ten, never more.
       expect(scan.callsUsed()).toBe(10);
-      expect(origin.getContext.mock.calls.length).toBeGreaterThan(0);
-      expect(api.getContext.mock.calls.length).toBeGreaterThan(origin.getContext.mock.calls.length);
+      const there = scan.elsewhere().get('origin.example') ?? 0;
+      expect(there).toBeGreaterThan(0);
+      expect(there).toBeLessThanOrEqual(scan.allowance());
+      expect(origin.getContext).toHaveBeenCalledTimes(there);
+      expect(scan.elsewhereCalls()).toBe(there);
+    });
+
+    it('resolves a root found on another server into my server’s copy', async () => {
+      const hidden = post('0', 'z', {
+        account: account('z', 'uz@origin.example'),
+        url: 'https://origin.example/@uz/0',
+      });
+      const looksLikeRoot = remoteRoot({ content: '<p>@uz agreed</p>', replies_count: 1 });
+      const answer = reply('2', 'b', looksLikeRoot);
+      pages = [[looksLikeRoot]];
+      contexts.set('1', of({ ancestors: [], descendants: [answer] }));
+      origin.getContext.mockReturnValue(of({ ancestors: [originCopy(hidden)], descendants: [] }));
+      // My server fetches it over ActivityPub under its own id.
+      const mine = { ...hidden, id: '900', in_reply_to_id: null };
+      api.search.mockReturnValue(of({ accounts: [], statuses: [mine], hashtags: [] }));
+      contexts.set(
+        '900',
+        of({ ancestors: [], descendants: [{ ...looksLikeRoot, in_reply_to_id: '900' }, answer] }),
+      );
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+
+      expect(api.search).toHaveBeenCalledWith('https://origin.example/@uz/0', 'statuses', {
+        resolve: true,
+        limit: 1,
+      });
+      const [only] = scan.found();
+      expect(only.anchor.id).toBe('900');
+      expect(only.anchor.provider).toBeUndefined();
+      expect(only.treeLoaded).toBe(true);
+      expect(only.posts.map((p) => p.id)).toEqual(['900', '1', '2']);
+    });
+
+    it('keeps the readable foreign copy when my server cannot fetch it', async () => {
+      const hidden = post('0', 'z', {
+        account: account('z', 'uz@origin.example'),
+        url: 'https://origin.example/@uz/0',
+      });
+      const looksLikeRoot = remoteRoot({ content: '<p>@uz agreed</p>', replies_count: 1 });
+      pages = [[looksLikeRoot]];
+      contexts.set('1', of({ ancestors: [], descendants: [reply('2', 'b', looksLikeRoot)] }));
+      origin.getContext.mockReturnValue(of({ ancestors: [originCopy(hidden)], descendants: [] }));
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+      expect(api.search).toHaveBeenCalledTimes(1);
+      expect(scan.found()[0].anchor.id).toBe('anonymous-mastodon:origin.example:0');
+    });
+
+    it('does not resolve through a separate search server', async () => {
+      searchServerActive = true;
+      const hidden = post('0', 'z', {
+        account: account('z', 'uz@origin.example'),
+        url: 'https://origin.example/@uz/0',
+      });
+      const looksLikeRoot = remoteRoot({ content: '<p>@uz agreed</p>', replies_count: 1 });
+      pages = [[looksLikeRoot]];
+      contexts.set('1', of({ ancestors: [], descendants: [reply('2', 'b', looksLikeRoot)] }));
+      origin.getContext.mockReturnValue(of({ ancestors: [originCopy(hidden)], descendants: [] }));
+      const scan = scanner();
+      scan.start({ kind: 'home' });
+      await settled(scan);
+      expect(api.search).not.toHaveBeenCalled();
     });
   });
 

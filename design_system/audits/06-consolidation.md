@@ -10,7 +10,8 @@ of the rails: pill buttons were being used for data. One candidate is removed:
 rows: a native row button (aria-pressed) for the People facet and a native avatar
 link to the profile; FollowButton and the group-action MbButtons stay. The list's
 "Open discussion" pill becomes the footer's stats link, and its badges move into
-that footer. No shared widget changed.
+that footer. Its progress line later gains other servers' call counts (text
+only, so findings move by lines). No shared widget changed.
 
 ## Forum: posts opened from Forum stay in Forum, 2026-10-27
 

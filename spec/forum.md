@@ -22,21 +22,21 @@ analytics already do: a small default budget and an explicit "spend more".
 
 ## Owner decisions (2026-10-27)
 
-| Topic           | Decision                                                                                                                                                                                                                                                                                                              |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Shape           | A fifth app mode, **Forum**, with its own top-line menu, like Video and Radio.                                                                                                                                                                                                                                        |
-| Top menu        | Filters become tabs: `Home \| Talk  Asked  Friends  Mine  Joined \| [switcher]`. Recent / Popular is a sort inside each tab.                                                                                                                                                                                          |
-| Sources (v1)    | Home timeline, a list, a hashtag, and **Me** (my own posts plus mention notifications).                                                                                                                                                                                                                               |
-| Starting budget | About 5–10 API calls. The reader can ask for more, in steps.                                                                                                                                                                                                                                                          |
-| Root hunt       | Walk back to the root. When my server's ancestors stop short of the real root, ask my server to resolve it, then try the origin server's public context, all within the budget. If that still fails, mark it **partial**. Revised in sprint 2 to the origin server only (see The scan, step 5); pending owner review. |
-| Layout          | Facets in the left rail; discussions in the center (close to today's thread view); a new **Members** widget in the right rail ("who is in this discussion") in place of ads and server cards.                                                                                                                         |
-| Persistence     | Session only for v1: in memory, lost on reload. **No new storage keys.** An IndexedDB cache is a later candidate.                                                                                                                                                                                                     |
-| Budget ceiling  | **50 calls per scan**, hard. Even that is a lot.                                                                                                                                                                                                                                                                      |
-| Interrupt       | Prioritised spending only makes sense with a **Stop** button. Stopping keeps and shows everything found so far.                                                                                                                                                                                                       |
-| Not discussions | Tweet storms (self-reply monologues) and lone posts, even ones asking a question, are not discussions.                                                                                                                                                                                                                |
-| Facets          | **No uncommon or topic words.** A short browser function cannot stand in for spaCy.                                                                                                                                                                                                                                   |
-| Members actions | **Follow everyone** and **add everyone to a list** are in scope (the existing `bulk-actions` flow).                                                                                                                                                                                                                   |
-| Anonymous       | Out of scope; the experience would be rough.                                                                                                                                                                                                                                                                          |
+| Topic           | Decision                                                                                                                                                                                                                                                                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shape           | A fifth app mode, **Forum**, with its own top-line menu, like Video and Radio.                                                                                                                                                                                                                                                            |
+| Top menu        | Filters become tabs: `Home \| Talk  Asked  Friends  Mine  Joined \| [switcher]`. Recent / Popular is a sort inside each tab.                                                                                                                                                                                                              |
+| Sources (v1)    | Home timeline, a list, a hashtag, and **Me** (my own posts plus mention notifications).                                                                                                                                                                                                                                                   |
+| Starting budget | About 5–10 API calls. The reader can ask for more, in steps.                                                                                                                                                                                                                                                                              |
+| Root hunt       | Walk back to the root. When my server's ancestors stop short of the real root, ask my server to resolve it, then try the origin server's public context, all within the budget. If that still fails, mark it **partial**. Settled 2026-10-27: widen on the origin, then resolve on my server (steps 5–6); each server has its own budget. |
+| Layout          | Facets in the left rail; discussions in the center (close to today's thread view); a new **Members** widget in the right rail ("who is in this discussion") in place of ads and server cards.                                                                                                                                             |
+| Persistence     | Session only for v1: in memory, lost on reload. **No new storage keys.** An IndexedDB cache is a later candidate.                                                                                                                                                                                                                         |
+| Budget ceiling  | **50 calls per scan**, hard. Even that is a lot.                                                                                                                                                                                                                                                                                          |
+| Interrupt       | Prioritised spending only makes sense with a **Stop** button. Stopping keeps and shows everything found so far.                                                                                                                                                                                                                           |
+| Not discussions | Tweet storms (self-reply monologues) and lone posts, even ones asking a question, are not discussions.                                                                                                                                                                                                                                    |
+| Facets          | **No uncommon or topic words.** A short browser function cannot stand in for spaCy.                                                                                                                                                                                                                                                       |
+| Members actions | **Follow everyone** and **add everyone to a list** are in scope (the existing `bulk-actions` flow).                                                                                                                                                                                                                                       |
+| Anonymous       | Out of scope; the experience would be rough.                                                                                                                                                                                                                                                                                              |
 
 ## Vocabulary
 
@@ -118,8 +118,18 @@ calls used out of calls allowed.
    that start with a mention. One slot per wave goes to widening while
    candidates remain. A refusal (signed fetch, timeout) leaves the discussion
    as it was. Partial means no server we asked could reach further.
-   (2026-10-27: this replaces "resolve on my server, then origin". Resolving
-   costs 2 calls and cannot find a parent that my server reports as a root.)
+   5a. **Resolve** (2 calls to my server, owner 2026-10-27: "resolve
+   servers/accounts/posts when possible"). When the anchor is a copy read from
+   another server, ask my server for its own copy (`search` with `resolve`, an
+   ActivityPub fetch under my identity), then that copy's context. The thread
+   then has my server's ids, so it can be replied to, followed and listed, and
+   it includes followers-only replies that a public read never shows. Resolving
+   goes before widening in the one completion slot per wave. It is skipped when
+   a separate search server is configured (search would go there), as in
+   `ThreadLoader`. Widening comes first because resolving cannot detect a
+   parent that my server reports as a root; widening finds it, and resolving
+   makes it mine. People from other servers are resolved when followed
+   (FollowButton's webfinger).
 6. **Load the tree**. The probe of a root, or the widening of an anchor,
    returns its whole subtree (`treeLoaded`). Context on a reply returns only
    that reply's own subtree. A discussion whose tree was not loaded is loaded
@@ -142,6 +152,10 @@ calls used out of calls allowed.
   from where the last one stopped.
 - **Hard ceiling: 50 calls per scan** (owner, 2026-10-27). That also bounds
   paging, so a feed that pages forever can't burn the budget.
+- **One budget per server** (owner, 2026-10-27). The allowance and ceiling apply
+  to my server and, separately, to each other server asked. Ten calls to
+  mastodon.social do not use up my server's ten. The progress line shows
+  "… · 3 more on 2 other servers".
 - **Stop is mandatory.** Prioritised spending is only worth it if the
   impatient can interrupt. Stop cancels any requests in flight and keeps and
   shows every discussion found so far. A 429 stops the scan the same way (the
