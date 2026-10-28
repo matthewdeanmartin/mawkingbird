@@ -44,6 +44,8 @@ describe('ForumDiscussionPage', () => {
           useValue: {
             listParams: { filter: 'asked', source: 'tag:rust' },
             discussion: (id: string) => (found?.anchor.id === id ? found : null),
+            containing: (id: string) =>
+              found?.posts.some((each) => each.id === id) ? found : null,
           },
         },
         {
@@ -91,6 +93,14 @@ describe('ForumDiscussionPage', () => {
     found = { ...discussion(), key: discussionKey(other), anchor: other, posts: [other] };
     params.next(convertToParamMap({ id: '7' }));
     expect(TestBed.inject(ThreadPreload).take('7')?.status.id).toBe('7');
+  });
+
+  it('opens a reply within a discussion through the thread page, partial notice and all', () => {
+    found = discussion({ partial: true });
+    params.next(convertToParamMap({ id: '4' }));
+    expect(mount().textContent).toContain('could not be reached');
+    expect(TestBed.inject(ThreadPreload).take('4')).toBeNull();
+    found = discussion();
   });
 
   it('goes back to the list as it was left', () => {

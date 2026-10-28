@@ -1,9 +1,9 @@
 import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { MbButton } from '../../design-system/button/button';
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import {
+  FacetChoice,
   facetParams,
   FacetKind,
   FacetValue,
@@ -20,8 +20,10 @@ import { ForumView } from '../../forum/forum-view';
 // i18n forum.facets.lang: Language
 // i18n forum.facets.none: Nothing to filter by yet.
 // i18n forum.facets.clear: Clear filters
-// i18n forum.facets.toggle: {{value}}, {{count}} discussions
+// i18n forum.facets.countOne: 1 discussion
+// i18n forum.facets.countOther: {{count}} discussions
 // i18n forum.facets.people: {{count}} people chosen
+// i18n forum.facets.chosen: Chosen
 
 interface FacetGroup {
   kind: Exclude<FacetKind, 'person'>;
@@ -31,79 +33,114 @@ interface FacetGroup {
 /**
  * Forum's left rail: hashtags, the root's server and language, counted over
  * the current tab (MIMB's facets, minus uncommon words; see spec/forum.md).
- * Choices are query parameters, so Back undoes them and a view can be shared.
- * Also shown in the list's Filters popover when the rail is hidden.
+ *
+ * Each value is a row linking to the list with that choice switched on or off,
+ * in the same shape as the default rails' trends: data reads as a list, and
+ * pill buttons are kept for actions. Choices are query parameters, so Back
+ * undoes them and a view can be shared. Also shown in the list's Filters
+ * disclosure when the rail is hidden.
  */
 @Component({
   selector: 'app-forum-facets',
-  imports: [TranslocoPipe, MbButton, MbRailCard],
+  imports: [RouterLink, TranslocoPipe, MbRailCard],
   template: `
-    <section mbRailCard class="facets">
-      @for (group of groups(); track group.kind) {
-        @if (group.values.length) {
+    @for (group of groups(); track group.kind) {
+      @if (group.values.length) {
+        <section mbRailCard class="card">
           <h2 class="card-title">{{ 'forum.facets.' + group.kind | transloco }}</h2>
-          <div class="chips">
-            @for (facet of group.values; track facet.value) {
-              <button
-                mbButton
-                type="button"
-                size="small"
-                [variant]="chosen(group.kind, facet.value) ? 'solid' : 'outline'"
-                [attr.aria-pressed]="chosen(group.kind, facet.value)"
-                [attr.aria-label]="
-                  'forum.facets.toggle'
-                    | transloco: { value: label(group.kind, facet.value), count: facet.count }
-                "
-                (click)="toggle(group.kind, facet.value)"
-              >
-                {{ label(group.kind, facet.value) }} <span class="count">{{ facet.count }}</span>
-              </button>
-            }
-          </div>
+          @for (facet of group.values; track facet.value) {
+            <a
+              class="facet"
+              routerLink="/forum"
+              [queryParams]="params(group.kind, facet.value)"
+              [class.chosen]="chosen(group.kind, facet.value)"
+              [attr.aria-current]="chosen(group.kind, facet.value) ? 'true' : null"
+            >
+              <span class="facet-name">{{ label(group.kind, facet.value) }}</span>
+              <span class="facet-count muted">
+                <span class="sr-only">
+                  {{
+                    (facet.count === 1 ? 'forum.facets.countOne' : 'forum.facets.countOther')
+                      | transloco: { count: facet.count }
+                  }}
+                </span>
+                <span aria-hidden="true">{{ facet.count }}</span>
+              </span>
+            </a>
+          }
+        </section>
+      }
+    }
+    @if (empty()) {
+      <section mbRailCard class="card">
+        <p class="card-note muted">{{ 'forum.facets.none' | transloco }}</p>
+      </section>
+    }
+    @if (filtered()) {
+      <section mbRailCard class="card">
+        @if (view.choice().person.length) {
+          <p class="card-note muted">
+            {{ 'forum.facets.people' | transloco: { count: view.choice().person.length } }}
+          </p>
         }
-      }
-      @if (empty()) {
-        <p class="muted small">{{ 'forum.facets.none' | transloco }}</p>
-      }
-      @if (view.choice().person.length) {
-        <p class="muted small">
-          {{ 'forum.facets.people' | transloco: { count: view.choice().person.length } }}
-        </p>
-      }
-      @if (filtered()) {
-        <button mbButton type="button" size="small" variant="outline" (click)="clear()">
+        <a class="facet clear" routerLink="/forum" [queryParams]="cleared()">
           {{ 'forum.facets.clear' | transloco }}
-        </button>
-      }
-    </section>
+        </a>
+      </section>
+    }
   `,
   styles: `
-    .facets {
-      display: grid;
-      gap: 0.5rem;
+    :host {
+      display: block;
     }
-    h2 {
-      margin: 0.25rem 0 0;
-      font-size: 0.95rem;
+    .card {
+      margin-bottom: 12px;
     }
-    .chips {
+    .facet {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 7px 14px;
+      border-bottom: 1px solid var(--border);
+      border-inline-start: 3px solid transparent;
+      color: var(--text);
+      text-decoration: none;
     }
-    .count {
-      opacity: 0.7;
+    .facet:last-child {
+      border-bottom: none;
+    }
+    .facet:hover {
+      background: var(--hover);
+      text-decoration: none;
+    }
+    .facet.chosen {
+      border-inline-start-color: var(--accent);
+      font-weight: 700;
+    }
+    .facet-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .facet-count {
+      font-size: 12px;
       font-variant-numeric: tabular-nums;
     }
-    p {
+    .clear {
+      color: var(--accent);
+    }
+    .card-note {
       margin: 0;
+      padding: 10px 14px;
+      font-size: 13px;
     }
   `,
 })
 export class ForumFacets {
   protected view = inject(ForumView);
   private scan = inject(ForumScan);
-  private router = inject(Router);
   private transloco = inject(TranslocoService);
 
   protected groups = computed<FacetGroup[]>(() => {
@@ -141,18 +178,16 @@ export class ForumFacets {
     return value;
   }
 
-  protected toggle(kind: FacetKind, value: string): void {
-    this.go(toggleFacet(this.view.choice(), kind, value));
+  /** The list with this value switched, keeping its tab and source. */
+  protected params(kind: FacetKind, value: string) {
+    return this.to(toggleFacet(this.view.choice(), kind, value));
   }
 
-  protected clear(): void {
-    this.go(NO_FACETS);
+  protected cleared() {
+    return this.to(NO_FACETS);
   }
 
-  /** To the list, with its tab and source kept: a choice made beside a discussion lands there too. */
-  private go(choice: typeof NO_FACETS): void {
-    void this.router.navigate(['/forum'], {
-      queryParams: { ...this.scan.listParams, ...facetParams(choice) },
-    });
+  private to(choice: FacetChoice) {
+    return { ...this.scan.listParams, ...facetParams(choice) };
   }
 }

@@ -25,6 +25,7 @@
     "build:seo": "ng build --configuration mockingbird,seo --stats-json",
     "test:seo:browser": "node scripts/check-seo-browser.mjs",
     "test:radio:browser": "node scripts/check-radio-browser.mjs",
+    "test:forum:browser": "node scripts/check-forum-browser.mjs",
     "postbuild:seo": "node scripts/prepare-seo-index.mjs && node scripts/stamp-preview-seo.mjs && node scripts/check-mock-leakage.mjs && node scripts/report-bundle.mjs --check && node scripts/check-seo-build.mjs",
     "postbuild:mockingbird": "node scripts/stamp-preview-seo.mjs && node scripts/check-mock-leakage.mjs && node scripts/report-bundle.mjs --check",
     "bundle:report": "node scripts/report-bundle.mjs",

@@ -8,6 +8,7 @@ import {
 } from './providers/anonymous/anonymous-route.guard';
 import { anonymousOnlyGuard } from './providers/anonymous/anonymous-only.guard';
 import { featureFlagGuard } from './feature-flag.guard';
+import { forumThreadGuard } from './forum-thread.guard';
 import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
@@ -1024,6 +1025,8 @@ export const routes: Routes = [
       {
         path: 'statuses/:id',
         title: 'Post',
+        // Opened from Forum, a post stays in Forum (its rails and menu).
+        canActivate: [forumThreadGuard],
         loadComponent: () => import('./pages/thread/thread').then((m) => m.Thread),
       },
       {

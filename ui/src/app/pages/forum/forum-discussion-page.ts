@@ -48,8 +48,15 @@ import { useForumRails } from './forum-rails';
     :host {
       display: block;
     }
+    /* In line with the post cards' 16px inset. */
+    .back,
+    mb-notice,
+    mb-disclosure {
+      display: block;
+      margin-inline: 16px;
+    }
     .back {
-      padding: 0.75rem 0 0.5rem;
+      padding: 0.75rem 0 0.25rem;
     }
   `,
 })
@@ -65,7 +72,7 @@ export class ForumDiscussionPage {
   });
   protected discussion = computed(() => {
     const id = this.id();
-    return id ? this.scan.discussion(id) : null;
+    return id ? this.scan.containing(id) : null;
   });
 
   constructor() {

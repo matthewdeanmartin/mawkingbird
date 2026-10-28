@@ -222,6 +222,15 @@ export class ForumScan {
     return this.found().find((discussion) => discussion.anchor.id === anchorId) ?? null;
   }
 
+  /** The discussion holding this post anywhere in it: a reply opened on its own. */
+  containing(postId: string): Discussion | null {
+    return (
+      this.discussion(postId) ??
+      this.found().find((discussion) => discussion.posts.some((post) => post.id === postId)) ??
+      null
+    );
+  }
+
   /** Start over on a source, with the first scan's allowance. */
   start(source: ForumSource): void {
     this.stop$.next();

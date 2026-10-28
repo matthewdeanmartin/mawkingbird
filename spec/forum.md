@@ -166,6 +166,8 @@ calls used out of calls allowed.
   avatars of up to 5 participants (friends first), "3 friends replied ·
   12 replies · 6 people", and latest activity. Activating the card opens the
   discussion.
+- Posts opened while in Forum mode (`/statuses/:id` from a card, a reply or
+  the reader) are redirected to `/forum/d/:id`, so the reader stays in Forum.
 - Discussion view (`/forum/d/<rootId>`): the unchanged thread page, in
   Forum mode. When the scan holds the whole tree, it is handed over in
   reading order through `ThreadPreload` (no request, and replies from other
@@ -177,7 +179,9 @@ calls used out of calls allowed.
 
 ### Left rail: facets
 
-Ported from MIMB, with the same semantics: counts are computed over the
+Each value is a row (a link with its count, in the default rails' trend
+shape), not a pill: pills are for actions. Ported from MIMB, with the same
+semantics: counts are computed over the
 current tab's discussions **before** facet choices (a stable denominator),
 choices combine with AND across facet types and OR within a type, and each
 facet shows its top 20. MIMB's uncommon-words facet is **not** ported: it
@@ -210,6 +214,8 @@ appear there. They remain everywhere else.
 - **Follow everyone** and **Add everyone to a list**, through the existing
   `bulk-actions` / `bulk-follow-confirmation` flow (with confirmation and
   progress, skipping you and accounts already followed).
+- Rows are two lines: the avatar links to the profile, and the name, badges and
+  counts form the People toggle. Counts come before the handle, which truncates.
 - Choosing a member toggles the **People** facet, which narrows the list to
   discussions that member is in. A separate link opens their profile.
 - Hidden accounts (mutes, blocks, `local-moderation`) are dropped from

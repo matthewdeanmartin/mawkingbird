@@ -79,6 +79,8 @@ describe('ForumMembers', () => {
           useValue: {
             following,
             listParams: { source: ['tag:rust'] },
+            containing: (id: string) =>
+              found().find((each) => each.posts.some((p) => p.id === id)) ?? null,
             summaries: computed(() =>
               found().map((each) => summarize(each, who('me'), following())),
             ),
@@ -102,7 +104,7 @@ describe('ForumMembers', () => {
   }
 
   function names(host: HTMLElement): string[] {
-    return [...host.querySelectorAll('li .who > button')].map((b) => b.textContent!.trim());
+    return [...host.querySelectorAll('li button.who .name')].map((b) => b.textContent!.trim());
   }
 
   it('lists everyone in the open discussion, starter first, with their roles', () => {
@@ -114,6 +116,10 @@ describe('ForumMembers', () => {
     expect(rows[1]).toContain('Following');
     expect(rows[1]).toContain('2 posts');
     expect(rows[3]).toContain('You');
+  });
+
+  it('lists the whole discussion when a reply in it is open', () => {
+    expect(names(mount('3'))).toEqual(['User a', 'User b', 'User r', 'User me']);
   });
 
   it('offers no follow button for me, and follows other servers’ people through webfinger', () => {
@@ -163,13 +169,13 @@ describe('ForumMembers', () => {
     const host = mount(null);
     expect(host.querySelector('h2')!.textContent).toContain('Most active');
     expect(names(host)[0]).toBe('User b');
-    expect(host.textContent).toContain('In 2 discussions');
+    expect(host.textContent).toContain('in 2 discussions');
     expect(host.querySelector('.actions')).toBeNull();
   });
 
   it('narrows the list to a person’s discussions, keeping the list’s source', async () => {
     const host = mount(null);
-    (host.querySelector('li .who > button') as HTMLButtonElement).click();
+    (host.querySelector('li button.who') as HTMLButtonElement).click();
     await fixture.whenStable();
     const url = TestBed.inject(Router).url;
     expect(url).toContain('/forum?source=tag:rust');

@@ -56,16 +56,19 @@ describe('ForumFacets', () => {
     const host = mount();
     const headings = [...host.querySelectorAll('h2')].map((h) => h.textContent!.trim());
     expect(headings).toEqual(['Hashtags', 'Started on', 'Language']);
-    const rust = host.querySelector('button[aria-pressed]')!;
-    expect(rust.textContent).toContain('#rust');
-    expect(rust.textContent).toContain('2');
-    expect(rust.getAttribute('aria-label')).toBe('#rust, 2 discussions');
+    const rust = host.querySelector('a.facet')!;
+    expect(rust.querySelector('.facet-name')!.textContent).toBe('#rust');
+    // Read as "#rust 2 discussions"; the bare number is for the eye only.
+    expect(rust.querySelector('.sr-only')!.textContent!.trim()).toBe('2 discussions');
+    expect(rust.querySelector('[aria-hidden="true"]')!.textContent).toBe('2');
+    expect(rust.getAttribute('aria-current')).toBeNull();
   });
 
   it('puts a choice in the list URL, keeping the tab', async () => {
     const host = mount();
-    (host.querySelector('button[aria-pressed]') as HTMLButtonElement).click();
-    await TestBed.inject(Router).navigated;
+    const rust = host.querySelector<HTMLAnchorElement>('a.facet')!;
+    expect(rust.getAttribute('href')).toBe('/forum?filter=asked&tag=rust');
+    rust.click();
     await new Promise((resolve) => setTimeout(resolve));
     expect(TestBed.inject(Router).url).toBe('/forum?filter=asked&tag=rust');
   });
@@ -73,8 +76,12 @@ describe('ForumFacets', () => {
   it('marks chosen values and offers to clear them', () => {
     TestBed.inject(ForumView).choice.set({ ...NO_FACETS, tag: ['rust'] });
     const host = mount();
-    expect(host.querySelector('button[aria-pressed="true"]')!.textContent).toContain('#rust');
-    expect(host.textContent).toContain('Clear filters');
+    const chosen = host.querySelector('a.facet[aria-current="true"]')!;
+    expect(chosen.textContent).toContain('#rust');
+    // Choosing it again switches it off.
+    expect(chosen.getAttribute('href')).toBe('/forum?filter=asked');
+    const clear = [...host.querySelectorAll('a')].find((a) => a.textContent!.includes('Clear'))!;
+    expect(clear.getAttribute('href')).toBe('/forum?filter=asked');
   });
 
   it('says when there is nothing to filter by', () => {

@@ -18,11 +18,6 @@
       "nextStep": "One Forum discussion: a native router link back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."
     },
     {
-      "file": "ui/src/app/pages/forum/forum-facets.ts",
-      "disposition": "adopted scope",
-      "nextStep": "Forum's left rail: a Rail Card of MbButton toggle chips (aria-pressed, an accessible name with the count) for hashtags, starting server and language, plus Clear filters. Preserve counts taken before choices, AND across facets and OR within one, choices kept in the URL, and its reuse inside the list's Filters disclosure on narrow screens."
-    },
-    {
       "file": "ui/src/app/pages/forum/forum-list-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Dialog, Field/Control (list select and new-list name) and MbButton add the people of a discussion to a list. Preserve the up-front follow check (Mastodon lists hold only followed accounts), status and alert text, batch-then-single fallback, and the omission of other servers' accounts."
@@ -30,12 +25,12 @@
     {
       "file": "ui/src/app/pages/forum/forum-members.ts",
       "disposition": "adopted scope",
-      "nextStep": "Forum's right rail: a Rail Card listing people with MbButton toggles (aria-pressed) for the People facet, Badge roles, native profile links, the shared FollowButton (webfinger for other servers), and MbButton Follow everyone / Add everyone to a list via the bulk-actions dialog and progress. Preserve the in-discussion and most-active modes, no group actions beside the list, and me excluded from group actions."
+      "nextStep": "Forum's right rail: a Rail Card of compact two-line people rows. The avatar is a native profile link; the name, Badge roles and counts sit in one native row button (aria-pressed) that toggles the People facet, deliberately not an MbButton pill because these rows are data, not actions. The shared FollowButton (webfinger for other servers) and MbButton Follow everyone / Add everyone to a list (bulk-actions dialog and progress) remain the actions. Preserve 14px row insets, counts before the truncating handle, the in-discussion and most-active modes, and me excluded from group actions."
     },
     {
       "file": "ui/src/app/pages/forum/forum-page.html",
       "disposition": "adopted scope",
-      "nextStep": "Forum's discussion list: Page Header, Field/Control for the source picker (select and hashtag input), MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers, and Content State for empty and Mastodon-only states. Discussion roots reuse StatusCard and its content-warning boundary. Preserve the visible call count, Stop keeping found results, the stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
+      "nextStep": "Forum's discussion list: Page Header with a help link, Field/Control for the source picker, MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers in each card's footer, and Content State for empty and Mastodon-only states. Roots reuse StatusCard; each footer's stats line is the native link into the discussion. One persistent sr-only status announces scan start and end, never the call counter. Preserve the 16px inset, Stop keeping found results, stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
     },
     {
       "file": "ui/src/app/pages/radio/radio-studio.html",

@@ -1,7 +1,12 @@
 <mb-page-header
   [title]="'forum.title' | transloco"
   [description]="'forum.intro.' + filter() | transloco"
-/>
+>
+  <!-- The static help site, as first-run links it: relative to the base href. -->
+  <a class="small" href="help/reading/forum/" target="_blank" rel="noopener">{{
+    'forum.help' | transloco
+  }}</a>
+</mb-page-header>
 
 @if (auth.lacksMastodonToken) {
   <mb-content-state [title]="'forum.mastodonOnly' | transloco" />
@@ -59,7 +64,10 @@
     </div>
   </section>
 
-  <section class="progress" aria-live="polite">
+  <!-- One persistent live region, changed only when a scan starts or ends:
+       announcing the call counter would read out every request. -->
+  <p class="sr-only" role="status">{{ announcement() }}</p>
+  <section class="progress">
     <p class="muted small">
       {{
         'forum.progress'
@@ -73,7 +81,7 @@
       }}
     </p>
     @if (scan.scanning()) {
-      <p role="status">{{ 'forum.scanning' | transloco }}</p>
+      <p>{{ 'forum.scanning' | transloco }}</p>
       <button mbButton type="button" size="small" tone="danger" (click)="scan.stop()">
         {{ 'forum.stop' | transloco }}
       </button>
@@ -120,18 +128,6 @@
   <ol class="discussions">
     @for (summary of shown(); track summary.discussion.key) {
       <li class="discussion">
-        @if (summary.question || summary.discussion.partial) {
-          <p class="badges">
-            @if (summary.question) {
-              <mb-badge>{{ 'forum.card.question' | transloco }}</mb-badge>
-            }
-            @if (summary.discussion.partial) {
-              <mb-badge tone="attention" [attr.title]="'forum.card.partialTitle' | transloco">
-                {{ 'forum.card.partial' | transloco }}
-              </mb-badge>
-            }
-          </p>
-        }
         <app-status-card [status]="summary.discussion.anchor" />
         <footer class="meta">
           <ul class="faces" [attr.aria-label]="'forum.card.participants' | transloco">
@@ -148,19 +144,36 @@
               </li>
             }
           </ul>
-          <span class="small muted">
-            {{
-              'forum.card.stats'
-                | transloco: { replies: summary.replyCount, people: summary.participants.length }
-            }}
-            @if (summary.friendReplyCount) {
-              · {{ 'forum.card.friends' | transloco: { count: summary.friendReplyCount } }}
+          <!-- The stats are the way in: one link, so nothing competes for the line. -->
+          <span class="stats small">
+            @if (summary.question) {
+              <mb-badge>{{ 'forum.card.question' | transloco }}</mb-badge>
             }
-            · {{ 'forum.card.latest' | transloco: { time: (summary.latestAt | humanTime) } }}
+            @if (summary.discussion.partial) {
+              <mb-badge tone="attention" [attr.title]="'forum.card.partialTitle' | transloco">
+                {{ 'forum.card.partial' | transloco }}
+              </mb-badge>
+            }
+            <a class="open" [routerLink]="['/forum/d', summary.discussion.anchor.id]">
+              <span class="sr-only">{{ 'forum.card.open' | transloco }}:</span>
+              {{
+                (summary.replyCount === 1 ? 'forum.card.repliesOne' : 'forum.card.repliesOther')
+                  | transloco: { count: summary.replyCount }
+              }}
+              · {{ 'forum.card.people' | transloco: { count: summary.participants.length } }}
+              @if (summary.friendReplyCount) {
+                ·
+                {{
+                  (summary.friendReplyCount === 1
+                    ? 'forum.card.friendsOne'
+                    : 'forum.card.friendsOther'
+                  ) | transloco: { count: summary.friendReplyCount }
+                }}
+              }
+              · {{ 'forum.card.latest' | transloco: { time: (summary.latestAt | humanTime) } }}
+              <span aria-hidden="true">→</span>
+            </a>
           </span>
-          <a mbButton size="small" [routerLink]="['/forum/d', summary.discussion.anchor.id]">
-            {{ 'forum.card.open' | transloco }}
-          </a>
         </footer>
       </li>
     }

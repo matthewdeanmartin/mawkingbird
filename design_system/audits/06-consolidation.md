@@ -1,5 +1,24 @@
 # Sprint 6 opening consolidation audit
 
+## Forum mode, sprint 4: data as rows, 2026-10-27
+
+Reviewed 1,228 source files and 257 candidate files, after owner review
+of the rails: pill buttons were being used for data. One candidate is removed:
+`pages/forum/forum-facets.ts` now renders facet values as rail rows (links with
+`aria-current`, in the default rails' trend-row shape) and has no controls left.
+`pages/forum/forum-members.ts` replaces pill name buttons with compact two-line
+rows: a native row button (aria-pressed) for the People facet and a native avatar
+link to the profile; FollowButton and the group-action MbButtons stay. The list's
+"Open discussion" pill becomes the footer's stats link, and its badges move into
+that footer. No shared widget changed.
+
+## Forum: posts opened from Forum stay in Forum, 2026-10-27
+
+Reviewed 1,228 source files and 258 candidate files. One source file is added
+with no candidates: `forum-thread.guard.ts`, a route guard that sends
+`/statuses/:id` to `/forum/d/:id` while Forum is the current mode. No control,
+candidate file or shared widget changed.
+
 ## Forum mode, sprint 3: rails, 2026-10-27
 
 Reviewed 1,227 source files and 258 candidate files. Three

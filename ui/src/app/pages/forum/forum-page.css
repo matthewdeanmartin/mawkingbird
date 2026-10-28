@@ -1,7 +1,17 @@
+/* Content lines up with the post cards' 16px inset, not the column's edge. */
 :host {
   display: grid;
   gap: 0.75rem;
-  padding: 0.75rem 0;
+  padding: 0 0 0.75rem;
+}
+
+.controls,
+.progress,
+.resort,
+.inline-rail,
+.meta,
+mb-content-state {
+  margin-inline: 16px;
 }
 
 .controls {
@@ -51,26 +61,30 @@
 
 .discussion {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
 }
 
-.badges {
+/* The stats wrap within their own space, so Open discussion keeps its place. */
+.stats {
   display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.4rem;
-  margin: 0;
+  min-width: 0;
 }
 
 .meta {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 0.75rem;
+  gap: 0.75rem;
 }
 
 .faces {
   display: flex;
+  flex: none;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -86,8 +100,12 @@
   border-radius: 50%;
 }
 
-.meta a {
-  margin-inline-start: auto;
+.open {
+  color: var(--muted);
+}
+
+.open:hover {
+  color: var(--accent);
 }
 
 .inline-rail {

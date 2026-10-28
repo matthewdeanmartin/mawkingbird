@@ -176,6 +176,28 @@ describe('ForumPage', () => {
     expect(scan.deeper).toHaveBeenCalledWith(10);
   });
 
+  it('announces a scan starting and how it ended, but never the call counter', async () => {
+    scan.source.set({ kind: 'home' });
+    scan.state.set('scanning');
+    const host = await mount();
+    const status = () => host.querySelector('p.sr-only[role="status"]')!.textContent!.trim();
+    // The counter is not a live region; one persistent status element is.
+    expect(
+      host.querySelectorAll(
+        '.progress [role="status"], .progress[aria-live], .progress [aria-live]',
+      ),
+    ).toHaveLength(0);
+    expect(host.querySelectorAll('p.sr-only[role="status"]')).toHaveLength(1);
+    expect(status()).toBe('Looking for discussions…');
+    scan.callsUsed.set(4);
+    fixture.detectChanges();
+    expect(status()).toBe('Looking for discussions…');
+    scan.found.set([thread('1', 'a', 'b')]);
+    scan.state.set('spent');
+    fixture.detectChanges();
+    expect(status()).toBe('Calls used up for now. 1 discussion found.');
+  });
+
   it('explains an empty result rather than showing nothing', async () => {
     scan.source.set({ kind: 'home' });
     scan.state.set('exhausted');

@@ -123,6 +123,10 @@ null`), which no resolve can detect, and the replies only the author's
   notifications (`types[]=mention`, 40 a page) take turns as one source.
   `api.notifications` gained optional `types` and `limit`.
 - **Discussion view** at `/forum/d/:id`: the unchanged thread page.
+  (Follow-up after trial: while Forum is the current mode, `forumThreadGuard`
+  sends any `/statuses/:id` link there too, so opening a post or reply from
+  Forum keeps Forum's menu and rails. Members recognise a reply inside a
+  scanned discussion.)
   `ThreadPreload` hands it the scan's tree in depth-first reading order, so
   there is no request. A discussion without its tree loads as any post would
   (the planned "Load full discussion" button is unnecessary). The back link
@@ -195,7 +199,8 @@ ads or server cards in the right rail, and every other mode is unchanged.
 1. **Help page** in `docs/` (Forum: what a scan costs, what partial means,
    facets, Members), added to the `mkdocs.yml` nav. Run `make help-site-test`
    and `make help-site`.
-2. **i18n pass** for every Forum key across the app locales; `check:i18n`.
+2. ~~i18n pass~~: English only (owner, 2026-10-27). Translation waits until
+   the feature is settled and joins one global pass, as Radio's keys do.
 3. **Accessibility.** Cards are a list of links with readable names; facets
    are toggle buttons with `aria-pressed`; progress is announced politely;
    Stop is reachable by keyboard.
@@ -203,6 +208,42 @@ ads or server cards in the right rail, and every other mode is unchanged.
    deeper, partial root, facet AND/OR, member filter, and the mobile layout.
 5. **Decide on the later candidates** in the spec (IndexedDB cache and
    Bluesky).
+
+### Sprint 4 progress (2026-10-27)
+
+- **Owner review of the rails** (screenshot): pill buttons were used for data,
+  widgets touched their containers' edges, and member rows stacked one fact per
+  line. Fixed:
+  - Facets are rail rows in the default rails' trend shape: a link per value
+    with its count, `aria-current` and an accent edge when chosen, and the
+    count spoken as "N discussions". There are no buttons.
+  - Members are two-line rows. The avatar links to the profile; the name,
+    badges and counts form one row toggle for the People facet; counts come
+    before the truncating handle. Follow and the group actions stay as
+    buttons.
+  - The list has a 16px inset, in line with the post cards. Badges move into
+    each card's footer, and the footer's stats line is now the link into the
+    discussion (the separate "Open discussion" pill is gone).
+  - Counts are singular or plural ("1 friend replied", "in 1 discussion").
+  - The list re-sorts by itself when a scan step ends and the reader has not
+    scrolled.
+- **Help page** `docs/reading/forum.md`, in the nav under Reading, and linked
+  from the Forum header ("How Forum works"). `make help-site-test` (9 tests)
+  and `make help-site` (60 guides) pass.
+- **Accessibility.** The progress area was a polite live region that would
+  read out every call. One persistent `sr-only` status now speaks only at a
+  scan's start and end, with the count found. Facets use `aria-current`, the
+  People toggles `aria-pressed`, and Stop is a button.
+- **Browser check** `npm run test:forum:browser` (`scripts/check-forum-browser.mjs`
+  with `forum-browser-fixture.mjs`, against the production build). It checks:
+  the scan within its allowance; storms and lone questions left out; 16px and
+  14px insets; no buttons in the facets; compact member rows; facet links and
+  Clear; the People facet; opening a scanned discussion with no request;
+  `/statuses/:id` redirecting into Forum; the 1100px (People inline) and
+  800px (Filters inline, no sideways scroll) layouts; and no page errors.
+  Screenshots go to `.test-results/forum-*.png`.
+- **Found, not fixed (shared shell):** at 800px the top menu's icons overlap
+  the next tab's label in every mode (Mastodon and Video too), not only Forum.
 
 ## Gates (every sprint)
 

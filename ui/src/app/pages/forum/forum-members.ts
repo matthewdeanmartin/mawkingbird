@@ -25,10 +25,13 @@ import { ForumListDialog } from './forum-list-dialog';
 // i18n forum.members.started: Started it
 // i18n forum.members.you: You
 // i18n forum.members.following: Following
-// i18n forum.members.posts: {{count}} posts · last {{time}}
-// i18n forum.members.discussions: In {{count}} discussions · {{posts}} posts
+// i18n forum.members.postsOne: 1 post
+// i18n forum.members.postsOther: {{count}} posts
+// i18n forum.members.last: last {{time}}
+// i18n forum.members.inOne: in 1 discussion
+// i18n forum.members.inOther: in {{count}} discussions
 // i18n forum.members.filter: Show discussions with {{name}}
-// i18n forum.members.profile: Profile
+// i18n forum.members.profileOf: {{name}}’s profile
 // i18n forum.members.followAll: Follow everyone
 // i18n forum.members.addToList: Add everyone to a list
 
@@ -38,7 +41,8 @@ interface MemberRow {
   account: Account;
   /** My server's record: follow and lists can act on it directly. */
   local: boolean;
-  detail: { key: string; params: Record<string, unknown> };
+  /** Short facts shown after the handle, each a translation key and its values. */
+  detail: { key: string; params: Record<string, unknown> }[];
   started: boolean;
 }
 
@@ -63,36 +67,55 @@ interface MemberRow {
     ForumListDialog,
   ],
   template: `
-    <section mbRailCard class="members">
+    <section mbRailCard class="card">
       <h2 class="card-title">
         {{
           (inDiscussion() ? 'forum.members.inDiscussion' : 'forum.members.mostActive') | transloco
         }}
       </h2>
-      <ul>
+      <ul class="people">
         @for (row of rows(); track row.person) {
-          <li>
-            <img
-              [src]="row.account.avatar_static || row.account.avatar"
-              alt=""
-              width="36"
-              height="36"
-              loading="lazy"
-            />
-            <div class="who">
-              <button
-                mbButton
-                type="button"
-                size="small"
-                [variant]="chosen(row.person) ? 'solid' : 'outline'"
-                [attr.aria-pressed]="chosen(row.person)"
-                [title]="'forum.members.filter' | transloco: { name: name(row.account) }"
-                (click)="toggle(row.person)"
+          <li [class.chosen]="chosen(row.person)">
+            @if (row.local) {
+              <a
+                class="avatar"
+                [routerLink]="['/accounts', row.account.id]"
+                [attr.aria-label]="
+                  'forum.members.profileOf' | transloco: { name: name(row.account) }
+                "
               >
-                {{ name(row.account) }}
-              </button>
-              <span class="small muted handle">&#64;{{ row.account.acct }}</span>
-              <span class="badges">
+                <img
+                  [src]="row.account.avatar_static || row.account.avatar"
+                  alt=""
+                  loading="lazy"
+                />
+              </a>
+            } @else {
+              <a
+                class="avatar"
+                [href]="row.account.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                [attr.aria-label]="
+                  'forum.members.profileOf' | transloco: { name: name(row.account) }
+                "
+              >
+                <img
+                  [src]="row.account.avatar_static || row.account.avatar"
+                  alt=""
+                  loading="lazy"
+                />
+              </a>
+            }
+            <button
+              type="button"
+              class="who"
+              [attr.aria-pressed]="chosen(row.person)"
+              [title]="'forum.members.filter' | transloco: { name: name(row.account) }"
+              (click)="toggle(row.person)"
+            >
+              <span class="line">
+                <span class="name">{{ name(row.account) }}</span>
                 @if (row.started) {
                   <mb-badge>{{ 'forum.members.started' | transloco }}</mb-badge>
                 }
@@ -102,33 +125,24 @@ interface MemberRow {
                   <mb-badge>{{ 'forum.members.following' | transloco }}</mb-badge>
                 }
               </span>
-              <span class="small muted">{{ row.detail.key | transloco: row.detail.params }}</span>
-              <span class="row-actions">
-                @if (row.local) {
-                  <a class="small" [routerLink]="['/accounts', row.account.id]">{{
-                    'forum.members.profile' | transloco
-                  }}</a>
-                } @else {
-                  <a
-                    class="small"
-                    [href]="row.account.url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >{{ 'forum.members.profile' | transloco }}</a
-                  >
+              <!-- Counts first: a long handle truncates, the counts never do. -->
+              <span class="detail muted">
+                @for (part of row.detail; track part.key) {
+                  {{ part.key | transloco: part.params }} ·
                 }
-                @if (row.person !== me()) {
-                  <app-follow-button
-                    [accountId]="row.account.id"
-                    [handle]="row.account.acct"
-                    [foreign]="row.local ? null : row.account"
-                  />
-                }
+                &#64;{{ row.account.acct }}
               </span>
-            </div>
+            </button>
+            @if (row.person !== me()) {
+              <app-follow-button
+                [accountId]="row.account.id"
+                [handle]="row.account.acct"
+                [foreign]="row.local ? null : row.account"
+              />
+            }
           </li>
         } @empty {
-          <li class="muted small">
+          <li class="note muted">
             {{ (inDiscussion() ? 'forum.members.unscanned' : 'forum.members.empty') | transloco }}
           </li>
         }
@@ -155,7 +169,7 @@ interface MemberRow {
           </button>
         </div>
       }
-      <app-bulk-progress />
+      <div class="progress"><app-bulk-progress /></div>
     </section>
 
     @if (followAllOpen() && followTarget(); as target) {
@@ -171,46 +185,85 @@ interface MemberRow {
     }
   `,
   styles: `
-    .members {
-      display: grid;
-      gap: 0.5rem;
+    :host {
+      display: block;
     }
-    h2 {
-      margin: 0;
-      font-size: 0.95rem;
+    .card {
+      margin-bottom: 12px;
     }
-    ul {
-      display: grid;
-      gap: 0.6rem;
+    .people {
       margin: 0;
       padding: 0;
       list-style: none;
     }
     li {
       display: grid;
-      grid-template-columns: 36px minmax(0, 1fr);
-      gap: 0.5rem;
-      align-items: start;
+      grid-template-columns: 32px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 14px 8px 11px;
+      border-bottom: 1px solid var(--border);
+      border-inline-start: 3px solid transparent;
     }
-    img {
+    li:last-child {
+      border-bottom: none;
+    }
+    li.chosen {
+      border-inline-start-color: var(--accent);
+    }
+    li.note {
+      display: block;
+      font-size: 13px;
+    }
+    .avatar img {
+      display: block;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
     }
     .who {
       display: grid;
-      gap: 0.15rem;
-      justify-items: start;
+      gap: 1px;
       min-width: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--text);
+      font: inherit;
+      text-align: start;
+      cursor: pointer;
     }
-    .handle {
-      overflow-wrap: anywhere;
+    .who:hover .name {
+      text-decoration: underline;
     }
-    .badges,
-    .row-actions,
+    .line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 700;
+    }
+    .detail {
+      overflow: hidden;
+      font-size: 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
     .actions {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 0.3rem 0.5rem;
+      gap: 6px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+    }
+    .progress:not(:empty) {
+      padding: 0 14px;
     }
   `,
 })
@@ -234,7 +287,9 @@ export class ForumMembers {
     const id = this.view.focus();
     return id === null
       ? null
-      : (this.scan.summaries().find((summary) => summary.discussion.anchor.id === id) ?? false);
+      : (this.scan
+          .summaries()
+          .find((summary) => summary.discussion.key === this.scan.containing(id)?.key) ?? false);
   });
 
   protected rows = computed<MemberRow[]>(() => {
@@ -246,10 +301,10 @@ export class ForumMembers {
         account: participant.account,
         local: participant.local,
         started: personKey(participant.account) === starter,
-        detail: {
-          key: 'forum.members.posts',
-          params: { count: participant.posts, time: this.time(participant.lastAt) },
-        },
+        detail: [
+          this.count('forum.members.posts', participant.posts),
+          { key: 'forum.members.last', params: { time: this.time(participant.lastAt) } },
+        ],
       }));
     }
     if (summary === false) return [];
@@ -265,10 +320,10 @@ export class ForumMembers {
       account: person.account,
       local: local.has(person.person),
       started: false,
-      detail: {
-        key: 'forum.members.discussions',
-        params: { count: person.discussions, posts: person.posts },
-      },
+      detail: [
+        this.count('forum.members.in', person.discussions),
+        this.count('forum.members.posts', person.posts),
+      ],
     }));
   });
 
@@ -297,6 +352,11 @@ export class ForumMembers {
 
   private time(iso: string): string {
     return this.timePipe.transform(iso);
+  }
+
+  /** A count's singular or plural phrase. */
+  private count(base: string, count: number) {
+    return { key: `${base}${count === 1 ? 'One' : 'Other'}`, params: { count } };
   }
 
   protected name(account: Account): string {

@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1227,
-  "filesWithCandidates": 258,
+  "filesScanned": 1228,
+  "filesWithCandidates": 257,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3856,28 +3856,6 @@
       ]
     },
     {
-      "file": "ui/src/app/pages/forum/forum-facets.ts",
-      "status": "needs semantic review",
-      "findings": [
-        {
-          "pattern": "shared",
-          "line": 48
-        },
-        {
-          "pattern": "shared",
-          "line": 74
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 47
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 74
-        }
-      ]
-    },
-    {
       "file": "ui/src/app/pages/forum/forum-list-dialog.ts",
       "status": "needs semantic review",
       "findings": [
@@ -3921,39 +3899,35 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 84
+          "line": 120
         },
         {
           "pattern": "shared",
-          "line": 97
+          "line": 123
         },
         {
           "pattern": "shared",
-          "line": 100
+          "line": 125
         },
         {
           "pattern": "shared",
-          "line": 102
+          "line": 153
         },
         {
           "pattern": "shared",
-          "line": 139
-        },
-        {
-          "pattern": "shared",
-          "line": 148
+          "line": 162
         },
         {
           "pattern": "nativeButtons",
-          "line": 83
+          "line": 110
         },
         {
           "pattern": "nativeButtons",
-          "line": 138
+          "line": 152
         },
         {
           "pattern": "nativeButtons",
-          "line": 147
+          "line": 161
         }
       ]
     },
@@ -3967,91 +3941,87 @@
         },
         {
           "pattern": "shared",
-          "line": 7
+          "line": 12
         },
         {
           "pattern": "shared",
-          "line": 11
+          "line": 16
         },
         {
           "pattern": "shared",
-          "line": 13
+          "line": 18
         },
         {
           "pattern": "shared",
-          "line": 29
+          "line": 34
         },
         {
           "pattern": "shared",
-          "line": 31
+          "line": 36
         },
         {
           "pattern": "shared",
-          "line": 41
+          "line": 46
         },
         {
           "pattern": "shared",
-          "line": 49
+          "line": 54
         },
         {
           "pattern": "shared",
-          "line": 77
+          "line": 85
         },
         {
           "pattern": "shared",
-          "line": 88
+          "line": 96
         },
         {
           "pattern": "shared",
-          "line": 104
+          "line": 112
         },
         {
           "pattern": "shared",
-          "line": 109
+          "line": 117
         },
         {
           "pattern": "shared",
-          "line": 115
+          "line": 123
         },
         {
           "pattern": "shared",
-          "line": 126
+          "line": 150
         },
         {
           "pattern": "shared",
-          "line": 129
+          "line": 153
         },
         {
           "pattern": "shared",
-          "line": 161
-        },
-        {
-          "pattern": "shared",
-          "line": 170
+          "line": 183
         },
         {
           "pattern": "nativeButtons",
-          "line": 41
+          "line": 46
         },
         {
           "pattern": "nativeButtons",
-          "line": 48
+          "line": 53
         },
         {
           "pattern": "nativeButtons",
-          "line": 77
+          "line": 85
         },
         {
           "pattern": "nativeButtons",
-          "line": 87
+          "line": 95
         },
         {
           "pattern": "nativeButtons",
-          "line": 115
+          "line": 123
         },
         {
           "pattern": "selects",
-          "line": 12
+          "line": 17
         }
       ]
     },

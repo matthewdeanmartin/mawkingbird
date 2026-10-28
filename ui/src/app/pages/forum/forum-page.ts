@@ -11,7 +11,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { catchError, of } from 'rxjs';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -48,6 +48,7 @@ import { ForumMembers } from './forum-members';
 import { useForumRails } from './forum-rails';
 
 // i18n forum.title: Forum
+// i18n forum.help: How Forum works
 // i18n forum.intro.talk: Conversations in your feed, traced back to where they started.
 // i18n forum.intro.asked: Discussions that start with a question.
 // i18n forum.intro.friends: Discussions started by people you follow.
@@ -66,6 +67,8 @@ import { useForumRails } from './forum-rails';
 // i18n forum.progress: {{posts}} posts read · {{discussions}} discussions · {{calls}} of {{allowance}} calls
 // i18n forum.scanning: Looking for discussions…
 // i18n forum.stop: Stop
+// i18n forum.foundOne: 1 discussion found.
+// i18n forum.foundOther: {{count}} discussions found.
 // i18n forum.deeper: Scan deeper (+{{count}} calls)
 // i18n forum.deeperTitle: Spend up to {{count}} more calls on this feed. A scan stops at {{max}}.
 // i18n forum.state.stopped: Stopped. Showing what was found so far.
@@ -85,8 +88,11 @@ import { useForumRails } from './forum-rails';
 // i18n forum.card.question: Question
 // i18n forum.card.partial: Partial thread
 // i18n forum.card.partialTitle: The start of this conversation could not be reached.
-// i18n forum.card.stats: {{replies}} replies · {{people}} people
-// i18n forum.card.friends: {{count}} friends replied
+// i18n forum.card.repliesOne: 1 reply
+// i18n forum.card.repliesOther: {{count}} replies
+// i18n forum.card.people: {{count}} people
+// i18n forum.card.friendsOne: 1 friend replied
+// i18n forum.card.friendsOther: {{count}} friends replied
 // i18n forum.card.latest: Latest {{time}}
 // i18n forum.card.open: Open discussion
 // i18n forum.card.participants: People in this discussion
@@ -130,6 +136,7 @@ export class ForumPage {
   protected scan = inject(ForumScan);
   protected auth = inject(Auth);
   private api = inject(Api);
+  private transloco = inject(TranslocoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -184,6 +191,18 @@ export class ForumPage {
   protected deeperOptions = computed(() => [
     ...new Set(DEEPER_STEPS.map((step) => Math.min(step, this.scan.headroom()))),
   ]);
+
+  /** What the live region says: the scan starting, or how it ended and what it found. */
+  protected announcement = computed(() => {
+    if (this.scan.scanning()) return this.transloco.translate('forum.scanning');
+    const message = this.stateMessage();
+    if (!message) return '';
+    const count = this.scan.summaries().length;
+    return `${this.transloco.translate(message, { max: MAX_SCAN_CALLS })} ${this.transloco.translate(
+      count === 1 ? 'forum.foundOne' : 'forum.foundOther',
+      { count },
+    )}`;
+  });
 
   protected stateMessage = computed(() => {
     switch (this.scan.state()) {
@@ -245,6 +264,16 @@ export class ForumPage {
       this.sort();
       this.scan.source();
       untracked(() => this.resort());
+    });
+    // A scan step ended while the reader was still at the top: nothing they
+    // were looking at can move under them, so show the ideal order.
+    let wasScanning = false;
+    effect(() => {
+      const scanning = this.scan.scanning();
+      untracked(() => {
+        if (wasScanning && !scanning && window.scrollY === 0) this.resort();
+        wasScanning = scanning;
+      });
     });
     // New results: keep what is shown in place, append the rest.
     effect(() => {
