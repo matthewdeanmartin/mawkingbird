@@ -1,1 +1,0 @@
-import{B as o,d as e}from"./chunk-W2SQ5CII.js";var t=class n{component=o(null);static \u0275fac=function(a){return new(a||n)};static \u0275prov=e({token:n,factory:n.\u0275fac,providedIn:"root"})};export{t as a};
