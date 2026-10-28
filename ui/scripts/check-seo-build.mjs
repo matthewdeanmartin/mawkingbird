@@ -88,6 +88,20 @@ for (const page of pages) {
     );
     assert.ok(doc.head.querySelector(`link[rel="me"][href="https://mastodon.social/@${account}"]`));
   }
+  const blocks = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+    JSON.parse(node.textContent),
+  );
+  if (page === '' || page === 'features') {
+    assert.equal(blocks.length, 1, `${page || 'root'} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'WebApplication');
+    assert.equal(blocks[0].url, 'https://mawkingbird.com/');
+  } else if (page.startsWith('follow/')) {
+    assert.equal(blocks.length, 1, `${page} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'ItemList');
+    assert.equal(blocks[0].itemListElement.length, doc.querySelectorAll('.people li').length);
+  } else {
+    assert.equal(blocks.length, 0, `${page} has no structured data`);
+  }
   const canonical = `https://mawkingbird.com/${page ? page + '/' : ''}`;
   assert.equal(doc.querySelector('link[rel="canonical"]')?.getAttribute('href'), canonical);
   assert.equal(doc.querySelector('meta[property="og:url"]')?.getAttribute('content'), canonical);
@@ -129,6 +143,13 @@ assert.deepEqual(
   [...sitemap.querySelectorAll('loc')].map((node) => node.textContent),
   pages.map((page) => `https://mawkingbird.com/${page ? page + '/' : ''}`),
 );
+// Dates come from git and are absent from shallow clones; when present, every
+// URL has one and it is a plain W3C date.
+const lastmods = [...sitemap.querySelectorAll('lastmod')].map((node) => node.textContent);
+if (lastmods.length) {
+  assert.equal(lastmods.length, pages.length, 'every sitemap URL has a lastmod');
+  for (const date of lastmods) assert.match(date, /^\d{4}-\d{2}-\d{2}$/);
+}
 const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/sitemap.xml/);
 // The static help site (scripts/build_help.py) publishes its own sitemap.

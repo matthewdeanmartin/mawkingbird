@@ -53,8 +53,7 @@
         <button
           mbButton
           type="button"
-          size="small"
-          [variant]="sort() === option ? 'solid' : 'outline'"
+          variant="compact"
           [attr.aria-pressed]="sort() === option"
           (click)="setSort(option)"
         >
@@ -89,7 +88,7 @@
     </p>
     @if (scan.scanning()) {
       <p>{{ 'forum.scanning' | transloco }}</p>
-      <button mbButton type="button" size="small" tone="danger" (click)="scan.stop()">
+      <button mbButton type="button" variant="compact" tone="danger" (click)="scan.stop()">
         {{ 'forum.stop' | transloco }}
       </button>
     } @else {
@@ -102,8 +101,7 @@
             <button
               mbButton
               type="button"
-              size="small"
-              variant="outline"
+              variant="compact"
               [title]="'forum.deeperTitle' | transloco: { count: calls, max: maxCalls }"
               (click)="scan.deeper(calls)"
             >
@@ -127,7 +125,7 @@
   }
 
   @if (unsorted()) {
-    <button mbButton type="button" size="small" variant="outline" class="resort" (click)="resort()">
+    <button mbButton type="button" variant="compact" class="resort" (click)="resort()">
       {{ 'forum.resort' | transloco }}
     </button>
   }

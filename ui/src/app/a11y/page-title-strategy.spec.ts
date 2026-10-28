@@ -26,6 +26,13 @@ describe('PageTitleStrategy', () => {
         provideRouter([
           { path: 'bookmarks', title: 'Bookmarks', component: Page },
           { path: 'untitled', component: Page },
+          { path: 'front', component: Page, data: { seoTagline: 'Feeds in one place' } },
+          {
+            path: 'titled',
+            title: 'Titled',
+            component: Page,
+            data: { seoTagline: 'Feeds in one place' },
+          },
         ]),
         { provide: TitleStrategy, useClass: PageTitleStrategy },
       ],
@@ -45,6 +52,14 @@ describe('PageTitleStrategy', () => {
     // Angular's default strategy leaves the previous route's title in place
     // here, so a screen reader would hear the wrong page name.
     expect(await go('/untitled')).toBe(environment.brand);
+  });
+
+  it('puts the brand before a tagline on an untitled route', async () => {
+    expect(await go('/front')).toBe(`${environment.brand} — Feeds in one place`);
+  });
+
+  it('prefers the page name over a tagline', async () => {
+    expect(await go('/titled')).toBe(`Titled · ${environment.brand}`);
   });
 
   it('replaces a previous page title rather than leaving it stale', async () => {

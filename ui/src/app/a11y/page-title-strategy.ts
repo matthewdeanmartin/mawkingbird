@@ -18,7 +18,9 @@ import { Seo, SITE_ORIGIN } from '../seo';
  * so the fallback below is the reason for a custom one.
  *
  * Format is "Page · Brand": the specific part first, because screen readers
- * and narrow tab strips both truncate the end.
+ * and narrow tab strips both truncate the end. An untitled route may declare a
+ * `seoTagline` instead, giving "Brand — Tagline": the front page is searched
+ * for by what it does, and the bare brand alone tells a search result nothing.
  */
 @Injectable({ providedIn: 'root' })
 export class PageTitleStrategy extends TitleStrategy {
@@ -34,7 +36,21 @@ export class PageTitleStrategy extends TitleStrategy {
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const page = this.buildTitle(snapshot);
-    this.title.setTitle(page ? `${page} · ${this.brand}` : this.brand);
+    const tagline = page ? undefined : this.tagline(snapshot);
+    this.title.setTitle(
+      page ? `${page} · ${this.brand}` : tagline ? `${this.brand} — ${tagline}` : this.brand,
+    );
     this.seo.update(snapshot, this.title.getTitle());
+  }
+
+  private tagline(snapshot: RouterStateSnapshot): string | undefined {
+    let route = snapshot.root;
+    let tagline: string | undefined;
+    while (route) {
+      if (route.data['seoTagline']) tagline = route.data['seoTagline'];
+      if (!route.firstChild) break;
+      route = route.firstChild;
+    }
+    return tagline;
   }
 }

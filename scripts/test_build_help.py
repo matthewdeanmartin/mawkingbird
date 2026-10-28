@@ -83,6 +83,30 @@ class BuildHelpTest(unittest.TestCase):
         self.assertIn("<loc>https://mawkingbird.com/help/</loc>", sitemap)
         self.assertIn("<loc>https://mawkingbird.com/help/start/welcome/</loc>", sitemap)
 
+    def test_sitemap_dates_come_from_git(self) -> None:
+        # The temporary docs are outside any repository, so they carry no date;
+        # the real guides are committed and must each have one.
+        self.build()
+        self.assertNotIn("<lastmod>", self.read("sitemap.xml"))
+        pages = build_help.load_nav()
+        build_help.last_commit_dates(build_help.DOCS, pages)
+        if any(page.lastmod is None for page in pages):
+            self.skipTest("guides without full git history (shallow clone or uncommitted)")
+        for page in pages:
+            self.assertRegex(page.lastmod, r"^\d{4}-\d{2}-\d{2}$", page.source)
+
+    def test_breadcrumbs_follow_the_top_bar(self) -> None:
+        self.build()
+        welcome = self.read("start/welcome/index.html")
+        self.assertIn('itemtype="https://schema.org/BreadcrumbList"', welcome)
+        self.assertIn(
+            '<meta itemprop="position" content="3"><meta itemprop="name" content="Welcome to Mawkingbird">'
+            '<link itemprop="item" href="https://mawkingbird.com/help/start/welcome/">',
+            welcome,
+        )
+        self.assertIn('<link itemprop="item" href="https://mawkingbird.com/help/">', welcome)
+        self.assertNotIn('itemprop="position" content="3"', self.read("index.html"))
+
     def test_preview_builds_are_noindex_without_sitemap(self) -> None:
         self.build(base="/canary/help/", noindex=True)
         self.assertIn('content="noindex, follow"', self.read("index.html"))

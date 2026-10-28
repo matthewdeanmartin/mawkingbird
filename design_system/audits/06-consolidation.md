@@ -1,5 +1,22 @@
 # Sprint 6 opening consolidation audit
 
+## Button weights: compact and link, 2026-10-27
+
+Reviewed 1,228 source files and 257 candidate files. MbButton gains
+two weights (owner: pills were drowning the UI). `compact` is a small, square-
+cornered action with no box until hover or pressed, in PostAction's
+proportions, keeping 44px touch targets. `link` is a word in the action colour,
+underlined on hover, on a button or a link, keeping its line height (inline
+exception). Both inherit MbButton's focus, disabled and danger treatment; the
+library's own findings grow with the new rules. Forum adopts them: sort, Scan
+deeper, Stop, re-sort and the Members group actions become compact, and "Back to
+discussions" becomes a link weight. No candidate files are added or removed.
+Stories: Actions / Button / Weights, Compact, Link; contrast and hover are
+covered by the Consistency matrix, and shape and touch rules by new browser
+tests. The contrast matrix caught compact danger's hover tint (6.2:1 against
+the 7:1 policy); its hover is a border instead. Guidance is in components.md,
+"Button weights".
+
 ## Forum mode, sprint 4: data as rows, 2026-10-27
 
 Reviewed 1,228 source files and 257 candidate files, after owner review

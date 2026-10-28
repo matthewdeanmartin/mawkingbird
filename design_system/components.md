@@ -2,11 +2,11 @@
 
 Approved widgets are being adopted in production batches. See [sprint status](SPRINTS.md) and the per-batch audits for actual consumers; catalogue availability alone does not mean app adoption.
 
-| Component                         | Owns                                                                               | Consumer owns                                               | Preview             |
-| --------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------- |
-| `mb-checkbox`                     | Native checkbox, label column, description/error IDs, focus, hint/status placement | Translated strings, checked/form value, saving and rollback | Forms/Checkbox      |
-| `mb-settings-row`                 | Group-heading column and stacking below 500px container width                      | Heading and child controls, page placement                  | Layout/Settings row |
-| `button[mbButton]`, `a[mbButton]` | Pill geometry, solid/outline, regular/small, focus/disabled treatment              | Native type, action, disabled state, accessible name        | Actions/Button      |
+| Component                         | Owns                                                                                  | Consumer owns                                               | Preview             |
+| --------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------- |
+| `mb-checkbox`                     | Native checkbox, label column, description/error IDs, focus, hint/status placement    | Translated strings, checked/form value, saving and rollback | Forms/Checkbox      |
+| `mb-settings-row`                 | Group-heading column and stacking below 500px container width                         | Heading and child controls, page placement                  | Layout/Settings row |
+| `button[mbButton]`, `a[mbButton]` | Four weights (solid, outline, compact, link), regular/small, focus/disabled treatment | Native type, action, disabled state, accessible name        | Actions/Button      |
 
 Use `(checkedChange)` with `[checked]`, or Angular forms, not both on one checkbox.
 The component supports `ControlValueAccessor`; form disable/reset/touch propagate
@@ -34,6 +34,48 @@ app's global styles. The legacy `.btn`, `.btn-outline`, `.btn-sm`/`.btn-small`
 classes are compatibility aliases for that same implementation, including file
 input labels; new actions use MbButton. Do not add page-specific button colors,
 padding, typography or radii. Pages own width, placement and external spacing.
+
+### Button weights
+
+A pill is the loudest thing on a screen. Most clickable things are not the
+primary action, and a screen of pills reads as a chiclet keyboard. Choose the
+quietest weight that still reads as clickable:
+
+| Weight    | Looks like                                                      | Use for                                                                                 |
+| --------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `solid`   | Filled pill                                                     | The one primary action in a region (Post, Save, Scan)                                   |
+| `outline` | Outlined pill                                                   | Other standalone actions beside it                                                      |
+| `compact` | Small, square-cornered, no box until hover or pressed           | Actions in dense places: rows, rails, card footers, result and sort bars                |
+| `link`    | A word in the accent colour, underlined on hover; no box at all | A word that acts or navigates in running text or a data row ("Clear filters", "← Back") |
+
+```html
+<button
+  mbButton
+  variant="compact"
+  type="button"
+  [attr.aria-pressed]="sort() === 'recent'"
+>
+  Recent
+</button>
+<button mbButton variant="compact" tone="danger" type="button">Stop</button>
+<button mbButton variant="link" type="button" (click)="clear()">
+  Clear filters
+</button>
+<a mbButton variant="link" routerLink="/forum">← Back to discussions</a>
+```
+
+`compact` and `link` work on buttons and links alike, and take `tone="danger"`,
+`aria-pressed` (compact shows a tinted surface and an underline bar; a danger
+compact shows a border on hover, since a tint would drop the text below 7:1; link
+stays underlined) and `disabled`. Neither uses `shape`; `size` does not change
+compact. Compact keeps a 44px target on touch screens. Link stays the height of
+its line, as inline links do (WCAG 2.5.8's inline exception), so do not use it
+as the only control in a row on touch layouts: use compact there.
+
+Data is not an action. A list of values someone can choose from (facets, people,
+trends) is a list of rows or links, not a grid of buttons of any weight. See
+Forum's rails and **Navigation / Links and tabs**. Stories: **Actions / Button /
+Weights**, **Compact** and **Link**.
 
 Use RadioGroup for mutually exclusive form choices, Toolbar for button-only
 roving-focus groups, and PostAction for compact mixed actions. Keep their native

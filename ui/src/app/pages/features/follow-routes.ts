@@ -12,6 +12,11 @@ const kitDescription: ResolveFn<string> = async (route) =>
   (await kits()).publicKit(kitSlug(route))?.description ?? FOLLOW_DESCRIPTION;
 const kitIndexable: ResolveFn<boolean> = async (route) =>
   !!(await kits()).publicKit(kitSlug(route));
+const kitStructuredData: ResolveFn<object | undefined> = async (route) => {
+  const { kitItemList, publicKit } = await kits();
+  const kit = publicKit(kitSlug(route));
+  return kit ? kitItemList(kit) : undefined;
+};
 
 export const followRoutes: Routes = [
   {
@@ -23,7 +28,11 @@ export const followRoutes: Routes = [
   {
     path: 'follow/:slug',
     title: kitTitle,
-    resolve: { seoDescription: kitDescription, seoIndexable: kitIndexable },
+    resolve: {
+      seoDescription: kitDescription,
+      seoIndexable: kitIndexable,
+      seoStructuredData: kitStructuredData,
+    },
     loadComponent: () => import('./follow-kit').then((m) => m.FollowKit),
   },
 ];

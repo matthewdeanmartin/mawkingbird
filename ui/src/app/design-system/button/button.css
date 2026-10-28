@@ -74,3 +74,111 @@
     min-width: 44px;
   }
 }
+
+/* Compact: an action in a dense place (rows, rails, card footers, result
+   headers). A quiet small rectangle in PostAction's proportions, never a pill;
+   the surface shows only on hover and when pressed. Shape and size inputs do
+   not apply: compact is one size. */
+[mbButton][data-variant='compact'] {
+  gap: 4px;
+  min-height: 28px;
+  padding: 3px 8px;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ds-action-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[mbButton][data-variant='compact']:hover:not(:disabled),
+[mbButton][data-variant='compact'][aria-pressed='true'] {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--ds-action-text);
+}
+
+[mbButton][data-variant='compact'][aria-pressed='true'] {
+  box-shadow: inset 0 -2px 0 var(--ds-action-text);
+}
+
+[mbButton][data-variant='compact'][data-tone='danger'] {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ds-error-text);
+}
+
+/* Hover shows the box as a border, not a tint: any tint behind the error
+   text drops it below the 7:1 contrast policy. */
+[mbButton][data-variant='compact'][data-tone='danger']:hover:not(:disabled) {
+  border-color: var(--ds-error-text);
+  background: transparent;
+  color: var(--ds-error-text);
+}
+
+[mbButton][data-variant='compact']:disabled {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+/* Link: a word that looks like a link and does something or goes somewhere.
+   No box at all; the underline appears on hover and focus, as for links. Like
+   an inline link it sits in the line, so it keeps the text's height rather
+   than a 44px target (WCAG 2.5.8's inline exception); use compact where a
+   control stands on its own. */
+[mbButton][data-variant='link'] {
+  display: inline;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: var(--ds-action-text);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+}
+
+[mbButton][data-variant='link']:hover:not(:disabled),
+[mbButton][data-variant='link']:focus-visible {
+  background: none;
+  color: var(--ds-action-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+[mbButton][data-variant='link'][aria-pressed='true'],
+[mbButton][data-variant='link'][aria-current='true'] {
+  background: none;
+  color: var(--ds-action-text);
+  text-decoration: underline;
+}
+
+[mbButton][data-variant='link'][data-tone='danger'],
+[mbButton][data-variant='link'][data-tone='danger']:hover:not(:disabled) {
+  background: none;
+  color: var(--ds-error-text);
+}
+
+[mbButton][data-variant='link']:disabled {
+  background: none;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+[mbButton][data-variant='link']:focus-visible {
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  [mbButton][data-variant='compact'] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  [mbButton][data-variant='link'] {
+    min-height: 0;
+    min-width: 0;
+  }
+}

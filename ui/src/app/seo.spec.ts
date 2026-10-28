@@ -5,7 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { PageTitleStrategy } from './a11y/page-title-strategy';
-import { FEATURES_DESCRIPTION, SITE_DESCRIPTION } from './seo';
+import { APP_STRUCTURED_DATA, FEATURES_DESCRIPTION, SITE_DESCRIPTION } from './seo';
 
 @Component({ template: 'page' })
 class Page {}
@@ -14,7 +14,7 @@ describe('route SEO metadata', () => {
   beforeEach(() => {
     document.head
       .querySelectorAll(
-        'meta[name="robots"], meta[name="description"], meta[property^="og:"], meta[name^="twitter:"], link[rel="canonical"]',
+        'meta[name="robots"], meta[name="description"], meta[property^="og:"], meta[name^="twitter:"], link[rel="canonical"], script[type="application/ld+json"]',
       )
       .forEach((node) => node.remove());
     TestBed.configureTestingModule({
@@ -24,7 +24,17 @@ describe('route SEO metadata', () => {
             path: 'features',
             component: Page,
             title: 'Features',
-            data: { seoIndexable: true, seoDescription: FEATURES_DESCRIPTION },
+            data: {
+              seoIndexable: true,
+              seoDescription: FEATURES_DESCRIPTION,
+              seoStructuredData: APP_STRUCTURED_DATA,
+            },
+          },
+          {
+            path: 'kit',
+            component: Page,
+            title: 'Kit',
+            data: { seoIndexable: true, seoStructuredData: { name: '</script><b>' } },
           },
           { path: 'login', component: Page, title: 'Sign in' },
           {
@@ -80,6 +90,20 @@ describe('route SEO metadata', () => {
     expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('noindex, follow');
   });
 
+  it('publishes one structured-data block per page and removes it on utility routes', async () => {
+    const router = TestBed.inject(Router);
+    const blocks = () => document.querySelectorAll('script[type="application/ld+json"]');
+    await router.navigateByUrl('/features');
+    expect(blocks()).toHaveLength(1);
+    expect(JSON.parse(blocks()[0].textContent ?? '')).toEqual(APP_STRUCTURED_DATA);
+    await router.navigateByUrl('/kit');
+    expect(blocks()).toHaveLength(1);
+    expect(blocks()[0].textContent).not.toContain('</script>');
+    expect(JSON.parse(blocks()[0].textContent ?? '')).toEqual({ name: '</script><b>' });
+    await router.navigateByUrl('/login');
+    expect(blocks()).toHaveLength(0);
+  });
+
   it('keeps preview public pages out of the index without a production canonical', async () => {
     const base = document.createElement('base');
     base.setAttribute('href', '/canary/');
@@ -88,6 +112,7 @@ describe('route SEO metadata', () => {
       await TestBed.inject(Router).navigateByUrl('/features');
       expect(TestBed.inject(Meta).getTag('name="robots"')?.content).toBe('noindex, follow');
       expect(document.querySelector('link[rel="canonical"]')).toBeNull();
+      expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
     } finally {
       base.remove();
     }

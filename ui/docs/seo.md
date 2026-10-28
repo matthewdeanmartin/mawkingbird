@@ -132,6 +132,31 @@ in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
 menu and the welcome modal link to it; the modal's links open new tabs so its
 two answers stay the only way out.
 
+## Titles, structured data and sitemap dates
+
+Pages titled through a route read "Page · Mawkingbird". The untitled front
+page declares a `seoTagline` instead and reads "Mawkingbird — Mastodon,
+Bluesky & RSS reader in one place"; `src/index.html` carries the same title
+for crawlers that skip JavaScript.
+
+`Seo` keeps at most one JSON-LD block in the head, from a route's
+`seoStructuredData`, and removes it on utility routes and previews. The front
+page and `/features/` describe the app (`APP_STRUCTURED_DATA`, a
+`WebApplication`); each `/follow/<slug>/` page lists its people as an
+`ItemList` (`kitItemList`). The server route table in `main.server.ts` must
+carry the same data as `app.routes.ts`. `prepare-seo-index.mjs` copies the
+prerendered `/features/` block into the root `index.html`. A JSON-LD block is
+data, not script, so `script-src 'self'` permits it. The help pages ship no
+scripts at all, so their breadcrumbs (Mawkingbird › Help › guide) are
+microdata `<meta>`/`<link>` elements instead.
+
+Both sitemaps give each URL a `<lastmod>` from the last git commit to its
+sources: the guide's file for help pages, and a page-to-files table in
+`prepare-seo-index.mjs` for the app pages. That table fails the build for an
+unmapped page. A shallow clone would date everything to one commit, so the
+dates are left out there. The Pages workflow checks out full history and
+fails if either sitemap lacks dates.
+
 ## Share image, verification and deployment checks
 
 The original hand-drawn `public/mockingbird_hand.png` is the share image.

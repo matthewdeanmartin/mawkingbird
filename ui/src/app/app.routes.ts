@@ -15,7 +15,12 @@ import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
-import { ABOUT_DESCRIPTION, BLOG_DESCRIPTION, FUNDING_DESCRIPTION } from './seo';
+import {
+  ABOUT_DESCRIPTION,
+  APP_STRUCTURED_DATA,
+  BLOG_DESCRIPTION,
+  FUNDING_DESCRIPTION,
+} from './seo';
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -27,6 +32,7 @@ export const routes: Routes = [
       seoIndexable: true,
       seoDescription:
         'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.',
+      seoStructuredData: APP_STRUCTURED_DATA,
     },
     loadComponent: () => import('./pages/features/features').then((m) => m.Features),
   },
@@ -53,7 +59,11 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     loadComponent: () => import('./pages/entry/entry').then((m) => m.EntryPage),
-    data: { seoIndexable: true },
+    data: {
+      seoIndexable: true,
+      seoTagline: 'Mastodon, Bluesky & RSS reader in one place',
+      seoStructuredData: APP_STRUCTURED_DATA,
+    },
   },
   {
     path: 'anonymous',

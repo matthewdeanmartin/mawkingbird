@@ -102,3 +102,20 @@ export const PUBLIC_KITS: readonly PublicKit[] = toPublicKits(BUNDLED_STARTER_KI
 export function publicKit(slug: string | null | undefined): PublicKit | null {
   return PUBLIC_KITS.find((kit) => kit.slug === slug) ?? null;
 }
+
+/** schema.org ItemList of the people a kit page shows, in the same order. */
+export function kitItemList(kit: PublicKit): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: kit.heading,
+    description: kit.description,
+    numberOfItems: kit.accounts.length,
+    itemListElement: kit.accounts.map((account, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: account.name,
+      url: account.url,
+    })),
+  };
+}

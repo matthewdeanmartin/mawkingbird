@@ -252,6 +252,64 @@ ads or server cards in the right rail, and every other mode is unchanged.
 - **Found, not fixed (shared shell):** at 800px the top menu's icons overlap
   the next tab's label in every mode (Mastodon and Video too), not only Forum.
 
+## Next (owner, 2026-10-27)
+
+Planned after v1, in this order. English only throughout; translation joins
+the global pass once Forum settles.
+
+### Sprint 5: threaded reading view
+
+An **alternative view** of a discussion, chosen beside it (Conversation |
+Threaded), not a replacement for the thread page. It is more of a full page:
+reading a long branching argument needs width, not rails.
+
+1. **Route and layout.** `/forum/d/:id?view=tree`, remembered for the
+   session. It takes the full width under the top bar through the shell's
+   `isWideUrl` (as Settings and Chat do), with Members collapsed into a
+   header strip ("6 people · Follow everyone") instead of a rail.
+2. **Tree.** Each reply sits under the post it answers, indented one step per
+   level up to a cap (about 6), after which depth is shown as "↳ replying to
+   @name" rather than further indentation. Siblings are oldest first.
+   It is built from the discussion's posts (`threadOrder` plus depth),
+   so a scanned discussion still opens without a request.
+3. **Reading aids.** Collapse and expand a branch (with its reply count),
+   "collapse all but the path to this reply", and jump to parent / next
+   sibling with the keyboard. Long posts are clamped with "Read more" (link
+   weight).
+4. **Posts in the tree** are a dense row, not the full StatusCard: avatar,
+   name, time, text, then compact actions (reply, like, boost, more). Reply
+   opens the composer inline under that post.
+5. **Same data.** Partial roots, foreign copies and resolution behave as in the
+   conversation view. Opening a post from the tree stays in Forum.
+
+Acceptance: a 40-reply, 5-level fixture reads top to bottom with every reply
+under its parent. Collapsing a branch hides exactly its subtree, and the
+view works at 800px. Browser check added to `test:forum:browser`.
+
+### Sprint 6: more sources
+
+1. **Search.** Statuses matching a query (`/api/v2/search?type=statuses`,
+   paged with `offset`), for "find discussions about X".
+2. **My server's local timeline**, and the federated timeline for the brave.
+3. **One person's posts and replies** (`/accounts/:id/statuses` with
+   replies), opened from Members as "Discussions with this person".
+4. **Several sources at once**: pick two or more (Home + a list + a tag). Their
+   pages interleave in one scan, the way the Me source already alternates
+   statuses and mentions.
+5. Every source keeps the per-server budgets: a source on another server
+   (a public tag timeline elsewhere, say) spends that server's budget, not
+   mine.
+
+Acceptance: each new source is in the picker and the URL (`?source=`), is
+paged within the allowance, and has a scan spec and a fixture in the browser
+check.
+
+### Later candidates
+
+The saved discussions cache (IndexedDB, "new replies since you looked"),
+watching a discussion, Boards (saved source and filter sets), conversation-
+quality ranking, "Catch me up" summaries, and Bluesky threads.
+
 ## Gates (every sprint)
 
 Targeted specs while working, then `cd ui && make test`, which includes

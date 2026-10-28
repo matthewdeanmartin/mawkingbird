@@ -15,7 +15,7 @@
     {
       "file": "ui/src/app/pages/forum/forum-discussion-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "One Forum discussion: a native router link back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."
+      "nextStep": "One Forum discussion: a link-weight MbButton back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."
     },
     {
       "file": "ui/src/app/pages/forum/forum-list-dialog.ts",

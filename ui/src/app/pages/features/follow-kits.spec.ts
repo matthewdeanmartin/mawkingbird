@@ -4,6 +4,7 @@ import { Account } from '../../models';
 import {
   MIN_PUBLIC_KIT_SIZE,
   PUBLIC_KITS,
+  kitItemList,
   plainBio,
   publicKit,
   searchListable,
@@ -97,5 +98,20 @@ describe('public starter-kit pages', () => {
       expect(publicKit(published.slug)).toBe(published);
     }
     expect(publicKit('no-such-kit')).toBeNull();
+  });
+
+  it('describes a kit as an ordered list of only the people its page shows', () => {
+    const [published] = toPublicKits([
+      kit('mixed', [person('a'), person('b'), person('c'), person('quiet', { noindex: true })]),
+    ]);
+    const list = kitItemList(published) as {
+      numberOfItems: number;
+      itemListElement: { position: number; name: string; url: string }[];
+    };
+    expect(list.numberOfItems).toBe(3);
+    expect(list.itemListElement.map((item) => item.position)).toEqual([1, 2, 3]);
+    expect(list.itemListElement.map((item) => item.url)).toEqual(
+      published.accounts.map((account) => account.url),
+    );
   });
 });

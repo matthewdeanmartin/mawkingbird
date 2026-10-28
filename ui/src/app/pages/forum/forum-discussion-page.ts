@@ -3,6 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { map } from 'rxjs';
+import { MbButton } from '../../design-system/button/button';
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { MbNotice } from '../../design-system/notice/notice';
 import { threadOrder } from '../../forum/discussion';
@@ -27,10 +28,10 @@ import { useForumRails } from './forum-rails';
  */
 @Component({
   selector: 'app-forum-discussion-page',
-  imports: [RouterLink, TranslocoPipe, MbDisclosure, MbNotice, ForumMembers, Thread],
+  imports: [RouterLink, TranslocoPipe, MbButton, MbDisclosure, MbNotice, ForumMembers, Thread],
   template: `
     <nav class="back">
-      <a routerLink="/forum" [queryParams]="scan.listParams">{{
+      <a mbButton variant="link" routerLink="/forum" [queryParams]="scan.listParams">{{
         'forum.discussion.back' | transloco
       }}</a>
     </nav>

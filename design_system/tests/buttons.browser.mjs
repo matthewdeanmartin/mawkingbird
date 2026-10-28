@@ -141,3 +141,83 @@ test("small actions retain full touch targets", async ({ browser }) => {
   expect(bounds.width).toBeGreaterThanOrEqual(44);
   await context.close();
 });
+
+test("compact and link buttons are quiet, never pills", async ({ page }) => {
+  await page.goto("/iframe.html?id=actions-button--weights&viewMode=story");
+  await expect(
+    page.getByRole("heading", { name: "Button weights" }),
+  ).toBeVisible();
+  const look = (element) => {
+    const style = getComputedStyle(element);
+    return {
+      radius: parseFloat(style.borderTopLeftRadius),
+      background: style.backgroundColor,
+      border: style.borderTopColor,
+      padding: style.paddingTop,
+      height: element.getBoundingClientRect().height,
+      underline: style.textDecorationLine,
+    };
+  };
+  const solid = await page
+    .getByRole("button", { name: "Scan", exact: true })
+    .evaluate(look);
+  const compact = page.getByRole("button", {
+    name: "Scan deeper (+10 calls)",
+    exact: true,
+  });
+  const quiet = await compact.evaluate(look);
+  expect(quiet.radius).toBeLessThanOrEqual(8);
+  expect(quiet.background).toBe("rgba(0, 0, 0, 0)");
+  expect(quiet.border).toBe("rgba(0, 0, 0, 0)");
+  expect(quiet.height).toBeLessThan(solid.height);
+  await compact.hover();
+  expect((await compact.evaluate(look)).background).not.toBe(
+    "rgba(0, 0, 0, 0)",
+  );
+  const pressed = await page
+    .getByRole("button", { name: "Recent", exact: true })
+    .evaluate(look);
+  expect(pressed.background).not.toBe("rgba(0, 0, 0, 0)");
+
+  const link = page.getByRole("button", { name: "Clear filters", exact: true });
+  const flat = await link.evaluate(look);
+  expect(flat.padding).toBe("0px");
+  expect(flat.background).toBe("rgba(0, 0, 0, 0)");
+  expect(flat.underline).toBe("none");
+  await link.hover();
+  expect((await link.evaluate(look)).underline).toBe("underline");
+  // A link destination and a link action look the same.
+  const destination = await page
+    .getByRole("link", { name: "Open discussion", exact: true })
+    .evaluate(look);
+  expect(destination.padding).toBe(flat.padding);
+  expect(destination.background).toBe(flat.background);
+});
+
+test("compact actions keep touch targets; link actions stay in the line", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    viewport: { width: 380, height: 900 },
+  });
+  const page = await context.newPage();
+  await page.goto(
+    "http://127.0.0.1:6008/iframe.html?id=actions-button--weights&viewMode=story",
+  );
+  const compact = page.getByRole("button", { name: "Recent", exact: true });
+  await expect(compact).toBeVisible();
+  const bounds = await compact.boundingBox();
+  expect(bounds.height).toBeGreaterThanOrEqual(44);
+  expect(bounds.width).toBeGreaterThanOrEqual(44);
+  const link = await page
+    .getByRole("button", { name: "Clear filters", exact: true })
+    .boundingBox();
+  expect(link.height).toBeLessThan(44);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await context.close();
+});

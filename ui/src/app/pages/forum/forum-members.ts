@@ -152,19 +152,13 @@ interface MemberRow {
           <button
             mbButton
             type="button"
-            size="small"
+            variant="compact"
             [disabled]="bulk.running()"
             (click)="followAllOpen.set(true)"
           >
             {{ 'forum.members.followAll' | transloco }}
           </button>
-          <button
-            mbButton
-            type="button"
-            size="small"
-            variant="outline"
-            (click)="listOpen.set(true)"
-          >
+          <button mbButton type="button" variant="compact" (click)="listOpen.set(true)">
             {{ 'forum.members.addToList' | transloco }}
           </button>
         </div>

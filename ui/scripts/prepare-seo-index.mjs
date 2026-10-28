@@ -1,4 +1,6 @@
+import { execFileSync } from 'node:child_process';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
 // Angular's static output names its client-rendered entry index.csr.html.
 // GitHub Pages needs index.html at /. Preserve the client entry and its head
@@ -29,7 +31,16 @@ const fallback = `<noscript>
     </ul>
   </main>
 </noscript>`;
-await writeFile(new URL('index.html', root), html.replace('</body>', `${fallback}</body>`));
+// The front page and /features/ describe the same app (APP_STRUCTURED_DATA in
+// seo.ts). The client sets it at runtime; copy the prerendered block so
+// crawlers that skip JavaScript see it on the root too.
+const features = await readFile(new URL('features/index.html', root), 'utf8');
+const appData = features.match(/<script type="application\/ld\+json">[^<]*<\/script>/)?.[0];
+if (!appData) throw new Error('prepare-seo-index: /features/ has no structured data to copy');
+await writeFile(
+  new URL('index.html', root),
+  html.replace('</head>', `${appData}</head>`).replace('</body>', `${fallback}</body>`),
+);
 
 // Starter-kit pages follow the bundled kits, which change with catalogue
 // refreshes, so their sitemap entries come from what was actually prerendered.
@@ -41,5 +52,50 @@ const sitemapUrl = new URL('sitemap.xml', root);
 const entries = ['follow/', ...kits.map((slug) => `follow/${slug}/`)]
   .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc></url>`)
   .join('\n');
-const sitemap = await readFile(sitemapUrl, 'utf8');
-await writeFile(sitemapUrl, sitemap.replace('</urlset>', `${entries}\n</urlset>`));
+const sitemap = (await readFile(sitemapUrl, 'utf8')).replace('</urlset>', `${entries}\n</urlset>`);
+await writeFile(sitemapUrl, withLastmod(sitemap));
+
+/**
+ * Dates each sitemap URL by the last commit to the files that render it, so
+ * search engines can tell which pages changed. Paths are relative to ui/. A new
+ * public page must be added here, or the build fails rather than guess a date.
+ */
+function withLastmod(xml) {
+  const features = 'src/app/pages/features/';
+  const kitData = [`${features}follow-kits.ts`, 'src/app/bundled-starter-kits.generated.ts'];
+  const sources = (page) => {
+    if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
+    if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
+    if (page.startsWith('for/'))
+      return [`${features}audience-content.ts`, `${features}audience-page.html`];
+    if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
+    if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
+    if (page === 'blog/') return ['src/app/pages/docs/'];
+    if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
+    if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
+    throw new Error(`prepare-seo-index: no lastmod sources for sitemap page "${page}"`);
+  };
+  const git = (...args) => {
+    try {
+      return execFileSync('git', args, {
+        cwd: fileURLToPath(new URL('..', import.meta.url)),
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+    } catch {
+      return '';
+    }
+  };
+  // A shallow clone would date every page to its one commit; leave dates out.
+  const fullHistory = git('rev-parse', '--is-shallow-repository') === 'false';
+  if (!fullHistory) console.warn('prepare-seo-index: no full git history; sitemap has no lastmod');
+  return xml.replace(
+    /<loc>https:\/\/mawkingbird\.com\/([^<]*)<\/loc><\/url>/g,
+    (entry, page) => {
+      const paths = sources(page);
+      if (!fullHistory) return entry;
+      const date = git('log', '-1', '--format=%cs', '--', ...paths, ':(exclude)*.spec.ts');
+      return date ? entry.replace('</url>', `<lastmod>${date}</lastmod></url>`) : entry;
+    },
+  );
+}

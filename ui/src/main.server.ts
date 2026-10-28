@@ -6,6 +6,7 @@ import { PageTitleStrategy } from './app/a11y/page-title-strategy';
 import { Features } from './app/pages/features/features';
 import {
   ABOUT_DESCRIPTION,
+  APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
@@ -47,7 +48,11 @@ export default (context: BootstrapContext) =>
             path: 'features',
             component: Features,
             title: 'Mastodon, reading and writing features',
-            data: { seoIndexable: true, seoDescription: FEATURES_DESCRIPTION },
+            data: {
+              seoIndexable: true,
+              seoDescription: FEATURES_DESCRIPTION,
+              seoStructuredData: APP_STRUCTURED_DATA,
+            },
           },
           ...articles.map(({ path, title, description }) => ({
             path,

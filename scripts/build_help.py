@@ -29,6 +29,7 @@ import argparse
 import html
 import re
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
@@ -68,6 +69,7 @@ class Page:
     description: str = ""
     body: str = ""
     links: list[str] = field(default_factory=list)
+    lastmod: str | None = None  # date of the guide's last commit, for the sitemap
 
     @property
     def slug(self) -> str:
@@ -80,6 +82,28 @@ class Page:
 
 def url_for(base: str, slug: str) -> str:
     return f"{base}{slug}/" if slug else base
+
+
+def last_commit_dates(docs: Path, pages: list[Page]) -> None:
+    """Fill each page's ``lastmod`` from git, the record of when a guide changed.
+
+    A shallow clone would date every guide to its single commit, which tells
+    search engines that everything changed; the dates are left out instead.
+    Guides outside a repository or not yet committed get no date either.
+    """
+
+    def git(*args: str) -> str:
+        try:
+            result = subprocess.run(["git", *args], cwd=docs, capture_output=True, text=True, check=False)
+        except OSError:
+            return ""
+        return result.stdout.strip() if result.returncode == 0 else ""
+
+    if git("rev-parse", "--is-shallow-repository") != "false":
+        print("help site: no full git history; sitemap has no lastmod", file=sys.stderr)
+        return
+    for page in pages:
+        page.lastmod = git("log", "-1", "--format=%cs", "--", page.source.as_posix()) or None
 
 
 def _yaml() -> YAML:
@@ -287,6 +311,7 @@ class HelpBuilder:
 <a class="section-name" href="{self.base}">Help</a>
 <a class="open-app" href="{app}">Open the app</a>
 </div></header>
+{self.breadcrumbs(page)}
 <div class="layout">
 <nav class="rail" aria-label="Help topics">
 {nav}
@@ -314,10 +339,29 @@ class HelpBuilder:
 </html>
 """
 
-    def sitemap(self) -> str:
-        urls = "\n".join(
-            f"  <url><loc>{SITE_ORIGIN}{url_for(self.base, page.slug)}</loc></url>" for page in self.pages
+    def breadcrumbs(self, page: Page) -> str:
+        """Microdata for the trail the top bar shows: Mawkingbird, Help, this guide.
+
+        Microdata rather than JSON-LD, because these pages ship no ``<script>``.
+        """
+        trail = [("Mawkingbird", SITE_ORIGIN + self.app_base), ("Help", SITE_ORIGIN + self.base)]
+        if page.slug:
+            trail.append((page.title, SITE_ORIGIN + url_for(self.base, page.slug)))
+        items = "".join(
+            '<div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">'
+            f'<meta itemprop="position" content="{position}">'
+            f'<meta itemprop="name" content="{html.escape(name)}">'
+            f'<link itemprop="item" href="{url}"></div>'
+            for position, (name, url) in enumerate(trail, start=1)
         )
+        return f'<div itemscope itemtype="https://schema.org/BreadcrumbList">{items}</div>'
+
+    def sitemap(self) -> str:
+        def entry(page: Page) -> str:
+            lastmod = f"<lastmod>{page.lastmod}</lastmod>" if page.lastmod else ""
+            return f"  <url><loc>{SITE_ORIGIN}{url_for(self.base, page.slug)}</loc>{lastmod}</url>"
+
+        urls = "\n".join(entry(page) for page in self.pages)
         return (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -334,6 +378,7 @@ class HelpBuilder:
             target.write_text(self.render_page(index), encoding="utf-8", newline="\n")
         shutil.copyfile(STATIC / "help.css", out / "help.css")
         if not self.noindex:
+            last_commit_dates(self.docs, self.pages)
             (out / "sitemap.xml").write_text(self.sitemap(), encoding="utf-8", newline="\n")
 
 
