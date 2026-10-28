@@ -223,13 +223,16 @@
 <ul>
 <li>The first scan uses up to <strong>10 calls</strong>.</li>
 <li><strong>Scan deeper</strong> adds 10 or 25 more, continuing where the last scan stopped.</li>
-<li>One scan never uses more than <strong>50 calls</strong>.</li>
+<li>One scan never uses more than <strong>50 calls</strong> to your server.</li>
+<li>Calls to other servers are counted separately, each server with its own
+  allowance, and shown as "more on other servers".</li>
 <li><strong>Stop</strong> ends a scan at once and keeps everything found so far. If your server asks Forum to slow down, it stops the same way.</li>
 </ul>
 <p>The most promising posts are asked about first: conversations you are in, then replies between different people, then posts with many replies.</p>
 <p>Finding nothing after the first scan is normal. Try <strong>Scan deeper</strong> or a different place to look.</p>
 <h2 id="conversations-from-other-servers">Conversations from other servers<a class="headerlink" href="#conversations-from-other-servers" title="Link to this section">#</a></h2>
-<p>When a conversation started on another server, Forum may also ask that server for its public view. That server usually has replies yours never received, and sometimes the post that started it all. This uses one call and only reads what that server shows publicly. Whenever your own server also has a post, Forum shows your server's copy.</p>
+<p>When a conversation started on another server, Forum may also ask that server for its public view. That server usually has replies yours never received, and sometimes the post that started it all. This uses one call to that server and only reads what it shows publicly.</p>
+<p>When that turns up a post your server did not have, Forum asks your server to fetch it too. Then you get your server's own copy, which you can reply to, and replies only your followers can see. This uses two calls to your server. Whenever your own server has a post, Forum shows your server's copy.</p>
 <p>A discussion marked <strong>Partial thread</strong> is one where no server Forum asked could reach the post that started it. You see as far back as it goes.</p>
 <h2 id="tabs-and-sorting">Tabs and sorting<a class="headerlink" href="#tabs-and-sorting" title="Link to this section">#</a></h2>
 <p>The menu across the top cuts the same list five ways:</p>
