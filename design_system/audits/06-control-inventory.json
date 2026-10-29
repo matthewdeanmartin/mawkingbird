@@ -31,31 +31,39 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 36
+          "line": 12
+        },
+        {
+          "pattern": "shared",
+          "line": 46
         },
         {
           "pattern": "nativeButtons",
-          "line": 35
+          "line": 12
         },
         {
           "pattern": "nativeButtons",
-          "line": 305
+          "line": 45
         },
         {
           "pattern": "nativeButtons",
-          "line": 312
+          "line": 315
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 322
         },
         {
           "pattern": "legacyPills",
-          "line": 40
+          "line": 50
         },
         {
           "pattern": "legacyPills",
-          "line": 305
+          "line": 315
         },
         {
           "pattern": "legacyPills",
-          "line": 312
+          "line": 322
         }
       ]
     },

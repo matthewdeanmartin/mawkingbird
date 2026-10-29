@@ -2,7 +2,17 @@
   @if (loading()) {
     <p class="muted center">{{ 'accountAnalytics.crunching' | transloco }}</p>
   } @else if (error()) {
-    <p class="muted center">{{ 'accountAnalytics.loadError' | transloco }}</p>
+    <div class="load-error center" role="alert">
+      <p>
+        <strong>{{ 'accountAnalytics.loadError' | transloco }}</strong>
+        @if (errorReason(); as reason) {
+          <span class="muted">{{ reason.key | transloco: reason.params }}</span>
+        }
+      </p>
+      <button mbButton type="button" (click)="retry()">
+        {{ 'accountAnalytics.retry' | transloco }}
+      </button>
+    </div>
   } @else if (!posts().length) {
     <p class="muted center">{{ 'accountAnalytics.empty' | transloco }}</p>
   } @else {

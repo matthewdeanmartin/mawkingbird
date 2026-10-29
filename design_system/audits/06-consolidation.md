@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Analytics load failure: reason and Retry, 2026-10-28
+
+Reviewed 1,249 source files and 263 candidate files; none added or removed.
+`account-analytics/account-analytics.html` replaces "Couldn't load posts — try
+again later" with the failure's reason and a Retry MbButton (one shared finding
+added). Its partial-adoption disposition stands. No shared widget changed.
+
 ## Crosspost, analytics and GitHub mini-apps, 2026-10-28
 
 Reviewed 1,247 source files and 263 candidate files. Four candidates are added.

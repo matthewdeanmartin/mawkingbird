@@ -409,3 +409,15 @@ a.counted-label:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* A failed first load: what went wrong, why, and a way to try again now. */
+.load-error {
+  padding: 24px 0;
+}
+.load-error p {
+  margin: 0 0 12px;
+}
+.load-error span {
+  display: block;
+  margin-top: 4px;
+}

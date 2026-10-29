@@ -1,5 +1,6 @@
 import { accountProfilePath } from '../account-route';
 import { MbButton } from '../design-system/button/button';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -47,7 +48,12 @@ const MAX_PAGES = 5;
 const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 
 // i18n accountAnalytics.crunching: Crunching the last 100 posts…
-// i18n accountAnalytics.loadError: Couldn't load posts — try again later.
+// i18n accountAnalytics.loadError: Couldn't load posts.
+// i18n accountAnalytics.retry: Retry
+// i18n accountAnalytics.why.offline: Your server couldn't be reached — check your connection.
+// i18n accountAnalytics.why.signedOut: Your server refused the request; your sign-in may have expired.
+// i18n accountAnalytics.why.rateLimited: Your server is limiting how fast it answers. Wait a minute, then retry.
+// i18n accountAnalytics.why.status: Your server answered with an error (HTTP {{status}}).
 // i18n accountAnalytics.empty: Nothing to analyze yet — no posts found.
 // i18n accountAnalytics.basedOnLast: Based on the last {{count}} {{posts}}, boosts excluded.
 // i18n accountAnalytics.sampleGoesBack: The sample goes back {{time}}.
@@ -167,6 +173,8 @@ export class AccountAnalytics implements OnInit {
 
   protected loading = signal(true);
   protected error = signal(false);
+  /** Why the first page failed, as an i18n key and params; shown under the error. */
+  protected errorReason = signal<{ key: string; params?: Record<string, unknown> } | null>(null);
   /** The analyzed sample: own posts only, newest first. */
   protected posts = signal<Status[]>([]);
   protected followers = signal<Account[]>([]);
@@ -185,6 +193,20 @@ export class AccountAnalytics implements OnInit {
     const acc = this.account();
     const id = this.publicRef()?.id ?? acc.id;
     this.fetchPosts(id, [], undefined, 0);
+    this.loadFollowers(id);
+  }
+
+  /** Start the post sample over after a failed first load. */
+  protected retry(): void {
+    const id = this.publicRef()?.id ?? this.account().id;
+    this.loading.set(true);
+    this.error.set(false);
+    this.errorReason.set(null);
+    this.fetchPosts(id, [], undefined, 0);
+    if (!this.followers().length) this.loadFollowers(id);
+  }
+
+  private loadFollowers(id: string): void {
     this.getFollowers(id).subscribe({
       next: (accounts) => {
         this.followers.set(accounts);
@@ -229,10 +251,11 @@ export class AccountAnalytics implements OnInit {
           this.fetchPosts(id, all, batch[batch.length - 1].id, page + 1);
         }
       },
-      error: () => {
+      error: (err: unknown) => {
         this.posts.set(acc);
         this.loading.set(false);
         this.error.set(acc.length === 0);
+        this.errorReason.set(failureReason(err));
       },
     });
   }
@@ -526,4 +549,13 @@ export class AccountAnalytics implements OnInit {
     }
     return n.toLocaleString();
   }
+}
+
+/** Name the failure, so the reader knows whether retrying can help. */
+function failureReason(err: unknown): { key: string; params?: Record<string, unknown> } | null {
+  if (!(err instanceof HttpErrorResponse)) return null;
+  if (err.status === 0) return { key: 'accountAnalytics.why.offline' };
+  if (err.status === 401 || err.status === 403) return { key: 'accountAnalytics.why.signedOut' };
+  if (err.status === 429) return { key: 'accountAnalytics.why.rateLimited' };
+  return { key: 'accountAnalytics.why.status', params: { status: err.status } };
 }
