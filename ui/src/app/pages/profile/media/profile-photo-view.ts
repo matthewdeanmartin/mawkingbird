@@ -79,8 +79,8 @@ import { Server } from '../../../server';
 // i18n pages.profile.media.openImageInNewTab: Open image in new tab
 // i18n pages.profile.media.deletePost: Delete post
 // i18n pages.profile.media.report: Report…
-// i18n pages.profile.media.muteHandle: Mute &#64;{{handle}}
-// i18n pages.profile.media.blockHandle: Block &#64;{{handle}}
+// i18n pages.profile.media.muteHandle: Mute @{{handle}}
+// i18n pages.profile.media.blockHandle: Block @{{handle}}
 // i18n pages.profile.media.addCommentPlaceholder: Add a comment…
 // i18n pages.profile.media.cancel: Cancel
 // i18n pages.profile.media.loadingComments: Loading comments…

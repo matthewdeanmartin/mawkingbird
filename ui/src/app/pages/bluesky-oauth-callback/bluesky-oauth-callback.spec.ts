@@ -61,4 +61,17 @@ describe('BlueskyOAuthCallback', () => {
       'cancelled',
     );
   });
+
+  it('returns to the mini-app that started the sign-in', async () => {
+    sessionStorage.setItem('mockingbird_login_next', '/crosspost');
+    bsky.finishOAuthIdentity.mockResolvedValue({ session: {}, adding: false });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    const fixture = TestBed.createComponent(BlueskyOAuthCallback);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledWith('/crosspost', { replaceUrl: true });
+    expect(sessionStorage.getItem('mockingbird_login_next')).toBeNull();
+  });
 });

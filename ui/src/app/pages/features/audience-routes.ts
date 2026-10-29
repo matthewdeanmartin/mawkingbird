@@ -27,12 +27,12 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/twitter-exodus',
-    title: 'Moving from Twitter or X to Mastodon and Bluesky',
+    title: 'Moving from Twitter to Mastodon and Bluesky',
     data: {
       audience: 'twitter-exodus',
       seoIndexable: true,
       seoDescription:
-        'Leaving Twitter or X? Try Mawkingbird to explore Mastodon and Bluesky, discover people through starter collections and build a familiar social feed.',
+        'Leaving Twitter? Try Mawkingbird to explore Mastodon and Bluesky, discover people through starter collections and build a familiar social feed.',
     },
     loadComponent: loadAudience,
   },

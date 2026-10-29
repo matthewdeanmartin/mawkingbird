@@ -20,13 +20,16 @@ const fallback = `<noscript>
       <li><a href="/features/">Discover Mawkingbird features</a></li>
       <li><a href="/for/readers/">News, RSS and reading lists</a></li>
       <li><a href="/for/bluesky/">Bluesky and Mastodon in one place</a></li>
-      <li><a href="/for/twitter-exodus/">A fresh start after Twitter / X</a></li>
+      <li><a href="/for/twitter-exodus/">A fresh start after Twitter</a></li>
       <li><a href="/for/instagram/">Photo viewing</a></li>
       <li><a href="/for/creators/">Writing and photography</a></li>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
       <li><a href="/twitter-to-mastodon/">Import your Twitter follows to Mastodon</a></li>
+      <li><a href="/crosspost/">Post to Mastodon and Bluesky at the same time</a></li>
+      <li><a href="/mastodon-analytics/">Mastodon analytics for your account</a></li>
+      <li><a href="/github-to-mastodon/">Find your GitHub friends on Mastodon</a></li>
       <li><a href="/about/">Why Mawkingbird exists</a></li>
       <li><a href="/blog/">Blog</a></li>
     </ul>
@@ -72,7 +75,14 @@ function withLastmod(xml) {
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'blog/') return ['src/app/pages/docs/'];
-    if (page === 'twitter-to-mastodon/') return ['src/app/pages/twitter-to-mastodon/'];
+    // Mini-app pages: their own directory plus the page chrome they share.
+    const tool = {
+      'twitter-to-mastodon/': 'twitter-to-mastodon',
+      'crosspost/': 'crosspost',
+      'mastodon-analytics/': 'mastodon-analytics',
+      'github-to-mastodon/': 'github-to-mastodon',
+    }[page];
+    if (tool) return [`src/app/pages/${tool}/`, 'src/app/pages/focused-apps/'];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
     throw new Error(`prepare-seo-index: no lastmod sources for sitemap page "${page}"`);

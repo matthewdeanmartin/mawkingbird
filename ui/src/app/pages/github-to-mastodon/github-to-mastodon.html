@@ -1,0 +1,62 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub to Mastodon</p>
+    <h1>Find your GitHub friends on Mastodon</h1>
+    <p>
+      Many developers list their Mastodon account on GitHub. Mawkingbird checks the people you
+      follow on GitHub, and the owners of repositories you starred, and lets you follow them on
+      Mastodon.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Loading the finder…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in with Mastodon</h2>
+        <p>Following happens on your own Mastodon account, so that comes first.</p>
+      </li>
+      <li>
+        <h2>Connect GitHub</h2>
+        <p>
+          Paste a GitHub personal access token; the page shows how to make one. GitHub does not let
+          browser apps sign in any other way, and the token stays in this browser.
+        </p>
+      </li>
+      <li>
+        <h2>Find and follow</h2>
+        <p>
+          Profile links to Mastodon come first, then a limited username search. Each match shows its
+          evidence, and you choose who to follow.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Sign in with Mastodon</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Where does my GitHub token go?</h3>
+    <p>
+      It is stored in this browser and sent only to <code>api.github.com</code>, never to
+      Mawkingbird. Revoke it on GitHub whenever you like.
+    </p>
+    <h3>Does it follow anyone automatically?</h3>
+    <p>No. Every follow is a button you press, next to the evidence for the match.</p>
+  </section>
+</main>

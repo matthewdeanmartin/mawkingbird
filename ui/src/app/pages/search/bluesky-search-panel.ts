@@ -106,7 +106,7 @@ import { Terminology } from '../../terminology';
 // i18n pages.search.bluesky.replies: Replies
 // i18n pages.search.bluesky.minimumReplies: Minimum replies
 // i18n pages.search.bluesky.any: any
-// i18n pages.search.bluesky.applyAndSearch: Apply &amp; search
+// i18n pages.search.bluesky.applyAndSearch: Apply & search
 // i18n pages.search.bluesky.clear: Clear
 // i18n pages.search.bluesky.advancedAccountsDescription: Bluesky's account search takes no parameters beyond the words themselves, so these gates filter the people it already found rather than changing the search.
 // i18n pages.search.bluesky.followers: Followers

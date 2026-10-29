@@ -171,4 +171,22 @@ describe('application routes', () => {
     );
     expect(routes.indexOf(signedIn)).toBeLessThan(routes.indexOf(shellRoute()!));
   });
+
+  it('gives every focused mini-app a shell twin, a public page and an Invite tab', () => {
+    for (const path of [
+      'twitter-to-mastodon',
+      'crosspost',
+      'mastodon-analytics',
+      'github-to-mastodon',
+    ]) {
+      const [inShell, publicPage] = routes.filter((route) => route.path === path);
+      expect(inShell.canMatch, path).toHaveLength(1);
+      expect(
+        inShell.children?.map((child) => child.path),
+        path,
+      ).toEqual(['', 'invite']);
+      expect(publicPage.data?.['seoIndexable'], path).toBe(true);
+      expect(routes.find((route) => route.path === `${path}/invite`)?.redirectTo).toBe(path);
+    }
+  });
 });

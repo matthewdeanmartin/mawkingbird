@@ -4,6 +4,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { takeLoginNext } from '../../login-destination';
 
 // i18n blueskyOauth.errorTitle: Bluesky sign-in did not finish
 // i18n blueskyOauth.back: Back to Bluesky sign-in
@@ -31,6 +32,7 @@ export class BlueskyOAuthCallback implements OnInit {
   private async finish(): Promise<void> {
     try {
       const result = await this.bsky.finishOAuthIdentity();
+      const next = takeLoginNext();
       if (!this.auth.enterBluesky()) {
         throw new Error('The browser could not store the Bluesky identity.');
       }
@@ -38,7 +40,7 @@ export class BlueskyOAuthCallback implements OnInit {
         // Recreate account-scoped singletons under the newly active DID.
         location.assign('home');
       } else {
-        await this.router.navigateByUrl('/home', { replaceUrl: true });
+        await this.router.navigateByUrl(next, { replaceUrl: true });
       }
     } catch (err: unknown) {
       this.error.set(describeOAuthError(err));

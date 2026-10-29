@@ -132,20 +132,37 @@ in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
 menu and the welcome modal link to it; the modal's links open new tabs so its
 two answers stay the only way out.
 
-## Twitter importer: /twitter-to-mastodon/
+## Focused mini-apps
 
-A public, prerendered page for people searching for exactly this task. Two
-routes share the path: signed in with Mastodon (`mastodonSignedInMatch`), it
-runs in the shell as a focused mini-app (`FOCUSED_APPS` in `shell/mode-nav.ts`:
-Home · Import · Invite, the usual … and account menus, no rails or mode
-switcher); for anyone else it stands alone with its own header. The importer is
-the shared `TwitterArchiveImport` (also in Settings → Import/Export), inside
-`@defer`, so the prerender holds only the static copy. A signed-out visitor
-reads the archive first; "Sign in with Mastodon" stashes it in sessionStorage
-and opens `/login/mastodon?next=/twitter-to-mastodon`. `next` travels in the
-pending OAuth record and only allowlisted paths (`loginDestination`) are
-honoured. Links into the rest of the app appear only after a search has run.
-Onboarding still opens on the first Home visit, never here.
+Public, prerendered pages for one task each, aimed at people searching for that
+task: `/twitter-to-mastodon/` (archive → follows), `/crosspost/` (post to
+Mastodon and Bluesky together), `/mastodon-analytics/` and
+`/github-to-mastodon/`. Each is registered in `FOCUSED_APPS`
+(`shell/mode-nav.ts`) and routed by `focusedAppRoutes` (`app.routes.ts`):
+
+- Signed in (`mastodonSignedInMatch`; the crossposter takes either network via
+  `signedInMatch`), the page runs in the shell trimmed to Home · tool · Invite,
+  with the usual … and account menus, no rails and no mode switcher.
+  `/<root>/invite` is the invite builder.
+- Anyone else gets the same page alone, with its own header: what the tool does,
+  then sign-in. Its interactive body is `@defer`red and signed-in only, so the
+  prerender holds copy alone (`check-seo-build.mjs` asserts this).
+- Sign-in returns to the page: `?next=` on `/login/mastodon` and `/login/bluesky`
+  is honoured only for a `FOCUSED_APPS` root (`login-destination.ts`). Mastodon
+  carries it in the pending OAuth record; Bluesky, whose OAuth state the SDK
+  owns, in sessionStorage until its callback.
+- Bodies reuse the app: the Twitter and GitHub finders are the components that
+  Settings → Import/Export renders, the crossposter is `Compose` plus the
+  Bluesky and Mastodon connectors, and the analytics are `AccountAnalytics`.
+  Connector pages take `embedded` to drop their Settings chrome.
+- Links into the rest of the app (`FocusedNextSteps`) come only after the task:
+  after a search, below the composer, below the analytics.
+- Onboarding opens on the first Home visit, never on these pages.
+
+The Twitter importer reads the archive before sign-in and stashes it across the
+redirect. To add a mini-app: a `FOCUSED_APPS` entry, `focusedAppRoutes`, the
+`tools` list in `main.server.ts`, the sitemap, `check-seo-build.mjs` and the
+lastmod table and fallback links in `prepare-seo-index.mjs`.
 
 ## Titles, structured data and sitemap dates
 

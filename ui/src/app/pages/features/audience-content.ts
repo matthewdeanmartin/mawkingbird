@@ -103,10 +103,10 @@ export const audienceContent: Record<string, AudienceContent> = {
     ],
   },
   'twitter-exodus': {
-    eyebrow: 'For people leaving Twitter / X',
+    eyebrow: 'For people leaving Twitter',
     heading: 'Find your next conversation without starting from an empty feed',
     intro:
-      'Moving on from Twitter or X is easier when you can see what another community feels like. Mawkingbird lets you explore a working preview, discover people and build a feed on Mastodon or Bluesky at your own pace.',
+      'Moving on from Twitter is easier when you can see what another community feels like. Mawkingbird lets you explore a working preview, discover people and build a feed on Mastodon or Bluesky at your own pace.',
     action: 'Explore your next feed',
     sections: [
       {
@@ -140,7 +140,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Start with the preview and browse a starter collection. Choose Mastodon or Bluesky, connect or create an account with that network, then follow a few people whose posts you want to see again.',
     expectation:
-      'Mawkingbird does not automatically transfer your Twitter/X followers, posts or identity. Its optional Twitter connector needs separate configuration and API access; you do not need it to explore Mastodon or Bluesky.',
+      'Mawkingbird does not automatically transfer your Twitter followers, posts or identity. Its optional Twitter connector needs separate configuration and API access; you do not need it to explore Mastodon or Bluesky.',
     guides: [
       { label: 'Import your Twitter follows to Mastodon', href: '/twitter-to-mastodon/' },
       { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },

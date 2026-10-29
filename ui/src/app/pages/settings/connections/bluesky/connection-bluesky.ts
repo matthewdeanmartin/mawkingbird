@@ -3,7 +3,7 @@ import { MbNotice } from '../../../../design-system/notice/notice';
 import { MbContentLink } from '../../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../../design-system/field/field';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -52,6 +52,8 @@ import { StorageBadge } from '../storage-badge';
   styleUrls: ['../connection-page.css', './connection-bluesky.css'],
 })
 export class ConnectionBluesky implements OnInit {
+  /** Inside a mini-app page: no Settings back link or page header. */
+  readonly embedded = input(false);
   protected capabilities = inject(AnonymousCapabilities);
   protected bsky = inject(BlueskySession);
   private transloco = inject(TranslocoService);

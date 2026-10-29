@@ -312,7 +312,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'secret',
-    note: "API keys for the Twitter/X read services (per service, each with its own retention stamp). Billable on a paid plan and able to read on the user's behalf, so it is treated exactly like the other pasted tokens. Unscoped: the subscription belongs to the human, not to one persona.",
+    note: "API keys for the Twitter read services (per service, each with its own retention stamp). Billable on a paid plan and able to read on the user's behalf, so it is treated exactly like the other pasted tokens. Unscoped: the subscription belongs to the human, not to one persona.",
   },
   {
     base: 'mockingbird_shortener_keys',
@@ -501,21 +501,21 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'private',
-    note: 'Which Twitter/X read service is selected, and the cached verdict on whether it can be reached from a browser at all. Not secret — the keys live in mockingbird_twitter_keys — but naming the service you read through is a disclosure, same reasoning as mockingbird_cors_proxy.',
+    note: 'Which Twitter read service is selected, and the cached verdict on whether it can be reached from a browser at all. Not secret — the keys live in mockingbird_twitter_keys — but naming the service you read through is a disclosure, same reasoning as mockingbird_cors_proxy.',
   },
   {
     base: 'mockingbird_twitter_follows',
     storage: 'local',
     suffix: 'account',
     sensitivity: 'private',
-    note: 'Which Twitter/X accounts are followed into the timeline. A follow list: not a credential, and squarely the kind of thing that should never reach a published gist.',
+    note: 'Which Twitter accounts are followed into the timeline. A follow list: not a credential, and squarely the kind of thing that should never reach a published gist.',
   },
   {
     base: 'mockingbird_nitter_host',
     storage: 'local',
     suffix: 'none',
     sensitivity: 'private',
-    note: 'The Nitter instance used for Twitter/X reads, replaceable when one dies. Private rather than setting for the same reason as mastodon_mock_server: a niche instance names where the reader goes.',
+    note: 'The Nitter instance used for Twitter reads, replaceable when one dies. Private rather than setting for the same reason as mastodon_mock_server: a niche instance names where the reader goes.',
   },
   {
     base: 'mockingbird_trusted_accounts',
@@ -900,7 +900,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     sensitivity: 'cache',
     // Same reasoning as mockingbird_cors_proxy_usage below: counters only, no
     // URLs and no handles, so it never records what was read.
-    note: "Daily Twitter/X request counts against the reader's own budget, bucketed by local calendar day. Counters only — resetting them loses nothing but the day's tally.",
+    note: "Daily Twitter request counts against the reader's own budget, bucketed by local calendar day. Counters only — resetting them loses nothing but the day's tally.",
   },
   {
     base: 'mockingbird_article_quota',
@@ -1023,6 +1023,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     suffix: 'none',
     sensitivity: 'setting',
     note: 'Which app mode (Mastodon, RSS or Video) the top menu is showing in this tab.',
+  },
+  {
+    base: 'mockingbird_login_next',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Which mini-app page a Bluesky sign-in returns to, carried across the OAuth redirect; consumed by the callback.',
   },
   {
     base: 'mockingbird_twitter_archive_handoff',

@@ -21,6 +21,7 @@ import { brandLogoSrc } from '../../build-flavor';
 import { AppFooter } from '../../shell/app-footer/app-footer';
 import { ServerDiscovery } from '../../server-discovery/server-discovery';
 import { redirectToSecureLogin } from '../../secure-login';
+import { loginDestination } from '../../login-destination';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 
@@ -45,19 +46,6 @@ interface StoredApp {
   server: string;
   /** Where to land after signing in, already checked by {@link loginDestination}. */
   next?: string;
-}
-
-/**
- * In-app pages a sign-in may return to instead of Home.
- *
- * An allowlist, not a same-origin check: `?next=` arrives in a URL anyone can
- * craft, and only pages built to pick up after sign-in belong here.
- */
-const LOGIN_RETURN_PATHS: readonly string[] = ['/twitter-to-mastodon'];
-
-/** The page to open after signing in: an allowlisted `next`, else Home. */
-export function loginDestination(next: string | null | undefined): string {
-  return next && LOGIN_RETURN_PATHS.includes(next) ? next : '/home';
 }
 
 type Tab = 'signin' | 'mock' | 'init';

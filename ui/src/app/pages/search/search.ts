@@ -247,7 +247,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.media.exhausted: No more results returned by this search server.
 // i18n pages.search.media.paused: Scan paused. Load more to continue.
 // i18n pages.search.media.failed: Could not load the next page. Your results are retained; try Load more again later.
-// i18n pages.search.action.applyAndSearch: Apply &amp; search
+// i18n pages.search.action.applyAndSearch: Apply & search
 // i18n pages.search.budget.maximumApiCalls: Maximum API calls
 // i18n pages.search.budget.onePage: 1 page (~40 posts)
 // i18n pages.search.budget.twoPages: 2 pages (~80 posts)
@@ -278,7 +278,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.field.publicAndLibrary: Public and my library
 // i18n pages.search.field.public: Public
 // i18n pages.search.field.myLibrary: My library
-// i18n pages.search.accountSearchDescription: Mastodon’s account search only matches names &amp; bios. “What they post” runs a post search and condenses the results down to the people who posted — good for finding, say, economists rather than one specific person.
+// i18n pages.search.accountSearchDescription: Mastodon’s account search only matches names & bios. “What they post” runs a post search and condenses the results down to the people who posted — good for finding, say, economists rather than one specific person.
 // i18n pages.search.accountField.matchOn: Match on
 // i18n pages.search.accountField.followers: Followers
 // i18n pages.search.accountField.following: Following
@@ -374,7 +374,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.placeholder.hashtags: Search {{network}} hashtags
 // i18n pages.search.placeholder.posts: Search {{network}} {{posts}}
 // i18n pages.search.accountSource.bioAndPosts: Bio and posts
-// i18n pages.search.accountSource.nameAndBioOnly: Name &amp; bio only
+// i18n pages.search.accountSource.nameAndBioOnly: Name & bio only
 // i18n pages.search.accountSource.whatTheyPost: What they post
 // i18n pages.search.language.any: Any language
 // i18n pages.search.language.english: English

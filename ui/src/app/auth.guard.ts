@@ -16,6 +16,12 @@ export const mastodonSignedInMatch: CanMatchFn = () => {
   return !auth.lacksMastodonToken && !auth.isAnonymous;
 };
 
+/** Matches any signed-in identity, Mastodon or Bluesky; not Anonymous. Same fall-through. */
+export const signedInMatch: CanMatchFn = () => {
+  const auth = inject(Auth);
+  return auth.isAuthenticated && !auth.isAnonymous;
+};
+
 export const authGuard: CanActivateFn = (_route, state) => {
   const auth = inject(Auth);
   const router = inject(Router);

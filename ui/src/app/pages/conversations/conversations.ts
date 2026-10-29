@@ -174,7 +174,7 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.likeTitle: Like
 // i18n pages.conversations.bookmarkTitle: Bookmark
 // i18n pages.conversations.openAs: Open as {{term}}
-// i18n pages.conversations.groupHint: 🔒 Group membership is just who's &#64;-mentioned — anyone replying can add or remove people by editing the mentions.
+// i18n pages.conversations.groupHint: 🔒 Group membership is just who's @-mentioned — anyone replying can add or remove people by editing the mentions.
 // i18n pages.conversations.bot.messagePlaceholder: Message {{name}}…
 // i18n pages.conversations.send: Send
 // i18n pages.conversations.bskyMessagePlaceholder: Message on Bluesky…

@@ -65,7 +65,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
 // i18n settings.importExport.twitter.folder: folder.
 // i18n settings.importExport.twitter.handleRecovered: of those have a handle recovered from your tweets
 // i18n settings.importExport.twitter.hide.bots: Bots or mirrors
-// i18n settings.importExport.twitter.hide.inactive: Inactive (&lt;10 combined posts, following, and followers)
+// i18n settings.importExport.twitter.hide.inactive: Inactive (fewer than 10 combined posts, following and followers)
 // i18n settings.importExport.twitter.hide.incomplete: Missing a bio or avatar
 // i18n settings.importExport.twitter.hide.stale: No posts, or last activity over a year ago (when known)
 // i18n settings.importExport.twitter.hideTitle: Hide candidates that are…
@@ -84,7 +84,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
 // i18n settings.importExport.twitter.replies: replies ·
 // i18n settings.importExport.twitter.searchNote: username-search calls used. Same-handle accounts are likely matches, not confirmed identities; a matching display name or profile link back to Twitter is shown as extra evidence.
 // i18n settings.importExport.twitter.seenIn: people seen in
-// i18n settings.importExport.twitter.title: Extract contacts from Twitter/Twitter
+// i18n settings.importExport.twitter.title: Extract contacts from Twitter
 // i18n twitterImport.signIn.title: Next: find them on Mastodon.
 // i18n twitterImport.signIn.body: Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. Your archive stays in this browser.
 // i18n twitterImport.signIn.action: Sign in with Mastodon

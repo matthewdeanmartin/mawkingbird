@@ -1,0 +1,67 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Post to Mastodon and Bluesky at the same time</h1>
+    <p>
+      Write once and send the same post to both networks.
+      @if (!inShell) {
+        Sign in with whichever account you have, connect the other, and try it from a simple
+        composer.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Loading the composer…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in with either network</h2>
+        <p>Use your Mastodon account or your Bluesky account. You only need one to start.</p>
+      </li>
+      <li>
+        <h2>Connect the other one</h2>
+        <p>
+          Signed in with Mastodon, link Bluesky with an app password. Signed in with Bluesky, add
+          your Mastodon server.
+        </p>
+      </li>
+      <li>
+        <h2>Write once, post to both</h2>
+        <p>The composer sends your post to both networks. Try it with a first post.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Sign in with Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Sign in with Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Is the Bluesky copy exactly the same?</h3>
+    <p>
+      The text is. The Bluesky copy is always public, and polls and content warnings stay on the
+      Mastodon copy, because Bluesky has no equivalent.
+    </p>
+    <h3>Where are my sign-ins kept?</h3>
+    <p>
+      In this browser. Mawkingbird talks to your Mastodon server and to Bluesky directly; there is
+      no Mawkingbird server in between holding your accounts.
+    </p>
+  </section>
+</main>

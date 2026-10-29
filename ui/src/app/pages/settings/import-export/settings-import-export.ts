@@ -18,10 +18,10 @@ import { environment } from '../../../../environments/environment';
 import { ContactDiscovery } from './contact-discovery';
 import { contactPickerAvailable, pickContacts } from './contact-picker';
 import { GitHubSession } from '../../../providers/github/github-session';
-import { GitHubFriendDiscovery, GitHubFriendStatus } from './github-friend-discovery';
 import { extractArchiveHashtags } from '../../../twitter-archive';
 import { SAMPLE_SIZE, TagSources } from './tag-sources';
 import { saveCsv } from './save-csv';
+import { GitHubFriendsImport } from './github-friends-import';
 import { TwitterArchiveImport } from './twitter-archive-import';
 import { BridgeFinder, BridgeRow } from './bridge-finder';
 import { BridgeNetwork } from './bridge-matching';
@@ -121,34 +121,6 @@ function exportHandle(account: Account): string {
 // i18n settings.importExport.friends.paste.b: handles or profile URLs, one per line, or upload a Mastodon
 // i18n settings.importExport.friends.paste.c: . Each account is looked up and followed one at a time.
 // i18n settings.importExport.friends.uploadCsv: Upload CSV…
-// i18n settings.importExport.github.callsUsed: {{used}} / {{limit}} username-search calls used.
-// i18n settings.importExport.github.checked.a: Checked
-// i18n settings.importExport.github.checked.b: starred repositories and
-// i18n settings.importExport.github.checked.c: unique owners; contributors were not loaded.
-// i18n settings.importExport.github.checkingStarred: Checking starred repo owners…
-// i18n settings.importExport.github.follows.body: The shorter, higher-confidence list. Direct profile links are matched first; remaining profiles can be searched once by GitHub username.
-// i18n settings.importExport.github.follows.title: People you follow on GitHub
-// i18n settings.importExport.github.friends.one: {{count}} GitHub friend
-// i18n settings.importExport.github.friends.other: {{count}} GitHub friends
-// i18n settings.importExport.github.intro: Use either or both GitHub sources. Exact handles are resolved through your Mastodon server so results open inside Mawkingbird and show your follow status.
-// i18n settings.importExport.github.linkedSummary: {{count}} matched directly from GitHub profile links. Loaded in
-// i18n settings.importExport.github.loadingFollows: Loading GitHub follows…
-// i18n settings.importExport.github.mastodonMatches.one: {{count}} Mastodon match
-// i18n settings.importExport.github.mastodonMatches.other: {{count}} Mastodon matches
-// i18n settings.importExport.github.matchViaFriends: Get matches via GitHub friends
-// i18n settings.importExport.github.matchViaStars: Get matches via GitHub stars
-// i18n settings.importExport.github.reloadFollows: Reload GitHub follows
-// i18n settings.importExport.github.requests.one: {{count}} GitHub GraphQL request
-// i18n settings.importExport.github.requests.other: {{count}} GitHub GraphQL requests
-// i18n settings.importExport.github.resolved.one: and resolved {{count}} exact linked profile through your server.
-// i18n settings.importExport.github.resolved.other: and resolved {{count}} exact linked profiles through your server.
-// i18n settings.importExport.github.starred.body: The longer, lower-confidence list. Checks each unique repository owner for a direct Mastodon profile link. Contributors and stargazers are never loaded.
-// i18n settings.importExport.github.starred.title: Owners of repositories you starred
-// i18n settings.importExport.github.starredMatches.one: {{count}} starred-owner match
-// i18n settings.importExport.github.starredMatches.other: {{count}} starred-owner matches
-// i18n settings.importExport.github.starsChecked: GitHub stars checked
-// i18n settings.importExport.github.title: Find GitHub friends on Mastodon
-// i18n settings.importExport.github.youStarred: You starred:
 // i18n settings.importExport.hideAlreadyFollowed: Hide already followed
 // i18n settings.importExport.intro: Move your friends and followed hashtags between accounts with portable CSV files, and find the people you already follow on your other network.
 // i18n settings.importExport.invite.body: Prewritten posts for Twitter and Bluesky that ask your friends to come over — or just to visit with no account at all.
@@ -163,7 +135,7 @@ function exportHandle(account: Account): string {
 // i18n settings.importExport.mock.downloadCsv: Download CSV
 // i18n settings.importExport.mock.followingList: Following list
 // i18n settings.importExport.mock.follows: Follows
-// i18n settings.importExport.mock.handleHint: One handle per line, e.g. user&#64;example.com.
+// i18n settings.importExport.mock.handleHint: One handle per line, e.g. user@example.com.
 // i18n settings.importExport.mock.importType: Import type
 // i18n settings.importExport.mock.imported: Imported
 // i18n settings.importExport.mock.mutes: Mutes
@@ -237,6 +209,7 @@ export class SuggestedTagImporter extends ImportTags {}
     MbCheckbox,
     MbRadioGroup,
     TwitterArchiveImport,
+    GitHubFriendsImport,
   ],
   providers: [SuggestedTagImporter],
   templateUrl: './settings-import-export.html',
@@ -258,7 +231,6 @@ export class SettingsImportExport {
   private anonymousTags = inject(AnonymousTags);
   protected contactDiscovery = inject(ContactDiscovery);
   protected github = inject(GitHubSession);
-  protected githubDiscovery = inject(GitHubFriendDiscovery);
   protected bridge = inject(BridgeFinder);
   protected bsky = inject(BlueskySession);
   protected mastodonConnector = inject(MastodonConnector);
@@ -292,8 +264,6 @@ export class SettingsImportExport {
   protected tagArchiveReading = signal(false);
   protected contactFileName = signal<string | null>(null);
   protected contactCallLimit = signal(20);
-  protected githubCallLimit = signal(20);
-  protected hideGithubFollowed = signal(false);
 
   protected doneCount = computed(
     () =>
@@ -352,38 +322,6 @@ export class SettingsImportExport {
       .filter((row) => row.status === 'complete' && row.matches.length === 0)
       .map((row) => row.contact.name),
   );
-  protected githubFoundCount = computed(() =>
-    this.githubDiscovery
-      .rows()
-      .reduce((count, row) => count + (row.identity ? 1 : row.matches.length), 0),
-  );
-  protected githubLinkedCount = computed(
-    () => this.githubDiscovery.rows().filter((row) => row.identity).length,
-  );
-  protected githubPendingCount = computed(
-    () => this.githubDiscovery.rows().filter((row) => row.status === 'pending').length,
-  );
-  protected githubFollowingProfileCount = computed(
-    () => this.githubDiscovery.rows().filter((row) => row.source !== 'starred-owner').length,
-  );
-  protected githubStarredMatchCount = computed(
-    () => this.githubDiscovery.rows().filter((row) => row.source === 'starred-owner').length,
-  );
-  protected githubVisibleRows = computed(() =>
-    this.githubDiscovery.rows().filter((row) => {
-      const renderable =
-        row.identity || row.matches.length || row.status === 'searching' || row.status === 'failed';
-      return (
-        renderable &&
-        (!this.hideGithubFollowed() ||
-          !row.matches.length ||
-          row.matches.some(
-            (match) => !this.githubDiscovery.relationship(match.account.id)?.following,
-          ))
-      );
-    }),
-  );
-
   // --- bridge finder ---
 
   protected bridgeBudget = signal(50);
@@ -595,38 +533,6 @@ export class SettingsImportExport {
     this.contactFileName.set(null);
     this.contactPickerError.set(null);
     this.contactDiscovery.reset();
-  }
-
-  protected loadGitHubFriends(): void {
-    void this.githubDiscovery.load();
-  }
-
-  protected loadGitHubStarredOwners(): void {
-    void this.githubDiscovery.loadStarredOwners();
-  }
-
-  protected startGitHubSearch(): void {
-    void this.githubDiscovery.start(this.githubCallLimit());
-  }
-
-  protected setGitHubCallLimit(value: number | string): void {
-    const parsed = Number(value);
-    this.githubCallLimit.set(
-      Number.isFinite(parsed) ? Math.min(1000, Math.max(1, Math.floor(parsed))) : 20,
-    );
-  }
-
-  protected githubStatusLabel(status: GitHubFriendStatus): string {
-    switch (status) {
-      case 'pending':
-        return 'waiting';
-      case 'searching':
-        return 'searching…';
-      case 'complete':
-        return 'checked';
-      default:
-        return 'failed';
-    }
   }
 
   protected contactStatusLabel(status: string): string {

@@ -1,8 +1,11 @@
-<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
-  'settings.connections.backLink' | transloco
-}}</a>
+<!-- Embedded in a mini-app page, which supplies its own heading and way back. -->
+@if (!embedded()) {
+  <a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
+    'settings.connections.backLink' | transloco
+  }}</a>
 
-<mb-page-header [title]="'settings.connections.github.title' | transloco" />
+  <mb-page-header [title]="'settings.connections.github.title' | transloco" />
+}
 <div class="connection-intro">
   <p>
     {{ 'settings.connections.github.intro' | transloco }}
@@ -41,13 +44,15 @@
       }
     </p>
   }
-  <p class="muted small">
-    {{ 'settings.connections.github.lookingForFriends' | transloco }}
-    <a mbContentLink [routerLink]="['/settings/import-export']" fragment="github-friends">
-      {{ 'settings.connections.github.findFriendsLink' | transloco }}
-    </a>
-    {{ 'settings.connections.github.findFriendsAfter' | transloco }}
-  </p>
+  @if (!embedded()) {
+    <p class="muted small">
+      {{ 'settings.connections.github.lookingForFriends' | transloco }}
+      <a mbContentLink [routerLink]="['/settings/import-export']" fragment="github-friends">
+        {{ 'settings.connections.github.findFriendsLink' | transloco }}
+      </a>
+      {{ 'settings.connections.github.findFriendsAfter' | transloco }}
+    </p>
+  }
 
   @if (github.notifications(); as notifications) {
     <mb-notice announcement="status">

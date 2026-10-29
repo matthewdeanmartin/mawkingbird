@@ -1,5 +1,20 @@
 # Sprint 6 opening consolidation audit
 
+## Crosspost, analytics and GitHub mini-apps, 2026-10-28
+
+Reviewed 1,247 source files and 263 candidate files. Four candidates are added.
+`pages/settings/import-export/github-friends-import.html` is the GitHub section
+moved out of `settings-import-export.html` unchanged (its 22 findings move with
+it; Settings drops from 109 to 87) so Settings and `/github-to-mastodon` share
+it. `pages/crosspost/crosspost.html`, `pages/mastodon-analytics/
+mastodon-analytics.html` and `pages/github-to-mastodon/github-to-mastodon.html`
+are public entry pages: MbContentLink and MbButton in the feature-page header and
+sign-in row, no new pattern. Their signed-in bodies embed existing components
+(Compose, AccountAnalytics, the Bluesky, Mastodon and GitHub connectors), which
+gain an `embedded` input that only hides their Settings back link and page
+header (line shifts, no new findings). `features.html` gains three MbContentLinks.
+No shared widget changed.
+
 ## Twitter importer mini-app, 2026-10-28
 
 Reviewed 1,236 source files and 259 candidate files. Two candidates are added.

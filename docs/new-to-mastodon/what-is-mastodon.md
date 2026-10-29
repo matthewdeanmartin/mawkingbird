@@ -2,7 +2,7 @@
 
 Mastodon is a social network made of thousands of independently run servers that talk to each other. You join one server, and you can still follow and talk to people on all the others.
 
-If you have used X or Twitter, most of it will feel familiar: short posts, replies, likes, reposts, hashtags and a timeline. The differences are in who runs it and how your feed is built.
+If you have used Twitter, most of it will feel familiar: short posts, replies, likes, reposts, hashtags and a timeline. The differences are in who runs it and how your feed is built.
 
 ## Servers instead of one company
 

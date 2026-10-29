@@ -156,3 +156,17 @@ describe('FOCUSED_APPS', () => {
     }
   });
 });
+
+describe('every focused app', () => {
+  it('marks exactly one of its tabs current on each of its pages', () => {
+    for (const app of FOCUSED_APPS) {
+      for (const item of app.items) {
+        expect(focusedAppFor(item.link)?.id, item.link).toBe(app.id);
+        expect(
+          app.items.filter((other) => other.active(item.link)),
+          item.link,
+        ).toHaveLength(1);
+      }
+    }
+  });
+});

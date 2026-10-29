@@ -27,7 +27,10 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 // i18n shell.modeNav.twitterImport.import: Import
-// i18n shell.modeNav.twitterImport.invite: Invite
+// i18n shell.modeNav.crosspost.post: Crosspost
+// i18n shell.modeNav.analytics.view: Analytics
+// i18n shell.modeNav.githubFriends.find: Find friends
+// i18n shell.modeNav.focused.invite: Invite
 
 /**
  * One tab of a mode's primary nav, as data rather than markup.
@@ -286,27 +289,56 @@ export interface FocusedApp {
   items: readonly ModeNavItem[];
 }
 
-export const FOCUSED_APPS: readonly FocusedApp[] = [
-  {
-    id: 'twitter-import',
-    root: '/twitter-to-mastodon',
+/** Every mini-app ends in the same Invite tab, so it is one meaning with one glyph. */
+const INVITE_ICON = 'M3 6h18v12H3zM3 6l9 7 9-7';
+
+/** A mini-app's own tool tab at its root, then Invite at `root/invite`. */
+function focusedApp(
+  id: string,
+  root: string,
+  tool: Pick<ModeNavItem, 'id' | 'labelKey' | 'icon'>,
+): FocusedApp {
+  return {
+    id,
+    root,
     items: [
-      {
-        id: 'import',
-        labelKey: 'shell.modeNav.twitterImport.import',
-        icon: 'M12 3v12M7 10l5 5 5-5M4 17v3h16v-3',
-        link: '/twitter-to-mastodon',
-        active: (url) => pathOf(url).replace(/\/$/, '') === '/twitter-to-mastodon',
-      },
+      { ...tool, link: root, active: (url) => pathOf(url).replace(/\/$/, '') === root },
       {
         id: 'invite',
-        labelKey: 'shell.modeNav.twitterImport.invite',
-        icon: 'M3 6h18v12H3zM3 6l9 7 9-7',
-        link: '/twitter-to-mastodon/invite',
-        active: onPath('/twitter-to-mastodon/invite'),
+        labelKey: 'shell.modeNav.focused.invite',
+        icon: INVITE_ICON,
+        link: `${root}/invite`,
+        active: onPath(`${root}/invite`),
       },
     ],
-  },
+  };
+}
+
+/**
+ * The mini-apps: public entry pages for one task each (spec in ui/docs/seo.md).
+ * Their roots are also the only pages a sign-in may return to.
+ */
+export const FOCUSED_APPS: readonly FocusedApp[] = [
+  focusedApp('twitter-import', '/twitter-to-mastodon', {
+    id: 'import',
+    labelKey: 'shell.modeNav.twitterImport.import',
+    icon: 'M12 3v12M7 10l5 5 5-5M4 17v3h16v-3',
+  }),
+  focusedApp('crosspost', '/crosspost', {
+    id: 'crosspost',
+    labelKey: 'shell.modeNav.crosspost.post',
+    icon: 'M3 12h7M10 12l5-5h5M10 12l5 5h5M17 4l3 3-3 3M17 14l3 3-3 3',
+  }),
+  focusedApp('mastodon-analytics', '/mastodon-analytics', {
+    id: 'analytics',
+    labelKey: 'shell.modeNav.analytics.view',
+    icon: 'M4 20V11M10 20V5M16 20v-6M3 20h18',
+  }),
+  focusedApp('github-friends', '/github-to-mastodon', {
+    id: 'find',
+    labelKey: 'shell.modeNav.githubFriends.find',
+    icon: 'M9 8a3 3 0 1 0 0-6a3 3 0 1 0 0 6M3 20a6 6 0 0 1 12 0M18 10l2 2 3-4',
+  }),
 ];
 
 /** The mini-app a URL belongs to, or null for the ordinary app. */

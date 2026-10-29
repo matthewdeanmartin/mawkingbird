@@ -293,7 +293,7 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
     proxyRoute: 'twitterapi',
     openUrl: 'https://twitterapi.io',
     mattersKey: 'settings.connections.doctor.target.twitterapi.matters',
-    // Also reports upstream X/Twitter impact, which is the usual cause here.
+    // Also reports upstream Twitter impact, which is the usual cause here.
     status: {
       url: 'https://twitterapi.io/status',
       labelKey: 'settings.connections.doctor.status.twitterapiStatus',

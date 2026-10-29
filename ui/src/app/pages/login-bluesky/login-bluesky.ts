@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../auth';
+import { loginDestination, stashLoginNext } from '../../login-destination';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { environment } from '../../../environments/environment';
 import { redirectToSecureLogin } from '../../secure-login';
@@ -60,6 +61,8 @@ export class LoginBluesky implements OnInit {
   private route = inject(ActivatedRoute);
   private transloco = inject(TranslocoService);
   private adding = false;
+  /** Home, or the allowlisted mini-app that sent the visitor here (`?next=`). */
+  private destination = '/home';
 
   protected brand = environment.brand;
 
@@ -73,9 +76,10 @@ export class LoginBluesky implements OnInit {
   ngOnInit(): void {
     if (redirectToSecureLogin()) return;
     this.adding = this.route.snapshot.queryParamMap.has('add');
+    this.destination = loginDestination(this.route.snapshot.queryParamMap.get('next'));
     // Already signed in and not explicitly adding an account: nothing to do here.
     if (this.auth.isAuthenticated && !this.adding) {
-      void this.router.navigateByUrl('/home', { replaceUrl: true });
+      void this.router.navigateByUrl(this.destination, { replaceUrl: true });
     }
   }
 
@@ -99,6 +103,8 @@ export class LoginBluesky implements OnInit {
     }
     this.working.set(true);
     this.error.set(null);
+    // The callback is a fresh page load; it finds the destination here.
+    stashLoginNext(this.destination);
     void this.bsky.beginOAuthIdentity(identifier, this.adding).catch((err: unknown) => {
       // The redirect promise normally never resolves; rejection means discovery
       // or PAR failed, or the visitor came back with browser history.
@@ -138,7 +144,7 @@ export class LoginBluesky implements OnInit {
           // A hard navigation rebuilds the app under the newly active DID.
           location.assign('home');
         } else {
-          void this.router.navigateByUrl('/home');
+          void this.router.navigateByUrl(this.destination);
         }
       },
       error: (err: unknown) => {

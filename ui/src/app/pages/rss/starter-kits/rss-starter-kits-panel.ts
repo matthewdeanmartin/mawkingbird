@@ -35,7 +35,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n pages.rss.kits.browserFetch:  — the sites have to be fetched from your browser.
 // i18n pages.rss.kits.checkingSites: Checking sites…
 // i18n pages.rss.kits.lookForFeeds: Look for feeds
-// i18n pages.rss.kits.linkedBy: linked by &#64;{{via}}
+// i18n pages.rss.kits.linkedBy: linked by @{{via}}
 // i18n pages.rss.kits.adding: Adding…
 // i18n pages.rss.kits.noFeedsFound.one: No feeds found on the {{count}} site checked. Many sites don't declare one, and some block being read this way.
 // i18n pages.rss.kits.noFeedsFound.other: No feeds found on the {{count}} sites checked. Many sites don't declare one, and some block being read this way.

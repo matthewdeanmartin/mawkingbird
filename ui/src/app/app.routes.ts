@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { authGuard, mastodonSignedInMatch } from './auth.guard';
+import { CanMatchFn, Route, Routes } from '@angular/router';
+import { authGuard, mastodonSignedInMatch, signedInMatch } from './auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
   anonymousChatGuard,
@@ -20,8 +20,55 @@ import {
   APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
+  CROSSPOST_DESCRIPTION,
+  GITHUB_TO_MASTODON_DESCRIPTION,
+  MASTODON_ANALYTICS_DESCRIPTION,
   TWITTER_TO_MASTODON_DESCRIPTION,
 } from './seo';
+
+/**
+ * The three routes of a focused mini-app.
+ *
+ * Signed in (`match`), the page runs in the shell, whose nav FOCUSED_APPS trims
+ * to Home · tool · Invite, and gains an Invite tab. Everyone else gets the same
+ * page standing alone and public — prerendered and indexed, so a search visitor
+ * meets the tool before being asked to sign in — and the Invite tab sends them
+ * back to it.
+ */
+function focusedAppRoutes(app: {
+  path: string;
+  title: string;
+  seoDescription: string;
+  match: CanMatchFn;
+  page: NonNullable<Route['loadComponent']>;
+}): Routes {
+  return [
+    {
+      path: app.path,
+      canMatch: [app.match],
+      canActivateChild: [justMyServerUpdateGuard],
+      canDeactivate: [justMyServerUpdateCanDeactivate],
+      loadComponent: () => import('./shell/shell').then((m) => m.Shell),
+      children: [
+        { path: '', title: app.title, data: { inShell: true }, loadComponent: app.page },
+        {
+          path: 'invite',
+          title: 'Invite friends',
+          loadComponent: () => import('./pages/invites/invites').then((m) => m.Invites),
+        },
+      ],
+    },
+    {
+      path: app.path,
+      pathMatch: 'full',
+      title: app.title,
+      // Prerendered for search engines; see main.server.ts and docs/seo.md.
+      data: { seoIndexable: true, seoDescription: app.seoDescription },
+      loadComponent: app.page,
+    },
+    { path: `${app.path}/invite`, redirectTo: app.path },
+  ];
+}
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -126,44 +173,40 @@ export const routes: Routes = [
       },
     ],
   },
-  // The Twitter importer as a focused mini-app. Signed in with Mastodon it runs
-  // in the shell with only Home · Import · Invite (see FOCUSED_NAV); otherwise
-  // the same page stands alone and is public, so search visitors can read
-  // their archive before they are asked to sign in.
-  {
+  // Focused mini-apps (FOCUSED_APPS in shell/mode-nav.ts): public entry pages
+  // for one task each, signed-in twins in the trimmed shell. See focusedAppRoutes.
+  ...focusedAppRoutes({
     path: 'twitter-to-mastodon',
-    canMatch: [mastodonSignedInMatch],
-    canActivateChild: [justMyServerUpdateGuard],
-    canDeactivate: [justMyServerUpdateCanDeactivate],
-    loadComponent: () => import('./shell/shell').then((m) => m.Shell),
-    children: [
-      {
-        path: '',
-        title: 'Import your Twitter follows to Mastodon',
-        data: { inShell: true },
-        loadComponent: () =>
-          import('./pages/twitter-to-mastodon/twitter-to-mastodon').then(
-            (m) => m.TwitterToMastodon,
-          ),
-      },
-      {
-        path: 'invite',
-        title: 'Invite friends',
-        loadComponent: () => import('./pages/invites/invites').then((m) => m.Invites),
-      },
-    ],
-  },
-  {
-    path: 'twitter-to-mastodon',
-    pathMatch: 'full',
     title: 'Import your Twitter follows to Mastodon',
-    // Prerendered for search engines; see main.server.ts and docs/seo.md.
-    data: { seoIndexable: true, seoDescription: TWITTER_TO_MASTODON_DESCRIPTION },
-    loadComponent: () =>
+    seoDescription: TWITTER_TO_MASTODON_DESCRIPTION,
+    match: mastodonSignedInMatch,
+    page: () =>
       import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodon),
-  },
-  // The invite tab is for signed-in Mastodon accounts; anyone else starts at the import.
-  { path: 'twitter-to-mastodon/invite', redirectTo: 'twitter-to-mastodon' },
+  }),
+  ...focusedAppRoutes({
+    path: 'crosspost',
+    title: 'Post to Mastodon and Bluesky at the same time',
+    seoDescription: CROSSPOST_DESCRIPTION,
+    // Either network will do: the page offers to connect the other one.
+    match: signedInMatch,
+    page: () => import('./pages/crosspost/crosspost').then((m) => m.Crosspost),
+  }),
+  ...focusedAppRoutes({
+    path: 'mastodon-analytics',
+    title: 'Mastodon analytics for your account',
+    seoDescription: MASTODON_ANALYTICS_DESCRIPTION,
+    match: mastodonSignedInMatch,
+    page: () =>
+      import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalytics),
+  }),
+  ...focusedAppRoutes({
+    path: 'github-to-mastodon',
+    title: 'Find your GitHub friends on Mastodon',
+    seoDescription: GITHUB_TO_MASTODON_DESCRIPTION,
+    match: mastodonSignedInMatch,
+    page: () =>
+      import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodon),
+  }),
   // A message shared as a TinyURL short link. Un-guarded so a shared link opens
   // for anyone, signed in or not.
   {

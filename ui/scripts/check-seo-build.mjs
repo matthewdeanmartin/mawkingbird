@@ -17,7 +17,18 @@ const pages = [
   'funding',
   'blog',
   'twitter-to-mastodon',
+  'crosspost',
+  'mastodon-analytics',
+  'github-to-mastodon',
 ];
+// Focused mini-app entry pages: the heading and a phrase from the signed-out
+// copy. Their tools are deferred and signed-in only, so none may prerender.
+const tools = new Map([
+  ['twitter-to-mastodon', [/Import your Twitter follows/, /Download your Twitter archive/]],
+  ['crosspost', [/Post to Mastodon and Bluesky/, /Sign in with Bluesky/]],
+  ['mastodon-analytics', [/Mastodon analytics for your account/, /Your best posts/]],
+  ['github-to-mastodon', [/Find your GitHub friends on Mastodon/, /Connect GitHub/]],
+]);
 // One prerendered page per published starter kit; follow-kits.ts decides which.
 const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
@@ -52,12 +63,18 @@ for (const page of pages) {
       `${page} links to the in-app kit`,
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
-  } else if (page === 'twitter-to-mastodon') {
+  } else if (tools.has(page)) {
+    const [heading, copy] = tools.get(page);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
-    assert.match(doc.querySelector('h1')?.textContent ?? '', /Import your Twitter follows/);
-    assert.match(doc.body.textContent, /Download your Twitter archive/);
-    // The importer itself is deferred: it needs the browser, not the prerender.
-    assert.equal(doc.querySelector('app-twitter-archive-import'), null);
+    assert.match(doc.querySelector('h1')?.textContent ?? '', heading);
+    assert.match(doc.body.textContent, copy);
+    for (const tool of [
+      'app-twitter-archive-import',
+      'app-crosspost-workbench',
+      'app-mastodon-analytics-panel',
+      'app-github-friends-workbench',
+    ])
+      assert.equal(doc.querySelector(tool), null, `${page} prerenders no ${tool}`);
   } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));

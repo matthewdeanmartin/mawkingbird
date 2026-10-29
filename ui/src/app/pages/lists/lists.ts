@@ -175,11 +175,11 @@ import { FEED_SECTIONS, FeedSection } from '../../lists/feed-sections';
 // i18n pages.lists.bsky.popularHeading: 🦋 Popular on Bluesky
 // i18n pages.lists.bsky.popularHint: Feeds other people built and published. Anyone can read them — no Bluesky account needed.
 // i18n pages.lists.bsky.savedHint: Saved on Bluesky. Pin and unpin them in the Bluesky app — Mawkingbird reads this list but never rewrites it.
-// i18n pages.lists.bsky.byList: · list by &#64;{{handle}}
-// i18n pages.lists.bsky.byFeed: · feed by &#64;{{handle}}
-// i18n pages.lists.bsky.byHandle: · by &#64;{{handle}}
-// i18n pages.lists.bsky.membersByHandle.one: · {{count}} member · by &#64;{{handle}}
-// i18n pages.lists.bsky.membersByHandle.other: · {{count}} members · by &#64;{{handle}}
+// i18n pages.lists.bsky.byList: · list by @{{handle}}
+// i18n pages.lists.bsky.byFeed: · feed by @{{handle}}
+// i18n pages.lists.bsky.byHandle: · by @{{handle}}
+// i18n pages.lists.bsky.membersByHandle.one: · {{count}} member · by @{{handle}}
+// i18n pages.lists.bsky.membersByHandle.other: · {{count}} members · by @{{handle}}
 // i18n pages.lists.confirm.deleteList.title: Delete this list?
 // i18n pages.lists.confirm.deleteList.message: "{{name}}" will be permanently deleted. This cannot be undone.
 // i18n pages.lists.confirm.deleteList.confirm: Delete list

@@ -106,7 +106,7 @@ import { Terminology } from '../../../../terminology';
 // i18n settings.connections.twitter.follows.atMax.a: You are following
 // i18n settings.connections.twitter.follows.atMax.b: accounts, the maximum. Remove one to add another.
 // i18n settings.connections.twitter.follows.confirm: Is this the right account?
-// i18n settings.connections.twitter.follows.followHandle: Follow &#64;
+// i18n settings.connections.twitter.follows.followHandle: Follow @
 // i18n settings.connections.twitter.follows.followers: followers ·
 // i18n settings.connections.twitter.follows.accountSummary: {{followers}} followers · {{posts}} {{postsWord}}
 // i18n settings.connections.twitter.follows.handleLabel: Twitter handle

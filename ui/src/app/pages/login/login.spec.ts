@@ -7,7 +7,8 @@ import { Auth } from '../../auth';
 import { Server } from '../../server';
 import { sha256Base64Url } from '../../pkce';
 import { stubLocation } from '../../testing/stub-location';
-import { Login, loginDestination } from './login';
+import { loginDestination } from '../../login-destination';
+import { Login } from './login';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 

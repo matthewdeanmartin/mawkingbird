@@ -3,7 +3,7 @@ import { MbNotice } from '../../../../design-system/notice/notice';
 import { MbContentLink } from '../../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../../design-system/field/field';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -87,6 +87,8 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
   styleUrls: ['../connection-page.css', './connection-mastodon.css'],
 })
 export class ConnectionMastodon {
+  /** Inside a mini-app page: no Settings back link or page header. */
+  readonly embedded = input(false);
   protected auth = inject(Auth);
   protected connector = inject(MastodonConnector);
   private server = inject(Server);

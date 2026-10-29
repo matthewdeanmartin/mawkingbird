@@ -14,7 +14,7 @@ import { BlueskyFeedEntry, BlueskyFeeds } from '../../providers/bluesky/bluesky-
 // i18n blueskyFeed.members.one: {{count}} member
 // i18n blueskyFeed.members.other: {{count}} members
 // i18n blueskyFeed.pinned: · 📌 pinned
-// i18n blueskyFeed.algorithm: This feed is an algorithm run by &#64;{{handle}}, not by Bluesky.
+// i18n blueskyFeed.algorithm: This feed is an algorithm run by @{{handle}}, not by Bluesky.
 // i18n blueskyFeed.loading: Loading…
 // i18n blueskyFeed.empty: This feed has no posts right now.
 // i18n blueskyFeed.loadMore: Load more

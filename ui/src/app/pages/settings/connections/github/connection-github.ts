@@ -2,7 +2,7 @@ import { MbButton } from '../../../../design-system/button/button';
 import { MbField, MbControl } from '../../../../design-system/field/field';
 import { MbNotice } from '../../../../design-system/notice/notice';
 import { MbContentLink } from '../../../../design-system/metadata/metadata';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -62,6 +62,8 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
   styleUrls: ['../connection-page.css', './connection-github.css'],
 })
 export class ConnectionGitHub implements OnInit {
+  /** Inside a mini-app page: no Settings back link or page header. */
+  readonly embedded = input(false);
   protected github = inject(GitHubSession);
   private bridge = inject(VaultBridge);
   private diagnostics = inject(PageDiagnostics);

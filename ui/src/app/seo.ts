@@ -16,6 +16,12 @@ export const FOLLOW_DESCRIPTION =
   'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
 export const TWITTER_TO_MASTODON_DESCRIPTION =
   'Find the people you followed on Twitter who are now on Mastodon and follow them again. Your archive is read in your browser; nothing is uploaded.';
+export const CROSSPOST_DESCRIPTION =
+  'Write once and post to Mastodon and Bluesky together. Sign in with either account, connect the other, and try it from a simple composer in your browser.';
+export const MASTODON_ANALYTICS_DESCRIPTION =
+  'Free analytics for your Mastodon account: top posts, engagement per post, estimated reach, when you post, who you talk to most and how many followers are active.';
+export const GITHUB_TO_MASTODON_DESCRIPTION =
+  'Find the people you follow on GitHub who are on Mastodon, using the links in their profiles first, and follow them in a click.';
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 

@@ -68,7 +68,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n pages.search.accountHelp.postsDetail: Filters out accounts that registered and never wrote anything.
 // i18n pages.search.accountHelp.filters: Filters
 // i18n pages.search.accountHelp.filtersDetail: After results arrive: by server, by whether you already follow them, by how recently they posted.
-// i18n pages.search.accountHelp.footer.a: Searching for a name and finding nothing usually means your server has not met that account yet, rather than that it does not exist — the full <code>&#64;name&#64;server</code> address finds it anyway. Browsing rather than looking for someone specific?
+// i18n pages.search.accountHelp.footer.a: Searching for a name and finding nothing usually means your server has not met that account yet, rather than that it does not exist — the full <code>@name@server</code> address finds it anyway. Browsing rather than looking for someone specific?
 // i18n pages.search.accountHelp.footer.findFriends: Find friends
 // i18n pages.search.accountHelp.footer.b: has directories and follow-list imports.
 @Component({

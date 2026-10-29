@@ -3,12 +3,14 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, ImportReport } from '../../../models';
 import { Auth } from '../../../auth';
 import { parseHandles } from '../../../import-follows';
 import { followingAccountsCsv, SettingsImportExport } from './settings-import-export';
 import { GitHubFriendDiscovery } from './github-friend-discovery';
+import { GitHubFriendsImport } from './github-friends-import';
 import { TwitterFriendDiscovery } from './twitter-friend-discovery';
 import { TagSources } from './tag-sources';
 import { seedGitHubConnection } from '../../../testing/seed-storage';
@@ -26,7 +28,6 @@ interface SettingsImportExportInternals {
   useSuggestedTags(): void;
   suggestTagsFromFavourites(): Promise<void>;
   exportTags(): Promise<void>;
-  hideGithubFollowed: WritableSignal<boolean>;
   download(kind: 'following' | 'mutes' | 'blocks'): void;
   upload(): void;
   exportFriends(): Promise<void>;
@@ -402,7 +403,12 @@ describe('SettingsImportExport', () => {
         ],
       ]),
     );
-    internals(fixture).hideGithubFollowed.set(true);
+    (
+      fixture.debugElement.query(By.directive(GitHubFriendsImport))
+        .componentInstance as unknown as {
+        hideGithubFollowed: WritableSignal<boolean>;
+      }
+    ).hideGithubFollowed.set(true);
     fixture.detectChanges();
 
     const rows = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.contact-row')].map(

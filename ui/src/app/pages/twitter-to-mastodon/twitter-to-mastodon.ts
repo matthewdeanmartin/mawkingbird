@@ -18,7 +18,7 @@ import { TwitterImportNextSteps } from './twitter-import-next-steps';
   selector: 'app-twitter-to-mastodon',
   imports: [RouterLink, MbButton, MbContentLink, TwitterArchiveImport, TwitterImportNextSteps],
   templateUrl: './twitter-to-mastodon.html',
-  styleUrl: './twitter-to-mastodon.css',
+  styleUrl: '../focused-apps/focused-page.css',
 })
 export class TwitterToMastodon {
   /** Set on the signed-in route, where the shell supplies header and account menu. */

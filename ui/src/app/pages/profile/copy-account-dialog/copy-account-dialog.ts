@@ -88,7 +88,7 @@ type Phase = 'loading' | 'confirm' | 'following' | 'done' | 'error' | 'hidden';
 // i18n pages.profile.copyAccount.andCollections.one: …and {{count}} collection as local lists
 // i18n pages.profile.copyAccount.andCollections.other: …and {{count}} collections as local lists
 // i18n pages.profile.copyAccount.listMembersFollowed: List members are followed too — that is how a local list builds its timeline — so they use the same follow slots.
-// i18n pages.profile.copyAccount.copyFollowsAndLists: Copy {{follows}} follows &amp; {{lists}} lists
+// i18n pages.profile.copyAccount.copyFollowsAndLists: Copy {{follows}} follows & {{lists}} lists
 // i18n pages.profile.copyAccount.copyLists.one: Copy {{count}} list
 // i18n pages.profile.copyAccount.copyLists.other: Copy {{count}} lists
 // i18n pages.profile.copyAccount.followCount: Follow {{count}}

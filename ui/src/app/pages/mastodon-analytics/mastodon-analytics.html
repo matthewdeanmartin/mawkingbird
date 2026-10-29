@@ -1,0 +1,66 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon analytics</p>
+    <h1>Mastodon analytics for your account</h1>
+    <p>
+      See how your posts do and who is listening.
+      @if (!inShell) {
+        Sign in with Mastodon and your numbers are worked out right here, from your own posts and
+        followers.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Loading your analytics…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Your best posts</h2>
+        <p>Top posts, favourites, boosts and replies per post, and an estimate of your reach.</p>
+      </li>
+      <li>
+        <h2>Your audience</h2>
+        <p>
+          How many of the people you follow and who follow you are still active, and who you talk to
+          most.
+        </p>
+      </li>
+      <li>
+        <h2>Your habits</h2>
+        <p>When you post, how often, in which languages and about what, on a posting calendar.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to see yours</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Where is my data sent?</h3>
+    <p>
+      Nowhere new. Your posts and followers are read from your own Mastodon server and the numbers
+      are calculated in this browser. Mawkingbird keeps no copy.
+    </p>
+    <h3>Why is reach an estimate?</h3>
+    <p>
+      Mastodon does not count views. Reach is estimated from your followers and how they interact,
+      and the page says so next to the number.
+    </p>
+  </section>
+</main>
