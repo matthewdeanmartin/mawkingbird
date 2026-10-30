@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Free tools for Mastodon and Bluesky · Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.">
+    <link rel="canonical" href="https://mawkingbird.com/tools/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Free tools for Mastodon and Bluesky · Mawkingbird">
+    <meta property="og:description" content="Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.">
+    <meta property="og:url" content="https://mawkingbird.com/tools/">
+    <meta property="og:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="3580">
+    <meta property="og:image:height" content="2508">
+    <meta property="og:image:alt" content="The hand-drawn Mawkingbird">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free tools for Mastodon and Bluesky · Mawkingbird">
+    <meta name="twitter:description" content="Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.">
+    <meta name="twitter:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta name="twitter:image:alt" content="The hand-drawn Mawkingbird">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-CLLSGXYD.css"><style ng-app-id="ng">[_nghost-ng-c1029256647]{display:block}.focused-page[_ngcontent-ng-c1029256647]{max-width:820px;margin:auto;padding:32px 24px;color:var(--text)}header[_ngcontent-ng-c1029256647]{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px}.eyebrow[_ngcontent-ng-c1029256647]{margin:0;font-weight:700;color:var(--muted)}h1[_ngcontent-ng-c1029256647]{font-size:clamp(1.8rem,4.5vw,2.6rem);line-height:1.15;margin:8px 0 16px}.intro[_ngcontent-ng-c1029256647]   p[_ngcontent-ng-c1029256647], .steps[_ngcontent-ng-c1029256647]   p[_ngcontent-ng-c1029256647], .questions[_ngcontent-ng-c1029256647]   p[_ngcontent-ng-c1029256647]{line-height:1.65}.steps[_ngcontent-ng-c1029256647]{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:28px 0;padding:0;list-style:none;counter-reset:step}.steps[_ngcontent-ng-c1029256647]   li[_ngcontent-ng-c1029256647]{padding:16px;border:1px solid var(--border);border-radius:12px;counter-increment:step}.steps[_ngcontent-ng-c1029256647]   h2[_ngcontent-ng-c1029256647]{font-size:1.05rem;margin:0 0 6px}.steps[_ngcontent-ng-c1029256647]   h2[_ngcontent-ng-c1029256647]:before{content:counter(step) ". ";color:var(--accent)}.steps[_ngcontent-ng-c1029256647]   p[_ngcontent-ng-c1029256647]{margin:0}.sign-in-choices[_ngcontent-ng-c1029256647]{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 28px}.panel[_ngcontent-ng-c1029256647]{margin:24px 0;padding:16px;border:1px solid var(--border);border-radius:12px}.panel[_ngcontent-ng-c1029256647]   h2[_ngcontent-ng-c1029256647]{font-size:1.15rem;margin:0 0 12px}.questions[_ngcontent-ng-c1029256647]{margin-top:32px}.questions[_ngcontent-ng-c1029256647]   h3[_ngcontent-ng-c1029256647]{font-size:1rem;margin:20px 0 4px}.questions[_ngcontent-ng-c1029256647]   p[_ngcontent-ng-c1029256647]{margin:0}@media(max-width:640px){.focused-page[_ngcontent-ng-c1029256647]{padding:24px 16px}}</style><style ng-app-id="ng">.tool-group[_ngcontent-ng-c1029256647]{margin:28px 0}.tool-group[_ngcontent-ng-c1029256647]   h2[_ngcontent-ng-c1029256647]{font-size:1.2rem;margin:0 0 12px}.tool-list[_ngcontent-ng-c1029256647]{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0;padding:0;list-style:none}.tool-list[_ngcontent-ng-c1029256647]   a[_ngcontent-ng-c1029256647]{display:block;height:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--col-bg);color:var(--text);text-decoration:none}.tool-list[_ngcontent-ng-c1029256647]   a[_ngcontent-ng-c1029256647]:hover, .tool-list[_ngcontent-ng-c1029256647]   a[_ngcontent-ng-c1029256647]:focus-visible{border-color:var(--accent)}.tool-list[_ngcontent-ng-c1029256647]   strong[_ngcontent-ng-c1029256647], .tool-list[_ngcontent-ng-c1029256647]   span[_ngcontent-ng-c1029256647]{display:block}.tool-list[_ngcontent-ng-c1029256647]   span[_ngcontent-ng-c1029256647]{margin-top:4px;color:var(--muted);line-height:1.5}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.23" ng-server-context="ssg"><router-outlet></router-outlet><app-tools-index _nghost-ng-c1029256647=""><main _ngcontent-ng-c1029256647="" lang="en" class="focused-page"><header _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" mbcontentlink="" routerlink="/" _nghost-ng-c3172328079="" href="/">Mawkingbird</a><a _ngcontent-ng-c1029256647="" mbbutton="" variant="outline" routerlink="/" data-variant="outline" data-size="regular" data-tone="accent" data-shape="pill" href="/">Open the app</a></header><div _ngcontent-ng-c1029256647="" class="intro"><p _ngcontent-ng-c1029256647="" class="eyebrow">Tools</p><h1 _ngcontent-ng-c1029256647="">Free tools for Mastodon and Bluesky</h1><p _ngcontent-ng-c1029256647=""> Small, single-purpose tools for the jobs the standard apps leave out: picking a handle, finding your friends, scheduling posts, and tidying up your account. Each one runs in your browser. </p></div><section _ngcontent-ng-c1029256647="" class="tool-group" aria-labelledby="tools-start"><h2 _ngcontent-ng-c1029256647="" id="tools-start">Start on Mastodon</h2><ul _ngcontent-ng-c1029256647="" class="tool-list"><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/mastodon-handle-generator"><strong _ngcontent-ng-c1029256647="">Mastodon handle generator: find a free username</strong><span _ngcontent-ng-c1029256647="">Generate Mastodon handles from your name and check which are free on the server you want and on the biggest Mastodon servers. No account needed.</span></a></li><!----></ul></section><section _ngcontent-ng-c1029256647="" class="tool-group" aria-labelledby="tools-people"><h2 _ngcontent-ng-c1029256647="" id="tools-people">Find your people</h2><ul _ngcontent-ng-c1029256647="" class="tool-list"><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/twitter-to-mastodon"><strong _ngcontent-ng-c1029256647="">Import your Twitter follows to Mastodon</strong><span _ngcontent-ng-c1029256647="">Find the people you followed on Twitter who are now on Mastodon and follow them again. Your archive is read in your browser; nothing is uploaded.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/github-to-mastodon"><strong _ngcontent-ng-c1029256647="">Find your GitHub friends on Mastodon</strong><span _ngcontent-ng-c1029256647="">Find the people you follow on GitHub who are on Mastodon, using the links in their profiles first, and follow them in a click.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/bluesky-to-mastodon"><strong _ngcontent-ng-c1029256647="">Find your Bluesky follows on Mastodon</strong><span _ngcontent-ng-c1029256647="">Find the people you follow on Bluesky who are also on Mastodon, from the handles in their bios first, and follow them there in a click.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/mastodon-to-bluesky"><strong _ngcontent-ng-c1029256647="">Find your Mastodon follows on Bluesky</strong><span _ngcontent-ng-c1029256647="">Find the people you follow on Mastodon who are also on Bluesky, from the handles in their bios first, and follow them there in a click.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/find-contacts-on-mastodon"><strong _ngcontent-ng-c1029256647="">Find your phone contacts on Mastodon</strong><span _ngcontent-ng-c1029256647="">Find the people in your phone contacts or Google Contacts who are on Mastodon. Your contacts stay in your browser; you follow each match yourself.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/mastodon-friends-rss-feeds"><strong _ngcontent-ng-c1029256647="">Find the RSS feeds of everyone you follow on Mastodon</strong><span _ngcontent-ng-c1029256647="">Turn the websites in your Mastodon follows' profiles into one OPML file of their blogs and RSS feeds, for any feed reader. A Mawkingbird Plus feature.</span></a></li><!----></ul></section><section _ngcontent-ng-c1029256647="" class="tool-group" aria-labelledby="tools-post"><h2 _ngcontent-ng-c1029256647="" id="tools-post">Post</h2><ul _ngcontent-ng-c1029256647="" class="tool-list"><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/crosspost"><strong _ngcontent-ng-c1029256647="">Post to Mastodon and Bluesky at the same time</strong><span _ngcontent-ng-c1029256647="">Write once and post to Mastodon and Bluesky together. Sign in with either account, connect the other, and try it from a simple composer in your browser.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/schedule-mastodon-posts"><strong _ngcontent-ng-c1029256647="">Schedule Mastodon posts in advance</strong><span _ngcontent-ng-c1029256647="">Schedule Mastodon posts in advance: write several at once, space them out daily or hourly, and your Mastodon server publishes them on time with the tab closed.</span></a></li><!----></ul></section><section _ngcontent-ng-c1029256647="" class="tool-group" aria-labelledby="tools-account"><h2 _ngcontent-ng-c1029256647="" id="tools-account">Look after your account</h2><ul _ngcontent-ng-c1029256647="" class="tool-list"><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/mastodon-analytics"><strong _ngcontent-ng-c1029256647="">Mastodon analytics for your account</strong><span _ngcontent-ng-c1029256647="">Free analytics for your Mastodon account: top posts, engagement per post, estimated reach, when you post, who you talk to most and how many followers are active.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/turn-off-boosts-mastodon"><strong _ngcontent-ng-c1029256647="">Turn off boosts on Mastodon for everyone you follow</strong><span _ngcontent-ng-c1029256647="">Hide boosts from everyone you follow on Mastodon at once, without unfollowing anyone. See how many change first, and turn them back on any time.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/mastodon-mute-block-amnesty"><strong _ngcontent-ng-c1029256647="">Mute Amnesty and Block Amnesty: unmute and unblock everyone on Mastodon</strong><span _ngcontent-ng-c1029256647="">Unmute or unblock every account on Mastodon at once with Mute Amnesty and Block Amnesty. See the count and back up your list first.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/how-to-be-anonymous-on-mastodon"><strong _ngcontent-ng-c1029256647="">How to be (pseudo)anonymous on Mastodon</strong><span _ngcontent-ng-c1029256647="">Make your Mastodon account hard to link to you: hide your follows, leave search and suggestions, and check what gives you away, in one step.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/turn-off-content-warnings-mastodon"><strong _ngcontent-ng-c1029256647="">How to turn off content warnings on Mastodon</strong><span _ngcontent-ng-c1029256647="">Auto-expand content warnings and show sensitive media on Mastodon, for everyone or only the people you trust. See your server's own setting too.</span></a></li><li _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" href="/export-mastodon-bookmarks"><strong _ngcontent-ng-c1029256647="">Export your Mastodon bookmarks to your browser</strong><span _ngcontent-ng-c1029256647="">Download your Mastodon bookmarks as a bookmark file for your browser, Raindrop.io or Pinboard, and unwrap them to the links the posts shared.</span></a></li><!----></ul></section><!----><section _ngcontent-ng-c1029256647="" class="questions"><h2 _ngcontent-ng-c1029256647="">Looking for something else?</h2><p _ngcontent-ng-c1029256647=""><a _ngcontent-ng-c1029256647="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features">See everything Mawkingbird does</a>, or read the <a _ngcontent-ng-c1029256647="" mbcontentlink="" href="help/" _nghost-ng-c3172328079="">help guides</a>. </p></section></main></app-tools-index><!----></app-root>
+  <link rel="modulepreload" href="chunk-4OLKVAW7.js"><link rel="modulepreload" href="chunk-XEGUIXXS.js"><link rel="modulepreload" href="chunk-ZW3U6JLM.js"><link rel="modulepreload" href="chunk-X4GGVM7P.js"><link rel="modulepreload" href="chunk-RJT2IYW7.js"><link rel="modulepreload" href="chunk-7RZ4W7WY.js"><link rel="modulepreload" href="chunk-3FEG6C7O.js"><link rel="modulepreload" href="chunk-6AIUPVDT.js"><link rel="modulepreload" href="chunk-URZ5C2F6.js"><link rel="modulepreload" href="chunk-OJ4AH26T.js"><script src="main-GFPBZ75O.js" type="module"></script>
+
+</body></html>

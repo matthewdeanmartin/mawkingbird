@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mawkingbird.com/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://mawkingbird.com/features/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://mawkingbird.com/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/features/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://mawkingbird.com/for/readers/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/for/bluesky/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/for/twitter-exodus/</loc><lastmod>2026-10-28</lastmod></url>
@@ -10,11 +10,23 @@
   <url><loc>https://mawkingbird.com/for/power-users/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/about/</loc><lastmod>2026-10-26</lastmod></url>
   <url><loc>https://mawkingbird.com/funding/</loc><lastmod>2026-10-26</lastmod></url>
-  <url><loc>https://mawkingbird.com/blog/</loc><lastmod>2026-10-26</lastmod></url>
-  <url><loc>https://mawkingbird.com/twitter-to-mastodon/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://mawkingbird.com/crosspost/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://mawkingbird.com/mastodon-analytics/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://mawkingbird.com/github-to-mastodon/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://mawkingbird.com/blog/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/tools/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/twitter-to-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/crosspost/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/mastodon-analytics/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/github-to-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/schedule-mastodon-posts/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/bluesky-to-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/mastodon-to-bluesky/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/turn-off-boosts-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/find-contacts-on-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/mastodon-friends-rss-feeds/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/mastodon-mute-block-amnesty/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/how-to-be-anonymous-on-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/mastodon-handle-generator/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/turn-off-content-warnings-mastodon/</loc><lastmod>2026-10-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/export-mastodon-bookmarks/</loc><lastmod>2026-10-30</lastmod></url>
   <url><loc>https://mawkingbird.com/follow/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/follow/books/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/follow/canadian-politics/</loc><lastmod>2026-10-28</lastmod></url>

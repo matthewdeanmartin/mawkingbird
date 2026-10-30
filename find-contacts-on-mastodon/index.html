@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Find your phone contacts on Mastodon · Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Find the people in your phone contacts or Google Contacts who are on Mastodon. Your contacts stay in your browser; you follow each match yourself.">
+    <link rel="canonical" href="https://mawkingbird.com/find-contacts-on-mastodon/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Find your phone contacts on Mastodon · Mawkingbird">
+    <meta property="og:description" content="Find the people in your phone contacts or Google Contacts who are on Mastodon. Your contacts stay in your browser; you follow each match yourself.">
+    <meta property="og:url" content="https://mawkingbird.com/find-contacts-on-mastodon/">
+    <meta property="og:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="3580">
+    <meta property="og:image:height" content="2508">
+    <meta property="og:image:alt" content="The hand-drawn Mawkingbird">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Find your phone contacts on Mastodon · Mawkingbird">
+    <meta name="twitter:description" content="Find the people in your phone contacts or Google Contacts who are on Mastodon. Your contacts stay in your browser; you follow each match yourself.">
+    <meta name="twitter:image" content="https://mawkingbird.com/mockingbird_hand.png">
+    <meta name="twitter:image:alt" content="The hand-drawn Mawkingbird">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-CLLSGXYD.css"><style ng-app-id="ng">[_nghost-ng-c1725764009]{display:block}.focused-page[_ngcontent-ng-c1725764009]{max-width:820px;margin:auto;padding:32px 24px;color:var(--text)}header[_ngcontent-ng-c1725764009]{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px}.eyebrow[_ngcontent-ng-c1725764009]{margin:0;font-weight:700;color:var(--muted)}h1[_ngcontent-ng-c1725764009]{font-size:clamp(1.8rem,4.5vw,2.6rem);line-height:1.15;margin:8px 0 16px}.intro[_ngcontent-ng-c1725764009]   p[_ngcontent-ng-c1725764009], .steps[_ngcontent-ng-c1725764009]   p[_ngcontent-ng-c1725764009], .questions[_ngcontent-ng-c1725764009]   p[_ngcontent-ng-c1725764009]{line-height:1.65}.steps[_ngcontent-ng-c1725764009]{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:28px 0;padding:0;list-style:none;counter-reset:step}.steps[_ngcontent-ng-c1725764009]   li[_ngcontent-ng-c1725764009]{padding:16px;border:1px solid var(--border);border-radius:12px;counter-increment:step}.steps[_ngcontent-ng-c1725764009]   h2[_ngcontent-ng-c1725764009]{font-size:1.05rem;margin:0 0 6px}.steps[_ngcontent-ng-c1725764009]   h2[_ngcontent-ng-c1725764009]:before{content:counter(step) ". ";color:var(--accent)}.steps[_ngcontent-ng-c1725764009]   p[_ngcontent-ng-c1725764009]{margin:0}.sign-in-choices[_ngcontent-ng-c1725764009]{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 28px}.panel[_ngcontent-ng-c1725764009]{margin:24px 0;padding:16px;border:1px solid var(--border);border-radius:12px}.panel[_ngcontent-ng-c1725764009]   h2[_ngcontent-ng-c1725764009]{font-size:1.15rem;margin:0 0 12px}.questions[_ngcontent-ng-c1725764009]{margin-top:32px}.questions[_ngcontent-ng-c1725764009]   h3[_ngcontent-ng-c1725764009]{font-size:1rem;margin:20px 0 4px}.questions[_ngcontent-ng-c1725764009]   p[_ngcontent-ng-c1725764009]{margin:0}@media(max-width:640px){.focused-page[_ngcontent-ng-c1725764009]{padding:24px 16px}}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.23" ng-server-context="ssg"><router-outlet></router-outlet><app-find-contacts-on-mastodon _nghost-ng-c1725764009=""><main _ngcontent-ng-c1725764009="" lang="en" class="focused-page"><header _ngcontent-ng-c1725764009=""><a _ngcontent-ng-c1725764009="" mbcontentlink="" routerlink="/" _nghost-ng-c3172328079="" href="/">Mawkingbird</a><a _ngcontent-ng-c1725764009="" mbbutton="" variant="outline" routerlink="/" data-variant="outline" data-size="regular" data-tone="accent" data-shape="pill" href="/">Open the app</a></header><!----><div _ngcontent-ng-c1725764009="" class="intro"><p _ngcontent-ng-c1725764009="" class="eyebrow">Contacts</p><h1 _ngcontent-ng-c1725764009="">Find your phone contacts on Mastodon</h1><p _ngcontent-ng-c1725764009=""> Some of the people in your address book are already on Mastodon. This looks for them and lets you follow the ones you recognise.  Sign in with Mastodon, pick your contacts or upload a contacts file, and see who turns up. <!----></p></div><!----><ol _ngcontent-ng-c1725764009="" class="steps"><li _ngcontent-ng-c1725764009=""><h2 _ngcontent-ng-c1725764009="">Sign in with Mastodon</h2><p _ngcontent-ng-c1725764009="">The search runs through your own Mastodon server.</p></li><li _ngcontent-ng-c1725764009=""><h2 _ngcontent-ng-c1725764009="">Choose your contacts</h2><p _ngcontent-ng-c1725764009=""> On an Android phone in Chrome, pick people straight from your contacts. Anywhere else, upload a contacts file exported from Google Contacts. </p></li><li _ngcontent-ng-c1725764009=""><h2 _ngcontent-ng-c1725764009="">Follow the ones you know</h2><p _ngcontent-ng-c1725764009=""> Each match shows why it was suggested. Follow people one at a time; nothing is followed for you. </p></li></ol><div _ngcontent-ng-c1725764009="" class="sign-in-choices"><a _ngcontent-ng-c1725764009="" mbbutton="" routerlink="/login/mastodon" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/login/mastodon?next=%2Ffind-contacts-on-mastodon">Sign in with Mastodon to find your contacts</a></div><!----><section _ngcontent-ng-c1725764009="" class="questions"><h2 _ngcontent-ng-c1725764009="">Questions</h2><h3 _ngcontent-ng-c1725764009="">Are my contacts uploaded?</h3><p _ngcontent-ng-c1725764009=""> No. Your contacts stay in this browser. Only search terms made from them, such as a name or a username, are sent to your own Mastodon server, and nothing is saved when you close the page. </p><h3 _ngcontent-ng-c1725764009="">How do I get a contacts file?</h3><p _ngcontent-ng-c1725764009=""> In Google Contacts, choose Export and pick the Google CSV format, then upload that file here. </p><h3 _ngcontent-ng-c1725764009="">Why is the match a guess?</h3><p _ngcontent-ng-c1725764009=""> Mastodon has no "find by phone number or email" search, so people are matched on clues: a Mastodon handle saved on the contact, their name, the name and domain of their email address, their website. A distinctive name is found easily; a common one may bring up strangers, which is why you follow each person yourself. </p><h3 _ngcontent-ng-c1725764009="">Someone isn't on Mastodon yet?</h3><p _ngcontent-ng-c1725764009="">Invite them: after the search, ready-made invitations are one click away.</p></section></main></app-find-contacts-on-mastodon><!----></app-root>
+  <link rel="modulepreload" href="chunk-4OLKVAW7.js"><link rel="modulepreload" href="chunk-XEGUIXXS.js"><link rel="modulepreload" href="chunk-ZW3U6JLM.js"><link rel="modulepreload" href="chunk-X4GGVM7P.js"><link rel="modulepreload" href="chunk-RJT2IYW7.js"><link rel="modulepreload" href="chunk-7RZ4W7WY.js"><link rel="modulepreload" href="chunk-3FEG6C7O.js"><link rel="modulepreload" href="chunk-6AIUPVDT.js"><link rel="modulepreload" href="chunk-URZ5C2F6.js"><link rel="modulepreload" href="chunk-OJ4AH26T.js"><script src="main-GFPBZ75O.js" type="module"></script>
+
+</body></html>
