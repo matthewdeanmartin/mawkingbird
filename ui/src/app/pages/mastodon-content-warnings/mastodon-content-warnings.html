@@ -1,0 +1,74 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Content warnings</p>
+    <h1>How to turn off content warnings on Mastodon</h1>
+    <p>
+      Tired of clicking "Show more" on every post, or tapping through blurred photos? You can have
+      content warnings open on their own and sensitive media shown straight away.
+      @if (!inShell) {
+        Sign in and it is two switches.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Loading your settings…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Expand content warnings</h2>
+        <p>Posts with a content warning open on their own. You still see the warning text.</p>
+      </li>
+      <li>
+        <h2>Show sensitive media</h2>
+        <p>Photos and video marked sensitive show without the blur.</p>
+      </li>
+      <li>
+        <h2>Or only for people you trust</h2>
+        <p>
+          Keep warnings closed for strangers and open for friends: trust individual people, or
+          everyone you follow.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to turn them off</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>How do I do it on the Mastodon website?</h3>
+    <p>
+      Open Preferences on your server, turn on "Always expand posts marked with content warnings",
+      and set "Media display" to "Show all". Those settings belong to your server and are followed
+      by its website and some apps.
+    </p>
+    <h3>Why can't Mawkingbird change my server's setting?</h3>
+    <p>
+      Mastodon lets apps read those preferences but not change them, so Mawkingbird has switches of
+      its own. Once you are signed in, this page shows what your server's are set to.
+    </p>
+    <h3>Will I still know a post had a warning?</h3>
+    <p>Yes. The warning text stays above the post; only the click to open it goes away.</p>
+    <h3>Does this change what other people see?</h3>
+    <p>
+      No. It only changes how posts open for you. Authors' warnings stay on their posts for everyone
+      else.
+    </p>
+  </section>
+</main>

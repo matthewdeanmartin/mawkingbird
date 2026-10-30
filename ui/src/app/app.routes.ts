@@ -113,6 +113,14 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
       (m) => m.MastodonHandleGenerator,
     ),
+  'turn-off-content-warnings-mastodon': () =>
+    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
+      (m) => m.MastodonContentWarnings,
+    ),
+  'export-mastodon-bookmarks': () =>
+    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
+      (m) => m.ExportMastodonBookmarks,
+    ),
 };
 
 export const routes: Routes = [

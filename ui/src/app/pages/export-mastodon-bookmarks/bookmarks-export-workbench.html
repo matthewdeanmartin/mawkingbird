@@ -1,0 +1,86 @@
+<section class="panel" aria-labelledby="export-read-title">
+  <h2 id="export-read-title">1. Read your bookmarks</h2>
+  <p>Your bookmarks are read from your Mastodon server, 40 at a time.</p>
+  <div class="actions">
+    @if (reading()) {
+      <button mbButton variant="outline" type="button" (click)="stop()">Stop</button>
+      <span class="muted">{{ bookmarks().length }} bookmarks read…</span>
+    } @else {
+      <button mbButton type="button" (click)="readAll()">
+        {{ read() ? 'Read them again' : 'Read my bookmarks' }}
+      </button>
+      @if (read()) {
+        <span class="muted"
+          >{{ bookmarks().length }} bookmarks, {{ withLinks() }} sharing a link.</span
+        >
+      }
+    }
+  </div>
+  @if (stopped()) {
+    <mb-notice
+      >Stopped early: the file will hold the {{ bookmarks().length }} read so far.</mb-notice
+    >
+  }
+  @if (readError()) {
+    <mb-notice tone="error" announcement="alert">
+      Your server stopped answering part-way ({{ bookmarks().length }} read).
+      @if (bookmarks().length) {
+        You can still download those, or read them again.
+      } @else {
+        Try again in a moment.
+      }
+    </mb-notice>
+  }
+</section>
+
+@if (read() && bookmarks().length) {
+  <section class="panel" aria-labelledby="export-file-title">
+    <h2 id="export-file-title">2. Download the file</h2>
+    <mb-radio-group
+      label="What to put in it"
+      hint="Unwrapping saves the article or page a post was sharing, instead of the post about it."
+      [options]="modes()"
+      [value]="mode()"
+      (valueChange)="setMode($event)"
+    />
+    <div class="actions">
+      <button mbButton type="button" [disabled]="!entryCount()" (click)="download()">
+        Download {{ entryCount() }} {{ entryCount() === 1 ? 'bookmark' : 'bookmarks' }}
+      </button>
+    </div>
+    @if (downloaded()) {
+      <mb-notice announcement="status">
+        Saved. Import it into your browser's bookmarks, or into Raindrop.io, Pinboard or any
+        bookmark service that reads browser bookmark files.
+      </mb-notice>
+    }
+  </section>
+} @else if (read()) {
+  <p class="muted">You have no Mastodon bookmarks yet.</p>
+}
+
+@if (downloaded()) {
+  <section class="panel" aria-labelledby="export-more-title">
+    <h2 id="export-more-title">Bookmarks in Mawkingbird</h2>
+    <ul class="extras">
+      <li>
+        <strong>Raindrop.io</strong>: connect it and choose, as you bookmark each post, whether to
+        save the post or unwrap it to the link it shares.
+      </li>
+      <li>
+        <strong>Folders by hashtag</strong>: your bookmarks page groups bookmarks by the hashtags on
+        them.
+      </li>
+      <li>
+        <strong>No account needed</strong>: browsing Mawkingbird without signing in, bookmarks are
+        kept in your browser.
+      </li>
+    </ul>
+    <p>
+      <a routerLink="/bookmarks">Open your bookmarks</a> or
+      <a routerLink="/settings/connections/raindrop">connect Raindrop.io</a>.
+    </p>
+  </section>
+
+  <app-focused-next-steps inviteLink="/export-mastodon-bookmarks/invite" />
+}

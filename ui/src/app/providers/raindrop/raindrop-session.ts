@@ -296,26 +296,6 @@ export class RaindropSession implements ExpiringConnection {
   }
 }
 
-/** Find the first ordinary web link, skipping hashtags and links back to the viewer's instance. */
-export function firstExternalLink(content: string, instanceUrl: string): string | null {
-  const instanceOrigin = safeOrigin(instanceUrl || location.origin);
-  const doc = new DOMParser().parseFromString(content, 'text/html');
-  for (const anchor of Array.from(doc.querySelectorAll<HTMLAnchorElement>('a[href]'))) {
-    const href = anchor.getAttribute('href');
-    if (!href || anchor.classList.contains('hashtag')) continue;
-    try {
-      const url = new URL(href, instanceOrigin ?? location.origin);
-      if (!['http:', 'https:'].includes(url.protocol)) continue;
-      if (/^\/tags?\/[^/?#]+\/?$/i.test(url.pathname)) continue;
-      if (instanceOrigin && url.origin === instanceOrigin) continue;
-      return url.toString();
-    } catch {
-      // Malformed links are not bookmark targets.
-    }
-  }
-  return null;
-}
-
 /**
  * Read the unscoped token, migrating the signed-in account's old per-account one
  * up to it if that is all there is.
@@ -363,14 +343,6 @@ function readToken(key: string): StoredRaindropToken | null {
   }
 }
 
-function safeOrigin(value: string): string | null {
-  try {
-    return new URL(value).origin;
-  } catch {
-    return null;
-  }
-}
-
 function plainText(html: string): string {
   return new DOMParser().parseFromString(html, 'text/html').body.textContent?.trim() ?? '';
 }
@@ -383,3 +355,7 @@ async function raindropError(response: Response, fallback: string): Promise<stri
     return fallback;
   }
 }
+
+// Moved to external-link.ts so the bookmark exporter can use it without this
+// session; re-exported for the callers that import it from here.
+export { firstExternalLink } from '../../external-link';

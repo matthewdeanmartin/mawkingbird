@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1291,
-  "filesWithCandidates": 280,
+  "filesScanned": 1301,
+  "filesWithCandidates": 284,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3572,6 +3572,70 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/bookmarks-export-workbench.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 9
+        },
+        {
+          "pattern": "shared",
+          "line": 20
+        },
+        {
+          "pattern": "shared",
+          "line": 25
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 6
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 9
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/fail-whale-demo/fail-whale-demo.ts",
       "status": "needs semantic review",
       "findings": [
@@ -5193,6 +5257,38 @@
     },
     {
       "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/content-warnings-workbench.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
       "status": "needs semantic review",
       "findings": [
         {

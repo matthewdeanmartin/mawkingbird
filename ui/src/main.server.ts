@@ -16,6 +16,8 @@ import { Type } from '@angular/core';
 import { FOCUSED_TOOLS } from './app/focused-tools';
 import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
 import { Crosspost } from './app/pages/crosspost/crosspost';
+import { ExportMastodonBookmarks } from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
+import { MastodonContentWarnings } from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
 import { MastodonHandleGenerator } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
 import { MastodonMuteBlockAmnesty } from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
 import { FindContactsOnMastodon } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
@@ -69,6 +71,8 @@ const toolComponents: Record<string, Type<unknown>> = {
   'mastodon-mute-block-amnesty': MastodonMuteBlockAmnesty,
   'how-to-be-anonymous-on-mastodon': AnonymousOnMastodon,
   'mastodon-handle-generator': MastodonHandleGenerator,
+  'turn-off-content-warnings-mastodon': MastodonContentWarnings,
+  'export-mastodon-bookmarks': ExportMastodonBookmarks,
 };
 const tools = FOCUSED_TOOLS.map((tool) => ({
   path: tool.path,

@@ -141,8 +141,9 @@ Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 `/schedule-mastodon-posts/`, `/bluesky-to-mastodon/` and `/mastodon-to-bluesky/`
 (one page, the URL sets the direction), `/turn-off-boosts-mastodon/`,
 `/find-contacts-on-mastodon/`, `/mastodon-friends-rss-feeds/`,
-`/mastodon-mute-block-amnesty/`, `/how-to-be-anonymous-on-mastodon/` and
-`/mastodon-handle-generator/`. `/tools/` lists them all, grouped by each entry's
+`/mastodon-mute-block-amnesty/`, `/how-to-be-anonymous-on-mastodon/`,
+`/mastodon-handle-generator/`, `/turn-off-content-warnings-mastodon/` and
+`/export-mastodon-bookmarks/`. `/tools/` lists them all, grouped by each entry's
 `group`; it is linked first on the in-app Docs page, from the blog article and
 from `/features`.
 
@@ -184,6 +185,17 @@ routes need titles and descriptions there.
   links to the server's Privacy and reach page. It then offers Mawkingbird's
   pseudonymity mode (`Pseudonymity`), reading the state back before saying it
   is on.
+- The content-warnings page flips Settings → Trust's two account-wide
+  switches (`TrustedAccounts`) and lifts "trust no one" when one is turned on.
+  Mastodon's own `reading:expand:spoilers` and `reading:expand:media` are
+  read-only through the API, so they are shown with a link to the server's
+  Preferences page, never as switches.
+- The bookmark exporter walks `/api/v1/bookmarks` (`Api.bookmarksPage`,
+  `Link`-header cursor) and writes a Netscape bookmark file in the browser:
+  posts, "unwrapped" (a post's shared link replaces it, by Raindrop's
+  `firstExternalLink` rule, now in `external-link.ts`, with the preview card as
+  fallback) or links only. Dates are the post's: Mastodon does not expose when
+  something was bookmarked.
 - The handle generator is the one tool that runs signed out, because its
   visitors have no account yet. It is still `@defer`red, so the prerender makes
   no requests. Lookups use plain `fetch` to each server's public

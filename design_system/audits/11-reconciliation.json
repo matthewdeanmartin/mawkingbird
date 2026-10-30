@@ -1393,6 +1393,26 @@
       "nextStep": "Handle form built from MbField/MbControl and MbButton, result rows with MbButton picks and sign-up links, MbNotice for the availability caveat, FocusedNextSteps after a pick. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/content-warnings-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Two MbCheckbox switches over TrustedAccounts, the server's preferences as read-only text with a plain link out, and a plain link to Settings → Trust; FocusedNextSteps after a change. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred bookmark exporter. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/bookmarks-export-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Read and stop as MbButton actions, the export shape as MbRadioGroup, download as MbButton, results and partial reads as MbNotice, plain links to Bookmarks and Raindrop; FocusedNextSteps after a download. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/tools/tools-index.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered index of focused-tools.json: MbContentLink and MbButton in the header and footer note, tool cards as plain router links styled like FocusedNextSteps. Keep new controls on shared widgets."

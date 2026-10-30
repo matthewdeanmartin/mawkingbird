@@ -1,5 +1,20 @@
 # Sprint 6 opening consolidation audit
 
+## Bookmark export tool page, 2026-10-30
+
+Reviewed 1,301 source files and 284 candidate files. Two candidates are added,
+both adopted scope: `pages/export-mastodon-bookmarks/` (page and
+`bookmarks-export-workbench.html`, built from MbButton, MbRadioGroup and
+MbNotice). `firstExternalLink` moved from the Raindrop session to
+`external-link.ts` unchanged. No shared widget changed.
+
+## Content warnings tool page, 2026-10-30
+
+Reviewed 1,295 source files and 282 candidate files. Two candidates are added,
+both adopted scope: `pages/mastodon-content-warnings/` (page and
+`content-warnings-workbench.html`, two MbCheckbox switches over
+TrustedAccounts). No shared widget changed.
+
 ## Handle generator and /tools index, 2026-10-30
 
 Reviewed 1,291 source files and 280 candidate files. Three candidates are

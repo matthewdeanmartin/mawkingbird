@@ -1,0 +1,69 @@
+<section class="panel" aria-labelledby="cw-here-title">
+  <h2 id="cw-here-title">In Mawkingbird</h2>
+  <div class="switches">
+    <mb-checkbox
+      label="Auto-expand content warnings"
+      hint="Posts with a content warning open on their own. The warning text still shows above the post."
+      [ngModel]="trust.expandAllCw()"
+      (ngModelChange)="setCw($event)"
+    />
+    <mb-checkbox
+      label="Auto-show sensitive media"
+      hint="Images and video marked sensitive show without the blur."
+      [ngModel]="trust.showAllSensitive()"
+      (ngModelChange)="setSensitive($event)"
+    />
+  </div>
+  <p class="muted small">
+    Changes apply straight away, for this account in this browser.
+    @if (restoredTrust()) {
+      Your trust setting was "trust no one", which keeps every warning closed, so it is back to the
+      default.
+    }
+  </p>
+</section>
+
+@if (serverPrefs(); as prefs) {
+  <section class="panel" aria-labelledby="cw-server-title">
+    <h2 id="cw-server-title">On your Mastodon server</h2>
+    <p>
+      The Mastodon website and some other apps follow your server's own preferences, which are
+      separate from Mawkingbird's. They are currently:
+    </p>
+    <ul class="server-values">
+      <li>
+        Always expand posts marked with content warnings:
+        <strong>{{ prefs['reading:expand:spoilers'] ? 'on' : 'off' }}</strong>
+      </li>
+      <li>
+        Media display: <strong>{{ mediaDisplay(prefs['reading:expand:media']) }}</strong>
+      </li>
+    </ul>
+    <p class="muted small">
+      Mastodon doesn't let apps change these, so they can only be set on your server's own website.
+      @if (serverPrefsUrl(); as url) {
+        <a [href]="url" target="_blank" rel="noopener noreferrer">Open your server's preferences</a
+        >.
+      }
+    </p>
+  </section>
+}
+
+<section class="panel" aria-labelledby="cw-trust-title">
+  <h2 id="cw-trust-title">Or only for people you trust</h2>
+  <p>
+    Mawkingbird can open warnings and show media for just the people you choose, and keep them
+    closed for everyone else: trust individual people from the menu on their profile, everyone you
+    follow, or everyone you follow and what they boost.
+  </p>
+  <p>
+    @if (trust.count()) {
+      You trust {{ trust.count() }} {{ trust.count() === 1 ? 'person' : 'people' }} so far.
+    }
+    <a routerLink="/settings/content">Choose who you trust</a>
+  </p>
+</section>
+
+@if (changed()) {
+  <app-focused-next-steps inviteLink="/turn-off-content-warnings-mastodon/invite" />
+}

@@ -235,5 +235,42 @@
       "copy": "No account needed",
       "tool": "app-handle-workbench"
     }
+  },
+  {
+    "id": "content-warnings",
+    "path": "turn-off-content-warnings-mastodon",
+    "title": "How to turn off content warnings on Mastodon",
+    "description": "Auto-expand content warnings and show sensitive media on Mastodon, for everyone or only the people you trust. See your server's own setting too.",
+    "group": "account",
+    "sources": "mastodon-content-warnings",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "cw",
+      "labelKey": "shell.modeNav.contentWarnings.off",
+      "icon": "M4 6h16v12H4zM4 10h16M9 14h6"
+    },
+    "prerenderCheck": {
+      "heading": "How to turn off content warnings on Mastodon",
+      "copy": "Expand content warnings",
+      "tool": "app-content-warnings-workbench"
+    }
+  },
+  {
+    "id": "export-bookmarks",
+    "path": "export-mastodon-bookmarks",
+    "title": "Export your Mastodon bookmarks to your browser",
+    "description": "Download your Mastodon bookmarks as a bookmark file for your browser, Raindrop.io or Pinboard, and unwrap them to the links the posts shared.",
+    "group": "account",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "export",
+      "labelKey": "shell.modeNav.exportBookmarks.export",
+      "icon": "M6 3h12v18l-6-4-6 4zM12 7v6M9 10l3 3 3-3"
+    },
+    "prerenderCheck": {
+      "heading": "Export your Mastodon bookmarks",
+      "copy": "Choose what to keep",
+      "tool": "app-bookmarks-export-workbench"
+    }
   }
 ]

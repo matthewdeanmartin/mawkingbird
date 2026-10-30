@@ -39,6 +39,8 @@ import { FOCUSED_TOOLS } from '../focused-tools';
 // i18n shell.modeNav.amnesty.run: Amnesty
 // i18n shell.modeNav.pseudonymity.check: Privacy
 // i18n shell.modeNav.handles.find: Handles
+// i18n shell.modeNav.contentWarnings.off: Warnings
+// i18n shell.modeNav.exportBookmarks.export: Export
 // i18n shell.modeNav.focused.invite: Invite
 
 /**

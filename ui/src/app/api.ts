@@ -664,6 +664,27 @@ export class Api {
     );
   }
 
+  /**
+   * One page of bookmarks, plus where the next page starts. Like favourites,
+   * bookmarks paginate by an id that appears only in the `Link` header, so this
+   * is what walks the whole list (the bookmark exporter).
+   */
+  bookmarksPage(
+    maxId?: string,
+    limit = 40,
+  ): Observable<{ statuses: Status[]; nextMaxId: string | null }> {
+    let params = new HttpParams().set('limit', String(limit));
+    if (maxId) {
+      params = params.set('max_id', maxId);
+    }
+    return this.http.get<Status[]>('/api/v1/bookmarks', { params, observe: 'response' }).pipe(
+      map((response) => ({
+        statuses: response.body ?? [],
+        nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
+      })),
+    );
+  }
+
   bookmarks(maxId?: string, limit?: number): Observable<Status[]> {
     let params = new HttpParams();
     if (maxId) {
