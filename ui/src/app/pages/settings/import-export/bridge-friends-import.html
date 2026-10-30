@@ -1,0 +1,242 @@
+<!-- The bridge finder. Unlike every other section on this page it reads two of
+   your own live networks rather than a foreign archive, so it is gated on
+   having credentials for both — and stays visible, disabled, when it does
+   not, because that is the clearest reason to attach the second account. -->
+<!-- Account-only: correlates two *signed-in* networks, and follows via
+   `api.follow`. Nothing here is meaningful without credentials. -->
+<section id="bridge-finder" class="friend-section bridge-section">
+  <h2>{{ 'settings.importExport.bridge.title' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.importExport.bridge.intro' | transloco }}
+  </p>
+
+  <!-- A tool page renders the connectors itself, in place of these links. -->
+  @if (!bridgeReady() && !connectInline()) {
+    <div class="bridge-gate">
+      <p>
+        <strong>{{ 'settings.importExport.bridge.needsBoth' | transloco }}</strong>
+      </p>
+      <ul class="bridge-gate-list">
+        <li [class.bridge-have]="hasMastodon()">
+          <span aria-hidden="true">{{ hasMastodon() ? '✓' : '○' }}</span>
+          {{ 'settings.importExport.bridge.mastodon' | transloco }}
+          @if (hasMastodon()) {
+            {{ 'settings.importExport.bridge.connected' | transloco }}
+          } @else {
+            <a routerLink="/settings/connections">{{
+              'settings.importExport.bridge.signInMastodon' | transloco
+            }}</a>
+          }
+        </li>
+        <li [class.bridge-have]="hasBluesky()">
+          <span aria-hidden="true">{{ hasBluesky() ? '✓' : '○' }}</span>
+          {{ 'settings.importExport.bridge.bluesky' | transloco }}
+          @if (hasBluesky()) {
+            {{ 'settings.importExport.bridge.connected' | transloco }}
+          } @else {
+            <a routerLink="/settings/connections/bluesky">{{
+              'settings.importExport.bridge.connectBluesky' | transloco
+            }}</a>
+          }
+        </li>
+      </ul>
+      <p class="muted small">
+        {{ 'settings.importExport.bridge.anon.a' | transloco }}
+        <em>{{ 'settings.importExport.bridge.anon.you' | transloco }}</em>
+        {{ 'settings.importExport.bridge.anon.b' | transloco }}
+      </p>
+    </div>
+  }
+
+  <fieldset class="bridge-body" [disabled]="!bridgeReady()">
+    <!-- A tool page's URL already names the direction. -->
+    @if (!fixedSource()) {
+      <mb-radio-group
+        class="bridge-direction"
+        [label]="'settings.importExport.bridge.directionLabel' | transloco"
+        [options]="[
+          {
+            value: 'mastodon',
+            label: 'settings.importExport.bridge.mastodonToBluesky' | transloco,
+          },
+          {
+            value: 'bluesky',
+            label: 'settings.importExport.bridge.blueskyToMastodon' | transloco,
+          },
+        ]"
+        [value]="bridgeSource()"
+        [disabled]="!bridgeReady()"
+        (valueChange)="setBridgeDirection($event === 'mastodon' ? 'mastodon' : 'bluesky')"
+      />
+    }
+
+    <div class="import-actions">
+      <button
+        mbButton
+        type="button"
+        class="btn"
+        [disabled]="bridge.loading() || bridge.running()"
+        (click)="loadBridge()"
+      >
+        {{
+          bridge.loading()
+            ? ('settings.importExport.bridge.readingFollows' | transloco)
+            : ('settings.importExport.bridge.readFollows' | transloco)
+        }}
+      </button>
+      @if (bridge.rows().length) {
+        <button type="button" class="link" (click)="bridge.reset()">
+          {{ 'settings.importExport.clear' | transloco }}
+        </button>
+      }
+    </div>
+
+    @if (bridge.loadError(); as error) {
+      <p class="export-error" role="alert">{{ error }}</p>
+    }
+
+    @if (bridge.rows().length) {
+      <!-- The free pass is the headline: these matches cost no searches at all,
+         because the people wrote their other handle in a bio we already had. -->
+      <p class="bridge-summary">
+        <span
+          [innerHTML]="
+            (bridge.sourcePageCount() === 1
+              ? 'settings.importExport.bridge.summary.one'
+              : 'settings.importExport.bridge.summary.other'
+            )
+              | transloco
+                : {
+                    follows: bridge.rows().length,
+                    pages: bridge.sourcePageCount(),
+                    found: bridge.freeMatchCount(),
+                  }
+          "
+        ></span>
+      </p>
+
+      @if (bridgePendingCount()) {
+        <div class="bridge-scan">
+          <p class="muted small">
+            {{ bridgePendingCount() }}
+            {{ 'settings.importExport.bridge.pendingNote' | transloco }}
+          </p>
+          <div class="import-actions">
+            <label class="bridge-budget">
+              {{ 'settings.importExport.bridge.searchUpTo' | transloco }}
+              <select
+                [ngModel]="bridgeBudget()"
+                (ngModelChange)="bridgeBudget.set(+$event)"
+                name="bridge_budget"
+                [disabled]="bridge.running()"
+              >
+                <option [ngValue]="25">25</option>
+                <option [ngValue]="50">50</option>
+                <option [ngValue]="200">200</option>
+                <option [ngValue]="bridgePendingCount()">
+                  {{ 'settings.importExport.bridge.all' | transloco }}
+                  {{ bridgePendingCount() }}
+                </option>
+              </select>
+              {{ 'settings.importExport.bridge.people' | transloco }}
+            </label>
+            @if (!bridge.running()) {
+              <button
+                mbButton
+                variant="outline"
+                type="button"
+                class="btn btn-outline"
+                (click)="bridge.scan(bridgeBudget())"
+              >
+                {{ 'settings.importExport.bridge.search' | transloco }}
+              </button>
+            } @else {
+              <button
+                mbButton
+                variant="outline"
+                type="button"
+                class="btn btn-outline"
+                (click)="bridge.stop()"
+              >
+                {{ 'settings.importExport.stop' | transloco }}
+              </button>
+            }
+            <span class="muted small"
+              >{{ bridge.callCount() }}
+              {{ 'settings.importExport.bridge.searchesUsed' | transloco }}</span
+            >
+          </div>
+        </div>
+      }
+
+      @if (bridgeMatchedRows().length) {
+        <ul class="bridge-rows">
+          @for (row of bridgeMatchedRows(); track bridgeRowKey(row)) {
+            <li class="bridge-row">
+              <div class="bridge-person">
+                <img [src]="row.person.avatar_static || row.person.avatar" alt="" />
+                <span class="bridge-person-name">
+                  {{ row.person.display_name || row.person.username }}
+                </span>
+                <span class="muted small">&#64;{{ row.person.acct }}</span>
+              </div>
+              <ul class="bridge-matches">
+                @for (match of row.matches; track match.account.id) {
+                  <li class="bridge-match" [class]="'confidence-' + match.confidence">
+                    @if (bridge.isFollowing(match.account)) {
+                      <span class="bridge-followed muted small">{{
+                        'settings.importExport.alreadyFollowing' | transloco
+                      }}</span>
+                    } @else {
+                      <label class="bridge-check">
+                        <input
+                          type="checkbox"
+                          [checked]="bridgeSelected().has(match.account.id)"
+                          (change)="toggleBridgeMatch(match.account.id)"
+                        />
+                        <span class="sr-only"
+                          >{{ 'settings.importExport.follow' | transloco }}
+                          {{ match.account.acct }}</span
+                        >
+                      </label>
+                    }
+                    <a class="bridge-match-name" [routerLink]="accountProfilePath(match.account)">
+                      {{ match.account.display_name || match.account.username }}
+                      <span class="muted">&#64;{{ match.account.acct }}</span>
+                    </a>
+                    <span class="bridge-kind">{{ match.confidence }}</span>
+                    <span class="muted small bridge-signals">{{ match.signals.join(' · ') }}</span>
+                    @if (bridge.followErrors().get(match.account.id); as error) {
+                      <span class="export-error" role="alert">{{ error }}</span>
+                    }
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+        </ul>
+
+        <div class="import-actions">
+          <button
+            mbButton
+            type="button"
+            class="btn"
+            [disabled]="!bridgeFollowTargets().length || bridgeFollowing()"
+            (click)="followBridgeSelection()"
+          >
+            {{
+              bridgeFollowing()
+                ? ('settings.importExport.bridge.following' | transloco)
+                : ('settings.importExport.bridge.followSelected'
+                  | transloco: { count: bridgeFollowTargets().length })
+            }}
+          </button>
+        </div>
+      } @else if (!bridge.loading()) {
+        <p class="muted small">
+          {{ 'settings.importExport.bridge.noMatches' | transloco }}
+        </p>
+      }
+    }
+  </fieldset>
+</section>

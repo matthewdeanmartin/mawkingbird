@@ -295,6 +295,14 @@
               } @else {
                 <a routerLink="/drafts">{{ 'shell.menu.drafts' | transloco }}</a>
               }
+              <!-- Scheduling (several at once) and the queue of posts waiting to
+                 go out; Drafts keeps only the far-future "parked" ones. Mastodon
+                 only: Bluesky has no server-side scheduling. -->
+              @if (!auth.isAnonymous && !auth.lacksMastodonToken) {
+                <a routerLink="/schedule-mastodon-posts">{{
+                  'shell.menu.scheduled' | transloco
+                }}</a>
+              }
               @if (featureFlags.enabled('pastebin')) {
                 <a routerLink="/pastes">{{ 'shell.menu.pastes' | transloco }}</a>
               }

@@ -145,4 +145,38 @@ describe('FailWhale', () => {
     expect(enterSpy).toHaveBeenCalledWith('https://mstdn.social');
     expect(reloadSpy).toHaveBeenCalled();
   });
+
+  // ---------------------------------------------------------------- switch account
+
+  it('offers no account switch to a logged-out visitor', () => {
+    const el = render();
+    expect(el.textContent).not.toContain('Switch account');
+  });
+
+  it('sends a signed-in user to the standalone account picker, not the login page', () => {
+    TestBed.inject(Server).setBaseUrl('https://mastodon.social');
+    const auth = TestBed.inject(Auth);
+    auth.setToken('fosstodon-token');
+    auth.setToken('mastodon-social-token');
+    const fixture: ComponentFixture<FailWhale> = TestBed.createComponent(FailWhale);
+    fixture.detectChanges();
+    const navigateSpy = vi
+      .spyOn(
+        fixture.componentInstance as unknown as { navigate: (url: string) => void },
+        'navigate',
+      )
+      .mockImplementation(() => undefined);
+
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('Switch account'),
+    );
+    expect(button).toBeDefined();
+    button!.click();
+
+    // A hard navigation: the shell (and every sidebar pinging the dead server)
+    // must not survive into the picker.
+    expect(navigateSpy).toHaveBeenCalledWith('choose-account');
+    // Nothing switched yet; the active account is only changed by a pick.
+    expect(auth.token()).toBe('mastodon-social-token');
+  });
 });

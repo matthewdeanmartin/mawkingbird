@@ -8,6 +8,13 @@ import { fileURLToPath } from 'node:url';
 // The separate prerendered /features/index.html remains unchanged.
 const root = new URL('../dist-mockingbird/browser/', import.meta.url);
 const html = await readFile(new URL('index.csr.html', root), 'utf8');
+// Tool pages come from the one registry the app's routes and prerendering use.
+const focusedTools = JSON.parse(
+  await readFile(new URL('../src/app/focused-tools.json', import.meta.url), 'utf8'),
+);
+const toolLinks = focusedTools
+  .map((tool) => `      <li><a href="/${tool.path}/">${tool.title}</a></li>`)
+  .join('\n');
 // Keep the live app dispatcher intact, while giving non-JavaScript visitors
 // real public content and crawlable links into the prerendered reference.
 const fallback = `<noscript>
@@ -26,10 +33,7 @@ const fallback = `<noscript>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
-      <li><a href="/twitter-to-mastodon/">Import your Twitter follows to Mastodon</a></li>
-      <li><a href="/crosspost/">Post to Mastodon and Bluesky at the same time</a></li>
-      <li><a href="/mastodon-analytics/">Mastodon analytics for your account</a></li>
-      <li><a href="/github-to-mastodon/">Find your GitHub friends on Mastodon</a></li>
+${toolLinks}
       <li><a href="/about/">Why Mawkingbird exists</a></li>
       <li><a href="/blog/">Blog</a></li>
     </ul>
@@ -46,14 +50,19 @@ await writeFile(
   html.replace('</head>', `${appData}</head>`).replace('</body>', `${fallback}</body>`),
 );
 
-// Starter-kit pages follow the bundled kits, which change with catalogue
-// refreshes, so their sitemap entries come from what was actually prerendered.
+// Tool pages are listed from the registry; starter-kit pages follow the bundled
+// kits, which change with catalogue refreshes, so their entries come from what
+// was actually prerendered. check-seo-build.mjs compares the result exactly.
 const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
 const sitemapUrl = new URL('sitemap.xml', root);
-const entries = ['follow/', ...kits.map((slug) => `follow/${slug}/`)]
+const entries = [
+  ...focusedTools.map((tool) => `${tool.path}/`),
+  'follow/',
+  ...kits.map((slug) => `follow/${slug}/`),
+]
   .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc></url>`)
   .join('\n');
 const sitemap = (await readFile(sitemapUrl, 'utf8')).replace('</urlset>', `${entries}\n</urlset>`);
@@ -75,14 +84,15 @@ function withLastmod(xml) {
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'blog/') return ['src/app/pages/docs/'];
-    // Mini-app pages: their own directory plus the page chrome they share.
-    const tool = {
-      'twitter-to-mastodon/': 'twitter-to-mastodon',
-      'crosspost/': 'crosspost',
-      'mastodon-analytics/': 'mastodon-analytics',
-      'github-to-mastodon/': 'github-to-mastodon',
-    }[page];
-    if (tool) return [`src/app/pages/${tool}/`, 'src/app/pages/focused-apps/'];
+    // Mini-app pages: their own directory (or the one they share), the page
+    // chrome they share, and the registry entry that titles and describes them.
+    const tool = focusedTools.find((entry) => `${entry.path}/` === page);
+    if (tool)
+      return [
+        `src/app/pages/${tool.sources ?? tool.path}/`,
+        'src/app/pages/focused-apps/',
+        'src/app/focused-tools.json',
+      ];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
     throw new Error(`prepare-seo-index: no lastmod sources for sitemap page "${page}"`);

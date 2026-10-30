@@ -2,7 +2,6 @@ import { accountProfilePath } from '../../../account-route';
 import { Component, computed, inject, Injectable, signal } from '@angular/core';
 import { MbButton } from '../../../design-system/button/button';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
-import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -15,18 +14,15 @@ import { followedTagsCsv, ImportTags, parseTags } from '../../../import-tags';
 import { AnonymousTags } from '../../../providers/anonymous/anonymous-tags';
 import { Account, ImportReport } from '../../../models';
 import { environment } from '../../../../environments/environment';
-import { ContactDiscovery } from './contact-discovery';
-import { contactPickerAvailable, pickContacts } from './contact-picker';
 import { GitHubSession } from '../../../providers/github/github-session';
 import { extractArchiveHashtags } from '../../../twitter-archive';
 import { SAMPLE_SIZE, TagSources } from './tag-sources';
+import { BridgeFriendsImport } from './bridge-friends-import';
+import { ContactFriendsImport } from './contact-friends-import';
 import { saveCsv } from './save-csv';
 import { GitHubFriendsImport } from './github-friends-import';
 import { TwitterArchiveImport } from './twitter-archive-import';
-import { BridgeFinder, BridgeRow } from './bridge-finder';
-import { BridgeNetwork } from './bridge-matching';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
-import { MastodonConnector } from '../../../providers/mastodon/mastodon-connector';
 import { PageDiagnostics } from '../../../page-diagnostics';
 
 type CsvKind = 'following' | 'mutes' | 'blocks';
@@ -63,48 +59,8 @@ function exportHandle(account: Account): string {
 // i18n settings.importExport.anon.here: in this browser
 // i18n settings.importExport.anon.signIn: Sign in
 // i18n settings.importExport.apiCalls: API calls
-// i18n settings.importExport.bridge.all: all
-// i18n settings.importExport.bridge.anon.a: Reading a server anonymously can show you public posts, but it cannot tell us who
-// i18n settings.importExport.bridge.anon.b: follow — so both sides need real credentials.
-// i18n settings.importExport.bridge.anon.you: you
-// i18n settings.importExport.bridge.bluesky: Bluesky —
-// i18n settings.importExport.bridge.blueskyToMastodon: Bluesky → Mastodon
-// i18n settings.importExport.bridge.connectBluesky: connect Bluesky
-// i18n settings.importExport.bridge.connected: connected
-// i18n settings.importExport.bridge.directionLabel: Search direction
-// i18n settings.importExport.bridge.followSelected: Follow selected ({{count}})
-// i18n settings.importExport.bridge.intro: You keep two follow lists that were built at different times. This finds the overlap: who you already follow on one network, and can now follow on the other.
-// i18n settings.importExport.bridge.mastodon: Mastodon —
-// i18n settings.importExport.bridge.mastodonToBluesky: Mastodon → Bluesky
-// i18n settings.importExport.bridge.needsBoth: This needs both accounts connected.
-// i18n settings.importExport.bridge.noMatches: No matches yet. Nobody you follow named their other account in their bio.
-// i18n settings.importExport.bridge.pendingNote: didn’t name their other account. Searching for them costs one request each, so it’s opt-in and capped.
-// i18n settings.importExport.bridge.people: people
-// i18n settings.importExport.bridge.readFollows: Read my follows (free)
-// i18n settings.importExport.bridge.readingFollows: Reading your follows…
-// i18n settings.importExport.bridge.search: Search
-// i18n settings.importExport.bridge.searchUpTo: Search up to
-// i18n settings.importExport.bridge.searchesUsed: searches used
-// i18n settings.importExport.bridge.signInMastodon: sign in to a Mastodon account
-// i18n settings.importExport.bridge.summary.one: Read <strong>{{follows}}</strong> follows over {{pages}} page and found <strong>{{found}}</strong> from bios alone — no searches spent.
-// i18n settings.importExport.bridge.summary.other: Read <strong>{{follows}}</strong> follows over {{pages}} pages and found <strong>{{found}}</strong> from bios alone — no searches spent.
-// i18n settings.importExport.bridge.title: Find the same people on your other network
 // i18n settings.importExport.checking: Checking…
 // i18n settings.importExport.clear: clear
-// i18n settings.importExport.contacts.callsUsed: API calls used
-// i18n settings.importExport.contacts.chooseCsv: Choose contacts CSV…
-// i18n settings.importExport.contacts.clues.one: {{count}} matching clue
-// i18n settings.importExport.contacts.clues.other: {{count}} matching clues
-// i18n settings.importExport.contacts.intro: Look for the people in your contacts through your home server. Your contacts stay in this browser; only derived search terms are sent to your server. Nobody is followed automatically. Names, usernames, domains, and profile links are clues—not proof of identity.
-// i18n settings.importExport.contacts.loadedNote: only in this browser.
-// i18n settings.importExport.contacts.noCandidate: searched contacts had no candidate match:
-// i18n settings.importExport.contacts.pick: Pick from my contacts…
-// i18n settings.importExport.contacts.pickedNote: Picked from your contacts. Nothing was saved — closing this page forgets them.
-// i18n settings.importExport.contacts.pickerNote: On this phone you can pick contacts directly — no export, no file. Your browser shows the picker and this page only ever sees the people you tap.
-// i18n settings.importExport.contacts.readyToSearch: contacts ready to search
-// i18n settings.importExport.contacts.skipped.a: skipped because they had no full person name or Mastodon handle. Up to
-// i18n settings.importExport.contacts.skipped.b: calls total; this run stops at
-// i18n settings.importExport.contacts.title: Find contacts on Mastodon
 // i18n settings.importExport.continueSearching: Continue searching
 // i18n settings.importExport.findMastodonAccounts: Find Mastodon accounts
 // i18n settings.importExport.follow: Follow
@@ -185,7 +141,6 @@ function exportHandle(account: Account): string {
 // i18n settings.importExport.tags.textareaLabel: Hashtags to follow
 // i18n settings.importExport.title: Import/Export Friends & Tags
 
-// i18n settings.importExport.bridge.following: Following…
 // i18n settings.importExport.tags.importTitle: Import hashtags
 // i18n settings.importExport.tags.seeAll: See every hashtag you follow →
 
@@ -207,7 +162,8 @@ export class SuggestedTagImporter extends ImportTags {}
     TranslocoPipe,
     MbButton,
     MbCheckbox,
-    MbRadioGroup,
+    BridgeFriendsImport,
+    ContactFriendsImport,
     TwitterArchiveImport,
     GitHubFriendsImport,
   ],
@@ -229,11 +185,8 @@ export class SettingsImportExport {
   protected tagSources = inject(TagSources);
   protected suggestedTagImporter = inject(SuggestedTagImporter);
   private anonymousTags = inject(AnonymousTags);
-  protected contactDiscovery = inject(ContactDiscovery);
   protected github = inject(GitHubSession);
-  protected bridge = inject(BridgeFinder);
   protected bsky = inject(BlueskySession);
-  protected mastodonConnector = inject(MastodonConnector);
 
   /**
    * Whether this reader has no server account.
@@ -262,8 +215,6 @@ export class SettingsImportExport {
   /** Which suggestion source last ran, so the results carry their provenance. */
   protected tagSourceUsed = signal<'twitter' | 'bluesky' | 'favourites' | null>(null);
   protected tagArchiveReading = signal(false);
-  protected contactFileName = signal<string | null>(null);
-  protected contactCallLimit = signal(20);
 
   protected doneCount = computed(
     () =>
@@ -316,108 +267,6 @@ export class SettingsImportExport {
     }
     return parts.join(' · ');
   });
-  protected contactMisses = computed(() =>
-    this.contactDiscovery
-      .rows()
-      .filter((row) => row.status === 'complete' && row.matches.length === 0)
-      .map((row) => row.contact.name),
-  );
-  // --- bridge finder ---
-
-  protected bridgeBudget = signal(50);
-  protected bridgeSelected = signal<ReadonlySet<string>>(new Set());
-  protected bridgeFollowing = signal(false);
-
-  /**
-   * Whether the user has credentials on Mastodon.
-   *
-   * Two ways to have them, and both count: a Mastodon-primary account holds the
-   * token as its identity, while a Bluesky-primary account holds it in the
-   * connector. An `anonymous` connector is deliberately *not* enough — reading a
-   * public server anonymously cannot tell us who *you* follow.
-   */
-  protected hasMastodon = computed(
-    () => this.auth.kind() === 'mastodon' || this.mastodonConnector.signedIn(),
-  );
-
-  /** Whether a Bluesky account is linked, in either of its two roles. */
-  protected hasBluesky = computed(() => this.bsky.linked());
-
-  /**
-   * Both sides are required, and the section is disabled rather than hidden when
-   * one is missing — a greyed-out bridge finder is the best argument there is
-   * for attaching the second account.
-   */
-  protected bridgeReady = computed(() => this.hasMastodon() && this.hasBluesky());
-
-  protected bridgeSource = computed(() => this.bridge.direction().source);
-
-  protected bridgeMatchedRows = computed(() =>
-    this.bridge.rows().filter((row) => row.matches.length > 0),
-  );
-
-  protected bridgePendingCount = computed(
-    () => this.bridge.rows().filter((row) => row.status === 'pending').length,
-  );
-
-  /** Matches that are selected, unfollowed, and therefore actionable. */
-  protected bridgeFollowTargets = computed(() =>
-    this.bridgeMatchedRows()
-      .flatMap((row) => row.matches)
-      .filter(
-        (match) =>
-          this.bridgeSelected().has(match.account.id) && !this.bridge.isFollowing(match.account),
-      )
-      .map((match) => match.account),
-  );
-
-  protected setBridgeDirection(source: BridgeNetwork): void {
-    this.bridgeSelected.set(new Set());
-    this.bridge.setDirection(
-      source === 'mastodon'
-        ? { source: 'mastodon', target: 'bluesky' }
-        : { source: 'bluesky', target: 'mastodon' },
-    );
-  }
-
-  protected async loadBridge(): Promise<void> {
-    this.bridgeSelected.set(new Set());
-    await this.bridge.load();
-    // Exact matches are self-published, so they are pre-selected; inferred ones
-    // are not, and weak ones especially must never be followed by default.
-    this.bridgeSelected.set(
-      new Set(
-        this.bridge
-          .rows()
-          .flatMap((row) => row.matches)
-          .filter((match) => match.confidence === 'exact')
-          .map((match) => match.account.id),
-      ),
-    );
-  }
-
-  protected toggleBridgeMatch(id: string): void {
-    this.bridgeSelected.update((selected) => {
-      const next = new Set(selected);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
-  }
-
-  protected async followBridgeSelection(): Promise<void> {
-    if (this.bridgeFollowing()) return;
-    this.bridgeFollowing.set(true);
-    try {
-      await this.bridge.followAll(this.bridgeFollowTargets());
-    } finally {
-      this.bridgeFollowing.set(false);
-    }
-  }
-
-  protected bridgeRowKey(row: BridgeRow): string {
-    return row.person.id;
-  }
-
   protected importKind = signal<CsvKind>('following');
   protected csvText = signal('');
   protected uploading = signal(false);
@@ -464,88 +313,6 @@ export class SettingsImportExport {
       this.previewFriends();
     });
     input.value = '';
-  }
-
-  protected onContactFile(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.contactFileName.set(file.name);
-    this.contactPickerError.set(null);
-    file.text().then((text) => this.contactDiscovery.load(text));
-    input.value = '';
-  }
-
-  /**
-   * Whether to offer the phone's own contact picker.
-   *
-   * Read once at construction rather than per-render: the answer is a property
-   * of the browser and cannot change while the page is open.
-   */
-  protected readonly canPickContacts = contactPickerAvailable();
-
-  /** A picker failure worth showing, or null. Cleared by the next attempt. */
-  protected readonly contactPickerError = signal<string | null>(null);
-
-  /**
-   * Open the phone's contact picker and search for whoever was chosen.
-   *
-   * Everything downstream is the CSV path's code — the picker only supplies the
-   * contacts. Deliberately does **not** start searching on its own: the budget
-   * control sits right there and spending someone's API calls without a second
-   * tap would be the app deciding how much to spend on their behalf.
-   */
-  protected async pickPhoneContacts(): Promise<void> {
-    this.contactPickerError.set(null);
-    const outcome = await pickContacts();
-    switch (outcome.kind) {
-      case 'picked':
-        // Replaces whatever a CSV had loaded, exactly as choosing a second CSV
-        // would. Two contact sets merged into one list would make the counts on
-        // screen unexplainable.
-        this.contactFileName.set(null);
-        this.contactDiscovery.loadContacts(outcome.result);
-        break;
-      case 'failed':
-        this.contactPickerError.set(outcome.message);
-        break;
-      case 'unsupported':
-        this.contactPickerError.set('This browser cannot open a contact picker.');
-        break;
-      case 'cancelled':
-        // Nothing chosen, nothing to say.
-        break;
-    }
-  }
-
-  protected startContactSearch(): void {
-    void this.contactDiscovery.start(this.contactCallLimit());
-  }
-
-  protected setContactCallLimit(value: number | string): void {
-    const parsed = Number(value);
-    this.contactCallLimit.set(
-      Number.isFinite(parsed) ? Math.min(1000, Math.max(1, Math.floor(parsed))) : 20,
-    );
-  }
-
-  protected clearContactSearch(): void {
-    this.contactFileName.set(null);
-    this.contactPickerError.set(null);
-    this.contactDiscovery.reset();
-  }
-
-  protected contactStatusLabel(status: string): string {
-    switch (status) {
-      case 'pending':
-        return 'waiting';
-      case 'searching':
-        return 'searching…';
-      case 'complete':
-        return 'searched';
-      default:
-        return 'failed';
-    }
   }
 
   protected previewFriends(): void {

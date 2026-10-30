@@ -1,4 +1,5 @@
 import { AppMode } from '../app-mode';
+import { FOCUSED_TOOLS } from '../focused-tools';
 
 // i18n shell.modeNav.rss.reader: Read
 // i18n shell.modeNav.rss.readLater: Later
@@ -30,6 +31,11 @@ import { AppMode } from '../app-mode';
 // i18n shell.modeNav.crosspost.post: Crosspost
 // i18n shell.modeNav.analytics.view: Analytics
 // i18n shell.modeNav.githubFriends.find: Find friends
+// i18n shell.modeNav.schedule.plan: Schedule
+// i18n shell.modeNav.bridge.find: Find
+// i18n shell.modeNav.boosts.off: Boosts
+// i18n shell.modeNav.contacts.find: Contacts
+// i18n shell.modeNav.friendFeeds.find: Feeds
 // i18n shell.modeNav.focused.invite: Invite
 
 /**
@@ -315,31 +321,14 @@ function focusedApp(
 }
 
 /**
- * The mini-apps: public entry pages for one task each (spec in ui/docs/seo.md).
- * Their roots are also the only pages a sign-in may return to.
+ * The mini-apps: public entry pages for one task each (spec in ui/docs/seo.md),
+ * from the shared tool registry. Their roots are also the only pages a sign-in
+ * may return to. Tab labels are translated, so each `labelKey` is declared with
+ * the other nav strings at the top of this file.
  */
-export const FOCUSED_APPS: readonly FocusedApp[] = [
-  focusedApp('twitter-import', '/twitter-to-mastodon', {
-    id: 'import',
-    labelKey: 'shell.modeNav.twitterImport.import',
-    icon: 'M12 3v12M7 10l5 5 5-5M4 17v3h16v-3',
-  }),
-  focusedApp('crosspost', '/crosspost', {
-    id: 'crosspost',
-    labelKey: 'shell.modeNav.crosspost.post',
-    icon: 'M3 12h7M10 12l5-5h5M10 12l5 5h5M17 4l3 3-3 3M17 14l3 3-3 3',
-  }),
-  focusedApp('mastodon-analytics', '/mastodon-analytics', {
-    id: 'analytics',
-    labelKey: 'shell.modeNav.analytics.view',
-    icon: 'M4 20V11M10 20V5M16 20v-6M3 20h18',
-  }),
-  focusedApp('github-friends', '/github-to-mastodon', {
-    id: 'find',
-    labelKey: 'shell.modeNav.githubFriends.find',
-    icon: 'M9 8a3 3 0 1 0 0-6a3 3 0 1 0 0 6M3 20a6 6 0 0 1 12 0M18 10l2 2 3-4',
-  }),
-];
+export const FOCUSED_APPS: readonly FocusedApp[] = FOCUSED_TOOLS.map((tool) =>
+  focusedApp(tool.id, `/${tool.path}`, tool.tab),
+);
 
 /** The mini-app a URL belongs to, or null for the ordinary app. */
 export function focusedAppFor(url: string): FocusedApp | null {

@@ -214,6 +214,7 @@
   </div>
   <p class="page-note">
     {{ 'pages.drafts.scheduled.note' | transloco }}
+    <a routerLink="/schedule-mastodon-posts">{{ 'pages.drafts.scheduled.bulk' | transloco }}</a>
   </p>
 
   @for (s of sources.upcomingScheduled(); track s.id) {

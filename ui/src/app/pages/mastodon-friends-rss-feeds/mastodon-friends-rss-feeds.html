@@ -1,0 +1,82 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS and OPML</p>
+    <h1>Find the blogs and RSS feeds of everyone you follow on Mastodon</h1>
+    <p>
+      People put their website in their Mastodon profile. This checks those links for a feed and
+      collects every one it finds into a single OPML file for any feed reader.
+      @if (!inShell) {
+        It is part of Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Loading…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Read who you follow</h2>
+        <p>
+          Your following list is read from your Mastodon server, with the links in each profile.
+        </p>
+      </li>
+      <li>
+        <h2>Check their websites</h2>
+        <p>
+          Each linked site is asked whether it publishes a feed. You choose how many sites to check,
+          and can stop at any point and keep what was found.
+        </p>
+      </li>
+      <li>
+        <h2>Download the OPML</h2>
+        <p>
+          Import the file into any feed reader, or follow the feeds right here in Mawkingbird's RSS
+          reader.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to find their feeds</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">See what Plus includes</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Why is this a Plus feature?</h3>
+    <p>
+      Checking hundreds of strangers' websites goes through a proxy that Mawkingbird pays for, one
+      request per site. Plus covers that cost.
+    </p>
+    <h3>What is an OPML file?</h3>
+    <p>
+      The subscription-list format every feed reader understands. Import it into Feedly,
+      NetNewsWire, Inoreader or any other reader to follow all the feeds at once.
+    </p>
+    <h3>Will it find everyone?</h3>
+    <p>
+      Only people who link a website from their profile, and only sites that publish a feed. Big
+      platforms that never carry a personal feed are skipped without being checked.
+    </p>
+    <h3>Does a second run cost as much?</h3>
+    <p>
+      No. Sites already checked are remembered, so after following a few new people a fresh scan
+      only checks their sites.
+    </p>
+  </section>
+</main>

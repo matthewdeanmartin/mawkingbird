@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Server } from './server';
+import { serverRole } from './server-role';
 
 export type StatusLinkKind = 'official' | 'administrator-provided' | 'third-party';
 
@@ -158,12 +159,19 @@ export class InstanceStatus {
     if (cached && Date.now() - Date.parse(cached.verifiedAt) < REVALIDATE_MS) {
       return;
     }
-    this.http.get<{ content?: string }>('/api/v1/instance/extended_description').subscribe({
-      next: (about) => this.store(domain, this.extractStatusUrl(about.content ?? '')),
-      error: () => {
-        // Unreachable or unsupported endpoint: keep whatever we knew before.
-      },
-    });
+    // Decoration, not a liveness signal: a failure here must not count toward
+    // the fail whale — notably on /choose-account, the page that whale sends
+    // people to when this very server is down.
+    this.http
+      .get<{ content?: string }>('/api/v1/instance/extended_description', {
+        context: serverRole('background'),
+      })
+      .subscribe({
+        next: (about) => this.store(domain, this.extractStatusUrl(about.content ?? '')),
+        error: () => {
+          // Unreachable or unsupported endpoint: keep whatever we knew before.
+        },
+      });
   }
 
   /** First safe https link in the about-page HTML that reads as a status page. */

@@ -1,5 +1,46 @@
 # Sprint 6 opening consolidation audit
 
+## Tool pages, sprint 2: contacts and friends' feeds, 2026-10-30
+
+Reviewed 1,273 source files and 273 candidate files. Four candidates are added.
+`settings/import-export/contact-friends-import.html` is the contacts finder
+moved out of `settings-import-export.html` unchanged (partial adoption, as its
+origin). `pages/find-contacts-on-mastodon/find-contacts-on-mastodon.html`,
+`pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html` and its
+`friend-feeds-workbench.ts` are adopted scope: MbButton and MbContentLink
+around the shared finder and the existing friend-feeds dialog, whose own
+disposition stands. No shared widget changed.
+
+## Tool pages, sprint 1: Bluesky ⇄ Mastodon and boosts, 2026-10-30
+
+Reviewed 1,265 source files and 269 candidate files. Four candidates are added.
+`settings/import-export/bridge-friends-import.html` is the bridge finder moved
+out of `settings-import-export.html` unchanged (partial adoption, as its origin).
+`pages/friend-bridge/friend-bridge.html`,
+`pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html` and its
+`boosts-workbench.ts` are adopted scope: MbButton and MbContentLink, the shared
+connectors, BulkActionsDialog and BulkProgress. `pages/features/features.html`
+now lists tool pages from `focused-tools.json`. No shared widget changed.
+
+## Mastodon scheduler mini-app, 2026-10-30
+
+Reviewed 1,255 source files and 265 candidate files. Two candidates are added,
+both adopted scope: `pages/schedule-mastodon-posts/schedule-mastodon-posts.html`
+(the public page, same header and sign-in row as the other mini-apps) and
+`schedule-workbench.html` (the signed-in scheduler, built only from MbField,
+MbControl, MbButton, MbHelp, MbNotice and ConfirmDialog). `shell/shell.html`
+gains a "Scheduled posts" row in the … menu and `pages/drafts/drafts-page.html`
+a plain link to the scheduler; their existing dispositions stand. No shared
+widget changed.
+
+## Fail whale: switch account, 2026-10-30
+
+Reviewed 1,249 source files and 263 candidate files; none added or removed.
+`fail-whale/fail-whale.html` gains a "Switch account" button beside Try again
+(one native button / legacy pill finding added), matching the whale's existing
+`.btn` actions; its existing disposition stands. `pages/account-picker` adds only a plain
+back link for its new standalone `/choose-account` mount. No shared widget changed.
+
 ## Analytics load failure: reason and Retry, 2026-10-28
 
 Reviewed 1,249 source files and 263 candidate files; none added or removed.

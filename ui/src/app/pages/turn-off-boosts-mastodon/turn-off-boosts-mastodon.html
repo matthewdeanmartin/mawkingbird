@@ -1,0 +1,79 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon boosts</p>
+    <h1>Turn off boosts on Mastodon for everyone you follow</h1>
+    <p>
+      Boosts are Mastodon's retweets. Keep following everyone, but see only what they write
+      themselves.
+      @if (!inShell) {
+        Mastodon lets you hide boosts one account at a time; this does it for all of them at once.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Loading…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in with Mastodon</h2>
+        <p>Your follows are read from your own Mastodon server.</p>
+      </li>
+      <li>
+        <h2>See how many it changes</h2>
+        <p>
+          Before anything happens you are told how many of the people you follow still have boosts
+          on.
+        </p>
+      </li>
+      <li>
+        <h2>Confirm, and watch it work</h2>
+        <p>
+          Each account is updated in turn, with a progress bar. You can stop part-way and carry on
+          later.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to turn off boosts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Does this unfollow anyone?</h3>
+    <p>
+      No. You keep following everyone, and their own posts and replies still reach your home
+      timeline. Only their boosts stop.
+    </p>
+    <h3>Can I undo it?</h3>
+    <p>
+      Yes. The same page turns boosts back on for everyone, and you can switch them on for a single
+      account from that person's profile.
+    </p>
+    <h3>What about people I follow later?</h3>
+    <p>
+      New follows start with boosts on, as Mastodon always does. Run this again whenever you like;
+      it only changes the accounts that need it.
+    </p>
+    <h3>Why does it take a while?</h3>
+    <p>
+      Mastodon has no "everyone at once" setting, so each account you follow is changed one by one.
+      A long follow list takes a few minutes.
+    </p>
+  </section>
+</main>

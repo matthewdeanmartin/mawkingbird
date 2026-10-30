@@ -22,6 +22,12 @@ import { PageDiagnostics } from '../page-diagnostics';
  * mastodon.social), the whale also offers the login page's instance picker to
  * hop to a reachable server without leaving the app.
  *
+ * A signed-in user's session *is* tied to its instance, but they may have other
+ * saved accounts on servers that are fine. "Switch account" takes them to the
+ * standalone picker at `/choose-account` — a hard navigation, so the shell and
+ * its sidebars (which would keep pinging the dead server) are torn down and the
+ * whale's in-memory down state goes with them.
+ *
  * Below all of that sits the **details box**: the actual error, the request that
  * produced it, and the context needed to tell "my network" apart from "their
  * server". Nobody else is going to look at this — no SRE is paged when a
@@ -35,6 +41,7 @@ import { PageDiagnostics } from '../page-diagnostics';
 // i18n failWhale.checking: Checking…
 // i18n failWhale.tryAgain: Try again
 // i18n failWhale.reportThis: Report this
+// i18n failWhale.switchAccount: Switch account
 // i18n failWhale.offlineNote: Your browser reports that this device is <strong>offline</strong>. Check your network connection before blaming the server.
 // i18n failWhale.orBrowse: Or browse a different instance:
 // i18n failWhale.whatWentWrong: What went wrong?
@@ -113,6 +120,18 @@ export class FailWhale {
     return this.auth.isAnonymous;
   }
 
+  /**
+   * Some other saved identity to fall back on. A logged-out visitor's list is
+   * only the virtual Anonymous account, which is not a "switch" worth offering.
+   */
+  protected readonly canSwitchAccount = computed(
+    () => this.auth.isAuthenticated && this.auth.otherSessions().length > 0,
+  );
+
+  switchAccount(): void {
+    this.navigate('choose-account');
+  }
+
   retry(): void {
     this.health.recheck();
   }
@@ -132,5 +151,10 @@ export class FailWhale {
   /** Seam so tests can assert the reload without navigating the test runner. */
   protected reload(): void {
     location.reload();
+  }
+
+  /** Seam for the hard navigation to the standalone account picker. */
+  protected navigate(url: string): void {
+    location.assign(url);
   }
 }

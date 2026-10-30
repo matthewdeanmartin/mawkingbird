@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+.panel {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.panel h2 {
+  font-size: 1.15rem;
+  margin: 0 0 12px;
+}
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-title h2 {
+  margin: 0;
+}
+.rules {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+.cadence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.rows {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.row textarea {
+  width: 100%;
+  resize: vertical;
+}
+.row-when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+.send {
+  margin-top: 20px;
+}
+.send p {
+  margin: 0 0 8px;
+}
+mb-notice {
+  display: block;
+  margin-top: 12px;
+}
+.upcoming {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.upcoming li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.upcoming-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.upcoming-text strong,
+.upcoming-text span {
+  display: block;
+}
+.upcoming-text span {
+  margin-top: 2px;
+  color: var(--muted);
+}

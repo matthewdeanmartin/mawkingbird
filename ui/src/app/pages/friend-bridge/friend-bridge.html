@@ -1,0 +1,89 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} to {{ copy.to }}</p>
+    <h1>Find your {{ copy.from }} follows on {{ copy.to }}</h1>
+    <p>
+      Many of the people you follow on {{ copy.from }} are on {{ copy.to }} too. This finds them and
+      lets you follow them there.
+      @if (!inShell) {
+        Sign in with either account, connect the other, and see who is already there.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Loading the finder…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in to both</h2>
+        <p>
+          Sign in with your Mastodon or your Bluesky account, then connect the other one on the next
+          screen.
+        </p>
+      </li>
+      <li>
+        <h2>Read who you follow</h2>
+        <p>
+          Everyone you follow on {{ copy.from }} who wrote their {{ copy.to }} handle in their bio
+          is matched straight away, at no cost.
+        </p>
+      </li>
+      <li>
+        <h2>Search for the rest, then follow</h2>
+        <p>
+          Look up the others by name, as many as you choose, then follow the ones you recognise with
+          one button.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Sign in with Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Sign in with Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Will it follow people without asking?</h3>
+    <p>
+      No. People who named their other handle themselves are ticked for you; guesses from a name
+      search are not. Nothing is followed until you press Follow.
+    </p>
+    <h3>Why are some people missing?</h3>
+    <p>
+      Only people who mention their {{ copy.to }} handle, or whose name finds them in a search, can
+      be matched. Someone with a common name and no handle in their bio may not turn up.
+    </p>
+    <h3>Can I go the other way?</h3>
+    <p>
+      Yes:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/mastodon-to-bluesky">find your Mastodon follows on Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/bluesky-to-mastodon">find your Bluesky follows on Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Where are my sign-ins kept?</h3>
+    <p>
+      In this browser. Mawkingbird talks to your Mastodon server and to Bluesky directly; there is
+      no Mawkingbird server in between holding your accounts.
+    </p>
+  </section>
+</main>

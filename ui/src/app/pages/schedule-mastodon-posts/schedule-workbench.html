@@ -1,0 +1,209 @@
+<section class="panel" aria-labelledby="schedule-when-title">
+  <div class="panel-title">
+    <h2 id="schedule-when-title">When</h2>
+    <mb-help label="Mastodon's scheduling rules">
+      <ul class="rules">
+        <li>
+          Your Mastodon server publishes the posts, so you can close this page once they are
+          scheduled.
+        </li>
+        <li>Each post must be at least 5 minutes away; this page asks for 10 to be safe.</li>
+        <li>
+          Up to {{ dailyLimit }} scheduled posts a day (days are counted in UTC) and
+          {{ totalLimit }} waiting at once, including ones you scheduled elsewhere.
+        </li>
+        <li>Posts are up to {{ maxChars }} characters; some servers allow more.</li>
+        <li>Scheduled posts can be cancelled below until they go out.</li>
+      </ul>
+    </mb-help>
+  </div>
+  <div class="cadence">
+    <mb-field label="First post" [hint]="'Your time zone: ' + timeZone">
+      <input
+        mbControl
+        type="datetime-local"
+        [ngModel]="cadence().start"
+        (ngModelChange)="setCadence({ start: $event })"
+      />
+    </mb-field>
+    <mb-field label="Then one every">
+      <input
+        mbControl
+        type="number"
+        min="1"
+        step="1"
+        inputmode="numeric"
+        [ngModel]="cadence().every"
+        (ngModelChange)="setCadence({ every: +$event })"
+      />
+    </mb-field>
+    <mb-field label="Unit">
+      <select mbControl [ngModel]="cadence().unit" (ngModelChange)="setUnit($event)">
+        <option value="minutes">minutes</option>
+        <option value="hours">hours</option>
+        <option value="days">days</option>
+      </select>
+    </mb-field>
+    <mb-field label="Who can see them">
+      <select mbControl [ngModel]="visibility()" (ngModelChange)="visibility.set($event)">
+        <option value="public">Public</option>
+        <option value="unlisted">Quiet public</option>
+        <option value="private">Followers only</option>
+      </select>
+    </mb-field>
+  </div>
+</section>
+
+<section class="panel" aria-labelledby="schedule-posts-title">
+  <h2 id="schedule-posts-title">Posts</h2>
+  <ol class="rows">
+    @for (row of rows(); track row.key; let i = $index) {
+      <li class="row">
+        <mb-field
+          [label]="'Post ' + (i + 1)"
+          [hint]="length(row.text) + ' / ' + maxChars"
+          [error]="row.error ?? (problems()[i] === 'tooLong' ? problemText('tooLong') : '')"
+        >
+          <textarea
+            mbControl
+            rows="3"
+            [ngModel]="row.text"
+            (ngModelChange)="setText(i, $event)"
+            [disabled]="sending()"
+          ></textarea>
+        </mb-field>
+        <div class="row-when">
+          <mb-field
+            [label]="
+              row.pinnedAt === null ? 'Goes out (from the schedule)' : 'Goes out (your time)'
+            "
+            density="compact"
+            [error]="
+              problems()[i] === 'tooSoon' || problems()[i] === 'noTime'
+                ? problemText(problems()[i])
+                : ''
+            "
+          >
+            <input
+              mbControl
+              type="datetime-local"
+              [ngModel]="rowInput(i)"
+              (ngModelChange)="pin(i, $event)"
+              [disabled]="sending()"
+            />
+          </mb-field>
+          @if (row.pinnedAt !== null) {
+            <button mbButton variant="link" size="small" type="button" (click)="unpin(i)">
+              Follow the schedule
+            </button>
+          }
+          @if (rows().length > 1) {
+            <button
+              mbButton
+              variant="link"
+              size="small"
+              type="button"
+              [disabled]="sending()"
+              (click)="removeRow(i)"
+            >
+              Remove
+            </button>
+          }
+        </div>
+      </li>
+    }
+  </ol>
+  <button mbButton variant="outline" size="small" type="button" (click)="addRow()">
+    + Add a post
+  </button>
+
+  @for (problem of limits(); track problem.kind + (problem.day ?? '')) {
+    <mb-notice tone="error">{{ limitText(problem) }}</mb-notice>
+  }
+  @if (existingError()) {
+    <mb-notice tone="error" announcement="alert">
+      Your scheduled posts couldn't be loaded, so Mastodon's limits can't be checked yet.
+      <button mbButton variant="link" size="small" type="button" (click)="retryLoad()">
+        Try again
+      </button>
+    </mb-notice>
+  }
+
+  <div class="send">
+    @if (emptyCount()) {
+      <p class="muted small">
+        {{ emptyCount() === 1 ? 'One post is' : emptyCount() + ' posts are' }} empty: write
+        something or remove {{ emptyCount() === 1 ? 'it' : 'them' }}.
+      </p>
+    }
+    <button mbButton type="button" [disabled]="!canSend()" (click)="send()">
+      @if (sending()) {
+        Scheduling…
+      } @else {
+        Schedule {{ rows().length }} {{ rows().length === 1 ? 'post' : 'posts' }}
+      }
+    </button>
+  </div>
+
+  @if (lastBatch() !== null) {
+    <mb-notice announcement="status" [tone]="failedCount() ? 'error' : 'info'">
+      @if (lastBatch()) {
+        Scheduled {{ lastBatch() }} {{ lastBatch() === 1 ? 'post' : 'posts' }}. Your server will
+        publish {{ lastBatch() === 1 ? 'it' : 'them' }} on time, even with this page closed.
+      }
+      @if (failedCount()) {
+        {{ failedCount() === 1 ? 'One post was' : failedCount() + ' posts were' }} not scheduled;
+        the reason is under each one.
+      }
+    </mb-notice>
+  }
+</section>
+
+<section class="panel" aria-labelledby="schedule-upcoming-title">
+  <h2 id="schedule-upcoming-title">Already scheduled</h2>
+  @if (!existingLoaded() && !existingError()) {
+    <p class="muted">Loading your scheduled posts…</p>
+  } @else if (upcoming().length) {
+    <p class="muted small">{{ existing().length }} of {{ totalLimit }} scheduled slots in use.</p>
+    <ul class="upcoming">
+      @for (s of upcoming(); track s.id) {
+        <li>
+          <div class="upcoming-text">
+            <strong>{{ when(s.scheduled_at) }}</strong>
+            <span>{{ preview(s) }}</span>
+          </div>
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            (click)="pendingCancel.set(s)"
+          >
+            Cancel
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (existingLoaded()) {
+    <p class="muted">Nothing scheduled yet.</p>
+  }
+  @if (cancelError()) {
+    <mb-notice tone="error" announcement="alert"
+      >That post couldn't be cancelled. Try again.</mb-notice
+    >
+  }
+</section>
+
+@if (pendingCancel()) {
+  <app-confirm-dialog
+    title="Cancel this scheduled post?"
+    message="It will be deleted from your server and never published."
+    confirmLabel="Cancel post"
+    (confirmed)="confirmCancel()"
+    (cancelled)="pendingCancel.set(null)"
+  />
+}
+
+@if (scheduledCount()) {
+  <app-focused-next-steps inviteLink="/schedule-mastodon-posts/invite" />
+}

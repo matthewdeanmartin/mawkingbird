@@ -1,0 +1,82 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon scheduler</p>
+    <h1>Schedule Mastodon posts in advance</h1>
+    <p>
+      Write a week of posts in one sitting and let your Mastodon server publish them on time.
+      @if (!inShell) {
+        Sign in with Mastodon, write your posts, pick when the first one goes out and how far apart
+        the rest are, and you are done.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Loading the scheduler…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Write your posts</h2>
+        <p>As many as you like, one box each, up to 500 characters a post.</p>
+      </li>
+      <li>
+        <h2>Space them out</h2>
+        <p>
+          Pick the first time and the gap: daily at 9:00, every three hours. Move any single post to
+          a time of its own.
+        </p>
+      </li>
+      <li>
+        <h2>Close the tab</h2>
+        <p>
+          Your Mastodon server holds the posts and publishes each one on time. Nothing waits in your
+          browser.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to schedule posts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Can Mastodon schedule posts?</h3>
+    <p>
+      Yes. Every Mastodon server can hold a post and publish it later, but the standard Mastodon
+      website has no button for it. This page uses that built-in scheduling, so the posts are kept
+      by your own server, not by Mawkingbird.
+    </p>
+    <h3>Do I need to keep this page open?</h3>
+    <p>
+      No. Once a post is scheduled it lives on your Mastodon server, which publishes it at the
+      chosen time whether or not your computer is on.
+    </p>
+    <h3>Are there limits?</h3>
+    <p>
+      Mastodon allows 300 scheduled posts waiting at once and 25 on any one day, and each must be at
+      least five minutes away. The scheduler checks these before it sends anything.
+    </p>
+    <h3>Can I change my mind?</h3>
+    <p>
+      Yes. Your scheduled posts are listed under the scheduler, and any of them can be cancelled
+      until it goes out.
+    </p>
+    <h3>Does this work for Bluesky?</h3>
+    <p>Not here. Bluesky has no built-in scheduling, so this page is for Mastodon only.</p>
+  </section>
+</main>

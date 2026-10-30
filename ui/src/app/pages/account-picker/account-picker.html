@@ -1,6 +1,6 @@
 <mb-page-header
   [title]="'accountPicker.title' | transloco"
-  [description]="'accountPicker.intro' | transloco"
+  [description]="(standalone ? 'accountPicker.standaloneIntro' : 'accountPicker.intro') | transloco"
 />
 
 <div class="picker">
@@ -86,5 +86,12 @@
         {{ 'accountPicker.addBluesky' | transloco }}
       </button>
     </div>
+  }
+
+  @if (standalone) {
+    <!-- A plain link, not routerLink: the shell must boot fresh. -->
+    <p class="picker-back">
+      <a href="home">{{ 'accountPicker.backHome' | transloco }}</a>
+    </p>
   }
 </div>

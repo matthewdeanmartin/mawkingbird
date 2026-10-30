@@ -928,6 +928,16 @@
       "nextStep": "Moved out of settings-import-export.html unchanged and shared with /github-to-mastodon; same scope as its origin. Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
+      "file": "ui/src/app/pages/settings/import-export/bridge-friends-import.html",
+      "disposition": "partial adoption",
+      "nextStep": "Moved out of settings-import-export.html unchanged and shared with /bluesky-to-mastodon and /mastodon-to-bluesky; same scope as its origin. Two inputs only hide its direction switch and its Settings links. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/import-export/contact-friends-import.html",
+      "disposition": "partial adoption",
+      "nextStep": "Moved out of settings-import-export.html unchanged and shared with /find-contacts-on-mastodon; same scope as its origin. Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, the file picker label and the call-limit input with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
       "file": "ui/src/app/pages/settings/import-export/twitter-archive-import.html",
       "disposition": "partial adoption",
       "nextStep": "Moved out of settings-import-export.html unchanged and shared with /twitter-to-mastodon; same scope as its origin. Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
@@ -1311,6 +1321,46 @@
       "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred schedule workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Signed-in bulk scheduler built on shared widgets: MbField/MbControl for the time, spacing, unit and visibility controls and each post's text, MbButton for row and send actions, MbHelp for Mastodon's limits, MbNotice for results and limit errors, and ConfirmDialog for cancelling. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page (two URLs) using MbContentLink and MbButton in the feature-page header, sign-in row and cross-link; the signed-in body embeds the existing connectors and the shared bridge finder. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred boosts workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/boosts-workbench.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Inline template with two MbButton actions that open the shared BulkActionsDialog, plus the shared BulkProgress panel and FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred contacts workbench around the shared contacts finder. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row (sign-in and Plus plans); the signed-in body is the deferred friend-feeds workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/friend-feeds-workbench.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Inline template with one MbButton that opens the existing friend-feeds dialog (its own disposition stands), plus FocusedNextSteps. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/crosspost/crosspost.html",

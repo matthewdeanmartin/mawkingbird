@@ -89,4 +89,72 @@ describe('AccountPicker', () => {
     expect(el.querySelectorAll('.picker-row')).toHaveLength(0);
     expect(el.querySelector('.picker-empty')).not.toBeNull();
   });
+
+  it('stays inside the shell when the shell provides the switcher', () => {
+    const { el } = render();
+    expect(el.classList).not.toContain('standalone');
+    expect(el.querySelector('.picker-back')).toBeNull();
+  });
+});
+
+describe('AccountPicker standalone (fail whale escape hatch)', () => {
+  const others = [
+    choice('a', 'everybodhi', 'https://mastodon.social'),
+    choice('b', 'pythonjobs', 'https://fosstodon.org'),
+  ];
+  const switchAccount = vi.fn();
+
+  beforeEach(() => {
+    switchAccount.mockReset();
+    // No AccountSwitcher: at /choose-account there is no shell to provide one.
+    TestBed.configureTestingModule({
+      imports: [AccountPicker, translocoTesting()],
+      providers: [
+        {
+          provide: Auth,
+          useValue: {
+            account: signal(null),
+            otherSessions: computed(() => others),
+            isAnonymous: false,
+            shouldOfferLogin: false,
+            switchAccount,
+          },
+        },
+      ],
+    });
+  });
+
+  it('commits the switch itself and hard-navigates home', () => {
+    switchAccount.mockReturnValue(true);
+    const fixture = TestBed.createComponent(AccountPicker);
+    const navigate = vi
+      .spyOn(
+        fixture.componentInstance as unknown as { navigate: (url: string) => void },
+        'navigate',
+      )
+      .mockImplementation(() => undefined);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.classList).toContain('standalone');
+    expect(el.querySelector('.picker-back a')?.getAttribute('href')).toBe('home');
+    el.querySelectorAll<HTMLButtonElement>('.picker-row')[1].click();
+
+    expect(switchAccount).toHaveBeenCalledWith(others[1]);
+    expect(navigate).toHaveBeenCalledWith('home');
+  });
+
+  it('stays put when the switch could not be made', () => {
+    switchAccount.mockReturnValue(false);
+    const fixture = TestBed.createComponent(AccountPicker);
+    const navigate = vi
+      .spyOn(
+        fixture.componentInstance as unknown as { navigate: (url: string) => void },
+        'navigate',
+      )
+      .mockImplementation(() => undefined);
+    fixture.detectChanges();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.picker-row')!.click();
+    expect(navigate).not.toHaveBeenCalled();
+  });
 });

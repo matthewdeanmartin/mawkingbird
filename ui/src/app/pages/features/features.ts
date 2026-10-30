@@ -1,6 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FOCUSED_TOOLS } from '../../focused-tools';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
@@ -15,6 +16,8 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 export class Features {
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  /** The tool pages, linked under "Find your way into Mawkingbird". */
+  protected readonly tools = FOCUSED_TOOLS;
 
   /** Resolve against this document, rather than the app's root base tag. */
   protected sectionHref(fragment: string): string {

@@ -1,0 +1,224 @@
+<!-- `id` so /find-friends can link straight here: this page is long, and a
+     reader sent from the hub should not have to scroll past four other
+     importers to reach the one they were promised. -->
+<section id="contacts" class="friend-section contact-section">
+  <h2>{{ 'settings.importExport.contacts.title' | transloco }}</h2>
+  <p class="muted small">
+    {{ 'settings.importExport.contacts.intro' | transloco }}
+  </p>
+  <!--
+    Only where it can work. The Contact Picker API is Chrome-on-Android only,
+    and a button that does nothing on this device is noise beside a CSV
+    importer that works everywhere. Not disabled-with-a-reason: the reason
+    would be about browsers, which is not the reader's problem to solve.
+  -->
+  @if (canPickContacts) {
+    <p class="muted small">
+      {{ 'settings.importExport.contacts.pickerNote' | transloco }}
+    </p>
+  }
+  <div class="contact-controls">
+    @if (canPickContacts) {
+      <button
+        mbButton
+        type="button"
+        class="btn"
+        (click)="pickPhoneContacts()"
+        [disabled]="contactDiscovery.running()"
+      >
+        {{ 'settings.importExport.contacts.pick' | transloco }}
+      </button>
+    }
+    <label class="btn btn-outline file-btn">
+      {{ 'settings.importExport.contacts.chooseCsv' | transloco }}
+      <input
+        type="file"
+        accept=".csv,text/csv"
+        (change)="onContactFile($event)"
+        [disabled]="contactDiscovery.running()"
+        hidden
+      />
+    </label>
+    <label class="call-limit">
+      {{ 'settings.importExport.stopAfter' | transloco }}
+      <input
+        type="number"
+        min="1"
+        max="1000"
+        [ngModel]="contactCallLimit()"
+        (ngModelChange)="setContactCallLimit($event)"
+        [disabled]="contactDiscovery.running()"
+      />
+      {{ 'settings.importExport.apiCalls' | transloco }}
+    </label>
+    @if (contactDiscovery.rows().length && !contactDiscovery.running()) {
+      <button
+        mbButton
+        type="button"
+        class="btn"
+        (click)="startContactSearch()"
+        [disabled]="contactDiscovery.callCount() >= contactCallLimit()"
+      >
+        {{
+          contactDiscovery.callCount()
+            ? ('settings.importExport.continueSearching' | transloco)
+            : ('settings.importExport.startSearching' | transloco)
+        }}
+      </button>
+    }
+    @if (contactDiscovery.running()) {
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        class="btn btn-outline"
+        (click)="contactDiscovery.stop()"
+      >
+        {{ 'settings.importExport.stop' | transloco }}
+      </button>
+    }
+    @if (contactDiscovery.parseResult()) {
+      <button type="button" class="link" (click)="clearContactSearch()">
+        {{ 'settings.importExport.clear' | transloco }}
+      </button>
+    }
+  </div>
+
+  @if (contactPickerError(); as message) {
+    <p class="config-error" role="alert">{{ message }}</p>
+  }
+
+  @if (contactDiscovery.parseResult(); as parsed) {
+    <div class="contact-summary" aria-live="polite">
+      <strong
+        >{{ parsed.contacts.length }}
+        {{ 'settings.importExport.contacts.readyToSearch' | transloco }}</strong
+      >
+      <span class="muted small">
+        {{ parsed.skipped }} {{ 'settings.importExport.contacts.skipped.a' | transloco }}
+        {{ parsed.contacts.length * 2 }}
+        {{ 'settings.importExport.contacts.skipped.b' | transloco }} {{ contactCallLimit() }}.
+      </span>
+      @if (contactFileName(); as name) {
+        <span class="muted small"
+          >{{ 'settings.importExport.loaded' | transloco }} <code>{{ name }}</code>
+          {{ 'settings.importExport.contacts.loadedNote' | transloco }}</span
+        >
+      } @else {
+        <!-- The picked-contacts case. Says where they came from and, more
+             importantly, that they are not being kept. -->
+        <span class="muted small">
+          {{ 'settings.importExport.contacts.pickedNote' | transloco }}
+        </span>
+      }
+    </div>
+  }
+
+  @if (contactDiscovery.rows().length) {
+    <div
+      class="progress-track"
+      role="progressbar"
+      [attr.aria-valuenow]="contactDiscovery.callCount()"
+      [attr.aria-valuemin]="0"
+      [attr.aria-valuemax]="contactCallLimit()"
+    >
+      <div
+        class="progress-fill"
+        [style.width.%]="(contactDiscovery.callCount() / contactCallLimit()) * 100"
+      ></div>
+    </div>
+    <p class="muted small">
+      {{ contactDiscovery.callCount() }} / {{ contactCallLimit() }}
+      {{ 'settings.importExport.contacts.callsUsed' | transloco }}
+    </p>
+    <ol class="contact-rows">
+      @for (row of contactDiscovery.rows(); track row.contact.id) {
+        @if (row.matches.length || row.status === 'searching' || row.status === 'failed') {
+          <li class="contact-row">
+            <div class="contact-row-head">
+              <span>
+                <strong>{{ row.contact.name }}</strong>
+                @if (row.contact.organization) {
+                  <span class="muted small"> · {{ row.contact.organization }}</span>
+                }
+              </span>
+              <span class="row-status muted">{{ contactStatusLabel(row.status) }}</span>
+            </div>
+            @if (row.error) {
+              <p class="export-error small" role="alert">{{ row.error }}</p>
+            }
+            @if (row.matches.length) {
+              <ul class="contact-matches">
+                @for (match of row.matches; track match.account.id) {
+                  <li class="contact-match">
+                    <img [src]="match.account.avatar_static || match.account.avatar" alt="" />
+                    <div class="match-main">
+                      <a [routerLink]="accountProfilePath(match.account)">
+                        <strong>{{ match.account.display_name || match.account.username }}</strong>
+                        <span class="muted"> &#64;{{ match.account.acct }}</span>
+                      </a>
+                      <span class="confidence" [class]="'confidence-' + match.confidence">
+                        {{ match.confidence }} ·
+                        {{
+                          (match.signals.length === 1
+                            ? 'settings.importExport.contacts.clues.one'
+                            : 'settings.importExport.contacts.clues.other'
+                          ) | transloco: { count: match.signals.length }
+                        }}
+                      </span>
+                      <span class="muted small">{{ match.signals.join(' · ') }}</span>
+                      @if (contactDiscovery.followErrors().get(match.account.id); as failure) {
+                        <span class="config-error small" role="alert">{{ failure }}</span>
+                      }
+                    </div>
+                    <!--
+                      The whole point of the feature. Every sibling section
+                      here (GitHub, Twitter) had a Follow button and this one
+                      did not — so a reader who found their friend had to open
+                      the profile and follow from there, which is a different
+                      page and loses their place in a list they are working
+                      down.
+
+                      One tap per account, never a "follow all": these are
+                      name guesses, and a batch action over guesses follows
+                      strangers.
+                    -->
+                    <button
+                      mbButton
+                      variant="outline"
+                      size="small"
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      [disabled]="
+                        contactDiscovery.followed().has(match.account.id) ||
+                        contactDiscovery.followBusy().has(match.account.id)
+                      "
+                      (click)="contactDiscovery.follow(match.account)"
+                    >
+                      @if (contactDiscovery.followed().has(match.account.id)) {
+                        {{ 'settings.importExport.following' | transloco }}
+                      } @else if (contactDiscovery.followBusy().has(match.account.id)) {
+                        {{ 'settings.importExport.followingBusy' | transloco }}
+                      } @else {
+                        {{ 'settings.importExport.follow' | transloco }}
+                      }
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      }
+    </ol>
+    @if (!contactDiscovery.running() && contactMisses().length) {
+      <div class="contact-misses">
+        <strong
+          >{{ contactMisses().length }}
+          {{ 'settings.importExport.contacts.noCandidate' | transloco }}</strong
+        >
+        <span class="muted small">{{ contactMisses().join(', ') }}</span>
+      </div>
+    }
+  }
+</section>

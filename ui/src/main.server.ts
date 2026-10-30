@@ -10,15 +10,17 @@ import {
   BLOG_DESCRIPTION,
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
-  CROSSPOST_DESCRIPTION,
-  GITHUB_TO_MASTODON_DESCRIPTION,
-  MASTODON_ANALYTICS_DESCRIPTION,
-  TWITTER_TO_MASTODON_DESCRIPTION,
 } from './app/seo';
 import { Type } from '@angular/core';
+import { FOCUSED_TOOLS } from './app/focused-tools';
 import { Crosspost } from './app/pages/crosspost/crosspost';
+import { FindContactsOnMastodon } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
+import { MastodonFriendsRssFeeds } from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
+import { FriendBridge } from './app/pages/friend-bridge/friend-bridge';
+import { TurnOffBoostsMastodon } from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
 import { GithubToMastodon } from './app/pages/github-to-mastodon/github-to-mastodon';
 import { MastodonAnalytics } from './app/pages/mastodon-analytics/mastodon-analytics';
+import { ScheduleMastodonPosts } from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
 import { TwitterToMastodon } from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
 import { audienceRoutes } from './app/pages/features/audience-routes';
@@ -44,34 +46,28 @@ const articles: { path: PublicArticleKind; title: string; description: string }[
   { path: 'blog', title: 'Blog', description: BLOG_DESCRIPTION },
 ];
 
-// The focused mini-apps' public pages (focusedAppRoutes in app.routes.ts).
-// Their interactive parts are deferred and signed-in only, so only copy renders.
-const tools: { path: string; title: string; description: string; component: Type<unknown> }[] = [
-  {
-    path: 'twitter-to-mastodon',
-    title: 'Import your Twitter follows to Mastodon',
-    description: TWITTER_TO_MASTODON_DESCRIPTION,
-    component: TwitterToMastodon,
-  },
-  {
-    path: 'crosspost',
-    title: 'Post to Mastodon and Bluesky at the same time',
-    description: CROSSPOST_DESCRIPTION,
-    component: Crosspost,
-  },
-  {
-    path: 'mastodon-analytics',
-    title: 'Mastodon analytics for your account',
-    description: MASTODON_ANALYTICS_DESCRIPTION,
-    component: MastodonAnalytics,
-  },
-  {
-    path: 'github-to-mastodon',
-    title: 'Find your GitHub friends on Mastodon',
-    description: GITHUB_TO_MASTODON_DESCRIPTION,
-    component: GithubToMastodon,
-  },
-];
+// The focused mini-apps' public pages (focused-tools.json; focusedAppRoutes in
+// app.routes.ts). Their interactive parts are deferred and signed-in only, so
+// only copy renders. A tool missing here is never prerendered, which fails
+// check-seo-build.mjs.
+const toolComponents: Record<string, Type<unknown>> = {
+  'twitter-to-mastodon': TwitterToMastodon,
+  crosspost: Crosspost,
+  'mastodon-analytics': MastodonAnalytics,
+  'github-to-mastodon': GithubToMastodon,
+  'schedule-mastodon-posts': ScheduleMastodonPosts,
+  'bluesky-to-mastodon': FriendBridge,
+  'mastodon-to-bluesky': FriendBridge,
+  'turn-off-boosts-mastodon': TurnOffBoostsMastodon,
+  'find-contacts-on-mastodon': FindContactsOnMastodon,
+  'mastodon-friends-rss-feeds': MastodonFriendsRssFeeds,
+};
+const tools = FOCUSED_TOOLS.map((tool) => ({
+  path: tool.path,
+  title: tool.title,
+  description: tool.description,
+  component: toolComponents[tool.path],
+}));
 
 export default (context: BootstrapContext) =>
   bootstrapApplication(

@@ -4,6 +4,9 @@ import path from 'node:path';
 import { JSDOM } from 'jsdom';
 
 const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
+const focusedTools = JSON.parse(
+  await readFile(path.resolve(import.meta.dirname, '../src/app/focused-tools.json'), 'utf8'),
+);
 const pages = [
   '',
   'features',
@@ -16,19 +19,13 @@ const pages = [
   'about',
   'funding',
   'blog',
-  'twitter-to-mastodon',
-  'crosspost',
-  'mastodon-analytics',
-  'github-to-mastodon',
+  ...focusedTools.map((tool) => tool.path),
 ];
-// Focused mini-app entry pages: the heading and a phrase from the signed-out
-// copy. Their tools are deferred and signed-in only, so none may prerender.
-const tools = new Map([
-  ['twitter-to-mastodon', [/Import your Twitter follows/, /Download your Twitter archive/]],
-  ['crosspost', [/Post to Mastodon and Bluesky/, /Sign in with Bluesky/]],
-  ['mastodon-analytics', [/Mastodon analytics for your account/, /Your best posts/]],
-  ['github-to-mastodon', [/Find your GitHub friends on Mastodon/, /Connect GitHub/]],
-]);
+// Focused mini-app entry pages (src/app/focused-tools.json): the heading and a
+// phrase from the signed-out copy. Their tools are deferred and signed-in only,
+// so none may prerender.
+const tools = new Map(focusedTools.map((tool) => [tool.path, tool.prerenderCheck]));
+const toolSelectors = focusedTools.map((tool) => tool.prerenderCheck.tool);
 // One prerendered page per published starter kit; follow-kits.ts decides which.
 const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
@@ -64,16 +61,11 @@ for (const page of pages) {
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
   } else if (tools.has(page)) {
-    const [heading, copy] = tools.get(page);
+    const { heading, copy } = tools.get(page);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
-    assert.match(doc.querySelector('h1')?.textContent ?? '', heading);
-    assert.match(doc.body.textContent, copy);
-    for (const tool of [
-      'app-twitter-archive-import',
-      'app-crosspost-workbench',
-      'app-mastodon-analytics-panel',
-      'app-github-friends-workbench',
-    ])
+    assert.ok(doc.querySelector('h1')?.textContent?.includes(heading), `${page} h1: ${heading}`);
+    assert.ok(doc.body.textContent.includes(copy), `${page} copy: ${copy}`);
+    for (const tool of toolSelectors)
       assert.equal(doc.querySelector(tool), null, `${page} prerenders no ${tool}`);
   } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);

@@ -110,3 +110,16 @@
   gap: 8px;
   margin-top: 20px;
 }
+
+/* On its own at /choose-account there is no shell column to sit in. */
+:host(.standalone) {
+  display: block;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-top: 24px;
+  color: var(--text);
+}
+
+.picker-back {
+  margin: 16px 0 0;
+}

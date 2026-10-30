@@ -163,6 +163,7 @@ function kindNoun(kind: DraftKind): string {
 // i18n pages.drafts.remove.draft: Remove draft
 // i18n pages.drafts.scheduled.title: Scheduled
 // i18n pages.drafts.scheduled.note: These are not drafts: they publish automatically at their set time, even with this browser closed.
+// i18n pages.drafts.scheduled.bulk: Schedule several posts at once
 // i18n pages.drafts.scheduled.cancelTitle: Cancel scheduled {{post}}
 // i18n pages.drafts.cancel: Cancel
 // i18n pages.drafts.scheduled.cancelDialog.title: Cancel this scheduled {{post}}?

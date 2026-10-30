@@ -1,0 +1,77 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Contacts</p>
+    <h1>Find your phone contacts on Mastodon</h1>
+    <p>
+      Some of the people in your address book are already on Mastodon. This looks for them and lets
+      you follow the ones you recognise.
+      @if (!inShell) {
+        Sign in with Mastodon, pick your contacts or upload a contacts file, and see who turns up.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Loading the finder…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in with Mastodon</h2>
+        <p>The search runs through your own Mastodon server.</p>
+      </li>
+      <li>
+        <h2>Choose your contacts</h2>
+        <p>
+          On an Android phone in Chrome, pick people straight from your contacts. Anywhere else,
+          upload a contacts file exported from Google Contacts.
+        </p>
+      </li>
+      <li>
+        <h2>Follow the ones you know</h2>
+        <p>
+          Each match shows why it was suggested. Follow people one at a time; nothing is followed
+          for you.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to find your contacts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Are my contacts uploaded?</h3>
+    <p>
+      No. Your contacts stay in this browser. Only search terms made from them, such as a name or a
+      username, are sent to your own Mastodon server, and nothing is saved when you close the page.
+    </p>
+    <h3>How do I get a contacts file?</h3>
+    <p>
+      In Google Contacts, choose Export and pick the Google CSV format, then upload that file here.
+    </p>
+    <h3>Why is the match a guess?</h3>
+    <p>
+      Mastodon has no "find by phone number or email" search, so people are matched on clues: a
+      Mastodon handle saved on the contact, their name, the name and domain of their email address,
+      their website. A distinctive name is found easily; a common one may bring up strangers, which
+      is why you follow each person yourself.
+    </p>
+    <h3>Someone isn't on Mastodon yet?</h3>
+    <p>Invite them: after the search, ready-made invitations are one click away.</p>
+  </section>
+</main>

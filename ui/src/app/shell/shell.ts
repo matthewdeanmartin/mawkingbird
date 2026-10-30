@@ -114,6 +114,7 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.menu.watchParties: Watch parties
 // i18n shell.menu.write: Write
 // i18n shell.menu.drafts: Drafts
+// i18n shell.menu.scheduled: Scheduled posts
 // i18n shell.menu.waitingToPublish: Waiting to publish
 // i18n shell.menu.pastes: Pastes
 // i18n shell.menu.links: Links

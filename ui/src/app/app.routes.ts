@@ -13,6 +13,7 @@ import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
+import { FOCUSED_TOOLS } from './focused-tools';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
 import {
@@ -20,10 +21,6 @@ import {
   APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
-  CROSSPOST_DESCRIPTION,
-  GITHUB_TO_MASTODON_DESCRIPTION,
-  MASTODON_ANALYTICS_DESCRIPTION,
-  TWITTER_TO_MASTODON_DESCRIPTION,
 } from './seo';
 
 /**
@@ -69,6 +66,41 @@ function focusedAppRoutes(app: {
     { path: `${app.path}/invite`, redirectTo: app.path },
   ];
 }
+
+/**
+ * Each tool page's lazy component, keyed by its path in focused-tools.json.
+ * Code rather than data because the import must stay lazy for the bundle; the
+ * route spec fails if a registered tool has no entry here.
+ */
+export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent']>> = {
+  'twitter-to-mastodon': () =>
+    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodon),
+  crosspost: () => import('./pages/crosspost/crosspost').then((m) => m.Crosspost),
+  'mastodon-analytics': () =>
+    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalytics),
+  'github-to-mastodon': () =>
+    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodon),
+  'schedule-mastodon-posts': () =>
+    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
+      (m) => m.ScheduleMastodonPosts,
+    ),
+  'bluesky-to-mastodon': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridge),
+  'mastodon-to-bluesky': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridge),
+  'turn-off-boosts-mastodon': () =>
+    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
+      (m) => m.TurnOffBoostsMastodon,
+    ),
+  'find-contacts-on-mastodon': () =>
+    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
+      (m) => m.FindContactsOnMastodon,
+    ),
+  'mastodon-friends-rss-feeds': () =>
+    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
+      (m) => m.MastodonFriendsRssFeeds,
+    ),
+};
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -173,40 +205,17 @@ export const routes: Routes = [
       },
     ],
   },
-  // Focused mini-apps (FOCUSED_APPS in shell/mode-nav.ts): public entry pages
-  // for one task each, signed-in twins in the trimmed shell. See focusedAppRoutes.
-  ...focusedAppRoutes({
-    path: 'twitter-to-mastodon',
-    title: 'Import your Twitter follows to Mastodon',
-    seoDescription: TWITTER_TO_MASTODON_DESCRIPTION,
-    match: mastodonSignedInMatch,
-    page: () =>
-      import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodon),
-  }),
-  ...focusedAppRoutes({
-    path: 'crosspost',
-    title: 'Post to Mastodon and Bluesky at the same time',
-    seoDescription: CROSSPOST_DESCRIPTION,
-    // Either network will do: the page offers to connect the other one.
-    match: signedInMatch,
-    page: () => import('./pages/crosspost/crosspost').then((m) => m.Crosspost),
-  }),
-  ...focusedAppRoutes({
-    path: 'mastodon-analytics',
-    title: 'Mastodon analytics for your account',
-    seoDescription: MASTODON_ANALYTICS_DESCRIPTION,
-    match: mastodonSignedInMatch,
-    page: () =>
-      import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalytics),
-  }),
-  ...focusedAppRoutes({
-    path: 'github-to-mastodon',
-    title: 'Find your GitHub friends on Mastodon',
-    seoDescription: GITHUB_TO_MASTODON_DESCRIPTION,
-    match: mastodonSignedInMatch,
-    page: () =>
-      import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodon),
-  }),
+  // Focused mini-apps: public entry pages for one task each, signed-in twins in
+  // the trimmed shell. The list is focused-tools.json; see focusedAppRoutes.
+  ...FOCUSED_TOOLS.flatMap((tool) =>
+    focusedAppRoutes({
+      path: tool.path,
+      title: tool.title,
+      seoDescription: tool.description,
+      match: tool.signIn === 'any' ? signedInMatch : mastodonSignedInMatch,
+      page: FOCUSED_TOOL_PAGES[tool.path],
+    }),
+  ),
   // A message shared as a TinyURL short link. Un-guarded so a shared link opens
   // for anyone, signed in or not.
   {
@@ -236,6 +245,15 @@ export const routes: Routes = [
     title: 'Connecting OpenRouter',
     loadComponent: () =>
       import('./pages/openrouter-callback/openrouter-callback').then((m) => m.OpenRouterCallback),
+  },
+  // The fail whale's way out: every saved account, outside the shell, so
+  // nothing on the page asks the downed server for anything. The in-shell
+  // twin is `switch-account` below.
+  {
+    path: 'choose-account',
+    title: 'Switch account',
+    loadComponent: () =>
+      import('./pages/account-picker/account-picker').then((m) => m.AccountPicker),
   },
   {
     path: 'fail-whale',

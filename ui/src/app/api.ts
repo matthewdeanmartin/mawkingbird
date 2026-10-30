@@ -480,6 +480,28 @@ export class Api {
     return this.http.get<ScheduledStatus[]>('/api/v1/scheduled_statuses');
   }
 
+  /**
+   * One page of scheduled statuses and the cursor to the next. The plain call
+   * above stops at the server's default page (20), which undercounts anyone
+   * who schedules in bulk; the scheduler needs every row to check the limits.
+   */
+  scheduledStatusesPage(
+    maxId?: string,
+  ): Observable<{ rows: ScheduledStatus[]; nextMaxId: string | null }> {
+    let params = new HttpParams().set('limit', '40');
+    if (maxId) {
+      params = params.set('max_id', maxId);
+    }
+    return this.http
+      .get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { params, observe: 'response' })
+      .pipe(
+        map((response) => ({
+          rows: response.body ?? [],
+          nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
+        })),
+      );
+  }
+
   cancelScheduledStatus(id: string): Observable<void> {
     return this.http.delete<void>(`/api/v1/scheduled_statuses/${id}`);
   }

@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { describe, expect, it } from 'vitest';
-import { routes } from './app.routes';
+import { FOCUSED_TOOL_PAGES, routes } from './app.routes';
+import { FOCUSED_TOOLS } from './focused-tools';
 
 /**
  * The guarded shell — the `''` route that has children, as distinct from the
@@ -173,12 +174,9 @@ describe('application routes', () => {
   });
 
   it('gives every focused mini-app a shell twin, a public page and an Invite tab', () => {
-    for (const path of [
-      'twitter-to-mastodon',
-      'crosspost',
-      'mastodon-analytics',
-      'github-to-mastodon',
-    ]) {
+    expect(FOCUSED_TOOLS.length).toBeGreaterThan(0);
+    for (const { path } of FOCUSED_TOOLS) {
+      expect(FOCUSED_TOOL_PAGES[path], `${path} has a page loader`).toBeTypeOf('function');
       const [inShell, publicPage] = routes.filter((route) => route.path === path);
       expect(inShell.canMatch, path).toHaveLength(1);
       expect(

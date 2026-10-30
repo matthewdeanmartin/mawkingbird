@@ -61,14 +61,15 @@ their build stamping handles both ordinary and self-closing robots meta tags.
 Utilities default to `noindex, follow` after client navigation. The static SPA
 fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
-contains `/`, `/features/`, the five audience URLs and the three project pages
-below, then `/follow/` and one URL per published starter kit, which
-`prepare-seo-index.mjs` appends from the prerendered output. The help site
+contains `/`, `/features/`, the six audience URLs and the three project pages
+below (all in `public/sitemap.xml`), then every tool page in
+`focused-tools.json`, `/follow/` and one URL per published starter kit, which
+`prepare-seo-index.mjs` appends. `check-seo-build.mjs` compares the finished
+list exactly, so a registered tool missing from the sitemap fails the build. The help site
 publishes its own. Do not add account feeds or arbitrary remote
 posts to the sitemap. Do not use robots.txt blocking as a substitute for noindex.
 When adding another public page, keep its client route, server route, sitemap
 entry and HTML checks in sync.
-
 
 ## Project pages: About, Funding and Blog
 
@@ -136,12 +137,22 @@ two answers stay the only way out.
 
 Public, prerendered pages for one task each, aimed at people searching for that
 task: `/twitter-to-mastodon/` (archive → follows), `/crosspost/` (post to
-Mastodon and Bluesky together), `/mastodon-analytics/` and
-`/github-to-mastodon/`. Each is registered in `FOCUSED_APPS`
-(`shell/mode-nav.ts`) and routed by `focusedAppRoutes` (`app.routes.ts`):
+Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
+`/schedule-mastodon-posts/`, `/bluesky-to-mastodon/` and `/mastodon-to-bluesky/`
+(one page, the URL sets the direction), `/turn-off-boosts-mastodon/`,
+`/find-contacts-on-mastodon/` and `/mastodon-friends-rss-feeds/`.
 
-- Signed in (`mastodonSignedInMatch`; the crossposter takes either network via
-  `signedInMatch`), the page runs in the shell trimmed to Home · tool · Invite,
+**`src/app/focused-tools.json` is the list.** Each entry has the path, title,
+meta description, who signs in (`mastodon` or `any`), the nav tab, and the
+heading, phrase and tool selector `check-seo-build.mjs` expects of the
+prerender. Routes (`focusedAppRoutes`), the trimmed nav (`FOCUSED_APPS`), the
+`?next=` allowlist, the prerender table in `main.server.ts`, the features page,
+the sitemap, its dates and the no-JavaScript links all read it. It is JSON so the
+Node build scripts can read it; it ships in the initial bundle because the
+routes need titles and descriptions there.
+
+- Signed in (`mastodonSignedInMatch`, or `signedInMatch` for `signIn: any`:
+  the crossposter and the Bluesky ⇄ Mastodon finder), the page runs in the shell trimmed to Home · tool · Invite,
   with the usual … and account menus, no rails and no mode switcher.
   `/<root>/invite` is the invite builder.
 - Anyone else gets the same page alone, with its own header: what the tool does,
@@ -152,17 +163,37 @@ Mastodon and Bluesky together), `/mastodon-analytics/` and
   carries it in the pending OAuth record; Bluesky, whose OAuth state the SDK
   owns, in sessionStorage until its callback.
 - Bodies reuse the app: the Twitter and GitHub finders are the components that
-  Settings → Import/Export renders, the crossposter is `Compose` plus the
-  Bluesky and Mastodon connectors, and the analytics are `AccountAnalytics`.
+  Settings → Import/Export renders, as is the Bluesky ⇄ Mastodon finder
+  (`bridge-friends-import`, with a fixed direction), the crossposter is
+  `Compose` plus the Bluesky and Mastodon connectors, the analytics are
+  `AccountAnalytics`, and the boosts page opens Settings → Bulk moderation's
+  `reblogs-off`/`reblogs-on` dialog and progress panel. The contacts page is
+  Settings' contacts finder (`contact-friends-import`); it works anonymously
+  there, but the tool page signs in first like the others. The friends' feeds
+  page opens the RSS pages' friend-feed dialog, which stays Plus-only: the page
+  says so before sign-in and the dialog carries the gate.
   Connector pages take `embedded` to drop their Settings chrome.
 - Links into the rest of the app (`FocusedNextSteps`) come only after the task:
   after a search, below the composer, below the analytics.
 - Onboarding opens on the first Home visit, never on these pages.
 
+The Mastodon scheduler uses the server's own `scheduled_at`, never a queue in
+the browser, so posts publish with the tab closed. It is Mastodon only: Bluesky
+has no server-side scheduling. Before sending it checks Mastodon's limits (300
+pending, 25 per UTC day, five minutes out; `schedule-plan.ts`) against every
+pending post, fetched page by page, so a batch is not refused half-way. Its
+signed-in page also lists and cancels upcoming posts, and the … menu's
+"Scheduled posts" row opens it. Drafts still shows far-future "parked" posts.
+
 The Twitter importer reads the archive before sign-in and stashes it across the
-redirect. To add a mini-app: a `FOCUSED_APPS` entry, `focusedAppRoutes`, the
-`tools` list in `main.server.ts`, the sitemap, `check-seo-build.mjs` and the
-lastmod table and fallback links in `prepare-seo-index.mjs`.
+redirect.
+
+To add a mini-app: one entry in `focused-tools.json` (with `sources` if its
+directory under `src/app/pages/` is not named after its path), its lazy loader
+in `FOCUSED_TOOL_PAGES` (`app.routes.ts`), its component in `toolComponents`
+(`main.server.ts`), and the tab's `// i18n` label in `shell/mode-nav.ts`. The
+route spec fails on a missing loader; a missing component is never prerendered,
+which fails `check-seo-build.mjs`.
 
 ## Titles, structured data and sitemap dates
 

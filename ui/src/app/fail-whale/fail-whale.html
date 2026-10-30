@@ -31,6 +31,11 @@
     <button class="btn" type="button" [disabled]="health.checking()" (click)="retry()">
       {{ (health.checking() ? 'failWhale.checking' : 'failWhale.tryAgain') | transloco }}
     </button>
+    @if (canSwitchAccount()) {
+      <button class="btn btn-outline" type="button" (click)="switchAccount()">
+        {{ 'failWhale.switchAccount' | transloco }}
+      </button>
+    }
   </div>
 
   @if (offline()) {
