@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1273,
-  "filesWithCandidates": 273,
+  "filesScanned": 1281,
+  "filesWithCandidates": 277,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -2764,6 +2764,66 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/pseudonymity-workbench.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 2
+        },
+        {
+          "pattern": "shared",
+          "line": 20
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 44
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 136
+        },
+        {
+          "pattern": "shared",
+          "line": 139
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 32
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 136
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/bluesky-feed/bluesky-feed.html",
       "status": "needs semantic review",
       "findings": [
@@ -5170,6 +5230,46 @@
         {
           "pattern": "shared",
           "line": 55
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/amnesty-workbench.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 28
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 39
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 49
         }
       ]
     },

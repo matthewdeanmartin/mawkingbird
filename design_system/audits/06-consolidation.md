@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Tool pages: amnesty and pseudonymity, 2026-10-30
+
+Reviewed 1,281 source files and 277 candidate files. Four candidates are added,
+all adopted scope: `pages/mastodon-mute-block-amnesty/` (page and
+`amnesty-workbench.ts`, opening the shared BulkActionsDialog) and
+`pages/anonymous-on-mastodon/` (page and `pseudonymity-workbench.html`, built
+from MbCheckbox, MbButton and MbNotice). No shared widget changed.
+
 ## Tool pages, sprint 2: contacts and friends' feeds, 2026-10-30
 
 Reviewed 1,273 source files and 273 candidate files. Four candidates are added.

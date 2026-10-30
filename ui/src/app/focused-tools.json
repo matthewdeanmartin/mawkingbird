@@ -170,5 +170,40 @@
       "copy": "Download the OPML",
       "tool": "app-friend-feeds-workbench"
     }
+  },
+  {
+    "id": "amnesty",
+    "path": "mastodon-mute-block-amnesty",
+    "title": "Mute Amnesty and Block Amnesty: unmute and unblock everyone on Mastodon",
+    "description": "Unmute or unblock every account on Mastodon at once with Mute Amnesty and Block Amnesty. See the count and back up your list first.",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "amnesty",
+      "labelKey": "shell.modeNav.amnesty.run",
+      "icon": "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM8.5 12l2.5 2.5 4.5-4.5"
+    },
+    "prerenderCheck": {
+      "heading": "Unmute and unblock everyone on Mastodon",
+      "copy": "Block Amnesty",
+      "tool": "app-amnesty-workbench"
+    }
+  },
+  {
+    "id": "pseudonymity",
+    "path": "how-to-be-anonymous-on-mastodon",
+    "title": "How to be (pseudo)anonymous on Mastodon",
+    "description": "Make your Mastodon account hard to link to you: hide your follows, leave search and suggestions, and check what gives you away, in one step.",
+    "sources": "anonymous-on-mastodon",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "privacy",
+      "labelKey": "shell.modeNav.pseudonymity.check",
+      "icon": "M3 12c3-5 15-5 18 0M3 12c3 5 15 5 18 0M9 12a3 3 0 1 0 6 0a3 3 0 1 0-6 0M4 4l16 16"
+    },
+    "prerenderCheck": {
+      "heading": "How to be (pseudo)anonymous on Mastodon",
+      "copy": "Hide the people around you",
+      "tool": "app-pseudonymity-workbench"
+    }
   }
 ]

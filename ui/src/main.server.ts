@@ -13,7 +13,9 @@ import {
 } from './app/seo';
 import { Type } from '@angular/core';
 import { FOCUSED_TOOLS } from './app/focused-tools';
+import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
 import { Crosspost } from './app/pages/crosspost/crosspost';
+import { MastodonMuteBlockAmnesty } from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
 import { FindContactsOnMastodon } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
 import { MastodonFriendsRssFeeds } from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
 import { FriendBridge } from './app/pages/friend-bridge/friend-bridge';
@@ -61,6 +63,8 @@ const toolComponents: Record<string, Type<unknown>> = {
   'turn-off-boosts-mastodon': TurnOffBoostsMastodon,
   'find-contacts-on-mastodon': FindContactsOnMastodon,
   'mastodon-friends-rss-feeds': MastodonFriendsRssFeeds,
+  'mastodon-mute-block-amnesty': MastodonMuteBlockAmnesty,
+  'how-to-be-anonymous-on-mastodon': AnonymousOnMastodon,
 };
 const tools = FOCUSED_TOOLS.map((tool) => ({
   path: tool.path,

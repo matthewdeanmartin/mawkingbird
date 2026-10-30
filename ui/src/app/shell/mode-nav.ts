@@ -36,6 +36,8 @@ import { FOCUSED_TOOLS } from '../focused-tools';
 // i18n shell.modeNav.boosts.off: Boosts
 // i18n shell.modeNav.contacts.find: Contacts
 // i18n shell.modeNav.friendFeeds.find: Feeds
+// i18n shell.modeNav.amnesty.run: Amnesty
+// i18n shell.modeNav.pseudonymity.check: Privacy
 // i18n shell.modeNav.focused.invite: Invite
 
 /**

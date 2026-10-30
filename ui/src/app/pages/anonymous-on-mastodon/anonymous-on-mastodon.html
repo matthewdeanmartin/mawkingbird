@@ -1,0 +1,83 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Privacy</p>
+    <h1>How to be (pseudo)anonymous on Mastodon</h1>
+    <p>
+      You don't need your real name on Mastodon. A few settings decide how easily someone can link
+      your account to you, and most people never change them.
+      @if (!inShell) {
+        Sign in and they are switched in one step.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">Loading your settings…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Hide the people around you</h2>
+        <p>
+          Who you follow and who follows you often gives you away. Mastodon can hide both lists from
+          everyone else.
+        </p>
+      </li>
+      <li>
+        <h2>Stay out of search and suggestions</h2>
+        <p>
+          Leave the profile directory, stop being suggested to strangers, and keep your posts out of
+          full-text search.
+        </p>
+      </li>
+      <li>
+        <h2>Check what you can't switch off</h2>
+        <p>
+          Profile links to your own website, search engines listing your profile, and the name and
+          picture you chose. The page shows you which of these apply.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to check your settings</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Anonymous or pseudonymous?</h3>
+    <p>
+      Pseudonymous: people see a name you made up, not your real one, and the account is hard to
+      link to you. Truly anonymous is harder; see the next answer.
+    </p>
+    <h3>Can my server's admins see who I am?</h3>
+    <p>
+      They can see the email address you signed up with and the IP addresses you connect from. No
+      setting changes that. Choose a server you trust, and an email address that doesn't carry your
+      name.
+    </p>
+    <h3>Are my posts private after this?</h3>
+    <p>
+      No. Public posts stay public. These settings make your account harder to find and harder to
+      tie to you; who can read each post is still set when you write it.
+    </p>
+    <h3>Does Mawkingbird add anything?</h3>
+    <p>
+      Yes: private follows and likes that nobody is told about, private lists, links cleaned of
+      trackers, and photos stripped of location details, all kept in your browser.
+    </p>
+  </section>
+</main>

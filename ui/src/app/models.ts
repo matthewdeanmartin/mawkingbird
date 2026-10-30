@@ -62,6 +62,8 @@ export interface Account {
   discoverable?: boolean | null;
   indexable?: boolean | null;
   noindex?: boolean | null;
+  /** Mastodon 4.1+: the follows and followers lists are hidden from others. */
+  hide_collections?: boolean | null;
   fields: AccountField[];
   // Present on verify_credentials (CredentialAccount): the current user's role, or null.
   role?: Role | null;

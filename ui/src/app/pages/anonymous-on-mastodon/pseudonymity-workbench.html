@@ -1,0 +1,147 @@
+@if (loadError()) {
+  <mb-notice tone="error" announcement="alert">
+    Your account settings couldn't be loaded from your server. Reload the page to try again.
+  </mb-notice>
+} @else if (!account()) {
+  <p class="muted">Reading your account settings…</p>
+} @else {
+  <section class="panel" aria-labelledby="pseudo-server-title">
+    <h2 id="pseudo-server-title">1. Your settings on your Mastodon server</h2>
+    @if (switches().length === 0) {
+      <p>Your server doesn't report any of these settings, so there is nothing to change here.</p>
+    } @else {
+      <ul class="switches">
+        @for (entry of switches(); track entry.key) {
+          <li>
+            @if (isSet(account()!, entry)) {
+              <strong class="done">✓ {{ entry.label }}</strong>
+              <p>Already set. {{ entry.why }}</p>
+            } @else {
+              <mb-checkbox
+                [label]="entry.label"
+                [hint]="entry.why"
+                [ngModel]="selected().has(entry.key)"
+                (ngModelChange)="toggle(entry.key, $event)"
+                [disabled]="saving()"
+              />
+            }
+          </li>
+        }
+      </ul>
+      @if (remaining().length) {
+        <button mbButton type="button" [disabled]="saving() || !selected().size" (click)="apply()">
+          @if (saving()) {
+            Saving…
+          } @else if (selected().size) {
+            Apply {{ selected().size }} {{ selected().size === 1 ? 'change' : 'changes' }}
+          } @else {
+            Nothing to apply
+          }
+        </button>
+      }
+    }
+    @if (saveError(); as message) {
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+    }
+    @if (applied()) {
+      <mb-notice announcement="status" [tone]="refused().length ? 'error' : 'info'">
+        @if (refused().length) {
+          Your server kept its own value for:
+          @for (entry of refused(); track entry.key; let last = $last) {
+            {{ entry.label }}{{ last ? '.' : ';' }}
+          }
+          Check them on your server's settings page.
+        } @else {
+          Saved. Your server confirmed every change.
+        }
+      </mb-notice>
+    }
+  </section>
+
+  <section class="panel" aria-labelledby="pseudo-manual-title">
+    <h2 id="pseudo-manual-title">2. What only you can change</h2>
+    <ul class="checks">
+      @if (account()!.noindex === false) {
+        <li>
+          <strong>Search engines may list your profile.</strong>
+          <p>
+            Mastodon only lets you change this on your server's own website: turn on the search
+            engine opt-out on its
+            <a [href]="privacyPage()" target="_blank" rel="noopener noreferrer"
+              >Privacy and reach page</a
+            >.
+          </p>
+        </li>
+      } @else if (account()!.noindex === true) {
+        <li>
+          <strong class="done">✓ Search engines are asked not to list your profile.</strong>
+        </li>
+      }
+      @if (fields().length) {
+        <li>
+          <strong>Your profile links to:</strong>
+          @for (field of fields(); track field.name) {
+            <p>
+              {{ field.name }}: {{ fieldText(field.value) }}
+              @if (field.verified_at) {
+                (verified, so it proves the same person runs both)
+              }
+            </p>
+          }
+          <p>
+            Remove any that lead back to your real name from your
+            <a routerLink="/settings/profile">profile</a>.
+          </p>
+        </li>
+      } @else {
+        <li><strong class="done">✓ No profile links that point to another site.</strong></li>
+      }
+      <li>
+        <strong>Your name, picture and bio.</strong>
+        <p>
+          Use a name and picture you don't use anywhere else, and leave out your town, school and
+          employer.
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  @if (serverDone()) {
+    <section class="panel" aria-labelledby="pseudo-more-title">
+      <h2 id="pseudo-more-title">3. Mawkingbird keeps you even more incognito</h2>
+      <p>Your server's settings stop at your profile. Mawkingbird adds more, in this browser:</p>
+      <ul class="extras">
+        <li>
+          <strong>Private follows</strong>: read someone's posts without following them, so they are
+          never notified.
+        </li>
+        <li><strong>Private likes</strong>: save a post you liked without telling anyone.</li>
+        <li><strong>Private lists</strong>: group accounts to read, kept only in this browser.</li>
+        <li><strong>Clean links</strong>: tracking parameters are removed from links you post.</li>
+        <li>
+          <strong>Clean photos</strong>: JPEG and PNG photos are re-encoded in this browser,
+          dropping location and camera details, before upload.
+        </li>
+        <li>
+          <strong>A reminder before posting</strong>, so you never post from the wrong account.
+        </li>
+      </ul>
+      @if (modeOn()) {
+        <p>
+          <strong>✓ Pseudonymity mode is on for this account.</strong>
+          Private follows, likes and lists are in your
+          <a routerLink="/settings/pseudonymity">pseudonymity settings</a>.
+        </p>
+      } @else {
+        <button mbButton type="button" (click)="turnOnMode()">Turn on pseudonymity mode</button>
+      }
+      @if (modeError()) {
+        <mb-notice tone="error" announcement="alert">
+          This browser couldn't save the setting. Free some storage and try again.
+        </mb-notice>
+      }
+    </section>
+
+    <app-focused-next-steps inviteLink="/how-to-be-anonymous-on-mastodon/invite" />
+  }
+}

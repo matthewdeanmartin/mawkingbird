@@ -140,7 +140,8 @@ task: `/twitter-to-mastodon/` (archive → follows), `/crosspost/` (post to
 Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 `/schedule-mastodon-posts/`, `/bluesky-to-mastodon/` and `/mastodon-to-bluesky/`
 (one page, the URL sets the direction), `/turn-off-boosts-mastodon/`,
-`/find-contacts-on-mastodon/` and `/mastodon-friends-rss-feeds/`.
+`/find-contacts-on-mastodon/`, `/mastodon-friends-rss-feeds/`,
+`/mastodon-mute-block-amnesty/` and `/how-to-be-anonymous-on-mastodon/`.
 
 **`src/app/focused-tools.json` is the list.** Each entry has the path, title,
 meta description, who signs in (`mastodon` or `any`), the nav tab, and the
@@ -171,7 +172,15 @@ routes need titles and descriptions there.
   Settings' contacts finder (`contact-friends-import`); it works anonymously
   there, but the tool page signs in first like the others. The friends' feeds
   page opens the RSS pages' friend-feed dialog, which stays Plus-only: the page
-  says so before sign-in and the dialog carries the gate.
+  says so before sign-in and the dialog carries the gate. The amnesty page
+  opens Bulk moderation's `mute-amnesty` and `block-amnesty` dialogs, which
+  offer a Mastodon-format CSV backup first. The pseudonymity page writes
+  `hide_collections`, `discoverable`, `indexable` and (opt-in) `locked` in one
+  `update_credentials`, offering only fields the server reports and trusting
+  only the values it sends back; search-engine `noindex` has no API, so it
+  links to the server's Privacy and reach page. It then offers Mawkingbird's
+  pseudonymity mode (`Pseudonymity`), reading the state back before saying it
+  is on.
   Connector pages take `embedded` to drop their Settings chrome.
 - Links into the rest of the app (`FocusedNextSteps`) come only after the task:
   after a search, below the composer, below the analytics.

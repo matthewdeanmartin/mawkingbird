@@ -100,6 +100,14 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
       (m) => m.MastodonFriendsRssFeeds,
     ),
+  'mastodon-mute-block-amnesty': () =>
+    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
+      (m) => m.MastodonMuteBlockAmnesty,
+    ),
+  'how-to-be-anonymous-on-mastodon': () =>
+    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
+      (m) => m.AnonymousOnMastodon,
+    ),
 };
 
 export const routes: Routes = [

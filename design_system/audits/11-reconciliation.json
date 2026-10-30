@@ -1363,6 +1363,26 @@
       "nextStep": "Inline template with one MbButton that opens the existing friend-feeds dialog (its own disposition stands), plus FocusedNextSteps. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred amnesty workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/amnesty-workbench.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Inline template with two MbButton actions (Block Amnesty in the danger tone) that open the shared BulkActionsDialog, plus BulkProgress and FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred pseudonymity workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/pseudonymity-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Server-settings checklist built from MbCheckbox, MbButton and MbNotice, with plain content links to the server's privacy page and Settings; FocusedNextSteps after. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."

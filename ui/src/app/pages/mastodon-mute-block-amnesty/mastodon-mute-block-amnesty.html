@@ -1,0 +1,75 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mute Amnesty · Block Amnesty</p>
+    <h1>Unmute and unblock everyone on Mastodon</h1>
+    <p>
+      Mute and block lists grow for years and nobody prunes them. Mute Amnesty clears your mutes and
+      Block Amnesty clears your blocks, all at once, so you can start over.
+      @if (!inShell) {
+        Mastodon only lets you undo them one account at a time.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Loading…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Sign in with Mastodon</h2>
+        <p>Your mute and block lists are read from your own Mastodon server.</p>
+      </li>
+      <li>
+        <h2>Back up, then review</h2>
+        <p>
+          Before anything changes you see how many accounts are on the list, and can download it
+          first so the amnesty can be undone.
+        </p>
+      </li>
+      <li>
+        <h2>Declare the amnesty</h2>
+        <p>
+          Every account is unmuted or unblocked in turn, with a progress bar. You can stop part-way.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to start an amnesty</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>What does Mute Amnesty change?</h3>
+    <p>
+      Every account you muted is unmuted, so their posts and notifications reach you again. Muted
+      words and filters stay exactly as they are.
+    </p>
+    <h3>What does Block Amnesty change?</h3>
+    <p>
+      Every account you blocked is unblocked. They can follow you, see your posts and reply again.
+      Nobody is told that you blocked them, or that you stopped.
+    </p>
+    <h3>Can I undo an amnesty?</h3>
+    <p>
+      Only from a backup. Download your list when the review offers it, and you can import it again
+      later from your Mastodon server's import page.
+    </p>
+    <h3>Does it touch domain blocks?</h3>
+    <p>No. Only accounts you muted or blocked one by one are changed.</p>
+  </section>
+</main>
