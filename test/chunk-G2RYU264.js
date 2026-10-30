@@ -1,1 +1,0 @@
-import{b as o}from"./chunk-SD2UR7SH.js";function r(t){return t&&o.some(n=>n.root===t)?t:"/home"}var e="mockingbird_login_next";function i(t){try{t==="/home"?sessionStorage.removeItem(e):sessionStorage.setItem(e,t)}catch{}}function g(){try{let t=sessionStorage.getItem(e);return sessionStorage.removeItem(e),r(t)}catch{return"/home"}}export{r as a,i as b,g as c};
