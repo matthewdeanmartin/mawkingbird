@@ -1383,6 +1383,21 @@
       "nextStep": "Server-settings checklist built from MbCheckbox, MbButton and MbNotice, with plain content links to the server's privacy page and Settings; FocusedNextSteps after. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header; the deferred handle workbench renders for everyone. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/handle-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Handle form built from MbField/MbControl and MbButton, result rows with MbButton picks and sign-up links, MbNotice for the availability caveat, FocusedNextSteps after a pick. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered index of focused-tools.json: MbContentLink and MbButton in the header and footer note, tool cards as plain router links styled like FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."

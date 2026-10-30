@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FOCUSED_TOOLS } from './focused-tools';
+import { FOCUSED_TOOL_GROUPS, FOCUSED_TOOLS } from './focused-tools';
 
 describe('FOCUSED_TOOLS', () => {
   it('gives every tool its own id, path, title and description', () => {
@@ -24,5 +24,10 @@ describe('FOCUSED_TOOLS', () => {
       // Search results cut descriptions off at roughly this length.
       expect(tool.description.length, tool.path).toBeLessThanOrEqual(200);
     }
+  });
+
+  it('files every tool under a /tools heading', () => {
+    const groups = FOCUSED_TOOL_GROUPS.map((group) => group.id);
+    for (const tool of FOCUSED_TOOLS) expect(groups, tool.path).toContain(tool.group);
   });
 });

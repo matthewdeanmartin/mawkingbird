@@ -33,6 +33,7 @@ const fallback = `<noscript>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
+      <li><a href="/tools/">Free tools for Mastodon and Bluesky</a></li>
 ${toolLinks}
       <li><a href="/about/">Why Mawkingbird exists</a></li>
       <li><a href="/blog/">Blog</a></li>
@@ -59,6 +60,7 @@ const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
   .sort();
 const sitemapUrl = new URL('sitemap.xml', root);
 const entries = [
+  'tools/',
   ...focusedTools.map((tool) => `${tool.path}/`),
   'follow/',
   ...kits.map((slug) => `follow/${slug}/`),
@@ -79,6 +81,7 @@ function withLastmod(xml) {
   const sources = (page) => {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
+    if (page === 'tools/') return ['src/app/pages/tools/', 'src/app/focused-tools.json'];
     if (page.startsWith('for/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];

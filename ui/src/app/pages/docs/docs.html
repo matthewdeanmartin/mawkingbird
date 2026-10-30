@@ -1,5 +1,11 @@
 <div class="page-head">{{ 'docs.head' | transloco }}</div>
 
+<!-- First: the tool pages are the hardest things in the app to find otherwise. -->
+<a class="doc-row" routerLink="/tools">
+  <span class="doc-title">{{ 'docs.tools.title' | transloco }}</span>
+  <span class="muted small">{{ 'docs.tools.detail' | transloco }}</span>
+</a>
+
 <a class="doc-row" routerLink="/about">
   <span class="doc-title">{{ 'docs.design.title' | transloco }}</span>
   <span class="muted small">{{ 'docs.design.detail' | transloco }}</span>

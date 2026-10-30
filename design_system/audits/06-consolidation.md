@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Handle generator and /tools index, 2026-10-30
+
+Reviewed 1,291 source files and 280 candidate files. Three candidates are
+added, all adopted scope: `pages/mastodon-handle-generator/` (page and
+`handle-workbench.html`, built from MbField, MbControl, MbButton and MbNotice)
+and `pages/tools/tools-index.html` (cards as plain links, like
+FocusedNextSteps). `pages/docs/docs.html` gains a Tools row and
+`features/public-article.html` and `features.html` gain /tools links; their
+dispositions stand. No shared widget changed.
+
 ## Tool pages: amnesty and pseudonymity, 2026-10-30
 
 Reviewed 1,281 source files and 277 candidate files. Four candidates are added,

@@ -11,6 +11,8 @@ export interface ServerSuggestion {
   category: string;
   /** Rough size, for a "big vs cozy" hint. 0 when the API omitted it. */
   users: number;
+  /** Sign-ups need an admin's approval. Absent in caches written before it was kept. */
+  approvalRequired?: boolean;
   local?: boolean;
 }
 
@@ -43,6 +45,7 @@ interface RawServer {
   description?: string;
   category?: string;
   total_users?: number;
+  approval_required?: boolean;
 }
 
 /**
@@ -140,6 +143,7 @@ export class MastodonServers {
         description: (server.description ?? '').replace(/\s+/g, ' ').trim(),
         category: server.category ?? '',
         users: server.total_users ?? 0,
+        approvalRequired: server.approval_required,
       }));
   }
 

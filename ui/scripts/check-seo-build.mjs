@@ -19,6 +19,7 @@ const pages = [
   'about',
   'funding',
   'blog',
+  'tools',
   ...focusedTools.map((tool) => tool.path),
 ];
 // Focused mini-app entry pages (src/app/focused-tools.json): the heading and a
@@ -60,6 +61,11 @@ for (const page of pages) {
       `${page} links to the in-app kit`,
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
+  } else if (page === 'tools') {
+    // The index links every registered tool page, from the same registry.
+    assert.equal(doc.querySelectorAll('h1').length, 1, 'tools has rendered content');
+    for (const tool of focusedTools)
+      assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `tools links to ${tool.path}`);
   } else if (tools.has(page)) {
     const { heading, copy } = tools.get(page);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);

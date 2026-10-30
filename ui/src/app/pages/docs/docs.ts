@@ -14,6 +14,8 @@ import { ServerAbout } from '../../server-about';
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n docs.head: Docs
+// i18n docs.tools.title: Tools
+// i18n docs.tools.detail: Free single-purpose tools: pick a handle, find your friends, schedule posts, tidy up your account.
 // i18n docs.design.title: Design
 // i18n docs.design.detail: Why this client exists.
 // i18n docs.plans.title: Plans

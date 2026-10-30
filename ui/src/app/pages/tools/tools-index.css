@@ -1,0 +1,38 @@
+.tool-group {
+  margin: 28px 0;
+}
+.tool-group h2 {
+  font-size: 1.2rem;
+  margin: 0 0 12px;
+}
+.tool-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tool-list a {
+  display: block;
+  height: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+  text-decoration: none;
+}
+.tool-list a:hover,
+.tool-list a:focus-visible {
+  border-color: var(--accent);
+}
+.tool-list strong,
+.tool-list span {
+  display: block;
+}
+.tool-list span {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.5;
+}

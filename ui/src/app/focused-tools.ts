@@ -23,6 +23,8 @@ export interface FocusedTool {
   title: string;
   /** Meta description, identical in the browser and the prerender. */
   description: string;
+  /** The heading it is listed under on /tools. */
+  group: FocusedToolGroup;
   /**
    * Directory under `src/app/pages/` whose commits date the sitemap entry, when
    * it is not `path` (two URLs sharing one page component).
@@ -35,5 +37,15 @@ export interface FocusedTool {
   /** What `check-seo-build.mjs` expects of the prerendered page. */
   prerenderCheck: { heading: string; copy: string; tool: string };
 }
+
+export type FocusedToolGroup = 'start' | 'people' | 'post' | 'account';
+
+/** The /tools headings, in page order. */
+export const FOCUSED_TOOL_GROUPS: readonly { id: FocusedToolGroup; title: string }[] = [
+  { id: 'start', title: 'Start on Mastodon' },
+  { id: 'people', title: 'Find your people' },
+  { id: 'post', title: 'Post' },
+  { id: 'account', title: 'Look after your account' },
+];
 
 export const FOCUSED_TOOLS: readonly FocusedTool[] = tools as FocusedTool[];

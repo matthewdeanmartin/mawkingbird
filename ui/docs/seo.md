@@ -63,7 +63,7 @@ fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
 contains `/`, `/features/`, the six audience URLs and the three project pages
 below (all in `public/sitemap.xml`), then every tool page in
-`focused-tools.json`, `/follow/` and one URL per published starter kit, which
+`focused-tools.json` after `/tools/`, `/follow/` and one URL per published starter kit, which
 `prepare-seo-index.mjs` appends. `check-seo-build.mjs` compares the finished
 list exactly, so a registered tool missing from the sitemap fails the build. The help site
 publishes its own. Do not add account feeds or arbitrary remote
@@ -141,7 +141,10 @@ Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 `/schedule-mastodon-posts/`, `/bluesky-to-mastodon/` and `/mastodon-to-bluesky/`
 (one page, the URL sets the direction), `/turn-off-boosts-mastodon/`,
 `/find-contacts-on-mastodon/`, `/mastodon-friends-rss-feeds/`,
-`/mastodon-mute-block-amnesty/` and `/how-to-be-anonymous-on-mastodon/`.
+`/mastodon-mute-block-amnesty/`, `/how-to-be-anonymous-on-mastodon/` and
+`/mastodon-handle-generator/`. `/tools/` lists them all, grouped by each entry's
+`group`; it is linked first on the in-app Docs page, from the blog article and
+from `/features`.
 
 **`src/app/focused-tools.json` is the list.** Each entry has the path, title,
 meta description, who signs in (`mastodon` or `any`), the nav tab, and the
@@ -181,6 +184,13 @@ routes need titles and descriptions there.
   links to the server's Privacy and reach page. It then offers Mawkingbird's
   pseudonymity mode (`Pseudonymity`), reading the state back before saying it
   is on.
+- The handle generator is the one tool that runs signed out, because its
+  visitors have no account yet. It is still `@defer`red, so the prerender makes
+  no requests. Lookups use plain `fetch` to each server's public
+  `/api/v1/accounts/lookup`, never `HttpClient`, so no token is sent to another
+  server and a dead server cannot raise the fail whale. "Biggest servers" are
+  the top ten by users in the joinmastodon directory (`MastodonServers`, the
+  bundled `public/mastodon-servers.json` refreshed weekly from the live API).
   Connector pages take `embedded` to drop their Settings chrome.
 - Links into the rest of the app (`FocusedNextSteps`) come only after the task:
   after a search, below the composer, below the analytics.

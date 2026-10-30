@@ -14,6 +14,8 @@ export const FUNDING_DESCRIPTION =
   'How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.';
 export const FOLLOW_DESCRIPTION =
   'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
+export const TOOLS_DESCRIPTION =
+  'Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.';
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 

@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+.panel {
+  margin: 24px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.panel h2 {
+  font-size: 1.15rem;
+  margin: 0 0 12px;
+}
+.panel h3 {
+  font-size: 1rem;
+  margin: 20px 0 8px;
+}
+.handle-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+.handle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.handles {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.handles li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.handles li.picked {
+  border-color: var(--accent);
+}
+.handle {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.handle small {
+  display: block;
+  font-weight: 400;
+}
+.status {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.is-free .status {
+  color: var(--accent);
+  font-weight: 600;
+}
+.is-taken .handle {
+  color: var(--muted);
+}
+mb-notice {
+  display: block;
+  margin-top: 16px;
+}

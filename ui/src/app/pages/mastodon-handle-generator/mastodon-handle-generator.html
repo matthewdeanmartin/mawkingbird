@@ -1,0 +1,52 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Handle generator</p>
+    <h1>Mastodon handle generator</h1>
+    <p>
+      Type your name and get handles you can actually have: each suggestion is checked on the
+      Mastodon server you plan to join, and the one you like is checked on the biggest servers too.
+      No account needed.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/mastodon-handle-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Loading the generator…</p>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>What does a Mastodon handle look like?</h3>
+    <p>
+      Two parts: your username and your server, like &#64;matthew_martin&#64;mastodon.social. The
+      username can use letters, numbers and underscores, up to 30 characters, and capital letters
+      don't make a different name.
+    </p>
+    <h3>Why check more than one server?</h3>
+    <p>
+      Each server has its own usernames. A name taken on mastodon.social can be free on another
+      server, and people on every server can follow you either way.
+    </p>
+    <h3>Is "looks free" a guarantee?</h3>
+    <p>
+      Not quite. It means nobody on that server has the name today. Names of deleted accounts stay
+      reserved, and admins can reserve words, so the sign-up form has the final say.
+    </p>
+    <h3>Which servers count as the biggest?</h3>
+    <p>
+      The ones with the most sign-ups in the joinmastodon.org directory of servers that follow
+      Mastodon's server covenant. Some need an admin to approve new accounts; the list says which.
+    </p>
+  </section>
+</main>

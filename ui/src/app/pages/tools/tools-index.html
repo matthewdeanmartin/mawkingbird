@@ -1,0 +1,40 @@
+<main class="focused-page" lang="en">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <a mbButton variant="outline" routerLink="/">Open the app</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Tools</p>
+    <h1>Free tools for Mastodon and Bluesky</h1>
+    <p>
+      Small, single-purpose tools for the jobs the standard apps leave out: picking a handle,
+      finding your friends, scheduling posts, and tidying up your account. Each one runs in your
+      browser.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Looking for something else?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">See everything Mawkingbird does</a>, or read the
+      <a mbContentLink href="help/">help guides</a>.
+    </p>
+  </section>
+</main>

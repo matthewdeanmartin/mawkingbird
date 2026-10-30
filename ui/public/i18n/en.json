@@ -747,7 +747,9 @@
     "serverRulesFor": "Server rules — {{host}}",
     "terms.detail": "Your instance's terms of service.",
     "terms.title": "Terms of Service",
-    "termsOfServiceFor": "Terms of Service — {{host}}"
+    "termsOfServiceFor": "Terms of Service — {{host}}",
+    "tools.detail": "Free single-purpose tools: pick a handle, find your friends, schedule posts, tidy up your account.",
+    "tools.title": "Tools"
   },
   "drafts": {
     "removeFailed": "Could not remove the draft from this browser. Please try again.",
@@ -6708,6 +6710,7 @@
     "modeNav.forum.talk": "Talk",
     "modeNav.friendFeeds.find": "Feeds",
     "modeNav.githubFriends.find": "Find friends",
+    "modeNav.handles.find": "Handles",
     "modeNav.menu": "Apps",
     "modeNav.mode.forum": "Forum",
     "modeNav.mode.mastodon": "Fedi",

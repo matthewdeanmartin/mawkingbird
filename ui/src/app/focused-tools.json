@@ -4,6 +4,7 @@
     "path": "twitter-to-mastodon",
     "title": "Import your Twitter follows to Mastodon",
     "description": "Find the people you followed on Twitter who are now on Mastodon and follow them again. Your archive is read in your browser; nothing is uploaded.",
+    "group": "people",
     "signIn": "mastodon",
     "tab": {
       "id": "import",
@@ -21,6 +22,7 @@
     "path": "crosspost",
     "title": "Post to Mastodon and Bluesky at the same time",
     "description": "Write once and post to Mastodon and Bluesky together. Sign in with either account, connect the other, and try it from a simple composer in your browser.",
+    "group": "post",
     "signIn": "any",
     "tab": {
       "id": "crosspost",
@@ -38,6 +40,7 @@
     "path": "mastodon-analytics",
     "title": "Mastodon analytics for your account",
     "description": "Free analytics for your Mastodon account: top posts, engagement per post, estimated reach, when you post, who you talk to most and how many followers are active.",
+    "group": "account",
     "signIn": "mastodon",
     "tab": {
       "id": "analytics",
@@ -55,6 +58,7 @@
     "path": "github-to-mastodon",
     "title": "Find your GitHub friends on Mastodon",
     "description": "Find the people you follow on GitHub who are on Mastodon, using the links in their profiles first, and follow them in a click.",
+    "group": "people",
     "signIn": "mastodon",
     "tab": {
       "id": "find",
@@ -72,6 +76,7 @@
     "path": "schedule-mastodon-posts",
     "title": "Schedule Mastodon posts in advance",
     "description": "Schedule Mastodon posts in advance: write several at once, space them out daily or hourly, and your Mastodon server publishes them on time with the tab closed.",
+    "group": "post",
     "signIn": "mastodon",
     "tab": {
       "id": "schedule",
@@ -89,6 +94,7 @@
     "path": "bluesky-to-mastodon",
     "title": "Find your Bluesky follows on Mastodon",
     "description": "Find the people you follow on Bluesky who are also on Mastodon, from the handles in their bios first, and follow them there in a click.",
+    "group": "people",
     "sources": "friend-bridge",
     "signIn": "any",
     "tab": {
@@ -107,6 +113,7 @@
     "path": "mastodon-to-bluesky",
     "title": "Find your Mastodon follows on Bluesky",
     "description": "Find the people you follow on Mastodon who are also on Bluesky, from the handles in their bios first, and follow them there in a click.",
+    "group": "people",
     "sources": "friend-bridge",
     "signIn": "any",
     "tab": {
@@ -125,6 +132,7 @@
     "path": "turn-off-boosts-mastodon",
     "title": "Turn off boosts on Mastodon for everyone you follow",
     "description": "Hide boosts from everyone you follow on Mastodon at once, without unfollowing anyone. See how many change first, and turn them back on any time.",
+    "group": "account",
     "signIn": "mastodon",
     "tab": {
       "id": "boosts",
@@ -142,6 +150,7 @@
     "path": "find-contacts-on-mastodon",
     "title": "Find your phone contacts on Mastodon",
     "description": "Find the people in your phone contacts or Google Contacts who are on Mastodon. Your contacts stay in your browser; you follow each match yourself.",
+    "group": "people",
     "signIn": "mastodon",
     "tab": {
       "id": "contacts",
@@ -159,6 +168,7 @@
     "path": "mastodon-friends-rss-feeds",
     "title": "Find the RSS feeds of everyone you follow on Mastodon",
     "description": "Turn the websites in your Mastodon follows' profiles into one OPML file of their blogs and RSS feeds, for any feed reader. A Mawkingbird Plus feature.",
+    "group": "people",
     "signIn": "mastodon",
     "tab": {
       "id": "feeds",
@@ -176,6 +186,7 @@
     "path": "mastodon-mute-block-amnesty",
     "title": "Mute Amnesty and Block Amnesty: unmute and unblock everyone on Mastodon",
     "description": "Unmute or unblock every account on Mastodon at once with Mute Amnesty and Block Amnesty. See the count and back up your list first.",
+    "group": "account",
     "signIn": "mastodon",
     "tab": {
       "id": "amnesty",
@@ -193,6 +204,7 @@
     "path": "how-to-be-anonymous-on-mastodon",
     "title": "How to be (pseudo)anonymous on Mastodon",
     "description": "Make your Mastodon account hard to link to you: hide your follows, leave search and suggestions, and check what gives you away, in one step.",
+    "group": "account",
     "sources": "anonymous-on-mastodon",
     "signIn": "mastodon",
     "tab": {
@@ -204,6 +216,24 @@
       "heading": "How to be (pseudo)anonymous on Mastodon",
       "copy": "Hide the people around you",
       "tool": "app-pseudonymity-workbench"
+    }
+  },
+  {
+    "id": "handle-generator",
+    "path": "mastodon-handle-generator",
+    "title": "Mastodon handle generator: find a free username",
+    "description": "Generate Mastodon handles from your name and check which are free on the server you want and on the biggest Mastodon servers. No account needed.",
+    "group": "start",
+    "signIn": "any",
+    "tab": {
+      "id": "handles",
+      "labelKey": "shell.modeNav.handles.find",
+      "icon": "M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8M16 12v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-4 7.5"
+    },
+    "prerenderCheck": {
+      "heading": "Mastodon handle generator",
+      "copy": "No account needed",
+      "tool": "app-handle-workbench"
     }
   }
 ]

@@ -21,6 +21,7 @@ import {
   APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
+  TOOLS_DESCRIPTION,
 } from './seo';
 
 /**
@@ -108,6 +109,10 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
       (m) => m.AnonymousOnMastodon,
     ),
+  'mastodon-handle-generator': () =>
+    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
+      (m) => m.MastodonHandleGenerator,
+    ),
 };
 
 export const routes: Routes = [
@@ -123,6 +128,13 @@ export const routes: Routes = [
       seoStructuredData: APP_STRUCTURED_DATA,
     },
     loadComponent: () => import('./pages/features/features').then((m) => m.Features),
+  },
+  // Every tool page, from focused-tools.json. Public and prerendered, like /features.
+  {
+    path: 'tools',
+    title: 'Free tools for Mastodon and Bluesky',
+    data: { seoIndexable: true, seoDescription: TOOLS_DESCRIPTION },
+    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndex),
   },
   // Recovery works before signing in, without changing the active account.
   {

@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1281,
-  "filesWithCandidates": 277,
+  "filesScanned": 1291,
+  "filesWithCandidates": 280,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -3733,11 +3733,11 @@
         },
         {
           "pattern": "shared",
-          "line": 34
+          "line": 31
         },
         {
           "pattern": "shared",
-          "line": 37
+          "line": 35
         },
         {
           "pattern": "shared",
@@ -3745,27 +3745,27 @@
         },
         {
           "pattern": "shared",
-          "line": 40
+          "line": 39
         },
         {
           "pattern": "shared",
-          "line": 61
+          "line": 41
         },
         {
           "pattern": "shared",
-          "line": 78
+          "line": 62
         },
         {
           "pattern": "shared",
-          "line": 92
+          "line": 79
         },
         {
           "pattern": "shared",
-          "line": 106
+          "line": 93
         },
         {
           "pattern": "shared",
-          "line": 115
+          "line": 107
         },
         {
           "pattern": "shared",
@@ -3773,7 +3773,7 @@
         },
         {
           "pattern": "shared",
-          "line": 120
+          "line": 117
         },
         {
           "pattern": "shared",
@@ -3806,6 +3806,10 @@
         {
           "pattern": "shared",
           "line": 128
+        },
+        {
+          "pattern": "shared",
+          "line": 129
         }
       ]
     },
@@ -3927,27 +3931,35 @@
         },
         {
           "pattern": "shared",
-          "line": 25
+          "line": 26
         },
         {
           "pattern": "shared",
-          "line": 30
-        },
-        {
-          "pattern": "shared",
-          "line": 31
-        },
-        {
-          "pattern": "shared",
-          "line": 32
-        },
-        {
-          "pattern": "shared",
-          "line": 33
+          "line": 29
         },
         {
           "pattern": "shared",
           "line": 34
+        },
+        {
+          "pattern": "shared",
+          "line": 35
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        },
+        {
+          "pattern": "shared",
+          "line": 39
         }
       ]
     },
@@ -5230,6 +5242,74 @@
         {
           "pattern": "shared",
           "line": 55
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/handle-workbench.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 9
+        },
+        {
+          "pattern": "shared",
+          "line": 16
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 31
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 68
+        },
+        {
+          "pattern": "shared",
+          "line": 71
+        },
+        {
+          "pattern": "shared",
+          "line": 95
+        },
+        {
+          "pattern": "shared",
+          "line": 108
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 31
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 44
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
         }
       ]
     },
@@ -13064,6 +13144,28 @@
         {
           "pattern": "legacyPills",
           "line": 178
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
         }
       ]
     },

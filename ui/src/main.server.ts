@@ -10,11 +10,13 @@ import {
   BLOG_DESCRIPTION,
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
+  TOOLS_DESCRIPTION,
 } from './app/seo';
 import { Type } from '@angular/core';
 import { FOCUSED_TOOLS } from './app/focused-tools';
 import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
 import { Crosspost } from './app/pages/crosspost/crosspost';
+import { MastodonHandleGenerator } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
 import { MastodonMuteBlockAmnesty } from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
 import { FindContactsOnMastodon } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
 import { MastodonFriendsRssFeeds } from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
@@ -25,6 +27,7 @@ import { MastodonAnalytics } from './app/pages/mastodon-analytics/mastodon-analy
 import { ScheduleMastodonPosts } from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
 import { TwitterToMastodon } from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
+import { ToolsIndex } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
 
@@ -65,6 +68,7 @@ const toolComponents: Record<string, Type<unknown>> = {
   'mastodon-friends-rss-feeds': MastodonFriendsRssFeeds,
   'mastodon-mute-block-amnesty': MastodonMuteBlockAmnesty,
   'how-to-be-anonymous-on-mastodon': AnonymousOnMastodon,
+  'mastodon-handle-generator': MastodonHandleGenerator,
 };
 const tools = FOCUSED_TOOLS.map((tool) => ({
   path: tool.path,
@@ -92,6 +96,12 @@ export default (context: BootstrapContext) =>
               seoStructuredData: APP_STRUCTURED_DATA,
             },
           },
+          {
+            path: 'tools',
+            component: ToolsIndex,
+            title: 'Free tools for Mastodon and Bluesky',
+            data: { seoIndexable: true, seoDescription: TOOLS_DESCRIPTION },
+          },
           ...tools.map(({ path, title, description, component }) => ({
             path,
             component,
@@ -110,6 +120,7 @@ export default (context: BootstrapContext) =>
           withRoutes([
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
+            { path: 'tools', renderMode: RenderMode.Prerender },
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },
