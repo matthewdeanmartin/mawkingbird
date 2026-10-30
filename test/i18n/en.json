@@ -747,7 +747,9 @@
     "serverRulesFor": "Server rules — {{host}}",
     "terms.detail": "Your instance's terms of service.",
     "terms.title": "Terms of Service",
-    "termsOfServiceFor": "Terms of Service — {{host}}"
+    "termsOfServiceFor": "Terms of Service — {{host}}",
+    "tools.detail": "Free single-purpose tools: pick a handle, find your friends, schedule posts, tidy up your account.",
+    "tools.title": "Tools"
   },
   "drafts": {
     "removeFailed": "Could not remove the draft from this browser. Please try again.",
@@ -6694,6 +6696,7 @@
     "menu.waitingToPublish": "Waiting to publish",
     "menu.watchParties": "Watch parties",
     "menu.write": "Write",
+    "modeNav.amnesty.run": "Amnesty",
     "modeNav.analytics.view": "Analytics",
     "modeNav.boosts.off": "Boosts",
     "modeNav.bridge.find": "Find",
@@ -6707,12 +6710,14 @@
     "modeNav.forum.talk": "Talk",
     "modeNav.friendFeeds.find": "Feeds",
     "modeNav.githubFriends.find": "Find friends",
+    "modeNav.handles.find": "Handles",
     "modeNav.menu": "Apps",
     "modeNav.mode.forum": "Forum",
     "modeNav.mode.mastodon": "Fedi",
     "modeNav.mode.radio": "Radio",
     "modeNav.mode.rss": "RSS",
     "modeNav.mode.video": "Video",
+    "modeNav.pseudonymity.check": "Privacy",
     "modeNav.radio.player": "Radio",
     "modeNav.radio.playlist": "Playlist",
     "modeNav.radio.settings": "Settings",
