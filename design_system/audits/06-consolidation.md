@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## German and English language pages, 2026-10-31
+
+Reviewed 1,329 source files and 295 candidate files. Two candidates are added,
+both adopted scope: `pages/language-landing/language-landing.html`
+(MbContentLink, MbButton) and `language-checklist.ts` (MbCheckbox, MbButton,
+MbNotice). The media download page, workbench and dialog now render their
+words from a per-language copy file and translation keys; same controls, line
+shifts only. No shared widget changed.
+
 ## Blogs no longer shown on your own profile, 2026-10-31
 
 Reviewed 1,323 source files and 293 candidate files; none added or removed.

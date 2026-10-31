@@ -43,6 +43,7 @@ import { FOCUSED_TOOLS } from '../focused-tools';
 // i18n shell.modeNav.exportBookmarks.export: Export
 // i18n shell.modeNav.downloadMedia.images: Images
 // i18n shell.modeNav.similarTags.find: Hashtags
+// i18n shell.modeNav.languages.setup: Languages
 // i18n shell.modeNav.focused.invite: Invite
 
 /**

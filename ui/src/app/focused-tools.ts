@@ -36,13 +36,29 @@ export interface FocusedTool {
   tab: { id: string; labelKey: string; icon: string };
   /** What `check-seo-build.mjs` expects of the prerendered page. */
   prerenderCheck: { heading: string; copy: string; tool: string };
+  /**
+   * The language the page is written in; English when absent. The page renders
+   * in it for every visitor (see `provideRouteLanguage`), and it becomes the
+   * prerender's `<html lang>`.
+   */
+  lang?: PageLanguage;
+  /**
+   * For a page in another language, the `id` of the English tool it
+   * translates. The two link to each other with `hreflang`. Only English
+   * tools are listed on /tools and the features page.
+   */
+  translationOf?: string;
 }
 
-export type FocusedToolGroup = 'start' | 'search' | 'people' | 'post' | 'account';
+/** Languages a public page can be written in. */
+export type PageLanguage = 'en' | 'de';
+
+export type FocusedToolGroup = 'start' | 'languages' | 'search' | 'people' | 'post' | 'account';
 
 /** The /tools headings, in page order. */
 export const FOCUSED_TOOL_GROUPS: readonly { id: FocusedToolGroup; title: string }[] = [
   { id: 'start', title: 'Start on Mastodon' },
+  { id: 'languages', title: 'Your languages' },
   { id: 'search', title: 'Search' },
   { id: 'people', title: 'Find your people' },
   { id: 'post', title: 'Post' },
@@ -50,3 +66,40 @@ export const FOCUSED_TOOL_GROUPS: readonly { id: FocusedToolGroup; title: string
 ];
 
 export const FOCUSED_TOOLS: readonly FocusedTool[] = tools as FocusedTool[];
+
+/** The language a tool page is written in. */
+export function toolLanguage(tool: FocusedTool): PageLanguage {
+  return tool.lang ?? 'en';
+}
+
+/** The English originals: what /tools and the features page list. */
+export const ENGLISH_TOOLS: readonly FocusedTool[] = FOCUSED_TOOLS.filter(
+  (tool) => toolLanguage(tool) === 'en',
+);
+
+/**
+ * Every language version of a tool, the original first: what `hreflang`
+ * links. One entry when the tool has no translations.
+ */
+export function toolVersions(tool: FocusedTool): FocusedTool[] {
+  const original = tool.translationOf
+    ? FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)
+    : tool;
+  if (!original) return [tool];
+  return [original, ...FOCUSED_TOOLS.filter((entry) => entry.translationOf === original.id)];
+}
+
+/** One language version of a page, for `hreflang`. */
+export interface PageAlternate {
+  lang: PageLanguage;
+  /** Path without slashes, as in the registry. */
+  path: string;
+}
+
+/** The `hreflang` set for a tool page: empty when it exists in one language only. */
+export function toolAlternates(tool: FocusedTool): PageAlternate[] {
+  const versions = toolVersions(tool);
+  return versions.length > 1
+    ? versions.map((version) => ({ lang: toolLanguage(version), path: version.path }))
+    : [];
+}

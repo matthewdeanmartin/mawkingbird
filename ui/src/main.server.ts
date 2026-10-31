@@ -13,12 +13,13 @@ import {
   TOOLS_DESCRIPTION,
 } from './app/seo';
 import { Type } from '@angular/core';
-import { FOCUSED_TOOLS } from './app/focused-tools';
+import { FOCUSED_TOOLS, toolAlternates, toolLanguage } from './app/focused-tools';
 import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
 import { Crosspost } from './app/pages/crosspost/crosspost';
 import { NetworkSearch } from './app/pages/network-search/network-search';
 import { DownloadMastodonImages } from './app/pages/download-mastodon-images/download-mastodon-images';
 import { MastodonSimilarHashtags } from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
+import { LanguageLanding } from './app/pages/language-landing/language-landing';
 import { ExportMastodonBookmarks } from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
 import { MastodonContentWarnings } from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
 import { MastodonHandleGenerator } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
@@ -77,7 +78,11 @@ const toolComponents: Record<string, Type<unknown>> = {
   'turn-off-content-warnings-mastodon': MastodonContentWarnings,
   'export-mastodon-bookmarks': ExportMastodonBookmarks,
   'download-mastodon-images': DownloadMastodonImages,
+  'mastodon-bilder-herunterladen': DownloadMastodonImages,
   'mastodon-similar-hashtags': MastodonSimilarHashtags,
+  'mastodon-in-english': LanguageLanding,
+  'mastodon-auf-deutsch': LanguageLanding,
+  'learn-english-with-mastodon': LanguageLanding,
   'mastodon-search': NetworkSearch,
   'bluesky-search': NetworkSearch,
 };
@@ -85,6 +90,8 @@ const tools = FOCUSED_TOOLS.map((tool) => ({
   path: tool.path,
   title: tool.title,
   description: tool.description,
+  lang: toolLanguage(tool),
+  alternates: toolAlternates(tool),
   component: toolComponents[tool.path],
 }));
 
@@ -113,11 +120,16 @@ export default (context: BootstrapContext) =>
             title: 'Free tools for Mastodon and Bluesky',
             data: { seoIndexable: true, seoDescription: TOOLS_DESCRIPTION },
           },
-          ...tools.map(({ path, title, description, component }) => ({
+          ...tools.map(({ path, title, description, lang, alternates, component }) => ({
             path,
             component,
             title,
-            data: { seoIndexable: true, seoDescription: description },
+            data: {
+              seoIndexable: true,
+              seoDescription: description,
+              lang,
+              seoAlternates: alternates,
+            },
           })),
           ...articles.map(({ path, title, description }) => ({
             path,

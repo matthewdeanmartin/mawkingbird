@@ -45,8 +45,9 @@ loading does not discard the first view. Analytics opt-out still suppresses
 loading/counting, and canary/test deployments and JavaScript-disabled visits are
 not tracked. Prerendering itself never initializes analytics.
 
-The features reference is explicitly English and does not imply localized
-indexable URLs. Existing app locale choices and script tags are unchanged.
+The features reference is English. Tool pages and language landing pages may
+exist in other languages, each at its own URL (see "Pages in other languages"
+below). Existing app locale choices and script tags are unchanged.
 Feature descriptions must reflect shipped capabilities and their account,
 deployment or third-party prerequisites. Keep optional catalogue data out of
 the root bundle and route guards.
@@ -248,6 +249,43 @@ signed-in page also lists and cancels upcoming posts, and the … menu's
 
 The Twitter importer reads the archive before sign-in and stashes it across the
 redirect.
+
+## Pages in other languages
+
+A tool page in another language is its own registry entry with `lang` (e.g.
+`de`) and `translationOf` (the English entry's id), and the same tab, sign-in,
+group and tool selector as the original (`focused-tools.spec.ts` checks). It
+reuses the original's page component; its `sources` names that directory.
+Slugs are written in the page's language, ASCII only, and never renamed.
+
+- **Page copy** (heading, intro, steps, Questions) lives in a copy file beside
+  the page, one set per language (`download-mastodon-images.copy.ts`), not in
+  the app dictionaries: it is what search engines read, the prerender loads no
+  dictionaries, and each set serves one language's readers only.
+- **Everything translated inside the page follows the URL**, not the browser:
+  the page component provides `provideRouteLanguage()` (`page-language.ts`),
+  which pins Transloco to the route's `lang` with `|static` for its whole
+  subtree, dialogs included. Google's renderer (an English browser) therefore
+  sees a German tool in German. Text built in code uses `routeTranslate()`;
+  a bare `TranslocoService.translate()` would ignore the pin. The tools' own
+  strings and the app parts they embed get German in `de.json` only.
+- **`<html lang>`** follows the page on public (indexable) routes: `Seo`
+  publishes the route's `lang` to `PageLanguageState`, which
+  `TranslocoLocaleSync` prefers over the interface language. The signed-in
+  shell twin is not indexable, so there the interface language keeps the
+  document.
+- **`hreflang`**: `Seo` writes `<link rel="alternate">` for every language
+  version plus `x-default` (English); the sitemap carries the same set as
+  `xhtml:link`. `check-seo-build.mjs` asserts both, plus `<html lang>`.
+- /tools and the features page list English pages only; each other language
+  gets its own index.
+
+Language landing pages (`mastodon-in-english`, `mastodon-auf-deutsch`,
+`learn-english-with-mastodon`) share `LanguageLanding`: a pitch while signed
+out, the reader's language settings as one checklist once signed in (the same
+services as Settings → Internationalization; nothing changes before Apply;
+only the posting language is written to the server), then the way home. Their
+copy, checklist included, is in `language-landing.copy.ts`.
 
 To add a mini-app: one entry in `focused-tools.json` (with `sources` if its
 directory under `src/app/pages/` is not named after its path), its lazy loader

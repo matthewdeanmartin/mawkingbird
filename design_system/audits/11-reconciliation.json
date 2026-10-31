@@ -1413,6 +1413,16 @@
       "nextStep": "Two MbCheckbox switches over TrustedAccounts, the server's preferences as read-only text with a plain link out, and a plain link to Settings → Trust; FocusedNextSteps after a change. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/language-landing/language-landing.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered language landing page (one component for every language page) using MbContentLink and MbButton in the header and sign-in row, a plain claims list, and the deferred checklist when signed in. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/language-landing/language-checklist.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Language settings as MbCheckbox items, Apply and the way-home links as MbButton, a failed server write as MbNotice, then FocusedNextSteps. Preserve: nothing written before Apply, the storage location in each hint, and the server value shown before and after."
+    },
+    {
       "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred similar-hashtags workbench, which also runs signed out. Keep new controls on shared widgets."

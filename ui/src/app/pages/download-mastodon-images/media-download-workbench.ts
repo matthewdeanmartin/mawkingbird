@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 import { Account, Status } from '../../models';
 import { MbButton } from '../../design-system/button/button';
@@ -12,6 +13,22 @@ import { ProfileMediaItem, buildMediaItems } from '../profile/media/profile-medi
 import { MediaDownloadDialog, MediaPageLoader } from '../../media-download/media-download-dialog';
 import { FocusedNextSteps, NextStepCard } from '../focused-apps/focused-next-steps';
 import { AccountSource, AccountSources, pagingId, parseAccountInput } from './account-source';
+import { routeTranslate } from '../../page-language';
+
+// i18n downloadImages.accountLabel: Mastodon account
+// i18n downloadImages.accountHint: A handle like @someone@mastodon.social, a link to their profile, or a name to search for.
+// i18n downloadImages.looking: Looking…
+// i18n downloadImages.show: Show their pictures
+// i18n downloadImages.noMatch: No Mastodon account matched. Check the spelling, or paste the address of their profile page.
+// i18n downloadImages.pickTitle: Which account?
+// i18n downloadImages.pickHint: Several accounts matched. Pick the one whose pictures you want.
+// i18n downloadImages.readFrom: read from {{server}}
+// i18n downloadImages.readFromYours: read from your server
+// i18n downloadImages.barHint: Pictures, GIFs, videos or audio, as a zip or separate files.
+// i18n downloadImages.next.title: Read @{{username}} in Mawkingbird
+// i18n downloadImages.next.body: Their posts, replies and boosts, with this media wall one tab away.
+// i18n downloadImages.loadFailed: {{server}} didn't share this account's posts. Try again later.
+// i18n downloadImages.loadFailedYours: Your server didn't share this account's posts. Try again later.
 
 /** `user@host`, even for an account local to the server it was found on. */
 function qualified(account: Account): string {
@@ -37,6 +54,7 @@ const PAGE = 40;
   selector: 'app-media-download-workbench',
   imports: [
     FormsModule,
+    TranslocoPipe,
     MbButton,
     MbControl,
     MbField,
@@ -148,17 +166,33 @@ export class MediaDownloadWorkbench implements OnInit {
   protected loading = signal(false);
   protected loadingMore = signal(false);
   protected exhausted = signal(false);
-  protected error = signal<string | null>(null);
+  /** Why the wall could not load, as a translation key and its server. */
+  private failure = signal<{ key: string; server: string | null } | null>(null);
+  private failureText = routeTranslate(
+    'downloadImages.loadFailed',
+    computed(() => ({ server: this.failure()?.server ?? '' })),
+  );
+  private failureTextYours = routeTranslate('downloadImages.loadFailedYours');
+  protected error = computed(() => {
+    const failure = this.failure();
+    if (!failure) return null;
+    return failure.server ? this.failureText() : this.failureTextYours();
+  });
   protected downloading = signal(false);
 
   protected items = computed<ProfileMediaItem[]>(() => buildMediaItems(this.statuses()));
+  private nextTitle = routeTranslate(
+    'downloadImages.next.title',
+    computed(() => ({ username: this.source()?.account.username ?? '' })),
+  );
+  private nextBody = routeTranslate('downloadImages.next.body');
   protected nextStep = computed<NextStepCard | null>(() => {
     const account = this.source()?.account;
     return account
       ? {
           link: `/accounts/@${qualified(account)}`,
-          title: `Read @${account.username} in Mawkingbird`,
-          body: 'Their posts, replies and boosts, with this media wall one tab away.',
+          title: this.nextTitle(),
+          body: this.nextBody(),
         }
       : null;
   });
@@ -203,7 +237,7 @@ export class MediaDownloadWorkbench implements OnInit {
   async choose(account: Account): Promise<void> {
     this.candidates.set([]);
     this.loading.set(true);
-    this.error.set(null);
+    this.failure.set(null);
     this.statuses.set([]);
     this.source.set(null);
     const source = await this.sources.open(account);
@@ -247,7 +281,7 @@ export class MediaDownloadWorkbench implements OnInit {
     } catch {
       if (this.source() !== source) return;
       this.exhausted.set(true);
-      this.error.set(`${source.server} didn't share this account's posts. Try again later.`);
+      this.failure.set({ key: 'downloadImages.loadFailed', server: source.server });
     } finally {
       this.loading.set(false);
     }

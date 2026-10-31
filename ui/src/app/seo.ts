@@ -2,6 +2,8 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
+import { PageLanguageState } from './page-language';
+import type { PageAlternate } from './focused-tools';
 
 export const SITE_ORIGIN = 'https://mawkingbird.com';
 export const SITE_DESCRIPTION =
@@ -42,6 +44,7 @@ export const APP_STRUCTURED_DATA = {
 export class Seo {
   private readonly document = inject(DOCUMENT);
   private readonly meta = inject(Meta);
+  private readonly pageLanguage = inject(PageLanguageState);
 
   update(snapshot: RouterStateSnapshot, title: string): void {
     let route = snapshot.root;
@@ -49,7 +52,11 @@ export class Seo {
     let indexable = false;
     let canonicalPath: string | undefined;
     let structuredData: object | undefined;
+    let lang: string | undefined;
+    let alternates: PageAlternate[] = [];
     while (route) {
+      if (route.data['seoAlternates']) alternates = route.data['seoAlternates'];
+      if (route.data['lang']) lang = route.data['lang'];
       if (route.data['seoStructuredData']) structuredData = route.data['seoStructuredData'];
       if (route.data['seoDescription']) description = route.data['seoDescription'];
       if (route.data['seoIndexable'] !== undefined) indexable = route.data['seoIndexable'];
@@ -67,6 +74,11 @@ export class Seo {
       SITE_ORIGIN,
     ).pathname;
     const preview = basePath.startsWith('/canary/') || basePath.startsWith('/test/');
+    // A public page written in one language is that language for everyone; the
+    // signed-in shell (not indexable) keeps the interface language.
+    const pageLang = indexable ? (lang ?? null) : null;
+    this.pageLanguage.lang.set(pageLang);
+    if (pageLang) this.document.documentElement.lang = pageLang;
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({
       name: 'robots',
@@ -87,6 +99,24 @@ export class Seo {
       link.href = canonical;
     } else {
       link?.remove();
+    }
+    // Language versions of this page, each pointing at all the others and
+    // itself, with English as the default for every other language.
+    for (const old of this.document.head.querySelectorAll('link[rel="alternate"][hreflang]'))
+      old.remove();
+    if (indexable && !preview && alternates.length > 1) {
+      const english = alternates.find((alternate) => alternate.lang === 'en');
+      const links = [
+        ...alternates.map(({ lang: hreflang, path: page }) => ({ hreflang, page })),
+        ...(english ? [{ hreflang: 'x-default', page: english.path }] : []),
+      ];
+      for (const { hreflang, page } of links) {
+        const alternate = this.document.createElement('link');
+        alternate.rel = 'alternate';
+        alternate.hreflang = hreflang;
+        alternate.href = `${SITE_ORIGIN}/${page}/`;
+        this.document.head.appendChild(alternate);
+      }
     }
     // A JSON-LD data block is never executed, so script-src 'self' allows it.
     let data = this.document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]');

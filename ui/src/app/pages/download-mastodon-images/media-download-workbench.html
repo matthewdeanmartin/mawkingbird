@@ -1,7 +1,7 @@
 <form class="finder" (submit)="find($event)">
   <mb-field
-    label="Mastodon account"
-    hint="A handle like @someone@mastodon.social, a link to their profile, or a name to search for."
+    [label]="'downloadImages.accountLabel' | transloco"
+    [hint]="'downloadImages.accountHint' | transloco"
   >
     <input
       mbControl
@@ -15,21 +15,21 @@
     />
   </mb-field>
   <button mbButton type="submit" [disabled]="finding() || !text().trim()">
-    {{ finding() ? 'Looking…' : 'Show their pictures' }}
+    {{ (finding() ? 'downloadImages.looking' : 'downloadImages.show') | transloco }}
   </button>
 </form>
 
 @if (notFound()) {
   <mb-notice tone="error" announcement="alert">
-    No Mastodon account matched. Check the spelling, or paste the address of their profile page.
+    {{ 'downloadImages.noMatch' | transloco }}
   </mb-notice>
 }
 
 @if (candidates().length) {
   <mb-dialog
-    title="Which account?"
-    closeLabel="Cancel"
-    description="Several accounts matched. Pick the one whose pictures you want."
+    [title]="'downloadImages.pickTitle' | transloco"
+    [closeLabel]="'common.cancel' | transloco"
+    [description]="'downloadImages.pickHint' | transloco"
     [closeOnBackdrop]="true"
     (dismissed)="closePicker()"
   >
@@ -55,14 +55,21 @@
       <img [src]="s.account.avatar_static || s.account.avatar" alt="" width="56" height="56" />
       <div>
         <h2 id="media-owner">{{ s.account.display_name || s.account.username }}</h2>
-        <p class="muted">&#64;{{ s.account.acct }} · read from {{ s.server }}</p>
+        <p class="muted">
+          &#64;{{ s.account.acct }} ·
+          {{
+            s.server
+              ? ('downloadImages.readFrom' | transloco: { server: s.server })
+              : ('downloadImages.readFromYours' | transloco)
+          }}
+        </p>
       </div>
     </div>
     <div class="download-bar">
       <button mbButton type="button" [disabled]="loading()" (click)="downloading.set(true)">
-        Download media…
+        {{ 'mediaDownload.open' | transloco }}
       </button>
-      <span class="muted">Pictures, GIFs, videos or audio, as a zip or separate files.</span>
+      <span class="muted">{{ 'downloadImages.barHint' | transloco }}</span>
     </div>
     <app-profile-media-grid
       [items]="items()"

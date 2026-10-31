@@ -330,6 +330,27 @@
     }
   },
   {
+    "id": "download-media-de",
+    "path": "mastodon-bilder-herunterladen",
+    "title": "Bilder von einem Mastodon-Konto herunterladen",
+    "description": "Alle Bilder eines Mastodon-Kontos auf einen Blick, dann alle auf einmal herunterladen: als ZIP oder einzeln, mit GIFs, Videos und Audio. Kein Konto nötig.",
+    "group": "account",
+    "sources": "download-mastodon-images",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "images",
+      "labelKey": "shell.modeNav.downloadMedia.images",
+      "icon": "M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15 8.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0-3 0"
+    },
+    "prerenderCheck": {
+      "heading": "Bilder von Mastodon herunterladen",
+      "copy": "Bilder ansehen",
+      "tool": "app-media-download-workbench"
+    },
+    "lang": "de",
+    "translationOf": "download-media"
+  },
+  {
     "id": "similar-hashtags",
     "path": "mastodon-similar-hashtags",
     "title": "Similar hashtags on Mastodon",
@@ -345,6 +366,65 @@
       "heading": "Similar hashtags on Mastodon",
       "copy": "See what travels with them",
       "tool": "app-similar-hashtags-workbench"
+    }
+  },
+  {
+    "id": "language-en",
+    "path": "mastodon-in-english",
+    "title": "Mastodon in English, without the noise",
+    "description": "Set Mastodon up for the languages you read: hide posts in others, filter trends, translate the ones you are learning, and give your posts the right language. Free.",
+    "group": "languages",
+    "sources": "language-landing",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "languages",
+      "labelKey": "shell.modeNav.languages.setup",
+      "icon": "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"
+    },
+    "prerenderCheck": {
+      "heading": "Mastodon in English",
+      "copy": "Only languages you read",
+      "tool": "app-language-checklist"
+    }
+  },
+  {
+    "id": "language-de",
+    "path": "mastodon-auf-deutsch",
+    "title": "Mastodon auf Deutsch",
+    "description": "Mastodon auf Deutsch einrichten: die App auf Deutsch, nur Sprachen, die du liest, Übersetzungen für Lernsprachen und deutsche Startpakete. Kostenlos.",
+    "group": "languages",
+    "sources": "language-landing",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "languages",
+      "labelKey": "shell.modeNav.languages.setup",
+      "icon": "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"
+    },
+    "prerenderCheck": {
+      "heading": "Mastodon auf Deutsch",
+      "copy": "Nur Sprachen, die du liest",
+      "tool": "app-language-checklist"
+    },
+    "lang": "de",
+    "translationOf": "language-en"
+  },
+  {
+    "id": "learn-english",
+    "path": "learn-english-with-mastodon",
+    "title": "Learn English with Mastodon",
+    "description": "Learn English from real posts on Mastodon: English stays in your feed with a translation underneath, automatically or on request, plus people to follow. Free.",
+    "group": "languages",
+    "sources": "language-landing",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "languages",
+      "labelKey": "shell.modeNav.languages.setup",
+      "icon": "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"
+    },
+    "prerenderCheck": {
+      "heading": "Learn English with Mastodon",
+      "copy": "Translation underneath, not instead",
+      "tool": "app-language-checklist"
     }
   }
 ]

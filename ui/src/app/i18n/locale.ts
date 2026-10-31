@@ -29,6 +29,7 @@ import { computed, effect, inject, Injectable, Signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { ClientPrefs } from '../client-prefs';
 import { isCanaryBuild, isTestBuild } from '../build-flavor';
+import { PageLanguageState } from '../page-language';
 
 /**
  * Locales this build ships a dictionary for.
@@ -261,11 +262,13 @@ export class TranslocoLocaleSync {
   private locale = inject(UiLocale);
   private transloco = inject(TranslocoService);
   private document = inject(DOCUMENT);
+  private page = inject(PageLanguageState);
 
   constructor() {
     effect(() => {
       const active = this.locale.active();
-      this.document.documentElement.lang = active;
+      // A public page written in one language keeps <html lang> to itself.
+      this.document.documentElement.lang = this.page.lang() ?? active;
       if (this.transloco.getActiveLang() !== active) {
         this.transloco.setActiveLang(active);
       }

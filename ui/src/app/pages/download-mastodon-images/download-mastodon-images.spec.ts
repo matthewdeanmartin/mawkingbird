@@ -73,7 +73,7 @@ function restoreDialogs(): void {
 }
 
 describe('DownloadMastodonImages page', () => {
-  async function render(inShell: boolean): Promise<HTMLElement> {
+  async function render(inShell: boolean, lang?: string): Promise<HTMLElement> {
     TestBed.configureTestingModule({
       imports: [DownloadMastodonImages],
       providers: [
@@ -82,7 +82,9 @@ describe('DownloadMastodonImages page', () => {
         provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { data: { inShell }, queryParamMap: convertToParamMap({}) } },
+          useValue: {
+            snapshot: { data: { inShell, lang }, queryParamMap: convertToParamMap({}) },
+          },
         },
       ],
     });
@@ -104,6 +106,17 @@ describe('DownloadMastodonImages page', () => {
     const root = await render(true);
     expect(root.querySelector('header')).toBeNull();
     expect(root.querySelector('.sign-in-choices')).toBeNull();
+  });
+
+  it('is written in German on its German route, and signs in back to it', async () => {
+    const root = await render(false, 'de');
+    expect(root.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(root.querySelector('h1')?.textContent).toBe('Bilder von Mastodon herunterladen');
+    expect(root.textContent).toContain('Kein Konto nötig');
+    expect(root.querySelector('.questions h2')?.textContent).toBe('Fragen');
+    expect(root.querySelector('.sign-in-choices a')?.getAttribute('href')).toBe(
+      '/login/mastodon?next=%2Fmastodon-bilder-herunterladen',
+    );
   });
 });
 

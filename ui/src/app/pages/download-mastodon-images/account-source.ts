@@ -38,8 +38,8 @@ export const ANONYMOUS_SEARCH_SERVER = 'https://mastodon.social';
 /** One account, and how to page its posts. */
 export interface AccountSource {
   account: Account;
-  /** The server the posts are read from, for the visitor to see. */
-  server: string;
+  /** The server the posts are read from, for the visitor to see; null for the visitor's own. */
+  server: string | null;
   page: (opts: AccountStatusesOptions) => Observable<Status[]>;
 }
 
@@ -102,7 +102,7 @@ export class AccountSources {
     if (this.signedIn()) {
       return {
         account,
-        server: 'your server',
+        server: null,
         page: (opts) => this.api.getAccountStatuses(account.id, opts),
       };
     }

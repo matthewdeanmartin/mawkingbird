@@ -13,7 +13,7 @@ import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
-import { FOCUSED_TOOLS } from './focused-tools';
+import { FOCUSED_TOOLS, PageAlternate, toolAlternates, toolLanguage } from './focused-tools';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
 import {
@@ -37,6 +37,10 @@ function focusedAppRoutes(app: {
   path: string;
   title: string;
   seoDescription: string;
+  /** The language the page is written in (focused-tools.json `lang`). */
+  lang: string;
+  /** Its other language versions, for `hreflang`. */
+  alternates: PageAlternate[];
   match: CanMatchFn;
   page: NonNullable<Route['loadComponent']>;
 }): Routes {
@@ -48,7 +52,12 @@ function focusedAppRoutes(app: {
       canDeactivate: [justMyServerUpdateCanDeactivate],
       loadComponent: () => import('./shell/shell').then((m) => m.Shell),
       children: [
-        { path: '', title: app.title, data: { inShell: true }, loadComponent: app.page },
+        {
+          path: '',
+          title: app.title,
+          data: { inShell: true, lang: app.lang },
+          loadComponent: app.page,
+        },
         {
           path: 'invite',
           title: 'Invite friends',
@@ -61,7 +70,12 @@ function focusedAppRoutes(app: {
       pathMatch: 'full',
       title: app.title,
       // Prerendered for search engines; see main.server.ts and docs/seo.md.
-      data: { seoIndexable: true, seoDescription: app.seoDescription },
+      data: {
+        seoIndexable: true,
+        seoDescription: app.seoDescription,
+        lang: app.lang,
+        seoAlternates: app.alternates,
+      },
       loadComponent: app.page,
     },
     { path: `${app.path}/invite`, redirectTo: app.path },
@@ -125,10 +139,20 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/download-mastodon-images/download-mastodon-images').then(
       (m) => m.DownloadMastodonImages,
     ),
+  'mastodon-bilder-herunterladen': () =>
+    import('./pages/download-mastodon-images/download-mastodon-images').then(
+      (m) => m.DownloadMastodonImages,
+    ),
   'mastodon-similar-hashtags': () =>
     import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
       (m) => m.MastodonSimilarHashtags,
     ),
+  'mastodon-in-english': () =>
+    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
+  'mastodon-auf-deutsch': () =>
+    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
+  'learn-english-with-mastodon': () =>
+    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
   'mastodon-search': () =>
     import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
   'bluesky-search': () =>
@@ -252,6 +276,8 @@ export const routes: Routes = [
       path: tool.path,
       title: tool.title,
       seoDescription: tool.description,
+      lang: toolLanguage(tool),
+      alternates: toolAlternates(tool),
       match: tool.signIn === 'any' ? signedInMatch : mastodonSignedInMatch,
       page: FOCUSED_TOOL_PAGES[tool.path],
     }),

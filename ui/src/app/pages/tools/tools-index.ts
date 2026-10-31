@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
-import { FOCUSED_TOOL_GROUPS, FOCUSED_TOOLS, FocusedTool } from '../../focused-tools';
+import { ENGLISH_TOOLS, FOCUSED_TOOL_GROUPS, FocusedTool } from '../../focused-tools';
 
 /**
  * /tools: every focused tool page, grouped, from the same registry that routes
@@ -18,6 +18,6 @@ import { FOCUSED_TOOL_GROUPS, FOCUSED_TOOLS, FocusedTool } from '../../focused-t
 export class ToolsIndex {
   protected readonly groups = FOCUSED_TOOL_GROUPS.map((group) => ({
     ...group,
-    tools: FOCUSED_TOOLS.filter((tool: FocusedTool) => tool.group === group.id),
+    tools: ENGLISH_TOOLS.filter((tool: FocusedTool) => tool.group === group.id),
   })).filter((group) => group.tools.length);
 }

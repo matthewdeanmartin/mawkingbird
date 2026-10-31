@@ -26,6 +26,22 @@ const pages = [
 // phrase from the signed-out copy. Their tools are deferred and signed-in only,
 // so none may prerender.
 const tools = new Map(focusedTools.map((tool) => [tool.path, tool.prerenderCheck]));
+const toolEntries = new Map(focusedTools.map((tool) => [tool.path, tool]));
+const languageOf = (tool) => tool.lang ?? 'en';
+// Every language version of a tool as "hreflang href" pairs, plus English as
+// x-default; empty for a tool in one language only.
+const expectedAlternates = (tool) => {
+  const originalId = tool.translationOf ?? tool.id;
+  const versions = focusedTools.filter(
+    (entry) => entry.id === originalId || entry.translationOf === originalId,
+  );
+  if (versions.length < 2) return [];
+  const english = versions.find((entry) => languageOf(entry) === 'en');
+  return [
+    ...versions.map((entry) => `${languageOf(entry)} https://mawkingbird.com/${entry.path}/`),
+    `x-default https://mawkingbird.com/${english.path}/`,
+  ].sort();
+};
 const toolSelectors = focusedTools.map((tool) => tool.prerenderCheck.tool);
 // One prerendered page per published starter kit; follow-kits.ts decides which.
 const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
@@ -62,9 +78,10 @@ for (const page of pages) {
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
   } else if (page === 'tools') {
-    // The index links every registered tool page, from the same registry.
+    // The index links every English tool page, from the same registry; the
+    // translations get their own language's index.
     assert.equal(doc.querySelectorAll('h1').length, 1, 'tools has rendered content');
-    for (const tool of focusedTools)
+    for (const tool of focusedTools.filter((entry) => languageOf(entry) === 'en'))
       assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `tools links to ${tool.path}`);
   } else if (tools.has(page)) {
     const { heading, copy } = tools.get(page);
@@ -73,6 +90,16 @@ for (const page of pages) {
     assert.ok(doc.body.textContent.includes(copy), `${page} copy: ${copy}`);
     for (const tool of toolSelectors)
       assert.equal(doc.querySelector(tool), null, `${page} prerenders no ${tool}`);
+    // A page written in one language says so, and links its other versions.
+    const entry = toolEntries.get(page);
+    assert.equal(doc.documentElement.lang, languageOf(entry), `${page} <html lang>`);
+    assert.deepEqual(
+      [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+        .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+        .sort(),
+      expectedAlternates(entry),
+      `${page} hreflang alternates`,
+    );
   } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));
@@ -165,6 +192,22 @@ assert.deepEqual(
   [...sitemap.querySelectorAll('loc')].map((node) => node.textContent),
   pages.map((page) => `https://mawkingbird.com/${page ? page + '/' : ''}`),
 );
+// The sitemap's alternates match the pages' own.
+for (const url of sitemap.querySelectorAll('url')) {
+  const page = url
+    .querySelector('loc')
+    .textContent.replace('https://mawkingbird.com/', '')
+    .replace(/\/$/, '');
+  const entry = toolEntries.get(page);
+  const listed = [...url.getElementsByTagName('xhtml:link')]
+    .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+    .sort();
+  assert.deepEqual(
+    listed,
+    entry ? expectedAlternates(entry) : [],
+    `sitemap alternates for ${page}`,
+  );
+}
 // Dates come from git and are absent from shallow clones; when present, every
 // URL has one and it is a plain W3C date.
 const lastmods = [...sitemap.querySelectorAll('lastmod')].map((node) => node.textContent);

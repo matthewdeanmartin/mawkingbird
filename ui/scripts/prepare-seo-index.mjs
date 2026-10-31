@@ -59,13 +59,34 @@ const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
   .map((entry) => entry.name)
   .sort();
 const sitemapUrl = new URL('sitemap.xml', root);
+// A tool page in several languages lists every version, itself included, plus
+// English as x-default: the same set the page's own <link rel="alternate"> has.
+const alternates = (page) => {
+  const tool = focusedTools.find((entry) => `${entry.path}/` === page);
+  if (!tool) return '';
+  const originalId = tool.translationOf ?? tool.id;
+  const versions = focusedTools.filter(
+    (entry) => entry.id === originalId || entry.translationOf === originalId,
+  );
+  if (versions.length < 2) return '';
+  const english = versions.find((entry) => (entry.lang ?? 'en') === 'en');
+  return [
+    ...versions.map((entry) => [entry.lang ?? 'en', entry.path]),
+    ...(english ? [['x-default', english.path]] : []),
+  ]
+    .map(
+      ([lang, path]) =>
+        `<xhtml:link rel="alternate" hreflang="${lang}" href="https://mawkingbird.com/${path}/"/>`,
+    )
+    .join('');
+};
 const entries = [
   'tools/',
   ...focusedTools.map((tool) => `${tool.path}/`),
   'follow/',
   ...kits.map((slug) => `follow/${slug}/`),
 ]
-  .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc></url>`)
+  .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc>${alternates(page)}</url>`)
   .join('\n');
 const sitemap = (await readFile(sitemapUrl, 'utf8')).replace('</urlset>', `${entries}\n</urlset>`);
 await writeFile(sitemapUrl, withLastmod(sitemap));
@@ -114,7 +135,9 @@ function withLastmod(xml) {
   // A shallow clone would date every page to its one commit; leave dates out.
   const fullHistory = git('rev-parse', '--is-shallow-repository') === 'false';
   if (!fullHistory) console.warn('prepare-seo-index: no full git history; sitemap has no lastmod');
-  return xml.replace(/<loc>https:\/\/mawkingbird\.com\/([^<]*)<\/loc><\/url>/g, (entry, page) => {
+  // Language alternates (<xhtml:link …/>) may sit between <loc> and </url>.
+  const url = /<loc>https:\/\/mawkingbird\.com\/([^<]*)<\/loc>((?:<xhtml:link [^>]*\/>)*)<\/url>/g;
+  return xml.replace(url, (entry, page) => {
     const paths = sources(page);
     if (!fullHistory) return entry;
     const spec = ['--', ...paths, ':(exclude)*.spec.ts'];

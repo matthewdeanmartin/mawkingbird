@@ -1,6 +1,7 @@
-import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { routeTranslate } from '../page-language';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Status } from '../models';
 import { Auth } from '../auth';
@@ -103,7 +104,7 @@ export type MediaPageLoader = (
           @if (loadPage()) {
             <mb-radio-group
               [label]="'mediaDownload.cap' | transloco"
-              [options]="capOptions"
+              [options]="capOptions()"
               [value]="'' + cap()"
               (valueChange)="cap.set(+$event)"
             />
@@ -111,7 +112,7 @@ export type MediaPageLoader = (
         }
         <mb-radio-group
           [label]="'mediaDownload.format' | transloco"
-          [options]="formatOptions"
+          [options]="formatOptions()"
           [value]="format()"
           (valueChange)="format.set($any($event))"
         />
@@ -252,19 +253,22 @@ export class MediaDownloadDialog {
 
   private controller: AbortController | null = null;
 
-  private i18n = inject(TranslocoService);
-  protected readonly capOptions: RadioOption[] = [40, 200, 1000].map((count) => ({
-    value: String(count),
-    label: this.i18n.translate<string>('mediaDownload.cap.option', { count }),
+  // Built in code, so they follow the page's pinned language explicitly; the
+  // template's pipes do so on their own (see page-language.ts).
+  private capLabels = [40, 200, 1000].map((count) => ({
+    count,
+    label: routeTranslate('mediaDownload.cap.option', { count }),
   }));
-  protected readonly formatOptions: RadioOption[] = [
-    { value: 'zip', label: this.i18n.translate<string>('mediaDownload.format.zip') },
-    {
-      value: 'files',
-      label: this.i18n.translate<string>('mediaDownload.format.files'),
-      hint: this.i18n.translate<string>('mediaDownload.format.filesHint'),
-    },
-  ];
+  protected readonly capOptions = computed<RadioOption[]>(() =>
+    this.capLabels.map(({ count, label }) => ({ value: String(count), label: label() })),
+  );
+  private zipLabel = routeTranslate('mediaDownload.format.zip');
+  private filesLabel = routeTranslate('mediaDownload.format.files');
+  private filesHint = routeTranslate('mediaDownload.format.filesHint');
+  protected readonly formatOptions = computed<RadioOption[]>(() => [
+    { value: 'zip', label: this.zipLabel() },
+    { value: 'files', label: this.filesLabel(), hint: this.filesHint() },
+  ]);
 
   constructor() {
     let identity: string | undefined;
