@@ -379,18 +379,24 @@ export class Api {
     return this.http.get<Status[]>('/api/v1/timelines/public', { params });
   }
 
-  /** `limit` is capped at 40 by Mastodon; analytics pages at the cap to halve calls. */
+  /**
+   * `limit` is capped at 40 by Mastodon; analytics pages at the cap to halve calls.
+   * `any` widens the timeline to posts carrying any of those tags as well, one
+   * stream for a union of hashtags (Mastodon's `any[]`).
+   */
   tagTimeline(
     tag: string,
     maxId?: string,
     limit?: number,
     onlyMedia = false,
+    any: readonly string[] = [],
   ): Observable<Status[]> {
     let params = this.pageParams(maxId);
     if (limit) {
       params = params.set('limit', String(limit));
     }
     if (onlyMedia) params = params.set('only_media', 'true');
+    for (const other of any) params = params.append('any[]', other);
     return this.http.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(tag)}`, {
       params,
       context: serverRole('tag'),

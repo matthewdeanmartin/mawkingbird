@@ -11,6 +11,10 @@ import { TagBundles } from '../lists/tag-bundles';
 import { AnonymousTags } from '../providers/anonymous/anonymous-tags';
 
 // i18n tagActions.failed: Couldn't update this tag. Please try again.
+// i18n tagActions.similar: Similar
+// i18n tagActions.similarTitle: Hashtags that often appear with #{{tag}}
+// i18n tagActions.add: + Add
+// i18n tagActions.addTitle: Add #{{tag}} to the hashtags compared
 @Component({
   selector: 'app-tag-actions',
   imports: [FormsModule, TranslocoPipe],
@@ -21,6 +25,12 @@ export class TagActions {
   readonly name = input.required<string>();
   readonly info = input<Partial<Tag> | null>(null);
   readonly changed = output<Tag>();
+  /** Offer "Similar": hashtags that turn up alongside this one. Off unless asked for. */
+  readonly offerSimilar = input(false);
+  readonly similar = output<string>();
+  /** Offer "+ Add": add this hashtag to a similar-hashtags comparison. */
+  readonly offerAdd = input(false);
+  readonly add = output<string>();
   protected auth = inject(Auth);
   protected bundles = inject(TagBundles);
   private api = inject(Api);

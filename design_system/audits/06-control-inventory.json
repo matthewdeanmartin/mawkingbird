@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1315,
-  "filesWithCandidates": 290,
+  "filesScanned": 1323,
+  "filesWithCandidates": 293,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5630,6 +5630,46 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 46
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/similar-hashtags-workbench.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 2
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 14
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 14
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/network-search/network-search.html",
       "status": "needs semantic review",
       "findings": [
@@ -8889,15 +8929,11 @@
         },
         {
           "pattern": "shared",
-          "line": 1309
+          "line": 1323
         },
         {
           "pattern": "shared",
-          "line": 1350
-        },
-        {
-          "pattern": "shared",
-          "line": 1368
+          "line": 1364
         },
         {
           "pattern": "shared",
@@ -8905,15 +8941,19 @@
         },
         {
           "pattern": "shared",
-          "line": 1468
+          "line": 1396
         },
         {
           "pattern": "shared",
-          "line": 1513
+          "line": 1487
         },
         {
           "pattern": "shared",
-          "line": 1524
+          "line": 1532
+        },
+        {
+          "pattern": "shared",
+          "line": 1543
         },
         {
           "pattern": "nativeButtons",
@@ -9049,15 +9089,11 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 1309
+          "line": 1323
         },
         {
           "pattern": "nativeButtons",
-          "line": 1350
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 1368
+          "line": 1364
         },
         {
           "pattern": "nativeButtons",
@@ -9065,15 +9101,19 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 1434
+          "line": 1396
         },
         {
           "pattern": "nativeButtons",
-          "line": 1466
+          "line": 1453
         },
         {
           "pattern": "nativeButtons",
-          "line": 1524
+          "line": 1485
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 1543
         },
         {
           "pattern": "checkboxes",
@@ -9145,7 +9185,7 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 1434
+          "line": 1453
         },
         {
           "pattern": "disclosure",
@@ -9175,7 +9215,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 1010
+          "line": 1013
         }
       ]
     },
@@ -15482,6 +15522,56 @@
       ]
     },
     {
+      "file": "ui/src/app/similar-hashtags/similar-hashtags-panel.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 62
+        },
+        {
+          "pattern": "shared",
+          "line": 93
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 5
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 16
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 62
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 93
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/status-card/status-card.html",
       "status": "needs semantic review",
       "findings": [
@@ -16201,11 +16291,19 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 69
+          "line": 42
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 52
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 89
         },
         {
           "pattern": "checkboxes",
-          "line": 50
+          "line": 70
         },
         {
           "pattern": "legacyPills",
@@ -16221,7 +16319,15 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 69
+          "line": 44
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 54
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 89
         }
       ]
     },

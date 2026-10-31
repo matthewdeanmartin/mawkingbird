@@ -1242,7 +1242,16 @@
           </div>
         }
 
-        @if (!results() && type() === 'hashtags') {
+        @if (type() === 'hashtags' && similarTags().length) {
+          <app-similar-hashtags-panel
+            [tags]="similarTags()"
+            [closable]="true"
+            (tagsChange)="showSimilar($event)"
+            (closed)="showSimilar([])"
+          />
+        }
+
+        @if (!results() && type() === 'hashtags' && !similarTags().length) {
           @if (trendingTags().length) {
             <div class="page-head">{{ 'pages.search.results.trendingHashtags' | transloco }}</div>
             @for (h of trendingTags(); track h.name) {
@@ -1254,7 +1263,12 @@
                       | transloco: { count: tagUses(h).toLocaleString() }
                   }}</span></a
                 >
-                <app-tag-actions [name]="h.name" [info]="h" />
+                <app-tag-actions
+                  [name]="h.name"
+                  [info]="h"
+                  [offerSimilar]="true"
+                  (similar)="showSimilar([$event])"
+                />
               </div>
             }
           }
@@ -1385,7 +1399,7 @@
           }
         }
         @if (results(); as r) {
-          @if (r.hashtags.length) {
+          @if (r.hashtags.length && !similarTags().length) {
             <div class="page-head">{{ 'pages.search.results.hashtags' | transloco }}</div>
             @for (h of r.hashtags; track h.name) {
               <div class="result-tag">
@@ -1393,7 +1407,12 @@
                 @if (missingTag() === h.name) {
                   <span class="muted small">{{ 'pages.search.results.noPosts' | transloco }}</span>
                 }
-                <app-tag-actions [name]="h.name" [info]="h" />
+                <app-tag-actions
+                  [name]="h.name"
+                  [info]="h"
+                  [offerSimilar]="true"
+                  (similar)="showSimilar([$event])"
+                />
               </div>
             }
           }

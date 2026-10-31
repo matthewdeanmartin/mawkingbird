@@ -1,0 +1,89 @@
+:host {
+  display: block;
+}
+.similar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px 0;
+}
+h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.seeds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+}
+.seed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.seed-remove {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+.seed-remove:hover,
+.seed-remove:focus-visible {
+  background: var(--border);
+  color: var(--text);
+}
+.seed-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1 1 220px;
+}
+.seed-add mb-field {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+.summary,
+.failed {
+  margin: 0;
+  padding: 0 16px 12px;
+}
+.failed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+/* Matches Search's hashtag result rows. */
+.similar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+.similar-row > a {
+  overflow-wrap: anywhere;
+}
+.count {
+  font-weight: 400;
+  font-size: 0.85em;
+  margin-left: 8px;
+}
+.center {
+  text-align: center;
+}

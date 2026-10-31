@@ -18,6 +18,7 @@ import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous
 import { Crosspost } from './app/pages/crosspost/crosspost';
 import { NetworkSearch } from './app/pages/network-search/network-search';
 import { DownloadMastodonImages } from './app/pages/download-mastodon-images/download-mastodon-images';
+import { MastodonSimilarHashtags } from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
 import { ExportMastodonBookmarks } from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
 import { MastodonContentWarnings } from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
 import { MastodonHandleGenerator } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
@@ -76,6 +77,7 @@ const toolComponents: Record<string, Type<unknown>> = {
   'turn-off-content-warnings-mastodon': MastodonContentWarnings,
   'export-mastodon-bookmarks': ExportMastodonBookmarks,
   'download-mastodon-images': DownloadMastodonImages,
+  'mastodon-similar-hashtags': MastodonSimilarHashtags,
   'mastodon-search': NetworkSearch,
   'bluesky-search': NetworkSearch,
 };

@@ -470,7 +470,7 @@
     {
       "file": "ui/src/app/locale-picker/locale-picker.ts",
       "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch. The optional + Add and Similar buttons (off unless the host asks) use the same btn-sm outline styling as the row; migrate them with the rest."
     },
     {
       "file": "ui/src/app/onboarding/onboarding-card.html",
@@ -1411,6 +1411,21 @@
       "file": "ui/src/app/pages/mastodon-content-warnings/content-warnings-workbench.html",
       "disposition": "adopted scope",
       "nextStep": "Two MbCheckbox switches over TrustedAccounts, the server's preferences as read-only text with a plain link out, and a plain link to Settings → Trust; FocusedNextSteps after a change. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred similar-hashtags workbench, which also runs signed out. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/similar-hashtags-workbench.html",
+      "disposition": "adopted scope",
+      "nextStep": "Hashtag box as MbField/MbControl with an MbButton submit, then the shared SimilarHashtagsPanel and FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/similar-hashtags/similar-hashtags-panel.html",
+      "disposition": "partial adoption",
+      "nextStep": "Shared by Search and the tool page. Close, add, retry and sample-more are MbButton; the add box is MbField/MbControl; rows reuse TagActions. Each hashtag chip's remove button is a native icon button with an accessible name; migrate it to a shared removable-chip control when one exists."
     },
     {
       "file": "ui/src/app/pages/download-mastodon-images/download-mastodon-images.html",

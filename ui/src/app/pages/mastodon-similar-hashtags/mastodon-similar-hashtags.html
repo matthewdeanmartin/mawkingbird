@@ -1,0 +1,77 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Hashtag finder</p>
+    <h1>Similar hashtags on Mastodon</h1>
+    <p>
+      Type a hashtag, or a few, and see the hashtags people use alongside them, ranked by how often
+      they turn up on the same recent posts. Use them to be found by more people, or to find more to
+      follow. No account needed.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Loading…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Enter hashtags</h2>
+        <p>One, or several that mean the same thing, like #dog and #dogs.</p>
+      </li>
+      <li>
+        <h2>Recent posts are sampled</h2>
+        <p>The latest 200 posts carrying any of them, read from mastodon.social.</p>
+      </li>
+      <li>
+        <h2>See what travels with them</h2>
+        <p>
+          Ranked by how often each hashtag appears on those posts. Sample more for a wider view.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon to use your own server</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Which hashtags should I use on Mastodon?</h3>
+    <p>
+      Mastodon has no algorithm deciding who sees your post: people find it by following a hashtag
+      or searching for it. Use the hashtags those people already use, which is what this list shows,
+      and write them in CamelCase (#DogsOfMastodon) so screen readers can say them.
+    </p>
+    <h3>How is "similar" worked out?</h3>
+    <p>
+      By counting. Every hashtag on the sampled posts is tallied, once per post, and the ones you
+      asked about are left out. A hashtag on 40 of 200 posts ranks above one on 5.
+    </p>
+    <h3>Why compare several hashtags at once?</h3>
+    <p>
+      People split one topic across spellings: #dog and #dogs, #photo and #photography. Entering
+      them together samples posts carrying any of them, so the list covers the whole conversation.
+    </p>
+    <h3>Why do the results differ between servers?</h3>
+    <p>
+      Each Mastodon server only sees posts from people its own users follow, so a big, busy server
+      gives the broadest picture. Signed in, the sample comes from your own server, which shows what
+      your corner of the network uses.
+    </p>
+  </section>
+</main>

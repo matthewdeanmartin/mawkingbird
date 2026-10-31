@@ -38,6 +38,26 @@
       ) | transloco: { count: memberships() }
     }}
   </button>
+  @if (offerAdd()) {
+    <button
+      type="button"
+      class="btn btn-sm btn-outline"
+      [title]="'tagActions.addTitle' | transloco: { tag: name() }"
+      (click)="add.emit(name())"
+    >
+      {{ 'tagActions.add' | transloco }}
+    </button>
+  }
+  @if (offerSimilar()) {
+    <button
+      type="button"
+      class="btn btn-sm btn-outline"
+      [title]="'tagActions.similarTitle' | transloco: { tag: name() }"
+      (click)="similar.emit(name())"
+    >
+      {{ 'tagActions.similar' | transloco }}
+    </button>
+  }
 </div>
 @if (error(); as error) {
   <p role="alert">{{ error === 'tagActions.failed' ? (error | transloco) : error }}</p>

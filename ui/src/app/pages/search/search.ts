@@ -1,4 +1,6 @@
 import { TagActions } from '../../tag-actions/tag-actions';
+import { SimilarHashtagsPanel } from '../../similar-hashtags/similar-hashtags-panel';
+import { parseSimilarParam, similarParam } from '../../similar-hashtags/similar-hashtags';
 import { MbButton } from '../../design-system/button/button';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import { BLUESKY_WIRE_TYPE } from './search-wire';
@@ -400,6 +402,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 @Component({
   selector: 'app-search',
   imports: [
+    SimilarHashtagsPanel,
     MbButton,
     TagActions,
     FormsModule,
@@ -1658,6 +1661,11 @@ export class Search implements OnInit, OnDestroy {
 
   // Idle-state trends: shown under the box before a hashtag search is run.
   protected trendingTags = signal<Tag[]>([]);
+  /**
+   * Hashtags being compared in the Similar panel (`?similar=dog,dogs`), which
+   * takes the place of the hashtag results while it is open.
+   */
+  protected similarTags = signal<string[]>([]);
   private trendsRequested = false;
   /** Last q/type reflected in the URL, so run() can detect an identical re-search
    *  (which wouldn't emit a new queryParamMap) and fetch directly. */
@@ -1773,6 +1781,14 @@ export class Search implements OnInit, OnDestroy {
       this.urlType = t;
       this.query.set(q);
       this.type.set(t);
+      // The Similar panel does its own reading; the hashtag search it covers
+      // runs again when it closes.
+      this.similarTags.set(t === 'hashtags' ? parseSimilarParam(params.get('similar')) : []);
+      if (this.similarTags().length) {
+        this.activeSearch?.unsubscribe();
+        this.searching.set(false);
+        return;
+      }
       if (q.trim()) {
         // Returning to an account search (e.g. Back from a profile): restore the
         // in-memory snapshot rather than re-running the whole fan-out.
@@ -1944,14 +1960,25 @@ export class Search implements OnInit, OnDestroy {
     // (or changing the budget, which isn't in the URL) would be a silent no-op.
     // Detect that case (tracked from the queryParamMap subscription) and fetch
     // directly instead of relying on navigation.
-    if (this.urlQuery === q && this.urlType === type) {
+    // A Similar panel in the way closes, so the URL changes and the
+    // subscription fetches.
+    if (this.urlQuery === q && this.urlType === type && !this.similarTags().length) {
       this.fetch(q, type);
       return;
     }
     // Otherwise push the search into the URL; ngOnInit's subscription fetches.
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { q, type },
+      queryParams: { q, type, similar: null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  /** Open (or change) the Similar panel for these hashtags; none closes it. */
+  protected showSimilar(tags: string[]): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { type: 'hashtags', similar: similarParam(tags) },
       queryParamsHandling: 'merge',
     });
   }

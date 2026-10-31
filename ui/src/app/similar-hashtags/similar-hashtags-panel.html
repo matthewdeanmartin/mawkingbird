@@ -1,0 +1,98 @@
+<section class="similar" aria-labelledby="similar-title">
+  <div class="similar-head">
+    <h2 id="similar-title">{{ 'similarTags.title' | transloco }}</h2>
+    @if (closable()) {
+      <button type="button" mbButton variant="outline" (click)="closed.emit()">
+        {{ 'similarTags.close' | transloco }}
+      </button>
+    }
+  </div>
+
+  <div class="seeds">
+    <span class="muted">{{ 'similarTags.to' | transloco }}</span>
+    @for (tag of tags(); track tag) {
+      <span class="seed">
+        <a [routerLink]="['/tags', tag]">#{{ tag }}</a>
+        <button
+          type="button"
+          class="seed-remove"
+          [attr.aria-label]="'similarTags.remove' | transloco: { tag }"
+          (click)="remove(tag)"
+        >
+          ✕
+        </button>
+      </span>
+    }
+    @if (tags().length < maxSeeds) {
+      <form class="seed-add" (submit)="addFromBox($event)">
+        <mb-field [label]="'similarTags.addLabel' | transloco" hideLabel density="compact">
+          <input
+            mbControl
+            type="text"
+            name="addTag"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="'similarTags.addLabel' | transloco"
+            [ngModel]="draft()"
+            (ngModelChange)="draft.set($event)"
+          />
+        </mb-field>
+        <button type="submit" mbButton variant="outline" [disabled]="!draft().trim()">
+          {{ 'similarTags.addButton' | transloco }}
+        </button>
+      </form>
+    }
+  </div>
+
+  <p class="muted small summary" role="status">
+    @if (reading()) {
+      {{ 'similarTags.reading' | transloco: { count: posts() } }}
+    } @else if (failed()) {
+      <!-- Said once, below, as an alert with its retry. -->
+    } @else if (!posts()) {
+      {{ 'similarTags.none' | transloco: { server: server() } }}
+    } @else {
+      {{ 'similarTags.sampled' | transloco: { count: posts(), server: server(), since: since() } }}
+    }
+  </p>
+
+  @if (failed()) {
+    <p class="failed" role="alert">
+      {{ 'similarTags.failed' | transloco: { server: server() } }}
+      <button type="button" mbButton variant="outline" (click)="sample()">
+        {{ 'similarTags.retry' | transloco }}
+      </button>
+    </p>
+  }
+
+  @for (row of ranked(); track row.name.toLowerCase()) {
+    <div class="similar-row">
+      <a [routerLink]="['/tags', row.name]">
+        #{{ row.name }}
+        <span class="muted count">{{
+          (row.count === 1 ? 'similarTags.posts.one' : 'similarTags.posts.other')
+            | transloco: { count: row.count }
+        }}</span>
+      </a>
+      <app-tag-actions
+        [name]="row.name"
+        [offerAdd]="tags().length < maxSeeds"
+        [offerSimilar]="true"
+        (add)="addTags([$event])"
+        (similar)="tagsChange.emit([$event])"
+      />
+    </div>
+  } @empty {
+    @if (posts() && !reading()) {
+      <p class="muted center">{{ 'similarTags.noOthers' | transloco }}</p>
+    }
+  }
+
+  @if (canSampleMore() && posts()) {
+    <p class="center">
+      <button type="button" mbButton variant="outline" (click)="sample()">
+        {{ 'similarTags.more' | transloco: { count: step } }}
+      </button>
+    </p>
+  }
+</section>

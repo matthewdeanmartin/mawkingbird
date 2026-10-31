@@ -143,7 +143,7 @@ Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 `/find-contacts-on-mastodon/`, `/mastodon-friends-rss-feeds/`,
 `/mastodon-mute-block-amnesty/`, `/how-to-be-anonymous-on-mastodon/`,
 `/mastodon-handle-generator/`, `/turn-off-content-warnings-mastodon/`,
-`/export-mastodon-bookmarks/`, `/download-mastodon-images/`, and `/mastodon-search/` and `/bluesky-search/`
+`/export-mastodon-bookmarks/`, `/download-mastodon-images/`, `/mastodon-similar-hashtags/`, and `/mastodon-search/` and `/bluesky-search/`
 (one page, the URL sets the network). `/tools/` lists them all, grouped by each entry's
 `group`; it is linked first on the in-app Docs page, from the blog article and
 from `/features`.
@@ -225,6 +225,15 @@ routes need titles and descriptions there.
   (`fetch().blob()` per file, falling back to a list of links where a media
   server sends no CORS headers; never the Plus proxy). The shown account is
   kept in `?acct=`. Sign-in returns to the tool root, not to that account.
+- The similar-hashtags page (`/mastodon-similar-hashtags/`) also runs signed
+  out. Its hashtags live in `?tags=`. It samples the newest 200 posts carrying
+  any of them (Mastodon's `any[]` on `/timelines/tag/`, one paged stream; up
+  to 1000 on request) and ranks the other hashtags by how many sampled posts
+  carry them. Signed out it reads the anonymous reading server, mastodon.social
+  by default, whose tag timelines were public and CORS-open on 2026-10-31;
+  signed in, the visitor's own server. It is `SimilarHashtagsPanel`, the same
+  panel Search opens from a hashtag result's Similar button (`?similar=` on
+  `/search`), where it takes the place of the hashtag results.
 - Links into the rest of the app (`FocusedNextSteps`) come only after the task:
   after a search, below the composer, below the analytics.
 - Onboarding opens on the first Home visit, never on these pages.

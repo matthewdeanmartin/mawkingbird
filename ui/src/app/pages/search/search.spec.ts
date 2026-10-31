@@ -217,6 +217,67 @@ describe('Search', () => {
     expect(row.textContent).toContain('Following');
   });
 
+  it('opens Similar hashtags from a hashtag result in place of the results, and closes it', async () => {
+    TestBed.inject(Auth).setToken('similar-token');
+    const fixture = setUp();
+    search(fixture, '#dogs', 'hashtags');
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush({ ...makeResults(), hashtags: [{ name: 'dogs', url: '' }] });
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const similar = [...el.querySelectorAll<HTMLButtonElement>('.result-tag button')].find(
+      (button) => button.textContent?.trim() === 'Similar',
+    )!;
+    similar.click();
+    fixture.detectChanges();
+
+    expect(TestBed.inject(Router).navigate).toHaveBeenLastCalledWith(
+      [],
+      expect.objectContaining({ queryParams: { type: 'hashtags', similar: 'dogs' } }),
+    );
+    const page = httpMock.expectOne((r) => r.url === '/api/v1/timelines/tag/dogs');
+    expect(page.request.params.get('limit')).toBe('40');
+    page.flush([
+      {
+        ...makeStatus('1'),
+        tags: [
+          { name: 'dogs', url: '' },
+          { name: 'puppy', url: '' },
+        ],
+      },
+    ]);
+    httpMock.expectNone((r) => r.url === '/api/v2/search');
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(el.querySelector('.similar-row')?.textContent).toContain('#puppy');
+    });
+    expect(el.querySelector('.result-tag')).toBeNull();
+
+    [...el.querySelectorAll<HTMLButtonElement>('app-similar-hashtags-panel button')]
+      .find((button) => button.textContent?.trim() === 'Back to hashtag results')!
+      .click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-similar-hashtags-panel')).toBeNull();
+  });
+
+  it('samples the anonymous reading server for ?similar=, without a hashtag search', async () => {
+    TestBed.inject(Auth).enterAnonymous('https://home.example');
+    queryParams$.next(convertToParamMap({ q: 'dog', type: 'hashtags', similar: 'dog,dogs' }));
+    const fixture = setUp();
+    const page = httpMock.expectOne(
+      (r) => r.url === 'https://home.example/api/v1/timelines/tag/dog',
+    );
+    expect(page.request.params.getAll('any[]')).toEqual(['dogs']);
+    page.flush([]);
+    httpMock.expectNone((r) => r.url.endsWith('/api/v2/search'));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.summary')?.textContent).toContain(
+      'No recent posts on home.example carry these hashtags.',
+    );
+  });
+
   it('does not duplicate exact hashtag results or label them empty', () => {
     const fixture = setUp();
     search(fixture, '#Foobar', 'hashtags');

@@ -1,0 +1,22 @@
+<form class="finder" (submit)="find($event)">
+  <mb-field label="Hashtags" [hint]="hint">
+    <input
+      mbControl
+      type="text"
+      name="tags"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+    />
+  </mb-field>
+  <button mbButton type="submit" [disabled]="!canFind()">Find similar hashtags</button>
+</form>
+
+@if (tags().length) {
+  <div class="panel">
+    <app-similar-hashtags-panel [tags]="tags()" (tagsChange)="show($event)" />
+  </div>
+  <app-focused-next-steps [lead]="nextStep()" [inviteLink]="inviteLink()" />
+}

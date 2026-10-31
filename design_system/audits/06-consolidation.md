@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Similar hashtags in Search and as a tool page, 2026-10-31
+
+Reviewed 1,323 source files and 293 candidate files. Three candidates are added:
+`similar-hashtags/similar-hashtags-panel.html` (partial adoption: MbButton,
+MbField, MbControl and TagActions, with native remove buttons on the hashtag
+chips), and the tool page `pages/mastodon-similar-hashtags/` (page and
+`similar-hashtags-workbench.html`, adopted scope). `tag-actions.html` gains
+optional + Add and Similar buttons in its existing btn-sm style; its backlog
+disposition stands with an updated next step. `search.html` and `search.ts`
+only shift lines. No shared widget changed.
+
 ## Media download tool page, 2026-10-31
 
 Reviewed 1,315 source files and 290 candidate files. Two candidates are added:
