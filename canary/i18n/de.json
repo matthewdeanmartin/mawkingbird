@@ -300,6 +300,17 @@
     "write.description": "Der Schreibarbeitsbereich unter /write – Entwürfe, Editor und Notizen nebeneinander, plus Zen-Modus.",
     "write.label": "Schreiben"
   },
+  "focusedNextSteps": {
+    "features.body": "Bluesky und RSS, Lesezeichen, lesbare Artikel und Schreibwerkzeuge.",
+    "features.title": "Entdecke, was Mawkingbird noch kann",
+    "follow.body": "Handverlesene Startpakete, nach Interessen sortiert.",
+    "follow.title": "Mehr Leuten folgen",
+    "home.body": "Beiträge der Leute, denen du folgst, die neuesten zuerst.",
+    "home.title": "Deine Startseite öffnen",
+    "invite.body": "Fertige Beiträge, die ihnen sagen, wo sie dich finden.",
+    "invite.title": "Freunde einladen",
+    "title": "Als Nächstes: Mawkingbird zu deiner täglichen Mastodon-App machen"
+  },
   "feedAnalytics": {
     "accounts.appearingOnce": "Autor*innen mit einem einzigen Beitrag",
     "accounts.authors": "{{bots}} von {{total}} Autor*innen, {{posts}} {{postsWord}}",
@@ -2654,7 +2665,9 @@
     "write.visibilityLock.blog": "Ein Blogbeitrag ist unter seiner URL öffentlich.",
     "write.visibilityLock.paste": "Ein veröffentlichter Text ist für alle mit dem Link erreichbar.",
     "write.wizardStep": "Schritt {{position}} von {{total}}",
-    "write.zenModeButton": "Zen-Modus"
+    "write.zenModeButton": "Zen-Modus",
+    "profile.media.loadMore": "Mehr laden",
+    "profile.media.loadingMore": "Lade mehr…"
   },
   "statusCard": {
     "actionFailure": "„{{verb}}“ fehlgeschlagen – versuche es erneut.",
@@ -2916,7 +2929,10 @@
     "skipToMain": "Zum Hauptinhalt springen",
     "testDeployment": "Testbereitstellung – hier ist nichts echt. Zahlungen verwenden die Stripe-Sandbox und es fließt kein Geld. Die echte App findest du unter",
     "toast.dismiss": "Ausblenden",
-    "toast.removed": "Dieses Konto wurde entfernt. Sonst wurde nichts geändert."
+    "toast.removed": "Dieses Konto wurde entfernt. Sonst wurde nichts geändert.",
+    "modeNav.downloadMedia.images": "Bilder",
+    "modeNav.languages.setup": "Sprachen",
+    "modeNav.focused.invite": "Einladen"
   },
   "shareDialog": {
     "alsoRecord": "Auch in meinem Blog aufzeichnen",
@@ -5158,6 +5174,22 @@
     "terms.title": "Nutzungsbedingungen",
     "termsOfServiceFor": "Nutzungsbedingungen – {{host}}"
   },
+  "downloadImages": {
+    "accountHint": "Ein Name wie @jemand@mastodon.social, ein Link zum Profil oder ein Name zum Suchen.",
+    "accountLabel": "Mastodon-Konto",
+    "barHint": "Bilder, GIFs, Videos oder Audio, als ZIP oder einzelne Dateien.",
+    "loadFailed": "{{server}} hat die Beiträge dieses Kontos nicht geliefert. Versuche es später noch einmal.",
+    "loadFailedYours": "Dein Server hat die Beiträge dieses Kontos nicht geliefert. Versuche es später noch einmal.",
+    "looking": "Suche…",
+    "next.body": "Beiträge, Antworten und Boosts, und diese Bildergalerie nur einen Tab entfernt.",
+    "next.title": "@{{username}} in Mawkingbird lesen",
+    "noMatch": "Kein Mastodon-Konto gefunden. Prüfe die Schreibweise oder füge die Adresse der Profilseite ein.",
+    "pickHint": "Mehrere Konten passen. Wähle das, dessen Bilder du möchtest.",
+    "pickTitle": "Welches Konto?",
+    "readFrom": "gelesen von {{server}}",
+    "readFromYours": "gelesen von deinem Server",
+    "show": "Bilder anzeigen"
+  },
   "leaveDialog": {
     "backupDownloaded": "Backup heruntergeladen",
     "backupError": "Es konnte keine Backup-Datei erstellt werden. Du kannst trotzdem gehen.",
@@ -5670,6 +5702,38 @@
     "privacy": "Es werden nur anonyme Seitenaufrufe gezählt — welche Arten von Seiten genutzt werden, niemals welches Konto, welchen Beitrag oder welches Tag du angesehen hast. Wenn du dies abwählst, wird das Analyseskript nie geladen: Es wird nichts abgerufen, gezählt oder gesendet. Du kannst dies später in den Einstellungen ändern.",
     "subtitle": "Wähle das Netzwerk aus, in dem sich dein Konto befindet. Du kannst das andere später verbinden und beide in derselben Timeline lesen.",
     "title": "Wo ist dein Konto?"
+  },
+  "mediaDownload": {
+    "again": "Optionen ändern",
+    "cancel": "Stopp",
+    "cap": "Wie weit zurück",
+    "cap.option": "Die letzten {{count}} Beiträge mit Medien",
+    "close": "Schließen",
+    "failedIntro": "{{count}} Dateien konnten hier nicht heruntergeladen werden, meist weil ihr Server anderen Websites das Abrufen nicht erlaubt. Öffne jeden Link, um die Datei selbst zu speichern:",
+    "fetching": "Lade {{done}} von {{total}}…",
+    "finding": "Suche Beiträge… bisher {{count}} mit Medien",
+    "format": "Speichern als",
+    "format.files": "Einzelne Dateien",
+    "format.filesHint": "Dein Browser fragt eventuell einmal, ob mehrere Downloads erlaubt sind.",
+    "format.zip": "Eine ZIP-Datei",
+    "includeBoosts": "Boosts einschließen",
+    "loadFailed": "Die Beiträge dieses Profils konnten nicht geladen werden. Versuche es noch einmal.",
+    "loadedOnly": "Diese Quelle lässt sich hier nicht weiter durchblättern, daher sind nur die bereits im Profil geladenen Beiträge enthalten.",
+    "nothing": "Nichts passte zu diesen Optionen.",
+    "open": "Medien herunterladen…",
+    "openFailed": "Der Download-Dialog konnte nicht geöffnet werden. Versuche es noch einmal.",
+    "postHint": "Bilder und andere Medien dieses Beitrags auf deinem Gerät speichern.",
+    "profileHint": "Medien aus den letzten Beiträgen dieses Profils auf deinem Gerät speichern.",
+    "saved": "{{count}} Dateien gespeichert.",
+    "skipSensitive": "Beiträge mit Inhaltswarnung oder als heikel markiert überspringen",
+    "start": "Herunterladen",
+    "title": "Medien herunterladen",
+    "type.audio": "Audio",
+    "type.gifv": "GIFs",
+    "type.image": "Bilder",
+    "type.video": "Videos",
+    "types": "Einschließen",
+    "zipping": "Erstelle die ZIP-Datei…"
   },
   "message": {
     "back": "← Zurück zu Mawkingbird",
