@@ -52,16 +52,14 @@ const VERIFIER_KEY = 'mockingbird_blogger_pkce_verifier';
 const STATE_KEY = 'mockingbird_blogger_oauth_state';
 
 /**
- * The chosen blog and the profile-feed opt-in, kept in `localStorage`.
+ * The chosen blog, kept in `localStorage`.
  *
  * Separate from the token on purpose. The *token* is a secret and belongs in
- * `sessionStorage` where it dies with the tab; which blog you write to, and
- * whether its posts appear on your profile, are preferences — losing them every
- * time you close the browser would mean re-choosing forever. Nothing here is
- * a credential, so it is safe to persist.
- *
- * This is also what lets the profile feed work when you are *not* signed in to
- * Google: reading a public RSS feed needs no token, only the address.
+ * `sessionStorage` where it dies with the tab; which blog you write to is a
+ * preference — losing it every time you close the browser would mean
+ * re-choosing forever. Nothing here is a credential, so it is safe to persist.
+ * An `includeInProfile` written by older versions is ignored: blogs are no
+ * longer mixed into your own profile.
  */
 const BLOG_CHOICE_KEY_BASE = 'mockingbird_blogger_blog';
 
@@ -69,7 +67,6 @@ interface StoredBlogChoice {
   blogId: string;
   blogName: string;
   blogUrl: string;
-  includeInProfile: boolean;
 }
 
 /** Where Google sends the browser back. Must match a registered redirect URI. */
@@ -135,7 +132,6 @@ function readChoice(): StoredBlogChoice | null {
       blogId: parsed.blogId,
       blogName: typeof parsed.blogName === 'string' ? parsed.blogName : parsed.blogId,
       blogUrl: parsed.blogUrl,
-      includeInProfile: parsed.includeInProfile === true,
     };
   } catch {
     return null;
@@ -208,14 +204,9 @@ export class BloggerSession {
    */
   readonly ready = computed(() => this.connected() && this.choice() !== null);
 
-  /** Show this blog's posts on the user's own profile. */
-  readonly includeInProfile = computed(() => this.choice()?.includeInProfile === true);
-
   /**
-   * The blog's RSS feed, when one is chosen. Deliberately independent of the
-   * token: a public feed needs no credential, so the profile keeps showing the
-   * blog after the Google session expires, and for an anonymous browser that
-   * never signed in at all.
+   * The blog's RSS feed, when one is chosen. Independent of the token: a public
+   * feed needs no credential.
    */
   readonly feedUrl = computed(() => {
     const url = this.choice()?.blogUrl;
@@ -348,38 +339,22 @@ export class BloggerSession {
 
   /** Remember which blog to publish to, and where to read its feed. */
   chooseBlog(blogId: string, blogName: string, blogUrl: string): void {
-    this.storeChoice({
-      blogId,
-      blogName,
-      blogUrl,
-      // Preserve the opt-in across a blog switch only if it was already on;
-      // turning it on for a blog the user never opted into would be a surprise.
-      includeInProfile: this.choice()?.includeInProfile === true,
-    });
-  }
-
-  setIncludeInProfile(include: boolean): void {
-    const current = this.choice();
-    if (!current) {
-      return;
-    }
-    this.storeChoice({ ...current, includeInProfile: include });
+    this.storeChoice({ blogId, blogName, blogUrl });
   }
 
   /**
    * Sign out of Google.
    *
-   * Drops the token only. The chosen blog and the profile-feed opt-in survive,
-   * because they are not secrets and the profile feed does not need a session —
-   * signing out should stop you *publishing*, not silently empty your profile.
-   * {@link forget} is the one that clears everything.
+   * Drops the token only. The chosen blog survives, because it is not a secret
+   * and signing in again should not mean choosing it again. {@link forget} is
+   * the one that clears everything.
    */
   disconnect(): void {
     sessionStorage.removeItem(tokenKey());
     this.token.set(null);
   }
 
-  /** Disconnect and forget the blog entirely, including the profile feed. */
+  /** Disconnect and forget the blog entirely. */
   forget(): void {
     this.disconnect();
     localStorage.removeItem(choiceKey());

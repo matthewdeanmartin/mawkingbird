@@ -97,9 +97,6 @@ import { ProfilePhotoView } from './media/profile-photo-view';
 import { buildMediaItems, ProfileMediaItem } from './media/profile-media-item';
 import { PageDiagnostics } from '../../page-diagnostics';
 import { RenderedHtmlLinks } from '../../rendered-html-links';
-import { MataroaSettings } from '../../providers/mataroa/mataroa-settings';
-import { HugoSettings } from '../../providers/hugo/hugo-settings';
-import { BloggerSession } from '../../providers/blogger/blogger-session';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
 type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' | 'analytics';
@@ -413,9 +410,6 @@ export class Profile implements OnInit, OnDestroy {
   private server = inject(Server);
   private searchServer = inject(SearchServer);
   private rss = inject(RssProvider);
-  private mataroa = inject(MataroaSettings);
-  private blogger = inject(BloggerSession);
-  private hugo = inject(HugoSettings);
   private twitterFollows = inject(TwitterFollows);
   private twitterFeed = inject(TwitterFeed);
   private twitterApi = inject(TwitterApi);
@@ -553,8 +547,6 @@ export class Profile implements OnInit, OnDestroy {
   protected homeServerLink = computed(() => homeServerLink(this.account()));
 
   protected statuses = signal<Status[]>([]);
-  /** Mataroa RSS items optionally folded into the signed-in user's own profile. */
-  private blogStatuses = signal<Status[]>([]);
   protected relationship = signal<Relationship | null>(null);
   protected loading = signal(true);
   /**
@@ -877,16 +869,20 @@ export class Profile implements OnInit, OnDestroy {
   /** Invalidates in-flight status fetches when filters change or the route moves. */
   private loadSeq = 0;
 
-  /** The main list, minus anything already shown in the pinned strip. */
+  /**
+   * The main list, minus anything already shown in the pinned strip.
+   *
+   * Only this account's own posts. Connected blogs (Mataroa, Blogger, Hugo)
+   * used to be folded into your own profile on request; with cross-posting
+   * that meant duplicates and a list whose length matched nothing, so a blog's
+   * posts now live only on its own feed.
+   */
   protected visibleStatuses = computed(() => {
-    const combined = [...this.statuses(), ...this.blogStatuses()].sort(
-      (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at),
-    );
     if (!this.showPinned()) {
-      return combined;
+      return this.statuses();
     }
     const pinnedIds = new Set(this.pinnedStatuses().map((s) => s.id));
-    return combined.filter((s) => !pinnedIds.has(s.id));
+    return this.statuses().filter((s) => !pinnedIds.has(s.id));
   });
 
   protected showReport = signal(false);
@@ -1162,7 +1158,6 @@ export class Profile implements OnInit, OnDestroy {
     this.loadError.set(null);
     this.recovering.set(false);
     this.recoveryFailed.set(false);
-    this.blogStatuses.set([]);
     this.relationship.set(null);
     this.reportDone.set(false);
     this.followError.set(null);
@@ -1835,7 +1830,6 @@ export class Profile implements OnInit, OnDestroy {
     this.statusLoadSub.unsubscribe();
     this.statusLoadSub = new Subscription();
     const seq = ++this.loadSeq;
-    this.loadBlogStatuses(id, seq);
     this.statuses.set([]);
     this.statusesLoading.set(true);
     this.exhausted.set(false);
@@ -1869,73 +1863,6 @@ export class Profile implements OnInit, OnDestroy {
       );
     };
     fetchPage(undefined, [], 1);
-  }
-
-  /**
-   * Load the user's own blog RSS feeds onto their own profile.
-   *
-   * Both connectors can be on at once, so this merges every opted-in feed
-   * rather than assuming a single blog. Each is fetched independently: one blog
-   * being unreachable must not blank the other, which is why the failures are
-   * caught per feed and the results accumulated instead of forkJoin'd.
-   *
-   * Whether a feed needs the CORS proxy is a fact about that blog, so it is
-   * carried per feed rather than assumed. Mataroa's needs it, and so does
-   * Blogger's — the Blogger *API* is CORS-open, but its RSS feed is not, and
-   * usually redirects to FeedBurner besides. A Hugo site on GitHub Pages does
-   * not: Pages sends `access-control-allow-origin: *`, so proxying it would
-   * route the user's own public writing through a third party for no reason.
-   */
-  private loadBlogStatuses(id: string, seq: number): void {
-    const account = this.auth.account();
-    if (!account || id !== account.id) {
-      this.blogStatuses.set([]);
-      return;
-    }
-
-    const feeds: { source: string; url: string; useProxy: boolean }[] = [];
-    const mataroaFeed = this.mataroa.feedUrl();
-    if (mataroaFeed && this.mataroa.includeInProfile()) {
-      feeds.push({ source: 'mataroa', url: mataroaFeed, useProxy: true });
-    }
-    const bloggerFeed = this.blogger.feedUrl();
-    if (bloggerFeed && this.blogger.includeInProfile()) {
-      feeds.push({ source: 'blogger', url: bloggerFeed, useProxy: true });
-    }
-    const hugoFeed = this.hugo.feedUrl();
-    if (hugoFeed && this.hugo.includeInProfile()) {
-      feeds.push({ source: 'hugo', url: hugoFeed, useProxy: false });
-    }
-    if (!feeds.length) {
-      this.blogStatuses.set([]);
-      return;
-    }
-
-    this.blogStatuses.set([]);
-    for (const feed of feeds) {
-      this.statusLoadSub.add(
-        this.rss.getFeed(feed.url, feed.useProxy).subscribe({
-          next: ({ statuses }) => {
-            if (seq !== this.loadSeq) {
-              return;
-            }
-            // This is the user's profile feed, so blog entries retain RSS behavior
-            // while presenting the same identity as the Mastodon posts beside them.
-            const owned = statuses.map((status) => ({ ...status, account }));
-            this.blogStatuses.update((existing) => [...existing, ...owned]);
-          },
-          error: (error: unknown) => {
-            if (seq === this.loadSeq) {
-              // Leave whatever other feeds delivered; only this one failed.
-              this.diagnostics.warn('Profile', `${feed.source}-rss:load-failed`, {
-                feed: feed.url,
-                reason: error instanceof Error ? error.message : String(error),
-              });
-            }
-          },
-        }),
-      );
-    }
   }
 
   /** Fetch one older page below the current list ("Load more" at the bottom). */

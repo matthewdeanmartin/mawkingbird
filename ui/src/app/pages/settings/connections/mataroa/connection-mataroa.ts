@@ -35,13 +35,10 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 // i18n settings.connections.mataroa.disconnect: Disconnect
 // i18n settings.connections.mataroa.keyDeletedOn: This API key is deleted from this browser on {{date}}.
 // i18n settings.connections.mataroa.keyClearedOn: This API key is cleared from this browser on {{date}}, and fetched back from your vault the next time it is needed.
-// i18n settings.connections.mataroa.includeRssLabel: Include my blog's RSS feed in my profile feed
-// i18n settings.connections.mataroa.includeRssNote: Your published blog posts appear alongside your Mawkingbird posts on your own profile.
 // i18n settings.connections.mataroa.apiKeyLabel: API key
 // i18n settings.connections.mataroa.apiKeyPlaceholder: Mataroa API key
 // i18n settings.connections.mataroa.blogUrlLabel: Public blog address
 // i18n settings.connections.mataroa.blogUrlPlaceholder: https://you.mataroa.blog/
-// i18n settings.connections.mataroa.includeRssCheckbox: Include this blog's RSS feed in my profile feed
 // i18n settings.connections.mataroa.proxyConsent: I understand that {{proxy}} can read my Mataroa API key and post contents.
 // i18n settings.connections.mataroa.proxyCannotForward: {{proxy}} cannot forward the Authorization header Mataroa requires.
 // i18n settings.connections.mataroa.noProxy: No CORS proxy is configured.
@@ -83,7 +80,6 @@ export class ConnectionMataroa implements OnInit {
 
   protected readonly apiKey = signal('');
   protected readonly blogUrl = signal('');
-  protected readonly includeInProfile = signal(false);
   protected readonly understandsProxy = signal(false);
   protected readonly busy = signal(false);
   protected readonly notice = signal<string | null>(null);
@@ -108,7 +104,6 @@ export class ConnectionMataroa implements OnInit {
   ngOnInit(): void {
     this.settings.enforceLifetime();
     this.blogUrl.set(this.settings.blogUrl() ?? '');
-    this.includeInProfile.set(this.settings.includeInProfile());
   }
 
   connect(): void {
@@ -126,7 +121,7 @@ export class ConnectionMataroa implements OnInit {
     this.error.set(null);
     this.notice.set(null);
     try {
-      this.settings.connect(this.apiKey(), this.blogUrl(), this.includeInProfile());
+      this.settings.connect(this.apiKey(), this.blogUrl());
     } catch (error: unknown) {
       this.diagnostics.error('Mataroa', 'save-connection:error', error);
       this.error.set(
@@ -160,11 +155,6 @@ export class ConnectionMataroa implements OnInit {
         );
       },
     });
-  }
-
-  setProfileFeed(include: boolean): void {
-    this.includeInProfile.set(include);
-    this.settings.setIncludeInProfile(include);
   }
 
   disconnect(): void {

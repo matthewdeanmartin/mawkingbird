@@ -49,12 +49,6 @@
       }
     </p>
   }
-  <mb-checkbox
-    [label]="'settings.connections.mataroa.includeRssLabel' | transloco"
-    [hint]="'settings.connections.mataroa.includeRssNote' | transloco"
-    [ngModel]="settings.includeInProfile()"
-    (ngModelChange)="setProfileFeed($event)"
-  />
 } @else {
   <form class="mataroa-form" (ngSubmit)="connect()">
     <mb-field [label]="'settings.connections.mataroa.apiKeyLabel' | transloco">
@@ -78,13 +72,6 @@
         (ngModelChange)="blogUrl.set($event)"
       />
     </mb-field>
-    <mb-checkbox
-      [label]="'settings.connections.mataroa.includeRssCheckbox' | transloco"
-      name="includeInProfile"
-      [ngModel]="includeInProfile()"
-      (ngModelChange)="includeInProfile.set($event)"
-    />
-
     @if (proxyEntry(); as proxy) {
       @if (proxyReady()) {
         <mb-checkbox

@@ -7,22 +7,12 @@ describe('MataroaSettings', () => {
 
   it('stores one account-scoped connection and derives its RSS feed', () => {
     const settings = TestBed.inject(MataroaSettings);
-    settings.connect('secret-key', 'writer.mataroa.blog', true);
+    settings.connect('secret-key', 'writer.mataroa.blog');
 
     expect(settings.connected()).toBe(true);
     expect(settings.blogUrl()).toBe('https://writer.mataroa.blog/');
     expect(settings.feedUrl()).toBe('https://writer.mataroa.blog/rss/');
-    expect(settings.includeInProfile()).toBe(true);
     expect(localStorage.getItem('mockingbird_mataroa_connection')).toContain('secret-key');
-  });
-
-  it('updates the profile-feed opt-in without replacing the credential', () => {
-    const settings = TestBed.inject(MataroaSettings);
-    settings.connect('secret-key', 'https://writer.mataroa.blog/', false);
-    settings.setIncludeInProfile(true);
-
-    expect(settings.includeInProfile()).toBe(true);
-    expect(settings.resolve()?.apiKey).toBe('secret-key');
   });
 
   it('normalizes custom-domain blog addresses to their root', () => {

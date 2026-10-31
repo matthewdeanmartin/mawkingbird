@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Blogs no longer shown on your own profile, 2026-10-31
+
+Reviewed 1,323 source files and 293 candidate files; none added or removed.
+The "include in my profile" checkbox is removed from the Blogger, Hugo and
+Mataroa connection pages (and its explanation and CORS-proxy link from
+Blogger's), so each page has fewer control findings. Their adopted-scope
+dispositions stand. No shared widget changed.
+
 ## Similar hashtags in Search and as a tool page, 2026-10-31
 
 Reviewed 1,323 source files and 293 candidate files. Three candidates are added:

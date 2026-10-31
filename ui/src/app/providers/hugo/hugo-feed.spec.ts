@@ -13,7 +13,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: 'https://mistersql.github.io/my-blog/',
-  includeInProfile: false,
 };
 
 const FEED = `<?xml version="1.0"?><rss version="2.0"><channel>

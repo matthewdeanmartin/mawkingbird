@@ -1210,7 +1210,6 @@ describe('Compose', () => {
       branch: 'main',
       contentPath: 'content/posts',
       siteUrl: 'https://mistersql.github.io/my-blog/',
-      includeInProfile: false,
     });
   }
 

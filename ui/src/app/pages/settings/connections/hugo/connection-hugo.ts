@@ -63,9 +63,6 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 // i18n settings.connections.hugo.deletedOn: This token is deleted from this browser on {{date}}.
 // i18n settings.connections.hugo.readBack.title: Read your blog back
 // i18n settings.connections.hugo.readBack.body: Your Hugo site publishes an RSS feed, so Mawkingbird can read your own posts the same way it reads any other feed — no special handling, and no CORS proxy if your site is on GitHub Pages.
-// i18n settings.connections.hugo.includeInProfile: Include my blog's posts on my profile
-// i18n settings.connections.hugo.includeInProfile.on: Your published posts appear alongside your Mawkingbird posts on your own profile.
-// i18n settings.connections.hugo.includeInProfile.off: Add your site address above to turn this on.
 // i18n settings.connections.hugo.inHomeTimeline: In your home timeline
 // i18n settings.connections.hugo.removeFromFeeds: Remove from feeds
 // i18n settings.connections.hugo.lookingForFeed: Looking for your feed…
@@ -256,7 +253,6 @@ export class ConnectionHugo implements OnInit {
       branch: this.branch().trim() || 'main',
       contentPath: this.contentPath().trim() || DEFAULT_CONTENT_PATH,
       siteUrl,
-      includeInProfile: this.settings.includeInProfile(),
     };
 
     this.busy.set(true);
@@ -294,10 +290,6 @@ export class ConnectionHugo implements OnInit {
     } finally {
       this.busy.set(false);
     }
-  }
-
-  setProfileFeed(include: boolean): void {
-    this.settings.setIncludeInProfile(include);
   }
 
   setPosse(enabled: boolean): void {

@@ -70,8 +70,8 @@ export class HugoFeed {
     for (const url of candidates) {
       try {
         const feed = await firstValueFrom(this.fetch.fetchFeed(url, { useProxy: false }));
-        // Remember which name won, so the profile feed and the subscribed check
-        // both ask about the real URL rather than re-deriving the default.
+        // Remember which name won, so the subscribed check asks about the real
+        // URL rather than re-deriving the default.
         this.settings.setFeedUrl(url);
         return { url, itemCount: feed.items.length, problem: null };
       } catch (error: unknown) {

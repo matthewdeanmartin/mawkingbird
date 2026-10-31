@@ -16,7 +16,6 @@ const STORAGE_KEY_BASE = 'mockingbird_mataroa_connection';
 export interface MataroaConnection extends ExpiringCredential {
   apiKey: string;
   blogUrl: string;
-  includeInProfile: boolean;
 }
 
 function load(key: string): MataroaConnection | null {
@@ -27,8 +26,9 @@ function load(key: string): MataroaConnection | null {
     }
     return ensureStamped(key, {
       apiKey: parsed.apiKey,
+      // An `includeInProfile` written by older versions is ignored: blogs are
+      // no longer mixed into your own profile.
       blogUrl: normalizeBlogUrl(parsed.blogUrl),
-      includeInProfile: parsed.includeInProfile === true,
       connectedAt: parsed.connectedAt,
     });
   } catch {
@@ -58,9 +58,7 @@ export class MataroaSettings implements ExpiringConnection {
     const blogUrl = this.blogUrl();
     return blogUrl ? new URL('rss/', blogUrl).toString() : null;
   });
-  readonly includeInProfile = computed(() => this.connection()?.includeInProfile === true);
-
-  connect(apiKey: string, blogUrl: string, includeInProfile = false): void {
+  connect(apiKey: string, blogUrl: string): void {
     const key = apiKey.trim();
     if (!key) {
       throw new Error('Paste your Mataroa API key.');
@@ -68,7 +66,6 @@ export class MataroaSettings implements ExpiringConnection {
     const next = stampCredential({
       apiKey: key,
       blogUrl: normalizeBlogUrl(blogUrl),
-      includeInProfile,
     });
     localStorage.setItem(this.storageKey, JSON.stringify(next));
     this.connection.set(next);
@@ -105,16 +102,6 @@ export class MataroaSettings implements ExpiringConnection {
       this.needsFetch.set(false);
     }
     return parsed;
-  }
-
-  setIncludeInProfile(include: boolean): void {
-    const current = this.connection();
-    if (!current) {
-      return;
-    }
-    const next = { ...current, includeInProfile: include };
-    localStorage.setItem(this.storageKey, JSON.stringify(next));
-    this.connection.set(next);
   }
 
   /** Disconnect here and remove the stored copy, so it cannot come back. */

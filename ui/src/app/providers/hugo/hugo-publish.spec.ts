@@ -13,7 +13,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: 'https://mistersql.github.io/my-blog/',
-  includeInProfile: false,
 };
 
 const ACCOUNT = { id: '1', acct: 'mistersql', username: 'mistersql' } as Account;

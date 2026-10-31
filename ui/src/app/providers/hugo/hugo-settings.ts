@@ -62,13 +62,11 @@ export interface HugoRepo {
    *
    * Hugo's default is `<site>/index.xml`, but a theme or an `outputs` config can
    * rename or move it, so {@link HugoFeed.probe} tries several names. Recording
-   * the winner means "is my blog subscribed?" and the profile feed both ask
-   * about the real URL rather than re-deriving a guess that may be wrong.
+   * the winner means "is my blog subscribed?" asks about the real URL rather
+   * than re-deriving a guess that may be wrong.
    * Absent until a probe has succeeded.
    */
   feedUrl?: string | null;
-  /** Show this blog's posts on the Mawkingbird profile (sprint 3). */
-  includeInProfile: boolean;
   /**
    * Record likes, boosts and replies to this blog (POSSE).
    *
@@ -113,7 +111,8 @@ function loadRepo(key: string): HugoRepo | null {
           : DEFAULT_CONTENT_PATH,
       siteUrl: typeof parsed.siteUrl === 'string' && parsed.siteUrl ? parsed.siteUrl : null,
       feedUrl: typeof parsed.feedUrl === 'string' && parsed.feedUrl ? parsed.feedUrl : null,
-      includeInProfile: parsed.includeInProfile === true,
+      // An `includeInProfile` written by older versions is ignored: blogs are
+      // no longer mixed into your own profile.
       posse: parsed.posse === true,
     };
   } catch {
@@ -186,7 +185,6 @@ export class HugoSettings implements ExpiringConnection {
   });
 
   readonly siteUrl = computed(() => this.repoState()?.siteUrl ?? null);
-  readonly includeInProfile = computed(() => this.repoState()?.includeInProfile === true);
 
   /**
    * Whether interactions should be recorded to this blog.
@@ -200,7 +198,6 @@ export class HugoSettings implements ExpiringConnection {
   /**
    * The site's RSS feed: the one a probe actually found, else Hugo's default.
    *
-   * Mirrors `MataroaSettings.feedUrl`, which the profile page already consumes.
    * The stored value wins because a theme can move the feed — falling back to
    * the default keeps this useful before any probe has run.
    */
@@ -350,17 +347,6 @@ export class HugoSettings implements ExpiringConnection {
       : { kind: 'unchanged' };
   }
 
-  setIncludeInProfile(include: boolean): void {
-    const current = this.repoState();
-    if (!current) {
-      return;
-    }
-    const next = { ...current, includeInProfile: include };
-    localStorage.setItem(this.repoKey, JSON.stringify(next));
-    this.repoState.set(next);
-    void this.syncToVault();
-  }
-
   setPosse(enabled: boolean): void {
     const current = this.repoState();
     if (!current) {
@@ -482,7 +468,6 @@ function normalizeVaultedRepo(value: unknown): HugoRepo | null {
         : DEFAULT_CONTENT_PATH,
     siteUrl: typeof repo.siteUrl === 'string' && repo.siteUrl ? repo.siteUrl : null,
     feedUrl: typeof repo.feedUrl === 'string' && repo.feedUrl ? repo.feedUrl : null,
-    includeInProfile: repo.includeInProfile === true,
     posse: repo.posse === true,
   };
 }

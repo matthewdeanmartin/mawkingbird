@@ -82,8 +82,7 @@
     </button>
 
     @if (session.blogName(); as name) {
-      <!-- Signed out, but the blog is remembered. Worth saying, because the
-           profile feed keeps working and that would otherwise look like a bug. -->
+      <!-- Signed out, but the blog is remembered: say so, and offer Forget below. -->
       <p class="muted small">
         <strong>{{ name }}</strong> {{ 'settings.connections.blogger.stillRemembered' | transloco }}
       </p>
@@ -91,22 +90,6 @@
   }
 
   @if (session.blogName()) {
-    <h2 class="section-title">{{ 'settings.connections.blogger.profile.title' | transloco }}</h2>
-    <!-- Reading a public feed needs no Google session, so this is offered
-         whenever a blog is known — including to an anonymous browser. -->
-    <mb-checkbox
-      [label]="'settings.connections.blogger.profile.include' | transloco"
-      [checked]="session.includeInProfile()"
-      (checkedChange)="toggleIncludeInProfile($event)"
-    />
-    <div class="control-help">
-      {{ 'settings.connections.blogger.profile.hint.a' | transloco }}
-      <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
-        'settings.connections.blogger.profile.corsProxy' | transloco
-      }}</a
-      >{{ 'settings.connections.blogger.profile.hint.b' | transloco }}
-    </div>
-
     <div class="connected-row">
       <button mbButton variant="outline" tone="danger" type="button" (click)="forget()">
         {{ 'settings.connections.blogger.forget' | transloco }}

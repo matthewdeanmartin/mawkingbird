@@ -90,19 +90,6 @@
     {{ 'settings.connections.hugo.readBack.body' | transloco }}
   </p>
 
-  <mb-checkbox
-    [label]="'settings.connections.hugo.includeInProfile' | transloco"
-    [hint]="
-      (settings.siteUrl()
-        ? 'settings.connections.hugo.includeInProfile.on'
-        : 'settings.connections.hugo.includeInProfile.off'
-      ) | transloco
-    "
-    [ngModel]="settings.includeInProfile()"
-    (ngModelChange)="setProfileFeed($event)"
-    [disabled]="!settings.siteUrl()"
-  />
-
   <div class="feed-row">
     @if (feed.subscribed()) {
       <span>{{ 'settings.connections.hugo.inHomeTimeline' | transloco }}</span>

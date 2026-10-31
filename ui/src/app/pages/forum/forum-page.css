@@ -1,6 +1,10 @@
-/* Content lines up with the post cards' 16px inset, not the column's edge. */
+/* Content lines up with the post cards' 16px inset, not the column's edge.
+   Every grid here has one explicit minmax(0, 1fr) column. Left implicit, the
+   column is `auto` and grows to its widest child, so one big picture in a
+   post widened the whole list past the centre column and under the people rail. */
 :host {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   padding: 0 0 0.75rem;
 }
@@ -53,6 +57,7 @@ mb-content-state {
 
 .discussions {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   margin: 0;
   padding: 0;
@@ -61,6 +66,7 @@ mb-content-state {
 
 .discussion {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);

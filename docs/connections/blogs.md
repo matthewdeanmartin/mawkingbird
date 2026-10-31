@@ -20,8 +20,8 @@ You can connect more than one kind of blog. Each remains a separate destination.
 
 Social-post features such as polls, visibility, and content warnings may not apply to a blog. The composer hides or explains options that the selected destination cannot use.
 
-## Show blog posts on your profile
+## Read your blog in Mawkingbird
 
-Each blog connection can offer an option to include its public posts on your Mawkingbird profile. Turn it on from the connection page. This reads the blog's public feed; it does not publish a second copy of the post.
+Your Mawkingbird profile shows only your own social posts, never your blog's. To read your blog in Mawkingbird, follow its public feed as you would any other: add it on the **Feeds** page, or use **Add my blog to my home timeline** on the Hugo connection page.
 
 Related: [Choose where a post is published](../posting/destinations.md).

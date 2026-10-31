@@ -8,7 +8,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: 'https://mistersql.github.io/my-blog/',
-  includeInProfile: false,
 };
 
 describe('HugoSettings', () => {
@@ -70,15 +69,6 @@ describe('HugoSettings', () => {
     const settings = TestBed.inject(HugoSettings);
 
     expect(() => settings.connect('   ', REPO)).toThrow(/token/i);
-  });
-
-  it('toggles the profile opt-in without touching the credential', () => {
-    const settings = TestBed.inject(HugoSettings);
-    settings.connect('github_pat_secret', REPO);
-    settings.setIncludeInProfile(true);
-
-    expect(settings.includeInProfile()).toBe(true);
-    expect(settings.token()).toBe('github_pat_secret');
   });
 
   it('reads a repo with no token back as not connected', () => {

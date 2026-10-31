@@ -20,9 +20,7 @@ After the check succeeds, the connection page can list posts in that folder. Cho
 
 ## Read the blog in Mawkingbird
 
-Turn on **Include my blog's posts on my profile** to add published posts to your profile feed.
-
-Choose **Add my blog to my home timeline** to follow its public feed yourself. A public site address is required for these choices.
+Choose **Add my blog to my home timeline** to follow its public feed yourself. A public site address is required. Your Mawkingbird profile shows only your own social posts, not the blog's.
 
 The **Record interactions on my blog** option requires extra preparation outside ordinary use. Leave it off unless your site is already set up for it.
 

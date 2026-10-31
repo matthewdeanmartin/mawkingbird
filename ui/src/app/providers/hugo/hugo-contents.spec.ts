@@ -9,7 +9,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: 'https://mistersql.github.io/my-blog/',
-  includeInProfile: false,
 };
 
 /** Non-ASCII on purpose: this is what `btoa(string)` alone would break on. */

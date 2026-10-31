@@ -125,15 +125,14 @@ describe('BloggerSession', () => {
     const blogger = session();
     blogger.adoptToken('tok', 3600);
     blogger.chooseBlog('1', 'Mine', 'https://mine.blogspot.com/');
-    blogger.setIncludeInProfile(true);
 
     blogger.disconnect();
 
-    // Signing out stops publishing, but the feed is public and needs no token —
-    // emptying the profile would be a surprise, not a security improvement.
+    // Signing out stops publishing, but the blog is remembered and its feed is
+    // public, needing no token.
     expect(blogger.connected()).toBe(false);
     expect(blogger.ready()).toBe(false);
-    expect(blogger.includeInProfile()).toBe(true);
+    expect(blogger.blogName()).toBe('Mine');
     expect(blogger.feedUrl()).toBe('https://mine.blogspot.com/feeds/posts/default?alt=rss');
   });
 
@@ -141,14 +140,13 @@ describe('BloggerSession', () => {
     const first = session();
     first.adoptToken('tok', 3600);
     first.chooseBlog('1', 'Mine', 'https://mine.blogspot.com/');
-    first.setIncludeInProfile(true);
     // A new tab: sessionStorage is gone, localStorage is not.
     sessionStorage.clear();
     TestBed.resetTestingModule();
 
     const reloaded = session();
     expect(reloaded.connected()).toBe(false);
-    expect(reloaded.includeInProfile()).toBe(true);
+    expect(reloaded.blogName()).toBe('Mine');
     expect(reloaded.feedUrl()).toContain('/feeds/posts/default?alt=rss');
   });
 
@@ -156,23 +154,12 @@ describe('BloggerSession', () => {
     const blogger = session();
     blogger.adoptToken('tok', 3600);
     blogger.chooseBlog('1', 'Mine', 'https://mine.blogspot.com/');
-    blogger.setIncludeInProfile(true);
 
     blogger.forget();
 
     expect(blogger.blogName()).toBeNull();
     expect(blogger.feedUrl()).toBeNull();
-    expect(blogger.includeInProfile()).toBe(false);
-  });
-
-  it('does not switch the profile feed on by itself when changing blogs', () => {
-    const blogger = session();
-    blogger.adoptToken('tok', 3600);
-    blogger.chooseBlog('1', 'First', 'https://first.blogspot.com/');
-    expect(blogger.includeInProfile()).toBe(false);
-
-    blogger.chooseBlog('2', 'Second', 'https://second.blogspot.com/');
-    expect(blogger.includeInProfile()).toBe(false);
+    expect(localStorage.getItem('mockingbird_blogger_blog')).toBeNull();
   });
 
   it("uses the user's own client id in preference to the build's", async () => {

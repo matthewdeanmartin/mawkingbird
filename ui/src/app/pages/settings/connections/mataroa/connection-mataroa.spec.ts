@@ -27,7 +27,6 @@ describe('Mataroa shared credential and consent controls', () => {
           useValue: {
             connected: signal(false),
             blogUrl: () => '',
-            includeInProfile: () => false,
             enforceLifetime: vi.fn(),
             connect,
             disconnect,
@@ -69,25 +68,26 @@ describe('Mataroa shared credential and consent controls', () => {
   it('requires a separate explicit proxy checkbox before storing or sending a credential', async () => {
     const { fixture, root } = await setup();
     const submit = root.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    // The proxy consent is the form's only checkbox (the profile-feed one is gone).
     const checkboxes = root.querySelectorAll<HTMLInputElement>('mb-checkbox input');
+    expect(checkboxes).toHaveLength(1);
     expect(submit.disabled).toBe(true);
-    checkboxes[0].click();
+    root.querySelector('form')!.dispatchEvent(new Event('submit'));
     fixture.detectChanges();
-    expect(submit.disabled).toBe(true);
     expect(grant).not.toHaveBeenCalled();
     expect(connect).not.toHaveBeenCalled();
-    checkboxes[1].click();
+    checkboxes[0].click();
     fixture.detectChanges();
     root.querySelector('form')!.dispatchEvent(new Event('submit'));
     fixture.detectChanges();
-    expect(connect).toHaveBeenCalledWith('candidate', 'https://preview.mataroa.blog', true);
+    expect(connect).toHaveBeenCalledWith('candidate', 'https://preview.mataroa.blog');
     expect(grant).toHaveBeenCalledWith('mataroa', 'custom');
     expect(submit.disabled).toBe(true);
   });
 
   it('revokes consent and rolls back settings after a rejected probe', async () => {
     const { fixture, root } = await setup();
-    root.querySelectorAll<HTMLInputElement>('mb-checkbox input')[1].click();
+    root.querySelectorAll<HTMLInputElement>('mb-checkbox input')[0].click();
     fixture.detectChanges();
     root.querySelector('form')!.dispatchEvent(new Event('submit'));
     probe.error(new Error('Rejected fixture key'));

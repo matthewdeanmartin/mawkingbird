@@ -225,6 +225,14 @@ body {
   max-width: 100%;
 }
 
+/* Pictures inside a post's own HTML (blogs, RSS, some fediverse servers) come at
+   their natural size, which can be thousands of pixels; fit them to the card.
+   Global because the HTML is injected, which component styles cannot reach. */
+.status :is(.content, .quote-content) img:not(.custom-emoji) {
+  max-width: 100%;
+  height: auto;
+}
+
 .reader :is(.reader-post, .reader-article-body, .comment-content) img:not(.custom-emoji) {
   display: block;
   width: auto;

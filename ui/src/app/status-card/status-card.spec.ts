@@ -1038,7 +1038,6 @@ describe('StatusCard', () => {
       branch: 'main',
       contentPath: 'content/posts',
       siteUrl: null,
-      includeInProfile: false,
       posse: true,
     });
   }

@@ -24,7 +24,6 @@ const HUGO_REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: 'https://alice.example/',
-  includeInProfile: true,
 };
 
 describe('connection vault across devices', () => {
@@ -62,7 +61,6 @@ describe('connection vault across devices', () => {
         JSON.stringify({
           apiKey: 'mataroa-desktop',
           blogUrl: 'https://alice.mataroa.blog/',
-          includeInProfile: true,
           connectedAt: NOW,
         }),
       ],

@@ -9,7 +9,6 @@ const CANDIDATE: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: null,
-  includeInProfile: false,
 };
 
 function json(body: unknown, status = 200): Response {

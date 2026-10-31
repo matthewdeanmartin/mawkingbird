@@ -10,7 +10,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: null,
-  includeInProfile: false,
 };
 
 const OURS = 'commit-abc';

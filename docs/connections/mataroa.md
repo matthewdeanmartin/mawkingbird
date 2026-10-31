@@ -18,9 +18,8 @@ The proxy can read the Mataroa key and the posts sent through it. Continue only 
 1. Open **Settings → Connections → Blog (Mataroa)**.
 2. Paste the **API key**.
 3. Enter the **Public blog address**.
-4. Decide whether to include the blog's public feed on your Mawkingbird profile.
-5. Read and select the proxy acknowledgment.
-6. Choose **Save and test connection**.
+4. Read and select the proxy acknowledgment.
+5. Choose **Save and test connection**.
 
 After a successful test, Mataroa appears as a destination in the composer.
 

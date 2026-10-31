@@ -12,7 +12,6 @@ const REPO: HugoRepo = {
   branch: 'main',
   contentPath: 'content/posts',
   siteUrl: null,
-  includeInProfile: false,
 };
 
 const TODAY = new Date('2026-08-06T12:00:00Z');

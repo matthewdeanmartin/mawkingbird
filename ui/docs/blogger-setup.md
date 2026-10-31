@@ -87,11 +87,13 @@ it is the same blog either way.
 | Key | Store | Why |
 | --- | --- | --- |
 | `mockingbird_blogger_token` | `sessionStorage`, account-scoped | A secret. Dies with the tab; there is deliberately no refresh token, which would be a year-long credential sitting in a browser. |
-| `mockingbird_blogger_blog` | `localStorage`, account-scoped | The chosen blog and the profile-feed opt-in. Preferences, not secrets — re-choosing them every session would be busywork. |
+| `mockingbird_blogger_blog` | `localStorage`, account-scoped | The chosen blog. A preference, not a secret — re-choosing it every session would be busywork. An `includeInProfile` field written by older versions is ignored. |
 | `mockingbird_blogger_client_id` | `localStorage`, unscoped | The user's own client id, if supplied. Public by design. |
 
-Keeping the blog choice out of the token is what lets the **profile feed** work
-with no Google session at all: reading a public RSS feed needs only the address.
+Keeping the blog choice out of the token means signing in again does not mean
+choosing the blog again. (It also used to let a "profile feed" mix the blog into
+your own profile with no Google session; that option was removed on 2026-10-31
+because cross-posting made it duplicate posts.)
 
 ## Networking notes
 
@@ -100,5 +102,5 @@ with no Google session at all: reading a public RSS feed needs only the address.
   matters for safety: routing a Google token through a third-party proxy would
   give that proxy the ability to publish as the user.
 - The Blogger **RSS feed** is not. It sends no `Access-Control-Allow-Origin` and
-  commonly redirects to FeedBurner, so the profile feed goes through the user's
-  configured CORS proxy, exactly as the Mataroa feed does.
+  commonly redirects to FeedBurner, so reading it in the browser needs the
+  user's configured CORS proxy.

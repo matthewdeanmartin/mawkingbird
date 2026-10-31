@@ -1,5 +1,4 @@
 import { MbField, MbControl } from '../../../../design-system/field/field';
-import { MbCheckbox } from '../../../../design-system/checkbox/checkbox';
 import { MbButton } from '../../../../design-system/button/button';
 import { MbNotice } from '../../../../design-system/notice/notice';
 import { MbContentLink } from '../../../../design-system/metadata/metadata';
@@ -26,7 +25,7 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 // i18n settings.connections.blogger.notice.postsWillPublish: Posts will publish to {{name}}.
 // i18n settings.connections.blogger.notice.savedOwnProject: Saved. Sign in again to use your own Google project.
 // i18n settings.connections.blogger.notice.clearedOwnProject: Cleared. Signing in will use this app's own Google project.
-// i18n settings.connections.blogger.notice.signedOut: Signed out of Google. Your blog is still shown on your profile.
+// i18n settings.connections.blogger.notice.signedOut: Signed out of Google. Your blog is still remembered.
 // i18n settings.connections.blogger.notice.forgotten: Disconnected from Blogger and removed the blog.
 
 /**
@@ -60,11 +59,6 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 // i18n settings.connections.blogger.permissionNote: Signing in grants this app permission to read and publish to your Blogger blogs. The permission lasts until you close this tab — nothing is stored long-term, so you will sign in again next session. Google may warn that this app is unverified; that is about Google's review process, not about what the app does.
 // i18n settings.connections.blogger.postsGoTo.a: Posts go to
 // i18n settings.connections.blogger.postsGoTo.b: . Pick another below to change it.
-// i18n settings.connections.blogger.profile.corsProxy: CORS proxy
-// i18n settings.connections.blogger.profile.hint.a: Your published blog posts appear alongside your Mawkingbird posts on your own profile. Reads the blog's public RSS feed through your
-// i18n settings.connections.blogger.profile.hint.b: , which Blogger's feed requires.
-// i18n settings.connections.blogger.profile.include: Include my blog's posts in my profile feed
-// i18n settings.connections.blogger.profile.title: On your profile
 // i18n settings.connections.blogger.publishTo: Publish to
 // i18n settings.connections.blogger.refreshBlogs: Refresh blog list
 // i18n settings.connections.blogger.save: Save
@@ -74,7 +68,7 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
 // i18n settings.connections.blogger.step.choose: Choose which of that account's blogs to publish to.
 // i18n settings.connections.blogger.step.post: Pick the blog as the destination in the composer, then post.
 // i18n settings.connections.blogger.step.signIn: Sign in with the Google account that owns the blog.
-// i18n settings.connections.blogger.stillRemembered: is still remembered. Its public posts keep appearing on your profile if you enabled that; sign in again to publish.
+// i18n settings.connections.blogger.stillRemembered: is still remembered. Sign in again to publish.
 // i18n settings.connections.blogger.title: ✍️ Blog (Blogger)
 
 // i18n settings.connections.blogger.unverified: Google may warn that <strong>“Google hasn't verified this app”</strong> before asking for permission. That refers to Google's review of this app, not to anything being wrong with it; continue past it via <em>Advanced</em>. Using your own Google project, below, removes the warning entirely.
@@ -84,7 +78,6 @@ import { PageDiagnostics } from '../../../../page-diagnostics';
   imports: [
     MbField,
     MbControl,
-    MbCheckbox,
     MbButton,
     MbNotice,
     MbContentLink,
@@ -193,10 +186,6 @@ export class ConnectionBlogger implements OnInit {
     );
   }
 
-  toggleIncludeInProfile(include: boolean): void {
-    this.session.setIncludeInProfile(include);
-  }
-
   saveClientId(): void {
     const next = this.clientIdDraft().trim();
     this.session.setOwnClientId(next);
@@ -212,9 +201,8 @@ export class ConnectionBlogger implements OnInit {
   }
 
   disconnect(): void {
-    // Signs out of Google but keeps the blog choice and profile-feed opt-in:
-    // the feed is public and needs no session, so signing out should stop
-    // publishing, not empty the user's profile.
+    // Signs out of Google but keeps the blog choice, so signing in again does
+    // not mean choosing it again.
     this.session.disconnect();
     this.blogs.set([]);
     this.notice.set(this.transloco.translate('settings.connections.blogger.notice.signedOut'));
