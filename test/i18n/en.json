@@ -751,6 +751,22 @@
     "tools.detail": "Free single-purpose tools: pick a handle, find your friends, schedule posts, tidy up your account.",
     "tools.title": "Tools"
   },
+  "downloadImages": {
+    "accountHint": "A handle like @someone@mastodon.social, a link to their profile, or a name to search for.",
+    "accountLabel": "Mastodon account",
+    "barHint": "Pictures, GIFs, videos or audio, as a zip or separate files.",
+    "loadFailed": "{{server}} didn't share this account's posts. Try again later.",
+    "loadFailedYours": "Your server didn't share this account's posts. Try again later.",
+    "looking": "Looking…",
+    "next.body": "Their posts, replies and boosts, with this media wall one tab away.",
+    "next.title": "Read @{{username}} in Mawkingbird",
+    "noMatch": "No Mastodon account matched. Check the spelling, or paste the address of their profile page.",
+    "pickHint": "Several accounts matched. Pick the one whose pictures you want.",
+    "pickTitle": "Which account?",
+    "readFrom": "read from {{server}}",
+    "readFromYours": "read from your server",
+    "show": "Show their pictures"
+  },
   "drafts": {
     "removeFailed": "Could not remove the draft from this browser. Please try again.",
     "saveFailed": "Could not save the draft in this browser. The original has been kept. Free some browser storage and try again."
@@ -1108,6 +1124,17 @@
     "unifiedShare.label": "Unified share menu",
     "write.description": "The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.",
     "write.label": "Write"
+  },
+  "focusedNextSteps": {
+    "features.body": "Bluesky and RSS, bookmarks, readable articles and writing tools.",
+    "features.title": "See what else Mawkingbird does",
+    "follow.body": "Hand-picked starter kits, grouped by interest.",
+    "follow.title": "Follow more people",
+    "home.body": "Posts from the people you follow, newest first.",
+    "home.title": "Open your home feed",
+    "invite.body": "Ready-made posts that tell them where to find you.",
+    "invite.title": "Invite your friends",
+    "title": "Next: make Mawkingbird your everyday Mastodon app"
   },
   "followBundle": {
     "cancel": "Close",
@@ -6735,6 +6762,7 @@
     "modeNav.friendFeeds.find": "Feeds",
     "modeNav.githubFriends.find": "Find friends",
     "modeNav.handles.find": "Handles",
+    "modeNav.languages.setup": "Languages",
     "modeNav.menu": "Apps",
     "modeNav.mode.forum": "Forum",
     "modeNav.mode.mastodon": "Fedi",
