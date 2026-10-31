@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { ContactsWorkbench } from './contacts-workbench';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * "Find my contacts on Mastodon" as a focused mini-app: the contacts finder from
@@ -14,7 +16,7 @@ import { ContactsWorkbench } from './contacts-workbench';
  */
 @Component({
   selector: 'app-find-contacts-on-mastodon',
-  imports: [RouterLink, MbButton, MbContentLink, ContactsWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
   templateUrl: './find-contacts-on-mastodon.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -22,4 +24,20 @@ export class FindContactsOnMastodon {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
   protected readonly returnHere = { next: '/find-contacts-on-mastodon' };
+}
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonDe extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/de/kontakte-auf-mastodon-finden' };
 }

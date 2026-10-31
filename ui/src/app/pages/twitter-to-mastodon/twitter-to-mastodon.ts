@@ -4,6 +4,8 @@ import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { TwitterArchiveImport } from '../settings/import-export/twitter-archive-import';
 import { TwitterImportNextSteps } from './twitter-import-next-steps';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * The Twitter importer as its own small app, for people who arrive searching
@@ -16,7 +18,14 @@ import { TwitterImportNextSteps } from './twitter-import-next-steps';
  */
 @Component({
   selector: 'app-twitter-to-mastodon',
-  imports: [RouterLink, MbButton, MbContentLink, TwitterArchiveImport, TwitterImportNextSteps],
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
   templateUrl: './twitter-to-mastodon.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -24,3 +33,24 @@ export class TwitterToMastodon {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-de',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonDe extends TwitterToMastodon {}

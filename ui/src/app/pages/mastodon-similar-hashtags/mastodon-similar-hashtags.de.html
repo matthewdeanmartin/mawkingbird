@@ -1,0 +1,82 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Hashtag-Finder</p>
+    <h1>Ähnliche Hashtags auf Mastodon</h1>
+    <p>
+      Gib einen Hashtag ein, oder mehrere, und sieh, welche Hashtags Leute zusätzlich verwenden,
+      geordnet danach, wie oft sie in denselben aktuellen Beiträgen vorkommen. So wirst du von mehr
+      Leuten gefunden oder findest mehr, dem du folgen kannst. Kein Konto nötig.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/de/aehnliche-hashtags-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Wird geladen…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Hashtags eingeben</h2>
+        <p>Einen, oder mehrere mit derselben Bedeutung, etwa #hund und #hunde.</p>
+      </li>
+      <li>
+        <h2>Aktuelle Beiträge werden ausgewertet</h2>
+        <p>Die neuesten 200 Beiträge mit einem davon, gelesen von mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Sehen, was mit ihnen reist</h2>
+        <p>
+          Geordnet danach, wie oft jeder Hashtag in diesen Beiträgen vorkommt. Werte mehr aus für
+          einen breiteren Blick.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und deinen eigenen Server nutzen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Welche Hashtags sollte ich auf Mastodon verwenden?</h3>
+    <p>
+      Auf Mastodon entscheidet kein Algorithmus, wer deinen Beitrag sieht: Leute finden ihn, indem
+      sie einem Hashtag folgen oder danach suchen. Nutze die Hashtags, die diese Leute schon
+      verwenden – genau das zeigt diese Liste – und schreibe sie in CamelCase (#HundeVonMastodon),
+      damit Screenreader sie vorlesen können.
+    </p>
+    <h3>Wie wird „ähnlich“ ermittelt?</h3>
+    <p>
+      Durch Zählen. Jeder Hashtag in den ausgewerteten Beiträgen wird gezählt, einmal pro Beitrag,
+      und die, nach denen du gefragt hast, werden weggelassen. Ein Hashtag in 40 von 200 Beiträgen
+      steht vor einem in 5.
+    </p>
+    <h3>Warum mehrere Hashtags auf einmal vergleichen?</h3>
+    <p>
+      Leute verteilen ein Thema auf mehrere Schreibweisen: #hund und #hunde, #foto und #fotografie.
+      Gibst du sie zusammen ein, werden Beiträge mit einem davon ausgewertet, und die Liste deckt
+      das ganze Gespräch ab.
+    </p>
+    <h3>Warum unterscheiden sich die Ergebnisse je nach Server?</h3>
+    <p>
+      Jeder Mastodon-Server sieht nur Beiträge von Leuten, denen seine eigenen Nutzer folgen,
+      deshalb gibt ein großer, belebter Server das breiteste Bild. Angemeldet kommt die Auswertung
+      von deinem eigenen Server und zeigt, was deine Ecke des Netzwerks verwendet.
+    </p>
+  </section>
+</main>

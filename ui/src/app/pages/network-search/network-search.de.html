@@ -1,0 +1,101 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky-Suche</p>
+      <h1>Bluesky durchsuchen</h1>
+      <p>Finde Leute und Beiträge auf Bluesky, mit den Suchfiltern, die du von Twitter kennst.</p>
+    } @else {
+      <p class="eyebrow">Mastodon-Suche</p>
+      <h1>Mastodon durchsuchen</h1>
+      <p>
+        Finde Beiträge, Leute und Hashtags auf ganz Mastodon, mit den Suchfiltern, die du von
+        Twitter kennst.
+      </p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Bluesky durchsuchen' : 'Mastodon durchsuchen'"
+        [attr.placeholder]="network === 'bluesky' ? 'Bluesky durchsuchen' : 'Mastodon durchsuchen'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Suchen</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Eingrenzen</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:jemand, Sprache, Datum und "genaue Wendungen", getippt oder aus den Filtern gewählt.
+        } @else {
+          from:jemand, has:media, is:reply, Datum und "genaue Wendungen", getippt oder aus den
+          Filtern gewählt.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Sortieren und verfeinern</h2>
+      <p>Filtere die Treffer nach Datum, Medien und Autor und sieh genau, wonach gesucht wurde.</p>
+    </li>
+    <li>
+      <h2>Suchen behalten</h2>
+      <p>Speichere eine Suche und starte sie mit einem Klick erneut, oder teile sie als Link.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    @if (network === 'bluesky') {
+      <h3>Brauche ich ein Bluesky-Konto?</h3>
+      <p>
+        Nicht, um nach Leuten zu suchen. Bluesky beantwortet Beitragssuchen nur für angemeldete
+        Konten, melde dich dafür also mit Bluesky an; danach kommst du auf diese Seite zurück.
+      </p>
+      <h3>Kann ich auch Mastodon durchsuchen?</h3>
+      <p>
+        Ja: <a mbContentLink routerLink="/de/mastodon-suche">Mastodon durchsuchen</a>, oder auf der
+        Ergebnisseite das Netzwerk wechseln.
+      </p>
+    } @else {
+      <h3>Brauche ich ein Mastodon-Konto?</h3>
+      <p>
+        Nein. Ohne Konto kannst du nach Leuten und Hashtags suchen und Beiträge über Hashtags
+        finden, denn Mastodon-Server erlauben keine anonyme Volltextsuche. Melde dich an, um nach
+        Wörtern in Beiträgen zu suchen; danach kommst du auf diese Seite zurück.
+      </p>
+      <h3>Warum ist das besser als die Suche meines Servers?</h3>
+      <p>
+        Gesucht wird auf demselben Server, aber hier bekommst du Filter, Sortierung, gespeicherte
+        Suchen und eine Erklärung, wonach gefragt wurde, statt eines einzigen Feldes.
+      </p>
+      <h3>Kann ich auch Bluesky durchsuchen?</h3>
+      <p>
+        Ja: <a mbContentLink routerLink="/de/bluesky-suche">Bluesky durchsuchen</a>, oder auf der
+        Ergebnisseite das Netzwerk wechseln.
+      </p>
+    }
+  </section>
+</main>

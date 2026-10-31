@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { MastodonAnalyticsPanel } from './mastodon-analytics-panel';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * Mastodon account analytics as a focused mini-app.
@@ -13,7 +15,7 @@ import { MastodonAnalyticsPanel } from './mastodon-analytics-panel';
  */
 @Component({
   selector: 'app-mastodon-analytics',
-  imports: [RouterLink, MbButton, MbContentLink, MastodonAnalyticsPanel],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
   templateUrl: './mastodon-analytics.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -21,4 +23,20 @@ export class MastodonAnalytics {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
   protected readonly returnHere = { next: '/mastodon-analytics' };
+}
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-analytics-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsDe extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/de/mastodon-statistik' };
 }

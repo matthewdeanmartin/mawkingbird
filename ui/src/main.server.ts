@@ -11,29 +11,70 @@ import {
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
+  TOOLS_DESCRIPTION_DE,
+  TOOLS_INDEX_ALTERNATES,
 } from './app/seo';
 import { Type } from '@angular/core';
 import { FOCUSED_TOOLS, toolAlternates, toolLanguage } from './app/focused-tools';
-import { AnonymousOnMastodon } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
-import { Crosspost } from './app/pages/crosspost/crosspost';
-import { NetworkSearch } from './app/pages/network-search/network-search';
+import {
+  AnonymousOnMastodon,
+  AnonymousOnMastodonDe,
+} from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
+import { Crosspost, CrosspostDe } from './app/pages/crosspost/crosspost';
+import { NetworkSearch, NetworkSearchDe } from './app/pages/network-search/network-search';
 import { DownloadMastodonImages } from './app/pages/download-mastodon-images/download-mastodon-images';
-import { MastodonSimilarHashtags } from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
+import {
+  MastodonSimilarHashtags,
+  MastodonSimilarHashtagsDe,
+} from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
 import { LanguageLanding } from './app/pages/language-landing/language-landing';
-import { ExportMastodonBookmarks } from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
-import { MastodonContentWarnings } from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
-import { MastodonHandleGenerator } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
-import { MastodonMuteBlockAmnesty } from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
-import { FindContactsOnMastodon } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
-import { MastodonFriendsRssFeeds } from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
-import { FriendBridge } from './app/pages/friend-bridge/friend-bridge';
-import { TurnOffBoostsMastodon } from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
-import { GithubToMastodon } from './app/pages/github-to-mastodon/github-to-mastodon';
-import { MastodonAnalytics } from './app/pages/mastodon-analytics/mastodon-analytics';
-import { ScheduleMastodonPosts } from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
-import { TwitterToMastodon } from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
+import {
+  ExportMastodonBookmarks,
+  ExportMastodonBookmarksDe,
+} from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
+import {
+  MastodonContentWarnings,
+  MastodonContentWarningsDe,
+} from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
+import {
+  MastodonHandleGenerator,
+  MastodonHandleGeneratorDe,
+} from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
+import {
+  MastodonMuteBlockAmnesty,
+  MastodonMuteBlockAmnestyDe,
+} from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
+import {
+  FindContactsOnMastodon,
+  FindContactsOnMastodonDe,
+} from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
+import {
+  MastodonFriendsRssFeeds,
+  MastodonFriendsRssFeedsDe,
+} from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
+import { FriendBridge, FriendBridgeDe } from './app/pages/friend-bridge/friend-bridge';
+import {
+  TurnOffBoostsMastodon,
+  TurnOffBoostsMastodonDe,
+} from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
+import {
+  GithubToMastodon,
+  GithubToMastodonDe,
+} from './app/pages/github-to-mastodon/github-to-mastodon';
+import {
+  MastodonAnalytics,
+  MastodonAnalyticsDe,
+} from './app/pages/mastodon-analytics/mastodon-analytics';
+import {
+  ScheduleMastodonPosts,
+  ScheduleMastodonPostsDe,
+} from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
+import {
+  TwitterToMastodon,
+  TwitterToMastodonDe,
+} from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
-import { ToolsIndex } from './app/pages/tools/tools-index';
+import { ToolsIndex, ToolsIndexDe } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
 
@@ -78,11 +119,29 @@ const toolComponents: Record<string, Type<unknown>> = {
   'turn-off-content-warnings-mastodon': MastodonContentWarnings,
   'export-mastodon-bookmarks': ExportMastodonBookmarks,
   'download-mastodon-images': DownloadMastodonImages,
-  'mastodon-bilder-herunterladen': DownloadMastodonImages,
+  'de/mastodon-bilder-herunterladen': DownloadMastodonImages,
   'mastodon-similar-hashtags': MastodonSimilarHashtags,
   'mastodon-in-english': LanguageLanding,
-  'mastodon-auf-deutsch': LanguageLanding,
+  'de/mastodon-auf-deutsch': LanguageLanding,
   'learn-english-with-mastodon': LanguageLanding,
+  'de/twitter-follower-zu-mastodon': TwitterToMastodonDe,
+  'de/mastodon-und-bluesky-gleichzeitig-posten': CrosspostDe,
+  'de/mastodon-statistik': MastodonAnalyticsDe,
+  'de/github-freunde-auf-mastodon': GithubToMastodonDe,
+  'de/mastodon-beitraege-planen': ScheduleMastodonPostsDe,
+  'de/von-bluesky-zu-mastodon': FriendBridgeDe,
+  'de/von-mastodon-zu-bluesky': FriendBridgeDe,
+  'de/mastodon-boosts-ausblenden': TurnOffBoostsMastodonDe,
+  'de/kontakte-auf-mastodon-finden': FindContactsOnMastodonDe,
+  'de/rss-feeds-deiner-mastodon-freunde': MastodonFriendsRssFeedsDe,
+  'de/mastodon-stummschaltungen-aufheben': MastodonMuteBlockAmnestyDe,
+  'de/anonym-auf-mastodon': AnonymousOnMastodonDe,
+  'de/mastodon-nutzernamen-generator': MastodonHandleGeneratorDe,
+  'de/mastodon-inhaltswarnungen-ausschalten': MastodonContentWarningsDe,
+  'de/mastodon-lesezeichen-exportieren': ExportMastodonBookmarksDe,
+  'de/mastodon-suche': NetworkSearchDe,
+  'de/bluesky-suche': NetworkSearchDe,
+  'de/aehnliche-hashtags-mastodon': MastodonSimilarHashtagsDe,
   'mastodon-search': NetworkSearch,
   'bluesky-search': NetworkSearch,
 };
@@ -118,7 +177,24 @@ export default (context: BootstrapContext) =>
             path: 'tools',
             component: ToolsIndex,
             title: 'Free tools for Mastodon and Bluesky',
-            data: { seoIndexable: true, seoDescription: TOOLS_DESCRIPTION },
+            data: {
+              seoIndexable: true,
+              seoDescription: TOOLS_DESCRIPTION,
+              lang: 'en',
+              seoAlternates: TOOLS_INDEX_ALTERNATES,
+            },
+          },
+          {
+            path: 'de',
+            pathMatch: 'full',
+            component: ToolsIndexDe,
+            title: 'Kostenlose Werkzeuge für Mastodon und Bluesky',
+            data: {
+              seoIndexable: true,
+              seoDescription: TOOLS_DESCRIPTION_DE,
+              lang: 'de',
+              seoAlternates: TOOLS_INDEX_ALTERNATES,
+            },
           },
           ...tools.map(({ path, title, description, lang, alternates, component }) => ({
             path,
@@ -144,6 +220,7 @@ export default (context: BootstrapContext) =>
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
             { path: 'tools', renderMode: RenderMode.Prerender },
+            { path: 'de', renderMode: RenderMode.Prerender },
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },

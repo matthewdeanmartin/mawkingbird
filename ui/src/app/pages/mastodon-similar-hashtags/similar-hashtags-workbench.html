@@ -1,5 +1,8 @@
 <form class="finder" (submit)="find($event)">
-  <mb-field label="Hashtags" [hint]="hint">
+  <mb-field
+    [label]="'focusedTools.similar.label' | transloco"
+    [hint]="'focusedTools.similar.hint' | transloco: { max: maxSeeds }"
+  >
     <input
       mbControl
       type="text"
@@ -11,7 +14,9 @@
       (ngModelChange)="text.set($event)"
     />
   </mb-field>
-  <button mbButton type="submit" [disabled]="!canFind()">Find similar hashtags</button>
+  <button mbButton type="submit" [disabled]="!canFind()">
+    {{ 'focusedTools.similar.find' | transloco }}
+  </button>
 </form>
 
 @if (tags().length) {

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../api';
 import { ClientPrefs } from '../../client-prefs';
@@ -10,7 +11,8 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbHelp } from '../../design-system/help/help';
 import { MbNotice } from '../../design-system/notice/notice';
 import { ScheduledStatus } from '../../models';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
+import { routeLanguage } from '../../page-language';
 import {
   Cadence,
   CadenceUnit,
@@ -39,11 +41,67 @@ interface Row {
 
 type ScheduleVisibility = 'public' | 'unlisted' | 'private';
 
-const PROBLEM_TEXT: Record<RowProblem, string> = {
-  empty: 'Write something, or remove this post.',
-  tooLong: `Longer than ${MAX_CHARS} characters, Mastodon's usual limit.`,
-  noTime: 'Pick a time.',
-  tooSoon: 'At least 10 minutes from now, or Mastodon posts it straight away.',
+// i18n focusedTools.schedule.when: When
+// i18n focusedTools.schedule.rulesLabel: Mastodon's scheduling rules
+// i18n focusedTools.schedule.rule.server: Your Mastodon server publishes the posts, so you can close this page once they are scheduled.
+// i18n focusedTools.schedule.rule.soon: Each post must be at least 5 minutes away; this page asks for 10 to be safe.
+// i18n focusedTools.schedule.rule.limits: Up to {{daily}} scheduled posts a day (days are counted in UTC) and {{total}} waiting at once, including ones you scheduled elsewhere.
+// i18n focusedTools.schedule.rule.chars: Posts are up to {{max}} characters; some servers allow more.
+// i18n focusedTools.schedule.rule.cancel: Scheduled posts can be cancelled below until they go out.
+// i18n focusedTools.schedule.first: First post
+// i18n focusedTools.schedule.timeZone: Your time zone: {{zone}}
+// i18n focusedTools.schedule.every: Then one every
+// i18n focusedTools.schedule.unit: Unit
+// i18n focusedTools.schedule.minutes: minutes
+// i18n focusedTools.schedule.hours: hours
+// i18n focusedTools.schedule.days: days
+// i18n focusedTools.schedule.who: Who can see them
+// i18n focusedTools.schedule.public: Public
+// i18n focusedTools.schedule.unlisted: Quiet public
+// i18n focusedTools.schedule.private: Followers only
+// i18n focusedTools.schedule.posts: Posts
+// i18n focusedTools.schedule.post: Post {{n}}
+// i18n focusedTools.schedule.goesOutSchedule: Goes out (from the schedule)
+// i18n focusedTools.schedule.goesOutYours: Goes out (your time)
+// i18n focusedTools.schedule.follow: Follow the schedule
+// i18n focusedTools.schedule.remove: Remove
+// i18n focusedTools.schedule.add: + Add a post
+// i18n focusedTools.schedule.limit.total: That would make {{count}} scheduled posts. Mastodon allows {{total}} at once, counting ones already waiting.
+// i18n focusedTools.schedule.limit.day: {{count}} posts would land on {{day}} (UTC). Mastodon allows {{daily}} a day; space them further apart.
+// i18n focusedTools.schedule.loadFailed: Your scheduled posts couldn't be loaded, so Mastodon's limits can't be checked yet.
+// i18n focusedTools.schedule.retry: Try again
+// i18n focusedTools.schedule.empty.one: One post is empty: write something or remove it.
+// i18n focusedTools.schedule.empty.other: {{count}} posts are empty: write something or remove them.
+// i18n focusedTools.schedule.sending: Scheduling…
+// i18n focusedTools.schedule.send.one: Schedule {{count}} post
+// i18n focusedTools.schedule.send.other: Schedule {{count}} posts
+// i18n focusedTools.schedule.done.one: Scheduled {{count}} post. Your server will publish it on time, even with this page closed.
+// i18n focusedTools.schedule.done.other: Scheduled {{count}} posts. Your server will publish them on time, even with this page closed.
+// i18n focusedTools.schedule.failed.one: One post was not scheduled; the reason is under it.
+// i18n focusedTools.schedule.failed.other: {{count}} posts were not scheduled; the reason is under each one.
+// i18n focusedTools.schedule.upcoming: Already scheduled
+// i18n focusedTools.schedule.loading: Loading your scheduled posts…
+// i18n focusedTools.schedule.slots: {{count}} of {{total}} scheduled slots in use.
+// i18n focusedTools.schedule.cancel: Cancel
+// i18n focusedTools.schedule.nothing: Nothing scheduled yet.
+// i18n focusedTools.schedule.cancelFailed: That post couldn't be cancelled. Try again.
+// i18n focusedTools.schedule.cancelTitle: Cancel this scheduled post?
+// i18n focusedTools.schedule.cancelMessage: It will be deleted from your server and never published.
+// i18n focusedTools.schedule.cancelConfirm: Cancel post
+// i18n focusedTools.schedule.problem.empty: Write something, or remove this post.
+// i18n focusedTools.schedule.problem.tooLong: Longer than {{max}} characters, Mastodon's usual limit.
+// i18n focusedTools.schedule.problem.noTime: Pick a time.
+// i18n focusedTools.schedule.problem.tooSoon: At least 10 minutes from now, or Mastodon posts it straight away.
+// i18n focusedTools.schedule.error.unreachable: Couldn't reach your server. Try again.
+// i18n focusedTools.schedule.error.refused: Your server refused it (HTTP {{status}}).
+// i18n focusedTools.schedule.error.other: Couldn't schedule this post. Try again.
+
+/** Translation keys for a row's problems. */
+const PROBLEM_KEY: Record<RowProblem, string> = {
+  empty: 'focusedTools.schedule.problem.empty',
+  tooLong: 'focusedTools.schedule.problem.tooLong',
+  noTime: 'focusedTools.schedule.problem.noTime',
+  tooSoon: 'focusedTools.schedule.problem.tooSoon',
 };
 
 /** Enough pages for the 300-post limit at 40 a page, with room to spare. */
@@ -63,6 +121,7 @@ function newRow(): Row {
 @Component({
   selector: 'app-schedule-workbench',
   imports: [
+    TranslocoPipe,
     FormsModule,
     ConfirmDialog,
     FocusedNextSteps,
@@ -76,6 +135,13 @@ function newRow(): Row {
   styleUrl: './schedule-workbench.css',
 })
 export class ScheduleWorkbench {
+  protected readonly invite = toolInviteLink();
+  /** Dates in the page's own language (German on the German page), else the browser's. */
+  private readonly dateLocale = routeLanguage();
+  private readonly i18n = inject(TranslocoService);
+  /** Messages built in code, in the page's pinned language when it has one. */
+  private readonly translate = (key: string, params?: Record<string, unknown>) =>
+    this.i18n.translate<string>(key, params, this.dateLocale);
   private readonly api = inject(Api);
   private readonly prefs = inject(ClientPrefs);
 
@@ -144,15 +210,8 @@ export class ScheduleWorkbench {
     void this.loadExisting();
   }
 
-  protected problemText(problem: RowProblem | null): string {
-    return problem ? PROBLEM_TEXT[problem] : '';
-  }
-
-  protected limitText(problem: LimitProblem): string {
-    if (problem.kind === 'total') {
-      return `That would make ${problem.count} scheduled posts. Mastodon allows ${TOTAL_LIMIT} at once, counting ones already waiting.`;
-    }
-    return `${problem.count} posts would land on ${problem.day} (UTC). Mastodon allows ${DAILY_LIMIT} a day; space them further apart.`;
+  protected problemKey(problem: RowProblem | null): string {
+    return problem ? PROBLEM_KEY[problem] : '';
   }
 
   protected length(text: string): number {
@@ -167,7 +226,7 @@ export class ScheduleWorkbench {
 
   protected when(at: Date | string | null): string {
     if (!at) return '';
-    return new Date(at).toLocaleString(undefined, {
+    return new Date(at).toLocaleString(this.dateLocale, {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -228,7 +287,9 @@ export class ScheduleWorkbench {
         // slide it onto an earlier post's cadence slot on the next attempt.
         this.rows.update((rows) =>
           rows.map((r) =>
-            r.key === row.key ? { ...r, pinnedAt: toLocalInput(at), error: reason(error) } : r,
+            r.key === row.key
+              ? { ...r, pinnedAt: toLocalInput(at), error: reason(error, this.translate) }
+              : r,
           ),
         );
       }
@@ -293,12 +354,15 @@ export class ScheduleWorkbench {
 }
 
 /** The server's own sentence when it sent one ("Scheduled at … limit"), else a plain one. */
-function reason(error: unknown): string {
+function reason(
+  error: unknown,
+  t: (key: string, params?: Record<string, unknown>) => string,
+): string {
   if (error instanceof HttpErrorResponse) {
     const detail = String(error.error?.error ?? '').trim();
     if (detail) return detail;
-    if (error.status === 0) return "Couldn't reach your server. Try again.";
-    return `Your server refused it (HTTP ${error.status}).`;
+    if (error.status === 0) return t('focusedTools.schedule.error.unreachable');
+    return t('focusedTools.schedule.error.refused', { status: error.status });
   }
-  return "Couldn't schedule this post. Try again.";
+  return t('focusedTools.schedule.error.other');
 }

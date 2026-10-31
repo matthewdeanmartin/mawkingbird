@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
 import { ContactDiscovery } from '../settings/import-export/contact-discovery';
 import { ContactFriendsImport } from '../settings/import-export/contact-friends-import';
 
@@ -14,10 +14,11 @@ import { ContactFriendsImport } from '../settings/import-export/contact-friends-
   template: `
     <app-contact-friends-import />
     @if (discovery.callCount() > 0) {
-      <app-focused-next-steps inviteLink="/find-contacts-on-mastodon/invite" />
+      <app-focused-next-steps [inviteLink]="invite" />
     }
   `,
 })
 export class ContactsWorkbench {
+  protected readonly invite = toolInviteLink();
   protected readonly discovery = inject(ContactDiscovery);
 }

@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { HandleWorkbench } from './handle-workbench';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * Mastodon handle generator: suggestions from a name, checked for availability
@@ -14,7 +16,7 @@ import { HandleWorkbench } from './handle-workbench';
  */
 @Component({
   selector: 'app-mastodon-handle-generator',
-  imports: [RouterLink, MbButton, MbContentLink, HandleWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -22,3 +24,17 @@ export class MastodonHandleGenerator {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-handle-generator-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorDe extends MastodonHandleGenerator {}

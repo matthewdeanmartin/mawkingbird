@@ -1,5 +1,5 @@
 <section class="wizard" aria-labelledby="handle-step-title">
-  <ol class="progress" aria-label="Steps">
+  <ol class="progress" [attr.aria-label]="'focusedTools.handle.steps' | transloco">
     @for (n of steps; track n) {
       <li
         [class.current]="step() === n"
@@ -7,21 +7,24 @@
         [attr.aria-current]="step() === n ? 'step' : null"
       >
         <span class="num" aria-hidden="true">{{ step() > n ? '✓' : n }}</span>
-        <span class="label">{{ stepTitles[n] }}</span>
+        <span class="label">{{ 'focusedTools.handle.step' + n | transloco }}</span>
       </li>
     }
   </ol>
 
   <h2 id="handle-step-title" class="step-title" tabindex="-1" #stepHeading>
-    <span class="muted">Step {{ step() }} of 4:</span> {{ stepTitles[step()] }}
+    <span class="muted">{{
+      'focusedTools.handle.stepOf' | transloco: { n: step(), total: 4 }
+    }}</span>
+    {{ 'focusedTools.handle.step' + step() | transloco }}
   </h2>
 
   @switch (step()) {
     @case (1) {
       <form class="handle-form" (ngSubmit)="next()">
         <mb-field
-          label="Your name or nickname"
-          hint="For example: Matthew Martin, or a nickname you use"
+          [label]="'focusedTools.handle.name' | transloco"
+          [hint]="'focusedTools.handle.nameHint' | transloco"
         >
           <input
             mbControl
@@ -32,9 +35,9 @@
           />
         </mb-field>
         <mb-field
-          label="Server you plan to join"
-          hint="mastodon.social is the biggest; any Mastodon server works"
-          [error]="serverError() ? 'Type a server address, like mastodon.social' : ''"
+          [label]="'focusedTools.handle.server' | transloco"
+          [hint]="'focusedTools.handle.serverHint' | transloco"
+          [error]="serverError() ? ('focusedTools.handle.serverError' | transloco) : ''"
         >
           <input
             mbControl
@@ -48,7 +51,7 @@
         <div class="nav">
           <span></span>
           <button mbButton type="submit" [disabled]="!suggestions().length">
-            Next: find handles
+            {{ 'focusedTools.handle.next' | transloco }}
           </button>
         </div>
       </form>
@@ -56,18 +59,17 @@
 
     @case (2) {
       <p class="muted small">
-        Checked on {{ server() }}.
-        @if (checking()) {
-          Still checking…
-        } @else {
-          Pick the one you like.
-        }
+        {{ 'focusedTools.handle.checkedOn' | transloco: { server: server() } }}
+        {{
+          (checking() ? 'focusedTools.handle.stillChecking' : 'focusedTools.handle.pickOne')
+            | transloco
+        }}
       </p>
       <ul class="handles">
         @for (row of rows(); track row.handle) {
           <li [class]="'is-' + row.status">
             <span class="handle">&#64;{{ row.handle }}</span>
-            <span class="status">{{ label(row.status) }}</span>
+            <span class="status">{{ label(row.status) | transloco }}</span>
             <button
               mbButton
               variant="outline"
@@ -76,34 +78,39 @@
               [disabled]="row.status === 'taken' || row.status === 'checking'"
               (click)="choose(row.handle)"
             >
-              Pick
+              {{ 'focusedTools.handle.pick' | transloco }}
             </button>
           </li>
         }
       </ul>
       <div class="nav">
-        <button mbButton variant="outline" type="button" (click)="back()">Back</button>
-        <span class="muted small">Pick a handle to continue</span>
+        <button mbButton variant="outline" type="button" (click)="back()">
+          {{ 'focusedTools.handle.back' | transloco }}
+        </button>
+        <span class="muted small">{{ 'focusedTools.handle.pickToContinue' | transloco }}</span>
       </div>
     }
 
     @case (3) {
       @if (chosen(); as handle) {
         <p>
-          To claim <strong>&#64;{{ handle }}</strong
-          >, sign up on {{ server() }} and type <strong>{{ handle }}</strong> as your username. Your
-          full address will be <strong>&#64;{{ handle }}&#64;{{ server() }}</strong
+          {{ 'focusedTools.handle.claimBefore' | transloco }}
+          <strong>&#64;{{ handle }}</strong>
+          {{ 'focusedTools.handle.claimSignUp' | transloco: { server: server() } }}
+          <strong>{{ handle }}</strong>
+          {{ 'focusedTools.handle.claimUsername' | transloco }}
+          <strong>&#64;{{ handle }}&#64;{{ server() }}</strong
           >.
         </p>
         <p>
-          <a mbButton [href]="signUp()" target="_blank" rel="noopener noreferrer"
-            >Sign up on {{ server() }}</a
-          >
+          <a mbButton [href]="signUp()" target="_blank" rel="noopener noreferrer">{{
+            'focusedTools.handle.signUpOn' | transloco: { server: server() }
+          }}</a>
         </p>
 
-        <h3>Or on one of the biggest servers</h3>
+        <h3>{{ 'focusedTools.handle.biggest' | transloco }}</h3>
         @if (!big().length) {
-          <p class="muted small">Loading the server list…</p>
+          <p class="muted small">{{ 'focusedTools.handle.loadingServers' | transloco }}</p>
         } @else {
           <ul class="handles">
             @for (entry of big(); track entry.domain) {
@@ -111,15 +118,15 @@
                 <span class="handle">
                   {{ entry.domain }}
                   <small class="muted">
-                    {{ users(entry.users) }}
+                    {{ users(entry.users) | transloco: { count: usersCount(entry.users) } }}
                     @if (entry.approval === true) {
-                      · sign-ups reviewed
+                      · {{ 'focusedTools.handle.reviewed' | transloco }}
                     } @else if (entry.approval === false) {
-                      · open sign-ups
+                      · {{ 'focusedTools.handle.open' | transloco }}
                     }
                   </small>
                 </span>
-                <span class="status">{{ label(entry.status) }}</span>
+                <span class="status">{{ label(entry.status) | transloco }}</span>
                 @if (entry.status === 'free') {
                   <a
                     mbButton
@@ -128,20 +135,21 @@
                     [href]="signUpOn(entry.domain)"
                     target="_blank"
                     rel="noopener noreferrer"
-                    >Sign up</a
+                    >{{ 'focusedTools.handle.signUp' | transloco }}</a
                   >
                 }
               </li>
             }
           </ul>
         }
-        <mb-notice>
-          "Looks free" means no account has that name yet. A server can still refuse it at sign-up:
-          names of deleted accounts stay reserved, and admins reserve some words.
-        </mb-notice>
+        <mb-notice>{{ 'focusedTools.handle.looksFreeNote' | transloco }}</mb-notice>
         <div class="nav">
-          <button mbButton variant="outline" type="button" (click)="back()">Back</button>
-          <button mbButton type="button" (click)="finish()">Done</button>
+          <button mbButton variant="outline" type="button" (click)="back()">
+            {{ 'focusedTools.handle.back' | transloco }}
+          </button>
+          <button mbButton type="button" (click)="finish()">
+            {{ 'focusedTools.handle.done' | transloco }}
+          </button>
         </div>
       }
     }
@@ -149,17 +157,20 @@
     @case (4) {
       <p>
         @if (chosen(); as handle) {
-          Once you've signed up as <strong>&#64;{{ handle }}</strong
-          >, sign in to Mawkingbird to start following people.
+          {{ 'focusedTools.handle.onceBefore' | transloco }}
+          <strong>&#64;{{ handle }}</strong
+          >{{ 'focusedTools.handle.onceAfter' | transloco }}
         }
       </p>
       <div class="nav">
-        <button mbButton variant="outline" type="button" (click)="back()">Back</button>
-        <a mbButton routerLink="/login/mastodon">Sign in to Mawkingbird</a>
+        <button mbButton variant="outline" type="button" (click)="back()">
+          {{ 'focusedTools.handle.back' | transloco }}
+        </button>
+        <a mbButton routerLink="/login/mastodon">{{ 'focusedTools.handle.signIn' | transloco }}</a>
       </div>
       <p class="restart">
         <button mbButton variant="link" type="button" (click)="startOver()">
-          Start over with another name
+          {{ 'focusedTools.handle.startOver' | transloco }}
         </button>
       </p>
       <app-focused-next-steps [inviteLink]="inviteLink()" />

@@ -1,0 +1,83 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-Lesezeichen</p>
+    <h1>Deine Mastodon-Lesezeichen exportieren</h1>
+    <p>
+      Lade jeden Beitrag, den du auf Mastodon als Lesezeichen gespeichert hast, als Lesezeichendatei
+      herunter, die dein Browser, Raindrop.io, Pinboard oder jeder Lesezeichendienst importieren
+      kann. Einen Beitrag wegen des geteilten Artikels gespeichert? Pack ihn aus, und du bekommst
+      den Artikel.
+      @if (!inShell) {
+        Melde dich mit Mastodon an, um loszulegen.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lesezeichen lesen</h2>
+        <p>Jedes Lesezeichen deines Mastodon-Kontos, von deinem eigenen Server gelesen.</p>
+      </li>
+      <li>
+        <h2>Wählen, was du behältst</h2>
+        <p>
+          Die Beiträge selbst, die darin geteilten Links („ausgepackt“) oder nur die Lesezeichen,
+          die einen Link geteilt haben.
+        </p>
+      </li>
+      <li>
+        <h2>Datei importieren</h2>
+        <p>
+          Eine normale Browser-Lesezeichendatei: Öffne die Lesezeichenverwaltung deines Browsers
+          oder deinen Lesezeichendienst und importiere sie.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und Lesezeichen exportieren</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Exportiert Mastodon Lesezeichen nicht schon?</h3>
+    <p>
+      Sein Datenexport listet deine Lesezeichen als Tabelle von Beitragsadressen, die Browser und
+      Lesezeichendienste nicht importieren. Diese Datei schon, mit Titeln, Text und Hashtags.
+    </p>
+    <h3>Was heißt „auspacken“?</h3>
+    <p>
+      Die meisten gespeicherten Beiträge wurden wegen eines Links geteilt: ein Artikel, ein Video,
+      ein Projekt. Auspacken speichert diesen Link statt des Beitrags darüber, mit dem Beitragstext
+      als Beschreibung.
+    </p>
+    <h3>Werden meine Lesezeichen irgendwo hochgeladen?</h3>
+    <p>
+      Nein. Sie werden von deinem Mastodon-Server gelesen, und die Datei entsteht in deinem Browser.
+      Nichts wird an Mawkingbird geschickt.
+    </p>
+    <h3>Stimmen die Daten?</h3>
+    <p>
+      Jedes Lesezeichen trägt das Datum, an dem der Beitrag geschrieben wurde. Mastodon speichert
+      nicht, wann du ihn gespeichert hast.
+    </p>
+  </section>
+</main>

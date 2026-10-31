@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageChecklist } from './language-checklist';
 import { LANGUAGE_LANDING_COPY, LanguageLandingCopy } from './language-landing.copy';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * A language landing page (`mastodon-auf-deutsch`, `mastodon-in-english`,
@@ -17,7 +18,7 @@ import { LANGUAGE_LANDING_COPY, LanguageLandingCopy } from './language-landing.c
  */
 @Component({
   selector: 'app-language-landing',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageChecklist],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, LanguageChecklist],
   templateUrl: './language-landing.html',
   styleUrl: '../focused-apps/focused-page.css',
   // Like .steps, without the numbers: these are claims, not a sequence.

@@ -6,13 +6,41 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { Preferences } from '../../models';
 import { Server } from '../../server';
 import { TrustedAccounts } from '../../trusted-accounts';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
+import { TranslocoPipe } from '@jsverse/transloco';
 
-/** Mastodon's `reading:expand:media` values, as its own Preferences page words them. */
+// i18n focusedTools.cw.here: In Mawkingbird
+// i18n focusedTools.cw.expand: Auto-expand content warnings
+// i18n focusedTools.cw.expandHint: Posts with a content warning open on their own. The warning text still shows above the post.
+// i18n focusedTools.cw.media: Auto-show sensitive media
+// i18n focusedTools.cw.mediaHint: Images and video marked sensitive show without the blur.
+// i18n focusedTools.cw.applies: Changes apply straight away, for this account in this browser.
+// i18n focusedTools.cw.restored: Your trust setting was "trust no one", which keeps every warning closed, so it is back to the default.
+// i18n focusedTools.cw.server: On your Mastodon server
+// i18n focusedTools.cw.serverIntro: The Mastodon website and some other apps follow your server's own preferences, which are separate from Mawkingbird's. They are currently:
+// i18n focusedTools.cw.serverExpand: Always expand posts marked with content warnings:
+// i18n focusedTools.cw.serverMedia: Media display:
+// i18n focusedTools.cw.on: on
+// i18n focusedTools.cw.off: off
+// i18n focusedTools.cw.serverOnly: Mastodon doesn't let apps change these, so they can only be set on your server's own website.
+// i18n focusedTools.cw.serverLink: Open your server's preferences
+// i18n focusedTools.cw.trustTitle: Or only for people you trust
+// i18n focusedTools.cw.trustBody: Mawkingbird can open warnings and show media for just the people you choose, and keep them closed for everyone else: trust individual people from the menu on their profile, everyone you follow, or everyone you follow and what they boost.
+// i18n focusedTools.cw.trusted.one: You trust {{count}} person so far.
+// i18n focusedTools.cw.trusted.other: You trust {{count}} people so far.
+// i18n focusedTools.cw.choose: Choose who you trust
+// i18n focusedTools.cw.display.default: hide media marked as sensitive
+// i18n focusedTools.cw.display.showAll: show all
+// i18n focusedTools.cw.display.hideAll: hide all
+
+/**
+ * Mastodon's `reading:expand:media` values, as its own Preferences page words
+ * them: translation keys.
+ */
 const MEDIA_DISPLAY: Record<string, string> = {
-  default: 'hide media marked as sensitive',
-  show_all: 'show all',
-  hide_all: 'hide all',
+  default: 'focusedTools.cw.display.default',
+  show_all: 'focusedTools.cw.display.showAll',
+  hide_all: 'focusedTools.cw.display.hideAll',
 };
 
 /**
@@ -26,7 +54,7 @@ const MEDIA_DISPLAY: Record<string, string> = {
  */
 @Component({
   selector: 'app-content-warnings-workbench',
-  imports: [FocusedNextSteps, FormsModule, MbCheckbox, RouterLink],
+  imports: [TranslocoPipe, FocusedNextSteps, FormsModule, MbCheckbox, RouterLink],
   templateUrl: './content-warnings-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',
   styles: `
@@ -43,6 +71,7 @@ const MEDIA_DISPLAY: Record<string, string> = {
   `,
 })
 export class ContentWarningsWorkbench {
+  protected readonly invite = toolInviteLink();
   private readonly api = inject(Api);
   private readonly server = inject(Server);
   protected readonly trust = inject(TrustedAccounts);
@@ -82,6 +111,7 @@ export class ContentWarningsWorkbench {
     this.changed.set(true);
   }
 
+  /** A translation key for known values; an unknown value shows as itself. */
   protected mediaDisplay(value: string | undefined): string {
     return MEDIA_DISPLAY[value ?? ''] ?? value ?? 'unknown';
   }

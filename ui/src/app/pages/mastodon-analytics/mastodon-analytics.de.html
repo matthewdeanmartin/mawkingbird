@@ -1,0 +1,70 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-Statistik</p>
+    <h1>Mastodon-Statistik für dein Konto</h1>
+    <p>
+      Sieh, wie deine Beiträge ankommen und wer zuhört.
+      @if (!inShell) {
+        Melde dich mit Mastodon an, und deine Zahlen werden hier berechnet, aus deinen eigenen
+        Beiträgen und Followern.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Deine Statistik wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Deine besten Beiträge</h2>
+        <p>
+          Top-Beiträge, Favoriten, Boosts und Antworten pro Beitrag und eine Schätzung deiner
+          Reichweite.
+        </p>
+      </li>
+      <li>
+        <h2>Dein Publikum</h2>
+        <p>
+          Wie viele der Leute, denen du folgst und die dir folgen, noch aktiv sind, und mit wem du
+          am meisten sprichst.
+        </p>
+      </li>
+      <li>
+        <h2>Deine Gewohnheiten</h2>
+        <p>Wann du postest, wie oft, in welchen Sprachen und worüber, in einem Kalender.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und deine sehen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Wohin werden meine Daten geschickt?</h3>
+    <p>
+      Nirgendwohin neu. Deine Beiträge und Follower werden von deinem eigenen Mastodon-Server
+      gelesen und die Zahlen in diesem Browser berechnet. Mawkingbird behält keine Kopie.
+    </p>
+    <h3>Warum ist die Reichweite eine Schätzung?</h3>
+    <p>
+      Mastodon zählt keine Aufrufe. Die Reichweite wird aus deinen Followern und ihren Reaktionen
+      geschätzt, und die Seite sagt das direkt neben der Zahl.
+    </p>
+  </section>
+</main>

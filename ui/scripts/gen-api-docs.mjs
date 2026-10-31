@@ -31,7 +31,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SCHEMA = process.env.MASTODON_OPENAPI_SCHEMA ?? join(HERE, '..', '..', '..', 'mastodon_mock', 'mastodon-openapi', 'dist', 'schema.json');
+const SCHEMA =
+  process.env.MASTODON_OPENAPI_SCHEMA ??
+  join(HERE, '..', '..', '..', 'mastodon_mock', 'mastodon-openapi', 'dist', 'schema.json');
 const TARGET = join(HERE, '..', 'src', 'app', 'observability', 'api-docs.generated.ts');
 const DOCS_PREFIX = 'https://docs.joinmastodon.org/methods/';
 const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'];

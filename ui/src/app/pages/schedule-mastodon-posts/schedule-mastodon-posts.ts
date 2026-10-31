@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { ScheduleWorkbench } from './schedule-workbench';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * Bulk Mastodon scheduling as a focused mini-app.
@@ -15,7 +17,7 @@ import { ScheduleWorkbench } from './schedule-workbench';
  */
 @Component({
   selector: 'app-schedule-mastodon-posts',
-  imports: [RouterLink, MbButton, MbContentLink, ScheduleWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
   templateUrl: './schedule-mastodon-posts.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -23,4 +25,20 @@ export class ScheduleMastodonPosts {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
   protected readonly returnHere = { next: '/schedule-mastodon-posts' };
+}
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/de/mastodon-beitraege-planen' };
 }

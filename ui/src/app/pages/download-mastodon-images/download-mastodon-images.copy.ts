@@ -71,7 +71,7 @@ export const DOWNLOAD_IMAGES_COPY: Record<PageLanguage, DownloadImagesCopy> = {
     ],
   },
   de: {
-    path: '/mastodon-bilder-herunterladen',
+    path: '/de/mastodon-bilder-herunterladen',
     openApp: 'App öffnen',
     eyebrow: 'Mastodon-Medien',
     heading: 'Bilder von Mastodon herunterladen',

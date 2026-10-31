@@ -2,9 +2,16 @@ import { Component, computed, inject } from '@angular/core';
 import { Auth } from '../../auth';
 import { Compose, PostTarget } from '../../compose/compose';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
+
+// i18n focusedTools.crosspost.both: Write once, post to Mastodon and Bluesky
+// i18n focusedTools.crosspost.fedi: Try it on Mastodon
+// i18n focusedTools.crosspost.bsky: Try it on Bluesky
+// i18n focusedTools.crosspost.addBluesky: Add Bluesky to post to both
+// i18n focusedTools.crosspost.addMastodon: Add Mastodon to post to both
 import { ConnectionBluesky } from '../settings/connections/bluesky/connection-bluesky';
 import { ConnectionMastodon } from '../settings/connections/mastodon/connection-mastodon';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * The signed-in body of /crosspost: the app's own composer aimed at whatever
@@ -15,10 +22,10 @@ import { ConnectionMastodon } from '../settings/connections/mastodon/connection-
  */
 @Component({
   selector: 'app-crosspost-workbench',
-  imports: [Compose, ConnectionBluesky, ConnectionMastodon, FocusedNextSteps],
+  imports: [TranslocoPipe, Compose, ConnectionBluesky, ConnectionMastodon, FocusedNextSteps],
   template: `
     <section class="panel">
-      <h2>{{ heading() }}</h2>
+      <h2>{{ heading() | transloco }}</h2>
       <!-- One composer per target: the composer reads its target once, and
            connecting a network should start it afresh aimed at both. -->
       @switch (target()) {
@@ -36,18 +43,18 @@ import { ConnectionMastodon } from '../settings/connections/mastodon/connection-
 
     @if (!bskyReady()) {
       <section class="panel">
-        <h2>Add Bluesky to post to both</h2>
+        <h2>{{ 'focusedTools.crosspost.addBluesky' | transloco }}</h2>
         <app-connection-bluesky [embedded]="true" />
       </section>
     }
     @if (!mastodonReady()) {
       <section class="panel">
-        <h2>Add Mastodon to post to both</h2>
+        <h2>{{ 'focusedTools.crosspost.addMastodon' | transloco }}</h2>
         <app-connection-mastodon [embedded]="true" />
       </section>
     }
 
-    <app-focused-next-steps inviteLink="/crosspost/invite" />
+    <app-focused-next-steps [inviteLink]="invite" />
   `,
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -63,14 +70,16 @@ export class CrosspostWorkbench {
     this.mastodonReady() && this.bskyReady() ? 'both' : this.mastodonReady() ? 'fedi' : 'bsky',
   );
 
+  protected readonly invite = toolInviteLink();
+  /** The panel heading's translation key, by which networks are connected. */
   protected readonly heading = computed(() => {
     switch (this.target()) {
       case 'both':
-        return 'Write once, post to Mastodon and Bluesky';
+        return 'focusedTools.crosspost.both';
       case 'fedi':
-        return 'Try it on Mastodon';
+        return 'focusedTools.crosspost.fedi';
       default:
-        return 'Try it on Bluesky';
+        return 'focusedTools.crosspost.bsky';
     }
   });
 }

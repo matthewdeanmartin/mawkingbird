@@ -6,6 +6,7 @@ import { PageLanguage } from '../../focused-tools';
 import { provideRouteLanguage } from '../../page-language';
 import { MediaDownloadWorkbench } from './media-download-workbench';
 import { DOWNLOAD_IMAGES_COPY } from './download-mastodon-images.copy';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * "Download images from Mastodon" as a focused mini-app: an account's pictures
@@ -21,7 +22,7 @@ import { DOWNLOAD_IMAGES_COPY } from './download-mastodon-images.copy';
  */
 @Component({
   selector: 'app-download-mastodon-images',
-  imports: [RouterLink, MbButton, MbContentLink, MediaDownloadWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MediaDownloadWorkbench],
   templateUrl: './download-mastodon-images.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

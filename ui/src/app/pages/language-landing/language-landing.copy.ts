@@ -46,8 +46,8 @@ export interface LanguageLandingCopy {
 }
 
 export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
-  'mastodon-auf-deutsch': {
-    path: 'mastodon-auf-deutsch',
+  'de/mastodon-auf-deutsch': {
+    path: 'de/mastodon-auf-deutsch',
     lang: 'de',
     target: 'de',
     learning: 'en',

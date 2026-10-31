@@ -16,6 +16,14 @@ header {
   gap: 16px;
   margin-bottom: 32px;
 }
+/* The page in its other language: next to "Open the app", not mid-header. */
+.language-switch {
+  margin-inline-start: auto;
+  color: var(--muted);
+}
+.language-switch:hover {
+  color: var(--accent);
+}
 .eyebrow {
   margin: 0;
   font-weight: 700;

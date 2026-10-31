@@ -22,6 +22,7 @@ import { MastodonServers, ServerSuggestion } from '../../mastodon-servers';
 import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
 import { Availability, checkHandle, normalizeDomain, signUpUrl } from './handle-availability';
 import { handleVariants } from './handle-variants';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 type Status = Availability | 'checking';
 
@@ -42,6 +43,46 @@ interface BigServer {
 const BIG_SERVER_COUNT = 10;
 /** Lookups in flight at once: quick, and gentle on any one server. */
 const CONCURRENCY = 4;
+
+// i18n focusedTools.handle.steps: Steps
+// i18n focusedTools.handle.step1: Your name
+// i18n focusedTools.handle.step2: Pick a handle
+// i18n focusedTools.handle.step3: Claim it
+// i18n focusedTools.handle.step4: Done
+// i18n focusedTools.handle.stepOf: Step {{n}} of {{total}}:
+// i18n focusedTools.handle.name: Your name or nickname
+// i18n focusedTools.handle.nameHint: For example: Matthew Martin, or a nickname you use
+// i18n focusedTools.handle.server: Server you plan to join
+// i18n focusedTools.handle.serverHint: mastodon.social is the biggest; any Mastodon server works
+// i18n focusedTools.handle.serverError: Type a server address, like mastodon.social
+// i18n focusedTools.handle.next: Next: find handles
+// i18n focusedTools.handle.checkedOn: Checked on {{server}}.
+// i18n focusedTools.handle.stillChecking: Still checking…
+// i18n focusedTools.handle.pickOne: Pick the one you like.
+// i18n focusedTools.handle.pick: Pick
+// i18n focusedTools.handle.back: Back
+// i18n focusedTools.handle.pickToContinue: Pick a handle to continue
+// i18n focusedTools.handle.claimBefore: To claim
+// i18n focusedTools.handle.claimSignUp: , sign up on {{server}} and type
+// i18n focusedTools.handle.claimUsername: as your username. Your full address will be
+// i18n focusedTools.handle.signUpOn: Sign up on {{server}}
+// i18n focusedTools.handle.biggest: Or on one of the biggest servers
+// i18n focusedTools.handle.loadingServers: Loading the server list…
+// i18n focusedTools.handle.reviewed: sign-ups reviewed
+// i18n focusedTools.handle.open: open sign-ups
+// i18n focusedTools.handle.signUp: Sign up
+// i18n focusedTools.handle.looksFreeNote: "Looks free" means no account has that name yet. A server can still refuse it at sign-up: names of deleted accounts stay reserved, and admins reserve some words.
+// i18n focusedTools.handle.done: Done
+// i18n focusedTools.handle.onceBefore: Once you've signed up as
+// i18n focusedTools.handle.onceAfter: , sign in to Mawkingbird to start following people.
+// i18n focusedTools.handle.signIn: Sign in to Mawkingbird
+// i18n focusedTools.handle.startOver: Start over with another name
+// i18n focusedTools.handle.status.free: Looks free
+// i18n focusedTools.handle.status.taken: Taken
+// i18n focusedTools.handle.status.unknown: Couldn't check
+// i18n focusedTools.handle.status.checking: Checking…
+// i18n focusedTools.handle.people: {{count}} people
+// i18n focusedTools.handle.peopleThousands: {{count}}k people
 
 /** The wizard's steps: your name, pick a handle, claim it, done. */
 export type HandleStep = 1 | 2 | 3 | 4;
@@ -68,7 +109,16 @@ export const STEP_TITLES: Record<HandleStep, string> = {
  */
 @Component({
   selector: 'app-handle-workbench',
-  imports: [FormsModule, RouterLink, FocusedNextSteps, MbButton, MbControl, MbField, MbNotice],
+  imports: [
+    TranslocoPipe,
+    FormsModule,
+    RouterLink,
+    FocusedNextSteps,
+    MbButton,
+    MbControl,
+    MbField,
+    MbNotice,
+  ],
   templateUrl: './handle-workbench.html',
   styleUrl: './handle-workbench.css',
 })
@@ -244,16 +294,17 @@ export class HandleWorkbench {
     });
   }
 
+  /** The status's translation key. */
   protected label(status: Status): string {
     switch (status) {
       case 'free':
-        return 'Looks free';
+        return 'focusedTools.handle.status.free';
       case 'taken':
-        return 'Taken';
+        return 'focusedTools.handle.status.taken';
       case 'unknown':
-        return "Couldn't check";
+        return 'focusedTools.handle.status.unknown';
       default:
-        return 'Checking…';
+        return 'focusedTools.handle.status.checking';
     }
   }
 
@@ -261,8 +312,13 @@ export class HandleWorkbench {
     return signUpUrl(domain);
   }
 
+  /** The translation key for a server's size; its number is {@link usersCount}. */
   protected users(count: number): string {
-    return count >= 1000 ? `${Math.round(count / 1000)}k people` : `${count} people`;
+    return count >= 1000 ? 'focusedTools.handle.peopleThousands' : 'focusedTools.handle.people';
+  }
+
+  protected usersCount(count: number): number {
+    return count >= 1000 ? Math.round(count / 1000) : count;
   }
 }
 

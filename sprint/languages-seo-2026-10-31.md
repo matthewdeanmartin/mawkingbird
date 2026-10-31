@@ -1,6 +1,6 @@
 # German and English SEO pages: two sprints, 2026-10-31
 
-Status: sprint 1 implemented and verified locally, uncommitted; sprint 2 planned. Spec: [Per-language landing pages](../spec/language-landing-pages.md).
+Status: both sprints implemented locally, uncommitted; S2-5 (measurement) not started. Spec: [Per-language landing pages](../spec/language-landing-pages.md).
 
 ## Owner decisions (2026-10-31)
 
@@ -141,3 +141,28 @@ design inventory review.
   inventory reviewed (two candidates added, adopted scope).
 - Not verified: the signed-in checklist against a real Mastodon account (specs
   only), and anything on canary.
+
+### Sprint 2 (2026-10-31)
+
+- Owner decision mid-sprint: German pages live under `/de/`. The two pilot
+  URLs from sprint 1 redirect there.
+- S2-1: 18 German tool pages, each a `…De` subclass with its own
+  `.de.html` (German sign-in return paths), registered with `lang` and
+  `translationOf`. `german-pages.spec.ts` renders all of them signed out.
+- S2-2: the tools' own strings moved to `focusedTools.*` keys, 252 German
+  strings; Invite links derive from the page's route (`toolInviteLink()`).
+- S2-3: 114 German gaps filled in embedded app parts (composer permissions, poll
+  statistics, post menu, analytics errors, video player, similar-hashtags panel).
+  German coverage 81% → 84%.
+- S2-4: `/de/` German index (`ToolsIndexDe`) paired with /tools via hreflang;
+  `LanguageVersions` links each page to its other language.
+- Gates: format, lint, check:i18n, build:mockingbird (initial 889 kB),
+  `make test-seo` and `test:seo:browser` passed. `make test`: 1 failure,
+  server-picker.spec.ts "waits for an explicit action before connecting to a
+  typed local server"; that file is untouched and passes alone (9/9), so it is
+  a test-order interaction, not yet diagnosed.
+- Live (en-US Chromium, prerendered build): /de/, the German handle generator,
+  search and similar-hashtags bodies all German; language links both ways; the
+  old pilot URL redirects. No page errors.
+- Not done: S2-5 measurement; native German review; the test-manifest
+  update for the new test IDs.

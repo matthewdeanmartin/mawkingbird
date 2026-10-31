@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1329,
-  "filesWithCandidates": 295,
+  "filesScanned": 1347,
+  "filesWithCandidates": 312,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -2844,6 +2844,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.html",
       "status": "needs semantic review",
       "findings": [
@@ -2853,11 +2871,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 53
+          "line": 54
         }
       ]
     },
@@ -2871,35 +2889,35 @@
         },
         {
           "pattern": "shared",
-          "line": 20
+          "line": 25
         },
         {
           "pattern": "shared",
-          "line": 32
+          "line": 37
         },
         {
           "pattern": "shared",
-          "line": 44
+          "line": 52
         },
         {
           "pattern": "shared",
-          "line": 47
+          "line": 55
         },
         {
           "pattern": "shared",
-          "line": 136
+          "line": 158
         },
         {
           "pattern": "shared",
-          "line": 139
+          "line": 163
         },
         {
           "pattern": "nativeButtons",
-          "line": 32
+          "line": 37
         },
         {
           "pattern": "nativeButtons",
-          "line": 136
+          "line": 158
         }
       ]
     },
@@ -3404,6 +3422,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/crosspost/crosspost.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.html",
       "status": "needs semantic review",
       "findings": [
@@ -3413,15 +3453,15 @@
         },
         {
           "pattern": "shared",
-          "line": 5
-        },
-        {
-          "pattern": "shared",
-          "line": 47
+          "line": 6
         },
         {
           "pattern": "shared",
           "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 49
         }
       ]
     },
@@ -3461,11 +3501,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 32
+          "line": 33
         }
       ]
     },
@@ -3721,19 +3761,15 @@
         },
         {
           "pattern": "shared",
-          "line": 9
+          "line": 13
         },
         {
           "pattern": "shared",
-          "line": 20
+          "line": 27
         },
         {
           "pattern": "shared",
-          "line": 25
-        },
-        {
-          "pattern": "shared",
-          "line": 39
+          "line": 32
         },
         {
           "pattern": "shared",
@@ -3741,7 +3777,11 @@
         },
         {
           "pattern": "shared",
-          "line": 52
+          "line": 55
+        },
+        {
+          "pattern": "shared",
+          "line": 65
         },
         {
           "pattern": "nativeButtons",
@@ -3749,11 +3789,29 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 9
+          "line": 13
         },
         {
           "pattern": "nativeButtons",
-          "line": 47
+          "line": 55
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
         }
       ]
     },
@@ -3767,11 +3825,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 51
+          "line": 52
         }
       ]
     },
@@ -4218,6 +4276,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.html",
       "status": "needs semantic review",
       "findings": [
@@ -4227,11 +4303,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 51
         }
       ]
     },
@@ -4438,6 +4514,36 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 55
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 81
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/friend-bridge/friend-bridge.html",
       "status": "needs semantic review",
       "findings": [
@@ -4447,11 +4553,7 @@
         },
         {
           "pattern": "shared",
-          "line": 5
-        },
-        {
-          "pattern": "shared",
-          "line": 53
+          "line": 6
         },
         {
           "pattern": "shared",
@@ -4459,11 +4561,33 @@
         },
         {
           "pattern": "shared",
-          "line": 76
+          "line": 55
         },
         {
           "pattern": "shared",
-          "line": 79
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
         }
       ]
     },
@@ -4477,11 +4601,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 48
+          "line": 49
         }
       ]
     },
@@ -4853,11 +4977,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 32
+          "line": 33
         }
       ]
     },
@@ -5448,6 +5572,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.html",
       "status": "needs semantic review",
       "findings": [
@@ -5457,11 +5599,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 47
+          "line": 48
         }
       ]
     },
@@ -5480,6 +5622,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
       "status": "needs semantic review",
       "findings": [
@@ -5489,11 +5649,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 47
+          "line": 48
         }
       ]
     },
@@ -5503,11 +5663,33 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 39
+          "line": 52
         },
         {
           "pattern": "nativeButtons",
-          "line": 39
+          "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        },
+        {
+          "pattern": "shared",
+          "line": 54
         }
       ]
     },
@@ -5521,15 +5703,15 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 52
+          "line": 53
         },
         {
           "pattern": "shared",
-          "line": 55
+          "line": 56
         }
       ]
     },
@@ -5539,91 +5721,105 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 22
+          "line": 25
         },
         {
           "pattern": "shared",
-          "line": 27
+          "line": 30
         },
         {
           "pattern": "shared",
-          "line": 34
+          "line": 37
         },
         {
           "pattern": "shared",
-          "line": 40
+          "line": 43
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 53
         },
         {
           "pattern": "shared",
-          "line": 72
+          "line": 74
         },
         {
           "pattern": "shared",
-          "line": 85
+          "line": 87
         },
         {
           "pattern": "shared",
-          "line": 99
+          "line": 106
         },
         {
           "pattern": "shared",
-          "line": 125
+          "line": 132
         },
         {
           "pattern": "shared",
-          "line": 138
+          "line": 145
         },
         {
           "pattern": "shared",
-          "line": 143
+          "line": 147
         },
         {
           "pattern": "shared",
-          "line": 144
+          "line": 150
         },
         {
           "pattern": "shared",
-          "line": 157
+          "line": 166
         },
         {
           "pattern": "shared",
-          "line": 158
+          "line": 169
         },
         {
           "pattern": "shared",
-          "line": 161
+          "line": 172
         },
         {
           "pattern": "nativeButtons",
-          "line": 50
+          "line": 53
         },
         {
           "pattern": "nativeButtons",
-          "line": 71
+          "line": 73
         },
         {
           "pattern": "nativeButtons",
-          "line": 85
+          "line": 87
         },
         {
           "pattern": "nativeButtons",
-          "line": 143
+          "line": 147
         },
         {
           "pattern": "nativeButtons",
-          "line": 144
+          "line": 150
         },
         {
           "pattern": "nativeButtons",
-          "line": 157
+          "line": 166
         },
         {
           "pattern": "nativeButtons",
-          "line": 161
+          "line": 172
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
         }
       ]
     },
@@ -5637,7 +5833,7 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         }
       ]
     },
@@ -5647,19 +5843,37 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 28
+          "line": 34
         },
         {
           "pattern": "shared",
-          "line": 40
+          "line": 48
         },
         {
           "pattern": "nativeButtons",
-          "line": 28
+          "line": 34
         },
         {
           "pattern": "nativeButtons",
-          "line": 39
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
         }
       ]
     },
@@ -5673,11 +5887,29 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 49
+          "line": 50
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
         }
       ]
     },
@@ -5691,11 +5923,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 46
+          "line": 47
         }
       ]
     },
@@ -5709,15 +5941,45 @@
         },
         {
           "pattern": "shared",
+          "line": 7
+        },
+        {
+          "pattern": "shared",
+          "line": 17
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
           "line": 4
         },
         {
           "pattern": "shared",
-          "line": 14
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 43
+        },
+        {
+          "pattern": "shared",
+          "line": 79
+        },
+        {
+          "pattern": "shared",
+          "line": 96
         },
         {
           "pattern": "nativeButtons",
-          "line": 14
+          "line": 43
         }
       ]
     },
@@ -5731,23 +5993,23 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 42
+          "line": 43
         },
         {
           "pattern": "shared",
-          "line": 78
+          "line": 79
         },
         {
           "pattern": "shared",
-          "line": 95
+          "line": 96
         },
         {
           "pattern": "nativeButtons",
-          "line": 42
+          "line": 43
         }
       ]
     },
@@ -5761,27 +6023,27 @@
         },
         {
           "pattern": "shared",
-          "line": 4
+          "line": 10
         },
         {
           "pattern": "shared",
-          "line": 13
+          "line": 22
         },
         {
           "pattern": "shared",
-          "line": 14
+          "line": 23
         },
         {
           "pattern": "shared",
-          "line": 20
+          "line": 29
         },
         {
           "pattern": "nativeButtons",
-          "line": 20
+          "line": 29
         },
         {
           "pattern": "selects",
-          "line": 14
+          "line": 23
         }
       ]
     },
@@ -8476,6 +8738,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.html",
       "status": "needs semantic review",
       "findings": [
@@ -8485,11 +8765,11 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 51
         }
       ]
     },
@@ -8503,15 +8783,11 @@
         },
         {
           "pattern": "shared",
-          "line": 21
+          "line": 20
         },
         {
           "pattern": "shared",
-          "line": 23
-        },
-        {
-          "pattern": "shared",
-          "line": 29
+          "line": 25
         },
         {
           "pattern": "shared",
@@ -8519,55 +8795,47 @@
         },
         {
           "pattern": "shared",
-          "line": 40
+          "line": 33
         },
         {
           "pattern": "shared",
-          "line": 41
+          "line": 42
         },
         {
           "pattern": "shared",
-          "line": 47
+          "line": 43
         },
         {
           "pattern": "shared",
-          "line": 48
+          "line": 49
         },
         {
           "pattern": "shared",
-          "line": 62
+          "line": 50
         },
         {
           "pattern": "shared",
-          "line": 68
+          "line": 64
         },
         {
           "pattern": "shared",
-          "line": 76
+          "line": 75
         },
         {
           "pattern": "shared",
-          "line": 88
+          "line": 83
         },
         {
           "pattern": "shared",
-          "line": 96
+          "line": 98
         },
         {
           "pattern": "shared",
-          "line": 102
+          "line": 106
         },
         {
           "pattern": "shared",
-          "line": 116
-        },
-        {
-          "pattern": "shared",
-          "line": 121
-        },
-        {
-          "pattern": "shared",
-          "line": 124
+          "line": 112
         },
         {
           "pattern": "shared",
@@ -8575,31 +8843,39 @@
         },
         {
           "pattern": "shared",
-          "line": 139
+          "line": 131
         },
         {
           "pattern": "shared",
-          "line": 149
+          "line": 141
         },
         {
           "pattern": "shared",
-          "line": 176
+          "line": 143
         },
         {
           "pattern": "shared",
-          "line": 191
+          "line": 160
+        },
+        {
+          "pattern": "shared",
+          "line": 173
+        },
+        {
+          "pattern": "shared",
+          "line": 212
+        },
+        {
+          "pattern": "shared",
+          "line": 227
         },
         {
           "pattern": "nativeButtons",
-          "line": 96
+          "line": 106
         },
         {
           "pattern": "nativeButtons",
-          "line": 101
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 116
+          "line": 111
         },
         {
           "pattern": "nativeButtons",
@@ -8607,19 +8883,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 139
+          "line": 143
         },
         {
           "pattern": "nativeButtons",
-          "line": 175
+          "line": 160
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 211
         },
         {
           "pattern": "selects",
-          "line": 41
+          "line": 43
         },
         {
           "pattern": "selects",
-          "line": 48
+          "line": 50
         }
       ]
     },
@@ -13560,6 +13840,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/tools/tools-index.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/tools/tools-index.html",
       "status": "needs semantic review",
       "findings": [
@@ -13569,15 +13871,15 @@
         },
         {
           "pattern": "shared",
-          "line": 4
-        },
-        {
-          "pattern": "shared",
-          "line": 36
+          "line": 5
         },
         {
           "pattern": "shared",
           "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 38
         }
       ]
     },
@@ -13587,19 +13889,37 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 27
+          "line": 33
         },
         {
           "pattern": "shared",
-          "line": 36
+          "line": 47
         },
         {
           "pattern": "nativeButtons",
-          "line": 27
+          "line": 33
         },
         {
           "pattern": "nativeButtons",
-          "line": 35
+          "line": 46
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -13613,11 +13933,25 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.de.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
         }
       ]
     },
@@ -13631,7 +13965,7 @@
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         }
       ]
     },

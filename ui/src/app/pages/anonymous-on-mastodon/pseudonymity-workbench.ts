@@ -9,7 +9,62 @@ import { MbNotice } from '../../design-system/notice/notice';
 import { Account } from '../../models';
 import { Pseudonymity } from '../../pseudonymity';
 import { Server } from '../../server';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
+
+// The switches' words, by key (pseudonymity-plan.ts keeps the English for specs).
+// i18n focusedTools.privacy.switch.hide_collections.label: Hide who you follow and who follows you
+// i18n focusedTools.privacy.switch.hide_collections.why: The people around an account are often the quickest way to work out who runs it.
+// i18n focusedTools.privacy.switch.discoverable.label: Leave the profile directory and follow suggestions
+// i18n focusedTools.privacy.switch.discoverable.why: Your profile stops being recommended to strangers and listed in the directory.
+// i18n focusedTools.privacy.switch.indexable.label: Keep your posts out of full-text search
+// i18n focusedTools.privacy.switch.indexable.why: People cannot find your public posts by searching for words in them. Hashtags still work.
+// i18n focusedTools.privacy.switch.locked.label: Approve every new follower yourself (optional)
+// i18n focusedTools.privacy.switch.locked.why: Followers-only posts reach only people you let in. It also slows down who can follow you.
+// i18n focusedTools.privacy.loadFailed: Your account settings couldn't be loaded from your server. Reload the page to try again.
+// i18n focusedTools.privacy.loading: Reading your account settings…
+// i18n focusedTools.privacy.serverTitle: 1. Your settings on your Mastodon server
+// i18n focusedTools.privacy.noSwitches: Your server doesn't report any of these settings, so there is nothing to change here.
+// i18n focusedTools.privacy.alreadySet: Already set.
+// i18n focusedTools.privacy.saving: Saving…
+// i18n focusedTools.privacy.nothing: Nothing to apply
+// i18n focusedTools.privacy.apply.one: Apply {{count}} change
+// i18n focusedTools.privacy.apply.other: Apply {{count}} changes
+// i18n focusedTools.privacy.refused: Your server kept its own value for:
+// i18n focusedTools.privacy.refusedAfter: Check them on your server's settings page.
+// i18n focusedTools.privacy.saved: Saved. Your server confirmed every change.
+// i18n focusedTools.privacy.manualTitle: 2. What only you can change
+// i18n focusedTools.privacy.indexed: Search engines may list your profile.
+// i18n focusedTools.privacy.indexedHow: Mastodon only lets you change this on your server's own website: turn on the search engine opt-out on its
+// i18n focusedTools.privacy.privacyPage: Privacy and reach page
+// i18n focusedTools.privacy.notIndexed: Search engines are asked not to list your profile.
+// i18n focusedTools.privacy.linksTo: Your profile links to:
+// i18n focusedTools.privacy.verified: (verified, so it proves the same person runs both)
+// i18n focusedTools.privacy.removeLinks: Remove any that lead back to your real name from your
+// i18n focusedTools.privacy.profile: profile
+// i18n focusedTools.privacy.noLinks: No profile links that point to another site.
+// i18n focusedTools.privacy.nameTitle: Your name, picture and bio.
+// i18n focusedTools.privacy.nameBody: Use a name and picture you don't use anywhere else, and leave out your town, school and employer.
+// i18n focusedTools.privacy.moreTitle: 3. Mawkingbird keeps you even more incognito
+// i18n focusedTools.privacy.moreIntro: Your server's settings stop at your profile. Mawkingbird adds more, in this browser:
+// i18n focusedTools.privacy.extra.follows: Private follows
+// i18n focusedTools.privacy.extra.followsBody: read someone's posts without following them, so they are never notified.
+// i18n focusedTools.privacy.extra.likes: Private likes
+// i18n focusedTools.privacy.extra.likesBody: save a post you liked without telling anyone.
+// i18n focusedTools.privacy.extra.lists: Private lists
+// i18n focusedTools.privacy.extra.listsBody: group accounts to read, kept only in this browser.
+// i18n focusedTools.privacy.extra.links: Clean links
+// i18n focusedTools.privacy.extra.linksBody: tracking parameters are removed from links you post.
+// i18n focusedTools.privacy.extra.photos: Clean photos
+// i18n focusedTools.privacy.extra.photosBody: JPEG and PNG photos are re-encoded in this browser, dropping location and camera details, before upload.
+// i18n focusedTools.privacy.extra.reminder: A reminder before posting
+// i18n focusedTools.privacy.extra.reminderBody: , so you never post from the wrong account.
+// i18n focusedTools.privacy.modeOn: Pseudonymity mode is on for this account.
+// i18n focusedTools.privacy.modeOnBody: Private follows, likes and lists are in your
+// i18n focusedTools.privacy.modeSettings: pseudonymity settings
+// i18n focusedTools.privacy.turnOn: Turn on pseudonymity mode
+// i18n focusedTools.privacy.modeFailed: This browser couldn't save the setting. Free some storage and try again.
+// i18n focusedTools.privacy.error.unreachable: Couldn't reach your server. Nothing was changed.
+// i18n focusedTools.privacy.error.refused: Your server didn't accept the change. Nothing was changed.
 import {
   ServerSwitch,
   ServerSwitchKey,
@@ -19,6 +74,8 @@ import {
   offeredSwitches,
   revealingFields,
 } from './pseudonymity-plan';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { routeLanguage } from '../../page-language';
 
 /**
  * The signed-in body of /how-to-be-anonymous-on-mastodon.
@@ -32,7 +89,15 @@ import {
  */
 @Component({
   selector: 'app-pseudonymity-workbench',
-  imports: [FocusedNextSteps, FormsModule, MbButton, MbCheckbox, MbNotice, RouterLink],
+  imports: [
+    TranslocoPipe,
+    FocusedNextSteps,
+    FormsModule,
+    MbButton,
+    MbCheckbox,
+    MbNotice,
+    RouterLink,
+  ],
   templateUrl: './pseudonymity-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',
   styles: `
@@ -74,6 +139,9 @@ import {
   `,
 })
 export class PseudonymityWorkbench {
+  protected readonly invite = toolInviteLink();
+  private readonly i18n = inject(TranslocoService);
+  private readonly lang = routeLanguage();
   private readonly api = inject(Api);
   private readonly server = inject(Server);
   private readonly pseudonymity = inject(Pseudonymity);
@@ -154,7 +222,9 @@ export class PseudonymityWorkbench {
       },
       error: (error: unknown) => {
         this.saving.set(false);
-        this.saveError.set(describe(error));
+        this.saveError.set(
+          describe(error, (key) => this.i18n.translate<string>(key, {}, this.lang)),
+        );
       },
     });
   }
@@ -177,11 +247,11 @@ export class PseudonymityWorkbench {
   }
 }
 
-function describe(error: unknown): string {
+function describe(error: unknown, t: (key: string) => string): string {
   if (error instanceof HttpErrorResponse) {
     const detail = String(error.error?.error ?? '').trim();
     if (detail) return detail;
-    if (error.status === 0) return "Couldn't reach your server. Nothing was changed.";
+    if (error.status === 0) return t('focusedTools.privacy.error.unreachable');
   }
-  return "Your server didn't accept the change. Nothing was changed.";
+  return t('focusedTools.privacy.error.refused');
 }

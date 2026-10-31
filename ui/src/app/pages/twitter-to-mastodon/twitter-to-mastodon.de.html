@@ -1,0 +1,72 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Von Twitter zu Mastodon</p>
+    <h1>Deine Twitter-Follows zu Mastodon mitnehmen</h1>
+    <p>
+      Finde die Leute, denen du auf Twitter gefolgt bist und die schon auf Mastodon sind, und folge
+      ihnen mit wenigen Klicks wieder. Dein Archiv wird in diesem Browser gelesen; nichts wird
+      hochgeladen.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Twitter-Archiv herunterladen</h2>
+      <p>
+        Öffne auf Twitter Einstellungen → Dein Account → Archiv deiner Daten herunterladen. Es kann
+        einen Tag oder länger dauern, bis es ankommt. Entpacke es dann.
+      </p>
+    </li>
+    <li>
+      <h2>Archiv hier auswählen</h2>
+      <p>
+        Wähle den entpackten Ordner oder nur die Dateien <code>data/following.js</code> und
+        <code>data/tweets.js</code>. Mawkingbird zählt die Leute, denen du gefolgt bist, denen du
+        geantwortet und die du erwähnt hast.
+      </p>
+    </li>
+    <li>
+      <h2>Mit Mastodon anmelden und folgen</h2>
+      <p>
+        Mawkingbird sucht jeden Namen auf deinem Mastodon-Server und zeigt wahrscheinliche Treffer
+        mit den Belegen dafür, damit du entscheidest, wem du folgst.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/de/twitter-follower-zu-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/de/twitter-follower-zu-mastodon"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Der Import wird geladen…</p>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Wird mein Archiv irgendwo hochgeladen?</h3>
+    <p>
+      Nein. Die Dateien werden von dieser Seite in deinem Browser gelesen. Nur die Namenssuchen
+      gehen an deinen eigenen Mastodon-Server, und erst nachdem du dich angemeldet hast.
+    </p>
+    <h3>Folgt es automatisch jemandem?</h3>
+    <p>
+      Nein. Ein passender Name ist ein wahrscheinlicher Treffer, kein Beweis, deshalb ist jedes
+      Folgen ein Knopf, den du selbst drückst. Du kannst die Liste auch als CSV herunterladen und
+      behalten.
+    </p>
+  </section>
+</main>

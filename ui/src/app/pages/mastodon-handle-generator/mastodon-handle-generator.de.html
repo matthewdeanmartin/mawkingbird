@@ -1,0 +1,55 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Namensgenerator</p>
+    <h1>Mastodon-Namensgenerator</h1>
+    <p>
+      Gib deinen Namen ein und bekomme Mastodon-Namen, die du wirklich haben kannst: Jeder Vorschlag
+      wird auf dem Server geprüft, dem du beitreten willst, und dein Favorit auch auf den größten
+      Servern. Kein Konto nötig.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/de/mastodon-nutzernamen-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Der Generator wird geladen…</p>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Wie sieht ein Mastodon-Name aus?</h3>
+    <p>
+      Er hat zwei Teile: deinen Benutzernamen und deinen Server, etwa
+      &#64;matthew_martin&#64;mastodon.social. Der Benutzername darf Buchstaben, Ziffern und
+      Unterstriche enthalten, bis zu 30 Zeichen, und Großbuchstaben ergeben keinen anderen Namen.
+    </p>
+    <h3>Warum mehr als einen Server prüfen?</h3>
+    <p>
+      Jeder Server hat seine eigenen Benutzernamen. Ein auf mastodon.social vergebener Name kann
+      woanders frei sein, und Leute auf jedem Server können dir so oder so folgen.
+    </p>
+    <h3>Ist „sieht frei aus“ eine Garantie?</h3>
+    <p>
+      Nicht ganz. Es heißt, dass auf diesem Server heute niemand den Namen hat. Namen gelöschter
+      Konten bleiben reserviert, und Admins können Wörter reservieren, deshalb hat das
+      Anmeldeformular das letzte Wort.
+    </p>
+    <h3>Welche Server zählen als die größten?</h3>
+    <p>
+      Die mit den meisten Anmeldungen im Verzeichnis von joinmastodon.org, das Server auflistet, die
+      dem Server-Abkommen von Mastodon folgen. Manche lassen neue Konten erst von Admins freigeben;
+      die Liste sagt, welche.
+    </p>
+  </section>
+</main>

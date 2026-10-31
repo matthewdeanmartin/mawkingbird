@@ -1,0 +1,80 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-Boosts</p>
+    <h1>Boosts auf Mastodon für alle ausblenden, denen du folgst</h1>
+    <p>
+      Boosts sind die Retweets von Mastodon. Folge weiter allen, aber sieh nur, was sie selbst
+      schreiben.
+      @if (!inShell) {
+        Mastodon blendet Boosts nur Konto für Konto aus; das hier erledigt es für alle auf einmal.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mit Mastodon anmelden</h2>
+        <p>Deine Follows werden von deinem eigenen Mastodon-Server gelesen.</p>
+      </li>
+      <li>
+        <h2>Sehen, wie viele es betrifft</h2>
+        <p>
+          Bevor etwas passiert, erfährst du, bei wie vielen Leuten, denen du folgst, Boosts noch
+          eingeschaltet sind.
+        </p>
+      </li>
+      <li>
+        <h2>Bestätigen und zusehen</h2>
+        <p>
+          Jedes Konto wird nacheinander geändert, mit Fortschrittsbalken. Du kannst mittendrin
+          aufhören und später weitermachen.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und Boosts ausblenden</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Entfolgt das jemandem?</h3>
+    <p>
+      Nein. Du folgst weiter allen, und ihre eigenen Beiträge und Antworten erreichen weiter deine
+      Startseite. Nur ihre Boosts verschwinden.
+    </p>
+    <h3>Kann ich es rückgängig machen?</h3>
+    <p>
+      Ja. Dieselbe Seite schaltet Boosts für alle wieder ein, und für ein einzelnes Konto geht das
+      auf dessen Profil.
+    </p>
+    <h3>Was ist mit Leuten, denen ich später folge?</h3>
+    <p>
+      Neue Follows starten mit eingeschalteten Boosts, wie immer bei Mastodon. Lass das hier
+      jederzeit erneut laufen; es ändert nur die Konten, bei denen es nötig ist.
+    </p>
+    <h3>Warum dauert es eine Weile?</h3>
+    <p>
+      Mastodon hat keine Einstellung „für alle auf einmal“, deshalb wird jedes Konto, dem du folgst,
+      einzeln geändert. Eine lange Liste braucht ein paar Minuten.
+    </p>
+  </section>
+</main>

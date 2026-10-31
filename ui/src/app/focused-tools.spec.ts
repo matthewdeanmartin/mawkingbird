@@ -16,8 +16,12 @@ describe('FOCUSED_TOOLS', () => {
   });
 
   it('uses plain path segments the sitemap and canonical URLs can be built from', () => {
-    for (const { path } of FOCUSED_TOOLS) {
-      expect(path).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    for (const tool of FOCUSED_TOOLS) {
+      // English at the root; every other language in its own folder: /de/<slug>.
+      const lang = toolLanguage(tool);
+      const folder = lang === 'en' ? '' : `${lang}/`;
+      expect(tool.path.startsWith(folder), tool.path).toBe(true);
+      expect(tool.path.slice(folder.length), tool.path).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
     }
   });
 

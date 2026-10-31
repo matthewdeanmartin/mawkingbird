@@ -7,24 +7,33 @@ import { ConnectionMastodon } from '../settings/connections/mastodon/connection-
 import { BridgeFinder } from '../settings/import-export/bridge-finder';
 import { BridgeFriendsImport } from '../settings/import-export/bridge-friends-import';
 import { BridgeNetwork } from '../settings/import-export/bridge-matching';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * The signed-in body of the Bluesky ⇄ Mastodon pages: connect whichever network
  * is missing, right here, then run the finder in the page's direction.
  */
+// i18n focusedTools.connectBluesky: Connect Bluesky
+// i18n focusedTools.connectMastodon: Connect Mastodon
 @Component({
   selector: 'app-friend-bridge-workbench',
-  imports: [BridgeFriendsImport, ConnectionBluesky, ConnectionMastodon, FocusedNextSteps],
+  imports: [
+    TranslocoPipe,
+    BridgeFriendsImport,
+    ConnectionBluesky,
+    ConnectionMastodon,
+    FocusedNextSteps,
+  ],
   template: `
     @if (!bskyReady()) {
       <section class="panel">
-        <h2>Connect Bluesky</h2>
+        <h2>{{ 'focusedTools.connectBluesky' | transloco }}</h2>
         <app-connection-bluesky [embedded]="true" />
       </section>
     }
     @if (!mastodonReady()) {
       <section class="panel">
-        <h2>Connect Mastodon</h2>
+        <h2>{{ 'focusedTools.connectMastodon' | transloco }}</h2>
         <app-connection-mastodon [embedded]="true" />
       </section>
     }

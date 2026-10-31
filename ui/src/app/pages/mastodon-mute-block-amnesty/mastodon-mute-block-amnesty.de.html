@@ -1,0 +1,79 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Stummschalt-Amnestie · Blockier-Amnestie</p>
+    <h1>Alle auf Mastodon wieder laut schalten und entblocken</h1>
+    <p>
+      Listen stummgeschalteter und blockierter Konten wachsen über Jahre, und niemand räumt sie auf.
+      Die Stummschalt-Amnestie hebt alle Stummschaltungen auf, die Blockier-Amnestie alle Blockaden,
+      auf einmal, damit du neu anfangen kannst.
+      @if (!inShell) {
+        Mastodon lässt dich das nur Konto für Konto rückgängig machen.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mit Mastodon anmelden</h2>
+        <p>Deine Listen werden von deinem eigenen Mastodon-Server gelesen.</p>
+      </li>
+      <li>
+        <h2>Sichern, dann prüfen</h2>
+        <p>
+          Bevor sich etwas ändert, siehst du, wie viele Konten auf der Liste stehen, und kannst sie
+          zuerst herunterladen, damit sich die Amnestie rückgängig machen lässt.
+        </p>
+      </li>
+      <li>
+        <h2>Amnestie ausrufen</h2>
+        <p>
+          Jedes Konto wird nacheinander laut geschaltet oder entblockt, mit Fortschrittsbalken. Du
+          kannst mittendrin aufhören.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und eine Amnestie starten</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Was ändert die Stummschalt-Amnestie?</h3>
+    <p>
+      Jedes stummgeschaltete Konto wird wieder laut geschaltet, sodass dich seine Beiträge und
+      Benachrichtigungen wieder erreichen. Stummgeschaltete Wörter und Filter bleiben genau, wie sie
+      sind.
+    </p>
+    <h3>Was ändert die Blockier-Amnestie?</h3>
+    <p>
+      Jedes blockierte Konto wird entblockt. Es kann dir wieder folgen, deine Beiträge sehen und
+      antworten. Niemand erfährt, dass du blockiert hattest oder damit aufgehört hast.
+    </p>
+    <h3>Kann ich eine Amnestie rückgängig machen?</h3>
+    <p>
+      Nur mit einer Sicherung. Lade deine Liste herunter, wenn die Prüfung es anbietet, dann kannst
+      du sie später über die Import-Seite deines Mastodon-Servers wieder einspielen.
+    </p>
+    <h3>Betrifft es blockierte Domains?</h3>
+    <p>Nein. Geändert werden nur Konten, die du einzeln stummgeschaltet oder blockiert hast.</p>
+  </section>
+</main>

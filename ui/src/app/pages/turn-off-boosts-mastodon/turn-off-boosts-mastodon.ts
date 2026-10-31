@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { BoostsWorkbench } from './boosts-workbench';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /**
  * "Turn off boosts for everyone" as a focused mini-app: the Mastodon twin of the
@@ -14,7 +16,7 @@ import { BoostsWorkbench } from './boosts-workbench';
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon',
-  imports: [RouterLink, MbButton, MbContentLink, BoostsWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
   templateUrl: './turn-off-boosts-mastodon.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -22,4 +24,20 @@ export class TurnOffBoostsMastodon {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
   protected readonly returnHere = { next: '/turn-off-boosts-mastodon' };
+}
+
+/**
+ * The German page (focused-tools.json `lang: "de"`): the same tool and logic,
+ * German words, and everything translated inside it pinned to German (see
+ * page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/de/mastodon-boosts-ausblenden' };
 }

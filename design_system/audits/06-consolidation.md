@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## German tool pages, 2026-10-31
+
+Reviewed 1,347 source files and 312 candidate files. Seventeen candidates are
+added: the German twins of the tool pages (`<page>.de.html`, and
+`tools/tools-index.de.html` for /de/), each with its English twin's
+disposition. They use the same controls with German words. The tool pages'
+headers gain `LanguageVersions` (a plain link to the other language), and
+the tools' own strings moved to translation keys; their dispositions stand,
+line shifts only. No shared widget changed.
+
 ## German and English language pages, 2026-10-31
 
 Reviewed 1,329 source files and 295 candidate files. Two candidates are added,

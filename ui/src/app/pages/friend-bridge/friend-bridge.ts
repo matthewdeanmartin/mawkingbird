@@ -4,6 +4,8 @@ import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { BridgeNetwork } from '../settings/import-export/bridge-matching';
 import { FriendBridgeWorkbench } from './friend-bridge-workbench';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 /** The network names a direction reads from and searches on. */
 export interface BridgeCopy {
@@ -30,12 +32,12 @@ const COPY: Record<BridgeNetwork, BridgeCopy> = {
  */
 @Component({
   selector: 'app-friend-bridge',
-  imports: [RouterLink, MbButton, MbContentLink, FriendBridgeWorkbench],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
   templateUrl: './friend-bridge.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
 export class FriendBridge {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = this.route.snapshot.data['inShell'] === true;
   protected readonly copy: BridgeCopy = COPY[bridgeSourceOf(this.route)];
@@ -45,5 +47,33 @@ export class FriendBridge {
 /** Bluesky is read unless the path says it is Mastodon's follows being read. */
 export function bridgeSourceOf(route: ActivatedRoute): BridgeNetwork {
   const paths = route.snapshot.pathFromRoot.map((step) => step.routeConfig?.path ?? '');
-  return paths.includes('mastodon-to-bluesky') ? 'mastodon' : 'bluesky';
+  return paths.includes('mastodon-to-bluesky') || paths.includes('de/von-mastodon-zu-bluesky')
+    ? 'mastodon'
+    : 'bluesky';
+}
+
+/** The German pages' own paths, one per direction. */
+const GERMAN_ROOTS: Record<BridgeNetwork, string> = {
+  bluesky: '/de/von-bluesky-zu-mastodon',
+  mastodon: '/de/von-mastodon-zu-bluesky',
+};
+
+/**
+ * The German pages (focused-tools.json `lang: "de"`), both directions: the
+ * same finder, German words, and everything translated inside it pinned to
+ * German (see page-language.ts).
+ */
+@Component({
+  selector: 'app-friend-bridge-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  templateUrl: './friend-bridge.de.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FriendBridgeDe extends FriendBridge {
+  protected override readonly copy: BridgeCopy = {
+    ...COPY[bridgeSourceOf(this.route)],
+    root: GERMAN_ROOTS[bridgeSourceOf(this.route)],
+  };
+  protected override readonly returnHere = { next: this.copy.root };
 }

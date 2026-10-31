@@ -1323,9 +1323,19 @@
       "nextStep": "Public prerendered page using MbContentLink and MbButton in the feature-page header; the importer is the shared twitter-archive-import component. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of twitter-to-mastodon.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered page using MbContentLink and MbButton in the feature-page header; the importer is the shared twitter-archive-import component. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-analytics.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.html",
@@ -1333,9 +1343,19 @@
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of github-to-mastodon.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred schedule workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of schedule-mastodon-posts.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred schedule workbench. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-workbench.html",
@@ -1348,9 +1368,19 @@
       "nextStep": "Public prerendered mini-app page (two URLs) using MbContentLink and MbButton in the feature-page header, sign-in row and cross-link; the signed-in body embeds the existing connectors and the shared bridge finder. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of friend-bridge.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page (two URLs) using MbContentLink and MbButton in the feature-page header, sign-in row and cross-link; the signed-in body embeds the existing connectors and the shared bridge finder. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred boosts workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of turn-off-boosts-mastodon.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred boosts workbench. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/turn-off-boosts-mastodon/boosts-workbench.ts",
@@ -1363,9 +1393,19 @@
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred contacts workbench around the shared contacts finder. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of find-contacts-on-mastodon.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred contacts workbench around the shared contacts finder. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row (sign-in and Plus plans); the signed-in body is the deferred friend-feeds workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-friends-rss-feeds.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row (sign-in and Plus plans); the signed-in body is the deferred friend-feeds workbench. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/mastodon-friends-rss-feeds/friend-feeds-workbench.ts",
@@ -1378,6 +1418,11 @@
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred amnesty workbench. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-mute-block-amnesty.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred amnesty workbench. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/mastodon-mute-block-amnesty/amnesty-workbench.ts",
       "disposition": "adopted scope",
       "nextStep": "Inline template with two MbButton actions (Block Amnesty in the danger tone) that open the shared BulkActionsDialog, plus BulkProgress and FocusedNextSteps. Keep new controls on shared widgets."
@@ -1386,6 +1431,11 @@
       "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred pseudonymity workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of anonymous-on-mastodon.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred pseudonymity workbench. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/anonymous-on-mastodon/pseudonymity-workbench.html",
@@ -1398,6 +1448,11 @@
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header; the deferred handle workbench renders for everyone. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-handle-generator.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header; the deferred handle workbench renders for everyone. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/mastodon-handle-generator/handle-workbench.html",
       "disposition": "adopted scope",
       "nextStep": "A four-step wizard (name, pick, claim, done) with a step indicator list, the name form as MbField/MbControl, result rows with MbButton picks and sign-up links, Back/Next/Done as MbButton, MbNotice for the availability caveat, FocusedNextSteps on the last step. Keep new controls on shared widgets."
@@ -1406,6 +1461,11 @@
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-content-warnings.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/mastodon-content-warnings/content-warnings-workbench.html",
@@ -1426,6 +1486,11 @@
       "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred similar-hashtags workbench, which also runs signed out. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of mastodon-similar-hashtags.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred similar-hashtags workbench, which also runs signed out. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/mastodon-similar-hashtags/similar-hashtags-workbench.html",
@@ -1453,6 +1518,11 @@
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred bookmark exporter. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of export-mastodon-bookmarks.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred bookmark exporter. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/export-mastodon-bookmarks/bookmarks-export-workbench.html",
       "disposition": "adopted scope",
       "nextStep": "Read and stop as MbButton actions, the export shape as MbRadioGroup, download as MbButton, results and partial reads as MbNotice, plain links to Bookmarks and Raindrop; FocusedNextSteps after a download. Keep new controls on shared widgets."
@@ -1461,6 +1531,11 @@
       "file": "ui/src/app/pages/network-search/network-search.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page (two URLs) using MbContentLink and MbButton; its prerendered stand-in search form is a plain GET form with an MbButton submit, replaced by the launcher once it loads. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of network-search.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page (two URLs) using MbContentLink and MbButton; its prerendered stand-in search form is a plain GET form with an MbButton submit, replaced by the launcher once it loads. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/network-search/search-launcher.html",
@@ -1473,9 +1548,19 @@
       "nextStep": "Public prerendered index of focused-tools.json: MbContentLink and MbButton in the header and footer note, tool cards as plain router links styled like FocusedNextSteps. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/tools/tools-index.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of tools-index.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered index of focused-tools.json: MbContentLink and MbButton in the header and footer note, tool cards as plain router links styled like FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.de.html",
+      "disposition": "adopted scope",
+      "nextStep": "German twin of crosspost.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
     }
   ]
 }

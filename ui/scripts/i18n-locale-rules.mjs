@@ -72,12 +72,13 @@ export const LOCALE_RULES = {
       'सिलाई का धागा': 'Thread is a conversation, not sewing thread',
       'चालू खाता': 'Current account is the active account, not a bank account',
       'फ़ोन कॉल': 'API call is not a telephone call',
-      'भोजन': 'Feed is a stream of posts, not food',
+      भोजन: 'Feed is a stream of posts, not food',
     },
   },
   vi: {
     name: 'Vietnamese',
-    register: 'neutral concise Vietnamese UI prose; natural second-person wording without unnecessary honorifics',
+    register:
+      'neutral concise Vietnamese UI prose; natural second-person wording without unnecessary honorifics',
     rules: [],
     traps: {
       'tăng cường tín hiệu': 'Boost is a social-media re-share, not signal amplification',
@@ -95,8 +96,8 @@ export const LOCALE_RULES = {
     rules: [],
     traps: {
       'усилить сигнал': 'Boost is a social-media re-share, not signal amplification',
-      'преследовать': 'Follow means follow an account, not pursue or stalk',
-      'ручка': 'Handle is an account identifier, not a physical handle',
+      преследовать: 'Follow means follow an account, not pursue or stalk',
+      ручка: 'Handle is an account identifier, not a physical handle',
       'швейная нить': 'Thread is a conversation, not sewing thread',
       'текущий счёт': 'Current account is the active account, not a bank account',
       'телефонный звонок': 'API call is not a telephone call',

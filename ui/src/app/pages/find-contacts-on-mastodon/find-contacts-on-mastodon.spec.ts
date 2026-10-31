@@ -17,7 +17,16 @@ describe('FindContactsOnMastodon', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { data } } },
+        // As the real route: the tool's path is what its Invite link is built from.
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data,
+              pathFromRoot: [{ routeConfig: { path: 'find-contacts-on-mastodon' } }],
+            },
+          },
+        },
       ],
     });
     await TestBed.compileComponents();
@@ -48,7 +57,21 @@ describe('ContactsWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [ContactsWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        // As on the tool page: its path is what the Invite link is built from.
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {},
+              pathFromRoot: [{ routeConfig: { path: 'find-contacts-on-mastodon' } }],
+            },
+          },
+        },
+      ],
     });
   });
 

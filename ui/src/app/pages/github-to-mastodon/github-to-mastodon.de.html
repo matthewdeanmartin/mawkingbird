@@ -1,0 +1,63 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Von GitHub zu Mastodon</p>
+    <h1>Deine GitHub-Freunde auf Mastodon finden</h1>
+    <p>
+      Viele Entwicklerinnen und Entwickler nennen ihr Mastodon-Konto auf GitHub. Mawkingbird prüft
+      die Leute, denen du auf GitHub folgst, und die Besitzer der Repositories, die du mit einem
+      Stern markiert hast, und lässt dich ihnen auf Mastodon folgen.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Die Suche wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mit Mastodon anmelden</h2>
+        <p>Gefolgt wird mit deinem eigenen Mastodon-Konto, deshalb kommt das zuerst.</p>
+      </li>
+      <li>
+        <h2>GitHub verbinden</h2>
+        <p>
+          Füge ein persönliches GitHub-Zugriffstoken ein; die Seite zeigt, wie du eines erstellst.
+          GitHub lässt Browser-Apps nicht anders anmelden, und das Token bleibt in diesem Browser.
+        </p>
+      </li>
+      <li>
+        <h2>Finden und folgen</h2>
+        <p>
+          Profil-Links zu Mastodon kommen zuerst, dann eine begrenzte Namenssuche. Jeder Treffer
+          zeigt seine Belege, und du entscheidest, wem du folgst.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mit Mastodon anmelden</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Wohin geht mein GitHub-Token?</h3>
+    <p>
+      Es wird in diesem Browser gespeichert und nur an <code>api.github.com</code> geschickt, nie an
+      Mawkingbird. Widerrufe es auf GitHub, wann immer du willst.
+    </p>
+    <h3>Folgt es automatisch jemandem?</h3>
+    <p>Nein. Jedes Folgen ist ein Knopf, den du drückst, neben den Belegen für den Treffer.</p>
+  </section>
+</main>

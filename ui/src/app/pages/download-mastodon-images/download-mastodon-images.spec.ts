@@ -115,7 +115,7 @@ describe('DownloadMastodonImages page', () => {
     expect(root.textContent).toContain('Kein Konto nötig');
     expect(root.querySelector('.questions h2')?.textContent).toBe('Fragen');
     expect(root.querySelector('.sign-in-choices a')?.getAttribute('href')).toBe(
-      '/login/mastodon?next=%2Fmastodon-bilder-herunterladen',
+      '/login/mastodon?next=%2Fde%2Fmastodon-bilder-herunterladen',
     );
   });
 });

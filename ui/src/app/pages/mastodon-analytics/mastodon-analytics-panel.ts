@@ -1,7 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
 import { AccountAnalytics } from '../../account-analytics/account-analytics';
 import { Auth } from '../../auth';
-import { FocusedNextSteps, NextStepCard } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, NextStepCard, toolInviteLink } from '../focused-apps/focused-next-steps';
+import { routeTranslate } from '../../page-language';
+
+// i18n focusedTools.analytics.keepTitle: Keep these analytics
+// i18n focusedTools.analytics.keepBody: Open them any time in Mawkingbird, and on the Analytics tab of any profile, yours included.
 
 /** The signed-in body: the app's own account analytics for the signed-in account. */
 @Component({
@@ -11,15 +15,18 @@ import { FocusedNextSteps, NextStepCard } from '../focused-apps/focused-next-ste
     @if (me(); as account) {
       <app-account-analytics [account]="account" />
     }
-    <app-focused-next-steps inviteLink="/mastodon-analytics/invite" [lead]="keepUsing" />
+    <app-focused-next-steps [inviteLink]="invite" [lead]="keepUsing()" />
   `,
 })
 export class MastodonAnalyticsPanel {
   private readonly auth = inject(Auth);
   protected readonly me = computed(() => this.auth.account());
-  protected readonly keepUsing: NextStepCard = {
+  protected readonly invite = toolInviteLink();
+  private keepTitle = routeTranslate('focusedTools.analytics.keepTitle');
+  private keepBody = routeTranslate('focusedTools.analytics.keepBody');
+  protected readonly keepUsing = computed<NextStepCard>(() => ({
     link: '/analytics',
-    title: 'Keep these analytics',
-    body: 'Open them any time in Mawkingbird, and on the Analytics tab of any profile, yours included.',
-  };
+    title: this.keepTitle(),
+    body: this.keepBody(),
+  }));
 }

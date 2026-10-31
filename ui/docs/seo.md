@@ -254,14 +254,22 @@ redirect.
 
 A tool page in another language is its own registry entry with `lang` (e.g.
 `de`) and `translationOf` (the English entry's id), and the same tab, sign-in,
-group and tool selector as the original (`focused-tools.spec.ts` checks). It
-reuses the original's page component; its `sources` names that directory.
-Slugs are written in the page's language, ASCII only, and never renamed.
+group and tool selector as the original (`focused-tools.spec.ts` checks). Its
+`sources` names the original's directory. Each language has a folder: English
+at the root, German under `/de/` (`de/mastodon-statistik`); the spec enforces
+it. Slugs are in the page's language, ASCII only, and never renamed. The
+first two German pages briefly lived at the root; `app.routes.ts` redirects
+those two old paths.
 
-- **Page copy** (heading, intro, steps, Questions) lives in a copy file beside
-  the page, one set per language (`download-mastodon-images.copy.ts`), not in
-  the app dictionaries: it is what search engines read, the prerender loads no
-  dictionaries, and each set serves one language's readers only.
+- **Page copy** (heading, intro, steps, Questions) is written in the page
+  itself, one language per file, not in the app dictionaries: it is what search
+  engines read, the prerender loads no dictionaries, and each set serves one
+  language's readers only. Existing tool pages get a German subclass of their
+  component (`…De`, same file) with its own `<page>.de.html`, which overrides
+  the sign-in return path; pages built later keep a copy file instead
+  (`download-mastodon-images.copy.ts`, `language-landing.copy.ts`). The
+  Bluesky ⇄ Mastodon and search pages pick their direction or network from the
+  path, German paths included.
 - **Everything translated inside the page follows the URL**, not the browser:
   the page component provides `provideRouteLanguage()` (`page-language.ts`),
   which pins Transloco to the route's `lang` with `|static` for its whole
@@ -277,8 +285,16 @@ Slugs are written in the page's language, ASCII only, and never renamed.
 - **`hreflang`**: `Seo` writes `<link rel="alternate">` for every language
   version plus `x-default` (English); the sitemap carries the same set as
   `xhtml:link`. `check-seo-build.mjs` asserts both, plus `<html lang>`.
-- /tools and the features page list English pages only; each other language
-  gets its own index.
+- /tools and the features page list English pages only. `/de/` is the German
+  index (`ToolsIndexDe`, German headings), and the two are each other's
+  `hreflang` pair. Every tool page's header links its other language
+  (`LanguageVersions`, from the registry), so the pairs are linked visibly too.
+- The tools' own strings are translation keys under `focusedTools.*` (German
+  in de.json only). Their Invite links come from the page's own route
+  (`toolInviteLink()`), so a German page's Invite stays German.
+- `german-pages.spec.ts` renders every German entry signed out and checks its
+  language, heading, link to the English version, and that every sign-in
+  returns to the German page.
 
 Language landing pages (`mastodon-in-english`, `mastodon-auf-deutsch`,
 `learn-english-with-mastodon`) share `LanguageLanding`: a pitch while signed

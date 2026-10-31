@@ -1,47 +1,62 @@
 <form class="launcher" role="search" (ngSubmit)="search()">
-  <mb-field [label]="network() === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'" hideLabel>
+  <mb-field
+    [label]="
+      (network() === 'bluesky' ? 'focusedTools.search.bluesky' : 'focusedTools.search.mastodon')
+        | transloco
+    "
+    hideLabel
+  >
     <input
       mbControl
       type="search"
       name="q"
       autocomplete="off"
-      [placeholder]="network() === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'"
+      [placeholder]="
+        (network() === 'bluesky' ? 'focusedTools.search.bluesky' : 'focusedTools.search.mastodon')
+          | transloco
+      "
       [ngModel]="query()"
       (ngModelChange)="query.set($event)"
     />
   </mb-field>
-  <mb-field label="What to find" hideLabel>
+  <mb-field [label]="'focusedTools.search.what' | transloco" hideLabel>
     <select mbControl name="type" [ngModel]="type()" (ngModelChange)="type.set($event)">
       @for (option of types(); track option.value) {
-        <option [value]="option.value">{{ option.label }}</option>
+        <option [value]="option.value">{{ option.labelKey | transloco }}</option>
       }
     </select>
   </mb-field>
   <button mbButton type="submit" [disabled]="!query().trim() || needsBlueskySignIn()">
-    Search
+    {{ 'focusedTools.search.search' | transloco }}
   </button>
 </form>
 
 <p class="better">
   @if (network() === 'bluesky') {
     @if (blueskySignedIn()) {
-      Signed in with Bluesky: posts and people are both searchable.
+      {{ 'focusedTools.search.bskySignedIn' | transloco }}
     } @else if (needsBlueskySignIn()) {
-      Bluesky only lets signed-in accounts search posts.
-      <a routerLink="/login/bluesky" [queryParams]="returnHere()">Sign in with Bluesky</a>, and
-      you'll come straight back here. People search works without an account.
+      {{ 'focusedTools.search.bskyNeeds' | transloco }}
+      <a routerLink="/login/bluesky" [queryParams]="returnHere()">{{
+        'focusedTools.search.bskySignIn' | transloco
+      }}</a
+      >{{ 'focusedTools.search.bskyNeedsAfter' | transloco }}
     } @else {
-      No account needed to search for people.
-      <a routerLink="/login/bluesky" [queryParams]="returnHere()">Sign in with Bluesky</a> to search
-      posts too.
+      {{ 'focusedTools.search.bskyPeople' | transloco }}
+      <a routerLink="/login/bluesky" [queryParams]="returnHere()">{{
+        'focusedTools.search.bskySignIn' | transloco
+      }}</a>
+      {{ 'focusedTools.search.bskyPeopleAfter' | transloco }}
     }
   } @else {
     @if (mastodonSignedIn()) {
-      Signed in: post searches use your server's full-text search, where it offers one.
+      {{ 'focusedTools.search.mastoSignedIn' | transloco }}
     } @else {
-      No account needed. Without one, Mastodon servers only search posts by hashtag;
-      <a routerLink="/login/mastodon" [queryParams]="returnHere()">sign in with Mastodon</a> for
-      full-text post search, and you'll come straight back here.
+      {{ 'focusedTools.search.mastoNone' | transloco }}
+      <a routerLink="/login/mastodon" [queryParams]="returnHere()">{{
+        'focusedTools.search.mastoSignIn' | transloco
+      }}</a>
+      {{ 'focusedTools.search.mastoNoneAfter' | transloco }}
     }
   }
 </p>

@@ -1,0 +1,76 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Inhaltswarnungen</p>
+    <h1>Inhaltswarnungen auf Mastodon ausschalten</h1>
+    <p>
+      Genug davon, bei jedem Beitrag auf „Mehr anzeigen“ zu klicken oder unscharfe Fotos anzutippen?
+      Inhaltswarnungen können sich von selbst öffnen und heikle Medien sofort angezeigt werden.
+      @if (!inShell) {
+        Melde dich an, und es sind zwei Schalter.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Deine Einstellungen werden geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Inhaltswarnungen aufklappen</h2>
+        <p>Beiträge mit Inhaltswarnung öffnen sich von selbst. Den Warntext siehst du weiterhin.</p>
+      </li>
+      <li>
+        <h2>Heikle Medien zeigen</h2>
+        <p>Als heikel markierte Fotos und Videos erscheinen ohne Unschärfe.</p>
+      </li>
+      <li>
+        <h2>Oder nur bei Leuten, denen du vertraust</h2>
+        <p>
+          Warnungen bei Fremden geschlossen lassen und bei Freunden öffnen: vertraue einzelnen
+          Leuten oder allen, denen du folgst.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und ausschalten</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Wie geht das auf der Mastodon-Website?</h3>
+    <p>
+      Öffne die Einstellungen deines Servers, schalte „Beiträge mit Inhaltswarnungen immer
+      aufklappen“ ein und stelle „Medienanzeige“ auf „Alle anzeigen“. Diese Einstellungen gehören zu
+      deinem Server und gelten für seine Website und manche Apps.
+    </p>
+    <h3>Warum kann Mawkingbird die Einstellung meines Servers nicht ändern?</h3>
+    <p>
+      Mastodon lässt Apps diese Einstellungen lesen, aber nicht ändern, deshalb hat Mawkingbird
+      eigene Schalter. Sobald du angemeldet bist, zeigt diese Seite, wie dein Server eingestellt
+      ist.
+    </p>
+    <h3>Sehe ich noch, dass ein Beitrag eine Warnung hatte?</h3>
+    <p>Ja. Der Warntext bleibt über dem Beitrag; nur der Klick zum Öffnen entfällt.</p>
+    <h3>Ändert das, was andere sehen?</h3>
+    <p>
+      Nein. Es ändert nur, wie sich Beiträge für dich öffnen. Die Warnungen der Autorinnen und
+      Autoren bleiben für alle anderen erhalten.
+    </p>
+  </section>
+</main>

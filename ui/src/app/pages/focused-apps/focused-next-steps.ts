@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, input } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 // i18n focusedNextSteps.title: Next: make Mawkingbird your everyday Mastodon app
@@ -109,4 +109,15 @@ export class FocusedNextSteps {
   /** The mini-app's own Invite tab when signed in, else the public builder. */
   readonly inviteLink = input('/invites');
   readonly lead = input<NextStepCard | null>(null);
+}
+
+/**
+ * "/<this tool's path>/invite": the Invite tab of the tool page the calling
+ * component sits on, English or translated alike. Call in an injection context.
+ */
+export function toolInviteLink(): string {
+  const paths = (inject(ActivatedRoute, { optional: true })?.snapshot?.pathFromRoot ?? [])
+    .map((route) => route.routeConfig?.path)
+    .filter((path): path is string => !!path);
+  return paths.length ? `/${paths.join('/')}/invite` : '/invites';
 }

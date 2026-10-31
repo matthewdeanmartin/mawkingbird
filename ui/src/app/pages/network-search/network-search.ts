@@ -3,6 +3,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { SearchLauncher, SearchNetwork } from './search-launcher';
+import { provideRouteLanguage } from '../../page-language';
+import { LanguageVersions } from '../focused-apps/language-versions';
 
 const ROOTS: Record<SearchNetwork, string> = {
   mastodon: '/mastodon-search',
@@ -19,12 +21,12 @@ const ROOTS: Record<SearchNetwork, string> = {
  */
 @Component({
   selector: 'app-network-search',
-  imports: [RouterLink, MbButton, MbContentLink, SearchLauncher],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
 })
 export class NetworkSearch {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = this.route.snapshot.data['inShell'] === true;
   protected readonly network: SearchNetwork = networkOf(this.route);
@@ -34,5 +36,29 @@ export class NetworkSearch {
 /** Mastodon unless the path says Bluesky. */
 export function networkOf(route: ActivatedRoute): SearchNetwork {
   const paths = route.snapshot.pathFromRoot.map((step) => step.routeConfig?.path ?? '');
-  return paths.includes('bluesky-search') ? 'bluesky' : 'mastodon';
+  return paths.includes('bluesky-search') || paths.includes('de/bluesky-suche')
+    ? 'bluesky'
+    : 'mastodon';
+}
+
+/** The German pages' own paths, one per network. */
+const GERMAN_ROOTS: Record<SearchNetwork, string> = {
+  mastodon: '/de/mastodon-suche',
+  bluesky: '/de/bluesky-suche',
+};
+
+/**
+ * The German pages (focused-tools.json `lang: "de"`), both networks: the same
+ * search box, German words, and everything translated inside it pinned to
+ * German (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-de',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.de.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchDe extends NetworkSearch {
+  protected override readonly root = GERMAN_ROOTS[networkOf(this.route)];
 }

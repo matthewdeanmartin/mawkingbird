@@ -1,0 +1,86 @@
+<main class="focused-page" lang="de">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">App öffnen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-Planer</p>
+    <h1>Mastodon-Beiträge im Voraus planen</h1>
+    <p>
+      Schreib die Beiträge einer ganzen Woche in einem Rutsch, und dein Mastodon-Server
+      veröffentlicht sie pünktlich.
+      @if (!inShell) {
+        Melde dich mit Mastodon an, schreib deine Beiträge, wähle, wann der erste erscheint und in
+        welchem Abstand die übrigen folgen, und fertig.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Der Planer wird geladen…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Beiträge schreiben</h2>
+        <p>So viele du willst, je ein Feld, bis zu 500 Zeichen pro Beitrag.</p>
+      </li>
+      <li>
+        <h2>Verteilen</h2>
+        <p>
+          Wähle die erste Uhrzeit und den Abstand: täglich um 9:00, alle drei Stunden. Jeden
+          einzelnen Beitrag kannst du auf eine eigene Zeit legen.
+        </p>
+      </li>
+      <li>
+        <h2>Tab schließen</h2>
+        <p>
+          Dein Mastodon-Server hält die Beiträge und veröffentlicht jeden pünktlich. In deinem
+          Browser wartet nichts.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mit Mastodon anmelden und Beiträge planen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Fragen</h2>
+    <h3>Kann Mastodon Beiträge planen?</h3>
+    <p>
+      Ja. Jeder Mastodon-Server kann einen Beitrag halten und später veröffentlichen, aber die
+      normale Mastodon-Website hat keinen Knopf dafür. Diese Seite nutzt die eingebaute Planung,
+      also verwahrt dein eigener Server die Beiträge, nicht Mawkingbird.
+    </p>
+    <h3>Muss ich diese Seite offen lassen?</h3>
+    <p>
+      Nein. Ein geplanter Beitrag liegt auf deinem Mastodon-Server, der ihn zur gewählten Zeit
+      veröffentlicht, egal ob dein Computer an ist.
+    </p>
+    <h3>Gibt es Grenzen?</h3>
+    <p>
+      Mastodon erlaubt 300 wartende geplante Beiträge und 25 an einem Tag, und jeder muss mindestens
+      fünf Minuten in der Zukunft liegen. Der Planer prüft das, bevor er etwas abschickt.
+    </p>
+    <h3>Kann ich es mir anders überlegen?</h3>
+    <p>
+      Ja. Deine geplanten Beiträge stehen unter dem Planer, und jeder lässt sich absagen, bis er
+      erscheint.
+    </p>
+    <h3>Geht das auch für Bluesky?</h3>
+    <p>
+      Hier nicht. Bluesky hat keine eingebaute Planung, deshalb ist diese Seite nur für Mastodon.
+    </p>
+  </section>
+</main>

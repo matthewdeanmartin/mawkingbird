@@ -20,6 +20,7 @@ const pages = [
   'funding',
   'blog',
   'tools',
+  'de',
   ...focusedTools.map((tool) => tool.path),
 ];
 // Focused mini-app entry pages (src/app/focused-tools.json): the heading and a
@@ -30,6 +31,12 @@ const toolEntries = new Map(focusedTools.map((tool) => [tool.path, tool]));
 const languageOf = (tool) => tool.lang ?? 'en';
 // Every language version of a tool as "hreflang href" pairs, plus English as
 // x-default; empty for a tool in one language only.
+// /tools/ and /de/ are one index in two languages.
+const INDEX_ALTERNATES = [
+  'de https://mawkingbird.com/de/',
+  'en https://mawkingbird.com/tools/',
+  'x-default https://mawkingbird.com/tools/',
+];
 const expectedAlternates = (tool) => {
   const originalId = tool.translationOf ?? tool.id;
   const versions = focusedTools.filter(
@@ -83,6 +90,18 @@ for (const page of pages) {
     assert.equal(doc.querySelectorAll('h1').length, 1, 'tools has rendered content');
     for (const tool of focusedTools.filter((entry) => languageOf(entry) === 'en'))
       assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `tools links to ${tool.path}`);
+  } else if (page === 'de') {
+    // The German index links every German page, and no English one.
+    assert.equal(doc.querySelectorAll('h1').length, 1, 'de has rendered content');
+    assert.equal(doc.documentElement.lang, 'de', 'de <html lang>');
+    for (const tool of focusedTools.filter((entry) => languageOf(entry) === 'de'))
+      assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `de links to ${tool.path}`);
+    for (const tool of focusedTools.filter((entry) => languageOf(entry) === 'en'))
+      assert.equal(
+        doc.querySelector(`.tool-list a[href="/${tool.path}"]`),
+        null,
+        `de lists no ${tool.path}`,
+      );
   } else if (tools.has(page)) {
     const { heading, copy } = tools.get(page);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
@@ -100,6 +119,17 @@ for (const page of pages) {
       expectedAlternates(entry),
       `${page} hreflang alternates`,
     );
+    // ...and links them visibly, for readers and crawlers alike.
+    for (const version of focusedTools.filter(
+      (other) =>
+        other.id !== entry.id &&
+        (other.id === (entry.translationOf ?? entry.id) ||
+          other.translationOf === (entry.translationOf ?? entry.id)),
+    ))
+      assert.ok(
+        doc.querySelector(`a[hreflang="${languageOf(version)}"][href="/${version.path}"]`),
+        `${page} links its ${languageOf(version)} version`,
+      );
   } else if (articles.has(page)) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));
@@ -204,7 +234,7 @@ for (const url of sitemap.querySelectorAll('url')) {
     .sort();
   assert.deepEqual(
     listed,
-    entry ? expectedAlternates(entry) : [],
+    page === 'tools' || page === 'de' ? INDEX_ALTERNATES : entry ? expectedAlternates(entry) : [],
     `sitemap alternates for ${page}`,
   );
 }

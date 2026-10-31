@@ -6,23 +6,42 @@ import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BLUESKY_WIRE_TYPE } from '../search/search-wire';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export type SearchNetwork = 'mastodon' | 'bluesky';
 
+// i18n focusedTools.search.mastodon: Search Mastodon
+// i18n focusedTools.search.bluesky: Search Bluesky
+// i18n focusedTools.search.what: What to find
+// i18n focusedTools.search.search: Search
+// i18n focusedTools.search.posts: Posts
+// i18n focusedTools.search.people: People
+// i18n focusedTools.search.hashtags: Hashtags
+// i18n focusedTools.search.bskySignedIn: Signed in with Bluesky: posts and people are both searchable.
+// i18n focusedTools.search.bskyNeeds: Bluesky only lets signed-in accounts search posts.
+// i18n focusedTools.search.bskySignIn: Sign in with Bluesky
+// i18n focusedTools.search.bskyNeedsAfter: , and you'll come straight back here. People search works without an account.
+// i18n focusedTools.search.bskyPeople: No account needed to search for people.
+// i18n focusedTools.search.bskyPeopleAfter: to search posts too.
+// i18n focusedTools.search.mastoSignedIn: Signed in: post searches use your server's full-text search, where it offers one.
+// i18n focusedTools.search.mastoNone: No account needed. Without one, Mastodon servers only search posts by hashtag;
+// i18n focusedTools.search.mastoSignIn: sign in with Mastodon
+// i18n focusedTools.search.mastoNoneAfter: for full-text post search, and you'll come straight back here.
+
 interface TypeOption {
   value: 'statuses' | 'accounts' | 'hashtags';
-  label: string;
+  labelKey: string;
 }
 
 const TYPES: Record<SearchNetwork, readonly TypeOption[]> = {
   mastodon: [
-    { value: 'statuses', label: 'Posts' },
-    { value: 'accounts', label: 'People' },
-    { value: 'hashtags', label: 'Hashtags' },
+    { value: 'statuses', labelKey: 'focusedTools.search.posts' },
+    { value: 'accounts', labelKey: 'focusedTools.search.people' },
+    { value: 'hashtags', labelKey: 'focusedTools.search.hashtags' },
   ],
   bluesky: [
-    { value: 'statuses', label: 'Posts' },
-    { value: 'accounts', label: 'People' },
+    { value: 'statuses', labelKey: 'focusedTools.search.posts' },
+    { value: 'accounts', labelKey: 'focusedTools.search.people' },
   ],
 };
 
@@ -37,7 +56,7 @@ const TYPES: Record<SearchNetwork, readonly TypeOption[]> = {
  */
 @Component({
   selector: 'app-search-launcher',
-  imports: [FormsModule, RouterLink, MbButton, MbControl, MbField],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MbButton, MbControl, MbField],
   templateUrl: './search-launcher.html',
   styles: `
     .launcher {

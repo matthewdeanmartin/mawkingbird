@@ -3,7 +3,15 @@ import { BulkActionId, BulkActions } from '../../bulk-actions';
 import { BulkActionsDialog } from '../../bulk-actions-dialog/bulk-actions-dialog';
 import { BulkProgress } from '../../bulk-progress/bulk-progress';
 import { MbButton } from '../../design-system/button/button';
-import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
+import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
+
+// i18n focusedTools.amnesty.muteTitle: Mute Amnesty
+// i18n focusedTools.amnesty.muteBody: Unmute every account you have muted and start over. Muted words and filters are not touched.
+// i18n focusedTools.amnesty.muteButton: Review Mute Amnesty
+// i18n focusedTools.amnesty.blockTitle: Block Amnesty
+// i18n focusedTools.amnesty.blockBody: Unblock every account you have blocked. They can follow you and see your posts again, and are not told.
+// i18n focusedTools.amnesty.blockButton: Review Block Amnesty
+import { TranslocoPipe } from '@jsverse/transloco';
 
 type Amnesty = 'mute-amnesty' | 'block-amnesty';
 
@@ -16,26 +24,26 @@ type Amnesty = 'mute-amnesty' | 'block-amnesty';
  */
 @Component({
   selector: 'app-amnesty-workbench',
-  imports: [BulkActionsDialog, BulkProgress, FocusedNextSteps, MbButton],
+  imports: [TranslocoPipe, BulkActionsDialog, BulkProgress, FocusedNextSteps, MbButton],
   template: `
     <app-bulk-progress />
 
     <section class="panel">
-      <h2>Mute Amnesty</h2>
-      <p>
-        Unmute every account you have muted and start over. Muted words and filters are not touched.
-      </p>
+      <h2>{{ 'focusedTools.amnesty.muteTitle' | transloco }}</h2>
+      <p>{{ 'focusedTools.amnesty.muteBody' | transloco }}</p>
       <button mbButton type="button" [disabled]="running()" (click)="pending.set('mute-amnesty')">
-        {{ running() && job()?.action === 'mute-amnesty' ? 'Working…' : 'Review Mute Amnesty' }}
+        {{
+          (running() && job()?.action === 'mute-amnesty'
+            ? 'focusedTools.working'
+            : 'focusedTools.amnesty.muteButton'
+          ) | transloco
+        }}
       </button>
     </section>
 
     <section class="panel">
-      <h2>Block Amnesty</h2>
-      <p>
-        Unblock every account you have blocked. They can follow you and see your posts again, and
-        are not told.
-      </p>
+      <h2>{{ 'focusedTools.amnesty.blockTitle' | transloco }}</h2>
+      <p>{{ 'focusedTools.amnesty.blockBody' | transloco }}</p>
       <button
         mbButton
         tone="danger"
@@ -43,7 +51,12 @@ type Amnesty = 'mute-amnesty' | 'block-amnesty';
         [disabled]="running()"
         (click)="pending.set('block-amnesty')"
       >
-        {{ running() && job()?.action === 'block-amnesty' ? 'Working…' : 'Review Block Amnesty' }}
+        {{
+          (running() && job()?.action === 'block-amnesty'
+            ? 'focusedTools.working'
+            : 'focusedTools.amnesty.blockButton'
+          ) | transloco
+        }}
       </button>
     </section>
 
@@ -56,12 +69,13 @@ type Amnesty = 'mute-amnesty' | 'block-amnesty';
     }
 
     @if (finished()) {
-      <app-focused-next-steps inviteLink="/mastodon-mute-block-amnesty/invite" />
+      <app-focused-next-steps [inviteLink]="invite" />
     }
   `,
   styleUrl: '../focused-apps/focused-page.css',
 })
 export class AmnestyWorkbench {
+  protected readonly invite = toolInviteLink();
   private readonly bulk = inject(BulkActions);
   protected readonly running = this.bulk.running;
   protected readonly job = this.bulk.job;

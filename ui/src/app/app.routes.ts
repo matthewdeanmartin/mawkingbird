@@ -22,6 +22,8 @@ import {
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
+  TOOLS_DESCRIPTION_DE,
+  TOOLS_INDEX_ALTERNATES,
 } from './seo';
 
 /**
@@ -139,7 +141,7 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/download-mastodon-images/download-mastodon-images').then(
       (m) => m.DownloadMastodonImages,
     ),
-  'mastodon-bilder-herunterladen': () =>
+  'de/mastodon-bilder-herunterladen': () =>
     import('./pages/download-mastodon-images/download-mastodon-images').then(
       (m) => m.DownloadMastodonImages,
     ),
@@ -149,10 +151,66 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     ),
   'mastodon-in-english': () =>
     import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'mastodon-auf-deutsch': () =>
+  'de/mastodon-auf-deutsch': () =>
     import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
   'learn-english-with-mastodon': () =>
     import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
+  'de/twitter-follower-zu-mastodon': () =>
+    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodonDe),
+  'de/mastodon-und-bluesky-gleichzeitig-posten': () =>
+    import('./pages/crosspost/crosspost').then((m) => m.CrosspostDe),
+  'de/mastodon-statistik': () =>
+    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalyticsDe),
+  'de/github-freunde-auf-mastodon': () =>
+    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodonDe),
+  'de/mastodon-beitraege-planen': () =>
+    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
+      (m) => m.ScheduleMastodonPostsDe,
+    ),
+  'de/von-bluesky-zu-mastodon': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeDe),
+  'de/von-mastodon-zu-bluesky': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeDe),
+  'de/mastodon-boosts-ausblenden': () =>
+    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
+      (m) => m.TurnOffBoostsMastodonDe,
+    ),
+  'de/kontakte-auf-mastodon-finden': () =>
+    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
+      (m) => m.FindContactsOnMastodonDe,
+    ),
+  'de/rss-feeds-deiner-mastodon-freunde': () =>
+    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
+      (m) => m.MastodonFriendsRssFeedsDe,
+    ),
+  'de/mastodon-stummschaltungen-aufheben': () =>
+    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
+      (m) => m.MastodonMuteBlockAmnestyDe,
+    ),
+  'de/anonym-auf-mastodon': () =>
+    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
+      (m) => m.AnonymousOnMastodonDe,
+    ),
+  'de/mastodon-nutzernamen-generator': () =>
+    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
+      (m) => m.MastodonHandleGeneratorDe,
+    ),
+  'de/mastodon-inhaltswarnungen-ausschalten': () =>
+    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
+      (m) => m.MastodonContentWarningsDe,
+    ),
+  'de/mastodon-lesezeichen-exportieren': () =>
+    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
+      (m) => m.ExportMastodonBookmarksDe,
+    ),
+  'de/mastodon-suche': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearchDe),
+  'de/bluesky-suche': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearchDe),
+  'de/aehnliche-hashtags-mastodon': () =>
+    import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
+      (m) => m.MastodonSimilarHashtagsDe,
+    ),
   'mastodon-search': () =>
     import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
   'bluesky-search': () =>
@@ -177,8 +235,26 @@ export const routes: Routes = [
   {
     path: 'tools',
     title: 'Free tools for Mastodon and Bluesky',
-    data: { seoIndexable: true, seoDescription: TOOLS_DESCRIPTION },
+    data: {
+      seoIndexable: true,
+      seoDescription: TOOLS_DESCRIPTION,
+      lang: 'en',
+      seoAlternates: TOOLS_INDEX_ALTERNATES,
+    },
     loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndex),
+  },
+  // The German pages' index (and the /de/ folder's own page).
+  {
+    path: 'de',
+    pathMatch: 'full',
+    title: 'Kostenlose Werkzeuge für Mastodon und Bluesky',
+    data: {
+      seoIndexable: true,
+      seoDescription: TOOLS_DESCRIPTION_DE,
+      lang: 'de',
+      seoAlternates: TOOLS_INDEX_ALTERNATES,
+    },
+    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndexDe),
   },
   // Recovery works before signing in, without changing the active account.
   {
@@ -271,6 +347,9 @@ export const routes: Routes = [
   },
   // Focused mini-apps: public entry pages for one task each, signed-in twins in
   // the trimmed shell. The list is focused-tools.json; see focusedAppRoutes.
+  // German pages moved into /de/ on 2026-10-31, hours after first going live.
+  { path: 'mastodon-bilder-herunterladen', redirectTo: 'de/mastodon-bilder-herunterladen' },
+  { path: 'mastodon-auf-deutsch', redirectTo: 'de/mastodon-auf-deutsch' },
   ...FOCUSED_TOOLS.flatMap((tool) =>
     focusedAppRoutes({
       path: tool.path,

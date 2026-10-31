@@ -13,6 +13,14 @@ import {
   similarParam,
 } from '../../similar-hashtags/similar-hashtags';
 import { FocusedNextSteps, NextStepCard } from '../focused-apps/focused-next-steps';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { routeTranslate } from '../../page-language';
+
+// i18n focusedTools.similar.label: Hashtags
+// i18n focusedTools.similar.hint: One or more, like #dog #dogs. Up to {{max}}, compared together as one set.
+// i18n focusedTools.similar.find: Find similar hashtags
+// i18n focusedTools.similar.nextTitle: Read #{{tag}} in Mawkingbird
+// i18n focusedTools.similar.nextBody: The latest posts for the hashtag; follow it to see them on Home.
 
 /**
  * The body of /mastodon-similar-hashtags: type a few hashtags, get the ones that
@@ -21,7 +29,15 @@ import { FocusedNextSteps, NextStepCard } from '../focused-apps/focused-next-ste
  */
 @Component({
   selector: 'app-similar-hashtags-workbench',
-  imports: [FormsModule, MbButton, MbControl, MbField, SimilarHashtagsPanel, FocusedNextSteps],
+  imports: [
+    TranslocoPipe,
+    FormsModule,
+    MbButton,
+    MbControl,
+    MbField,
+    SimilarHashtagsPanel,
+    FocusedNextSteps,
+  ],
   templateUrl: './similar-hashtags-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',
   styles: `
@@ -46,7 +62,7 @@ export class SimilarHashtagsWorkbench {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  protected readonly hint = `One or more, like #dog #dogs. Up to ${MAX_SIMILAR_SEEDS}, compared together as one set.`;
+  protected readonly maxSeeds = MAX_SIMILAR_SEEDS;
 
   protected tags = toSignal(
     this.route.queryParamMap.pipe(map((params) => parseSimilarParam(params.get('tags')))),
@@ -58,13 +74,18 @@ export class SimilarHashtagsWorkbench {
       .join(' '),
   );
   protected canFind = computed(() => parseHashtags(this.text()).length > 0);
+  private nextTitle = routeTranslate(
+    'focusedTools.similar.nextTitle',
+    computed(() => ({ tag: this.tags()[0] ?? '' })),
+  );
+  private nextBody = routeTranslate('focusedTools.similar.nextBody');
   protected nextStep = computed<NextStepCard | null>(() => {
     const first = this.tags()[0];
     return first
       ? {
           link: `/tags/${first}`,
-          title: `Read #${first} in Mawkingbird`,
-          body: 'The latest posts for the hashtag; follow it to see them on Home.',
+          title: this.nextTitle(),
+          body: this.nextBody(),
         }
       : null;
   });

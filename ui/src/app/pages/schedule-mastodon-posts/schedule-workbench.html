@@ -1,24 +1,26 @@
 <section class="panel" aria-labelledby="schedule-when-title">
   <div class="panel-title">
-    <h2 id="schedule-when-title">When</h2>
-    <mb-help label="Mastodon's scheduling rules">
+    <h2 id="schedule-when-title">{{ 'focusedTools.schedule.when' | transloco }}</h2>
+    <mb-help [label]="'focusedTools.schedule.rulesLabel' | transloco">
       <ul class="rules">
+        <li>{{ 'focusedTools.schedule.rule.server' | transloco }}</li>
+        <li>{{ 'focusedTools.schedule.rule.soon' | transloco }}</li>
         <li>
-          Your Mastodon server publishes the posts, so you can close this page once they are
-          scheduled.
+          {{
+            'focusedTools.schedule.rule.limits'
+              | transloco: { daily: dailyLimit, total: totalLimit }
+          }}
         </li>
-        <li>Each post must be at least 5 minutes away; this page asks for 10 to be safe.</li>
-        <li>
-          Up to {{ dailyLimit }} scheduled posts a day (days are counted in UTC) and
-          {{ totalLimit }} waiting at once, including ones you scheduled elsewhere.
-        </li>
-        <li>Posts are up to {{ maxChars }} characters; some servers allow more.</li>
-        <li>Scheduled posts can be cancelled below until they go out.</li>
+        <li>{{ 'focusedTools.schedule.rule.chars' | transloco: { max: maxChars } }}</li>
+        <li>{{ 'focusedTools.schedule.rule.cancel' | transloco }}</li>
       </ul>
     </mb-help>
   </div>
   <div class="cadence">
-    <mb-field label="First post" [hint]="'Your time zone: ' + timeZone">
+    <mb-field
+      [label]="'focusedTools.schedule.first' | transloco"
+      [hint]="'focusedTools.schedule.timeZone' | transloco: { zone: timeZone }"
+    >
       <input
         mbControl
         type="datetime-local"
@@ -26,7 +28,7 @@
         (ngModelChange)="setCadence({ start: $event })"
       />
     </mb-field>
-    <mb-field label="Then one every">
+    <mb-field [label]="'focusedTools.schedule.every' | transloco">
       <input
         mbControl
         type="number"
@@ -37,32 +39,37 @@
         (ngModelChange)="setCadence({ every: +$event })"
       />
     </mb-field>
-    <mb-field label="Unit">
+    <mb-field [label]="'focusedTools.schedule.unit' | transloco">
       <select mbControl [ngModel]="cadence().unit" (ngModelChange)="setUnit($event)">
-        <option value="minutes">minutes</option>
-        <option value="hours">hours</option>
-        <option value="days">days</option>
+        <option value="minutes">{{ 'focusedTools.schedule.minutes' | transloco }}</option>
+        <option value="hours">{{ 'focusedTools.schedule.hours' | transloco }}</option>
+        <option value="days">{{ 'focusedTools.schedule.days' | transloco }}</option>
       </select>
     </mb-field>
-    <mb-field label="Who can see them">
+    <mb-field [label]="'focusedTools.schedule.who' | transloco">
       <select mbControl [ngModel]="visibility()" (ngModelChange)="visibility.set($event)">
-        <option value="public">Public</option>
-        <option value="unlisted">Quiet public</option>
-        <option value="private">Followers only</option>
+        <option value="public">{{ 'focusedTools.schedule.public' | transloco }}</option>
+        <option value="unlisted">{{ 'focusedTools.schedule.unlisted' | transloco }}</option>
+        <option value="private">{{ 'focusedTools.schedule.private' | transloco }}</option>
       </select>
     </mb-field>
   </div>
 </section>
 
 <section class="panel" aria-labelledby="schedule-posts-title">
-  <h2 id="schedule-posts-title">Posts</h2>
+  <h2 id="schedule-posts-title">{{ 'focusedTools.schedule.posts' | transloco }}</h2>
   <ol class="rows">
     @for (row of rows(); track row.key; let i = $index) {
       <li class="row">
         <mb-field
-          [label]="'Post ' + (i + 1)"
+          [label]="'focusedTools.schedule.post' | transloco: { n: i + 1 }"
           [hint]="length(row.text) + ' / ' + maxChars"
-          [error]="row.error ?? (problems()[i] === 'tooLong' ? problemText('tooLong') : '')"
+          [error]="
+            row.error ??
+            (problems()[i] === 'tooLong'
+              ? (problemKey('tooLong') | transloco: { max: maxChars })
+              : '')
+          "
         >
           <textarea
             mbControl
@@ -75,12 +82,15 @@
         <div class="row-when">
           <mb-field
             [label]="
-              row.pinnedAt === null ? 'Goes out (from the schedule)' : 'Goes out (your time)'
+              (row.pinnedAt === null
+                ? 'focusedTools.schedule.goesOutSchedule'
+                : 'focusedTools.schedule.goesOutYours'
+              ) | transloco
             "
             density="compact"
             [error]="
               problems()[i] === 'tooSoon' || problems()[i] === 'noTime'
-                ? problemText(problems()[i])
+                ? (problemKey(problems()[i]) | transloco)
                 : ''
             "
           >
@@ -94,7 +104,7 @@
           </mb-field>
           @if (row.pinnedAt !== null) {
             <button mbButton variant="link" size="small" type="button" (click)="unpin(i)">
-              Follow the schedule
+              {{ 'focusedTools.schedule.follow' | transloco }}
             </button>
           }
           @if (rows().length > 1) {
@@ -106,7 +116,7 @@
               [disabled]="sending()"
               (click)="removeRow(i)"
             >
-              Remove
+              {{ 'focusedTools.schedule.remove' | transloco }}
             </button>
           }
         </div>
@@ -114,17 +124,24 @@
     }
   </ol>
   <button mbButton variant="outline" size="small" type="button" (click)="addRow()">
-    + Add a post
+    {{ 'focusedTools.schedule.add' | transloco }}
   </button>
 
   @for (problem of limits(); track problem.kind + (problem.day ?? '')) {
-    <mb-notice tone="error">{{ limitText(problem) }}</mb-notice>
+    <mb-notice tone="error">{{
+      (problem.kind === 'total'
+        ? 'focusedTools.schedule.limit.total'
+        : 'focusedTools.schedule.limit.day'
+      )
+        | transloco
+          : { count: problem.count, day: problem.day, total: totalLimit, daily: dailyLimit }
+    }}</mb-notice>
   }
   @if (existingError()) {
     <mb-notice tone="error" announcement="alert">
-      Your scheduled posts couldn't be loaded, so Mastodon's limits can't be checked yet.
+      {{ 'focusedTools.schedule.loadFailed' | transloco }}
       <button mbButton variant="link" size="small" type="button" (click)="retryLoad()">
-        Try again
+        {{ 'focusedTools.schedule.retry' | transloco }}
       </button>
     </mb-notice>
   }
@@ -132,39 +149,58 @@
   <div class="send">
     @if (emptyCount()) {
       <p class="muted small">
-        {{ emptyCount() === 1 ? 'One post is' : emptyCount() + ' posts are' }} empty: write
-        something or remove {{ emptyCount() === 1 ? 'it' : 'them' }}.
+        {{
+          (emptyCount() === 1
+            ? 'focusedTools.schedule.empty.one'
+            : 'focusedTools.schedule.empty.other'
+          ) | transloco: { count: emptyCount() }
+        }}
       </p>
     }
     <button mbButton type="button" [disabled]="!canSend()" (click)="send()">
-      @if (sending()) {
-        Scheduling…
-      } @else {
-        Schedule {{ rows().length }} {{ rows().length === 1 ? 'post' : 'posts' }}
-      }
+      {{
+        (sending()
+          ? 'focusedTools.schedule.sending'
+          : rows().length === 1
+            ? 'focusedTools.schedule.send.one'
+            : 'focusedTools.schedule.send.other'
+        ) | transloco: { count: rows().length }
+      }}
     </button>
   </div>
 
   @if (lastBatch() !== null) {
     <mb-notice announcement="status" [tone]="failedCount() ? 'error' : 'info'">
       @if (lastBatch()) {
-        Scheduled {{ lastBatch() }} {{ lastBatch() === 1 ? 'post' : 'posts' }}. Your server will
-        publish {{ lastBatch() === 1 ? 'it' : 'them' }} on time, even with this page closed.
+        {{
+          (lastBatch() === 1
+            ? 'focusedTools.schedule.done.one'
+            : 'focusedTools.schedule.done.other'
+          ) | transloco: { count: lastBatch() }
+        }}
       }
       @if (failedCount()) {
-        {{ failedCount() === 1 ? 'One post was' : failedCount() + ' posts were' }} not scheduled;
-        the reason is under each one.
+        {{
+          (failedCount() === 1
+            ? 'focusedTools.schedule.failed.one'
+            : 'focusedTools.schedule.failed.other'
+          ) | transloco: { count: failedCount() }
+        }}
       }
     </mb-notice>
   }
 </section>
 
 <section class="panel" aria-labelledby="schedule-upcoming-title">
-  <h2 id="schedule-upcoming-title">Already scheduled</h2>
+  <h2 id="schedule-upcoming-title">{{ 'focusedTools.schedule.upcoming' | transloco }}</h2>
   @if (!existingLoaded() && !existingError()) {
-    <p class="muted">Loading your scheduled posts…</p>
+    <p class="muted">{{ 'focusedTools.schedule.loading' | transloco }}</p>
   } @else if (upcoming().length) {
-    <p class="muted small">{{ existing().length }} of {{ totalLimit }} scheduled slots in use.</p>
+    <p class="muted small">
+      {{
+        'focusedTools.schedule.slots' | transloco: { count: existing().length, total: totalLimit }
+      }}
+    </p>
     <ul class="upcoming">
       @for (s of upcoming(); track s.id) {
         <li>
@@ -179,31 +215,31 @@
             type="button"
             (click)="pendingCancel.set(s)"
           >
-            Cancel
+            {{ 'focusedTools.schedule.cancel' | transloco }}
           </button>
         </li>
       }
     </ul>
   } @else if (existingLoaded()) {
-    <p class="muted">Nothing scheduled yet.</p>
+    <p class="muted">{{ 'focusedTools.schedule.nothing' | transloco }}</p>
   }
   @if (cancelError()) {
-    <mb-notice tone="error" announcement="alert"
-      >That post couldn't be cancelled. Try again.</mb-notice
-    >
+    <mb-notice tone="error" announcement="alert">{{
+      'focusedTools.schedule.cancelFailed' | transloco
+    }}</mb-notice>
   }
 </section>
 
 @if (pendingCancel()) {
   <app-confirm-dialog
-    title="Cancel this scheduled post?"
-    message="It will be deleted from your server and never published."
-    confirmLabel="Cancel post"
+    [title]="'focusedTools.schedule.cancelTitle' | transloco"
+    [message]="'focusedTools.schedule.cancelMessage' | transloco"
+    [confirmLabel]="'focusedTools.schedule.cancelConfirm' | transloco"
     (confirmed)="confirmCancel()"
     (cancelled)="pendingCancel.set(null)"
   />
 }
 
 @if (scheduledCount()) {
-  <app-focused-next-steps inviteLink="/schedule-mastodon-posts/invite" />
+  <app-focused-next-steps [inviteLink]="invite" />
 }

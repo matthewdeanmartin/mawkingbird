@@ -18,6 +18,13 @@ export const FOLLOW_DESCRIPTION =
   'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
 export const TOOLS_DESCRIPTION =
   'Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.';
+export const TOOLS_DESCRIPTION_DE =
+  'Kostenlose Werkzeuge für Mastodon und Bluesky auf Deutsch: Twitter-Follows mitnehmen, Beiträge planen, Bilder herunterladen, ähnliche Hashtags finden und mehr. Alles im Browser.';
+/** /tools and /de/ are the same index in two languages. */
+export const TOOLS_INDEX_ALTERNATES = [
+  { lang: 'en' as const, path: 'tools' },
+  { lang: 'de' as const, path: 'de' },
+];
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
 

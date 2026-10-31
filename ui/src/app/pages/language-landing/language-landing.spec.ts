@@ -43,12 +43,12 @@ describe('LanguageLanding', () => {
   }
 
   it('pitches German readers in German, and signs in back to the page', async () => {
-    const root = await render('mastodon-auf-deutsch', false, 'de');
+    const root = await render('de/mastodon-auf-deutsch', false, 'de');
     expect(root.querySelector('main')?.getAttribute('lang')).toBe('de');
     expect(root.querySelector('h1')?.textContent).toBe('Mastodon auf Deutsch');
     expect(root.querySelectorAll('.claims li').length).toBeGreaterThan(3);
     expect(root.querySelector('.sign-in-choices a')?.getAttribute('href')).toBe(
-      '/login/mastodon?next=%2Fmastodon-auf-deutsch',
+      '/login/mastodon?next=%2Fde%2Fmastodon-auf-deutsch',
     );
     expect(root.querySelector('app-language-checklist')).toBeNull();
   });
@@ -100,7 +100,7 @@ describe('LanguageChecklist', () => {
     }));
 
   it('changes nothing until Apply, and shows the server value it would change', () => {
-    setUp('mastodon-auf-deutsch');
+    setUp('de/mastodon-auf-deutsch');
     const prefs = TestBed.inject(ClientPrefs);
     const choose = vi.spyOn(TestBed.inject(UiLocale), 'choose');
     expect(labels().find((l) => l.text === 'Ich lerne Englisch')?.checked).toBe(false);
@@ -112,7 +112,7 @@ describe('LanguageChecklist', () => {
   });
 
   it('applies every ticked setting through the same services as Settings', async () => {
-    setUp('mastodon-auf-deutsch');
+    setUp('de/mastodon-auf-deutsch');
     const prefs = TestBed.inject(ClientPrefs);
     const choose = vi.spyOn(TestBed.inject(UiLocale), 'choose');
     await (fixture.componentInstance as unknown as { apply(): Promise<void> }).apply();

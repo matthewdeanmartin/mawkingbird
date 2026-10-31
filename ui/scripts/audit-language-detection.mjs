@@ -18,10 +18,18 @@ const unknownReasons = {};
 for (const { lang, text } of corpus) {
   const analysis = analyzeLanguage(text);
   if (!analysis.language) {
-    for (const reason of analysis.reasons) unknownReasons[reason] = (unknownReasons[reason] ?? 0) + 1;
+    for (const reason of analysis.reasons)
+      unknownReasons[reason] = (unknownReasons[reason] ?? 0) + 1;
     if (process.argv.includes('--explain')) {
-      console.log(JSON.stringify({ text, candidates: analysis.candidates, candidatesComplete: analysis.candidatesComplete,
-        reasons: analysis.reasons, evidence: analysis.evidence }));
+      console.log(
+        JSON.stringify({
+          text,
+          candidates: analysis.candidates,
+          candidatesComplete: analysis.candidatesComplete,
+          reasons: analysis.reasons,
+          evidence: analysis.evidence,
+        }),
+      );
     }
   }
   const variants = lang === 'und' ? [text] : [text, text.normalize('NFD'), text.toUpperCase()];
