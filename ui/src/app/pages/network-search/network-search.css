@@ -1,0 +1,16 @@
+/* The prerendered stand-in for the search box, until the real one loads. */
+.search-fallback {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 24px;
+}
+.search-fallback input[type='search'] {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--col-bg);
+  color: var(--text);
+  font: inherit;
+}

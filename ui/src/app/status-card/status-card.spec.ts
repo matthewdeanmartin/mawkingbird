@@ -189,6 +189,28 @@ describe('StatusCard', () => {
     }
   });
 
+  it('offers Download media in the post menu only when the post carries media', () => {
+    const rows = (status: Status) => {
+      const fixture = setUp(status);
+      const found = (fixture.nativeElement as HTMLElement).querySelectorAll(
+        '.danger-menu-panel app-media-download-menu-item',
+      ).length;
+      fixture.destroy();
+      return found;
+    };
+    expect(rows(makeStatus({ url: 'https://social.example/@pizza/1' }))).toBe(0);
+    expect(
+      rows(
+        makeStatus({
+          url: 'https://social.example/@pizza/2',
+          media_attachments: [
+            { id: 'm1', type: 'image', url: 'https://example.com/a.png', preview_url: '' },
+          ] as Status['media_attachments'],
+        }),
+      ),
+    ).toBe(1);
+  });
+
   it('ends the post menu with a close row that shuts it and returns focus to •••', () => {
     const fixture = setUp(makeStatus({ url: 'https://social.example/@pizza/1' }));
     const el = fixture.nativeElement as HTMLElement;

@@ -1,0 +1,79 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon media</p>
+    <h1>Download images from Mastodon</h1>
+    <p>
+      Paste a Mastodon account and see every picture it posted on one wall. Then download them all
+      at once, as a zip or as separate files, with GIFs, videos and audio if you want them. No
+      account needed.
+    </p>
+  </div>
+
+  <!-- Deferred: lookups and downloads run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-media-download-workbench
+      [inviteLink]="inShell ? '/download-mastodon-images/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Loading…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Paste an account</h2>
+        <p>A handle like &#64;someone&#64;mastodon.social, a profile link, or just a name.</p>
+      </li>
+      <li>
+        <h2>See their pictures</h2>
+        <p>Every post with media, newest first, read straight from their own server.</p>
+      </li>
+      <li>
+        <h2>Download them all</h2>
+        <p>Pick pictures, GIFs, videos or audio, how far back, and a zip or separate files.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>How do I download all the images from a Mastodon account?</h3>
+    <p>
+      Paste the account above, press Download media, and choose a zip. Mastodon itself only lets you
+      save pictures one at a time, or download an archive of your own account.
+    </p>
+    <h3>Can I download my own Mastodon media?</h3>
+    <p>
+      Yes: paste your own handle. For a full backup of your account, posts included, use your
+      server's own data export too (Preferences → Import and export).
+    </p>
+    <h3>Why couldn't some files be downloaded?</h3>
+    <p>
+      A web page can only save a file when the server holding it allows other websites to read it.
+      Most Mastodon servers do; some don't. Those files are listed as links, so you can open and
+      save each one yourself.
+    </p>
+    <h3>Are the files sent through Mawkingbird?</h3>
+    <p>
+      No. Your browser fetches them from the Mastodon servers and makes the zip itself. Nothing is
+      uploaded.
+    </p>
+    <h3>Is it OK to download someone's pictures?</h3>
+    <p>
+      Their pictures still belong to them. Keeping a copy for yourself is one thing; posting them
+      elsewhere needs their permission.
+    </p>
+  </section>
+</main>

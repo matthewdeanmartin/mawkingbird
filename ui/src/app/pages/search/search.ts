@@ -1,11 +1,14 @@
 import { TagActions } from '../../tag-actions/tag-actions';
 import { MbButton } from '../../design-system/button/button';
 import { searchPanelOpenByDefault } from './search-panel-default';
+import { BLUESKY_WIRE_TYPE } from './search-wire';
 import { matchesMedia, parseMediaQuery, SearchMediaType } from '../../media-query';
 import {
   Component,
   DestroyRef,
+  Injector,
   OnDestroy,
+  afterNextRender,
   OnInit,
   computed,
   inject,
@@ -115,15 +118,9 @@ import { TranslatedText } from '../../i18n/translated';
 
 type SearchType = 'accounts' | 'statuses' | 'hashtags';
 
-/**
- * The URL value that means "the Bluesky panel", and the dropdown option id.
- *
- * Deliberately **not** a member of {@link SearchType}. It is a wire value
- * translated once at the URL boundary into `blueskyMode`, so the Mastodon-shaped
- * consumers — the query serializers, saved searches, the explain panel — never
- * grow a fourth case. See the note on `blueskyMode`.
- */
-export const BLUESKY_WIRE_TYPE = 'bluesky-posts';
+// The Bluesky wire value lives in search-wire.ts so the tool pages can link here
+// without loading this page; re-exported for existing importers.
+export { BLUESKY_WIRE_TYPE } from './search-wire';
 
 /** One selected facet value, keyed by "kind:value" (see selectedFacets). */
 interface FacetSelection {
@@ -1665,6 +1662,9 @@ export class Search implements OnInit, OnDestroy {
   /** Last q/type reflected in the URL, so run() can detect an identical re-search
    *  (which wouldn't emit a new queryParamMap) and fetch directly. */
   private urlQuery = '';
+  /** The Bluesky query and type last run, so a URL change it caused does not run it again. */
+  private lastBlueskyRun = '';
+  private readonly injector = inject(Injector);
   private urlType: SearchType = 'accounts';
 
   private sharedLinkHandled = false;
@@ -1732,6 +1732,14 @@ export class Search implements OnInit, OnDestroy {
         this.type.set(this.typeUnavailable(restored) ? 'accounts' : restored);
         this.urlQuery = q;
         this.query.set(q);
+        // A link that names a Bluesky search (a tool page hand-off, a shared or
+        // back-navigated link) runs it, as a Mastodon link does. Not when the
+        // URL change is this page's own Search press, which already ran it.
+        const key = `${q.trim()}|${this.type()}`;
+        if (q.trim() && key !== this.lastBlueskyRun) {
+          this.lastBlueskyRun = key;
+          afterNextRender(() => this.blueskyPanel()?.runQuery(), { injector: this.injector });
+        }
         return;
       }
 
@@ -1906,6 +1914,7 @@ export class Search implements OnInit, OnDestroy {
         queryLength: q.length,
         network: 'bluesky',
       });
+      this.lastBlueskyRun = `${q}|${this.type()}`;
       void this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { q, type: BLUESKY_WIRE_TYPE, bskyType: this.type() },

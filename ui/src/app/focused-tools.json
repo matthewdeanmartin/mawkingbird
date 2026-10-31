@@ -272,5 +272,61 @@
       "copy": "Choose what to keep",
       "tool": "app-bookmarks-export-workbench"
     }
+  },
+  {
+    "id": "mastodon-search",
+    "path": "mastodon-search",
+    "title": "Mastodon search: find posts, people and hashtags",
+    "description": "Search Mastodon for posts, people and hashtags with Twitter-style filters: from:, has:media, dates and phrases. No account needed to start.",
+    "group": "search",
+    "sources": "network-search",
+    "signIn": "any",
+    "tab": {
+      "id": "search",
+      "labelKey": "shell.nav.search",
+      "icon": "M4 10.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0M15.5 15.5l5 5"
+    },
+    "prerenderCheck": {
+      "heading": "Search Mastodon",
+      "copy": "Narrow it down",
+      "tool": "app-search-launcher"
+    }
+  },
+  {
+    "id": "bluesky-search",
+    "path": "bluesky-search",
+    "title": "Bluesky search: find posts and people",
+    "description": "Search Bluesky for people and posts with Twitter-style filters: from:, language, dates and phrases. Sign in with Bluesky to search posts.",
+    "group": "search",
+    "sources": "network-search",
+    "signIn": "any",
+    "tab": {
+      "id": "search",
+      "labelKey": "shell.nav.search",
+      "icon": "M4 10.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0M15.5 15.5l5 5"
+    },
+    "prerenderCheck": {
+      "heading": "Search Bluesky",
+      "copy": "Narrow it down",
+      "tool": "app-search-launcher"
+    }
+  },
+  {
+    "id": "download-media",
+    "path": "download-mastodon-images",
+    "title": "Download images from a Mastodon account",
+    "description": "See every picture a Mastodon account posted on one wall, then download them all as a zip or separate files, with GIFs, videos and audio. No account needed.",
+    "group": "account",
+    "signIn": "mastodon",
+    "tab": {
+      "id": "images",
+      "labelKey": "shell.modeNav.downloadMedia.images",
+      "icon": "M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15 8.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0-3 0"
+    },
+    "prerenderCheck": {
+      "heading": "Download images from Mastodon",
+      "copy": "See their pictures",
+      "tool": "app-media-download-workbench"
+    }
   }
 ]

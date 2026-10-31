@@ -149,6 +149,14 @@
                     localFollowCount('rss')
                   }})
                 </button>
+                @if (canShowMedia() && !auth.isAnonymous) {
+                  <app-media-download-menu-item
+                    scope="profile"
+                    [statuses]="statuses()"
+                    [loadPage]="mediaDownloadLoader()"
+                    [archiveName]="a.acct + '-media'"
+                  />
+                }
                 @if (localActionError()) {
                   <p class="menu-note" role="alert">
                     {{ 'pages.profile.actions.localFailed' | transloco }}
@@ -237,6 +245,14 @@
                   <button type="button" (click)="showSlideshow.set(true)">
                     {{ 'pages.profile.slideshow.open' | transloco }}
                   </button>
+                  @if (canShowMedia()) {
+                    <app-media-download-menu-item
+                      scope="profile"
+                      [statuses]="statuses()"
+                      [loadPage]="mediaDownloadLoader()"
+                      [archiveName]="a.acct + '-media'"
+                    />
+                  }
                   @if (a.url) {
                     <a [href]="a.url" target="_blank" rel="noopener noreferrer">{{
                       'pages.profile.actions.openOnBskyApp' | transloco
@@ -335,6 +351,14 @@
                   <button type="button" (click)="showSlideshow.set(true)">
                     {{ 'pages.profile.slideshow.open' | transloco }}
                   </button>
+                  @if (canShowMedia()) {
+                    <app-media-download-menu-item
+                      scope="profile"
+                      [statuses]="statuses()"
+                      [loadPage]="mediaDownloadLoader()"
+                      [archiveName]="a.acct + '-media'"
+                    />
+                  }
                   @if (a.url) {
                     <a [href]="a.url" target="_blank" rel="noopener noreferrer">{{
                       'pages.profile.actions.openOnBskyApp' | transloco
@@ -386,6 +410,14 @@
                         | transloco
                     }}
                   </button>
+                }
+                @if (canShowMedia()) {
+                  <app-media-download-menu-item
+                    scope="profile"
+                    [statuses]="statuses()"
+                    [loadPage]="mediaDownloadLoader()"
+                    [archiveName]="a.acct + '-media'"
+                  />
                 }
 
                 <!-- Two groups, split by a rule: things that make something appear in

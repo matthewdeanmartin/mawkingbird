@@ -45,6 +45,10 @@ describe('authGuard', () => {
     '/credits',
     '/collections/starter',
     '/collections/starter/infosec',
+    // The search tool pages hand their query here; no front page in between.
+    '/search',
+    '/search?q=coffee&type=statuses',
+    '/search?q=coffee&type=bluesky-posts&bskyType=accounts',
   ])('opens public content anonymously on a fresh browser: %s', (url) => {
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
     expect(result).toBe(true);
@@ -69,14 +73,19 @@ describe('authGuard', () => {
     expect(TestBed.inject(Auth).isAnonymous).toBe(false);
   });
 
-  it.each(['/aboutness', '/blog/drafts', '/plans', '/collections/123', '/collections/starter/a/b'])(
-    'keeps paths that only resemble project pages private: %s',
-    (url) => {
-      const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
-      expect(result).toBeInstanceOf(UrlTree);
-      expect(TestBed.inject(Auth).isAnonymous).toBe(false);
-    },
-  );
+  it.each([
+    '/aboutness',
+    '/blog/drafts',
+    '/plans',
+    '/collections/123',
+    '/collections/starter/a/b',
+    '/searches',
+    '/search/saved',
+  ])('keeps paths that only resemble project pages private: %s', (url) => {
+    const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(TestBed.inject(Auth).isAnonymous).toBe(false);
+  });
 
   /**
    * The front page, not the login page. A visitor with no account is a stranger

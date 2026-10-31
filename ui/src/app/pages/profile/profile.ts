@@ -83,6 +83,8 @@ import {
 import { AnonymousProviderRef } from '../../providers/anonymous/anonymous-mastodon-provider';
 import { AccountStatusesOptions } from '../../api';
 import { Observable } from 'rxjs';
+import { MediaDownloadMenuItem } from '../../media-download/media-download-menu-item';
+import type { MediaPageLoader } from '../../media-download/media-download-dialog';
 import { ElizaService } from '../../eliza/eliza.service';
 import { isElizaId } from '../../eliza/eliza-identity';
 import { AiAvailability } from '../../ai-availability';
@@ -238,6 +240,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
   selector: 'app-profile',
   imports: [
     ProfileSlideshow,
+    MediaDownloadMenuItem,
     CustomEmojiPipe,
     MbButton,
     NgTemplateOutlet,
@@ -733,6 +736,30 @@ export class Profile implements OnInit, OnDestroy {
       }),
     );
   }
+
+  /**
+   * Pages for the "Download media…" dialog, or null when this source can't be
+   * paged here and the dialog should use the posts already loaded.
+   */
+  protected mediaDownloadLoader = computed<MediaPageLoader | null>(() =>
+    this.supportsOnlyMedia() ? this.mediaDownloadPage : null,
+  );
+
+  /**
+   * With boosts included `only_media` must go: Mastodon applies it to the
+   * account's own attachments, so it never returns a boost. The dialog filters
+   * those pages for media itself.
+   */
+  private mediaDownloadPage: MediaPageLoader = (cursor, includeBoosts) => {
+    const id = this.publicProfileRef?.id ?? this.account()?.id;
+    if (!id) return of([]);
+    return this.getAccountStatuses(id, {
+      onlyMedia: !includeBoosts,
+      excludeReblogs: !includeBoosts,
+      limit: Profile.MEDIA_PAGE,
+      maxId: cursor ? this.nativeStatusId(cursor) : undefined,
+    });
+  };
 
   /** Only Mastodon-shaped sources answer `only_media`. */
   private supportsOnlyMedia(): boolean {

@@ -13,6 +13,7 @@ import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Relationship, SearchResults, Status, Tag } from '../../models';
 import { Search } from './search';
+import { BlueskySearchPanel } from './bluesky-search-panel';
 import { Auth } from '../../auth';
 import { SearchServer } from '../../search-server';
 import { RecentSearches } from './recent-searches';
@@ -1653,6 +1654,28 @@ describe('Search', () => {
       internals(fixture).onNetworkSelect('bluesky');
 
       expect(internals(fixture).queryPlaceholder()).toBe('Search Bluesky accounts');
+    });
+
+    it('runs a Bluesky search a link names, once, and not again for its own Search press', async () => {
+      const runQuery = vi
+        .spyOn(BlueskySearchPanel.prototype, 'runQuery')
+        .mockImplementation(() => undefined);
+      queryParams$.next(
+        convertToParamMap({ q: 'coffee', type: 'bluesky-posts', bskyType: 'accounts' }),
+      );
+      const fixture = setUp();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // The /bluesky-search hand-off lands with the search already running.
+      expect(runQuery).toHaveBeenCalledTimes(1);
+
+      // Pressing Search runs it and rewrites the URL to the same search; the
+      // URL change must not run it a second time.
+      internals(fixture).run();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(runQuery).toHaveBeenCalledTimes(2);
     });
 
     it('restores which half of Bluesky a shared link meant', () => {

@@ -1,0 +1,47 @@
+<form class="launcher" role="search" (ngSubmit)="search()">
+  <mb-field [label]="network() === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'" hideLabel>
+    <input
+      mbControl
+      type="search"
+      name="q"
+      autocomplete="off"
+      [placeholder]="network() === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+    />
+  </mb-field>
+  <mb-field label="What to find" hideLabel>
+    <select mbControl name="type" [ngModel]="type()" (ngModelChange)="type.set($event)">
+      @for (option of types(); track option.value) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+  </mb-field>
+  <button mbButton type="submit" [disabled]="!query().trim() || needsBlueskySignIn()">
+    Search
+  </button>
+</form>
+
+<p class="better">
+  @if (network() === 'bluesky') {
+    @if (blueskySignedIn()) {
+      Signed in with Bluesky: posts and people are both searchable.
+    } @else if (needsBlueskySignIn()) {
+      Bluesky only lets signed-in accounts search posts.
+      <a routerLink="/login/bluesky" [queryParams]="returnHere()">Sign in with Bluesky</a>, and
+      you'll come straight back here. People search works without an account.
+    } @else {
+      No account needed to search for people.
+      <a routerLink="/login/bluesky" [queryParams]="returnHere()">Sign in with Bluesky</a> to search
+      posts too.
+    }
+  } @else {
+    @if (mastodonSignedIn()) {
+      Signed in: post searches use your server's full-text search, where it offers one.
+    } @else {
+      No account needed. Without one, Mastodon servers only search posts by hashtag;
+      <a routerLink="/login/mastodon" [queryParams]="returnHere()">sign in with Mastodon</a> for
+      full-text post search, and you'll come straight back here.
+    }
+  }
+</p>

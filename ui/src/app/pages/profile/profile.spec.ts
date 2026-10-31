@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, firstValueFrom, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Relationship, Status } from '../../models';
 import { Profile } from './profile';
@@ -1564,6 +1564,34 @@ describe('Profile cross-server recovery', () => {
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/conversations'], {
       queryParams: { open: 'priv:alice@example.social', with: '900', visibility: 'direct' },
     });
+  });
+
+  it('offers Download media in the overflow menu, paging only_media posts without boosts', async () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush({ id: '900', acct: 'alice@example.social', username: 'alice', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('details app-media-download-menu-item')?.textContent).toContain(
+      'Download media…',
+    );
+    const loader = fixture.componentInstance['mediaDownloadLoader']()!;
+    expect(loader).not.toBeNull();
+    const page = firstValueFrom(loader(undefined, false));
+    const request = httpMock.expectOne((r) => r.url === '/api/v1/accounts/900/statuses');
+    expect(request.request.params.get('only_media')).toBe('true');
+    expect(request.request.params.get('exclude_reblogs')).toBe('true');
+    request.flush([]);
+    expect(await page).toEqual([]);
+
+    const withBoosts = firstValueFrom(loader(undefined, true));
+    const boosted = httpMock.expectOne((r) => r.url === '/api/v1/accounts/900/statuses');
+    expect(boosted.request.params.has('only_media')).toBe(false);
+    expect(boosted.request.params.has('exclude_reblogs')).toBe(false);
+    boosted.flush([]);
+    await withBoosts;
   });
 
   it('retries a transient profile failure from the error screen', () => {

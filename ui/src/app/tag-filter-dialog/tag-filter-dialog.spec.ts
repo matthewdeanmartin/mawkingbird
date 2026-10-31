@@ -35,7 +35,7 @@ describe('Tag account-filter dialog', () => {
       ],
     });
     fixture = TestBed.createComponent(TagFilterDialog);
-    fixture.componentRef.setInput('tag', 'Anime2000');
+    fixture.componentRef.setInput('tags', ['Anime2000']);
     fixture.componentRef.setInput('finish', finish);
     fixture.detectChanges();
   });
@@ -83,15 +83,55 @@ describe('Tag account-filter dialog', () => {
   it('preserves choices after an API failure for a deliberate retry', () => {
     const state = fixture.componentInstance as unknown as {
       save(): void;
-      keyword(): string;
+      selected(): string[];
       saving(): boolean;
     };
     state.save();
     result.error(new Error('denied'));
     fixture.detectChanges();
     expect(state.saving()).toBe(false);
-    expect(state.keyword()).toBe('#Anime2000');
+    expect(state.selected()).toEqual(['Anime2000']);
     expect(finish).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('[role=alert]')).not.toBeNull();
+  });
+  it('saves several picked tags as one filter, keeping a title the reader typed', () => {
+    fixture.componentRef.setInput('tags', ['cats', 'dogs', 'birds']);
+    fixture.detectChanges();
+    const state = fixture.componentInstance as unknown as {
+      selected(): string[];
+      title(): string;
+      ownTitle: ReturnType<typeof signal<string | null>>;
+      setTag(tag: string, checked: boolean): void;
+      save(): void;
+    };
+    const create = () =>
+      [...fixture.nativeElement.querySelectorAll('button')].find(
+        (button) => (button as HTMLButtonElement).textContent?.trim() === 'Create filter',
+      ) as HTMLButtonElement;
+    expect(state.selected()).toEqual([]);
+    expect(create().disabled).toBe(true);
+    state.save();
+    expect(api.createFilter).not.toHaveBeenCalled();
+
+    state.setTag('dogs', true);
+    state.setTag('cats', true);
+    fixture.detectChanges();
+    expect(state.title()).toBe('#cats, #dogs');
+    expect(create().disabled).toBe(false);
+
+    state.ownTitle.set('Pets');
+    state.setTag('birds', true);
+    state.setTag('dogs', false);
+    state.save();
+    expect(api.createFilter).toHaveBeenCalledOnce();
+    expect(api.createFilter).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Pets',
+        keywords_attributes: [
+          { keyword: '#cats', whole_word: true },
+          { keyword: '#birds', whole_word: true },
+        ],
+      }),
+    );
   });
 });

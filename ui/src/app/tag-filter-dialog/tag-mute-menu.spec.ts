@@ -24,30 +24,15 @@ describe('TagMuteMenu', () => {
     );
   }
 
-  it('gives each of up to four tags its own row', () => {
-    const fixture = setUp(['one', 'two', 'three', 'four']);
-    expect(labels(fixture)).toEqual(['Mute #one…', 'Mute #two…', 'Mute #three…', 'Mute #four…']);
-    expect((fixture.nativeElement as HTMLElement).querySelector('[aria-expanded]')).toBeNull();
+  it('offers a single Mute tags row however many tags the post has', () => {
+    expect(labels(setUp(['one']))).toEqual(['Mute tags…']);
+    expect(labels(setUp(['a', 'b', 'c', 'd', 'e', 'f', 'g']))).toEqual(['Mute tags…']);
   });
 
-  it('collapses five or more tags behind one toggle row that reveals all of them', () => {
-    const tags = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-    const fixture = setUp(tags);
-    const el = fixture.nativeElement as HTMLElement;
-    const toggle = el.querySelector<HTMLButtonElement>('button.toggle')!;
-    expect(labels(fixture)).toEqual(['▸ Mute a hashtag (7)']);
-    expect(toggle.getAttribute('aria-expanded')).toBe('false');
-
-    toggle.click();
-    fixture.detectChanges();
-    expect(toggle.getAttribute('aria-expanded')).toBe('true');
-    const list = el.querySelector(`#${toggle.getAttribute('aria-controls')}`)!;
-    expect(Array.from(list.querySelectorAll('button'), (b) => b.textContent!.trim())).toEqual(
-      tags.map((tag) => `Mute #${tag}…`),
-    );
-
-    toggle.click();
-    fixture.detectChanges();
-    expect(labels(fixture)).toEqual(['▸ Mute a hashtag (7)']);
+  it('hands the picker each valid tag once, ignoring case', () => {
+    const fixture = setUp(['Cats', 'cats', '#Dogs', 'not a tag']);
+    (fixture.nativeElement as HTMLElement).querySelector('button')!.click();
+    const state = fixture.componentInstance as unknown as { active(): string[] | null };
+    expect(state.active()).toEqual(['Cats', 'Dogs']);
   });
 });

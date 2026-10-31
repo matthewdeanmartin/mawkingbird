@@ -1,0 +1,87 @@
+<form class="finder" (submit)="find($event)">
+  <mb-field
+    label="Mastodon account"
+    hint="A handle like @someone@mastodon.social, a link to their profile, or a name to search for."
+  >
+    <input
+      mbControl
+      type="text"
+      name="acct"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+    />
+  </mb-field>
+  <button mbButton type="submit" [disabled]="finding() || !text().trim()">
+    {{ finding() ? 'Looking…' : 'Show their pictures' }}
+  </button>
+</form>
+
+@if (notFound()) {
+  <mb-notice tone="error" announcement="alert">
+    No Mastodon account matched. Check the spelling, or paste the address of their profile page.
+  </mb-notice>
+}
+
+@if (candidates().length) {
+  <mb-dialog
+    title="Which account?"
+    closeLabel="Cancel"
+    description="Several accounts matched. Pick the one whose pictures you want."
+    [closeOnBackdrop]="true"
+    (dismissed)="closePicker()"
+  >
+    <ul class="candidates">
+      @for (account of candidates(); track account.url) {
+        <li>
+          <button type="button" (click)="choose(account)">
+            <img [src]="account.avatar_static || account.avatar" alt="" width="40" height="40" />
+            <span>
+              <strong>{{ account.display_name || account.username }}</strong>
+              <small class="muted">&#64;{{ account.acct }}</small>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  </mb-dialog>
+}
+
+@if (source(); as s) {
+  <section class="panel" aria-labelledby="media-owner">
+    <div class="who">
+      <img [src]="s.account.avatar_static || s.account.avatar" alt="" width="56" height="56" />
+      <div>
+        <h2 id="media-owner">{{ s.account.display_name || s.account.username }}</h2>
+        <p class="muted">&#64;{{ s.account.acct }} · read from {{ s.server }}</p>
+      </div>
+    </div>
+    <div class="download-bar">
+      <button mbButton type="button" [disabled]="loading()" (click)="downloading.set(true)">
+        Download media…
+      </button>
+      <span class="muted">Pictures, GIFs, videos or audio, as a zip or separate files.</span>
+    </div>
+    <app-profile-media-grid
+      [items]="items()"
+      [loading]="loading()"
+      [loadingMore]="loadingMore()"
+      [exhausted]="exhausted()"
+      [error]="error()"
+      (opened)="openPost($event)"
+      (more)="more()"
+    />
+  </section>
+  <app-focused-next-steps [lead]="nextStep()" [inviteLink]="inviteLink()" />
+}
+
+@if (downloading() && source(); as s) {
+  <app-media-download-dialog
+    scope="profile"
+    [loadPage]="loadPage"
+    [archiveName]="s.account.username + '-media'"
+    [finish]="closeDownload"
+  />
+}

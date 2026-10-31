@@ -1373,6 +1373,12 @@
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
+                    @if (downloadable(); as posts) {
+                      <app-media-download-menu-item
+                        [statuses]="posts"
+                        [archiveName]="'media-' + display.id"
+                      />
+                    }
                     @if (display.provider !== 'bluesky') {
                       <button
                         type="button"
@@ -1480,6 +1486,12 @@
                   }
                   @if (canMuteTags() && postTags().length) {
                     <app-tag-mute-menu [tags]="postTags()" />
+                  }
+                  @if (downloadable(); as posts) {
+                    <app-media-download-menu-item
+                      [statuses]="posts"
+                      [archiveName]="'media-' + display.id"
+                    />
                   }
                   <app-private-like-button [status]="display" />
                   <!-- "Reply to this later." Parks a local draft; publishes
@@ -1597,6 +1609,12 @@
                 }
                 @if (canMuteTags() && postTags().length) {
                   <app-tag-mute-menu [tags]="postTags()" />
+                }
+                @if (downloadable(); as posts) {
+                  <app-media-download-menu-item
+                    [statuses]="posts"
+                    [archiveName]="'media-' + display.id"
+                  />
                 }
                 <app-private-like-button [status]="display" />
                 <!-- "Reply to this later." Parks a local draft; publishes

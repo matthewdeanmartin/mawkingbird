@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal, Type } from '@angular/core';
+import { Component, effect, inject, input, signal, Type } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { normalizeHashtag } from '../hashtag';
@@ -6,46 +6,21 @@ import type { TagFilterDialog } from './tag-filter-dialog';
 import { Auth } from '../auth';
 import { Server } from '../server';
 
-// i18n tagFilter.mute: Mute #{{tag}}…
-// i18n tagFilter.muteMany: Mute a hashtag ({{count}})
+// i18n tagFilter.muteTags: Mute tags…
 
-/** Up to this many tags get a row each; more collapse behind one toggle row. */
-const INLINE_TAGS = 4;
-let nextId = 0;
-
+/**
+ * One "Mute tags…" row in a post's ••• menu, however many tags the post has.
+ * The dialog it opens is where the reader picks which of them to mute.
+ */
 @Component({
   selector: 'app-tag-mute-menu',
   imports: [NgComponentOutlet, TranslocoPipe],
-  template: `@if (collapsible()) {
-      <button
-        type="button"
-        class="toggle"
-        [attr.aria-expanded]="expanded()"
-        [attr.aria-controls]="listId"
-        (click)="toggle($event)"
-      >
-        <span aria-hidden="true">{{ expanded() ? '▾' : '▸' }}</span>
-        {{ 'tagFilter.muteMany' | transloco: { count: tags().length } }}
-      </button>
-      @if (expanded()) {
-        <div class="many" [id]="listId">
-          @for (tag of tags(); track tag) {
-            <button type="button" (click)="open(tag, $event)">
-              {{ 'tagFilter.mute' | transloco: { tag } }}
-            </button>
-          }
-        </div>
-      }
-    } @else {
-      @for (tag of tags(); track tag) {
-        <button type="button" (click)="open(tag, $event)">
-          {{ 'tagFilter.mute' | transloco: { tag } }}
-        </button>
-      }
-    }
-    @if (active(); as tag) {
+  template: `<button type="button" (click)="open($event)">
+      {{ 'tagFilter.muteTags' | transloco }}
+    </button>
+    @if (active(); as tags) {
       @if (component(); as dialog) {
-        <ng-container [ngComponentOutlet]="dialog" [ngComponentOutletInputs]="{ tag, finish }" />
+        <ng-container [ngComponentOutlet]="dialog" [ngComponentOutletInputs]="{ tags, finish }" />
       }
       @if (failed()) {
         <p role="alert">{{ 'tagFilter.failed' | transloco }}</p>
@@ -73,13 +48,6 @@ let nextId = 0;
     button:focus-visible {
       background: var(--border);
     }
-    /* A long tag list scrolls inside its own box instead of stretching the
-       whole menu; the indent ties the rows to the toggle that revealed them. */
-    .many {
-      max-height: min(40vh, 16rem);
-      overflow-y: auto;
-      padding-inline-start: 12px;
-    }
     [role='alert'] {
       margin: 0;
       padding: 4px 9px;
@@ -99,10 +67,7 @@ export class TagMuteMenu {
     });
   }
   readonly tags = input.required<string[]>();
-  protected readonly listId = `tag-mute-list-${nextId++}`;
-  protected collapsible = computed(() => this.tags().length > INLINE_TAGS);
-  protected expanded = signal(false);
-  protected active = signal<string | null>(null);
+  protected active = signal<string[] | null>(null);
   protected component = signal<Type<TagFilterDialog> | null>(null);
   protected failed = signal(false);
   private menu: HTMLDetailsElement | null = null;
@@ -114,19 +79,21 @@ export class TagMuteMenu {
       this.menu = null;
     }
   };
-  protected toggle(event: Event): void {
-    event.stopPropagation();
-    this.expanded.update((open) => !open);
-  }
-  protected open(tag: string, event: Event): void {
+  protected open(event: Event): void {
     event.stopPropagation();
     const details = (event.target as HTMLElement).closest('details');
     this.menu = details;
     if (details) {
       details.querySelector('summary')?.focus();
     }
-    const valid = normalizeHashtag(tag);
-    if (!valid) return;
+    // Mastodon matches keywords case-insensitively, so #Cats and #cats are one row.
+    const byKey = new Map<string, string>();
+    for (const tag of this.tags()) {
+      const valid = normalizeHashtag(tag);
+      if (valid && !byKey.has(valid.toLowerCase())) byKey.set(valid.toLowerCase(), valid);
+    }
+    const valid = [...byKey.values()];
+    if (!valid.length) return;
     this.active.set(valid);
     this.failed.set(false);
     void import('./tag-filter-dialog')

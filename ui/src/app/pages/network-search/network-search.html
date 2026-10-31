@@ -1,0 +1,100 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky search</p>
+      <h1>Search Bluesky</h1>
+      <p>Find people and posts on Bluesky, with the search filters you remember from Twitter.</p>
+    } @else {
+      <p class="eyebrow">Mastodon search</p>
+      <h1>Search Mastodon</h1>
+      <p>
+        Find posts, people and hashtags across Mastodon, with the search filters you remember from
+        Twitter.
+      </p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? 'Search Bluesky' : 'Search Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Search</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Narrow it down</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, language, dates and "exact phrases", typed or picked from the filters.
+        } @else {
+          from:someone, has:media, is:reply, dates and "exact phrases", typed or picked from the
+          filters.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Sort and refine</h2>
+      <p>Filter what came back by date, media and author, and see exactly what was searched.</p>
+    </li>
+    <li>
+      <h2>Keep your searches</h2>
+      <p>Save a search and run it again in one click, or share it as a link.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Questions</h2>
+    @if (network === 'bluesky') {
+      <h3>Do I need a Bluesky account?</h3>
+      <p>
+        Not to search for people. Bluesky only answers post searches for signed-in accounts, so sign
+        in with Bluesky for those; you come back to this page afterwards.
+      </p>
+      <h3>Can I search Mastodon too?</h3>
+      <p>
+        Yes: <a mbContentLink routerLink="/mastodon-search">search Mastodon</a>, or switch network
+        on the results page.
+      </p>
+    } @else {
+      <h3>Do I need a Mastodon account?</h3>
+      <p>
+        No. Without one you can search people and hashtags, and posts by hashtag, because Mastodon
+        servers don't allow anonymous full-text search. Sign in to search the words in posts; you
+        come back to this page afterwards.
+      </p>
+      <h3>Why is this better than my server's search?</h3>
+      <p>
+        The same server does the searching, but here you get the filters, sorting, saved searches
+        and an explanation of what was asked, instead of a single box.
+      </p>
+      <h3>Can I search Bluesky too?</h3>
+      <p>
+        Yes: <a mbContentLink routerLink="/bluesky-search">search Bluesky</a>, or switch network on
+        the results page.
+      </p>
+    }
+  </section>
+</main>

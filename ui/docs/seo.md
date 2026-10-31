@@ -142,8 +142,9 @@ Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 (one page, the URL sets the direction), `/turn-off-boosts-mastodon/`,
 `/find-contacts-on-mastodon/`, `/mastodon-friends-rss-feeds/`,
 `/mastodon-mute-block-amnesty/`, `/how-to-be-anonymous-on-mastodon/`,
-`/mastodon-handle-generator/`, `/turn-off-content-warnings-mastodon/` and
-`/export-mastodon-bookmarks/`. `/tools/` lists them all, grouped by each entry's
+`/mastodon-handle-generator/`, `/turn-off-content-warnings-mastodon/`,
+`/export-mastodon-bookmarks/`, `/download-mastodon-images/`, and `/mastodon-search/` and `/bluesky-search/`
+(one page, the URL sets the network). `/tools/` lists them all, grouped by each entry's
 `group`; it is linked first on the in-app Docs page, from the blog article and
 from `/features`.
 
@@ -196,14 +197,34 @@ routes need titles and descriptions there.
   `firstExternalLink` rule, now in `external-link.ts`, with the preview card as
   fallback) or links only. Dates are the post's: Mastodon does not expose when
   something was bookmarked.
-- The handle generator is the one tool that runs signed out, because its
-  visitors have no account yet. It is still `@defer`red, so the prerender makes
+- The search pages put a box first and hand the query to the app's own
+  `/search` (`?q=&type=`, or `type=bluesky-posts&bskyType=` for Bluesky), which
+  `authGuard` opens anonymously for a fresh visitor, with no front page in
+  between; a Bluesky search named in the URL now runs on arrival. Sign-in is
+  offered beside the box and returns to the tool page (`?next=`). Their
+  prerender holds a plain GET form until the deferred box loads.
+- The handle generator also runs signed out, because its
+  visitors have no account yet. It is a four-step wizard (name, pick, claim,
+  done) with the step in `?step=`, so the browser's Back steps back; a step
+  with nothing to show falls back to the furthest one that has. It is still `@defer`red, so the prerender makes
   no requests. Lookups use plain `fetch` to each server's public
   `/api/v1/accounts/lookup`, never `HttpClient`, so no token is sent to another
   server and a dead server cannot raise the fail whale. "Biggest servers" are
   the top ten by users in the joinmastodon directory (`MastodonServers`, the
   bundled `public/mastodon-servers.json` refreshed weekly from the live API).
   Connector pages take `embedded` to drop their Settings chrome.
+- The media downloader (`/download-mastodon-images/`) also runs signed out:
+  everything it reads is public. A handle or profile link is looked up on the
+  account's own server; anything else is a search, on the visitor's server
+  when signed in (resolving) or on mastodon.social when not. Several matches
+  open a picker dialog. Posts are read from the account's home server through
+  its public API, because another server only holds what federated to it;
+  when the home server refuses, they come from the server the account was
+  found on. The wall is the profile's `ProfileMediaGrid` and the Download
+  media… button opens the same `MediaDownloadDialog` as the profile ••• menu
+  (`fetch().blob()` per file, falling back to a list of links where a media
+  server sends no CORS headers; never the Plus proxy). The shown account is
+  kept in `?acct=`. Sign-in returns to the tool root, not to that account.
 - Links into the rest of the app (`FocusedNextSteps`) come only after the task:
   after a search, below the composer, below the analytics.
 - Onboarding opens on the first Home visit, never on these pages.

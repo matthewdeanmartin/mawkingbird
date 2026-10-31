@@ -38,11 +38,12 @@ export interface FocusedTool {
   prerenderCheck: { heading: string; copy: string; tool: string };
 }
 
-export type FocusedToolGroup = 'start' | 'people' | 'post' | 'account';
+export type FocusedToolGroup = 'start' | 'search' | 'people' | 'post' | 'account';
 
 /** The /tools headings, in page order. */
 export const FOCUSED_TOOL_GROUPS: readonly { id: FocusedToolGroup; title: string }[] = [
   { id: 'start', title: 'Start on Mastodon' },
+  { id: 'search', title: 'Search' },
   { id: 'people', title: 'Find your people' },
   { id: 'post', title: 'Post' },
   { id: 'account', title: 'Look after your account' },

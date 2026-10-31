@@ -1,115 +1,168 @@
-<section class="panel" aria-labelledby="handle-find-title">
-  <h2 id="handle-find-title">Find a handle</h2>
-  <form class="handle-form" (ngSubmit)="find()">
-    <mb-field
-      label="Your name or nickname"
-      hint="For example: Matthew Martin, or a nickname you use"
-    >
-      <input
-        mbControl
-        name="handle-name"
-        autocomplete="name"
-        [ngModel]="name()"
-        (ngModelChange)="name.set($event)"
-      />
-    </mb-field>
-    <mb-field
-      label="Server you plan to join"
-      hint="mastodon.social is the biggest; any Mastodon server works"
-      [error]="serverError() ? 'Type a server address, like mastodon.social' : ''"
-    >
-      <input
-        mbControl
-        name="handle-server"
-        autocapitalize="off"
-        spellcheck="false"
-        [ngModel]="serverInput()"
-        (ngModelChange)="serverInput.set($event)"
-      />
-    </mb-field>
-    <div class="handle-actions">
-      <button mbButton type="submit" [disabled]="!suggestions().length || checking()">
-        {{ checking() ? 'Checking…' : 'Find free handles' }}
-      </button>
-    </div>
-  </form>
-
-  @if (rows().length) {
-    <p class="muted small">On {{ server() }}. Pick one to see where else it is free.</p>
-    <ul class="handles">
-      @for (row of rows(); track row.handle) {
-        <li [class]="'is-' + row.status" [class.picked]="chosen() === row.handle">
-          <span class="handle">&#64;{{ row.handle }}</span>
-          <span class="status">{{ label(row.status) }}</span>
-          <button
-            mbButton
-            variant="outline"
-            size="small"
-            type="button"
-            (click)="choose(row.handle)"
-          >
-            Pick
-          </button>
-        </li>
-      }
-    </ul>
-  }
-</section>
-
-@if (chosen(); as handle) {
-  <section class="panel" aria-labelledby="handle-chosen-title">
-    <h2 id="handle-chosen-title">&#64;{{ handle }}</h2>
-    <p>
-      To claim it, sign up on {{ server() }} and type <strong>{{ handle }}</strong> as your
-      username. Your full address will be <strong>&#64;{{ handle }}&#64;{{ server() }}</strong
-      >.
-    </p>
-    <div class="handle-actions">
-      <a mbButton [href]="signUp()" target="_blank" rel="noopener noreferrer"
-        >Sign up on {{ server() }}</a
+<section class="wizard" aria-labelledby="handle-step-title">
+  <ol class="progress" aria-label="Steps">
+    @for (n of steps; track n) {
+      <li
+        [class.current]="step() === n"
+        [class.complete]="step() > n"
+        [attr.aria-current]="step() === n ? 'step' : null"
       >
-      <a mbButton variant="outline" routerLink="/login/mastodon">Already signed up? Sign in</a>
-    </div>
+        <span class="num" aria-hidden="true">{{ step() > n ? '✓' : n }}</span>
+        <span class="label">{{ stepTitles[n] }}</span>
+      </li>
+    }
+  </ol>
 
-    <h3>On the biggest Mastodon servers</h3>
-    @if (!big().length) {
-      <p class="muted small">Loading the server list…</p>
-    } @else {
+  <h2 id="handle-step-title" class="step-title" tabindex="-1" #stepHeading>
+    <span class="muted">Step {{ step() }} of 4:</span> {{ stepTitles[step()] }}
+  </h2>
+
+  @switch (step()) {
+    @case (1) {
+      <form class="handle-form" (ngSubmit)="next()">
+        <mb-field
+          label="Your name or nickname"
+          hint="For example: Matthew Martin, or a nickname you use"
+        >
+          <input
+            mbControl
+            name="handle-name"
+            autocomplete="name"
+            [ngModel]="name()"
+            (ngModelChange)="name.set($event)"
+          />
+        </mb-field>
+        <mb-field
+          label="Server you plan to join"
+          hint="mastodon.social is the biggest; any Mastodon server works"
+          [error]="serverError() ? 'Type a server address, like mastodon.social' : ''"
+        >
+          <input
+            mbControl
+            name="handle-server"
+            autocapitalize="off"
+            spellcheck="false"
+            [ngModel]="serverInput()"
+            (ngModelChange)="serverInput.set($event)"
+          />
+        </mb-field>
+        <div class="nav">
+          <span></span>
+          <button mbButton type="submit" [disabled]="!suggestions().length">
+            Next: find handles
+          </button>
+        </div>
+      </form>
+    }
+
+    @case (2) {
+      <p class="muted small">
+        Checked on {{ server() }}.
+        @if (checking()) {
+          Still checking…
+        } @else {
+          Pick the one you like.
+        }
+      </p>
       <ul class="handles">
-        @for (entry of big(); track entry.domain) {
-          <li [class]="'is-' + entry.status">
-            <span class="handle">
-              {{ entry.domain }}
-              <small class="muted">
-                {{ users(entry.users) }}
-                @if (entry.approval === true) {
-                  · sign-ups reviewed
-                } @else if (entry.approval === false) {
-                  · open sign-ups
-                }
-              </small>
-            </span>
-            <span class="status">{{ label(entry.status) }}</span>
-            @if (entry.status === 'free') {
-              <a
-                mbButton
-                variant="outline"
-                size="small"
-                [href]="signUpOn(entry.domain)"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Sign up</a
-              >
-            }
+        @for (row of rows(); track row.handle) {
+          <li [class]="'is-' + row.status">
+            <span class="handle">&#64;{{ row.handle }}</span>
+            <span class="status">{{ label(row.status) }}</span>
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              [disabled]="row.status === 'taken' || row.status === 'checking'"
+              (click)="choose(row.handle)"
+            >
+              Pick
+            </button>
           </li>
         }
       </ul>
+      <div class="nav">
+        <button mbButton variant="outline" type="button" (click)="back()">Back</button>
+        <span class="muted small">Pick a handle to continue</span>
+      </div>
     }
-    <mb-notice>
-      "Looks free" means no account has that name yet. A server can still refuse it at sign-up:
-      names of deleted accounts stay reserved, and admins reserve some words.
-    </mb-notice>
-  </section>
 
-  <app-focused-next-steps [inviteLink]="inviteLink()" />
-}
+    @case (3) {
+      @if (chosen(); as handle) {
+        <p>
+          To claim <strong>&#64;{{ handle }}</strong
+          >, sign up on {{ server() }} and type <strong>{{ handle }}</strong> as your username. Your
+          full address will be <strong>&#64;{{ handle }}&#64;{{ server() }}</strong
+          >.
+        </p>
+        <p>
+          <a mbButton [href]="signUp()" target="_blank" rel="noopener noreferrer"
+            >Sign up on {{ server() }}</a
+          >
+        </p>
+
+        <h3>Or on one of the biggest servers</h3>
+        @if (!big().length) {
+          <p class="muted small">Loading the server list…</p>
+        } @else {
+          <ul class="handles">
+            @for (entry of big(); track entry.domain) {
+              <li [class]="'is-' + entry.status">
+                <span class="handle">
+                  {{ entry.domain }}
+                  <small class="muted">
+                    {{ users(entry.users) }}
+                    @if (entry.approval === true) {
+                      · sign-ups reviewed
+                    } @else if (entry.approval === false) {
+                      · open sign-ups
+                    }
+                  </small>
+                </span>
+                <span class="status">{{ label(entry.status) }}</span>
+                @if (entry.status === 'free') {
+                  <a
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    [href]="signUpOn(entry.domain)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Sign up</a
+                  >
+                }
+              </li>
+            }
+          </ul>
+        }
+        <mb-notice>
+          "Looks free" means no account has that name yet. A server can still refuse it at sign-up:
+          names of deleted accounts stay reserved, and admins reserve some words.
+        </mb-notice>
+        <div class="nav">
+          <button mbButton variant="outline" type="button" (click)="back()">Back</button>
+          <button mbButton type="button" (click)="finish()">Done</button>
+        </div>
+      }
+    }
+
+    @case (4) {
+      <p>
+        @if (chosen(); as handle) {
+          Once you've signed up as <strong>&#64;{{ handle }}</strong
+          >, sign in to Mawkingbird to start following people.
+        }
+      </p>
+      <div class="nav">
+        <button mbButton variant="outline" type="button" (click)="back()">Back</button>
+        <a mbButton routerLink="/login/mastodon">Sign in to Mawkingbird</a>
+      </div>
+      <p class="restart">
+        <button mbButton variant="link" type="button" (click)="startOver()">
+          Start over with another name
+        </button>
+      </p>
+      <app-focused-next-steps [inviteLink]="inviteLink()" />
+    }
+  }
+</section>

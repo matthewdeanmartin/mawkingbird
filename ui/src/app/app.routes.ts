@@ -121,6 +121,14 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
       (m) => m.ExportMastodonBookmarks,
     ),
+  'download-mastodon-images': () =>
+    import('./pages/download-mastodon-images/download-mastodon-images').then(
+      (m) => m.DownloadMastodonImages,
+    ),
+  'mastodon-search': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
+  'bluesky-search': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
 };
 
 export const routes: Routes = [

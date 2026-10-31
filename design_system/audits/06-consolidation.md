@@ -1,5 +1,40 @@
 # Sprint 6 opening consolidation audit
 
+## Media download tool page, 2026-10-31
+
+Reviewed 1,315 source files and 290 candidate files. Two candidates are added:
+`pages/download-mastodon-images/download-mastodon-images.html` (adopted scope:
+MbContentLink and MbButton) and `media-download-workbench.html` (partial
+adoption: MbField, MbControl, MbButton, MbNotice, MbDialog and ProfileMediaGrid,
+with native buttons for the account picker's rows). No shared widget changed.
+
+## Mute tags and Download media, 2026-10-31
+
+Reviewed 1,310 source files and 288 candidate files. Two candidates are added:
+`media-download/media-download-dialog.ts` (adopted scope: Dialog, Checkbox,
+RadioGroup, Button; native progress and failure-link list) and
+`media-download/media-download-menu-item.ts` (partial adoption: a native menu
+row like `tag-mute-menu.ts`). `tag-mute-menu.ts` is now one "Mute tags…" row and
+`tag-filter-dialog.ts` picks hashtags with Checkbox; their dispositions stand
+with updated next steps. Post and profile ••• menus gain the download row. No
+shared widget changed.
+
+## Handle generator as a wizard, 2026-10-30
+
+Reviewed 1,307 source files and 286 candidate files; none added or removed.
+`mastodon-handle-generator/handle-workbench.html` becomes a four-step wizard
+(one step on screen, Back/Next/Done as MbButton, a plain step-indicator list).
+Its adopted-scope disposition stands. No shared widget changed.
+
+## Search tool pages, 2026-10-30
+
+Reviewed 1,307 source files and 286 candidate files. Two candidates are added,
+both adopted scope: `pages/network-search/network-search.html` (two URLs; its
+prerendered stand-in form submits with MbButton) and `search-launcher.html`
+(MbField, MbControl, MbButton). `pages/search/search.ts` only gains a run for
+Bluesky searches named in the URL; its disposition stands. No shared widget
+changed.
+
 ## Bookmark export tool page, 2026-10-30
 
 Reviewed 1,301 source files and 284 candidate files. Two candidates are added,

@@ -1,30 +1,86 @@
 :host {
   display: block;
 }
-.panel {
+.wizard {
   margin: 24px 0;
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 12px;
+  /* Room above it when a step change scrolls it to the top of the window. */
+  scroll-margin-top: 16px;
 }
-.panel h2 {
+.progress {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.progress li {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding-top: 6px;
+  border-top: 3px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.progress li.complete {
+  border-top-color: var(--accent);
+}
+.progress li.current {
+  border-top-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+.progress .num {
+  flex: none;
+}
+.progress .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  /* Four labels do not fit a phone; the heading names the step. */
+  .progress .label {
+    display: none;
+  }
+}
+.step-title {
   font-size: 1.15rem;
   margin: 0 0 12px;
 }
-.panel h3 {
+.step-title:focus {
+  outline: none;
+}
+.step-title:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.wizard h3 {
   font-size: 1rem;
   margin: 20px 0 8px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  grid-column: 1 / -1;
+}
+.restart {
+  margin: 12px 0 0;
 }
 .handle-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   align-items: end;
-}
-.handle-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 .handles {
   display: grid;
@@ -40,9 +96,6 @@
   padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
-}
-.handles li.picked {
-  border-color: var(--accent);
 }
 .handle {
   flex: 1;

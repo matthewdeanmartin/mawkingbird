@@ -1,8 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MastodonServers, ServerSuggestion } from '../../mastodon-servers';
 import { HandleWorkbench } from './handle-workbench';
@@ -42,8 +42,19 @@ describe('HandleWorkbench', () => {
     'big.example': ['matthew_martin'],
   };
   let requests: string[];
+  let fixture: ComponentFixture<HandleWorkbench>;
+  let root: HTMLElement;
+  let wb: {
+    name: { set(v: string): void };
+    serverInput: { set(v: string): void };
+    next(): void;
+    choose(handle: string): Promise<void>;
+    back(): void;
+    finish(): void;
+    startOver(): void;
+  };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
     requests = [];
     vi.stubGlobal(
@@ -60,80 +71,129 @@ describe('HandleWorkbench', () => {
       server('mastodon.social', 900_000, false),
       server('big.example', 300_000, true),
       server('down.example', 50_000),
-      server('mastomini.local', 0),
+      { ...server('mastomini.local', 0), local: true },
     ]);
-    directory()[3].local = true;
     TestBed.configureTestingModule({
       imports: [HandleWorkbench],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]),
+        provideRouter([{ path: '**', children: [] }]),
         {
           provide: MastodonServers,
           useValue: { servers: directory, ready: () => Promise.resolve() },
         },
       ],
     });
+    await TestBed.inject(Router).navigateByUrl('/mastodon-handle-generator');
+    fixture = TestBed.createComponent(HandleWorkbench);
+    root = fixture.nativeElement as HTMLElement;
+    wb = fixture.componentInstance as unknown as typeof wb;
+    fixture.detectChanges();
   });
 
   afterEach(() => vi.unstubAllGlobals());
 
-  async function settle(fixture: { detectChanges(): void }): Promise<void> {
+  async function settle(): Promise<void> {
     for (let i = 0; i < 10; i++) await Promise.resolve();
+    await fixture.whenStable();
     fixture.detectChanges();
   }
 
-  it('checks every suggestion on the chosen server, then the pick on the biggest others', async () => {
-    const fixture = TestBed.createComponent(HandleWorkbench);
-    fixture.detectChanges();
-    const wb = fixture.componentInstance as unknown as {
-      name: { set(v: string): void };
-      find(): void;
-      choose(handle: string): Promise<void>;
-    };
-    wb.name.set('Matthew Martin');
-    wb.find();
-    await settle(fixture);
-    const root = fixture.nativeElement as HTMLElement;
+  const title = () => root.querySelector('.step-title')?.textContent?.replace(/\s+/g, ' ').trim();
+  const url = () => TestBed.inject(Router).url;
 
+  it('walks name → pick → claim → done, one step on screen at a time, the step in the URL', async () => {
+    expect(title()).toBe('Step 1 of 4: Your name');
+    expect(root.querySelector('.handles')).toBeNull();
+
+    wb.name.set('Matthew Martin');
+    wb.next();
+    await settle();
+    expect(title()).toBe('Step 2 of 4: Pick a handle');
+    expect(url()).toBe('/mastodon-handle-generator?step=2');
+    // The name form is gone, not scrolled past.
+    expect(root.querySelector('input[name="handle-name"]')).toBeNull();
     const rows = [...root.querySelectorAll('.handles li')];
     expect(rows).toHaveLength(12);
-    expect(rows[0].textContent).toContain('@matthewmartin');
     expect(rows[0].textContent).toContain('Taken');
-    expect(rows[1].textContent).toContain('Looks free');
-    expect(requests.every((url) => url.startsWith('https://mastodon.social/'))).toBe(true);
+    // A taken handle cannot be picked; a free one can.
+    expect(rows[0].querySelector('button')?.disabled).toBe(true);
+    expect(rows[1].querySelector('button')?.disabled).toBe(false);
+    expect(requests.every((r) => r.startsWith('https://mastodon.social/'))).toBe(true);
 
     await wb.choose('matthew_martin');
-    await settle(fixture);
-    const big = [...root.querySelectorAll('[aria-labelledby="handle-chosen-title"] .handles li')];
-    // The chosen server is not repeated, and the local test server is not "big".
+    await settle();
+    expect(title()).toBe('Step 3 of 4: Claim it');
+    expect(url()).toBe('/mastodon-handle-generator?step=3');
+    const big = [...root.querySelectorAll('.handles li')];
     expect(
       big.map((li) => li.querySelector('.handle')?.textContent?.trim().split(/\s/)[0]),
     ).toEqual(['big.example', 'down.example']);
-    expect(big[0].textContent).toContain('Taken');
     expect(big[0].textContent).toContain('sign-ups reviewed');
     expect(big[1].textContent).toContain("Couldn't check");
-    const signUp = root.querySelector<HTMLAnchorElement>(
-      '[aria-labelledby="handle-chosen-title"] a',
-    );
-    expect(signUp?.getAttribute('href')).toBe('https://mastodon.social/auth/sign_up');
+    expect(root.querySelector('a[href="https://mastodon.social/auth/sign_up"]')).not.toBeNull();
+    expect(root.querySelector('app-focused-next-steps')).toBeNull();
+
+    wb.finish();
+    await settle();
+    expect(title()).toBe('Step 4 of 4: Done');
+    expect(root.querySelector('a[href="/login/mastodon"]')).not.toBeNull();
     expect(root.querySelector('app-focused-next-steps')).not.toBeNull();
   });
 
+  it('marks the steps done so far, and the current one', async () => {
+    wb.name.set('Matthew Martin');
+    wb.next();
+    await settle();
+    const steps = [...root.querySelectorAll('.progress li')];
+    expect(steps[0].classList).toContain('complete');
+    expect(steps[1].getAttribute('aria-current')).toBe('step');
+    expect(steps[2].classList).not.toContain('complete');
+  });
+
+  it('never shows a step there is nothing for, whatever the URL says', async () => {
+    await TestBed.inject(Router).navigateByUrl('/mastodon-handle-generator?step=3');
+    await settle();
+    expect(title()).toBe('Step 1 of 4: Your name');
+  });
+
+  it('steps back in place when the page was opened straight on a step', async () => {
+    wb.name.set('Matthew Martin');
+    wb.next();
+    await settle();
+    // Simulate an entry the wizard did not make (a pasted ?step=2 link).
+    history.replaceState(null, '');
+    wb.back();
+    await settle();
+    expect(title()).toBe('Step 1 of 4: Your name');
+    // The name is kept for another go.
+    expect(root.querySelector<HTMLInputElement>('input[name="handle-name"]')?.value).toBe(
+      'Matthew Martin',
+    );
+  });
+
+  it('starts over from step 1 with the results cleared', async () => {
+    wb.name.set('Matthew Martin');
+    wb.next();
+    await settle();
+    await wb.choose('matthew_martin');
+    await settle();
+    wb.finish();
+    await settle();
+    wb.startOver();
+    await settle();
+    expect(title()).toBe('Step 1 of 4: Your name');
+    expect(url()).toBe('/mastodon-handle-generator');
+  });
+
   it('refuses a server address that is not one, without sending anything', async () => {
-    const fixture = TestBed.createComponent(HandleWorkbench);
-    fixture.detectChanges();
-    const wb = fixture.componentInstance as unknown as {
-      name: { set(v: string): void };
-      serverInput: { set(v: string): void };
-      find(): void;
-    };
     wb.name.set('Matthew Martin');
     wb.serverInput.set('not a server');
-    wb.find();
-    await settle(fixture);
+    wb.next();
+    await settle();
     expect(requests).toEqual([]);
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Type a server address');
+    expect(title()).toBe('Step 1 of 4: Your name');
+    expect(root.textContent).toContain('Type a server address');
   });
 });

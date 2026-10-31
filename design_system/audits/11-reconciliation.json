@@ -105,12 +105,22 @@
     {
       "file": "ui/src/app/tag-filter-dialog/tag-filter-dialog.ts",
       "disposition": "adopted scope",
-      "nextStep": "Account filter creation uses Dialog, Field/Control, Checkbox and Button. Preserve focus return, explicit confirmation, context selection, validation and retry choices."
+      "nextStep": "Account filter creation uses Dialog, Field/Control, Checkbox and Button. The post's hashtags are Checkboxes; the chosen ones become keywords of one filter. Preserve focus return, explicit confirmation, nothing preselected when there are several tags, a title the reader typed, context selection, validation and retry choices."
     },
     {
       "file": "ui/src/app/tag-filter-dialog/tag-mute-menu.ts",
       "disposition": "partial adoption",
-      "nextStep": "Per-post tag filter actions lazily load the shared dialog. The rows are native buttons styled as entries of the post's ••• menu, no longer Button, so they match the other menu items. Five or more tags collapse behind one toggle row with a scroll-bounded list. Migrate to a shared menu-item control when one exists; keep names specific to each hashtag, the four-tag inline limit and the disclosure state, and prevent parent card navigation."
+      "nextStep": "One Mute tags… row lazily loads the shared dialog, where the hashtags are picked. The row is a native button styled as an entry of the post's ••• menu, no longer Button, so it matches the other menu items. Migrate to a shared menu-item control when one exists; keep case-insensitive tag deduplication and prevent parent card navigation."
+    },
+    {
+      "file": "ui/src/app/media-download/media-download-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Download media uses Dialog, Checkbox, RadioGroup and Button, with a native progress bar and a native list of links for files whose server refuses CORS. Preserve one projected footer outside the phase switch, Stop during work, focus return, and links opening in a new tab with noopener."
+    },
+    {
+      "file": "ui/src/app/media-download/media-download-menu-item.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Download media… row in post and profile ••• menus lazily loads the dialog. Native button styled as a menu entry like tag-mute-menu. Migrate to a shared menu-item control when one exists; keep the menu open while the dialog shows and prevent parent card navigation."
     },
     {
       "file": "ui/src/app/pages/features/follow-hub.html",
@@ -1390,7 +1400,7 @@
     {
       "file": "ui/src/app/pages/mastodon-handle-generator/handle-workbench.html",
       "disposition": "adopted scope",
-      "nextStep": "Handle form built from MbField/MbControl and MbButton, result rows with MbButton picks and sign-up links, MbNotice for the availability caveat, FocusedNextSteps after a pick. Keep new controls on shared widgets."
+      "nextStep": "A four-step wizard (name, pick, claim, done) with a step indicator list, the name form as MbField/MbControl, result rows with MbButton picks and sign-up links, Back/Next/Done as MbButton, MbNotice for the availability caveat, FocusedNextSteps on the last step. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
@@ -1403,6 +1413,16 @@
       "nextStep": "Two MbCheckbox switches over TrustedAccounts, the server's preferences as read-only text with a plain link out, and a plain link to Settings → Trust; FocusedNextSteps after a change. Keep new controls on shared widgets."
     },
     {
+      "file": "ui/src/app/pages/download-mastodon-images/download-mastodon-images.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred media download workbench, which also runs signed out. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/download-mastodon-images/media-download-workbench.html",
+      "disposition": "partial adoption",
+      "nextStep": "Account box as MbField/MbControl with an MbButton submit, no match as MbNotice, the account picker as MbDialog, the download action as MbButton, the wall as ProfileMediaGrid. The picker's account rows are native buttons (avatar, name, handle); migrate them to a shared selectable-account row when one exists, keeping one button per account and the handle visible."
+    },
+    {
       "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
       "disposition": "adopted scope",
       "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred bookmark exporter. Keep new controls on shared widgets."
@@ -1411,6 +1431,16 @@
       "file": "ui/src/app/pages/export-mastodon-bookmarks/bookmarks-export-workbench.html",
       "disposition": "adopted scope",
       "nextStep": "Read and stop as MbButton actions, the export shape as MbRadioGroup, download as MbButton, results and partial reads as MbNotice, plain links to Bookmarks and Raindrop; FocusedNextSteps after a download. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public prerendered mini-app page (two URLs) using MbContentLink and MbButton; its prerendered stand-in search form is a plain GET form with an MbButton submit, replaced by the launcher once it loads. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/network-search/search-launcher.html",
+      "disposition": "adopted scope",
+      "nextStep": "Search box and type select as MbField/MbControl, submit as MbButton, sign-in prompts as plain router links. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/pages/tools/tools-index.html",

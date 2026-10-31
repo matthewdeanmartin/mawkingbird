@@ -41,6 +41,7 @@ import { FOCUSED_TOOLS } from '../focused-tools';
 // i18n shell.modeNav.handles.find: Handles
 // i18n shell.modeNav.contentWarnings.off: Warnings
 // i18n shell.modeNav.exportBookmarks.export: Export
+// i18n shell.modeNav.downloadMedia.images: Images
 // i18n shell.modeNav.focused.invite: Invite
 
 /**

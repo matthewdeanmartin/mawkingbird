@@ -108,6 +108,8 @@ import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
 import { statusHashtags } from '../hashtag';
 import { TagMuteMenu } from '../tag-filter-dialog/tag-mute-menu';
+import { MediaDownloadMenuItem } from '../media-download/media-download-menu-item';
+import { hasDownloadableMedia } from '../media-download/media-download';
 // i18n watch.addPostTag: Add #{{tag}} to party
 import { HumanTimePipe } from '../human-time.pipe';
 import { VerifiedBadge } from '../verified-badge/verified-badge';
@@ -379,6 +381,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     AccountHoverCard,
     ReportDialog,
     TagMuteMenu,
+    MediaDownloadMenuItem,
     AccountListDialog,
     HistoryDialog,
     FormsModule,
@@ -564,6 +567,10 @@ export class StatusCard {
   readonly partyTagAdded = output<string>();
   protected postTags = computed(() => statusHashtags(this.status()));
   protected canMuteTags = computed(() => this.auth.kind() === 'mastodon' && !!this.auth.token());
+  /** This post as a one-item list for the download dialog, or null when it has no media. */
+  protected downloadable = computed(() =>
+    hasDownloadableMedia(this.status()) ? [this.status()] : null,
+  );
   protected imagesVisible = computed(
     () => !this.textFocus() && this.prefs.showImages() && !this.prefs.feedReader(),
   );

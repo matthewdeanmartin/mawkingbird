@@ -40,9 +40,14 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const projectPage = /^\/(about|funding|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(
     link.pathname,
   );
+  // Search works anonymously, and the /mastodon-search and /bluesky-search tool
+  // pages hand their query straight to it: a front page with a sign-in question
+  // in between is the distraction those pages exist to remove.
+  const search = link.pathname === '/search';
   if (
     publicRadio ||
     projectPage ||
+    search ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {
     auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');

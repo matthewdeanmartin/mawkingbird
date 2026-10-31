@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
@@ -13,8 +13,9 @@ import { MbControl, MbField } from '../design-system/field/field';
 import { MbCheckbox } from '../design-system/checkbox/checkbox';
 import { normalizeHashtag } from '../hashtag';
 
-// i18n tagFilter.title: Mute #{{tag}}
-// i18n tagFilter.hint: Create a keyword filter on your current Mastodon account. Choose where it applies and when it expires. Refresh loaded feeds after saving to see the server's filter results.
+// i18n tagFilter.title: Mute tags
+// i18n tagFilter.hint: Pick the hashtags to mute. They are saved together as one keyword filter on your current Mastodon account. Choose where it applies and when it expires. Refresh loaded feeds after saving to see the server's filter results.
+// i18n tagFilter.pick: Hashtags to mute
 // i18n tagFilter.failed: Couldn't create the filter. Your choices are still here; try again.
 // i18n tagFilter.saving: Creating filter…
 // i18n tagFilter.expiry: Filter expires
@@ -22,17 +23,24 @@ import { normalizeHashtag } from '../hashtag';
   selector: 'app-tag-filter-dialog',
   imports: [FormsModule, TranslocoPipe, MbDialog, MbButton, MbField, MbControl, MbCheckbox],
   template: ` <mb-dialog
-    [title]="'tagFilter.title' | transloco: { tag: tag() }"
+    [title]="'tagFilter.title' | transloco"
     [closeLabel]="'common.cancel' | transloco"
     [description]="'tagFilter.hint' | transloco"
     [busy]="saving()"
     (dismissed)="finish()()"
   >
+    <fieldset>
+      <legend>{{ 'tagFilter.pick' | transloco }}</legend>
+      @for (tag of tags(); track tag) {
+        <mb-checkbox
+          [label]="'#' + tag"
+          [checked]="selected().includes(tag)"
+          (checkedChange)="setTag(tag, $event)"
+        />
+      }
+    </fieldset>
     <mb-field [label]="'settings.filters.titleLabel' | transloco">
-      <input mbControl [ngModel]="title()" (ngModelChange)="title.set($event)" />
-    </mb-field>
-    <mb-field [label]="'settings.filters.keywords' | transloco">
-      <input mbControl [ngModel]="keyword()" (ngModelChange)="keyword.set($event)" />
+      <input mbControl [ngModel]="title()" (ngModelChange)="ownTitle.set($event)" />
     </mb-field>
     <mb-checkbox
       [label]="'settings.filters.wholeWord' | transloco"
@@ -74,7 +82,7 @@ import { normalizeHashtag } from '../hashtag';
       <button
         mbButton
         type="button"
-        [disabled]="saving() || !title().trim() || !keyword().trim() || !contexts().length"
+        [disabled]="saving() || !title().trim() || !selected().length || !contexts().length"
         (click)="save()"
       >
         {{ (saving() ? 'tagFilter.saving' : 'settings.filters.create') | transloco }}
@@ -83,14 +91,22 @@ import { normalizeHashtag } from '../hashtag';
   </mb-dialog>`,
 })
 export class TagFilterDialog {
-  readonly tag = input.required<string>();
+  readonly tags = input.required<string[]>();
   readonly finish = input.required<() => void>();
   private api = inject(Api);
   private auth = inject(Auth);
   private server = inject(Server);
   private destroyRef = inject(DestroyRef);
-  protected title = linkedSignal(() => '#' + this.tag());
-  protected keyword = linkedSignal(() => '#' + this.tag());
+  /** A lone tag is the obvious choice; with several, the reader picks. */
+  protected selected = linkedSignal(() => (this.tags().length === 1 ? [...this.tags()] : []));
+  private keywords = computed(() =>
+    this.tags()
+      .filter((tag) => this.selected().includes(tag) && normalizeHashtag(tag))
+      .map((tag) => '#' + tag),
+  );
+  /** Follows the picked tags until the reader types a title of their own. */
+  protected ownTitle = signal<string | null>(null);
+  protected title = computed(() => this.ownTitle() ?? this.keywords().join(', '));
   protected wholeWord = signal(true);
   protected contexts = signal<FilterContext[]>(['home']);
   protected action = signal<FilterAction>('hide');
@@ -121,6 +137,11 @@ export class TagFilterDialog {
       identity = next;
     });
   }
+  protected setTag(tag: string, checked: boolean): void {
+    this.selected.update((list) =>
+      checked ? [...new Set([...list, tag])] : list.filter((item) => item !== tag),
+    );
+  }
   protected setContext(context: FilterContext, checked: boolean): void {
     this.contexts.update((list) =>
       checked ? [...new Set([...list, context])] : list.filter((item) => item !== context),
@@ -129,10 +150,9 @@ export class TagFilterDialog {
   protected save(): void {
     if (
       this.saving() ||
-      !normalizeHashtag(this.tag()) ||
+      !this.keywords().length ||
       this.auth.kind() !== 'mastodon' ||
       !this.title().trim() ||
-      !this.keyword().trim() ||
       !this.contexts().length
     )
       return;
@@ -144,7 +164,10 @@ export class TagFilterDialog {
         context: this.contexts(),
         filter_action: this.action(),
         expires_in: this.expires(),
-        keywords_attributes: [{ keyword: this.keyword().trim(), whole_word: this.wholeWord() }],
+        keywords_attributes: this.keywords().map((keyword) => ({
+          keyword,
+          whole_word: this.wholeWord(),
+        })),
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
