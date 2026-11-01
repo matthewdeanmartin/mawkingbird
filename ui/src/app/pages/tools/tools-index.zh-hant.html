@@ -1,0 +1,43 @@
+<main class="focused-page" lang="zh-Hant">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">開啟 App</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">工具</p>
+    <h1>Mastodon 與 Bluesky 免費工具</h1>
+    <p>
+      每個工具只做一件官方 App
+      做不到的事：挑選帳號名稱、找到您的聯絡人、排程發嘟、整理您的帳號。全部在您的瀏覽器裡執行，有些甚至不需要帳號。
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>找不到您要的嗎？</h2>
+    <p>
+      看看 <a mbContentLink routerLink="/features">Mawkingbird 的所有功能</a>（英文）或<a
+        mbContentLink
+        href="help/"
+        >說明</a
+      >（英文）。
+    </p>
+  </section>
+</main>

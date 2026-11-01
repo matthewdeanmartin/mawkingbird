@@ -1,0 +1,62 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">從 GitHub 到 Mastodon</p>
+    <h1>在 Mastodon 找到您 GitHub 上的朋友</h1>
+    <p>
+      很多開發者會在 GitHub 上寫出自己的 Mastodon 帳號。Mawkingbird 會檢查您在 GitHub
+      跟隨的人，以及您加星號的儲存庫擁有者，讓您在 Mastodon 跟隨他們。
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">正在載入搜尋……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>用 Mastodon 登入</h2>
+        <p>跟隨要用您自己的 Mastodon 帳號，所以先登入。</p>
+      </li>
+      <li>
+        <h2>連結 GitHub</h2>
+        <p>
+          貼上一個 GitHub 個人存取權杖，頁面會說明如何建立。GitHub 不讓網頁 App
+          用其他方式登入，權杖只會留在這個瀏覽器裡。
+        </p>
+      </li>
+      <li>
+        <h2>找到並跟隨</h2>
+        <p>
+          先看個人檔案裡指向 Mastodon
+          的連結，再做有限的名字搜尋。每個結果都會列出線索，由您決定要跟隨誰。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>我的 GitHub 權杖會送到哪裡？</h3>
+    <p>
+      它存在這個瀏覽器裡，只會送到 <code>api.github.com</code>，絕不會送到 Mawkingbird。您隨時可以在
+      GitHub 撤銷它。
+    </p>
+    <h3>會自動幫我跟隨別人嗎？</h3>
+    <p>不會。每一次跟隨都是您在線索旁邊自己按下的按鈕。</p>
+  </section>
+</main>

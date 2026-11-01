@@ -1,0 +1,78 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS와 OPML</p>
+    <h1>Mastodon에서 팔로우하는 사람들의 블로그와 RSS 피드 찾기</h1>
+    <p>
+      많은 사람이 Mastodon 프로필에 자기 웹사이트를 적어 둡니다. 이 도구는 그 링크에 피드가 있는지
+      확인하고, 찾은 피드를 모두 하나의 OPML 파일로 모아 어떤 피드 리더에서도 쓸 수 있게 합니다.
+      @if (!inShell) {
+        Mawkingbird Plus 기능입니다.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>팔로우 목록 읽기</h2>
+        <p>Mastodon 서버에서 목록과 각 프로필의 링크를 읽습니다.</p>
+      </li>
+      <li>
+        <h2>웹사이트 확인</h2>
+        <p>
+          링크된 사이트마다 피드가 있는지 묻습니다. 몇 개를 확인할지는 회원님이 정하며, 언제든
+          멈추고 찾은 것을 가질 수 있습니다.
+        </p>
+      </li>
+      <li>
+        <h2>OPML 다운로드</h2>
+        <p>원하는 피드 리더로 파일을 가져오거나, Mawkingbird의 RSS 리더에서 바로 구독하세요.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 피드 찾기</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Plus에 포함된 것</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>왜 Plus 기능인가요?</h3>
+    <p>
+      수백 개의 외부 사이트를 확인하려면 Mawkingbird가 비용을 내는 프록시를 사이트마다 한 번씩
+      거쳐야 합니다. Plus가 그 비용을 충당합니다.
+    </p>
+    <h3>OPML 파일이 뭔가요?</h3>
+    <p>
+      모든 피드 리더가 이해하는 구독 목록 형식입니다. Feedly, NetNewsWire, Inoreader 등으로 가져오면
+      모든 피드를 한 번에 구독할 수 있습니다.
+    </p>
+    <h3>모두 찾아 주나요?</h3>
+    <p>
+      프로필에 웹사이트를 링크한 사람, 그리고 피드가 있는 사이트만 찾습니다. 개인 피드가 없는 대형
+      플랫폼은 확인하지 않고 건너뜁니다.
+    </p>
+    <h3>두 번째 실행도 비용이 같나요?</h3>
+    <p>
+      아니요. 이미 확인한 사이트는 기억하므로, 몇 명을 새로 팔로우한 뒤 다시 실행하면 그 사람들의
+      사이트만 확인합니다.
+    </p>
+  </section>
+</main>

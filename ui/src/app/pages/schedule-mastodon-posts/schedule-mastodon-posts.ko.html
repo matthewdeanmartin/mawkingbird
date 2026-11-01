@@ -1,0 +1,79 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 예약 게시</p>
+    <h1>Mastodon 게시물 예약하기</h1>
+    <p>
+      일주일 치 게시물을 한 번에 써 두면 Mastodon 서버가 제시간에 게시합니다.
+      @if (!inShell) {
+        Mastodon으로 로그인해 게시물을 쓰고, 첫 게시물 시간과 나머지 간격을 고르면 끝입니다.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">예약 도구를 불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>게시물 작성</h2>
+        <p>원하는 만큼, 칸 하나에 하나씩, 게시물마다 최대 500자까지 씁니다.</p>
+      </li>
+      <li>
+        <h2>시간 나누기</h2>
+        <p>
+          첫 시간과 간격을 고릅니다. 매일 오전 9시, 3시간마다 등. 게시물마다 따로 시간을 정할 수도
+          있습니다.
+        </p>
+      </li>
+      <li>
+        <h2>탭 닫기</h2>
+        <p>
+          Mastodon 서버가 게시물을 보관했다가 제시간에 게시합니다. 브라우저에서 기다릴 필요가
+          없습니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 예약하기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>Mastodon에서 게시물을 예약할 수 있나요?</h3>
+    <p>
+      네. 모든 Mastodon 서버는 게시물을 보관했다가 나중에 게시할 수 있지만, 일반 Mastodon
+      웹사이트에는 그 버튼이 없습니다. 이 페이지는 기본 제공되는 예약 기능을 쓰므로, 게시물을
+      보관하는 것은 Mawkingbird가 아니라 회원님의 서버입니다.
+    </p>
+    <h3>이 페이지를 계속 열어 둬야 하나요?</h3>
+    <p>
+      아니요. 예약된 게시물은 Mastodon 서버에 있으며, 컴퓨터가 켜져 있든 아니든 정한 시간에
+      게시됩니다.
+    </p>
+    <h3>제한이 있나요?</h3>
+    <p>
+      Mastodon은 대기 중인 예약 게시물 300개, 하루 25개까지 허용하며, 각 게시물은 최소 5분 뒤여야
+      합니다. 예약 도구가 보내기 전에 확인합니다.
+    </p>
+    <h3>마음이 바뀌면요?</h3>
+    <p>예약한 게시물은 예약 도구 아래에 표시되며, 게시되기 전까지 각각 취소할 수 있습니다.</p>
+    <h3>Bluesky도 되나요?</h3>
+    <p>여기서는 안 됩니다. Bluesky에는 예약 기능이 없어서 이 페이지는 Mastodon 전용입니다.</p>
+  </section>
+</main>

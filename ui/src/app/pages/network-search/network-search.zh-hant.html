@@ -1,0 +1,95 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky 搜尋</p>
+      <h1>搜尋 Bluesky</h1>
+      <p>用您在 Twitter 熟悉的搜尋篩選條件，找出 Bluesky 上的使用者與貼文。</p>
+    } @else {
+      <p class="eyebrow">Mastodon 搜尋</p>
+      <h1>搜尋 Mastodon</h1>
+      <p>用您在 Twitter 熟悉的搜尋篩選條件，找出整個 Mastodon 上的嘟文、使用者與主題標籤。</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? '搜尋 Bluesky' : '搜尋 Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? '搜尋 Bluesky' : '搜尋 Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">搜尋</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>縮小範圍</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:某人、語言、日期與 "完整詞句"，可以直接輸入，也可以從篩選條件中選。
+        } @else {
+          from:某人、has:media、is:reply、日期與 "完整詞句"，可以直接輸入，也可以從篩選條件中選。
+        }
+      </p>
+    </li>
+    <li>
+      <h2>排序與細篩</h2>
+      <p>依日期、媒體與作者篩選結果，並清楚看到實際搜尋了什麼。</p>
+    </li>
+    <li>
+      <h2>保存搜尋</h2>
+      <p>保存一個搜尋，一鍵再次執行，或以連結分享。</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    @if (network === 'bluesky') {
+      <h3>我需要 Bluesky 帳號嗎？</h3>
+      <p>
+        搜尋使用者不需要。Bluesky 只回應已登入帳號的貼文搜尋，所以要搜尋貼文請用 Bluesky
+        登入，之後會回到這個頁面。
+      </p>
+      <h3>也可以搜尋 Mastodon 嗎？</h3>
+      <p>
+        可以：<a mbContentLink routerLink="/zh-hant/mastodon-search">搜尋 Mastodon</a
+        >，或在搜尋結果頁切換網路。
+      </p>
+    } @else {
+      <h3>我需要 Mastodon 帳號嗎？</h3>
+      <p>
+        不需要。沒有帳號也能搜尋使用者與主題標籤，並用主題標籤找嘟文，因為 Mastodon
+        伺服器不允許匿名全文搜尋。登入後就能搜尋嘟文中的字詞，之後會回到這個頁面。
+      </p>
+      <h3>為什麼比我伺服器的搜尋好用？</h3>
+      <p>
+        搜尋的是同一個伺服器，但這裡有篩選條件、排序、保存的搜尋，還會說明實際查詢了什麼，而不是只有一個輸入框。
+      </p>
+      <h3>也可以搜尋 Bluesky 嗎？</h3>
+      <p>
+        可以：<a mbContentLink routerLink="/zh-hant/bluesky-search">搜尋 Bluesky</a
+        >，或在搜尋結果頁切換網路。
+      </p>
+    }
+  </section>
+</main>

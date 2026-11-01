@@ -2,6 +2,14 @@
 :host {
   display: block;
 }
+/* Korean wraps between words (spaces), never inside one. */
+.focused-page:lang(ko) {
+  word-break: keep-all;
+}
+/* Chinese: no line may start with closing punctuation. */
+.focused-page:lang(zh) {
+  line-break: strict;
+}
 /* Japanese has no spaces to break at: keep words whole and follow Japanese
    line-break rules (no 。、 or small kana at the start of a line). */
 .focused-page:lang(ja) {
@@ -21,17 +29,6 @@ header {
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 32px;
-}
-/* The page in its other language: next to "Open the app", not mid-header. */
-.language-switch {
-  margin-inline-start: auto;
-  color: var(--muted);
-}
-.language-switch:hover {
-  color: var(--accent);
-}
-.language-switch + .language-switch {
-  margin-inline-start: 0;
 }
 .eyebrow {
   margin: 0;

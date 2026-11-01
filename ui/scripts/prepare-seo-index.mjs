@@ -1,6 +1,12 @@
 import { execFileSync } from 'node:child_process';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import {
+  languageFolder,
+  loadFocusedTools,
+  registrySources,
+  translatedLanguages,
+} from './focused-tools-registry.mjs';
 
 // Angular's static output names its client-rendered entry index.csr.html.
 // GitHub Pages needs index.html at /. Preserve the client entry and its head
@@ -9,9 +15,8 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../dist-mockingbird/browser/', import.meta.url);
 const html = await readFile(new URL('index.csr.html', root), 'utf8');
 // Tool pages come from the one registry the app's routes and prerendering use.
-const focusedTools = JSON.parse(
-  await readFile(new URL('../src/app/focused-tools.json', import.meta.url), 'utf8'),
-);
+const focusedTools = await loadFocusedTools();
+const registryFiles = await registrySources();
 const toolLinks = focusedTools
   .map((tool) => `      <li><a href="/${tool.path}/">${tool.title}</a></li>`)
   .join('\n');
@@ -61,11 +66,10 @@ const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
 const sitemapUrl = new URL('sitemap.xml', root);
 // A tool page in several languages lists every version, itself included, plus
 // English as x-default: the same set the page's own <link rel="alternate"> has.
-// /tools/, /de/ and /ja/ are one index in three languages.
+// /tools/ and every language's index (/de/, /fr/, …) are one page in several languages.
 const indexPair = [
   ['en', 'tools'],
-  ['de', 'de'],
-  ['ja', 'ja'],
+  ...(await translatedLanguages()).map((lang) => [lang, languageFolder(lang)]),
 ];
 const indexPages = indexPair.map(([, path]) => `${path}/`);
 const alternateLinks = (pairs) =>
@@ -76,8 +80,7 @@ const alternateLinks = (pairs) =>
     )
     .join('');
 const alternates = (page) => {
-  if (indexPages.includes(page))
-    return alternateLinks([...indexPair, ['x-default', 'tools']]);
+  if (indexPages.includes(page)) return alternateLinks([...indexPair, ['x-default', 'tools']]);
   const tool = focusedTools.find((entry) => `${entry.path}/` === page);
   if (!tool) return '';
   const originalId = tool.translationOf ?? tool.id;
@@ -118,8 +121,7 @@ function withLastmod(xml) {
   const sources = (page) => {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
-    if (indexPages.includes(page))
-      return ['src/app/pages/tools/', 'src/app/focused-tools.json'];
+    if (indexPages.includes(page)) return ['src/app/pages/tools/', ...registryFiles];
     if (page.startsWith('for/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
@@ -132,7 +134,10 @@ function withLastmod(xml) {
       return [
         `src/app/pages/${tool.sources ?? tool.path}/`,
         'src/app/pages/focused-apps/',
+        // Its own entry: English, the paths (its hreflang set), its language's words.
         'src/app/focused-tools.json',
+        'src/app/tool-translations/paths.json',
+        ...(tool.lang ? [`src/app/tool-translations/${tool.lang}.json`] : []),
       ];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];

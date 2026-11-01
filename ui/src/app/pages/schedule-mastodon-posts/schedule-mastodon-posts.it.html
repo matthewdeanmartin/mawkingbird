@@ -1,0 +1,85 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Programmazione su Mastodon</p>
+    <h1>Programmare i post su Mastodon</h1>
+    <p>
+      Scrivi i post di un’intera settimana in una volta, e il tuo server Mastodon li pubblica in
+      orario.
+      @if (!inShell) {
+        Accedi con Mastodon, scrivi i tuoi post, scegli quando esce il primo e ogni quanto escono
+        gli altri, ed è fatta.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Caricamento della programmazione…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Scrivi i tuoi post</h2>
+        <p>Quanti ne vuoi, uno per campo, fino a 500 caratteri ciascuno.</p>
+      </li>
+      <li>
+        <h2>Distribuiscili</h2>
+        <p>
+          Scegli il primo orario e l’intervallo: ogni giorno alle 9, ogni tre ore. Puoi anche
+          mettere ogni post a un orario preciso.
+        </p>
+      </li>
+      <li>
+        <h2>Chiudi la scheda</h2>
+        <p>
+          Il tuo server Mastodon conserva i post e li pubblica in orario. Nel tuo browser non resta
+          niente in attesa.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Accedi con Mastodon e programma</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Mastodon può programmare i post?</h3>
+    <p>
+      Sì. Ogni server Mastodon può conservare un post e pubblicarlo più tardi, ma il normale sito di
+      Mastodon non ha un pulsante per farlo. Questa pagina usa la programmazione integrata, quindi a
+      custodire i post è il tuo server, non Mawkingbird.
+    </p>
+    <h3>Devo lasciare aperta questa pagina?</h3>
+    <p>
+      No. Un post programmato resta sul tuo server Mastodon, che lo pubblica all’ora scelta, che il
+      tuo computer sia acceso o no.
+    </p>
+    <h3>Ci sono limiti?</h3>
+    <p>
+      Mastodon accetta 300 post programmati in attesa e 25 al giorno, e ognuno deve essere almeno
+      cinque minuti nel futuro. Lo strumento lo controlla prima di inviare.
+    </p>
+    <h3>Posso cambiare idea?</h3>
+    <p>
+      Sì. I tuoi post programmati compaiono sotto lo strumento, e puoi annullarli finché non escono.
+    </p>
+    <h3>Funziona anche con Bluesky?</h3>
+    <p>
+      Qui no. Bluesky non ha una programmazione integrata, quindi questa pagina è solo per Mastodon.
+    </p>
+  </section>
+</main>

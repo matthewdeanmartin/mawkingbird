@@ -1,0 +1,76 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">De Twitter a Mastodon</p>
+    <h1>Lleva a tus seguidos de Twitter a Mastodon</h1>
+    <p>
+      Encuentra a la gente que seguías en Twitter y que ya está en Mastodon, y vuelve a seguirla en
+      unos pocos clics. Tu archivo se lee en este navegador; no se sube nada.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Descarga tu archivo de Twitter</h2>
+      <p>
+        En Twitter, abre Configuración y privacidad → Tu cuenta → Descargar un archivo de tus datos.
+        Puede tardar un día o más en llegar. Después, descomprímelo.
+      </p>
+    </li>
+    <li>
+      <h2>Elige el archivo aquí</h2>
+      <p>
+        Elige la carpeta descomprimida, o solo los archivos <code>data/following.js</code> y
+        <code>data/tweets.js</code>. Mawkingbird cuenta a la gente que seguías, a quien respondías y
+        a quien mencionabas.
+      </p>
+    </li>
+    <li>
+      <h2>Inicia sesión con Mastodon y sigue</h2>
+      <p>
+        Mawkingbird busca cada nombre en tu servidor de Mastodon y te muestra las coincidencias
+        probables con sus pistas, para que decidas a quién seguir.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/es/de-twitter-a-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/es/de-twitter-a-mastodon"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Cargando el importador…</p>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Se sube mi archivo a algún sitio?</h3>
+    <p>
+      No. Esta página lee los archivos en tu navegador. Solo las búsquedas de nombres van a tu
+      propio servidor de Mastodon, y solo después de que inicies sesión.
+    </p>
+    <h3>¿Sigue a gente automáticamente?</h3>
+    <p>
+      No. Que un nombre coincida es una pista probable, no una prueba, así que cada seguimiento es
+      un botón que pulsas tú. También puedes descargar la lista en CSV y guardarla.
+    </p>
+    <h3>¿Por qué pasarse de Twitter a Mastodon?</h3>
+    <p>
+      Mastodon no es de nadie: son miles de servidores independientes, muchos en español, que hablan
+      entre sí. No hay un algoritmo que decida lo que ves, no hay anuncios y tu línea de tiempo
+      sigue siendo cronológica.
+    </p>
+  </section>
+</main>

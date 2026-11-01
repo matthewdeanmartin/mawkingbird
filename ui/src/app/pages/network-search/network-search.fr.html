@@ -1,0 +1,110 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Recherche Bluesky</p>
+      <h1>Rechercher sur Bluesky</h1>
+      <p>
+        Trouve des personnes et des messages sur Bluesky, avec les filtres de recherche que tu
+        connais de Twitter.
+      </p>
+    } @else {
+      <p class="eyebrow">Recherche Mastodon</p>
+      <h1>Rechercher sur Mastodon</h1>
+      <p>
+        Trouve des messages, des personnes et des hashtags sur tout Mastodon, avec les filtres de
+        recherche que tu connais de Twitter.
+      </p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="
+          network === 'bluesky' ? 'Rechercher sur Bluesky' : 'Rechercher sur Mastodon'
+        "
+        [attr.placeholder]="
+          network === 'bluesky' ? 'Rechercher sur Bluesky' : 'Rechercher sur Mastodon'
+        "
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Rechercher</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Affiner</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:quelqu’un, langue, date et "expressions exactes", tapés ou choisis dans les filtres.
+        } @else {
+          from:quelqu’un, has:media, is:reply, date et "expressions exactes", tapés ou choisis dans
+          les filtres.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Trier et préciser</h2>
+      <p>
+        Filtre les résultats par date, médias et auteur, et vois exactement ce qui a été cherché.
+      </p>
+    </li>
+    <li>
+      <h2>Garder tes recherches</h2>
+      <p>Enregistre une recherche et relance-la en un clic, ou partage-la sous forme de lien.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Questions</h2>
+    @if (network === 'bluesky') {
+      <h3>Ai-je besoin d’un compte Bluesky ?</h3>
+      <p>
+        Pas pour chercher des personnes. Bluesky ne répond aux recherches de messages que pour les
+        comptes connectés : connecte-toi avec Bluesky pour ça, puis tu reviens sur cette page.
+      </p>
+      <h3>Puis-je aussi chercher sur Mastodon ?</h3>
+      <p>
+        Oui : <a mbContentLink routerLink="/fr/recherche-mastodon">rechercher sur Mastodon</a>, ou
+        change de réseau sur la page de résultats.
+      </p>
+    } @else {
+      <h3>Ai-je besoin d’un compte Mastodon ?</h3>
+      <p>
+        Non. Sans compte, tu peux chercher des personnes et des hashtags, et trouver des messages
+        par hashtag, car les serveurs Mastodon n’autorisent pas la recherche plein texte anonyme.
+        Connecte-toi pour chercher des mots dans les messages ; tu reviens ensuite sur cette page.
+      </p>
+      <h3>Pourquoi est-ce mieux que la recherche de mon serveur ?</h3>
+      <p>
+        La recherche se fait sur le même serveur, mais tu as ici des filtres, le tri, les recherches
+        enregistrées et une explication de ce qui a été demandé, au lieu d’un seul champ.
+      </p>
+      <h3>Puis-je aussi chercher sur Bluesky ?</h3>
+      <p>
+        Oui : <a mbContentLink routerLink="/fr/recherche-bluesky">rechercher sur Bluesky</a>, ou
+        change de réseau sur la page de résultats.
+      </p>
+    }
+  </section>
+</main>

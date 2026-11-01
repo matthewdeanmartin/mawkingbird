@@ -1,0 +1,84 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Signets Mastodon</p>
+    <h1>Exporter tes signets Mastodon</h1>
+    <p>
+      Télécharge chaque message que tu as mis en signet sur Mastodon sous forme de fichier de
+      marque-pages, que ton navigateur, Raindrop.io, Pinboard ou n’importe quel service de
+      marque-pages peut importer. Tu as gardé un message pour l’article qu’il partageait ?
+      Déballe-le, et tu obtiens l’article.
+      @if (!inShell) {
+        Connecte-toi avec Mastodon pour commencer.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Chargement…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lire tes signets</h2>
+        <p>Tous les signets de ton compte Mastodon, lus depuis ton propre serveur.</p>
+      </li>
+      <li>
+        <h2>Choisir ce que tu gardes</h2>
+        <p>
+          Les messages eux-mêmes, les liens qu’ils partagent (« déballés »), ou seulement les
+          signets qui partageaient un lien.
+        </p>
+      </li>
+      <li>
+        <h2>Importer le fichier</h2>
+        <p>
+          Un fichier de marque-pages standard : ouvre le gestionnaire de marque-pages de ton
+          navigateur ou ton service de marque-pages, et importe-le.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et exporter mes signets</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Mastodon n’exporte-t-il pas déjà les signets ?</h3>
+    <p>
+      Son export de données liste tes signets sous forme de tableau d’adresses de messages, que les
+      navigateurs et les services de marque-pages n’importent pas. Ce fichier, si, avec les titres,
+      le texte et les hashtags.
+    </p>
+    <h3>Que veut dire « déballer » ?</h3>
+    <p>
+      La plupart des messages gardés ont été partagés pour un lien : un article, une vidéo, un
+      projet. Déballer enregistre ce lien plutôt que le message qui en parle, avec le texte du
+      message comme description.
+    </p>
+    <h3>Mes signets sont-ils envoyés quelque part ?</h3>
+    <p>
+      Non. Ils sont lus depuis ton serveur Mastodon et le fichier est créé dans ton navigateur. Rien
+      n’est envoyé à Mawkingbird.
+    </p>
+    <h3>Les dates sont-elles justes ?</h3>
+    <p>
+      Chaque signet porte la date à laquelle le message a été écrit. Mastodon n’enregistre pas quand
+      tu l’as mis en signet.
+    </p>
+  </section>
+</main>

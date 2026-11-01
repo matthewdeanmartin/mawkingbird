@@ -1,0 +1,78 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Amnistie des masquages · Amnistie des blocages</p>
+    <h1>Démasquer et débloquer tout le monde sur Mastodon</h1>
+    <p>
+      Les listes de comptes masqués et bloqués s’allongent pendant des années, et personne ne fait
+      le tri. L’amnistie des masquages lève tous les masquages, l’amnistie des blocages tous les
+      blocages, d’un coup, pour repartir de zéro.
+      @if (!inShell) {
+        Mastodon ne permet de le faire que compte par compte.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Chargement…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter avec Mastodon</h2>
+        <p>Tes listes sont lues depuis ton propre serveur Mastodon.</p>
+      </li>
+      <li>
+        <h2>Sauvegarder, puis vérifier</h2>
+        <p>
+          Avant tout changement, tu vois combien de comptes figurent sur la liste, et tu peux
+          d’abord la télécharger pour pouvoir annuler l’amnistie.
+        </p>
+      </li>
+      <li>
+        <h2>Déclarer l’amnistie</h2>
+        <p>
+          Chaque compte est démasqué ou débloqué l’un après l’autre, avec une barre de progression.
+          Tu peux t’arrêter en cours de route.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et lancer une amnistie</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Que change l’amnistie des masquages ?</h3>
+    <p>
+      Chaque compte masqué est démasqué : ses messages et notifications te parviennent de nouveau.
+      Les mots masqués et les filtres restent exactement comme ils sont.
+    </p>
+    <h3>Que change l’amnistie des blocages ?</h3>
+    <p>
+      Chaque compte bloqué est débloqué. Il peut de nouveau te suivre, voir tes messages et
+      répondre. Personne n’apprend que tu l’avais bloqué ni que tu as arrêté.
+    </p>
+    <h3>Puis-je annuler une amnistie ?</h3>
+    <p>
+      Seulement avec une sauvegarde. Télécharge ta liste quand la vérification le propose : tu
+      pourras ensuite la réimporter depuis la page d’import de ton serveur Mastodon.
+    </p>
+    <h3>Est-ce que ça touche les domaines bloqués ?</h3>
+    <p>Non. Seuls les comptes que tu as masqués ou bloqués un par un sont modifiés.</p>
+  </section>
+</main>

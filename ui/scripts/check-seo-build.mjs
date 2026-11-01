@@ -2,11 +2,18 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { JSDOM } from 'jsdom';
+import {
+  languageFolder,
+  loadFocusedTools,
+  translatedLanguages,
+} from './focused-tools-registry.mjs';
 
 const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
-const focusedTools = JSON.parse(
-  await readFile(path.resolve(import.meta.dirname, '../src/app/focused-tools.json'), 'utf8'),
-);
+const focusedTools = await loadFocusedTools();
+// Each translated language's index, at /<lang>/.
+const LANGUAGE_INDEXES = await translatedLanguages();
+// The language whose index lives at this folder, if any.
+const indexLanguage = (page) => LANGUAGE_INDEXES.find((lang) => languageFolder(lang) === page);
 const pages = [
   '',
   'features',
@@ -20,8 +27,7 @@ const pages = [
   'funding',
   'blog',
   'tools',
-  'de',
-  'ja',
+  ...LANGUAGE_INDEXES.map(languageFolder),
   ...focusedTools.map((tool) => tool.path),
 ];
 // Focused mini-app entry pages (src/app/focused-tools.json): the heading and a
@@ -32,14 +38,12 @@ const toolEntries = new Map(focusedTools.map((tool) => [tool.path, tool]));
 const languageOf = (tool) => tool.lang ?? 'en';
 // Every language version of a tool as "hreflang href" pairs, plus English as
 // x-default; empty for a tool in one language only.
-// /tools/, /de/ and /ja/ are one index in three languages.
+// /tools/ and every language's index are one page in several languages.
 const INDEX_ALTERNATES = [
-  'de https://mawkingbird.com/de/',
   'en https://mawkingbird.com/tools/',
-  'ja https://mawkingbird.com/ja/',
+  ...LANGUAGE_INDEXES.map((lang) => `${lang} https://mawkingbird.com/${languageFolder(lang)}/`),
   'x-default https://mawkingbird.com/tools/',
-];
-const LANGUAGE_INDEXES = ['de', 'ja'];
+].sort();
 const expectedAlternates = (tool) => {
   const originalId = tool.translationOf ?? tool.id;
   const versions = focusedTools.filter(
@@ -93,13 +97,14 @@ for (const page of pages) {
     assert.equal(doc.querySelectorAll('h1').length, 1, 'tools has rendered content');
     for (const tool of focusedTools.filter((entry) => languageOf(entry) === 'en'))
       assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `tools links to ${tool.path}`);
-  } else if (LANGUAGE_INDEXES.includes(page)) {
+  } else if (indexLanguage(page)) {
     // A language's index links every page in that language, and no other.
+    const lang = indexLanguage(page);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
-    assert.equal(doc.documentElement.lang, page, `${page} <html lang>`);
-    for (const tool of focusedTools.filter((entry) => languageOf(entry) === page))
+    assert.equal(doc.documentElement.lang, lang, `${page} <html lang>`);
+    for (const tool of focusedTools.filter((entry) => languageOf(entry) === lang))
       assert.ok(doc.querySelector(`a[href="/${tool.path}"]`), `${page} links to ${tool.path}`);
-    for (const tool of focusedTools.filter((entry) => languageOf(entry) !== page))
+    for (const tool of focusedTools.filter((entry) => languageOf(entry) !== lang))
       assert.equal(
         doc.querySelector(`.tool-list a[href="/${tool.path}"]`),
         null,
@@ -237,7 +242,11 @@ for (const url of sitemap.querySelectorAll('url')) {
     .sort();
   assert.deepEqual(
     listed,
-    page === 'tools' || LANGUAGE_INDEXES.includes(page) ? INDEX_ALTERNATES : entry ? expectedAlternates(entry) : [],
+    page === 'tools' || indexLanguage(page)
+      ? INDEX_ALTERNATES
+      : entry
+        ? expectedAlternates(entry)
+        : [],
     `sitemap alternates for ${page}`,
   );
 }

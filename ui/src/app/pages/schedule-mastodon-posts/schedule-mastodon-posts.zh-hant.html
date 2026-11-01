@@ -1,0 +1,68 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 排程</p>
+    <h1>Mastodon 排程發嘟</h1>
+    <p>
+      一口氣寫好整個星期的嘟文，您的 Mastodon 伺服器會準時發出。
+      @if (!inShell) {
+        用 Mastodon 登入，寫好嘟文，選好第一則的時間與之後的間隔，就完成了。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">正在載入排程工具……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>寫好您的嘟文</h2>
+        <p>想寫幾則都可以，一則一個欄位，每則最多 500 字。</p>
+      </li>
+      <li>
+        <h2>分配時間</h2>
+        <p>選好第一則的時間與間隔：每天早上 9 點、每三小時一則。每一則也都能單獨指定時間。</p>
+      </li>
+      <li>
+        <h2>關掉分頁</h2>
+        <p>您的 Mastodon 伺服器會保管這些嘟文，並準時發出。瀏覽器裡不需要等任何東西。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入並排程</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>Mastodon 可以排程發嘟嗎？</h3>
+    <p>
+      可以。每個 Mastodon 伺服器都能保管一則嘟文、稍後再發出，只是 Mastodon
+      網頁版沒有這個按鈕。這個頁面使用內建的排程功能，所以保管嘟文的是您自己的伺服器，不是
+      Mawkingbird。
+    </p>
+    <h3>我需要讓這個頁面一直開著嗎？</h3>
+    <p>不需要。排程的嘟文放在您的 Mastodon 伺服器上，時間到了就會發出，不管您的電腦有沒有開。</p>
+    <h3>有什麼限制嗎？</h3>
+    <p>
+      Mastodon 最多允許 300 則等待中的排程嘟文、每天 25
+      則，而且每則至少要在五分鐘之後。排程工具送出前會先檢查。
+    </p>
+    <h3>我可以改變主意嗎？</h3>
+    <p>可以。您排好的嘟文會列在排程工具下方，發出之前都能取消。</p>
+    <h3>Bluesky 也可以嗎？</h3>
+    <p>這裡不行。Bluesky 沒有內建排程功能，所以這個頁面只適用於 Mastodon。</p>
+  </section>
+</main>

@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "把 Twitter 的跟隨帶到 Mastodon",
+    "description": "找出您在 Twitter 上跟隨、而且已經在 Mastodon 的人，再次跟隨他們。封存檔只在您的瀏覽器中讀取，不會上傳。",
+    "prerenderCheck": {
+      "heading": "把您在 Twitter 的跟隨帶到 Mastodon",
+      "copy": "下載您的 Twitter 封存檔"
+    }
+  },
+  "crosspost": {
+    "title": "同時發文到 Mastodon 與 Bluesky",
+    "description": "寫一次，同時發到 Mastodon 與 Bluesky。用其中一個登入、連結另一個，馬上在瀏覽器中試試看。",
+    "prerenderCheck": {
+      "heading": "同時發文到 Mastodon 與 Bluesky",
+      "copy": "連結另一個帳號"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon 數據分析",
+    "description": "免費的 Mastodon 帳號數據分析：熱門嘟文、每則嘟文的互動、估計觸及、發文時段，以及仍在活動的跟隨者。",
+    "prerenderCheck": {
+      "heading": "您帳號的 Mastodon 數據分析",
+      "copy": "您最受歡迎的嘟文"
+    }
+  },
+  "github-friends": {
+    "title": "在 Mastodon 找到 GitHub 上的朋友",
+    "description": "找出您在 GitHub 上跟隨、也在 Mastodon 的人，先從個人檔案的連結找起，一鍵就能跟隨。",
+    "prerenderCheck": {
+      "heading": "在 Mastodon 找到您 GitHub 上的朋友",
+      "copy": "連結 GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon 排程發嘟",
+    "description": "Mastodon 排程發嘟：一次寫好多則，按天或按小時間隔排程，就算關掉分頁，伺服器也會準時發出。",
+    "prerenderCheck": {
+      "heading": "Mastodon 排程發嘟",
+      "copy": "寫好您的嘟文"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "在 Mastodon 找到 Bluesky 上跟隨的人",
+    "description": "在 Mastodon 找到您在 Bluesky 跟隨的人：先看個人檔案，再用名稱搜尋，然後在 Mastodon 跟隨他們。",
+    "prerenderCheck": {
+      "heading": "在 Mastodon 找到您在 Bluesky 跟隨的人",
+      "copy": "讀取您跟隨的人"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "在 Bluesky 找到 Mastodon 上跟隨的人",
+    "description": "在 Bluesky 找到您在 Mastodon 跟隨的人：先看個人檔案，再用名稱搜尋，然後在 Bluesky 跟隨他們。",
+    "prerenderCheck": {
+      "heading": "在 Bluesky 找到您在 Mastodon 跟隨的人",
+      "copy": "讀取您跟隨的人"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "一次隱藏 Mastodon 的轉嘟",
+    "description": "一次隱藏所有跟隨對象的轉嘟，不必一個一個關。仍然跟隨每個人，而且隨時可以復原。",
+    "prerenderCheck": {
+      "heading": "一次隱藏所有跟隨對象在 Mastodon 的轉嘟",
+      "copy": "看看會影響多少人"
+    }
+  },
+  "find-contacts": {
+    "title": "在 Mastodon 找到手機聯絡人",
+    "description": "在 Mastodon 找到通訊錄裡的人：Android 可直接從聯絡人挑選，其他裝置可用 Google 聯絡人檔案。聯絡人不會離開瀏覽器。",
+    "prerenderCheck": {
+      "heading": "在 Mastodon 找到您的手機聯絡人",
+      "copy": "選擇聯絡人"
+    }
+  },
+  "friend-feeds": {
+    "title": "Mastodon 跟隨對象的部落格與 RSS",
+    "description": "從個人檔案的連結找出您在 Mastodon 跟隨的人的部落格與 RSS 訂閱源，整理成任何閱讀器都能用的 OPML 檔。",
+    "prerenderCheck": {
+      "heading": "找出您在 Mastodon 跟隨的人的部落格與 RSS 訂閱源",
+      "copy": "下載 OPML"
+    }
+  },
+  "amnesty": {
+    "title": "一次解除 Mastodon 的靜音與封鎖",
+    "description": "先備份，再一次解除 Mastodon 上所有的靜音或封鎖。Mastodon 本身只能一個帳號一個帳號解除。",
+    "prerenderCheck": {
+      "heading": "一次解除 Mastodon 上所有人的靜音與封鎖",
+      "copy": "先備份再檢查"
+    }
+  },
+  "pseudonymity": {
+    "title": "在 Mastodon 匿名使用",
+    "description": "一次檢查讓您的 Mastodon 帳號被認出來的設定：隱藏跟隨名單、退出搜尋與推薦，以及哪些設定關不掉。",
+    "prerenderCheck": {
+      "heading": "如何在 Mastodon 匿名（化名）使用",
+      "copy": "隱藏您身邊的人"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon 帳號名稱產生器",
+    "description": "輸入您的名字，取得可用的 Mastodon 帳號名稱，並在您想加入的伺服器與大型伺服器上確認。不需註冊。",
+    "prerenderCheck": {
+      "heading": "Mastodon 帳號名稱產生器",
+      "copy": "Mastodon 帳號名稱長什麼樣子"
+    }
+  },
+  "content-warnings": {
+    "title": "關閉 Mastodon 的內容警告",
+    "description": "自動展開 Mastodon 的內容警告、直接顯示敏感媒體，可套用到所有人，或只套用到您信任的人。",
+    "prerenderCheck": {
+      "heading": "如何關閉 Mastodon 的內容警告",
+      "copy": "顯示敏感媒體"
+    }
+  },
+  "export-bookmarks": {
+    "title": "匯出 Mastodon 書籤",
+    "description": "把 Mastodon 書籤下載成瀏覽器、Raindrop.io 或 Pinboard 能匯入的書籤檔，也可以只保留分享的連結。",
+    "prerenderCheck": {
+      "heading": "匯出您的 Mastodon 書籤",
+      "copy": "選擇要保留的內容"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon 搜尋：嘟文、使用者與主題標籤",
+    "description": "用 Twitter 式的搜尋篩選條件（from:、has:media、日期、完整詞句）搜尋 Mastodon 的嘟文、使用者與主題標籤。不需帳號。",
+    "prerenderCheck": {
+      "heading": "搜尋 Mastodon",
+      "copy": "縮小範圍"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky 搜尋：貼文與使用者",
+    "description": "用 Twitter 式的搜尋篩選條件（from:、語言、日期、完整詞句）搜尋 Bluesky 的使用者與貼文。搜尋貼文需要用 Bluesky 登入。",
+    "prerenderCheck": {
+      "heading": "搜尋 Bluesky",
+      "copy": "縮小範圍"
+    }
+  },
+  "download-media": {
+    "title": "批次下載 Mastodon 帳號的圖片",
+    "description": "一頁看完 Mastodon 帳號發過的所有圖片，一次下載成 ZIP 或個別檔案，也能包含 GIF、影片與音訊。不需帳號。",
+    "prerenderCheck": {
+      "heading": "批次下載 Mastodon 帳號的圖片",
+      "copy": "查看圖片"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Mastodon 相似主題標籤",
+    "description": "找出在 Mastodon 上和您的主題標籤一起出現的標籤，依近期嘟文中的出現次數排序。可同時比較多個標籤。不需帳號。",
+    "prerenderCheck": {
+      "heading": "Mastodon 相似主題標籤",
+      "copy": "看看它們常和誰一起出現"
+    }
+  },
+  "language-en": {
+    "title": "用中文暢玩 Mastodon（長毛象）",
+    "description": "一次設定好中文的 Mastodon：介面中文化、只顯示您看得懂的語言、為學習中的語言加上翻譯。免費。",
+    "prerenderCheck": {
+      "heading": "用中文暢玩 Mastodon（長毛象）",
+      "copy": "只顯示您看得懂的語言"
+    }
+  },
+  "learn-english": {
+    "title": "用 Mastodon（長毛象）學英文",
+    "description": "在 Mastodon 上讀英文學英文：英文嘟文永遠顯示，下方附上翻譯，可自動或手動翻譯。免費。",
+    "prerenderCheck": {
+      "heading": "用 Mastodon（長毛象）學英文",
+      "copy": "英文嘟文永遠顯示"
+    }
+  }
+}

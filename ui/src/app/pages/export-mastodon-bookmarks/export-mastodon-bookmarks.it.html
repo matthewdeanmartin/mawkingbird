@@ -1,0 +1,82 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Segnalibri di Mastodon</p>
+    <h1>Esporta i tuoi segnalibri di Mastodon</h1>
+    <p>
+      Scarica ogni post che hai salvato nei segnalibri di Mastodon come un file di preferiti che il
+      tuo browser, Raindrop.io, Pinboard o qualsiasi servizio di segnalibri può importare. Hai
+      salvato un post per l’articolo che condivideva? Scartalo e tieni l’articolo.
+      @if (!inShell) {
+        Accedi con Mastodon per iniziare.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Caricamento…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Leggi i tuoi segnalibri</h2>
+        <p>Tutti i segnalibri del tuo account Mastodon, letti dal tuo server.</p>
+      </li>
+      <li>
+        <h2>Scegli cosa tenere</h2>
+        <p>
+          I post stessi, i link che condividevano (“scartati”), o solo i segnalibri che
+          condividevano un link.
+        </p>
+      </li>
+      <li>
+        <h2>Importa il file</h2>
+        <p>
+          Un normale file di preferiti: apri il gestore dei preferiti del browser o il tuo servizio
+          di segnalibri e importalo.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Accedi con Mastodon ed esporta i segnalibri</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Mastodon non esporta già i segnalibri?</h3>
+    <p>
+      La sua esportazione dei dati elenca i segnalibri come una tabella di indirizzi di post, che
+      browser e servizi di segnalibri non importano. Questo file sì, con titoli, testo e hashtag.
+    </p>
+    <h3>Cosa vuol dire “scartare”?</h3>
+    <p>
+      La maggior parte dei post salvati è stata condivisa per un link: un articolo, un video, un
+      progetto. Scartare salva quel link invece del post che ne parla, con il testo del post come
+      descrizione.
+    </p>
+    <h3>I miei segnalibri vengono caricati da qualche parte?</h3>
+    <p>
+      No. Vengono letti dal tuo server Mastodon e il file viene creato nel tuo browser. Niente viene
+      mandato a Mawkingbird.
+    </p>
+    <h3>Le date sono giuste?</h3>
+    <p>
+      Ogni segnalibro porta la data in cui è stato scritto il post. Mastodon non registra quando
+      l’hai salvato.
+    </p>
+  </section>
+</main>

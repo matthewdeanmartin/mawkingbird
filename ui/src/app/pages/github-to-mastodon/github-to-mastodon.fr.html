@@ -1,0 +1,65 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">De GitHub à Mastodon</p>
+    <h1>Retrouver tes amis GitHub sur Mastodon</h1>
+    <p>
+      Beaucoup de développeuses et de développeurs indiquent leur compte Mastodon sur GitHub.
+      Mawkingbird vérifie les personnes que tu suis sur GitHub et les propriétaires des dépôts que
+      tu as mis en favori, et te permet de les suivre sur Mastodon.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de la recherche…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter avec Mastodon</h2>
+        <p>Tu suis les gens avec ton propre compte Mastodon, c’est donc la première étape.</p>
+      </li>
+      <li>
+        <h2>Relier GitHub</h2>
+        <p>
+          Colle un jeton d’accès personnel GitHub ; la page montre comment en créer un. GitHub ne
+          permet pas aux applis web de se connecter autrement, et le jeton reste dans ce navigateur.
+        </p>
+      </li>
+      <li>
+        <h2>Trouver et suivre</h2>
+        <p>
+          Les liens vers Mastodon dans les profils passent en premier, puis une recherche de noms
+          limitée. Chaque correspondance montre ses indices, et c’est toi qui décides qui suivre.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Où va mon jeton GitHub ?</h3>
+    <p>
+      Il est enregistré dans ce navigateur et envoyé uniquement à <code>api.github.com</code>,
+      jamais à Mawkingbird. Révoque-le sur GitHub quand tu veux.
+    </p>
+    <h3>Est-ce que ça suit des gens automatiquement ?</h3>
+    <p>Non. Chaque abonnement est un bouton sur lequel tu appuies, à côté des indices.</p>
+  </section>
+</main>

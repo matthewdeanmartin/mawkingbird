@@ -1,0 +1,73 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">主題標籤搜尋</p>
+    <h1>Mastodon 相似主題標籤</h1>
+    <p>
+      輸入一個或多個主題標籤，看看大家還會一起用哪些標籤，依它們在相同近期嘟文中出現的次數排序。讓更多人找到您，或找到更多值得跟隨的內容。不需要帳號。
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/zh-hant/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">載入中……</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>輸入主題標籤</h2>
+        <p>一個，或幾個意思相同的，例如 #貓 和 #貓咪。</p>
+      </li>
+      <li>
+        <h2>分析近期嘟文</h2>
+        <p>從 mastodon.social 讀取帶有其中任一標籤的最新 200 則嘟文。</p>
+      </li>
+      <li>
+        <h2>看看它們常和誰一起出現</h2>
+        <p>依每個主題標籤出現在多少則嘟文中排序。分析更多嘟文，視野就更廣。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並使用您自己的伺服器</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>在 Mastodon 該用哪些主題標籤？</h3>
+    <p>
+      Mastodon
+      沒有演算法決定誰會看到您的嘟文，大家是靠跟隨或搜尋主題標籤找到它。請使用那些人已經在用的標籤（正是這份清單列出的），英文標籤請用
+      CamelCase（例如 #CatsOfMastodon），讓螢幕閱讀器能正確朗讀。
+    </p>
+    <h3>「相似」是怎麼決定的？</h3>
+    <p>
+      靠計數。分析過的嘟文中，每個主題標籤每則嘟文只算一次，並排除您輸入的標籤。出現在 200 則中 40
+      則的標籤，會排在只出現 5 則的前面。
+    </p>
+    <h3>為什麼要一次比較多個主題標籤？</h3>
+    <p>
+      同一個話題常分散在不同寫法裡：#貓 和 #貓咪、#攝影 和
+      #photo。一起輸入的話，帶有其中任一標籤的嘟文都會被分析，清單就能涵蓋整個話題。
+    </p>
+    <h3>為什麼不同伺服器的結果不一樣？</h3>
+    <p>
+      每個 Mastodon
+      伺服器只看得到自己使用者跟隨的人發的嘟文，所以大型、活躍的伺服器視野最廣。登入後會改用您自己的伺服器分析，顯示您身邊的圈子在用什麼。
+    </p>
+  </section>
+</main>

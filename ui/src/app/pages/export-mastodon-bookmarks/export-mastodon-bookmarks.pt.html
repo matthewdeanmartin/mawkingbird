@@ -1,0 +1,84 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Marcadores do Mastodon</p>
+    <h1>Exporte seus marcadores do Mastodon</h1>
+    <p>
+      Baixe cada publicação que você salvou nos marcadores do Mastodon como um arquivo de favoritos
+      que o seu navegador, o Raindrop.io, o Pinboard ou qualquer serviço de favoritos consegue
+      importar. Salvou uma publicação pelo artigo que ela compartilhava? Desembrulhe e fique com o
+      artigo.
+      @if (!inShell) {
+        Entre com o Mastodon para começar.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Carregando…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Leia seus marcadores</h2>
+        <p>Todos os marcadores da sua conta do Mastodon, lidos do seu próprio servidor.</p>
+      </li>
+      <li>
+        <h2>Escolha o que guardar</h2>
+        <p>
+          As próprias publicações, os links que elas compartilhavam (“desembrulhados”), ou só os
+          marcadores que compartilhavam um link.
+        </p>
+      </li>
+      <li>
+        <h2>Importe o arquivo</h2>
+        <p>
+          Um arquivo de favoritos comum: abra o gerenciador de favoritos do navegador ou o seu
+          serviço de favoritos e importe.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Entrar com o Mastodon e exportar marcadores</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>O Mastodon já não exporta os marcadores?</h3>
+    <p>
+      A exportação de dados dele lista seus marcadores como uma tabela de endereços de publicações,
+      que navegadores e serviços de favoritos não importam. Este arquivo importa, com títulos, texto
+      e hashtags.
+    </p>
+    <h3>O que é “desembrulhar”?</h3>
+    <p>
+      A maioria das publicações salvas foi compartilhada por causa de um link: um artigo, um vídeo,
+      um projeto. Desembrulhar salva esse link em vez da publicação que fala dele, com o texto da
+      publicação como descrição.
+    </p>
+    <h3>Meus marcadores são enviados para algum lugar?</h3>
+    <p>
+      Não. Eles são lidos do seu servidor do Mastodon e o arquivo é criado no seu navegador. Nada é
+      enviado ao Mawkingbird.
+    </p>
+    <h3>As datas estão certas?</h3>
+    <p>
+      Cada marcador traz a data em que a publicação foi escrita. O Mastodon não guarda quando você
+      salvou.
+    </p>
+  </section>
+</main>

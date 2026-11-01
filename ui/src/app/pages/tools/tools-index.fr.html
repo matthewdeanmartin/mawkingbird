@@ -1,0 +1,42 @@
+<main class="focused-page" lang="fr">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Outils</p>
+    <h1>Outils gratuits pour Mastodon et Bluesky</h1>
+    <p>
+      Chaque outil fait une seule chose que les applis officielles ne font pas : trouver un nom
+      d’utilisateur, retrouver tes contacts, programmer des messages, faire le ménage dans ton
+      compte. Tout fonctionne dans ton navigateur, et certains outils marchent même sans compte.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Tu ne trouves pas ce qu’il te faut ?</h2>
+    <p>
+      Découvre
+      <a mbContentLink routerLink="/features">toutes les fonctionnalités de Mawkingbird</a> (en
+      anglais) ou consulte <a mbContentLink href="help/">l’aide</a> (en anglais).
+    </p>
+  </section>
+</main>

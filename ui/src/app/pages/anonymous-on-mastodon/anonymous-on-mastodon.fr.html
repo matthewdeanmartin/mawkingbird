@@ -1,0 +1,85 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Vie privée</p>
+    <h1>Être anonyme (sous pseudonyme) sur Mastodon</h1>
+    <p>
+      Sur Mastodon, tu n’as pas besoin de ton vrai nom. Quelques réglages décident à quel point il
+      est facile de relier ton compte à toi, et la plupart des gens ne les changent jamais.
+      @if (!inShell) {
+        Connecte-toi, et ils sont modifiés en une seule étape.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de tes réglages…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Cacher les gens autour de toi</h2>
+        <p>
+          Qui tu suis et qui te suit trahit souvent ton identité. Mastodon peut cacher ces deux
+          listes à tout le monde.
+        </p>
+      </li>
+      <li>
+        <h2>Rester hors de la recherche et des suggestions</h2>
+        <p>
+          Quitte l’annuaire des profils, ne sois plus suggéré aux inconnus et retire tes messages de
+          la recherche plein texte.
+        </p>
+      </li>
+      <li>
+        <h2>Vérifier ce qui ne se désactive pas</h2>
+        <p>
+          Les liens de ton profil vers ton propre site, les moteurs de recherche qui listent ton
+          profil, et le nom et l’image que tu as choisis. La page te montre ce qui s’applique à toi.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et vérifier mes réglages</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Anonyme ou pseudonyme ?</h3>
+    <p>
+      Pseudonyme : les autres voient un nom inventé, pas ton vrai nom, et il est difficile de relier
+      le compte à toi. Être vraiment anonyme est plus difficile ; voir la réponse suivante.
+    </p>
+    <h3>Les admins de mon serveur peuvent-ils savoir qui je suis ?</h3>
+    <p>
+      Ils voient l’adresse e-mail avec laquelle tu t’es inscrit et les adresses IP depuis lesquelles
+      tu te connectes. Aucun réglage n’y change rien. Choisis un serveur en qui tu as confiance, et
+      une adresse e-mail sans ton nom.
+    </p>
+    <h3>Mes messages deviennent-ils privés ?</h3>
+    <p>
+      Non. Les messages publics restent publics. Ces réglages rendent ton compte plus difficile à
+      trouver et à relier à toi ; qui peut lire un message, tu le choisis toujours en l’écrivant.
+    </p>
+    <h3>Mawkingbird propose-t-il autre chose ?</h3>
+    <p>
+      Oui : des abonnements et des favoris privés dont personne n’est informé, des listes privées,
+      des liens nettoyés des traqueurs et des photos sans localisation, le tout enregistré dans ton
+      navigateur.
+    </p>
+  </section>
+</main>

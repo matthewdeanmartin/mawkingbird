@@ -1,0 +1,65 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">內容警告</p>
+    <h1>如何關閉 Mastodon 的內容警告</h1>
+    <p>
+      每則嘟文都要按「顯示更多」、每張模糊的照片都要點一下，覺得很煩嗎？內容警告可以自動展開，敏感媒體也可以直接顯示。
+      @if (!inShell) {
+        登入後，只要兩個開關。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">正在載入您的設定……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>展開內容警告</h2>
+        <p>有內容警告的嘟文會自動展開，警告文字仍然會顯示。</p>
+      </li>
+      <li>
+        <h2>顯示敏感媒體</h2>
+        <p>標示為敏感的照片與影片會直接顯示，不再模糊。</p>
+      </li>
+      <li>
+        <h2>或只對您信任的人</h2>
+        <p>對陌生人保持關閉，對朋友直接展開：信任特定的人，或信任所有您跟隨的人。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入並關閉</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>在 Mastodon 網頁版要怎麼設定？</h3>
+    <p>
+      打開伺服器的偏好設定，開啟「永遠展開標有內容警告的嘟文」，並把「媒體顯示」設為「全部顯示」。這些是伺服器的設定，會套用到網頁版與部分
+      App。
+    </p>
+    <h3>為什麼 Mawkingbird 不能改我伺服器的設定？</h3>
+    <p>
+      Mastodon 只讓 App 讀取這些設定，不能修改，所以 Mawkingbird
+      有自己的開關。登入後，這個頁面會顯示您伺服器目前的設定。
+    </p>
+    <h3>我還看得出一則嘟文原本有警告嗎？</h3>
+    <p>看得出來。警告文字會留在嘟文上方，只是省去點開的那一下。</p>
+    <h3>會改變別人看到的內容嗎？</h3>
+    <p>不會。這只改變嘟文在您這邊如何展開。作者加上的警告，其他人仍然會看到。</p>
+  </section>
+</main>

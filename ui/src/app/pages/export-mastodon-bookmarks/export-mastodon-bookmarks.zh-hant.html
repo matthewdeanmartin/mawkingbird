@@ -1,0 +1,66 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 書籤</p>
+    <h1>匯出您的 Mastodon 書籤</h1>
+    <p>
+      把您在 Mastodon 加入書籤的每則嘟文，下載成瀏覽器、Raindrop.io、Pinboard
+      或任何書籤服務都能匯入的書籤檔。因為分享的文章才收藏那則嘟文？把它拆開，就能直接得到那篇文章。
+      @if (!inShell) {
+        用 Mastodon 登入就能開始。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">載入中……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>讀取您的書籤</h2>
+        <p>從您自己的伺服器讀取 Mastodon 帳號的所有書籤。</p>
+      </li>
+      <li>
+        <h2>選擇要保留的內容</h2>
+        <p>嘟文本身、嘟文分享的連結（「拆開」），或只保留分享了連結的書籤。</p>
+      </li>
+      <li>
+        <h2>匯入檔案</h2>
+        <p>這是一般的瀏覽器書籤檔：打開瀏覽器的書籤管理員或您的書籤服務，匯入即可。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並匯出書籤</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>Mastodon 不是已經能匯出書籤了嗎？</h3>
+    <p>
+      它的資料匯出只是一張列出嘟文網址的表格，瀏覽器與書籤服務都無法匯入。這個檔案可以，而且包含標題、內文與主題標籤。
+    </p>
+    <h3>「拆開」是什麼意思？</h3>
+    <p>
+      大部分收藏的嘟文都是為了一個連結：一篇文章、一部影片、一個專案。拆開會保存那個連結，而不是談論它的嘟文，並以嘟文內容作為說明。
+    </p>
+    <h3>我的書籤會被上傳到哪裡嗎？</h3>
+    <p>不會。書籤從您的 Mastodon 伺服器讀取，檔案在您的瀏覽器中產生，不會傳給 Mawkingbird。</p>
+    <h3>日期正確嗎？</h3>
+    <p>每個書籤的日期是嘟文發出的日期。Mastodon 不會記錄您是什麼時候加入書籤的。</p>
+  </section>
+</main>

@@ -57,3 +57,99 @@ export class AnonymousOnMastodonDe extends AnonymousOnMastodon {
 export class AnonymousOnMastodonJa extends AnonymousOnMastodon {
   protected override readonly returnHere = { next: '/ja/how-to-be-anonymous-on-mastodon' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonFr extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/fr/anonyme-sur-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonEs extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/es/anonimo-en-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonZhHant extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/zh-hant/how-to-be-anonymous-on-mastodon' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonKo extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/ko/how-to-be-anonymous-on-mastodon' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonPt extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/pt/anonimo-no-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/it/anonimo-su-mastodon' };
+}

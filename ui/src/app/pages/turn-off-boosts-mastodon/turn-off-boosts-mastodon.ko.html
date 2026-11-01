@@ -1,0 +1,78 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 부스트</p>
+    <h1>팔로우하는 모든 사람의 Mastodon 부스트 숨기기</h1>
+    <p>
+      부스트는 Mastodon의 리트윗입니다. 모두를 계속 팔로우하면서 그들이 직접 쓴 글만 보세요.
+      @if (!inShell) {
+        Mastodon은 계정마다 하나씩만 부스트를 끌 수 있지만, 이 도구는 모두에게 한 번에 적용합니다.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon으로 로그인</h2>
+        <p>팔로우 목록은 회원님의 Mastodon 서버에서 읽습니다.</p>
+      </li>
+      <li>
+        <h2>영향받는 계정 수 확인</h2>
+        <p>
+          무엇이든 바꾸기 전에, 팔로우하는 사람 중 아직 부스트가 켜진 사람이 몇 명인지 알려 줍니다.
+        </p>
+      </li>
+      <li>
+        <h2>확인하고 지켜보기</h2>
+        <p>
+          계정마다 차례로 바뀌며 진행 표시줄이 보입니다. 중간에 멈췄다가 나중에 이어서 할 수
+          있습니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 부스트 숨기기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>누군가를 언팔로우하나요?</h3>
+    <p>
+      아니요. 모두를 계속 팔로우하며, 그들이 직접 쓴 게시물과 답글은 계속 홈에 나옵니다. 부스트만
+      사라집니다.
+    </p>
+    <h3>되돌릴 수 있나요?</h3>
+    <p>
+      네. 같은 페이지에서 모두의 부스트를 다시 켤 수 있고, 한 계정만이라면 그 사람의 프로필에서 켤
+      수 있습니다.
+    </p>
+    <h3>나중에 팔로우하는 사람은요?</h3>
+    <p>
+      새로 팔로우한 계정은 Mastodon에서 늘 그렇듯 부스트가 켜진 상태로 시작합니다. 언제든 다시
+      실행하세요. 필요한 계정만 바꿉니다.
+    </p>
+    <h3>왜 시간이 좀 걸리나요?</h3>
+    <p>
+      Mastodon에는 “모두에게 한 번에” 설정이 없어서, 팔로우하는 계정마다 따로 바꿉니다. 목록이 길면
+      몇 분 걸립니다.
+    </p>
+  </section>
+</main>

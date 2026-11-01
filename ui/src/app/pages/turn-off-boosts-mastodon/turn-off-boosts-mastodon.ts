@@ -57,3 +57,99 @@ export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
 export class TurnOffBoostsMastodonJa extends TurnOffBoostsMastodon {
   protected override readonly returnHere = { next: '/ja/turn-off-boosts-mastodon' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonFr extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/fr/masquer-les-boosts-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonEs extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/es/ocultar-boosts-en-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonZhHant extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/zh-hant/turn-off-boosts-mastodon' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonKo extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/ko/turn-off-boosts-mastodon' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonPt extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/pt/ocultar-boosts-no-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/it/nascondere-i-boost-su-mastodon' };
+}

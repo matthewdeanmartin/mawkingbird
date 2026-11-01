@@ -1,0 +1,56 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Generador de nombres</p>
+    <h1>Generador de nombres de usuario de Mastodon</h1>
+    <p>
+      Escribe tu nombre y obtén nombres de Mastodon que de verdad puedes conseguir: cada sugerencia
+      se comprueba en el servidor al que quieres unirte, y tu favorita también en los servidores más
+      grandes. Sin cuenta.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/es/generador-de-nombres-de-usuario-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Cargando el generador…</p>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Cómo es un nombre de Mastodon?</h3>
+    <p>
+      Tiene dos partes: tu nombre de usuario y tu servidor, por ejemplo
+      &#64;lucia_garcia&#64;mastodon.social. El nombre de usuario puede llevar letras, números y
+      guiones bajos, hasta 30 caracteres, sin tildes ni eñes, y las mayúsculas no crean un nombre
+      distinto.
+    </p>
+    <h3>¿Por qué comprobar más de un servidor?</h3>
+    <p>
+      Cada servidor tiene sus propios nombres de usuario. Un nombre ocupado en mastodon.social puede
+      estar libre en otro, y la gente de cualquier servidor puede seguirte igual.
+    </p>
+    <h3>¿“Parece libre” es una garantía?</h3>
+    <p>
+      No del todo. Significa que hoy nadie tiene ese nombre en ese servidor. Los nombres de cuentas
+      borradas quedan reservados y los administradores pueden reservar palabras, así que la última
+      palabra la tiene el formulario de registro.
+    </p>
+    <h3>¿Qué servidores cuentan como los más grandes?</h3>
+    <p>
+      Los que tienen más registros en el directorio de joinmastodon.org, que lista los servidores
+      que cumplen el pacto de servidores de Mastodon. Algunos hacen que un administrador apruebe las
+      cuentas nuevas; la lista dice cuáles.
+    </p>
+  </section>
+</main>

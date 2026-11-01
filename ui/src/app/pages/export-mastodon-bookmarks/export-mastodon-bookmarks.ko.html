@@ -1,0 +1,77 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 북마크</p>
+    <h1>Mastodon 북마크 내보내기</h1>
+    <p>
+      Mastodon에서 북마크한 모든 게시물을 브라우저, Raindrop.io, Pinboard 등 어떤 북마크
+      서비스에서도 가져올 수 있는 북마크 파일로 다운로드하세요. 공유된 글 때문에 저장한
+      게시물이라면, 풀어서 그 글 자체를 남길 수 있습니다.
+      @if (!inShell) {
+        Mastodon으로 로그인해 시작하세요.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>북마크 읽기</h2>
+        <p>Mastodon 계정의 모든 북마크를 회원님의 서버에서 읽습니다.</p>
+      </li>
+      <li>
+        <h2>남길 내용 선택</h2>
+        <p>게시물 자체, 게시물이 공유한 링크(“풀기”), 또는 링크를 공유한 북마크만.</p>
+      </li>
+      <li>
+        <h2>파일 가져오기</h2>
+        <p>
+          일반 브라우저 북마크 파일입니다. 브라우저의 북마크 관리자나 북마크 서비스를 열어
+          가져오세요.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 북마크 내보내기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>Mastodon에서 이미 북마크를 내보낼 수 있지 않나요?</h3>
+    <p>
+      Mastodon의 데이터 내보내기는 북마크를 게시물 주소 표로만 주는데, 브라우저와 북마크 서비스는
+      이를 가져오지 못합니다. 이 파일은 제목, 본문, 해시태그까지 담아 가져올 수 있습니다.
+    </p>
+    <h3>“풀기”가 뭔가요?</h3>
+    <p>
+      저장한 게시물 대부분은 링크 하나 때문입니다. 기사, 동영상, 프로젝트 같은 것이죠. 풀기는 그
+      링크에 대한 게시물 대신 링크 자체를 저장하고, 게시물 내용을 설명으로 붙입니다.
+    </p>
+    <h3>북마크가 어딘가로 업로드되나요?</h3>
+    <p>
+      아니요. Mastodon 서버에서 읽고, 파일은 브라우저에서 만들어집니다. Mawkingbird로는 아무것도
+      보내지 않습니다.
+    </p>
+    <h3>날짜는 정확한가요?</h3>
+    <p>
+      각 북마크에는 게시물이 작성된 날짜가 붙습니다. Mastodon은 북마크한 시점을 기록하지 않습니다.
+    </p>
+  </section>
+</main>

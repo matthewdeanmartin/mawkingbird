@@ -1,62 +1,128 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FOCUSED_TOOLS, PageLanguage, toolLanguage, toolVersions } from '../../focused-tools';
+import { MbPopover } from '../../design-system/popover/popover';
+import {
+  PageAlternate,
+  PageLanguage,
+  TOOL_PAGES,
+  toolLanguage,
+  toolVersions,
+} from '../../focused-tools';
+import { TOOLS_INDEX_ALTERNATES } from '../../seo';
 
 /** Each language named in itself, so a reader finds their own. */
-const ENDONYMS: Record<PageLanguage, string> = { en: 'English', de: 'Deutsch', ja: '日本語' };
+const ENDONYMS: Record<PageLanguage, string> = {
+  en: 'English',
+  de: 'Deutsch',
+  es: 'Español',
+  fr: 'Français',
+  it: 'Italiano',
+  ja: '日本語',
+  ko: '한국어',
+  pt: 'Português',
+  'zh-Hant': '繁體中文',
+};
+
+interface Version {
+  lang: PageLanguage;
+  path: string;
+  name: string;
+  current: boolean;
+}
 
 /**
- * Links to this tool page in its other languages ("Deutsch" on the English
- * page, "English" on the German one), from the registry. Empty when the page
- * exists in one language only. Crawlable links in the prerender, alongside
- * the `hreflang` tags that say the same thing to search engines.
+ * The page's language versions as one compact menu: the button names the
+ * current language, the menu lists every version in its own name. Tool pages
+ * read their versions from the registry, the tool indexes from
+ * TOOLS_INDEX_ALTERNATES. Nothing renders for a page in one language only.
+ *
+ * The menu's links stay in the document while it is closed (a popover is
+ * hidden, not removed), so the prerender carries a crawlable link to every
+ * version beside the `hreflang` tags that say the same thing.
  */
 @Component({
   selector: 'app-language-versions',
-  imports: [RouterLink],
-  template: `@for (version of others; track version.path) {
-    <a
-      class="language-switch"
-      [routerLink]="'/' + version.path"
-      [attr.hreflang]="version.lang"
-      [attr.lang]="version.lang"
-      >{{ version.name }}</a
-    >
+  imports: [RouterLink, MbPopover],
+  template: `@if (versions.length > 1) {
+    <mb-popover [label]="currentName" layout="list">
+      <ul>
+        @for (version of versions; track version.path) {
+          <li>
+            <a
+              [routerLink]="'/' + version.path"
+              [attr.hreflang]="version.lang"
+              [attr.lang]="version.lang"
+              [attr.aria-current]="version.current ? 'page' : null"
+              >{{ version.name }}</a
+            >
+          </li>
+        }
+      </ul>
+    </mb-popover>
   }`,
   styles: `
     :host {
       display: contents;
     }
-    .language-switch {
+    /* Next to "Open the app", not mid-header. */
+    mb-popover {
       margin-inline-start: auto;
-      color: var(--muted);
     }
-    .language-switch:hover {
-      color: var(--accent);
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
-    /* Several languages sit together; only the first is pushed right. */
-    .language-switch + .language-switch {
-      margin-inline-start: 0;
+    a {
+      display: block;
+      min-height: 32px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    a:hover,
+    a:focus-visible {
+      background: var(--hover);
+    }
+    a:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: -2px;
+    }
+    a[aria-current] {
+      font-weight: 600;
+    }
+    @media (pointer: coarse) {
+      a {
+        min-height: 44px;
+      }
     }
   `,
 })
 export class LanguageVersions {
-  protected readonly others = otherVersions(
+  protected readonly versions = versionsAt(
     (inject(ActivatedRoute).snapshot?.pathFromRoot ?? [])
       .map((route) => route.routeConfig?.path)
       .filter((path): path is string => !!path)
       .join('/'),
   );
+  protected readonly currentName = this.versions.find((version) => version.current)?.name ?? '';
 }
 
-function otherVersions(path: string): { lang: PageLanguage; path: string; name: string }[] {
-  const tool = FOCUSED_TOOLS.find((entry) => entry.path === path);
-  if (!tool) return [];
-  return toolVersions(tool)
-    .filter((version) => version.id !== tool.id)
-    .map((version) => ({
-      lang: toolLanguage(version),
-      path: version.path,
-      name: ENDONYMS[toolLanguage(version)],
+/** Every version of the page at this path, the current one marked. */
+function versionsAt(path: string): Version[] {
+  const named = (alternates: PageAlternate[]) =>
+    alternates.map(({ lang, path: versionPath }) => ({
+      lang,
+      path: versionPath,
+      name: ENDONYMS[lang],
+      current: versionPath === path,
     }));
+  if (TOOLS_INDEX_ALTERNATES.some((index) => index.path === path))
+    return named(TOOLS_INDEX_ALTERNATES);
+  const tool = TOOL_PAGES.find((entry) => entry.path === path);
+  if (!tool) return [];
+  return named(
+    toolVersions(tool).map((version) => ({ lang: toolLanguage(version), path: version.path })),
+  );
 }

@@ -5,8 +5,9 @@ import { DeferBlockBehavior, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { describe, expect, it } from 'vitest';
-import { FOCUSED_TOOL_PAGES } from '../../app.routes';
-import { FOCUSED_TOOLS, toolLanguage } from '../../focused-tools';
+import { toolPageLoader } from '../../app.routes';
+import { toolLanguage } from '../../focused-tools';
+import { FOCUSED_TOOLS } from '../../focused-tools-all';
 
 const TRANSLATED = FOCUSED_TOOLS.filter((tool) => toolLanguage(tool) !== 'en');
 
@@ -25,7 +26,7 @@ describe('Translated tool pages', () => {
 
   for (const tool of TRANSLATED) {
     it(`/${tool.path} is in its language and signs in back to itself`, async () => {
-      const component = (await FOCUSED_TOOL_PAGES[tool.path]()) as Type<unknown>;
+      const component = (await toolPageLoader(tool)()) as Type<unknown>;
       TestBed.configureTestingModule({
         // Keep the tools themselves deferred, as in the prerender.
         deferBlockBehavior: DeferBlockBehavior.Manual,

@@ -1,0 +1,67 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Publicar no Mastodon e no Bluesky ao mesmo tempo</h1>
+    <p>
+      Escreva uma vez e mande a mesma publicação para as duas redes.
+      @if (!inShell) {
+        Entre com a conta que você tem, conecte a outra e teste num editor simples.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Carregando o editor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Entre com uma delas</h2>
+        <p>Use sua conta do Mastodon ou do Bluesky. Para começar, basta uma.</p>
+      </li>
+      <li>
+        <h2>Conecte a outra</h2>
+        <p>
+          Entrou com o Mastodon? Conecte o Bluesky com uma senha de app. Entrou com o Bluesky?
+          Adicione seu servidor do Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Escreva uma vez, publique nas duas</h2>
+        <p>O editor manda sua publicação para as duas redes. Teste com uma primeira publicação.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Entrar com o Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Entrar com o Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>A cópia no Bluesky fica idêntica?</h3>
+    <p>
+      O texto, sim. A cópia no Bluesky é sempre pública, e enquetes e avisos de conteúdo ficam só na
+      cópia do Mastodon, porque o Bluesky não tem nada parecido.
+    </p>
+    <h3>Onde ficam salvos meus logins?</h3>
+    <p>
+      Neste navegador. O Mawkingbird fala direto com o seu servidor do Mastodon e com o Bluesky; não
+      existe servidor do Mawkingbird no meio guardando suas contas.
+    </p>
+  </section>
+</main>

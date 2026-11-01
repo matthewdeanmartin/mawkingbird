@@ -1,0 +1,82 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS y OPML</p>
+    <h1>Encuentra los blogs y feeds RSS de todos los que sigues en Mastodon</h1>
+    <p>
+      Mucha gente pone su web en su perfil de Mastodon. Esta herramienta comprueba si esos enlaces
+      tienen un feed y reúne todos los que encuentra en un solo archivo OPML, para cualquier lector
+      de feeds.
+      @if (!inShell) {
+        Forma parte de Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Cargando…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lee a quién sigues</h2>
+        <p>Tu lista se lee de tu servidor de Mastodon, con los enlaces de cada perfil.</p>
+      </li>
+      <li>
+        <h2>Revisa sus webs</h2>
+        <p>
+          Se pregunta a cada web enlazada si tiene un feed. Tú decides cuántas webs revisar, y
+          puedes parar cuando quieras y quedarte con lo encontrado.
+        </p>
+      </li>
+      <li>
+        <h2>Descarga el OPML</h2>
+        <p>
+          Importa el archivo en el lector de feeds que prefieras, o sigue los feeds aquí mismo, en
+          el lector RSS de Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Iniciar sesión con Mastodon y encontrar sus feeds</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Qué incluye Plus</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Por qué es una función de Plus?</h3>
+    <p>
+      Revisar cientos de webs ajenas pasa por un proxy que paga Mawkingbird, una petición por web.
+      Plus cubre ese coste.
+    </p>
+    <h3>¿Qué es un archivo OPML?</h3>
+    <p>
+      El formato de listas de suscripciones que entiende cualquier lector de feeds. Impórtalo en
+      Feedly, NetNewsWire, Inoreader u otro lector para seguir todos los feeds de una vez.
+    </p>
+    <h3>¿Encuentra a todo el mundo?</h3>
+    <p>
+      Solo a quienes enlazan una web en su perfil, y solo las webs con feed. Las grandes
+      plataformas, que nunca tienen un feed personal, se saltan sin revisarlas.
+    </p>
+    <h3>¿Una segunda pasada cuesta lo mismo?</h3>
+    <p>
+      No. Las webs ya revisadas se recuerdan: tras seguir a unas cuantas cuentas nuevas, una nueva
+      pasada solo revisa sus webs.
+    </p>
+  </section>
+</main>

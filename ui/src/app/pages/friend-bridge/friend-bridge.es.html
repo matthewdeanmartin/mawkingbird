@@ -1,0 +1,91 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">De {{ copy.from }} a {{ copy.to }}</p>
+    <h1>Encuentra en {{ copy.to }} a quienes sigues en {{ copy.from }}</h1>
+    <p>
+      Mucha de la gente que sigues en {{ copy.from }} también está en {{ copy.to }}. Esta
+      herramienta la encuentra y te deja seguirla allí.
+      @if (!inShell) {
+        Inicia sesión con una de las dos cuentas, conecta la otra y mira quién ya está.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Cargando la búsqueda…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Inicia sesión en las dos</h2>
+        <p>Entra con tu cuenta de Mastodon o de Bluesky y conecta la otra en el siguiente paso.</p>
+      </li>
+      <li>
+        <h2>Lee a quién sigues</h2>
+        <p>
+          Todas las cuentas que sigues en {{ copy.from }} que pusieron su nombre de {{ copy.to }} en
+          la biografía se emparejan al momento, sin coste.
+        </p>
+      </li>
+      <li>
+        <h2>Busca al resto y sigue</h2>
+        <p>
+          Busca a las demás por su nombre, todas las que quieras, y sigue con un botón a las que
+          reconozcas.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Iniciar sesión con Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Iniciar sesión con Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Sigue a gente sin preguntar?</h3>
+    <p>
+      No. Quienes indicaron su otro nombre ellos mismos quedan marcados para ti; las suposiciones de
+      una búsqueda por nombre, no. No se sigue a nadie hasta que pulses “Seguir”.
+    </p>
+    <h3>¿Por qué falta gente?</h3>
+    <p>
+      Solo se empareja a quienes indican su nombre de {{ copy.to }} o a quienes encuentra una
+      búsqueda por nombre. Alguien con un nombre común y nada en su biografía puede no aparecer.
+    </p>
+    <h3>¿Funciona al revés?</h3>
+    <p>
+      Sí:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/es/de-mastodon-a-bluesky"
+          >encuentra en Bluesky a quienes sigues en Mastodon</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/es/de-bluesky-a-mastodon"
+          >encuentra en Mastodon a quienes sigues en Bluesky</a
+        >.
+      }
+    </p>
+    <h3>¿Dónde se guardan mis sesiones?</h3>
+    <p>
+      En este navegador. Mawkingbird habla directamente con tu servidor de Mastodon y con Bluesky;
+      no hay ningún servidor de Mawkingbird en medio guardando tus cuentas.
+    </p>
+  </section>
+</main>

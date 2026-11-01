@@ -1,0 +1,86 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} → {{ copy.to }}</p>
+    <h1>{{ copy.from }}에서 팔로우하는 사람을 {{ copy.to }}에서 찾기</h1>
+    <p>
+      {{ copy.from }}에서 팔로우하는 사람 중 많은 이가 {{ copy.to }}에도 있습니다. 이 도구가 그들을
+      찾아 그곳에서도 팔로우할 수 있게 해 줍니다.
+      @if (!inShell) {
+        둘 중 한 계정으로 로그인하고, 다른 계정을 연결한 뒤 누가 이미 있는지 확인하세요.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">검색을 불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>양쪽에 로그인</h2>
+        <p>Mastodon 또는 Bluesky 계정으로 로그인하고, 다음 단계에서 다른 계정을 연결합니다.</p>
+      </li>
+      <li>
+        <h2>팔로우 목록 읽기</h2>
+        <p>
+          {{ copy.from }}에서 팔로우하는 사람 중 소개란에 {{ copy.to }} 계정을 적어 둔 사람은 비용
+          없이 바로 짝지어집니다.
+        </p>
+      </li>
+      <li>
+        <h2>나머지를 찾아 팔로우</h2>
+        <p>나머지는 이름으로 원하는 만큼 검색하고, 알아보는 사람은 버튼 하나로 팔로우합니다.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon으로 로그인</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky로 로그인</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>묻지 않고 팔로우하나요?</h3>
+    <p>
+      아니요. 다른 계정을 직접 밝힌 사람은 미리 체크되지만, 이름 검색으로 추측한 사람은 체크되지
+      않습니다. 회원님이 “팔로우”를 누르기 전에는 아무도 팔로우하지 않습니다.
+    </p>
+    <h3>왜 빠진 사람이 있나요?</h3>
+    <p>
+      {{ copy.to }} 계정을 밝혔거나 이름 검색으로 찾을 수 있는 사람만 짝지어집니다. 흔한 이름에
+      소개란이 비어 있는 사람은 나오지 않을 수 있습니다.
+    </p>
+    <h3>반대 방향도 되나요?</h3>
+    <p>
+      네.
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/ko/mastodon-to-bluesky"
+          >Mastodon에서 팔로우하는 사람을 Bluesky에서 찾기</a
+        >
+      } @else {
+        <a mbContentLink routerLink="/ko/bluesky-to-mastodon"
+          >Bluesky에서 팔로우하는 사람을 Mastodon에서 찾기</a
+        >
+      }
+    </p>
+    <h3>로그인 정보는 어디에 저장되나요?</h3>
+    <p>
+      이 브라우저에 저장됩니다. Mawkingbird는 회원님의 Mastodon 서버 및 Bluesky와 직접 통신하며,
+      중간에서 계정을 보관하는 Mawkingbird 서버는 없습니다.
+    </p>
+  </section>
+</main>

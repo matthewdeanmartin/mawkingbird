@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
-import { provideRouter, RouterOutlet, TitleStrategy } from '@angular/router';
+import { provideRouter, Route, RouterOutlet, TitleStrategy } from '@angular/router';
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { PageTitleStrategy } from './app/a11y/page-title-strategy';
 import { Features } from './app/pages/features/features';
@@ -11,92 +11,41 @@ import {
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
-  TOOLS_DESCRIPTION_DE,
-  TOOLS_DESCRIPTION_JA,
   TOOLS_INDEX_ALTERNATES,
+  TOOLS_INDEXES,
 } from './app/seo';
 import { Type } from '@angular/core';
-import { FOCUSED_TOOLS, toolAlternates, toolLanguage } from './app/focused-tools';
 import {
-  AnonymousOnMastodon,
-  AnonymousOnMastodonDe,
-  AnonymousOnMastodonJa,
-} from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
-import { Crosspost, CrosspostDe, CrosspostJa } from './app/pages/crosspost/crosspost';
-import {
-  NetworkSearch,
-  NetworkSearchDe,
-  NetworkSearchJa,
-} from './app/pages/network-search/network-search';
-import { DownloadMastodonImages } from './app/pages/download-mastodon-images/download-mastodon-images';
-import {
-  MastodonSimilarHashtags,
-  MastodonSimilarHashtagsDe,
-  MastodonSimilarHashtagsJa,
-} from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
-import { LanguageLanding } from './app/pages/language-landing/language-landing';
-import {
-  ExportMastodonBookmarks,
-  ExportMastodonBookmarksDe,
-  ExportMastodonBookmarksJa,
-} from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
-import {
-  MastodonContentWarnings,
-  MastodonContentWarningsDe,
-  MastodonContentWarningsJa,
-} from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
-import {
-  MastodonHandleGenerator,
-  MastodonHandleGeneratorDe,
-  MastodonHandleGeneratorJa,
-} from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
-import {
-  MastodonMuteBlockAmnesty,
-  MastodonMuteBlockAmnestyDe,
-  MastodonMuteBlockAmnestyJa,
-} from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
-import {
-  FindContactsOnMastodon,
-  FindContactsOnMastodonDe,
-  FindContactsOnMastodonJa,
-} from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
-import {
-  MastodonFriendsRssFeeds,
-  MastodonFriendsRssFeedsDe,
-  MastodonFriendsRssFeedsJa,
-} from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
-import {
-  FriendBridge,
-  FriendBridgeDe,
-  FriendBridgeJa,
-} from './app/pages/friend-bridge/friend-bridge';
-import {
-  TurnOffBoostsMastodon,
-  TurnOffBoostsMastodonDe,
-  TurnOffBoostsMastodonJa,
-} from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
-import {
-  GithubToMastodon,
-  GithubToMastodonDe,
-  GithubToMastodonJa,
-} from './app/pages/github-to-mastodon/github-to-mastodon';
-import {
-  MastodonAnalytics,
-  MastodonAnalyticsDe,
-  MastodonAnalyticsJa,
-} from './app/pages/mastodon-analytics/mastodon-analytics';
-import {
-  ScheduleMastodonPosts,
-  ScheduleMastodonPostsDe,
-  ScheduleMastodonPostsJa,
-} from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
-import {
-  TwitterToMastodon,
-  TwitterToMastodonDe,
-  TwitterToMastodonJa,
-} from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
+  FocusedTool,
+  TranslatedLanguage,
+  languageFolder,
+  toolAlternates,
+  toolComponentName,
+  toolLanguage,
+} from './app/focused-tools';
+import { FOCUSED_TOOLS } from './app/focused-tools-all';
+import { toolsResolver } from './app/tool-copy';
+import * as anonymousOnMastodonPage from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
+import * as crosspostPage from './app/pages/crosspost/crosspost';
+import * as networkSearchPage from './app/pages/network-search/network-search';
+import * as downloadMastodonImagesPage from './app/pages/download-mastodon-images/download-mastodon-images';
+import * as mastodonSimilarHashtagsPage from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
+import * as languageLandingPage from './app/pages/language-landing/language-landing';
+import * as exportMastodonBookmarksPage from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
+import * as mastodonContentWarningsPage from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
+import * as mastodonHandleGeneratorPage from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
+import * as mastodonMuteBlockAmnestyPage from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
+import * as findContactsOnMastodonPage from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
+import * as mastodonFriendsRssFeedsPage from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
+import * as friendBridgePage from './app/pages/friend-bridge/friend-bridge';
+import * as turnOffBoostsMastodonPage from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
+import * as githubToMastodonPage from './app/pages/github-to-mastodon/github-to-mastodon';
+import * as mastodonAnalyticsPage from './app/pages/mastodon-analytics/mastodon-analytics';
+import * as scheduleMastodonPostsPage from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
+import * as twitterToMastodonPage from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
-import { ToolsIndex, ToolsIndexDe, ToolsIndexJa } from './app/pages/tools/tools-index';
+import * as toolsIndexPage from './app/pages/tools/tools-index';
+import { ToolsIndex } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
 
@@ -124,77 +73,91 @@ const articles: { path: PublicArticleKind; title: string; description: string }[
 // app.routes.ts). Their interactive parts are deferred and signed-in only, so
 // only copy renders. A tool missing here is never prerendered, which fails
 // check-seo-build.mjs.
-const toolComponents: Record<string, Type<unknown>> = {
-  'twitter-to-mastodon': TwitterToMastodon,
-  crosspost: Crosspost,
-  'mastodon-analytics': MastodonAnalytics,
-  'github-to-mastodon': GithubToMastodon,
-  'schedule-mastodon-posts': ScheduleMastodonPosts,
-  'bluesky-to-mastodon': FriendBridge,
-  'mastodon-to-bluesky': FriendBridge,
-  'turn-off-boosts-mastodon': TurnOffBoostsMastodon,
-  'find-contacts-on-mastodon': FindContactsOnMastodon,
-  'mastodon-friends-rss-feeds': MastodonFriendsRssFeeds,
-  'mastodon-mute-block-amnesty': MastodonMuteBlockAmnesty,
-  'how-to-be-anonymous-on-mastodon': AnonymousOnMastodon,
-  'mastodon-handle-generator': MastodonHandleGenerator,
-  'turn-off-content-warnings-mastodon': MastodonContentWarnings,
-  'export-mastodon-bookmarks': ExportMastodonBookmarks,
-  'download-mastodon-images': DownloadMastodonImages,
-  'de/mastodon-bilder-herunterladen': DownloadMastodonImages,
-  'mastodon-similar-hashtags': MastodonSimilarHashtags,
-  'mastodon-in-english': LanguageLanding,
-  'de/mastodon-auf-deutsch': LanguageLanding,
-  'learn-english-with-mastodon': LanguageLanding,
-  'de/twitter-follower-zu-mastodon': TwitterToMastodonDe,
-  'de/mastodon-und-bluesky-gleichzeitig-posten': CrosspostDe,
-  'de/mastodon-statistik': MastodonAnalyticsDe,
-  'de/github-freunde-auf-mastodon': GithubToMastodonDe,
-  'de/mastodon-beitraege-planen': ScheduleMastodonPostsDe,
-  'de/von-bluesky-zu-mastodon': FriendBridgeDe,
-  'de/von-mastodon-zu-bluesky': FriendBridgeDe,
-  'de/mastodon-boosts-ausblenden': TurnOffBoostsMastodonDe,
-  'de/kontakte-auf-mastodon-finden': FindContactsOnMastodonDe,
-  'de/rss-feeds-deiner-mastodon-freunde': MastodonFriendsRssFeedsDe,
-  'de/mastodon-stummschaltungen-aufheben': MastodonMuteBlockAmnestyDe,
-  'de/anonym-auf-mastodon': AnonymousOnMastodonDe,
-  'de/mastodon-nutzernamen-generator': MastodonHandleGeneratorDe,
-  'de/mastodon-inhaltswarnungen-ausschalten': MastodonContentWarningsDe,
-  'de/mastodon-lesezeichen-exportieren': ExportMastodonBookmarksDe,
-  'de/mastodon-suche': NetworkSearchDe,
-  'de/bluesky-suche': NetworkSearchDe,
-  'de/aehnliche-hashtags-mastodon': MastodonSimilarHashtagsDe,
-  'ja/twitter-to-mastodon': TwitterToMastodonJa,
-  'ja/crosspost': CrosspostJa,
-  'ja/mastodon-analytics': MastodonAnalyticsJa,
-  'ja/github-to-mastodon': GithubToMastodonJa,
-  'ja/schedule-mastodon-posts': ScheduleMastodonPostsJa,
-  'ja/bluesky-to-mastodon': FriendBridgeJa,
-  'ja/mastodon-to-bluesky': FriendBridgeJa,
-  'ja/turn-off-boosts-mastodon': TurnOffBoostsMastodonJa,
-  'ja/find-contacts-on-mastodon': FindContactsOnMastodonJa,
-  'ja/mastodon-friends-rss-feeds': MastodonFriendsRssFeedsJa,
-  'ja/mastodon-mute-block-amnesty': MastodonMuteBlockAmnestyJa,
-  'ja/how-to-be-anonymous-on-mastodon': AnonymousOnMastodonJa,
-  'ja/mastodon-handle-generator': MastodonHandleGeneratorJa,
-  'ja/turn-off-content-warnings-mastodon': MastodonContentWarningsJa,
-  'ja/export-mastodon-bookmarks': ExportMastodonBookmarksJa,
-  'ja/mastodon-search': NetworkSearchJa,
-  'ja/bluesky-search': NetworkSearchJa,
-  'ja/download-mastodon-images': DownloadMastodonImages,
-  'ja/mastodon-similar-hashtags': MastodonSimilarHashtagsJa,
-  'ja/mastodon-in-japanese': LanguageLanding,
-  'ja/learn-english-with-mastodon': LanguageLanding,
-  'mastodon-search': NetworkSearch,
-  'bluesky-search': NetworkSearch,
+const toolModules: Record<string, { module: unknown; component: string; oneForAll?: true }> = {
+  'twitter-to-mastodon': { module: twitterToMastodonPage, component: 'TwitterToMastodon' },
+  crosspost: { module: crosspostPage, component: 'Crosspost' },
+  'mastodon-analytics': { module: mastodonAnalyticsPage, component: 'MastodonAnalytics' },
+  'github-to-mastodon': { module: githubToMastodonPage, component: 'GithubToMastodon' },
+  'schedule-mastodon-posts': {
+    module: scheduleMastodonPostsPage,
+    component: 'ScheduleMastodonPosts',
+  },
+  'bluesky-to-mastodon': { module: friendBridgePage, component: 'FriendBridge' },
+  'mastodon-to-bluesky': { module: friendBridgePage, component: 'FriendBridge' },
+  'turn-off-boosts-mastodon': {
+    module: turnOffBoostsMastodonPage,
+    component: 'TurnOffBoostsMastodon',
+  },
+  'find-contacts-on-mastodon': {
+    module: findContactsOnMastodonPage,
+    component: 'FindContactsOnMastodon',
+  },
+  'mastodon-friends-rss-feeds': {
+    module: mastodonFriendsRssFeedsPage,
+    component: 'MastodonFriendsRssFeeds',
+  },
+  'mastodon-mute-block-amnesty': {
+    module: mastodonMuteBlockAmnestyPage,
+    component: 'MastodonMuteBlockAmnesty',
+  },
+  'how-to-be-anonymous-on-mastodon': {
+    module: anonymousOnMastodonPage,
+    component: 'AnonymousOnMastodon',
+  },
+  'mastodon-handle-generator': {
+    module: mastodonHandleGeneratorPage,
+    component: 'MastodonHandleGenerator',
+  },
+  'turn-off-content-warnings-mastodon': {
+    module: mastodonContentWarningsPage,
+    component: 'MastodonContentWarnings',
+  },
+  'export-mastodon-bookmarks': {
+    module: exportMastodonBookmarksPage,
+    component: 'ExportMastodonBookmarks',
+  },
+  'download-mastodon-images': {
+    module: downloadMastodonImagesPage,
+    component: 'DownloadMastodonImages',
+    oneForAll: true,
+  },
+  'mastodon-similar-hashtags': {
+    module: mastodonSimilarHashtagsPage,
+    component: 'MastodonSimilarHashtags',
+  },
+  'mastodon-in-english': {
+    module: languageLandingPage,
+    component: 'LanguageLanding',
+    oneForAll: true,
+  },
+  'learn-english-with-mastodon': {
+    module: languageLandingPage,
+    component: 'LanguageLanding',
+    oneForAll: true,
+  },
+  'mastodon-search': { module: networkSearchPage, component: 'NetworkSearch' },
+  'bluesky-search': { module: networkSearchPage, component: 'NetworkSearch' },
 };
+
+/** A tool page's component: the original's, or its language's subclass. */
+function toolComponent(tool: FocusedTool): Type<unknown> {
+  const original = FOCUSED_TOOLS.find((entry) => entry.id === (tool.translationOf ?? tool.id));
+  const page = original && toolModules[original.path];
+  if (!page) throw new Error(`No page module for ${tool.path}`);
+  const component = (page.module as Record<string, Type<unknown>>)[
+    toolComponentName(page, toolLanguage(tool))
+  ];
+  if (!component) throw new Error(`No ${toolLanguage(tool)} component for ${tool.path}`);
+  return component;
+}
+
 const tools = FOCUSED_TOOLS.map((tool) => ({
   path: tool.path,
   title: tool.title,
   description: tool.description,
   lang: toolLanguage(tool),
   alternates: toolAlternates(tool),
-  component: toolComponents[tool.path],
+  component: toolComponent(tool),
 }));
 
 export default (context: BootstrapContext) =>
@@ -227,30 +190,21 @@ export default (context: BootstrapContext) =>
               seoAlternates: TOOLS_INDEX_ALTERNATES,
             },
           },
-          {
-            path: 'de',
+          ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang): Route => ({
+            path: languageFolder(lang),
             pathMatch: 'full',
-            component: ToolsIndexDe,
-            title: 'Kostenlose Werkzeuge für Mastodon und Bluesky',
+            component: (toolsIndexPage as Record<string, Type<unknown>>)[
+              toolComponentName({ component: 'ToolsIndex' }, lang)
+            ],
+            title: TOOLS_INDEXES[lang].title,
             data: {
               seoIndexable: true,
-              seoDescription: TOOLS_DESCRIPTION_DE,
-              lang: 'de',
+              seoDescription: TOOLS_INDEXES[lang].description,
+              lang,
               seoAlternates: TOOLS_INDEX_ALTERNATES,
             },
-          },
-          {
-            path: 'ja',
-            pathMatch: 'full',
-            component: ToolsIndexJa,
-            title: 'Mastodon と Bluesky の無料ツール',
-            data: {
-              seoIndexable: true,
-              seoDescription: TOOLS_DESCRIPTION_JA,
-              lang: 'ja',
-              seoAlternates: TOOLS_INDEX_ALTERNATES,
-            },
-          },
+            resolve: { tools: toolsResolver(lang) },
+          })),
           ...tools.map(({ path, title, description, lang, alternates, component }) => ({
             path,
             component,
@@ -275,8 +229,10 @@ export default (context: BootstrapContext) =>
             { path: '', renderMode: RenderMode.Client },
             { path: 'features', renderMode: RenderMode.Prerender },
             { path: 'tools', renderMode: RenderMode.Prerender },
-            { path: 'de', renderMode: RenderMode.Prerender },
-            { path: 'ja', renderMode: RenderMode.Prerender },
+            ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang) => ({
+              path: languageFolder(lang),
+              renderMode: RenderMode.Prerender as const,
+            })),
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },

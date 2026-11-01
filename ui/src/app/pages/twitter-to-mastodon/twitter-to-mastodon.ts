@@ -75,3 +75,129 @@ export class TwitterToMastodonDe extends TwitterToMastodon {}
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonJa extends TwitterToMastodon {}
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-fr',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonFr extends TwitterToMastodon {}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-es',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonEs extends TwitterToMastodon {}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-zh-hant',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonZhHant extends TwitterToMastodon {}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-ko',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonKo extends TwitterToMastodon {}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-pt',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonPt extends TwitterToMastodon {}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-it',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonIt extends TwitterToMastodon {}

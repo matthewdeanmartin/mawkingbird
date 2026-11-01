@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Llevar a tus seguidos de Twitter a Mastodon",
+    "description": "Encuentra en Mastodon a la gente que seguías en Twitter y vuelve a seguirla. Tu archivo se lee en tu navegador y nunca se sube.",
+    "prerenderCheck": {
+      "heading": "Lleva a tus seguidos de Twitter a Mastodon",
+      "copy": "Descarga tu archivo de Twitter"
+    }
+  },
+  "crosspost": {
+    "title": "Publicar en Mastodon y Bluesky a la vez",
+    "description": "Escribe una vez y publica en Mastodon y Bluesky a la vez. Inicia sesión con una, conecta la otra y pruébalo en tu navegador.",
+    "prerenderCheck": {
+      "heading": "Publicar en Mastodon y Bluesky a la vez",
+      "copy": "Conecta la otra"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Estadísticas de Mastodon",
+    "description": "Estadísticas gratis para tu cuenta de Mastodon: publicaciones más populares, interacciones por publicación, alcance estimado, horarios y seguidores activos.",
+    "prerenderCheck": {
+      "heading": "Estadísticas de Mastodon para tu cuenta",
+      "copy": "Tus mejores publicaciones"
+    }
+  },
+  "github-friends": {
+    "title": "Encontrar a tus amigos de GitHub en Mastodon",
+    "description": "Encuentra en Mastodon a quienes sigues en GitHub, primero por los enlaces de su perfil, y síguelos con un clic.",
+    "prerenderCheck": {
+      "heading": "Encuentra a tus amigos de GitHub en Mastodon",
+      "copy": "Conecta GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Programar publicaciones en Mastodon",
+    "description": "Programa publicaciones en Mastodon: escribe varias de una vez, espácialas por día u hora, y tu servidor las publica a tiempo aunque cierres la pestaña.",
+    "prerenderCheck": {
+      "heading": "Programar publicaciones en Mastodon",
+      "copy": "Escribe tus publicaciones"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Encontrar a quienes sigues en Bluesky en Mastodon",
+    "description": "Encuentra en Mastodon a quienes sigues en Bluesky: primero por su perfil, luego buscando su nombre, y síguelos en Mastodon.",
+    "prerenderCheck": {
+      "heading": "Encuentra en Mastodon a quienes sigues en Bluesky",
+      "copy": "Lee a quién sigues"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Encontrar a quienes sigues en Mastodon en Bluesky",
+    "description": "Encuentra en Bluesky a quienes sigues en Mastodon: primero por su perfil, luego buscando su nombre, y síguelos en Bluesky.",
+    "prerenderCheck": {
+      "heading": "Encuentra en Bluesky a quienes sigues en Mastodon",
+      "copy": "Lee a quién sigues"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Ocultar los boosts en Mastodon",
+    "description": "Oculta los boosts (republicaciones) de todas las cuentas que sigues de una vez, no una por una. Sigues a todos y puedes deshacerlo cuando quieras.",
+    "prerenderCheck": {
+      "heading": "Oculta los boosts de todas las cuentas que sigues en Mastodon",
+      "copy": "Mira a cuántas afecta"
+    }
+  },
+  "find-contacts": {
+    "title": "Encontrar a tus contactos en Mastodon",
+    "description": "Encuentra en Mastodon a la gente de tu agenda: directo desde tus contactos en Android, o con un archivo de Google Contactos. Nada sale de tu navegador.",
+    "prerenderCheck": {
+      "heading": "Encuentra a tus contactos del teléfono en Mastodon",
+      "copy": "Elige tus contactos"
+    }
+  },
+  "friend-feeds": {
+    "title": "Feeds RSS de quienes sigues en Mastodon",
+    "description": "Encuentra los blogs y feeds RSS de quienes sigues en Mastodon, a partir de los enlaces de su perfil, reunidos en un archivo OPML para cualquier lector.",
+    "prerenderCheck": {
+      "heading": "Encuentra los blogs y feeds RSS de todos los que sigues en Mastodon",
+      "copy": "Descarga el OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Dejar de silenciar y desbloquear a todos en Mastodon",
+    "description": "Deja de silenciar o desbloquea a todos en Mastodon de una vez, con una copia de seguridad antes. Mastodon solo deja hacerlo cuenta por cuenta.",
+    "prerenderCheck": {
+      "heading": "Deja de silenciar y desbloquea a todos en Mastodon",
+      "copy": "Haz una copia y revisa"
+    }
+  },
+  "pseudonymity": {
+    "title": "Ser anónimo en Mastodon",
+    "description": "Revisa de una vez los ajustes que vinculan tu cuenta de Mastodon contigo: oculta tus listas de seguidos, sal de búsquedas y sugerencias, y mira lo que no se puede apagar.",
+    "prerenderCheck": {
+      "heading": "Cómo ser anónimo (con seudónimo) en Mastodon",
+      "copy": "Oculta a la gente a tu alrededor"
+    }
+  },
+  "handle-generator": {
+    "title": "Generador de nombres de usuario de Mastodon",
+    "description": "Escribe tu nombre y obtén nombres de usuario de Mastodon libres, comprobados en el servidor al que quieres unirte y en los más grandes. Sin registro.",
+    "prerenderCheck": {
+      "heading": "Generador de nombres de usuario de Mastodon",
+      "copy": "Cómo es un nombre de Mastodon"
+    }
+  },
+  "content-warnings": {
+    "title": "Desactivar las advertencias de contenido de Mastodon",
+    "description": "Abre solas las advertencias de contenido de Mastodon y muestra al instante el contenido sensible, para todos o solo para la gente en quien confías.",
+    "prerenderCheck": {
+      "heading": "Desactivar las advertencias de contenido en Mastodon",
+      "copy": "Muestra el contenido sensible"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Exportar tus marcadores de Mastodon",
+    "description": "Descarga tus marcadores de Mastodon como archivo de marcadores para tu navegador, Raindrop.io o Pinboard, o guarda solo los enlaces compartidos.",
+    "prerenderCheck": {
+      "heading": "Exporta tus marcadores de Mastodon",
+      "copy": "Elige qué guardar"
+    }
+  },
+  "mastodon-search": {
+    "title": "Buscar en Mastodon: publicaciones, personas y hashtags",
+    "description": "Busca publicaciones, personas y hashtags en Mastodon con los filtros de Twitter: from:, has:media, fechas y frases exactas. Sin cuenta.",
+    "prerenderCheck": {
+      "heading": "Buscar en Mastodon",
+      "copy": "Acota"
+    }
+  },
+  "bluesky-search": {
+    "title": "Buscar en Bluesky: publicaciones y personas",
+    "description": "Busca personas y publicaciones en Bluesky con los filtros de Twitter: from:, idioma, fechas y frases exactas. Las publicaciones requieren iniciar sesión.",
+    "prerenderCheck": {
+      "heading": "Buscar en Bluesky",
+      "copy": "Acota"
+    }
+  },
+  "download-media": {
+    "title": "Descargar las imágenes de una cuenta de Mastodon",
+    "description": "Mira todas las imágenes que publicó una cuenta de Mastodon y descárgalas de una vez, en ZIP o por separado, con GIF, videos y audio. Sin cuenta.",
+    "prerenderCheck": {
+      "heading": "Descargar las imágenes de una cuenta de Mastodon",
+      "copy": "Mira las imágenes"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Hashtags similares en Mastodon",
+    "description": "Encuentra los hashtags que se usan junto a los tuyos en Mastodon, ordenados por cuántas publicaciones recientes los comparten. Compara varios a la vez. Sin cuenta.",
+    "prerenderCheck": {
+      "heading": "Hashtags similares en Mastodon",
+      "copy": "Mira qué viaja con ellos"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon en español",
+    "description": "Mastodon en español, configurado de una vez: la app en español, solo los idiomas que lees y traducciones para los que aprendes. Gratis.",
+    "prerenderCheck": {
+      "heading": "Mastodon en español",
+      "copy": "Solo los idiomas que lees"
+    }
+  },
+  "learn-english": {
+    "title": "Aprender inglés con Mastodon",
+    "description": "Aprende inglés leyendo Mastodon: las publicaciones en inglés siempre se ven, con la traducción debajo, automática o cuando la pidas. Gratis.",
+    "prerenderCheck": {
+      "heading": "Aprender inglés con Mastodon",
+      "copy": "El inglés siempre se ve"
+    }
+  }
+}

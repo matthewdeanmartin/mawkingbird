@@ -57,3 +57,99 @@ export class CrosspostDe extends Crosspost {
 export class CrosspostJa extends Crosspost {
   protected override readonly returnHere = { next: '/ja/crosspost' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostFr extends Crosspost {
+  protected override readonly returnHere = { next: '/fr/publier-sur-mastodon-et-bluesky' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostEs extends Crosspost {
+  protected override readonly returnHere = { next: '/es/publicar-en-mastodon-y-bluesky' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostZhHant extends Crosspost {
+  protected override readonly returnHere = { next: '/zh-hant/crosspost' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostKo extends Crosspost {
+  protected override readonly returnHere = { next: '/ko/crosspost' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostPt extends Crosspost {
+  protected override readonly returnHere = { next: '/pt/publicar-no-mastodon-e-no-bluesky' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostIt extends Crosspost {
+  protected override readonly returnHere = { next: '/it/pubblicare-su-mastodon-e-bluesky' };
+}

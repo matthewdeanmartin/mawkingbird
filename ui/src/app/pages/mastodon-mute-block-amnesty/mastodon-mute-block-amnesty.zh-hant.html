@@ -1,0 +1,63 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">靜音大赦 · 封鎖大赦</p>
+    <h1>一次解除 Mastodon 上所有人的靜音與封鎖</h1>
+    <p>
+      靜音與封鎖的名單年復一年越來越長，卻沒人整理。靜音大赦一次解除所有靜音，封鎖大赦一次解除所有封鎖，讓您從頭開始。
+      @if (!inShell) {
+        Mastodon 本身只能一個帳號一個帳號解除。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">載入中……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>用 Mastodon 登入</h2>
+        <p>您的名單從您自己的 Mastodon 伺服器讀取。</p>
+      </li>
+      <li>
+        <h2>先備份再檢查</h2>
+        <p>在任何變更之前，您會看到名單上有多少帳號，並可以先下載名單，之後才能復原大赦。</p>
+      </li>
+      <li>
+        <h2>宣布大赦</h2>
+        <p>每個帳號會依序解除靜音或封鎖，並顯示進度條。您可以中途停下。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並開始大赦</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>靜音大赦會改變什麼？</h3>
+    <p>所有被靜音的帳號都會解除靜音，他們的嘟文與通知會再次出現。靜音的字詞與過濾器維持原樣。</p>
+    <h3>封鎖大赦會改變什麼？</h3>
+    <p>
+      所有被封鎖的帳號都會解除封鎖，他們可以再次跟隨您、看到您的嘟文並回覆。沒有人會知道您曾封鎖他們，或已經解除封鎖。
+    </p>
+    <h3>大赦可以復原嗎？</h3>
+    <p>只有備份過才可以。檢查時請下載名單，之後可以從 Mastodon 伺服器的匯入頁面再匯入回去。</p>
+    <h3>會影響封鎖的網域嗎？</h3>
+    <p>不會。只會變更您逐一靜音或封鎖的帳號。</p>
+  </section>
+</main>

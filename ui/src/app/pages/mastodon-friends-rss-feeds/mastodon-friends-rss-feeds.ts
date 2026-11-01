@@ -56,3 +56,99 @@ export class MastodonFriendsRssFeedsDe extends MastodonFriendsRssFeeds {
 export class MastodonFriendsRssFeedsJa extends MastodonFriendsRssFeeds {
   protected override readonly returnHere = { next: '/ja/mastodon-friends-rss-feeds' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsFr extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/fr/flux-rss-de-tes-abonnements-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsEs extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/es/feeds-rss-de-quienes-sigues-en-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsZhHant extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/zh-hant/mastodon-friends-rss-feeds' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsKo extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/ko/mastodon-friends-rss-feeds' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsPt extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/pt/feeds-rss-de-quem-voce-segue-no-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/it/feed-rss-di-chi-segui-su-mastodon' };
+}

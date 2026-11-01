@@ -1,0 +1,81 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Contacts</p>
+    <h1>Retrouver tes contacts du téléphone sur Mastodon</h1>
+    <p>
+      Certaines personnes de ton carnet d’adresses sont déjà sur Mastodon. Cet outil les cherche et
+      te permet de suivre celles que tu reconnais.
+      @if (!inShell) {
+        Connecte-toi avec Mastodon, choisis tes contacts ou envoie un fichier de contacts, et vois
+        qui apparaît.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de la recherche…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter avec Mastodon</h2>
+        <p>La recherche passe par ton propre serveur Mastodon.</p>
+      </li>
+      <li>
+        <h2>Choisir tes contacts</h2>
+        <p>
+          Sur un téléphone Android avec Chrome, tu choisis directement dans tes contacts. Partout
+          ailleurs, tu envoies un fichier de contacts exporté depuis Google Contacts.
+        </p>
+      </li>
+      <li>
+        <h2>Suivre ceux que tu connais</h2>
+        <p>
+          Chaque correspondance montre pourquoi elle est proposée. Suis les gens un par un ;
+          personne n’est suivi à ta place.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et trouver mes contacts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Mes contacts sont-ils envoyés en ligne ?</h3>
+    <p>
+      Non. Tes contacts restent dans ce navigateur. Seuls des termes de recherche qui en sont tirés,
+      comme un nom ou un nom d’utilisateur, partent vers ton propre serveur Mastodon, et rien n’est
+      gardé quand tu fermes la page.
+    </p>
+    <h3>Comment obtenir un fichier de contacts ?</h3>
+    <p>
+      Dans Google Contacts, choisis « Exporter » et le format Google CSV, puis envoie ce fichier
+      ici.
+    </p>
+    <h3>Pourquoi la correspondance est-elle une supposition ?</h3>
+    <p>
+      Mastodon ne permet pas de chercher par numéro de téléphone ou par e-mail, donc les gens sont
+      associés grâce à des indices : un nom Mastodon enregistré dans le contact, leur nom, le nom et
+      le domaine de leur adresse e-mail, leur site web. Un nom rare se trouve facilement ; un nom
+      courant peut donner des inconnus, c’est pourquoi tu suis chaque personne toi-même.
+    </p>
+    <h3>Quelqu’un n’est pas encore sur Mastodon ?</h3>
+    <p>Invite-le : après la recherche, des invitations toutes prêtes sont à un clic.</p>
+  </section>
+</main>

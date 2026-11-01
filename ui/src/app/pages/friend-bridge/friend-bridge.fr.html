@@ -1,0 +1,94 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">De {{ copy.from }} à {{ copy.to }}</p>
+    <h1>Retrouver tes abonnements {{ copy.from }} sur {{ copy.to }}</h1>
+    <p>
+      Beaucoup des personnes que tu suis sur {{ copy.from }} sont aussi sur {{ copy.to }}. Cet outil
+      les trouve et te permet de les suivre là-bas.
+      @if (!inShell) {
+        Connecte-toi avec l’un des deux comptes, relie l’autre, et vois qui est déjà là.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Chargement de la recherche…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter aux deux</h2>
+        <p>
+          Connecte-toi avec ton compte Mastodon ou Bluesky, puis relie l’autre à l’étape suivante.
+        </p>
+      </li>
+      <li>
+        <h2>Lire qui tu suis</h2>
+        <p>
+          Toutes les personnes que tu suis sur {{ copy.from }} et qui ont mis leur nom
+          {{ copy.to }} dans leur bio sont associées tout de suite, sans frais.
+        </p>
+      </li>
+      <li>
+        <h2>Chercher le reste, puis suivre</h2>
+        <p>
+          Cherche les autres par leur nom, autant que tu veux, et suis ceux que tu reconnais d’un
+          bouton.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Se connecter avec Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Est-ce que ça suit des gens sans demander ?</h3>
+    <p>
+      Non. Les personnes qui ont elles-mêmes indiqué leur autre nom sont cochées pour toi ; les
+      suppositions issues d’une recherche de noms ne le sont pas. Personne n’est suivi avant que tu
+      appuies sur « Suivre ».
+    </p>
+    <h3>Pourquoi certaines personnes manquent-elles ?</h3>
+    <p>
+      Seules sont associées les personnes qui indiquent leur nom {{ copy.to }} ou qu’une recherche
+      de noms trouve. Quelqu’un avec un nom courant et rien dans sa bio peut ne pas apparaître.
+    </p>
+    <h3>Et dans l’autre sens ?</h3>
+    <p>
+      Oui :
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/fr/de-mastodon-a-bluesky"
+          >retrouver tes abonnements Mastodon sur Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/fr/de-bluesky-a-mastodon"
+          >retrouver tes abonnements Bluesky sur Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Où sont enregistrées mes connexions ?</h3>
+    <p>
+      Dans ce navigateur. Mawkingbird parle directement à ton serveur Mastodon et à Bluesky ; aucun
+      serveur Mawkingbird ne garde tes comptes entre les deux.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,86 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">從 {{ copy.from }} 到 {{ copy.to }}</p>
+    <h1>在 {{ copy.to }} 找到您在 {{ copy.from }} 跟隨的人</h1>
+    <p>
+      您在 {{ copy.from }} 跟隨的人，有很多也在
+      {{ copy.to }}。這個工具會找出他們，讓您在那邊也跟隨他們。
+      @if (!inShell) {
+        用其中一個帳號登入、連結另一個，看看誰已經在那裡了。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">正在載入搜尋……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>登入兩邊</h2>
+        <p>用您的 Mastodon 或 Bluesky 帳號登入，下一步再連結另一個。</p>
+      </li>
+      <li>
+        <h2>讀取您跟隨的人</h2>
+        <p>
+          您在 {{ copy.from }} 跟隨的人之中，凡是在自我介紹裡寫了
+          {{ copy.to }} 帳號的，會立刻配對，不花任何成本。
+        </p>
+      </li>
+      <li>
+        <h2>搜尋其他人，然後跟隨</h2>
+        <p>用名字搜尋其他人，想搜幾個都可以，認得的人按一下就能跟隨。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >用 Bluesky 登入</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>會不經同意就跟隨別人嗎？</h3>
+    <p>
+      不會。自己寫出另一個帳號的人會幫您預先勾選；名字搜尋猜到的人則不會。在您按下「跟隨」之前，不會跟隨任何人。
+    </p>
+    <h3>為什麼有些人沒出現？</h3>
+    <p>
+      只有寫出自己
+      {{ copy.to }}
+      帳號的人，或名字搜尋找得到的人才會配對。名字很常見、自我介紹又沒寫的人，可能不會出現。
+    </p>
+    <h3>反過來也可以嗎？</h3>
+    <p>
+      可以：
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/zh-hant/mastodon-to-bluesky"
+          >在 Bluesky 找到您在 Mastodon 跟隨的人</a
+        >。
+      } @else {
+        <a mbContentLink routerLink="/zh-hant/bluesky-to-mastodon"
+          >在 Mastodon 找到您在 Bluesky 跟隨的人</a
+        >。
+      }
+    </p>
+    <h3>我的登入資訊存在哪裡？</h3>
+    <p>
+      存在這個瀏覽器裡。Mawkingbird 直接與您的 Mastodon 伺服器和 Bluesky 溝通，中間沒有任何
+      Mawkingbird 伺服器保管您的帳號。
+    </p>
+  </section>
+</main>

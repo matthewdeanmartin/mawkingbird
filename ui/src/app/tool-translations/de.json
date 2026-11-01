@@ -1,0 +1,162 @@
+{
+  "twitter-import": {
+    "title": "Twitter-Follows zu Mastodon mitnehmen",
+    "description": "Finde die Leute, denen du auf Twitter gefolgt bist und die jetzt auf Mastodon sind, und folge ihnen wieder. Dein Archiv wird im Browser gelesen; nichts wird hochgeladen.",
+    "prerenderCheck": {
+      "heading": "Deine Twitter-Follows zu Mastodon mitnehmen",
+      "copy": "Twitter-Archiv herunterladen"
+    }
+  },
+  "crosspost": {
+    "title": "Gleichzeitig auf Mastodon und Bluesky posten",
+    "description": "Einmal schreiben, auf Mastodon und Bluesky zugleich posten. Mit einem der beiden Konten anmelden, das andere verbinden und im einfachen Editor im Browser ausprobieren.",
+    "prerenderCheck": {
+      "heading": "Gleichzeitig auf Mastodon und Bluesky posten",
+      "copy": "Mit einem der beiden anmelden"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon-Statistik für dein Konto",
+    "description": "Kostenlose Statistik für dein Mastodon-Konto: Top-Beiträge, Reaktionen pro Beitrag, geschätzte Reichweite, wann du postest, mit wem du sprichst und wie viele Follower aktiv sind.",
+    "prerenderCheck": {
+      "heading": "Mastodon-Statistik für dein Konto",
+      "copy": "Deine besten Beiträge"
+    }
+  },
+  "github-friends": {
+    "title": "Deine GitHub-Freunde auf Mastodon finden",
+    "description": "Finde die Leute, denen du auf GitHub folgst und die auf Mastodon sind, zuerst über die Links in ihren Profilen, und folge ihnen mit einem Klick.",
+    "prerenderCheck": {
+      "heading": "Deine GitHub-Freunde auf Mastodon finden",
+      "copy": "GitHub verbinden"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon-Beiträge im Voraus planen",
+    "description": "Mastodon-Beiträge im Voraus planen: mehrere auf einmal schreiben, täglich oder stündlich verteilen, und dein Server veröffentlicht sie pünktlich, auch bei geschlossenem Tab.",
+    "prerenderCheck": {
+      "heading": "Mastodon-Beiträge im Voraus planen",
+      "copy": "Beiträge schreiben"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Deine Bluesky-Follows auf Mastodon finden",
+    "description": "Finde die Leute, denen du auf Bluesky folgst, auf Mastodon: zuerst über ihre Bio, dann per Namenssuche, und folge ihnen dort. Mit einem der beiden Konten anmelden.",
+    "prerenderCheck": {
+      "heading": "Deine Bluesky-Follows auf Mastodon finden",
+      "copy": "Lesen, wem du folgst"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Deine Mastodon-Follows auf Bluesky finden",
+    "description": "Finde die Leute, denen du auf Mastodon folgst, auf Bluesky: zuerst über ihre Bio, dann per Namenssuche, und folge ihnen dort. Mit einem der beiden Konten anmelden.",
+    "prerenderCheck": {
+      "heading": "Deine Mastodon-Follows auf Bluesky finden",
+      "copy": "Lesen, wem du folgst"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Boosts auf Mastodon für alle ausblenden",
+    "description": "Blende Boosts auf Mastodon für alle aus, denen du folgst, mit einem Klick statt Konto für Konto. Du folgst weiter allen und kannst es jederzeit rückgängig machen.",
+    "prerenderCheck": {
+      "heading": "Boosts auf Mastodon für alle ausblenden",
+      "copy": "Sehen, wie viele es betrifft"
+    }
+  },
+  "find-contacts": {
+    "title": "Deine Handy-Kontakte auf Mastodon finden",
+    "description": "Finde Leute aus deinem Adressbuch auf Mastodon: direkt aus den Kontakten auf Android oder per Google-Kontakte-Datei. Deine Kontakte bleiben im Browser.",
+    "prerenderCheck": {
+      "heading": "Deine Handy-Kontakte auf Mastodon finden",
+      "copy": "Kontakte wählen"
+    }
+  },
+  "friend-feeds": {
+    "title": "RSS-Feeds deiner Mastodon-Freunde finden",
+    "description": "Finde die Blogs und RSS-Feeds aller, denen du auf Mastodon folgst, über die Links in ihren Profilen, und lade sie als OPML-Datei für jeden Feedreader herunter.",
+    "prerenderCheck": {
+      "heading": "Die Blogs und RSS-Feeds aller finden, denen du auf Mastodon folgst",
+      "copy": "OPML herunterladen"
+    }
+  },
+  "amnesty": {
+    "title": "Alle Stummschaltungen und Blockaden auf Mastodon aufheben",
+    "description": "Hebe alle Stummschaltungen oder alle Blockaden auf Mastodon auf einmal auf, mit Sicherung vorher. Mastodon selbst lässt das nur Konto für Konto zu.",
+    "prerenderCheck": {
+      "heading": "Alle auf Mastodon wieder laut schalten und entblocken",
+      "copy": "Sichern, dann prüfen"
+    }
+  },
+  "pseudonymity": {
+    "title": "So bist du auf Mastodon (pseudo)anonym",
+    "description": "Die Einstellungen, die dein Mastodon-Konto mit dir verknüpfen, in einem Schritt: Listen verbergen, aus Suche und Vorschlägen heraushalten, und was sich nicht abschalten lässt.",
+    "prerenderCheck": {
+      "heading": "So bist du auf Mastodon (pseudo)anonym",
+      "copy": "Die Leute um dich herum verbergen"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon-Namensgenerator: freie Namen finden",
+    "description": "Gib deinen Namen ein und bekomme Mastodon-Namen, die noch frei sind, geprüft auf deinem Wunschserver und den größten Servern. Kein Konto nötig.",
+    "prerenderCheck": {
+      "heading": "Mastodon-Namensgenerator",
+      "copy": "Wie sieht ein Mastodon-Name aus?"
+    }
+  },
+  "content-warnings": {
+    "title": "Inhaltswarnungen auf Mastodon ausschalten",
+    "description": "Inhaltswarnungen auf Mastodon automatisch aufklappen und heikle Medien sofort zeigen, für alle oder nur für Leute, denen du vertraust. Zwei Schalter.",
+    "prerenderCheck": {
+      "heading": "Inhaltswarnungen auf Mastodon ausschalten",
+      "copy": "Heikle Medien zeigen"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Mastodon-Lesezeichen in den Browser exportieren",
+    "description": "Lade deine Mastodon-Lesezeichen als Lesezeichendatei für deinen Browser, Raindrop.io oder Pinboard herunter, und pack sie zu den geteilten Links aus.",
+    "prerenderCheck": {
+      "heading": "Deine Mastodon-Lesezeichen exportieren",
+      "copy": "Wählen, was du behältst"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon-Suche: Beiträge, Leute und Hashtags finden",
+    "description": "Durchsuche Mastodon nach Beiträgen, Leuten und Hashtags mit Filtern wie bei Twitter: from:, has:media, Datum und genaue Wendungen. Für den Anfang ohne Konto.",
+    "prerenderCheck": {
+      "heading": "Mastodon durchsuchen",
+      "copy": "Eingrenzen"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky-Suche: Beiträge und Leute finden",
+    "description": "Durchsuche Bluesky nach Leuten und Beiträgen mit Filtern wie bei Twitter: from:, Sprache, Datum und genaue Wendungen. Für Beitragssuchen mit Bluesky anmelden.",
+    "prerenderCheck": {
+      "heading": "Bluesky durchsuchen",
+      "copy": "Eingrenzen"
+    }
+  },
+  "download-media": {
+    "title": "Bilder von einem Mastodon-Konto herunterladen",
+    "description": "Alle Bilder eines Mastodon-Kontos auf einen Blick, dann alle auf einmal herunterladen: als ZIP oder einzeln, mit GIFs, Videos und Audio. Kein Konto nötig.",
+    "prerenderCheck": {
+      "heading": "Bilder von Mastodon herunterladen",
+      "copy": "Bilder ansehen"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Ähnliche Hashtags auf Mastodon",
+    "description": "Finde die Hashtags, die Mastodon-Nutzer zu deinen verwenden, geordnet danach, wie oft sie in aktuellen Beiträgen zusammen vorkommen. Mehrere auf einmal vergleichen. Kein Konto nötig.",
+    "prerenderCheck": {
+      "heading": "Ähnliche Hashtags auf Mastodon",
+      "copy": "Sehen, was mit ihnen reist"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon auf Deutsch",
+    "description": "Mastodon auf Deutsch einrichten: die App auf Deutsch, nur Sprachen, die du liest, Übersetzungen für Lernsprachen und deutsche Startpakete. Kostenlos.",
+    "prerenderCheck": {
+      "heading": "Mastodon auf Deutsch",
+      "copy": "Nur Sprachen, die du liest"
+    }
+  }
+}

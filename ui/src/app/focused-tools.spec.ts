@@ -2,10 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
   ENGLISH_TOOLS,
   FOCUSED_TOOL_GROUPS,
-  FOCUSED_TOOLS,
+  TOOL_PAGES,
+  TRANSLATED_PATHS,
+  languageFolder,
   toolLanguage,
   toolVersions,
 } from './focused-tools';
+import { FOCUSED_TOOLS, TOOL_COPY } from './focused-tools-all';
+import { withCopy } from './tool-copy';
 
 describe('FOCUSED_TOOLS', () => {
   it('gives every tool its own id, path, title and description', () => {
@@ -19,7 +23,7 @@ describe('FOCUSED_TOOLS', () => {
     for (const tool of FOCUSED_TOOLS) {
       // English at the root; every other language in its own folder: /de/<slug>.
       const lang = toolLanguage(tool);
-      const folder = lang === 'en' ? '' : `${lang}/`;
+      const folder = lang === 'en' ? '' : `${languageFolder(lang)}/`;
       expect(tool.path.startsWith(folder), tool.path).toBe(true);
       expect(tool.path.slice(folder.length), tool.path).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
     }
@@ -59,6 +63,24 @@ describe('FOCUSED_TOOLS', () => {
       expect(toolVersions(original!).map((entry) => entry.id)).toContain(tool.id);
     }
     expect(ENGLISH_TOOLS.every((tool) => toolLanguage(tool) === 'en')).toBe(true);
+  });
+
+  it('gives every translated path its words, and words only to translated paths', () => {
+    expect(Object.keys(TOOL_COPY).sort()).toEqual(Object.keys(TRANSLATED_PATHS).sort());
+    const englishIds = ENGLISH_TOOLS.map((tool) => tool.id);
+    for (const [lang, paths] of Object.entries(TRANSLATED_PATHS)) {
+      const words = TOOL_COPY[lang as keyof typeof TOOL_COPY];
+      expect(Object.keys(words).sort(), lang).toEqual(Object.keys(paths).sort());
+      for (const id of Object.keys(paths)) expect(englishIds, `${lang} ${id}`).toContain(id);
+    }
+    expect(TOOL_PAGES.map((page) => page.path)).toEqual(FOCUSED_TOOLS.map((tool) => tool.path));
+  });
+
+  it('loads the same words in the browser, one language at a time, as the server has', async () => {
+    for (const page of TOOL_PAGES)
+      expect(await withCopy(page), page.path).toEqual(
+        FOCUSED_TOOLS.find((tool) => tool.path === page.path),
+      );
   });
 
   it('files every tool under a /tools heading', () => {

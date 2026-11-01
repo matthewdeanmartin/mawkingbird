@@ -1,0 +1,79 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Avertissements de contenu</p>
+    <h1>Désactiver les avertissements de contenu sur Mastodon</h1>
+    <p>
+      Marre de cliquer sur « Afficher plus » à chaque message ou de toucher les photos floutées ?
+      Les avertissements de contenu peuvent s’ouvrir tout seuls et les médias sensibles s’afficher
+      directement.
+      @if (!inShell) {
+        Connecte-toi : ce sont deux interrupteurs.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de tes réglages…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Déplier les avertissements de contenu</h2>
+        <p>
+          Les messages avec un avertissement s’ouvrent tout seuls. Tu vois toujours le texte de
+          l’avertissement.
+        </p>
+      </li>
+      <li>
+        <h2>Afficher les médias sensibles</h2>
+        <p>Les photos et vidéos marquées comme sensibles s’affichent sans flou.</p>
+      </li>
+      <li>
+        <h2>Ou seulement pour les gens de confiance</h2>
+        <p>
+          Garde les avertissements fermés pour les inconnus et ouverts pour tes amis : fais
+          confiance à certaines personnes, ou à tous tes abonnements.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et désactiver</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Comment faire sur le site de Mastodon ?</h3>
+    <p>
+      Ouvre les préférences de ton serveur, active « Toujours déplier les messages marqués d’un
+      avertissement de contenu » et règle « Affichage des médias » sur « Tout afficher ». Ces
+      réglages appartiennent à ton serveur et s’appliquent à son site et à certaines applis.
+    </p>
+    <h3>Pourquoi Mawkingbird ne peut-il pas changer le réglage de mon serveur ?</h3>
+    <p>
+      Mastodon laisse les applis lire ces réglages, mais pas les modifier : Mawkingbird a donc ses
+      propres interrupteurs. Une fois connecté, cette page t’indique comment ton serveur est réglé.
+    </p>
+    <h3>Est-ce que je vois encore qu’un message avait un avertissement ?</h3>
+    <p>Oui. Le texte de l’avertissement reste au-dessus du message ; seul le clic disparaît.</p>
+    <h3>Est-ce que ça change ce que voient les autres ?</h3>
+    <p>
+      Non. Ça change seulement la façon dont les messages s’ouvrent pour toi. Les avertissements des
+      auteurs restent en place pour tout le monde.
+    </p>
+  </section>
+</main>

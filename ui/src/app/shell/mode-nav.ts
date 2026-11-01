@@ -1,5 +1,5 @@
 import { AppMode } from '../app-mode';
-import { FOCUSED_TOOLS } from '../focused-tools';
+import { TOOL_PAGES } from '../focused-tools';
 
 // i18n shell.modeNav.rss.reader: Read
 // i18n shell.modeNav.rss.readLater: Later
@@ -334,7 +334,7 @@ function focusedApp(
  * may return to. Tab labels are translated, so each `labelKey` is declared with
  * the other nav strings at the top of this file.
  */
-export const FOCUSED_APPS: readonly FocusedApp[] = FOCUSED_TOOLS.map((tool) =>
+export const FOCUSED_APPS: readonly FocusedApp[] = TOOL_PAGES.map((tool) =>
   focusedApp(tool.id, `/${tool.path}`, tool.tab),
 );
 

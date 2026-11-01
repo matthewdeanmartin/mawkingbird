@@ -1,0 +1,81 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Boosts de Mastodon</p>
+    <h1>Oculta los boosts de todas las cuentas que sigues en Mastodon</h1>
+    <p>
+      Los boosts (republicaciones) son los retuits de Mastodon. Sigue a todos, pero ve solo lo que
+      escriben ellos mismos.
+      @if (!inShell) {
+        Mastodon solo oculta los boosts cuenta por cuenta; esta herramienta lo hace para todas de
+        una vez.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Cargando…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Inicia sesión con Mastodon</h2>
+        <p>Las cuentas que sigues se leen de tu propio servidor de Mastodon.</p>
+      </li>
+      <li>
+        <h2>Mira a cuántas afecta</h2>
+        <p>
+          Antes de cambiar nada, ves cuántas de las cuentas que sigues aún tienen los boosts
+          activados.
+        </p>
+      </li>
+      <li>
+        <h2>Confirma y observa</h2>
+        <p>
+          Cada cuenta se cambia una tras otra, con una barra de progreso. Puedes parar a mitad y
+          seguir más tarde.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Iniciar sesión con Mastodon y ocultar los boosts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Dejo de seguir a alguien?</h3>
+    <p>
+      No. Sigues a todos, y sus propias publicaciones y respuestas siguen llegando a tu inicio. Solo
+      desaparecen sus boosts.
+    </p>
+    <h3>¿Se puede deshacer?</h3>
+    <p>
+      Sí. La misma página vuelve a activar los boosts para todos, y para una sola cuenta se hace
+      desde su perfil.
+    </p>
+    <h3>¿Y la gente que siga más adelante?</h3>
+    <p>
+      Las cuentas nuevas empiezan con los boosts activados, como siempre en Mastodon. Vuelve a usar
+      esta herramienta cuando quieras; solo cambia las cuentas que lo necesitan.
+    </p>
+    <h3>¿Por qué tarda un poco?</h3>
+    <p>
+      Mastodon no tiene un ajuste “para todos a la vez”, así que cada cuenta que sigues se cambia
+      por separado. Una lista larga tarda unos minutos.
+    </p>
+  </section>
+</main>

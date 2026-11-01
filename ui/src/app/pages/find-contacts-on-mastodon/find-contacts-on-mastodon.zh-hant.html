@@ -1,0 +1,70 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">聯絡人</p>
+    <h1>在 Mastodon 找到您的手機聯絡人</h1>
+    <p>
+      您通訊錄裡有些人已經在 Mastodon 了。這個工具會搜尋他們，讓您跟隨認得的人。
+      @if (!inShell) {
+        用 Mastodon 登入，選擇聯絡人或上傳聯絡人檔案，看看會找到誰。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">正在載入搜尋……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>用 Mastodon 登入</h2>
+        <p>搜尋會透過您自己的 Mastodon 伺服器進行。</p>
+      </li>
+      <li>
+        <h2>選擇聯絡人</h2>
+        <p>
+          在 Android 手機的 Chrome 上，可以直接從聯絡人挑選；其他裝置請上傳從 Google
+          聯絡人匯出的檔案。
+        </p>
+      </li>
+      <li>
+        <h2>跟隨您認識的人</h2>
+        <p>每個結果都會說明為什麼推薦。請逐一跟隨，不會有人被自動跟隨。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並尋找聯絡人</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>我的聯絡人會被上傳嗎？</h3>
+    <p>
+      不會。您的聯絡人留在這個瀏覽器裡。只有由它們產生的搜尋字詞（例如名字或帳號名稱）會送到您自己的
+      Mastodon 伺服器，關閉頁面後也不會保留任何東西。
+    </p>
+    <h3>怎麼取得聯絡人檔案？</h3>
+    <p>在 Google 聯絡人選擇「匯出」與 Google CSV 格式，再把檔案上傳到這裡。</p>
+    <h3>為什麼配對只是推測？</h3>
+    <p>
+      Mastodon 無法用電話號碼或電子郵件搜尋，所以只能靠線索配對：聯絡人裡存的 Mastodon
+      帳號、對方的名字、電子郵件的名稱與網域、個人網站。少見的名字很好找；常見的名字可能找到陌生人，所以每個人都由您自己決定是否跟隨。
+    </p>
+    <h3>有人還沒加入 Mastodon？</h3>
+    <p>邀請他們吧：搜尋完成後，現成的邀請只要點一下。</p>
+  </section>
+</main>

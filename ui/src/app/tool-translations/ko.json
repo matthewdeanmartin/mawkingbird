@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Twitter 팔로우를 Mastodon으로 옮기기",
+    "description": "Twitter에서 팔로우하던 사람 중 이미 Mastodon에 있는 사람을 찾아 다시 팔로우합니다. 보관 파일은 브라우저에서만 읽고 업로드하지 않습니다.",
+    "prerenderCheck": {
+      "heading": "Twitter 팔로우를 Mastodon으로 옮기기",
+      "copy": "Twitter 보관 파일 다운로드"
+    }
+  },
+  "crosspost": {
+    "title": "Mastodon과 Bluesky에 동시 게시",
+    "description": "한 번 쓰고 Mastodon과 Bluesky에 동시에 게시하세요. 한쪽으로 로그인하고 다른 쪽을 연결한 뒤 브라우저에서 바로 써 볼 수 있습니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon과 Bluesky에 동시 게시",
+      "copy": "다른 계정 연결"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon 통계",
+    "description": "Mastodon 계정 무료 통계: 인기 게시물, 게시물별 반응, 예상 도달 범위, 게시 시간대, 활동 중인 팔로워 수를 보여 줍니다.",
+    "prerenderCheck": {
+      "heading": "내 계정의 Mastodon 통계",
+      "copy": "반응이 가장 좋은 게시물"
+    }
+  },
+  "github-friends": {
+    "title": "GitHub 친구를 Mastodon에서 찾기",
+    "description": "GitHub에서 팔로우하는 사람 중 Mastodon에 있는 사람을 프로필 링크부터 찾아, 한 번의 클릭으로 팔로우합니다.",
+    "prerenderCheck": {
+      "heading": "GitHub 친구를 Mastodon에서 찾기",
+      "copy": "GitHub 연결"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon 게시물 예약",
+    "description": "Mastodon 게시물 예약: 여러 개를 한 번에 쓰고 하루나 시간 간격으로 예약하면, 탭을 닫아도 서버가 제시간에 게시합니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon 게시물 예약하기",
+      "copy": "게시물 작성"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Bluesky에서 팔로우하는 사람을 Mastodon에서 찾기",
+    "description": "Bluesky에서 팔로우하는 사람을 먼저 프로필로, 다음으로 이름 검색으로 Mastodon에서 찾아 팔로우합니다.",
+    "prerenderCheck": {
+      "heading": "Bluesky에서 팔로우하는 사람을 Mastodon에서 찾기",
+      "copy": "팔로우 목록 읽기"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Mastodon에서 팔로우하는 사람을 Bluesky에서 찾기",
+    "description": "Mastodon에서 팔로우하는 사람을 먼저 프로필로, 다음으로 이름 검색으로 Bluesky에서 찾아 팔로우합니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon에서 팔로우하는 사람을 Bluesky에서 찾기",
+      "copy": "팔로우 목록 읽기"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Mastodon 부스트 한 번에 숨기기",
+    "description": "팔로우하는 모든 사람의 부스트를 한 명씩이 아니라 한 번에 숨깁니다. 팔로우는 그대로이며 언제든 되돌릴 수 있습니다.",
+    "prerenderCheck": {
+      "heading": "팔로우하는 모든 사람의 Mastodon 부스트 숨기기",
+      "copy": "영향받는 계정 수 확인"
+    }
+  },
+  "find-contacts": {
+    "title": "휴대폰 연락처를 Mastodon에서 찾기",
+    "description": "주소록의 지인을 Mastodon에서 찾습니다. Android에서는 연락처에서 바로, 다른 기기에서는 Google 주소록 파일로. 연락처는 브라우저 밖으로 나가지 않습니다.",
+    "prerenderCheck": {
+      "heading": "휴대폰 연락처를 Mastodon에서 찾기",
+      "copy": "연락처 선택"
+    }
+  },
+  "friend-feeds": {
+    "title": "Mastodon 팔로우의 블로그·RSS 피드",
+    "description": "Mastodon에서 팔로우하는 사람들의 블로그와 RSS 피드를 프로필 링크에서 찾아, 어떤 피드 리더에서도 쓸 수 있는 OPML 파일로 모읍니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon에서 팔로우하는 사람들의 블로그와 RSS 피드 찾기",
+      "copy": "OPML 다운로드"
+    }
+  },
+  "amnesty": {
+    "title": "Mastodon 뮤트·차단 한 번에 해제",
+    "description": "먼저 백업한 다음 Mastodon의 모든 뮤트나 차단을 한 번에 해제합니다. Mastodon에서는 계정마다 하나씩만 해제할 수 있습니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon에서 모두 뮤트 해제하고 차단 해제하기",
+      "copy": "백업 후 확인"
+    }
+  },
+  "pseudonymity": {
+    "title": "Mastodon을 익명으로 쓰는 법",
+    "description": "Mastodon 계정이 회원님과 연결되는 설정을 한 번에 점검합니다. 팔로우 목록 숨기기, 검색·추천에서 빠지기, 끌 수 없는 항목 확인까지.",
+    "prerenderCheck": {
+      "heading": "Mastodon을 익명(가명)으로 쓰는 법",
+      "copy": "주변 사람 숨기기"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon 사용자 이름 생성기",
+    "description": "이름을 입력하면 쓸 수 있는 Mastodon 사용자 이름을 제안하고, 가입하려는 서버와 큰 서버들에서 사용 가능한지 확인합니다. 가입 불필요.",
+    "prerenderCheck": {
+      "heading": "Mastodon 사용자 이름 생성기",
+      "copy": "Mastodon 사용자 이름은 어떻게 생겼나요"
+    }
+  },
+  "content-warnings": {
+    "title": "Mastodon 콘텐츠 경고 끄기",
+    "description": "Mastodon 콘텐츠 경고를 자동으로 펼치고 민감한 미디어를 바로 보여 줍니다. 모든 사람에게, 또는 신뢰하는 사람에게만 적용할 수 있습니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon 콘텐츠 경고 끄는 법",
+      "copy": "민감한 미디어 표시"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Mastodon 북마크 내보내기",
+    "description": "Mastodon 북마크를 브라우저, Raindrop.io, Pinboard에서 가져올 수 있는 북마크 파일로 다운로드합니다. 공유된 링크만 남길 수도 있습니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon 북마크 내보내기",
+      "copy": "남길 내용 선택"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon 검색: 게시물, 사람, 해시태그",
+    "description": "Twitter식 검색 필터(from:, has:media, 날짜, 정확한 문구)로 Mastodon의 게시물, 사람, 해시태그를 찾습니다. 계정 없이도 됩니다.",
+    "prerenderCheck": {
+      "heading": "Mastodon 검색",
+      "copy": "범위 좁히기"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky 검색: 게시물과 사람",
+    "description": "Twitter식 검색 필터(from:, 언어, 날짜, 정확한 문구)로 Bluesky의 사람과 게시물을 찾습니다. 게시물 검색은 Bluesky 로그인이 필요합니다.",
+    "prerenderCheck": {
+      "heading": "Bluesky 검색",
+      "copy": "범위 좁히기"
+    }
+  },
+  "download-media": {
+    "title": "Mastodon 이미지 한 번에 다운로드",
+    "description": "Mastodon 계정이 올린 이미지를 한 페이지에서 보고 ZIP이나 개별 파일로 한 번에 다운로드합니다. GIF, 동영상, 오디오도 됩니다. 가입 불필요.",
+    "prerenderCheck": {
+      "heading": "Mastodon 계정의 이미지 한 번에 다운로드",
+      "copy": "이미지 보기"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Mastodon 비슷한 해시태그",
+    "description": "내 해시태그와 함께 쓰이는 태그를 최근 게시물에 함께 나온 횟수 순으로 보여 줍니다. 여러 태그를 한 번에 비교할 수 있습니다. 가입 불필요.",
+    "prerenderCheck": {
+      "heading": "Mastodon 비슷한 해시태그",
+      "copy": "함께 쓰이는 태그 보기"
+    }
+  },
+  "language-en": {
+    "title": "마스토돈(Mastodon)을 한국어로",
+    "description": "마스토돈을 한국어로 편하게 쓰도록 한 번에 설정합니다. 한국어 화면, 읽을 수 있는 언어만 표시, 배우는 언어에는 번역. 무료입니다.",
+    "prerenderCheck": {
+      "heading": "마스토돈(Mastodon)을 한국어로",
+      "copy": "읽을 수 있는 언어만 표시"
+    }
+  },
+  "learn-english": {
+    "title": "마스토돈(Mastodon)으로 영어 공부",
+    "description": "마스토돈의 영어 게시물로 영어를 공부하세요. 영어 게시물은 항상 보이고 아래에 번역이 붙으며, 자동 또는 원할 때 번역합니다. 무료입니다.",
+    "prerenderCheck": {
+      "heading": "마스토돈(Mastodon)으로 영어 공부",
+      "copy": "영어 게시물은 항상 표시"
+    }
+  }
+}

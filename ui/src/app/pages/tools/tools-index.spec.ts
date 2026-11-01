@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { describe, expect, it } from 'vitest';
-import { ENGLISH_TOOLS, FOCUSED_TOOL_GROUPS, FOCUSED_TOOLS } from '../../focused-tools';
+import { ENGLISH_TOOLS, FOCUSED_TOOL_GROUPS } from '../../focused-tools';
+import { FOCUSED_TOOLS } from '../../focused-tools-all';
 import { ToolsIndex } from './tools-index';
 
 describe('ToolsIndex', () => {

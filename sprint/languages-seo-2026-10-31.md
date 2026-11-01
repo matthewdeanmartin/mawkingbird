@@ -210,3 +210,176 @@ Mastodon in the landing pages, where people search both.
   existing ja.json does not); S2-5 measurement still the owner's. Other
   ja.json gaps (about 16% of keys) remain for the global pass; they are
   outside the tool pages.
+
+### French (2026-10-31)
+
+Owner pick after Japanese: French, the next-largest Mastodon audience among
+the locales the app already has.
+
+- 21 French pages under `/fr/` with French slugs, accents dropped
+  (`fr/statistiques-mastodon`, `fr/telecharger-images-mastodon`,
+  `fr/mastodon-en-francais`, `fr/apprendre-l-anglais-avec-mastodon`): 16
+  `…Fr` subclasses with `.fr.html`, the download copy, two landing pages, and
+  the `/fr/` index (`ToolsIndexFr`). The bridge and search pages recognise
+  the French slugs for direction.
+- Copy says « tu », like the app's own fr.json, and uses Mastodon's French
+  terms (message, signets, abonnés, masquer, avertissement de contenu;
+  "boosts" kept on the boosts page because that is what people search).
+  French spacing (non-breaking before `:` and inside « », narrow before
+  `; ! ?`) applied to text only, never to template bindings.
+- hreflang sets now en/de/fr/ja; Français in every language switch.
+- fr.json: the same 424 strings as Japanese. French coverage 78% → 84%.
+- Design inventory: 17 French twins, German twins' dispositions.
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,757 tests, 0 failed), build:mockingbird (initial 928.77 kB),
+  `make test-seo` and `test:seo:browser` passed.
+- Live (en-US Chromium, prerendered build): `/fr/` (`<html lang="fr">`, 21
+  pages), handle generator, search, Bluesky ⇄ Mastodon, similar hashtags,
+  image download form and `fr/mastodon-en-francais` all French; hreflang
+  en/de/ja/fr/x-default; the English download page links Français. No page
+  errors.
+- Watch: the initial bundle grows with every language because
+  `focused-tools.json` (59 kB) is imported eagerly by `app.routes.ts`:
+  889 kB (de) → 912 kB (ja) → 929 kB (fr). Four more languages would near the
+  1 MB budget; move the per-route titles and descriptions out of the root
+  import before adding many more.
+
+### Registry for 15–35 languages (2026-10-31)
+
+Owner: "Do it. I aspire to support ~15 - ~35 languages."
+
+- Translations left `focused-tools.json`. Each language is a slug per tool in
+  `tool-translations/paths.json` (eager, about 1 kB) and its words in
+  `tool-translations/<lang>.json` (lazy: route resolvers in `tool-copy.ts`
+  give translated pages their title and description, and each language index
+  its list). Tab, sign-in, group and sources come from the English original.
+  Server and specs use `focused-tools-all.ts`; scripts use
+  `scripts/focused-tools-registry.mjs` (same entries as before, checked
+  field by field during the split).
+- Page tables keyed by English page: `TOOL_PAGE_MODULES` (browser) and
+  `toolModules` (server) find `<Class><Lang>` by name, so a language adds no
+  route or prerender lines. Language indexes come from `TOOLS_INDEXES`
+  (`seo.ts`); scripts take the language list from `paths.json`. The bridge
+  and search pages find direction and root from the registry.
+- New specs: paths and words files match; browser lazy words equal the
+  server's; every page and every index loads its own language's class.
+- Initial bundle: 928.77 kB → 879.66 kB before Spanish, 881.20 kB after.
+- Next limit at scale: the header language switch lists every version as a
+  link; past ~8 languages it wants a menu.
+
+### Spanish (2026-10-31)
+
+- 22 Spanish pages under `/es/` (index plus 21), neutral Spanish with « tú »
+  like the app's es.json (publicación, marcadores, seguidores, silenciar,
+  advertencias de contenido; "boosts (republicaciones)" on the boosts page).
+  Slugs: `es/estadisticas-de-mastodon`, `es/descargar-imagenes-de-mastodon`,
+  `es/mastodon-en-espanol`, `es/aprender-ingles-con-mastodon`, …
+- es.json: 424 strings; Spanish coverage 78% → 84%.
+- Design inventory: 17 Spanish twins, German twins' dispositions.
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,782 tests, 0 failed, 0 missing from the manifest), build:mockingbird
+  (initial 881.20 kB), `make test-seo`, `test:seo:browser` passed.
+- Live (en-US Chromium, prerendered build): `/es/` (`lang="es"`, 21 pages),
+  handle generator, search, Bluesky ⇄ Mastodon, similar hashtags, image
+  download and `es/mastodon-en-espanol` all Spanish; hreflang
+  en/de/es/fr/ja/x-default; client-side navigation resolves translated titles
+  and descriptions. No page errors.
+
+### Traditional Chinese (2026-10-31)
+
+- Script: Traditional (`zh-Hant`), the app's existing Chinese dictionary
+  (Taiwan, Hong Kong). Simplified would need a new app locale first.
+- First language whose code is not its folder: `languageFolder()` (`zh-Hant`
+  → `/zh-hant/`) in routes, prerender, index alternates, scripts and the
+  registry spec; `hreflang` and `<html lang>` stay `zh-Hant`. Class names
+  `…ZhHant`, templates `<page>.zh-hant.html`.
+- English slugs under `/zh-hant/`, as Chinese sites usually do; landing pages
+  `zh-hant/mastodon-in-chinese` and `zh-hant/learn-english-with-mastodon`,
+  with 長毛象 (Mastodon's nickname in Taiwan) beside Mastodon.
+- Copy matches the app's zh-Hant: polite 您, 嘟文, 轉嘟, 書籤, 跟隨者, 靜音,
+  封鎖, 內容警告, a space between Chinese and Latin words. Strict line
+  breaking under `:lang(zh)`.
+- Landing checklist: Mastodon tags Chinese posts `zh`, the interface locale is
+  `zh-Hant`; copy entries gain `content` for the posting/known language.
+- zh-Hant.json: 424 strings; coverage 78% → 84%. Design inventory: 17 twins.
+- Gates: lint, check:i18n, design:inventory-check, `make test` (8,803 tests,
+  0 failed, 0 missing), build:mockingbird (initial 882.77 kB), `make
+  test-seo`, `test:seo:browser` passed. format:check first failed on
+  `friend-bridge.zh-hant.html` (prettier needed a second pass on a wrapped
+  `{{ copy.to }}`); after it, format:check and inventory-check pass.
+- Live (en-US Chromium): `/zh-hant/` (`lang="zh-Hant"`, 21 pages), handle
+  generator, search, bridge, similar hashtags, download form and the landing
+  page all Chinese; hreflang includes zh-Hant. No page errors.
+- Open: the header language switch now lists five other languages; it wants
+  a menu before many more.
+
+### Korean (2026-11-01)
+
+- 22 Korean pages under `/ko/` with English slugs (as Korean sites usually
+  do); landing pages `ko/mastodon-in-korean` and
+  `ko/learn-english-with-mastodon`, with 마스토돈 beside Mastodon.
+- Copy matches the app's ko dictionary: formal polite 합니다체, 회원님,
+  게시물, 부스트, 북마크, 팔로워, 뮤트, 차단, 콘텐츠 경고, 즐겨찾기.
+  Particles after Latin names follow their Korean reading (Mastodon과/을/으로,
+  Bluesky와/를/로). `word-break: keep-all` under `:lang(ko)`.
+- Two handle-generator fragments needed a lead-in word (사용자 이름) because
+  Korean puts the name first and Transloco treats empty strings as missing.
+- ko.json: 424 strings; coverage 78% → 84%. Design inventory: 17 twins.
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,824 tests, 0 failed, 0 missing), build:mockingbird (initial 884.21 kB),
+  `make test-seo`, `test:seo:browser` passed.
+- Live (en-US Chromium): `/ko/` (`lang="ko"`, 21 pages), handle generator,
+  search (검색), bridge, similar hashtags, download form and the landing page
+  all Korean; hreflang includes ko. No page errors.
+- Open: header language switch now lists six other languages; a menu is due.
+
+### Language menu (2026-11-01)
+
+Owner: "add compact menu because this is going to get to ~15".
+
+- `LanguageVersions` is now one `MbPopover` (list layout): the button names
+  the current language, the panel links every version, the current one
+  `aria-current`. The links stay in the document while closed, so prerendered
+  pages keep a crawlable link to each `hreflang` version.
+- Tool indexes use the same component (versions from
+  `TOOLS_INDEX_ALTERNATES`) instead of hand-written header links, so adding a
+  language no longer touches any index template but its own. Unused
+  `.language-switch` styles removed. New `language-versions.spec.ts`.
+
+### Portuguese (Brazil) (2026-11-01)
+
+- 22 pages under `/pt/` with Portuguese slugs, accents dropped
+  (`pt/estatisticas-do-mastodon`, `pt/baixar-imagens-do-mastodon`,
+  `pt/mastodon-em-portugues`, `pt/aprender-ingles-com-mastodon`).
+- Brazilian, like the app's pt dictionary: você, arquivo, usuário, baixar,
+  celular; publicação, marcadores, seguidores, silenciar, avisos de conteúdo;
+  "boosts (republicações)". `hreflang="pt"` (no European version to separate).
+- pt.json: 424 strings; coverage 78% → 84%. Design inventory: 17 twins plus
+  the language menu (adopted scope).
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,848 tests, 0 failed, 0 missing), build:mockingbird (initial 885.90 kB),
+  `make test-seo`, `test:seo:browser` passed.
+- Live (en-US Chromium, 1100px and 375px): prerendered `/pt/` page carries 8
+  version links (closed menu) and 9 head alternates; the menu opens, lists
+  all eight languages with Português marked, and picking 한국어 lands on
+  `/ko/download-mastodon-images` in Korean. No horizontal overflow on a
+  phone. `/pt/` index (21 pages), handle generator, search, bridge and the
+  landing page all Portuguese. No page errors.
+
+### Italian (2026-11-01)
+
+- 22 pages under `/it/` with Italian slugs, accents and apostrophes dropped
+  (`it/statistiche-mastodon`, `it/scaricare-immagini-da-mastodon`,
+  `it/mastodon-in-italiano`, `it/imparare-inglese-con-mastodon`).
+- Copy says « tu », like the app's it dictionary: post, segnalibri, follower,
+  silenziare/riattivare, bloccare/sbloccare, avvisi sul contenuto, preferiti;
+  "boost (ricondivisioni)". Typographic apostrophes in the text.
+- First language added after the menu: no other page header changed.
+- it.json: 424 strings; coverage 78% → 84%. Design inventory: 17 twins.
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,869 tests, 0 failed, 0 missing), build:mockingbird (initial 887.25 kB),
+  `make test-seo`, `test:seo:browser` passed.
+- Live (en-US Chromium, 1100px and 375px): `/it/` (`lang="it"`, 21 pages);
+  menu lists nine languages with Italiano marked and switches to Korean;
+  handle generator, search, bridge, download form and landing page all
+  Italian; no horizontal overflow; no page errors.

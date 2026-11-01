@@ -1,0 +1,74 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">연락처</p>
+    <h1>휴대폰 연락처를 Mastodon에서 찾기</h1>
+    <p>
+      주소록에 있는 사람 중 일부는 이미 Mastodon에 있습니다. 이 도구가 그들을 찾아, 알아보는 사람을
+      팔로우할 수 있게 해 줍니다.
+      @if (!inShell) {
+        Mastodon으로 로그인하고 연락처를 고르거나 연락처 파일을 올린 뒤 누가 나오는지 보세요.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">검색을 불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon으로 로그인</h2>
+        <p>검색은 회원님의 Mastodon 서버를 통해 이루어집니다.</p>
+      </li>
+      <li>
+        <h2>연락처 선택</h2>
+        <p>
+          Android 휴대폰의 Chrome에서는 연락처에서 바로 고릅니다. 그 밖의 기기에서는 Google
+          주소록에서 내보낸 연락처 파일을 올립니다.
+        </p>
+      </li>
+      <li>
+        <h2>아는 사람 팔로우</h2>
+        <p>
+          결과마다 추천 이유가 표시됩니다. 한 명씩 팔로우하세요. 대신 팔로우되는 사람은 없습니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 연락처 찾기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>연락처가 업로드되나요?</h3>
+    <p>
+      아니요. 연락처는 이 브라우저에 남습니다. 이름이나 사용자 이름처럼 연락처에서 만든 검색어만
+      회원님의 Mastodon 서버로 보내며, 페이지를 닫으면 아무것도 남지 않습니다.
+    </p>
+    <h3>연락처 파일은 어떻게 받나요?</h3>
+    <p>Google 주소록에서 “내보내기”와 Google CSV 형식을 고른 뒤, 그 파일을 여기에 올리세요.</p>
+    <h3>왜 일치가 추측인가요?</h3>
+    <p>
+      Mastodon은 전화번호나 이메일로 검색할 수 없어서, 연락처에 저장된 Mastodon 계정, 이름, 이메일
+      주소의 이름과 도메인, 웹사이트 같은 단서로 짝을 짓습니다. 드문 이름은 찾기 쉽지만 흔한 이름은
+      모르는 사람이 나올 수 있으니, 팔로우는 회원님이 한 명씩 직접 합니다.
+    </p>
+    <h3>아직 Mastodon에 없는 사람은요?</h3>
+    <p>초대하세요. 검색이 끝나면 준비된 초대장이 클릭 한 번 거리에 있습니다.</p>
+  </section>
+</main>

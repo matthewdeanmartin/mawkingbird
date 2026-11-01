@@ -1,0 +1,69 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Publier sur Mastodon et Bluesky en même temps</h1>
+    <p>
+      Écris une seule fois et envoie le même message sur les deux réseaux.
+      @if (!inShell) {
+        Connecte-toi avec le compte que tu as, relie l’autre, et essaie dans un éditeur tout simple.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de l’éditeur…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter avec l’un des deux</h2>
+        <p>Utilise ton compte Mastodon ou ton compte Bluesky. Un seul suffit pour commencer.</p>
+      </li>
+      <li>
+        <h2>Relier l’autre</h2>
+        <p>
+          Connecté avec Mastodon, tu relies Bluesky avec un mot de passe d’application. Connecté
+          avec Bluesky, tu ajoutes ton serveur Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Écrire une fois, publier partout</h2>
+        <p>L’éditeur envoie ton message sur les deux réseaux. Essaie avec un premier message.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Se connecter avec Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>La copie sur Bluesky est-elle identique ?</h3>
+    <p>
+      Le texte, oui. La copie sur Bluesky est toujours publique, et les sondages et avertissements
+      de contenu restent sur la copie Mastodon, car Bluesky n’a pas d’équivalent.
+    </p>
+    <h3>Où sont enregistrées mes connexions ?</h3>
+    <p>
+      Dans ce navigateur. Mawkingbird parle directement à ton serveur Mastodon et à Bluesky ; aucun
+      serveur Mawkingbird ne garde tes comptes entre les deux.
+    </p>
+  </section>
+</main>

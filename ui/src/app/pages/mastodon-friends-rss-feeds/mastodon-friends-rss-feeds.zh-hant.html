@@ -1,0 +1,73 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS 與 OPML</p>
+    <h1>找出您在 Mastodon 跟隨的人的部落格與 RSS 訂閱源</h1>
+    <p>
+      很多人會在 Mastodon
+      個人檔案裡放上自己的網站。這個工具會檢查這些連結有沒有訂閱源，並把找到的全部整理成一個 OPML
+      檔，任何 RSS 閱讀器都能用。
+      @if (!inShell) {
+        這是 Mawkingbird Plus 的功能。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">載入中……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>讀取您跟隨的人</h2>
+        <p>從您的 Mastodon 伺服器讀取名單，以及每個個人檔案裡的連結。</p>
+      </li>
+      <li>
+        <h2>檢查他們的網站</h2>
+        <p>
+          逐一詢問每個連結的網站有沒有訂閱源。檢查多少個由您決定，隨時可以停下並保留已找到的結果。
+        </p>
+      </li>
+      <li>
+        <h2>下載 OPML</h2>
+        <p>把檔案匯入您喜歡的 RSS 閱讀器，或直接在 Mawkingbird 的 RSS 閱讀器裡訂閱。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並找出他們的訂閱源</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Plus 包含什麼</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>為什麼這是 Plus 功能？</h3>
+    <p>
+      檢查數百個外部網站要透過 Mawkingbird 付費的代理伺服器，每個網站一次請求。Plus 負擔這筆費用。
+    </p>
+    <h3>什麼是 OPML 檔？</h3>
+    <p>
+      所有 RSS 閱讀器都看得懂的訂閱清單格式。把它匯入 Feedly、NetNewsWire、Inoreader
+      或其他閱讀器，就能一次訂閱全部。
+    </p>
+    <h3>每個人都找得到嗎？</h3>
+    <p>
+      只找得到在個人檔案裡放了網站連結、而且網站有訂閱源的人。從來不提供個人訂閱源的大型平台會直接略過。
+    </p>
+    <h3>第二次執行也要花一樣的成本嗎？</h3>
+    <p>不用。已檢查過的網站會被記住，新跟隨幾個人之後再執行，只會檢查他們的網站。</p>
+  </section>
+</main>

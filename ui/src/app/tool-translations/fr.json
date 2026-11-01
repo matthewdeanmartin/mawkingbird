@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Retrouver ses abonnements Twitter sur Mastodon",
+    "description": "Retrouve sur Mastodon les personnes que tu suivais sur Twitter et réabonne-toi. Ton archive est lue dans ton navigateur, jamais envoyée.",
+    "prerenderCheck": {
+      "heading": "Retrouver tes abonnements Twitter sur Mastodon",
+      "copy": "Télécharger ton archive Twitter"
+    }
+  },
+  "crosspost": {
+    "title": "Publier sur Mastodon et Bluesky en même temps",
+    "description": "Écris une fois, publie sur Mastodon et Bluesky en même temps. Connecte-toi avec l’un, relie l’autre, et essaie tout de suite dans ton navigateur.",
+    "prerenderCheck": {
+      "heading": "Publier sur Mastodon et Bluesky en même temps",
+      "copy": "Relier l’autre"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Statistiques Mastodon",
+    "description": "Statistiques gratuites pour ton compte Mastodon : messages les plus populaires, réactions par message, portée estimée, heures de publication et abonnés actifs.",
+    "prerenderCheck": {
+      "heading": "Statistiques Mastodon pour ton compte",
+      "copy": "Tes meilleurs messages"
+    }
+  },
+  "github-friends": {
+    "title": "Retrouver ses amis GitHub sur Mastodon",
+    "description": "Trouve sur Mastodon les personnes que tu suis sur GitHub, d’abord grâce aux liens de leur profil, et suis-les en un clic.",
+    "prerenderCheck": {
+      "heading": "Retrouver tes amis GitHub sur Mastodon",
+      "copy": "Relier GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Programmer des posts sur Mastodon",
+    "description": "Programme tes posts Mastodon : écris-en plusieurs d’un coup, espace-les chaque jour ou chaque heure, et ton serveur les publie à l’heure, onglet fermé.",
+    "prerenderCheck": {
+      "heading": "Programmer des posts sur Mastodon",
+      "copy": "Écrire tes messages"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Retrouver ses abonnements Bluesky sur Mastodon",
+    "description": "Trouve sur Mastodon les personnes que tu suis sur Bluesky : d’abord par leur profil, puis par une recherche de noms, et suis-les sur Mastodon.",
+    "prerenderCheck": {
+      "heading": "Retrouver tes abonnements Bluesky sur Mastodon",
+      "copy": "Lire qui tu suis"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Retrouver ses abonnements Mastodon sur Bluesky",
+    "description": "Trouve sur Bluesky les personnes que tu suis sur Mastodon : d’abord par leur profil, puis par une recherche de noms, et suis-les sur Bluesky.",
+    "prerenderCheck": {
+      "heading": "Retrouver tes abonnements Mastodon sur Bluesky",
+      "copy": "Lire qui tu suis"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Masquer les boosts sur Mastodon",
+    "description": "Masque les boosts de tous tes abonnements d’un coup, au lieu de compte par compte. Tu restes abonné, et tu peux revenir en arrière à tout moment.",
+    "prerenderCheck": {
+      "heading": "Masquer les boosts de tous tes abonnements Mastodon",
+      "copy": "Voir combien de comptes sont concernés"
+    }
+  },
+  "find-contacts": {
+    "title": "Retrouver ses contacts sur Mastodon",
+    "description": "Trouve sur Mastodon les gens de ton carnet d’adresses : directement depuis tes contacts sur Android, sinon avec un fichier Google Contacts. Rien ne quitte ton navigateur.",
+    "prerenderCheck": {
+      "heading": "Retrouver tes contacts du téléphone sur Mastodon",
+      "copy": "Choisir tes contacts"
+    }
+  },
+  "friend-feeds": {
+    "title": "Flux RSS de tes abonnements Mastodon",
+    "description": "Trouve les blogs et flux RSS des personnes que tu suis sur Mastodon, grâce aux liens de leur profil, réunis dans un fichier OPML pour tout lecteur de flux.",
+    "prerenderCheck": {
+      "heading": "Trouver les blogs et flux RSS de tous tes abonnements Mastodon",
+      "copy": "Télécharger l’OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Démasquer et débloquer tout le monde sur Mastodon",
+    "description": "Lève tous tes masquages ou blocages Mastodon d’un coup, avec une sauvegarde d’abord. Mastodon ne permet de le faire que compte par compte.",
+    "prerenderCheck": {
+      "heading": "Démasquer et débloquer tout le monde sur Mastodon",
+      "copy": "Sauvegarder, puis vérifier"
+    }
+  },
+  "pseudonymity": {
+    "title": "Être anonyme sur Mastodon",
+    "description": "Revois en une fois les réglages qui relient ton compte Mastodon à toi : listes d’abonnements cachées, hors recherche et suggestions, et ce qui ne se désactive pas.",
+    "prerenderCheck": {
+      "heading": "Être anonyme (sous pseudonyme) sur Mastodon",
+      "copy": "Cacher les gens autour de toi"
+    }
+  },
+  "handle-generator": {
+    "title": "Générateur de pseudo Mastodon",
+    "description": "Entre ton nom et obtiens des pseudos Mastodon libres, vérifiés sur le serveur que tu veux rejoindre et sur les plus grands serveurs. Sans inscription.",
+    "prerenderCheck": {
+      "heading": "Générateur de pseudo Mastodon",
+      "copy": "À quoi ressemble un nom Mastodon"
+    }
+  },
+  "content-warnings": {
+    "title": "Désactiver les avertissements de contenu Mastodon",
+    "description": "Ouvre automatiquement les avertissements de contenu Mastodon et affiche directement les médias sensibles, pour tout le monde ou seulement pour les gens de confiance.",
+    "prerenderCheck": {
+      "heading": "Désactiver les avertissements de contenu sur Mastodon",
+      "copy": "Afficher les médias sensibles"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Exporter ses signets Mastodon",
+    "description": "Télécharge tes signets Mastodon en fichier de marque-pages pour ton navigateur, Raindrop.io ou Pinboard, ou garde seulement les liens partagés.",
+    "prerenderCheck": {
+      "heading": "Exporter tes signets Mastodon",
+      "copy": "Choisir ce que tu gardes"
+    }
+  },
+  "mastodon-search": {
+    "title": "Recherche Mastodon : messages, personnes, hashtags",
+    "description": "Cherche des messages, des personnes et des hashtags sur Mastodon avec les filtres de Twitter : from:, has:media, dates, expressions exactes. Sans compte.",
+    "prerenderCheck": {
+      "heading": "Rechercher sur Mastodon",
+      "copy": "Affiner"
+    }
+  },
+  "bluesky-search": {
+    "title": "Recherche Bluesky : messages et personnes",
+    "description": "Cherche des personnes et des messages sur Bluesky avec les filtres de Twitter : from:, langue, dates, expressions exactes. Connexion Bluesky pour les messages.",
+    "prerenderCheck": {
+      "heading": "Rechercher sur Bluesky",
+      "copy": "Affiner"
+    }
+  },
+  "download-media": {
+    "title": "Télécharger les images d’un compte Mastodon",
+    "description": "Vois toutes les images publiées par un compte Mastodon et télécharge-les d’un coup, en ZIP ou une par une, avec GIF, vidéos et sons. Sans compte.",
+    "prerenderCheck": {
+      "heading": "Télécharger les images d’un compte Mastodon",
+      "copy": "Voir les images"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Hashtags similaires sur Mastodon",
+    "description": "Trouve les hashtags utilisés avec les tiens sur Mastodon, classés selon leur fréquence dans les messages récents. Compare plusieurs tags à la fois. Sans compte.",
+    "prerenderCheck": {
+      "heading": "Hashtags similaires sur Mastodon",
+      "copy": "Voir ce qui les accompagne"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon en français",
+    "description": "Mastodon en français, réglé en une fois : l’appli en français, seulement les langues que tu lis, des traductions pour celles que tu apprends. Gratuit.",
+    "prerenderCheck": {
+      "heading": "Mastodon en français",
+      "copy": "Seulement les langues que tu lis"
+    }
+  },
+  "learn-english": {
+    "title": "Apprendre l’anglais avec Mastodon",
+    "description": "Apprends l’anglais en lisant Mastodon : les messages en anglais restent visibles, avec la traduction en dessous, automatique ou à la demande. Gratuit.",
+    "prerenderCheck": {
+      "heading": "Apprendre l’anglais avec Mastodon",
+      "copy": "Les messages en anglais restent visibles"
+    }
+  }
+}

@@ -57,3 +57,105 @@ export class MastodonContentWarningsDe extends MastodonContentWarnings {
 export class MastodonContentWarningsJa extends MastodonContentWarnings {
   protected override readonly returnHere = { next: '/ja/turn-off-content-warnings-mastodon' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsFr extends MastodonContentWarnings {
+  protected override readonly returnHere = {
+    next: '/fr/desactiver-avertissements-de-contenu-mastodon',
+  };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsEs extends MastodonContentWarnings {
+  protected override readonly returnHere = {
+    next: '/es/desactivar-advertencias-de-contenido-mastodon',
+  };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/zh-hant/turn-off-content-warnings-mastodon' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsKo extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/ko/turn-off-content-warnings-mastodon' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsPt extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/pt/desativar-avisos-de-conteudo-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsIt extends MastodonContentWarnings {
+  protected override readonly returnHere = {
+    next: '/it/disattivare-avvisi-sul-contenuto-mastodon',
+  };
+}

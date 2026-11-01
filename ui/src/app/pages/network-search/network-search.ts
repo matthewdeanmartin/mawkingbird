@@ -5,11 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { SearchLauncher, SearchNetwork } from './search-launcher';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
-
-const ROOTS: Record<SearchNetwork, string> = {
-  mastodon: '/mastodon-search',
-  bluesky: '/bluesky-search',
-};
+import { originalPath, toolPageAt } from '../../focused-tools';
 
 /**
  * Search as a focused mini-app, at two URLs: /mastodon-search and
@@ -30,23 +26,20 @@ export class NetworkSearch {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = this.route.snapshot.data['inShell'] === true;
   protected readonly network: SearchNetwork = networkOf(this.route);
-  protected readonly root = ROOTS[this.network];
+  /** This page's own path, in its language, for the search box's sign-in return. */
+  protected readonly root = `/${toolPageAt(stepPaths(this.route))?.path ?? 'mastodon-search'}`;
 }
 
-/** Mastodon unless the path says Bluesky. */
+/** The paths of a route's steps, root first. */
+function stepPaths(route: ActivatedRoute): string[] {
+  return (route.snapshot?.pathFromRoot ?? []).map((step) => step.routeConfig?.path ?? '');
+}
+
+/** Mastodon unless the page is a version, in any language, of /bluesky-search. */
 export function networkOf(route: ActivatedRoute): SearchNetwork {
-  const paths = route.snapshot.pathFromRoot.map((step) => step.routeConfig?.path ?? '');
-  // Any language version: the English slug, under /ja/ too, or the German one.
-  return paths.some((path) => path.endsWith('bluesky-search') || path === 'de/bluesky-suche')
-    ? 'bluesky'
-    : 'mastodon';
+  const page = toolPageAt(stepPaths(route));
+  return page && originalPath(page) === 'bluesky-search' ? 'bluesky' : 'mastodon';
 }
-
-/** The German pages' own paths, one per network. */
-const GERMAN_ROOTS: Record<SearchNetwork, string> = {
-  mastodon: '/de/mastodon-suche',
-  bluesky: '/de/bluesky-suche',
-};
 
 /**
  * The German pages (focused-tools.json `lang: "de"`), both networks: the same
@@ -60,15 +53,7 @@ const GERMAN_ROOTS: Record<SearchNetwork, string> = {
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
 })
-export class NetworkSearchDe extends NetworkSearch {
-  protected override readonly root = GERMAN_ROOTS[networkOf(this.route)];
-}
-
-/** The Japanese pages' own paths, one per network. */
-const JAPANESE_ROOTS: Record<SearchNetwork, string> = {
-  mastodon: '/ja/mastodon-search',
-  bluesky: '/ja/bluesky-search',
-};
+export class NetworkSearchDe extends NetworkSearch {}
 
 /** The Japanese pages, both networks; see NetworkSearchDe. */
 @Component({
@@ -78,6 +63,84 @@ const JAPANESE_ROOTS: Record<SearchNetwork, string> = {
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
 })
-export class NetworkSearchJa extends NetworkSearch {
-  protected override readonly root = JAPANESE_ROOTS[networkOf(this.route)];
-}
+export class NetworkSearchJa extends NetworkSearch {}
+
+/** The French pages, both networks; see NetworkSearchDe. */
+@Component({
+  selector: 'app-network-search-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.fr.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchFr extends NetworkSearch {}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.es.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchEs extends NetworkSearch {}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.zh-hant.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchZhHant extends NetworkSearch {}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.ko.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchKo extends NetworkSearch {}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.pt.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchPt extends NetworkSearch {}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.it.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchIt extends NetworkSearch {}

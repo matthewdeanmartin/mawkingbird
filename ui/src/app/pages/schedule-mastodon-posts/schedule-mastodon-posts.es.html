@@ -1,0 +1,86 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Programador de Mastodon</p>
+    <h1>Programar publicaciones en Mastodon</h1>
+    <p>
+      Escribe las publicaciones de toda una semana de una sentada, y tu servidor de Mastodon las
+      publica a su hora.
+      @if (!inShell) {
+        Inicia sesión con Mastodon, escribe tus publicaciones, elige cuándo sale la primera y cada
+        cuánto las demás, y listo.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Cargando el programador…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Escribe tus publicaciones</h2>
+        <p>Todas las que quieras, una por campo, hasta 500 caracteres cada una.</p>
+      </li>
+      <li>
+        <h2>Repártelas</h2>
+        <p>
+          Elige la primera hora y el intervalo: cada día a las 9:00, cada tres horas. También puedes
+          poner cada publicación a una hora concreta.
+        </p>
+      </li>
+      <li>
+        <h2>Cierra la pestaña</h2>
+        <p>
+          Tu servidor de Mastodon guarda las publicaciones y publica cada una a su hora. Nada espera
+          en tu navegador.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Iniciar sesión con Mastodon y programar</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿Mastodon puede programar publicaciones?</h3>
+    <p>
+      Sí. Cualquier servidor de Mastodon puede guardar una publicación y publicarla más tarde, pero
+      la web normal de Mastodon no tiene un botón para eso. Esta página usa la programación
+      integrada, así que es tu propio servidor el que guarda las publicaciones, no Mawkingbird.
+    </p>
+    <h3>¿Tengo que dejar esta página abierta?</h3>
+    <p>
+      No. Una publicación programada vive en tu servidor de Mastodon, que la publica a la hora
+      elegida, esté o no encendido tu equipo.
+    </p>
+    <h3>¿Hay límites?</h3>
+    <p>
+      Mastodon admite 300 publicaciones programadas en espera y 25 por día, y cada una debe estar al
+      menos cinco minutos en el futuro. El programador lo comprueba antes de enviar nada.
+    </p>
+    <h3>¿Puedo cambiar de idea?</h3>
+    <p>
+      Sí. Tus publicaciones programadas aparecen debajo del programador, y puedes cancelar cada una
+      hasta que se publique.
+    </p>
+    <h3>¿Sirve para Bluesky?</h3>
+    <p>
+      Aquí no. Bluesky no tiene programación integrada, así que esta página es solo para Mastodon.
+    </p>
+  </section>
+</main>

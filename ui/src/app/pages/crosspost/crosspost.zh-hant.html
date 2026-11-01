@@ -1,0 +1,67 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>同時發文到 Mastodon 與 Bluesky</h1>
+    <p>
+      寫一次，就把同一則貼文送到兩個網路。
+      @if (!inShell) {
+        用您已有的帳號登入、連結另一個，然後在簡單的編輯器裡試試看。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">正在載入編輯器……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>用其中一個登入</h2>
+        <p>使用您的 Mastodon 或 Bluesky 帳號。一開始只要一個就夠了。</p>
+      </li>
+      <li>
+        <h2>連結另一個帳號</h2>
+        <p>
+          用 Mastodon 登入的話，用應用程式密碼連結 Bluesky；用 Bluesky 登入的話，加入您的 Mastodon
+          伺服器。
+        </p>
+      </li>
+      <li>
+        <h2>寫一次，兩邊都發</h2>
+        <p>編輯器會把您的貼文送到兩個網路。發第一則試試看吧。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >用 Bluesky 登入</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>Bluesky 上的那份會一模一樣嗎？</h3>
+    <p>
+      文字會一樣。Bluesky 上的那份一律公開，投票與內容警告只會留在 Mastodon 那份，因為 Bluesky
+      沒有對應的功能。
+    </p>
+    <h3>我的登入資訊存在哪裡？</h3>
+    <p>
+      存在這個瀏覽器裡。Mawkingbird 直接與您的 Mastodon 伺服器和 Bluesky 溝通，中間沒有任何
+      Mawkingbird 伺服器保管您的帳號。
+    </p>
+  </section>
+</main>

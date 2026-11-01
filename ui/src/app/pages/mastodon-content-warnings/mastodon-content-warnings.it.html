@@ -1,0 +1,76 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Avvisi sul contenuto</p>
+    <h1>Disattivare gli avvisi sul contenuto su Mastodon</h1>
+    <p>
+      Stufo di cliccare “Mostra altro” su ogni post o di toccare le foto sfocate? Gli avvisi sul
+      contenuto possono aprirsi da soli e i contenuti sensibili comparire subito.
+      @if (!inShell) {
+        Accedi: sono due interruttori.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Caricamento delle impostazioni…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Espandi gli avvisi sul contenuto</h2>
+        <p>I post con un avviso si aprono da soli. Il testo dell’avviso resta visibile.</p>
+      </li>
+      <li>
+        <h2>Mostra i contenuti sensibili</h2>
+        <p>Foto e video segnati come sensibili compaiono senza sfocatura.</p>
+      </li>
+      <li>
+        <h2>O solo per le persone di cui ti fidi</h2>
+        <p>
+          Tieni chiusi gli avvisi con gli sconosciuti e aperti con gli amici: fidati di persone
+          precise o di tutti quelli che segui.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Accedi con Mastodon e disattivali</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Come si fa sul sito di Mastodon?</h3>
+    <p>
+      Apri le preferenze del tuo server, attiva “Espandi sempre i post con avvisi sul contenuto” e
+      imposta “Visualizzazione dei media” su “Mostra tutto”. Sono impostazioni del tuo server e
+      valgono per il suo sito e per alcune app.
+    </p>
+    <h3>Perché Mawkingbird non può cambiare l’impostazione del mio server?</h3>
+    <p>
+      Mastodon permette alle app di leggere queste impostazioni ma non di cambiarle, quindi
+      Mawkingbird ha i suoi interruttori. Una volta effettuato l’accesso, questa pagina mostra come
+      è impostato il tuo server.
+    </p>
+    <h3>Vedo ancora che un post aveva un avviso?</h3>
+    <p>Sì. Il testo dell’avviso resta sopra il post; sparisce solo il clic per aprirlo.</p>
+    <h3>Cambia quello che vedono gli altri?</h3>
+    <p>
+      No. Cambia solo come si aprono i post per te. Gli avvisi degli autori restano per tutti gli
+      altri.
+    </p>
+  </section>
+</main>

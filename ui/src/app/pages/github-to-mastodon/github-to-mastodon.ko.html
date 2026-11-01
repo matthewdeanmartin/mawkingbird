@@ -1,0 +1,62 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub에서 Mastodon으로</p>
+    <h1>GitHub 친구를 Mastodon에서 찾기</h1>
+    <p>
+      많은 개발자가 GitHub에 Mastodon 계정을 적어 둡니다. Mawkingbird가 회원님이 GitHub에서
+      팔로우하는 사람과 별표를 누른 저장소의 주인을 확인해, Mastodon에서 팔로우할 수 있게 해 줍니다.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">검색을 불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon으로 로그인</h2>
+        <p>팔로우는 회원님의 Mastodon 계정으로 하므로 먼저 로그인합니다.</p>
+      </li>
+      <li>
+        <h2>GitHub 연결</h2>
+        <p>
+          GitHub 개인 액세스 토큰을 붙여 넣으세요. 만드는 방법은 페이지에서 안내합니다. GitHub는 웹
+          앱이 다른 방법으로 로그인하는 것을 허용하지 않으며, 토큰은 이 브라우저에만 남습니다.
+        </p>
+      </li>
+      <li>
+        <h2>찾고 팔로우</h2>
+        <p>
+          먼저 프로필의 Mastodon 링크를, 그다음 제한된 이름 검색을 사용합니다. 결과마다 근거가
+          표시되며, 누구를 팔로우할지는 회원님이 정합니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon으로 로그인</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>GitHub 토큰은 어디로 가나요?</h3>
+    <p>
+      이 브라우저에 저장되고 <code>api.github.com</code>에만 보내지며, Mawkingbird로는 절대 보내지지
+      않습니다. 언제든 GitHub에서 취소할 수 있습니다.
+    </p>
+    <h3>자동으로 팔로우하나요?</h3>
+    <p>아니요. 모든 팔로우는 근거 옆의 버튼을 회원님이 직접 눌러야 합니다.</p>
+  </section>
+</main>

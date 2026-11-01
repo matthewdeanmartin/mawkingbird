@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Twitter のフォローを Mastodon に引き継ぐ",
+    "description": "Twitter でフォローしていた人のうち、Mastodon にいる人を見つけてフォローし直せます。アーカイブはブラウザーの中で読み込み、アップロードされません。",
+    "prerenderCheck": {
+      "heading": "Twitter のフォローを Mastodon に引き継ぐ",
+      "copy": "Twitter のアーカイブをダウンロード"
+    }
+  },
+  "crosspost": {
+    "title": "Mastodon と Bluesky に同時投稿",
+    "description": "一度書くだけで Mastodon と Bluesky に同時投稿。どちらかのアカウントでログインし、もう一方を連携して、ブラウザーの投稿画面ですぐに試せます。",
+    "prerenderCheck": {
+      "heading": "Mastodon と Bluesky に同時投稿",
+      "copy": "どちらかでログイン"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon のアクセス解析・統計",
+    "description": "Mastodon アカウントの無料アクセス解析。人気の投稿、投稿ごとの反応、推定リーチ、投稿の時間帯、よくやりとりする相手、活動中のフォロワー数がわかります。",
+    "prerenderCheck": {
+      "heading": "Mastodon のアクセス解析・統計",
+      "copy": "反応のよかった投稿"
+    }
+  },
+  "github-friends": {
+    "title": "GitHub の知り合いを Mastodon で探す",
+    "description": "GitHub でフォローしている人のうち Mastodon にいる人を、まずプロフィールのリンクから探し、ワンクリックでフォローできます。",
+    "prerenderCheck": {
+      "heading": "GitHub の知り合いを Mastodon で探す",
+      "copy": "GitHub を連携"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon の予約投稿",
+    "description": "Mastodon の予約投稿ツール。複数の投稿をまとめて書き、毎日・毎時の間隔で予約すると、タブを閉じてもサーバーが時間どおりに公開します。",
+    "prerenderCheck": {
+      "heading": "Mastodon の予約投稿",
+      "copy": "投稿を書く"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Bluesky でフォローしている人を Mastodon で探す",
+    "description": "Bluesky でフォローしている人を Mastodon で探します。まずプロフィール、次に名前検索で見つけて、Mastodon でフォローできます。",
+    "prerenderCheck": {
+      "heading": "Bluesky でフォローしている人を Mastodon で探す",
+      "copy": "フォロー一覧を読み込む"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Mastodon でフォローしている人を Bluesky で探す",
+    "description": "Mastodon でフォローしている人を Bluesky で探します。まずプロフィール、次に名前検索で見つけて、Bluesky でフォローできます。",
+    "prerenderCheck": {
+      "heading": "Mastodon でフォローしている人を Bluesky で探す",
+      "copy": "フォロー一覧を読み込む"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Mastodon のブーストをまとめて非表示にする",
+    "description": "フォロー中の全員のブーストを、1 人ずつではなく一度に非表示にできます。フォローはそのままで、いつでも元に戻せます。",
+    "prerenderCheck": {
+      "heading": "Mastodon のブーストを全員分まとめて非表示にする",
+      "copy": "対象の人数を確認"
+    }
+  },
+  "find-contacts": {
+    "title": "スマホの連絡先から Mastodon の知り合いを探す",
+    "description": "アドレス帳の知り合いを Mastodon で探します。Android なら連絡先から直接、それ以外は Google コンタクトのファイルで。連絡先はブラウザーから出ません。",
+    "prerenderCheck": {
+      "heading": "スマホの連絡先から Mastodon の知り合いを探す",
+      "copy": "連絡先を選ぶ"
+    }
+  },
+  "friend-feeds": {
+    "title": "Mastodon のフォロー相手のブログ・RSS を探す",
+    "description": "Mastodon でフォローしている人のブログや RSS フィードを、プロフィールのリンクから探し、どのフィードリーダーでも使える OPML ファイルにまとめます。",
+    "prerenderCheck": {
+      "heading": "Mastodon でフォローしている人のブログ・RSS フィードをまとめて探す",
+      "copy": "OPML をダウンロード"
+    }
+  },
+  "amnesty": {
+    "title": "Mastodon のミュート・ブロックを一括解除",
+    "description": "Mastodon のミュートやブロックを、事前にバックアップしたうえで一度にすべて解除できます。Mastodon 本体では 1 アカウントずつしか解除できません。",
+    "prerenderCheck": {
+      "heading": "Mastodon のミュートとブロックをまとめて解除する",
+      "copy": "バックアップして確認"
+    }
+  },
+  "pseudonymity": {
+    "title": "Mastodon を匿名（仮名）で使うには",
+    "description": "Mastodon アカウントがあなた本人と結びつく設定を、まとめて見直せます。フォロー一覧の非公開、検索やおすすめからの除外、オフにできない項目の確認。",
+    "prerenderCheck": {
+      "heading": "Mastodon を匿名（仮名）で使うには",
+      "copy": "周りの人を隠す"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon のユーザー名ジェネレーター",
+    "description": "名前を入力すると、空いている Mastodon のユーザー名を提案し、参加予定のサーバーと大手サーバーで空きを確認します。登録不要。",
+    "prerenderCheck": {
+      "heading": "Mastodon のユーザー名ジェネレーター",
+      "copy": "Mastodon のユーザー名はどんな形ですか？"
+    }
+  },
+  "content-warnings": {
+    "title": "Mastodon の閲覧注意（CW）を常に展開する",
+    "description": "Mastodon の閲覧注意（CW）を自動で展開し、センシティブなメディアをすぐに表示。全員にも、信頼する人だけにも設定できます。",
+    "prerenderCheck": {
+      "heading": "Mastodon の閲覧注意（CW）を常に展開する方法",
+      "copy": "センシティブなメディアを表示"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Mastodon のブックマークをエクスポート",
+    "description": "Mastodon のブックマークを、ブラウザーや Raindrop.io、Pinboard で読み込めるファイルとしてダウンロード。共有されたリンクだけを取り出すこともできます。",
+    "prerenderCheck": {
+      "heading": "Mastodon のブックマークをエクスポート",
+      "copy": "保存する内容を選ぶ"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon 検索：投稿・人・ハッシュタグを探す",
+    "description": "Twitter のような検索フィルター（from:、has:media、日付、完全一致）で、Mastodon の投稿・人・ハッシュタグを探せます。アカウントがなくても使えます。",
+    "prerenderCheck": {
+      "heading": "Mastodon を検索",
+      "copy": "絞り込む"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky 検索：投稿と人を探す",
+    "description": "Twitter のような検索フィルター（from:、言語、日付、完全一致）で、Bluesky の人と投稿を探せます。投稿の検索には Bluesky でのログインが必要です。",
+    "prerenderCheck": {
+      "heading": "Bluesky を検索",
+      "copy": "絞り込む"
+    }
+  },
+  "download-media": {
+    "title": "Mastodon の画像をまとめてダウンロード",
+    "description": "Mastodon アカウントが投稿した画像を一覧で表示し、ZIP または個別のファイルでまとめてダウンロード。GIF・動画・音声にも対応、登録不要です。",
+    "prerenderCheck": {
+      "heading": "Mastodon の画像をまとめてダウンロード",
+      "copy": "画像を一覧表示"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Mastodon で関連するハッシュタグを探す",
+    "description": "あなたのハッシュタグと一緒に使われているタグを、最近の投稿で同時に出てくる回数順に表示。複数のタグをまとめて調べられます。登録不要。",
+    "prerenderCheck": {
+      "heading": "Mastodon で関連するハッシュタグを探す",
+      "copy": "一緒に使われるタグを表示"
+    }
+  },
+  "language-en": {
+    "title": "マストドン（Mastodon）を日本語で快適に",
+    "description": "マストドンを日本語で快適に使う設定を一度に。アプリの日本語表示、読める言語だけの表示、学習中の言語の翻訳、投稿の言語設定に対応。無料です。",
+    "prerenderCheck": {
+      "heading": "マストドン（Mastodon）を日本語で快適に",
+      "copy": "読める言語だけを表示"
+    }
+  },
+  "learn-english": {
+    "title": "マストドン（Mastodon）で英語を学ぶ",
+    "description": "マストドンの英語の投稿で英語を学習。英語の投稿は常に表示され、下に日本語訳を付けられます。自動翻訳にも対応し、フォローする人も見つかります。無料。",
+    "prerenderCheck": {
+      "heading": "マストドン（Mastodon）で英語を学ぶ",
+      "copy": "英語の投稿は常に表示"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Generatore di nomi</p>
+    <h1>Generatore di nomi utente per Mastodon</h1>
+    <p>
+      Scrivi il tuo nome e ricevi nomi Mastodon che puoi davvero avere: ogni proposta viene
+      controllata sul server a cui vuoi iscriverti, e la tua preferita anche sui server più grandi.
+      Senza account.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/it/generatore-di-nomi-utente-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Caricamento del generatore…</p>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Com’è fatto un nome su Mastodon?</h3>
+    <p>
+      Ha due parti: il tuo nome utente e il tuo server, per esempio
+      &#64;giulia_rossi&#64;mastodon.social. Il nome utente può contenere lettere, numeri e trattini
+      bassi, fino a 30 caratteri, senza accenti, e le maiuscole non creano un nome diverso.
+    </p>
+    <h3>Perché controllare più di un server?</h3>
+    <p>
+      Ogni server ha i suoi nomi utente. Un nome già preso su mastodon.social può essere libero
+      altrove, e le persone di qualsiasi server possono seguirti comunque.
+    </p>
+    <h3>“Sembra libero” è una garanzia?</h3>
+    <p>
+      Non del tutto. Vuol dire che oggi nessuno ha quel nome su quel server. I nomi degli account
+      eliminati restano riservati e gli admin possono riservare alcune parole, quindi l’ultima
+      parola spetta al modulo di iscrizione.
+    </p>
+    <h3>Quali server contano come i più grandi?</h3>
+    <p>
+      Quelli con più iscrizioni nella directory di joinmastodon.org, che elenca i server che
+      rispettano il patto dei server di Mastodon. Alcuni fanno approvare i nuovi account da un
+      admin; l’elenco indica quali.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,74 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">從 Twitter 到 Mastodon</p>
+    <h1>把您在 Twitter 的跟隨帶到 Mastodon</h1>
+    <p>
+      找出您在 Twitter 上跟隨、而且已經在 Mastodon
+      的人，點幾下就能再次跟隨。封存檔只在這個瀏覽器中讀取，不會上傳任何東西。
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>下載您的 Twitter 封存檔</h2>
+      <p>
+        在 Twitter
+        開啟「設定與隱私」→「您的帳戶」→「下載資料封存檔」。可能要一天以上才會收到，收到後請解壓縮。
+      </p>
+    </li>
+    <li>
+      <h2>在這裡選擇封存檔</h2>
+      <p>
+        選擇解壓縮後的資料夾，或只選 <code>data/following.js</code> 與
+        <code>data/tweets.js</code> 兩個檔案。Mawkingbird 會統計您跟隨過、回覆過與提及過的人。
+      </p>
+    </li>
+    <li>
+      <h2>用 Mastodon 登入並跟隨</h2>
+      <p>
+        Mawkingbird 會在您的 Mastodon
+        伺服器上搜尋每個名字，列出可能的對象與相符的線索，由您決定要跟隨誰。
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/zh-hant/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/zh-hant/twitter-to-mastodon"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">正在載入匯入工具……</p>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>我的封存檔會被上傳到哪裡嗎？</h3>
+    <p>
+      不會。檔案由這個頁面在您的瀏覽器中讀取。只有名字搜尋會送到您自己的 Mastodon
+      伺服器，而且要在您登入之後。
+    </p>
+    <h3>會自動幫我跟隨別人嗎？</h3>
+    <p>
+      不會。名字相符只是可能的線索，不是證據，所以每一次跟隨都是由您自己按下按鈕。您也可以把名單下載成
+      CSV 保存。
+    </p>
+    <h3>為什麼要從 Twitter 搬到 Mastodon？</h3>
+    <p>
+      Mastodon
+      不屬於任何一家公司：它是由數千個獨立伺服器互相連結而成，其中也有不少中文伺服器。沒有演算法決定您看到什麼，沒有廣告，時間軸依時間排序。
+    </p>
+  </section>
+</main>

@@ -1,0 +1,80 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Boosts Mastodon</p>
+    <h1>Masquer les boosts de tous tes abonnements Mastodon</h1>
+    <p>
+      Les boosts sont les retweets de Mastodon. Continue de suivre tout le monde, mais ne vois que
+      ce que les gens écrivent eux-mêmes.
+      @if (!inShell) {
+        Mastodon ne masque les boosts que compte par compte ; cet outil le fait pour tout le monde
+        d’un coup.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Chargement…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Te connecter avec Mastodon</h2>
+        <p>Tes abonnements sont lus depuis ton propre serveur Mastodon.</p>
+      </li>
+      <li>
+        <h2>Voir combien de comptes sont concernés</h2>
+        <p>
+          Avant tout changement, tu vois combien de tes abonnements ont encore les boosts activés.
+        </p>
+      </li>
+      <li>
+        <h2>Confirmer et suivre la progression</h2>
+        <p>
+          Chaque compte est modifié l’un après l’autre, avec une barre de progression. Tu peux
+          t’arrêter en cours de route et reprendre plus tard.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et masquer les boosts</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Est-ce que je me désabonne de quelqu’un ?</h3>
+    <p>
+      Non. Tu continues de suivre tout le monde, et leurs propres messages et réponses arrivent
+      toujours dans ton fil d’accueil. Seuls leurs boosts disparaissent.
+    </p>
+    <h3>Puis-je revenir en arrière ?</h3>
+    <p>
+      Oui. La même page réactive les boosts pour tout le monde, et pour un seul compte, ça se fait
+      depuis son profil.
+    </p>
+    <h3>Et les personnes que je suivrai plus tard ?</h3>
+    <p>
+      Les nouveaux abonnements commencent avec les boosts activés, comme toujours sur Mastodon.
+      Relance cet outil quand tu veux ; il ne modifie que les comptes qui en ont besoin.
+    </p>
+    <h3>Pourquoi est-ce que ça prend un moment ?</h3>
+    <p>
+      Mastodon n’a pas de réglage « pour tout le monde d’un coup », donc chaque compte que tu suis
+      est modifié séparément. Une longue liste prend quelques minutes.
+    </p>
+  </section>
+</main>

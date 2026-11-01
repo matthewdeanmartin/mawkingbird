@@ -15,9 +15,14 @@ export interface LanguageLandingCopy {
   /** The language the page is written in. */
   lang: PageLanguage;
   /** The language the page sets the reader up for (interface, known, posting). */
-  target: 'de' | 'en' | 'ja';
+  target: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pt' | 'zh-Hant';
+  /**
+   * The code posts and the language filters use for it, when not `target`:
+   * Mastodon tags Chinese posts `zh`, while the interface locale is `zh-Hant`.
+   */
+  content?: string;
   /** A language offered as "learning", when the page has one. */
-  learning?: 'de' | 'en' | 'ja';
+  learning?: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pt' | 'zh-Hant';
   openApp: string;
   eyebrow: string;
   heading: string;
@@ -333,6 +338,382 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       settingsLink: 'All language settings',
     },
   },
+  'es/mastodon-en-espanol': {
+    path: 'es/mastodon-en-espanol',
+    lang: 'es',
+    target: 'es',
+    learning: 'en',
+    openApp: 'Abrir la app',
+    eyebrow: 'Mastodon en español',
+    heading: 'Mastodon en español',
+    intro:
+      'Mawkingbird hace más que la propia app de Mastodon por quienes hablan español, por quienes viven entre dos idiomas y por quienes aprenden uno. Inicia sesión y lo configuramos para los idiomas que lees y los que aprendes. Tu inicio quedará mucho mejor.',
+    loading: 'Cargando…',
+    claims: [
+      {
+        title: 'Toda la app en español',
+        body: 'Menús, ajustes y ayuda en tu idioma.',
+      },
+      {
+        title: 'Solo los idiomas que lees',
+        body: 'Las publicaciones en otros idiomas se ocultan de tu inicio. El idioma se detecta aunque una publicación lo indique mal.',
+      },
+      {
+        title: 'Hoy, solo en español',
+        body: 'Deja tu línea de tiempo en un solo idioma por un rato, sin dejar de seguir a nadie.',
+      },
+      {
+        title: 'Traducciones para el idioma que aprendes',
+        body: 'Las publicaciones en el idioma que aprendes nunca se ocultan, con una traducción debajo si la quieres. La traducción la hace tu servidor o tu propia clave de IA.',
+      },
+      {
+        title: 'Tendencias que puedes leer',
+        body: 'Se filtran los hashtags en tendencia escritos en otros alfabetos.',
+      },
+      {
+        title: 'Tus publicaciones llegan a quienes leen español',
+        body: 'Tu idioma de publicación por defecto queda en español en tu servidor. Los filtros de idioma de los demás se basan en él.',
+      },
+      {
+        title: 'Paquetes de inicio en español',
+        body: 'Listas seleccionadas de cuentas para seguir, dentro de la app.',
+      },
+    ],
+    signIn: 'Iniciar sesión con Mastodon',
+    questionsTitle: 'Preguntas',
+    questions: [
+      {
+        q: '¿Mastodon está en español?',
+        a: 'Sí. Mastodon está traducido al español, y Mawkingbird también, de principio a fin. Además, Mawkingbird puede limitar tu línea de tiempo a los idiomas que lees.',
+      },
+      {
+        q: '¿Dónde me registro?',
+        a: 'mastodon.social es lo más fácil para empezar. También hay muchos servidores en español, que encontrarás en directorios como joinmastodon.org. Mawkingbird funciona con todos.',
+      },
+      {
+        q: '¿Qué cambia cuando inicio sesión?',
+        a: 'Nada al principio. Ves una lista de ajustes y eliges cuáles aplicar. Solo el idioma de publicación se guarda en tu servidor; lo demás se guarda en este navegador.',
+      },
+      {
+        q: '¿Cuesta algo?',
+        a: 'No. Mawkingbird es gratis y funciona en tu navegador.',
+      },
+    ],
+    checklist: {
+      title: 'Configurar Mawkingbird en español',
+      intro: 'Elige qué aplicar. Nada cambia hasta que pulses “Aplicar”.',
+      items: [
+        {
+          setting: 'interface',
+          label: 'Ver la app en español',
+          hint: 'Toda la app pasa a español.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Leo español',
+          hint: 'Los idiomas que lees se usan en los filtros de abajo.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'También leo inglés',
+          hint: 'Así las publicaciones en inglés siguen visibles.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Publico en español',
+          hint: 'El idioma por defecto de las publicaciones nuevas. Se guarda en tu servidor de Mastodon.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Ocultar publicaciones en idiomas que no leo',
+          hint: 'En Inicio y Algo. Las publicaciones de idioma dudoso siguen visibles.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Solo tendencias en mi alfabeto',
+          hint: 'Filtra los hashtags en tendencia escritos en otros alfabetos.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'Estoy aprendiendo inglés',
+          hint: 'Las publicaciones en inglés siempre se ven, con una traducción debajo.',
+          checked: false,
+        },
+      ],
+      where: { browser: 'este navegador', server: 'tu servidor' },
+      apply: 'Aplicar',
+      applying: 'Aplicando…',
+      failed:
+        'No se pudo guardar el idioma de publicación en tu servidor. Lo demás ya está aplicado.',
+      doneTitle: 'Listo',
+      doneNothing: 'No había nada marcado, así que no cambió nada.',
+      home: 'Ir al inicio',
+      starterPacks: 'Ver los paquetes de inicio',
+      settingsLink: 'Todos los ajustes de idioma',
+    },
+  },
+  'es/aprender-ingles-con-mastodon': {
+    path: 'es/aprender-ingles-con-mastodon',
+    lang: 'es',
+    target: 'es',
+    learning: 'en',
+    openApp: 'Abrir la app',
+    eyebrow: 'Aprender idiomas',
+    heading: 'Aprender inglés con Mastodon',
+    intro:
+      'Lee cada día publicaciones reales de gente que habla inglés, con una traducción debajo cuando la necesites. Inicia sesión y configuramos Mawkingbird para aprender inglés, sin tocar los idiomas que ya lees.',
+    loading: 'Cargando…',
+    claims: [
+      {
+        title: 'El inglés siempre se ve',
+        body: 'El idioma que aprendes nunca se oculta, ni siquiera con el filtro que esconde los idiomas que no lees.',
+      },
+      {
+        title: 'La traducción debajo, no en lugar del original',
+        body: 'El original y la traducción juntos: aprendes con el texto real.',
+      },
+      {
+        title: 'Automática o cuando la pidas',
+        body: 'Traduce automáticamente al desplazarte, o solo cuando pulses Traducir. La traducción la hace tu servidor o tu propia clave de IA.',
+      },
+      {
+        title: 'Gente a quien seguir',
+        body: 'Paquetes de inicio de cuentas que publican en inglés, por temas.',
+      },
+    ],
+    signIn: 'Iniciar sesión con Mastodon',
+    questionsTitle: 'Preguntas',
+    questions: [
+      {
+        q: '¿Mastodon sirve para aprender inglés?',
+        a: 'Está lleno de inglés corto y cotidiano escrito por personas reales, sobre cualquier tema. Sigue a gente que habla de lo que te gusta y leer se vuelve un hábito.',
+      },
+      {
+        q: '¿Quién hace la traducción?',
+        a: 'Tu servidor de Mastodon, si ofrece traducción, o un modelo de IA con tu propia clave de OpenRouter. Mawkingbird nunca traduce en servidores propios.',
+      },
+      {
+        q: '¿Cambia el idioma de la app?',
+        a: 'No. Esta página solo añade el inglés como idioma que aprendes; el idioma de la app y los idiomas que lees no cambian.',
+      },
+    ],
+    checklist: {
+      title: 'Configurar Mawkingbird para aprender inglés',
+      intro: 'Elige qué aplicar. Nada cambia hasta que pulses “Aplicar”.',
+      items: [
+        {
+          setting: 'learning',
+          label: 'Estoy aprendiendo inglés',
+          hint: 'Las publicaciones en inglés nunca se ocultan, con una traducción debajo.',
+          checked: true,
+        },
+      ],
+      where: { browser: 'este navegador', server: 'tu servidor' },
+      apply: 'Aplicar',
+      applying: 'Aplicando…',
+      failed: 'No se pudo guardar un ajuste. Inténtalo de nuevo.',
+      doneTitle: 'Listo',
+      doneNothing: 'No había nada marcado, así que no cambió nada.',
+      home: 'Ir al inicio',
+      starterPacks: 'Ver los paquetes de inicio',
+      settingsLink: 'Todos los ajustes de idioma',
+    },
+  },
+  'fr/mastodon-en-francais': {
+    path: 'fr/mastodon-en-francais',
+    lang: 'fr',
+    target: 'fr',
+    learning: 'en',
+    openApp: 'Ouvrir l’appli',
+    eyebrow: 'Mastodon en français',
+    heading: 'Mastodon en français',
+    intro:
+      'Mawkingbird en fait plus que l’appli Mastodon elle-même pour les francophones, les bilingues et ceux qui apprennent une langue. Connecte-toi, et on le règle pour les langues que tu lis et celles que tu apprends. Ton fil d’accueil n’en sera que meilleur.',
+    loading: 'Chargement…',
+    claims: [
+      {
+        title: 'Toute l’appli en français',
+        body: 'Menus, réglages et aide dans ta langue.',
+      },
+      {
+        title: 'Seulement les langues que tu lis',
+        body: 'Les messages dans d’autres langues sont masqués de ton fil d’accueil. La langue est détectée, même quand un message l’indique mal.',
+      },
+      {
+        title: 'Aujourd’hui, que du français',
+        body: 'Réduis ton fil à une seule langue pour un moment, sans te désabonner de personne.',
+      },
+      {
+        title: 'Des traductions pour la langue que tu apprends',
+        body: 'Les messages dans la langue que tu apprends ne sont jamais masqués, avec une traduction en dessous si tu veux. La traduction vient de ton serveur ou de ta propre clé d’IA.',
+      },
+      {
+        title: 'Des tendances que tu peux lire',
+        body: 'Les hashtags tendance écrits dans d’autres alphabets sont filtrés.',
+      },
+      {
+        title: 'Tes messages atteignent les lecteurs francophones',
+        body: 'La langue de publication par défaut est réglée sur le français sur ton serveur. Les filtres de langue des autres s’appuient dessus.',
+      },
+      {
+        title: 'Des packs de démarrage en français',
+        body: 'Des listes choisies de comptes à suivre, dans l’appli.',
+      },
+    ],
+    signIn: 'Se connecter avec Mastodon',
+    questionsTitle: 'Questions',
+    questions: [
+      {
+        q: 'Mastodon existe-t-il en français ?',
+        a: 'Oui. Mastodon lui-même est traduit en français, et Mawkingbird aussi, de bout en bout. En plus, Mawkingbird peut limiter ton fil aux langues que tu lis.',
+      },
+      {
+        q: 'Où m’inscrire ?',
+        a: 'mastodon.social est le plus simple pour commencer. Il existe aussi beaucoup de serveurs francophones, que tu trouveras dans des annuaires comme joinmastodon.org. Mawkingbird fonctionne avec tous.',
+      },
+      {
+        q: 'Qu’est-ce qui change quand je me connecte ?',
+        a: 'Rien au début. Tu vois une liste de réglages et tu choisis ceux à appliquer. Seule la langue de publication est enregistrée sur ton serveur ; le reste est gardé dans ce navigateur.',
+      },
+      {
+        q: 'Est-ce que c’est payant ?',
+        a: 'Non. Mawkingbird est gratuit et fonctionne dans ton navigateur.',
+      },
+    ],
+    checklist: {
+      title: 'Régler Mawkingbird pour le français',
+      intro:
+        'Choisis ce qu’il faut appliquer. Rien ne change avant que tu appuies sur « Appliquer ».',
+      items: [
+        {
+          setting: 'interface',
+          label: 'Afficher l’appli en français',
+          hint: 'Toute l’appli passe en français.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Je lis le français',
+          hint: 'Les langues que tu lis servent aux filtres ci-dessous.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'Je lis aussi l’anglais',
+          hint: 'Les messages en anglais restent alors visibles.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Je publie en français',
+          hint: 'La langue par défaut des nouveaux messages. Enregistrée sur ton serveur Mastodon.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Masquer les messages dans des langues que je ne lis pas',
+          hint: 'Sur l’accueil et Algo. Les messages dont la langue est incertaine restent visibles.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Seulement les tendances dans mon alphabet',
+          hint: 'Filtre les hashtags tendance écrits dans d’autres alphabets.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'J’apprends l’anglais',
+          hint: 'Les messages en anglais restent toujours visibles, avec une traduction en dessous.',
+          checked: false,
+        },
+      ],
+      where: { browser: 'ce navigateur', server: 'ton serveur' },
+      apply: 'Appliquer',
+      applying: 'Application…',
+      failed:
+        'La langue de publication n’a pas pu être enregistrée sur ton serveur. Le reste est appliqué.',
+      doneTitle: 'C’est fait',
+      doneNothing: 'Rien n’était coché, donc rien n’a changé.',
+      home: 'Aller à l’accueil',
+      starterPacks: 'Voir les packs de démarrage',
+      settingsLink: 'Tous les réglages de langue',
+    },
+  },
+  'fr/apprendre-l-anglais-avec-mastodon': {
+    path: 'fr/apprendre-l-anglais-avec-mastodon',
+    lang: 'fr',
+    target: 'fr',
+    learning: 'en',
+    openApp: 'Ouvrir l’appli',
+    eyebrow: 'Apprendre une langue',
+    heading: 'Apprendre l’anglais avec Mastodon',
+    intro:
+      'Lis chaque jour de vrais messages d’anglophones, avec une traduction en dessous quand tu en as besoin. Connecte-toi, et on règle Mawkingbird pour apprendre l’anglais, sans toucher aux langues que tu lis déjà.',
+    loading: 'Chargement…',
+    claims: [
+      {
+        title: 'Les messages en anglais restent visibles',
+        body: 'La langue que tu apprends n’est jamais masquée, même par le filtre qui cache les langues que tu ne lis pas.',
+      },
+      {
+        title: 'La traduction en dessous, pas à la place',
+        body: 'L’original et la traduction côte à côte : tu apprends à partir du vrai texte.',
+      },
+      {
+        title: 'Automatique ou à la demande',
+        body: 'Traduis automatiquement en faisant défiler, ou seulement quand tu appuies sur Traduire. La traduction vient de ton serveur ou de ta propre clé d’IA.',
+      },
+      {
+        title: 'Des gens à suivre',
+        body: 'Des packs de démarrage de comptes anglophones, classés par centres d’intérêt.',
+      },
+    ],
+    signIn: 'Se connecter avec Mastodon',
+    questionsTitle: 'Questions',
+    questions: [
+      {
+        q: 'Mastodon est-il bien pour apprendre l’anglais ?',
+        a: 'On y trouve énormément d’anglais court et courant, écrit par de vraies personnes, sur tous les sujets. Suis des gens qui parlent de ce qui te plaît, et la lecture devient une habitude.',
+      },
+      {
+        q: 'Qui fait la traduction ?',
+        a: 'Ton serveur Mastodon, s’il propose la traduction, ou un modèle d’IA avec ta propre clé OpenRouter. Mawkingbird ne traduit jamais sur ses propres serveurs.',
+      },
+      {
+        q: 'Est-ce que ça change la langue de l’appli ?',
+        a: 'Non. Cette page ajoute seulement l’anglais comme langue que tu apprends ; la langue de l’appli et les langues que tu lis ne bougent pas.',
+      },
+    ],
+    checklist: {
+      title: 'Régler Mawkingbird pour apprendre l’anglais',
+      intro:
+        'Choisis ce qu’il faut appliquer. Rien ne change avant que tu appuies sur « Appliquer ».',
+      items: [
+        {
+          setting: 'learning',
+          label: 'J’apprends l’anglais',
+          hint: 'Les messages en anglais ne sont jamais masqués, avec une traduction en dessous.',
+          checked: true,
+        },
+      ],
+      where: { browser: 'ce navigateur', server: 'ton serveur' },
+      apply: 'Appliquer',
+      applying: 'Application…',
+      failed: 'Un réglage n’a pas pu être enregistré. Réessaie.',
+      doneTitle: 'C’est fait',
+      doneNothing: 'Rien n’était coché, donc rien n’a changé.',
+      home: 'Aller à l’accueil',
+      starterPacks: 'Voir les packs de démarrage',
+      settingsLink: 'Tous les réglages de langue',
+    },
+  },
   'ja/mastodon-in-japanese': {
     path: 'ja/mastodon-in-japanese',
     lang: 'ja',
@@ -517,6 +898,754 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       home: 'ホームのタイムラインへ',
       starterPacks: 'おすすめパックを見る',
       settingsLink: '言語の設定をすべて見る',
+    },
+  },
+  'zh-hant/mastodon-in-chinese': {
+    path: 'zh-hant/mastodon-in-chinese',
+    lang: 'zh-Hant',
+    target: 'zh-Hant',
+    content: 'zh',
+    learning: 'en',
+    openApp: '開啟 App',
+    eyebrow: '中文的 Mastodon',
+    heading: '用中文暢玩 Mastodon（長毛象）',
+    intro:
+      '對使用中文、在多種語言間切換或正在學語言的人來說，Mawkingbird 比 Mastodon 官方 App 更好用。登入後，我們會依照您看得懂與正在學的語言幫您設定好，您的首頁時間軸會清爽許多。',
+    loading: '載入中……',
+    claims: [
+      {
+        title: '整個 App 都是中文',
+        body: '選單、設定與說明都使用您的語言。',
+      },
+      {
+        title: '只顯示您看得懂的語言',
+        body: '其他語言的嘟文會從首頁隱藏。就算嘟文標錯語言，也會從內容判斷。',
+      },
+      {
+        title: '今天只看中文',
+        body: '暫時把時間軸限定為一種語言，不必取消跟隨任何人。',
+      },
+      {
+        title: '學習中的語言附上翻譯',
+        body: '您正在學的語言永遠不會被隱藏，需要時會在下方附上翻譯。翻譯由您的伺服器或您自己的 AI 金鑰完成。',
+      },
+      {
+        title: '只看讀得懂的熱門話題',
+        body: '過濾掉以其他文字書寫的熱門主題標籤。',
+      },
+      {
+        title: '讓中文讀者看到您的嘟文',
+        body: '把伺服器上的預設發文語言設為中文，別人的語言過濾器就會依此判斷。',
+      },
+      {
+        title: '中文入門清單',
+        body: 'App 內精選的跟隨名單，幫您找到值得跟隨的人。',
+      },
+    ],
+    signIn: '用 Mastodon 登入',
+    questionsTitle: '常見問題',
+    questions: [
+      {
+        q: 'Mastodon 有中文版嗎？',
+        a: '有。Mastodon 本身有中文介面，Mawkingbird 也全面中文化。此外，Mawkingbird 還能把時間軸限定為您看得懂的語言。',
+      },
+      {
+        q: '要在哪裡註冊？',
+        a: 'mastodon.social 是最簡單的起點。也有許多中文伺服器，可以在 joinmastodon.org 等目錄中找到。Mawkingbird 適用於任何伺服器。',
+      },
+      {
+        q: '登入後會改變什麼？',
+        a: '一開始什麼都不會變。您會看到一份設定清單，自己選擇要套用哪些。只有發文語言會存到您的伺服器，其他都存在這個瀏覽器裡。',
+      },
+      {
+        q: '要付費嗎？',
+        a: '不用。Mawkingbird 免費，而且在您的瀏覽器中執行。',
+      },
+    ],
+    checklist: {
+      title: '把 Mawkingbird 設定成中文',
+      intro: '選擇要套用的項目。按下「套用」之前，什麼都不會改變。',
+      items: [
+        {
+          setting: 'interface',
+          label: '以中文顯示 App',
+          hint: '整個 App 改為繁體中文。',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: '我看得懂中文',
+          hint: '下方的過濾器會依據您看得懂的語言。',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: '我也看得懂英文',
+          hint: '勾選後，英文嘟文也會繼續顯示。',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: '我用中文發嘟',
+          hint: '新嘟文的預設語言，會存到您的 Mastodon 伺服器。',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: '隱藏我看不懂的語言的嘟文',
+          hint: '適用於首頁與 Algo。語言不明的嘟文仍會顯示。',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: '只顯示我看得懂的文字的熱門話題',
+          hint: '過濾掉以其他文字書寫的熱門主題標籤。',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: '我正在學英文',
+          hint: '英文嘟文永遠顯示，並在下方附上翻譯。',
+          checked: false,
+        },
+      ],
+      where: { browser: '這個瀏覽器', server: '您的伺服器' },
+      apply: '套用',
+      applying: '套用中……',
+      failed: '無法把發文語言存到您的伺服器。其他設定已經套用。',
+      doneTitle: '完成',
+      doneNothing: '沒有勾選任何項目，所以沒有變更。',
+      home: '前往首頁',
+      starterPacks: '查看入門清單',
+      settingsLink: '所有語言設定',
+    },
+  },
+  'zh-hant/learn-english-with-mastodon': {
+    path: 'zh-hant/learn-english-with-mastodon',
+    lang: 'zh-Hant',
+    target: 'zh-Hant',
+    content: 'zh',
+    learning: 'en',
+    openApp: '開啟 App',
+    eyebrow: '學語言',
+    heading: '用 Mastodon（長毛象）學英文',
+    intro:
+      '每天讀英語使用者寫的真實嘟文，需要時在下方附上翻譯。登入後，我們會幫您把 Mawkingbird 設定成適合學英文，不會動到您已經看得懂的語言。',
+    loading: '載入中……',
+    claims: [
+      {
+        title: '英文嘟文永遠顯示',
+        body: '您正在學的語言永遠不會被隱藏，就算開啟了隱藏看不懂語言的過濾器也一樣。',
+      },
+      {
+        title: '翻譯附在下方，而不是取代原文',
+        body: '原文與翻譯並列，讓您從真正的英文中學習。',
+      },
+      {
+        title: '自動翻譯或手動翻譯',
+        body: '捲動時自動翻譯，或只在按下「翻譯」時才翻譯。翻譯由您的伺服器或您自己的 AI 金鑰完成。',
+      },
+      {
+        title: '找到值得跟隨的人',
+        body: '依主題分類的入門清單，都是用英文發嘟的帳號。',
+      },
+    ],
+    signIn: '用 Mastodon 登入',
+    questionsTitle: '常見問題',
+    questions: [
+      {
+        q: 'Mastodon 適合學英文嗎？',
+        a: '這裡充滿真人寫的簡短日常英文，什麼話題都有。跟隨談論您喜歡的事情的人，閱讀就會變成習慣。',
+      },
+      {
+        q: '翻譯是誰做的？',
+        a: '如果您的 Mastodon 伺服器提供翻譯，就由伺服器翻譯；或是用您自己的 OpenRouter 金鑰呼叫 AI 模型。Mawkingbird 從不在自己的伺服器上翻譯。',
+      },
+      {
+        q: '會改變 App 的語言嗎？',
+        a: '不會。這個頁面只會把英文加為學習中的語言，App 的語言與您看得懂的語言都不會改變。',
+      },
+    ],
+    checklist: {
+      title: '把 Mawkingbird 設定成適合學英文',
+      intro: '選擇要套用的項目。按下「套用」之前，什麼都不會改變。',
+      items: [
+        {
+          setting: 'learning',
+          label: '我正在學英文',
+          hint: '英文嘟文永遠不會被隱藏，並在下方附上翻譯。',
+          checked: true,
+        },
+      ],
+      where: { browser: '這個瀏覽器', server: '您的伺服器' },
+      apply: '套用',
+      applying: '套用中……',
+      failed: '有一項設定無法儲存，請再試一次。',
+      doneTitle: '完成',
+      doneNothing: '沒有勾選任何項目，所以沒有變更。',
+      home: '前往首頁',
+      starterPacks: '查看入門清單',
+      settingsLink: '所有語言設定',
+    },
+  },
+  'ko/mastodon-in-korean': {
+    path: 'ko/mastodon-in-korean',
+    lang: 'ko',
+    target: 'ko',
+    learning: 'en',
+    openApp: '앱 열기',
+    eyebrow: '한국어 마스토돈',
+    heading: '마스토돈(Mastodon)을 한국어로',
+    intro:
+      'Mawkingbird는 한국어 사용자, 여러 언어를 쓰는 사람, 외국어를 배우는 사람에게 Mastodon 공식 앱보다 더 많은 기능을 제공합니다. 로그인하면 읽을 수 있는 언어와 배우는 언어에 맞춰 설정해 드립니다. 홈 타임라인이 훨씬 깔끔해집니다.',
+    loading: '불러오는 중…',
+    claims: [
+      {
+        title: '앱 전체가 한국어',
+        body: '메뉴, 설정, 도움말이 모두 한국어로 나옵니다.',
+      },
+      {
+        title: '읽을 수 있는 언어만 표시',
+        body: '다른 언어로 된 게시물은 홈에서 숨깁니다. 게시물의 언어 표시가 틀려도 내용으로 언어를 판단합니다.',
+      },
+      {
+        title: '오늘은 한국어만',
+        body: '아무도 언팔로우하지 않고 잠시 타임라인을 한 언어로만 볼 수 있습니다.',
+      },
+      {
+        title: '배우는 언어에는 번역을',
+        body: '배우는 언어의 게시물은 절대 숨기지 않고, 원하면 아래에 번역을 붙입니다. 번역은 회원님의 서버나 직접 가진 AI 키로 합니다.',
+      },
+      {
+        title: '읽을 수 있는 트렌드만',
+        body: '다른 문자로 쓰인 트렌드 해시태그를 걸러 냅니다.',
+      },
+      {
+        title: '한국어 독자에게 닿는 게시물',
+        body: '서버의 기본 게시 언어를 한국어로 설정합니다. 다른 사람들의 언어 필터가 이 값을 사용합니다.',
+      },
+      {
+        title: '한국어 스타터 팩',
+        body: '팔로우할 사람을 고른 목록이 앱 안에 있습니다.',
+      },
+    ],
+    signIn: 'Mastodon으로 로그인',
+    questionsTitle: '자주 묻는 질문',
+    questions: [
+      {
+        q: '마스토돈을 한국어로 쓸 수 있나요?',
+        a: '네. Mastodon 자체도 한국어를 지원하고, Mawkingbird도 앱 전체를 한국어로 쓸 수 있습니다. 게다가 타임라인을 읽을 수 있는 언어로만 거르는 기능도 있습니다.',
+      },
+      {
+        q: '어디에서 가입하나요?',
+        a: '처음이라면 mastodon.social이 가장 쉽습니다. 한국어 서버도 여럿 있으며 joinmastodon.org 같은 목록에서 찾을 수 있습니다. Mawkingbird는 어느 서버에서나 작동합니다.',
+      },
+      {
+        q: '로그인하면 무엇이 바뀌나요?',
+        a: '처음에는 아무것도 바뀌지 않습니다. 설정 목록이 나오고, 적용할 항목은 회원님이 고릅니다. 게시 언어만 서버에 저장되고 나머지는 이 브라우저에 저장됩니다.',
+      },
+      {
+        q: '요금이 있나요?',
+        a: '아니요. Mawkingbird는 무료이며 브라우저에서 작동합니다.',
+      },
+    ],
+    checklist: {
+      title: '한국어에 맞게 Mawkingbird 설정하기',
+      intro: '적용할 항목을 고르세요. “적용”을 누르기 전에는 아무것도 바뀌지 않습니다.',
+      items: [
+        {
+          setting: 'interface',
+          label: '앱을 한국어로 표시',
+          hint: '앱 전체가 한국어로 바뀝니다.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: '한국어를 읽을 수 있음',
+          hint: '읽을 수 있는 언어가 아래 필터에 쓰입니다.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: '영어도 읽을 수 있음',
+          hint: '켜면 영어 게시물도 계속 보입니다.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: '한국어로 게시',
+          hint: '새 게시물의 기본 언어입니다. Mastodon 서버에 저장됩니다.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: '읽을 수 없는 언어의 게시물 숨기기',
+          hint: '홈과 Algo에 적용됩니다. 언어가 불분명한 게시물은 계속 보입니다.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: '읽을 수 있는 문자의 트렌드만',
+          hint: '다른 문자로 쓰인 트렌드 해시태그를 걸러 냅니다.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: '영어를 배우는 중',
+          hint: '영어 게시물은 항상 보이고 아래에 번역이 붙습니다.',
+          checked: false,
+        },
+      ],
+      where: { browser: '이 브라우저', server: '회원님의 서버' },
+      apply: '적용',
+      applying: '적용하는 중…',
+      failed: '게시 언어를 서버에 저장하지 못했습니다. 나머지 설정은 적용되었습니다.',
+      doneTitle: '완료',
+      doneNothing: '선택한 항목이 없어 바뀐 것이 없습니다.',
+      home: '홈으로',
+      starterPacks: '스타터 팩 보기',
+      settingsLink: '모든 언어 설정',
+    },
+  },
+  'ko/learn-english-with-mastodon': {
+    path: 'ko/learn-english-with-mastodon',
+    lang: 'ko',
+    target: 'ko',
+    learning: 'en',
+    openApp: '앱 열기',
+    eyebrow: '외국어 공부',
+    heading: '마스토돈(Mastodon)으로 영어 공부',
+    intro:
+      '영어 사용자가 쓴 진짜 게시물을 매일 읽고, 필요할 때는 아래에 번역을 붙여 보세요. 로그인하면 지금 읽는 언어는 그대로 두고 영어 공부에 맞게 Mawkingbird를 설정해 드립니다.',
+    loading: '불러오는 중…',
+    claims: [
+      {
+        title: '영어 게시물은 항상 표시',
+        body: '배우는 언어는 읽을 수 없는 언어를 숨기는 필터를 켜도 절대 숨기지 않습니다.',
+      },
+      {
+        title: '번역은 원문 대신이 아니라 아래에',
+        body: '원문과 번역을 나란히 보며 진짜 영어로 배웁니다.',
+      },
+      {
+        title: '자동으로, 또는 원할 때만',
+        body: '스크롤하면 자동으로 번역하거나, 번역 버튼을 누를 때만 번역합니다. 번역은 회원님의 서버나 직접 가진 AI 키로 합니다.',
+      },
+      {
+        title: '팔로우할 사람',
+        body: '영어로 게시하는 계정을 주제별로 모은 스타터 팩이 있습니다.',
+      },
+    ],
+    signIn: 'Mastodon으로 로그인',
+    questionsTitle: '자주 묻는 질문',
+    questions: [
+      {
+        q: '마스토돈은 영어 공부에 좋나요?',
+        a: '온갖 주제에 대해 실제 사람이 쓴 짧은 일상 영어가 가득합니다. 좋아하는 것에 대해 쓰는 사람을 팔로우하면 읽기가 습관이 됩니다.',
+      },
+      {
+        q: '번역은 누가 하나요?',
+        a: '번역을 지원한다면 회원님의 Mastodon 서버가, 아니면 회원님의 OpenRouter 키로 AI 모델이 합니다. Mawkingbird가 자체 서버에서 번역하는 일은 없습니다.',
+      },
+      {
+        q: '앱 언어가 바뀌나요?',
+        a: '아니요. 이 페이지는 영어를 배우는 언어로 추가할 뿐이며, 앱 언어와 읽을 수 있는 언어는 그대로입니다.',
+      },
+    ],
+    checklist: {
+      title: '영어 공부에 맞게 Mawkingbird 설정하기',
+      intro: '적용할 항목을 고르세요. “적용”을 누르기 전에는 아무것도 바뀌지 않습니다.',
+      items: [
+        {
+          setting: 'learning',
+          label: '영어를 배우는 중',
+          hint: '영어 게시물은 절대 숨기지 않고 아래에 번역을 붙입니다.',
+          checked: true,
+        },
+      ],
+      where: { browser: '이 브라우저', server: '회원님의 서버' },
+      apply: '적용',
+      applying: '적용하는 중…',
+      failed: '저장하지 못한 설정이 있습니다. 다시 시도해 주세요.',
+      doneTitle: '완료',
+      doneNothing: '선택한 항목이 없어 바뀐 것이 없습니다.',
+      home: '홈으로',
+      starterPacks: '스타터 팩 보기',
+      settingsLink: '모든 언어 설정',
+    },
+  },
+  'pt/mastodon-em-portugues': {
+    path: 'pt/mastodon-em-portugues',
+    lang: 'pt',
+    target: 'pt',
+    learning: 'en',
+    openApp: 'Abrir o app',
+    eyebrow: 'Mastodon em português',
+    heading: 'Mastodon em português',
+    intro:
+      'O Mawkingbird faz mais que o próprio app do Mastodon por quem fala português, por quem vive entre dois idiomas e por quem está aprendendo um. Entre, e a gente configura tudo para os idiomas que você lê e os que você aprende. Seu início fica bem melhor.',
+    loading: 'Carregando…',
+    claims: [
+      {
+        title: 'O app inteiro em português',
+        body: 'Menus, ajustes e ajuda no seu idioma.',
+      },
+      {
+        title: 'Só os idiomas que você lê',
+        body: 'Publicações em outros idiomas somem do seu início. O idioma é detectado mesmo quando a publicação informa errado.',
+      },
+      {
+        title: 'Hoje, só português',
+        body: 'Deixe sua linha do tempo num idioma só por um tempo, sem deixar de seguir ninguém.',
+      },
+      {
+        title: 'Tradução para o idioma que você aprende',
+        body: 'Publicações no idioma que você aprende nunca somem, com tradução embaixo se quiser. Quem traduz é o seu servidor ou a sua própria chave de IA.',
+      },
+      {
+        title: 'Assuntos do momento que você consegue ler',
+        body: 'Hashtags em alta escritas em outros alfabetos são filtradas.',
+      },
+      {
+        title: 'Suas publicações chegam a quem lê português',
+        body: 'O idioma padrão das suas publicações fica em português no seu servidor. Os filtros de idioma dos outros usam esse ajuste.',
+      },
+      {
+        title: 'Pacotes iniciais em português',
+        body: 'Listas escolhidas a dedo de contas para seguir, dentro do app.',
+      },
+    ],
+    signIn: 'Entrar com o Mastodon',
+    questionsTitle: 'Perguntas',
+    questions: [
+      {
+        q: 'O Mastodon tem versão em português?',
+        a: 'Tem. O Mastodon é traduzido para o português, e o Mawkingbird também, de ponta a ponta. Além disso, o Mawkingbird consegue limitar sua linha do tempo aos idiomas que você lê.',
+      },
+      {
+        q: 'Onde eu me cadastro?',
+        a: 'O mastodon.social é o jeito mais fácil de começar. Também existem muitos servidores brasileiros e em português, que você encontra em diretórios como o joinmastodon.org. O Mawkingbird funciona com todos.',
+      },
+      {
+        q: 'O que muda quando eu entro?',
+        a: 'Nada, no começo. Você vê uma lista de ajustes e escolhe quais aplicar. Só o idioma de publicação é salvo no seu servidor; o resto fica neste navegador.',
+      },
+      {
+        q: 'É pago?',
+        a: 'Não. O Mawkingbird é grátis e roda no seu navegador.',
+      },
+    ],
+    checklist: {
+      title: 'Configurar o Mawkingbird para português',
+      intro: 'Escolha o que aplicar. Nada muda até você tocar em “Aplicar”.',
+      items: [
+        {
+          setting: 'interface',
+          label: 'Mostrar o app em português',
+          hint: 'O app inteiro passa para português.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Eu leio português',
+          hint: 'Os idiomas que você lê são usados nos filtros abaixo.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'Também leio inglês',
+          hint: 'Assim as publicações em inglês continuam aparecendo.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Eu publico em português',
+          hint: 'O idioma padrão das publicações novas. Fica salvo no seu servidor do Mastodon.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Ocultar publicações em idiomas que eu não leio',
+          hint: 'No Início e no Algo. Publicações de idioma incerto continuam aparecendo.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Só assuntos do momento no meu alfabeto',
+          hint: 'Filtra as hashtags em alta escritas em outros alfabetos.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'Estou aprendendo inglês',
+          hint: 'As publicações em inglês sempre aparecem, com tradução embaixo.',
+          checked: false,
+        },
+      ],
+      where: { browser: 'este navegador', server: 'seu servidor' },
+      apply: 'Aplicar',
+      applying: 'Aplicando…',
+      failed:
+        'Não deu para salvar o idioma de publicação no seu servidor. O resto já foi aplicado.',
+      doneTitle: 'Pronto',
+      doneNothing: 'Nada estava marcado, então nada mudou.',
+      home: 'Ir para o início',
+      starterPacks: 'Ver os pacotes iniciais',
+      settingsLink: 'Todos os ajustes de idioma',
+    },
+  },
+  'pt/aprender-ingles-com-mastodon': {
+    path: 'pt/aprender-ingles-com-mastodon',
+    lang: 'pt',
+    target: 'pt',
+    learning: 'en',
+    openApp: 'Abrir o app',
+    eyebrow: 'Aprender idiomas',
+    heading: 'Aprender inglês com o Mastodon',
+    intro:
+      'Leia todo dia publicações de verdade de quem fala inglês, com tradução embaixo quando precisar. Entre, e a gente configura o Mawkingbird para aprender inglês, sem mexer nos idiomas que você já lê.',
+    loading: 'Carregando…',
+    claims: [
+      {
+        title: 'O inglês sempre aparece',
+        body: 'O idioma que você aprende nunca some, nem com o filtro que esconde os idiomas que você não lê.',
+      },
+      {
+        title: 'A tradução embaixo, não no lugar',
+        body: 'O original e a tradução lado a lado: você aprende com o texto de verdade.',
+      },
+      {
+        title: 'Automática ou quando você pedir',
+        body: 'Traduza automaticamente ao rolar, ou só quando tocar em Traduzir. Quem traduz é o seu servidor ou a sua própria chave de IA.',
+      },
+      {
+        title: 'Gente para seguir',
+        body: 'Pacotes iniciais de contas que publicam em inglês, por assunto.',
+      },
+    ],
+    signIn: 'Entrar com o Mastodon',
+    questionsTitle: 'Perguntas',
+    questions: [
+      {
+        q: 'O Mastodon é bom para aprender inglês?',
+        a: 'Ele está cheio de inglês curto e do dia a dia, escrito por pessoas de verdade, sobre qualquer assunto. Siga quem fala do que você gosta, e ler vira hábito.',
+      },
+      {
+        q: 'Quem faz a tradução?',
+        a: 'O seu servidor do Mastodon, se ele oferecer tradução, ou um modelo de IA com a sua própria chave do OpenRouter. O Mawkingbird nunca traduz em servidores próprios.',
+      },
+      {
+        q: 'Isso muda o idioma do app?',
+        a: 'Não. Esta página só adiciona o inglês como idioma que você aprende; o idioma do app e os idiomas que você lê continuam iguais.',
+      },
+    ],
+    checklist: {
+      title: 'Configurar o Mawkingbird para aprender inglês',
+      intro: 'Escolha o que aplicar. Nada muda até você tocar em “Aplicar”.',
+      items: [
+        {
+          setting: 'learning',
+          label: 'Estou aprendendo inglês',
+          hint: 'As publicações em inglês nunca somem, e ganham tradução embaixo.',
+          checked: true,
+        },
+      ],
+      where: { browser: 'este navegador', server: 'seu servidor' },
+      apply: 'Aplicar',
+      applying: 'Aplicando…',
+      failed: 'Um ajuste não pôde ser salvo. Tente de novo.',
+      doneTitle: 'Pronto',
+      doneNothing: 'Nada estava marcado, então nada mudou.',
+      home: 'Ir para o início',
+      starterPacks: 'Ver os pacotes iniciais',
+      settingsLink: 'Todos os ajustes de idioma',
+    },
+  },
+  'it/mastodon-in-italiano': {
+    path: 'it/mastodon-in-italiano',
+    lang: 'it',
+    target: 'it',
+    learning: 'en',
+    openApp: 'Apri l’app',
+    eyebrow: 'Mastodon in italiano',
+    heading: 'Mastodon in italiano',
+    intro:
+      'Mawkingbird fa più dell’app di Mastodon per chi parla italiano, per chi vive tra due lingue e per chi ne sta imparando una. Accedi e lo impostiamo per le lingue che leggi e per quelle che stai imparando. La tua home ne guadagnerà.',
+    loading: 'Caricamento…',
+    claims: [
+      {
+        title: 'Tutta l’app in italiano',
+        body: 'Menu, impostazioni e guida nella tua lingua.',
+      },
+      {
+        title: 'Solo le lingue che leggi',
+        body: 'I post in altre lingue spariscono dalla tua home. La lingua viene riconosciuta anche quando un post la indica male.',
+      },
+      {
+        title: 'Oggi solo italiano',
+        body: 'Limita per un po’ la tua timeline a una sola lingua, senza smettere di seguire nessuno.',
+      },
+      {
+        title: 'Traduzioni per la lingua che stai imparando',
+        body: 'I post nella lingua che stai imparando non vengono mai nascosti, con una traduzione sotto se vuoi. A tradurre è il tuo server o la tua chiave IA.',
+      },
+      {
+        title: 'Tendenze che puoi leggere',
+        body: 'Gli hashtag di tendenza scritti in altri alfabeti vengono filtrati.',
+      },
+      {
+        title: 'I tuoi post arrivano a chi legge l’italiano',
+        body: 'La lingua predefinita dei tuoi post diventa l’italiano sul tuo server. I filtri di lingua degli altri si basano su questa.',
+      },
+      {
+        title: 'Starter pack in italiano',
+        body: 'Elenchi scelti a mano di account da seguire, dentro l’app.',
+      },
+    ],
+    signIn: 'Accedi con Mastodon',
+    questionsTitle: 'Domande',
+    questions: [
+      {
+        q: 'Mastodon è in italiano?',
+        a: 'Sì. Mastodon è tradotto in italiano, e anche Mawkingbird lo è, dall’inizio alla fine. In più, Mawkingbird può limitare la tua timeline alle lingue che leggi.',
+      },
+      {
+        q: 'Dove mi iscrivo?',
+        a: 'mastodon.social è il modo più semplice per iniziare. Ci sono anche molti server italiani, che trovi in directory come joinmastodon.org. Mawkingbird funziona con tutti.',
+      },
+      {
+        q: 'Cosa cambia quando accedo?',
+        a: 'All’inizio niente. Vedi un elenco di impostazioni e scegli tu quali applicare. Solo la lingua dei post viene salvata sul tuo server; il resto resta in questo browser.',
+      },
+      {
+        q: 'È a pagamento?',
+        a: 'No. Mawkingbird è gratuito e funziona nel tuo browser.',
+      },
+    ],
+    checklist: {
+      title: 'Imposta Mawkingbird per l’italiano',
+      intro: 'Scegli cosa applicare. Non cambia niente finché non tocchi “Applica”.',
+      items: [
+        {
+          setting: 'interface',
+          label: 'Mostra l’app in italiano',
+          hint: 'Tutta l’app passa all’italiano.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Leggo l’italiano',
+          hint: 'Le lingue che leggi vengono usate dai filtri qui sotto.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'Leggo anche l’inglese',
+          hint: 'Così i post in inglese restano visibili.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Pubblico in italiano',
+          hint: 'La lingua predefinita dei nuovi post. Salvata sul tuo server Mastodon.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Nascondi i post nelle lingue che non leggo',
+          hint: 'In Home e in Algo. I post di lingua incerta restano visibili.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Solo tendenze nel mio alfabeto',
+          hint: 'Filtra gli hashtag di tendenza scritti in altri alfabeti.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'Sto imparando l’inglese',
+          hint: 'I post in inglese restano sempre visibili, con una traduzione sotto.',
+          checked: false,
+        },
+      ],
+      where: { browser: 'questo browser', server: 'il tuo server' },
+      apply: 'Applica',
+      applying: 'Applicazione in corso…',
+      failed:
+        'Non è stato possibile salvare la lingua dei post sul tuo server. Il resto è applicato.',
+      doneTitle: 'Fatto',
+      doneNothing: 'Non era selezionato niente, quindi non è cambiato niente.',
+      home: 'Vai alla home',
+      starterPacks: 'Guarda gli starter pack',
+      settingsLink: 'Tutte le impostazioni della lingua',
+    },
+  },
+  'it/imparare-inglese-con-mastodon': {
+    path: 'it/imparare-inglese-con-mastodon',
+    lang: 'it',
+    target: 'it',
+    learning: 'en',
+    openApp: 'Apri l’app',
+    eyebrow: 'Imparare le lingue',
+    heading: 'Imparare l’inglese con Mastodon',
+    intro:
+      'Leggi ogni giorno post veri di chi parla inglese, con una traduzione sotto quando ti serve. Accedi e impostiamo Mawkingbird per imparare l’inglese, senza toccare le lingue che leggi già.',
+    loading: 'Caricamento…',
+    claims: [
+      {
+        title: 'L’inglese resta sempre visibile',
+        body: 'La lingua che stai imparando non viene mai nascosta, nemmeno dal filtro che nasconde le lingue che non leggi.',
+      },
+      {
+        title: 'La traduzione sotto, non al posto dell’originale',
+        body: 'Originale e traduzione affiancati: impari dal testo vero.',
+      },
+      {
+        title: 'Automatica o quando la chiedi',
+        body: 'Traduci in automatico mentre scorri, o solo quando tocchi Traduci. A tradurre è il tuo server o la tua chiave IA.',
+      },
+      {
+        title: 'Persone da seguire',
+        body: 'Starter pack di account che pubblicano in inglese, per argomento.',
+      },
+    ],
+    signIn: 'Accedi con Mastodon',
+    questionsTitle: 'Domande',
+    questions: [
+      {
+        q: 'Mastodon va bene per imparare l’inglese?',
+        a: 'È pieno di inglese breve e quotidiano, scritto da persone vere, su ogni argomento. Segui chi parla di quello che ti piace, e leggere diventa un’abitudine.',
+      },
+      {
+        q: 'Chi fa la traduzione?',
+        a: 'Il tuo server Mastodon, se offre la traduzione, oppure un modello di IA con la tua chiave OpenRouter. Mawkingbird non traduce mai sui propri server.',
+      },
+      {
+        q: 'Cambia la lingua dell’app?',
+        a: 'No. Questa pagina aggiunge solo l’inglese come lingua che stai imparando; la lingua dell’app e le lingue che leggi restano uguali.',
+      },
+    ],
+    checklist: {
+      title: 'Imposta Mawkingbird per imparare l’inglese',
+      intro: 'Scegli cosa applicare. Non cambia niente finché non tocchi “Applica”.',
+      items: [
+        {
+          setting: 'learning',
+          label: 'Sto imparando l’inglese',
+          hint: 'I post in inglese non vengono mai nascosti, e hanno una traduzione sotto.',
+          checked: true,
+        },
+      ],
+      where: { browser: 'questo browser', server: 'il tuo server' },
+      apply: 'Applica',
+      applying: 'Applicazione in corso…',
+      failed: 'Un’impostazione non è stata salvata. Riprova.',
+      doneTitle: 'Fatto',
+      doneNothing: 'Non era selezionato niente, quindi non è cambiato niente.',
+      home: 'Vai alla home',
+      starterPacks: 'Guarda gli starter pack',
+      settingsLink: 'Tutte le impostazioni della lingua',
     },
   },
 };

@@ -1,0 +1,82 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Recherche de hashtags</p>
+    <h1>Hashtags similaires sur Mastodon</h1>
+    <p>
+      Entre un hashtag, ou plusieurs, et vois quels autres hashtags les gens utilisent avec, classés
+      selon leur fréquence dans les mêmes messages récents. De quoi être trouvé par plus de monde,
+      ou trouver plus de choses à suivre. Pas besoin de compte.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/fr/hashtags-similaires-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Chargement…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Entrer des hashtags</h2>
+        <p>Un seul, ou plusieurs qui veulent dire la même chose, comme #chat et #chats.</p>
+      </li>
+      <li>
+        <h2>Les messages récents sont analysés</h2>
+        <p>Les 200 derniers messages portant l’un d’eux, lus depuis mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Voir ce qui les accompagne</h2>
+        <p>
+          Classés selon le nombre de messages où chaque hashtag apparaît. Analyse-en plus pour une
+          vue plus large.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et utiliser mon serveur</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Quels hashtags utiliser sur Mastodon ?</h3>
+    <p>
+      Sur Mastodon, aucun algorithme ne décide qui voit ton message : les gens le trouvent en
+      suivant un hashtag ou en le cherchant. Utilise les hashtags que ces gens emploient déjà –
+      c’est exactement ce que montre cette liste – et écris-les en CamelCase (#ChatsDeMastodon) pour
+      que les lecteurs d’écran puissent les lire.
+    </p>
+    <h3>Comment « similaire » est-il déterminé ?</h3>
+    <p>
+      En comptant. Chaque hashtag des messages analysés est compté, une fois par message, et ceux
+      que tu as demandés sont exclus. Un hashtag présent dans 40 messages sur 200 passe devant un
+      hashtag présent dans 5.
+    </p>
+    <h3>Pourquoi comparer plusieurs hashtags à la fois ?</h3>
+    <p>
+      Un même sujet se répartit souvent sur plusieurs écritures : #chat et #chats, #photo et
+      #photographie. En les entrant ensemble, les messages portant l’un d’eux sont analysés, et la
+      liste couvre toute la conversation.
+    </p>
+    <h3>Pourquoi les résultats varient-ils selon le serveur ?</h3>
+    <p>
+      Chaque serveur Mastodon ne voit que les messages des personnes suivies par ses propres
+      utilisateurs : un grand serveur animé donne donc la vue la plus large. Une fois connecté,
+      l’analyse se fait sur ton propre serveur et montre ce qu’utilise ton coin du réseau.
+    </p>
+  </section>
+</main>

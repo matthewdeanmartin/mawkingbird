@@ -131,7 +131,8 @@ export class LanguageChecklist implements OnInit {
     const where = this.copy().checklist.where;
     if (setting !== 'posting') return `${hint} (${where.browser})`;
     const now = this.serverPosting();
-    const change = now === null ? '' : ` ${now || '—'} → ${this.copy().target}`;
+    const change =
+      now === null ? '' : ` ${now || '—'} → ${this.copy().content ?? this.copy().target}`;
     return `${hint} (${where.server}${change})`;
   }
 
@@ -164,7 +165,7 @@ export class LanguageChecklist implements OnInit {
         this.locale.choose(copy.target as SupportedLocale);
         return true;
       case 'known':
-        this.prefs.addKnownLanguage(copy.target);
+        this.prefs.addKnownLanguage(copy.content ?? copy.target);
         return true;
       case 'alsoEnglish':
         this.prefs.addKnownLanguage('en');
@@ -184,12 +185,13 @@ export class LanguageChecklist implements OnInit {
       }
       case 'posting': {
         const form = new FormData();
-        form.append('source[language]', copy.target);
+        const code = copy.content ?? copy.target;
+        form.append('source[language]', code);
         try {
           await firstValueFrom(this.api.updateCredentials(form));
-          this.prefs.setPostingLanguage(copy.target);
-          this.prefs.addKnownLanguage(copy.target);
-          this.serverPosting.set(copy.target);
+          this.prefs.setPostingLanguage(code);
+          this.prefs.addKnownLanguage(code);
+          this.serverPosting.set(code);
           return true;
         } catch {
           return false;

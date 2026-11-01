@@ -1,0 +1,80 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">해시태그 찾기</p>
+    <h1>Mastodon 비슷한 해시태그</h1>
+    <p>
+      해시태그를 하나 또는 여러 개 입력하면, 사람들이 함께 쓰는 다른 해시태그를 최근 같은 게시물에
+      나온 횟수 순으로 보여 줍니다. 더 많은 사람에게 발견되거나, 팔로우할 것을 더 찾을 수 있습니다.
+      계정은 필요 없습니다.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/ko/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">불러오는 중…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>해시태그 입력</h2>
+        <p>하나, 또는 #고양이와 #냥스타그램처럼 뜻이 같은 여러 개.</p>
+      </li>
+      <li>
+        <h2>최근 게시물 분석</h2>
+        <p>그중 하나라도 달린 최신 게시물 200개를 mastodon.social에서 읽습니다.</p>
+      </li>
+      <li>
+        <h2>함께 쓰이는 태그 보기</h2>
+        <p>
+          각 해시태그가 그 게시물들에 몇 번 나왔는지 순으로 정렬합니다. 더 분석하면 더 넓게
+          보입니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 내 서버 사용하기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>Mastodon에서는 어떤 해시태그를 써야 하나요?</h3>
+    <p>
+      Mastodon에는 누가 게시물을 볼지 정하는 알고리즘이 없습니다. 사람들은 해시태그를 팔로우하거나
+      검색해서 게시물을 찾습니다. 그 사람들이 이미 쓰는 해시태그, 바로 이 목록에 나오는 것을 쓰세요.
+      영어 해시태그는 #CatsOfMastodon처럼 단어 첫 글자를 대문자로 쓰면 스크린 리더가 제대로
+      읽습니다.
+    </p>
+    <h3>“비슷함”은 어떻게 정하나요?</h3>
+    <p>
+      셉니다. 분석한 게시물의 해시태그를 게시물마다 한 번씩 세고, 입력한 태그는 뺍니다. 200개 중
+      40개에 나온 태그가 5개에 나온 태그보다 앞에 옵니다.
+    </p>
+    <h3>왜 여러 해시태그를 한 번에 비교하나요?</h3>
+    <p>
+      같은 주제도 여러 표기로 나뉩니다. #고양이와 #냥스타그램, #사진과 #photo처럼요. 함께 입력하면
+      그중 하나라도 달린 게시물을 분석하므로 목록이 대화 전체를 담습니다.
+    </p>
+    <h3>서버마다 결과가 다른 이유는?</h3>
+    <p>
+      각 Mastodon 서버는 자기 사용자가 팔로우하는 사람의 게시물만 봅니다. 그래서 크고 활발한
+      서버일수록 넓게 보입니다. 로그인하면 회원님의 서버에서 분석해, 회원님 주변에서 쓰는 태그를
+      보여 줍니다.
+    </p>
+  </section>
+</main>

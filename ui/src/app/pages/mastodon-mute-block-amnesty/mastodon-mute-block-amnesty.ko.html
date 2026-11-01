@@ -1,0 +1,76 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">뮤트 사면 · 차단 사면</p>
+    <h1>Mastodon에서 모두 뮤트 해제하고 차단 해제하기</h1>
+    <p>
+      뮤트하고 차단한 계정 목록은 몇 년씩 늘어나기만 하고 아무도 정리하지 않습니다. 뮤트 사면은 모든
+      뮤트를, 차단 사면은 모든 차단을 한 번에 풀어 새로 시작하게 해 줍니다.
+      @if (!inShell) {
+        Mastodon에서는 계정마다 하나씩만 해제할 수 있습니다.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">불러오는 중…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon으로 로그인</h2>
+        <p>목록은 회원님의 Mastodon 서버에서 읽습니다.</p>
+      </li>
+      <li>
+        <h2>백업 후 확인</h2>
+        <p>
+          무엇이든 바꾸기 전에 목록에 계정이 몇 개인지 보여 주고, 사면을 되돌릴 수 있도록 먼저
+          목록을 다운로드할 수 있게 합니다.
+        </p>
+      </li>
+      <li>
+        <h2>사면 선포</h2>
+        <p>
+          계정마다 차례로 뮤트나 차단이 해제되며 진행 표시줄이 보입니다. 중간에 멈출 수 있습니다.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon으로 로그인하고 사면 시작하기</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    <h3>뮤트 사면은 무엇을 바꾸나요?</h3>
+    <p>
+      뮤트한 모든 계정의 뮤트가 해제되어, 그 게시물과 알림이 다시 보입니다. 뮤트한 단어와 필터는
+      그대로 둡니다.
+    </p>
+    <h3>차단 사면은 무엇을 바꾸나요?</h3>
+    <p>
+      차단한 모든 계정의 차단이 해제됩니다. 그 계정은 다시 회원님을 팔로우하고, 게시물을 보고,
+      답글을 달 수 있습니다. 차단했었다는 사실이나 해제했다는 사실은 아무도 알 수 없습니다.
+    </p>
+    <h3>사면을 되돌릴 수 있나요?</h3>
+    <p>
+      백업이 있을 때만 됩니다. 확인 단계에서 목록을 다운로드해 두면, 나중에 Mastodon 서버의 가져오기
+      페이지에서 다시 가져올 수 있습니다.
+    </p>
+    <h3>차단한 도메인에도 영향이 있나요?</h3>
+    <p>아니요. 하나씩 뮤트하거나 차단한 계정만 바뀝니다.</p>
+  </section>
+</main>

@@ -1,0 +1,86 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Da {{ copy.from }} a {{ copy.to }}</p>
+    <h1>Ritrova su {{ copy.to }} chi segui su {{ copy.from }}</h1>
+    <p>
+      Molte delle persone che segui su {{ copy.from }} sono anche su {{ copy.to }}. Questo strumento
+      le trova e ti permette di seguirle anche lì.
+      @if (!inShell) {
+        Accedi con uno dei due account, collega l’altro e guarda chi c’è già.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Caricamento della ricerca…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Accedi a entrambi</h2>
+        <p>Accedi con il tuo account Mastodon o Bluesky, e collega l’altro al passo successivo.</p>
+      </li>
+      <li>
+        <h2>Leggi chi segui</h2>
+        <p>
+          Chiunque segui su {{ copy.from }} e abbia scritto il proprio nome di {{ copy.to }} nella
+          bio viene abbinato subito, senza costi.
+        </p>
+      </li>
+      <li>
+        <h2>Cerca gli altri e segui</h2>
+        <p>Cerca gli altri per nome, quanti vuoi, e segui con un pulsante chi riconosci.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Accedi con Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Accedi con Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Segue le persone senza chiedere?</h3>
+    <p>
+      No. Chi ha indicato da solo l’altro nome viene già selezionato per te; i tentativi di una
+      ricerca per nome no. Nessuno viene seguito prima che tu prema “Segui”.
+    </p>
+    <h3>Perché mancano alcune persone?</h3>
+    <p>
+      Vengono abbinate solo le persone che indicano il proprio nome di {{ copy.to }} o che una
+      ricerca per nome trova. Chi ha un nome comune e niente nella bio potrebbe non comparire.
+    </p>
+    <h3>Funziona anche al contrario?</h3>
+    <p>
+      Sì:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/it/da-mastodon-a-bluesky"
+          >ritrova su Bluesky chi segui su Mastodon</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/it/da-bluesky-a-mastodon"
+          >ritrova su Mastodon chi segui su Bluesky</a
+        >.
+      }
+    </p>
+    <h3>Dove vengono salvati i miei accessi?</h3>
+    <p>
+      In questo browser. Mawkingbird parla direttamente con il tuo server Mastodon e con Bluesky;
+      non c’è nessun server di Mawkingbird in mezzo che custodisce i tuoi account.
+    </p>
+  </section>
+</main>

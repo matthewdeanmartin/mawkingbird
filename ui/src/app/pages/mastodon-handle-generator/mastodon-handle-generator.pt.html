@@ -1,0 +1,55 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Gerador de nomes</p>
+    <h1>Gerador de nome de usuário do Mastodon</h1>
+    <p>
+      Digite seu nome e receba nomes do Mastodon que você realmente pode ter: cada sugestão é
+      verificada no servidor em que você quer entrar, e a sua favorita também nos maiores
+      servidores. Sem conta.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/pt/gerador-de-nome-de-usuario-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Carregando o gerador…</p>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>Como é um nome no Mastodon?</h3>
+    <p>
+      Ele tem duas partes: seu nome de usuário e seu servidor, por exemplo
+      &#64;ana_souza&#64;mastodon.social. O nome de usuário pode ter letras, números e sublinhados,
+      até 30 caracteres, sem acentos, e maiúsculas não criam um nome diferente.
+    </p>
+    <h3>Por que verificar mais de um servidor?</h3>
+    <p>
+      Cada servidor tem seus próprios nomes de usuário. Um nome ocupado no mastodon.social pode
+      estar livre em outro, e gente de qualquer servidor pode seguir você do mesmo jeito.
+    </p>
+    <h3>“Parece livre” é garantia?</h3>
+    <p>
+      Não totalmente. Quer dizer que hoje ninguém tem esse nome naquele servidor. Nomes de contas
+      apagadas ficam reservados e os admins podem reservar palavras, então quem decide é o
+      formulário de cadastro.
+    </p>
+    <h3>Quais servidores contam como os maiores?</h3>
+    <p>
+      Os que têm mais cadastros no diretório do joinmastodon.org, que lista os servidores que seguem
+      o pacto de servidores do Mastodon. Alguns exigem aprovação de um admin para contas novas; a
+      lista mostra quais.
+    </p>
+  </section>
+</main>

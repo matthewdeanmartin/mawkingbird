@@ -1,7 +1,15 @@
 import { Route } from '@angular/router';
 import { describe, expect, it } from 'vitest';
-import { FOCUSED_TOOL_PAGES, routes } from './app.routes';
-import { FOCUSED_TOOLS } from './focused-tools';
+import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
+import {
+  TRANSLATED_PATHS,
+  TranslatedLanguage,
+  languageFolder,
+  toolLanguage,
+} from './focused-tools';
+import { ToolsIndex } from './pages/tools/tools-index';
+import { TOOLS_INDEXES } from './seo';
+import { FOCUSED_TOOLS } from './focused-tools-all';
 
 /**
  * The guarded shell — the `''` route that has children, as distinct from the
@@ -176,7 +184,6 @@ describe('application routes', () => {
   it('gives every focused mini-app a shell twin, a public page and an Invite tab', () => {
     expect(FOCUSED_TOOLS.length).toBeGreaterThan(0);
     for (const { path } of FOCUSED_TOOLS) {
-      expect(FOCUSED_TOOL_PAGES[path], `${path} has a page loader`).toBeTypeOf('function');
       const [inShell, publicPage] = routes.filter((route) => route.path === path);
       expect(inShell.canMatch, path).toHaveLength(1);
       expect(
@@ -185,6 +192,32 @@ describe('application routes', () => {
       ).toEqual(['', 'invite']);
       expect(publicPage.data?.['seoIndexable'], path).toBe(true);
       expect(routes.find((route) => route.path === `${path}/invite`)?.redirectTo).toBe(path);
+    }
+  });
+
+  it('gives every translated language an index at its folder, in that language', async () => {
+    expect(Object.keys(TOOLS_INDEXES).sort()).toEqual(Object.keys(TRANSLATED_PATHS).sort());
+    for (const lang of Object.keys(TOOLS_INDEXES)) {
+      const index = routes.find(
+        (route) => route.path === languageFolder(lang as TranslatedLanguage),
+      );
+      expect(index?.data?.['lang'], lang).toBe(lang);
+      const component = await index!.loadComponent!();
+      expect(component, `${lang} index component`).toBeTypeOf('function');
+      expect(component, lang).not.toBe(ToolsIndex);
+    }
+  });
+
+  it('loads each tool page in its own language: the original, or its subclass', async () => {
+    for (const tool of FOCUSED_TOOLS) {
+      const component = await toolPageLoader(tool)();
+      expect(component, `${tool.path} has a page component`).toBeTypeOf('function');
+      if (toolLanguage(tool) === 'en') continue;
+      // Its language's own subclass, unless one class carries every language.
+      const original = FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)!;
+      const english = await toolPageLoader(original)();
+      if (TOOL_PAGE_MODULES[original.path].oneForAll) expect(component, tool.path).toBe(english);
+      else expect(component, tool.path).not.toBe(english);
     }
   });
 });

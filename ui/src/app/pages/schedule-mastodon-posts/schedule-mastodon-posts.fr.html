@@ -1,0 +1,86 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Programmation Mastodon</p>
+    <h1>Programmer des posts sur Mastodon</h1>
+    <p>
+      Écris les messages de toute une semaine d’un coup, et ton serveur Mastodon les publie à
+      l’heure.
+      @if (!inShell) {
+        Connecte-toi avec Mastodon, écris tes messages, choisis quand sort le premier et à quel
+        intervalle suivent les autres, et c’est fini.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Chargement de la programmation…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Écrire tes messages</h2>
+        <p>Autant que tu veux, un champ chacun, jusqu’à 500 caractères par message.</p>
+      </li>
+      <li>
+        <h2>Les répartir</h2>
+        <p>
+          Choisis la première heure et l’intervalle : tous les jours à 9 h, toutes les trois heures.
+          Tu peux aussi placer chaque message à une heure précise.
+        </p>
+      </li>
+      <li>
+        <h2>Fermer l’onglet</h2>
+        <p>
+          Ton serveur Mastodon garde les messages et publie chacun à l’heure. Rien n’attend dans ton
+          navigateur.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et programmer</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Mastodon permet-il de programmer des messages ?</h3>
+    <p>
+      Oui. Tout serveur Mastodon peut garder un message et le publier plus tard, mais le site
+      Mastodon habituel n’a pas de bouton pour ça. Cette page utilise la programmation intégrée :
+      c’est ton propre serveur qui garde les messages, pas Mawkingbird.
+    </p>
+    <h3>Dois-je laisser cette page ouverte ?</h3>
+    <p>
+      Non. Un message programmé est stocké sur ton serveur Mastodon, qui le publie à l’heure
+      choisie, que ton ordinateur soit allumé ou non.
+    </p>
+    <h3>Y a-t-il des limites ?</h3>
+    <p>
+      Mastodon accepte 300 messages programmés en attente et 25 par jour, et chacun doit être au
+      moins cinq minutes dans le futur. L’outil le vérifie avant d’envoyer quoi que ce soit.
+    </p>
+    <h3>Puis-je changer d’avis ?</h3>
+    <p>
+      Oui. Tes messages programmés s’affichent sous l’outil, et chacun peut être annulé jusqu’à sa
+      publication.
+    </p>
+    <h3>Et pour Bluesky ?</h3>
+    <p>
+      Pas ici. Bluesky n’a pas de programmation intégrée, donc cette page ne sert que pour Mastodon.
+    </p>
+  </section>
+</main>

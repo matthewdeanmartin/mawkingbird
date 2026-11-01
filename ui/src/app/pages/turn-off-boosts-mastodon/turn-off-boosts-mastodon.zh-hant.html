@@ -1,0 +1,66 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 轉嘟</p>
+    <h1>一次隱藏所有跟隨對象在 Mastodon 的轉嘟</h1>
+    <p>
+      轉嘟就是 Mastodon 的轉推。繼續跟隨每個人，但只看他們自己寫的內容。
+      @if (!inShell) {
+        Mastodon 只能一個帳號一個帳號關掉轉嘟；這個工具一次幫您全部處理。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">載入中……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>用 Mastodon 登入</h2>
+        <p>您的跟隨名單從您自己的 Mastodon 伺服器讀取。</p>
+      </li>
+      <li>
+        <h2>看看會影響多少人</h2>
+        <p>在變更任何設定之前，先告訴您跟隨的人之中，還有多少人開著轉嘟。</p>
+      </li>
+      <li>
+        <h2>確認後看著它完成</h2>
+        <p>每個帳號會依序變更，並顯示進度條。您可以中途停下，之後再繼續。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並隱藏轉嘟</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>會取消跟隨任何人嗎？</h3>
+    <p>不會。您仍然跟隨每個人，他們自己的嘟文與回覆照樣出現在您的首頁，只有轉嘟會消失。</p>
+    <h3>可以復原嗎？</h3>
+    <p>可以。同一個頁面就能為所有人重新開啟轉嘟；單一帳號則可以在對方的個人檔案頁設定。</p>
+    <h3>之後才跟隨的人呢？</h3>
+    <p>
+      新跟隨的帳號預設會開著轉嘟，Mastodon 一向如此。隨時可以再執行一次，它只會變更需要變更的帳號。
+    </p>
+    <h3>為什麼要花一點時間？</h3>
+    <p>
+      Mastodon
+      沒有「一次套用到所有人」的設定，所以每個跟隨的帳號都要分別變更。名單很長的話要幾分鐘。
+    </p>
+  </section>
+</main>

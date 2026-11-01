@@ -57,3 +57,99 @@ export class MastodonSimilarHashtagsDe extends MastodonSimilarHashtags {
 export class MastodonSimilarHashtagsJa extends MastodonSimilarHashtags {
   protected override readonly returnHere = { next: '/ja/mastodon-similar-hashtags' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsFr extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/fr/hashtags-similaires-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsEs extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/es/hashtags-similares-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsZhHant extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/zh-hant/mastodon-similar-hashtags' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsKo extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/ko/mastodon-similar-hashtags' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsPt extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/pt/hashtags-semelhantes-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsIt extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/it/hashtag-simili-mastodon' };
+}

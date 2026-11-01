@@ -1,0 +1,80 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Boost di Mastodon</p>
+    <h1>Nascondi i boost di tutti quelli che segui su Mastodon</h1>
+    <p>
+      I boost (ricondivisioni) sono i retweet di Mastodon. Continua a seguire tutti, ma vedi solo
+      quello che scrivono loro.
+      @if (!inShell) {
+        Mastodon nasconde i boost solo un account alla volta; questo strumento lo fa per tutti
+        insieme.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Caricamento…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Accedi con Mastodon</h2>
+        <p>Chi segui viene letto dal tuo server Mastodon.</p>
+      </li>
+      <li>
+        <h2>Guarda quanti sono</h2>
+        <p>
+          Prima di cambiare qualcosa, scopri quanti degli account che segui hanno ancora i boost
+          attivi.
+        </p>
+      </li>
+      <li>
+        <h2>Conferma e osserva</h2>
+        <p>
+          Ogni account viene modificato uno dopo l’altro, con una barra di avanzamento. Puoi
+          fermarti a metà e riprendere dopo.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Accedi con Mastodon e nascondi i boost</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Smetto di seguire qualcuno?</h3>
+    <p>
+      No. Continui a seguire tutti, e i loro post e le loro risposte continuano ad arrivare nella
+      tua home. Spariscono solo i boost.
+    </p>
+    <h3>Posso tornare indietro?</h3>
+    <p>
+      Sì. La stessa pagina riattiva i boost per tutti, e per un solo account si fa dal suo profilo.
+    </p>
+    <h3>E chi seguirò in futuro?</h3>
+    <p>
+      I nuovi account partono con i boost attivi, come sempre su Mastodon. Riavvia lo strumento
+      quando vuoi; cambia solo gli account che ne hanno bisogno.
+    </p>
+    <h3>Perché ci vuole un po’?</h3>
+    <p>
+      Mastodon non ha un’impostazione “per tutti insieme”, quindi ogni account che segui viene
+      modificato a parte. Un elenco lungo richiede qualche minuto.
+    </p>
+  </section>
+</main>

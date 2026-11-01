@@ -1,0 +1,84 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Agendamento no Mastodon</p>
+    <h1>Agendar publicações no Mastodon</h1>
+    <p>
+      Escreva as publicações da semana inteira de uma vez, e o seu servidor do Mastodon publica na
+      hora certa.
+      @if (!inShell) {
+        Entre com o Mastodon, escreva suas publicações, escolha quando sai a primeira e de quanto em
+        quanto tempo saem as outras, e pronto.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Carregando o agendador…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Escreva suas publicações</h2>
+        <p>Quantas quiser, uma por campo, até 500 caracteres cada.</p>
+      </li>
+      <li>
+        <h2>Distribua</h2>
+        <p>
+          Escolha o primeiro horário e o intervalo: todo dia às 9h, a cada três horas. Também dá
+          para colocar cada publicação num horário específico.
+        </p>
+      </li>
+      <li>
+        <h2>Feche a aba</h2>
+        <p>
+          O seu servidor do Mastodon guarda as publicações e publica cada uma na hora certa. Nada
+          fica esperando no seu navegador.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Entrar com o Mastodon e agendar</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>Dá para agendar publicações no Mastodon?</h3>
+    <p>
+      Dá. Todo servidor do Mastodon consegue guardar uma publicação e publicar depois, mas o site
+      normal do Mastodon não tem botão para isso. Esta página usa o agendamento nativo, então quem
+      guarda as publicações é o seu próprio servidor, não o Mawkingbird.
+    </p>
+    <h3>Preciso deixar esta página aberta?</h3>
+    <p>
+      Não. Uma publicação agendada fica no seu servidor do Mastodon, que publica no horário
+      escolhido, com o seu computador ligado ou não.
+    </p>
+    <h3>Tem limites?</h3>
+    <p>
+      O Mastodon aceita 300 publicações agendadas na fila e 25 por dia, e cada uma precisa estar
+      pelo menos cinco minutos no futuro. O agendador confere isso antes de enviar.
+    </p>
+    <h3>Posso mudar de ideia?</h3>
+    <p>
+      Pode. Suas publicações agendadas aparecem embaixo do agendador, e cada uma pode ser cancelada
+      até sair.
+    </p>
+    <h3>Funciona com o Bluesky?</h3>
+    <p>Aqui não. O Bluesky não tem agendamento nativo, então esta página é só para o Mastodon.</p>
+  </section>
+</main>

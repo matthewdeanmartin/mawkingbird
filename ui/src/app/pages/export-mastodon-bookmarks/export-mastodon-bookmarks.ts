@@ -55,3 +55,99 @@ export class ExportMastodonBookmarksDe extends ExportMastodonBookmarks {
 export class ExportMastodonBookmarksJa extends ExportMastodonBookmarks {
   protected override readonly returnHere = { next: '/ja/export-mastodon-bookmarks' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksFr extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/fr/exporter-les-signets-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksEs extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/es/exportar-marcadores-de-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksZhHant extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/zh-hant/export-mastodon-bookmarks' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksKo extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/ko/export-mastodon-bookmarks' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksPt extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/pt/exportar-marcadores-do-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksIt extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/it/esportare-segnalibri-mastodon' };
+}

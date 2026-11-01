@@ -1,0 +1,40 @@
+<main class="focused-page" lang="ko">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">앱 열기</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">도구</p>
+    <h1>Mastodon·Bluesky 무료 도구</h1>
+    <p>
+      각 도구는 공식 앱이 하지 못하는 일 하나만 합니다. 사용자 이름 고르기, 연락처 찾기, 게시물
+      예약, 계정 정리 같은 일입니다. 모두 브라우저에서 작동하며, 일부는 계정 없이도 쓸 수 있습니다.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>찾는 것이 없나요?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Mawkingbird의 모든 기능</a>(영어)이나
+      <a mbContentLink href="help/">도움말</a>(영어)을 확인해 보세요.
+    </p>
+  </section>
+</main>

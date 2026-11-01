@@ -1,0 +1,63 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Do GitHub para o Mastodon</p>
+    <h1>Encontre seus amigos do GitHub no Mastodon</h1>
+    <p>
+      Muita gente que programa coloca a conta do Mastodon no GitHub. O Mawkingbird confere quem você
+      segue no GitHub e os donos dos repositórios que você marcou com estrela, e deixa você seguir
+      essas pessoas no Mastodon.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Carregando a busca…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Entre com o Mastodon</h2>
+        <p>Você segue as pessoas com a sua própria conta do Mastodon, então isso vem primeiro.</p>
+      </li>
+      <li>
+        <h2>Conecte o GitHub</h2>
+        <p>
+          Cole um token de acesso pessoal do GitHub; a página mostra como criar um. O GitHub não
+          deixa apps web entrarem de outro jeito, e o token fica neste navegador.
+        </p>
+      </li>
+      <li>
+        <h2>Encontre e siga</h2>
+        <p>
+          Primeiro os links para o Mastodon nos perfis, depois uma busca limitada por nome. Cada
+          resultado mostra as pistas, e você decide quem seguir.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Entrar com o Mastodon</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>Para onde vai meu token do GitHub?</h3>
+    <p>
+      Ele fica salvo neste navegador e só é enviado para <code>api.github.com</code>, nunca para o
+      Mawkingbird. Revogue no GitHub quando quiser.
+    </p>
+    <h3>Ele segue pessoas automaticamente?</h3>
+    <p>Não. Cada seguida é um botão que você aperta, ao lado das pistas do resultado.</p>
+  </section>
+</main>

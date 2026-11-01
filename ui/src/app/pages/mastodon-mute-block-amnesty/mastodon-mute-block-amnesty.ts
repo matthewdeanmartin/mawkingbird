@@ -54,3 +54,101 @@ export class MastodonMuteBlockAmnestyDe extends MastodonMuteBlockAmnesty {
 export class MastodonMuteBlockAmnestyJa extends MastodonMuteBlockAmnesty {
   protected override readonly returnHere = { next: '/ja/mastodon-mute-block-amnesty' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyFr extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/fr/demasquer-et-debloquer-sur-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyEs extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/es/dejar-de-silenciar-y-desbloquear-en-mastodon',
+  };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyZhHant extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/zh-hant/mastodon-mute-block-amnesty' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyKo extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/ko/mastodon-mute-block-amnesty' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyPt extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/pt/dessilenciar-e-desbloquear-no-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyIt extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/it/riattivare-e-sbloccare-tutti-su-mastodon' };
+}

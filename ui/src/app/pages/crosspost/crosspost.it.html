@@ -1,0 +1,67 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Pubblicare su Mastodon e Bluesky insieme</h1>
+    <p>
+      Scrivi una volta e manda lo stesso post su entrambe le reti.
+      @if (!inShell) {
+        Accedi con l’account che hai, collega l’altro e provalo in un editor semplice.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Caricamento dell’editor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Accedi con uno dei due</h2>
+        <p>Usa il tuo account Mastodon o il tuo account Bluesky. Per iniziare ne basta uno.</p>
+      </li>
+      <li>
+        <h2>Collega l’altro</h2>
+        <p>
+          Se hai fatto l’accesso con Mastodon, colleghi Bluesky con una password per app. Se l’hai
+          fatto con Bluesky, aggiungi il tuo server Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Scrivi una volta, pubblica ovunque</h2>
+        <p>L’editor manda il tuo post su entrambe le reti. Provalo con un primo post.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Accedi con Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Accedi con Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>La copia su Bluesky è identica?</h3>
+    <p>
+      Il testo sì. La copia su Bluesky è sempre pubblica, e sondaggi e avvisi sul contenuto restano
+      sulla copia di Mastodon, perché Bluesky non ha niente di equivalente.
+    </p>
+    <h3>Dove vengono salvati i miei accessi?</h3>
+    <p>
+      In questo browser. Mawkingbird parla direttamente con il tuo server Mastodon e con Bluesky;
+      non c’è nessun server di Mawkingbird in mezzo che custodisce i tuoi account.
+    </p>
+  </section>
+</main>

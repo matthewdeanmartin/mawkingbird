@@ -1,0 +1,97 @@
+<main class="focused-page" lang="ko">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">앱 열기</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky 검색</p>
+      <h1>Bluesky 검색</h1>
+      <p>Twitter에서 쓰던 검색 필터로 Bluesky의 사람과 게시물을 찾으세요.</p>
+    } @else {
+      <p class="eyebrow">Mastodon 검색</p>
+      <h1>Mastodon 검색</h1>
+      <p>Twitter에서 쓰던 검색 필터로 Mastodon 전체의 게시물, 사람, 해시태그를 찾으세요.</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Bluesky 검색' : 'Mastodon 검색'"
+        [attr.placeholder]="network === 'bluesky' ? 'Bluesky 검색' : 'Mastodon 검색'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">검색</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>범위 좁히기</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:누군가, 언어, 날짜, "정확한 문구"를 직접 입력하거나 필터에서 고릅니다.
+        } @else {
+          from:누군가, has:media, is:reply, 날짜, "정확한 문구"를 직접 입력하거나 필터에서 고릅니다.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>정렬하고 다듬기</h2>
+      <p>날짜, 미디어, 작성자로 결과를 거르고, 정확히 무엇을 검색했는지 확인합니다.</p>
+    </li>
+    <li>
+      <h2>검색 저장</h2>
+      <p>검색을 저장해 클릭 한 번으로 다시 실행하거나 링크로 공유하세요.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
+    @if (network === 'bluesky') {
+      <h3>Bluesky 계정이 필요한가요?</h3>
+      <p>
+        사람을 찾을 때는 필요 없습니다. Bluesky는 로그인한 계정의 게시물 검색에만 응답하므로,
+        게시물을 찾으려면 Bluesky로 로그인하세요. 로그인 후 이 페이지로 돌아옵니다.
+      </p>
+      <h3>Mastodon도 검색할 수 있나요?</h3>
+      <p>
+        네. <a mbContentLink routerLink="/ko/mastodon-search">Mastodon 검색</a>을 쓰거나, 결과
+        페이지에서 네트워크를 바꾸세요.
+      </p>
+    } @else {
+      <h3>Mastodon 계정이 필요한가요?</h3>
+      <p>
+        아니요. 계정 없이도 사람과 해시태그를 찾고 해시태그로 게시물을 찾을 수 있습니다. Mastodon
+        서버는 익명 전문 검색을 허용하지 않기 때문입니다. 게시물 속 단어를 찾으려면 로그인하세요.
+        로그인 후 이 페이지로 돌아옵니다.
+      </p>
+      <h3>내 서버의 검색보다 나은 점은 뭔가요?</h3>
+      <p>
+        같은 서버에서 검색하지만, 입력란 하나 대신 필터, 정렬, 저장된 검색, 무엇을 요청했는지에 대한
+        설명을 제공합니다.
+      </p>
+      <h3>Bluesky도 검색할 수 있나요?</h3>
+      <p>
+        네. <a mbContentLink routerLink="/ko/bluesky-search">Bluesky 검색</a>을 쓰거나, 결과
+        페이지에서 네트워크를 바꾸세요.
+      </p>
+    }
+  </section>
+</main>

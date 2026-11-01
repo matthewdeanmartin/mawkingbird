@@ -1,0 +1,73 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">隱私</p>
+    <h1>如何在 Mastodon 匿名（化名）使用</h1>
+    <p>
+      在 Mastodon
+      上不需要用真名。有幾項設定決定別人多容易把您的帳號和您本人連在一起，而大多數人從來沒改過。
+      @if (!inShell) {
+        登入後，一個步驟就能全部調整好。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">正在載入您的設定……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>隱藏您身邊的人</h2>
+        <p>您跟隨誰、誰跟隨您，往往最容易洩漏身分。Mastodon 可以對所有人隱藏這兩份名單。</p>
+      </li>
+      <li>
+        <h2>不出現在搜尋與推薦中</h2>
+        <p>離開個人檔案目錄、不再被推薦給陌生人，並讓您的嘟文不出現在全文搜尋中。</p>
+      </li>
+      <li>
+        <h2>檢查關不掉的部分</h2>
+        <p>
+          指向您自己網站的個人檔案連結、會列出您個人檔案的搜尋引擎，以及您選的名字和頭像。頁面會告訴您哪些與您有關。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並檢查設定</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>匿名還是化名？</h3>
+    <p>
+      化名：別人看到的是編出來的名字而不是您的真名，帳號也很難和您連在一起。真正的匿名更困難，請看下一題。
+    </p>
+    <h3>我的伺服器管理員看得出我是誰嗎？</h3>
+    <p>
+      他們看得到您註冊用的電子郵件，以及您連線時的 IP
+      位址，任何設定都改變不了這一點。請選擇您信任的伺服器，並使用不含真名的電子郵件。
+    </p>
+    <h3>我的嘟文會因此變成私人的嗎？</h3>
+    <p>
+      不會。公開嘟文仍然公開。這些設定讓您的帳號更難被找到、更難和您連結；誰能讀某則嘟文，仍然在寫的時候由您決定。
+    </p>
+    <h3>Mawkingbird 還提供什麼？</h3>
+    <p>
+      有的：沒人會知道的私人跟隨與私人最愛、私人清單、清除追蹤參數的連結，以及去除位置資訊的照片，全部存在您的瀏覽器裡。
+    </p>
+  </section>
+</main>

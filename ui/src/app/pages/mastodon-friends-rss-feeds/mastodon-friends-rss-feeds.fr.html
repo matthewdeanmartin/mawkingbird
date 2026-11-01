@@ -1,0 +1,83 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS et OPML</p>
+    <h1>Trouver les blogs et flux RSS de tous tes abonnements Mastodon</h1>
+    <p>
+      Beaucoup de gens indiquent leur site web dans leur profil Mastodon. Cet outil vérifie si ces
+      liens ont un flux et rassemble tous ceux qu’il trouve dans un seul fichier OPML, pour
+      n’importe quel lecteur de flux.
+      @if (!inShell) {
+        Il fait partie de Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Chargement…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lire qui tu suis</h2>
+        <p>Ta liste est lue depuis ton serveur Mastodon, avec les liens de chaque profil.</p>
+      </li>
+      <li>
+        <h2>Vérifier leurs sites</h2>
+        <p>
+          On demande à chaque site lié s’il a un flux. Tu choisis combien de sites vérifier, et tu
+          peux t’arrêter à tout moment en gardant ce qui a été trouvé.
+        </p>
+      </li>
+      <li>
+        <h2>Télécharger l’OPML</h2>
+        <p>
+          Importe le fichier dans le lecteur de flux de ton choix, ou suis les flux directement ici,
+          dans le lecteur RSS de Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Se connecter avec Mastodon et trouver leurs flux</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Ce que comprend Plus</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Pourquoi est-ce une fonction Plus ?</h3>
+    <p>
+      Vérifier des centaines de sites tiers passe par un proxy que Mawkingbird paie, une requête par
+      site. Plus couvre ce coût.
+    </p>
+    <h3>Qu’est-ce qu’un fichier OPML ?</h3>
+    <p>
+      Le format de liste d’abonnements que tous les lecteurs de flux comprennent. Importe-le dans
+      Feedly, NetNewsWire, Inoreader ou un autre lecteur pour suivre tous les flux d’un coup.
+    </p>
+    <h3>Est-ce que ça trouve tout le monde ?</h3>
+    <p>
+      Seulement les personnes qui ont un site dans leur profil, et seulement les sites qui ont un
+      flux. Les grandes plateformes, qui n’ont jamais de flux personnel, sont ignorées sans
+      vérification.
+    </p>
+    <h3>Un deuxième passage coûte-t-il autant ?</h3>
+    <p>
+      Non. Les sites déjà vérifiés sont mémorisés : après quelques nouveaux abonnements, un nouveau
+      passage ne vérifie que leurs sites.
+    </p>
+  </section>
+</main>

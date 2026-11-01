@@ -64,7 +64,7 @@ fallback initially contains homepage tags; utility URLs do not have individual
 prerendered documents or route-specific social cards. The sitemap therefore
 contains `/`, `/features/`, the six audience URLs and the three project pages
 below (all in `public/sitemap.xml`), then every tool page in
-`focused-tools.json` after `/tools/`, `/follow/` and one URL per published starter kit, which
+the registry, translations included, after `/tools/`, `/follow/` and one URL per published starter kit, which
 `prepare-seo-index.mjs` appends. `check-seo-build.mjs` compares the finished
 list exactly, so a registered tool missing from the sitemap fails the build. The help site
 publishes its own. Do not add account feeds or arbitrary remote
@@ -154,9 +154,10 @@ meta description, who signs in (`mastodon` or `any`), the nav tab, and the
 heading, phrase and tool selector `check-seo-build.mjs` expects of the
 prerender. Routes (`focusedAppRoutes`), the trimmed nav (`FOCUSED_APPS`), the
 `?next=` allowlist, the prerender table in `main.server.ts`, the features page,
-the sitemap, its dates and the no-JavaScript links all read it. It is JSON so the
-Node build scripts can read it; it ships in the initial bundle because the
-routes need titles and descriptions there.
+the sitemap, its dates and the no-JavaScript links all read it, with the
+translations beside it (see Pages in other languages). It is JSON so the Node
+build scripts can read it; the English entries ship in the initial bundle
+because the routes need their titles and descriptions there.
 
 - Signed in (`mastodonSignedInMatch`, or `signedInMatch` for `signIn: any`:
   the crossposter and the Bluesky ⇄ Mastodon finder), the page runs in the shell trimmed to Home · tool · Invite,
@@ -252,40 +253,63 @@ redirect.
 
 ## Pages in other languages
 
-A tool page in another language is its own registry entry with `lang` (e.g.
-`de`) and `translationOf` (the English entry's id), and the same tab, sign-in,
-group and tool selector as the original (`focused-tools.spec.ts` checks). Its
-`sources` names the original's directory. Each language has a folder: English
-at the root, German under `/de/` (`de/mastodon-statistik`), Japanese under
-`/ja/`; the spec enforces it. Slugs are ASCII only and never renamed. German
-slugs are German words; Japanese pages keep the English slug
-(`ja/download-mastodon-images`), as Japanese sites usually do, since
-romanised Japanese is not what anyone searches. The first two German pages
-briefly lived at the root; `app.routes.ts` redirects those two old paths.
+English tools are `focused-tools.json`. A translation stores only what
+differs: its path in `tool-translations/paths.json` (by English id) and its
+title, description and prerender phrases in `tool-translations/<lang>.json`.
+Tab, sign-in, group, sources and tool selector come from the original, and its
+id is `<original>-<lang>`. Only the paths load with the app (about a kilobyte
+per language), so routes, `hreflang`, the language switch and the sign-in
+allowlist know every version; a translated page's title and description
+resolve on the way in (`tool-copy.ts`), and each language index resolves its
+list the same way. The server and specs use `focused-tools-all.ts` (every
+language at once); the scripts use `scripts/focused-tools-registry.mjs`. Never
+import `focused-tools-all.ts` into browser code: it would put every language
+in the first load.
+
+Each language has a folder: English at the root, German under `/de/`
+(`de/mastodon-statistik`), Spanish under `/es/` (`es/estadisticas-de-mastodon`), Portuguese (Brazil) under `/pt/` (`pt/estatisticas-do-mastodon`),
+French under `/fr/` (`fr/statistiques-mastodon`), Italian under `/it/` (`it/statistiche-mastodon`), Japanese under `/ja/`, Korean under `/ko/`, Traditional Chinese under `/zh-hant/` (a folder is its code in lower case, `languageFolder()`; `hreflang` and `<html lang>` keep `zh-Hant`); the spec enforces it. Slugs are ASCII only and never
+renamed. German, Spanish, French, Italian and Portuguese slugs are words in the language, accents and apostrophes dropped;
+Japanese, Korean and Chinese pages keep the English slug (`ja/download-mastodon-images`), as
+Japanese sites usually do, since romanised Japanese or pinyin is not what anyone searches. The first two German pages briefly lived at the root;
+`app.routes.ts` redirects those two old paths.
 
 - **Page copy** (heading, intro, steps, Questions) is written in the page
   itself, one language per file, not in the app dictionaries: it is what search
   engines read, the prerender loads no dictionaries, and each set serves one
-  language's readers only. Existing tool pages get a subclass of their
-  component per language (`…De`, `…Ja`, same file) with its own
-  `<page>.de.html` or `<page>.ja.html`, which overrides
-  the sign-in return path; pages built later keep a copy file instead
-  (`download-mastodon-images.copy.ts`, `language-landing.copy.ts`). The
-  Bluesky ⇄ Mastodon and search pages pick their direction or network from the
-  path (`endsWith` the English slug, plus the German slugs).
+  language's readers only. A tool page gets a subclass of its component per
+  language (`CrosspostDe`, `CrosspostFr`, same file) with its own
+  `<page>.<lang>.html`, which overrides the sign-in return path. Routes and
+  prerender find it by name: `TOOL_PAGE_MODULES` (`app.routes.ts`) and
+  `toolModules` (`main.server.ts`) list each English page once, and
+  `toolComponentName()` adds the language (`zh-Hant` → `ZhHant`). Pages that
+  keep a copy file instead (`download-mastodon-images.copy.ts`,
+  `language-landing.copy.ts`) are `oneForAll`: one class, every language. The
+  Bluesky ⇄ Mastodon and search pages pick their direction or network, and
+  their own root, from the registry (`toolPageAt`, `originalPath`): whichever
+  English page this one translates.
 - **Everything translated inside the page follows the URL**, not the browser:
   the page component provides `provideRouteLanguage()` (`page-language.ts`),
   which pins Transloco to the route's `lang` with `|static` for its whole
   subtree, dialogs included. Google's renderer (an English browser) therefore
   sees a German tool in German. Text built in code uses `routeTranslate()`;
   a bare `TranslocoService.translate()` would ignore the pin. The tools' own
-  strings and the app parts they embed get German and Japanese in `de.json`
-  and `ja.json` only; other dictionaries fall back to English there.
+  strings and the app parts they embed get their language in that language's
+  dictionary only (`de.json`, `fr.json`, `ja.json`); other dictionaries fall
+  back to English there.
+- **French copy** says « tu », like the app’s French, and uses Mastodon’s own
+  French words (message, signets, abonnés, masquer, avertissement de
+  contenu). French spacing: a non-breaking space before `:` and inside « »,
+  a narrow one before `; ! ?`, in the text only, never in bindings.
 - **Japanese copy** is polite (です/ます), with full-width punctuation, no
   spaces between Japanese words, and マストドン beside Mastodon where people
   search it. `focused-page.css` sets `line-break: strict` and
   `word-break: auto-phrase` under `:lang(ja)` so lines break between
   phrases, not inside words.
+- **Korean copy** is formal polite (합니다체) with 회원님, like the app’s ko dictionary, and Mastodon’s Korean terms (게시물, 부스트, 북마크, 팔로워, 뮤트, 차단, 콘텐츠 경고); particles after Latin names follow their Korean reading (Mastodon과, Bluesky와). 마스토돈 sits beside Mastodon on the landing pages. `word-break: keep-all` under `:lang(ko)`, so lines break between words.
+- **Italian copy** says « tu », like the app’s it dictionary, and uses its Mastodon words (post, segnalibri, follower, silenziare/riattivare, bloccare/sbloccare, avvisi sul contenuto, preferiti); "boost (ricondivisioni)" on the boosts page. Typographic apostrophes (l’app) in the text.
+- **Portuguese copy** is Brazilian, like the app’s pt dictionary: você, arquivo, usuário, baixar, celular, and Mastodon’s Brazilian terms (publicação, marcadores, seguidores, silenciar, avisos de conteúdo); "boosts (republicações)" on the boosts page. `hreflang` is `pt`, since there is no European Portuguese version to tell apart.
+- **Chinese copy** is Traditional, Taiwan style like the app’s zh-Hant dictionary: polite 您, Mastodon’s own terms (嘟文, 轉嘟, 書籤, 跟隨者, 靜音, 封鎖, 內容警告), a space between Chinese and Latin words, and 長毛象 beside Mastodon on the landing pages. Strict line breaking under `:lang(zh)`. Mastodon tags Chinese posts `zh` while the interface locale is `zh-Hant`, so a landing copy can set `content` for the posting and known language.
 - **`<html lang>`** follows the page on public (indexable) routes: `Seo`
   publishes the route's `lang` to `PageLanguageState`, which
   `TranslocoLocaleSync` prefers over the interface language. The signed-in
@@ -294,32 +318,52 @@ briefly lived at the root; `app.routes.ts` redirects those two old paths.
 - **`hreflang`**: `Seo` writes `<link rel="alternate">` for every language
   version plus `x-default` (English); the sitemap carries the same set as
   `xhtml:link`. `check-seo-build.mjs` asserts both, plus `<html lang>`.
-- /tools and the features page list English pages only. `/de/` is the German
-  index (`ToolsIndexDe`, German headings) and `/ja/` the Japanese one
-  (`ToolsIndexJa`); the three are each other's `hreflang` set. Every tool page's header links its other language
-  (`LanguageVersions`, from the registry), so the pairs are linked visibly too.
-- The tools' own strings are translation keys under `focusedTools.*` (German
-  and Japanese in de.json and ja.json only). Their Invite links come from the
-  page's own route (`toolInviteLink()`), so a translated page's Invite stays
-  in its language.
+- /tools and the features page list English pages only. Each language's
+  index is its folder's own page (`/de/`, `/fr/`, `/ja/`): its title and
+  description are `TOOLS_INDEXES` (`seo.ts`), its component
+  `ToolsIndex<Lang>` with its own template and headings, and routes,
+  prerender, sitemap and SEO checks come from that table and `paths.json`.
+  All of them and /tools are one `hreflang` set. Every tool page and index carries `LanguageVersions` in its header: one compact menu (a shared `MbPopover`) whose button names the current language and whose panel links every version, the current one marked. Tool pages read their versions from the registry, indexes from `TOOLS_INDEX_ALTERNATES`, so a new language needs no header edits. The links stay in the document while the menu is closed, so the prerender keeps a crawlable link to each version.
+- The tools' own strings are translation keys under `focusedTools.*`. Their
+  Invite links come from the page's own route (`toolInviteLink()`), so a
+  translated page's Invite stays in its language.
 - `translated-pages.spec.ts` renders every non-English entry signed out and
   checks its language, heading, link to the English version, and that every
-  sign-in returns to the same page.
+  sign-in returns to the same page. The route spec loads every page and
+  every index and fails on a missing class.
 
 Language landing pages (`mastodon-in-english`, `de/mastodon-auf-deutsch`,
-`learn-english-with-mastodon`, `ja/mastodon-in-japanese`,
+`learn-english-with-mastodon`, `fr/mastodon-en-francais`,
+`fr/apprendre-l-anglais-avec-mastodon`, `ja/mastodon-in-japanese`,
 `ja/learn-english-with-mastodon`) share `LanguageLanding`: a pitch while signed
 out, the reader's language settings as one checklist once signed in (the same
 services as Settings → Internationalization; nothing changes before Apply;
 only the posting language is written to the server), then the way home. Their
 copy, checklist included, is in `language-landing.copy.ts`.
 
+### Adding a language
+
+1. `PageLanguage` (`focused-tools.ts`), its name in itself in `ENDONYMS` (`language-versions.ts`),
+   and its words loader in `COPY` (`tool-copy.ts`) and `TOOL_COPY`
+   (`focused-tools-all.ts`): one line each.
+2. `tool-translations/paths.json` (a slug per tool) and
+   `tool-translations/<lang>.json` (title, description, prerender phrases).
+3. A `<page>.<lang>.html` and a `<Class><Lang>` subclass for each tool page
+   (generate them with the same pattern as the existing ones), and the
+   language's entries in `download-mastodon-images.copy.ts` and
+   `language-landing.copy.ts`.
+4. The index: a `TOOLS_INDEXES` entry (`seo.ts`), `ToolsIndex<Lang>` with its headings and `tools-index.<lang>.html`.
+5. The tools' strings in `public/i18n/<lang>.json` (the `focusedTools`,
+   `downloadImages`, `mediaDownload`, `focusedNextSteps` groups and the app
+   parts the tools embed), then `npm run i18n:extract` and `check:i18n`.
+6. Inventory, gates and a live check, as for any page.
+
 To add a mini-app: one entry in `focused-tools.json` (with `sources` if its
-directory under `src/app/pages/` is not named after its path), its lazy loader
-in `FOCUSED_TOOL_PAGES` (`app.routes.ts`), its component in `toolComponents`
+directory under `src/app/pages/` is not named after its path), its module and
+class in `TOOL_PAGE_MODULES` (`app.routes.ts`) and `toolModules`
 (`main.server.ts`), and the tab's `// i18n` label in `shell/mode-nav.ts`. The
-route spec fails on a missing loader; a missing component is never prerendered,
-which fails `check-seo-build.mjs`.
+route spec fails on a missing page; a missing prerender component throws at
+build time.
 
 ## Titles, structured data and sitemap dates
 

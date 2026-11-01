@@ -1,0 +1,69 @@
+<main class="focused-page" lang="es">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir la app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Publicar en Mastodon y Bluesky a la vez</h1>
+    <p>
+      Escribe una vez y envía la misma publicación a las dos redes.
+      @if (!inShell) {
+        Inicia sesión con la cuenta que tengas, conecta la otra y pruébalo en un editor sencillo.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Cargando el editor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Inicia sesión con una</h2>
+        <p>Usa tu cuenta de Mastodon o tu cuenta de Bluesky. Para empezar, basta con una.</p>
+      </li>
+      <li>
+        <h2>Conecta la otra</h2>
+        <p>
+          Si entraste con Mastodon, conectas Bluesky con una contraseña de aplicación. Si entraste
+          con Bluesky, añades tu servidor de Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Escribe una vez, publica en las dos</h2>
+        <p>El editor envía tu publicación a las dos redes. Pruébalo con una primera publicación.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Iniciar sesión con Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Iniciar sesión con Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Preguntas</h2>
+    <h3>¿La copia en Bluesky es idéntica?</h3>
+    <p>
+      El texto, sí. La copia en Bluesky siempre es pública, y las encuestas y advertencias de
+      contenido se quedan en la copia de Mastodon, porque Bluesky no tiene nada equivalente.
+    </p>
+    <h3>¿Dónde se guardan mis sesiones?</h3>
+    <p>
+      En este navegador. Mawkingbird habla directamente con tu servidor de Mastodon y con Bluesky;
+      no hay ningún servidor de Mawkingbird en medio guardando tus cuentas.
+    </p>
+  </section>
+</main>

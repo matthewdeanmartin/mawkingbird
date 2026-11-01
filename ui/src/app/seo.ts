@@ -3,7 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterStateSnapshot } from '@angular/router';
 import { PageLanguageState } from './page-language';
-import type { PageAlternate } from './focused-tools';
+import { languageFolder } from './focused-tools';
+import type { PageAlternate, TranslatedLanguage } from './focused-tools';
 
 export const SITE_ORIGIN = 'https://mawkingbird.com';
 export const SITE_DESCRIPTION =
@@ -18,15 +19,60 @@ export const FOLLOW_DESCRIPTION =
   'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
 export const TOOLS_DESCRIPTION =
   'Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.';
-export const TOOLS_DESCRIPTION_DE =
-  'Kostenlose Werkzeuge für Mastodon und Bluesky auf Deutsch: Twitter-Follows mitnehmen, Beiträge planen, Bilder herunterladen, ähnliche Hashtags finden und mehr. Alles im Browser.';
-export const TOOLS_DESCRIPTION_JA =
-  'Mastodon と Bluesky の無料ツール集：Twitter のフォローの引き継ぎ、投稿の予約、画像の一括ダウンロード、似ているハッシュタグ探しなど。すべてブラウザーで動きます。';
-/** /tools, /de/ and /ja/ are the same index in three languages. */
-export const TOOLS_INDEX_ALTERNATES = [
-  { lang: 'en' as const, path: 'tools' },
-  { lang: 'de' as const, path: 'de' },
-  { lang: 'ja' as const, path: 'ja' },
+/**
+ * Each translated language's tool index, which is also its folder's own page
+ * (/de/, /fr/, …): title and meta description. Its component is
+ * `ToolsIndex<Lang>` (tools-index.ts); routes and prerender come from here.
+ */
+export const TOOLS_INDEXES: Record<TranslatedLanguage, { title: string; description: string }> = {
+  de: {
+    title: 'Kostenlose Werkzeuge für Mastodon und Bluesky',
+    description:
+      'Kostenlose Werkzeuge für Mastodon und Bluesky auf Deutsch: Twitter-Follows mitnehmen, Beiträge planen, Bilder herunterladen, ähnliche Hashtags finden und mehr. Alles im Browser.',
+  },
+  es: {
+    title: 'Herramientas gratis para Mastodon y Bluesky',
+    description:
+      'Herramientas gratis para Mastodon y Bluesky en español: lleva a tus seguidos de Twitter, programa publicaciones, descarga imágenes, encuentra hashtags similares y más. Todo en el navegador.',
+  },
+  fr: {
+    title: 'Outils gratuits pour Mastodon et Bluesky',
+    description:
+      'Outils gratuits pour Mastodon et Bluesky en français : retrouver ses abonnements Twitter, programmer des posts, télécharger des images, trouver des hashtags similaires et plus. Tout dans le navigateur.',
+  },
+  ko: {
+    title: 'Mastodon·Bluesky 무료 도구',
+    description:
+      'Mastodon과 Bluesky를 위한 무료 한국어 도구: Twitter 팔로우 옮기기, 게시물 예약, 이미지 일괄 다운로드, 비슷한 해시태그 찾기 등. 모두 브라우저에서 작동합니다.',
+  },
+  pt: {
+    title: 'Ferramentas grátis para Mastodon e Bluesky',
+    description:
+      'Ferramentas grátis para Mastodon e Bluesky em português: leve quem você segue no Twitter, agende publicações, baixe imagens, encontre hashtags semelhantes e mais. Tudo no navegador.',
+  },
+  'zh-Hant': {
+    title: 'Mastodon 與 Bluesky 免費工具',
+    description:
+      'Mastodon 與 Bluesky 的免費中文工具：把 Twitter 的跟隨帶過來、排程發嘟、下載圖片、找相似的主題標籤等等。全部在瀏覽器裡完成。',
+  },
+  it: {
+    title: 'Strumenti gratuiti per Mastodon e Bluesky',
+    description:
+      'Strumenti gratuiti per Mastodon e Bluesky in italiano: porta con te chi seguivi su Twitter, programma i post, scarica le immagini, trova hashtag simili e altro. Tutto nel browser.',
+  },
+  ja: {
+    title: 'Mastodon と Bluesky の無料ツール',
+    description:
+      'Mastodon と Bluesky の無料ツール集：Twitter のフォローの引き継ぎ、投稿の予約、画像の一括ダウンロード、似ているハッシュタグ探しなど。すべてブラウザーで動きます。',
+  },
+};
+/** /tools and every language's index are one page in several languages. */
+export const TOOLS_INDEX_ALTERNATES: PageAlternate[] = [
+  { lang: 'en', path: 'tools' },
+  ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang) => ({
+    lang,
+    path: languageFolder(lang),
+  })),
 ];
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';

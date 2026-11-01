@@ -1,0 +1,62 @@
+<main class="focused-page" lang="zh-Hant">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">開啟 App</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 數據分析</p>
+    <h1>您帳號的 Mastodon 數據分析</h1>
+    <p>
+      看看您的嘟文反應如何、誰在聽您說話。
+      @if (!inShell) {
+        用 Mastodon 登入後，數據會根據您自己的嘟文與跟隨者在這裡算出來。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">正在載入您的數據……</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>您最受歡迎的嘟文</h2>
+        <p>熱門嘟文、每則嘟文的最愛、轉嘟與回覆數，以及觸及人數的估計。</p>
+      </li>
+      <li>
+        <h2>您的觀眾</h2>
+        <p>您跟隨的人與跟隨您的人之中，還有多少在活動，以及您最常和誰互動。</p>
+      </li>
+      <li>
+        <h2>您的習慣</h2>
+        <p>您什麼時候發嘟、多常發、用哪些語言、談些什麼，都畫在一張日曆上。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >用 Mastodon 登入並查看您的數據</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>常見問題</h2>
+    <h3>我的資料會被送到哪裡？</h3>
+    <p>
+      不會送到新的地方。您的嘟文與跟隨者從您自己的 Mastodon
+      伺服器讀取，數據在這個瀏覽器裡計算。Mawkingbird 不會保留任何副本。
+    </p>
+    <h3>為什麼觸及人數是估計值？</h3>
+    <p>
+      Mastodon 不計算瀏覽次數。觸及人數是根據您的跟隨者與他們的互動估算的，頁面也會在數字旁邊註明。
+    </p>
+  </section>
+</main>

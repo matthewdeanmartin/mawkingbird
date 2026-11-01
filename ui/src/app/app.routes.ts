@@ -1,4 +1,5 @@
-import { CanMatchFn, Route, Routes } from '@angular/router';
+import { Type } from '@angular/core';
+import { CanMatchFn, ResolveFn, Route, Routes } from '@angular/router';
 import { authGuard, mastodonSignedInMatch, signedInMatch } from './auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
@@ -13,7 +14,19 @@ import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
-import { FOCUSED_TOOLS, PageAlternate, toolAlternates, toolLanguage } from './focused-tools';
+import {
+  ENGLISH_TOOLS,
+  PageAlternate,
+  TOOL_PAGES,
+  ToolPage,
+  ToolPageModule,
+  languageFolder,
+  TranslatedLanguage,
+  toolAlternates,
+  toolComponentName,
+  toolLanguage,
+} from './focused-tools';
+import { toolDescription, toolTitle, toolsResolver } from './tool-copy';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
 import {
@@ -22,9 +35,8 @@ import {
   BLOG_DESCRIPTION,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
-  TOOLS_DESCRIPTION_DE,
-  TOOLS_DESCRIPTION_JA,
   TOOLS_INDEX_ALTERNATES,
+  TOOLS_INDEXES,
 } from './seo';
 
 /**
@@ -38,8 +50,9 @@ import {
  */
 function focusedAppRoutes(app: {
   path: string;
-  title: string;
-  seoDescription: string;
+  /** A translated page's title and description resolve lazily (tool-copy.ts). */
+  title: string | ResolveFn<string>;
+  seoDescription: string | ResolveFn<string>;
   /** The language the page is written in (focused-tools.json `lang`). */
   lang: string;
   /** Its other language versions, for `hreflang`. */
@@ -75,10 +88,13 @@ function focusedAppRoutes(app: {
       // Prerendered for search engines; see main.server.ts and docs/seo.md.
       data: {
         seoIndexable: true,
-        seoDescription: app.seoDescription,
+        ...(typeof app.seoDescription === 'string' ? { seoDescription: app.seoDescription } : {}),
         lang: app.lang,
         seoAlternates: app.alternates,
       },
+      ...(typeof app.seoDescription === 'string'
+        ? {}
+        : { resolve: { seoDescription: app.seoDescription } }),
       loadComponent: app.page,
     },
     { path: `${app.path}/invite`, redirectTo: app.path },
@@ -86,200 +102,108 @@ function focusedAppRoutes(app: {
 }
 
 /**
- * Each tool page's lazy component, keyed by its path in focused-tools.json.
- * Code rather than data because the import must stay lazy for the bundle; the
- * route spec fails if a registered tool has no entry here.
+ * Each tool's page component, by its English path: the module to load and the
+ * class in it. A translated page loads `<Class><Lang>` (`CrosspostFr`) from
+ * the same module: the same logic with its own template. A `oneForAll` page
+ * carries every language's copy in one class instead. Code rather than data
+ * because each import must stay a literal for the bundler; the route spec
+ * loads every page and fails on a missing class.
  */
-export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent']>> = {
-  'twitter-to-mastodon': () =>
-    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodon),
-  crosspost: () => import('./pages/crosspost/crosspost').then((m) => m.Crosspost),
-  'mastodon-analytics': () =>
-    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalytics),
-  'github-to-mastodon': () =>
-    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodon),
-  'schedule-mastodon-posts': () =>
-    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
-      (m) => m.ScheduleMastodonPosts,
-    ),
-  'bluesky-to-mastodon': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridge),
-  'mastodon-to-bluesky': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridge),
-  'turn-off-boosts-mastodon': () =>
-    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
-      (m) => m.TurnOffBoostsMastodon,
-    ),
-  'find-contacts-on-mastodon': () =>
-    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
-      (m) => m.FindContactsOnMastodon,
-    ),
-  'mastodon-friends-rss-feeds': () =>
-    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
-      (m) => m.MastodonFriendsRssFeeds,
-    ),
-  'mastodon-mute-block-amnesty': () =>
-    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
-      (m) => m.MastodonMuteBlockAmnesty,
-    ),
-  'how-to-be-anonymous-on-mastodon': () =>
-    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
-      (m) => m.AnonymousOnMastodon,
-    ),
-  'mastodon-handle-generator': () =>
-    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
-      (m) => m.MastodonHandleGenerator,
-    ),
-  'turn-off-content-warnings-mastodon': () =>
-    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
-      (m) => m.MastodonContentWarnings,
-    ),
-  'export-mastodon-bookmarks': () =>
-    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
-      (m) => m.ExportMastodonBookmarks,
-    ),
-  'download-mastodon-images': () =>
-    import('./pages/download-mastodon-images/download-mastodon-images').then(
-      (m) => m.DownloadMastodonImages,
-    ),
-  'de/mastodon-bilder-herunterladen': () =>
-    import('./pages/download-mastodon-images/download-mastodon-images').then(
-      (m) => m.DownloadMastodonImages,
-    ),
-  'mastodon-similar-hashtags': () =>
-    import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
-      (m) => m.MastodonSimilarHashtags,
-    ),
-  'mastodon-in-english': () =>
-    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'de/mastodon-auf-deutsch': () =>
-    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'learn-english-with-mastodon': () =>
-    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'de/twitter-follower-zu-mastodon': () =>
-    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodonDe),
-  'de/mastodon-und-bluesky-gleichzeitig-posten': () =>
-    import('./pages/crosspost/crosspost').then((m) => m.CrosspostDe),
-  'de/mastodon-statistik': () =>
-    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalyticsDe),
-  'de/github-freunde-auf-mastodon': () =>
-    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodonDe),
-  'de/mastodon-beitraege-planen': () =>
-    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
-      (m) => m.ScheduleMastodonPostsDe,
-    ),
-  'de/von-bluesky-zu-mastodon': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeDe),
-  'de/von-mastodon-zu-bluesky': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeDe),
-  'de/mastodon-boosts-ausblenden': () =>
-    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
-      (m) => m.TurnOffBoostsMastodonDe,
-    ),
-  'de/kontakte-auf-mastodon-finden': () =>
-    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
-      (m) => m.FindContactsOnMastodonDe,
-    ),
-  'de/rss-feeds-deiner-mastodon-freunde': () =>
-    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
-      (m) => m.MastodonFriendsRssFeedsDe,
-    ),
-  'de/mastodon-stummschaltungen-aufheben': () =>
-    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
-      (m) => m.MastodonMuteBlockAmnestyDe,
-    ),
-  'de/anonym-auf-mastodon': () =>
-    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
-      (m) => m.AnonymousOnMastodonDe,
-    ),
-  'de/mastodon-nutzernamen-generator': () =>
-    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
-      (m) => m.MastodonHandleGeneratorDe,
-    ),
-  'de/mastodon-inhaltswarnungen-ausschalten': () =>
-    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
-      (m) => m.MastodonContentWarningsDe,
-    ),
-  'de/mastodon-lesezeichen-exportieren': () =>
-    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
-      (m) => m.ExportMastodonBookmarksDe,
-    ),
-  'de/mastodon-suche': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearchDe),
-  'de/bluesky-suche': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearchDe),
-  'de/aehnliche-hashtags-mastodon': () =>
-    import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
-      (m) => m.MastodonSimilarHashtagsDe,
-    ),
-  'ja/twitter-to-mastodon': () =>
-    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodonJa),
-  'ja/crosspost': () => import('./pages/crosspost/crosspost').then((m) => m.CrosspostJa),
-  'ja/mastodon-analytics': () =>
-    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalyticsJa),
-  'ja/github-to-mastodon': () =>
-    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodonJa),
-  'ja/schedule-mastodon-posts': () =>
-    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
-      (m) => m.ScheduleMastodonPostsJa,
-    ),
-  'ja/bluesky-to-mastodon': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeJa),
-  'ja/mastodon-to-bluesky': () =>
-    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeJa),
-  'ja/turn-off-boosts-mastodon': () =>
-    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
-      (m) => m.TurnOffBoostsMastodonJa,
-    ),
-  'ja/find-contacts-on-mastodon': () =>
-    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
-      (m) => m.FindContactsOnMastodonJa,
-    ),
-  'ja/mastodon-friends-rss-feeds': () =>
-    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
-      (m) => m.MastodonFriendsRssFeedsJa,
-    ),
-  'ja/mastodon-mute-block-amnesty': () =>
-    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
-      (m) => m.MastodonMuteBlockAmnestyJa,
-    ),
-  'ja/how-to-be-anonymous-on-mastodon': () =>
-    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
-      (m) => m.AnonymousOnMastodonJa,
-    ),
-  'ja/mastodon-handle-generator': () =>
-    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
-      (m) => m.MastodonHandleGeneratorJa,
-    ),
-  'ja/turn-off-content-warnings-mastodon': () =>
-    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
-      (m) => m.MastodonContentWarningsJa,
-    ),
-  'ja/export-mastodon-bookmarks': () =>
-    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
-      (m) => m.ExportMastodonBookmarksJa,
-    ),
-  'ja/mastodon-search': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearchJa),
-  'ja/bluesky-search': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearchJa),
-  'ja/download-mastodon-images': () =>
-    import('./pages/download-mastodon-images/download-mastodon-images').then(
-      (m) => m.DownloadMastodonImages,
-    ),
-  'ja/mastodon-similar-hashtags': () =>
-    import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
-      (m) => m.MastodonSimilarHashtagsJa,
-    ),
-  'ja/mastodon-in-japanese': () =>
-    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'ja/learn-english-with-mastodon': () =>
-    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
-  'mastodon-search': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
-  'bluesky-search': () =>
-    import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
+export const TOOL_PAGE_MODULES: Record<string, ToolPageModule> = {
+  'twitter-to-mastodon': {
+    load: () => import('./pages/twitter-to-mastodon/twitter-to-mastodon'),
+    component: 'TwitterToMastodon',
+  },
+  crosspost: { load: () => import('./pages/crosspost/crosspost'), component: 'Crosspost' },
+  'mastodon-analytics': {
+    load: () => import('./pages/mastodon-analytics/mastodon-analytics'),
+    component: 'MastodonAnalytics',
+  },
+  'github-to-mastodon': {
+    load: () => import('./pages/github-to-mastodon/github-to-mastodon'),
+    component: 'GithubToMastodon',
+  },
+  'schedule-mastodon-posts': {
+    load: () => import('./pages/schedule-mastodon-posts/schedule-mastodon-posts'),
+    component: 'ScheduleMastodonPosts',
+  },
+  'bluesky-to-mastodon': {
+    load: () => import('./pages/friend-bridge/friend-bridge'),
+    component: 'FriendBridge',
+  },
+  'mastodon-to-bluesky': {
+    load: () => import('./pages/friend-bridge/friend-bridge'),
+    component: 'FriendBridge',
+  },
+  'turn-off-boosts-mastodon': {
+    load: () => import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon'),
+    component: 'TurnOffBoostsMastodon',
+  },
+  'find-contacts-on-mastodon': {
+    load: () => import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon'),
+    component: 'FindContactsOnMastodon',
+  },
+  'mastodon-friends-rss-feeds': {
+    load: () => import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds'),
+    component: 'MastodonFriendsRssFeeds',
+  },
+  'mastodon-mute-block-amnesty': {
+    load: () => import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty'),
+    component: 'MastodonMuteBlockAmnesty',
+  },
+  'how-to-be-anonymous-on-mastodon': {
+    load: () => import('./pages/anonymous-on-mastodon/anonymous-on-mastodon'),
+    component: 'AnonymousOnMastodon',
+  },
+  'mastodon-handle-generator': {
+    load: () => import('./pages/mastodon-handle-generator/mastodon-handle-generator'),
+    component: 'MastodonHandleGenerator',
+  },
+  'turn-off-content-warnings-mastodon': {
+    load: () => import('./pages/mastodon-content-warnings/mastodon-content-warnings'),
+    component: 'MastodonContentWarnings',
+  },
+  'export-mastodon-bookmarks': {
+    load: () => import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks'),
+    component: 'ExportMastodonBookmarks',
+  },
+  'download-mastodon-images': {
+    load: () => import('./pages/download-mastodon-images/download-mastodon-images'),
+    component: 'DownloadMastodonImages',
+    oneForAll: true,
+  },
+  'mastodon-similar-hashtags': {
+    load: () => import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags'),
+    component: 'MastodonSimilarHashtags',
+  },
+  'mastodon-in-english': {
+    load: () => import('./pages/language-landing/language-landing'),
+    component: 'LanguageLanding',
+    oneForAll: true,
+  },
+  'learn-english-with-mastodon': {
+    load: () => import('./pages/language-landing/language-landing'),
+    component: 'LanguageLanding',
+    oneForAll: true,
+  },
+  'mastodon-search': {
+    load: () => import('./pages/network-search/network-search'),
+    component: 'NetworkSearch',
+  },
+  'bluesky-search': {
+    load: () => import('./pages/network-search/network-search'),
+    component: 'NetworkSearch',
+  },
 };
+
+/** A tool route's lazy component: the original's, or its language's subclass. */
+export function toolPageLoader(tool: ToolPage): NonNullable<Route['loadComponent']> {
+  const original = ENGLISH_TOOLS.find((entry) => entry.id === (tool.translationOf ?? tool.id));
+  const page = original && TOOL_PAGE_MODULES[original.path];
+  if (!page) throw new Error(`No page module for ${tool.path}`);
+  const name = toolComponentName(page, toolLanguage(tool));
+  return () => page.load().then((module) => (module as Record<string, Type<unknown>>)[name]);
+}
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -307,32 +231,26 @@ export const routes: Routes = [
     },
     loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndex),
   },
-  // The German pages' index (and the /de/ folder's own page).
-  {
-    path: 'de',
+  // Each language's index, which is also its folder's own page (/de/, /fr/, …).
+  ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang): Route => ({
+    path: languageFolder(lang),
     pathMatch: 'full',
-    title: 'Kostenlose Werkzeuge für Mastodon und Bluesky',
+    title: TOOLS_INDEXES[lang].title,
     data: {
       seoIndexable: true,
-      seoDescription: TOOLS_DESCRIPTION_DE,
-      lang: 'de',
+      seoDescription: TOOLS_INDEXES[lang].description,
+      lang,
       seoAlternates: TOOLS_INDEX_ALTERNATES,
     },
-    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndexDe),
-  },
-  // The Japanese pages' index (and the /ja/ folder's own page).
-  {
-    path: 'ja',
-    pathMatch: 'full',
-    title: 'Mastodon と Bluesky の無料ツール',
-    data: {
-      seoIndexable: true,
-      seoDescription: TOOLS_DESCRIPTION_JA,
-      lang: 'ja',
-      seoAlternates: TOOLS_INDEX_ALTERNATES,
-    },
-    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndexJa),
-  },
+    resolve: { tools: toolsResolver(lang) },
+    loadComponent: () =>
+      import('./pages/tools/tools-index').then(
+        (m) =>
+          (m as Record<string, Type<unknown>>)[
+            toolComponentName({ component: 'ToolsIndex' }, lang)
+          ],
+      ),
+  })),
   // Recovery works before signing in, without changing the active account.
   {
     path: 'connection-help',
@@ -427,17 +345,18 @@ export const routes: Routes = [
   // German pages moved into /de/ on 2026-10-31, hours after first going live.
   { path: 'mastodon-bilder-herunterladen', redirectTo: 'de/mastodon-bilder-herunterladen' },
   { path: 'mastodon-auf-deutsch', redirectTo: 'de/mastodon-auf-deutsch' },
-  ...FOCUSED_TOOLS.flatMap((tool) =>
-    focusedAppRoutes({
+  ...TOOL_PAGES.flatMap((tool) => {
+    const english = ENGLISH_TOOLS.find((entry) => entry.id === tool.id);
+    return focusedAppRoutes({
       path: tool.path,
-      title: tool.title,
-      seoDescription: tool.description,
+      title: english?.title ?? toolTitle(tool),
+      seoDescription: english?.description ?? toolDescription(tool),
       lang: toolLanguage(tool),
       alternates: toolAlternates(tool),
       match: tool.signIn === 'any' ? signedInMatch : mastodonSignedInMatch,
-      page: FOCUSED_TOOL_PAGES[tool.path],
-    }),
-  ),
+      page: toolPageLoader(tool),
+    });
+  }),
   // A message shared as a TinyURL short link. Un-guarded so a shared link opens
   // for anyone, signed in or not.
   {

@@ -58,3 +58,99 @@ export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
 export class ScheduleMastodonPostsJa extends ScheduleMastodonPosts {
   protected override readonly returnHere = { next: '/ja/schedule-mastodon-posts' };
 }
+
+/**
+ * The French page (focused-tools.json `lang: "fr"`): the same tool and
+ * logic, French words, and everything translated inside it pinned to
+ * French (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-fr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.fr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsFr extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/fr/programmer-des-posts-mastodon' };
+}
+
+/**
+ * The Spanish page (focused-tools.json `lang: "es"`): the same tool and
+ * logic, Spanish words, and everything translated inside it pinned to
+ * Spanish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-es',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.es.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsEs extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/es/programar-publicaciones-en-mastodon' };
+}
+
+/**
+ * The Traditional Chinese page (focused-tools.json `lang: "zh-Hant"`): the same tool and
+ * logic, Traditional Chinese words, and everything translated inside it pinned to
+ * Traditional Chinese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-zh-hant',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.zh-hant.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsZhHant extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/zh-hant/schedule-mastodon-posts' };
+}
+
+/**
+ * The Korean page (focused-tools.json `lang: "ko"`): the same tool and
+ * logic, Korean words, and everything translated inside it pinned to
+ * Korean (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-ko',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.ko.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsKo extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/ko/schedule-mastodon-posts' };
+}
+
+/**
+ * The Portuguese (Brazil) page (focused-tools.json `lang: "pt"`): the same tool and
+ * logic, Portuguese (Brazil) words, and everything translated inside it pinned to
+ * Portuguese (Brazil) (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-pt',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.pt.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsPt extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/pt/agendar-publicacoes-no-mastodon' };
+}
+
+/**
+ * The Italian page (focused-tools.json `lang: "it"`): the same tool and
+ * logic, Italian words, and everything translated inside it pinned to
+ * Italian (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-it',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.it.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsIt extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/it/programmare-post-su-mastodon' };
+}

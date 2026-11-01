@@ -1,0 +1,56 @@
+<main class="focused-page" lang="fr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Ouvrir l’appli</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Générateur de pseudo</p>
+    <h1>Générateur de pseudo Mastodon</h1>
+    <p>
+      Entre ton nom et obtiens des noms Mastodon que tu peux vraiment avoir : chaque suggestion est
+      vérifiée sur le serveur que tu veux rejoindre, et ta préférée aussi sur les plus grands
+      serveurs. Pas besoin de compte.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/fr/generateur-de-pseudo-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Chargement du générateur…</p>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>À quoi ressemble un nom Mastodon ?</h3>
+    <p>
+      Il a deux parties : ton nom d’utilisateur et ton serveur, par exemple
+      &#64;camille_martin&#64;mastodon.social. Le nom d’utilisateur peut contenir des lettres, des
+      chiffres et des tirets bas, jusqu’à 30 caractères, sans accents, et les majuscules ne donnent
+      pas un autre nom.
+    </p>
+    <h3>Pourquoi vérifier plus d’un serveur ?</h3>
+    <p>
+      Chaque serveur a ses propres noms d’utilisateur. Un nom pris sur mastodon.social peut être
+      libre ailleurs, et les gens de n’importe quel serveur peuvent te suivre de toute façon.
+    </p>
+    <h3>« Semble libre », c’est une garantie ?</h3>
+    <p>
+      Pas tout à fait. Cela veut dire que personne n’a ce nom aujourd’hui sur ce serveur. Les noms
+      des comptes supprimés restent réservés, et les admins peuvent réserver des mots : c’est le
+      formulaire d’inscription qui a le dernier mot.
+    </p>
+    <h3>Quels serveurs comptent parmi les plus grands ?</h3>
+    <p>
+      Ceux qui ont le plus d’inscriptions dans l’annuaire de joinmastodon.org, qui liste les
+      serveurs respectant la charte des serveurs de Mastodon. Certains font valider les nouveaux
+      comptes par les admins ; la liste indique lesquels.
+    </p>
+  </section>
+</main>

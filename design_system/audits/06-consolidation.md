@@ -1,5 +1,66 @@
 # Sprint 6 opening consolidation audit
 
+## Italian tool pages, 2026-11-01
+
+Reviewed 1,468 source files and 432 candidate files. Seventeen candidates are
+added: the Italian twins of the tool pages (`<page>.it.html`, and
+`tools/tools-index.it.html` for /it/), each with its German twin's
+disposition. They use the same controls with Italian words. The language menu
+picks the new version up from the registry; no other template changed.
+Existing candidates shift lines only. No shared widget changed.
+
+## Portuguese tool pages and the language menu, 2026-11-01
+
+Reviewed 1,451 source files and 415 candidate files. Eighteen candidates are
+added. Seventeen are the Portuguese (Brazil) twins of the tool pages
+(`<page>.pt.html`, and `tools/tools-index.pt.html` for /pt/), each with its
+German twin's disposition. The eighteenth is `focused-apps/language-versions.ts`:
+the language switch, which was a row of plain links, is now one shared
+`MbPopover` (list layout) naming the current language, with every version as
+a link inside (adopted scope). The tool index templates use the same
+component instead of their hand-written header links, and `focused-page.css`
+drops the unused `.language-switch` rules. No shared widget changed.
+
+## Korean tool pages, 2026-11-01
+
+Reviewed 1,434 source files and 397 candidate files. Seventeen candidates are
+added: the Korean twins of the tool pages (`<page>.ko.html`, and
+`tools/tools-index.ko.html` for /ko/), each with its German twin's
+disposition. They use the same controls with Korean words. The other index
+headers gain a plain 한국어 link; `focused-page.css` adds
+`word-break: keep-all` under `:lang(ko)`. Existing candidates shift lines
+only. No shared widget changed.
+
+## Traditional Chinese tool pages, 2026-10-31
+
+Reviewed 1,417 source files and 380 candidate files. Seventeen candidates are
+added: the Traditional Chinese twins of the tool pages
+(`<page>.zh-hant.html`, and `tools/tools-index.zh-hant.html` for /zh-hant/),
+each with its German twin's disposition. They use the same controls with
+Chinese words. The other index headers gain a plain 繁體中文 link;
+`focused-page.css` adds strict line breaking under `:lang(zh)`. Existing
+candidates shift lines only. No shared widget changed.
+
+## Spanish tool pages and the lighter registry, 2026-10-31
+
+Reviewed 1,400 source files and 363 candidate files. Seventeen candidates are
+added: the Spanish twins of the tool pages (`<page>.es.html`, and
+`tools/tools-index.es.html` for /es/), each with its German twin's
+disposition. They use the same controls with Spanish words. The other index
+headers gain a plain Español link. The registry split (translations out of
+`focused-tools.json`) and the derived page tables touch TypeScript only; the
+bridge and search pages' language subclasses lost their root overrides.
+Existing candidates shift lines only. No shared widget changed.
+
+## French tool pages, 2026-10-31
+
+Reviewed 1,381 source files and 346 candidate files. Seventeen candidates are
+added: the French twins of the tool pages (`<page>.fr.html`, and
+`tools/tools-index.fr.html` for /fr/), each with its German twin's
+disposition. They use the same controls with French words. The other index
+headers gain a plain Français link. Existing candidates shift lines only. No
+shared widget changed.
+
 ## Japanese tool pages, 2026-10-31
 
 Reviewed 1,364 source files and 329 candidate files. Seventeen candidates are

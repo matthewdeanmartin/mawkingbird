@@ -1,0 +1,78 @@
+<main class="focused-page" lang="pt">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Abrir o app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Anistia de silenciados · Anistia de bloqueados</p>
+    <h1>Dessilencie e desbloqueie todo mundo no Mastodon</h1>
+    <p>
+      As listas de contas silenciadas e bloqueadas crescem por anos, e ninguém arruma. A anistia de
+      silenciados tira todos os silenciamentos, a de bloqueados todos os bloqueios, de uma vez, para
+      você recomeçar do zero.
+      @if (!inShell) {
+        O Mastodon só deixa desfazer isso conta por conta.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Carregando…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Entre com o Mastodon</h2>
+        <p>Suas listas são lidas do seu próprio servidor do Mastodon.</p>
+      </li>
+      <li>
+        <h2>Faça backup e revise</h2>
+        <p>
+          Antes de mudar qualquer coisa, você vê quantas contas estão na lista e pode baixá-la
+          primeiro, para conseguir desfazer a anistia.
+        </p>
+      </li>
+      <li>
+        <h2>Declare a anistia</h2>
+        <p>
+          Cada conta é dessilenciada ou desbloqueada uma depois da outra, com barra de progresso. Dá
+          para parar no meio.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Entrar com o Mastodon e começar uma anistia</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Perguntas</h2>
+    <h3>O que a anistia de silenciados muda?</h3>
+    <p>
+      Toda conta silenciada é dessilenciada, então as publicações e notificações dela voltam a
+      chegar. Palavras silenciadas e filtros ficam como estão.
+    </p>
+    <h3>O que a anistia de bloqueados muda?</h3>
+    <p>
+      Toda conta bloqueada é desbloqueada. Ela pode voltar a seguir você, ver suas publicações e
+      responder. Ninguém fica sabendo que você bloqueou ou que parou de bloquear.
+    </p>
+    <h3>Dá para desfazer uma anistia?</h3>
+    <p>
+      Só com backup. Baixe sua lista quando a revisão oferecer, e depois dá para importá-la de volta
+      pela página de importação do seu servidor do Mastodon.
+    </p>
+    <h3>Afeta os domínios bloqueados?</h3>
+    <p>Não. Só mudam as contas que você silenciou ou bloqueou uma por uma.</p>
+  </section>
+</main>

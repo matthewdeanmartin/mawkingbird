@@ -1,0 +1,82 @@
+<main class="focused-page" lang="it">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Apri l’app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Cerca hashtag</p>
+    <h1>Hashtag simili su Mastodon</h1>
+    <p>
+      Scrivi un hashtag, o più di uno, e guarda quali altri hashtag le persone usano insieme,
+      ordinati per quante volte compaiono negli stessi post recenti. Così ti trovano più persone, o
+      trovi più cose da seguire. Senza account.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/it/hashtag-simili-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Caricamento…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Scrivi gli hashtag</h2>
+        <p>Uno, o più con lo stesso significato, come #gatto e #gatti.</p>
+      </li>
+      <li>
+        <h2>Vengono analizzati i post recenti</h2>
+        <p>Gli ultimi 200 post con uno di questi, letti da mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Guarda cosa viaggia insieme</h2>
+        <p>
+          Ordinati per quanti di quei post contengono ciascun hashtag. Analizzane di più per una
+          vista più ampia.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Accedi con Mastodon e usa il tuo server</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Domande</h2>
+    <h3>Quali hashtag usare su Mastodon?</h3>
+    <p>
+      Su Mastodon nessun algoritmo decide chi vede il tuo post: le persone lo trovano seguendo un
+      hashtag o cercandolo. Usa gli hashtag che quelle persone usano già — esattamente quello che
+      mostra questo elenco — e scrivili in CamelCase (#GattiDiMastodon) perché gli screen reader
+      possano leggerli.
+    </p>
+    <h3>Come si decide cosa è “simile”?</h3>
+    <p>
+      Contando. Ogni hashtag dei post analizzati viene contato una volta per post, e quelli che hai
+      chiesto vengono esclusi. Un hashtag presente in 40 post su 200 viene prima di uno presente in
+      5.
+    </p>
+    <h3>Perché confrontare più hashtag insieme?</h3>
+    <p>
+      Lo stesso argomento si divide in più forme: #gatto e #gatti, #foto e #fotografia. Scrivendoli
+      insieme, vengono analizzati i post con uno qualsiasi di loro, e l’elenco copre tutta la
+      conversazione.
+    </p>
+    <h3>Perché i risultati cambiano da server a server?</h3>
+    <p>
+      Ogni server Mastodon vede solo i post delle persone seguite dai suoi utenti, quindi un server
+      grande e vivace dà la vista più ampia. Una volta effettuato l’accesso, l’analisi parte dal tuo
+      server e mostra cosa usa il tuo angolo di rete.
+    </p>
+  </section>
+</main>
