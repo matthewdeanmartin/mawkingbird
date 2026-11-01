@@ -152,3 +152,19 @@ export class GithubToMastodonPt extends GithubToMastodon {
 export class GithubToMastodonIt extends GithubToMastodon {
   protected override readonly returnHere = { next: '/it/amici-di-github-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-github-to-mastodon-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonPl extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/pl/znajomi-z-githuba-na-mastodonie' };
+}

@@ -1,0 +1,55 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Generator nazw</p>
+    <h1>Generator nazw użytkownika na Mastodonie</h1>
+    <p>
+      Wpisz swoje imię i dostań nazwy na Mastodonie, które naprawdę możesz mieć: każda propozycja
+      jest sprawdzana na serwerze, do którego chcesz dołączyć, a ulubiona także na największych
+      serwerach. Bez konta.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/pl/generator-nazw-uzytkownika-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Wczytywanie generatora…</p>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Jak wygląda nazwa na Mastodonie?</h3>
+    <p>
+      Ma dwie części: nazwę użytkownika i serwer, na przykład &#64;anna_nowak&#64;mastodon.social.
+      Nazwa użytkownika może zawierać litery, cyfry i podkreślenia, do 30 znaków, bez polskich
+      znaków, a wielkie litery nie tworzą innej nazwy.
+    </p>
+    <h3>Dlaczego sprawdzać więcej niż jeden serwer?</h3>
+    <p>
+      Każdy serwer ma własne nazwy użytkowników. Nazwa zajęta na mastodon.social może być wolna
+      gdzie indziej, a ludzie z dowolnego serwera i tak mogą Cię obserwować.
+    </p>
+    <h3>Czy „wygląda na wolną” to gwarancja?</h3>
+    <p>
+      Nie całkiem. Oznacza, że dziś nikt na tym serwerze nie ma tej nazwy. Nazwy usuniętych kont
+      pozostają zarezerwowane, a administratorzy mogą rezerwować słowa, więc ostatnie słowo należy
+      do formularza rejestracji.
+    </p>
+    <h3>Które serwery liczą się jako największe?</h3>
+    <p>
+      Te z największą liczbą rejestracji w katalogu joinmastodon.org, który wymienia serwery
+      przestrzegające umowy serwerów Mastodona. Niektóre wymagają zatwierdzenia nowych kont przez
+      administratora; lista pokazuje które.
+    </p>
+  </section>
+</main>

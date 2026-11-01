@@ -268,8 +268,8 @@ in the first load.
 
 Each language has a folder: English at the root, German under `/de/`
 (`de/mastodon-statistik`), Spanish under `/es/` (`es/estadisticas-de-mastodon`), Portuguese (Brazil) under `/pt/` (`pt/estatisticas-do-mastodon`),
-French under `/fr/` (`fr/statistiques-mastodon`), Italian under `/it/` (`it/statistiche-mastodon`), Japanese under `/ja/`, Korean under `/ko/`, Traditional Chinese under `/zh-hant/` (a folder is its code in lower case, `languageFolder()`; `hreflang` and `<html lang>` keep `zh-Hant`); the spec enforces it. Slugs are ASCII only and never
-renamed. German, Spanish, French, Italian and Portuguese slugs are words in the language, accents and apostrophes dropped;
+French under `/fr/` (`fr/statistiques-mastodon`), Italian under `/it/` (`it/statistiche-mastodon`), Polish under `/pl/` (`pl/statystyki-mastodona`), Japanese under `/ja/`, Korean under `/ko/`, Traditional Chinese under `/zh-hant/` (a folder is its code in lower case, `languageFolder()`; `hreflang` and `<html lang>` keep `zh-Hant`); the spec enforces it. Slugs are ASCII only and never
+renamed. German, Spanish, French, Italian, Polish and Portuguese slugs are words in the language, accents, diacritics and apostrophes dropped;
 Japanese, Korean and Chinese pages keep the English slug (`ja/download-mastodon-images`), as
 Japanese sites usually do, since romanised Japanese or pinyin is not what anyone searches. The first two German pages briefly lived at the root;
 `app.routes.ts` redirects those two old paths.
@@ -308,6 +308,7 @@ Japanese sites usually do, since romanised Japanese or pinyin is not what anyone
   phrases, not inside words.
 - **Korean copy** is formal polite (합니다체) with 회원님, like the app’s ko dictionary, and Mastodon’s Korean terms (게시물, 부스트, 북마크, 팔로워, 뮤트, 차단, 콘텐츠 경고); particles after Latin names follow their Korean reading (Mastodon과, Bluesky와). 마스토돈 sits beside Mastodon on the landing pages. `word-break: keep-all` under `:lang(ko)`, so lines break between words.
 - **Italian copy** says « tu », like the app’s it dictionary, and uses its Mastodon words (post, segnalibri, follower, silenziare/riattivare, bloccare/sbloccare, avvisi sul contenuto, preferiti); "boost (ricondivisioni)" on the boosts page. Typographic apostrophes (l’app) in the text.
+- **Polish copy** says « Ty » with the capitalised Twój/Cię of direct address, like the app’s pl dictionary, and its Mastodon words (wpis, zakładki, obserwujący, wyciszyć, zablokować, ostrzeżenia o treści, podbicie). Polish declines names (na Mastodonie, z Twittera), so the Bluesky ⇄ Mastodon page writes each direction out rather than interpolating `copy.from`/`copy.to`. Counts read "Zakładki: 5", since the app’s plurals have only one/other and Polish needs three forms. Past-tense second person is avoided because it would fix a gender.
 - **Portuguese copy** is Brazilian, like the app’s pt dictionary: você, arquivo, usuário, baixar, celular, and Mastodon’s Brazilian terms (publicação, marcadores, seguidores, silenciar, avisos de conteúdo); "boosts (republicações)" on the boosts page. `hreflang` is `pt`, since there is no European Portuguese version to tell apart.
 - **Chinese copy** is Traditional, Taiwan style like the app’s zh-Hant dictionary: polite 您, Mastodon’s own terms (嘟文, 轉嘟, 書籤, 跟隨者, 靜音, 封鎖, 內容警告), a space between Chinese and Latin words, and 長毛象 beside Mastodon on the landing pages. Strict line breaking under `:lang(zh)`. Mastodon tags Chinese posts `zh` while the interface locale is `zh-Hant`, so a landing copy can set `content` for the posting and known language.
 - **`<html lang>`** follows the page on public (indexable) routes: `Seo`

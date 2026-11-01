@@ -152,3 +152,21 @@ export class MastodonMuteBlockAmnestyPt extends MastodonMuteBlockAmnesty {
 export class MastodonMuteBlockAmnestyIt extends MastodonMuteBlockAmnesty {
   protected override readonly returnHere = { next: '/it/riattivare-e-sbloccare-tutti-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyPl extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/pl/odcisz-i-odblokuj-wszystkich-na-mastodonie',
+  };
+}

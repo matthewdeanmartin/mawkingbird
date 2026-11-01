@@ -1,0 +1,80 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Zakładki z Mastodona</p>
+    <h1>Wyeksportuj zakładki z Mastodona</h1>
+    <p>
+      Pobierz każdy wpis zapisany w zakładkach na Mastodonie jako plik zakładek, który zaimportuje
+      Twoja przeglądarka, Raindrop.io, Pinboard albo dowolna usługa zakładek. Zapisany wpis był dla
+      udostępnionego artykułu? Rozpakuj go i zachowaj sam artykuł.
+      @if (!inShell) {
+        Zaloguj się przez Mastodona, żeby zacząć.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Wczytaj zakładki</h2>
+        <p>Wszystkie zakładki Twojego konta na Mastodonie, czytane z Twojego serwera.</p>
+      </li>
+      <li>
+        <h2>Wybierz, co zachować</h2>
+        <p>
+          Same wpisy, linki, które udostępniały („rozpakowane”), albo tylko zakładki z udostępnionym
+          linkiem.
+        </p>
+      </li>
+      <li>
+        <h2>Zaimportuj plik</h2>
+        <p>
+          Zwykły plik zakładek: otwórz menedżer zakładek przeglądarki albo swoją usługę zakładek i
+          go zaimportuj.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i wyeksportuj zakładki</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy Mastodon nie eksportuje już zakładek?</h3>
+    <p>
+      Jego eksport danych podaje zakładki jako tabelę adresów wpisów, której przeglądarki i usługi
+      zakładek nie importują. Ten plik tak, z tytułami, tekstem i hashtagami.
+    </p>
+    <h3>Co znaczy „rozpakować”?</h3>
+    <p>
+      Większość zapisanych wpisów udostępniała jakiś link: artykuł, film, projekt. Rozpakowanie
+      zapisuje ten link zamiast wpisu o nim, z treścią wpisu jako opisem.
+    </p>
+    <h3>Czy moje zakładki gdzieś trafiają?</h3>
+    <p>
+      Nie. Są czytane z Twojego serwera Mastodona, a plik powstaje w Twojej przeglądarce. Nic nie
+      trafia do Mawkingbird.
+    </p>
+    <h3>Czy daty są poprawne?</h3>
+    <p>
+      Każda zakładka ma datę napisania wpisu. Mastodon nie zapisuje, kiedy dodano go do zakładek.
+    </p>
+  </section>
+</main>

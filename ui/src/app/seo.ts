@@ -45,6 +45,11 @@ export const TOOLS_INDEXES: Record<TranslatedLanguage, { title: string; descript
     description:
       'Mastodon과 Bluesky를 위한 무료 한국어 도구: Twitter 팔로우 옮기기, 게시물 예약, 이미지 일괄 다운로드, 비슷한 해시태그 찾기 등. 모두 브라우저에서 작동합니다.',
   },
+  pl: {
+    title: 'Darmowe narzędzia do Mastodona i Bluesky',
+    description:
+      'Darmowe narzędzia do Mastodona i Bluesky po polsku: przenieś obserwowanych z Twittera, planuj wpisy, pobieraj obrazy, znajdź podobne hashtagi i więcej. Wszystko w przeglądarce.',
+  },
   pt: {
     title: 'Ferramentas grátis para Mastodon e Bluesky',
     description:

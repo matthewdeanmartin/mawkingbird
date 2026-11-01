@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Przenieś obserwowanych z Twittera na Mastodona",
+    "description": "Znajdź na Mastodonie osoby, które obserwowałeś na Twitterze, i obserwuj je ponownie. Archiwum jest czytane w przeglądarce i nigdzie nie trafia.",
+    "prerenderCheck": {
+      "heading": "Przenieś obserwowanych z Twittera na Mastodona",
+      "copy": "Pobierz archiwum Twittera"
+    }
+  },
+  "crosspost": {
+    "title": "Publikuj jednocześnie na Mastodonie i Bluesky",
+    "description": "Napisz raz i opublikuj jednocześnie na Mastodonie i Bluesky. Zaloguj się jednym kontem, połącz drugie i wypróbuj od razu w przeglądarce.",
+    "prerenderCheck": {
+      "heading": "Publikuj jednocześnie na Mastodonie i Bluesky",
+      "copy": "Połącz drugie konto"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Statystyki Mastodona",
+    "description": "Darmowe statystyki konta na Mastodonie: najpopularniejsze wpisy, reakcje na każdy wpis, szacowany zasięg, godziny publikacji i aktywni obserwujący.",
+    "prerenderCheck": {
+      "heading": "Statystyki Mastodona dla Twojego konta",
+      "copy": "Twoje najlepsze wpisy"
+    }
+  },
+  "github-friends": {
+    "title": "Znajdź znajomych z GitHuba na Mastodonie",
+    "description": "Znajdź na Mastodonie osoby, które obserwujesz na GitHubie, najpierw po linkach w profilu, i obserwuj je jednym kliknięciem.",
+    "prerenderCheck": {
+      "heading": "Znajdź znajomych z GitHuba na Mastodonie",
+      "copy": "Połącz GitHuba"
+    }
+  },
+  "schedule": {
+    "title": "Planowanie wpisów na Mastodonie",
+    "description": "Planuj wpisy na Mastodonie: napisz kilka naraz, rozłóż je co dzień lub co godzinę, a serwer opublikuje je na czas nawet po zamknięciu karty.",
+    "prerenderCheck": {
+      "heading": "Planowanie wpisów na Mastodonie",
+      "copy": "Napisz swoje wpisy"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Znajdź na Mastodonie osoby obserwowane na Bluesky",
+    "description": "Znajdź na Mastodonie osoby, które obserwujesz na Bluesky: najpierw po profilu, potem po nazwie, i obserwuj je na Mastodonie.",
+    "prerenderCheck": {
+      "heading": "Znajdź na Mastodonie osoby, które obserwujesz na Bluesky",
+      "copy": "Wczytaj obserwowanych"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Znajdź na Bluesky osoby obserwowane na Mastodonie",
+    "description": "Znajdź na Bluesky osoby, które obserwujesz na Mastodonie: najpierw po profilu, potem po nazwie, i obserwuj je na Bluesky.",
+    "prerenderCheck": {
+      "heading": "Znajdź na Bluesky osoby, które obserwujesz na Mastodonie",
+      "copy": "Wczytaj obserwowanych"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Ukryj podbicia na Mastodonie",
+    "description": "Ukryj podbicia (boosty) wszystkich obserwowanych naraz, a nie po kolei. Dalej ich obserwujesz i w każdej chwili możesz to cofnąć.",
+    "prerenderCheck": {
+      "heading": "Ukryj podbicia wszystkich obserwowanych na Mastodonie",
+      "copy": "Zobacz, kogo to dotyczy"
+    }
+  },
+  "find-contacts": {
+    "title": "Znajdź swoje kontakty na Mastodonie",
+    "description": "Znajdź na Mastodonie osoby z książki adresowej: na Androidzie prosto z kontaktów, gdzie indziej z pliku Kontaktów Google. Nic nie opuszcza przeglądarki.",
+    "prerenderCheck": {
+      "heading": "Znajdź kontakty z telefonu na Mastodonie",
+      "copy": "Wybierz kontakty"
+    }
+  },
+  "friend-feeds": {
+    "title": "Kanały RSS obserwowanych na Mastodonie",
+    "description": "Znajdź blogi i kanały RSS osób, które obserwujesz na Mastodonie, po linkach w ich profilach, zebrane w pliku OPML do dowolnego czytnika.",
+    "prerenderCheck": {
+      "heading": "Znajdź blogi i kanały RSS wszystkich obserwowanych na Mastodonie",
+      "copy": "Pobierz OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Wyłącz wyciszenia i odblokuj wszystkich na Mastodonie",
+    "description": "Wyłącz wszystkie wyciszenia albo odblokuj wszystkich na Mastodonie naraz, po zrobieniu kopii. Sam Mastodon pozwala na to tylko konto po koncie.",
+    "prerenderCheck": {
+      "heading": "Wyłącz wyciszenia i odblokuj wszystkich na Mastodonie",
+      "copy": "Zrób kopię i sprawdź"
+    }
+  },
+  "pseudonymity": {
+    "title": "Anonimowo na Mastodonie",
+    "description": "Sprawdź naraz ustawienia, które łączą Twoje konto na Mastodonie z Tobą: ukryj listy obserwowanych, wyjdź z wyszukiwania i podpowiedzi, zobacz, czego nie da się wyłączyć.",
+    "prerenderCheck": {
+      "heading": "Jak być anonimowym (pod pseudonimem) na Mastodonie",
+      "copy": "Ukryj ludzi wokół siebie"
+    }
+  },
+  "handle-generator": {
+    "title": "Generator nazw użytkownika na Mastodonie",
+    "description": "Wpisz swoje imię i dostań wolne nazwy użytkownika na Mastodonie, sprawdzone na serwerze, do którego chcesz dołączyć, i na największych. Bez rejestracji.",
+    "prerenderCheck": {
+      "heading": "Generator nazw użytkownika na Mastodonie",
+      "copy": "Jak wygląda nazwa na Mastodonie"
+    }
+  },
+  "content-warnings": {
+    "title": "Wyłącz ostrzeżenia o treści na Mastodonie",
+    "description": "Rozwijaj automatycznie ostrzeżenia o treści na Mastodonie i od razu pokazuj wrażliwe multimedia, wszystkim albo tylko zaufanym osobom.",
+    "prerenderCheck": {
+      "heading": "Jak wyłączyć ostrzeżenia o treści na Mastodonie",
+      "copy": "Pokaż wrażliwe multimedia"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Eksport zakładek z Mastodona",
+    "description": "Pobierz zakładki z Mastodona jako plik zakładek do przeglądarki, Raindrop.io lub Pinboard, albo zachowaj tylko udostępnione linki.",
+    "prerenderCheck": {
+      "heading": "Wyeksportuj zakładki z Mastodona",
+      "copy": "Wybierz, co zachować"
+    }
+  },
+  "mastodon-search": {
+    "title": "Wyszukiwanie na Mastodonie: wpisy, osoby, hashtagi",
+    "description": "Szukaj wpisów, osób i hashtagów na Mastodonie z filtrami znanymi z Twittera: from:, has:media, daty i dokładne frazy. Bez konta.",
+    "prerenderCheck": {
+      "heading": "Szukaj na Mastodonie",
+      "copy": "Zawęź"
+    }
+  },
+  "bluesky-search": {
+    "title": "Wyszukiwanie na Bluesky: wpisy i osoby",
+    "description": "Szukaj osób i wpisów na Bluesky z filtrami znanymi z Twittera: from:, język, daty i dokładne frazy. Wpisy wymagają logowania przez Bluesky.",
+    "prerenderCheck": {
+      "heading": "Szukaj na Bluesky",
+      "copy": "Zawęź"
+    }
+  },
+  "download-media": {
+    "title": "Pobierz obrazy z konta na Mastodonie",
+    "description": "Zobacz wszystkie obrazy opublikowane przez konto na Mastodonie i pobierz je naraz, w ZIP lub osobno, razem z GIF-ami, wideo i dźwiękiem. Bez konta.",
+    "prerenderCheck": {
+      "heading": "Pobierz obrazy z konta na Mastodonie",
+      "copy": "Zobacz obrazy"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Podobne hashtagi na Mastodonie",
+    "description": "Znajdź hashtagi używane razem z Twoimi na Mastodonie, uszeregowane według liczby ostatnich wpisów, w których się pojawiają. Porównaj kilka naraz. Bez konta.",
+    "prerenderCheck": {
+      "heading": "Podobne hashtagi na Mastodonie",
+      "copy": "Zobacz, co idzie w parze"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon po polsku",
+    "description": "Mastodon po polsku, ustawiony za jednym razem: aplikacja po polsku, tylko języki, które czytasz, i tłumaczenia dla tych, których się uczysz. Za darmo.",
+    "prerenderCheck": {
+      "heading": "Mastodon po polsku",
+      "copy": "Tylko języki, które czytasz"
+    }
+  },
+  "learn-english": {
+    "title": "Nauka angielskiego z Mastodonem",
+    "description": "Ucz się angielskiego, czytając Mastodona: angielskie wpisy są zawsze widoczne, z tłumaczeniem pod spodem, automatycznym albo na żądanie. Za darmo.",
+    "prerenderCheck": {
+      "heading": "Nauka angielskiego z Mastodonem",
+      "copy": "Angielski zawsze widoczny"
+    }
+  }
+}

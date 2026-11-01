@@ -19,6 +19,7 @@ const ENDONYMS: Record<PageLanguage, string> = {
   it: 'Italiano',
   ja: '日本語',
   ko: '한국어',
+  pl: 'Polski',
   pt: 'Português',
   'zh-Hant': '繁體中文',
 };

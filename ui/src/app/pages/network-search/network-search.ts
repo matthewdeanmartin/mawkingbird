@@ -144,3 +144,17 @@ export class NetworkSearchPt extends NetworkSearch {}
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchIt extends NetworkSearch {}
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-network-search-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.pl.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchPl extends NetworkSearch {}

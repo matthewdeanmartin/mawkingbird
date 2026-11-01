@@ -153,3 +153,19 @@ export class CrosspostPt extends Crosspost {
 export class CrosspostIt extends Crosspost {
   protected override readonly returnHere = { next: '/it/pubblicare-su-mastodon-e-bluesky' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostPl extends Crosspost {
+  protected override readonly returnHere = { next: '/pl/publikuj-na-mastodonie-i-bluesky' };
+}

@@ -201,3 +201,24 @@ export class TwitterToMastodonPt extends TwitterToMastodon {}
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonIt extends TwitterToMastodon {}
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-pl',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonPl extends TwitterToMastodon {}

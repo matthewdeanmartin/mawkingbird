@@ -1,0 +1,77 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Podbicia na Mastodonie</p>
+    <h1>Ukryj podbicia wszystkich obserwowanych na Mastodonie</h1>
+    <p>
+      Podbicia (boosty) to mastodonowe retweety. Dalej obserwuj wszystkich, ale oglądaj tylko to, co
+      piszą sami.
+      @if (!inShell) {
+        Mastodon ukrywa podbicia tylko konto po koncie; to narzędzie robi to dla wszystkich naraz.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się przez Mastodona</h2>
+        <p>Lista obserwowanych jest czytana z Twojego serwera Mastodona.</p>
+      </li>
+      <li>
+        <h2>Zobacz, kogo to dotyczy</h2>
+        <p>Zanim cokolwiek się zmieni, zobaczysz, ilu obserwowanych ma nadal włączone podbicia.</p>
+      </li>
+      <li>
+        <h2>Potwierdź i obserwuj postęp</h2>
+        <p>
+          Każde konto jest zmieniane po kolei, z paskiem postępu. Możesz przerwać w połowie i
+          dokończyć później.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i ukryj podbicia</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy przestaję kogoś obserwować?</h3>
+    <p>
+      Nie. Dalej obserwujesz wszystkich, a ich własne wpisy i odpowiedzi nadal trafiają na Twoją oś
+      główną. Znikają tylko podbicia.
+    </p>
+    <h3>Czy można to cofnąć?</h3>
+    <p>
+      Tak. Ta sama strona włącza podbicia z powrotem dla wszystkich, a dla jednego konta robi się to
+      w jego profilu.
+    </p>
+    <h3>A osoby, które zaobserwuję później?</h3>
+    <p>
+      Nowe konta zaczynają z włączonymi podbiciami, jak zawsze na Mastodonie. Uruchom narzędzie
+      ponownie, kiedy chcesz; zmieni tylko konta, które tego wymagają.
+    </p>
+    <h3>Dlaczego to chwilę trwa?</h3>
+    <p>
+      Mastodon nie ma ustawienia „dla wszystkich naraz”, więc każde obserwowane konto zmienia się
+      osobno. Długa lista zajmuje kilka minut.
+    </p>
+  </section>
+</main>

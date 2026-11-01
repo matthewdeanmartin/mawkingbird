@@ -1,0 +1,78 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Amnestia wyciszeń · Amnestia blokad</p>
+    <h1>Wyłącz wyciszenia i odblokuj wszystkich na Mastodonie</h1>
+    <p>
+      Listy wyciszonych i zablokowanych kont rosną latami i nikt ich nie porządkuje. Amnestia
+      wyciszeń zdejmuje wszystkie wyciszenia, amnestia blokad wszystkie blokady, za jednym razem,
+      żeby zacząć od nowa.
+      @if (!inShell) {
+        Mastodon pozwala na to tylko konto po koncie.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się przez Mastodona</h2>
+        <p>Listy są czytane z Twojego serwera Mastodona.</p>
+      </li>
+      <li>
+        <h2>Zrób kopię i sprawdź</h2>
+        <p>
+          Zanim cokolwiek się zmieni, zobaczysz, ile kont jest na liście, i możesz ją najpierw
+          pobrać, żeby dało się cofnąć amnestię.
+        </p>
+      </li>
+      <li>
+        <h2>Ogłoś amnestię</h2>
+        <p>
+          Każde konto jest po kolei odciszane lub odblokowywane, z paskiem postępu. Możesz przerwać
+          w połowie.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i zacznij amnestię</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Co zmienia amnestia wyciszeń?</h3>
+    <p>
+      Każde wyciszone konto przestaje być wyciszone, więc jego wpisy i powiadomienia znów do Ciebie
+      docierają. Wyciszone słowa i filtry zostają bez zmian.
+    </p>
+    <h3>Co zmienia amnestia blokad?</h3>
+    <p>
+      Każde zablokowane konto zostaje odblokowane. Może znów Cię obserwować, widzieć Twoje wpisy i
+      odpowiadać. Nikt się nie dowie, że było zablokowane ani że blokada zniknęła.
+    </p>
+    <h3>Czy można cofnąć amnestię?</h3>
+    <p>
+      Tylko mając kopię. Pobierz listę, gdy sprawdzanie to zaproponuje, a potem możesz ją
+      zaimportować z powrotem na stronie importu swojego serwera Mastodona.
+    </p>
+    <h3>Czy dotyczy to zablokowanych domen?</h3>
+    <p>Nie. Zmieniają się tylko konta, które wyciszono lub zablokowano pojedynczo.</p>
+  </section>
+</main>

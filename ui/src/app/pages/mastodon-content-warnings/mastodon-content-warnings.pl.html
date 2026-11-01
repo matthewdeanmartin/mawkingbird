@@ -1,0 +1,75 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Ostrzeżenia o treści</p>
+    <h1>Jak wyłączyć ostrzeżenia o treści na Mastodonie</h1>
+    <p>
+      Masz dość klikania „Pokaż więcej” przy każdym wpisie i stukania w rozmyte zdjęcia? Ostrzeżenia
+      o treści mogą rozwijać się same, a wrażliwe multimedia mogą być widoczne od razu.
+      @if (!inShell) {
+        Zaloguj się: to dwa przełączniki.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie ustawień…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Rozwijaj ostrzeżenia o treści</h2>
+        <p>Wpisy z ostrzeżeniem otwierają się same. Tekst ostrzeżenia nadal jest widoczny.</p>
+      </li>
+      <li>
+        <h2>Pokaż wrażliwe multimedia</h2>
+        <p>Zdjęcia i filmy oznaczone jako wrażliwe są widoczne bez rozmycia.</p>
+      </li>
+      <li>
+        <h2>Albo tylko dla zaufanych osób</h2>
+        <p>
+          Zostaw ostrzeżenia zamknięte dla nieznajomych, a otwarte dla znajomych: zaufaj konkretnym
+          osobom albo wszystkim obserwowanym.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i wyłącz</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Jak to zrobić na stronie Mastodona?</h3>
+    <p>
+      Otwórz preferencje swojego serwera, włącz „Zawsze rozwijaj wpisy z ostrzeżeniem o treści” i
+      ustaw „Wyświetlanie multimediów” na „Pokaż wszystkie”. Te ustawienia należą do serwera i
+      działają na jego stronie oraz w niektórych aplikacjach.
+    </p>
+    <h3>Dlaczego Mawkingbird nie może zmienić ustawienia mojego serwera?</h3>
+    <p>
+      Mastodon pozwala aplikacjom czytać te ustawienia, ale nie zmieniać ich, więc Mawkingbird ma
+      własne przełączniki. Po zalogowaniu ta strona pokazuje, jak ustawiony jest Twój serwer.
+    </p>
+    <h3>Czy nadal widać, że wpis miał ostrzeżenie?</h3>
+    <p>Tak. Tekst ostrzeżenia zostaje nad wpisem; znika tylko kliknięcie, żeby go otworzyć.</p>
+    <h3>Czy to zmienia to, co widzą inni?</h3>
+    <p>
+      Nie. Zmienia tylko to, jak wpisy otwierają się u Ciebie. Ostrzeżenia autorów zostają dla
+      wszystkich innych.
+    </p>
+  </section>
+</main>

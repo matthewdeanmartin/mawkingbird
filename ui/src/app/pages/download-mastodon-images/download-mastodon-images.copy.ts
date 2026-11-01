@@ -446,4 +446,51 @@ export const DOWNLOAD_IMAGES_COPY: Record<PageLanguage, DownloadImagesCopy> = {
       },
     ],
   },
+  pl: {
+    path: '/pl/pobierz-obrazy-z-mastodona',
+    openApp: 'Otwórz aplikację',
+    eyebrow: 'Multimedia z Mastodona',
+    heading: 'Pobierz obrazy z konta na Mastodonie',
+    intro:
+      'Wklej konto z Mastodona i zobacz wszystkie opublikowane przez nie obrazy na jednej stronie. Potem pobierz je wszystkie naraz, jako ZIP albo osobne pliki, jeśli chcesz także z GIF-ami, wideo i dźwiękiem. Bez konta.',
+    loading: 'Wczytywanie…',
+    steps: [
+      {
+        title: 'Wklej konto',
+        body: 'Nazwę w rodzaju @ktos@mastodon.social, link do profilu albo po prostu imię i nazwisko.',
+      },
+      {
+        title: 'Zobacz obrazy',
+        body: 'Każdy wpis z multimediami, od najnowszych, czytany prosto z jego serwera.',
+      },
+      {
+        title: 'Pobierz wszystko',
+        body: 'Wybierz obrazy, GIF-y, wideo lub dźwięk, jak daleko wstecz, i ZIP albo osobne pliki.',
+      },
+    ],
+    signIn: 'Zaloguj się przez Mastodona',
+    questionsTitle: 'Pytania',
+    questions: [
+      {
+        q: 'Jak pobrać wszystkie obrazy z konta na Mastodonie?',
+        a: 'Wklej konto powyżej, stuknij „Pobierz multimedia” i wybierz ZIP. Sam Mastodon zapisuje obrazy tylko pojedynczo albo pobiera archiwum Twojego własnego konta.',
+      },
+      {
+        q: 'Czy mogę pobrać własne multimedia z Mastodona?',
+        a: 'Tak: wklej swoją nazwę. Do pełnej kopii konta ze wszystkimi wpisami użyj też eksportu danych swojego serwera (Preferencje → Import i eksport).',
+      },
+      {
+        q: 'Dlaczego niektórych plików nie udało się pobrać?',
+        a: 'Strona internetowa może zapisać plik tylko wtedy, gdy serwer, na którym leży, pozwala innym stronom go czytać. Większość serwerów Mastodona na to pozwala, niektóre nie. Takie pliki są wymienione jako linki, żeby otworzyć i zapisać je pojedynczo.',
+      },
+      {
+        q: 'Czy pliki przechodzą przez Mawkingbird?',
+        a: 'Nie. Twoja przeglądarka pobiera je prosto z serwerów Mastodona i sama tworzy plik ZIP. Nic nie jest wysyłane.',
+      },
+      {
+        q: 'Czy mogę pobierać obrazy innych osób?',
+        a: 'Obrazy nadal należą do autorów. Zachowanie kopii dla siebie to jedno; publikowanie ich gdzie indziej wymaga zgody autora.',
+      },
+    ],
+  },
 };

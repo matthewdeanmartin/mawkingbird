@@ -1,0 +1,80 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Kontakty</p>
+    <h1>Znajdź kontakty z telefonu na Mastodonie</h1>
+    <p>
+      Część osób z Twojej książki adresowej jest już na Mastodonie. To narzędzie ich szuka i pozwala
+      obserwować tych, których rozpoznajesz.
+      @if (!inShell) {
+        Zaloguj się przez Mastodona, wybierz kontakty albo wgraj plik kontaktów i zobacz, kto się
+        pojawi.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie wyszukiwania…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się przez Mastodona</h2>
+        <p>Wyszukiwanie odbywa się przez Twój własny serwer Mastodona.</p>
+      </li>
+      <li>
+        <h2>Wybierz kontakty</h2>
+        <p>
+          Na telefonie z Androidem w Chrome wybierasz prosto z kontaktów. Wszędzie indziej wgrywasz
+          plik kontaktów wyeksportowany z Kontaktów Google.
+        </p>
+      </li>
+      <li>
+        <h2>Obserwuj tych, których znasz</h2>
+        <p>
+          Każdy wynik pokazuje, dlaczego jest proponowany. Obserwuj ludzi pojedynczo; nikt nie
+          zostanie zaobserwowany za Ciebie.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i znajdź kontakty</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy moje kontakty są wysyłane?</h3>
+    <p>
+      Nie. Kontakty zostają w tej przeglądarce. Tylko utworzone z nich frazy wyszukiwania, na
+      przykład imię i nazwisko albo nazwa użytkownika, trafiają na Twój serwer Mastodona, a po
+      zamknięciu strony nic nie zostaje zapisane.
+    </p>
+    <h3>Skąd wziąć plik kontaktów?</h3>
+    <p>
+      W Kontaktach Google wybierz „Eksportuj” i format Google CSV, a potem wgraj ten plik tutaj.
+    </p>
+    <h3>Dlaczego dopasowanie to tylko przypuszczenie?</h3>
+    <p>
+      Mastodon nie pozwala szukać po numerze telefonu ani e-mailu, więc ludzie są dopasowywani po
+      poszlakach: nazwie z Mastodona zapisanej w kontakcie, imieniu i nazwisku, nazwie i domenie
+      e-maila, stronie internetowej. Rzadkie nazwisko łatwo znaleźć; popularne może dać obcych,
+      dlatego każdą osobę obserwujesz samodzielnie.
+    </p>
+    <h3>Ktoś nie jest jeszcze na Mastodonie?</h3>
+    <p>Zaproś go: po wyszukiwaniu gotowe zaproszenia są o jedno kliknięcie.</p>
+  </section>
+</main>

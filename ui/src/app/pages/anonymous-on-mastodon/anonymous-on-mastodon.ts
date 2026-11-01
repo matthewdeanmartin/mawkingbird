@@ -153,3 +153,19 @@ export class AnonymousOnMastodonPt extends AnonymousOnMastodon {
 export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
   protected override readonly returnHere = { next: '/it/anonimo-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonPl extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/pl/anonimowo-na-mastodonie' };
+}

@@ -12,6 +12,7 @@ import fr from './tool-translations/fr.json';
 import it from './tool-translations/it.json';
 import ja from './tool-translations/ja.json';
 import ko from './tool-translations/ko.json';
+import pl from './tool-translations/pl.json';
 import pt from './tool-translations/pt.json';
 import zhHant from './tool-translations/zh-Hant.json';
 
@@ -27,6 +28,7 @@ export const TOOL_COPY: Record<TranslatedLanguage, Record<string, ToolCopy>> = {
   it,
   ja,
   ko,
+  pl,
   pt,
   'zh-Hant': zhHant,
 };

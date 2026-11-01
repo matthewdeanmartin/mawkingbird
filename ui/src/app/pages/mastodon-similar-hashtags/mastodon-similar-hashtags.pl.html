@@ -1,0 +1,80 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Wyszukiwarka hashtagów</p>
+    <h1>Podobne hashtagi na Mastodonie</h1>
+    <p>
+      Wpisz jeden hashtag albo kilka i zobacz, jakich innych hashtagów ludzie używają razem z nimi,
+      uszeregowanych według tego, jak często pojawiają się w tych samych ostatnich wpisach. Dzięki
+      temu znajdzie Cię więcej osób albo Ty znajdziesz więcej rzeczy do obserwowania. Bez konta.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/pl/podobne-hashtagi-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Wczytywanie…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Wpisz hashtagi</h2>
+        <p>Jeden albo kilka o tym samym znaczeniu, na przykład #kot i #koty.</p>
+      </li>
+      <li>
+        <h2>Ostatnie wpisy są analizowane</h2>
+        <p>200 najnowszych wpisów z którymkolwiek z nich, czytanych z mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Zobacz, co idzie w parze</h2>
+        <p>
+          Uszeregowane według tego, w ilu z tych wpisów pojawia się każdy hashtag. Przeanalizuj
+          więcej, żeby zobaczyć szerzej.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i użyj swojego serwera</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Jakich hashtagów używać na Mastodonie?</h3>
+    <p>
+      Na Mastodonie żaden algorytm nie decyduje, kto zobaczy Twój wpis: ludzie znajdują go,
+      obserwując hashtag albo szukając go. Używaj hashtagów, których ci ludzie już używają —
+      dokładnie tego, co pokazuje ta lista — i pisz je w CamelCase (#KotyNaMastodonie), żeby
+      czytniki ekranu mogły je odczytać.
+    </p>
+    <h3>Jak ustalane jest „podobieństwo”?</h3>
+    <p>
+      Przez liczenie. Każdy hashtag z analizowanych wpisów jest liczony raz na wpis, a te, o które
+      pytasz, są pomijane. Hashtag z 40 wpisów na 200 stoi przed hashtagiem z 5.
+    </p>
+    <h3>Po co porównywać kilka hashtagów naraz?</h3>
+    <p>
+      Jeden temat rozkłada się na kilka zapisów: #kot i #koty, #foto i #fotografia. Wpisane razem
+      dają analizę wpisów z którymkolwiek z nich, a lista obejmuje całą rozmowę.
+    </p>
+    <h3>Dlaczego wyniki różnią się między serwerami?</h3>
+    <p>
+      Każdy serwer Mastodona widzi tylko wpisy osób obserwowanych przez jego użytkowników, więc duży
+      i aktywny serwer daje najszerszy obraz. Po zalogowaniu analiza pochodzi z Twojego serwera i
+      pokazuje, czego używa Twój zakątek sieci.
+    </p>
+  </section>
+</main>

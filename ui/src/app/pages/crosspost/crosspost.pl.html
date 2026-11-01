@@ -1,0 +1,69 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Publikuj jednocześnie na Mastodonie i Bluesky</h1>
+    <p>
+      Napisz raz i wyślij ten sam wpis do obu sieci.
+      @if (!inShell) {
+        Zaloguj się kontem, które masz, połącz drugie i wypróbuj to w prostym edytorze.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie edytora…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się jednym z nich</h2>
+        <p>Użyj konta na Mastodonie albo na Bluesky. Na początek wystarczy jedno.</p>
+      </li>
+      <li>
+        <h2>Połącz drugie konto</h2>
+        <p>
+          Po zalogowaniu przez Mastodona łączysz Bluesky hasłem aplikacji. Po zalogowaniu przez
+          Bluesky dodajesz swój serwer Mastodona.
+        </p>
+      </li>
+      <li>
+        <h2>Napisz raz, opublikuj wszędzie</h2>
+        <p>Edytor wysyła Twój wpis do obu sieci. Wypróbuj to na pierwszym wpisie.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Zaloguj się przez Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy kopia na Bluesky jest identyczna?</h3>
+    <p>
+      Tekst tak. Kopia na Bluesky jest zawsze publiczna, a ankiety i ostrzeżenia o treści zostają w
+      kopii na Mastodonie, bo Bluesky nie ma ich odpowiedników.
+    </p>
+    <h3>Gdzie są zapisane moje logowania?</h3>
+    <p>
+      W tej przeglądarce. Mawkingbird rozmawia bezpośrednio z Twoim serwerem Mastodona i z Bluesky;
+      nie ma po drodze żadnego serwera Mawkingbird, który przechowuje Twoje konta.
+    </p>
+  </section>
+</main>

@@ -188,3 +188,21 @@ export class ToolsIndexIt extends ToolsIndex {
     account: 'Cura il tuo account',
   });
 }
+
+/** /pl/: the Polish pages, the same way. */
+@Component({
+  selector: 'app-tools-index-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.pl.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexPl extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Zacznij na Mastodonie',
+    languages: 'Twoje języki',
+    search: 'Wyszukiwanie',
+    people: 'Znajdź swoich ludzi',
+    post: 'Publikowanie',
+    account: 'Zadbaj o swoje konto',
+  });
+}

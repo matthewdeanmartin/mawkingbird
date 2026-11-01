@@ -1,0 +1,81 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS i OPML</p>
+    <h1>Znajdź blogi i kanały RSS wszystkich obserwowanych na Mastodonie</h1>
+    <p>
+      Wiele osób podaje swoją stronę w profilu na Mastodonie. To narzędzie sprawdza, czy te linki
+      mają kanał, i zbiera wszystkie znalezione w jednym pliku OPML do dowolnego czytnika.
+      @if (!inShell) {
+        To część Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Wczytaj obserwowanych</h2>
+        <p>Lista jest czytana z Twojego serwera Mastodona, razem z linkami z każdego profilu.</p>
+      </li>
+      <li>
+        <h2>Sprawdź ich strony</h2>
+        <p>
+          Każda podlinkowana strona jest pytana, czy ma kanał. Ty decydujesz, ile stron sprawdzić, i
+          możesz przerwać w każdej chwili, zachowując to, co już znaleziono.
+        </p>
+      </li>
+      <li>
+        <h2>Pobierz OPML</h2>
+        <p>
+          Zaimportuj plik do wybranego czytnika albo obserwuj kanały tutaj, w czytniku RSS
+          Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i znajdź ich kanały</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Co zawiera Plus</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Dlaczego to funkcja Plus?</h3>
+    <p>
+      Sprawdzanie setek cudzych stron idzie przez serwer pośredniczący, za który płaci Mawkingbird,
+      jedno zapytanie na stronę. Plus pokrywa ten koszt.
+    </p>
+    <h3>Czym jest plik OPML?</h3>
+    <p>
+      To format list subskrypcji, który rozumie każdy czytnik kanałów. Zaimportuj go do Feedly,
+      NetNewsWire, Inoreadera lub innego czytnika, żeby obserwować wszystkie kanały naraz.
+    </p>
+    <h3>Czy znajduje wszystkich?</h3>
+    <p>
+      Tylko osoby, które mają stronę w profilu, i tylko strony z kanałem. Duże platformy, które
+      nigdy nie mają osobistego kanału, są pomijane bez sprawdzania.
+    </p>
+    <h3>Czy drugi przebieg kosztuje tyle samo?</h3>
+    <p>
+      Nie. Sprawdzone strony są zapamiętywane: po zaobserwowaniu kilku nowych osób kolejny przebieg
+      sprawdza tylko ich strony.
+    </p>
+  </section>
+</main>

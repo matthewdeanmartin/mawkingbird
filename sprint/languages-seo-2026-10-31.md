@@ -383,3 +383,22 @@ Owner: "add compact menu because this is going to get to ~15".
   menu lists nine languages with Italiano marked and switches to Korean;
   handle generator, search, bridge, download form and landing page all
   Italian; no horizontal overflow; no page errors.
+
+### Polish (2026-11-01)
+
+- 22 pages under `/pl/` with Polish slugs, diacritics dropped
+  (`pl/statystyki-mastodona`, `pl/pobierz-obrazy-z-mastodona`,
+  `pl/mastodon-po-polsku`, `pl/nauka-angielskiego-z-mastodonem`).
+- Copy says « Ty » with capitalised Twój/Cię, like the app's pl dictionary:
+  wpis, zakładki, obserwujący, wyciszyć/odciszyć, zablokować/odblokować,
+  ostrzeżenia o treści, podbicie. Declension handled by writing out both
+  directions on the Bluesky ⇄ Mastodon page; counts as "Zakładki: 5" since
+  the app's plurals are one/other only; no gendered past-tense second person.
+- pl.json: 424 strings; coverage 78% → 84%. Design inventory: 17 twins.
+- Gates: format, lint, check:i18n, design:inventory-check, `make test`
+  (8,890 tests, 0 failed, 0 missing), build:mockingbird (initial 888.63 kB),
+  `make test-seo`, `test:seo:browser` passed.
+- Live (en-US Chromium, 1100px and 375px): `/pl/` (`lang="pl"`, 21 pages);
+  menu lists ten languages with Polski marked; handle generator, search,
+  Bluesky → Mastodon (declined forms), download form and landing page all
+  Polish; no horizontal overflow; no page errors.

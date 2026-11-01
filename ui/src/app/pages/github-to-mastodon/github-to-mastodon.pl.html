@@ -1,0 +1,65 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Z GitHuba na Mastodona</p>
+    <h1>Znajdź znajomych z GitHuba na Mastodonie</h1>
+    <p>
+      Wiele osób programujących podaje swoje konto na Mastodonie na GitHubie. Mawkingbird sprawdza
+      osoby, które obserwujesz na GitHubie, i właścicieli repozytoriów oznaczonych przez Ciebie
+      gwiazdką, i pozwala obserwować ich na Mastodonie.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Wczytywanie wyszukiwania…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się przez Mastodona</h2>
+        <p>Obserwujesz ludzi własnym kontem na Mastodonie, więc to pierwszy krok.</p>
+      </li>
+      <li>
+        <h2>Połącz GitHuba</h2>
+        <p>
+          Wklej osobisty token dostępu z GitHuba; strona pokaże, jak go utworzyć. GitHub nie pozwala
+          aplikacjom w przeglądarce logować się inaczej, a token zostaje w tej przeglądarce.
+        </p>
+      </li>
+      <li>
+        <h2>Znajdź i obserwuj</h2>
+        <p>
+          Najpierw linki do Mastodona w profilach, potem ograniczone wyszukiwanie po nazwie. Każdy
+          wynik pokazuje poszlaki, a Ty decydujesz, kogo obserwować.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Dokąd trafia mój token GitHuba?</h3>
+    <p>
+      Jest zapisany w tej przeglądarce i wysyłany tylko do <code>api.github.com</code>, nigdy do
+      Mawkingbird. Unieważnij go na GitHubie, kiedy chcesz.
+    </p>
+    <h3>Czy obserwuje ludzi automatycznie?</h3>
+    <p>Nie. Każde obserwowanie to przycisk, który klikasz obok poszlak dopasowania.</p>
+  </section>
+</main>

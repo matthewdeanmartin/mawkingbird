@@ -21,6 +21,7 @@ const COPY: Record<TranslatedLanguage, () => Promise<Record<string, ToolCopy>>> 
   it: () => import('./tool-translations/it.json').then((m) => m.default),
   ja: () => import('./tool-translations/ja.json').then((m) => m.default),
   ko: () => import('./tool-translations/ko.json').then((m) => m.default),
+  pl: () => import('./tool-translations/pl.json').then((m) => m.default),
   pt: () => import('./tool-translations/pt.json').then((m) => m.default),
   'zh-Hant': () => import('./tool-translations/zh-Hant.json').then((m) => m.default),
 };

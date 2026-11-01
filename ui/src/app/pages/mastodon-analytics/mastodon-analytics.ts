@@ -152,3 +152,19 @@ export class MastodonAnalyticsPt extends MastodonAnalytics {
 export class MastodonAnalyticsIt extends MastodonAnalytics {
   protected override readonly returnHere = { next: '/it/statistiche-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-analytics-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsPl extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/pl/statystyki-mastodona' };
+}

@@ -1,0 +1,109 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <!-- Polish declines the network names, so each direction is written out. -->
+  <div class="intro">
+    @if (copy.source === 'bluesky') {
+      <p class="eyebrow">Z Bluesky na Mastodona</p>
+      <h1>Znajdź na Mastodonie osoby, które obserwujesz na Bluesky</h1>
+      <p>
+        Wiele osób, które obserwujesz na Bluesky, jest też na Mastodonie. To narzędzie je znajduje i
+        pozwala obserwować je również tam.
+        @if (!inShell) {
+          Zaloguj się jednym z kont, połącz drugie i zobacz, kto już tam jest.
+        }
+      </p>
+    } @else {
+      <p class="eyebrow">Z Mastodona na Bluesky</p>
+      <h1>Znajdź na Bluesky osoby, które obserwujesz na Mastodonie</h1>
+      <p>
+        Wiele osób, które obserwujesz na Mastodonie, jest też na Bluesky. To narzędzie je znajduje i
+        pozwala obserwować je również tam.
+        @if (!inShell) {
+          Zaloguj się jednym z kont, połącz drugie i zobacz, kto już tam jest.
+        }
+      </p>
+    }
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Wczytywanie wyszukiwania…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Zaloguj się do obu</h2>
+        <p>Zaloguj się kontem na Mastodonie albo na Bluesky, a drugie połącz w następnym kroku.</p>
+      </li>
+      <li>
+        <h2>Wczytaj obserwowanych</h2>
+        <p>
+          @if (copy.source === 'bluesky') {
+            Każdy, kogo obserwujesz na Bluesky i kto wpisał w bio swoją nazwę z Mastodona, zostaje
+            od razu dopasowany, bez kosztów.
+          } @else {
+            Każdy, kogo obserwujesz na Mastodonie i kto wpisał w bio swoją nazwę z Bluesky, zostaje
+            od razu dopasowany, bez kosztów.
+          }
+        </p>
+      </li>
+      <li>
+        <h2>Wyszukaj resztę i obserwuj</h2>
+        <p>
+          Wyszukaj pozostałych po nazwie, ilu chcesz, i obserwuj jednym przyciskiem tych, których
+          znasz.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Zaloguj się przez Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy obserwuje ludzi bez pytania?</h3>
+    <p>
+      Nie. Osoby, które same podały drugą nazwę, są dla Ciebie zaznaczone; zgadywanie z wyszukiwania
+      po nazwie już nie. Nikt nie zostanie zaobserwowany, zanim klikniesz „Obserwuj”.
+    </p>
+    <h3>Dlaczego niektórych osób brakuje?</h3>
+    <p>
+      Dopasowywane są tylko osoby, które podają swoją drugą nazwę, albo te, które znajdzie
+      wyszukiwanie po nazwie. Ktoś z popularnym imieniem i pustym bio może się nie pojawić.
+    </p>
+    <h3>A w drugą stronę?</h3>
+    <p>
+      Też działa:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/pl/z-mastodona-na-bluesky"
+          >znajdź na Bluesky osoby, które obserwujesz na Mastodonie</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/pl/z-bluesky-na-mastodona"
+          >znajdź na Mastodonie osoby, które obserwujesz na Bluesky</a
+        >.
+      }
+    </p>
+    <h3>Gdzie są zapisane moje logowania?</h3>
+    <p>
+      W tej przeglądarce. Mawkingbird rozmawia bezpośrednio z Twoim serwerem Mastodona i z Bluesky;
+      nie ma po drodze żadnego serwera Mawkingbird, który przechowuje Twoje konta.
+    </p>
+  </section>
+</main>

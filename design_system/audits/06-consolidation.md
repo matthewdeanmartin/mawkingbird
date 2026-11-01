@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Polish tool pages, 2026-11-01
+
+Reviewed 1,485 source files and 449 candidate files. Seventeen candidates are
+added: the Polish twins of the tool pages (`<page>.pl.html`, and
+`tools/tools-index.pl.html` for /pl/), each with its German twin's
+disposition. They use the same controls with Polish words; the Bluesky ⇄
+Mastodon twin writes each direction out because Polish declines the network
+names. Existing candidates shift lines only. No shared widget changed.
+
 ## Italian tool pages, 2026-11-01
 
 Reviewed 1,468 source files and 432 candidate files. Seventeen candidates are

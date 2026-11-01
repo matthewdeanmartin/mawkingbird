@@ -1,0 +1,69 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Statystyki Mastodona</p>
+    <h1>Statystyki Mastodona dla Twojego konta</h1>
+    <p>
+      Zobacz, jak przyjmowane są Twoje wpisy i kto Cię słucha.
+      @if (!inShell) {
+        Zaloguj się przez Mastodona, a liczby zostaną obliczone tutaj, z Twoich wpisów i
+        obserwujących.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Wczytywanie statystyk…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Twoje najlepsze wpisy</h2>
+        <p>
+          Najpopularniejsze wpisy, polubienia, podbicia i odpowiedzi na każdy wpis oraz szacowany
+          zasięg.
+        </p>
+      </li>
+      <li>
+        <h2>Twoi odbiorcy</h2>
+        <p>
+          Ilu obserwowanych i obserwujących jest nadal aktywnych i z kim rozmawiasz najczęściej.
+        </p>
+      </li>
+      <li>
+        <h2>Twoje nawyki</h2>
+        <p>Kiedy publikujesz, jak często, w jakich językach i o czym, na jednym kalendarzu.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Zaloguj się przez Mastodona i zobacz swoje</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Dokąd trafiają moje dane?</h3>
+    <p>
+      Nigdzie nowego. Wpisy i obserwujący są czytani z Twojego serwera Mastodona, a liczby liczone w
+      tej przeglądarce. Mawkingbird nie zachowuje żadnej kopii.
+    </p>
+    <h3>Dlaczego zasięg jest szacunkowy?</h3>
+    <p>
+      Mastodon nie liczy wyświetleń. Zasięg jest szacowany na podstawie obserwujących i ich reakcji,
+      a strona mówi o tym tuż obok liczby.
+    </p>
+  </section>
+</main>

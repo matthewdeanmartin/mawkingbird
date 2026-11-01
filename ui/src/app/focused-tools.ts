@@ -72,7 +72,7 @@ export interface ToolCopy {
 }
 
 /** Languages a public page can be written in. */
-export type PageLanguage = 'en' | 'de' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pt' | 'zh-Hant';
+export type PageLanguage = 'en' | 'de' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pl' | 'pt' | 'zh-Hant';
 
 /** A language's folder in URLs: its code in lower case (`zh-Hant` → `/zh-hant/`). */
 export function languageFolder(lang: PageLanguage): string {

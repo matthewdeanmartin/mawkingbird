@@ -15,14 +15,14 @@ export interface LanguageLandingCopy {
   /** The language the page is written in. */
   lang: PageLanguage;
   /** The language the page sets the reader up for (interface, known, posting). */
-  target: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pt' | 'zh-Hant';
+  target: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pl' | 'pt' | 'zh-Hant';
   /**
    * The code posts and the language filters use for it, when not `target`:
    * Mastodon tags Chinese posts `zh`, while the interface locale is `zh-Hant`.
    */
   content?: string;
   /** A language offered as "learning", when the page has one. */
-  learning?: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pt' | 'zh-Hant';
+  learning?: 'de' | 'en' | 'es' | 'fr' | 'it' | 'ja' | 'ko' | 'pl' | 'pt' | 'zh-Hant';
   openApp: string;
   eyebrow: string;
   heading: string;
@@ -1646,6 +1646,192 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       home: 'Vai alla home',
       starterPacks: 'Guarda gli starter pack',
       settingsLink: 'Tutte le impostazioni della lingua',
+    },
+  },
+  'pl/mastodon-po-polsku': {
+    path: 'pl/mastodon-po-polsku',
+    lang: 'pl',
+    target: 'pl',
+    learning: 'en',
+    openApp: 'Otwórz aplikację',
+    eyebrow: 'Mastodon po polsku',
+    heading: 'Mastodon po polsku',
+    intro:
+      'Mawkingbird potrafi więcej niż sama aplikacja Mastodona dla osób mówiących po polsku, żyjących między dwoma językami i uczących się nowego. Zaloguj się, a ustawimy go dla języków, które czytasz, i tych, których się uczysz. Twoja oś główna od razu zrobi się lepsza.',
+    loading: 'Wczytywanie…',
+    claims: [
+      {
+        title: 'Cała aplikacja po polsku',
+        body: 'Menu, ustawienia i pomoc w Twoim języku.',
+      },
+      {
+        title: 'Tylko języki, które czytasz',
+        body: 'Wpisy w innych językach znikają z Twojej osi głównej. Język jest rozpoznawany, nawet gdy wpis podaje go błędnie.',
+      },
+      {
+        title: 'Dziś tylko po polsku',
+        body: 'Na chwilę ogranicz oś czasu do jednego języka, bez przestawania obserwowania kogokolwiek.',
+      },
+      {
+        title: 'Tłumaczenia dla języka, którego się uczysz',
+        body: 'Wpisy w języku, którego się uczysz, nigdy nie są ukrywane, a pod spodem może pojawić się tłumaczenie. Tłumaczy Twój serwer albo Twój własny klucz AI.',
+      },
+      {
+        title: 'Popularne tematy, które przeczytasz',
+        body: 'Popularne hashtagi zapisane innymi alfabetami są odfiltrowywane.',
+      },
+      {
+        title: 'Twoje wpisy trafiają do czytelników po polsku',
+        body: 'Domyślny język Twoich wpisów zostaje na serwerze ustawiony na polski. Filtry językowe innych osób z niego korzystają.',
+      },
+      {
+        title: 'Polskie paczki startowe',
+        body: 'Wybrane ręcznie listy kont do obserwowania, w aplikacji.',
+      },
+    ],
+    signIn: 'Zaloguj się przez Mastodona',
+    questionsTitle: 'Pytania',
+    questions: [
+      {
+        q: 'Czy Mastodon jest po polsku?',
+        a: 'Tak. Mastodon ma polskie tłumaczenie, a Mawkingbird również, od początku do końca. Do tego Mawkingbird potrafi ograniczyć oś czasu do języków, które czytasz.',
+      },
+      {
+        q: 'Gdzie się zarejestrować?',
+        a: 'Najprościej zacząć od mastodon.social. Jest też wiele polskich serwerów, które znajdziesz w katalogach takich jak joinmastodon.org. Mawkingbird działa z każdym z nich.',
+      },
+      {
+        q: 'Co się zmieni po zalogowaniu?',
+        a: 'Na początku nic. Zobaczysz listę ustawień i wybierzesz, które zastosować. Tylko język wpisów trafia na Twój serwer; reszta zostaje w tej przeglądarce.',
+      },
+      {
+        q: 'Czy to kosztuje?',
+        a: 'Nie. Mawkingbird jest darmowy i działa w Twojej przeglądarce.',
+      },
+    ],
+    checklist: {
+      title: 'Ustaw Mawkingbird po polsku',
+      intro: 'Wybierz, co zastosować. Nic się nie zmieni, dopóki nie stukniesz „Zastosuj”.',
+      items: [
+        {
+          setting: 'interface',
+          label: 'Pokaż aplikację po polsku',
+          hint: 'Cała aplikacja przechodzi na polski.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Czytam po polsku',
+          hint: 'Języki, które czytasz, są używane przez filtry poniżej.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'Czytam też po angielsku',
+          hint: 'Wtedy wpisy po angielsku też zostają widoczne.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Piszę po polsku',
+          hint: 'Domyślny język nowych wpisów. Zapisywany na Twoim serwerze Mastodona.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Ukryj wpisy w językach, których nie czytam',
+          hint: 'Na osi głównej i w Algo. Wpisy o niepewnym języku zostają widoczne.',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Tylko popularne tematy w moim alfabecie',
+          hint: 'Odfiltrowuje popularne hashtagi zapisane innymi alfabetami.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'Uczę się angielskiego',
+          hint: 'Wpisy po angielsku są zawsze widoczne, z tłumaczeniem pod spodem.',
+          checked: false,
+        },
+      ],
+      where: { browser: 'ta przeglądarka', server: 'Twój serwer' },
+      apply: 'Zastosuj',
+      applying: 'Stosowanie…',
+      failed: 'Nie udało się zapisać języka wpisów na Twoim serwerze. Reszta została zastosowana.',
+      doneTitle: 'Gotowe',
+      doneNothing: 'Nic nie było zaznaczone, więc nic się nie zmieniło.',
+      home: 'Przejdź do osi głównej',
+      starterPacks: 'Zobacz paczki startowe',
+      settingsLink: 'Wszystkie ustawienia języka',
+    },
+  },
+  'pl/nauka-angielskiego-z-mastodonem': {
+    path: 'pl/nauka-angielskiego-z-mastodonem',
+    lang: 'pl',
+    target: 'pl',
+    learning: 'en',
+    openApp: 'Otwórz aplikację',
+    eyebrow: 'Nauka języków',
+    heading: 'Nauka angielskiego z Mastodonem',
+    intro:
+      'Czytaj codziennie prawdziwe wpisy osób mówiących po angielsku, z tłumaczeniem pod spodem, gdy go potrzebujesz. Zaloguj się, a ustawimy Mawkingbird do nauki angielskiego, nie ruszając języków, które już czytasz.',
+    loading: 'Wczytywanie…',
+    claims: [
+      {
+        title: 'Angielski zawsze widoczny',
+        body: 'Język, którego się uczysz, nigdy nie jest ukrywany, nawet przez filtr chowający języki, których nie czytasz.',
+      },
+      {
+        title: 'Tłumaczenie pod spodem, nie zamiast',
+        body: 'Oryginał i tłumaczenie obok siebie: uczysz się z prawdziwego tekstu.',
+      },
+      {
+        title: 'Automatycznie albo na żądanie',
+        body: 'Tłumacz automatycznie podczas przewijania albo tylko po stuknięciu Przetłumacz. Tłumaczy Twój serwer albo Twój własny klucz AI.',
+      },
+      {
+        title: 'Ludzie do obserwowania',
+        body: 'Paczki startowe kont piszących po angielsku, według tematów.',
+      },
+    ],
+    signIn: 'Zaloguj się przez Mastodona',
+    questionsTitle: 'Pytania',
+    questions: [
+      {
+        q: 'Czy Mastodon nadaje się do nauki angielskiego?',
+        a: 'Jest pełen krótkiej, codziennej angielszczyzny pisanej przez prawdziwych ludzi, na każdy temat. Obserwuj osoby piszące o tym, co lubisz, a czytanie stanie się nawykiem.',
+      },
+      {
+        q: 'Kto tłumaczy?',
+        a: 'Twój serwer Mastodona, jeśli oferuje tłumaczenia, albo model AI z Twoim własnym kluczem OpenRouter. Mawkingbird nigdy nie tłumaczy na własnych serwerach.',
+      },
+      {
+        q: 'Czy to zmienia język aplikacji?',
+        a: 'Nie. Ta strona tylko dodaje angielski jako język, którego się uczysz; język aplikacji i języki, które czytasz, zostają bez zmian.',
+      },
+    ],
+    checklist: {
+      title: 'Ustaw Mawkingbird do nauki angielskiego',
+      intro: 'Wybierz, co zastosować. Nic się nie zmieni, dopóki nie stukniesz „Zastosuj”.',
+      items: [
+        {
+          setting: 'learning',
+          label: 'Uczę się angielskiego',
+          hint: 'Wpisy po angielsku nigdy nie są ukrywane i mają tłumaczenie pod spodem.',
+          checked: true,
+        },
+      ],
+      where: { browser: 'ta przeglądarka', server: 'Twój serwer' },
+      apply: 'Zastosuj',
+      applying: 'Stosowanie…',
+      failed: 'Nie udało się zapisać jednego ustawienia. Spróbuj ponownie.',
+      doneTitle: 'Gotowe',
+      doneNothing: 'Nic nie było zaznaczone, więc nic się nie zmieniło.',
+      home: 'Przejdź do osi głównej',
+      starterPacks: 'Zobacz paczki startowe',
+      settingsLink: 'Wszystkie ustawienia języka',
     },
   },
 };

@@ -154,3 +154,19 @@ export class ScheduleMastodonPostsPt extends ScheduleMastodonPosts {
 export class ScheduleMastodonPostsIt extends ScheduleMastodonPosts {
   protected override readonly returnHere = { next: '/it/programmare-post-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsPl extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/pl/planowanie-wpisow-na-mastodonie' };
+}

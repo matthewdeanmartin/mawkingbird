@@ -152,3 +152,19 @@ export class MastodonFriendsRssFeedsPt extends MastodonFriendsRssFeeds {
 export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
   protected override readonly returnHere = { next: '/it/feed-rss-di-chi-segui-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsPl extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/pl/kanaly-rss-obserwowanych-na-mastodonie' };
+}

@@ -153,3 +153,19 @@ export class FindContactsOnMastodonPt extends FindContactsOnMastodon {
 export class FindContactsOnMastodonIt extends FindContactsOnMastodon {
   protected override readonly returnHere = { next: '/it/trovare-i-contatti-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonPl extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/pl/znajdz-kontakty-na-mastodonie' };
+}

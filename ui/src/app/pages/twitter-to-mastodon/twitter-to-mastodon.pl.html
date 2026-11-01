@@ -1,0 +1,77 @@
+<main class="focused-page" lang="pl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Otwórz aplikację</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Z Twittera na Mastodona</p>
+    <h1>Przenieś obserwowanych z Twittera na Mastodona</h1>
+    <p>
+      Znajdź osoby obserwowane przez Ciebie na Twitterze, które są już na Mastodonie, i obserwuj je
+      ponownie kilkoma kliknięciami. Archiwum jest czytane w tej przeglądarce; nic nie jest
+      wysyłane.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Pobierz archiwum Twittera</h2>
+      <p>
+        Na Twitterze otwórz Ustawienia i prywatność → Twoje konto → Pobierz archiwum swoich danych.
+        Może to potrwać dzień lub dłużej. Potem rozpakuj plik.
+      </p>
+    </li>
+    <li>
+      <h2>Wybierz archiwum tutaj</h2>
+      <p>
+        Wybierz rozpakowany folder albo tylko pliki <code>data/following.js</code> i
+        <code>data/tweets.js</code>. Mawkingbird policzy osoby obserwowane, te, którym odpowiadano,
+        i te wspominane we wpisach.
+      </p>
+    </li>
+    <li>
+      <h2>Zaloguj się przez Mastodona i obserwuj</h2>
+      <p>
+        Mawkingbird szuka każdego nazwiska na Twoim serwerze Mastodona i pokazuje prawdopodobne
+        dopasowania wraz z poszlakami, a Ty decydujesz, kogo obserwować.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/pl/z-twittera-na-mastodona/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/pl/z-twittera-na-mastodona"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Wczytywanie importu…</p>
+  }
+
+  <section class="questions">
+    <h2>Pytania</h2>
+    <h3>Czy moje archiwum gdzieś trafia?</h3>
+    <p>
+      Nie. Pliki czyta ta strona, w Twojej przeglądarce. Tylko wyszukiwania nazwisk trafiają na Twój
+      serwer Mastodona, i to dopiero po zalogowaniu.
+    </p>
+    <h3>Czy obserwuje ludzi automatycznie?</h3>
+    <p>
+      Nie. Pasujące nazwisko to prawdopodobna poszlaka, nie dowód, więc każde obserwowanie to
+      przycisk, który klikasz samodzielnie. Możesz też pobrać listę jako CSV i ją zachować.
+    </p>
+    <h3>Dlaczego warto przejść z Twittera na Mastodona?</h3>
+    <p>
+      Mastodon nie należy do nikogo: to tysiące niezależnych serwerów, także polskich, które
+      rozmawiają ze sobą. Żaden algorytm nie decyduje, co widzisz, nie ma reklam, a oś czasu
+      pozostaje chronologiczna.
+    </p>
+  </section>
+</main>

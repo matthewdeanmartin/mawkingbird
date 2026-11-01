@@ -153,3 +153,19 @@ export class TurnOffBoostsMastodonPt extends TurnOffBoostsMastodon {
 export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
   protected override readonly returnHere = { next: '/it/nascondere-i-boost-su-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonPl extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/pl/ukryj-podbicia-na-mastodonie' };
+}

@@ -153,3 +153,19 @@ export class MastodonSimilarHashtagsPt extends MastodonSimilarHashtags {
 export class MastodonSimilarHashtagsIt extends MastodonSimilarHashtags {
   protected override readonly returnHere = { next: '/it/hashtag-simili-mastodon' };
 }
+
+/**
+ * The Polish page (focused-tools.json `lang: "pl"`): the same tool and
+ * logic, Polish words, and everything translated inside it pinned to
+ * Polish (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-pl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.pl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsPl extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/pl/podobne-hashtagi-mastodon' };
+}
