@@ -1,0 +1,63 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub から Mastodon へ</p>
+    <h1>GitHub の知り合いを Mastodon で探す</h1>
+    <p>
+      GitHub のプロフィールに Mastodon のアカウントを載せている開発者はたくさんいます。GitHub
+      でフォローしている人や、スターを付けたリポジトリの持ち主を調べて、Mastodon
+      でフォローできるようにします。
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">検索ツールを読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon でログイン</h2>
+        <p>フォローはあなた自身の Mastodon アカウントで行うため、まずログインします。</p>
+      </li>
+      <li>
+        <h2>GitHub を連携</h2>
+        <p>
+          GitHub の個人用アクセストークンを貼り付けます。作り方はページで案内します。GitHub
+          はブラウザーアプリにほかのログイン方法を用意しておらず、トークンはこのブラウザーの中に保存されます。
+        </p>
+      </li>
+      <li>
+        <h2>見つけてフォロー</h2>
+        <p>
+          まずプロフィールにある Mastodon
+          へのリンクを、次に件数を絞ったユーザー名検索を使います。候補にはそれぞれ根拠が表示され、誰をフォローするかはあなたが決めます。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon でログイン</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>GitHub のトークンはどこに送られますか？</h3>
+    <p>
+      このブラウザーに保存され、<code>api.github.com</code> にだけ送られます。Mawkingbird
+      に送られることはありません。GitHub でいつでも無効にできます。
+    </p>
+    <h3>自動でフォローされますか？</h3>
+    <p>いいえ。フォローはすべて、候補の根拠の横にあるボタンをあなたが押して行います。</p>
+  </section>
+</main>

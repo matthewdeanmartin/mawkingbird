@@ -51,7 +51,7 @@ export interface FocusedTool {
 }
 
 /** Languages a public page can be written in. */
-export type PageLanguage = 'en' | 'de';
+export type PageLanguage = 'en' | 'de' | 'ja';
 
 export type FocusedToolGroup = 'start' | 'languages' | 'search' | 'people' | 'post' | 'account';
 

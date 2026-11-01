@@ -41,3 +41,19 @@ export class TurnOffBoostsMastodon {
 export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
   protected override readonly returnHere = { next: '/de/mastodon-boosts-ausblenden' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonJa extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/ja/turn-off-boosts-mastodon' };
+}

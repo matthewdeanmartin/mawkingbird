@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FOCUSED_TOOLS, PageLanguage, toolLanguage, toolVersions } from '../../focused-tools';
 
 /** Each language named in itself, so a reader finds their own. */
-const ENDONYMS: Record<PageLanguage, string> = { en: 'English', de: 'Deutsch' };
+const ENDONYMS: Record<PageLanguage, string> = { en: 'English', de: 'Deutsch', ja: '日本語' };
 
 /**
  * Links to this tool page in its other languages ("Deutsch" on the English
@@ -33,6 +33,10 @@ const ENDONYMS: Record<PageLanguage, string> = { en: 'English', de: 'Deutsch' };
     }
     .language-switch:hover {
       color: var(--accent);
+    }
+    /* Several languages sit together; only the first is pushed right. */
+    .language-switch + .language-switch {
+      margin-inline-start: 0;
     }
   `,
 })

@@ -41,3 +41,19 @@ export class MastodonSimilarHashtags {
 export class MastodonSimilarHashtagsDe extends MastodonSimilarHashtags {
   protected override readonly returnHere = { next: '/de/aehnliche-hashtags-mastodon' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsJa extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/ja/mastodon-similar-hashtags' };
+}

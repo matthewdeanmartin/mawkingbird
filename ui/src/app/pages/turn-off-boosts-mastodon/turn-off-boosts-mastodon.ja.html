@@ -1,0 +1,74 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon のブースト</p>
+    <h1>Mastodon のブーストを全員分まとめて非表示にする</h1>
+    <p>
+      ブーストは Mastodon のリツイートです。フォローはそのままで、本人が書いた投稿だけを見られます。
+      @if (!inShell) {
+        Mastodon では 1
+        人ずつしかブーストを非表示にできませんが、ここなら全員分を一度に変更できます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon でログイン</h2>
+        <p>フォロー一覧はあなた自身の Mastodon サーバーから読み込みます。</p>
+      </li>
+      <li>
+        <h2>対象の人数を確認</h2>
+        <p>変更する前に、ブーストが表示されたままの人が何人いるかをお知らせします。</p>
+      </li>
+      <li>
+        <h2>確認して実行</h2>
+        <p>
+          1 アカウントずつ順番に変更し、進み具合を表示します。途中で止めて、あとで続きからできます。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインしてブーストを非表示にする</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>フォローが解除されますか？</h3>
+    <p>
+      いいえ。全員のフォローはそのままで、本人の投稿や返信はこれまでどおりホームに届きます。止まるのはブーストだけです。
+    </p>
+    <h3>元に戻せますか？</h3>
+    <p>
+      はい。同じページで全員分のブーストを再表示できます。特定の人だけなら、その人のプロフィールから戻せます。
+    </p>
+    <h3>あとからフォローした人は？</h3>
+    <p>
+      新しくフォローした人は、Mastodon
+      の通常どおりブーストが表示される状態から始まります。必要なときにもう一度実行してください。変更が必要なアカウントだけが変わります。
+    </p>
+    <h3>時間がかかるのはなぜ？</h3>
+    <p>
+      Mastodon には「全員まとめて」の設定がないため、フォローしているアカウントを 1
+      つずつ変更します。フォローが多いと数分かかります。
+    </p>
+  </section>
+</main>

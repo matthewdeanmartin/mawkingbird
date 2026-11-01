@@ -1,0 +1,78 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">プライバシー</p>
+    <h1>Mastodon を匿名（仮名）で使うには</h1>
+    <p>
+      Mastodon
+      で本名を使う必要はありません。アカウントがあなた本人と結びつくかどうかは、いくつかの設定で決まりますが、ほとんどの人は一度も変えていません。
+      @if (!inShell) {
+        ログインすれば、まとめて切り替えられます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">設定を読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>周りの人を隠す</h2>
+        <p>
+          誰をフォローし、誰にフォローされているかで、身元が分かることがよくあります。Mastodon
+          ではどちらの一覧も非公開にできます。
+        </p>
+      </li>
+      <li>
+        <h2>検索とおすすめに出ない</h2>
+        <p>
+          プロフィールディレクトリから外れ、知らない人へのおすすめに出ないようにし、投稿を全文検索の対象から外します。
+        </p>
+      </li>
+      <li>
+        <h2>オフにできないものを確認</h2>
+        <p>
+          自分のサイトへのプロフィールリンク、検索エンジンへの掲載、選んだ名前と画像など。どれが当てはまるかをページで表示します。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして設定を確認する</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>匿名と仮名の違いは？</h3>
+    <p>
+      仮名とは、本名ではなく自分で考えた名前が表示され、アカウントとあなたを結びつけにくい状態です。完全な匿名はもっと難しく、理由は次の答えのとおりです。
+    </p>
+    <h3>サーバーの管理者には正体がわかりますか？</h3>
+    <p>
+      登録したメールアドレスと、接続元の IP
+      アドレスは管理者に見えます。これはどの設定でも変わりません。信頼できるサーバーと、本名を含まないメールアドレスを選んでください。
+    </p>
+    <h3>これで投稿は非公開になりますか？</h3>
+    <p>
+      いいえ。公開投稿は公開のままです。これらの設定はアカウントを見つけにくく、本人と結びつけにくくするもので、誰が読めるかは投稿するときに決めます。
+    </p>
+    <h3>Mawkingbird ならではの機能はありますか？</h3>
+    <p>
+      はい。相手に通知されない非公開フォローと非公開いいね、非公開リスト、トラッカーを取り除いたリンク、位置情報を消した写真などがあり、すべてブラウザーの中に保存されます。
+    </p>
+  </section>
+</main>

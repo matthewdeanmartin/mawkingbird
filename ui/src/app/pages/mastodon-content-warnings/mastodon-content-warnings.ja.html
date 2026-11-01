@@ -1,0 +1,72 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">閲覧注意（CW）</p>
+    <h1>Mastodon の閲覧注意（CW）を常に展開する方法</h1>
+    <p>
+      投稿のたびに「もっと見る」を押したり、ぼかされた写真をタップしたりするのが面倒ではありませんか？閲覧注意の投稿を自動で開き、センシティブなメディアをすぐに表示できます。
+      @if (!inShell) {
+        ログインすれば、スイッチ 2 つで設定できます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">設定を読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>閲覧注意を自動で展開</h2>
+        <p>閲覧注意の付いた投稿が自動で開きます。注意書きはそのまま表示されます。</p>
+      </li>
+      <li>
+        <h2>センシティブなメディアを表示</h2>
+        <p>センシティブ指定の写真や動画を、ぼかさずに表示します。</p>
+      </li>
+      <li>
+        <h2>信頼する人だけでも OK</h2>
+        <p>
+          知らない人の投稿は閉じたまま、知り合いの投稿だけ開く、といった設定もできます。個別の人か、フォロー中の全員を信頼できます。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして設定する</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Mastodon の Web 画面ではどう設定しますか？</h3>
+    <p>
+      サーバーの「ユーザー設定」を開き、「閲覧注意としてマークされた投稿を常に展開する」をオンにし、「メディアの表示」を「すべて表示」にします。これはサーバー側の設定で、サーバーの
+      Web 画面と一部のアプリに反映されます。
+    </p>
+    <h3>Mawkingbird からサーバーの設定を変えられないのはなぜ？</h3>
+    <p>
+      Mastodon はアプリにこの設定の読み取りは許していますが、変更は許していません。そのため
+      Mawkingbird
+      には独自のスイッチがあります。ログインすると、サーバー側の現在の設定もこのページに表示されます。
+    </p>
+    <h3>閲覧注意が付いていたことはわかりますか？</h3>
+    <p>はい。注意書きは投稿の上に残り、開くためのクリックが不要になるだけです。</p>
+    <h3>ほかの人の見え方も変わりますか？</h3>
+    <p>
+      いいえ。変わるのはあなたの画面での開き方だけです。投稿者が付けた閲覧注意は、ほかの人にはそのまま表示されます。
+    </p>
+  </section>
+</main>

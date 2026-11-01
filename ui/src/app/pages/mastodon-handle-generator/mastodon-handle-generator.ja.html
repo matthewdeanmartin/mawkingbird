@@ -1,0 +1,50 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">ユーザー名ジェネレーター</p>
+    <h1>Mastodon のユーザー名ジェネレーター</h1>
+    <p>
+      名前を入力すると、実際に使えるユーザー名を提案します。候補は参加予定のサーバーで空きを確認し、気に入ったものは大手サーバーでも確認します。アカウント登録は不要です。
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/ja/mastodon-handle-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">ジェネレーターを読み込み中…</p>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Mastodon のユーザー名はどんな形ですか？</h3>
+    <p>
+      ユーザー名とサーバーの 2 つの部分からなり、&#64;matthew_martin&#64;mastodon.social
+      のようになります。ユーザー名には英数字とアンダースコアを 30
+      文字まで使え、大文字・小文字は区別されません。
+    </p>
+    <h3>複数のサーバーで確認するのはなぜ？</h3>
+    <p>
+      ユーザー名はサーバーごとに別々です。mastodon.social
+      で使われている名前でも、ほかのサーバーなら空いていることがあり、どのサーバーの人からもフォローしてもらえます。
+    </p>
+    <h3>「空いていそう」なら必ず取れますか？</h3>
+    <p>
+      確実ではありません。そのサーバーで今その名前を使っている人がいない、という意味です。削除されたアカウントの名前は予約されたままのことがあり、管理者が予約している言葉もあるため、最終的には登録画面で決まります。
+    </p>
+    <h3>「大手サーバー」はどう決めていますか？</h3>
+    <p>
+      Mastodon のサーバー規約に従うサーバーを載せた joinmastodon.org
+      の一覧で、登録者数の多い順です。新規登録に管理者の承認が必要なサーバーもあり、一覧に表示しています。
+    </p>
+  </section>
+</main>

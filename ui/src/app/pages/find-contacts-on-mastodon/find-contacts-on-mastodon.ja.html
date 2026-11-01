@@ -1,0 +1,79 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">連絡先</p>
+    <h1>スマホの連絡先から Mastodon の知り合いを探す</h1>
+    <p>
+      アドレス帳の中には、すでに Mastodon
+      を使っている人がいるかもしれません。その人たちを探して、知っている人をフォローできます。
+      @if (!inShell) {
+        Mastodon
+        でログインし、連絡先を選ぶか連絡先ファイルをアップロードすると、見つかった人が表示されます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">検索ツールを読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon でログイン</h2>
+        <p>検索はあなた自身の Mastodon サーバーを通して行います。</p>
+      </li>
+      <li>
+        <h2>連絡先を選ぶ</h2>
+        <p>
+          Android の Chrome なら連絡先から直接選べます。それ以外の環境では、Google
+          コンタクトから書き出した連絡先ファイルをアップロードします。
+        </p>
+      </li>
+      <li>
+        <h2>知っている人をフォロー</h2>
+        <p>
+          候補にはそれぞれ理由が表示されます。フォローは 1
+          人ずつあなたが行い、自動ではフォローされません。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして連絡先を探す</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>連絡先はアップロードされますか？</h3>
+    <p>
+      いいえ。連絡先はこのブラウザーの中にとどまります。名前やユーザー名など、そこから作った検索語だけがあなたの
+      Mastodon サーバーに送られ、ページを閉じると何も残りません。
+    </p>
+    <h3>連絡先ファイルはどうやって作りますか？</h3>
+    <p>
+      Google コンタクトで「エクスポート」を選び、Google CSV
+      形式で書き出したファイルをここでアップロードしてください。
+    </p>
+    <h3>候補が「推測」なのはなぜ？</h3>
+    <p>
+      Mastodon には電話番号やメールアドレスで人を探す機能がないため、連絡先に保存された Mastodon
+      のアカウント、名前、メールアドレスの名前とドメイン、Web
+      サイトなどの手がかりで照合します。珍しい名前ならすぐ見つかりますが、よくある名前だと別人が出ることもあるため、フォローはご自身で行います。
+    </p>
+    <h3>まだ Mastodon を使っていない人がいたら？</h3>
+    <p>招待しましょう。検索のあと、ワンクリックで使える招待文を用意しています。</p>
+  </section>
+</main>

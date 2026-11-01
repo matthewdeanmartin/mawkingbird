@@ -1,0 +1,81 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS と OPML</p>
+    <h1>Mastodon でフォローしている人のブログ・RSS フィードをまとめて探す</h1>
+    <p>
+      Mastodon
+      のプロフィールに自分のサイトを載せている人はたくさんいます。そのリンクにフィードがあるかを調べ、見つかったものを
+      1 つの OPML ファイルにまとめます。どのフィードリーダーでも読み込めます。
+      @if (!inShell) {
+        この機能は Mawkingbird Plus に含まれます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>フォロー一覧を読み込む</h2>
+        <p>
+          フォローしている人の一覧を、各プロフィールのリンクとあわせて Mastodon
+          サーバーから読み込みます。
+        </p>
+      </li>
+      <li>
+        <h2>サイトを調べる</h2>
+        <p>
+          リンク先のサイトごとにフィードがあるかを確認します。調べるサイト数は選べ、途中で止めてもそれまでの結果は残ります。
+        </p>
+      </li>
+      <li>
+        <h2>OPML をダウンロード</h2>
+        <p>
+          お好きなフィードリーダーに読み込むか、Mawkingbird の RSS リーダーでそのまま購読できます。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインしてフィードを探す</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Plus の内容を見る</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>なぜ Plus の機能なのですか？</h3>
+    <p>
+      何百もの他人のサイトを調べるには、Mawkingbird が費用を払っているプロキシを 1
+      サイトごとに使います。Plus はその費用をまかなうためのものです。
+    </p>
+    <h3>OPML ファイルとは？</h3>
+    <p>
+      どのフィードリーダーでも読み込める購読リストの形式です。Feedly、NetNewsWire、Inoreader
+      などに読み込めば、すべてのフィードをまとめて購読できます。
+    </p>
+    <h3>全員分見つかりますか？</h3>
+    <p>
+      見つかるのは、プロフィールにサイトを載せていて、そのサイトにフィードがある人だけです。個人のフィードを持たない大手サービスは調べずにスキップします。
+    </p>
+    <h3>2 回目も同じだけ費用がかかりますか？</h3>
+    <p>
+      いいえ。調べたサイトは記録されるので、新しくフォローした人がいても、次はその人のサイトだけを調べます。
+    </p>
+  </section>
+</main>

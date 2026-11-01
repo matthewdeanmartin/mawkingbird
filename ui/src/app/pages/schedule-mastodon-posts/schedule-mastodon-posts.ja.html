@@ -1,0 +1,83 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon 予約投稿</p>
+    <h1>Mastodon の予約投稿</h1>
+    <p>
+      1 週間分の投稿をまとめて書いておけば、Mastodon のサーバーが時間どおりに公開します。
+      @if (!inShell) {
+        Mastodon でログインし、投稿を書いて、最初の投稿の時刻と間隔を選ぶだけです。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">予約ツールを読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>投稿を書く</h2>
+        <p>いくつでも書けます。1 つの欄に 1 投稿、最大 500 文字です。</p>
+      </li>
+      <li>
+        <h2>間隔をあける</h2>
+        <p>
+          最初の時刻と間隔を選びます（毎日 9:00、3
+          時間ごとなど）。個別の投稿だけ別の時刻にすることもできます。
+        </p>
+      </li>
+      <li>
+        <h2>タブを閉じて OK</h2>
+        <p>
+          投稿は Mastodon
+          のサーバーが預かり、時間どおりに公開します。ブラウザーで待つ必要はありません。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして予約する</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Mastodon で予約投稿はできますか？</h3>
+    <p>
+      はい。どの Mastodon サーバーにも投稿を預かって後で公開する機能がありますが、標準の Web
+      画面にはそのボタンがありません。このページはその標準機能を使うので、投稿を預かるのは
+      Mawkingbird ではなくあなたのサーバーです。
+    </p>
+    <h3>このページを開いたままにする必要はありますか？</h3>
+    <p>
+      いいえ。予約した投稿は Mastodon
+      のサーバーにあり、パソコンの電源が入っていなくても指定の時刻に公開されます。
+    </p>
+    <h3>制限はありますか？</h3>
+    <p>
+      予約できるのは同時に 300 件、1 日あたり 25 件までで、どれも 5
+      分以上先である必要があります。送信前にツールがこれらを確認します。
+    </p>
+    <h3>あとで取り消せますか？</h3>
+    <p>
+      はい。予約済みの投稿は予約ツールの下に一覧表示され、公開されるまではいつでも取り消せます。
+    </p>
+    <h3>Bluesky でも使えますか？</h3>
+    <p>
+      ここでは使えません。Bluesky には予約投稿の仕組みがないため、このページは Mastodon 専用です。
+    </p>
+  </section>
+</main>

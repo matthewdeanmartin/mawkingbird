@@ -31,7 +31,8 @@ export class DownloadMastodonImages {
   private readonly data = inject(ActivatedRoute).snapshot.data;
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = this.data['inShell'] === true;
-  protected readonly lang: PageLanguage = this.data['lang'] === 'de' ? 'de' : 'en';
+  protected readonly lang: PageLanguage =
+    (this.data['lang'] as PageLanguage) in DOWNLOAD_IMAGES_COPY ? this.data['lang'] : 'en';
   protected readonly copy = DOWNLOAD_IMAGES_COPY[this.lang];
   protected readonly returnHere = { next: this.copy.path };
 }

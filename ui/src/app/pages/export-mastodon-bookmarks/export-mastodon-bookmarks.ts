@@ -39,3 +39,19 @@ export class ExportMastodonBookmarks {
 export class ExportMastodonBookmarksDe extends ExportMastodonBookmarks {
   protected override readonly returnHere = { next: '/de/mastodon-lesezeichen-exportieren' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksJa extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/ja/export-mastodon-bookmarks' };
+}

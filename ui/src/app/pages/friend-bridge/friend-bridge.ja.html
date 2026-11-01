@@ -1,0 +1,86 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} から {{ copy.to }} へ</p>
+    <h1>{{ copy.from }} でフォローしている人を {{ copy.to }} で探す</h1>
+    <p>
+      {{ copy.from }} でフォローしている人の多くは
+      {{ copy.to }} にもいます。その人たちを見つけて、{{ copy.to }}
+      でフォローできます。
+      @if (!inShell) {
+        どちらかのアカウントでログインし、もう一方を連携すれば、すでにいる人がわかります。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">検索ツールを読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>両方にログイン</h2>
+        <p>Mastodon か Bluesky のアカウントでログインし、次の画面でもう一方を連携します。</p>
+      </li>
+      <li>
+        <h2>フォロー一覧を読み込む</h2>
+        <p>
+          {{ copy.from }} でフォローしている人のうち、プロフィールに {{ copy.to }}
+          のアカウントを書いている人は、すぐに無料で見つかります。
+        </p>
+      </li>
+      <li>
+        <h2>残りを検索してフォロー</h2>
+        <p>ほかの人は名前で好きなだけ検索し、見覚えのある人をボタンひとつでフォローします。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon でログイン</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky でログイン</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>確認なしでフォローされますか？</h3>
+    <p>
+      いいえ。本人がもう一方のアカウントを書いている人にはチェックが入りますが、名前検索で見つかった候補には入りません。「フォロー」を押すまで誰もフォローされません。
+    </p>
+    <h3>見つからない人がいるのはなぜ？</h3>
+    <p>
+      見つかるのは、{{ copy.to }}
+      のアカウントを書いている人か、名前検索で見つかる人だけです。よくある名前でプロフィールにアカウントを書いていない人は見つからないことがあります。
+    </p>
+    <h3>逆方向もできますか？</h3>
+    <p>
+      はい。
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/ja/mastodon-to-bluesky"
+          >Mastodon でフォローしている人を Bluesky で探す</a
+        >こともできます。
+      } @else {
+        <a mbContentLink routerLink="/ja/bluesky-to-mastodon"
+          >Bluesky でフォローしている人を Mastodon で探す</a
+        >こともできます。
+      }
+    </p>
+    <h3>ログイン情報はどこに保存されますか？</h3>
+    <p>
+      このブラウザーの中です。Mawkingbird はあなたの Mastodon サーバーや Bluesky
+      と直接やりとりし、アカウントを預かる Mawkingbird のサーバーはありません。
+    </p>
+  </section>
+</main>

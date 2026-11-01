@@ -23,6 +23,7 @@ import {
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
   TOOLS_DESCRIPTION_DE,
+  TOOLS_DESCRIPTION_JA,
   TOOLS_INDEX_ALTERNATES,
 } from './seo';
 
@@ -211,6 +212,69 @@ export const FOCUSED_TOOL_PAGES: Record<string, NonNullable<Route['loadComponent
     import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
       (m) => m.MastodonSimilarHashtagsDe,
     ),
+  'ja/twitter-to-mastodon': () =>
+    import('./pages/twitter-to-mastodon/twitter-to-mastodon').then((m) => m.TwitterToMastodonJa),
+  'ja/crosspost': () => import('./pages/crosspost/crosspost').then((m) => m.CrosspostJa),
+  'ja/mastodon-analytics': () =>
+    import('./pages/mastodon-analytics/mastodon-analytics').then((m) => m.MastodonAnalyticsJa),
+  'ja/github-to-mastodon': () =>
+    import('./pages/github-to-mastodon/github-to-mastodon').then((m) => m.GithubToMastodonJa),
+  'ja/schedule-mastodon-posts': () =>
+    import('./pages/schedule-mastodon-posts/schedule-mastodon-posts').then(
+      (m) => m.ScheduleMastodonPostsJa,
+    ),
+  'ja/bluesky-to-mastodon': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeJa),
+  'ja/mastodon-to-bluesky': () =>
+    import('./pages/friend-bridge/friend-bridge').then((m) => m.FriendBridgeJa),
+  'ja/turn-off-boosts-mastodon': () =>
+    import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon').then(
+      (m) => m.TurnOffBoostsMastodonJa,
+    ),
+  'ja/find-contacts-on-mastodon': () =>
+    import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon').then(
+      (m) => m.FindContactsOnMastodonJa,
+    ),
+  'ja/mastodon-friends-rss-feeds': () =>
+    import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds').then(
+      (m) => m.MastodonFriendsRssFeedsJa,
+    ),
+  'ja/mastodon-mute-block-amnesty': () =>
+    import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty').then(
+      (m) => m.MastodonMuteBlockAmnestyJa,
+    ),
+  'ja/how-to-be-anonymous-on-mastodon': () =>
+    import('./pages/anonymous-on-mastodon/anonymous-on-mastodon').then(
+      (m) => m.AnonymousOnMastodonJa,
+    ),
+  'ja/mastodon-handle-generator': () =>
+    import('./pages/mastodon-handle-generator/mastodon-handle-generator').then(
+      (m) => m.MastodonHandleGeneratorJa,
+    ),
+  'ja/turn-off-content-warnings-mastodon': () =>
+    import('./pages/mastodon-content-warnings/mastodon-content-warnings').then(
+      (m) => m.MastodonContentWarningsJa,
+    ),
+  'ja/export-mastodon-bookmarks': () =>
+    import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks').then(
+      (m) => m.ExportMastodonBookmarksJa,
+    ),
+  'ja/mastodon-search': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearchJa),
+  'ja/bluesky-search': () =>
+    import('./pages/network-search/network-search').then((m) => m.NetworkSearchJa),
+  'ja/download-mastodon-images': () =>
+    import('./pages/download-mastodon-images/download-mastodon-images').then(
+      (m) => m.DownloadMastodonImages,
+    ),
+  'ja/mastodon-similar-hashtags': () =>
+    import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags').then(
+      (m) => m.MastodonSimilarHashtagsJa,
+    ),
+  'ja/mastodon-in-japanese': () =>
+    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
+  'ja/learn-english-with-mastodon': () =>
+    import('./pages/language-landing/language-landing').then((m) => m.LanguageLanding),
   'mastodon-search': () =>
     import('./pages/network-search/network-search').then((m) => m.NetworkSearch),
   'bluesky-search': () =>
@@ -255,6 +319,19 @@ export const routes: Routes = [
       seoAlternates: TOOLS_INDEX_ALTERNATES,
     },
     loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndexDe),
+  },
+  // The Japanese pages' index (and the /ja/ folder's own page).
+  {
+    path: 'ja',
+    pathMatch: 'full',
+    title: 'Mastodon と Bluesky の無料ツール',
+    data: {
+      seoIndexable: true,
+      seoDescription: TOOLS_DESCRIPTION_JA,
+      lang: 'ja',
+      seoAlternates: TOOLS_INDEX_ALTERNATES,
+    },
+    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndexJa),
   },
   // Recovery works before signing in, without changing the active account.
   {

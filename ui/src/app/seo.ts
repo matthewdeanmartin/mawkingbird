@@ -20,10 +20,13 @@ export const TOOLS_DESCRIPTION =
   'Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.';
 export const TOOLS_DESCRIPTION_DE =
   'Kostenlose Werkzeuge für Mastodon und Bluesky auf Deutsch: Twitter-Follows mitnehmen, Beiträge planen, Bilder herunterladen, ähnliche Hashtags finden und mehr. Alles im Browser.';
-/** /tools and /de/ are the same index in two languages. */
+export const TOOLS_DESCRIPTION_JA =
+  'Mastodon と Bluesky の無料ツール集：Twitter のフォローの引き継ぎ、投稿の予約、画像の一括ダウンロード、似ているハッシュタグ探しなど。すべてブラウザーで動きます。';
+/** /tools, /de/ and /ja/ are the same index in three languages. */
 export const TOOLS_INDEX_ALTERNATES = [
   { lang: 'en' as const, path: 'tools' },
   { lang: 'de' as const, path: 'de' },
+  { lang: 'ja' as const, path: 'ja' },
 ];
 export const BLOG_DESCRIPTION =
   'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';

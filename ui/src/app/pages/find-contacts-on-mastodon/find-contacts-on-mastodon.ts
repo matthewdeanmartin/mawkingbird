@@ -41,3 +41,19 @@ export class FindContactsOnMastodon {
 export class FindContactsOnMastodonDe extends FindContactsOnMastodon {
   protected override readonly returnHere = { next: '/de/kontakte-auf-mastodon-finden' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonJa extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/ja/find-contacts-on-mastodon' };
+}

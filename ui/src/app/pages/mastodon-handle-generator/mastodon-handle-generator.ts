@@ -38,3 +38,17 @@ export class MastodonHandleGenerator {
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorDe extends MastodonHandleGenerator {}
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-handle-generator-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorJa extends MastodonHandleGenerator {}

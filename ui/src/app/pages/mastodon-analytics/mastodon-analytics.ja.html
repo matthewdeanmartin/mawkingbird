@@ -1,0 +1,66 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon アナリティクス</p>
+    <h1>Mastodon のアクセス解析・統計</h1>
+    <p>
+      投稿の反応や、誰が見てくれているかがわかります。
+      @if (!inShell) {
+        Mastodon でログインすると、あなた自身の投稿とフォロワーから、このページで数字を計算します。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">統計を読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>反応のよかった投稿</h2>
+        <p>人気の投稿、投稿ごとのお気に入り・ブースト・返信の数、そして推定リーチ。</p>
+      </li>
+      <li>
+        <h2>フォロワーの様子</h2>
+        <p>フォローしている人・フォロワーのうち今も活動している人の数、よくやりとりする相手。</p>
+      </li>
+      <li>
+        <h2>投稿の習慣</h2>
+        <p>
+          いつ、どのくらいの頻度で、どの言語で、何について投稿しているかをカレンダーで表示します。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして確認する</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>データはどこに送られますか？</h3>
+    <p>
+      新たに送られる先はありません。投稿とフォロワーはあなたの Mastodon
+      サーバーから読み込み、数字はこのブラウザーの中で計算します。Mawkingbird
+      はコピーを保存しません。
+    </p>
+    <h3>リーチが推定値なのはなぜ？</h3>
+    <p>
+      Mastodon
+      には閲覧数のカウントがないためです。リーチはフォロワー数と反応から推定しており、数字の横にもそう表示しています。
+    </p>
+  </section>
+</main>

@@ -40,3 +40,19 @@ export class MastodonFriendsRssFeeds {
 export class MastodonFriendsRssFeedsDe extends MastodonFriendsRssFeeds {
   protected override readonly returnHere = { next: '/de/rss-feeds-deiner-mastodon-freunde' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsJa extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/ja/mastodon-friends-rss-feeds' };
+}

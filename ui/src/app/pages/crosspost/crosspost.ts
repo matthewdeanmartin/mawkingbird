@@ -41,3 +41,19 @@ export class Crosspost {
 export class CrosspostDe extends Crosspost {
   protected override readonly returnHere = { next: '/de/mastodon-und-bluesky-gleichzeitig-posten' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-crosspost-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostJa extends Crosspost {
+  protected override readonly returnHere = { next: '/ja/crosspost' };
+}

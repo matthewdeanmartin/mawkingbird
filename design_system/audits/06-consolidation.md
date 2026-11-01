@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Japanese tool pages, 2026-10-31
+
+Reviewed 1,364 source files and 329 candidate files. Seventeen candidates are
+added: the Japanese twins of the tool pages (`<page>.ja.html`, and
+`tools/tools-index.ja.html` for /ja/), each with its German twin's
+disposition. They use the same controls with Japanese words. The language
+switch now lists every version; `focused-page.css` adds Japanese line
+breaking under `:lang(ja)`. Existing candidates shift lines only. No shared
+widget changed.
+
 ## German tool pages, 2026-10-31
 
 Reviewed 1,347 source files and 312 candidate files. Seventeen candidates are

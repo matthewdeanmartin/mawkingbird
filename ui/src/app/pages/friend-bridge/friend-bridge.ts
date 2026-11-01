@@ -47,7 +47,10 @@ export class FriendBridge {
 /** Bluesky is read unless the path says it is Mastodon's follows being read. */
 export function bridgeSourceOf(route: ActivatedRoute): BridgeNetwork {
   const paths = route.snapshot.pathFromRoot.map((step) => step.routeConfig?.path ?? '');
-  return paths.includes('mastodon-to-bluesky') || paths.includes('de/von-mastodon-zu-bluesky')
+  // Any language version: the English slug, under /ja/ too, or the German one.
+  return paths.some(
+    (path) => path.endsWith('mastodon-to-bluesky') || path === 'de/von-mastodon-zu-bluesky',
+  )
     ? 'mastodon'
     : 'bluesky';
 }
@@ -74,6 +77,28 @@ export class FriendBridgeDe extends FriendBridge {
   protected override readonly copy: BridgeCopy = {
     ...COPY[bridgeSourceOf(this.route)],
     root: GERMAN_ROOTS[bridgeSourceOf(this.route)],
+  };
+  protected override readonly returnHere = { next: this.copy.root };
+}
+
+/** The Japanese pages' own paths, one per direction. */
+const JAPANESE_ROOTS: Record<BridgeNetwork, string> = {
+  bluesky: '/ja/bluesky-to-mastodon',
+  mastodon: '/ja/mastodon-to-bluesky',
+};
+
+/** The Japanese pages, both directions; see FriendBridgeDe. */
+@Component({
+  selector: 'app-friend-bridge-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  templateUrl: './friend-bridge.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FriendBridgeJa extends FriendBridge {
+  protected override readonly copy: BridgeCopy = {
+    ...COPY[bridgeSourceOf(this.route)],
+    root: JAPANESE_ROOTS[bridgeSourceOf(this.route)],
   };
   protected override readonly returnHere = { next: this.copy.root };
 }

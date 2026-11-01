@@ -41,3 +41,19 @@ export class MastodonContentWarnings {
 export class MastodonContentWarningsDe extends MastodonContentWarnings {
   protected override readonly returnHere = { next: '/de/mastodon-inhaltswarnungen-ausschalten' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-content-warnings-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsJa extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/ja/turn-off-content-warnings-mastodon' };
+}

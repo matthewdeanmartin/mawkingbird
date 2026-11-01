@@ -54,3 +54,24 @@ export class TwitterToMastodon {
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonDe extends TwitterToMastodon {}
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-twitter-to-mastodon-ja',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonJa extends TwitterToMastodon {}

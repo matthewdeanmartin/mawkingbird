@@ -8,21 +8,23 @@ import { describe, expect, it } from 'vitest';
 import { FOCUSED_TOOL_PAGES } from '../../app.routes';
 import { FOCUSED_TOOLS, toolLanguage } from '../../focused-tools';
 
-const GERMAN = FOCUSED_TOOLS.filter((tool) => toolLanguage(tool) === 'de');
+const TRANSLATED = FOCUSED_TOOLS.filter((tool) => toolLanguage(tool) !== 'en');
 
 /**
- * Every German page, signed out, as a search visitor first sees it: German
- * words, a link to its English version, and every sign-in coming back to the
- * German page rather than the English one. The prerender checks cover the
+ * Every page in a language other than English, signed out, as a search
+ * visitor first sees it: written in its language, a link to its English
+ * version, and every sign-in coming back to that page rather than the English
+ * one. The prerender checks cover the
  * heading and hreflang at build time; the sign-in return is only checked here.
  */
-describe('German tool pages', () => {
-  it('has German pages to check', () => {
-    expect(GERMAN.length).toBeGreaterThan(15);
+describe('Translated tool pages', () => {
+  it('has German and Japanese pages to check', () => {
+    expect(TRANSLATED.filter((tool) => toolLanguage(tool) === 'de').length).toBeGreaterThan(15);
+    expect(TRANSLATED.filter((tool) => toolLanguage(tool) === 'ja').length).toBeGreaterThan(15);
   });
 
-  for (const tool of GERMAN) {
-    it(`/${tool.path} is German and signs in back to itself`, async () => {
+  for (const tool of TRANSLATED) {
+    it(`/${tool.path} is in its language and signs in back to itself`, async () => {
       const component = (await FOCUSED_TOOL_PAGES[tool.path]()) as Type<unknown>;
       TestBed.configureTestingModule({
         // Keep the tools themselves deferred, as in the prerender.
@@ -36,7 +38,7 @@ describe('German tool pages', () => {
             provide: ActivatedRoute,
             useValue: {
               snapshot: {
-                data: { lang: 'de', inShell: false },
+                data: { lang: toolLanguage(tool), inShell: false },
                 pathFromRoot: [{ routeConfig: null }, { routeConfig: { path: tool.path } }],
                 queryParamMap: convertToParamMap({}),
                 paramMap: convertToParamMap({}),
@@ -52,7 +54,7 @@ describe('German tool pages', () => {
       fixture.detectChanges();
       const root = fixture.nativeElement as HTMLElement;
 
-      expect(root.querySelector('main')?.getAttribute('lang')).toBe('de');
+      expect(root.querySelector('main')?.getAttribute('lang')).toBe(toolLanguage(tool));
       expect(root.querySelector('h1')?.textContent).toContain(tool.prerenderCheck.heading);
       const english = FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)!;
       expect(root.querySelector(`a[hreflang="en"][href="/${english.path}"]`)?.textContent).toBe(

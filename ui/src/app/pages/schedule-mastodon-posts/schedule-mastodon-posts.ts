@@ -42,3 +42,19 @@ export class ScheduleMastodonPosts {
 export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
   protected override readonly returnHere = { next: '/de/mastodon-beitraege-planen' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-schedule-mastodon-posts-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsJa extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/ja/schedule-mastodon-posts' };
+}

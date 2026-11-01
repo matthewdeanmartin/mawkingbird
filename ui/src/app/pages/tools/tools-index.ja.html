@@ -1,0 +1,43 @@
+<main class="focused-page" lang="ja">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <a class="language-switch" routerLink="/tools" hreflang="en" lang="en">English</a>
+    <a class="language-switch" routerLink="/de" hreflang="de" lang="de">Deutsch</a>
+    <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">ツール</p>
+    <h1>Mastodon と Bluesky の無料ツール</h1>
+    <p>
+      公式アプリにはない「ちょっと便利な機能」を、ひとつずつ小さなツールにしました。ユーザー名探し、知り合い探し、投稿の予約、アカウントの整理などに使えます。どれもブラウザーだけで動き、登録は不要なものもあります。
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>お探しのものが見つかりませんか？</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Mawkingbird のすべての機能</a>（英語）や、<a
+        mbContentLink
+        href="help/"
+        >ヘルプ</a
+      >（英語）もご覧ください。
+    </p>
+  </section>
+</main>

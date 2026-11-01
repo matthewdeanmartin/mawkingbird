@@ -2,6 +2,12 @@
 :host {
   display: block;
 }
+/* Japanese has no spaces to break at: keep words whole and follow Japanese
+   line-break rules (no 。、 or small kana at the start of a line). */
+.focused-page:lang(ja) {
+  line-break: strict;
+  word-break: auto-phrase;
+}
 .focused-page {
   max-width: 820px;
   margin: auto;
@@ -23,6 +29,9 @@ header {
 }
 .language-switch:hover {
   color: var(--accent);
+}
+.language-switch + .language-switch {
+  margin-inline-start: 0;
 }
 .eyebrow {
   margin: 0;

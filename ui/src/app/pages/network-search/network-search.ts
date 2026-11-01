@@ -36,7 +36,8 @@ export class NetworkSearch {
 /** Mastodon unless the path says Bluesky. */
 export function networkOf(route: ActivatedRoute): SearchNetwork {
   const paths = route.snapshot.pathFromRoot.map((step) => step.routeConfig?.path ?? '');
-  return paths.includes('bluesky-search') || paths.includes('de/bluesky-suche')
+  // Any language version: the English slug, under /ja/ too, or the German one.
+  return paths.some((path) => path.endsWith('bluesky-search') || path === 'de/bluesky-suche')
     ? 'bluesky'
     : 'mastodon';
 }
@@ -61,4 +62,22 @@ const GERMAN_ROOTS: Record<SearchNetwork, string> = {
 })
 export class NetworkSearchDe extends NetworkSearch {
   protected override readonly root = GERMAN_ROOTS[networkOf(this.route)];
+}
+
+/** The Japanese pages' own paths, one per network. */
+const JAPANESE_ROOTS: Record<SearchNetwork, string> = {
+  mastodon: '/ja/mastodon-search',
+  bluesky: '/ja/bluesky-search',
+};
+
+/** The Japanese pages, both networks; see NetworkSearchDe. */
+@Component({
+  selector: 'app-network-search-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.ja.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchJa extends NetworkSearch {
+  protected override readonly root = JAPANESE_ROOTS[networkOf(this.route)];
 }

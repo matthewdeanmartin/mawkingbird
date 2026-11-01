@@ -15,9 +15,9 @@ export interface LanguageLandingCopy {
   /** The language the page is written in. */
   lang: PageLanguage;
   /** The language the page sets the reader up for (interface, known, posting). */
-  target: 'de' | 'en';
+  target: 'de' | 'en' | 'ja';
   /** A language offered as "learning", when the page has one. */
-  learning?: 'de' | 'en';
+  learning?: 'de' | 'en' | 'ja';
   openApp: string;
   eyebrow: string;
   heading: string;
@@ -331,6 +331,192 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       home: 'Go to your home feed',
       starterPacks: 'Browse starter packs',
       settingsLink: 'All language settings',
+    },
+  },
+  'ja/mastodon-in-japanese': {
+    path: 'ja/mastodon-in-japanese',
+    lang: 'ja',
+    target: 'ja',
+    learning: 'en',
+    openApp: 'アプリを開く',
+    eyebrow: 'マストドン（Mastodon）を日本語で',
+    heading: 'マストドン（Mastodon）を日本語で快適に',
+    intro:
+      'Mawkingbird は、日本語で使う人、複数の言語を使う人、語学を学ぶ人のための機能が、Mastodon 公式アプリよりも充実しています。ログインすると、読める言語と学習中の言語にあわせて設定します。ホームのタイムラインがぐっと読みやすくなります。',
+    loading: '読み込み中…',
+    claims: [
+      {
+        title: 'アプリ全体が日本語',
+        body: 'メニューも設定もヘルプも日本語で表示されます。',
+      },
+      {
+        title: '読める言語だけを表示',
+        body: '読めない言語の投稿をホームから非表示にします。投稿の言語設定が間違っていても、本文から言語を判定します。',
+      },
+      {
+        title: '今日は日本語だけ',
+        body: '誰のフォローも外さずに、しばらくのあいだタイムラインを 1 つの言語に絞れます。',
+      },
+      {
+        title: '学習中の言語には翻訳を',
+        body: '学習中の言語の投稿は非表示にならず、必要なら下に翻訳を表示します。翻訳はお使いのサーバー、または自分の AI キーで行います。',
+      },
+      {
+        title: '読めるトレンドだけ',
+        body: '読めない文字で書かれたトレンドのハッシュタグを除外します。',
+      },
+      {
+        title: '投稿が日本語の読者に届く',
+        body: '投稿の既定の言語をサーバーに日本語として設定します。ほかの人の言語フィルターはこの設定を使います。',
+      },
+      {
+        title: '日本語のおすすめパック',
+        body: 'フォローする人を探せる、厳選されたリストをアプリ内で用意しています。',
+      },
+    ],
+    signIn: 'Mastodon でログイン',
+    questionsTitle: 'よくある質問',
+    questions: [
+      {
+        q: 'マストドンは日本語で使えますか？',
+        a: 'はい。Mastodon 本体も日本語に対応しており、Mawkingbird ではアプリ全体を日本語で使えます。さらに、タイムラインを読める言語に絞るフィルターもあります。',
+      },
+      {
+        q: 'どこで登録すればいいですか？',
+        a: 'まずは mastodon.social がいちばん簡単です。ほかにも多くのサーバーがあり、joinmastodon.org などの一覧で探せます。Mawkingbird はどのサーバーでも使えます。',
+      },
+      {
+        q: 'ログインすると何が変わりますか？',
+        a: '最初は何も変わりません。設定の一覧が表示され、反映するものをあなたが選びます。サーバーに保存されるのは投稿の既定の言語だけで、ほかはこのブラウザーに保存されます。',
+      },
+      {
+        q: '料金はかかりますか？',
+        a: 'いいえ。Mawkingbird は無料で、ブラウザーで動きます。',
+      },
+    ],
+    checklist: {
+      title: '日本語向けに設定する',
+      intro: '反映する項目を選んでください。「反映する」を押すまで何も変わりません。',
+      items: [
+        {
+          setting: 'interface',
+          label: 'アプリを日本語で表示',
+          hint: 'アプリ全体を日本語にします。',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: '日本語が読める',
+          hint: '読める言語の設定が、下のフィルターに使われます。',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: '英語も読める',
+          hint: 'オンにすると英語の投稿も表示されたままになります。',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: '投稿は日本語で書く',
+          hint: '新しい投稿の既定の言語。Mastodon サーバーに保存されます。',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: '読めない言語の投稿を非表示にする',
+          hint: 'ホームと Algo が対象です。言語がはっきりしない投稿は表示されたままです。',
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: '読める文字のトレンドだけ表示',
+          hint: 'ほかの文字で書かれたトレンドのハッシュタグを除外します。',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: '英語を勉強している',
+          hint: '英語の投稿は常に表示され、下に翻訳が付きます。',
+          checked: false,
+        },
+      ],
+      where: { browser: 'このブラウザー', server: 'あなたのサーバー' },
+      apply: '反映する',
+      applying: '反映しています…',
+      failed: '投稿の既定の言語をサーバーに保存できませんでした。ほかの設定は反映済みです。',
+      doneTitle: '完了しました',
+      doneNothing: '何も選ばれていないため、変更はありません。',
+      home: 'ホームのタイムラインへ',
+      starterPacks: 'おすすめパックを見る',
+      settingsLink: '言語の設定をすべて見る',
+    },
+  },
+  'ja/learn-english-with-mastodon': {
+    path: 'ja/learn-english-with-mastodon',
+    lang: 'ja',
+    target: 'ja',
+    learning: 'en',
+    openApp: 'アプリを開く',
+    eyebrow: '英語学習',
+    heading: 'マストドン（Mastodon）で英語を学ぶ',
+    intro:
+      '英語を話す人たちのリアルな投稿を毎日読み、わからないときは下に翻訳を表示できます。ログインすると、今読める言語はそのままに、英語学習向けに Mawkingbird を設定します。',
+    loading: '読み込み中…',
+    claims: [
+      {
+        title: '英語の投稿は常に表示',
+        body: '学習中の言語は、読めない言語を非表示にするフィルターでも決して隠されません。',
+      },
+      {
+        title: '翻訳は「置き換え」ではなく「下に表示」',
+        body: '英文と日本語訳を並べて表示するので、原文から学べます。',
+      },
+      {
+        title: '自動でも、ボタンでも',
+        body: 'スクロールして表示されたときに自動で翻訳することも、翻訳ボタンを押したときだけにすることもできます。翻訳はお使いのサーバー、または自分の AI キーで行います。',
+      },
+      {
+        title: 'フォローする人も見つかる',
+        body: '英語で投稿する人たちのおすすめパックを、興味ごとに用意しています。',
+      },
+    ],
+    signIn: 'Mastodon でログイン',
+    questionsTitle: 'よくある質問',
+    questions: [
+      {
+        q: 'マストドンは英語の勉強に向いていますか？',
+        a: 'あらゆる話題について、実際の人が書いた短い日常英語があふれています。好きなことを投稿する人をフォローすれば、無理なく続けられる読む練習になります。',
+      },
+      {
+        q: '翻訳は誰がしますか？',
+        a: '翻訳に対応していればあなたの Mastodon サーバー、または自分の OpenRouter キーを使った AI モデルです。Mawkingbird 独自のサーバーで翻訳することはありません。',
+      },
+      {
+        q: 'アプリの表示言語は変わりますか？',
+        a: 'いいえ。このページは英語を学習中の言語として追加するだけで、表示言語や読める言語はそのままです。',
+      },
+    ],
+    checklist: {
+      title: '英語学習向けに設定する',
+      intro: '反映する項目を選んでください。「反映する」を押すまで何も変わりません。',
+      items: [
+        {
+          setting: 'learning',
+          label: '英語を勉強している',
+          hint: '英語の投稿は非表示にならず、下に翻訳が付きます。',
+          checked: true,
+        },
+      ],
+      where: { browser: 'このブラウザー', server: 'あなたのサーバー' },
+      apply: '反映する',
+      applying: '反映しています…',
+      failed: '保存できない項目がありました。もう一度お試しください。',
+      doneTitle: '完了しました',
+      doneNothing: '何も選ばれていないため、変更はありません。',
+      home: 'ホームのタイムラインへ',
+      starterPacks: 'おすすめパックを見る',
+      settingsLink: '言語の設定をすべて見る',
     },
   },
 };

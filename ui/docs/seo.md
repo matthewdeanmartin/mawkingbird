@@ -256,27 +256,36 @@ A tool page in another language is its own registry entry with `lang` (e.g.
 `de`) and `translationOf` (the English entry's id), and the same tab, sign-in,
 group and tool selector as the original (`focused-tools.spec.ts` checks). Its
 `sources` names the original's directory. Each language has a folder: English
-at the root, German under `/de/` (`de/mastodon-statistik`); the spec enforces
-it. Slugs are in the page's language, ASCII only, and never renamed. The
-first two German pages briefly lived at the root; `app.routes.ts` redirects
-those two old paths.
+at the root, German under `/de/` (`de/mastodon-statistik`), Japanese under
+`/ja/`; the spec enforces it. Slugs are ASCII only and never renamed. German
+slugs are German words; Japanese pages keep the English slug
+(`ja/download-mastodon-images`), as Japanese sites usually do, since
+romanised Japanese is not what anyone searches. The first two German pages
+briefly lived at the root; `app.routes.ts` redirects those two old paths.
 
 - **Page copy** (heading, intro, steps, Questions) is written in the page
   itself, one language per file, not in the app dictionaries: it is what search
   engines read, the prerender loads no dictionaries, and each set serves one
-  language's readers only. Existing tool pages get a German subclass of their
-  component (`…De`, same file) with its own `<page>.de.html`, which overrides
+  language's readers only. Existing tool pages get a subclass of their
+  component per language (`…De`, `…Ja`, same file) with its own
+  `<page>.de.html` or `<page>.ja.html`, which overrides
   the sign-in return path; pages built later keep a copy file instead
   (`download-mastodon-images.copy.ts`, `language-landing.copy.ts`). The
   Bluesky ⇄ Mastodon and search pages pick their direction or network from the
-  path, German paths included.
+  path (`endsWith` the English slug, plus the German slugs).
 - **Everything translated inside the page follows the URL**, not the browser:
   the page component provides `provideRouteLanguage()` (`page-language.ts`),
   which pins Transloco to the route's `lang` with `|static` for its whole
   subtree, dialogs included. Google's renderer (an English browser) therefore
   sees a German tool in German. Text built in code uses `routeTranslate()`;
   a bare `TranslocoService.translate()` would ignore the pin. The tools' own
-  strings and the app parts they embed get German in `de.json` only.
+  strings and the app parts they embed get German and Japanese in `de.json`
+  and `ja.json` only; other dictionaries fall back to English there.
+- **Japanese copy** is polite (です/ます), with full-width punctuation, no
+  spaces between Japanese words, and マストドン beside Mastodon where people
+  search it. `focused-page.css` sets `line-break: strict` and
+  `word-break: auto-phrase` under `:lang(ja)` so lines break between
+  phrases, not inside words.
 - **`<html lang>`** follows the page on public (indexable) routes: `Seo`
   publishes the route's `lang` to `PageLanguageState`, which
   `TranslocoLocaleSync` prefers over the interface language. The signed-in
@@ -286,18 +295,20 @@ those two old paths.
   version plus `x-default` (English); the sitemap carries the same set as
   `xhtml:link`. `check-seo-build.mjs` asserts both, plus `<html lang>`.
 - /tools and the features page list English pages only. `/de/` is the German
-  index (`ToolsIndexDe`, German headings), and the two are each other's
-  `hreflang` pair. Every tool page's header links its other language
+  index (`ToolsIndexDe`, German headings) and `/ja/` the Japanese one
+  (`ToolsIndexJa`); the three are each other's `hreflang` set. Every tool page's header links its other language
   (`LanguageVersions`, from the registry), so the pairs are linked visibly too.
 - The tools' own strings are translation keys under `focusedTools.*` (German
-  in de.json only). Their Invite links come from the page's own route
-  (`toolInviteLink()`), so a German page's Invite stays German.
-- `german-pages.spec.ts` renders every German entry signed out and checks its
-  language, heading, link to the English version, and that every sign-in
-  returns to the German page.
+  and Japanese in de.json and ja.json only). Their Invite links come from the
+  page's own route (`toolInviteLink()`), so a translated page's Invite stays
+  in its language.
+- `translated-pages.spec.ts` renders every non-English entry signed out and
+  checks its language, heading, link to the English version, and that every
+  sign-in returns to the same page.
 
-Language landing pages (`mastodon-in-english`, `mastodon-auf-deutsch`,
-`learn-english-with-mastodon`) share `LanguageLanding`: a pitch while signed
+Language landing pages (`mastodon-in-english`, `de/mastodon-auf-deutsch`,
+`learn-english-with-mastodon`, `ja/mastodon-in-japanese`,
+`ja/learn-english-with-mastodon`) share `LanguageLanding`: a pitch while signed
 out, the reader's language settings as one checklist once signed in (the same
 services as Settings → Internationalization; nothing changes before Apply;
 only the posting language is written to the server), then the way home. Their

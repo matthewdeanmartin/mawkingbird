@@ -61,11 +61,13 @@ const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
 const sitemapUrl = new URL('sitemap.xml', root);
 // A tool page in several languages lists every version, itself included, plus
 // English as x-default: the same set the page's own <link rel="alternate"> has.
-// /tools/ and /de/ are one index in two languages.
+// /tools/, /de/ and /ja/ are one index in three languages.
 const indexPair = [
   ['en', 'tools'],
   ['de', 'de'],
+  ['ja', 'ja'],
 ];
+const indexPages = indexPair.map(([, path]) => `${path}/`);
 const alternateLinks = (pairs) =>
   pairs
     .map(
@@ -74,7 +76,7 @@ const alternateLinks = (pairs) =>
     )
     .join('');
 const alternates = (page) => {
-  if (page === 'tools/' || page === 'de/')
+  if (indexPages.includes(page))
     return alternateLinks([...indexPair, ['x-default', 'tools']]);
   const tool = focusedTools.find((entry) => `${entry.path}/` === page);
   if (!tool) return '';
@@ -95,8 +97,7 @@ const alternates = (page) => {
     .join('');
 };
 const entries = [
-  'tools/',
-  'de/',
+  ...indexPages,
   ...focusedTools.map((tool) => `${tool.path}/`),
   'follow/',
   ...kits.map((slug) => `follow/${slug}/`),
@@ -117,7 +118,7 @@ function withLastmod(xml) {
   const sources = (page) => {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
-    if (page === 'tools/' || page === 'de/')
+    if (indexPages.includes(page))
       return ['src/app/pages/tools/', 'src/app/focused-tools.json'];
     if (page.startsWith('for/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];

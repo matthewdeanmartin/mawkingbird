@@ -1,0 +1,75 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">ハッシュタグ検索</p>
+    <h1>Mastodon で関連するハッシュタグを探す</h1>
+    <p>
+      ハッシュタグを 1
+      つ、または複数入力すると、一緒に使われているハッシュタグを、最近の投稿で同時に使われた回数の多い順に表示します。より多くの人に見つけてもらうためにも、フォローするタグを探すためにも使えます。アカウント登録は不要です。
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/ja/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">読み込み中…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>ハッシュタグを入力</h2>
+        <p>1 つでも、#猫 と #ねこ のように同じ意味のものを複数でもかまいません。</p>
+      </li>
+      <li>
+        <h2>最近の投稿を集計</h2>
+        <p>いずれかのタグが付いた最新 200 件の投稿を mastodon.social から読み込みます。</p>
+      </li>
+      <li>
+        <h2>一緒に使われるタグを表示</h2>
+        <p>
+          それらの投稿に各ハッシュタグが出てきた回数の順に並べます。もっと集計すれば範囲が広がります。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして自分のサーバーを使う</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Mastodon ではどのハッシュタグを使えばいいですか？</h3>
+    <p>
+      Mastodon
+      には投稿の表示先を決めるアルゴリズムがなく、投稿はハッシュタグのフォローや検索で見つけてもらいます。見てほしい人たちがすでに使っているタグ、つまりこの一覧に出るタグを使いましょう。英語のタグは
+      #CatsOfMastodon のように単語の頭を大文字にすると、読み上げソフトが正しく読めます。
+    </p>
+    <h3>「関連」はどう判断していますか？</h3>
+    <p>
+      数えています。集計した投稿のハッシュタグを 1 投稿 1 回ずつ数え、入力したタグは除きます。200
+      件中 40 件に出るタグは、5 件のタグより上に並びます。
+    </p>
+    <h3>複数のハッシュタグをまとめて調べるのはなぜ？</h3>
+    <p>
+      同じ話題でも表記が分かれることがよくあります（#猫 と #ねこ、#写真 と #photo
+      など）。まとめて入力すれば、いずれかが付いた投稿を集計するので、話題全体をカバーできます。
+    </p>
+    <h3>サーバーによって結果が違うのはなぜ？</h3>
+    <p>
+      各サーバーに届くのは、そのサーバーの利用者がフォローしている人の投稿だけです。大きくて活発なサーバーほど全体像に近づきます。ログインすると自分のサーバーで集計するので、身近な界隈で使われているタグがわかります。
+    </p>
+  </section>
+</main>

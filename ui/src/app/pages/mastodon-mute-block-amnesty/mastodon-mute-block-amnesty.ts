@@ -38,3 +38,19 @@ export class MastodonMuteBlockAmnesty {
 export class MastodonMuteBlockAmnestyDe extends MastodonMuteBlockAmnesty {
   protected override readonly returnHere = { next: '/de/mastodon-stummschaltungen-aufheben' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyJa extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = { next: '/ja/mastodon-mute-block-amnesty' };
+}

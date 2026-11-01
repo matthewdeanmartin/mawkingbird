@@ -12,6 +12,7 @@ import {
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
   TOOLS_DESCRIPTION_DE,
+  TOOLS_DESCRIPTION_JA,
   TOOLS_INDEX_ALTERNATES,
 } from './app/seo';
 import { Type } from '@angular/core';
@@ -19,62 +20,83 @@ import { FOCUSED_TOOLS, toolAlternates, toolLanguage } from './app/focused-tools
 import {
   AnonymousOnMastodon,
   AnonymousOnMastodonDe,
+  AnonymousOnMastodonJa,
 } from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
-import { Crosspost, CrosspostDe } from './app/pages/crosspost/crosspost';
-import { NetworkSearch, NetworkSearchDe } from './app/pages/network-search/network-search';
+import { Crosspost, CrosspostDe, CrosspostJa } from './app/pages/crosspost/crosspost';
+import {
+  NetworkSearch,
+  NetworkSearchDe,
+  NetworkSearchJa,
+} from './app/pages/network-search/network-search';
 import { DownloadMastodonImages } from './app/pages/download-mastodon-images/download-mastodon-images';
 import {
   MastodonSimilarHashtags,
   MastodonSimilarHashtagsDe,
+  MastodonSimilarHashtagsJa,
 } from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
 import { LanguageLanding } from './app/pages/language-landing/language-landing';
 import {
   ExportMastodonBookmarks,
   ExportMastodonBookmarksDe,
+  ExportMastodonBookmarksJa,
 } from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
 import {
   MastodonContentWarnings,
   MastodonContentWarningsDe,
+  MastodonContentWarningsJa,
 } from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
 import {
   MastodonHandleGenerator,
   MastodonHandleGeneratorDe,
+  MastodonHandleGeneratorJa,
 } from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
 import {
   MastodonMuteBlockAmnesty,
   MastodonMuteBlockAmnestyDe,
+  MastodonMuteBlockAmnestyJa,
 } from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
 import {
   FindContactsOnMastodon,
   FindContactsOnMastodonDe,
+  FindContactsOnMastodonJa,
 } from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
 import {
   MastodonFriendsRssFeeds,
   MastodonFriendsRssFeedsDe,
+  MastodonFriendsRssFeedsJa,
 } from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
-import { FriendBridge, FriendBridgeDe } from './app/pages/friend-bridge/friend-bridge';
+import {
+  FriendBridge,
+  FriendBridgeDe,
+  FriendBridgeJa,
+} from './app/pages/friend-bridge/friend-bridge';
 import {
   TurnOffBoostsMastodon,
   TurnOffBoostsMastodonDe,
+  TurnOffBoostsMastodonJa,
 } from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
 import {
   GithubToMastodon,
   GithubToMastodonDe,
+  GithubToMastodonJa,
 } from './app/pages/github-to-mastodon/github-to-mastodon';
 import {
   MastodonAnalytics,
   MastodonAnalyticsDe,
+  MastodonAnalyticsJa,
 } from './app/pages/mastodon-analytics/mastodon-analytics';
 import {
   ScheduleMastodonPosts,
   ScheduleMastodonPostsDe,
+  ScheduleMastodonPostsJa,
 } from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
 import {
   TwitterToMastodon,
   TwitterToMastodonDe,
+  TwitterToMastodonJa,
 } from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
-import { ToolsIndex, ToolsIndexDe } from './app/pages/tools/tools-index';
+import { ToolsIndex, ToolsIndexDe, ToolsIndexJa } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
 
@@ -142,6 +164,27 @@ const toolComponents: Record<string, Type<unknown>> = {
   'de/mastodon-suche': NetworkSearchDe,
   'de/bluesky-suche': NetworkSearchDe,
   'de/aehnliche-hashtags-mastodon': MastodonSimilarHashtagsDe,
+  'ja/twitter-to-mastodon': TwitterToMastodonJa,
+  'ja/crosspost': CrosspostJa,
+  'ja/mastodon-analytics': MastodonAnalyticsJa,
+  'ja/github-to-mastodon': GithubToMastodonJa,
+  'ja/schedule-mastodon-posts': ScheduleMastodonPostsJa,
+  'ja/bluesky-to-mastodon': FriendBridgeJa,
+  'ja/mastodon-to-bluesky': FriendBridgeJa,
+  'ja/turn-off-boosts-mastodon': TurnOffBoostsMastodonJa,
+  'ja/find-contacts-on-mastodon': FindContactsOnMastodonJa,
+  'ja/mastodon-friends-rss-feeds': MastodonFriendsRssFeedsJa,
+  'ja/mastodon-mute-block-amnesty': MastodonMuteBlockAmnestyJa,
+  'ja/how-to-be-anonymous-on-mastodon': AnonymousOnMastodonJa,
+  'ja/mastodon-handle-generator': MastodonHandleGeneratorJa,
+  'ja/turn-off-content-warnings-mastodon': MastodonContentWarningsJa,
+  'ja/export-mastodon-bookmarks': ExportMastodonBookmarksJa,
+  'ja/mastodon-search': NetworkSearchJa,
+  'ja/bluesky-search': NetworkSearchJa,
+  'ja/download-mastodon-images': DownloadMastodonImages,
+  'ja/mastodon-similar-hashtags': MastodonSimilarHashtagsJa,
+  'ja/mastodon-in-japanese': LanguageLanding,
+  'ja/learn-english-with-mastodon': LanguageLanding,
   'mastodon-search': NetworkSearch,
   'bluesky-search': NetworkSearch,
 };
@@ -196,6 +239,18 @@ export default (context: BootstrapContext) =>
               seoAlternates: TOOLS_INDEX_ALTERNATES,
             },
           },
+          {
+            path: 'ja',
+            pathMatch: 'full',
+            component: ToolsIndexJa,
+            title: 'Mastodon と Bluesky の無料ツール',
+            data: {
+              seoIndexable: true,
+              seoDescription: TOOLS_DESCRIPTION_JA,
+              lang: 'ja',
+              seoAlternates: TOOLS_INDEX_ALTERNATES,
+            },
+          },
           ...tools.map(({ path, title, description, lang, alternates, component }) => ({
             path,
             component,
@@ -221,6 +276,7 @@ export default (context: BootstrapContext) =>
             { path: 'features', renderMode: RenderMode.Prerender },
             { path: 'tools', renderMode: RenderMode.Prerender },
             { path: 'de', renderMode: RenderMode.Prerender },
+            { path: 'ja', renderMode: RenderMode.Prerender },
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },

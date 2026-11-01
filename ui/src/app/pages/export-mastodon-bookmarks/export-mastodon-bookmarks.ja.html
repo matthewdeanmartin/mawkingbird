@@ -1,0 +1,77 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon のブックマーク</p>
+    <h1>Mastodon のブックマークをエクスポート</h1>
+    <p>
+      Mastodon でブックマークした投稿を、ブラウザーや Raindrop.io、Pinboard
+      などのブックマークサービスに読み込めるファイルとしてダウンロードできます。記事を共有した投稿をブックマークしていたなら、「中身を取り出す」と記事そのものを保存できます。
+      @if (!inShell) {
+        Mastodon でログインして始めましょう。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>ブックマークを読み込む</h2>
+        <p>Mastodon アカウントのブックマークをすべて、あなたのサーバーから読み込みます。</p>
+      </li>
+      <li>
+        <h2>保存する内容を選ぶ</h2>
+        <p>
+          投稿そのもの、投稿が共有したリンク（中身を取り出す）、またはリンクを共有したブックマークだけ、から選べます。
+        </p>
+      </li>
+      <li>
+        <h2>ファイルを読み込む</h2>
+        <p>
+          一般的なブラウザー用ブックマークファイルです。ブラウザーのブックマーク管理やブックマークサービスで読み込んでください。
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインしてエクスポート</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Mastodon 本体でもブックマークを書き出せるのでは？</h3>
+    <p>
+      Mastodon のデータエクスポートでは、ブックマークは投稿 URL
+      を並べた表形式になり、ブラウザーやブックマークサービスでは読み込めません。このファイルなら、タイトル・本文・ハッシュタグ付きで読み込めます。
+    </p>
+    <h3>「中身を取り出す」とは？</h3>
+    <p>
+      ブックマークした投稿の多くは、記事や動画、プロジェクトなどのリンクを共有したものです。中身を取り出すと、投稿ではなくそのリンクを保存し、投稿の本文は説明として残します。
+    </p>
+    <h3>ブックマークはどこかにアップロードされますか？</h3>
+    <p>
+      いいえ。Mastodon サーバーから読み込み、ファイルはブラウザーの中で作ります。Mawkingbird
+      には何も送られません。
+    </p>
+    <h3>日付は正しいですか？</h3>
+    <p>
+      各ブックマークの日付は投稿が書かれた日です。Mastodon
+      はブックマークした日時を記録していません。
+    </p>
+  </section>
+</main>

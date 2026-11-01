@@ -1561,6 +1561,91 @@
       "file": "ui/src/app/pages/crosspost/crosspost.de.html",
       "disposition": "adopted scope",
       "nextStep": "German twin of crosspost.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of anonymous-on-mastodon.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred pseudonymity workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of crosspost.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of export-mastodon-bookmarks.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred bookmark exporter. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of find-contacts-on-mastodon.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred contacts workbench around the shared contacts finder. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of friend-bridge.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page (two URLs) using MbContentLink and MbButton in the feature-page header, sign-in row and cross-link; the signed-in body embeds the existing connectors and the shared bridge finder. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of github-to-mastodon.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-analytics.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body embeds existing components. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-content-warnings.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-friends-rss-feeds.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row (sign-in and Plus plans); the signed-in body is the deferred friend-feeds workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-handle-generator.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header; the deferred handle workbench renders for everyone. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-mute-block-amnesty.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred amnesty workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of mastodon-similar-hashtags.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the body is the deferred similar-hashtags workbench, which also runs signed out. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of network-search.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page (two URLs) using MbContentLink and MbButton; its prerendered stand-in search form is a plain GET form with an MbButton submit, replaced by the launcher once it loads. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of schedule-mastodon-posts.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred schedule workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of tools-index.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered index of focused-tools.json: MbContentLink and MbButton in the header and footer note, tool cards as plain router links styled like FocusedNextSteps. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of turn-off-boosts-mastodon.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred boosts workbench. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.ja.html",
+      "disposition": "adopted scope",
+      "nextStep": "Japanese twin of twitter-to-mastodon.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered page using MbContentLink and MbButton in the feature-page header; the importer is the shared twitter-archive-import component. Keep new controls on shared widgets."
     }
   ]
 }

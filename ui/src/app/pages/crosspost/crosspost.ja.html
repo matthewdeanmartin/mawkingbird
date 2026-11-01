@@ -1,0 +1,69 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Mastodon と Bluesky に同時投稿</h1>
+    <p>
+      一度書くだけで、同じ投稿を両方に送れます。
+      @if (!inShell) {
+        どちらかのアカウントでログインし、もう一方を連携すれば、シンプルな投稿画面ですぐに試せます。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">投稿画面を読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>どちらかでログイン</h2>
+        <p>
+          Mastodon と Bluesky のどちらのアカウントでもかまいません。まずは片方だけで始められます。
+        </p>
+      </li>
+      <li>
+        <h2>もう一方を連携</h2>
+        <p>
+          Mastodon でログインした場合は、Bluesky をアプリパスワードで連携します。Bluesky
+          でログインした場合は、Mastodon のサーバーを追加します。
+        </p>
+      </li>
+      <li>
+        <h2>一度書いて両方に投稿</h2>
+        <p>投稿画面から両方のネットワークに送信されます。まずは最初の投稿で試してみてください。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon でログイン</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky でログイン</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>Bluesky 側もまったく同じ内容になりますか？</h3>
+    <p>
+      本文は同じです。Bluesky 側は常に公開投稿になり、投票や閲覧注意（CW）は Bluesky
+      に同等の機能がないため Mastodon 側だけに付きます。
+    </p>
+    <h3>ログイン情報はどこに保存されますか？</h3>
+    <p>
+      このブラウザーの中です。Mawkingbird はあなたの Mastodon サーバーや Bluesky
+      と直接やりとりし、アカウントを預かる Mawkingbird のサーバーはありません。
+    </p>
+  </section>
+</main>

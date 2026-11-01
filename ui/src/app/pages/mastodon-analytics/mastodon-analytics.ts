@@ -40,3 +40,19 @@ export class MastodonAnalytics {
 export class MastodonAnalyticsDe extends MastodonAnalytics {
   protected override readonly returnHere = { next: '/de/mastodon-statistik' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-mastodon-analytics-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsJa extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/ja/mastodon-analytics' };
+}

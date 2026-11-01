@@ -1,0 +1,68 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">ミュート一括解除・ブロック一括解除</p>
+    <h1>Mastodon のミュートとブロックをまとめて解除する</h1>
+    <p>
+      ミュートやブロックの一覧は何年も増え続け、見直されることはほとんどありません。ミュートの一括解除、ブロックの一括解除で、一度にすべてリセットして新しく始められます。
+      @if (!inShell) {
+        Mastodon では 1 アカウントずつしか解除できません。
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">読み込み中…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon でログイン</h2>
+        <p>ミュートとブロックの一覧は、あなた自身の Mastodon サーバーから読み込みます。</p>
+      </li>
+      <li>
+        <h2>バックアップして確認</h2>
+        <p>変更する前に対象の件数を表示し、元に戻せるよう一覧を先にダウンロードできます。</p>
+      </li>
+      <li>
+        <h2>一括解除を実行</h2>
+        <p>1 アカウントずつ順番に解除し、進み具合を表示します。途中で止めることもできます。</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon でログインして一括解除を始める</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>ミュートの一括解除で何が変わりますか？</h3>
+    <p>
+      ミュートしていたすべてのアカウントのミュートが解除され、その投稿や通知が再び届くようになります。ミュートしたワードやフィルターはそのままです。
+    </p>
+    <h3>ブロックの一括解除で何が変わりますか？</h3>
+    <p>
+      ブロックしていたすべてのアカウントのブロックが解除されます。相手は再びあなたをフォローしたり、投稿を見たり、返信したりできます。ブロックしていたことも、解除したことも相手には通知されません。
+    </p>
+    <h3>元に戻せますか？</h3>
+    <p>
+      バックアップがあれば戻せます。確認画面で一覧をダウンロードしておけば、あとで Mastodon
+      サーバーのインポート画面から読み込み直せます。
+    </p>
+    <h3>ドメインブロックも解除されますか？</h3>
+    <p>いいえ。変わるのは、1 アカウントずつミュート・ブロックしたものだけです。</p>
+  </section>
+</main>

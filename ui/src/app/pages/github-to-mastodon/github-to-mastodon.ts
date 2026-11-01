@@ -40,3 +40,19 @@ export class GithubToMastodon {
 export class GithubToMastodonDe extends GithubToMastodon {
   protected override readonly returnHere = { next: '/de/github-freunde-auf-mastodon' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-github-to-mastodon-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonJa extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/ja/github-to-mastodon' };
+}

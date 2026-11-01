@@ -41,3 +41,19 @@ export class AnonymousOnMastodon {
 export class AnonymousOnMastodonDe extends AnonymousOnMastodon {
   protected override readonly returnHere = { next: '/de/anonym-auf-mastodon' };
 }
+
+/**
+ * The Japanese page (focused-tools.json `lang: "ja"`): the same tool and
+ * logic, Japanese words, and everything translated inside it pinned to
+ * Japanese (see page-language.ts).
+ */
+@Component({
+  selector: 'app-anonymous-on-mastodon-ja',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.ja.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonJa extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/ja/how-to-be-anonymous-on-mastodon' };
+}

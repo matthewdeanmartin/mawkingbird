@@ -1,0 +1,71 @@
+<main class="focused-page" lang="ja">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">アプリを開く</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter から Mastodon へ</p>
+    <h1>Twitter のフォローを Mastodon に引き継ぐ</h1>
+    <p>
+      Twitter でフォローしていた人のうち、すでに Mastodon
+      にいる人を見つけて、数クリックでフォローし直せます。アーカイブはこのブラウザーの中で読み込むだけで、どこにもアップロードされません。
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Twitter のアーカイブをダウンロード</h2>
+      <p>
+        Twitter で「設定」→「アカウント」→「データのアーカイブをダウンロード」を開きます。届くまで 1
+        日以上かかることがあります。届いたら解凍してください。
+      </p>
+    </li>
+    <li>
+      <h2>ここでアーカイブを選ぶ</h2>
+      <p>
+        解凍したフォルダー、または <code>data/following.js</code> と
+        <code>data/tweets.js</code>
+        のファイルだけを選びます。フォローしていた人、返信や言及をした相手を Mawkingbird
+        が数えます。
+      </p>
+    </li>
+    <li>
+      <h2>Mastodon でログインしてフォロー</h2>
+      <p>
+        それぞれのユーザー名をあなたの Mastodon
+        サーバーで検索し、根拠つきで候補を表示します。誰をフォローするかはあなたが決めます。
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/ja/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/ja/twitter-to-mastodon"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">インポーターを読み込み中…</p>
+  }
+
+  <section class="questions">
+    <h2>よくある質問</h2>
+    <h3>アーカイブはどこかにアップロードされますか？</h3>
+    <p>
+      いいえ。ファイルはこのページがブラウザーの中で読み込みます。ユーザー名の検索だけが、ログイン後にあなた自身の
+      Mastodon サーバーへ送られます。
+    </p>
+    <h3>自動でフォローされますか？</h3>
+    <p>
+      いいえ。ユーザー名が一致しても同じ人とは限らないため、フォローはすべてあなたがボタンを押して行います。一覧は
+      CSV でダウンロードして保存することもできます。
+    </p>
+  </section>
+</main>

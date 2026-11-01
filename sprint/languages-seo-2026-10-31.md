@@ -168,3 +168,45 @@ design inventory review.
   old pilot URL redirects. No page errors.
 - Not done: S2-5 measurement (Search Console and GoatCounter need the owner);
   native German review.
+
+### Japanese (2026-10-31)
+
+Owner request: "onward to Japanese", and "when in japanese-land do whatever
+they do". Read as: pages under `/ja/` keeping the English slug (Japanese
+sites rarely use romanised slugs, and nobody searches romaji); polite
+です/ます copy with full-width punctuation; FAQ-heavy pages; マストドン beside
+Mastodon in the landing pages, where people search both.
+
+- 21 Japanese pages: 16 tool templates (`…Ja` subclasses with `.ja.html`;
+  the Bluesky ⇄ Mastodon and search pages pick direction from the slug),
+  the download copy, `ja/mastodon-in-japanese` and
+  `ja/learn-english-with-mastodon` in `language-landing.copy.ts`, and the
+  `/ja/` index (`ToolsIndexJa`). Registered in focused-tools.json,
+  `FOCUSED_TOOL_PAGES` and the prerender table.
+- `PageLanguage` gains `ja`; the language switch lists every version
+  (English · Deutsch · 日本語); index hreflang is now a set of three in `Seo`,
+  the sitemap script and `check-seo-build.mjs`.
+- `focused-page.css`: `line-break: strict; word-break: auto-phrase` under
+  `:lang(ja)`, so lines break between phrases.
+- ja.json: 424 strings (252 tool strings, 114 embedded app parts, 58 for the
+  download dialog, next steps and nav tabs). Japanese coverage 78% → 84%.
+- `german-pages.spec.ts` is now `translated-pages.spec.ts` and covers every
+  non-English entry.
+- Design inventory: 17 Japanese twins added, each with its German twin's
+  disposition.
+- Gates: format, lint, check:i18n, design:inventory-check, build:mockingbird
+  (initial 912.53 kB), `make test-seo` and `test:seo:browser` passed.
+  `make test`: one run failed on server-discovery.spec.ts "skips degraded
+  servers unless the user explicitly accepts them" (untouched; a `waitFor`
+  timeout under load; passes alone, 3/3); a full rerun of `test:ci` passed,
+  8,736 tests, 0 failed.
+- Live (en-US Chromium, prerendered build): `/ja/` (`<html lang="ja">`, 21
+  pages listed), handle generator, search, Bluesky ⇄ Mastodon, similar
+  hashtags, image download form and `ja/mastodon-in-japanese` all render
+  Japanese; hreflang set en/de/ja/x-default on the landing page; the English
+  download page links 日本語 → `/ja/download-mastodon-images`. No page errors.
+- Open: native Japanese review (copy is drafted, not by a native speaker;
+  it uses a half-width space between Japanese and Latin words, which the
+  existing ja.json does not); S2-5 measurement still the owner's. Other
+  ja.json gaps (about 16% of keys) remain for the global pass; they are
+  outside the tool pages.
