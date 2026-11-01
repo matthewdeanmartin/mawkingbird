@@ -169,3 +169,87 @@ export class MastodonSimilarHashtagsIt extends MastodonSimilarHashtags {
 export class MastodonSimilarHashtagsPl extends MastodonSimilarHashtags {
   protected override readonly returnHere = { next: '/pl/podobne-hashtagi-mastodon' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsUk extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/uk/mastodon-similar-hashtags' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsHi extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/hi/mastodon-similar-hashtags' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsNl extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/nl/vergelijkbare-mastodon-hashtags' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsId extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/id/tagar-serupa-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsRu extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/ru/mastodon-similar-hashtags' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsSv extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/sv/liknande-mastodon-hashtaggar' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsVi extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/vi/mastodon-similar-hashtags' };
+}

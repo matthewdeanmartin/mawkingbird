@@ -1,0 +1,79 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-boosts</p>
+    <h1>Zet boosts uit voor iedereen die je volgt op Mastodon</h1>
+    <p>
+      Boosts zijn de retweets van Mastodon. Blijf iedereen volgen, maar zie alleen wat ze zelf
+      schrijven.
+      @if (!inShell) {
+        In Mastodon kun je boosts per account verbergen. Hier doe je het voor iedereen tegelijk.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in met Mastodon</h2>
+        <p>Je volglijst wordt van je eigen Mastodon-server gelezen.</p>
+      </li>
+      <li>
+        <h2>Bekijk hoeveel er veranderen</h2>
+        <p>
+          Voordat er iets gebeurt, zie je bij hoeveel mensen die je volgt de boosts nog aanstaan.
+        </p>
+      </li>
+      <li>
+        <h2>Bevestig en volg de voortgang</h2>
+        <p>
+          Elk account wordt om de beurt aangepast, met een voortgangsbalk. Je kunt tussendoor
+          stoppen en later doorgaan.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om boosts uit te zetten</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Ontvolg ik hiermee mensen?</h3>
+    <p>
+      Nee. Je blijft iedereen volgen. Hun eigen berichten en antwoorden blijven in je thuistijdlijn
+      komen. Alleen hun boosts stoppen.
+    </p>
+    <h3>Kan ik dit ongedaan maken?</h3>
+    <p>
+      Ja. Op dezelfde pagina zet je boosts voor iedereen weer aan. Voor één account kan dat ook via
+      het profiel van die persoon.
+    </p>
+    <h3>En mensen die ik later ga volgen?</h3>
+    <p>
+      Nieuwe volgacties beginnen zoals altijd met boosts aan. Voer dit gerust opnieuw uit; alleen
+      accounts die het nodig hebben worden aangepast.
+    </p>
+    <h3>Waarom duurt het even?</h3>
+    <p>
+      Mastodon heeft geen instelling voor iedereen tegelijk. Elk gevolgd account wordt dus apart
+      aangepast. Een lange volglijst kost een paar minuten.
+    </p>
+  </section>
+</main>

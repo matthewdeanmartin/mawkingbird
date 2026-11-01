@@ -462,6 +462,419 @@ try {
     assert.deepEqual(errors, [], `starter-kit pages have no runtime errors`);
     await context.close();
   }
+  // Ukrainian routes must keep their language after the client replaces the prerender.
+  const ukrainianCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),
+  );
+  const ukrainianPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).uk;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(ukrainianPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: ukrainianCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'uk');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="uk"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Показати зображення', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/uk/`);
+    await page
+      .getByRole('heading', { name: 'Безкоштовні інструменти для Mastodon і Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Українська', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="uk"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-uk-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Ukrainian pages have no runtime errors');
+    await context.close();
+  }
+  // Hindi routes must keep their language after the client replaces the prerender.
+  const hindiCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/hi.json', import.meta.url), 'utf8'),
+  );
+  const hindiPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).hi;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(hindiPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: hindiCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'hi');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="hi"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'तस्वीरें दिखाएँ', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/hi/`);
+    await page
+      .getByRole('heading', { name: 'Mastodon और Bluesky के लिए मुफ़्त टूल', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'हिन्दी', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="hi"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-hi-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Hindi pages have no runtime errors');
+    await context.close();
+  }
+  // Dutch routes must keep their language after the client replaces the prerender.
+  const dutchCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/nl.json', import.meta.url), 'utf8'),
+  );
+  const dutchPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).nl;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(dutchPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: dutchCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'nl');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="nl"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Toon de afbeeldingen', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/nl/`);
+    await page
+      .getByRole('heading', { name: 'Gratis tools voor Mastodon en Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Nederlands', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="nl"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-nl-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Dutch pages have no runtime errors');
+    await context.close();
+  }
+  // Indonesian routes must keep their language after the client replaces the prerender.
+  const indonesianCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/id.json', import.meta.url), 'utf8'),
+  );
+  const indonesianPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).id;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(indonesianPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: indonesianCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'id');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="id"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Tampilkan gambarnya', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/id/`);
+    await page
+      .getByRole('heading', { name: 'Alat gratis untuk Mastodon dan Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Bahasa Indonesia', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="id"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-id-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Indonesian pages have no runtime errors');
+    await context.close();
+  }
+  // Russian routes must keep their language after the client replaces the prerender.
+  const russianCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/ru.json', import.meta.url), 'utf8'),
+  );
+  const russianPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).ru;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(russianPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: russianCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'ru');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="ru"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Показать изображения', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/ru/`);
+    await page
+      .getByRole('heading', { name: 'Бесплатные инструменты для Mastodon и Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Русский', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="ru"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-ru-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Russian pages have no runtime errors');
+    await context.close();
+  }
+  // Swedish routes must keep their language after the client replaces the prerender.
+  const swedishCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/sv.json', import.meta.url), 'utf8'),
+  );
+  const swedishPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).sv;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(swedishPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: swedishCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'sv');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="sv"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Visa bilderna', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/sv/`);
+    await page
+      .getByRole('heading', { name: 'Gratis verktyg för Mastodon och Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Svenska', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="sv"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-sv-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Swedish pages have no runtime errors');
+    await context.close();
+  }
+  // Vietnamese routes must keep their language after the client replaces the prerender.
+  const vietnameseCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/vi.json', import.meta.url), 'utf8'),
+  );
+  const vietnamesePaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).vi;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(vietnamesePaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: vietnameseCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'vi');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="vi"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Xem ảnh của họ', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/vi/`);
+    await page
+      .getByRole('heading', { name: 'Công cụ miễn phí cho Mastodon và Bluesky', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Tiếng Việt', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="vi"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-vi-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Vietnamese pages have no runtime errors');
+    await context.close();
+  }
   console.log(
     'SEO browser checks passed with JavaScript enabled and disabled, desktop and mobile.',
   );

@@ -1,0 +1,80 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Boost Mastodon</p>
+    <h1>Nonaktifkan boost dari semua orang yang kamu ikuti di Mastodon</h1>
+    <p>
+      Boost adalah retweet-nya Mastodon. Tetap ikuti semua orang, tetapi lihat hanya tulisan mereka
+      sendiri.
+      @if (!inShell) {
+        Mastodon bisa menyembunyikan boost per akun. Alat ini melakukannya untuk semua sekaligus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Memuat…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Masuk dengan Mastodon</h2>
+        <p>Daftar mengikuti dibaca dari server Mastodon-mu sendiri.</p>
+      </li>
+      <li>
+        <h2>Lihat berapa akun yang berubah</h2>
+        <p>
+          Sebelum apa pun dilakukan, kamu diberi tahu berapa orang yang kamu ikuti masih memiliki
+          boost aktif.
+        </p>
+      </li>
+      <li>
+        <h2>Konfirmasi dan lihat progresnya</h2>
+        <p>
+          Setiap akun diperbarui bergiliran, dengan bilah progres. Kamu bisa berhenti di tengah dan
+          melanjutkan nanti.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk menonaktifkan boost</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah ini berhenti mengikuti seseorang?</h3>
+    <p>
+      Tidak. Kamu tetap mengikuti semua orang. Postingan dan balasan mereka sendiri tetap masuk ke
+      linimasa beranda. Hanya boost yang berhenti.
+    </p>
+    <h3>Bisakah aku mengembalikannya?</h3>
+    <p>
+      Bisa. Halaman yang sama mengaktifkan boost lagi untuk semua orang. Untuk satu akun, aktifkan
+      lewat profil orang tersebut.
+    </p>
+    <h3>Bagaimana dengan orang yang kuikuti nanti?</h3>
+    <p>
+      Akun yang baru diikuti memiliki boost aktif, seperti biasa di Mastodon. Jalankan alat ini lagi
+      kapan saja; hanya akun yang perlu diubah yang diperbarui.
+    </p>
+    <h3>Mengapa perlu waktu?</h3>
+    <p>
+      Mastodon tidak punya pengaturan untuk semua sekaligus, jadi akun yang kamu ikuti diubah satu
+      per satu. Daftar panjang memerlukan beberapa menit.
+    </p>
+  </section>
+</main>

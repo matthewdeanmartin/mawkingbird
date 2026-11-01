@@ -1,0 +1,68 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Plaats tegelijk berichten op Mastodon en Bluesky</h1>
+    <p>
+      Schrijf één keer en stuur hetzelfde bericht naar beide netwerken.
+      @if (!inShell) {
+        Log in met het account dat je hebt, koppel het andere en probeer de eenvoudige
+        berichteneditor.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">De berichteneditor laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in bij een van beide</h2>
+        <p>Gebruik je Mastodon- of Bluesky-account. Om te beginnen heb je er maar één nodig.</p>
+      </li>
+      <li>
+        <h2>Koppel het andere account</h2>
+        <p>
+          Ingelogd met Mastodon koppel je Bluesky met een appwachtwoord. Ingelogd met Bluesky voeg
+          je je Mastodon-server toe.
+        </p>
+      </li>
+      <li>
+        <h2>Schrijf één keer, plaats op beide</h2>
+        <p>De editor stuurt je bericht naar beide netwerken. Probeer het met een eerste bericht.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Log in met Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Log in met Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Is de kopie op Bluesky precies hetzelfde?</h3>
+    <p>
+      De tekst wel. De kopie op Bluesky is altijd openbaar. Peilingen en inhoudswaarschuwingen
+      blijven bij de Mastodon-kopie, want Bluesky heeft daar geen equivalent voor.
+    </p>
+    <h3>Waar worden mijn aanmeldingen bewaard?</h3>
+    <p>
+      In deze browser. Mawkingbird praat rechtstreeks met je Mastodon-server en met Bluesky. Er zit
+      geen Mawkingbird-server tussen die je accounts bewaart.
+    </p>
+  </section>
+</main>

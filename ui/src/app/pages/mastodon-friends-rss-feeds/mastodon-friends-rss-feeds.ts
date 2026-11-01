@@ -168,3 +168,87 @@ export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
 export class MastodonFriendsRssFeedsPl extends MastodonFriendsRssFeeds {
   protected override readonly returnHere = { next: '/pl/kanaly-rss-obserwowanych-na-mastodonie' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsUk extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/uk/mastodon-friends-rss-feeds' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsHi extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/hi/mastodon-friends-rss-feeds' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsNl extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/nl/rss-feeds-mastodon-vrienden' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsId extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/id/feed-rss-teman-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsRu extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/ru/mastodon-friends-rss-feeds' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsSv extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/sv/rss-floden-mastodon-vanner' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsVi extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/vi/mastodon-friends-rss-feeds' };
+}

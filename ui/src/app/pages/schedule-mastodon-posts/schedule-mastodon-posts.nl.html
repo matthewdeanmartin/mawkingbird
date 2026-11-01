@@ -1,0 +1,86 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-planner</p>
+    <h1>Plan Mastodon-berichten vooraf</h1>
+    <p>
+      Schrijf in één keer een week aan berichten en laat je Mastodon-server ze op tijd plaatsen.
+      @if (!inShell) {
+        Log in met Mastodon, schrijf je berichten, kies het eerste tijdstip en de tussenpozen, en
+        klaar.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">De planner laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Schrijf je berichten</h2>
+        <p>Zoveel je wilt, elk in een eigen vak, tot 500 tekens per bericht.</p>
+      </li>
+      <li>
+        <h2>Kies de tussenpozen</h2>
+        <p>
+          Kies het eerste tijdstip en de tussenpoos: dagelijks om 9:00 uur of elke drie uur. Geef
+          een afzonderlijk bericht gerust een eigen tijdstip.
+        </p>
+      </li>
+      <li>
+        <h2>Sluit het tabblad</h2>
+        <p>
+          Je Mastodon-server bewaart de berichten en publiceert ze op tijd. Er hoeft niets in je
+          browser te wachten.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om berichten te plannen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Kan Mastodon berichten plannen?</h3>
+    <p>
+      Ja. Elke Mastodon-server kan een bericht bewaren en later publiceren, maar de standaardwebsite
+      heeft daar geen knop voor. Deze pagina gebruikt die ingebouwde functie. Je eigen server
+      bewaart de berichten, niet Mawkingbird.
+    </p>
+    <h3>Moet deze pagina open blijven?</h3>
+    <p>
+      Nee. Zodra een bericht is gepland, staat het op je Mastodon-server. Die publiceert het op het
+      gekozen tijdstip, ook als je computer uit staat.
+    </p>
+    <h3>Zijn er grenzen?</h3>
+    <p>
+      Mastodon staat 300 wachtende berichten tegelijk toe en 25 op één dag. Elk bericht moet
+      minstens vijf minuten in de toekomst liggen. De planner controleert dit voordat er iets wordt
+      verstuurd.
+    </p>
+    <h3>Kan ik me bedenken?</h3>
+    <p>
+      Ja. Je geplande berichten staan onder de planner. Je kunt ze annuleren zolang ze nog niet zijn
+      gepubliceerd.
+    </p>
+    <h3>Werkt dit ook voor Bluesky?</h3>
+    <p>
+      Hier niet. Bluesky heeft geen ingebouwde planner, dus deze pagina is alleen voor Mastodon.
+    </p>
+  </section>
+</main>

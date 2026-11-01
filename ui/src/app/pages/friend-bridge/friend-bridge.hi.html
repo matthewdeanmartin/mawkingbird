@@ -1,0 +1,88 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} से {{ copy.to }}</p>
+    <h1>{{ copy.from }} पर फ़ॉलो किए लोगों को {{ copy.to }} पर खोजें</h1>
+    <p>
+      {{ copy.from }} पर फ़ॉलो किए कई लोग {{ copy.to }} पर भी हैं। यह टूल उन्हें खोजता है ताकि आप
+      वहाँ भी फ़ॉलो कर सकें।
+      @if (!inShell) {
+        किसी एक अकाउंट से साइन इन करें, दूसरा जोड़ें और देखें कौन पहले से वहाँ है।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">खोज टूल लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>दोनों में साइन इन करें</h2>
+        <p>Mastodon या Bluesky अकाउंट से साइन इन करें, फिर अगले पेज पर दूसरा जोड़ें।</p>
+      </li>
+      <li>
+        <h2>अपनी फ़ॉलो सूची पढ़ें</h2>
+        <p>
+          {{ copy.from }} पर फ़ॉलो किए जिन लोगों ने परिचय में {{ copy.to }} का यूज़रनेम लिखा है, वे
+          तुरंत मुफ़्त में मिल जाते हैं।
+        </p>
+      </li>
+      <li>
+        <h2>बाकी को खोजकर फ़ॉलो करें</h2>
+        <p>जितने चाहें, दूसरों को नाम से खोजें। पहचाने लोगों को एक बटन से फ़ॉलो करें।</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon से साइन इन करें</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या यह बिना पूछे फ़ॉलो करेगा?</h3>
+    <p>
+      नहीं। जिन्होंने खुद अपना दूसरा यूज़रनेम बताया है, वे पहले से चुने रहते हैं; नाम की खोज से आए
+      अनुमान नहीं। फ़ॉलो दबाने से पहले कोई फ़ॉलो नहीं होता।
+    </p>
+    <h3>कुछ लोग क्यों नहीं मिलते?</h3>
+    <p>
+      केवल वे मिलते हैं जिन्होंने {{ copy.to }} यूज़रनेम लिखा है या जिनका नाम खोज से मिलता है। आम
+      नाम और परिचय में यूज़रनेम न होने पर कोई नहीं मिल सकता।
+    </p>
+    <h3>क्या दूसरी दिशा में भी खोज सकते हैं?</h3>
+    <p>
+      हाँ:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/hi/mastodon-to-bluesky"
+          >Mastodon पर फ़ॉलो किए लोगों को Bluesky पर खोजें</a
+        >।
+      } @else {
+        <a mbContentLink routerLink="/hi/bluesky-to-mastodon"
+          >Bluesky पर फ़ॉलो किए लोगों को Mastodon पर खोजें</a
+        >।
+      }
+    </p>
+    <h3>मेरे साइन इन कहाँ रखे जाते हैं?</h3>
+    <p>
+      इसी ब्राउज़र में। Mawkingbird सीधे आपके Mastodon सर्वर और Bluesky से बात करता है; बीच में आपके
+      अकाउंट रखने वाला Mawkingbird सर्वर नहीं है।
+    </p>
+  </section>
+</main>

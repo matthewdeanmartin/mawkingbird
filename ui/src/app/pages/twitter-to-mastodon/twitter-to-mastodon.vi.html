@@ -1,0 +1,68 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter sang Mastodon</p>
+    <h1>Tìm người bạn theo dõi trên Twitter ở Mastodon</h1>
+    <p>
+      Tìm người bạn từng theo dõi trên Twitter đã có trên Mastodon và theo dõi lại trong vài lần
+      nhấn. Bản lưu trữ được đọc trong trình duyệt; không tải gì lên.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Tải bản lưu trữ Twitter</h2>
+      <p>
+        Trên Twitter, mở Thiết lập → Tài khoản của bạn → Tải bản lưu trữ dữ liệu. Có thể mất một
+        ngày hoặc hơn. Giải nén khi nhận được.
+      </p>
+    </li>
+    <li>
+      <h2>Chọn bản lưu trữ tại đây</h2>
+      <p>
+        Chọn thư mục đã giải nén hoặc chỉ các tệp <code>data/following.js</code> và
+        <code>data/tweets.js</code> . Mawkingbird đếm người bạn từng theo dõi, trả lời và nhắc đến.
+      </p>
+    </li>
+    <li>
+      <h2>Đăng nhập bằng Mastodon và theo dõi</h2>
+      <p>
+        Mawkingbird tìm từng tên trên máy chủ Mastodon và hiện kết quả có khả năng phù hợp cùng bằng
+        chứng để bạn quyết định theo dõi ai.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/vi/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Đang tải công cụ nhập…</p>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Bản lưu trữ có được tải lên đâu không?</h3>
+    <p>
+      Không. Trang này đọc các tệp trong trình duyệt. Chỉ yêu cầu tìm tên được gửi đến máy chủ
+      Mastodon sau khi bạn đăng nhập.
+    </p>
+    <h3>Có tự động theo dõi ai không?</h3>
+    <p>
+      Không. Tên giống nhau chỉ là khả năng, không phải bằng chứng, nên mỗi lần theo dõi đều do bạn
+      nhấn nút. Bạn cũng có thể tải danh sách CSV để giữ lại.
+    </p>
+  </section>
+</main>

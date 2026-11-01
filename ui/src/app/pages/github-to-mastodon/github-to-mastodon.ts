@@ -168,3 +168,87 @@ export class GithubToMastodonIt extends GithubToMastodon {
 export class GithubToMastodonPl extends GithubToMastodon {
   protected override readonly returnHere = { next: '/pl/znajomi-z-githuba-na-mastodonie' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonUk extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/uk/github-to-mastodon' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonHi extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/hi/github-to-mastodon' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonNl extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/nl/github-vrienden-op-mastodon' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonId extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/id/teman-github-di-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonRu extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/ru/github-to-mastodon' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonSv extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/sv/github-vanner-pa-mastodon' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonVi extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/vi/github-to-mastodon' };
+}

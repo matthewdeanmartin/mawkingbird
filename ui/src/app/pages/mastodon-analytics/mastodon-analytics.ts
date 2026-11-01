@@ -168,3 +168,87 @@ export class MastodonAnalyticsIt extends MastodonAnalytics {
 export class MastodonAnalyticsPl extends MastodonAnalytics {
   protected override readonly returnHere = { next: '/pl/statystyki-mastodona' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsUk extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/uk/mastodon-analytics' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsHi extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/hi/mastodon-analytics' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsNl extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/nl/mastodon-statistieken' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsId extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/id/statistik-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsRu extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/ru/mastodon-analytics' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsSv extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/sv/mastodon-statistik' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsVi extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/vi/mastodon-analytics' };
+}

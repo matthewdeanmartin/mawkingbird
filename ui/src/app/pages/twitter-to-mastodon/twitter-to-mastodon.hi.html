@@ -1,0 +1,69 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter से Mastodon</p>
+    <h1>Twitter पर फ़ॉलो किए लोगों को Mastodon पर खोजें</h1>
+    <p>
+      Twitter पर जिन्हें आप फ़ॉलो करते थे, उनमें से Mastodon पर आ चुके लोगों को खोजें और कुछ क्लिक
+      में फिर फ़ॉलो करें। आपका आर्काइव इसी ब्राउज़र में पढ़ा जाता है; कुछ अपलोड नहीं होता।
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>अपना Twitter आर्काइव डाउनलोड करें</h2>
+      <p>
+        Twitter में सेटिंग → आपका अकाउंट → अपने डेटा का आर्काइव डाउनलोड करें खोलें। आने में एक दिन
+        या उससे अधिक लग सकता है। आने पर ZIP खोलें।
+      </p>
+    </li>
+    <li>
+      <h2>यहाँ आर्काइव चुनें</h2>
+      <p>
+        खोला हुआ फ़ोल्डर चुनें, या सिर्फ़ उसकी <code>data/following.js</code> और
+        <code>data/tweets.js</code> फ़ाइलें। Mawkingbird उन लोगों को गिनता है जिन्हें आपने फ़ॉलो
+        किया, जवाब दिया या उल्लेख किया।
+      </p>
+    </li>
+    <li>
+      <h2>Mastodon से साइन इन करके फ़ॉलो करें</h2>
+      <p>
+        Mawkingbird आपके Mastodon सर्वर पर हर यूज़रनेम खोजता है और संभावित मेल के साथ सबूत दिखाता
+        है। किसे फ़ॉलो करना है, आप तय करते हैं।
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/hi/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">आयात टूल लोड हो रहा है…</p>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या मेरा आर्काइव कहीं अपलोड होता है?</h3>
+    <p>
+      नहीं। फ़ाइलें आपके ब्राउज़र में पढ़ी जाती हैं। केवल यूज़रनेम की खोज आपके Mastodon सर्वर पर
+      जाती है, वह भी साइन इन करने के बाद।
+    </p>
+    <h3>क्या यह किसी को अपने-आप फ़ॉलो करता है?</h3>
+    <p>
+      नहीं। मिलता हुआ यूज़रनेम एक संभावना है, सबूत नहीं। हर फ़ॉलो के लिए आपको बटन दबाना होता है।
+      सूची CSV में डाउनलोड करके भी रख सकते हैं।
+    </p>
+  </section>
+</main>

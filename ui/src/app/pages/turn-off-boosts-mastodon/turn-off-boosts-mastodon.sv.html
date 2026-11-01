@@ -1,0 +1,78 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-boostar</p>
+    <h1>Stäng av boostar från alla du följer på Mastodon</h1>
+    <p>
+      Boostar är Mastodons retweets. Fortsätt följa alla men se bara vad de skriver själva.
+      @if (!inShell) {
+        Mastodon låter dig dölja boostar för ett konto i taget. Här gör du det för alla samtidigt.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Laddar…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Logga in med Mastodon</h2>
+        <p>Listan över dem du följer läses från din Mastodon-server.</p>
+      </li>
+      <li>
+        <h2>Se hur många som ändras</h2>
+        <p>
+          Innan något händer får du veta hur många du följer som fortfarande har boostar påslagna.
+        </p>
+      </li>
+      <li>
+        <h2>Bekräfta och följ förloppet</h2>
+        <p>
+          Varje konto uppdateras i tur och ordning, med en förloppsindikator. Du kan stoppa halvvägs
+          och fortsätta senare.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att stänga av boostar</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Slutar jag följa någon?</h3>
+    <p>
+      Nej. Du fortsätter följa alla. Deras egna inlägg och svar når fortfarande ditt hemflöde. Bara
+      deras boostar slutar visas.
+    </p>
+    <h3>Kan jag ångra ändringen?</h3>
+    <p>
+      Ja. Samma sida slår på boostar igen för alla. Du kan också slå på dem för ett enskilt konto
+      från personens profil.
+    </p>
+    <h3>Vad händer med dem jag följer senare?</h3>
+    <p>
+      Nya följningar börjar med boostar på, som vanligt i Mastodon. Kör verktyget igen när du vill;
+      bara konton som behöver ändras påverkas.
+    </p>
+    <h3>Varför tar det en stund?</h3>
+    <p>
+      Mastodon saknar en inställning för alla samtidigt, så varje konto du följer ändras separat. En
+      lång lista tar några minuter.
+    </p>
+  </section>
+</main>

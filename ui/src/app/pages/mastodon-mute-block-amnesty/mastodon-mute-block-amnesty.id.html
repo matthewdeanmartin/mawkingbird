@@ -1,0 +1,77 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Cabut pembisuan dan blokir</p>
+    <h1>Cabut semua pembisuan dan blokir di Mastodon</h1>
+    <p>
+      Daftar pembisuan dan blokir bisa tumbuh bertahun-tahun tanpa dibersihkan. Amnesti mencabut
+      semua pembisuan atau blokir sekaligus agar kamu bisa memulai lagi.
+      @if (!inShell) {
+        Mastodon sendiri hanya bisa mencabutnya satu akun sekali.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Memuat…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Masuk dengan Mastodon</h2>
+        <p>Daftar pembisuan dan blokir dibaca dari server Mastodon-mu sendiri.</p>
+      </li>
+      <li>
+        <h2>Cadangkan lalu tinjau</h2>
+        <p>
+          Sebelum ada perubahan, lihat jumlah akun dalam daftar dan unduh dulu agar amnesti bisa
+          dibatalkan.
+        </p>
+      </li>
+      <li>
+        <h2>Terapkan amnesti</h2>
+        <p>
+          Pembisuan atau blokir dicabut satu per satu dengan bilah progres. Kamu bisa berhenti di
+          tengah.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk memulai amnesti</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apa yang diubah amnesti pembisuan?</h3>
+    <p>
+      Pembisuan semua akun dicabut agar postingan dan notifikasi mereka muncul lagi. Kata yang
+      dibisukan dan filter tidak diubah.
+    </p>
+    <h3>Apa yang diubah amnesti blokir?</h3>
+    <p>
+      Semua akun yang diblokir dibuka kembali. Mereka bisa mengikuti, melihat postingan, dan
+      membalas lagi. Tidak ada yang diberi tahu saat kamu memblokir atau mencabutnya.
+    </p>
+    <h3>Bisakah amnesti dibatalkan?</h3>
+    <p>
+      Hanya lewat cadangan. Unduh daftar saat ditawarkan dalam tinjauan, lalu impor lagi lewat
+      halaman impor di server Mastodon-mu.
+    </p>
+    <h3>Apakah blokir domain ikut berubah?</h3>
+    <p>Tidak. Hanya akun yang kamu bisukan atau blokir satu per satu yang diubah.</p>
+  </section>
+</main>

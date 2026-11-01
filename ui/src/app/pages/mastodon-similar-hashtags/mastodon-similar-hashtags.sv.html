@@ -1,0 +1,79 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Hitta hashtaggar</p>
+    <h1>Liknande hashtaggar på Mastodon</h1>
+    <p>
+      Skriv en eller flera hashtaggar och se vilka andra som används tillsammans med dem, ordnade
+      efter hur ofta de syns i samma senaste inlägg. Använd dem för att bli hittad eller hitta fler
+      ämnen att följa. Inget konto behövs.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/sv/liknande-mastodon-hashtaggar/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Laddar…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Skriv hashtaggar</h2>
+        <p>En eller flera med samma betydelse, som #dog och #dogs.</p>
+      </li>
+      <li>
+        <h2>Ett urval av senaste inlägg</h2>
+        <p>De senaste 200 inläggen med någon av hashtaggarna, lästa från mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Se vad som förekommer tillsammans</h2>
+        <p>
+          Ordnat efter hur ofta varje hashtagg finns i de inläggen. Läs ett större urval för en
+          bredare bild.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att använda din egen server</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Vilka hashtaggar ska jag använda på Mastodon?</h3>
+    <p>
+      Mastodon har ingen algoritm som bestämmer vem som ser ditt inlägg. Andra hittar det genom att
+      följa eller söka efter en hashtagg. Använd hashtaggar som de redan använder, vilket listan
+      visar. Skriv i CamelCase (#DogsOfMastodon) så att skärmläsare kan uttala dem.
+    </p>
+    <h3>Hur räknas liknande ut?</h3>
+    <p>
+      Genom att räkna. Varje hashtagg i urvalet räknas en gång per inlägg. De hashtaggar du angav
+      lämnas utanför. En hashtagg i 40 av 200 inlägg hamnar över en som finns i 5.
+    </p>
+    <h3>Varför jämföra flera hashtaggar samtidigt?</h3>
+    <p>
+      Samma ämne kan stavas på olika sätt: #dog och #dogs, #photo och #photography. Tillsammans ger
+      de inlägg med någon av hashtaggarna så att hela samtalet kommer med.
+    </p>
+    <h3>Varför skiljer sig resultaten mellan servrar?</h3>
+    <p>
+      Varje Mastodon-server ser bara inlägg från personer som dess användare följer. En stor aktiv
+      server ger därför den bredaste bilden. När du loggat in kommer urvalet från din server och
+      visar din del av nätverket.
+    </p>
+  </section>
+</main>

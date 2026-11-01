@@ -1,0 +1,81 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Contacten</p>
+    <h1>Vind je telefooncontacten op Mastodon</h1>
+    <p>
+      Sommige mensen uit je adresboek zitten al op Mastodon. Deze functie zoekt ze en laat je
+      bekenden volgen.
+      @if (!inShell) {
+        Log in met Mastodon, kies je contacten of upload een contactenbestand, en bekijk wie er
+        gevonden wordt.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">De zoeker laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in met Mastodon</h2>
+        <p>De zoekopdracht loopt via je eigen Mastodon-server.</p>
+      </li>
+      <li>
+        <h2>Kies je contacten</h2>
+        <p>
+          Kies op een Android-telefoon in Chrome rechtstreeks mensen uit je contacten. Upload elders
+          een contactenbestand dat je vanuit Google Contacts hebt geëxporteerd.
+        </p>
+      </li>
+      <li>
+        <h2>Volg wie je kent</h2>
+        <p>
+          Bij elke overeenkomst staat waarom die is voorgesteld. Volg mensen één voor één; er wordt
+          niemand automatisch gevolgd.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om je contacten te vinden</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Worden mijn contacten geüpload?</h3>
+    <p>
+      Nee. Je contacten blijven in deze browser. Alleen zoektermen die ervan worden gemaakt, zoals
+      een naam of gebruikersnaam, gaan naar je eigen Mastodon-server. Bij het sluiten van de pagina
+      wordt niets bewaard.
+    </p>
+    <h3>Hoe kom ik aan een contactenbestand?</h3>
+    <p>
+      Kies in Google Contacts voor Exporteren en kies het formaat Google CSV. Upload dat bestand
+      hier.
+    </p>
+    <h3>Waarom is een overeenkomst een gok?</h3>
+    <p>
+      Mastodon kan niet zoeken op telefoonnummer of e-mailadres. Mensen worden gevonden op
+      aanwijzingen: een opgeslagen Mastodon-gebruikersnaam, hun naam, de naam en het domein van hun
+      e-mailadres, hun website. Een bijzondere naam is makkelijk te vinden. Een veelvoorkomende naam
+      kan vreemden opleveren. Daarom kies je elke volgactie zelf.
+    </p>
+    <h3>Zit iemand nog niet op Mastodon?</h3>
+    <p>Nodig diegene uit: na het zoeken staan kant-en-klare uitnodigingen één klik verderop.</p>
+  </section>
+</main>

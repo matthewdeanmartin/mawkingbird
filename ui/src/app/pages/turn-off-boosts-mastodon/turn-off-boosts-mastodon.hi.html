@@ -1,0 +1,75 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon बूस्ट</p>
+    <h1>Mastodon पर सभी फ़ॉलो किए लोगों के बूस्ट बंद करें</h1>
+    <p>
+      बूस्ट Mastodon के रीट्वीट हैं। सभी को फ़ॉलो करते रहें, लेकिन केवल उनकी अपनी पोस्ट देखें।
+      @if (!inShell) {
+        Mastodon एक बार में एक अकाउंट के बूस्ट छिपाता है; यह टूल सभी के लिए एक साथ करता है।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon से साइन इन करें</h2>
+        <p>आपकी फ़ॉलो सूची आपके अपने Mastodon सर्वर से पढ़ी जाती है।</p>
+      </li>
+      <li>
+        <h2>देखें कितने अकाउंट बदलेंगे</h2>
+        <p>कुछ होने से पहले आपको बताया जाता है कि कितने फ़ॉलो किए लोगों के बूस्ट अभी चालू हैं।</p>
+      </li>
+      <li>
+        <h2>पुष्टि करें और प्रगति देखें</h2>
+        <p>
+          प्रगति पट्टी के साथ हर अकाउंट बारी-बारी बदलता है। बीच में रोककर बाद में जारी रख सकते हैं।
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >बूस्ट बंद करने के लिए Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या इससे कोई अनफ़ॉलो होता है?</h3>
+    <p>
+      नहीं। आप सभी को फ़ॉलो करते रहते हैं। उनकी अपनी पोस्ट और जवाब होम टाइमलाइन में आते हैं। केवल
+      बूस्ट बंद होते हैं।
+    </p>
+    <h3>क्या इसे वापस बदल सकता हूँ?</h3>
+    <p>
+      हाँ। यही पेज सभी के बूस्ट फिर चालू करता है। किसी एक के प्रोफ़ाइल से उसके बूस्ट भी चालू कर सकते
+      हैं।
+    </p>
+    <h3>बाद में फ़ॉलो किए लोगों का क्या होगा?</h3>
+    <p>
+      नए फ़ॉलो के बूस्ट हमेशा की तरह चालू होते हैं। टूल कभी भी फिर चलाएँ; यह केवल ज़रूरत वाले अकाउंट
+      बदलता है।
+    </p>
+    <h3>इसमें समय क्यों लगता है?</h3>
+    <p>
+      Mastodon में सभी के लिए एक साथ बदलने की सेटिंग नहीं है, इसलिए हर अकाउंट अलग बदला जाता है। लंबी
+      फ़ॉलो सूची में कुछ मिनट लगते हैं।
+    </p>
+  </section>
+</main>

@@ -1,0 +1,79 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Tìm hashtag</p>
+    <h1>Hashtag tương tự trên Mastodon</h1>
+    <p>
+      Nhập một hoặc vài hashtag để xem hashtag thường dùng cùng chúng, xếp theo tần suất xuất hiện
+      trong cùng bài gần đây. Dùng chúng để được nhiều người tìm thấy hoặc tìm thêm nội dung theo
+      dõi. Không cần tài khoản.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/vi/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Đang tải…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Nhập hashtag</h2>
+        <p>Một hoặc nhiều hashtag cùng nghĩa, như #dog và #dogs.</p>
+      </li>
+      <li>
+        <h2>Lấy mẫu bài gần đây</h2>
+        <p>200 bài mới nhất có bất kỳ hashtag nào đã nhập, đọc từ mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Xem hashtag thường đi cùng</h2>
+        <p>
+          Xếp theo số lần mỗi hashtag xuất hiện trong các bài đó. Lấy thêm mẫu để có góc nhìn rộng
+          hơn.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để dùng máy chủ của bạn</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Nên dùng hashtag nào trên Mastodon?</h3>
+    <p>
+      Mastodon không có thuật toán quyết định ai xem bài: mọi người tìm bằng cách theo dõi hoặc tìm
+      hashtag. Dùng hashtag họ đã dùng như danh sách này cho thấy, và viết kiểu CamelCase
+      (#DogsOfMastodon) để trình đọc màn hình đọc được.
+    </p>
+    <h3>“Tương tự” được tính thế nào?</h3>
+    <p>
+      Bằng cách đếm. Mỗi hashtag được tính một lần mỗi bài trong mẫu, trừ những hashtag bạn đã nhập.
+      Hashtag có ở 40 trong 200 bài xếp trên hashtag có ở 5 bài.
+    </p>
+    <h3>Vì sao so sánh nhiều hashtag cùng lúc?</h3>
+    <p>
+      Một chủ đề có thể dùng nhiều cách viết: #dog và #dogs, #photo và #photography. Nhập cùng nhau
+      để lấy mẫu bài có bất kỳ hashtag nào và bao quát cuộc trò chuyện.
+    </p>
+    <h3>Vì sao kết quả khác nhau giữa máy chủ?</h3>
+    <p>
+      Mỗi máy chủ Mastodon chỉ thấy bài của những người mà người dùng máy chủ đó theo dõi, nên máy
+      chủ lớn và sôi động cho góc nhìn rộng nhất. Khi đăng nhập, mẫu lấy từ máy chủ của bạn, phản
+      ánh góc mạng bạn đang dùng.
+    </p>
+  </section>
+</main>

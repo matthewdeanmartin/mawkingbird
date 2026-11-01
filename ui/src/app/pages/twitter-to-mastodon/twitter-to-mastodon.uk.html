@@ -1,0 +1,76 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">З Twitter у Mastodon</p>
+    <h1>Перенесіть підписки з Twitter у Mastodon</h1>
+    <p>
+      Знайдіть людей, на яких ви були підписані в Twitter і які вже є в Mastodon, і підпишіться
+      знову кількома кліками. Архів читається в цьому браузері; нічого не надсилається.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Завантажте архів Twitter</h2>
+      <p>
+        У Twitter відкрийте Налаштування й конфіденційність → Ваш обліковий запис → Завантажити
+        архів ваших даних. Він може надходити добу або довше. Потім розпакуйте його.
+      </p>
+    </li>
+    <li>
+      <h2>Виберіть архів тут</h2>
+      <p>
+        Виберіть розпаковану теку або лише файли <code>data/following.js</code> і
+        <code>data/tweets.js</code>. Mawkingbird порахує людей, на яких ви були підписані, яким
+        відповідали й яких згадували.
+      </p>
+    </li>
+    <li>
+      <h2>Увійдіть через Mastodon і підпишіться</h2>
+      <p>
+        Mawkingbird шукає кожне ім’я на вашому сервері Mastodon і показує ймовірні збіги з доказами,
+        а ви вирішуєте, на кого підписатися.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/uk/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+      signInReturn="/uk/twitter-to-mastodon"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Завантаження імпорту…</p>
+  }
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    <h3>Мій архів кудись надсилається?</h3>
+    <p>
+      Ні. Файли читає ця сторінка, у вашому браузері. Лише пошук імен іде на ваш власний сервер
+      Mastodon, і тільки після входу.
+    </p>
+    <h3>Він підписується на людей автоматично?</h3>
+    <p>
+      Ні. Збіг імені — це ймовірна підказка, а не доказ, тож кожна підписка — це кнопка, яку ви
+      натискаєте самі. Список також можна завантажити як CSV і зберегти.
+    </p>
+    <h3>Навіщо переходити з Twitter у Mastodon?</h3>
+    <p>
+      Mastodon нікому не належить: це тисячі незалежних серверів, зокрема українських, які
+      спілкуються між собою. Жоден алгоритм не вирішує, що ви бачите, реклами немає, а стрічка
+      лишається хронологічною.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,77 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Avtysta och avblockera</p>
+    <h1>Avtysta och avblockera alla på Mastodon</h1>
+    <p>
+      Listor över tystade och blockerade konton växer i åratal utan att rensas. Amnesti tar bort
+      alla tystningar eller blockeringar samtidigt så att du kan börja om.
+      @if (!inShell) {
+        Mastodon låter dig annars bara ändra ett konto i taget.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Laddar…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Logga in med Mastodon</h2>
+        <p>Dina listor över tystade och blockerade konton läses från din Mastodon-server.</p>
+      </li>
+      <li>
+        <h2>Säkerhetskopiera och granska</h2>
+        <p>
+          Innan något ändras ser du antalet konton och kan ladda ner listan först, så att amnestin
+          kan ångras.
+        </p>
+      </li>
+      <li>
+        <h2>Utfärda amnesti</h2>
+        <p>
+          Varje konto avtystas eller avblockeras i tur och ordning, med en förloppsindikator. Du kan
+          stoppa halvvägs.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att börja med amnesti</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Vad ändrar amnesti för tystningar?</h3>
+    <p>
+      Alla konton du tystat avtystas, så att deras inlägg och aviseringar når dig igen. Tystade ord
+      och filter ändras inte.
+    </p>
+    <h3>Vad ändrar amnesti för blockeringar?</h3>
+    <p>
+      Alla konton du blockerat avblockeras. De kan följa dig, se dina inlägg och svara igen. Ingen
+      får veta att du blockerade dem eller slutade med det.
+    </p>
+    <h3>Kan jag ångra amnesti?</h3>
+    <p>
+      Bara från en säkerhetskopia. Ladda ner listan när granskningen erbjuder det och importera den
+      senare via din Mastodon-servers importsida.
+    </p>
+    <h3>Påverkas domänblockeringar?</h3>
+    <p>Nej. Bara konton du tystat eller blockerat ett i taget ändras.</p>
+  </section>
+</main>

@@ -1,0 +1,77 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Dempingen en blokkeringen opheffen</p>
+    <h1>Hef alle dempingen en blokkeringen op Mastodon op</h1>
+    <p>
+      Demp- en blokkeerlijsten groeien jarenlang zonder dat iemand ze opruimt. Met deze amnestie hef
+      je alle dempingen of blokkeringen tegelijk op en begin je opnieuw.
+      @if (!inShell) {
+        In Mastodon zelf kan dat alleen per account.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in met Mastodon</h2>
+        <p>Je demp- en blokkeerlijsten worden van je eigen Mastodon-server gelezen.</p>
+      </li>
+      <li>
+        <h2>Maak een back-up en bekijk de lijst</h2>
+        <p>
+          Voordat er iets verandert, zie je hoeveel accounts op de lijst staan. Download de lijst
+          eerst, zodat je de amnestie kunt terugdraaien.
+        </p>
+      </li>
+      <li>
+        <h2>Verleen amnestie</h2>
+        <p>
+          Elke demping of blokkering wordt om de beurt opgeheven, met een voortgangsbalk. Je kunt
+          tussendoor stoppen.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om amnestie te verlenen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Wat verandert de amnestie voor dempingen?</h3>
+    <p>
+      De demping wordt opgeheven voor alle gedempte accounts. Hun berichten en meldingen bereiken je
+      weer. Gedempte woorden en filters blijven zoals ze zijn.
+    </p>
+    <h3>Wat verandert de amnestie voor blokkeringen?</h3>
+    <p>
+      Alle geblokkeerde accounts worden gedeblokkeerd. Ze kunnen je weer volgen, je berichten zien
+      en antwoorden. Niemand krijgt te horen dat je diegene blokkeerde of daarmee stopte.
+    </p>
+    <h3>Kan ik amnestie terugdraaien?</h3>
+    <p>
+      Alleen met een back-up. Download de lijst tijdens de controle. Je kunt die later opnieuw
+      importeren via de importpagina van je Mastodon-server.
+    </p>
+    <h3>Verandert dit domeinblokkeringen?</h3>
+    <p>Nee. Alleen accounts die je afzonderlijk hebt gedempt of geblokkeerd worden aangepast.</p>
+  </section>
+</main>

@@ -493,4 +493,333 @@ export const DOWNLOAD_IMAGES_COPY: Record<PageLanguage, DownloadImagesCopy> = {
       },
     ],
   },
+  uk: {
+    path: '/uk/download-mastodon-images',
+    openApp: 'Відкрити застосунок',
+    eyebrow: 'Медіа Mastodon',
+    heading: 'Завантажте зображення з облікового запису Mastodon',
+    intro:
+      'Вставте обліковий запис Mastodon і перегляньте всі його зображення на одній сторінці. Потім завантажте їх одразу, у ZIP або окремими файлами, за бажанням із GIF, відео та аудіо. Обліковий запис не потрібен.',
+    loading: 'Завантаження…',
+    steps: [
+      {
+        title: 'Вставте обліковий запис',
+        body: 'Ім’я на зразок @someone@mastodon.social, посилання на профіль або просто ім’я.',
+      },
+      {
+        title: 'Перегляньте зображення',
+        body: 'Усі дописи з медіа, від найновіших, безпосередньо з їхнього сервера.',
+      },
+      {
+        title: 'Завантажте все',
+        body: 'Виберіть зображення, GIF, відео чи аудіо, період і ZIP або окремі файли.',
+      },
+    ],
+    signIn: 'Увійти через Mastodon',
+    questionsTitle: 'Запитання',
+    questions: [
+      {
+        q: 'Як завантажити всі зображення облікового запису Mastodon?',
+        a: 'Вставте обліковий запис вище, натисніть «Завантажити медіа» й виберіть ZIP. Сам Mastodon дозволяє зберігати зображення лише по одному або завантажити архів власного облікового запису.',
+      },
+      {
+        q: 'Чи можна завантажити власні медіа Mastodon?',
+        a: 'Так: вставте своє ім’я користувача. Для повної резервної копії з дописами також скористайтеся експортом даних сервера (Налаштування → Імпорт і експорт).',
+      },
+      {
+        q: 'Чому деякі файли не завантажилися?',
+        a: 'Сторінка може зберегти файл лише тоді, коли сервер дозволяє іншим сайтам його читати. Більшість серверів Mastodon дозволяє, але не всі. Такі файли наведено як посилання, щоб ви могли відкрити й зберегти кожен самостійно.',
+      },
+      {
+        q: 'Чи проходять файли через Mawkingbird?',
+        a: 'Ні. Браузер отримує їх із серверів Mastodon і сам створює ZIP. Нічого не передається до Mawkingbird.',
+      },
+      {
+        q: 'Чи можна завантажувати чужі зображення?',
+        a: 'Зображення залишаються власністю авторів. Зберегти копію для себе — одне, а для публікації деінде потрібен їхній дозвіл.',
+      },
+    ],
+  },
+  hi: {
+    path: '/hi/download-mastodon-images',
+    openApp: 'ऐप खोलें',
+    eyebrow: 'Mastodon मीडिया',
+    heading: 'Mastodon की तस्वीरें डाउनलोड करें',
+    intro:
+      'Mastodon अकाउंट पेस्ट करें और उसकी सारी तस्वीरें एक दीवार पर देखें। फिर एक साथ ZIP या अलग फ़ाइलों में डाउनलोड करें। चाहें तो GIF, वीडियो और ऑडियो भी लें। अकाउंट ज़रूरी नहीं।',
+    loading: 'लोड हो रहा है…',
+    steps: [
+      {
+        title: 'अकाउंट पेस्ट करें',
+        body: '@someone@mastodon.social जैसा यूज़रनेम, प्रोफ़ाइल का लिंक या खोजने के लिए नाम।',
+      },
+      {
+        title: 'तस्वीरें देखें',
+        body: 'मीडिया वाली हर पोस्ट, नई पहले, सीधे उनके सर्वर से।',
+      },
+      {
+        title: 'सब डाउनलोड करें',
+        body: 'तस्वीरें, GIF, वीडियो या ऑडियो, समय सीमा और ZIP या अलग फ़ाइलें चुनें।',
+      },
+    ],
+    signIn: 'Mastodon से साइन इन करें',
+    questionsTitle: 'सवाल',
+    questions: [
+      {
+        q: 'Mastodon अकाउंट की सारी तस्वीरें कैसे डाउनलोड करूँ?',
+        a: 'ऊपर अकाउंट पेस्ट करें, मीडिया डाउनलोड करें दबाएँ और ZIP चुनें। Mastodon खुद एक बार में एक तस्वीर या अपने अकाउंट का पूरा आर्काइव डाउनलोड करने देता है।',
+      },
+      {
+        q: 'क्या अपना Mastodon मीडिया डाउनलोड कर सकते हैं?',
+        a: 'हाँ। अपना यूज़रनेम पेस्ट करें। पोस्ट सहित पूरे बैकअप के लिए सर्वर का डेटा निर्यात भी इस्तेमाल करें (सेटिंग → आयात और निर्यात)।',
+      },
+      {
+        q: 'कुछ फ़ाइलें डाउनलोड क्यों नहीं हुईं?',
+        a: 'वेब पेज तभी फ़ाइल सहेज सकता है जब उसका सर्वर दूसरे वेबसाइट को उसे पढ़ने दे। अधिकतर Mastodon सर्वर ऐसा करते हैं, कुछ नहीं। उन फ़ाइलों के लिंक दिखते हैं ताकि खुद खोलकर सहेज सकें।',
+      },
+      {
+        q: 'क्या फ़ाइलें Mawkingbird से होकर जाती हैं?',
+        a: 'नहीं। ब्राउज़र Mastodon सर्वर से फ़ाइलें लाता है और खुद ZIP बनाता है। कुछ अपलोड नहीं होता।',
+      },
+      {
+        q: 'क्या दूसरों की तस्वीरें डाउनलोड कर सकते हैं?',
+        a: 'तस्वीरों का अधिकार उन्हीं का रहता है। निजी कॉपी रखना अलग बात है; कहीं और पोस्ट करने के लिए अनुमति चाहिए।',
+      },
+    ],
+  },
+  nl: {
+    path: '/nl/mastodon-afbeeldingen-downloaden',
+    openApp: 'Open de app',
+    eyebrow: 'Mastodon-media',
+    heading: 'Download afbeeldingen van Mastodon',
+    intro:
+      'Plak een Mastodon-account en bekijk alle geplaatste afbeeldingen op één muur. Download ze daarna tegelijk, als ZIP of losse bestanden, met GIFs, video en audio als je wilt. Geen account nodig.',
+    loading: 'Laden…',
+    steps: [
+      {
+        title: 'Plak een account',
+        body: 'Een gebruikersnaam zoals @someone@mastodon.social, een profiellink of een naam om te zoeken.',
+      },
+      {
+        title: 'Bekijk de afbeeldingen',
+        body: 'Elk bericht met media, het nieuwste eerst, rechtstreeks van de eigen server.',
+      },
+      {
+        title: 'Download alles',
+        body: 'Kies afbeeldingen, GIFs, video of audio, hoe ver terug, en een ZIP of losse bestanden.',
+      },
+    ],
+    signIn: 'Log in met Mastodon',
+    questionsTitle: 'Vragen',
+    questions: [
+      {
+        q: 'Hoe download ik alle afbeeldingen van een Mastodon-account?',
+        a: 'Plak het account hierboven, druk op Media downloaden en kies een ZIP. In Mastodon zelf kun je alleen losse afbeeldingen bewaren of een archief van je eigen account downloaden.',
+      },
+      {
+        q: 'Kan ik mijn eigen Mastodon-media downloaden?',
+        a: 'Ja: plak je eigen gebruikersnaam. Gebruik voor een volledige back-up met berichten ook de gegevensexport van je server (Voorkeuren → Importeren en exporteren).',
+      },
+      {
+        q: 'Waarom konden sommige bestanden niet worden gedownload?',
+        a: 'Een webpagina kan een bestand alleen bewaren als de server andere websites toestaat het te lezen. De meeste Mastodon-servers doen dat, sommige niet. Die bestanden staan als links vermeld, zodat je ze zelf kunt openen en bewaren.',
+      },
+      {
+        q: 'Gaan de bestanden via Mawkingbird?',
+        a: 'Nee. Je browser haalt ze van de Mastodon-servers en maakt zelf de ZIP. Er wordt niets geüpload.',
+      },
+      {
+        q: 'Mag ik afbeeldingen van anderen downloaden?',
+        a: 'De afbeeldingen blijven van de maker. Een kopie voor jezelf bewaren is iets anders dan ze elders publiceren; daarvoor heb je toestemming nodig.',
+      },
+    ],
+  },
+  id: {
+    path: '/id/unduh-gambar-mastodon',
+    openApp: 'Buka aplikasi',
+    eyebrow: 'Media Mastodon',
+    heading: 'Unduh gambar dari Mastodon',
+    intro:
+      'Tempel akun Mastodon dan lihat semua gambar yang dipostingnya pada satu dinding media. Lalu unduh semuanya sebagai ZIP atau berkas terpisah, dengan GIF, video, dan audio jika diinginkan. Tidak perlu akun.',
+    loading: 'Memuat…',
+    steps: [
+      {
+        title: 'Tempel akun',
+        body: 'Handle seperti @someone@mastodon.social, tautan profil, atau nama untuk dicari.',
+      },
+      {
+        title: 'Lihat gambarnya',
+        body: 'Semua postingan bermedia, terbaru lebih dulu, langsung dari servernya sendiri.',
+      },
+      {
+        title: 'Unduh semuanya',
+        body: 'Pilih gambar, GIF, video, atau audio, rentang waktu, serta ZIP atau berkas terpisah.',
+      },
+    ],
+    signIn: 'Masuk dengan Mastodon',
+    questionsTitle: 'Pertanyaan',
+    questions: [
+      {
+        q: 'Bagaimana mengunduh semua gambar akun Mastodon?',
+        a: 'Tempel akun di atas, tekan Unduh media, lalu pilih ZIP. Mastodon sendiri hanya bisa menyimpan gambar satu per satu atau mengunduh arsip akunmu sendiri.',
+      },
+      {
+        q: 'Bisakah mengunduh media Mastodon milikku sendiri?',
+        a: 'Bisa: tempel handle-mu. Untuk cadangan lengkap beserta postingan, gunakan juga ekspor data server (Pengaturan → Impor dan ekspor).',
+      },
+      {
+        q: 'Mengapa beberapa berkas gagal diunduh?',
+        a: 'Halaman web hanya bisa menyimpan berkas jika servernya mengizinkan situs lain membacanya. Sebagian besar server Mastodon mengizinkan, sebagian tidak. Berkas tersebut ditampilkan sebagai tautan agar bisa dibuka dan disimpan sendiri.',
+      },
+      {
+        q: 'Apakah berkas melewati Mawkingbird?',
+        a: 'Tidak. Browser mengambilnya dari server Mastodon dan membuat ZIP sendiri. Tidak ada yang diunggah.',
+      },
+      {
+        q: 'Bolehkah mengunduh gambar orang lain?',
+        a: 'Gambar tetap milik pembuatnya. Menyimpan salinan pribadi berbeda dengan memposting di tempat lain; untuk itu perlu izin mereka.',
+      },
+    ],
+  },
+  ru: {
+    path: '/ru/download-mastodon-images',
+    openApp: 'Открыть приложение',
+    eyebrow: 'Медиа Mastodon',
+    heading: 'Скачай изображения из Mastodon',
+    intro:
+      'Вставь адрес Mastodon и посмотри все изображения учётной записи на одной стене. Затем скачай их сразу в ZIP или отдельными файлами, при желании с GIF, видео и аудио. Учётная запись не нужна.',
+    loading: 'Загрузка…',
+    steps: [
+      {
+        title: 'Вставь адрес',
+        body: 'Имя вроде @someone@mastodon.social, ссылка на профиль или имя для поиска.',
+      },
+      {
+        title: 'Посмотри изображения',
+        body: 'Все посты с медиа, от новых к старым, прямо с их сервера.',
+      },
+      {
+        title: 'Скачай всё',
+        body: 'Выбери изображения, GIF, видео или аудио, период и ZIP или отдельные файлы.',
+      },
+    ],
+    signIn: 'Войти через Mastodon',
+    questionsTitle: 'Вопросы',
+    questions: [
+      {
+        q: 'Как скачать все изображения учётной записи Mastodon?',
+        a: 'Вставь адрес выше, нажми «Скачать медиа» и выбери ZIP. Сам Mastodon позволяет сохранять картинки по одной или скачать архив собственной учётной записи.',
+      },
+      {
+        q: 'Можно скачать свои медиа Mastodon?',
+        a: 'Да: вставь свой адрес. Для полной резервной копии с постами также используй экспорт данных сервера (Настройки → Импорт и экспорт).',
+      },
+      {
+        q: 'Почему некоторые файлы не скачались?',
+        a: 'Страница может сохранить файл, только если сервер разрешает другим сайтам его читать. Большинство серверов Mastodon разрешает, но не все. Такие файлы перечислены как ссылки, чтобы открыть и сохранить каждый самостоятельно.',
+      },
+      {
+        q: 'Файлы проходят через Mawkingbird?',
+        a: 'Нет. Браузер получает их с серверов Mastodon и сам создаёт ZIP. Ничего не загружается на сервер Mawkingbird.',
+      },
+      {
+        q: 'Можно скачивать чужие изображения?',
+        a: 'Изображения принадлежат авторам. Сохранить копию для себя — одно, а для публикации в другом месте нужно их разрешение.',
+      },
+    ],
+  },
+  sv: {
+    path: '/sv/ladda-ner-mastodon-bilder',
+    openApp: 'Öppna appen',
+    eyebrow: 'Mastodon-medier',
+    heading: 'Ladda ner bilder från Mastodon',
+    intro:
+      'Klistra in ett Mastodon-konto och se alla dess bilder på en vägg. Ladda sedan ner allt samtidigt som ZIP eller separata filer, med GIFs, videor och ljud om du vill. Inget konto behövs.',
+    loading: 'Laddar…',
+    steps: [
+      {
+        title: 'Klistra in ett konto',
+        body: 'Ett användarnamn som @someone@mastodon.social, en profillänk eller ett namn att söka efter.',
+      },
+      {
+        title: 'Se bilderna',
+        body: 'Varje inlägg med medier, nyast först, läst direkt från personens egen server.',
+      },
+      {
+        title: 'Ladda ner allt',
+        body: 'Välj bilder, GIFs, videor eller ljud, hur långt tillbaka och ZIP eller separata filer.',
+      },
+    ],
+    signIn: 'Logga in med Mastodon',
+    questionsTitle: 'Frågor',
+    questions: [
+      {
+        q: 'Hur laddar jag ner alla bilder från ett Mastodon-konto?',
+        a: 'Klistra in kontot ovan, tryck på Ladda ner medier och välj ZIP. Mastodon självt låter dig bara spara bilder en i taget eller ladda ner ett arkiv över ditt eget konto.',
+      },
+      {
+        q: 'Kan jag ladda ner mina egna Mastodon-medier?',
+        a: 'Ja. Klistra in ditt eget användarnamn. Använd även serverns dataexport för en fullständig säkerhetskopia med inlägg (Inställningar → Importera och exportera).',
+      },
+      {
+        q: 'Varför kunde vissa filer inte laddas ner?',
+        a: 'En webbsida kan bara spara en fil när servern tillåter andra webbplatser att läsa den. De flesta Mastodon-servrar gör det, men inte alla. Sådana filer visas som länkar så att du kan öppna och spara dem själv.',
+      },
+      {
+        q: 'Skickas filerna via Mawkingbird?',
+        a: 'Nej. Webbläsaren hämtar dem från Mastodon-servrarna och skapar ZIP-filen själv. Inget laddas upp.',
+      },
+      {
+        q: 'Är det okej att ladda ner andras bilder?',
+        a: 'Bilderna tillhör fortfarande skaparna. Att spara en egen kopia är en sak; att publicera dem någon annanstans kräver tillstånd.',
+      },
+    ],
+  },
+  vi: {
+    path: '/vi/download-mastodon-images',
+    openApp: 'Mở ứng dụng',
+    eyebrow: 'Nội dung đa phương tiện Mastodon',
+    heading: 'Tải ảnh từ Mastodon',
+    intro:
+      'Dán tài khoản Mastodon để xem tất cả ảnh trên một bảng. Sau đó tải tất cả thành ZIP hoặc tệp riêng, kèm GIF, video và âm thanh nếu muốn. Không cần tài khoản.',
+    loading: 'Đang tải…',
+    steps: [
+      {
+        title: 'Dán tài khoản',
+        body: 'Tên như @someone@mastodon.social, liên kết hồ sơ hoặc tên để tìm kiếm.',
+      },
+      {
+        title: 'Xem hình ảnh',
+        body: 'Mọi bài có nội dung đa phương tiện, mới nhất trước, đọc trực tiếp từ máy chủ của họ.',
+      },
+      {
+        title: 'Tải tất cả',
+        body: 'Chọn ảnh, GIF, video hoặc âm thanh, khoảng thời gian và ZIP hoặc tệp riêng.',
+      },
+    ],
+    signIn: 'Đăng nhập bằng Mastodon',
+    questionsTitle: 'Câu hỏi',
+    questions: [
+      {
+        q: 'Làm sao tải tất cả ảnh của tài khoản Mastodon?',
+        a: 'Dán tài khoản ở trên, nhấn Tải nội dung đa phương tiện và chọn ZIP. Mastodon chỉ cho lưu từng ảnh hoặc tải bản lưu trữ tài khoản của chính bạn.',
+      },
+      {
+        q: 'Có thể tải nội dung đa phương tiện của tôi không?',
+        a: 'Có. Dán định danh của bạn. Để sao lưu đầy đủ kèm bài đăng, dùng thêm chức năng xuất dữ liệu trên máy chủ (Tùy chọn → Nhập và xuất).',
+      },
+      {
+        q: 'Vì sao một số tệp không tải được?',
+        a: 'Trang web chỉ lưu được tệp khi máy chủ cho phép trang khác đọc tệp đó. Phần lớn máy chủ Mastodon cho phép, nhưng không phải tất cả. Các tệp này được liệt kê thành liên kết để bạn mở và tự lưu.',
+      },
+      {
+        q: 'Tệp có đi qua Mawkingbird không?',
+        a: 'Không. Trình duyệt lấy tệp từ máy chủ Mastodon và tự tạo ZIP. Không tải gì lên.',
+      },
+      {
+        q: 'Có được tải ảnh của người khác không?',
+        a: 'Ảnh vẫn thuộc về người tạo. Lưu một bản cho mình khác với đăng lại ở nơi khác; việc đăng lại cần được cho phép.',
+      },
+    ],
+  },
 };

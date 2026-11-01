@@ -14,6 +14,13 @@ import ja from './tool-translations/ja.json';
 import ko from './tool-translations/ko.json';
 import pl from './tool-translations/pl.json';
 import pt from './tool-translations/pt.json';
+import uk from './tool-translations/uk.json';
+import hi from './tool-translations/hi.json';
+import nl from './tool-translations/nl.json';
+import id from './tool-translations/id.json';
+import ru from './tool-translations/ru.json';
+import sv from './tool-translations/sv.json';
+import vi from './tool-translations/vi.json';
 import zhHant from './tool-translations/zh-Hant.json';
 
 /**
@@ -30,6 +37,13 @@ export const TOOL_COPY: Record<TranslatedLanguage, Record<string, ToolCopy>> = {
   ko,
   pl,
   pt,
+  uk,
+  hi,
+  nl,
+  id,
+  ru,
+  sv,
+  vi,
   'zh-Hant': zhHant,
 };
 

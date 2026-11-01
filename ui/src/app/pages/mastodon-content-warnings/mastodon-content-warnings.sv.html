@@ -1,0 +1,78 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Innehållsvarningar</p>
+    <h1>Så stänger du av innehållsvarningar på Mastodon</h1>
+    <p>
+      Trött på att trycka på Visa mer för varje inlägg eller öppna suddiga foton? Låt
+      innehållsvarningar öppnas automatiskt och känsliga medier visas direkt.
+      @if (!inShell) {
+        Logga in och ändra två reglage.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Laddar dina inställningar…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Öppna innehållsvarningar automatiskt</h2>
+        <p>Inlägg med innehållsvarning öppnas av sig själva. Varningstexten syns fortfarande.</p>
+      </li>
+      <li>
+        <h2>Visa känsliga medier</h2>
+        <p>Foton och videor märkta som känsliga visas utan suddighet.</p>
+      </li>
+      <li>
+        <h2>Eller bara för personer du litar på</h2>
+        <p>
+          Låt varningar från främlingar vara stängda och vänners öppna. Lita på enskilda personer
+          eller alla du följer.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att stänga av dem</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Hur gör jag på Mastodons webbplats?</h3>
+    <p>
+      Öppna inställningarna på din server, aktivera att alltid öppna inlägg med innehållsvarningar
+      och välj Visa alla för medievisning. Det är serverns inställningar och de används av dess
+      webbplats och vissa appar.
+    </p>
+    <h3>Varför kan Mawkingbird inte ändra serverns inställning?</h3>
+    <p>
+      Mastodon låter appar läsa inställningarna men inte ändra dem. Därför har Mawkingbird egna
+      reglage. När du loggat in visar sidan serverns aktuella inställningar.
+    </p>
+    <h3>Ser jag fortfarande att inlägget hade en varning?</h3>
+    <p>
+      Ja. Varningstexten står kvar ovanför inlägget. Det är bara klicket för att öppna som
+      försvinner.
+    </p>
+    <h3>Ändras det andra ser?</h3>
+    <p>
+      Nej. Det ändrar bara hur inlägg öppnas för dig. Författarnas varningar finns kvar för alla
+      andra.
+    </p>
+  </section>
+</main>

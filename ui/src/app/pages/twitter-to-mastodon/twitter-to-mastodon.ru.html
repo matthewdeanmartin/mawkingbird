@@ -1,0 +1,69 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Из Twitter в Mastodon</p>
+    <h1>Найди знакомых из Twitter в Mastodon</h1>
+    <p>
+      Найди людей из своих подписок в Twitter, которые уже есть в Mastodon, и подпишись снова в
+      несколько нажатий. Архив читается в этом браузере; ничего не загружается на чужой сервер.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Скачай архив Twitter</h2>
+      <p>
+        В Twitter открой Настройки → Твоя учётная запись → Скачать архив данных. Подготовка может
+        занять день или больше. Распакуй полученный архив.
+      </p>
+    </li>
+    <li>
+      <h2>Выбери архив здесь</h2>
+      <p>
+        Выбери распакованную папку или только файлы <code>data/following.js</code> и
+        <code>data/tweets.js</code> из неё. Mawkingbird посчитает людей из твоих подписок, ответов и
+        упоминаний.
+      </p>
+    </li>
+    <li>
+      <h2>Войди через Mastodon и подпишись</h2>
+      <p>
+        Mawkingbird ищет каждое имя на твоём сервере Mastodon и показывает возможные совпадения с
+        пояснениями. Ты выбираешь, на кого подписаться.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/ru/twitter-to-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Загрузка импорта…</p>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Мой архив куда-нибудь отправляется?</h3>
+    <p>
+      Нет. Файлы читает эта страница в твоём браузере. Только запросы поиска имён идут на твой
+      сервер Mastodon, и лишь после входа.
+    </p>
+    <h3>Подписки оформляются автоматически?</h3>
+    <p>
+      Нет. Совпадение имени — подсказка, а не доказательство. Для каждой подписки нужно нажать
+      кнопку. Список также можно скачать в CSV и сохранить.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,73 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Закладки Mastodon</p>
+    <h1>Экспортируй закладки Mastodon</h1>
+    <p>
+      Скачай все посты из закладок Mastodon как файл для браузера, Raindrop.io, Pinboard или другого
+      сервиса закладок. Сохраняешь пост ради статьи? Извлеки ссылку и получи саму статью.
+      @if (!inShell) {
+        Для начала войди через Mastodon.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Загрузка…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Прочитай свои закладки</h2>
+        <p>Все закладки твоей учётной записи Mastodon, прочитанные с твоего сервера.</p>
+      </li>
+      <li>
+        <h2>Выбери, что сохранить</h2>
+        <p>Сами посты, опубликованные в них ссылки или только закладки с такими ссылками.</p>
+      </li>
+      <li>
+        <h2>Импортируй файл</h2>
+        <p>
+          Стандартный файл закладок браузера: открой менеджер закладок или сервис и импортируй его.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Войти через Mastodon и экспортировать закладки</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Разве Mastodon уже не экспортирует закладки?</h3>
+    <p>
+      Его экспорт данных содержит таблицу адресов постов, которую браузеры и сервисы закладок не
+      импортируют. Этот файл они принимают — с заголовками, текстом и хештегами.
+    </p>
+    <h3>Что значит извлечь ссылку?</h3>
+    <p>
+      Многие посты сохраняют ради ссылки: на статью, видео или проект. Извлечение сохраняет эту
+      ссылку вместо поста о ней, а текст поста становится описанием.
+    </p>
+    <h3>Мои закладки куда-нибудь загружаются?</h3>
+    <p>
+      Нет. Они читаются с твоего сервера Mastodon, а файл создаётся в браузере. В Mawkingbird ничего
+      не отправляется.
+    </p>
+    <h3>Даты правильные?</h3>
+    <p>Дата закладки — это дата написания поста. Mastodon не хранит время добавления в закладки.</p>
+  </section>
+</main>

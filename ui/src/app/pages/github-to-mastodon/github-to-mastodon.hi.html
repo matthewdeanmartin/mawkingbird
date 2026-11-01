@@ -1,0 +1,64 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub से Mastodon</p>
+    <h1>GitHub के दोस्तों को Mastodon पर खोजें</h1>
+    <p>
+      कई डेवलपर GitHub पर अपना Mastodon अकाउंट बताते हैं। Mawkingbird आपके फ़ॉलो किए लोगों और स्टार
+      किए रिपॉज़िटरी के मालिकों को जाँचता है, ताकि आप उन्हें Mastodon पर फ़ॉलो कर सकें।
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">खोज टूल लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon से साइन इन करें</h2>
+        <p>फ़ॉलो आपके Mastodon अकाउंट से होगा, इसलिए पहले साइन इन करें।</p>
+      </li>
+      <li>
+        <h2>GitHub जोड़ें</h2>
+        <p>
+          GitHub का व्यक्तिगत ऐक्सेस टोकन पेस्ट करें; पेज बताता है कि उसे कैसे बनाएँ। GitHub
+          ब्राउज़र ऐप को दूसरे तरीके से साइन इन नहीं करने देता। टोकन इसी ब्राउज़र में रहता है।
+        </p>
+      </li>
+      <li>
+        <h2>खोजें और फ़ॉलो करें</h2>
+        <p>
+          पहले Mastodon के प्रोफ़ाइल लिंक देखे जाते हैं, फिर सीमित यूज़रनेम खोज होती है। हर मेल के
+          साथ सबूत दिखता है; किसे फ़ॉलो करना है, आप चुनते हैं।
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>मेरा GitHub टोकन कहाँ जाता है?</h3>
+    <p>
+      यह इसी ब्राउज़र में रखा जाता है और केवल <code>api.github.com</code> को भेजा जाता है,
+      Mawkingbird को कभी नहीं। GitHub पर कभी भी इसे रद्द कर सकते हैं।
+    </p>
+    <h3>क्या यह किसी को अपने-आप फ़ॉलो करता है?</h3>
+    <p>नहीं। हर फ़ॉलो के लिए मेल के सबूत के पास दिया बटन आपको दबाना होता है।</p>
+  </section>
+</main>

@@ -170,3 +170,101 @@ export class MastodonMuteBlockAmnestyPl extends MastodonMuteBlockAmnesty {
     next: '/pl/odcisz-i-odblokuj-wszystkich-na-mastodonie',
   };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyUk extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/uk/mastodon-mute-block-amnesty',
+  };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyHi extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/hi/mastodon-mute-block-amnesty',
+  };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyNl extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/nl/mastodon-dempen-blokkeren-opheffen',
+  };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyId extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/id/cabut-pembisuan-dan-blokir-mastodon',
+  };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyRu extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/ru/mastodon-mute-block-amnesty',
+  };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestySv extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/sv/mastodon-avtysta-avblockera',
+  };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyVi extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/vi/mastodon-mute-block-amnesty',
+  };
+}

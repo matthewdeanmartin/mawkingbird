@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Twitter फ़ॉलो को Mastodon पर लाएँ",
+    "description": "Twitter आर्काइव से Mastodon पर आ चुके लोगों को खोजें और फ़ॉलो करें। फ़ाइलें आपके ब्राउज़र में रहती हैं।",
+    "prerenderCheck": {
+      "heading": "Twitter पर फ़ॉलो किए लोगों को Mastodon पर खोजें",
+      "copy": "अपना Twitter आर्काइव डाउनलोड करें"
+    }
+  },
+  "crosspost": {
+    "title": "Mastodon और Bluesky पर एक साथ पोस्ट करें",
+    "description": "एक बार लिखें और दोनों नेटवर्क पर पोस्ट करें। Mastodon या Bluesky से साइन इन करके दूसरा अकाउंट जोड़ें।",
+    "prerenderCheck": {
+      "heading": "Mastodon और Bluesky पर एक साथ पोस्ट करें",
+      "copy": "दूसरा अकाउंट जोड़ें"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "आपके अकाउंट के लिए Mastodon के आँकड़े",
+    "description": "अपनी लोकप्रिय पोस्ट, बूस्ट, पसंदीदा, जवाब, सक्रिय फ़ॉलोअर और पहुँच का अनुमान देखें। गणना ब्राउज़र में होती है।",
+    "prerenderCheck": {
+      "heading": "आपके अकाउंट के लिए Mastodon के आँकड़े",
+      "copy": "आपकी बेहतरीन पोस्ट"
+    }
+  },
+  "github-friends": {
+    "title": "GitHub के दोस्तों को Mastodon पर खोजें",
+    "description": "GitHub पर फ़ॉलो किए लोगों और स्टार किए रिपॉज़िटरी के मालिकों को Mastodon पर खोजें। हर मेल के सबूत देखें और फ़ॉलो चुनें।",
+    "prerenderCheck": {
+      "heading": "GitHub के दोस्तों को Mastodon पर खोजें",
+      "copy": "GitHub जोड़ें"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon पोस्ट शेड्यूल करें",
+    "description": "कई Mastodon पोस्ट पहले से लिखें और समय का अंतर चुनें। आपका सर्वर टैब बंद होने पर भी समय पर प्रकाशित करता है।",
+    "prerenderCheck": {
+      "heading": "Mastodon पोस्ट पहले से शेड्यूल करें",
+      "copy": "अपनी पोस्ट लिखें"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Bluesky के लोगों को Mastodon पर खोजें",
+    "description": "Bluesky पर फ़ॉलो किए लोगों में से Mastodon पर मौजूद लोगों को खोजें और वहाँ भी फ़ॉलो करें।",
+    "prerenderCheck": {
+      "heading": "Bluesky पर फ़ॉलो किए लोगों को Mastodon पर खोजें",
+      "copy": "अपनी फ़ॉलो सूची पढ़ें"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Mastodon के लोगों को Bluesky पर खोजें",
+    "description": "Mastodon पर फ़ॉलो किए लोगों में से Bluesky पर मौजूद लोगों को खोजें और वहाँ भी फ़ॉलो करें।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर फ़ॉलो किए लोगों को Bluesky पर खोजें",
+      "copy": "अपनी फ़ॉलो सूची पढ़ें"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Mastodon पर सभी के बूस्ट बंद करें",
+    "description": "बिना अनफ़ॉलो किए सभी फ़ॉलो किए लोगों के बूस्ट छिपाएँ। अपनी पोस्ट और जवाब देखते रहें; कभी भी बूस्ट फिर चालू करें।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर सभी फ़ॉलो किए लोगों के बूस्ट बंद करें",
+      "copy": "देखें कितने अकाउंट बदलेंगे"
+    }
+  },
+  "find-contacts": {
+    "title": "फ़ोन के संपर्कों को Mastodon पर खोजें",
+    "description": "फ़ोन के संपर्क चुनें या Google Contacts फ़ाइल से Mastodon पर परिचित लोगों को खोजें। हर मेल की वजह देखें और खुद फ़ॉलो करें।",
+    "prerenderCheck": {
+      "heading": "फ़ोन के संपर्कों को Mastodon पर खोजें",
+      "copy": "अपने संपर्क चुनें"
+    }
+  },
+  "friend-feeds": {
+    "title": "Mastodon के लोगों के ब्लॉग और RSS फ़ीड खोजें",
+    "description": "फ़ॉलो किए लोगों के प्रोफ़ाइल लिंक पर ब्लॉग और RSS फ़ीड खोजें और OPML फ़ाइल डाउनलोड करें। Mawkingbird Plus की सुविधा।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर फ़ॉलो किए लोगों के ब्लॉग और RSS फ़ीड खोजें",
+      "copy": "OPML डाउनलोड करें"
+    }
+  },
+  "amnesty": {
+    "title": "Mastodon पर सभी को अनम्यूट और अनब्लॉक करें",
+    "description": "म्यूट या ब्लॉक सूची का बैकअप लें, समीक्षा करें और सबके लिए म्यूट या ब्लॉक हटाएँ। बीच में रोक सकते हैं।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर सभी को अनम्यूट और अनब्लॉक करें",
+      "copy": "पहले बैकअप लें, फिर समीक्षा करें"
+    }
+  },
+  "pseudonymity": {
+    "title": "Mastodon पर छद्म नाम से रहें",
+    "description": "अपनी फ़ॉलो सूचियाँ छिपाएँ, खोज और सुझावों से बाहर रहें, और देखें कि कौन से लिंक आपकी पहचान बताते हैं।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर छद्म नाम से कैसे रहें",
+      "copy": "अपने आस-पास के लोगों को छिपाएँ"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon यूज़रनेम जनरेटर",
+    "description": "अपने नाम से यूज़रनेम सुझाएँ और चुने Mastodon सर्वर पर उपलब्धता जाँचें। सबसे बड़े सर्वर भी तुलना करें। अकाउंट ज़रूरी नहीं।",
+    "prerenderCheck": {
+      "heading": "Mastodon यूज़रनेम जनरेटर",
+      "copy": "Mastodon यूज़रनेम कैसा होता है"
+    }
+  },
+  "content-warnings": {
+    "title": "Mastodon सामग्री चेतावनियाँ बंद करें",
+    "description": "सामग्री चेतावनियाँ अपने-आप खोलें और संवेदनशील तस्वीरें दिखाएँ — सबके लिए या केवल भरोसेमंद लोगों के लिए।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर सामग्री चेतावनियाँ कैसे बंद करें",
+      "copy": "संवेदनशील मीडिया दिखाएँ"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Mastodon बुकमार्क निर्यात करें",
+    "description": "Mastodon बुकमार्क ब्राउज़र, Raindrop.io या Pinboard के लिए डाउनलोड करें। पोस्ट के बजाय उनके साझा लिंक भी सहेजें।",
+    "prerenderCheck": {
+      "heading": "अपने Mastodon बुकमार्क निर्यात करें",
+      "copy": "चुनें क्या रखना है"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon पर पोस्ट, लोग और हैशटैग खोजें",
+    "description": "Twitter जैसे फ़िल्टर से Mastodon खोजें: from:, has:media, तारीखें और सटीक वाक्यांश। खोज सहेजें और परिणाम छाँटें।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर खोजें",
+      "copy": "खोज सीमित करें"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky पर पोस्ट और लोग खोजें",
+    "description": "Twitter जैसे फ़िल्टर से Bluesky पर लोग और पोस्ट खोजें। पोस्ट की खोज के लिए Bluesky से साइन इन करना होता है।",
+    "prerenderCheck": {
+      "heading": "Bluesky पर खोजें",
+      "copy": "खोज सीमित करें"
+    }
+  },
+  "download-media": {
+    "title": "Mastodon की तस्वीरें डाउनलोड करें",
+    "description": "किसी Mastodon अकाउंट की तस्वीरें देखें और ZIP या अलग फ़ाइलों में डाउनलोड करें। GIF, वीडियो और ऑडियो भी। अकाउंट ज़रूरी नहीं।",
+    "prerenderCheck": {
+      "heading": "Mastodon की तस्वीरें डाउनलोड करें",
+      "copy": "तस्वीरें देखें"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Mastodon पर मिलते-जुलते हैशटैग",
+    "description": "हाल की Mastodon पोस्ट में साथ आने वाले हैशटैग खोजें और कई हैशटैग एक साथ तुलना करें। अकाउंट ज़रूरी नहीं।",
+    "prerenderCheck": {
+      "heading": "Mastodon पर मिलते-जुलते हैशटैग",
+      "copy": "देखें साथ में क्या आता है"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon हिन्दी में",
+    "description": "Mastodon पर हिन्दी पढ़ें और लिखें। अपनी पढ़ने वाली भाषाएँ चुनें, अनजानी भाषाओं की पोस्ट छिपाएँ और सीखने के लिए अनुवाद जोड़ें।",
+    "prerenderCheck": {
+      "heading": "Mastodon हिन्दी में",
+      "copy": "केवल वे भाषाएँ जिन्हें आप पढ़ते हैं"
+    }
+  },
+  "learn-english": {
+    "title": "Mastodon से अंग्रेज़ी सीखें",
+    "description": "असली अंग्रेज़ी पोस्ट पढ़कर सीखें। मूल टेक्स्ट के नीचे अपने-आप या माँग पर अनुवाद पाएँ।",
+    "prerenderCheck": {
+      "heading": "Mastodon से अंग्रेज़ी सीखें",
+      "copy": "अंग्रेज़ी हमेशा दिखती है"
+    }
+  }
+}

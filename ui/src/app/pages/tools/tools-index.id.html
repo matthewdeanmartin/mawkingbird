@@ -1,0 +1,40 @@
+<main class="focused-page" lang="id">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Alat</p>
+    <h1>Alat gratis untuk Mastodon dan Bluesky</h1>
+    <p>
+      Alat kecil untuk pekerjaan yang belum ditangani aplikasi standar: memilih nama pengguna,
+      mencari teman, menjadwalkan postingan, dan merapikan akun. Setiap alat berjalan di browsermu.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Mencari yang lain?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Lihat semua fitur Mawkingbird</a> (bahasa Inggris),
+      atau baca <a mbContentLink href="help/">panduan bantuan</a> (bahasa Inggris).
+    </p>
+  </section>
+</main>

@@ -1,0 +1,100 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Zoeken op Bluesky</p>
+      <h1>Zoek op Bluesky</h1>
+      <p>Vind mensen en berichten op Bluesky, met de zoekfilters die je van Twitter kent.</p>
+    } @else {
+      <p class="eyebrow">Zoeken op Mastodon</p>
+      <h1>Zoek op Mastodon</h1>
+      <p>
+        Vind berichten, mensen en hashtags op Mastodon, met de zoekfilters die je van Twitter kent.
+      </p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Zoek op Bluesky' : 'Zoek op Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? 'Zoek op Bluesky' : 'Zoek op Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Zoeken</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Beperk je zoekopdracht</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, taal, datums en "exacte zinnen", getypt of gekozen via de filters.
+        } @else {
+          from:someone, has:media, is:reply, datums en "exacte zinnen", getypt of gekozen via de
+          filters.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Sorteer en verfijn</h2>
+      <p>Filter de resultaten op datum, media en auteur en bekijk precies wat er is gezocht.</p>
+    </li>
+    <li>
+      <h2>Bewaar je zoekopdrachten</h2>
+      <p>Bewaar een zoekopdracht om die met één klik opnieuw uit te voeren of als link te delen.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    @if (network === 'bluesky') {
+      <h3>Heb ik een Bluesky-account nodig?</h3>
+      <p>
+        Niet om mensen te zoeken. Bluesky laat alleen ingelogde accounts naar berichten zoeken. Log
+        daarvoor in met Bluesky; daarna kom je hier terug.
+      </p>
+      <h3>Kan ik ook op Mastodon zoeken?</h3>
+      <p>
+        Ja: <a mbContentLink routerLink="/nl/zoeken-op-mastodon">zoek op Mastodon</a>, of wissel van
+        netwerk op de resultatenpagina.
+      </p>
+    } @else {
+      <h3>Heb ik een Mastodon-account nodig?</h3>
+      <p>
+        Nee. Zonder account kun je mensen en hashtags zoeken en berichten op hashtag vinden.
+        Mastodon-servers laten geen anonieme zoekopdrachten op volledige tekst toe. Log in om
+        woorden in berichten te zoeken; daarna kom je hier terug.
+      </p>
+      <h3>Waarom is dit beter dan de zoekfunctie van mijn server?</h3>
+      <p>
+        Dezelfde server zoekt, maar hier krijg je filters, sortering, bewaarde zoekopdrachten en
+        uitleg over de zoekopdracht in plaats van alleen een vak.
+      </p>
+      <h3>Kan ik ook op Bluesky zoeken?</h3>
+      <p>
+        Ja: <a mbContentLink routerLink="/nl/zoeken-op-bluesky">zoek op Bluesky</a>, of wissel van
+        netwerk op de resultatenpagina.
+      </p>
+    }
+  </section>
+</main>

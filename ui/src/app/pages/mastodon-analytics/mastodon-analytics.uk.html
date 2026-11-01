@@ -1,0 +1,66 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Статистика Mastodon</p>
+    <h1>Статистика Mastodon для вашого облікового запису</h1>
+    <p>
+      Подивіться, як сприймають ваші дописи і хто вас слухає.
+      @if (!inShell) {
+        Увійдіть через Mastodon, і цифри порахуються тут, із ваших власних дописів і підписників.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Завантаження статистики…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Ваші найкращі дописи</h2>
+        <p>
+          Найпопулярніші дописи, вподобання, поширення й відповіді на кожен допис і орієнтовне
+          охоплення.
+        </p>
+      </li>
+      <li>
+        <h2>Ваша аудиторія</h2>
+        <p>Скільки ваших підписок і підписників досі активні та з ким ви спілкуєтеся найбільше.</p>
+      </li>
+      <li>
+        <h2>Ваші звички</h2>
+        <p>Коли ви публікуєте, як часто, якими мовами й про що — на одному календарі.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Увійти через Mastodon і подивитися свою</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    <h3>Куди надсилаються мої дані?</h3>
+    <p>
+      Нікуди нового. Ваші дописи й підписники читаються з вашого власного сервера Mastodon, а цифри
+      рахуються в цьому браузері. Mawkingbird не зберігає жодної копії.
+    </p>
+    <h3>Чому охоплення лише орієнтовне?</h3>
+    <p>
+      Mastodon не рахує переглядів. Охоплення оцінюється за вашими підписниками та їхніми реакціями,
+      і сторінка пише про це просто біля цифри.
+    </p>
+  </section>
+</main>

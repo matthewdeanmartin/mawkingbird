@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Hitta dina Twitter-vänner på Mastodon",
+    "description": "Använd Twitter-arkivet för att hitta dem du följde som redan finns på Mastodon. Arkivet stannar i webbläsaren och du väljer varje följning.",
+    "prerenderCheck": {
+      "heading": "Hitta dina Twitter-vänner på Mastodon",
+      "copy": "Ladda ner ditt Twitter-arkiv"
+    }
+  },
+  "crosspost": {
+    "title": "Posta på Mastodon och Bluesky samtidigt",
+    "description": "Skriv en gång och posta på Mastodon och Bluesky. Logga in med ett nätverk, anslut det andra och prova redigeraren.",
+    "prerenderCheck": {
+      "heading": "Posta på Mastodon och Bluesky samtidigt",
+      "copy": "Anslut det andra kontot"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon-statistik för ditt konto",
+    "description": "Se dina bästa inlägg, favoriter, boostar, svar, aktiva följare och uppskattad räckvidd. Beräknas i webbläsaren.",
+    "prerenderCheck": {
+      "heading": "Mastodon-statistik för ditt konto",
+      "copy": "Dina bästa inlägg"
+    }
+  },
+  "github-friends": {
+    "title": "Hitta dina GitHub-vänner på Mastodon",
+    "description": "Hitta dem du följer på GitHub och ägarna till stjärnmarkerade kodarkiv på Mastodon. Granska underlaget och välj vem du följer.",
+    "prerenderCheck": {
+      "heading": "Hitta dina GitHub-vänner på Mastodon",
+      "copy": "Anslut GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Schemalägg Mastodon-inlägg",
+    "description": "Skriv flera inlägg och välj tid och intervall. Din Mastodon-server publicerar dem i tid även när fliken är stängd.",
+    "prerenderCheck": {
+      "heading": "Schemalägg Mastodon-inlägg i förväg",
+      "copy": "Skriv dina inlägg"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Hitta dem du följer på Bluesky på Mastodon",
+    "description": "Hitta dina Bluesky-kontakter på Mastodon och följ dem där också. Se profillänkar och sök efter namn.",
+    "prerenderCheck": {
+      "heading": "Hitta dem du följer på Bluesky på Mastodon",
+      "copy": "Läs vilka du följer"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Hitta dem du följer på Mastodon på Bluesky",
+    "description": "Hitta dina Mastodon-kontakter på Bluesky och följ dem där också. Se profillänkar och sök efter namn.",
+    "prerenderCheck": {
+      "heading": "Hitta dem du följer på Mastodon på Bluesky",
+      "copy": "Läs vilka du följer"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Stäng av boostar på Mastodon",
+    "description": "Dölj boostar från alla du följer utan att sluta följa dem. Behåll deras egna inlägg och svar. Du kan slå på boostar igen.",
+    "prerenderCheck": {
+      "heading": "Stäng av boostar från alla du följer på Mastodon",
+      "copy": "Se hur många som ändras"
+    }
+  },
+  "find-contacts": {
+    "title": "Hitta dina telefonkontakter på Mastodon",
+    "description": "Välj telefonkontakter eller ladda upp en Google Contacts-fil för att hitta bekanta på Mastodon. Du väljer varje följning.",
+    "prerenderCheck": {
+      "heading": "Hitta dina telefonkontakter på Mastodon",
+      "copy": "Välj dina kontakter"
+    }
+  },
+  "friend-feeds": {
+    "title": "Hitta RSS-flöden från dina Mastodon-vänner",
+    "description": "Hitta bloggar och RSS-flöden via profillänkarna hos dem du följer. Ladda ner OPML. Ingår i Mawkingbird Plus.",
+    "prerenderCheck": {
+      "heading": "Hitta bloggar och RSS-flöden från alla du följer på Mastodon",
+      "copy": "Ladda ner OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Avtysta och avblockera på Mastodon",
+    "description": "Säkerhetskopiera listan, granska och ta bort alla tystningar eller blockeringar samtidigt. Du kan stoppa halvvägs.",
+    "prerenderCheck": {
+      "heading": "Avtysta och avblockera alla på Mastodon",
+      "copy": "Säkerhetskopiera och granska"
+    }
+  },
+  "pseudonymity": {
+    "title": "Använd Mastodon under pseudonym",
+    "description": "Dölj vilka du följer och vilka som följer dig, lämna sökningar och förslag och granska länkar som kan avslöja din identitet.",
+    "prerenderCheck": {
+      "heading": "Så använder du pseudonym på Mastodon",
+      "copy": "Dölj personerna runt dig"
+    }
+  },
+  "handle-generator": {
+    "title": "Skapa ett Mastodon-användarnamn",
+    "description": "Få namnförslag och kontrollera tillgänglighet på din valda Mastodon-server och de största servrarna. Inget konto behövs.",
+    "prerenderCheck": {
+      "heading": "Skapa ett användarnamn för Mastodon",
+      "copy": "Hur ser ett Mastodon-användarnamn ut"
+    }
+  },
+  "content-warnings": {
+    "title": "Stäng av innehållsvarningar på Mastodon",
+    "description": "Öppna innehållsvarningar automatiskt och visa känsliga medier direkt, för alla eller bara personer du litar på.",
+    "prerenderCheck": {
+      "heading": "Så stänger du av innehållsvarningar på Mastodon",
+      "copy": "Visa känsliga medier"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Exportera dina Mastodon-bokmärken",
+    "description": "Ladda ner Mastodon-bokmärken för webbläsaren, Raindrop.io eller Pinboard. Spara inläggen eller länkarna de delar.",
+    "prerenderCheck": {
+      "heading": "Exportera dina Mastodon-bokmärken",
+      "copy": "Välj vad du vill behålla"
+    }
+  },
+  "mastodon-search": {
+    "title": "Sök på Mastodon: inlägg, personer och hashtaggar",
+    "description": "Sök med Twitter-liknande filter: from:, has:media, datum och exakta fraser. Sortera resultat och spara sökningar.",
+    "prerenderCheck": {
+      "heading": "Sök på Mastodon",
+      "copy": "Avgränsa sökningen"
+    }
+  },
+  "bluesky-search": {
+    "title": "Sök på Bluesky: inlägg och personer",
+    "description": "Sök på Bluesky med Twitter-liknande filter. För att söka inlägg behöver du logga in med Bluesky.",
+    "prerenderCheck": {
+      "heading": "Sök på Bluesky",
+      "copy": "Avgränsa sökningen"
+    }
+  },
+  "download-media": {
+    "title": "Ladda ner bilder från Mastodon",
+    "description": "Se bilder från ett Mastodon-konto och ladda ner allt som ZIP eller separata filer, med GIFs, video och ljud. Inget konto behövs.",
+    "prerenderCheck": {
+      "heading": "Ladda ner bilder från Mastodon",
+      "copy": "Se bilderna"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Liknande hashtaggar på Mastodon",
+    "description": "Hitta hashtaggar som används med dina i de senaste Mastodon-inläggen. Jämför flera samtidigt. Inget konto behövs.",
+    "prerenderCheck": {
+      "heading": "Liknande hashtaggar på Mastodon",
+      "copy": "Se vad som förekommer tillsammans"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon på svenska",
+    "description": "Läs och skriv svenska på Mastodon. Välj dina lässpråk, dölj inlägg på okända språk och lägg till översättning för språk du lär dig.",
+    "prerenderCheck": {
+      "heading": "Mastodon på svenska",
+      "copy": "Bara språken du läser"
+    }
+  },
+  "learn-english": {
+    "title": "Lär dig engelska med Mastodon",
+    "description": "Lär dig engelska genom riktiga Mastodon-inlägg med översättning under originalet, automatiskt eller på begäran.",
+    "prerenderCheck": {
+      "heading": "Lär dig engelska med Mastodon",
+      "copy": "Engelska syns alltid"
+    }
+  }
+}

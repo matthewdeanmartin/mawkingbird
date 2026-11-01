@@ -1,0 +1,76 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">हैशटैग खोज</p>
+    <h1>Mastodon पर मिलते-जुलते हैशटैग</h1>
+    <p>
+      एक या अधिक हैशटैग लिखें और देखें लोग उनके साथ कौन से हैशटैग लगाते हैं। क्रम हाल की पोस्ट में
+      साथ आने की संख्या पर है। इससे अधिक लोग आपको खोज सकते हैं और आप नए विषय फ़ॉलो कर सकते हैं।
+      अकाउंट ज़रूरी नहीं।
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/hi/mastodon-similar-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">लोड हो रहा है…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>हैशटैग लिखें</h2>
+        <p>एक या एक जैसे अर्थ वाले कई, जैसे #dog और #dogs।</p>
+      </li>
+      <li>
+        <h2>हाल की पोस्ट का नमूना</h2>
+        <p>mastodon.social से इनमें से किसी हैशटैग वाली नवीनतम 200 पोस्ट पढ़ी जाती हैं।</p>
+      </li>
+      <li>
+        <h2>देखें साथ में क्या आता है</h2>
+        <p>हर हैशटैग उन पोस्ट में जितनी बार आता है, उसी क्रम में। बड़ा नमूना लेकर और देखें।</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >अपना सर्वर इस्तेमाल करने के लिए Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>Mastodon पर कौन से हैशटैग इस्तेमाल करूँ?</h3>
+    <p>
+      Mastodon में कौन पोस्ट देखेगा, यह तय करने वाला एल्गोरिदम नहीं है। लोग हैशटैग फ़ॉलो करके या
+      खोजकर पाते हैं। सूची में दिखे वही हैशटैग इस्तेमाल करें जो लोग पहले से करते हैं। CamelCase
+      (#DogsOfMastodon) में लिखें ताकि स्क्रीन रीडर पढ़ सकें।
+    </p>
+    <h3>मिलते-जुलते कैसे तय होते हैं?</h3>
+    <p>
+      गिनती से। नमूने की हर पोस्ट में हैशटैग एक बार गिना जाता है। आपके दिए हैशटैग हटा दिए जाते हैं।
+      200 में से 40 पोस्ट में आया हैशटैग 5 में आए हैशटैग से ऊपर होता है।
+    </p>
+    <h3>कई हैशटैग एक साथ क्यों तुलना करें?</h3>
+    <p>
+      एक ही विषय की अलग वर्तनी होती है: #dog और #dogs, #photo और #photography। साथ डालने पर किसी भी
+      हैशटैग वाली पोस्ट देखी जाती है, ताकि पूरी बातचीत शामिल हो।
+    </p>
+    <h3>सर्वर के हिसाब से नतीजे क्यों बदलते हैं?</h3>
+    <p>
+      हर Mastodon सर्वर केवल उन लोगों की पोस्ट देखता है जिन्हें उसके उपयोगकर्ता फ़ॉलो करते हैं। बड़ा
+      सक्रिय सर्वर व्यापक तस्वीर देता है। साइन इन के बाद नमूना आपके सर्वर से आता है, जो नेटवर्क के
+      आपके हिस्से को दिखाता है।
+    </p>
+  </section>
+</main>

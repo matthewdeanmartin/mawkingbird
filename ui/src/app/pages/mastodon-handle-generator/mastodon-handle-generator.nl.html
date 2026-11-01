@@ -1,0 +1,55 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Gebruikersnaamgenerator</p>
+    <h1>Genereer een gebruikersnaam voor Mastodon</h1>
+    <p>
+      Typ je naam en krijg gebruikersnamen die je echt kunt nemen. Elk voorstel wordt gecontroleerd
+      op de Mastodon-server waar je wilt beginnen. Je favoriete naam wordt ook op de grootste
+      servers bekeken. Geen account nodig.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/nl/mastodon-gebruikersnaam-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">De generator laden…</p>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Hoe ziet een Mastodon-gebruikersnaam eruit?</h3>
+    <p>
+      Twee delen: je gebruikersnaam en je server, zoals &#64;matthew_martin&#64;mastodon.social. De
+      gebruikersnaam mag letters, cijfers en underscores bevatten, tot 30 tekens. Hoofdletters maken
+      geen andere naam.
+    </p>
+    <h3>Waarom meer dan één server controleren?</h3>
+    <p>
+      Elke server heeft eigen gebruikersnamen. Een naam die op mastodon.social bezet is, kan op een
+      andere server vrij zijn. Mensen kunnen je vanaf elke server volgen.
+    </p>
+    <h3>Is lijkt vrij een garantie?</h3>
+    <p>
+      Niet helemaal. Het betekent dat vandaag geen account op die server de naam gebruikt. Namen van
+      verwijderde accounts blijven gereserveerd en beheerders kunnen woorden reserveren. Het
+      aanmeldformulier beslist dus uiteindelijk.
+    </p>
+    <h3>Welke servers gelden als de grootste?</h3>
+    <p>
+      De servers met de meeste aanmeldingen in de lijst van joinmastodon.org die het
+      Mastodon-serverconvenant volgen. Sommige vereisen goedkeuring voor nieuwe accounts; dat staat
+      erbij.
+    </p>
+  </section>
+</main>

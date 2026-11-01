@@ -1,0 +1,69 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-statistieken</p>
+    <h1>Mastodon-statistieken voor je account</h1>
+    <p>
+      Bekijk hoe je berichten het doen en wie er meeleest.
+      @if (!inShell) {
+        Log in met Mastodon en je cijfers worden hier berekend, uit je eigen berichten en volgers.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Je statistieken laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Je beste berichten</h2>
+        <p>
+          Populaire berichten, favorieten, boosts en antwoorden per bericht, en een schatting van je
+          bereik.
+        </p>
+      </li>
+      <li>
+        <h2>Je publiek</h2>
+        <p>
+          Hoeveel van de mensen die je volgt en die jou volgen nog actief zijn, en met wie je het
+          meest praat.
+        </p>
+      </li>
+      <li>
+        <h2>Je gewoontes</h2>
+        <p>Wanneer je berichten plaatst, hoe vaak, in welke talen en waarover, op een kalender.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon voor je statistieken</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Waar worden mijn gegevens naartoe gestuurd?</h3>
+    <p>
+      Nergens anders naartoe. Je berichten en volgers worden van je eigen Mastodon-server gelezen en
+      de cijfers worden in deze browser berekend. Mawkingbird bewaart geen kopie.
+    </p>
+    <h3>Waarom is bereik een schatting?</h3>
+    <p>
+      Mastodon telt geen weergaven. Het bereik wordt geschat op basis van je volgers en hun
+      interacties. Dat staat naast het getal vermeld.
+    </p>
+  </section>
+</main>

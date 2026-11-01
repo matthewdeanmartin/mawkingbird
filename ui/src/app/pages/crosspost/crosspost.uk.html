@@ -1,0 +1,68 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Публікуйте в Mastodon і Bluesky одночасно</h1>
+    <p>
+      Напишіть один раз і надішліть той самий допис в обидві мережі.
+      @if (!inShell) {
+        Увійдіть через обліковий запис, який маєте, під’єднайте інший і спробуйте в простому
+        редакторі.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Завантаження редактора…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Увійдіть через один із них</h2>
+        <p>Скористайтеся обліковим записом Mastodon або Bluesky. Для початку вистачить одного.</p>
+      </li>
+      <li>
+        <h2>Під’єднайте інший</h2>
+        <p>
+          Увійшовши через Mastodon, ви під’єднуєте Bluesky паролем застосунку. Увійшовши через
+          Bluesky, ви додаєте свій сервер Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Напишіть раз, опублікуйте всюди</h2>
+        <p>Редактор надсилає ваш допис в обидві мережі. Спробуйте з першим дописом.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Увійти через Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Увійти через Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    <h3>Копія в Bluesky така сама?</h3>
+    <p>
+      Текст — так. Копія в Bluesky завжди публічна, а опитування й попередження про вміст лишаються
+      в копії Mastodon, бо Bluesky не має відповідників.
+    </p>
+    <h3>Де зберігаються мої входи?</h3>
+    <p>
+      У цьому браузері. Mawkingbird спілкується напряму з вашим сервером Mastodon і з Bluesky; між
+      ними немає сервера Mawkingbird, що зберігав би ваші облікові записи.
+    </p>
+  </section>
+</main>

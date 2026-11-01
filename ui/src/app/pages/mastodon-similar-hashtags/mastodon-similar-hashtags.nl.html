@@ -1,0 +1,81 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Hashtags zoeken</p>
+    <h1>Vergelijkbare hashtags op Mastodon</h1>
+    <p>
+      Typ één of meer hashtags en bekijk welke hashtags mensen ermee combineren, gerangschikt op hoe
+      vaak ze samen in recente berichten staan. Gebruik ze om gevonden te worden of meer te vinden
+      om te volgen. Geen account nodig.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/nl/vergelijkbare-mastodon-hashtags/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Laden…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Voer hashtags in</h2>
+        <p>Eén of meerdere met dezelfde betekenis, zoals #dog en #dogs.</p>
+      </li>
+      <li>
+        <h2>Recente berichten als steekproef</h2>
+        <p>De laatste 200 berichten met een van deze hashtags, gelezen van mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Bekijk wat ermee samengaat</h2>
+        <p>
+          Gerangschikt op hoe vaak elke hashtag in die berichten staat. Lees meer berichten voor een
+          breder beeld.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om je eigen server te gebruiken</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Welke hashtags moet ik op Mastodon gebruiken?</h3>
+    <p>
+      Mastodon heeft geen algoritme dat bepaalt wie je bericht ziet. Mensen vinden het door een
+      hashtag te volgen of te zoeken. Gebruik de hashtags die zij al gebruiken; die zie je in deze
+      lijst. Schrijf ze in CamelCase (#DogsOfMastodon), zodat schermlezers ze kunnen uitspreken.
+    </p>
+    <h3>Hoe wordt vergelijkbaar bepaald?</h3>
+    <p>
+      Door te tellen. Elke hashtag in de steekproef wordt één keer per bericht geteld. De hashtags
+      die je zelf opgaf worden weggelaten. Een hashtag in 40 van 200 berichten staat boven eentje in
+      5.
+    </p>
+    <h3>Waarom meerdere hashtags tegelijk vergelijken?</h3>
+    <p>
+      Mensen gebruiken verschillende spellingen voor hetzelfde onderwerp: #dog en #dogs, #photo en
+      #photography. Samen leveren ze berichten met een van die hashtags op, zodat de hele discussie
+      wordt meegenomen.
+    </p>
+    <h3>Waarom verschillen de resultaten per server?</h3>
+    <p>
+      Elke Mastodon-server ziet alleen berichten van mensen die zijn eigen gebruikers volgen. Een
+      grote, drukke server geeft dus het breedste beeld. Na het inloggen komt de steekproef van je
+      eigen server: het deel van het netwerk dat jij ziet.
+    </p>
+  </section>
+</main>

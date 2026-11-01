@@ -1,0 +1,69 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Mastodon और Bluesky पर एक साथ पोस्ट करें</h1>
+    <p>
+      एक बार लिखें और वही पोस्ट दोनों नेटवर्क पर भेजें।
+      @if (!inShell) {
+        किसी एक अकाउंट से साइन इन करें, दूसरा जोड़ें और आसान संपादक में आज़माएँ।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">संपादक लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>किसी एक नेटवर्क से साइन इन करें</h2>
+        <p>अपना Mastodon या Bluesky अकाउंट इस्तेमाल करें। शुरुआत के लिए एक काफ़ी है।</p>
+      </li>
+      <li>
+        <h2>दूसरा अकाउंट जोड़ें</h2>
+        <p>
+          Mastodon से साइन इन करने पर ऐप पासवर्ड से Bluesky जोड़ें। Bluesky से साइन इन करने पर अपना
+          Mastodon सर्वर जोड़ें।
+        </p>
+      </li>
+      <li>
+        <h2>एक बार लिखें, दोनों पर पोस्ट करें</h2>
+        <p>संपादक आपकी पोस्ट दोनों नेटवर्क पर भेजता है। पहली पोस्ट के साथ आज़माएँ।</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Mastodon से साइन इन करें</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या Bluesky पर हूबहू वही पोस्ट जाती है?</h3>
+    <p>
+      टेक्स्ट वही होता है। Bluesky की पोस्ट हमेशा सार्वजनिक होती है। पोल और सामग्री चेतावनियाँ केवल
+      Mastodon की पोस्ट में रहती हैं, क्योंकि Bluesky में उनके समकक्ष नहीं हैं।
+    </p>
+    <h3>मेरे साइन इन कहाँ रखे जाते हैं?</h3>
+    <p>
+      इसी ब्राउज़र में। Mawkingbird सीधे आपके Mastodon सर्वर और Bluesky से बात करता है; बीच में आपके
+      अकाउंट रखने वाला Mawkingbird सर्वर नहीं है।
+    </p>
+  </section>
+</main>

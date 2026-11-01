@@ -1,0 +1,86 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Från {{ copy.from }} till {{ copy.to }}</p>
+    <h1>Hitta dem du följer på {{ copy.from }} på {{ copy.to }}</h1>
+    <p>
+      Många du följer på {{ copy.from }} finns också på {{ copy.to }}. Verktyget hittar dem så att
+      du kan följa dem där.
+      @if (!inShell) {
+        Logga in med ett konto, anslut det andra och se vilka som redan finns där.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Laddar sökverktyget…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Logga in på båda</h2>
+        <p>Logga in med ditt Mastodon- eller Bluesky-konto och anslut det andra på nästa skärm.</p>
+      </li>
+      <li>
+        <h2>Läs vilka du följer</h2>
+        <p>
+          De du följer på {{ copy.from }} som skrivit sitt {{ copy.to }}-användarnamn i sin bio
+          matchas direkt, utan kostnad.
+        </p>
+      </li>
+      <li>
+        <h2>Sök efter resten och följ</h2>
+        <p>Slå upp så många du vill efter namn och följ dem du känner igen med en knapp.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Logga in med Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Logga in med Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Följer verktyget människor utan att fråga?</h3>
+    <p>
+      Nej. Personer som själva angett sitt andra användarnamn är förvalda, men gissningar från
+      namnsökning är inte det. Ingen följs innan du trycker på Följ.
+    </p>
+    <h3>Varför saknas vissa personer?</h3>
+    <p>
+      Bara personer som nämner sitt {{ copy.to }}-användarnamn eller hittas på namn kan matchas.
+      Någon med vanligt namn och utan användarnamn i sin bio kanske inte hittas.
+    </p>
+    <h3>Kan jag gå åt andra hållet?</h3>
+    <p>
+      Ja:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/sv/mastodon-till-bluesky"
+          >hitta dem du följer på Mastodon på Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/sv/bluesky-till-mastodon"
+          >hitta dem du följer på Bluesky på Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Var sparas mina inloggningar?</h3>
+    <p>
+      I den här webbläsaren. Mawkingbird kommunicerar direkt med din Mastodon-server och Bluesky.
+      Det finns ingen Mawkingbird-server emellan som sparar dina konton.
+    </p>
+  </section>
+</main>

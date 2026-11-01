@@ -1,0 +1,86 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Privacy</p>
+    <h1>Zo blijf je onder een pseudoniem op Mastodon</h1>
+    <p>
+      Je hoeft op Mastodon niet je echte naam te gebruiken. Een paar instellingen bepalen hoe
+      makkelijk iemand je account aan jou kan koppelen. De meeste mensen veranderen die nooit.
+      @if (!inShell) {
+        Log in en pas ze in één stap aan.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">Je instellingen laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Verberg de mensen om je heen</h2>
+        <p>
+          Wie je volgt en wie jou volgt verraadt vaak wie je bent. Mastodon kan beide lijsten voor
+          anderen verbergen.
+        </p>
+      </li>
+      <li>
+        <h2>Blijf uit zoekresultaten en suggesties</h2>
+        <p>
+          Verlaat de profielengids, laat je niet meer voorstellen aan vreemden en houd je berichten
+          buiten de zoekfunctie voor volledige tekst.
+        </p>
+      </li>
+      <li>
+        <h2>Bekijk wat je niet kunt uitzetten</h2>
+        <p>
+          Profiellinks naar je eigen website, zoekmachines die je profiel tonen, en je gekozen naam
+          en foto. Deze pagina laat zien wat voor jou geldt.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om je instellingen te bekijken</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Anoniem of onder een pseudoniem?</h3>
+    <p>
+      Onder een pseudoniem: mensen zien een verzonnen naam in plaats van je echte naam, en het
+      account is moeilijk aan jou te koppelen. Echt anoniem blijven is lastiger; zie het volgende
+      antwoord.
+    </p>
+    <h3>Kunnen de beheerders van mijn server zien wie ik ben?</h3>
+    <p>
+      Ze zien het e-mailadres waarmee je je hebt aangemeld en de IP-adressen waarmee je verbinding
+      maakt. Geen instelling verandert dat. Kies een server die je vertrouwt en een e-mailadres
+      zonder je naam.
+    </p>
+    <h3>Zijn mijn berichten daarna privé?</h3>
+    <p>
+      Nee. Openbare berichten blijven openbaar. Deze instellingen maken je account moeilijker te
+      vinden en aan jou te koppelen. Wie elk bericht mag lezen, kies je nog steeds bij het
+      schrijven.
+    </p>
+    <h3>Voegt Mawkingbird nog iets toe?</h3>
+    <p>
+      Ja: privé volgen en liken zonder meldingen, privélijsten, links zonder trackers en foto's
+      zonder locatiegegevens. Dat blijft allemaal in je browser.
+    </p>
+  </section>
+</main>

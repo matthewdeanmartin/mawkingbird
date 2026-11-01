@@ -2,7 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { HttpTranslocoLoader, translationUrl } from './i18n.config';
+import { TranslocoService } from '@jsverse/transloco';
+import { negotiateLocale, supportedLocales } from './locale';
+import { HttpTranslocoLoader, provideI18n, translationUrl } from './i18n.config';
 
 describe('Runtime translation URLs', () => {
   afterEach(() => vi.restoreAllMocks());
@@ -24,6 +26,15 @@ describe('Runtime translation URLs', () => {
     expect(translationUrl('en', 'https://mawkingbird.com/canary/', null)).toBe(
       'https://mawkingbird.com/canary/i18n/en.json',
     );
+  });
+  it('recognizes an explicitly pinned Hindi page without promoting Hindi in production', () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), ...provideI18n()],
+    });
+    const transloco = TestBed.inject(TranslocoService);
+    expect(transloco.getAvailableLangs()).toContain('hi');
+    expect(supportedLocales('https://mawkingbird.com/')).not.toContain('hi');
+    expect(negotiateLocale(['hi-IN'], supportedLocales('https://mawkingbird.com/'))).toBe('en');
   });
   it('loads through the release-aware URL helper using the actual deployment base', () => {
     TestBed.configureTestingModule({

@@ -1,0 +1,67 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Van GitHub naar Mastodon</p>
+    <h1>Vind je GitHub-vrienden op Mastodon</h1>
+    <p>
+      Veel ontwikkelaars vermelden hun Mastodon-account op GitHub. Mawkingbird kijkt bij de mensen
+      die je op GitHub volgt en de eigenaren van repositories waaraan je een ster gaf. Je kunt ze
+      vervolgens op Mastodon volgen.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">De zoeker laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in met Mastodon</h2>
+        <p>Volgen doe je met je eigen Mastodon-account, dus dat komt eerst.</p>
+      </li>
+      <li>
+        <h2>Koppel GitHub</h2>
+        <p>
+          Plak een persoonlijk toegangstoken van GitHub. De pagina laat zien hoe je er een maakt.
+          GitHub laat browserapps niet op een andere manier inloggen. Het token blijft in deze
+          browser.
+        </p>
+      </li>
+      <li>
+        <h2>Zoek en volg</h2>
+        <p>
+          Eerst worden profiellinks naar Mastodon bekeken, daarna volgt een beperkte zoekopdracht
+          naar gebruikersnamen. Bij elke overeenkomst staan de aanwijzingen. Jij kiest wie je volgt.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Log in met Mastodon</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Waar gaat mijn GitHub-token naartoe?</h3>
+    <p>
+      Het wordt in deze browser bewaard en alleen verstuurd naar <code>api.github.com</code>, nooit
+      naar Mawkingbird. Je kunt het op GitHub op elk moment intrekken.
+    </p>
+    <h3>Volgt dit automatisch mensen?</h3>
+    <p>
+      Nee. Bij elke overeenkomst met de aanwijzingen staat een knop die je zelf indrukt om te
+      volgen.
+    </p>
+  </section>
+</main>

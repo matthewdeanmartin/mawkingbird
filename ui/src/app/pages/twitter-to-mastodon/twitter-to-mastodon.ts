@@ -222,3 +222,122 @@ export class TwitterToMastodonIt extends TwitterToMastodon {}
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonPl extends TwitterToMastodon {}
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-uk',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonUk extends TwitterToMastodon {}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-hi',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonHi extends TwitterToMastodon {}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-nl',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonNl extends TwitterToMastodon {}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-id',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonId extends TwitterToMastodon {}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-ru',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonRu extends TwitterToMastodon {}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-sv',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonSv extends TwitterToMastodon {}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-vi',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonVi extends TwitterToMastodon {}

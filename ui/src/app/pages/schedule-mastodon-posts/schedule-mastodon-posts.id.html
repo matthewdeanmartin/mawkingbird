@@ -1,0 +1,86 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Penjadwal Mastodon</p>
+    <h1>Jadwalkan postingan Mastodon lebih awal</h1>
+    <p>
+      Tulis postingan seminggu sekaligus dan biarkan server Mastodon menerbitkannya tepat waktu.
+      @if (!inShell) {
+        Masuk dengan Mastodon, tulis postingan, pilih waktu pertama dan jarak antarpostingan, lalu
+        selesai.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Memuat penjadwal…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Tulis postinganmu</h2>
+        <p>
+          Sebanyak yang kamu mau, masing-masing dalam satu kotak, hingga 500 karakter per postingan.
+        </p>
+      </li>
+      <li>
+        <h2>Atur jaraknya</h2>
+        <p>
+          Pilih waktu pertama dan jedanya: setiap hari pukul 9:00 atau setiap tiga jam. Postingan
+          tertentu juga bisa diberi waktu sendiri.
+        </p>
+      </li>
+      <li>
+        <h2>Tutup tabnya</h2>
+        <p>
+          Server Mastodon menyimpan postingan dan menerbitkannya tepat waktu. Tidak ada yang
+          menunggu di browser.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk menjadwalkan postingan</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah Mastodon bisa menjadwalkan postingan?</h3>
+    <p>
+      Bisa. Setiap server Mastodon dapat menyimpan postingan untuk diterbitkan nanti, tetapi situs
+      Mastodon standar tidak punya tombol untuk itu. Halaman ini memakai penjadwalan bawaan
+      tersebut. Postingan disimpan di servermu, bukan di Mawkingbird.
+    </p>
+    <h3>Apakah halaman ini harus tetap terbuka?</h3>
+    <p>
+      Tidak. Setelah dijadwalkan, postingan berada di server Mastodon-mu. Server menerbitkannya pada
+      waktu yang dipilih, meskipun komputermu mati.
+    </p>
+    <h3>Apakah ada batasnya?</h3>
+    <p>
+      Mastodon mengizinkan 300 postingan terjadwal sekaligus dan 25 pada satu hari. Masing-masing
+      harus setidaknya lima menit lagi. Penjadwal memeriksa batas ini sebelum mengirim apa pun.
+    </p>
+    <h3>Bisakah aku berubah pikiran?</h3>
+    <p>
+      Bisa. Postingan terjadwal ditampilkan di bawah penjadwal dan bisa dibatalkan sebelum terbit.
+    </p>
+    <h3>Apakah ini bisa untuk Bluesky?</h3>
+    <p>
+      Tidak di sini. Bluesky tidak punya penjadwalan bawaan, jadi halaman ini hanya untuk Mastodon.
+    </p>
+  </section>
+</main>

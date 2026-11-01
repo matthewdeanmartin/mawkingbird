@@ -1,0 +1,68 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Статистика Mastodon</p>
+    <h1>Статистика твоей учётной записи Mastodon</h1>
+    <p>
+      Посмотри, как читают твои посты и кто на них реагирует.
+      @if (!inShell) {
+        Войди через Mastodon — показатели рассчитываются здесь, по твоим постам и подписчикам.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Загрузка статистики…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Твои лучшие посты</h2>
+        <p>
+          Популярные посты, добавления в избранное, репосты и ответы на пост, а также оценка охвата.
+        </p>
+      </li>
+      <li>
+        <h2>Твоя аудитория</h2>
+        <p>
+          Сколько людей среди твоих подписок и подписчиков ещё активны и с кем ты чаще всего
+          общаешься.
+        </p>
+      </li>
+      <li>
+        <h2>Твои привычки</h2>
+        <p>Когда и как часто ты пишешь, на каких языках и о чём — в календаре публикаций.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Войти через Mastodon и посмотреть статистику</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Куда отправляются мои данные?</h3>
+    <p>
+      Никуда дополнительно. Посты и подписчики читаются с твоего сервера Mastodon, а показатели
+      рассчитываются в этом браузере. Mawkingbird не хранит копию.
+    </p>
+    <h3>Почему охват приблизительный?</h3>
+    <p>
+      Mastodon не считает просмотры. Охват оценивается по подписчикам и их взаимодействиям, и рядом
+      с числом это указано.
+    </p>
+  </section>
+</main>

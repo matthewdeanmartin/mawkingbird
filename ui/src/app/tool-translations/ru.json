@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Найди знакомых из Twitter в Mastodon",
+    "description": "Найди людей из своих подписок в Twitter, которые уже есть в Mastodon. Архив остаётся в браузере, а каждую подписку выбираешь ты.",
+    "prerenderCheck": {
+      "heading": "Найди знакомых из Twitter в Mastodon",
+      "copy": "Скачай архив Twitter"
+    }
+  },
+  "crosspost": {
+    "title": "Публикуй в Mastodon и Bluesky одновременно",
+    "description": "Напиши один раз и отправь пост в Mastodon и Bluesky. Войди через одну сеть, подключи другую и попробуй редактор.",
+    "prerenderCheck": {
+      "heading": "Публикуй в Mastodon и Bluesky одновременно",
+      "copy": "Подключи другую"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Статистика твоей учётной записи Mastodon",
+    "description": "Лучшие посты, избранное, репосты, ответы, активные подписчики и оценка охвата. Всё рассчитывается в браузере.",
+    "prerenderCheck": {
+      "heading": "Статистика твоей учётной записи Mastodon",
+      "copy": "Твои лучшие посты"
+    }
+  },
+  "github-friends": {
+    "title": "Найди знакомых из GitHub в Mastodon",
+    "description": "Найди свои подписки GitHub и владельцев отмеченных звездой репозиториев в Mastodon. Проверь совпадения и подпишись на знакомых.",
+    "prerenderCheck": {
+      "heading": "Найди знакомых из GitHub в Mastodon",
+      "copy": "Подключи GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Планируй посты Mastodon заранее",
+    "description": "Напиши несколько постов и выбери время и интервалы. Сервер Mastodon опубликует их, даже если закрыть вкладку.",
+    "prerenderCheck": {
+      "heading": "Планируй посты Mastodon заранее",
+      "copy": "Напиши посты"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Из Bluesky в Mastodon: найди знакомых",
+    "description": "Найди людей из своих подписок в Bluesky, которые есть в Mastodon, и подпишись на них там.",
+    "prerenderCheck": {
+      "heading": "Из Bluesky в Mastodon: найди знакомых",
+      "copy": "Прочитай свои подписки"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Из Mastodon в Bluesky: найди знакомых",
+    "description": "Найди людей из своих подписок в Mastodon, которые есть в Bluesky, и подпишись на них там.",
+    "prerenderCheck": {
+      "heading": "Из Mastodon в Bluesky: найди знакомых",
+      "copy": "Прочитай свои подписки"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Отключи бусты всех подписок в Mastodon",
+    "description": "Скрой бусты всех своих подписок, сохранив собственные посты и ответы этих людей в ленте. Бусты можно включить снова.",
+    "prerenderCheck": {
+      "heading": "Отключи бусты всех подписок в Mastodon",
+      "copy": "Посмотри, сколько подписок изменится"
+    }
+  },
+  "find-contacts": {
+    "title": "Найди контакты из телефона в Mastodon",
+    "description": "Выбери контакты телефона или загрузи файл Google Contacts, чтобы найти знакомых в Mastodon. Каждую подписку выбираешь ты.",
+    "prerenderCheck": {
+      "heading": "Найди контакты из телефона в Mastodon",
+      "copy": "Выбери контакты"
+    }
+  },
+  "friend-feeds": {
+    "title": "Найди RSS-ленты своих подписок в Mastodon",
+    "description": "Найди блоги и RSS-ленты по ссылкам в профилях своих подписок и скачай OPML. Часть Mawkingbird Plus.",
+    "prerenderCheck": {
+      "heading": "Найди блоги и RSS-ленты своих подписок в Mastodon",
+      "copy": "Скачай OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Отмени игнорирования и блокировки в Mastodon",
+    "description": "Сохрани резервную копию списка, проверь его и отмени все игнорирования или блокировки сразу. Можно остановиться в любой момент.",
+    "prerenderCheck": {
+      "heading": "Отмени все игнорирования и блокировки в Mastodon",
+      "copy": "Сохрани копию и проверь список"
+    }
+  },
+  "pseudonymity": {
+    "title": "Mastodon под псевдонимом",
+    "description": "Скрой подписки и подписчиков, отключи рекомендации и поиск, проверь ссылки, которые могут раскрывать личность.",
+    "prerenderCheck": {
+      "heading": "Как пользоваться Mastodon под псевдонимом",
+      "copy": "Скрой людей вокруг себя"
+    }
+  },
+  "handle-generator": {
+    "title": "Генератор имён пользователей Mastodon",
+    "description": "Получи варианты имени и проверь доступность на выбранном сервере Mastodon и крупнейших серверах. Учётная запись не нужна.",
+    "prerenderCheck": {
+      "heading": "Придумай имя пользователя Mastodon",
+      "copy": "Как выглядит адрес Mastodon"
+    }
+  },
+  "content-warnings": {
+    "title": "Отключи предупреждения о содержании в Mastodon",
+    "description": "Открывай предупреждения автоматически и сразу показывай чувствительные медиа — для всех или только для тех, кому доверяешь.",
+    "prerenderCheck": {
+      "heading": "Как отключить предупреждения о содержании в Mastodon",
+      "copy": "Показывай чувствительные медиа"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Экспорт закладок Mastodon",
+    "description": "Скачай закладки Mastodon для браузера, Raindrop.io или Pinboard. Сохрани посты или извлеки опубликованные в них ссылки.",
+    "prerenderCheck": {
+      "heading": "Экспортируй закладки Mastodon",
+      "copy": "Выбери, что сохранить"
+    }
+  },
+  "mastodon-search": {
+    "title": "Поиск в Mastodon: посты, люди и хештеги",
+    "description": "Ищи в Mastodon с фильтрами как в Twitter: from:, has:media, даты и точные фразы. Сортируй результаты и сохраняй запросы.",
+    "prerenderCheck": {
+      "heading": "Поиск в Mastodon",
+      "copy": "Уточни запрос"
+    }
+  },
+  "bluesky-search": {
+    "title": "Поиск в Bluesky: посты и люди",
+    "description": "Ищи людей и посты в Bluesky с фильтрами как в Twitter. Для поиска постов нужно войти через Bluesky.",
+    "prerenderCheck": {
+      "heading": "Поиск в Bluesky",
+      "copy": "Уточни запрос"
+    }
+  },
+  "download-media": {
+    "title": "Скачай изображения из Mastodon",
+    "description": "Посмотри изображения учётной записи Mastodon и скачай всё в ZIP или отдельными файлами, включая GIF, видео и аудио. Учётная запись не нужна.",
+    "prerenderCheck": {
+      "heading": "Скачай изображения из Mastodon",
+      "copy": "Посмотри изображения"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Похожие хештеги в Mastodon",
+    "description": "Найди хештеги, которые часто встречаются вместе с твоими в недавних постах Mastodon. Сравнивай несколько сразу. Учётная запись не нужна.",
+    "prerenderCheck": {
+      "heading": "Похожие хештеги в Mastodon",
+      "copy": "Посмотри, что встречается вместе"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon на русском",
+    "description": "Настрой Mastodon на русском: язык интерфейса, знакомые языки, фильтры и перевод для языков, которые изучаешь. Бесплатно.",
+    "prerenderCheck": {
+      "heading": "Mastodon на русском",
+      "copy": "Только языки, которые ты читаешь"
+    }
+  },
+  "learn-english": {
+    "title": "Учи английский с Mastodon",
+    "description": "Учи английский на настоящих постах Mastodon с переводом под оригиналом, автоматически или по запросу.",
+    "prerenderCheck": {
+      "heading": "Учи английский с Mastodon",
+      "copy": "Английский всегда виден"
+    }
+  }
+}

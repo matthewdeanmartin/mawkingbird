@@ -1,0 +1,83 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Integritet</p>
+    <h1>Så använder du pseudonym på Mastodon</h1>
+    <p>
+      Du behöver inte använda ditt riktiga namn på Mastodon. Några inställningar avgör hur lätt
+      kontot kan kopplas till dig, men de flesta ändrar dem aldrig.
+      @if (!inShell) {
+        Logga in och ändra dem i ett steg.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">Laddar dina inställningar…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Dölj personerna runt dig</h2>
+        <p>
+          Vilka du följer och vilka som följer dig avslöjar ofta vem du är. Mastodon kan dölja båda
+          listorna för andra.
+        </p>
+      </li>
+      <li>
+        <h2>Håll dig borta från sökningar och förslag</h2>
+        <p>
+          Lämna profilkatalogen, sluta föreslås för främlingar och håll dina inlägg utanför
+          fulltextsökning.
+        </p>
+      </li>
+      <li>
+        <h2>Kontrollera vad som inte går att stänga av</h2>
+        <p>
+          Profillänkar till din egen webbplats, sökmotorer som visar din profil samt namnet och
+          bilden du valt. Sidan visar vad som gäller för dig.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att kontrollera inställningarna</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Anonym eller under pseudonym?</h3>
+    <p>
+      Pseudonym: andra ser ett påhittat namn i stället för ditt riktiga, och kontot är svårt att
+      koppla till dig. Verklig anonymitet är svårare; se nästa svar.
+    </p>
+    <h3>Kan serverns administratörer se vem jag är?</h3>
+    <p>
+      De ser e-postadressen du registrerade dig med och IP-adresserna du ansluter från. Ingen
+      inställning ändrar det. Välj en server du litar på och en e-postadress utan ditt namn.
+    </p>
+    <h3>Blir mina inlägg privata efter detta?</h3>
+    <p>
+      Nej. Offentliga inlägg förblir offentliga. Inställningarna gör kontot svårare att hitta och
+      koppla till dig. Vem som får läsa varje inlägg väljer du fortfarande när du skriver det.
+    </p>
+    <h3>Tillför Mawkingbird något mer?</h3>
+    <p>
+      Ja: privata följningar och gillningar utan att någon meddelas, privata listor, länkar utan
+      spårare och foton utan platsuppgifter. Allt sparas i webbläsaren.
+    </p>
+  </section>
+</main>

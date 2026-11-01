@@ -1,0 +1,51 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Tạo tên người dùng</p>
+    <h1>Tạo tên người dùng Mastodon</h1>
+    <p>
+      Nhập tên để nhận gợi ý bạn có thể đăng ký: mỗi tên được kiểm tra trên máy chủ bạn định tham
+      gia, và tên bạn thích được kiểm tra cả trên các máy chủ lớn nhất. Không cần tài khoản.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/vi/mastodon-handle-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Đang tải công cụ tạo tên…</p>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Định danh Mastodon trông thế nào?</h3>
+    <p>
+      Gồm hai phần: tên người dùng và máy chủ, như &#64;matthew_martin&#64;mastodon.social. Tên có
+      thể dùng chữ, số và gạch dưới, tối đa 30 ký tự; chữ hoa không tạo tên khác.
+    </p>
+    <h3>Vì sao kiểm tra nhiều máy chủ?</h3>
+    <p>
+      Mỗi máy chủ có tên người dùng riêng. Tên đã dùng trên mastodon.social có thể còn trống ở máy
+      chủ khác, và người ở mọi máy chủ vẫn theo dõi bạn được.
+    </p>
+    <h3>“Có vẻ còn trống” có chắc chắn không?</h3>
+    <p>
+      Chưa hẳn. Nghĩa là hiện chưa ai trên máy chủ dùng tên đó. Tên tài khoản đã xóa vẫn được giữ và
+      quản trị viên có thể giữ một số từ, nên biểu mẫu đăng ký quyết định cuối cùng.
+    </p>
+    <h3>Máy chủ nào được xem là lớn nhất?</h3>
+    <p>
+      Các máy chủ có nhiều lượt đăng ký nhất trong danh mục joinmastodon.org và tuân thủ cam kết máy
+      chủ Mastodon. Một số cần quản trị viên duyệt tài khoản mới; danh sách có ghi rõ.
+    </p>
+  </section>
+</main>

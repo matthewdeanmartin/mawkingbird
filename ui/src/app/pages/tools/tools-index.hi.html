@@ -1,0 +1,40 @@
+<main class="focused-page" lang="hi">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">टूल</p>
+    <h1>Mastodon और Bluesky के लिए मुफ़्त टूल</h1>
+    <p>
+      सामान्य ऐप में छूटे कामों के लिए छोटे टूल: यूज़रनेम चुनें, दोस्तों को खोजें, पोस्ट शेड्यूल
+      करें और अकाउंट व्यवस्थित करें। हर टूल आपके ब्राउज़र में चलता है।
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>कुछ और खोज रहे हैं?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Mawkingbird की सभी सुविधाएँ देखें</a> (अंग्रेज़ी में),
+      या पढ़ें<a mbContentLink href="help/">मदद गाइड</a> (अंग्रेज़ी में)।
+    </p>
+  </section>
+</main>

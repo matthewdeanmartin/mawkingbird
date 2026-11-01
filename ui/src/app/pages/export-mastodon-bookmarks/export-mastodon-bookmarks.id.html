@@ -1,0 +1,77 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Markah Mastodon</p>
+    <h1>Ekspor markah Mastodon-mu</h1>
+    <p>
+      Unduh semua postingan yang kamu tandai di Mastodon sebagai berkas markah untuk browser,
+      Raindrop.io, Pinboard, atau layanan markah lain. Menyimpan postingan demi artikelnya? Ambil
+      tautannya dan simpan artikel itu.
+      @if (!inShell) {
+        Masuk dengan Mastodon untuk memulai.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Memuat…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Baca markahmu</h2>
+        <p>Semua markah akun Mastodon-mu, dibaca dari servermu sendiri.</p>
+      </li>
+      <li>
+        <h2>Pilih yang ingin disimpan</h2>
+        <p>
+          Postingannya, tautan yang dibagikan di dalamnya, atau hanya markah yang membagikan tautan.
+        </p>
+      </li>
+      <li>
+        <h2>Impor berkasnya</h2>
+        <p>Berkas markah browser standar: buka pengelola markah atau layanan markah, lalu impor.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk mengekspor markah</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Bukankah Mastodon sudah mengekspor markah?</h3>
+    <p>
+      Ekspor datanya berisi spreadsheet alamat postingan yang tidak bisa diimpor browser dan layanan
+      markah. Berkas ini bisa, lengkap dengan judul, teks, dan tagar.
+    </p>
+    <h3>Apa arti mengambil tautan?</h3>
+    <p>
+      Banyak postingan disimpan karena tautan artikel, video, atau proyek di dalamnya. Opsi ini
+      menyimpan tautan itu, bukan postingannya, dengan teks postingan sebagai deskripsi.
+    </p>
+    <h3>Apakah markahku diunggah ke suatu tempat?</h3>
+    <p>
+      Tidak. Markah dibaca dari server Mastodon dan berkas dibuat di browser. Tidak ada yang dikirim
+      ke Mawkingbird.
+    </p>
+    <h3>Apakah tanggalnya benar?</h3>
+    <p>
+      Tanggal markah mengikuti waktu postingan ditulis. Mastodon tidak mencatat kapan kamu
+      menyimpannya.
+    </p>
+  </section>
+</main>

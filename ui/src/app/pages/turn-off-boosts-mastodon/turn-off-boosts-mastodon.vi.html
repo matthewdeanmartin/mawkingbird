@@ -1,0 +1,78 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Đăng lại trên Mastodon</p>
+    <h1>Tắt bài đăng lại của mọi người bạn theo dõi trên Mastodon</h1>
+    <p>
+      Đăng lại trên Mastodon giống retweet. Vẫn theo dõi mọi người nhưng chỉ xem bài họ tự viết.
+      @if (!inShell) {
+        Mastodon cho ẩn bài đăng lại từng tài khoản; công cụ này làm cho tất cả cùng lúc.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập bằng Mastodon</h2>
+        <p>Đọc danh sách theo dõi từ máy chủ Mastodon của bạn.</p>
+      </li>
+      <li>
+        <h2>Xem số người sẽ thay đổi</h2>
+        <p>
+          Trước khi thực hiện, bạn biết bao nhiêu người mình theo dõi vẫn đang bật bài đăng lại.
+        </p>
+      </li>
+      <li>
+        <h2>Xác nhận và xem tiến độ</h2>
+        <p>
+          Cập nhật lần lượt từng tài khoản với thanh tiến độ. Bạn có thể dừng giữa chừng và tiếp tục
+          sau.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để tắt bài đăng lại</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Có bỏ theo dõi ai không?</h3>
+    <p>
+      Không. Bạn vẫn theo dõi mọi người và nhận bài họ viết cùng trả lời trong bảng tin chính. Chỉ
+      ngừng bài họ đăng lại.
+    </p>
+    <h3>Có thể hoàn tác không?</h3>
+    <p>
+      Có. Cùng trang này bật lại cho mọi người; bạn cũng có thể bật riêng từng người từ hồ sơ của
+      họ.
+    </p>
+    <h3>Còn người tôi theo dõi sau này?</h3>
+    <p>
+      Người mới theo dõi mặc định bật bài đăng lại như Mastodon vẫn làm. Chạy lại bất cứ lúc nào;
+      chỉ đổi tài khoản cần đổi.
+    </p>
+    <h3>Vì sao mất thời gian?</h3>
+    <p>
+      Mastodon không có thiết lập cho tất cả cùng lúc, nên phải đổi từng tài khoản. Danh sách dài có
+      thể mất vài phút.
+    </p>
+  </section>
+</main>

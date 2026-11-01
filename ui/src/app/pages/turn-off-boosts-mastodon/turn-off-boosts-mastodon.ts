@@ -169,3 +169,87 @@ export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
 export class TurnOffBoostsMastodonPl extends TurnOffBoostsMastodon {
   protected override readonly returnHere = { next: '/pl/ukryj-podbicia-na-mastodonie' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonUk extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/uk/turn-off-boosts-mastodon' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonHi extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/hi/turn-off-boosts-mastodon' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonNl extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/nl/boosts-uitzetten-mastodon' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonId extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/id/nonaktifkan-boost-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonRu extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/ru/turn-off-boosts-mastodon' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonSv extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/sv/stang-av-boostar-mastodon' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonVi extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/vi/turn-off-boosts-mastodon' };
+}

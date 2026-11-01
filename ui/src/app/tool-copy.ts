@@ -23,6 +23,13 @@ const COPY: Record<TranslatedLanguage, () => Promise<Record<string, ToolCopy>>> 
   ko: () => import('./tool-translations/ko.json').then((m) => m.default),
   pl: () => import('./tool-translations/pl.json').then((m) => m.default),
   pt: () => import('./tool-translations/pt.json').then((m) => m.default),
+  uk: () => import('./tool-translations/uk.json').then((m) => m.default),
+  hi: () => import('./tool-translations/hi.json').then((m) => m.default),
+  nl: () => import('./tool-translations/nl.json').then((m) => m.default),
+  id: () => import('./tool-translations/id.json').then((m) => m.default),
+  ru: () => import('./tool-translations/ru.json').then((m) => m.default),
+  sv: () => import('./tool-translations/sv.json').then((m) => m.default),
+  vi: () => import('./tool-translations/vi.json').then((m) => m.default),
   'zh-Hant': () => import('./tool-translations/zh-Hant.json').then((m) => m.default),
 };
 

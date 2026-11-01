@@ -1,0 +1,69 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Van Twitter naar Mastodon</p>
+    <h1>Vind je Twitter-contacten terug op Mastodon</h1>
+    <p>
+      Vind de mensen die je op Twitter volgde en die al op Mastodon zitten, en volg ze opnieuw met
+      een paar klikken. Je archief wordt in deze browser gelezen; er wordt niets geüpload.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Download je Twitter-archief</h2>
+      <p>
+        Open op Twitter Instellingen → Je account → Een archief van je gegevens downloaden. Het kan
+        een dag of langer duren. Pak het bestand uit zodra het binnen is.
+      </p>
+    </li>
+    <li>
+      <h2>Kies hier het archief</h2>
+      <p>
+        Kies de uitgepakte map, of alleen de bestanden <code>data/following.js</code> en
+        <code>data/tweets.js</code> uit die map. Mawkingbird telt wie je volgde, op wie je reageerde
+        en wie je vermeldde.
+      </p>
+    </li>
+    <li>
+      <h2>Log in met Mastodon en volg</h2>
+      <p>
+        Mawkingbird zoekt elke gebruikersnaam op je Mastodon-server en toont mogelijke
+        overeenkomsten met de aanwijzingen erbij. Jij kiest wie je volgt.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/nl/twitter-contacten-naar-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">De importfunctie laden…</p>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Wordt mijn archief ergens geüpload?</h3>
+    <p>
+      Nee. Deze pagina leest de bestanden in je browser. Alleen de zoekopdrachten naar
+      gebruikersnamen gaan naar je eigen Mastodon-server, en pas nadat je bent ingelogd.
+    </p>
+    <h3>Volgt dit automatisch mensen?</h3>
+    <p>
+      Nee. Een gelijke gebruikersnaam is een aanwijzing, geen bewijs. Je drukt voor elke nieuwe
+      volgactie zelf op een knop. Je kunt de lijst ook als CSV downloaden en bewaren.
+    </p>
+  </section>
+</main>

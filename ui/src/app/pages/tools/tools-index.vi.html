@@ -1,0 +1,40 @@
+<main class="focused-page" lang="vi">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Công cụ</p>
+    <h1>Công cụ miễn phí cho Mastodon và Bluesky</h1>
+    <p>
+      Các công cụ nhỏ cho việc ứng dụng tiêu chuẩn còn thiếu: chọn tên người dùng, tìm bạn bè, lên
+      lịch bài đăng và dọn tài khoản. Mỗi công cụ chạy trong trình duyệt.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Bạn đang tìm thứ khác?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Xem mọi tính năng Mawkingbird</a>, hoặc đọc
+      <a mbContentLink href="help/">hướng dẫn trợ giúp</a>(bằng tiếng Anh).
+    </p>
+  </section>
+</main>

@@ -1,0 +1,55 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Användarnamnsgenerator</p>
+    <h1>Skapa ett användarnamn för Mastodon</h1>
+    <p>
+      Skriv ditt namn och få förslag du faktiskt kan använda. Varje förslag kontrolleras på
+      Mastodon-servern du vill gå med i. Namnet du gillar kontrolleras också på de största
+      servrarna. Inget konto behövs.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/sv/skapa-mastodon-anvandarnamn/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Laddar generatorn…</p>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Hur ser ett Mastodon-användarnamn ut?</h3>
+    <p>
+      Två delar: ditt användarnamn och din server, till exempel
+      &#64;matthew_martin&#64;mastodon.social. Namnet kan innehålla bokstäver, siffror och
+      understreck, upp till 30 tecken. Stora bokstäver gör inte namnet annorlunda.
+    </p>
+    <h3>Varför kontrollera fler än en server?</h3>
+    <p>
+      Varje server har sina egna användarnamn. Ett namn som är upptaget på mastodon.social kan vara
+      ledigt på en annan server. Andra kan följa dig från vilken server som helst.
+    </p>
+    <h3>Är verkar ledigt en garanti?</h3>
+    <p>
+      Inte riktigt. Det betyder att inget konto på servern använder namnet i dag. Namn från
+      borttagna konton förblir reserverade och administratörer kan reservera ord.
+      Registreringsformuläret avgör till sist.
+    </p>
+    <h3>Vilka servrar räknas som störst?</h3>
+    <p>
+      De med flest registreringar i joinmastodon.orgs katalog över servrar som följer Mastodons
+      serveröverenskommelse. Några kräver att administratörer godkänner nya konton; det står i
+      listan.
+    </p>
+  </section>
+</main>

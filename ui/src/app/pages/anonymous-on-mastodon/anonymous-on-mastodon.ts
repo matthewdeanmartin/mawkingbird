@@ -169,3 +169,87 @@ export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
 export class AnonymousOnMastodonPl extends AnonymousOnMastodon {
   protected override readonly returnHere = { next: '/pl/anonimowo-na-mastodonie' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonUk extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/uk/how-to-be-anonymous-on-mastodon' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonHi extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/hi/how-to-be-anonymous-on-mastodon' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonNl extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/nl/anoniem-op-mastodon' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonId extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/id/anonim-di-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonRu extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/ru/how-to-be-anonymous-on-mastodon' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonSv extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/sv/anonym-pa-mastodon' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonVi extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/vi/how-to-be-anonymous-on-mastodon' };
+}

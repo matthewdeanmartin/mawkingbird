@@ -402,3 +402,261 @@ Owner: "add compact menu because this is going to get to ~15".
   menu lists ten languages with Polski marked; handle generator, search,
   Bluesky → Mastodon (declined forms), download form and landing page all
   Polish; no horizontal overflow; no page errors.
+
+### Ukrainian (2026-11-01)
+
+- Resumed the interrupted draft: 22 pages under `/uk/` (index plus 21
+  tools), keeping the drafted English slugs. Both language landing pages,
+  download copy, 16 component subclasses and all 17 templates are complete.
+- Polite lowercase ви/ваш, Ukrainian social vocabulary from the existing
+  glossary, and count-neutral totals for one/other messages. Added 424 keys
+  for the tools, media download dialog, navigation and embedded components;
+  Ukrainian coverage is now 84%.
+- Ukrainian metadata remains lazy; initial production bundle is 890.68 kB,
+  below the unchanged 1 MB error budget. Registry-driven routes, prerender,
+  sitemaps and hreflang include Ukrainian; the menu names it Українська.
+- Reviewed and reconciled 17 new design candidates with their Polish twins;
+  no shared widget implementations changed.
+- Extended the SEO browser gate to visit every Ukrainian tool with and
+  without JavaScript in an en-US browser, asserting headings, lang, canonical,
+  Ukrainian hreflang, desktop/mobile overflow and no runtime errors. It also
+  checks the live download button and the index language menu.
+- Gates passed: locked `npm ci` (Node 24.18.0), format:check, lint,
+  check:i18n, check:storage, check:subpaths, design:inventory-check, targeted
+  specs (223 tests), `make test` (8,911 passed, 0 failed/skipped, 0 missing
+  from the manifest), build:mockingbird (initial 890.68 kB), `make test-seo`
+  and `test:seo:browser`. Reviewed the phone-width Ukrainian index screenshot.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), and the
+  CI deployment matrix/publishing workflow.
+- Open: native Ukrainian copy review; signed-in tools against a real account;
+  Search Console/GoatCounter measurement and production deployment.
+
+### Hindi (2026-11-01)
+
+- Owner scope: SEO landing pages, not a global i18n catch-up. Stop after
+  Hindi for a usage check; Indonesian is next, only on a new request.
+- 22 pages under `/hi/` (index plus 21 tools), with English slugs and polite
+  आप copy using the existing Hindi glossary. Metadata, sitemap, hreflang,
+  language menu, component loaders and prerender use the shared registry.
+- Added only the same 424 keys needed by the focused tools and embedded
+  controls; existing Hindi translations are unchanged. Coverage is 84%.
+- Hindi stays in IN_PROGRESS_LOCALES. Public tools render Hindi through
+  their route provider. The Hindi language page offers known/posting/filter
+  settings without an interface-language switch, and clearly explains that
+  the global app translation is still in preview. No locale was promoted.
+  Transloco recognizes shipped preview dictionary codes for explicit route
+  translations; UiLocale still restricts production picker/negotiation. A
+  regression spec checks that Hindi remains unavailable to those controls.
+- Reviewed and reconciled 17 Hindi design candidates (483 candidate files
+  total); no shared widget changes. Browser coverage includes every Hindi
+  tool with/without JavaScript, lang/canonical/hreflang, desktop/mobile
+  overflow, the live download control and the index language menu.
+- Production initial bundle: 892.54 kB, below the unchanged 1 MB budget.
+- Gates passed: targeted page specs (244), final translation/locale/page
+  specs (264), format:check, lint, check:i18n, check:storage, check:subpaths,
+  design:inventory-check, `make test` (8,933 passed, 0 failed/skipped,
+  0 missing from the manifest), build:mockingbird, `make test-seo`, and
+  test:seo:browser. Reviewed the mobile Hindi index screenshot.
+- Browser QA caught missing inline filename spacing and preview-language
+  codes being interpreted as translation scopes. Both are fixed; final
+  browser checks pass for all 21 Hindi tools with/without JavaScript,
+  desktop and mobile, plus the Hindi index/menu and live download control.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), or
+  CI deployment matrix/publishing. Used the unchanged locked dependencies
+  installed with `npm ci` earlier in this session (Node 24.18.0).
+- Remaining existing app locales without SEO landing pages: Indonesian
+  (next), Dutch, Russian, Swedish, Turkish and Vietnamese.
+- Open: native Hindi copy review, signed-in tools against a real account,
+  production deployment and owner measurement.
+
+### Dutch (2026-11-01)
+
+- Owner picked Dutch next, retaining the one-language stopping point for
+  usage review. Scope remains SEO landing pages and their embedded tools.
+- 22 pages under `/nl/` (index plus 21 tools), with Dutch slugs such as
+  `nl/mastodon-statistieken`, `nl/mastodon-afbeeldingen-downloaden`,
+  `nl/mastodon-in-het-nederlands` and `nl/engels-leren-met-mastodon`.
+- Informal je and the existing glossary: bericht, bladwijzer, dempen,
+  blokkeren, inhoudswaarschuwing; boosts retained as Mastodon terminology.
+  Dutch is already a production app locale, so the language checklist
+  includes the interface switch. No locale release status changed.
+- Added only the same 424 focused-tool/embedded-control keys. Existing Dutch
+  translations are unchanged; Dutch coverage is 84%. Metadata stays lazy;
+  the production initial bundle is 893.87 kB, below the 1 MB budget.
+- Reviewed/reconciled 17 new template candidates (500 candidate files total).
+  No shared widget changes. Browser coverage visits every Dutch tool with
+  and without JavaScript and checks lang, canonical, hreflang, desktop/mobile
+  overflow, the live download button, and the Dutch index/language menu.
+- Gates passed: initial targeted specs (265), final registry/page specs
+  (259), format:check, lint, check:i18n, check:storage, check:subpaths,
+  design:inventory-check, `make test` (8,954 passed, 0 failed/skipped,
+  0 missing from the manifest), build:mockingbird (initial 893.87 kB),
+  `make test-seo` and test:seo:browser. Inspected the phone-width Dutch
+  index screenshot. Final copy uses Twitter-contacten rather than volgers
+  to distinguish people you followed from people following you.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), or
+  CI deployment matrix/publishing. Used unchanged locked dependencies
+  installed earlier with `npm ci` in this session (Node 24.18.0).
+- Remaining existing app locales without SEO landing pages: Indonesian,
+  Russian, Swedish, Turkish and Vietnamese. Stop here until the owner
+  selects the next language.
+- Open: native Dutch copy review; signed-in tools with a real account;
+  production deployment and owner measurement.
+
+### Indonesian (2026-11-01)
+
+- Owner selected Indonesian, retaining the one-language stopping point for
+  usage review. Scope is SEO landing pages and their embedded tools.
+- 22 pages under `/id/` (index plus 21 tools), with Indonesian slugs such as
+  `id/statistik-mastodon`, `id/unduh-gambar-mastodon`,
+  `id/mastodon-dalam-bahasa-indonesia` and
+  `id/belajar-bahasa-inggris-dengan-mastodon`.
+- Informal kamu/-mu per the locked glossary: postingan, linimasa, markah,
+  bisukan, blokir, tagar and paket awal; boost retained. No plural inflection
+  is added for count messages. Indonesian was already a production app
+  locale, so its checklist includes the interface switch.
+- Added only the same 424 focused-tool/embedded-control keys, through
+  `make i18n-merge L=id` after a passing dry run. Placeholder/markup/length
+  and register checks pass. Original Indonesian values are unchanged.
+  Indonesian coverage is now 84%. No global i18n catch-up or locale promotion.
+- Reviewed/reconciled 17 new template candidates (517 candidate files total).
+  Shared widgets are unchanged. Browser coverage visits every Indonesian
+  tool with/without JavaScript, checking headings, lang, canonical, hreflang,
+  desktop/mobile overflow, the live download control and the index/menu.
+- Production initial bundle: 895.14 kB, below the unchanged 1 MB budget.
+- Gates passed: locale merge dry run and merge (424 keys), targeted specs
+  (286), format:check, lint, check:i18n, check:storage, check:subpaths,
+  design:inventory-check, `make test` (8,975 passed, 0 failed/skipped,
+  0 missing from the manifest), build:mockingbird (initial 895.14 kB),
+  `make test-seo` and test:seo:browser. Inspected the phone-width Indonesian
+  index screenshot. All 21 Indonesian tools passed static/client browser
+  checks with no runtime errors or desktop/mobile overflow.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), or
+  CI deployment matrix/publishing. Used unchanged locked dependencies
+  installed earlier with `npm ci` in this session (Node 24.18.0).
+- Remaining existing app locales without SEO landing pages: Russian,
+  Swedish, Turkish and Vietnamese. Stop here for owner usage review.
+- Open: native Indonesian copy review, signed-in tools with a real account,
+  production deployment and owner measurement.
+
+### Russian (2026-11-01)
+
+- Owner selected Russian, retaining the one-language stopping point for
+  usage review. Scope remains SEO landing pages and their embedded tools.
+- 22 pages under `/ru/` (index plus 21 tools), keeping English tool slugs
+  like the other non-Latin locale families. Language pages are
+  `ru/mastodon-in-russian` and `ru/learn-english-with-mastodon`.
+- Informal ты from the existing glossary; игнорировать and заблокировать
+  stay distinct; the boosts page explains бусты as репосты. Count-neutral
+  totals and abbreviated time units avoid invalid Russian one/other plurals.
+  No shared English templates or plural logic changed.
+- Added only the same 424 focused-tool/embedded-control keys, through the
+  locale merge gate with a frozen English/context source snapshot. The
+  Russian ledger records their accepted source revisions, without claiming
+  independent native review. Original Russian values are unchanged;
+  coverage is 84%. No global i18n catch-up or locale promotion.
+- Reviewed/reconciled 17 new templates (534 candidate files total), with no
+  shared widget changes. Browser coverage checks every Russian tool with
+  and without JavaScript: heading, lang, canonical, hreflang, desktop/mobile
+  overflow, the live download control, and the Russian index/language menu.
+- Production initial bundle: 896.98 kB, below the unchanged 1 MB budget.
+- Gates passed: source-snapshot locale merge dry run/merge (424 keys),
+  targeted specs (307), format:check, lint, check:i18n, check:storage,
+  check:subpaths, design:inventory-check, `make test` (8,996 passed,
+  0 failed/skipped, 0 missing from the manifest), build:mockingbird
+  (initial 896.98 kB), `make test-seo` and test:seo:browser. Inspected
+  the phone-width Russian index screenshot. All 21 Russian tools passed
+  static/client browser checks without runtime errors or mobile overflow.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), or
+  CI deployment matrix/publishing. Used unchanged locked dependencies
+  installed earlier with `npm ci` in this session (Node 24.18.0).
+- Remaining existing app locales without SEO landing pages: Swedish,
+  Turkish and Vietnamese. Stop here for owner usage review.
+- Open: native Russian copy review, signed-in tools with a real account,
+  production deployment and owner measurement.
+
+Owner follow-up at Russian completion: proceed directly to Swedish; the
+previous stopping point is superseded for this hand-off.
+
+### Swedish (2026-11-01)
+
+- Owner explicitly requested Swedish immediately after Russian. Stop after
+  Swedish for usage review; scope remains SEO pages and embedded tools.
+- 22 pages under `/sv/` (index plus 21 tools), with Swedish slugs such as
+  `sv/mastodon-statistik`, `sv/ladda-ner-mastodon-bilder`,
+  `sv/mastodon-pa-svenska` and `sv/lar-dig-engelska-med-mastodon`. Copy
+  preserves å/ä/ö; URLs omit the accents.
+- Informal du from the existing glossary: inlägg, bokmärke, tysta, blockera,
+  flöde and innehållsvarning. Swedish singular/plural pairs are preserved;
+  interval units use invariant labels where needed.
+- Swedish stays in IN_PROGRESS_LOCALES. Public pages/tools pin Swedish
+  through the existing route provider and preview dictionary recognition.
+  The language checklist offers reading/posting/filter settings without
+  an interface-language switch and explains that the app translation is
+  still in preview. No locale was promoted.
+- Added only the same 424 focused-tool/embedded-control keys through the
+  source-snapshot locale merge gate. Original Swedish values are unchanged;
+  coverage is 84%. Ledger acceptance does not claim independent native review.
+- Reviewed/reconciled 17 templates (551 candidate files total); no shared
+  widgets changed. Browser coverage visits every Swedish tool with and
+  without JavaScript, checking lang, canonical, hreflang, heading, overflow
+  at desktop/mobile sizes, the live download control, and index/menu.
+- Production initial bundle: 898.26 kB, below the unchanged 1 MB budget.
+- Gates passed: source-snapshot merge (424 new keys, then 15 count-copy
+  refinements), targeted specs (328), format:check, lint, check:i18n,
+  check:storage, check:subpaths, design:inventory-check, `make test`
+  (9,017 passed, 0 failed/skipped, 0 missing), build:mockingbird,
+  `make test-seo` and test:seo:browser. Inspected the phone-width index.
+- Not run: design-verify (no shared widget changes), real-wheel integration,
+  help-site gates, CI deployment matrix or publishing. Reused the unchanged
+  locked dependencies installed by npm ci earlier (Node 24.18.0).
+- Remaining existing app locales without SEO landing pages: Turkish and
+  Vietnamese. Stop here for owner usage review.
+- Open: native Swedish copy review, signed-in tools with a real account,
+  production deployment and owner measurement.
+
+Owner follow-up: proceed directly to Vietnamese after Swedish; that explicit
+request supersedes the Swedish stopping point. Stop after Vietnamese.
+
+### Vietnamese (2026-11-01)
+
+- Owner explicitly requested Vietnamese immediately after Swedish, then a
+  stopping point for usage review. Scope remains SEO pages and embedded tools.
+- 22 pages under `/vi/` (index plus 21 tools), retaining English tool slugs
+  like the other non-Latin locales. The language pages are
+  `vi/mastodon-in-vietnamese` and `vi/learn-english-with-mastodon`.
+- Neutral, concise Vietnamese from the existing glossary: bài đăng,
+  dấu trang, theo dõi, ẩn and chặn. Count messages use invariant nouns.
+  Filenames, search operators, placeholders and product names are preserved.
+- Vietnamese stays in IN_PROGRESS_LOCALES. Public pages and embedded tools
+  pin Vietnamese through the route provider. The language checklist offers
+  reading/posting/filter settings without an interface-language switch and
+  explains the preview status of the app translation. No locale promotion.
+- Added only the same 424 focused-tool/embedded-control keys through the
+  frozen source-snapshot merge gate. Verified all original Vietnamese values
+  are unchanged; coverage is 84%. Ledger acceptance does not claim native review.
+- Reviewed/reconciled 17 new templates (568 candidates across 1,604 sources).
+  No shared widget changes. Browser checks cover all Vietnamese routes with
+  and without JavaScript, headings, lang, canonical, hreflang, desktop/mobile
+  overflow, live download control and the index/language menu.
+- Production initial bundle: 899.61 kB, below the unchanged 1 MB budget.
+- Gates passed: source-snapshot merge dry run and merge (424 keys),
+  targeted specs (373), format:check, lint, check:i18n, check:storage,
+  check:subpaths, design:inventory-check, `make test` (9,038 passed,
+  0 failed/skipped, 0 missing), build:mockingbird, `make test-seo` and
+  test:seo:browser. All Vietnamese tools passed static/client browser checks
+  without runtime errors or desktop/mobile overflow. Inspected the
+  phone-width Vietnamese index screenshot.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), CI
+  deployment matrix or publishing. Reused unchanged locked dependencies
+  installed by npm ci earlier in the session (Node 24.18.0).
+- Remaining existing app locale without SEO landing pages: Turkish.
+  Stop after Vietnamese for owner usage review.
+- Open: independent native Vietnamese review, signed-in tools with a real
+  account, production deployment and owner measurement.

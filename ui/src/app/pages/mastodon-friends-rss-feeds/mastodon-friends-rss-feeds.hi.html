@@ -1,0 +1,78 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS और OPML</p>
+    <h1>Mastodon पर फ़ॉलो किए लोगों के ब्लॉग और RSS फ़ीड खोजें</h1>
+    <p>
+      लोग अपने Mastodon प्रोफ़ाइल में वेबसाइट बताते हैं। यह टूल उन लिंक पर फ़ीड खोजता है और मिली
+      फ़ीड को एक OPML फ़ाइल में रखता है, जिसे किसी फ़ीड रीडर में खोल सकते हैं।
+      @if (!inShell) {
+        यह Mawkingbird Plus का हिस्सा है।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>अपनी फ़ॉलो सूची पढ़ें</h2>
+        <p>आपके Mastodon सर्वर से फ़ॉलो सूची और हर प्रोफ़ाइल के लिंक पढ़े जाते हैं।</p>
+      </li>
+      <li>
+        <h2>उनकी वेबसाइट जाँचें</h2>
+        <p>
+          हर लिंक पर फ़ीड की जाँच होती है। कितनी वेबसाइट जाँचनी हैं, आप चुनते हैं। कभी भी रोककर मिले
+          परिणाम रख सकते हैं।
+        </p>
+      </li>
+      <li>
+        <h2>OPML डाउनलोड करें</h2>
+        <p>फ़ाइल किसी फ़ीड रीडर में आयात करें या Mawkingbird के RSS रीडर में यहीं फ़ॉलो करें।</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >फ़ीड खोजने के लिए Mastodon से साइन इन करें</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">देखें Plus में क्या है</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>यह Plus सुविधा क्यों है?</h3>
+    <p>
+      सैकड़ों अनजान वेबसाइट जाँचने के लिए Mawkingbird के भुगतान वाले प्रॉक्सी से प्रति वेबसाइट एक
+      अनुरोध होता है। Plus यह खर्च पूरा करता है।
+    </p>
+    <h3>OPML फ़ाइल क्या है?</h3>
+    <p>
+      फ़ीड सदस्यता सूची का फ़ॉर्मैट जिसे हर फ़ीड रीडर समझता है। सभी फ़ीड एक साथ फ़ॉलो करने के लिए
+      Feedly, NetNewsWire, Inoreader या अन्य रीडर में आयात करें।
+    </p>
+    <h3>क्या सभी मिलेंगे?</h3>
+    <p>
+      केवल वे लोग जिनके प्रोफ़ाइल में वेबसाइट का लिंक है, और केवल फ़ीड देने वाली साइटें। व्यक्तिगत
+      फ़ीड न देने वाले बड़े प्लेटफ़ॉर्म बिना जाँच के छोड़ दिए जाते हैं।
+    </p>
+    <h3>क्या दोबारा चलाने पर उतना ही खर्च होता है?</h3>
+    <p>
+      नहीं। जाँची गई साइटें याद रहती हैं। कुछ नए लोगों को फ़ॉलो करने के बाद नई जाँच केवल उनकी साइटें
+      देखती है।
+    </p>
+  </section>
+</main>

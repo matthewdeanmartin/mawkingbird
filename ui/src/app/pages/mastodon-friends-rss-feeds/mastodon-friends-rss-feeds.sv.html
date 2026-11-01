@@ -1,0 +1,80 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS och OPML</p>
+    <h1>Hitta bloggar och RSS-flöden från alla du följer på Mastodon</h1>
+    <p>
+      Många anger sin webbplats i Mastodon-profilen. Verktyget letar efter flöden bakom länkarna och
+      samlar det som hittas i en OPML-fil för valfri flödesläsare.
+      @if (!inShell) {
+        Det ingår i Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Laddar…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Läs vilka du följer</h2>
+        <p>
+          Listan över dem du följer läses från din Mastodon-server, med länkarna i varje profil.
+        </p>
+      </li>
+      <li>
+        <h2>Kontrollera deras webbplatser</h2>
+        <p>
+          Varje länkad webbplats kontrolleras efter ett flöde. Du väljer hur många som kontrolleras
+          och kan stoppa när som helst och behålla det som hittats.
+        </p>
+      </li>
+      <li>
+        <h2>Ladda ner OPML</h2>
+        <p>Importera filen i en flödesläsare eller följ flödena här i Mawkingbirds RSS-läsare.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att hitta deras flöden</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Se vad Plus innehåller</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Varför är detta en Plus-funktion?</h3>
+    <p>
+      Att kontrollera hundratals främmande webbplatser går via en proxy som Mawkingbird betalar för,
+      med en begäran per webbplats. Plus täcker kostnaden.
+    </p>
+    <h3>Vad är en OPML-fil?</h3>
+    <p>
+      Formatet för prenumerationslistor som alla flödesläsare förstår. Importera i Feedly,
+      NetNewsWire, Inoreader eller en annan läsare för att följa alla flöden samtidigt.
+    </p>
+    <h3>Hittas alla?</h3>
+    <p>
+      Bara personer som länkar en webbplats från profilen och bara webbplatser som har ett flöde.
+      Stora plattformar utan personligt flöde hoppas över utan kontroll.
+    </p>
+    <h3>Kostar en andra körning lika mycket?</h3>
+    <p>
+      Nej. Kontrollerade webbplatser koms ihåg. Efter att du följt några nya personer kontrollerar
+      nästa sökning bara deras webbplatser.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,69 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter ke Mastodon</p>
+    <h1>Temukan teman dari Twitter di Mastodon</h1>
+    <p>
+      Temukan orang yang dulu kamu ikuti di Twitter dan sudah ada di Mastodon, lalu ikuti lagi dalam
+      beberapa klik. Arsip dibaca di browser ini; tidak ada yang diunggah.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Unduh arsip Twitter-mu</h2>
+      <p>
+        Di Twitter, buka Pengaturan → Akun kamu → Unduh arsip data kamu. Arsip bisa memerlukan satu
+        hari atau lebih. Ekstrak setelah diterima.
+      </p>
+    </li>
+    <li>
+      <h2>Pilih arsip di sini</h2>
+      <p>
+        Pilih folder yang sudah diekstrak, atau cukup berkas <code>data/following.js</code> serta
+        <code>data/tweets.js</code> dari folder itu. Mawkingbird menghitung orang yang kamu ikuti,
+        balas, dan sebut.
+      </p>
+    </li>
+    <li>
+      <h2>Masuk dengan Mastodon lalu ikuti</h2>
+      <p>
+        Mawkingbird mencari setiap handle di server Mastodon-mu dan menampilkan kemungkinan
+        kecocokan beserta petunjuknya. Kamu yang memilih siapa yang akan diikuti.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/id/twitter-ke-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Memuat alat impor…</p>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah arsipku diunggah ke suatu tempat?</h3>
+    <p>
+      Tidak. Berkas dibaca oleh halaman ini di browser. Hanya pencarian handle yang dikirim ke
+      server Mastodon-mu, itu pun setelah masuk.
+    </p>
+    <h3>Apakah orang akan diikuti secara otomatis?</h3>
+    <p>
+      Tidak. Nama pengguna yang sama adalah petunjuk, bukan bukti. Setiap tindakan mengikuti perlu
+      kamu pilih sendiri. Daftarnya juga bisa diunduh sebagai CSV untuk disimpan.
+    </p>
+  </section>
+</main>

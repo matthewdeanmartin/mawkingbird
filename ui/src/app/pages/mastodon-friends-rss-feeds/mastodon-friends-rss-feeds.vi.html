@@ -1,0 +1,78 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS và OPML</p>
+    <h1>Tìm blog và RSS của người bạn theo dõi trên Mastodon</h1>
+    <p>
+      Mọi người thường đặt trang web trong hồ sơ Mastodon. Công cụ kiểm tra các liên kết để tìm RSS
+      và gom vào một tệp OPML dùng cho mọi trình đọc.
+      @if (!inShell) {
+        Tính năng thuộc Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đọc danh sách theo dõi</h2>
+        <p>Đọc danh sách theo dõi từ máy chủ Mastodon, cùng liên kết trong từng hồ sơ.</p>
+      </li>
+      <li>
+        <h2>Kiểm tra trang web</h2>
+        <p>
+          Hỏi từng trang được liên kết xem có RSS không. Bạn chọn số trang cần kiểm tra, có thể dừng
+          bất cứ lúc nào và giữ kết quả đã tìm được.
+        </p>
+      </li>
+      <li>
+        <h2>Tải OPML</h2>
+        <p>Nhập tệp vào trình đọc RSS hoặc theo dõi ngay trong trình đọc RSS của Mawkingbird.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để tìm RSS</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Xem Plus gồm những gì</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Vì sao tính năng này thuộc Plus?</h3>
+    <p>
+      Kiểm tra hàng trăm trang web cần đi qua máy chủ trung gian do Mawkingbird trả phí, mỗi trang
+      một yêu cầu. Plus chi trả khoản này.
+    </p>
+    <h3>Tệp OPML là gì?</h3>
+    <p>
+      Định dạng danh sách đăng ký mà mọi trình đọc RSS đều hiểu. Nhập vào Feedly, NetNewsWire,
+      Inoreader hoặc trình đọc khác để theo dõi tất cả cùng lúc.
+    </p>
+    <h3>Có tìm được tất cả không?</h3>
+    <p>
+      Chỉ người có liên kết trang web trong hồ sơ và trang có RSS. Các nền tảng lớn không cung cấp
+      RSS cá nhân được bỏ qua mà không kiểm tra.
+    </p>
+    <h3>Chạy lần hai có tốn như lần đầu không?</h3>
+    <p>
+      Không. Trang đã kiểm tra được ghi nhớ, nên sau khi theo dõi người mới, lần quét tiếp chỉ kiểm
+      tra trang của họ.
+    </p>
+  </section>
+</main>

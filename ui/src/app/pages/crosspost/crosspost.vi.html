@@ -1,0 +1,69 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Đăng lên Mastodon và Bluesky cùng lúc</h1>
+    <p>
+      Viết một lần và gửi cùng bài lên cả hai mạng.
+      @if (!inShell) {
+        Đăng nhập bằng tài khoản bạn có, kết nối tài khoản còn lại và thử trình soạn thảo đơn giản.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải trình soạn thảo…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập bằng một trong hai mạng</h2>
+        <p>Dùng tài khoản Mastodon hoặc Bluesky. Bạn chỉ cần một tài khoản để bắt đầu.</p>
+      </li>
+      <li>
+        <h2>Kết nối tài khoản còn lại</h2>
+        <p>
+          Nếu đăng nhập bằng Mastodon, liên kết Bluesky bằng mật khẩu ứng dụng. Nếu đăng nhập bằng
+          Bluesky, thêm máy chủ Mastodon.
+        </p>
+      </li>
+      <li>
+        <h2>Viết một lần, đăng lên cả hai</h2>
+        <p>Trình soạn thảo gửi bài lên cả hai mạng. Hãy thử với bài đầu tiên.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Đăng nhập bằng Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Bản trên Bluesky có giống hệt không?</h3>
+    <p>
+      Văn bản giống nhau. Bản Bluesky luôn công khai; bình chọn và cảnh báo nội dung chỉ có trên bản
+      Mastodon vì Bluesky không có tính năng tương đương.
+    </p>
+    <h3>Thông tin đăng nhập được giữ ở đâu?</h3>
+    <p>
+      Trong trình duyệt này. Mawkingbird kết nối trực tiếp với máy chủ Mastodon và Bluesky; không có
+      máy chủ Mawkingbird trung gian giữ tài khoản.
+    </p>
+  </section>
+</main>

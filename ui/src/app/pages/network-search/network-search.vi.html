@@ -1,0 +1,99 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Tìm kiếm Bluesky</p>
+      <h1>Tìm trên Bluesky</h1>
+      <p>Tìm người và bài đăng trên Bluesky bằng các bộ lọc quen thuộc từ Twitter.</p>
+    } @else {
+      <p class="eyebrow">Tìm kiếm Mastodon</p>
+      <h1>Tìm trên Mastodon</h1>
+      <p>Tìm bài đăng, người và hashtag trên Mastodon bằng các bộ lọc quen thuộc từ Twitter.</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Tìm trên Bluesky' : 'Tìm trên Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? 'Tìm trên Bluesky' : 'Tìm trên Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Tìm kiếm</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Thu hẹp tìm kiếm</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, ngôn ngữ, ngày và "cụm từ chính xác", nhập hoặc chọn từ bộ lọc.
+        } @else {
+          from:someone, has:media, is:reply, ngày và "cụm từ chính xác", nhập hoặc chọn từ bộ lọc.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Sắp xếp và tinh chỉnh</h2>
+      <p>
+        Lọc kết quả theo ngày, nội dung đa phương tiện và tác giả; xem chính xác truy vấn đã gửi.
+      </p>
+    </li>
+    <li>
+      <h2>Giữ tìm kiếm</h2>
+      <p>Lưu tìm kiếm để chạy lại bằng một lần nhấn hoặc chia sẻ thành liên kết.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    @if (network === 'bluesky') {
+      <h3>Tôi cần tài khoản Bluesky không?</h3>
+      <p>
+        Tìm người thì không. Bluesky chỉ cho tài khoản đã đăng nhập tìm bài đăng; đăng nhập bằng
+        Bluesky rồi bạn sẽ quay lại trang này.
+      </p>
+      <h3>Có tìm trên Mastodon được không?</h3>
+      <p>
+        Có: <a mbContentLink routerLink="/vi/mastodon-search">tìm trên Mastodon</a>, hoặc đổi mạng
+        trên trang kết quả.
+      </p>
+    } @else {
+      <h3>Tôi cần tài khoản Mastodon không?</h3>
+      <p>
+        Không. Khi chưa đăng nhập, bạn có thể tìm người, hashtag và bài theo hashtag vì máy chủ
+        Mastodon không cho tìm toàn văn ẩn danh. Đăng nhập để tìm từ trong bài, rồi bạn sẽ quay lại
+        trang này.
+      </p>
+      <h3>Hơn tìm kiếm của máy chủ ở đâu?</h3>
+      <p>
+        Vẫn máy chủ đó tìm kiếm, nhưng tại đây có bộ lọc, sắp xếp, tìm kiếm đã lưu và giải thích
+        truy vấn thay vì một ô duy nhất.
+      </p>
+      <h3>Có tìm trên Bluesky được không?</h3>
+      <p>
+        Có: <a mbContentLink routerLink="/vi/bluesky-search">tìm trên Bluesky</a>, hoặc đổi mạng
+        trên trang kết quả.
+      </p>
+    }
+  </section>
+</main>

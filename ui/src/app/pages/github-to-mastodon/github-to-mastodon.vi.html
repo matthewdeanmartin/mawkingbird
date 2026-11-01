@@ -1,0 +1,64 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub sang Mastodon</p>
+    <h1>Tìm bạn bè GitHub trên Mastodon</h1>
+    <p>
+      Nhiều lập trình viên ghi tài khoản Mastodon trên GitHub. Mawkingbird kiểm tra người bạn theo
+      dõi trên GitHub và chủ kho mã bạn gắn sao để bạn theo dõi họ trên Mastodon.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải công cụ tìm…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập bằng Mastodon</h2>
+        <p>Việc theo dõi dùng tài khoản Mastodon của bạn, nên cần đăng nhập trước.</p>
+      </li>
+      <li>
+        <h2>Kết nối GitHub</h2>
+        <p>
+          Dán mã truy cập cá nhân GitHub; trang có hướng dẫn tạo mã. GitHub không cho ứng dụng trình
+          duyệt đăng nhập bằng cách khác, và mã ở lại trong trình duyệt.
+        </p>
+      </li>
+      <li>
+        <h2>Tìm và theo dõi</h2>
+        <p>
+          Ưu tiên liên kết hồ sơ đến Mastodon, rồi tìm tên người dùng với giới hạn. Mỗi kết quả có
+          bằng chứng để bạn chọn người theo dõi.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Mã GitHub của tôi đi đâu?</h3>
+    <p>
+      Mã được giữ trong trình duyệt và chỉ gửi tới <code>api.github.com</code>, không gửi tới
+      Mawkingbird. Bạn có thể thu hồi trên GitHub bất cứ lúc nào.
+    </p>
+    <h3>Có tự động theo dõi ai không?</h3>
+    <p>Không. Mỗi lần theo dõi đều do bạn nhấn nút bên cạnh bằng chứng của kết quả.</p>
+  </section>
+</main>

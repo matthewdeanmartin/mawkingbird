@@ -1,0 +1,91 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Van {{ copy.from }} naar {{ copy.to }}</p>
+    <h1>Vind de mensen die je volgt op {{ copy.from }} terug op {{ copy.to }}</h1>
+    <p>
+      Veel mensen die je op {{ copy.from }} volgt, zitten ook op {{ copy.to }}. Deze functie vindt
+      ze, zodat je ze daar ook kunt volgen.
+      @if (!inShell) {
+        Log in met een van beide accounts, koppel het andere en bekijk wie er al is.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">De zoeker laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Log in bij allebei</h2>
+        <p>
+          Log in met je Mastodon- of Bluesky-account en koppel het andere op het volgende scherm.
+        </p>
+      </li>
+      <li>
+        <h2>Lees wie je volgt</h2>
+        <p>
+          Mensen die je op {{ copy.from }} volgt en die hun {{ copy.to }}-gebruikersnaam in hun bio
+          hebben gezet, worden meteen en gratis gekoppeld.
+        </p>
+      </li>
+      <li>
+        <h2>Zoek de rest en volg</h2>
+        <p>
+          Zoek zoveel anderen op naam als je wilt en volg de mensen die je herkent met één knop.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Log in met Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Log in met Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Worden mensen zonder te vragen gevolgd?</h3>
+    <p>
+      Nee. Mensen die zelf hun andere gebruikersnaam vermelden, staan alvast aangevinkt. Gokken op
+      basis van een naam niet. Er wordt niemand gevolgd voordat je op Volgen drukt.
+    </p>
+    <h3>Waarom ontbreken sommige mensen?</h3>
+    <p>
+      Alleen mensen die hun {{ copy.to }}-gebruikersnaam noemen of op naam te vinden zijn, kunnen
+      worden gekoppeld. Iemand met een veelvoorkomende naam zonder gebruikersnaam in de bio wordt
+      misschien niet gevonden.
+    </p>
+    <h3>Kan het ook andersom?</h3>
+    <p>
+      Ja:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/nl/mastodon-naar-bluesky"
+          >vind de mensen die je op Mastodon volgt op Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/nl/bluesky-naar-mastodon"
+          >vind de mensen die je op Bluesky volgt op Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Waar worden mijn aanmeldingen bewaard?</h3>
+    <p>
+      In deze browser. Mawkingbird praat rechtstreeks met je Mastodon-server en met Bluesky. Er zit
+      geen Mawkingbird-server tussen die je accounts bewaart.
+    </p>
+  </section>
+</main>

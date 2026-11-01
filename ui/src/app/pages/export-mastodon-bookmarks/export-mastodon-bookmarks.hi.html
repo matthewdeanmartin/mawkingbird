@@ -1,0 +1,78 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon बुकमार्क</p>
+    <h1>अपने Mastodon बुकमार्क निर्यात करें</h1>
+    <p>
+      Mastodon पर बुकमार्क की गई पोस्ट ऐसी फ़ाइल में डाउनलोड करें जिसे ब्राउज़र, Raindrop.io,
+      Pinboard या अन्य बुकमार्क सेवा आयात कर सके। पोस्ट किसी लेख के लिए सहेजी थी? लिंक निकालें और
+      लेख पाएँ।
+      @if (!inShell) {
+        शुरुआत के लिए Mastodon से साइन इन करें।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>अपने बुकमार्क पढ़ें</h2>
+        <p>आपके Mastodon अकाउंट के सभी बुकमार्क, सीधे आपके सर्वर से।</p>
+      </li>
+      <li>
+        <h2>चुनें क्या रखना है</h2>
+        <p>खुद पोस्ट, उनमें साझा किए लिंक या सिर्फ़ वे बुकमार्क जिनमें लिंक है।</p>
+      </li>
+      <li>
+        <h2>फ़ाइल आयात करें</h2>
+        <p>
+          ब्राउज़र बुकमार्क की मानक फ़ाइल: ब्राउज़र के बुकमार्क प्रबंधक या बुकमार्क सेवा में आयात
+          करें।
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >बुकमार्क निर्यात करने के लिए Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या Mastodon पहले से बुकमार्क निर्यात नहीं करता?</h3>
+    <p>
+      उसका डेटा निर्यात पोस्ट के पतों की स्प्रेडशीट देता है, जिसे ब्राउज़र और बुकमार्क सेवाएँ आयात
+      नहीं करतीं। यह फ़ाइल शीर्षक, टेक्स्ट और हैशटैग सहित आयात होती है।
+    </p>
+    <h3>लिंक निकालने का क्या मतलब है?</h3>
+    <p>
+      अक्सर पोस्ट किसी लेख, वीडियो या परियोजना के लिंक के लिए सहेजी जाती है। लिंक निकालने पर पोस्ट
+      की जगह वही लिंक सहेजा जाता है और पोस्ट का टेक्स्ट विवरण बनता है।
+    </p>
+    <h3>क्या मेरे बुकमार्क कहीं अपलोड होते हैं?</h3>
+    <p>
+      नहीं। वे आपके Mastodon सर्वर से पढ़े जाते हैं और फ़ाइल ब्राउज़र में बनती है। Mawkingbird को
+      कुछ नहीं भेजा जाता।
+    </p>
+    <h3>क्या तारीखें सही हैं?</h3>
+    <p>
+      हर बुकमार्क की तारीख पोस्ट लिखे जाने की है। Mastodon यह नहीं रखता कि आपने उसे कब बुकमार्क
+      किया।
+    </p>
+  </section>
+</main>

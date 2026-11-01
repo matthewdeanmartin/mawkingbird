@@ -1,0 +1,102 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Pencarian Bluesky</p>
+      <h1>Cari di Bluesky</h1>
+      <p>Temukan orang dan postingan di Bluesky dengan filter pencarian seperti di Twitter.</p>
+    } @else {
+      <p class="eyebrow">Pencarian Mastodon</p>
+      <h1>Cari di Mastodon</h1>
+      <p>
+        Temukan postingan, orang, dan tagar di Mastodon dengan filter pencarian seperti di Twitter.
+      </p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Cari di Bluesky' : 'Cari di Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? 'Cari di Bluesky' : 'Cari di Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Cari</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Persempit pencarian</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, bahasa, tanggal, dan "frasa persis", diketik atau dipilih dari filter.
+        } @else {
+          from:someone, has:media, is:reply, tanggal, dan "frasa persis", diketik atau dipilih dari
+          filter.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Urutkan dan saring</h2>
+      <p>
+        Saring hasil berdasarkan tanggal, media, dan penulis, lalu lihat persis apa yang dicari.
+      </p>
+    </li>
+    <li>
+      <h2>Simpan pencarianmu</h2>
+      <p>Simpan pencarian untuk dijalankan lagi dalam satu klik atau dibagikan sebagai tautan.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    @if (network === 'bluesky') {
+      <h3>Apakah perlu akun Bluesky?</h3>
+      <p>
+        Tidak untuk mencari orang. Bluesky hanya memberikan hasil pencarian postingan kepada akun
+        yang sudah masuk. Masuk dengan Bluesky untuk itu; setelahnya kamu kembali ke sini.
+      </p>
+      <h3>Bisakah mencari di Mastodon juga?</h3>
+      <p>
+        Bisa: <a mbContentLink routerLink="/id/cari-di-mastodon">cari di Mastodon</a>, atau ganti
+        jaringan di halaman hasil.
+      </p>
+    } @else {
+      <h3>Apakah perlu akun Mastodon?</h3>
+      <p>
+        Tidak. Tanpa akun, kamu bisa mencari orang, tagar, dan postingan berdasarkan tagar. Server
+        Mastodon tidak mengizinkan pencarian teks lengkap anonim. Masuk untuk mencari kata dalam
+        postingan; setelahnya kamu kembali ke sini.
+      </p>
+      <h3>Apa bedanya dengan pencarian serverku?</h3>
+      <p>
+        Server yang sama melakukan pencarian, tetapi di sini ada filter, pengurutan, pencarian
+        tersimpan, dan penjelasan tentang kueri, bukan hanya satu kotak.
+      </p>
+      <h3>Bisakah mencari di Bluesky juga?</h3>
+      <p>
+        Bisa: <a mbContentLink routerLink="/id/cari-di-bluesky">cari di Bluesky</a>, atau ganti
+        jaringan di halaman hasil.
+      </p>
+    }
+  </section>
+</main>

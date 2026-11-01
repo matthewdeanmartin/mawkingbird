@@ -1,0 +1,92 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">З {{ copy.from }} у {{ copy.to }}</p>
+    <h1>Знайдіть у {{ copy.to }} тих, на кого ви підписані в {{ copy.from }}</h1>
+    <p>
+      Багато людей, на яких ви підписані в {{ copy.from }}, є і в {{ copy.to }}. Цей інструмент
+      знаходить їх і дає змогу підписатися на них і там.
+      @if (!inShell) {
+        Увійдіть через один із облікових записів, під’єднайте інший і подивіться, хто вже там.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Завантаження пошуку…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Увійдіть в обидва</h2>
+        <p>
+          Увійдіть через обліковий запис Mastodon або Bluesky, а інший під’єднайте на наступному
+          кроці.
+        </p>
+      </li>
+      <li>
+        <h2>Прочитайте свої підписки</h2>
+        <p>
+          Кожен, на кого ви підписані в {{ copy.from }} і хто вказав у біо своє ім’я в
+          {{ copy.to }}, отримує збіг одразу, безкоштовно.
+        </p>
+      </li>
+      <li>
+        <h2>Знайдіть решту й підпишіться</h2>
+        <p>
+          Шукайте інших за іменем, скільки завгодно, і підписуйтеся однією кнопкою на тих, кого
+          впізнаєте.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Увійти через Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Увійти через Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    <h3>Він підписується на людей без запиту?</h3>
+    <p>
+      Ні. Люди, які самі вказали своє інше ім’я, позначені для вас; припущення з пошуку за іменем —
+      ні. Ні на кого не буде підписки, доки ви не натиснете «Підписатися».
+    </p>
+    <h3>Чому деяких людей немає?</h3>
+    <p>
+      Збіг отримують лише ті, хто вказує своє ім’я в {{ copy.to }}, або кого знаходить пошук за
+      іменем. Людина з поширеним іменем і порожнім біо може не з’явитися.
+    </p>
+    <h3>А навпаки можна?</h3>
+    <p>
+      Так:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/uk/mastodon-to-bluesky"
+          >знайдіть у Bluesky тих, на кого ви підписані в Mastodon</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/uk/bluesky-to-mastodon"
+          >знайдіть у Mastodon тих, на кого ви підписані в Bluesky</a
+        >.
+      }
+    </p>
+    <h3>Де зберігаються мої входи?</h3>
+    <p>
+      У цьому браузері. Mawkingbird спілкується напряму з вашим сервером Mastodon і з Bluesky; між
+      ними немає сервера Mawkingbird, що зберігав би ваші облікові записи.
+    </p>
+  </section>
+</main>

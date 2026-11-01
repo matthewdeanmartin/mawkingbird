@@ -1,0 +1,76 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Kontak</p>
+    <h1>Temukan kontak ponselmu di Mastodon</h1>
+    <p>
+      Sebagian orang di buku alamatmu sudah ada di Mastodon. Alat ini mencari mereka agar kamu bisa
+      mengikuti orang yang dikenali.
+      @if (!inShell) {
+        Masuk dengan Mastodon, pilih kontak atau unggah berkas kontak, lalu lihat hasilnya.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Memuat pencarian…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Masuk dengan Mastodon</h2>
+        <p>Pencarian berjalan lewat server Mastodon-mu sendiri.</p>
+      </li>
+      <li>
+        <h2>Pilih kontakmu</h2>
+        <p>
+          Di ponsel Android dengan Chrome, pilih orang langsung dari kontak. Di perangkat lain,
+          unggah berkas yang diekspor dari Google Contacts.
+        </p>
+      </li>
+      <li>
+        <h2>Ikuti orang yang kamu kenal</h2>
+        <p>
+          Setiap kecocokan menjelaskan alasannya disarankan. Ikuti satu per satu; tidak ada yang
+          diikuti secara otomatis.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk menemukan kontakmu</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah kontakku diunggah?</h3>
+    <p>
+      Tidak. Kontak tetap di browser ini. Hanya istilah pencarian, seperti nama atau handle, yang
+      dikirim ke server Mastodon-mu. Tidak ada yang disimpan saat halaman ditutup.
+    </p>
+    <h3>Bagaimana cara mendapatkan berkas kontak?</h3>
+    <p>Di Google Contacts, pilih Ekspor dan format Google CSV, lalu unggah berkas itu di sini.</p>
+    <h3>Mengapa kecocokannya hanya dugaan?</h3>
+    <p>
+      Mastodon tidak bisa mencari lewat nomor telepon atau email. Kecocokan memakai petunjuk: handle
+      Mastodon yang disimpan pada kontak, nama, bagian nama dan domain email, serta situs web. Nama
+      yang khas mudah ditemukan. Nama umum bisa memunculkan orang asing, jadi kamu memilih setiap
+      tindakan mengikuti sendiri.
+    </p>
+    <h3>Ada yang belum memakai Mastodon?</h3>
+    <p>Undang mereka: setelah pencarian, undangan siap pakai tinggal satu klik lagi.</p>
+  </section>
+</main>

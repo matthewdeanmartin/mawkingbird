@@ -1,0 +1,82 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-schemaläggning</p>
+    <h1>Schemalägg Mastodon-inlägg i förväg</h1>
+    <p>
+      Skriv en veckas inlägg på en gång och låt din Mastodon-server publicera dem i tid.
+      @if (!inShell) {
+        Logga in med Mastodon, skriv dina inlägg, välj första tidpunkten och avståndet mellan
+        resten. Sedan är det klart.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Laddar schemaläggaren…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Skriv dina inlägg</h2>
+        <p>Så många du vill, ett fält per inlägg, upp till 500 tecken vardera.</p>
+      </li>
+      <li>
+        <h2>Välj mellanrummen</h2>
+        <p>
+          Välj första tidpunkten och intervallet: varje dag klockan 9:00 eller var tredje timme. Ge
+          enskilda inlägg en egen tid om du vill.
+        </p>
+      </li>
+      <li>
+        <h2>Stäng fliken</h2>
+        <p>
+          Din Mastodon-server sparar inläggen och publicerar dem i tid. Inget väntar i webbläsaren.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att schemalägga inlägg</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Kan Mastodon schemalägga inlägg?</h3>
+    <p>
+      Ja. Varje Mastodon-server kan spara ett inlägg och publicera det senare, men
+      standardwebbplatsen har ingen knapp för det. Sidan använder den inbyggda funktionen. Inläggen
+      sparas på din server, inte hos Mawkingbird.
+    </p>
+    <h3>Måste sidan vara öppen?</h3>
+    <p>
+      Nej. När ett inlägg är schemalagt finns det på din Mastodon-server. Servern publicerar det vid
+      vald tid även om datorn är avstängd.
+    </p>
+    <h3>Finns det gränser?</h3>
+    <p>
+      Mastodon tillåter 300 väntande inlägg samtidigt och 25 under en dag. Varje inlägg måste ligga
+      minst fem minuter framåt. Schemaläggaren kontrollerar detta innan något skickas.
+    </p>
+    <h3>Kan jag ångra mig?</h3>
+    <p>
+      Ja. Dina schemalagda inlägg listas under schemaläggaren och kan avbrytas fram till
+      publiceringen.
+    </p>
+    <h3>Fungerar det för Bluesky?</h3>
+    <p>Inte här. Bluesky saknar inbyggd schemaläggning, så sidan är bara för Mastodon.</p>
+  </section>
+</main>

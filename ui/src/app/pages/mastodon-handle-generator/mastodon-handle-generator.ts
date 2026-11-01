@@ -150,3 +150,73 @@ export class MastodonHandleGeneratorIt extends MastodonHandleGenerator {}
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorPl extends MastodonHandleGenerator {}
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorUk extends MastodonHandleGenerator {}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorHi extends MastodonHandleGenerator {}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorNl extends MastodonHandleGenerator {}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorId extends MastodonHandleGenerator {}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorRu extends MastodonHandleGenerator {}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorSv extends MastodonHandleGenerator {}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorVi extends MastodonHandleGenerator {}

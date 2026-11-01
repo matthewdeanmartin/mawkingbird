@@ -1,0 +1,82 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Quyền riêng tư</p>
+    <h1>Cách dùng bút danh trên Mastodon</h1>
+    <p>
+      Bạn không cần tên thật trên Mastodon. Một vài thiết lập quyết định mức độ dễ liên hệ tài khoản
+      với bạn, nhưng nhiều người chưa từng đổi chúng.
+      @if (!inShell) {
+        Đăng nhập để đổi trong một bước.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-pseudonymity-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải thiết lập…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Ẩn những người quanh bạn</h2>
+        <p>
+          Người bạn theo dõi và người theo dõi bạn thường tiết lộ danh tính. Mastodon có thể ẩn cả
+          hai danh sách khỏi người khác.
+        </p>
+      </li>
+      <li>
+        <h2>Rời tìm kiếm và gợi ý</h2>
+        <p>
+          Rời danh mục hồ sơ, ngừng được gợi ý cho người lạ và loại bài đăng khỏi tìm kiếm toàn văn.
+        </p>
+      </li>
+      <li>
+        <h2>Kiểm tra điều không thể tắt</h2>
+        <p>
+          Liên kết tới trang riêng, công cụ tìm kiếm liệt kê hồ sơ, tên và ảnh bạn chọn. Trang này
+          cho biết điều nào đang áp dụng.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để kiểm tra thiết lập</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Ẩn danh hay dùng bút danh?</h3>
+    <p>
+      Dùng bút danh: người khác thấy tên bạn tự đặt và khó liên hệ tài khoản với bạn. Ẩn danh hoàn
+      toàn khó hơn; xem câu trả lời tiếp theo.
+    </p>
+    <h3>Quản trị viên máy chủ có biết tôi là ai không?</h3>
+    <p>
+      Họ thấy địa chỉ email đăng ký và địa chỉ IP bạn kết nối từ đó. Không thiết lập nào đổi được
+      điều này. Hãy chọn máy chủ đáng tin và email không chứa tên bạn.
+    </p>
+    <h3>Sau đó bài của tôi có riêng tư không?</h3>
+    <p>
+      Không. Bài công khai vẫn công khai. Các thiết lập này khiến tài khoản khó tìm và khó liên hệ
+      với bạn hơn; người đọc từng bài vẫn do bạn chọn khi viết.
+    </p>
+    <h3>Mawkingbird bổ sung gì?</h3>
+    <p>
+      Theo dõi và yêu thích riêng tư mà không thông báo cho ai, danh sách riêng tư, liên kết được
+      xóa dấu theo dõi và ảnh được xóa vị trí, tất cả trong trình duyệt.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,76 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Kontakter</p>
+    <h1>Hitta dina telefonkontakter på Mastodon</h1>
+    <p>
+      Några i din adressbok finns redan på Mastodon. Verktyget söker efter dem så att du kan följa
+      dem du känner igen.
+      @if (!inShell) {
+        Logga in med Mastodon, välj kontakter eller ladda upp en kontaktfil och se vilka som hittas.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Laddar sökverktyget…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Logga in med Mastodon</h2>
+        <p>Sökningen går via din egen Mastodon-server.</p>
+      </li>
+      <li>
+        <h2>Välj dina kontakter</h2>
+        <p>
+          På en Android-telefon i Chrome kan du välja personer direkt ur kontakterna. På andra
+          enheter laddar du upp en fil exporterad från Google Contacts.
+        </p>
+      </li>
+      <li>
+        <h2>Följ dem du känner</h2>
+        <p>
+          Varje träff visar varför den föreslås. Följ en person i taget; ingen följs automatiskt åt
+          dig.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Logga in med Mastodon för att hitta dina kontakter</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Laddas mina kontakter upp?</h3>
+    <p>
+      Nej. Kontakterna stannar i webbläsaren. Bara sökord som namn eller användarnamn skickas till
+      din Mastodon-server. Inget sparas när du stänger sidan.
+    </p>
+    <h3>Hur får jag en kontaktfil?</h3>
+    <p>Välj Exportera i Google Contacts och välj formatet Google CSV. Ladda sedan upp filen här.</p>
+    <h3>Varför är träffen en gissning?</h3>
+    <p>
+      Mastodon saknar sökning på telefonnummer eller e-postadress. Träffarna bygger på ledtrådar:
+      ett sparat Mastodon-användarnamn, personens namn, namnet och domänen i e-postadressen samt
+      webbplatsen. Ett ovanligt namn är lätt att hitta. Ett vanligt namn kan ge främlingar, så du
+      väljer varje följning själv.
+    </p>
+    <h3>Finns någon inte på Mastodon ännu?</h3>
+    <p>Bjud in personen. Efter sökningen finns färdiga inbjudningar ett klick bort.</p>
+  </section>
+</main>

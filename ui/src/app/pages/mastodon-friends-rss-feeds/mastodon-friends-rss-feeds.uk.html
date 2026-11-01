@@ -1,0 +1,80 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS і OPML</p>
+    <h1>Знайдіть блоги й RSS-стрічки всіх, за ким стежите в Mastodon</h1>
+    <p>
+      Люди вказують свої сайти в профілях Mastodon. Інструмент шукає стрічки за цими посиланнями й
+      збирає знайдене в один файл OPML для будь-якого RSS-застосунку.
+      @if (!inShell) {
+        Це частина Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Завантаження…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Прочитайте свої підписки</h2>
+        <p>Список підписок із посиланнями в кожному профілі читається з вашого сервера Mastodon.</p>
+      </li>
+      <li>
+        <h2>Перевірте їхні сайти</h2>
+        <p>
+          Кожен сайт перевіряється на наявність стрічки. Ви вибираєте кількість сайтів і можете
+          будь-коли зупинитися, зберігши знайдене.
+        </p>
+      </li>
+      <li>
+        <h2>Завантажте OPML</h2>
+        <p>
+          Імпортуйте файл у будь-який RSS-застосунок або стежте за стрічками просто в Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Увійти через Mastodon і знайти стрічки</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Переглянути можливості Plus</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    <h3>Чому це можливість Plus?</h3>
+    <p>
+      Перевірка сотень сторонніх сайтів проходить через проксі, який оплачує Mawkingbird: один запит
+      на сайт. Plus покриває ці витрати.
+    </p>
+    <h3>Що таке файл OPML?</h3>
+    <p>
+      Формат списку підписок, який розуміють усі RSS-застосунки. Імпортуйте його у Feedly,
+      NetNewsWire, Inoreader чи інший застосунок, щоб додати всі стрічки одразу.
+    </p>
+    <h3>Чи знайдуться всі?</h3>
+    <p>
+      Лише люди з посиланням на сайт у профілі, і лише сайти зі стрічкою. Великі платформи без
+      особистих стрічок пропускаються без перевірки.
+    </p>
+    <h3>Чи коштує повторна перевірка стільки ж?</h3>
+    <p>
+      Ні. Перевірені сайти запам’ятовуються, тому після нових підписок повторне сканування перевіряє
+      лише нові сайти.
+    </p>
+  </section>
+</main>

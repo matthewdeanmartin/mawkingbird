@@ -1,0 +1,73 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Bỏ ẩn · Bỏ chặn hàng loạt</p>
+    <h1>Bỏ ẩn và bỏ chặn mọi người trên Mastodon</h1>
+    <p>
+      Danh sách ẩn và chặn lớn dần nhiều năm mà ít được dọn. Bỏ ẩn hoặc bỏ chặn toàn bộ để bắt đầu
+      lại.
+      @if (!inShell) {
+        Mastodon chỉ cho hoàn tác từng tài khoản một.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập bằng Mastodon</h2>
+        <p>Đọc danh sách ẩn và chặn từ máy chủ Mastodon của bạn.</p>
+      </li>
+      <li>
+        <h2>Sao lưu rồi xem trước</h2>
+        <p>Trước khi đổi, bạn thấy số tài khoản và có thể tải danh sách để khôi phục sau này.</p>
+      </li>
+      <li>
+        <h2>Bỏ ẩn hoặc bỏ chặn hàng loạt</h2>
+        <p>
+          Lần lượt bỏ ẩn hoặc bỏ chặn từng tài khoản với thanh tiến độ. Bạn có thể dừng giữa chừng.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để bắt đầu</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Bỏ ẩn hàng loạt thay đổi gì?</h3>
+    <p>
+      Bỏ ẩn mọi tài khoản đã ẩn, để bài và thông báo của họ đến với bạn trở lại. Từ đã ẩn và bộ lọc
+      không thay đổi.
+    </p>
+    <h3>Bỏ chặn hàng loạt thay đổi gì?</h3>
+    <p>
+      Bỏ chặn mọi tài khoản đã chặn. Họ có thể theo dõi, xem bài và trả lời trở lại. Không ai được
+      thông báo về việc chặn hoặc bỏ chặn.
+    </p>
+    <h3>Có thể hoàn tác không?</h3>
+    <p>
+      Chỉ từ bản sao lưu. Tải danh sách khi xem trước rồi nhập lại trên trang nhập dữ liệu của máy
+      chủ Mastodon.
+    </p>
+    <h3>Có ảnh hưởng chặn tên miền không?</h3>
+    <p>Không. Chỉ đổi các tài khoản bạn đã ẩn hoặc chặn riêng lẻ.</p>
+  </section>
+</main>

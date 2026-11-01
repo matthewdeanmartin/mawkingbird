@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Tìm người bạn theo dõi trên Twitter ở Mastodon",
+    "description": "Dùng bản lưu trữ Twitter để tìm người bạn từng theo dõi đã có trên Mastodon. Tệp ở lại trong trình duyệt; bạn tự chọn từng người để theo dõi.",
+    "prerenderCheck": {
+      "heading": "Tìm người bạn theo dõi trên Twitter ở Mastodon",
+      "copy": "Tải bản lưu trữ Twitter"
+    }
+  },
+  "crosspost": {
+    "title": "Đăng lên Mastodon và Bluesky cùng lúc",
+    "description": "Viết một lần và đăng lên Mastodon lẫn Bluesky. Đăng nhập bằng một mạng, kết nối mạng còn lại và thử trình soạn thảo.",
+    "prerenderCheck": {
+      "heading": "Đăng lên Mastodon và Bluesky cùng lúc",
+      "copy": "Kết nối tài khoản còn lại"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Thống kê cho tài khoản Mastodon",
+    "description": "Xem bài nổi bật, lượt yêu thích, đăng lại, trả lời, người theo dõi còn hoạt động và phạm vi tiếp cận ước lượng. Tính trong trình duyệt.",
+    "prerenderCheck": {
+      "heading": "Thống kê cho tài khoản Mastodon",
+      "copy": "Bài đăng nổi bật"
+    }
+  },
+  "github-friends": {
+    "title": "Tìm bạn bè GitHub trên Mastodon",
+    "description": "Tìm người bạn theo dõi trên GitHub và chủ kho mã đã gắn sao trên Mastodon. Xem bằng chứng và chọn người để theo dõi.",
+    "prerenderCheck": {
+      "heading": "Tìm bạn bè GitHub trên Mastodon",
+      "copy": "Kết nối GitHub"
+    }
+  },
+  "schedule": {
+    "title": "Lên lịch bài đăng Mastodon",
+    "description": "Viết nhiều bài, chọn giờ và khoảng cách. Máy chủ Mastodon đăng đúng giờ dù bạn đã đóng thẻ trình duyệt.",
+    "prerenderCheck": {
+      "heading": "Lên lịch bài đăng Mastodon",
+      "copy": "Viết bài đăng"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Tìm người bạn theo dõi từ Bluesky trên Mastodon",
+    "description": "Tìm người bạn theo dõi trên Bluesky ở Mastodon để theo dõi tại đó. Kiểm tra liên kết hồ sơ và tìm theo tên.",
+    "prerenderCheck": {
+      "heading": "Tìm người bạn theo dõi từ Bluesky trên Mastodon",
+      "copy": "Đọc danh sách theo dõi"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Tìm người bạn theo dõi từ Mastodon trên Bluesky",
+    "description": "Tìm người bạn theo dõi trên Mastodon ở Bluesky để theo dõi tại đó. Kiểm tra liên kết hồ sơ và tìm theo tên.",
+    "prerenderCheck": {
+      "heading": "Tìm người bạn theo dõi từ Mastodon trên Bluesky",
+      "copy": "Đọc danh sách theo dõi"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Tắt bài đăng lại trên Mastodon",
+    "description": "Ẩn bài đăng lại của mọi người bạn theo dõi mà không bỏ theo dõi họ. Giữ bài họ tự viết và trả lời; có thể bật lại.",
+    "prerenderCheck": {
+      "heading": "Tắt bài đăng lại của mọi người bạn theo dõi trên Mastodon",
+      "copy": "Xem số người sẽ thay đổi"
+    }
+  },
+  "find-contacts": {
+    "title": "Tìm người trong danh bạ trên Mastodon",
+    "description": "Chọn danh bạ điện thoại hoặc tải tệp Google Contacts để tìm người quen trên Mastodon. Bạn tự chọn từng người để theo dõi.",
+    "prerenderCheck": {
+      "heading": "Tìm người trong danh bạ trên Mastodon",
+      "copy": "Chọn liên hệ"
+    }
+  },
+  "friend-feeds": {
+    "title": "Tìm RSS của bạn bè Mastodon",
+    "description": "Tìm blog và RSS từ liên kết hồ sơ của người bạn theo dõi. Tải OPML để nhập vào trình đọc RSS. Thuộc Mawkingbird Plus.",
+    "prerenderCheck": {
+      "heading": "Tìm blog và RSS của người bạn theo dõi trên Mastodon",
+      "copy": "Tải OPML"
+    }
+  },
+  "amnesty": {
+    "title": "Bỏ ẩn và bỏ chặn trên Mastodon",
+    "description": "Sao lưu danh sách, xem trước rồi bỏ ẩn hoặc bỏ chặn tất cả tài khoản. Có thể dừng giữa chừng.",
+    "prerenderCheck": {
+      "heading": "Bỏ ẩn và bỏ chặn mọi người trên Mastodon",
+      "copy": "Sao lưu rồi xem trước"
+    }
+  },
+  "pseudonymity": {
+    "title": "Dùng bút danh trên Mastodon",
+    "description": "Ẩn danh sách theo dõi hai chiều, rời tìm kiếm và gợi ý, kiểm tra liên kết có thể tiết lộ danh tính của bạn.",
+    "prerenderCheck": {
+      "heading": "Cách dùng bút danh trên Mastodon",
+      "copy": "Ẩn những người quanh bạn"
+    }
+  },
+  "handle-generator": {
+    "title": "Tạo tên người dùng Mastodon",
+    "description": "Nhận gợi ý tên và kiểm tra tên còn trống trên máy chủ Mastodon bạn chọn cùng các máy chủ lớn nhất. Không cần tài khoản.",
+    "prerenderCheck": {
+      "heading": "Tạo tên người dùng Mastodon",
+      "copy": "Định danh Mastodon trông thế nào"
+    }
+  },
+  "content-warnings": {
+    "title": "Tắt cảnh báo nội dung trên Mastodon",
+    "description": "Tự mở cảnh báo nội dung và hiện nội dung đa phương tiện nhạy cảm, cho mọi người hoặc chỉ người bạn tin tưởng.",
+    "prerenderCheck": {
+      "heading": "Cách tắt cảnh báo nội dung trên Mastodon",
+      "copy": "Hiện nội dung đa phương tiện nhạy cảm"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Xuất dấu trang Mastodon",
+    "description": "Tải dấu trang Mastodon để nhập vào trình duyệt, Raindrop.io hoặc Pinboard. Giữ bài đăng hoặc liên kết được chia sẻ.",
+    "prerenderCheck": {
+      "heading": "Xuất dấu trang Mastodon",
+      "copy": "Chọn nội dung cần giữ"
+    }
+  },
+  "mastodon-search": {
+    "title": "Tìm trên Mastodon: bài đăng, người và hashtag",
+    "description": "Tìm với bộ lọc quen thuộc từ Twitter: from:, has:media, ngày và cụm từ chính xác. Sắp xếp kết quả và lưu tìm kiếm.",
+    "prerenderCheck": {
+      "heading": "Tìm trên Mastodon",
+      "copy": "Thu hẹp tìm kiếm"
+    }
+  },
+  "bluesky-search": {
+    "title": "Tìm trên Bluesky: bài đăng và người",
+    "description": "Tìm trên Bluesky bằng bộ lọc quen thuộc từ Twitter. Để tìm bài đăng, bạn cần đăng nhập bằng Bluesky.",
+    "prerenderCheck": {
+      "heading": "Tìm trên Bluesky",
+      "copy": "Thu hẹp tìm kiếm"
+    }
+  },
+  "download-media": {
+    "title": "Tải ảnh từ Mastodon",
+    "description": "Xem ảnh của tài khoản Mastodon và tải tất cả thành ZIP hoặc tệp riêng, kèm GIF, video và âm thanh. Không cần tài khoản.",
+    "prerenderCheck": {
+      "heading": "Tải ảnh từ Mastodon",
+      "copy": "Xem hình ảnh"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Hashtag tương tự trên Mastodon",
+    "description": "Tìm hashtag thường dùng cùng hashtag của bạn trong các bài Mastodon gần đây. So sánh nhiều hashtag cùng lúc. Không cần tài khoản.",
+    "prerenderCheck": {
+      "heading": "Hashtag tương tự trên Mastodon",
+      "copy": "Xem hashtag thường đi cùng"
+    }
+  },
+  "language-en": {
+    "title": "Mastodon bằng tiếng Việt",
+    "description": "Đọc và viết tiếng Việt trên Mastodon. Chọn ngôn ngữ bạn đọc, ẩn bài bằng ngôn ngữ chưa biết và thêm bản dịch cho ngôn ngữ đang học.",
+    "prerenderCheck": {
+      "heading": "Mastodon bằng tiếng Việt",
+      "copy": "Chỉ ngôn ngữ bạn đọc"
+    }
+  },
+  "learn-english": {
+    "title": "Học tiếng Anh với Mastodon",
+    "description": "Học tiếng Anh qua bài đăng Mastodon thực tế, với bản dịch bên dưới bản gốc, tự động hoặc khi bạn yêu cầu.",
+    "prerenderCheck": {
+      "heading": "Học tiếng Anh với Mastodon",
+      "copy": "Luôn hiện tiếng Anh"
+    }
+  }
+}

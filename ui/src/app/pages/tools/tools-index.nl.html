@@ -1,0 +1,40 @@
+<main class="focused-page" lang="nl">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Open de app</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Tools</p>
+    <h1>Gratis tools voor Mastodon en Bluesky</h1>
+    <p>
+      Kleine tools voor wat standaardapps missen: een gebruikersnaam kiezen, vrienden vinden,
+      berichten plannen en je account opruimen. Elke tool werkt in je browser.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Zoek je iets anders?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Bekijk alles wat Mawkingbird kan</a> (Engels), of lees
+      de <a mbContentLink href="help/">hulpgidsen</a> (Engels).
+    </p>
+  </section>
+</main>

@@ -55,6 +55,41 @@ export const TOOLS_INDEXES: Record<TranslatedLanguage, { title: string; descript
     description:
       'Ferramentas grátis para Mastodon e Bluesky em português: leve quem você segue no Twitter, agende publicações, baixe imagens, encontre hashtags semelhantes e mais. Tudo no navegador.',
   },
+  vi: {
+    title: 'Công cụ miễn phí cho Mastodon và Bluesky',
+    description:
+      'Công cụ Mastodon và Bluesky bằng tiếng Việt: tìm bạn bè từ Twitter, lên lịch bài đăng, tải ảnh và tìm hashtag tương tự. Chạy ngay trong trình duyệt.',
+  },
+  sv: {
+    title: 'Gratis verktyg för Mastodon och Bluesky',
+    description:
+      'Mastodon- och Bluesky-verktyg på svenska: hitta vänner från Twitter, schemalägg inlägg, ladda ner bilder och hitta liknande hashtaggar. Direkt i webbläsaren.',
+  },
+  ru: {
+    title: 'Бесплатные инструменты для Mastodon и Bluesky',
+    description:
+      'Инструменты Mastodon и Bluesky на русском: найди знакомых из Twitter, планируй посты, скачивай изображения и ищи похожие хештеги. Всё в браузере.',
+  },
+  id: {
+    title: 'Alat gratis untuk Mastodon dan Bluesky',
+    description:
+      'Alat Mastodon dan Bluesky dalam bahasa Indonesia: temukan teman dari Twitter, jadwalkan postingan, unduh gambar, dan cari tagar serupa. Langsung di browser.',
+  },
+  nl: {
+    title: 'Gratis tools voor Mastodon en Bluesky',
+    description:
+      'Gratis Mastodon- en Bluesky-tools in het Nederlands: Twitter-volgers terugvinden, berichten plannen, afbeeldingen downloaden en vergelijkbare hashtags zoeken. In je browser.',
+  },
+  hi: {
+    title: 'Mastodon और Bluesky के लिए मुफ़्त टूल',
+    description:
+      'Mastodon और Bluesky के टूल हिन्दी में: Twitter फ़ॉलो आयात करें, पोस्ट शेड्यूल करें, तस्वीरें डाउनलोड करें, मिलते-जुलते हैशटैग खोजें। सीधे आपके ब्राउज़र में।',
+  },
+  uk: {
+    title: 'Безкоштовні інструменти для Mastodon і Bluesky',
+    description:
+      'Безкоштовні інструменти для Mastodon і Bluesky українською: перенесіть підписки з Twitter, плануйте дописи, завантажуйте зображення, знаходьте схожі хештеги та інше. Усе в браузері.',
+  },
   'zh-Hant': {
     title: 'Mastodon 與 Bluesky 免費工具',
     description:

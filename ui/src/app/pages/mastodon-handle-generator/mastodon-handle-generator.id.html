@@ -1,0 +1,54 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Generator nama pengguna</p>
+    <h1>Buat nama pengguna Mastodon</h1>
+    <p>
+      Ketik namamu dan dapatkan nama pengguna yang bisa dipakai. Setiap saran diperiksa di server
+      Mastodon pilihanmu, dan nama favoritmu juga diperiksa di server terbesar. Tidak perlu akun.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/id/generator-nama-pengguna-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Memuat generator…</p>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Seperti apa handle Mastodon?</h3>
+    <p>
+      Dua bagian: nama pengguna dan server, misalnya &#64;matthew_martin&#64;mastodon.social. Nama
+      pengguna bisa berisi huruf, angka, dan garis bawah, hingga 30 karakter. Huruf besar tidak
+      membuat nama berbeda.
+    </p>
+    <h3>Mengapa memeriksa lebih dari satu server?</h3>
+    <p>
+      Setiap server memiliki nama pengguna sendiri. Nama yang sudah dipakai di mastodon.social
+      mungkin tersedia di server lain. Orang dari server mana pun tetap bisa mengikutimu.
+    </p>
+    <h3>Apakah tampaknya tersedia berarti dijamin?</h3>
+    <p>
+      Tidak sepenuhnya. Artinya belum ada akun di server itu yang memakai nama tersebut hari ini.
+      Nama akun yang dihapus tetap dicadangkan, dan admin bisa mencadangkan kata. Formulir
+      pendaftaran yang menentukan akhirnya.
+    </p>
+    <h3>Server mana yang dianggap terbesar?</h3>
+    <p>
+      Server dengan pendaftaran terbanyak di direktori joinmastodon.org yang mengikuti kesepakatan
+      server Mastodon. Sebagian perlu persetujuan admin untuk akun baru; daftar menunjukkan yang
+      mana.
+    </p>
+  </section>
+</main>

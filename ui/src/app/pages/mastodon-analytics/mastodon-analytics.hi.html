@@ -1,0 +1,66 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon के आँकड़े</p>
+    <h1>आपके अकाउंट के लिए Mastodon के आँकड़े</h1>
+    <p>
+      देखें कि आपकी पोस्ट कैसी चल रही हैं और कौन उन्हें पढ़ रहा है।
+      @if (!inShell) {
+        Mastodon से साइन इन करें; आँकड़े आपकी पोस्ट और फ़ॉलोअर से यहीं निकाले जाते हैं।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">आँकड़े लोड हो रहे हैं…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>आपकी बेहतरीन पोस्ट</h2>
+        <p>लोकप्रिय पोस्ट, हर पोस्ट पर पसंदीदा, बूस्ट और जवाब, और पहुँच का अनुमान।</p>
+      </li>
+      <li>
+        <h2>आपके पाठक</h2>
+        <p>
+          आपकी फ़ॉलो सूची और फ़ॉलोअर में कितने लोग अब भी सक्रिय हैं, और आप किससे सबसे अधिक बात करते
+          हैं।
+        </p>
+      </li>
+      <li>
+        <h2>आपकी आदतें</h2>
+        <p>आप कब, कितनी बार, किन भाषाओं और विषयों पर पोस्ट करते हैं — पोस्ट कैलेंडर में देखें।</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >अपने आँकड़े देखने के लिए Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>मेरा डेटा कहाँ भेजा जाता है?</h3>
+    <p>
+      कहीं नया नहीं। पोस्ट और फ़ॉलोअर आपके अपने Mastodon सर्वर से पढ़े जाते हैं और गणना ब्राउज़र में
+      होती है। Mawkingbird कोई कॉपी नहीं रखता।
+    </p>
+    <h3>पहुँच एक अनुमान क्यों है?</h3>
+    <p>
+      Mastodon व्यू नहीं गिनता। पहुँच का अनुमान आपके फ़ॉलोअर और उनकी प्रतिक्रियाओं से लगाया जाता है,
+      और संख्या के पास यही बताया जाता है।
+    </p>
+  </section>
+</main>

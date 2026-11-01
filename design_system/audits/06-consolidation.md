@@ -1308,3 +1308,73 @@ Reviewed the regenerated inventory: the changes are in those files, with line
 shifts elsewhere. `catalogue-panel.ts` is a new candidate (253 in total),
 reconciled as adopted scope. Shared widget implementations are unchanged;
 Compose gains only an `acceptHandoff` input.
+
+## Ukrainian public tools, 2026-11-01
+
+Reviewed all 17 new Ukrainian template candidates against their existing locale
+twins: shared Button and Content Link actions, the shared language menu, and
+the native search fallback retain their semantics. The inventory adds 17 files
+(466 candidate files total); no candidates were removed. Reconciled each with
+its Polish twin’s disposition in `11-reconciliation.json`. Source line numbers
+were regenerated after formatting. Shared widget implementations are unchanged.
+
+## Hindi public tools, 2026-11-01
+
+Reviewed the 17 new Hindi template candidates against their locale twins.
+Button, Content Link and the shared language menu keep their semantics;
+the search fallback keeps its native form and translated accessible name.
+The inventory now has 483 candidate files, with no removals. Each Hindi file
+uses its Polish twin’s disposition in `11-reconciliation.json`. No shared
+widget implementations changed.
+
+Hindi follow-up review: restored whitespace around the Twitter archive filenames
+to preserve mobile line breaks, corrected the Hindi Invite return path, and
+regenerated the inventory after the translation-provider comment line shifts.
+Candidate membership remains 483. No shared widgets changed.
+
+## Dutch public tools, 2026-11-01
+
+Reviewed all 17 Dutch template candidates against their translated twins.
+Shared Button, Content Link and language menu semantics are unchanged.
+The search fallback remains a native form with Dutch accessible names.
+Inline archive filenames retain spaces for line wrapping. All 17 entries
+use their Polish twin’s disposition in `11-reconciliation.json`; no
+candidates were removed. The inventory now has 500 candidate files.
+No shared widget implementations changed.
+
+## Indonesian public tools, 2026-11-01
+
+Reviewed the 17 new Indonesian templates against their translated twins.
+Button, Content Link and language menu semantics stay intact. The search
+fallback keeps its native form and Indonesian accessible names. Inline
+archive filenames retain wrapping spaces. All 17 files use their Polish
+twin’s disposition in `11-reconciliation.json`; no candidates were removed.
+The inventory now has 517 candidate files. No shared widgets changed.
+
+## Russian public tools, 2026-11-01
+
+Reviewed the 17 Russian templates against their translated twins. Button,
+Content Link and language menu semantics are unchanged. The search fallback
+keeps its native form and Russian accessible names; archive filenames keep
+wrapping spaces. All 17 candidates use their Polish twin’s disposition in
+`11-reconciliation.json`, with no removals. The inventory now has 534
+candidate files. No shared widget implementations changed.
+
+## Swedish public tools, 2026-11-01
+
+Reviewed all 17 Swedish templates against their translated twins. Button,
+Content Link and language menu semantics are unchanged. The search fallback
+keeps its native form and Swedish accessible names. Inline archive filenames
+retain spaces for wrapping. Each new candidate uses its Polish twin’s
+disposition in `11-reconciliation.json`; none were removed. The inventory
+now contains 551 candidate files. No shared widget implementations changed.
+
+## Vietnamese public tools, 2026-11-01
+
+Reviewed the 17 Vietnamese templates against their translated twins. Button,
+Content Link and language-menu controls retain their semantics. The native
+search fallback has Vietnamese accessible names. Inline archive filenames
+retain wrapping spaces; internal tool links and invite paths use Vietnamese
+routes. Each candidate has its Polish twin's disposition in
+`11-reconciliation.json`; no candidates were removed. The reviewed inventory
+has 568 candidate files across 1,604 sources. No shared widgets changed.

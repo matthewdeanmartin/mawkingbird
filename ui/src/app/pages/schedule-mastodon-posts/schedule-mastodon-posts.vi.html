@@ -1,0 +1,81 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Lên lịch Mastodon</p>
+    <h1>Lên lịch bài đăng Mastodon</h1>
+    <p>
+      Viết bài cho cả tuần một lần và để máy chủ Mastodon đăng đúng giờ.
+      @if (!inShell) {
+        Đăng nhập bằng Mastodon, viết bài, chọn giờ bài đầu và khoảng cách giữa các bài là xong.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải công cụ lên lịch…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Viết bài đăng</h2>
+        <p>Viết bao nhiêu tùy bạn, mỗi bài một ô, tối đa 500 ký tự mỗi bài.</p>
+      </li>
+      <li>
+        <h2>Giãn lịch đăng</h2>
+        <p>
+          Chọn giờ đầu và khoảng cách: mỗi ngày 9 giờ hoặc mỗi ba giờ. Có thể đặt giờ riêng cho từng
+          bài.
+        </p>
+      </li>
+      <li>
+        <h2>Đóng thẻ trình duyệt</h2>
+        <p>
+          Máy chủ Mastodon giữ bài và đăng từng bài đúng giờ. Không có gì phải chờ trong trình
+          duyệt.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để lên lịch</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Mastodon lên lịch bài được không?</h3>
+    <p>
+      Có. Mọi máy chủ Mastodon có thể giữ bài để đăng sau, nhưng trang web Mastodon tiêu chuẩn không
+      có nút cho việc này. Trang này dùng tính năng sẵn có đó, nên bài nằm trên máy chủ của bạn,
+      không ở Mawkingbird.
+    </p>
+    <h3>Tôi cần giữ trang này mở không?</h3>
+    <p>
+      Không. Khi đã lên lịch, bài nằm trên máy chủ Mastodon và được đăng đúng giờ dù máy tính của
+      bạn có bật hay không.
+    </p>
+    <h3>Có giới hạn không?</h3>
+    <p>
+      Mastodon cho phép 300 bài chờ cùng lúc và 25 bài mỗi ngày; mỗi bài phải cách hiện tại ít nhất
+      năm phút. Công cụ kiểm tra trước khi gửi.
+    </p>
+    <h3>Tôi có thể đổi ý không?</h3>
+    <p>Có. Bài đã lên lịch nằm bên dưới công cụ và có thể hủy cho đến khi đăng.</p>
+    <h3>Có dùng cho Bluesky không?</h3>
+    <p>
+      Không tại đây. Bluesky không có tính năng lên lịch sẵn, nên trang này chỉ dành cho Mastodon.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,80 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS и OPML</p>
+    <h1>Найди блоги и RSS-ленты своих подписок в Mastodon</h1>
+    <p>
+      Люди указывают сайты в профилях Mastodon. Инструмент ищет ленты по этим ссылкам и собирает
+      найденное в один файл OPML для любого RSS-приложения.
+      @if (!inShell) {
+        Это часть Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Загрузка…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Прочитай свои подписки</h2>
+        <p>Список подписок со ссылками из каждого профиля читается с твоего сервера Mastodon.</p>
+      </li>
+      <li>
+        <h2>Проверь их сайты</h2>
+        <p>
+          Каждый сайт проверяется на наличие ленты. Ты выбираешь число сайтов и можешь остановиться
+          в любой момент, сохранив найденное.
+        </p>
+      </li>
+      <li>
+        <h2>Скачай OPML</h2>
+        <p>
+          Импортируй файл в RSS-приложение или подпишись на ленты прямо в RSS-ридере Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Войти через Mastodon и найти ленты</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Посмотреть возможности Plus</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Почему это функция Plus?</h3>
+    <p>
+      Проверка сотен чужих сайтов идёт через прокси, который оплачивает Mawkingbird: один запрос на
+      сайт. Plus покрывает эти расходы.
+    </p>
+    <h3>Что такое файл OPML?</h3>
+    <p>
+      Формат списка подписок, который понимают все RSS-приложения. Импортируй его в Feedly,
+      NetNewsWire, Inoreader или другое приложение, чтобы добавить все ленты сразу.
+    </p>
+    <h3>Найдутся все?</h3>
+    <p>
+      Только люди со ссылкой на сайт в профиле, и только сайты с лентами. Крупные платформы без
+      личных лент пропускаются без проверки.
+    </p>
+    <h3>Повторный запуск стоит столько же?</h3>
+    <p>
+      Нет. Проверенные сайты запоминаются. После новых подписок повторное сканирование проверяет
+      только новые сайты.
+    </p>
+  </section>
+</main>

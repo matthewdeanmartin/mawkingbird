@@ -169,3 +169,87 @@ export class CrosspostIt extends Crosspost {
 export class CrosspostPl extends Crosspost {
   protected override readonly returnHere = { next: '/pl/publikuj-na-mastodonie-i-bluesky' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-crosspost-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostUk extends Crosspost {
+  protected override readonly returnHere = { next: '/uk/crosspost' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostHi extends Crosspost {
+  protected override readonly returnHere = { next: '/hi/crosspost' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostNl extends Crosspost {
+  protected override readonly returnHere = { next: '/nl/mastodon-en-bluesky-tegelijk' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostId extends Crosspost {
+  protected override readonly returnHere = { next: '/id/posting-mastodon-dan-bluesky' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostRu extends Crosspost {
+  protected override readonly returnHere = { next: '/ru/crosspost' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostSv extends Crosspost {
+  protected override readonly returnHere = { next: '/sv/posta-pa-mastodon-och-bluesky' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostVi extends Crosspost {
+  protected override readonly returnHere = { next: '/vi/crosspost' };
+}

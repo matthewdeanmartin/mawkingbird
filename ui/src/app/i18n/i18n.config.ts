@@ -29,7 +29,12 @@ import {
   translocoConfig,
 } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
-import { FALLBACK_LOCALE, SUPPORTED_LOCALES, TranslocoLocaleSync } from './locale';
+import {
+  FALLBACK_LOCALE,
+  IN_PROGRESS_LOCALES,
+  SUPPORTED_LOCALES,
+  TranslocoLocaleSync,
+} from './locale';
 import { externalFetch } from '../providers/external-fetch';
 import { BUILD_INFO } from '../build-info';
 
@@ -68,7 +73,10 @@ export class HttpTranslocoLoader implements TranslocoLoader {
 export function provideI18n(): EnvironmentProviders[] {
   return provideTransloco({
     config: translocoConfig({
-      availableLangs: [...SUPPORTED_LOCALES],
+      // Recognize shipped preview dictionaries for explicitly pinned public pages.
+      // UiLocale still owns which languages the picker and negotiation expose.
+      // Otherwise Transloco interprets a preview language (hi) as a scope name.
+      availableLangs: [...new Set([...SUPPORTED_LOCALES, ...IN_PROGRESS_LOCALES])],
       defaultLang: FALLBACK_LOCALE,
       fallbackLang: FALLBACK_LOCALE,
       // Re-render on language change, so the picker switches the UI live

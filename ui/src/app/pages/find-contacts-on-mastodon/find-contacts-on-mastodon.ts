@@ -169,3 +169,87 @@ export class FindContactsOnMastodonIt extends FindContactsOnMastodon {
 export class FindContactsOnMastodonPl extends FindContactsOnMastodon {
   protected override readonly returnHere = { next: '/pl/znajdz-kontakty-na-mastodonie' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonUk extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/uk/find-contacts-on-mastodon' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonHi extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/hi/find-contacts-on-mastodon' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonNl extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/nl/contacten-vinden-op-mastodon' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonId extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/id/cari-kontak-di-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonRu extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/ru/find-contacts-on-mastodon' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonSv extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/sv/hitta-kontakter-pa-mastodon' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonVi extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/vi/find-contacts-on-mastodon' };
+}

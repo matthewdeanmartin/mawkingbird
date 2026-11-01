@@ -1,0 +1,77 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">संपर्क</p>
+    <h1>फ़ोन के संपर्कों को Mastodon पर खोजें</h1>
+    <p>
+      आपके कुछ संपर्क पहले से Mastodon पर हैं। यह टूल उन्हें खोजता है ताकि आप पहचाने लोगों को फ़ॉलो
+      कर सकें।
+      @if (!inShell) {
+        Mastodon से साइन इन करें, संपर्क चुनें या संपर्क फ़ाइल अपलोड करें और परिणाम देखें।
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">खोज टूल लोड हो रहा है…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon से साइन इन करें</h2>
+        <p>खोज आपके अपने Mastodon सर्वर से होती है।</p>
+      </li>
+      <li>
+        <h2>अपने संपर्क चुनें</h2>
+        <p>
+          Android फ़ोन पर Chrome में सीधे संपर्क चुनें। दूसरे उपकरणों पर Google Contacts से निर्यात
+          की गई संपर्क फ़ाइल अपलोड करें।
+        </p>
+      </li>
+      <li>
+        <h2>पहचाने लोगों को फ़ॉलो करें</h2>
+        <p>
+          हर मेल के साथ उसका कारण दिखता है। एक-एक करके फ़ॉलो करें; आपकी ओर से अपने-आप कोई फ़ॉलो नहीं
+          होता।
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >संपर्क खोजने के लिए Mastodon से साइन इन करें</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>क्या मेरे संपर्क अपलोड होते हैं?</h3>
+    <p>
+      नहीं। संपर्क इसी ब्राउज़र में रहते हैं। उनसे बने खोज शब्द, जैसे नाम या यूज़रनेम, आपके Mastodon
+      सर्वर को जाते हैं। पेज बंद करने पर कुछ सहेजा नहीं जाता।
+    </p>
+    <h3>संपर्क फ़ाइल कैसे मिलेगी?</h3>
+    <p>
+      Google Contacts में निर्यात चुनें, Google CSV फ़ॉर्मैट चुनें और वही फ़ाइल यहाँ अपलोड करें।
+    </p>
+    <h3>मेल केवल अनुमान क्यों है?</h3>
+    <p>
+      Mastodon में फ़ोन नंबर या ईमेल से खोज नहीं है। संपर्क में सहेजे Mastodon यूज़रनेम, नाम, ईमेल
+      के नाम और डोमेन तथा वेबसाइट जैसे संकेत देखे जाते हैं। अनोखा नाम आसानी से मिलता है; आम नाम से
+      अनजान लोग भी आ सकते हैं। इसीलिए हर फ़ॉलो आप चुनते हैं।
+    </p>
+    <h3>कोई अभी Mastodon पर नहीं है?</h3>
+    <p>उन्हें आमंत्रित करें: खोज के बाद तैयार निमंत्रण एक क्लिक दूर हैं।</p>
+  </section>
+</main>

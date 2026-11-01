@@ -1,0 +1,52 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">यूज़रनेम जनरेटर</p>
+    <h1>Mastodon यूज़रनेम जनरेटर</h1>
+    <p>
+      अपना नाम लिखें और ऐसे यूज़रनेम पाएँ जिन्हें ले सकते हैं। हर सुझाव आपके चुने Mastodon सर्वर पर
+      जाँचा जाता है, और पसंद किया नाम सबसे बड़े सर्वरों पर भी। अकाउंट ज़रूरी नहीं।
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/hi/mastodon-handle-generator/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">जनरेटर लोड हो रहा है…</p>
+  }
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    <h3>Mastodon यूज़रनेम कैसा होता है?</h3>
+    <p>
+      दो हिस्से: यूज़रनेम और सर्वर, जैसे &#64;matthew_martin&#64;mastodon.social। यूज़रनेम में 30
+      अक्षरों तक लैटिन अक्षर, अंक और अंडरस्कोर हो सकते हैं। बड़े-छोटे अक्षर अलग नाम नहीं बनाते।
+    </p>
+    <h3>एक से अधिक सर्वर क्यों जाँचें?</h3>
+    <p>
+      हर सर्वर के अपने यूज़रनेम होते हैं। mastodon.social पर लिया नाम दूसरे सर्वर पर खाली हो सकता
+      है। किसी भी सर्वर से लोग आपको फ़ॉलो कर सकते हैं।
+    </p>
+    <h3>क्या उपलब्ध लगता है एक गारंटी है?</h3>
+    <p>
+      पूरी नहीं। मतलब है कि आज उस सर्वर पर कोई अकाउंट यह नाम नहीं इस्तेमाल करता। हटाए अकाउंट के नाम
+      आरक्षित रहते हैं और व्यवस्थापक कुछ शब्द आरक्षित कर सकते हैं। अंतिम फैसला पंजीकरण फ़ॉर्म करता
+      है।
+    </p>
+    <h3>सबसे बड़े सर्वर कौन से हैं?</h3>
+    <p>
+      joinmastodon.org की उस डायरेक्टरी में सबसे अधिक पंजीकरण वाले सर्वर, जो Mastodon सर्वर समझौते
+      का पालन करते हैं। कुछ को नए अकाउंट मंज़ूर करने होते हैं; सूची में बताया जाता है।
+    </p>
+  </section>
+</main>

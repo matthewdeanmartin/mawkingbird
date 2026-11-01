@@ -1,0 +1,71 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Statistik Mastodon</p>
+    <h1>Statistik Mastodon untuk akunmu</h1>
+    <p>
+      Lihat kinerja postinganmu dan siapa yang membacanya.
+      @if (!inShell) {
+        Masuk dengan Mastodon. Statistik dihitung di sini dari postingan dan pengikutmu sendiri.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Memuat statistikmu…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Postingan terbaikmu</h2>
+        <p>
+          Postingan teratas, favorit, boost dan balasan per postingan, serta perkiraan jangkauan.
+        </p>
+      </li>
+      <li>
+        <h2>Audiensmu</h2>
+        <p>
+          Berapa orang yang kamu ikuti dan yang mengikutimu masih aktif, serta siapa yang paling
+          sering kamu ajak bicara.
+        </p>
+      </li>
+      <li>
+        <h2>Kebiasaanmu</h2>
+        <p>
+          Kapan dan seberapa sering kamu memposting, dalam bahasa apa dan tentang apa, ditampilkan
+          di kalender postingan.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk melihat statistikmu</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Ke mana dataku dikirim?</h3>
+    <p>
+      Tidak ke tempat baru. Postingan dan pengikut dibaca dari server Mastodon-mu, lalu dihitung di
+      browser ini. Mawkingbird tidak menyimpan salinan.
+    </p>
+    <h3>Mengapa jangkauan hanya perkiraan?</h3>
+    <p>
+      Mastodon tidak menghitung tayangan. Jangkauan diperkirakan dari pengikut dan interaksi mereka.
+      Keterangan itu ditampilkan di samping angkanya.
+    </p>
+  </section>
+</main>

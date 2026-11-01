@@ -1,0 +1,63 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Из GitHub в Mastodon</p>
+    <h1>Найди знакомых из GitHub в Mastodon</h1>
+    <p>
+      Многие разработчики указывают Mastodon в профиле GitHub. Mawkingbird проверяет твои подписки в
+      GitHub и владельцев репозиториев, отмеченных звездой, чтобы можно было подписаться на них в
+      Mastodon.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Загрузка поиска…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Войди через Mastodon</h2>
+        <p>Подписки оформляются с твоей учётной записи Mastodon, поэтому сначала войди.</p>
+      </li>
+      <li>
+        <h2>Подключи GitHub</h2>
+        <p>
+          Вставь личный токен доступа GitHub. Страница объяснит, как его создать. GitHub не
+          позволяет браузерным приложениям входить иначе. Токен остаётся в этом браузере.
+        </p>
+      </li>
+      <li>
+        <h2>Найди и подпишись</h2>
+        <p>
+          Сначала проверяются ссылки на Mastodon в профилях, затем выполняется ограниченный поиск по
+          имени. У каждого совпадения есть пояснение; ты выбираешь, на кого подписаться.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Войти через Mastodon</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Куда отправляется мой токен GitHub?</h3>
+    <p>
+      Он хранится в этом браузере и отправляется только на <code>api.github.com</code>, но не в
+      Mawkingbird. Его можно в любой момент отозвать в GitHub.
+    </p>
+    <h3>Подписки оформляются автоматически?</h3>
+    <p>Нет. Для каждой подписки нужно нажать кнопку рядом с пояснением совпадения.</p>
+  </section>
+</main>

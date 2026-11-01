@@ -1,0 +1,96 @@
+<main class="focused-page" lang="hi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">ऐप खोलें</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky खोज</p>
+      <h1>Bluesky पर खोजें</h1>
+      <p>Twitter जैसे खोज फ़िल्टर के साथ Bluesky पर लोग और पोस्ट खोजें।</p>
+    } @else {
+      <p class="eyebrow">Mastodon खोज</p>
+      <h1>Mastodon पर खोजें</h1>
+      <p>Twitter जैसे खोज फ़िल्टर के साथ Mastodon पर पोस्ट, लोग और हैशटैग खोजें।</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Bluesky पर खोजें' : 'Mastodon पर खोजें'"
+        [attr.placeholder]="network === 'bluesky' ? 'Bluesky पर खोजें' : 'Mastodon पर खोजें'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">खोजें</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>खोज सीमित करें</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, भाषा, तारीखें और "सटीक वाक्यांश" — लिखें या फ़िल्टर से चुनें।
+        } @else {
+          from:someone, has:media, is:reply, तारीखें और "सटीक वाक्यांश" — लिखें या फ़िल्टर से चुनें।
+        }
+      </p>
+    </li>
+    <li>
+      <h2>क्रम और फ़िल्टर चुनें</h2>
+      <p>तारीख, मीडिया और लेखक से परिणाम छाँटें और देखें कि असल में क्या खोजा गया।</p>
+    </li>
+    <li>
+      <h2>अपनी खोजें सहेजें</h2>
+      <p>खोज सहेजकर एक क्लिक में फिर चलाएँ या लिंक के रूप में साझा करें।</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>सवाल</h2>
+    @if (network === 'bluesky') {
+      <h3>क्या Bluesky अकाउंट ज़रूरी है?</h3>
+      <p>
+        लोग खोजने के लिए नहीं। Bluesky पोस्ट की खोज केवल साइन इन करने पर देता है। उसके लिए Bluesky
+        से साइन इन करें; फिर इसी पेज पर लौटेंगे।
+      </p>
+      <h3>क्या Mastodon पर भी खोज सकता हूँ?</h3>
+      <p>
+        हाँ:<a mbContentLink routerLink="/hi/mastodon-search">Mastodon पर खोजें</a>, या परिणाम पेज
+        पर नेटवर्क बदलें।
+      </p>
+    } @else {
+      <h3>क्या Mastodon अकाउंट ज़रूरी है?</h3>
+      <p>
+        नहीं। बिना अकाउंट लोग और हैशटैग, तथा हैशटैग से पोस्ट खोज सकते हैं। Mastodon सर्वर बिना साइन
+        इन पूरे टेक्स्ट की खोज नहीं देते। पोस्ट के शब्द खोजने के लिए साइन इन करें; फिर यहीं लौटेंगे।
+      </p>
+      <h3>यह मेरे सर्वर की खोज से बेहतर कैसे है?</h3>
+      <p>
+        खोज वही सर्वर करता है, लेकिन यहाँ एक बॉक्स के साथ फ़िल्टर, क्रम, सहेजी खोजें और खोजे गए
+        अनुरोध की व्याख्या भी मिलती है।
+      </p>
+      <h3>क्या Bluesky पर भी खोज सकता हूँ?</h3>
+      <p>
+        हाँ:<a mbContentLink routerLink="/hi/bluesky-search">Bluesky पर खोजें</a>, या परिणाम पेज पर
+        नेटवर्क बदलें।
+      </p>
+    }
+  </section>
+</main>

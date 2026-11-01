@@ -1,0 +1,70 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Thống kê Mastodon</p>
+    <h1>Thống kê cho tài khoản Mastodon</h1>
+    <p>
+      Xem hiệu quả bài đăng và ai đang quan tâm.
+      @if (!inShell) {
+        Đăng nhập bằng Mastodon để tính các số liệu ngay tại đây từ bài đăng và người theo dõi của
+        bạn.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">Đang tải thống kê…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Bài đăng nổi bật</h2>
+        <p>
+          Bài hàng đầu, lượt yêu thích, đăng lại và trả lời mỗi bài, cùng ước lượng phạm vi tiếp
+          cận.
+        </p>
+      </li>
+      <li>
+        <h2>Độc giả của bạn</h2>
+        <p>
+          Bao nhiêu người trong danh sách theo dõi hai chiều còn hoạt động và bạn trò chuyện với ai
+          nhiều nhất.
+        </p>
+      </li>
+      <li>
+        <h2>Thói quen của bạn</h2>
+        <p>Thời điểm, tần suất, ngôn ngữ và chủ đề bạn đăng, trình bày trên lịch đăng bài.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để xem thống kê</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Dữ liệu được gửi đi đâu?</h3>
+    <p>
+      Không đến nơi nào mới. Bài đăng và người theo dõi được đọc từ máy chủ Mastodon, các số liệu
+      được tính trong trình duyệt. Mawkingbird không giữ bản sao.
+    </p>
+    <h3>Vì sao phạm vi tiếp cận là ước lượng?</h3>
+    <p>
+      Mastodon không đếm lượt xem. Phạm vi tiếp cận được ước lượng từ người theo dõi và tương tác
+      của họ; trang ghi rõ điều này cạnh số liệu.
+    </p>
+  </section>
+</main>

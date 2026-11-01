@@ -1,0 +1,81 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Inhoudswaarschuwingen</p>
+    <h1>Zo zet je inhoudswaarschuwingen uit op Mastodon</h1>
+    <p>
+      Ben je het klikken op Meer tonen bij elk bericht of het openen van vervaagde foto's zat? Laat
+      inhoudswaarschuwingen vanzelf openen en gevoelige media meteen zien.
+      @if (!inShell) {
+        Log in en zet twee schakelaars om.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Je instellingen laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Open inhoudswaarschuwingen automatisch</h2>
+        <p>
+          Berichten met een inhoudswaarschuwing openen vanzelf. Je blijft de waarschuwingstekst
+          zien.
+        </p>
+      </li>
+      <li>
+        <h2>Toon gevoelige media</h2>
+        <p>Foto's en video's die als gevoelig zijn gemarkeerd verschijnen zonder vervaging.</p>
+      </li>
+      <li>
+        <h2>Of alleen voor mensen die je vertrouwt</h2>
+        <p>
+          Houd waarschuwingen bij vreemden gesloten en bij vrienden open. Vertrouw afzonderlijke
+          mensen of iedereen die je volgt.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om ze uit te zetten</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Hoe doe ik dit op de Mastodon-website?</h3>
+    <p>
+      Open de voorkeuren op je server, zet het altijd uitklappen van berichten met
+      inhoudswaarschuwingen aan en kies bij mediaweergave voor Alles tonen. Die instellingen horen
+      bij je server en worden door de website en sommige apps gebruikt.
+    </p>
+    <h3>Waarom kan Mawkingbird de serverinstelling niet veranderen?</h3>
+    <p>
+      Mastodon laat apps deze voorkeuren lezen, maar niet wijzigen. Daarom heeft Mawkingbird eigen
+      schakelaars. Na het inloggen toont deze pagina de instellingen van je server.
+    </p>
+    <h3>Zie ik nog dat een bericht een waarschuwing had?</h3>
+    <p>
+      Ja. De waarschuwingstekst blijft boven het bericht staan. Alleen het klikken om het te openen
+      vervalt.
+    </p>
+    <h3>Verandert dit wat anderen zien?</h3>
+    <p>
+      Nee. Het verandert alleen hoe berichten voor jou openen. Voor anderen blijven de
+      waarschuwingen van de auteurs staan.
+    </p>
+  </section>
+</main>

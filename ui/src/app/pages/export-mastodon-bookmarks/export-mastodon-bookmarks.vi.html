@@ -1,0 +1,77 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Dấu trang Mastodon</p>
+    <h1>Xuất dấu trang Mastodon</h1>
+    <p>
+      Tải mọi bài bạn đánh dấu trên Mastodon thành tệp dấu trang để nhập vào trình duyệt,
+      Raindrop.io, Pinboard hoặc dịch vụ dấu trang khác. Đánh dấu bài vì liên kết bài viết được chia
+      sẻ? Lấy liên kết để lưu chính bài viết đó.
+      @if (!inShell) {
+        Đăng nhập bằng Mastodon để bắt đầu.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đọc dấu trang</h2>
+        <p>Mọi dấu trang trong tài khoản Mastodon, đọc từ máy chủ của bạn.</p>
+      </li>
+      <li>
+        <h2>Chọn nội dung cần giữ</h2>
+        <p>
+          Chính bài đăng, liên kết được chia sẻ trong bài, hoặc chỉ các dấu trang chia sẻ liên kết.
+        </p>
+      </li>
+      <li>
+        <h2>Nhập tệp</h2>
+        <p>
+          Tệp dấu trang chuẩn của trình duyệt: mở trình quản lý dấu trang hoặc dịch vụ dấu trang rồi
+          nhập tệp.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để xuất dấu trang</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Mastodon chưa xuất được dấu trang sao?</h3>
+    <p>
+      Bản xuất dữ liệu liệt kê dấu trang dưới dạng bảng địa chỉ bài đăng mà trình duyệt và dịch vụ
+      dấu trang không nhập được. Tệp này nhập được, kèm tiêu đề, nội dung và hashtag.
+    </p>
+    <h3>“Lấy liên kết” nghĩa là gì?</h3>
+    <p>
+      Nhiều bài được đánh dấu vì một liên kết: bài viết, video hay dự án. Tùy chọn này lưu liên kết
+      đó thay vì bài đăng, giữ văn bản bài đăng làm mô tả.
+    </p>
+    <h3>Dấu trang có được tải lên đâu không?</h3>
+    <p>
+      Không. Dấu trang được đọc từ máy chủ Mastodon và tệp được tạo trong trình duyệt. Không gửi gì
+      đến Mawkingbird.
+    </p>
+    <h3>Ngày tháng có chính xác không?</h3>
+    <p>Mỗi dấu trang mang ngày viết bài đăng. Mastodon không ghi lại lúc bạn đánh dấu.</p>
+  </section>
+</main>

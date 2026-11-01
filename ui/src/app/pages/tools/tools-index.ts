@@ -206,3 +206,129 @@ export class ToolsIndexPl extends ToolsIndex {
     account: 'Zadbaj o swoje konto',
   });
 }
+
+/** /uk/: the Ukrainian pages, the same way. */
+@Component({
+  selector: 'app-tools-index-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.uk.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexUk extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Почніть у Mastodon',
+    languages: 'Ваші мови',
+    search: 'Пошук',
+    people: 'Знайдіть своїх людей',
+    post: 'Публікації',
+    account: 'Догляд за обліковим записом',
+  });
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.hi.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexHi extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Mastodon पर शुरुआत',
+    languages: 'आपकी भाषाएँ',
+    search: 'खोज',
+    people: 'अपने लोगों को खोजें',
+    post: 'पोस्ट करें',
+    account: 'अपने अकाउंट की देखभाल',
+  });
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.nl.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexNl extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Beginnen met Mastodon',
+    languages: 'Je talen',
+    search: 'Zoeken',
+    people: 'Vind je mensen',
+    post: 'Berichten plaatsen',
+    account: 'Je account onderhouden',
+  });
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.id.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexId extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Mulai di Mastodon',
+    languages: 'Bahasamu',
+    search: 'Pencarian',
+    people: 'Temukan temanmu',
+    post: 'Memposting',
+    account: 'Kelola akunmu',
+  });
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.ru.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexRu extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Начни с Mastodon',
+    languages: 'Твои языки',
+    search: 'Поиск',
+    people: 'Найди своих',
+    post: 'Публикации',
+    account: 'Порядок в учётной записи',
+  });
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.sv.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexSv extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Kom igång med Mastodon',
+    languages: 'Dina språk',
+    search: 'Sök',
+    people: 'Hitta dina vänner',
+    post: 'Publicera',
+    account: 'Ta hand om ditt konto',
+  });
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.vi.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexVi extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: 'Bắt đầu với Mastodon',
+    languages: 'Ngôn ngữ của bạn',
+    search: 'Tìm kiếm',
+    people: 'Tìm bạn bè',
+    post: 'Đăng bài',
+    account: 'Quản lý tài khoản',
+  });
+}

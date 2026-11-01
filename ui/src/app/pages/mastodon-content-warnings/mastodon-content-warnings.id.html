@@ -1,0 +1,79 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Peringatan konten</p>
+    <h1>Cara menonaktifkan peringatan konten di Mastodon</h1>
+    <p>
+      Bosan menekan Tampilkan lebih banyak di setiap postingan atau membuka foto yang diburamkan?
+      Buka peringatan konten otomatis dan tampilkan media sensitif langsung.
+      @if (!inShell) {
+        Masuk, lalu ubah dua sakelar.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-content-warnings-workbench />
+    } @placeholder {
+      <p class="muted">Memuat pengaturanmu…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Buka peringatan konten otomatis</h2>
+        <p>Postingan berperingatan terbuka sendiri. Teks peringatannya tetap terlihat.</p>
+      </li>
+      <li>
+        <h2>Tampilkan media sensitif</h2>
+        <p>Foto dan video bertanda sensitif ditampilkan tanpa diburamkan.</p>
+      </li>
+      <li>
+        <h2>Atau hanya untuk orang tepercaya</h2>
+        <p>
+          Biarkan peringatan orang asing tertutup dan peringatan teman terbuka. Percayai orang
+          tertentu atau semua orang yang kamu ikuti.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk menonaktifkannya</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Bagaimana melakukannya di situs Mastodon?</h3>
+    <p>
+      Buka Pengaturan di servermu, aktifkan opsi untuk selalu membuka postingan berperingatan
+      konten, lalu pilih Tampilkan semua pada tampilan media. Pengaturan server itu dipakai situs
+      dan beberapa aplikasi.
+    </p>
+    <h3>Mengapa Mawkingbird tidak bisa mengubah pengaturan server?</h3>
+    <p>
+      Mastodon mengizinkan aplikasi membaca pengaturan itu, tetapi tidak mengubahnya. Jadi
+      Mawkingbird memiliki sakelar sendiri. Setelah masuk, halaman ini menampilkan pengaturan server
+      saat ini.
+    </p>
+    <h3>Apakah aku tetap tahu ada peringatan pada postingan?</h3>
+    <p>
+      Ya. Teks peringatan tetap di atas postingan. Hanya klik untuk membukanya yang tidak
+      diperlukan.
+    </p>
+    <h3>Apakah tampilan bagi orang lain berubah?</h3>
+    <p>
+      Tidak. Ini hanya mengubah cara postingan dibuka untukmu. Peringatan penulis tetap berlaku bagi
+      orang lain.
+    </p>
+  </section>
+</main>

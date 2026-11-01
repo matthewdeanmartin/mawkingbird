@@ -175,3 +175,87 @@ export class MastodonContentWarningsIt extends MastodonContentWarnings {
 export class MastodonContentWarningsPl extends MastodonContentWarnings {
   protected override readonly returnHere = { next: '/pl/wylacz-ostrzezenia-o-tresci-mastodon' };
 }
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.uk.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsUk extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/uk/turn-off-content-warnings-mastodon' };
+}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.hi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsHi extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/hi/turn-off-content-warnings-mastodon' };
+}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.nl.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsNl extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/nl/inhoudswaarschuwingen-uitzetten-mastodon' };
+}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.id.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsId extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/id/nonaktifkan-peringatan-konten-mastodon' };
+}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.ru.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsRu extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/ru/turn-off-content-warnings-mastodon' };
+}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.sv.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsSv extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/sv/stang-av-innehallsvarningar-mastodon' };
+}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.vi.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsVi extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/vi/turn-off-content-warnings-mastodon' };
+}

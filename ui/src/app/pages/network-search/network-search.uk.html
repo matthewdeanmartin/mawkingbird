@@ -1,0 +1,97 @@
+<main class="focused-page" lang="uk">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Відкрити застосунок</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Пошук у Bluesky</p>
+      <h1>Пошук у Bluesky</h1>
+      <p>Знаходьте людей і дописи в Bluesky із фільтрами пошуку, знайомими з Twitter.</p>
+    } @else {
+      <p class="eyebrow">Пошук у Mastodon</p>
+      <h1>Пошук у Mastodon</h1>
+      <p>Знаходьте дописи, людей і хештеги в Mastodon із фільтрами пошуку, знайомими з Twitter.</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Пошук у Bluesky' : 'Пошук у Mastodon'"
+        [attr.placeholder]="network === 'bluesky' ? 'Пошук у Bluesky' : 'Пошук у Mastodon'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Шукати</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Звузьте пошук</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, мова, дати й «точні фрази» — введіть або виберіть у фільтрах.
+        } @else {
+          from:someone, has:media, is:reply, дати й «точні фрази» — введіть або виберіть у фільтрах.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Сортуйте й уточнюйте</h2>
+      <p>Фільтруйте результати за датою, медіа та автором і дивіться, що саме шукали.</p>
+    </li>
+    <li>
+      <h2>Зберігайте пошуки</h2>
+      <p>Збережіть пошук і повторюйте його одним натисканням або поділіться посиланням.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Запитання</h2>
+    @if (network === 'bluesky') {
+      <h3>Чи потрібен обліковий запис Bluesky?</h3>
+      <p>
+        Для пошуку людей — ні. Пошук дописів Bluesky доступний лише після входу. Увійдіть через
+        Bluesky й повернетеся сюди.
+      </p>
+      <h3>Чи можна шукати також у Mastodon?</h3>
+      <p>
+        Так: <a mbContentLink routerLink="/uk/mastodon-search">пошук у Mastodon</a> або змініть
+        мережу на сторінці результатів.
+      </p>
+    } @else {
+      <h3>Чи потрібен обліковий запис Mastodon?</h3>
+      <p>
+        Ні. Без нього можна шукати людей і хештеги, а дописи — за хештегом: сервери Mastodon не
+        дозволяють анонімний повнотекстовий пошук. Увійдіть, щоб шукати слова в дописах; потім
+        повернетеся сюди.
+      </p>
+      <h3>Чим це краще за пошук мого сервера?</h3>
+      <p>
+        Шукає той самий сервер, але тут є фільтри, сортування, збережені пошуки й пояснення запиту,
+        а не лише одне поле.
+      </p>
+      <h3>Чи можна шукати також у Bluesky?</h3>
+      <p>
+        Так: <a mbContentLink routerLink="/uk/bluesky-search">пошук у Bluesky</a> або змініть мережу
+        на сторінці результатів.
+      </p>
+    }
+  </section>
+</main>

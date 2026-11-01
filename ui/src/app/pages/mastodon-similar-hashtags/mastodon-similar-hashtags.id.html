@@ -1,0 +1,80 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Pencarian tagar</p>
+    <h1>Tagar serupa di Mastodon</h1>
+    <p>
+      Ketik satu atau beberapa tagar dan lihat tagar yang dipakai bersamanya, diurutkan menurut
+      seberapa sering muncul dalam postingan terbaru yang sama. Gunakan untuk membantu orang
+      menemukanmu atau menemukan lebih banyak hal untuk diikuti. Tidak perlu akun.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/id/tagar-serupa-mastodon/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Memuat…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Masukkan tagar</h2>
+        <p>Satu atau beberapa yang bermakna sama, seperti #dog dan #dogs.</p>
+      </li>
+      <li>
+        <h2>Sampel postingan terbaru</h2>
+        <p>200 postingan terakhir dengan salah satu tagar itu, dibaca dari mastodon.social.</p>
+      </li>
+      <li>
+        <h2>Lihat yang sering muncul bersama</h2>
+        <p>
+          Diurutkan menurut seberapa sering tagar muncul dalam postingan tersebut. Baca sampel lebih
+          banyak untuk gambaran lebih luas.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Masuk dengan Mastodon untuk memakai servermu sendiri</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Tagar apa yang sebaiknya kupakai di Mastodon?</h3>
+    <p>
+      Mastodon tidak punya algoritma yang menentukan siapa yang melihat postingan. Orang
+      menemukannya dengan mengikuti atau mencari tagar. Gunakan tagar yang sudah mereka pakai,
+      seperti dalam daftar ini. Tulis dalam CamelCase (#DogsOfMastodon) agar pembaca layar bisa
+      membacanya.
+    </p>
+    <h3>Bagaimana kemiripan ditentukan?</h3>
+    <p>
+      Dengan menghitung. Setiap tagar dalam sampel dihitung sekali per postingan, kecuali tagar yang
+      kamu masukkan. Tagar pada 40 dari 200 postingan berada di atas yang hanya muncul pada 5.
+    </p>
+    <h3>Mengapa membandingkan beberapa tagar sekaligus?</h3>
+    <p>
+      Satu topik punya beberapa ejaan: #dog dan #dogs, #photo dan #photography. Memasukkannya
+      bersama mengambil sampel dengan salah satu tagar itu agar percakapan lebih lengkap terwakili.
+    </p>
+    <h3>Mengapa hasil berbeda antarserver?</h3>
+    <p>
+      Setiap server Mastodon hanya melihat postingan orang yang diikuti penggunanya. Server besar
+      dan aktif memberi gambaran terluas. Setelah masuk, sampel berasal dari servermu sendiri dan
+      menunjukkan bagian jaringanmu.
+    </p>
+  </section>
+</main>

@@ -1,0 +1,69 @@
+<main class="focused-page" lang="sv">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Från Twitter till Mastodon</p>
+    <h1>Hitta dina Twitter-vänner på Mastodon</h1>
+    <p>
+      Hitta personerna du följde på Twitter som redan finns på Mastodon och följ dem igen med några
+      klick. Arkivet läses i den här webbläsaren; inget laddas upp.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Ladda ner ditt Twitter-arkiv</h2>
+      <p>
+        Öppna Inställningar → Ditt konto → Ladda ner ett arkiv med dina data på Twitter. Det kan ta
+        en dag eller mer. Packa upp arkivet när det kommer.
+      </p>
+    </li>
+    <li>
+      <h2>Välj arkivet här</h2>
+      <p>
+        Välj den uppackade mappen, eller bara filerna <code>data/following.js</code> och
+        <code>data/tweets.js</code> från den. Mawkingbird räknar personerna du följde, svarade och
+        nämnde.
+      </p>
+    </li>
+    <li>
+      <h2>Logga in med Mastodon och följ</h2>
+      <p>
+        Mawkingbird söker efter varje användarnamn på din Mastodon-server och visar möjliga träffar
+        med underlag. Du bestämmer vem du följer.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/sv/twitter-till-mastodon/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">Laddar importverktyget…</p>
+  }
+
+  <section class="questions">
+    <h2>Frågor</h2>
+    <h3>Laddas mitt arkiv upp någonstans?</h3>
+    <p>
+      Nej. Sidan läser filerna i din webbläsare. Bara sökningarna efter användarnamn skickas till
+      din egen Mastodon-server, och först efter att du loggat in.
+    </p>
+    <h3>Följer verktyget någon automatiskt?</h3>
+    <p>
+      Nej. Samma användarnamn är en ledtråd, inte ett bevis. Du trycker själv på en knapp för varje
+      följning. Du kan också ladda ner listan som CSV och behålla den.
+    </p>
+  </section>
+</main>

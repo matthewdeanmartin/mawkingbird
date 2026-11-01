@@ -1,0 +1,74 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Danh bạ</p>
+    <h1>Tìm người trong danh bạ trên Mastodon</h1>
+    <p>
+      Một số người trong danh bạ đã có trên Mastodon. Công cụ này tìm họ và cho bạn theo dõi người
+      bạn nhận ra.
+      @if (!inShell) {
+        Đăng nhập bằng Mastodon, chọn liên hệ hoặc tải tệp danh bạ lên để xem kết quả.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Đang tải công cụ tìm…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập bằng Mastodon</h2>
+        <p>Tìm kiếm chạy qua máy chủ Mastodon của bạn.</p>
+      </li>
+      <li>
+        <h2>Chọn liên hệ</h2>
+        <p>
+          Trên điện thoại Android dùng Chrome, chọn trực tiếp từ danh bạ. Ở nơi khác, tải lên tệp
+          xuất từ Google Contacts.
+        </p>
+      </li>
+      <li>
+        <h2>Theo dõi người bạn biết</h2>
+        <p>
+          Mỗi kết quả cho biết lý do được gợi ý. Theo dõi từng người; công cụ không tự theo dõi ai.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon để tìm người quen</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Danh bạ có được tải lên không?</h3>
+    <p>
+      Không. Danh bạ ở lại trong trình duyệt. Chỉ từ khóa như tên hoặc tên người dùng được gửi đến
+      máy chủ Mastodon của bạn, và không lưu gì khi đóng trang.
+    </p>
+    <h3>Lấy tệp danh bạ bằng cách nào?</h3>
+    <p>Trong Google Contacts, chọn Xuất và định dạng Google CSV, rồi tải tệp đó lên đây.</p>
+    <h3>Vì sao kết quả chỉ là phỏng đoán?</h3>
+    <p>
+      Mastodon không tìm theo số điện thoại hay email, nên công cụ dựa vào dấu hiệu: định danh
+      Mastodon trong liên hệ, tên, phần tên và tên miền email, trang web. Tên đặc biệt dễ tìm hơn;
+      tên phổ biến có thể ra người lạ, nên bạn tự chọn từng người để theo dõi.
+    </p>
+    <h3>Có người chưa dùng Mastodon?</h3>
+    <p>Mời họ: sau tìm kiếm, bạn có thể mở lời mời soạn sẵn chỉ bằng một lần nhấn.</p>
+  </section>
+</main>

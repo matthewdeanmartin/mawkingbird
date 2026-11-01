@@ -1,0 +1,93 @@
+<main class="focused-page" lang="vi">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Mở ứng dụng</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} sang {{ copy.to }}</p>
+    <h1>Tìm người bạn theo dõi từ {{ copy.from }} trên {{ copy.to }}</h1>
+    <p>
+      Nhiều người bạn theo dõi trên {{ copy.from }} cũng có trên {{ copy.to }}. Công cụ này tìm họ
+      để bạn theo dõi tại đó.
+      @if (!inShell) {
+        Đăng nhập bằng một tài khoản, kết nối tài khoản còn lại và xem ai đã có mặt.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Đang tải công cụ tìm…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Đăng nhập cả hai</h2>
+        <p>
+          Đăng nhập bằng Mastodon hoặc Bluesky rồi kết nối tài khoản còn lại ở màn hình tiếp theo.
+        </p>
+      </li>
+      <li>
+        <h2>Đọc danh sách theo dõi</h2>
+        <p>
+          Người bạn theo dõi trên {{ copy.from }} có ghi định danh {{ copy.to }} trong tiểu sử được
+          ghép ngay, không tốn phí.
+        </p>
+      </li>
+      <li>
+        <h2>Tìm những người còn lại rồi theo dõi</h2>
+        <p>
+          Tra tên những người khác, với số lượng bạn chọn, rồi theo dõi người bạn nhận ra bằng một
+          nút.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Đăng nhập bằng Mastodon</a
+      >
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Đăng nhập bằng Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Câu hỏi</h2>
+    <h3>Công cụ có tự theo dõi không?</h3>
+    <p>
+      Không. Người tự ghi định danh mạng kia được chọn sẵn; kết quả đoán từ tên thì không. Chưa theo
+      dõi ai cho đến khi bạn nhấn Theo dõi.
+    </p>
+    <h3>Vì sao thiếu một số người?</h3>
+    <p>
+      Chỉ có thể tìm người ghi định danh {{ copy.to }} hoặc có tên xuất hiện khi tìm kiếm. Người có
+      tên phổ biến và không ghi định danh trong tiểu sử có thể không xuất hiện.
+    </p>
+    <h3>Có thể làm chiều ngược lại không?</h3>
+    <p>
+      Có:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/vi/mastodon-to-bluesky"
+          >tìm người bạn theo dõi trên Mastodon ở Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/vi/bluesky-to-mastodon"
+          >tìm người bạn theo dõi trên Bluesky ở Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Thông tin đăng nhập được giữ ở đâu?</h3>
+    <p>
+      Trong trình duyệt này. Mawkingbird kết nối trực tiếp với máy chủ Mastodon và Bluesky; không có
+      máy chủ Mawkingbird trung gian giữ tài khoản.
+    </p>
+  </section>
+</main>

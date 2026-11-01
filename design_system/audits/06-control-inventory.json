@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1485,
-  "filesWithCandidates": 449,
+  "filesScanned": 1604,
+  "filesWithCandidates": 568,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -2898,7 +2898,43 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -2970,6 +3006,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -3002,6 +3056,78 @@
         {
           "pattern": "shared",
           "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/anonymous-on-mastodon/anonymous-on-mastodon.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
         }
       ]
     },
@@ -3632,6 +3758,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/crosspost/crosspost.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.html",
       "status": "needs semantic review",
       "findings": [
@@ -3650,6 +3798,28 @@
         {
           "pattern": "shared",
           "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 48
         }
       ]
     },
@@ -3720,6 +3890,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/crosspost/crosspost.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/crosspost/crosspost.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -3760,6 +3952,94 @@
         {
           "pattern": "shared",
           "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/crosspost/crosspost.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 50
         }
       ]
     },
@@ -4172,6 +4452,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
       "status": "needs semantic review",
       "findings": [
@@ -4186,6 +4484,24 @@
         {
           "pattern": "shared",
           "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
         }
       ]
     },
@@ -4244,6 +4560,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -4276,6 +4610,78 @@
         {
           "pattern": "shared",
           "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -4794,7 +5200,43 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -4866,6 +5308,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -4898,6 +5358,78 @@
         {
           "pattern": "shared",
           "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
         }
       ]
     },
@@ -4939,7 +5471,7 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 48
+          "line": 55
         }
       ]
     },
@@ -5222,6 +5754,36 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        },
+        {
+          "pattern": "shared",
+          "line": 73
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/friend-bridge/friend-bridge.html",
       "status": "needs semantic review",
       "findings": [
@@ -5244,6 +5806,36 @@
         {
           "pattern": "shared",
           "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 76
         },
         {
           "pattern": "shared",
@@ -5342,6 +5934,36 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        },
+        {
+          "pattern": "shared",
+          "line": 76
+        },
+        {
+          "pattern": "shared",
+          "line": 80
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/friend-bridge/friend-bridge.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -5398,6 +6020,126 @@
         {
           "pattern": "shared",
           "line": 75
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        },
+        {
+          "pattern": "shared",
+          "line": 73
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        },
+        {
+          "pattern": "shared",
+          "line": 71
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 55
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 81
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/friend-bridge/friend-bridge.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        },
+        {
+          "pattern": "shared",
+          "line": 56
+        },
+        {
+          "pattern": "shared",
+          "line": 78
+        },
+        {
+          "pattern": "shared",
+          "line": 82
         }
       ]
     },
@@ -5486,7 +6228,43 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -5558,6 +6336,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -5590,6 +6386,78 @@
         {
           "pattern": "shared",
           "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/github-to-mastodon/github-to-mastodon.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
         }
       ]
     },
@@ -6628,6 +7496,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.html",
       "status": "needs semantic review",
       "findings": [
@@ -6642,6 +7528,24 @@
         {
           "pattern": "shared",
           "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 52
         }
       ]
     },
@@ -6700,6 +7604,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -6732,6 +7654,78 @@
         {
           "pattern": "shared",
           "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-analytics/mastodon-analytics.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -6822,7 +7816,43 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -6894,6 +7924,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -6913,6 +7961,78 @@
     },
     {
       "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.pt.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-content-warnings/mastodon-content-warnings.vi.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -7028,6 +8148,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html",
       "status": "needs semantic review",
       "findings": [
@@ -7046,6 +8188,28 @@
         {
           "pattern": "shared",
           "line": 56
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        },
+        {
+          "pattern": "shared",
+          "line": 54
         }
       ]
     },
@@ -7116,6 +8280,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -7156,6 +8342,94 @@
         {
           "pattern": "shared",
           "line": 55
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -7318,7 +8592,35 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -7374,6 +8676,20 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -7389,6 +8705,62 @@
     },
     {
       "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.pt.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-handle-generator/mastodon-handle-generator.vi.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -7492,6 +8864,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.html",
       "status": "needs semantic review",
       "findings": [
@@ -7506,6 +8896,24 @@
         {
           "pattern": "shared",
           "line": 50
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -7564,6 +8972,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -7596,6 +9022,78 @@
         {
           "pattern": "shared",
           "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
         }
       ]
     },
@@ -7672,6 +9170,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
       "status": "needs semantic review",
       "findings": [
@@ -7686,6 +9202,24 @@
         {
           "pattern": "shared",
           "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
         }
       ]
     },
@@ -7744,6 +9278,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -7763,6 +9315,78 @@
     },
     {
       "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.pt.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags.vi.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -7910,6 +9534,36 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/network-search/network-search.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 91
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/network-search/network-search.html",
       "status": "needs semantic review",
       "findings": [
@@ -7936,6 +9590,36 @@
         {
           "pattern": "nativeButtons",
           "line": 43
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 42
+        },
+        {
+          "pattern": "shared",
+          "line": 80
+        },
+        {
+          "pattern": "shared",
+          "line": 97
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 42
         }
       ]
     },
@@ -8030,6 +9714,36 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/network-search/network-search.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 42
+        },
+        {
+          "pattern": "shared",
+          "line": 78
+        },
+        {
+          "pattern": "shared",
+          "line": 95
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 42
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/network-search/network-search.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -8086,6 +9800,126 @@
         {
           "pattern": "nativeButtons",
           "line": 46
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 92
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 42
+        },
+        {
+          "pattern": "shared",
+          "line": 78
+        },
+        {
+          "pattern": "shared",
+          "line": 95
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 42
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 92
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/network-search/network-search.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 40
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 94
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
         }
       ]
     },
@@ -10898,6 +12732,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.html",
       "status": "needs semantic review",
       "findings": [
@@ -10912,6 +12764,24 @@
         {
           "pattern": "shared",
           "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 53
         }
       ]
     },
@@ -10970,6 +12840,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -11002,6 +12890,78 @@
         {
           "pattern": "shared",
           "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/schedule-mastodon-posts/schedule-mastodon-posts.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
         }
       ]
     },
@@ -16156,6 +18116,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/tools/tools-index.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/tools/tools-index.html",
       "status": "needs semantic review",
       "findings": [
@@ -16174,6 +18156,28 @@
         {
           "pattern": "shared",
           "line": 38
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.id.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
         }
       ]
     },
@@ -16244,6 +18248,28 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/tools/tools-index.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/tools/tools-index.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -16284,6 +18310,94 @@
         {
           "pattern": "shared",
           "line": 38
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/tools/tools-index.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 37
         }
       ]
     },
@@ -16386,7 +18500,43 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 46
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -16458,6 +18608,24 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -16490,6 +18658,78 @@
         {
           "pattern": "shared",
           "line": 52
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon.vi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 49
         }
       ]
     },
@@ -16554,7 +18794,35 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.hi.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.id.html",
       "status": "needs semantic review",
       "findings": [
         {
@@ -16610,6 +18878,20 @@
       ]
     },
     {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.nl.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.pl.html",
       "status": "needs semantic review",
       "findings": [
@@ -16625,6 +18907,62 @@
     },
     {
       "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.pt.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.ru.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.sv.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.uk.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.vi.html",
       "status": "needs semantic review",
       "findings": [
         {

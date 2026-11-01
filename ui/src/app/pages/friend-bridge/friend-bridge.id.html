@@ -1,0 +1,91 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Dari {{ copy.from }} ke {{ copy.to }}</p>
+    <h1>Temukan orang yang kamu ikuti di {{ copy.from }} di {{ copy.to }}</h1>
+    <p>
+      Banyak orang yang kamu ikuti di {{ copy.from }} juga ada di {{ copy.to }}. Alat ini menemukan
+      mereka agar kamu bisa mengikutinya di sana.
+      @if (!inShell) {
+        Masuk dengan salah satu akun, hubungkan yang lain, lalu lihat siapa yang sudah ada.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Memuat pencarian…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Masuk ke keduanya</h2>
+        <p>
+          Masuk dengan akun Mastodon atau Bluesky, lalu hubungkan akun lainnya di layar berikutnya.
+        </p>
+      </li>
+      <li>
+        <h2>Baca daftar mengikuti</h2>
+        <p>
+          Orang yang kamu ikuti di {{ copy.from }} dan mencantumkan handle {{ copy.to }} di bio
+          langsung cocok tanpa biaya.
+        </p>
+      </li>
+      <li>
+        <h2>Cari sisanya lalu ikuti</h2>
+        <p>
+          Cari yang lain berdasarkan nama, sebanyak yang kamu pilih, lalu ikuti orang yang dikenali
+          dengan satu tombol.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Masuk dengan Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Masuk dengan Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah alat ini mengikuti orang tanpa bertanya?</h3>
+    <p>
+      Tidak. Orang yang mencantumkan handle lain mereka sendiri sudah dicentang; dugaan dari
+      pencarian nama tidak. Tidak ada yang diikuti sebelum kamu menekan Ikuti.
+    </p>
+    <h3>Mengapa ada orang yang tidak ditemukan?</h3>
+    <p>
+      Hanya orang yang menyebut handle {{ copy.to }} atau bisa ditemukan dari namanya yang dapat
+      dicocokkan. Nama umum tanpa handle di bio mungkin tidak muncul.
+    </p>
+    <h3>Bisakah mencari ke arah sebaliknya?</h3>
+    <p>
+      Bisa:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/id/mastodon-ke-bluesky"
+          >temukan orang yang kamu ikuti di Mastodon di Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/id/bluesky-ke-mastodon"
+          >temukan orang yang kamu ikuti di Bluesky di Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Di mana data masukku disimpan?</h3>
+    <p>
+      Di browser ini. Mawkingbird berkomunikasi langsung dengan server Mastodon-mu dan Bluesky.
+      Tidak ada server Mawkingbird di tengah yang menyimpan akunmu.
+    </p>
+  </section>
+</main>

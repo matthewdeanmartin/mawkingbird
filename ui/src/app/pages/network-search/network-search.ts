@@ -158,3 +158,73 @@ export class NetworkSearchIt extends NetworkSearch {}
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchPl extends NetworkSearch {}
+
+/** Ukrainian public page, with embedded tools pinned to the route language. */
+@Component({
+  selector: 'app-network-search-uk',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.uk.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchUk extends NetworkSearch {}
+
+/** Hindi public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-hi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.hi.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchHi extends NetworkSearch {}
+
+/** Dutch public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-nl',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.nl.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchNl extends NetworkSearch {}
+
+/** Indonesian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-id',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.id.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchId extends NetworkSearch {}
+
+/** Russian public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-ru',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.ru.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchRu extends NetworkSearch {}
+
+/** Swedish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-sv',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.sv.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchSv extends NetworkSearch {}
+
+/** Vietnamese public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-vi',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.vi.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchVi extends NetworkSearch {}

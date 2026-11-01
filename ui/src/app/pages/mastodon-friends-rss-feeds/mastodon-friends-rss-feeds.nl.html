@@ -1,0 +1,81 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS en OPML</p>
+    <h1>Vind de blogs en RSS-feeds van iedereen die je volgt op Mastodon</h1>
+    <p>
+      Mensen zetten hun website in hun Mastodon-profiel. Deze functie zoekt feeds achter die links
+      en verzamelt alle gevonden feeds in één OPML-bestand voor elke feedlezer.
+      @if (!inShell) {
+        Dit hoort bij Mawkingbird Plus.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lees wie je volgt</h2>
+        <p>Je volglijst wordt van je Mastodon-server gelezen, inclusief de links in elk profiel.</p>
+      </li>
+      <li>
+        <h2>Controleer hun websites</h2>
+        <p>
+          Elke gelinkte site wordt op een feed gecontroleerd. Jij kiest hoeveel sites je bekijkt. Je
+          kunt altijd stoppen en bewaren wat gevonden is.
+        </p>
+      </li>
+      <li>
+        <h2>Download de OPML</h2>
+        <p>
+          Importeer het bestand in een feedlezer, of volg de feeds hier in de RSS-lezer van
+          Mawkingbird.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om hun feeds te vinden</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Bekijk wat Plus biedt</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Waarom is dit een Plus-functie?</h3>
+    <p>
+      Honderden websites van anderen controleren loopt via een proxy waarvoor Mawkingbird betaalt,
+      met één verzoek per site. Plus dekt die kosten.
+    </p>
+    <h3>Wat is een OPML-bestand?</h3>
+    <p>
+      Het abonnementenformaat dat elke feedlezer begrijpt. Importeer het in Feedly, NetNewsWire,
+      Inoreader of een andere lezer om alle feeds tegelijk te volgen.
+    </p>
+    <h3>Wordt iedereen gevonden?</h3>
+    <p>
+      Alleen mensen met een websitelink in hun profiel, en alleen sites die een feed aanbieden.
+      Grote platforms zonder persoonlijke feed worden zonder controle overgeslagen.
+    </p>
+    <h3>Kost een tweede ronde evenveel?</h3>
+    <p>
+      Nee. Gecontroleerde sites worden onthouden. Nadat je nieuwe mensen hebt gevolgd, controleert
+      een volgende scan alleen hun sites.
+    </p>
+  </section>
+</main>

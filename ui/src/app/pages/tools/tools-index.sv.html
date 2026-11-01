@@ -1,0 +1,40 @@
+<main class="focused-page" lang="sv">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Öppna appen</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Verktyg</p>
+    <h1>Gratis verktyg för Mastodon och Bluesky</h1>
+    <p>
+      Små verktyg för det standardapparna saknar: välja användarnamn, hitta vänner, schemalägga
+      inlägg och städa upp kontot. Varje verktyg körs i din webbläsare.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Letar du efter något annat?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Se allt Mawkingbird kan göra</a> (på engelska), eller
+      läs <a mbContentLink href="help/">hjälpguiderna</a> (på engelska).
+    </p>
+  </section>
+</main>

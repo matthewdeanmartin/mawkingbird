@@ -1,0 +1,88 @@
+<main class="focused-page" lang="ru">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Открыть приложение</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Из {{ copy.from }} в {{ copy.to }}</p>
+    <h1>Из {{ copy.from }} в {{ copy.to }}: найди знакомых</h1>
+    <p>
+      Многие люди из твоих подписок в {{ copy.from }} есть и в {{ copy.to }}. Инструмент найдёт их и
+      поможет подписаться там.
+      @if (!inShell) {
+        Войди через одну учётную запись, подключи другую и посмотри, кто уже там.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Загрузка поиска…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Войди в обе сети</h2>
+        <p>
+          Войди через Mastodon или Bluesky, а другую учётную запись подключи на следующем экране.
+        </p>
+      </li>
+      <li>
+        <h2>Прочитай свои подписки</h2>
+        <p>
+          Люди из твоих подписок в {{ copy.from }}, указавшие адрес {{ copy.to }} в биографии,
+          находятся сразу и бесплатно.
+        </p>
+      </li>
+      <li>
+        <h2>Найди остальных и подпишись</h2>
+        <p>Ищи остальных по имени сколько нужно и подписывайся на знакомых одной кнопкой.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Войти через Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Войти через Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Вопросы</h2>
+    <h3>Инструмент подписывается без спроса?</h3>
+    <p>
+      Нет. Люди, сами указавшие другой адрес, уже отмечены, а предположения из поиска по имени —
+      нет. Никто не добавится до нажатия «Подписаться».
+    </p>
+    <h3>Почему некоторые люди не найдены?</h3>
+    <p>
+      Найти можно тех, кто указал адрес {{ copy.to }} или находится по имени. Человек с
+      распространённым именем без адреса в биографии может не появиться.
+    </p>
+    <h3>А в обратную сторону можно?</h3>
+    <p>
+      Да:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/ru/mastodon-to-bluesky"
+          >найди знакомых из Mastodon в Bluesky</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/ru/bluesky-to-mastodon"
+          >найди знакомых из Bluesky в Mastodon</a
+        >.
+      }
+    </p>
+    <h3>Где хранятся данные входа?</h3>
+    <p>
+      В этом браузере. Mawkingbird общается напрямую с твоим сервером Mastodon и с Bluesky. Между
+      ними нет сервера Mawkingbird, который хранит твои учётные записи.
+    </p>
+  </section>
+</main>

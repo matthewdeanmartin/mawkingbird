@@ -1,0 +1,67 @@
+<main class="focused-page" lang="id">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Buka aplikasi</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Posting ke Mastodon dan Bluesky sekaligus</h1>
+    <p>
+      Tulis sekali dan kirim postingan yang sama ke kedua jaringan.
+      @if (!inShell) {
+        Masuk dengan akun yang kamu punya, hubungkan akun lainnya, lalu coba editor sederhana ini.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Memuat editor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Masuk lewat salah satu jaringan</h2>
+        <p>Gunakan akun Mastodon atau Bluesky. Untuk memulai, cukup satu akun.</p>
+      </li>
+      <li>
+        <h2>Hubungkan akun lainnya</h2>
+        <p>
+          Jika masuk dengan Mastodon, hubungkan Bluesky memakai kata sandi aplikasi. Jika masuk
+          dengan Bluesky, tambahkan server Mastodon-mu.
+        </p>
+      </li>
+      <li>
+        <h2>Tulis sekali, posting ke keduanya</h2>
+        <p>Editor mengirim postinganmu ke kedua jaringan. Coba dengan postingan pertama.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Masuk dengan Mastodon</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Masuk dengan Bluesky</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
+    <h3>Apakah salinan di Bluesky sama persis?</h3>
+    <p>
+      Teksnya sama. Salinan Bluesky selalu publik. Jajak pendapat dan peringatan konten tetap ada
+      hanya di salinan Mastodon karena Bluesky tidak memiliki padanannya.
+    </p>
+    <h3>Di mana data masukku disimpan?</h3>
+    <p>
+      Di browser ini. Mawkingbird berkomunikasi langsung dengan server Mastodon-mu dan Bluesky.
+      Tidak ada server Mawkingbird di tengah yang menyimpan akunmu.
+    </p>
+  </section>
+</main>

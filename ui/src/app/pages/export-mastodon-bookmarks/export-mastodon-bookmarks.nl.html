@@ -1,0 +1,81 @@
+<main class="focused-page" lang="nl">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open de app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon-bladwijzers</p>
+    <h1>Exporteer je Mastodon-bladwijzers</h1>
+    <p>
+      Download alle berichten die je op Mastodon hebt bewaard als een bladwijzerbestand voor je
+      browser, Raindrop.io, Pinboard of een andere bladwijzerdienst. Bewaarde je een bericht voor
+      het gedeelde artikel? Haal de link eruit en bewaar het artikel.
+      @if (!inShell) {
+        Log in met Mastodon om te beginnen.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Laden…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Lees je bladwijzers</h2>
+        <p>Elke bladwijzer uit je Mastodon-account, gelezen van je eigen server.</p>
+      </li>
+      <li>
+        <h2>Kies wat je bewaart</h2>
+        <p>
+          De berichten zelf, de links die erin werden gedeeld, of alleen bladwijzers met een
+          gedeelde link.
+        </p>
+      </li>
+      <li>
+        <h2>Importeer het bestand</h2>
+        <p>
+          Een standaard bladwijzerbestand voor browsers: open je bladwijzerbeheer of
+          bladwijzerdienst en importeer het.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Log in met Mastodon om bladwijzers te exporteren</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Vragen</h2>
+    <h3>Exporteert Mastodon niet al bladwijzers?</h3>
+    <p>
+      De gegevensexport bevat een spreadsheet met berichtadressen die browsers en bladwijzerdiensten
+      niet kunnen importeren. Dit bestand wel, met titels, tekst en hashtags.
+    </p>
+    <h3>Wat betekent links eruit halen?</h3>
+    <p>
+      Veel berichten bewaar je voor een link: een artikel, video of project. Deze optie bewaart die
+      link in plaats van het bericht erover. De berichttekst blijft als beschrijving staan.
+    </p>
+    <h3>Worden mijn bladwijzers ergens geüpload?</h3>
+    <p>
+      Nee. Ze worden van je Mastodon-server gelezen en het bestand wordt in je browser gemaakt. Er
+      gaat niets naar Mawkingbird.
+    </p>
+    <h3>Kloppen de datums?</h3>
+    <p>
+      Elke bladwijzer krijgt de datum waarop het bericht is geschreven. Mastodon houdt niet bij
+      wanneer je het hebt bewaard.
+    </p>
+  </section>
+</main>
