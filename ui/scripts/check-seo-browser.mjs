@@ -875,6 +875,65 @@ try {
     assert.deepEqual(errors, [], 'Vietnamese pages have no runtime errors');
     await context.close();
   }
+  // Turkish routes must keep their language after the client replaces the prerender.
+  const turkishCopy = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/tr.json', import.meta.url), 'utf8'),
+  );
+  const turkishPaths = JSON.parse(
+    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+  ).tr;
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [id, slug] of Object.entries(turkishPaths)) {
+      await page.goto(`${origin}/${slug}/`);
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      await page
+        .getByRole('heading', { name: turkishCopy[id].prerenderCheck.heading, exact: true })
+        .waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'tr');
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="tr"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const width of [1100, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      if (id === 'download-media' && javaScriptEnabled)
+        await page.getByRole('button', { name: 'Görselleri göster', exact: true }).waitFor();
+    }
+    await page.goto(`${origin}/tr/`);
+    await page
+      .getByRole('heading', { name: 'Mastodon ve Bluesky için ücretsiz araçlar', exact: true })
+      .waitFor();
+    assert.equal(await page.locator('.tool-list a').count(), 21);
+    if (javaScriptEnabled) {
+      await page.getByRole('button', { name: 'Türkçe', exact: true }).click();
+      assert.equal(await page.locator('a[hreflang="tr"][aria-current="page"]').count(), 1);
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-tr-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'Turkish pages have no runtime errors');
+    await context.close();
+  }
   console.log(
     'SEO browser checks passed with JavaScript enabled and disabled, desktop and mobile.',
   );

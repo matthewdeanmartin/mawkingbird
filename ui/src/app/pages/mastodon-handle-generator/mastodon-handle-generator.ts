@@ -220,3 +220,13 @@ export class MastodonHandleGeneratorSv extends MastodonHandleGenerator {}
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorVi extends MastodonHandleGenerator {}
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-handle-generator-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  templateUrl: './mastodon-handle-generator.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonHandleGeneratorTr extends MastodonHandleGenerator {}

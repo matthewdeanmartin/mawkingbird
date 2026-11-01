@@ -259,3 +259,15 @@ export class MastodonContentWarningsSv extends MastodonContentWarnings {
 export class MastodonContentWarningsVi extends MastodonContentWarnings {
   protected override readonly returnHere = { next: '/vi/turn-off-content-warnings-mastodon' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-content-warnings-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  templateUrl: './mastodon-content-warnings.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonContentWarningsTr extends MastodonContentWarnings {
+  protected override readonly returnHere = { next: '/tr/mastodon-icerik-uyarilarini-kapat' };
+}

@@ -1,0 +1,63 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">GitHub → Mastodon</p>
+    <h1>GitHub arkadaşlarını Mastodon'da bul</h1>
+    <p>
+      Birçok geliştirici GitHub'da Mastodon hesabını belirtir. Mawkingbird GitHub'da takip
+      ettiklerini ve yıldızladığın depoların sahiplerini kontrol edip Mastodon'da takip etmeni
+      sağlar.
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the connector and finder load only in the browser. -->
+    @defer (on immediate) {
+      <app-github-friends-workbench />
+    } @placeholder {
+      <p class="muted">Bulucu yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon ile oturum aç</h2>
+        <p>Takip işlemi kendi Mastodon hesabında yapılacağı için önce bu gerekir.</p>
+      </li>
+      <li>
+        <h2>GitHub'ı bağla</h2>
+        <p>
+          GitHub kişisel erişim belirtecini yapıştır; sayfa nasıl oluşturacağını gösterir. GitHub
+          tarayıcı uygulamalarına başka giriş yolu sunmaz ve belirteç bu tarayıcıda kalır.
+        </p>
+      </li>
+      <li>
+        <h2>Bul ve takip et</h2>
+        <p>
+          Önce Mastodon profil bağlantıları, sonra sınırlı kullanıcı adı araması. Her eşleşme
+          kanıtını gösterir; kimi takip edeceğini sen seçersin.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon ile oturum aç</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>GitHub belirtecim nereye gider?</h3>
+    <p>
+      Bu tarayıcıda saklanır ve yalnızca <code>api.github.com</code>adresine gönderilir;
+      Mawkingbird'e asla gönderilmez. İstediğin zaman GitHub'dan iptal et.
+    </p>
+    <h3>Otomatik takip eder mi?</h3>
+    <p>Hayır. Her takip, eşleşme kanıtının yanındaki düğmeye senin basmanla gerçekleşir.</p>
+  </section>
+</main>

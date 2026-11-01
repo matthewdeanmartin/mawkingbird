@@ -1,0 +1,81 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">RSS ve OPML</p>
+    <h1>Mastodon'da takip ettiğin herkesin blog ve RSS akışlarını bul</h1>
+    <p>
+      İnsanlar sitelerini Mastodon profiline koyar. Bu araç bağlantıları akış için kontrol eder ve
+      bulduklarını her okuyucuda kullanılabilen tek bir OPML dosyasında toplar.
+      @if (!inShell) {
+        Mawkingbird Plus'a dahildir.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-feeds-workbench />
+    } @placeholder {
+      <p class="muted">Yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Takip ettiklerini oku</h2>
+        <p>Takip listen, her profildeki bağlantılarla birlikte Mastodon sunucundan okunur.</p>
+      </li>
+      <li>
+        <h2>Sitelerini kontrol et</h2>
+        <p>
+          Bağlantı verilen her siteye akış yayımlayıp yayımlamadığı sorulur. Kaç site kontrol
+          edileceğini seçer, istediğin an durup bulunanları tutabilirsin.
+        </p>
+      </li>
+      <li>
+        <h2>OPML dosyasını indir</h2>
+        <p>
+          Dosyayı herhangi bir akış okuyucuya aktar veya akışları burada Mawkingbird'ün RSS
+          okuyucusunda takip et.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Akışlarını bulmak için Mastodon ile oturum aç</a
+      >
+      <a mbButton variant="outline" routerLink="/plans">Plus'ın içeriğini gör</a>
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Bu neden Plus özelliği?</h3>
+    <p>
+      Yüzlerce yabancı siteyi kontrol etmek, site başına bir istekle Mawkingbird'ün ücretini ödediği
+      bir vekil sunucudan geçer. Plus bu maliyeti karşılar.
+    </p>
+    <h3>OPML dosyası nedir?</h3>
+    <p>
+      Her akış okuyucunun anladığı abonelik listesi biçimi. Feedly, NetNewsWire, Inoreader veya
+      başka bir okuyucuya aktararak tümünü birden takip et.
+    </p>
+    <h3>Herkesi bulur mu?</h3>
+    <p>
+      Yalnızca profilinden sitesine bağlantı verenleri ve akış yayımlayan siteleri. Kişisel akış
+      sunmayan büyük platformlar kontrol edilmeden atlanır.
+    </p>
+    <h3>İkinci tarama da aynı maliyette mi?</h3>
+    <p>
+      Hayır. Kontrol edilen siteler hatırlanır; birkaç yeni kişiyi takip ettikten sonra yeni tarama
+      yalnızca onların sitelerini kontrol eder.
+    </p>
+  </section>
+</main>

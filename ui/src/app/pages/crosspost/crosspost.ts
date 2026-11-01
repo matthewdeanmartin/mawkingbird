@@ -253,3 +253,15 @@ export class CrosspostSv extends Crosspost {
 export class CrosspostVi extends Crosspost {
   protected override readonly returnHere = { next: '/vi/crosspost' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-crosspost-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  templateUrl: './crosspost.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class CrosspostTr extends Crosspost {
+  protected override readonly returnHere = { next: '/tr/mastodon-bluesky-ortak-paylasim' };
+}

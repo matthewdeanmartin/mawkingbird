@@ -1,0 +1,86 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">{{ copy.from }} → {{ copy.to }}</p>
+    <h1>{{ copy.from }} takiplerini {{ copy.to }} üzerinde bul</h1>
+    <p>
+      {{ copy.from }} üzerinde takip ettiğin birçok kişi {{ copy.to }} üzerinde de var. Bu araç
+      onları bulup orada takip etmeni sağlar.
+      @if (!inShell) {
+        Bir hesapla oturum aç, diğerini bağla ve kimlerin orada olduğuna bak.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-friend-bridge-workbench [source]="copy.source" [root]="copy.root" />
+    } @placeholder {
+      <p class="muted">Bulucu yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>İkisinde de oturum aç</h2>
+        <p>Mastodon veya Bluesky hesabınla oturum aç, sonra diğer hesabı sonraki ekranda bağla.</p>
+      </li>
+      <li>
+        <h2>Takip ettiklerini oku</h2>
+        <p>
+          {{ copy.from }} üzerinde takip ettiğin ve biyografisinde {{ copy.to }} adresini yazan
+          herkes hemen, ücretsiz eşleştirilir.
+        </p>
+      </li>
+      <li>
+        <h2>Diğerlerini ara, sonra takip et</h2>
+        <p>İstediğin kadar kişiyi adıyla ara; tanıdıklarını tek düğmeyle takip et.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon ile oturum aç</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Sormadan insanları takip eder mi?</h3>
+    <p>
+      Hayır. Diğer adresini kendisi yazanlar önceden seçilir; ad aramasından gelen tahminler
+      seçilmez. Takip et düğmesine basana kadar kimse takip edilmez.
+    </p>
+    <h3>Neden bazı kişiler eksik?</h3>
+    <p>
+      Yalnızca {{ copy.to }} adresini belirtenler veya adıyla aramada bulunanlar eşleşebilir. Adı
+      yaygın olup biyografisinde adresi olmayan biri bulunmayabilir.
+    </p>
+    <h3>Ters yönde yapabilir miyim?</h3>
+    <p>
+      Evet:
+      @if (copy.source === 'bluesky') {
+        <a mbContentLink routerLink="/tr/mastodondan-blueskya"
+          >Mastodon takiplerini Bluesky'da bul</a
+        >.
+      } @else {
+        <a mbContentLink routerLink="/tr/blueskydan-mastodona"
+          >Bluesky takiplerini Mastodon'da bul</a
+        >.
+      }
+    </p>
+    <h3>Oturum bilgilerim nerede tutulur?</h3>
+    <p>
+      Bu tarayıcıda. Mawkingbird Mastodon sunucunla ve Bluesky ile doğrudan iletişim kurar; arada
+      hesaplarını tutan bir Mawkingbird sunucusu yoktur.
+    </p>
+  </section>
+</main>

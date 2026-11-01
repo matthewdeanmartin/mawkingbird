@@ -21,6 +21,7 @@ import id from './tool-translations/id.json';
 import ru from './tool-translations/ru.json';
 import sv from './tool-translations/sv.json';
 import vi from './tool-translations/vi.json';
+import tr from './tool-translations/tr.json';
 import zhHant from './tool-translations/zh-Hant.json';
 
 /**
@@ -44,6 +45,7 @@ export const TOOL_COPY: Record<TranslatedLanguage, Record<string, ToolCopy>> = {
   ru,
   sv,
   vi,
+  tr,
   'zh-Hant': zhHant,
 };
 

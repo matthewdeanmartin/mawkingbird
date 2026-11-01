@@ -1,0 +1,83 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon zamanlayıcısı</p>
+    <h1>Mastodon gönderilerini önceden zamanla</h1>
+    <p>
+      Bir haftalık gönderiyi bir oturuşta yaz ve Mastodon sunucun zamanında yayımlasın.
+      @if (!inShell) {
+        Mastodon ile oturum aç, gönderilerini yaz, ilkinin saatini ve diğerlerinin aralığını seç;
+        hepsi bu.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the scheduler reads and writes your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-schedule-workbench />
+    } @placeholder {
+      <p class="muted">Zamanlayıcı yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Gönderilerini yaz</h2>
+        <p>İstediğin kadar; her biri ayrı kutuda, gönderi başına en fazla 500 karakter.</p>
+      </li>
+      <li>
+        <h2>Aralarını ayarla</h2>
+        <p>
+          İlk saati ve aralığı seç: her gün 9.00, her üç saatte bir. Her gönderiye ayrı saat de
+          verebilirsin.
+        </p>
+      </li>
+      <li>
+        <h2>Sekmeyi kapat</h2>
+        <p>
+          Mastodon sunucun gönderileri tutar ve her birini zamanında yayımlar. Tarayıcında hiçbir
+          şey beklemez.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Gönderi zamanlamak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Mastodon gönderi zamanlayabilir mi?</h3>
+    <p>
+      Evet. Her Mastodon sunucusu gönderiyi tutup sonra yayımlayabilir; standart Mastodon sitesinde
+      bunun düğmesi yoktur. Bu sayfa o yerleşik özelliği kullanır; gönderiler Mawkingbird'de değil
+      kendi sunucunda tutulur.
+    </p>
+    <h3>Sayfayı açık tutmalı mıyım?</h3>
+    <p>
+      Hayır. Zamanlanmış gönderi Mastodon sunucunda yaşar; bilgisayarın açık olmasa da seçilen
+      saatte yayımlanır.
+    </p>
+    <h3>Sınırlar var mı?</h3>
+    <p>
+      Mastodon aynı anda 300 bekleyen ve günde 25 zamanlanmış gönderiye izin verir; her biri en az
+      beş dakika sonrası olmalıdır. Zamanlayıcı göndermeden önce bunları kontrol eder.
+    </p>
+    <h3>Fikrimi değiştirebilir miyim?</h3>
+    <p>
+      Evet. Zamanlanmış gönderilerin aşağıda listelenir; yayımlanana kadar her birini iptal
+      edebilirsin.
+    </p>
+    <h3>Bluesky için çalışır mı?</h3>
+    <p>Burada değil. Bluesky'ın yerleşik zamanlaması yok; bu sayfa yalnızca Mastodon içindir.</p>
+  </section>
+</main>

@@ -1,0 +1,40 @@
+<main class="focused-page" lang="tr">
+  <header>
+    <a mbContentLink routerLink="/">Mawkingbird</a>
+    <app-language-versions />
+    <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+  </header>
+
+  <div class="intro">
+    <p class="eyebrow">Araçlar</p>
+    <h1>Mastodon ve Bluesky için ücretsiz araçlar</h1>
+    <p>
+      Standart uygulamaların eksik bıraktığı işler için küçük araçlar: kullanıcı adı seçme,
+      arkadaşlarını bulma, gönderi zamanlama ve hesabını düzenleme. Her biri tarayıcında çalışır.
+    </p>
+  </div>
+
+  @for (group of groups; track group.id) {
+    <section class="tool-group" [attr.aria-labelledby]="'tools-' + group.id">
+      <h2 [id]="'tools-' + group.id">{{ group.title }}</h2>
+      <ul class="tool-list">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a [routerLink]="'/' + tool.path">
+              <strong>{{ tool.title }}</strong>
+              <span>{{ tool.description }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="questions">
+    <h2>Başka bir şey mi arıyorsun?</h2>
+    <p>
+      <a mbContentLink routerLink="/features">Mawkingbird'ün tüm özelliklerini gör</a>, veya
+      <a mbContentLink href="help/">yardım kılavuzlarını oku</a>(İngilizce).
+    </p>
+  </section>
+</main>

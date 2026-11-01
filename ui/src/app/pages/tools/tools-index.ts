@@ -332,3 +332,21 @@ export class ToolsIndexVi extends ToolsIndex {
     account: 'Quản lý tài khoản',
   });
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-tools-index-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  templateUrl: './tools-index.tr.html',
+  styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
+})
+export class ToolsIndexTr extends ToolsIndex {
+  protected override readonly groups = groupsIn({
+    start: "Mastodon'a başla",
+    languages: 'Dillerin',
+    search: 'Ara',
+    people: 'Arkadaşlarını bul',
+    post: 'Paylaş',
+    account: 'Hesabını düzenle',
+  });
+}

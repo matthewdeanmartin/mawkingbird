@@ -251,3 +251,15 @@ export class ExportMastodonBookmarksSv extends ExportMastodonBookmarks {
 export class ExportMastodonBookmarksVi extends ExportMastodonBookmarks {
   protected override readonly returnHere = { next: '/vi/export-mastodon-bookmarks' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-export-mastodon-bookmarks-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  templateUrl: './export-mastodon-bookmarks.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ExportMastodonBookmarksTr extends ExportMastodonBookmarks {
+  protected override readonly returnHere = { next: '/tr/mastodon-yer-imlerini-aktar' };
+}

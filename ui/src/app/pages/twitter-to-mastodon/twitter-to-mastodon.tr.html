@@ -1,0 +1,69 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter → Mastodon</p>
+    <h1>Twitter'da takip ettiklerini Mastodon'da bul</h1>
+    <p>
+      Twitter'da takip ettiğin ve Mastodon'a geçmiş kişileri bul, birkaç tıkla yeniden takip et.
+      Arşivin bu tarayıcıda okunur; hiçbir şey yüklenmez.
+    </p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <h2>Twitter arşivini indir</h2>
+      <p>
+        Twitter'da Ayarlar → Hesabın → Verilerinin arşivini indir yolunu aç. Gelmesi bir gün veya
+        daha uzun sürebilir. Geldiğinde arşivi aç.
+      </p>
+    </li>
+    <li>
+      <h2>Arşivi burada seç</h2>
+      <p>
+        Açılmış klasörü veya yalnızca şu dosyaları seç: <code>data/following.js</code> ve
+        <code>data/tweets.js</code>. Mawkingbird takip ettiğin, yanıtladığın ve bahsettiğin kişileri
+        sayar.
+      </p>
+    </li>
+    <li>
+      <h2>Mastodon ile oturum aç ve takip et</h2>
+      <p>
+        Mawkingbird her kullanıcı adını Mastodon sunucunda arar, olası eşleşmeleri kanıtlarıyla
+        gösterir; kimi takip edeceğini sen seçersin.
+      </p>
+    </li>
+  </ol>
+
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-twitter-archive-import
+      [inviteLink]="inShell ? '/tr/twitterdan-mastodona/invite' : '/invites'"
+      [offerSignIn]="!inShell"
+    />
+    <app-twitter-import-next-steps [signedIn]="inShell" />
+  } @placeholder {
+    <p class="muted">İçe aktarıcı yükleniyor…</p>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Arşivim bir yere yükleniyor mu?</h3>
+    <p>
+      Hayır. Dosyalar bu sayfada tarayıcında okunur. Yalnızca kullanıcı adı aramaları kendi Mastodon
+      sunucuna gider; o da oturum açtıktan sonra.
+    </p>
+    <h3>Otomatik takip eder mi?</h3>
+    <p>
+      Hayır. Aynı kullanıcı adı olası eşleşmedir, kanıt değil; her takip senin düğmeye basmanla
+      olur. Listeyi CSV olarak indirip saklayabilirsin.
+    </p>
+  </section>
+</main>

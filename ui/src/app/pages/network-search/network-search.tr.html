@@ -1,0 +1,97 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    @if (network === 'bluesky') {
+      <p class="eyebrow">Bluesky araması</p>
+      <h1>Bluesky'da ara</h1>
+      <p>Twitter'dan bildiğin arama filtreleriyle Bluesky'da kişiler ve gönderiler bul.</p>
+    } @else {
+      <p class="eyebrow">Mastodon araması</p>
+      <h1>Mastodon'da ara</h1>
+      <p>Twitter'dan bildiğin arama filtreleriyle Mastodon'da gönderi, kişi ve etiket bul.</p>
+    }
+  </div>
+
+  <!-- The box comes first. Deferred, because it reads the session; until it
+       loads, a plain form does the same job and is what the prerender holds. -->
+  @defer (on immediate) {
+    <app-search-launcher [network]="network" [root]="root" />
+  } @placeholder {
+    <form class="search-fallback" action="search" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        [attr.aria-label]="network === 'bluesky' ? 'Bluesky\'da ara' : 'Mastodon\'da ara'"
+        [attr.placeholder]="network === 'bluesky' ? 'Bluesky\'da ara' : 'Mastodon\'da ara'"
+      />
+      @if (network === 'bluesky') {
+        <input type="hidden" name="type" value="bluesky-posts" />
+        <input type="hidden" name="bskyType" value="accounts" />
+      } @else {
+        <input type="hidden" name="type" value="statuses" />
+      }
+      <button mbButton type="submit">Ara</button>
+    </form>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Aramayı daralt</h2>
+      <p>
+        @if (network === 'bluesky') {
+          from:someone, dil, tarihler ve "tam ifadeler"; yaz veya filtrelerden seç.
+        } @else {
+          from:someone, has:media, is:reply, tarihler ve "tam ifadeler"; yaz veya filtrelerden seç.
+        }
+      </p>
+    </li>
+    <li>
+      <h2>Sırala ve iyileştir</h2>
+      <p>Sonuçları tarih, medya ve yazara göre süz; ne arandığını tam olarak gör.</p>
+    </li>
+    <li>
+      <h2>Aramalarını sakla</h2>
+      <p>Aramayı kaydet, tek tıkla yeniden çalıştır veya bağlantı olarak paylaş.</p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    @if (network === 'bluesky') {
+      <h3>Bluesky hesabı gerekir mi?</h3>
+      <p>
+        Kişi aramak için gerekmez. Bluesky gönderi aramalarını yalnızca oturum açmış hesaplar için
+        yanıtlar; bunun için Bluesky ile oturum aç, sonra bu sayfaya dönersin.
+      </p>
+      <h3>Mastodon'da da arayabilir miyim?</h3>
+      <p>
+        Evet: <a mbContentLink routerLink="/tr/mastodon-arama">Mastodon'da ara</a>, ya da sonuç
+        sayfasından ağı değiştir.
+      </p>
+    } @else {
+      <h3>Mastodon hesabı gerekir mi?</h3>
+      <p>
+        Hayır. Hesapsız kişi, etiket ve etiketle gönderi arayabilirsin; Mastodon sunucuları anonim
+        tam metin aramaya izin vermez. Gönderideki sözcükleri aramak için oturum aç; sonra bu
+        sayfaya dönersin.
+      </p>
+      <h3>Sunucumun aramasından farkı ne?</h3>
+      <p>
+        Aramayı aynı sunucu yapar; ama burada tek kutu yerine filtreler, sıralama, kayıtlı aramalar
+        ve arananların açıklaması vardır.
+      </p>
+      <h3>Bluesky'da da arayabilir miyim?</h3>
+      <p>
+        Evet: <a mbContentLink routerLink="/tr/bluesky-arama">Bluesky'da ara</a>, ya da sonuç
+        sayfasından ağı değiştir.
+      </p>
+    }
+  </section>
+</main>

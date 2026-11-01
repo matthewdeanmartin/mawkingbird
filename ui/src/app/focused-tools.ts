@@ -88,6 +88,7 @@ export type PageLanguage =
   | 'ru'
   | 'sv'
   | 'vi'
+  | 'tr'
   | 'uk'
   | 'zh-Hant';
 

@@ -341,3 +341,20 @@ export class TwitterToMastodonSv extends TwitterToMastodon {}
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonVi extends TwitterToMastodon {}
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-twitter-to-mastodon-tr',
+  imports: [
+    RouterLink,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    TwitterArchiveImport,
+    TwitterImportNextSteps,
+  ],
+  templateUrl: './twitter-to-mastodon.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TwitterToMastodonTr extends TwitterToMastodon {}

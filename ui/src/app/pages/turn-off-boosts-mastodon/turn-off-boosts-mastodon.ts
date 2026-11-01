@@ -253,3 +253,15 @@ export class TurnOffBoostsMastodonSv extends TurnOffBoostsMastodon {
 export class TurnOffBoostsMastodonVi extends TurnOffBoostsMastodon {
   protected override readonly returnHere = { next: '/vi/turn-off-boosts-mastodon' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-turn-off-boosts-mastodon-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  templateUrl: './turn-off-boosts-mastodon.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class TurnOffBoostsMastodonTr extends TurnOffBoostsMastodon {
+  protected override readonly returnHere = { next: '/tr/mastodon-yeniden-paylasimlari-kapat' };
+}

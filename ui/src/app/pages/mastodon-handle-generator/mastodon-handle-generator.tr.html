@@ -1,0 +1,52 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Kullanıcı adı oluşturucu</p>
+    <h1>Mastodon kullanıcı adı oluşturucu</h1>
+    <p>
+      Adını yaz, gerçekten alabileceğin kullanıcı adları bul: her öneri katılmayı düşündüğün
+      Mastodon sunucusunda, beğendiğin ad da en büyük sunucularda kontrol edilir. Hesap gerekmez.
+    </p>
+  </div>
+
+  <!-- Deferred: the checks run in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-handle-workbench
+      [inviteLink]="inShell ? '/tr/mastodon-kullanici-adi-olustur/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Oluşturucu yükleniyor…</p>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Mastodon adresi nasıl görünür?</h3>
+    <p>
+      İki kısımdır: kullanıcı adın ve sunucun; örneğin &#64;matthew_martin&#64;mastodon.social.
+      Kullanıcı adı harf, sayı ve alt çizgi içerebilir, en fazla 30 karakterdir; büyük harfler
+      farklı ad oluşturmaz.
+    </p>
+    <h3>Neden birden fazla sunucu kontrol ediliyor?</h3>
+    <p>
+      Her sunucunun kendi kullanıcı adları vardır. mastodon.social üzerinde dolu olan ad başka
+      sunucuda boş olabilir; her sunucudan insanlar seni yine takip edebilir.
+    </p>
+    <h3>“Boş görünüyor” garanti mi?</h3>
+    <p>
+      Tam değil. O sunucuda henüz kimsenin bu ada sahip olmadığı anlamına gelir. Silinen hesap
+      adları korunur, yöneticiler sözcük ayırabilir; son sözü kayıt formu söyler.
+    </p>
+    <h3>En büyük sunucular hangileri?</h3>
+    <p>
+      Mastodon sunucu sözleşmesine uyan sunucuların joinmastodon.org dizininde en çok kaydı olanlar.
+      Bazıları yeni hesapları yönetici onayına sunar; listede belirtilir.
+    </p>
+  </section>
+</main>

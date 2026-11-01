@@ -31,6 +31,7 @@ export interface LanguageLandingCopy {
     | 'ru'
     | 'sv'
     | 'vi'
+    | 'tr'
     | 'uk'
     | 'zh-Hant';
   /**
@@ -55,6 +56,7 @@ export interface LanguageLandingCopy {
     | 'ru'
     | 'sv'
     | 'vi'
+    | 'tr'
     | 'uk'
     | 'zh-Hant';
   openApp: string;
@@ -3121,6 +3123,190 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       home: 'Mở bảng tin chính',
       starterPacks: 'Xem gói khởi đầu',
       settingsLink: 'Mọi thiết lập ngôn ngữ',
+    },
+  },
+  'tr/turkce-mastodon': {
+    lang: 'tr',
+    target: 'tr',
+    learning: 'en',
+    openApp: 'Uygulamayı aç',
+    loading: 'Yükleniyor…',
+    signIn: 'Mastodon ile oturum aç',
+    questionsTitle: 'Sorular',
+    path: 'tr/turkce-mastodon',
+    eyebrow: 'Dillerin',
+    heading: 'Türkçe Mastodon',
+    intro:
+      "Mastodon'da Türkçe oku ve yaz. Arayüzünü ve okuduğun dilleri seç, öğrendiğin dillere çeviri ekle. Ayarları birlikte gözden geçirip uygulamak için oturum aç.",
+    claims: [
+      {
+        title: 'Türkçe arayüz',
+        body: "Mawkingbird'ün menülerini ve düğmelerini Türkçe kullan.",
+      },
+      {
+        title: 'Yalnızca okuduğun diller',
+        body: "Ana akış ve Algo'da bilmediğin dillerdeki gönderileri gizle. Dili belirsiz gönderiler görünmeye devam eder.",
+      },
+      {
+        title: 'Okuyarak öğren',
+        body: 'Öğrendiğin bir dil ekle. O dildeki gönderiler asla gizlenmez; çeviri özgün metnin altında görünür.',
+      },
+      {
+        title: 'Kullandığın yazı sisteminde gündem',
+        body: 'Gündemdeki etiketleri yazı sistemine göre süz.',
+      },
+    ],
+    questions: [
+      {
+        q: "Mastodon'u Türkçe kullanabilir miyim?",
+        a: 'Evet. Türkçe gönderiler okuyup yazabilir, Türkçeyi gönderi dili yapabilirsin. Bu sayfada arayüz dilini, okuma dillerini ve filtreleri seçersin.',
+      },
+      {
+        q: 'Mawkingbird Türkçe mi?',
+        a: 'Evet. Mawkingbird arayüzü Türkçe sunulur. Bu sayfadan Türkçeyi seçip diğer dil ayarlarıyla birlikte uygulayabilirsin.',
+      },
+      {
+        q: 'Nereden kaydolurum?',
+        a: 'mastodon.social ile başlayabilirsin. joinmastodon.org gibi dizinlerde başka sunucular da var. Mawkingbird tüm Mastodon sunucularıyla çalışır.',
+      },
+      {
+        q: 'Oturum açınca ne değişir?',
+        a: 'Başta hiçbir şey. Ayarları görüp hangilerini uygulayacağını seçersin. Yalnızca gönderi dili sunucuya kaydedilir; diğerleri tarayıcıda kalır.',
+      },
+      {
+        q: 'Ücretli mi?',
+        a: 'Hayır. Mawkingbird ücretsizdir ve tarayıcında çalışır.',
+      },
+    ],
+    checklist: {
+      title: "Mawkingbird'ü Türkçe okumak için ayarla",
+      intro: "Kullanmak istediklerini seç. Uygula'ya basana kadar hiçbir şey değişmez.",
+      items: [
+        {
+          setting: 'interface',
+          label: 'Arayüzü Türkçe kullan',
+          hint: 'Bu tarayıcıdaki menüler ve düğmeler.',
+          checked: true,
+        },
+        {
+          setting: 'known',
+          label: 'Türkçe okuyorum',
+          hint: 'Aşağıdaki filtreler okuduğun dilleri kullanır.',
+          checked: true,
+        },
+        {
+          setting: 'alsoEnglish',
+          label: 'İngilizce de okuyorum',
+          hint: 'İngilizce gönderiler de görünmeye devam eder.',
+          checked: true,
+        },
+        {
+          setting: 'posting',
+          label: 'Türkçe yazıyorum',
+          hint: 'Yeni gönderilerin varsayılan dili. Mastodon sunucuna kaydedilir.',
+          checked: true,
+        },
+        {
+          setting: 'hideForeign',
+          label: 'Okumadığım dillerdeki gönderileri gizle',
+          hint: "Ana akış ve Algo'da. Dili belirsiz gönderiler görünür.",
+          checked: true,
+        },
+        {
+          setting: 'trends',
+          label: 'Yalnızca yazı sistemimdeki gündem',
+          hint: 'Diğer yazı sistemlerindeki gündem etiketlerini süzer.',
+          checked: true,
+        },
+        {
+          setting: 'learning',
+          label: 'İngilizce öğreniyorum',
+          hint: 'İngilizce gönderiler çeviriyle birlikte her zaman görünür.',
+          checked: false,
+        },
+      ],
+      where: {
+        browser: 'bu tarayıcı',
+        server: 'sunucun',
+      },
+      apply: 'Uygula',
+      applying: 'Uygulanıyor…',
+      failed: 'Gönderi dili sunucuna kaydedilemedi. Diğer ayarlar uygulandı.',
+      doneTitle: 'Bitti',
+      doneNothing: 'Hiçbir şey seçilmedi; değişiklik yapılmadı.',
+      home: 'Ana akışı aç',
+      starterPacks: 'Başlangıç paketlerini gör',
+      settingsLink: 'Tüm dil ayarları',
+    },
+  },
+  'tr/mastodonla-ingilizce-ogren': {
+    lang: 'tr',
+    target: 'tr',
+    learning: 'en',
+    openApp: 'Uygulamayı aç',
+    loading: 'Yükleniyor…',
+    signIn: 'Mastodon ile oturum aç',
+    questionsTitle: 'Sorular',
+    path: 'tr/mastodonla-ingilizce-ogren',
+    eyebrow: 'Dil öğrenme',
+    heading: 'Mastodon ile İngilizce öğren',
+    intro:
+      "Her gün gerçek İngilizce gönderiler oku; gerektiğinde altında çeviri gör. Okuduğun dilleri değiştirmeden Mawkingbird'ü İngilizce öğrenmek için ayarlamak üzere oturum aç.",
+    claims: [
+      {
+        title: 'İngilizce hep görünür',
+        body: 'Öğrendiğin dil, okumadığın dilleri gizleyen filtreyle bile asla gizlenmez.',
+      },
+      {
+        title: 'Çeviri altında, aslı yerine değil',
+        body: 'Özgün metin ve çeviri birlikte; gerçek metinden öğrenmen için.',
+      },
+      {
+        title: 'Otomatik veya isteğinle',
+        body: "Kaydırırken veya yalnızca Çevir'e basınca çevir. Çeviriyi sunucun ya da kendi anahtarını kullanan yapay zekâ yapar.",
+      },
+      {
+        title: 'Takip edilecek kişiler',
+        body: 'Konuya göre gruplandırılmış İngilizce hesaplardan başlangıç paketleri.',
+      },
+    ],
+    questions: [
+      {
+        q: 'Mastodon İngilizce öğrenmek için iyi mi?',
+        a: 'Gerçek insanların her türlü konuda yazdığı kısa, günlük İngilizce gönderiler var. İlgi alanındaki kişileri takip et ve okumayı alışkanlık yap.',
+      },
+      {
+        q: 'Çeviriyi kim yapar?',
+        a: 'Destekliyorsa Mastodon sunucun veya kendi OpenRouter anahtarınla bir yapay zekâ modeli. Mawkingbird kendi sunucularında çeviri yapmaz.',
+      },
+      {
+        q: 'Uygulamanın dili değişir mi?',
+        a: 'Hayır. Sayfa yalnızca İngilizceyi öğrendiğin dil olarak ekler. Uygulama dili ve okuduğun diller değişmez.',
+      },
+    ],
+    checklist: {
+      title: "Mawkingbird'ü İngilizce öğrenmek için ayarla",
+      intro: "Kullanmak istediklerini seç. Uygula'ya basana kadar hiçbir şey değişmez.",
+      items: [
+        {
+          setting: 'learning',
+          label: 'İngilizce öğreniyorum',
+          hint: 'İngilizce gönderiler asla gizlenmez; altında çeviri gösterilir.',
+          checked: true,
+        },
+      ],
+      where: {
+        browser: 'bu tarayıcı',
+        server: 'sunucun',
+      },
+      apply: 'Uygula',
+      applying: 'Uygulanıyor…',
+      failed: 'Bir ayar kaydedilemedi. Yeniden dene.',
+      doneTitle: 'Bitti',
+      doneNothing: 'Hiçbir şey seçilmedi; değişiklik yapılmadı.',
+      home: 'Ana akışı aç',
+      starterPacks: 'Başlangıç paketlerini gör',
+      settingsLink: 'Tüm dil ayarları',
     },
   },
 };

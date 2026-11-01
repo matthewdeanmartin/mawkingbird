@@ -252,3 +252,15 @@ export class MastodonFriendsRssFeedsSv extends MastodonFriendsRssFeeds {
 export class MastodonFriendsRssFeedsVi extends MastodonFriendsRssFeeds {
   protected override readonly returnHere = { next: '/vi/mastodon-friends-rss-feeds' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-friends-rss-feeds-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  templateUrl: './mastodon-friends-rss-feeds.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonFriendsRssFeedsTr extends MastodonFriendsRssFeeds {
+  protected override readonly returnHere = { next: '/tr/mastodon-arkadas-rss-akislari' };
+}

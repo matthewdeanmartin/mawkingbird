@@ -1,0 +1,79 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Kişiler</p>
+    <h1>Telefon rehberindeki kişileri Mastodon'da bul</h1>
+    <p>
+      Rehberindeki bazı kişiler zaten Mastodon'da. Bu araç onları arar ve tanıdıklarını takip etmeni
+      sağlar.
+      @if (!inShell) {
+        Mastodon ile oturum aç, kişilerini seç veya rehber dosyası yükle; kimlerin bulunduğuna bak.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the finder searches through your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-contacts-workbench />
+    } @placeholder {
+      <p class="muted">Bulucu yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon ile oturum aç</h2>
+        <p>Arama kendi Mastodon sunucun üzerinden yapılır.</p>
+      </li>
+      <li>
+        <h2>Kişilerini seç</h2>
+        <p>
+          Android telefonda Chrome kullanıyorsan kişileri doğrudan rehberden seç. Diğer yerlerde
+          Google Contacts'tan dışa aktardığın dosyayı yükle.
+        </p>
+      </li>
+      <li>
+        <h2>Tanıdıklarını takip et</h2>
+        <p>
+          Her eşleşme neden önerildiğini gösterir. Kişileri tek tek takip et; senin yerine kimse
+          takip edilmez.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Kişilerini bulmak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Rehberim yükleniyor mu?</h3>
+    <p>
+      Hayır. Kişilerin bu tarayıcıda kalır. Yalnızca ad veya kullanıcı adı gibi arama terimleri
+      kendi Mastodon sunucuna gönderilir; sayfayı kapatınca hiçbir şey saklanmaz.
+    </p>
+    <h3>Rehber dosyasını nasıl alırım?</h3>
+    <p>
+      Google Contacts'ta Dışa aktar seçeneğini ve Google CSV biçimini seç; ardından dosyayı buraya
+      yükle.
+    </p>
+    <h3>Eşleşme neden tahmin?</h3>
+    <p>
+      Mastodon'da telefon veya e-posta ile arama yoktur. Kişiler ipuçlarıyla eşleştirilir:
+      kaydedilmiş Mastodon adresi, adları, e-postalarının ad ve alan adı kısmı, siteleri. Özgün
+      adlar kolay bulunur; yaygın adlar yabancıları getirebilir. Bu yüzden kimi takip edeceğini sen
+      seçersin.
+    </p>
+    <h3>Birisi henüz Mastodon'da değil mi?</h3>
+    <p>Davet et: aramadan sonra hazır davetler bir tık uzağında.</p>
+  </section>
+</main>

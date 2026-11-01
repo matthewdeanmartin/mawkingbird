@@ -249,3 +249,13 @@ export class FriendBridgeSv extends FriendBridge {}
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeVi extends FriendBridge {}
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-friend-bridge-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  templateUrl: './friend-bridge.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FriendBridgeTr extends FriendBridge {}

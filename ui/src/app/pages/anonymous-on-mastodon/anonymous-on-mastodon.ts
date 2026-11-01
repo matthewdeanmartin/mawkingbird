@@ -253,3 +253,15 @@ export class AnonymousOnMastodonSv extends AnonymousOnMastodon {
 export class AnonymousOnMastodonVi extends AnonymousOnMastodon {
   protected override readonly returnHere = { next: '/vi/how-to-be-anonymous-on-mastodon' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-anonymous-on-mastodon-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  templateUrl: './anonymous-on-mastodon.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class AnonymousOnMastodonTr extends AnonymousOnMastodon {
+  protected override readonly returnHere = { next: '/tr/mastodon-takma-ad' };
+}

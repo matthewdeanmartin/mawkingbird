@@ -253,3 +253,15 @@ export class MastodonSimilarHashtagsSv extends MastodonSimilarHashtags {
 export class MastodonSimilarHashtagsVi extends MastodonSimilarHashtags {
   protected override readonly returnHere = { next: '/vi/mastodon-similar-hashtags' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-similar-hashtags-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SimilarHashtagsWorkbench],
+  templateUrl: './mastodon-similar-hashtags.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonSimilarHashtagsTr extends MastodonSimilarHashtags {
+  protected override readonly returnHere = { next: '/tr/mastodon-benzer-etiketler' };
+}

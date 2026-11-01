@@ -55,6 +55,11 @@ export const TOOLS_INDEXES: Record<TranslatedLanguage, { title: string; descript
     description:
       'Ferramentas grátis para Mastodon e Bluesky em português: leve quem você segue no Twitter, agende publicações, baixe imagens, encontre hashtags semelhantes e mais. Tudo no navegador.',
   },
+  tr: {
+    title: 'Mastodon ve Bluesky için ücretsiz araçlar',
+    description:
+      'Türkçe Mastodon ve Bluesky araçları: Twitter arkadaşlarını bul, gönderi zamanla, görsel indir ve benzer etiketleri keşfet. Hepsi tarayıcında çalışır.',
+  },
   vi: {
     title: 'Công cụ miễn phí cho Mastodon và Bluesky',
     description:

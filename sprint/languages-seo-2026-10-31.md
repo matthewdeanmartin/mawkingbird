@@ -660,3 +660,49 @@ request supersedes the Swedish stopping point. Stop after Vietnamese.
   Stop after Vietnamese for owner usage review.
 - Open: independent native Vietnamese review, signed-in tools with a real
   account, production deployment and owner measurement.
+
+### Turkish (2026-11-01)
+
+- Owner selected Turkish as the last language, retaining the SEO landing
+  page and embedded-tool scope without global i18n catch-up.
+- 22 pages under `/tr/` (index plus 21 tools), with Turkish slugs such as
+  `tr/mastodon-istatistikleri`, `tr/mastodon-gorsel-indir`,
+  `tr/turkce-mastodon` and `tr/mastodonla-ingilizce-ogren`. Copy preserves
+  Turkish characters; URLs use ASCII.
+- Informal sen and the existing glossary: gönderi, yer imi, takip et,
+  sessize al and engelle. Counts use singular nouns after numerals in both
+  one/other messages. No shared plural logic changed.
+- Added only the same 424 focused-tool/embedded-control keys through the
+  frozen English/context source-snapshot merge gate. Verified all original
+  Turkish values are unchanged; coverage is 84%. Ledger acceptance does
+  not claim independent native review.
+- Turkish is already a production app locale; its language checklist
+  includes the interface-language switch. No locale status changed.
+- Reviewed/reconciled all 17 new templates (585 candidates across 1,621
+  sources). No shared widget implementations changed. Browser checks cover
+  all Turkish tools with and without JavaScript, headings, lang, canonical,
+  hreflang, desktop/mobile overflow, download control and index/menu.
+- Audit confirms all 18 existing app locales now have SEO tools.
+  Remaining languages in this scoped rollout: none. Stop here.
+- Production initial bundle: 900.95 kB, below the unchanged 1 MB budget.
+- Initial SEO build hit an esbuild Go-runtime crash ("attempt to execute
+  system stack code on user stack"). A fresh SEO build passed with no source
+  changes; no checks or budgets were bypassed.
+- Initial full test run produced an incomplete Vitest report: 43 status-card
+  assertions were still pending when the reporter ran. No assertions failed,
+  but the complete gate correctly rejected it. The fresh complete run passed
+  all 9,059 tests with 0 failed/skipped and 0 missing from the manifest.
+  No tests were skipped, focused, removed or weakened.
+- Gates passed: source-snapshot merge dry run/merge (424 keys),
+  targeted specs (394), format:check, lint, check:i18n, check:storage,
+  check:subpaths, design:inventory-check, `make test` (9,059 passed),
+  build:mockingbird, `make test-seo`
+  on retry and test:seo:browser. All Turkish tools passed with and without
+  JavaScript, without runtime errors or desktop/mobile overflow. Inspected
+  the phone-width Turkish index screenshot.
+- Not run: `make design-verify` (no shared widget changes), real-wheel
+  `make test-integration`, help-site gates (no public help changes), CI
+  deployment matrix or publishing. Reused unchanged locked dependencies
+  installed by npm ci earlier in the session (Node 24.18.0).
+- Open: independent native Turkish copy review, signed-in tools with a real
+  account, production deployment and owner measurement.

@@ -1,0 +1,79 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon yeniden paylaşımları</p>
+    <h1>Mastodon'da takip ettiğin herkesin yeniden paylaşımlarını kapat</h1>
+    <p>
+      Yeniden paylaşımlar Mastodon'un retweet'leridir. Herkesi takip etmeye devam et, yalnızca kendi
+      yazdıklarını gör.
+      @if (!inShell) {
+        Mastodon yeniden paylaşımları tek tek gizletir; bu araç hepsi için birden yapar.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the action reads and changes your follows, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-boosts-workbench />
+    } @placeholder {
+      <p class="muted">Yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon ile oturum aç</h2>
+        <p>Takip ettiklerin kendi Mastodon sunucundan okunur.</p>
+      </li>
+      <li>
+        <h2>Kaç kişiyi değiştireceğini gör</h2>
+        <p>
+          İşlem başlamadan önce takip ettiklerinin kaçında yeniden paylaşımların hâlâ açık olduğu
+          söylenir.
+        </p>
+      </li>
+      <li>
+        <h2>Onayla ve ilerlemeyi izle</h2>
+        <p>
+          Her hesap sırayla güncellenir; ilerleme çubuğunu izlersin. Yarıda durup sonra devam
+          edebilirsin.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Yeniden paylaşımları kapatmak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Kimsenin takibini bırakır mı?</h3>
+    <p>
+      Hayır. Herkesi takip etmeye devam edersin; kendi gönderileri ve yanıtları ana akışına ulaşır.
+      Yalnızca yeniden paylaşımları durur.
+    </p>
+    <h3>Geri alabilir miyim?</h3>
+    <p>
+      Evet. Aynı sayfa herkes için yeniden açar; tek bir hesap için kişinin profilinden açabilirsin.
+    </p>
+    <h3>Daha sonra takip ettiklerim ne olacak?</h3>
+    <p>
+      Yeni takiplerde yeniden paylaşımlar Mastodon'un olağan biçiminde açık başlar. İstediğin zaman
+      yeniden çalıştır; yalnızca gereken hesapları değiştirir.
+    </p>
+    <h3>Neden zaman alıyor?</h3>
+    <p>
+      Mastodon'da “herkes birden” ayarı yok; takip ettiğin her hesap tek tek değiştirilir. Uzun
+      takip listesi birkaç dakika sürer.
+    </p>
+  </section>
+</main>

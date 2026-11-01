@@ -252,3 +252,15 @@ export class GithubToMastodonSv extends GithubToMastodon {
 export class GithubToMastodonVi extends GithubToMastodon {
   protected override readonly returnHere = { next: '/vi/github-to-mastodon' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-github-to-mastodon-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  templateUrl: './github-to-mastodon.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class GithubToMastodonTr extends GithubToMastodon {
+  protected override readonly returnHere = { next: '/tr/github-arkadaslarini-mastodonda-bul' };
+}

@@ -228,3 +228,13 @@ export class NetworkSearchSv extends NetworkSearch {}
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchVi extends NetworkSearch {}
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-network-search-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  templateUrl: './network-search.tr.html',
+  styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
+  providers: [provideRouteLanguage()],
+})
+export class NetworkSearchTr extends NetworkSearch {}

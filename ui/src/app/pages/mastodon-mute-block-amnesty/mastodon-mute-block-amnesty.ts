@@ -268,3 +268,17 @@ export class MastodonMuteBlockAmnestyVi extends MastodonMuteBlockAmnesty {
     next: '/vi/mastodon-mute-block-amnesty',
   };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-mute-block-amnesty-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  templateUrl: './mastodon-mute-block-amnesty.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonMuteBlockAmnestyTr extends MastodonMuteBlockAmnesty {
+  protected override readonly returnHere = {
+    next: '/tr/mastodon-ses-ac-engel-kaldir',
+  };
+}

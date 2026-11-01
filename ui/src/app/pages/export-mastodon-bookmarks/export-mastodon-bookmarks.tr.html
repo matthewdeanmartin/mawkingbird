@@ -1,0 +1,82 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon yer imleri</p>
+    <h1>Mastodon yer imlerini dışa aktar</h1>
+    <p>
+      Mastodon'da işaretlediğin tüm gönderileri tarayıcının, Raindrop.io'nun, Pinboard'un veya başka
+      bir yer imi hizmetinin alabileceği dosya olarak indir. Gönderiyi paylaştığı makale için mi
+      işaretledin? Bağlantısını çıkarıp makalenin kendisini kaydet.
+      @if (!inShell) {
+        Başlamak için Mastodon ile oturum aç.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->
+    @defer (on immediate) {
+      <app-bookmarks-export-workbench />
+    } @placeholder {
+      <p class="muted">Yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Yer imlerini oku</h2>
+        <p>Mastodon hesabındaki her yer imi, kendi sunucundan okunur.</p>
+      </li>
+      <li>
+        <h2>Neyi tutacağını seç</h2>
+        <p>
+          Gönderilerin kendisi, paylaştıkları bağlantılar veya yalnızca bağlantı paylaşan yer
+          imleri.
+        </p>
+      </li>
+      <li>
+        <h2>Dosyayı içe aktar</h2>
+        <p>
+          Standart tarayıcı yer imi dosyası: tarayıcının yer imi yöneticisini veya yer imi hizmetini
+          açıp içe aktar.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Yer imlerini dışa aktarmak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Mastodon zaten yer imlerini dışa aktarmıyor mu?</h3>
+    <p>
+      Veri dışa aktarımı, yer imlerini tarayıcıların ve yer imi hizmetlerinin alamadığı bir gönderi
+      adresleri tablosu olarak listeler. Bu dosyayı başlık, metin ve etiketlerle birlikte
+      alabilirler.
+    </p>
+    <h3>“Bağlantıyı çıkar” ne demek?</h3>
+    <p>
+      Çoğu gönderi bir bağlantı için işaretlenir: makale, video veya proje. Bu seçenek gönderi
+      yerine o bağlantıyı kaydeder ve gönderi metnini açıklama olarak tutar.
+    </p>
+    <h3>Yer imlerim bir yere yükleniyor mu?</h3>
+    <p>
+      Hayır. Mastodon sunucundan okunur ve dosya tarayıcında oluşturulur. Mawkingbird'e hiçbir şey
+      gönderilmez.
+    </p>
+    <h3>Tarihler doğru mu?</h3>
+    <p>
+      Her yer iminde gönderinin yazıldığı tarih kullanılır. Mastodon onu ne zaman işaretlediğini
+      kaydetmez.
+    </p>
+  </section>
+</main>

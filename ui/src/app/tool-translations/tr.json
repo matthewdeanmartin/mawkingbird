@@ -1,0 +1,170 @@
+{
+  "twitter-import": {
+    "title": "Twitter'da takip ettiklerini Mastodon'da bul",
+    "description": "Twitter arşivini kullanarak takip ettiklerinden Mastodon’a geçenleri bul. Arşiv tarayıcında kalır; kimi takip edeceğini sen seçersin.",
+    "prerenderCheck": {
+      "heading": "Twitter'da takip ettiklerini Mastodon'da bul",
+      "copy": "Twitter arşivini indir"
+    }
+  },
+  "crosspost": {
+    "title": "Mastodon ve Bluesky'da aynı anda paylaş",
+    "description": "Bir kez yaz, Mastodon ve Bluesky’da paylaş. Bir ağla oturum aç, diğerini bağla ve düzenleyiciyi dene.",
+    "prerenderCheck": {
+      "heading": "Mastodon ve Bluesky'da aynı anda paylaş",
+      "copy": "Diğer hesabı bağla"
+    }
+  },
+  "mastodon-analytics": {
+    "title": "Mastodon hesabının istatistikleri",
+    "description": "En iyi gönderilerini, favorileri, yeniden paylaşımları, yanıtları, etkin takipçileri ve tahmini erişimi gör. Tarayıcında hesaplanır.",
+    "prerenderCheck": {
+      "heading": "Mastodon hesabının istatistikleri",
+      "copy": "En iyi gönderilerin"
+    }
+  },
+  "github-friends": {
+    "title": "GitHub arkadaşlarını Mastodon'da bul",
+    "description": "GitHub’da takip ettiklerini ve yıldızladığın depoların sahiplerini Mastodon’da bul. Kanıtları incele, kimi takip edeceğini seç.",
+    "prerenderCheck": {
+      "heading": "GitHub arkadaşlarını Mastodon'da bul",
+      "copy": "GitHub'ı bağla"
+    }
+  },
+  "schedule": {
+    "title": "Mastodon gönderilerini zamanla",
+    "description": "Birden fazla gönderi yaz, ilk saati ve aralığı seç. Mastodon sunucun sekme kapalıyken bile zamanında yayımlar.",
+    "prerenderCheck": {
+      "heading": "Mastodon gönderilerini önceden zamanla",
+      "copy": "Gönderilerini yaz"
+    }
+  },
+  "bluesky-to-mastodon": {
+    "title": "Bluesky takiplerini Mastodon üzerinde bul",
+    "description": "Bluesky’da takip ettiklerini Mastodon’da bul ve orada da takip et. Profil bağlantılarını kontrol et, adla ara.",
+    "prerenderCheck": {
+      "heading": "Bluesky takiplerini Mastodon üzerinde bul",
+      "copy": "Takip ettiklerini oku"
+    }
+  },
+  "mastodon-to-bluesky": {
+    "title": "Mastodon takiplerini Bluesky üzerinde bul",
+    "description": "Mastodon’da takip ettiklerini Bluesky’da bul ve orada da takip et. Profil bağlantılarını kontrol et, adla ara.",
+    "prerenderCheck": {
+      "heading": "Mastodon takiplerini Bluesky üzerinde bul",
+      "copy": "Takip ettiklerini oku"
+    }
+  },
+  "turn-off-boosts": {
+    "title": "Mastodon'da yeniden paylaşımları kapat",
+    "description": "Kimsenin takibini bırakmadan yeniden paylaşımları gizle. Kendi gönderileri ve yanıtları kalsın. İstediğinde yeniden aç.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da takip ettiğin herkesin yeniden paylaşımlarını kapat",
+      "copy": "Kaç kişiyi değiştireceğini gör"
+    }
+  },
+  "find-contacts": {
+    "title": "Telefon rehberindeki kişileri Mastodon'da bul",
+    "description": "Telefon rehberini seç veya Google Contacts dosyası yükle, Mastodon’daki tanıdıklarını bul. Her takibi kendin seçersin.",
+    "prerenderCheck": {
+      "heading": "Telefon rehberindeki kişileri Mastodon'da bul",
+      "copy": "Kişilerini seç"
+    }
+  },
+  "friend-feeds": {
+    "title": "Mastodon arkadaşlarının RSS akışlarını bul",
+    "description": "Takip ettiklerinin profil bağlantılarından blog ve RSS akışlarını bul. OPML indir. Mawkingbird Plus’a dahildir.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da takip ettiğin herkesin blog ve RSS akışlarını bul",
+      "copy": "OPML dosyasını indir"
+    }
+  },
+  "amnesty": {
+    "title": "Mastodon'da sesi aç ve engelleri kaldır",
+    "description": "Listeni yedekle, gözden geçir ve tüm hesapların sesini aç veya engelini kaldır. Yarıda durabilirsin.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da herkesin sesini aç ve engelini kaldır",
+      "copy": "Yedekle, sonra gözden geçir"
+    }
+  },
+  "pseudonymity": {
+    "title": "Mastodon'u takma adla kullan",
+    "description": "Takip ettiklerini ve takipçilerini gizle, arama ve önerilerden çık, kimliğini açığa çıkarabilecek bağlantıları kontrol et.",
+    "prerenderCheck": {
+      "heading": "Mastodon'u takma adla kullan",
+      "copy": "Çevrendeki kişileri gizle"
+    }
+  },
+  "handle-generator": {
+    "title": "Mastodon kullanıcı adı oluşturucu",
+    "description": "Ad önerileri al; seçtiğin Mastodon sunucusunda ve en büyük sunucularda kullanılabilirliklerini kontrol et. Hesap gerekmez.",
+    "prerenderCheck": {
+      "heading": "Mastodon kullanıcı adı oluşturucu",
+      "copy": "Mastodon adresi nasıl görünür"
+    }
+  },
+  "content-warnings": {
+    "title": "Mastodon'da içerik uyarılarını kapat",
+    "description": "İçerik uyarılarını otomatik aç, hassas medyayı hemen göster. Herkes veya yalnızca güvendiğin kişiler için.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da içerik uyarıları nasıl kapatılır?",
+      "copy": "Hassas medyayı göster"
+    }
+  },
+  "export-bookmarks": {
+    "title": "Mastodon yer imlerini dışa aktar",
+    "description": "Mastodon yer imlerini tarayıcın, Raindrop.io veya Pinboard için indir. Gönderileri veya paylaştıkları bağlantıları kaydet.",
+    "prerenderCheck": {
+      "heading": "Mastodon yer imlerini dışa aktar",
+      "copy": "Neyi tutacağını seç"
+    }
+  },
+  "mastodon-search": {
+    "title": "Mastodon araması: gönderiler, kişiler ve etiketler",
+    "description": "Twitter benzeri filtrelerle ara: from:, has:media, tarihler ve tam ifadeler. Sonuçları sırala, aramalarını kaydet.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da ara",
+      "copy": "Aramayı daralt"
+    }
+  },
+  "bluesky-search": {
+    "title": "Bluesky araması: gönderiler ve kişiler",
+    "description": "Bluesky’da Twitter benzeri filtrelerle ara. Gönderileri aramak için Bluesky ile oturum açman gerekir.",
+    "prerenderCheck": {
+      "heading": "Bluesky'da ara",
+      "copy": "Aramayı daralt"
+    }
+  },
+  "download-media": {
+    "title": "Mastodon'dan görsel indir",
+    "description": "Bir Mastodon hesabının görsellerini gör; GIF, video ve seslerle birlikte ZIP veya ayrı dosyalar olarak indir. Hesap gerekmez.",
+    "prerenderCheck": {
+      "heading": "Mastodon'dan görsel indir",
+      "copy": "Görselleri gör"
+    }
+  },
+  "similar-hashtags": {
+    "title": "Mastodon'da benzer etiketler",
+    "description": "Son Mastodon gönderilerinde etiketlerinle birlikte kullanılanları bul. Birkaç etiketi aynı anda karşılaştır. Hesap gerekmez.",
+    "prerenderCheck": {
+      "heading": "Mastodon'da benzer etiketler",
+      "copy": "Yanında kullanılanları gör"
+    }
+  },
+  "language-en": {
+    "title": "Türkçe Mastodon",
+    "description": "Mastodon’da Türkçe oku ve yaz. Okuduğun dilleri seç, bilmediğin dillerdeki gönderileri gizle, öğrendiğin dillere çeviri ekle.",
+    "prerenderCheck": {
+      "heading": "Türkçe Mastodon",
+      "copy": "Yalnızca okuduğun diller"
+    }
+  },
+  "learn-english": {
+    "title": "Mastodon ile İngilizce öğren",
+    "description": "Gerçek Mastodon gönderileriyle İngilizce öğren. Çeviri özgün metnin altında, otomatik veya isteğinle gösterilir.",
+    "prerenderCheck": {
+      "heading": "Mastodon ile İngilizce öğren",
+      "copy": "İngilizce hep görünür"
+    }
+  }
+}

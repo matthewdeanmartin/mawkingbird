@@ -1,0 +1,77 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Toplu ses açma · Engel kaldırma</p>
+    <h1>Mastodon'da herkesin sesini aç ve engelini kaldır</h1>
+    <p>
+      Sessize alma ve engel listeleri yıllarca büyür, kimse budamaz. Hepsinin sesini birden aç veya
+      engelini kaldır, yeniden başla.
+      @if (!inShell) {
+        Mastodon bunları yalnızca tek tek geri almana izin verir.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the amnesties read and change your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-amnesty-workbench />
+    } @placeholder {
+      <p class="muted">Yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>Mastodon ile oturum aç</h2>
+        <p>Sessize alma ve engel listelerin kendi Mastodon sunucundan okunur.</p>
+      </li>
+      <li>
+        <h2>Yedekle, sonra gözden geçir</h2>
+        <p>
+          Bir şey değişmeden önce listedeki hesap sayısını görür, geri alabilmek için listeyi
+          indirebilirsin.
+        </p>
+      </li>
+      <li>
+        <h2>Toplu işlemi başlat</h2>
+        <p>
+          Her hesabın sırayla sesi açılır veya engeli kaldırılır; ilerleme çubuğunu izlersin. Yarıda
+          durabilirsin.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Başlamak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Toplu ses açma neyi değiştirir?</h3>
+    <p>
+      Sessize aldığın her hesabın sesi açılır; gönderi ve bildirimleri yeniden sana ulaşır. Sessize
+      alınan sözcükler ve filtreler değişmez.
+    </p>
+    <h3>Toplu engel kaldırma neyi değiştirir?</h3>
+    <p>
+      Engellediğin her hesabın engeli kaldırılır. Yeniden seni takip edebilir, gönderilerini
+      görebilir ve yanıtlayabilirler. Engellediğin veya bıraktığın kimseye bildirilmez.
+    </p>
+    <h3>Geri alabilir miyim?</h3>
+    <p>
+      Yalnızca yedekten. Gözden geçirme sırasında listeyi indir; sonra Mastodon sunucunun içe
+      aktarma sayfasından yeniden alabilirsin.
+    </p>
+    <h3>Alan adı engellerini etkiler mi?</h3>
+    <p>Hayır. Yalnızca tek tek sessize aldığın veya engellediğin hesaplar değişir.</p>
+  </section>
+</main>

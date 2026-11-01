@@ -253,3 +253,15 @@ export class FindContactsOnMastodonSv extends FindContactsOnMastodon {
 export class FindContactsOnMastodonVi extends FindContactsOnMastodon {
   protected override readonly returnHere = { next: '/vi/find-contacts-on-mastodon' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-find-contacts-on-mastodon-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContactsWorkbench],
+  templateUrl: './find-contacts-on-mastodon.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class FindContactsOnMastodonTr extends FindContactsOnMastodon {
+  protected override readonly returnHere = { next: '/tr/mastodon-rehber-kisilerini-bul' };
+}

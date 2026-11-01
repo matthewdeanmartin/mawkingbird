@@ -1,0 +1,79 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Etiket bulucu</p>
+    <h1>Mastodon'da benzer etiketler</h1>
+    <p>
+      Bir veya birkaç etiket yaz; insanların yanında kullandığı etiketleri, aynı yeni gönderilerde
+      görülme sıklığına göre gör. Daha fazla kişiye ulaşmak veya takip edecek yeni şeyler bulmak
+      için kullan. Hesap gerekmez.
+    </p>
+  </div>
+
+  <!-- Deferred: the sampling runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-similar-hashtags-workbench
+      [inviteLink]="inShell ? '/tr/mastodon-benzer-etiketler/invite' : '/invites'"
+    />
+  } @placeholder {
+    <p class="muted">Yükleniyor…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Etiket gir</h2>
+        <p>#dog ve #dogs gibi aynı anlama gelen bir veya birkaç etiket.</p>
+      </li>
+      <li>
+        <h2>Son gönderiler örneklenir</h2>
+        <p>Herhangi birini içeren en yeni 200 gönderi mastodon.social üzerinden okunur.</p>
+      </li>
+      <li>
+        <h2>Yanında kullanılanları gör</h2>
+        <p>
+          Her etiket bu gönderilerde kaç kez görüldüğüne göre sıralanır. Daha geniş görünüm için
+          daha fazlasını örnekle.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Kendi sunucunu kullanmak için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Mastodon'da hangi etiketleri kullanmalıyım?</h3>
+    <p>
+      Mastodon'da gönderini kimin göreceğine karar veren algoritma yoktur: insanlar etiket takip
+      ederek veya arayarak bulur. Bu listede gösterildiği gibi onların kullandığı etiketleri kullan;
+      ekran okuyucular okuyabilsin diye CamelCase (#DogsOfMastodon) yaz.
+    </p>
+    <h3>“Benzer” nasıl hesaplanır?</h3>
+    <p>
+      Sayılarak. Örneklenen gönderilerdeki her etiket gönderi başına bir kez sayılır; sorduğun
+      etiketler çıkarılır. 200 gönderinin 40'ında görünen etiket, 5'inde görülenden üstte olur.
+    </p>
+    <h3>Neden birkaç etiket birden karşılaştırılıyor?</h3>
+    <p>
+      İnsanlar aynı konuyu farklı yazımlara böler: #dog ve #dogs, #photo ve #photography. Birlikte
+      girince herhangi birini içeren gönderiler örneklenir; liste tüm konuşmayı kapsar.
+    </p>
+    <h3>Sonuçlar sunucular arasında neden farklı?</h3>
+    <p>
+      Her Mastodon sunucusu yalnızca kendi kullanıcılarının takip ettiği kişilerin gönderilerini
+      görür. Büyük, etkin sunucu en geniş görünümü verir. Oturum açıkken örnek kendi sunucundan
+      gelir ve ağdaki çevrenin kullanımını gösterir.
+    </p>
+  </section>
+</main>

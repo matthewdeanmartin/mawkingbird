@@ -1,0 +1,67 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon + Bluesky</p>
+    <h1>Mastodon ve Bluesky'da aynı anda paylaş</h1>
+    <p>
+      Bir kez yaz ve aynı gönderiyi iki ağa da gönder.
+      @if (!inShell) {
+        Sahip olduğun hesapla oturum aç, diğerini bağla ve basit düzenleyicide dene.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the composer and connectors load only in the browser. -->
+    @defer (on immediate) {
+      <app-crosspost-workbench />
+    } @placeholder {
+      <p class="muted">Düzenleyici yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>İki ağdan biriyle oturum aç</h2>
+        <p>Mastodon veya Bluesky hesabını kullan. Başlamak için bir tanesi yeterli.</p>
+      </li>
+      <li>
+        <h2>Diğer hesabı bağla</h2>
+        <p>
+          Mastodon ile giriş yaptıysan Bluesky'ı uygulama parolasıyla bağla. Bluesky ile giriş
+          yaptıysan Mastodon sunucunu ekle.
+        </p>
+      </li>
+      <li>
+        <h2>Bir kez yaz, ikisinde de paylaş</h2>
+        <p>Düzenleyici gönderini iki ağa da yollar. İlk gönderinle dene.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">Mastodon ile oturum aç</a>
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Bluesky ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Bluesky kopyası tamamen aynı mı?</h3>
+    <p>
+      Metin aynıdır. Bluesky kopyası her zaman herkese açıktır. Bluesky'da karşılıkları olmadığından
+      anketler ve içerik uyarıları Mastodon kopyasında kalır.
+    </p>
+    <h3>Oturum bilgilerim nerede tutulur?</h3>
+    <p>
+      Bu tarayıcıda. Mawkingbird Mastodon sunucunla ve Bluesky ile doğrudan iletişim kurar; arada
+      hesaplarını tutan bir Mawkingbird sunucusu yoktur.
+    </p>
+  </section>
+</main>

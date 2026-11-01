@@ -28,6 +28,7 @@ const ENDONYMS: Record<PageLanguage, string> = {
   ru: 'Русский',
   sv: 'Svenska',
   vi: 'Tiếng Việt',
+  tr: 'Türkçe',
   'zh-Hant': '繁體中文',
 };
 

@@ -365,5 +365,28 @@
     "similar-hashtags": "vi/mastodon-similar-hashtags",
     "language-en": "vi/mastodon-in-vietnamese",
     "learn-english": "vi/learn-english-with-mastodon"
+  },
+  "tr": {
+    "twitter-import": "tr/twitterdan-mastodona",
+    "crosspost": "tr/mastodon-bluesky-ortak-paylasim",
+    "mastodon-analytics": "tr/mastodon-istatistikleri",
+    "github-friends": "tr/github-arkadaslarini-mastodonda-bul",
+    "schedule": "tr/mastodon-gonderi-zamanlama",
+    "bluesky-to-mastodon": "tr/blueskydan-mastodona",
+    "mastodon-to-bluesky": "tr/mastodondan-blueskya",
+    "turn-off-boosts": "tr/mastodon-yeniden-paylasimlari-kapat",
+    "find-contacts": "tr/mastodon-rehber-kisilerini-bul",
+    "friend-feeds": "tr/mastodon-arkadas-rss-akislari",
+    "amnesty": "tr/mastodon-ses-ac-engel-kaldir",
+    "pseudonymity": "tr/mastodon-takma-ad",
+    "handle-generator": "tr/mastodon-kullanici-adi-olustur",
+    "content-warnings": "tr/mastodon-icerik-uyarilarini-kapat",
+    "export-bookmarks": "tr/mastodon-yer-imlerini-aktar",
+    "mastodon-search": "tr/mastodon-arama",
+    "bluesky-search": "tr/bluesky-arama",
+    "download-media": "tr/mastodon-gorsel-indir",
+    "similar-hashtags": "tr/mastodon-benzer-etiketler",
+    "language-en": "tr/turkce-mastodon",
+    "learn-english": "tr/mastodonla-ingilizce-ogren"
   }
 }

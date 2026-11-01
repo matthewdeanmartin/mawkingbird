@@ -822,4 +822,51 @@ export const DOWNLOAD_IMAGES_COPY: Record<PageLanguage, DownloadImagesCopy> = {
       },
     ],
   },
+  tr: {
+    path: '/tr/mastodon-gorsel-indir',
+    openApp: 'Uygulamayı aç',
+    eyebrow: 'Mastodon medyası',
+    heading: "Mastodon'dan görsel indir",
+    intro:
+      'Mastodon hesabını yapıştır, tüm görsellerini tek duvarda gör. Sonra istersen GIF, video ve seslerle birlikte ZIP veya ayrı dosyalar olarak indir. Hesap gerekmez.',
+    loading: 'Yükleniyor…',
+    steps: [
+      {
+        title: 'Hesabı yapıştır',
+        body: '@someone@mastodon.social gibi bir kullanıcı adı, profil bağlantısı veya aranacak ad.',
+      },
+      {
+        title: 'Görselleri gör',
+        body: 'Medya içeren tüm gönderiler, en yenisi önce, doğrudan kişinin sunucusundan okunur.',
+      },
+      {
+        title: 'Hepsini indir',
+        body: "Görseller, GIF'ler, videolar veya sesler; ne kadar geriye gidileceği; ZIP veya ayrı dosyalar.",
+      },
+    ],
+    signIn: 'Mastodon ile oturum aç',
+    questionsTitle: 'Sorular',
+    questions: [
+      {
+        q: 'Bir Mastodon hesabının tüm görsellerini nasıl indiririm?',
+        a: "Hesabı yukarıya yapıştır, Medya indir'e bas ve ZIP seç. Mastodon yalnızca görselleri tek tek kaydetmene veya kendi hesabının arşivini indirmene izin verir.",
+      },
+      {
+        q: 'Kendi Mastodon medyamı indirebilir miyim?',
+        a: 'Evet. Kendi adresini yapıştır. Gönderiler dahil tam yedek için sunucunun veri dışa aktarımını da kullan (Tercihler → İçe ve dışa aktar).',
+      },
+      {
+        q: 'Bazı dosyalar neden indirilemedi?',
+        a: 'Bir sayfa dosyayı ancak sunucu başka sitelerin okumasına izin veriyorsa kaydedebilir. Mastodon sunucularının çoğu izin verir ama hepsi değil. Böyle dosyalar tek tek açıp kaydedebilmen için bağlantı olarak listelenir.',
+      },
+      {
+        q: 'Dosyalar Mawkingbird üzerinden mi geçer?',
+        a: "Hayır. Tarayıcı dosyaları Mastodon sunucularından alır ve ZIP'i kendisi oluşturur. Hiçbir şey yüklenmez.",
+      },
+      {
+        q: 'Başkalarının görsellerini indirmek uygun mu?',
+        a: 'Görsellerin sahibi hâlâ yaratıcılarıdır. Kendine kopya saklamak başka, başka yerde yayımlamak başkadır; yayımlamak için izin gerekir.',
+      },
+    ],
+  },
 };

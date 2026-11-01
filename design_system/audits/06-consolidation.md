@@ -1378,3 +1378,13 @@ retain wrapping spaces; internal tool links and invite paths use Vietnamese
 routes. Each candidate has its Polish twin's disposition in
 `11-reconciliation.json`; no candidates were removed. The reviewed inventory
 has 568 candidate files across 1,604 sources. No shared widgets changed.
+
+## Turkish public tools, 2026-11-01
+
+Reviewed all 17 Turkish templates against their translated twins. Button,
+Content Link and language-menu semantics remain intact. The search fallback
+retains its native form and Turkish accessible names; inline archive filenames
+retain wrapping spaces. Internal tool links, invite paths and sign-in return
+paths use the Turkish registry. Each new candidate uses its Polish twin's
+disposition in `11-reconciliation.json`; none were removed. The inventory now
+contains 585 candidate files across 1,621 sources. No shared widgets changed.

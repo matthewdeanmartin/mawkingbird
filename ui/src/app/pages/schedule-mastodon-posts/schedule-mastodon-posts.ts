@@ -254,3 +254,15 @@ export class ScheduleMastodonPostsSv extends ScheduleMastodonPosts {
 export class ScheduleMastodonPostsVi extends ScheduleMastodonPosts {
   protected override readonly returnHere = { next: '/vi/schedule-mastodon-posts' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-schedule-mastodon-posts-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  templateUrl: './schedule-mastodon-posts.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class ScheduleMastodonPostsTr extends ScheduleMastodonPosts {
+  protected override readonly returnHere = { next: '/tr/mastodon-gonderi-zamanlama' };
+}

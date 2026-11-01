@@ -252,3 +252,15 @@ export class MastodonAnalyticsSv extends MastodonAnalytics {
 export class MastodonAnalyticsVi extends MastodonAnalytics {
   protected override readonly returnHere = { next: '/vi/mastodon-analytics' };
 }
+
+/** Turkish public page; embedded tools use the route language. */
+@Component({
+  selector: 'app-mastodon-analytics-tr',
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  templateUrl: './mastodon-analytics.tr.html',
+  styleUrl: '../focused-apps/focused-page.css',
+  providers: [provideRouteLanguage()],
+})
+export class MastodonAnalyticsTr extends MastodonAnalytics {
+  protected override readonly returnHere = { next: '/tr/mastodon-istatistikleri' };
+}

@@ -1,0 +1,72 @@
+<main class="focused-page" lang="tr">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Uygulamayı aç</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Mastodon istatistikleri</p>
+    <h1>Mastodon hesabının istatistikleri</h1>
+    <p>
+      Gönderilerinin nasıl karşılandığını ve kimlerin ilgilendiğini gör.
+      @if (!inShell) {
+        Mastodon ile oturum aç; sayılar kendi gönderi ve takipçilerinden burada hesaplanır.
+      }
+    </p>
+  </div>
+
+  @if (inShell) {
+    <!-- Deferred: the analytics read your account, so they load only in the browser. -->
+    @defer (on immediate) {
+      <app-mastodon-analytics-panel />
+    } @placeholder {
+      <p class="muted">İstatistiklerin yükleniyor…</p>
+    }
+  } @else {
+    <ol class="steps">
+      <li>
+        <h2>En iyi gönderilerin</h2>
+        <p>
+          En iyi gönderiler, gönderi başına favoriler, yeniden paylaşımlar ve yanıtlar; tahmini
+          erişim.
+        </p>
+      </li>
+      <li>
+        <h2>Kitlen</h2>
+        <p>
+          Takip ettiklerin ve takipçilerin arasında kaç kişinin hâlâ etkin olduğu, en çok kimlerle
+          konuştuğun.
+        </p>
+      </li>
+      <li>
+        <h2>Alışkanlıkların</h2>
+        <p>
+          Ne zaman, ne sıklıkla, hangi dillerde ve neler hakkında paylaştığın, bir gönderi
+          takviminde.
+        </p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Kendininkini görmek için Mastodon ile oturum aç</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Sorular</h2>
+    <h3>Verilerim nereye gönderilir?</h3>
+    <p>
+      Yeni bir yere gönderilmez. Gönderilerin ve takipçilerin kendi Mastodon sunucundan okunur;
+      sayılar bu tarayıcıda hesaplanır. Mawkingbird kopya tutmaz.
+    </p>
+    <h3>Erişim neden tahmin?</h3>
+    <p>
+      Mastodon görüntülemeleri saymaz. Erişim takipçilerin ve etkileşimlerinden tahmin edilir;
+      sayfanın ilgili sayının yanında bunu belirttiğini görürsün.
+    </p>
+  </section>
+</main>
