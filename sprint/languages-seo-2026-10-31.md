@@ -157,12 +157,14 @@ design inventory review.
 - S2-4: `/de/` German index (`ToolsIndexDe`) paired with /tools via hreflang;
   `LanguageVersions` links each page to its other language.
 - Gates: format, lint, check:i18n, build:mockingbird (initial 889 kB),
-  `make test-seo` and `test:seo:browser` passed. `make test`: 1 failure,
+  `make test-seo` and `test:seo:browser` passed. `make test`: one run failed on
   server-picker.spec.ts "waits for an explicit action before connecting to a
-  typed local server"; that file is untouched and passes alone (9/9), so it is
-  a test-order interaction, not yet diagnosed.
+  typed local server" (untouched; passes alone, 9/9); a full rerun of
+  `test:ci` passed, 8,715 tests, 0 failed. It is flaky: it fakes timers and
+  asserts global `fetch` is never called, which a stray request from another
+  spec in the shared realm can occasionally break.
 - Live (en-US Chromium, prerendered build): /de/, the German handle generator,
   search and similar-hashtags bodies all German; language links both ways; the
   old pilot URL redirects. No page errors.
-- Not done: S2-5 measurement; native German review; the test-manifest
-  update for the new test IDs.
+- Not done: S2-5 measurement (Search Console and GoatCounter need the owner);
+  native German review.
