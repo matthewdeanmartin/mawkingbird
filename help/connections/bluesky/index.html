@@ -29,7 +29,7 @@
 </div></header>
 <div itemscope itemtype="https://schema.org/BreadcrumbList"><div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="1"><meta itemprop="name" content="Mawkingbird"><link itemprop="item" href="https://mawkingbird.com/"></div><div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="2"><meta itemprop="name" content="Help"><link itemprop="item" href="https://mawkingbird.com/help/"></div><div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><meta itemprop="position" content="3"><meta itemprop="name" content="Connect Bluesky"><link itemprop="item" href="https://mawkingbird.com/help/connections/bluesky/"></div></div>
 <div class="layout">
-<nav class="rail" aria-label="Help topics">
+<nav class="rail" aria-label="Help topics"><div data-nosnippet>
 <ul>
 <li><a href="/help/">Help home</a></li>
 </ul>
@@ -48,7 +48,7 @@
 <li><a href="/help/new-to-mastodon/what-is-mastodon/">What Mastodon is</a></li>
 <li><a href="/help/new-to-mastodon/choose-a-server/">Choose a Mastodon server</a></li>
 <li><a href="/help/new-to-mastodon/create-an-account/">Create a Mastodon account</a></li>
-<li><a href="/help/new-to-mastodon/coming-from-x/">Coming to Mastodon from X</a></li>
+<li><a href="/help/new-to-mastodon/coming-from-x/">Coming to Mastodon from Twitter</a></li>
 <li><a href="/help/new-to-mastodon/customs/">Mastodon customs worth knowing</a></li>
 <li><a href="/help/new-to-mastodon/from-bluesky/">Use Bluesky and Mastodon together</a></li>
 </ul>
@@ -110,11 +110,11 @@
 </ul>
 <ul>
 <li><a href="/help/glossary/">Glossary</a></li>
-<li><a href="/help/contributing/">Contributing</a></li>
+<li><a href="/help/contributing/">Report a bug or contribute</a></li>
 </ul>
-</nav>
+</div></nav>
 <main class="column" id="guide">
-<details class="topics"><summary>All help topics</summary>
+<div data-nosnippet><details class="topics"><summary>All help topics</summary>
 <nav aria-label="Help topics (compact)">
 <ul>
 <li><a href="/help/">Help home</a></li>
@@ -134,7 +134,7 @@
 <li><a href="/help/new-to-mastodon/what-is-mastodon/">What Mastodon is</a></li>
 <li><a href="/help/new-to-mastodon/choose-a-server/">Choose a Mastodon server</a></li>
 <li><a href="/help/new-to-mastodon/create-an-account/">Create a Mastodon account</a></li>
-<li><a href="/help/new-to-mastodon/coming-from-x/">Coming to Mastodon from X</a></li>
+<li><a href="/help/new-to-mastodon/coming-from-x/">Coming to Mastodon from Twitter</a></li>
 <li><a href="/help/new-to-mastodon/customs/">Mastodon customs worth knowing</a></li>
 <li><a href="/help/new-to-mastodon/from-bluesky/">Use Bluesky and Mastodon together</a></li>
 </ul>
@@ -196,36 +196,35 @@
 </ul>
 <ul>
 <li><a href="/help/glossary/">Glossary</a></li>
-<li><a href="/help/contributing/">Contributing</a></li>
+<li><a href="/help/contributing/">Report a bug or contribute</a></li>
 </ul>
 </nav>
-</details>
+</details></div>
 <article>
 <p class="eyebrow">Connections and accounts</p>
 <h1 id="connect-bluesky">Connect Bluesky<a class="headerlink" href="#connect-bluesky" title="Link to this section">#</a></h1>
 <p>A Bluesky connection merges posts from your Bluesky timeline into Home. You can reply, like, and repost Bluesky posts without leaving Mawkingbird.</p>
-<h2 id="make-an-app-password">Make an app password<a class="headerlink" href="#make-an-app-password" title="Link to this section">#</a></h2>
-<p>Do not use your regular Bluesky password.</p>
-<ol>
-<li>On Bluesky, open <strong>Settings → Privacy and security → App Passwords</strong>.</li>
-<li>Create an app password.</li>
-<li>If you want Bluesky direct messages in Mawkingbird Chat, allow direct-message access while creating it.</li>
-<li>Copy the app password.</li>
-</ol>
 <h2 id="link-the-account">Link the account<a class="headerlink" href="#link-the-account" title="Link to this section">#</a></h2>
 <ol>
 <li>Open <strong>Settings → Connections → Bluesky</strong>.</li>
-<li>Enter your Bluesky handle, such as <code>you.bsky.social</code>.</li>
-<li>Paste the app password.</li>
-<li>Choose <strong>Link Bluesky</strong>.</li>
+<li>Choose <strong>Continue with Bluesky</strong>.</li>
+<li>Sign in on Bluesky's own page with your usual Bluesky login, then approve access.</li>
 </ol>
+<p>Bluesky sends you back to the connection page, now linked. Mawkingbird never sees your password, and the link includes your Bluesky direct messages in Chat.</p>
+<p>If your account is on a server other than Bluesky's own, open <strong>Use a specific handle or another PDS</strong>, enter your handle, and choose <strong>Continue</strong>.</p>
 <p>This also works while browsing anonymously. In that mode you can read and respond to Bluesky posts, but Chat is not available.</p>
+<h2 id="if-approval-does-not-work-use-an-app-password">If approval does not work: use an app password<a class="headerlink" href="#if-approval-does-not-work-use-an-app-password" title="Link to this section">#</a></h2>
+<p>Some self-hosted servers cannot do the approval step yet. Only then, use an app password. Never use your regular Bluesky password.</p>
+<ol>
+<li>On Bluesky, open <strong>Settings → Privacy and security → App Passwords</strong> and create one.</li>
+<li>If you want Bluesky direct messages in Mawkingbird Chat, allow direct-message access while creating it.</li>
+<li>On the connection page, open <strong>Use an app password instead</strong>, enter your handle and the app password, and choose <strong>Link Bluesky</strong>.</li>
+</ol>
 <h2 id="unlink">Unlink<a class="headerlink" href="#unlink" title="Link to this section">#</a></h2>
-<p>Return to the connection page and choose <strong>Unlink</strong>. Mawkingbird forgets the saved Bluesky session in this browser.</p>
-<p>For complete revocation, also delete the app password in Bluesky's settings. You can make a new app password and reconnect later.</p>
+<p>Return to the connection page and choose <strong>Unlink</strong>. Mawkingbird forgets the Bluesky link in this browser and, for an approved link, asks Bluesky to revoke its access. If you used an app password, also delete it in Bluesky's settings.</p>
 <p>Related: <a href="/help/posting/destinations/">Choose where a post is published</a> and <a href="/help/connections/accounts/">Add or switch accounts</a>.</p>
 </article>
-<nav class="pager" aria-label="More guides"><a rel="prev" href="/help/connections/mastodon/"><span>Previous</span>Connect Mastodon</a><a rel="next" href="/help/connections/twitter/"><span>Next</span>Read public Twitter accounts</a></nav>
+<div data-nosnippet><nav class="pager" aria-label="More guides"><a rel="prev" href="/help/connections/mastodon/"><span>Previous</span>Connect Mastodon</a><a rel="next" href="/help/connections/twitter/"><span>Next</span>Read public Twitter accounts</a></nav></div>
 </main>
 </div>
 <footer class="site-footer">
