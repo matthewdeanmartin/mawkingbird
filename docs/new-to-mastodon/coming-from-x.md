@@ -1,10 +1,10 @@
-# Coming to Mastodon from X
+# Coming to Mastodon from Twitter
 
-Mastodon looks like Twitter did before it became X, and Mawkingbird deliberately looks like Twitter did in 2018. Most habits carry over. These are the differences you will notice first.
+Mastodon looks like Twitter used to, and Mawkingbird deliberately looks like Twitter did in 2018. Most habits carry over. These are the differences you will notice first.
 
 ## The same things with different names
 
-| On X | On Mastodon |
+| On Twitter | On Mastodon |
 | --- | --- |
 | Post or tweet | Post (older guides say *toot*) |
 | Repost or retweet | Boost |
@@ -22,13 +22,13 @@ If you miss a feed sorted by what is popular, Mawkingbird's **Algo** tab sorts p
 
 ## Your followers do not come with you
 
-Nothing moves your X followers, posts or handle to Mastodon automatically. Mawkingbird does not do it either. You rebuild your feed by following people again, and the [starter kits](../finding-people/starter-kits.md) give you a head start.
+Your Twitter followers, posts and handle stay on Twitter; no service moves them to Mastodon. But if you download your Twitter archive, Mawkingbird can [find the people you followed](https://mawkingbird.com/twitter-to-mastodon/) who are already on Mastodon, so you can follow them again. The [starter kits](../finding-people/starter-kits.md) fill in the rest.
 
 If friends have already moved, ask them for their full Mastodon handles and [import them as a list](../finding-people/import-follow-list.md).
 
 ## Hashtags matter more
 
-Mastodon search is more limited than X search. A word search only finds posts whose authors opted in, so hashtags are how most posts get found. Add one or two relevant tags to posts you want strangers to see, and follow tags for subjects you care about.
+Mastodon search is more limited than Twitter search. A word search only finds posts whose authors opted in, so hashtags are how most posts get found. Add one or two relevant tags to posts you want strangers to see, and follow tags for subjects you care about.
 
 ## Private mentions are not encrypted
 
@@ -36,7 +36,7 @@ A private mention is only shown to the people mentioned, but it is not encrypted
 
 ## Quote posts work differently
 
-Mastodon added quote posts later than X, and people can choose whether their posts may be quoted. Some people and servers still dislike quote posts used to mock someone. Replying is the more common habit.
+Mastodon added quote posts later than Twitter, and people can choose whether their posts may be quoted. Some people and servers still dislike quote posts used to mock someone. Replying is the more common habit.
 
 ## Verification uses links
 

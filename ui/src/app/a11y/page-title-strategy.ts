@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { isCanaryBuild } from '../build-flavor';
+import { readPreviewState } from '../first-run/preview-state';
 import { Seo, SITE_ORIGIN } from '../seo';
 
 /**
@@ -21,6 +22,10 @@ import { Seo, SITE_ORIGIN } from '../seo';
  * and narrow tab strips both truncate the end. An untitled route may declare a
  * `seoTagline` instead, giving "Brand — Tagline": the front page is searched
  * for by what it does, and the bare brand alone tells a search result nothing.
+ *
+ * During the first-run preview the tagline wins over the page name. A crawler
+ * arriving at `/` is always a first-time visitor, so it lands on the preview at
+ * `/home` (canonical `/`) and would otherwise index the front page as "Home".
  */
 @Injectable({ providedIn: 'root' })
 export class PageTitleStrategy extends TitleStrategy {
@@ -35,8 +40,8 @@ export class PageTitleStrategy extends TitleStrategy {
     : environment.brand;
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
-    const page = this.buildTitle(snapshot);
-    const tagline = page ? undefined : this.tagline(snapshot);
+    const tagline = this.tagline(snapshot);
+    const page = tagline && readPreviewState() ? undefined : this.buildTitle(snapshot);
     this.title.setTitle(
       page ? `${page} · ${this.brand}` : tagline ? `${this.brand} — ${tagline}` : this.brand,
     );

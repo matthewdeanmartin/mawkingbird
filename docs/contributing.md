@@ -1,7 +1,9 @@
-# Contributing to Mawkingbird
+# Report a bug or contribute to Mawkingbird
 
-Report bugs and propose changes in the
-[Mawkingbird repository](https://github.com/matthewdeanmartin/mawkingbird).
+Found a bug in Mawkingbird or want a feature? Open an issue in the
+[Mawkingbird repository](https://github.com/matthewdeanmartin/mawkingbird) on
+GitHub. Mawkingbird is open source, so you can also fix guides or send code.
+
 For a bug report, include the page, steps to reproduce, expected behavior,
 browser, and build commit shown in the app. Remove tokens and private account
 data from screenshots and logs.

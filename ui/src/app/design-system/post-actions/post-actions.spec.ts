@@ -13,6 +13,14 @@ class CountHost {
   locale = signal('en');
 }
 
+@Component({
+  imports: [MbActionCount, MbPostAction],
+  template: `<button mbPostAction type="button">
+      <span mbActionCount [count]="3" label="likes">3 likes</span></button
+    ><span mbPostAction><span mbActionCount [count]="3" label="likes">3 likes</span></span>`,
+})
+class StaticHost {}
+
 describe('post action counts', () => {
   it('keeps compact destructive commands distinct from toggles', () => {
     const fixture = TestBed.createComponent(MbPostAction);
@@ -24,6 +32,21 @@ describe('post action counts', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.getAttribute('aria-pressed')).toBe('true');
   });
+  it('renders a read-only count as a static span with the controls typography', () => {
+    const fixture = TestBed.createComponent(StaticHost);
+    fixture.detectChanges();
+    const [button, span] = fixture.nativeElement.querySelectorAll('[mbPostAction]');
+    const b = getComputedStyle(button);
+    const s = getComputedStyle(span);
+
+    expect(span.tagName).toBe('SPAN');
+    expect(span.hasAttribute('aria-pressed')).toBe(false);
+    expect(s.cursor).toBe('default');
+    for (const prop of ['fontSize', 'fontWeight', 'lineHeight', 'minHeight', 'padding'] as const) {
+      expect(s[prop], prop).toBe(b[prop]);
+    }
+  });
+
   it('compacts large counts while retaining exact accessible text and a tooltip', () => {
     const fixture = TestBed.createComponent(CountHost);
     fixture.detectChanges();

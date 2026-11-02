@@ -8,7 +8,7 @@ import {
   toolLanguage,
 } from './focused-tools';
 import { ToolsIndex } from './pages/tools/tools-index';
-import { TOOLS_INDEXES } from './seo';
+import { FRONT_PAGE_TAGLINE, TOOLS_INDEXES } from './seo';
 import { FOCUSED_TOOLS } from './focused-tools-all';
 
 /**
@@ -27,7 +27,11 @@ function shellChild(path: string): Route | undefined {
 
 describe('application routes', () => {
   it('keeps the front door destination indexable under the root canonical', () => {
-    expect(shellChild('home')?.data).toEqual({ seoIndexable: true, seoCanonicalPath: '/' });
+    expect(shellChild('home')?.data).toEqual({
+      seoIndexable: true,
+      seoCanonicalPath: '/',
+      seoTagline: FRONT_PAGE_TAGLINE,
+    });
   });
   it('provides a shareable Anonymous entry route', () => {
     expect(routes.find((route) => route.path === 'anonymous')?.loadComponent).toBeDefined();

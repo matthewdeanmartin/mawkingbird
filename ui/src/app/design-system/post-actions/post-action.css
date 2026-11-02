@@ -7,6 +7,14 @@
 :host(:any-link):hover {
   text-decoration: underline;
 }
+/* A static count: same type and geometry as the controls, none of the
+   affordances. Overrides the shared toolbar hover, which matches spans too. */
+:host(span) {
+  cursor: default;
+}
+:host(span:hover:not(:disabled)) {
+  background: transparent;
+}
 :host([data-tone='danger']) {
   color: var(--ds-error-text);
 }

@@ -16,8 +16,13 @@ export class MbPostActions {
   readonly density = input<'default' | 'compact'>('default');
   readonly narrowAlign = input<'start' | 'end'>('start');
 }
+/**
+ * A post command (`button`), navigation (`a`), or a count nobody can act on
+ * (`span`). The span shares the controls' type, padding and height so a
+ * read-only count sits in the row exactly like the counts beside it.
+ */
 @Component({
-  selector: 'button[mbPostAction], a[mbPostAction]',
+  selector: 'button[mbPostAction], a[mbPostAction], span[mbPostAction]',
   template: '<ng-content />',
   styleUrls: ['../toolbar/toolbar-button.css', './post-action.css'],
   host: {

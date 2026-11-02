@@ -669,7 +669,7 @@
           >
         } @else if (auth.isAnonymous || readOnlyStats) {
           <span
-            mbActionCount
+            mbPostAction
             class="action action-static"
             [title]="'statusCard.repliesTitle' | transloco"
             ><span aria-hidden="true">💬</span>
@@ -844,7 +844,11 @@
         }
         @if (unifiedShare()) {
           <!-- The menu above already carries boost, quote and share; the
-               per-audience branches below would duplicate all three. -->
+               per-audience branches below would duplicate all three. Only the
+               count remains, right after the 🔁 it counts. -->
+          @if (!foreign || readOnlyStats || auth.isAnonymous) {
+            <ng-container [ngTemplateOutlet]="boostCount" />
+          }
         } @else if (auth.isAnonymous && display.provider !== 'bluesky') {
           @if (display.url) {
             <button
@@ -873,7 +877,7 @@
             <!-- No URL to share and no network to boost on: a number, not a
                  control. `.action-static` keeps the row's spacing without the
                  pointer cursor that made this look tappable. -->
-            <span mbActionCount class="action action-static" [title]="words().Boosts"
+            <span mbPostAction class="action action-static" [title]="words().Boosts"
               ><span aria-hidden="true">🔁</span>
               <span
                 ><span
@@ -890,6 +894,9 @@
             >
           }
         } @else if (!foreign && capabilities.canCompose) {
+          <!-- The count comes first so it sits beside the 🔁 it counts, as on
+               every other network; Quote follows. -->
+          <ng-container [ngTemplateOutlet]="boostCount" />
           <button
             type="button"
             mbPostAction
@@ -902,49 +909,12 @@
           >
             <span aria-hidden="true">❝</span>
           </button>
-          @if (capabilities.canUseServerActions && display.provider !== 'bluesky') {
-            <button
-              type="button"
-              mbPostAction
-              class="action count-link"
-              (click)="openAccountList('reblogged_by', $event)"
-              [title]="countWords().BoostedBy"
-              [attr.aria-label]="
-                'statusCard.countLabel'
-                  | transloco: { count: display.reblogs_count, label: countWords().BoostedBy }
-              "
-            >
-              <span
-                mbActionCount
-                [count]="display.reblogs_count"
-                [label]="countWords().boosts"
-                [locale]="countLocale"
-                >{{
-                  'statusCard.countLabel'
-                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
-                }}</span
-              >
-            </button>
-          } @else {
-            <span mbActionCount class="action action-static"
-              ><span
-                mbActionCount
-                [count]="display.reblogs_count"
-                [label]="countWords().boosts"
-                [locale]="countLocale"
-                >{{
-                  'statusCard.countLabel'
-                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
-                }}</span
-              ></span
-            >
-          }
         } @else if (!caps.reblog && readOnlyStats) {
           <!-- Read-only providers (Twitter) report real counts with no button to
                attach them to. When `caps.reblog` already rendered a button above,
                this fallback would be a second 🔁 on the same row — the case a
                signed-in viewer hits on every Bluesky post. -->
-          <span mbActionCount class="action action-static" [title]="words().Boosts"
+          <span mbPostAction class="action action-static" [title]="words().Boosts"
             ><span aria-hidden="true">🔁</span>
             <span
               mbActionCount
@@ -956,24 +926,6 @@
                   | transloco: { count: display.reblogs_count, label: countWords().boosts }
               }}</span
             ></span
-          >
-        }
-        @if (display.provider === 'bluesky') {
-          <span
-            class="action action-static"
-            mbActionCount
-            [count]="display.reblogs_count"
-            [label]="countWords().boosts"
-            [locale]="countLocale"
-            >{{ display.reblogs_count }} {{ countWords().boosts }}</span
-          >
-          <span
-            class="action action-static"
-            mbActionCount
-            [count]="display.favourites_count"
-            [label]="'statusCard.likes' | transloco"
-            [locale]="countLocale"
-            >{{ display.favourites_count }} {{ 'statusCard.likes' | transloco }}</span
           >
         }
         @if (caps.favourite) {
@@ -1106,7 +1058,7 @@
               >
             </button>
           } @else {
-            <span mbActionCount class="action action-static"
+            <span mbPostAction class="action action-static"
               ><span
                 mbActionCount
                 [count]="display.favourites_count"
@@ -1123,15 +1075,34 @@
               ></span
             >
           }
-        } @else if (!caps.favourite && readOnlyStats && display.provider !== 'bluesky') {
+        } @else if (!caps.favourite && readOnlyStats) {
           <!-- Same pairing as the boost fallback above: only stand in for the
                button when there is no button. -->
           <span
-            mbActionCount
+            mbPostAction
             class="action action-static"
             [title]="'statusCard.likesTitle' | transloco"
             ><span aria-hidden="true">⭐</span>
             <span
+              mbActionCount
+              [count]="display.favourites_count"
+              [label]="'statusCard.likes' | transloco"
+              [locale]="countLocale"
+              >{{
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.favourites_count, label: ('statusCard.likes' | transloco) }
+              }}</span
+            ></span
+          >
+        } @else if (readOnlyStats) {
+          <!-- A network you can like on but whose likers list is not wired up
+               (Bluesky): the count still follows its ⭐, as a static item. -->
+          <span
+            mbPostAction
+            class="action action-static"
+            [title]="'statusCard.likesTitle' | transloco"
+            ><span
               mbActionCount
               [count]="display.favourites_count"
               [label]="'statusCard.likes' | transloco"
@@ -1686,6 +1657,45 @@
             </details>
           }
         }
+        <ng-template #boostCount>
+          @if (capabilities.canUseServerActions && !foreign) {
+            <button
+              type="button"
+              mbPostAction
+              class="action count-link"
+              (click)="openAccountList('reblogged_by', $event)"
+              [title]="countWords().BoostedBy"
+              [attr.aria-label]="
+                'statusCard.countLabel'
+                  | transloco: { count: display.reblogs_count, label: countWords().BoostedBy }
+              "
+            >
+              <span
+                mbActionCount
+                [count]="display.reblogs_count"
+                [label]="countWords().boosts"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                }}</span
+              >
+            </button>
+          } @else {
+            <span mbPostAction class="action action-static" [title]="words().Boosts"
+              ><span
+                mbActionCount
+                [count]="display.reblogs_count"
+                [label]="countWords().boosts"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                }}</span
+              ></span
+            >
+          }
+        </ng-template>
       </mb-post-actions>
 
       @if (actionError(); as err) {

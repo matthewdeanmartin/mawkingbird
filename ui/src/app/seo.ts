@@ -7,8 +7,12 @@ import { languageFolder } from './focused-tools';
 import type { PageAlternate, TranslatedLanguage } from './focused-tools';
 
 export const SITE_ORIGIN = 'https://mawkingbird.com';
+// Client first, a few headline features after. Google replaced the vaguer
+// original with link text from the page. Keep in step with ui/src/index.html.
 export const SITE_DESCRIPTION =
-  'Mawkingbird brings Mastodon, Bluesky and RSS together with bookmarks, readable articles, writing tools and advanced account controls.';
+  'A free browser client for Mastodon and Bluesky: read your feeds and RSS in one place, post to both at once, and find your Twitter follows again.';
+/** Front-page title tagline ("Mawkingbird — …"); matches the static <title> in index.html. */
+export const FRONT_PAGE_TAGLINE = 'Mastodon, Bluesky & RSS reader in one place';
 export const FEATURES_DESCRIPTION =
   'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.';
 export const ABOUT_DESCRIPTION =

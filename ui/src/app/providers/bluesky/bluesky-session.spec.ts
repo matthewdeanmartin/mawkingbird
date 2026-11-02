@@ -23,6 +23,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlueskySession } from './bluesky-session';
+import { BlueskyOAuth } from './bluesky-oauth';
+import { saveBlueskyIdentity } from './bluesky-identity-store';
 import { VaultService } from '../vault/vault-service';
 import { VAULT_TEST_ROLLOUT } from '../vault/vault-preference';
 
@@ -223,5 +225,98 @@ describe('BlueskySession vault sync', () => {
       .map((k) => localStorage.getItem(k) ?? '')
       .join('|');
     expect(profileRaw).not.toContain('app-pass-1234');
+  });
+});
+
+/**
+ * OAuth as a connector: Bluesky linked under a Mastodon or Anonymous account
+ * through the authorization flow instead of an app password. The SDK owns the
+ * tokens, so storage holds only who is linked and an OAuth marker.
+ */
+describe('BlueskySession OAuth connector', () => {
+  const profile = { service: 'https://pds.example', handle: 'me.example', did: 'did:plc:me' };
+
+  function oauthSession(state: string): {
+    session: BlueskySession;
+    oauth: {
+      signIn: ReturnType<typeof vi.fn>;
+      callback: ReturnType<typeof vi.fn>;
+      revoke: ReturnType<typeof vi.fn>;
+    };
+  } {
+    const oauth = {
+      signIn: vi.fn(() => new Promise<never>(() => undefined)),
+      callback: vi.fn().mockResolvedValue({ profile, state }),
+      revoke: vi.fn().mockResolvedValue(undefined),
+    };
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: VaultService, useValue: lockedVault() },
+        { provide: BlueskyOAuth, useValue: oauth },
+      ],
+    });
+    return { session: TestBed.inject(BlueskySession), oauth };
+  }
+
+  function stored(fragment: string): string {
+    return Object.keys(localStorage)
+      .filter((k) => k.includes(fragment))
+      .map((k) => localStorage.getItem(k) ?? '')
+      .join('|');
+  }
+
+  it('starts the redirect with the connector intent', () => {
+    const { session, oauth } = oauthSession('connector:link');
+    void session.beginOAuthConnector('https://bsky.social');
+    expect(oauth.signIn).toHaveBeenCalledWith('https://bsky.social', 'connector:link');
+  });
+
+  it('stores the connector as profile plus marker, with no tokens', async () => {
+    const { session } = oauthSession('connector:link');
+
+    const result = await session.finishOAuth();
+
+    expect(result.kind).toBe('connector');
+    expect(session.session()?.authMethod).toBe('oauth');
+    expect(session.isOAuthSession()).toBe(true);
+    expect(JSON.parse(stored('bsky_credentials'))).toEqual({
+      authMethod: 'oauth',
+      connectedAt: expect.any(Number),
+    });
+    expect(stored('bsky_profile')).toContain('me.example');
+    // A connector link never touches who the app is signed in as.
+    expect(localStorage.getItem('mastodon_mock_account_mode')).toBeNull();
+  });
+
+  it('reloads an OAuth connector from storage on the next boot', async () => {
+    await oauthSession('connector:link').session.finishOAuth();
+
+    const { session } = oauthSession('connector:link');
+
+    expect(session.session()?.handle).toBe('me.example');
+    expect(session.isOAuthSession()).toBe(true);
+  });
+
+  it('revokes the grant when an OAuth connector is unlinked', async () => {
+    const { session, oauth } = oauthSession('connector:link');
+    await session.finishOAuth();
+
+    session.unlink();
+
+    expect(oauth.revoke).toHaveBeenCalledWith('did:plc:me');
+    expect(stored('bsky_credentials')).toBe('');
+  });
+
+  it('keeps an identity signed in when a connector for the same DID is unlinked', async () => {
+    saveBlueskyIdentity(profile, { authMethod: 'oauth' });
+    const { session, oauth } = oauthSession('connector:link');
+    await session.finishOAuth();
+
+    session.unlink();
+
+    expect(oauth.revoke).not.toHaveBeenCalled();
   });
 });

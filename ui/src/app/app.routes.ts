@@ -33,6 +33,7 @@ import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
   BLOG_DESCRIPTION,
+  FRONT_PAGE_TAGLINE,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
   TOOLS_INDEX_ALTERNATES,
@@ -276,7 +277,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/entry/entry').then((m) => m.EntryPage),
     data: {
       seoIndexable: true,
-      seoTagline: 'Mastodon, Bluesky & RSS reader in one place',
+      seoTagline: FRONT_PAGE_TAGLINE,
       seoStructuredData: APP_STRUCTURED_DATA,
     },
   },
@@ -417,7 +418,9 @@ export const routes: Routes = [
         path: 'home',
         title: 'Home',
         // The front door dispatches here, so crawlers must not lose its indexability.
-        data: { seoIndexable: true, seoCanonicalPath: '/' },
+        // The tagline titles the page during the first-run preview, which is
+        // what a crawler sees; see PageTitleStrategy.
+        data: { seoIndexable: true, seoCanonicalPath: '/', seoTagline: FRONT_PAGE_TAGLINE },
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
       },
       {

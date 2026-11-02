@@ -29,7 +29,7 @@ import {
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../poll-results/poll-results';
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../account-hover-card/account-hover-card';
 import { PreviewCardComponent } from '../preview-card/preview-card';
@@ -364,6 +364,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
   selector: 'app-status-card',
   imports: [
     ExternalPlayerHost,
+    NgTemplateOutlet,
     MbButton,
     PostPermissions,
     MbMenuItem,

@@ -89,12 +89,12 @@ describe('Bluesky OAuth transport', () => {
       },
     });
 
-    const result = await TestBed.inject(BlueskySession).finishOAuthIdentity();
+    const result = await TestBed.inject(BlueskySession).finishOAuth();
     const credentials = JSON.parse(
       localStorage.getItem('mockingbird_bsky_identity_credentials') ?? '{}',
     );
 
-    expect(result.adding).toBe(true);
+    expect(result).toMatchObject({ kind: 'identity', adding: true });
     expect(credentials['did:plc:second']).toMatchObject({ authMethod: 'oauth' });
     expect(credentials['did:plc:second']).not.toHaveProperty('accessJwt');
     expect(credentials['did:plc:second']).not.toHaveProperty('refreshJwt');

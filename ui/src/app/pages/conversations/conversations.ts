@@ -144,7 +144,7 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.badge.public: 📢 Public
 // i18n pages.conversations.filters.bskyTitle: Bluesky DMs
 // i18n pages.conversations.badge.bluesky: 🦋 Bluesky
-// i18n pages.conversations.bskyScopeHint.a: 🦋 Your Bluesky app password can't read DMs. Create a new app password at bsky.app with "Allow access to your direct messages" checked, then relink in
+// i18n pages.conversations.bskyScopeHint.relink: 🦋 This Bluesky link can't read DMs. Unlink and choose Continue with Bluesky to relink with DM access in
 // i18n pages.conversations.bskyScopeHint.link: Settings → Connections → Bluesky
 // i18n pages.conversations.loading: Loading…
 // i18n pages.conversations.emptyChats: No conversations yet. Post with visibility "direct", or reply to a mention.

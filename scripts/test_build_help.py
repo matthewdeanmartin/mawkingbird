@@ -77,6 +77,15 @@ class BuildHelpTest(unittest.TestCase):
             self.assertNotIn("<script", text, page)
             self.assertIn("default-src 'none'", text)
 
+    def test_topic_lists_are_kept_out_of_search_snippets(self) -> None:
+        # Google once built a guide's snippet from the topic rail's link titles.
+        self.build()
+        text = self.read("index.html")
+        self.assertEqual(text.count("<div data-nosnippet>"), 3)
+        self.assertIn('<nav class="rail" aria-label="Help topics"><div data-nosnippet>', text)
+        self.assertIn('<div data-nosnippet><details class="topics">', text)
+        self.assertIn('<div data-nosnippet><nav class="pager"', text)
+
     def test_sitemap_lists_every_guide(self) -> None:
         self.build()
         sitemap = self.read("sitemap.xml")

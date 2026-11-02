@@ -395,3 +395,41 @@ test("soft selection follows all six accents in light and dim themes", async ({
     expect(new Set(colors).size).toBe(6);
   }
 });
+test("Bluesky counts sit after their icons in the same type as Mastodon's", async ({
+  page,
+}) => {
+  const scope = card(page);
+  const measure = () =>
+    scope.locator("mb-post-actions").evaluate((group) => {
+      const items = [...group.children];
+      const next = (match) => items[items.findIndex(match) + 1];
+      const boost = next((item) => item.textContent.includes("🔁"));
+      const like = next((item) =>
+        item.matches(
+          'button[title="Favourite"], button[title="Undo favourite"]',
+        ),
+      );
+      const look = (item) => {
+        const style = getComputedStyle(item);
+        return [
+          style.fontSize,
+          style.fontWeight,
+          style.lineHeight,
+          style.color,
+        ].join(" ");
+      };
+      return {
+        counts: [boost, like].map((item) =>
+          Boolean(item?.querySelector("[mbActionCount]")),
+        ),
+        looks: [look(boost), look(like)],
+      };
+    });
+  await choose(page, "Signed in");
+  const mastodon = await measure();
+  await choose(page, "Bluesky");
+  const bluesky = await measure();
+  expect(mastodon.counts).toEqual([true, true]);
+  expect(bluesky.counts).toEqual([true, true]);
+  expect(bluesky.looks).toEqual(mastodon.looks);
+});

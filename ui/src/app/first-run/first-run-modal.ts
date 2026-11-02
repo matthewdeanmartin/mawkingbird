@@ -9,7 +9,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n firstRun.continueAnonymous: Continue without logging in
 // i18n firstRun.accountQuestion: Which account do you have?
 // i18n firstRun.pickNetwork: Pick the network you already use.
-// i18n firstRun.blueskyHint: Sign in with your handle and an app password.
+// i18n firstRun.blueskyHintApprove: Sign in on Bluesky and approve access.
 // i18n firstRun.mastodonHint: Sign in on your own server.
 // i18n firstRun.bluesky: Bluesky
 // i18n firstRun.mastodon: Mastodon

@@ -1032,6 +1032,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which mini-app page a Bluesky sign-in returns to, carried across the OAuth redirect; consumed by the callback.',
   },
   {
+    base: 'mockingbird_bsky_connector_return',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Which page a Bluesky connector OAuth link returns to (the connection page or a mini-app embedding it); consumed by the callback.',
+  },
+  {
     base: 'mockingbird_twitter_archive_handoff',
     storage: 'session',
     suffix: 'none',

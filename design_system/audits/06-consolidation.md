@@ -1388,3 +1388,28 @@ retain wrapping spaces. Internal tool links, invite paths and sign-in return
 paths use the Turkish registry. Each new candidate uses its Polish twin's
 disposition in `11-reconciliation.json`; none were removed. The inventory now
 contains 585 candidate files across 1,621 sources. No shared widgets changed.
+
+## Search titles and help snippets, 2026-11-02
+
+Added `first-run/preview-state.ts`, a storage reader with no markup, so the
+title strategy can detect the first-run preview. It adds no controls or style
+candidates; `11-reconciliation.json` is unchanged. The help rail, compact topic
+list and pager gained `data-nosnippet` wrappers in the static help builder,
+outside the Angular inventory. The inventory now contains 585 candidate files
+across 1,622 sources. No shared widgets changed.
+
+## Bluesky action row and connector OAuth, 2026-11-02
+
+`MbPostAction` gains `span[mbPostAction]`, a static count with the controls'
+type, padding and height and no pointer or hover (`post-actions.ts`, one more
+shared finding). StatusCard's read-only counts adopt it instead of an outer
+`mbActionCount` plus local `.action-static` colour and size, and Bluesky's
+boost and like counts move from a provider-only block to directly after their
+icons, as on Mastodon. Finding counts in `status-card.html` are unchanged
+(one shared selector swapped for another). The Bluesky connector now leads
+with an OAuth `mbButton`, then two `mb-disclosure` panels (handle-specific
+OAuth, and the app password as a last resort) using the existing Field and
+Control (`connection-bluesky.html`: 9→15 shared, 2→4 native buttons, all
+shared widgets). No candidate files were added or removed;
+`11-reconciliation.json` is unchanged. The inventory contains 585 candidate
+files across 1,622 sources.

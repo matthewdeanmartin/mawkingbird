@@ -22,6 +22,13 @@ export interface BlueskyOAuthResult {
   state: string | null;
 }
 
+/**
+ * What the redirect is for, carried through the authorization server and back.
+ * `connector:link` attaches Bluesky to the active Mastodon or Anonymous account
+ * instead of signing in as it.
+ */
+export type BlueskyOAuthIntent = 'identity:login' | 'identity:add' | 'connector:link';
+
 interface ProfileResponse {
   handle: string;
   displayName?: string;
@@ -39,8 +46,8 @@ interface ProfileResponse {
 export class BlueskyOAuth {
   private clientValue: Promise<BrowserOAuthClient> | null = null;
 
-  /** Begin an authorization redirect for a first-class Bluesky identity. */
-  async signIn(identifier: string, adding: boolean): Promise<never> {
+  /** Begin an authorization redirect, as an identity or as a connector. */
+  async signIn(identifier: string, intent: BlueskyOAuthIntent): Promise<never> {
     if (location.hostname === 'localhost') {
       // OAuth state lives in origin-bound IndexedDB. Move before creating it so
       // the eventual 127.0.0.1 callback can read the same PKCE/DPoP material.
@@ -50,7 +57,7 @@ export class BlueskyOAuth {
       return new Promise<never>(() => undefined);
     }
     return (await this.client()).signInRedirect(identifier, {
-      state: adding ? 'identity:add' : 'identity:login',
+      state: intent,
       redirect_uri: blueskyOAuthRedirectUri(),
     });
   }

@@ -4,10 +4,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
-import { takeLoginNext } from '../../login-destination';
+import { peekConnectorReturn, takeConnectorReturn, takeLoginNext } from '../../login-destination';
 
 // i18n blueskyOauth.errorTitle: Bluesky sign-in did not finish
 // i18n blueskyOauth.back: Back to Bluesky sign-in
+// i18n blueskyOauth.backToConnection: Back to the Bluesky connection
 // i18n blueskyOauth.finishing: Finishing Bluesky sign-in…
 // i18n blueskyOauth.exchange: Your PDS is exchanging the one-time authorization code.
 
@@ -24,6 +25,12 @@ export class BlueskyOAuthCallback implements OnInit {
   private router = inject(Router);
 
   protected error = signal<string | null>(null);
+  /** Where "back" goes after a failure: the connector page for a link, else sign-in. */
+  private readonly connectorReturn = peekConnectorReturn();
+  protected readonly backLink = this.connectorReturn ?? '/login/bluesky';
+  protected readonly backLabel = this.connectorReturn
+    ? 'blueskyOauth.backToConnection'
+    : 'blueskyOauth.back';
 
   ngOnInit(): void {
     void this.finish();
@@ -31,7 +38,12 @@ export class BlueskyOAuthCallback implements OnInit {
 
   private async finish(): Promise<void> {
     try {
-      const result = await this.bsky.finishOAuthIdentity();
+      const result = await this.bsky.finishOAuth();
+      if (result.kind === 'connector') {
+        // Linked under the active account; nothing about who is signed in changes.
+        await this.router.navigateByUrl(takeConnectorReturn(), { replaceUrl: true });
+        return;
+      }
       const next = takeLoginNext();
       if (!this.auth.enterBluesky()) {
         throw new Error('The browser could not store the Bluesky identity.');

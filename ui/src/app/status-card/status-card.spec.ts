@@ -582,6 +582,62 @@ describe('StatusCard', () => {
    * looked exactly like the working buttons beside them and did nothing at all
    * when tapped — on a phone, indistinguishable from a tap that missed.
    */
+  /**
+   * One action row for every network. Bluesky's counts used to be bare muted
+   * text parked between 🔁 and ⭐, so its like count sat on the wrong side of
+   * the star and in a different font from Mastodon's. Each count now follows
+   * its own icon and is a shared post action (button, or a static span).
+   */
+  describe('counts follow their icons on every network', () => {
+    function row(f: ComponentFixture<StatusCard>): Element[] {
+      return [...(f.nativeElement as HTMLElement).querySelector('mb-post-actions')!.children];
+    }
+    function after(items: Element[], match: (item: Element) => boolean): Element | undefined {
+      return items[items.findIndex(match) + 1];
+    }
+    const isBoost = (item: Element) => item.textContent?.includes('🔁') ?? false;
+    const isFavourite = (item: Element) =>
+      item.matches('button[title="Favourite"], button[title="Undo favourite"]');
+
+    it('puts Mastodon counts right after 🔁 and ⭐, with Quote after the boost count', () => {
+      const f = setUp(makeStatus({ reblogs_count: 7, favourites_count: 9 }));
+      const items = row(f);
+
+      const boosts = after(items, isBoost)!;
+      expect(boosts.matches('[mbPostAction]')).toBe(true);
+      expect(boosts.querySelector('[mbActionCount]')?.textContent).toContain('7');
+      expect(after(items, (item) => item === boosts)?.textContent).toContain('❝');
+
+      const likes = after(items, isFavourite)!;
+      expect(likes.matches('[mbPostAction]')).toBe(true);
+      expect(likes.querySelector('[mbActionCount]')?.textContent).toContain('9');
+    });
+
+    it('puts Bluesky counts in the same places, as static post actions', () => {
+      const f = setUp(
+        makeStatus({
+          id: 'bsky:at://did:plc:x/app.bsky.feed.post/1',
+          provider: 'bluesky',
+          reblogs_count: 7,
+          favourites_count: 9,
+        }),
+      );
+      const items = row(f);
+
+      const boosts = after(items, isBoost)!;
+      expect(boosts.matches('span[mbPostAction].action-static')).toBe(true);
+      expect(boosts.querySelector('[mbActionCount]')?.textContent).toContain('7');
+
+      const likes = after(items, isFavourite)!;
+      expect(likes.matches('span[mbPostAction].action-static')).toBe(true);
+      expect(likes.querySelector('[mbActionCount]')?.textContent).toContain('9');
+
+      // Each count appears once: no second copy elsewhere in the row.
+      const counts = items.filter((item) => item.matches('.action-static'));
+      expect(counts).toHaveLength(2);
+    });
+  });
+
   describe('Anonymous actions answer the tap', () => {
     it('offers a way in when an anonymous reader taps like', () => {
       TestBed.inject(Auth).enterAnonymous();

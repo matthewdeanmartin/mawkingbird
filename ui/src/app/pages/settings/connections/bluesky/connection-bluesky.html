@@ -17,7 +17,7 @@
      Mastodon account at all, and anonymous is the mode people try first. -->
 @if (capabilities.active) {
   <p class="muted small">
-    {{ 'settings.connections.bluesky.anonymousNote' | transloco }}
+    {{ 'settings.connections.bluesky.anonymousNoteSignIn' | transloco }}
   </p>
 }
 
@@ -34,7 +34,12 @@
     </button>
   </div>
   <p class="muted small">
-    {{ 'settings.connections.bluesky.unlinkNote' | transloco }}
+    {{
+      (session.authMethod === 'oauth'
+        ? 'settings.connections.bluesky.unlinkNoteOAuth'
+        : 'settings.connections.bluesky.unlinkNote'
+      ) | transloco
+    }}
   </p>
   @if (expiryLabel(bsky.expiresAt()); as expiry) {
     <p class="muted small">
@@ -42,50 +47,89 @@
     </p>
   }
 } @else {
-  <p class="muted">
-    {{ 'settings.connections.bluesky.linkHint.a' | transloco }}
-    <strong>{{ 'settings.connections.bluesky.linkHint.appPassword' | transloco }}</strong>
-    {{ 'settings.connections.bluesky.linkHint.b' | transloco }}
-    <em>{{ 'settings.connections.bluesky.linkHint.allowDms' | transloco }}</em>
-    {{ 'settings.connections.bluesky.linkHint.c' | transloco }}
-  </p>
-  <form class="bsky-form" (ngSubmit)="linkBluesky()">
-    <mb-field [label]="'settings.connections.bluesky.handlePlaceholder' | transloco">
-      <input
-        mbControl
-        type="text"
-        name="bskyHandle"
-        [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
-        [ngModel]="bskyHandle()"
-        (ngModelChange)="bskyHandle.set($event)"
-        [disabled]="bskyLinking()"
-      />
-    </mb-field>
-    <mb-field [label]="'settings.connections.bluesky.passwordPlaceholder' | transloco">
-      <input
-        mbControl
-        type="password"
-        name="bskyPassword"
-        [placeholder]="'settings.connections.bluesky.passwordPlaceholder' | transloco"
-        autocomplete="off"
-        [ngModel]="bskyPassword()"
-        (ngModelChange)="bskyPassword.set($event)"
-        [disabled]="bskyLinking()"
-      />
-    </mb-field>
-    <button
-      mbButton
-      type="submit"
-      [disabled]="!bskyHandle().trim() || !bskyPassword() || bskyLinking()"
-    >
-      {{
-        (bskyLinking()
-          ? 'settings.connections.bluesky.linking'
-          : 'settings.connections.bluesky.link'
-        ) | transloco
-      }}
-    </button>
-  </form>
+  <!-- OAuth first. The app password is a last resort for a PDS without OAuth,
+       so it sits at the bottom, closed, after the handle-specific OAuth path. -->
+  <p class="muted">{{ 'settings.connections.bluesky.oauthHint' | transloco }}</p>
+  <button mbButton type="button" [disabled]="bskyLinking()" (click)="linkWithBluesky()">
+    {{
+      (bskyLinking()
+        ? 'settings.connections.bluesky.opening'
+        : 'settings.connections.bluesky.continueWithBluesky'
+      ) | transloco
+    }}
+  </button>
+  <mb-disclosure [label]="'settings.connections.bluesky.otherServerSummary' | transloco">
+    <form class="bsky-form bsky-oauth-handle" (ngSubmit)="linkWithHandle()">
+      <mb-field [label]="'settings.connections.bluesky.handlePlaceholder' | transloco">
+        <input
+          mbControl
+          type="text"
+          name="bskyOAuthHandle"
+          [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
+          autocapitalize="none"
+          spellcheck="false"
+          [ngModel]="oauthHandle()"
+          (ngModelChange)="oauthHandle.set($event)"
+          [disabled]="bskyLinking()"
+        />
+      </mb-field>
+      <button
+        mbButton
+        type="submit"
+        variant="outline"
+        [disabled]="!oauthHandle().trim() || bskyLinking()"
+      >
+        {{ 'settings.connections.bluesky.handleContinue' | transloco }}
+      </button>
+    </form>
+  </mb-disclosure>
+  <mb-disclosure [label]="'settings.connections.bluesky.appPasswordSummary' | transloco">
+    <p class="muted">
+      {{ 'settings.connections.bluesky.linkHint.a' | transloco }}
+      <strong>{{ 'settings.connections.bluesky.linkHint.appPassword' | transloco }}</strong>
+      {{ 'settings.connections.bluesky.linkHint.b' | transloco }}
+      <em>{{ 'settings.connections.bluesky.linkHint.allowDms' | transloco }}</em>
+      {{ 'settings.connections.bluesky.linkHint.c' | transloco }}
+    </p>
+    <form class="bsky-form bsky-app-password" (ngSubmit)="linkBluesky()">
+      <mb-field [label]="'settings.connections.bluesky.handlePlaceholder' | transloco">
+        <input
+          mbControl
+          type="text"
+          name="bskyHandle"
+          [placeholder]="'settings.connections.bluesky.handlePlaceholder' | transloco"
+          [ngModel]="bskyHandle()"
+          (ngModelChange)="bskyHandle.set($event)"
+          [disabled]="bskyLinking()"
+        />
+      </mb-field>
+      <mb-field [label]="'settings.connections.bluesky.passwordPlaceholder' | transloco">
+        <input
+          mbControl
+          type="password"
+          name="bskyPassword"
+          [placeholder]="'settings.connections.bluesky.passwordPlaceholder' | transloco"
+          autocomplete="off"
+          [ngModel]="bskyPassword()"
+          (ngModelChange)="bskyPassword.set($event)"
+          [disabled]="bskyLinking()"
+        />
+      </mb-field>
+      <button
+        mbButton
+        type="submit"
+        variant="outline"
+        [disabled]="!bskyHandle().trim() || !bskyPassword() || bskyLinking()"
+      >
+        {{
+          (bskyLinking()
+            ? 'settings.connections.bluesky.linking'
+            : 'settings.connections.bluesky.link'
+          ) | transloco
+        }}
+      </button>
+    </form>
+  </mb-disclosure>
   @if (bskyError(); as msg) {
     <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
   }

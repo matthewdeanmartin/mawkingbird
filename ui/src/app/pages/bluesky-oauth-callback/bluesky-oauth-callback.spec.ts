@@ -9,10 +9,11 @@ import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BlueskyOAuthCallback } from './bluesky-oauth-callback';
 
 describe('BlueskyOAuthCallback', () => {
-  const bsky = { finishOAuthIdentity: vi.fn() };
+  const bsky = { finishOAuth: vi.fn() };
 
   beforeEach(() => {
     localStorage.clear();
+    sessionStorage.clear();
     vi.clearAllMocks();
     saveBlueskyIdentity(
       {
@@ -35,7 +36,7 @@ describe('BlueskyOAuthCallback', () => {
   });
 
   it('activates the returned DID and replaces the callback URL with Home', async () => {
-    bsky.finishOAuthIdentity.mockResolvedValue({ session: {}, adding: false });
+    bsky.finishOAuth.mockResolvedValue({ kind: 'identity', session: {}, adding: false });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
 
     const fixture = TestBed.createComponent(BlueskyOAuthCallback);
@@ -49,7 +50,7 @@ describe('BlueskyOAuthCallback', () => {
 
   it('shows an actionable error without activating an account', async () => {
     localStorage.clear();
-    bsky.finishOAuthIdentity.mockRejectedValue(new Error('access_denied'));
+    bsky.finishOAuth.mockRejectedValue(new Error('access_denied'));
 
     const fixture = TestBed.createComponent(BlueskyOAuthCallback);
     fixture.detectChanges();
@@ -64,7 +65,7 @@ describe('BlueskyOAuthCallback', () => {
 
   it('returns to the mini-app that started the sign-in', async () => {
     sessionStorage.setItem('mockingbird_login_next', '/crosspost');
-    bsky.finishOAuthIdentity.mockResolvedValue({ session: {}, adding: false });
+    bsky.finishOAuth.mockResolvedValue({ kind: 'identity', session: {}, adding: false });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
 
     const fixture = TestBed.createComponent(BlueskyOAuthCallback);
@@ -73,5 +74,34 @@ describe('BlueskyOAuthCallback', () => {
 
     expect(navigate).toHaveBeenCalledWith('/crosspost', { replaceUrl: true });
     expect(sessionStorage.getItem('mockingbird_login_next')).toBeNull();
+  });
+
+  it('returns a connector link to the page that started it without switching accounts', async () => {
+    localStorage.clear();
+    sessionStorage.setItem('mockingbird_bsky_connector_return', '/settings/connections/bluesky');
+    bsky.finishOAuth.mockResolvedValue({ kind: 'connector', session: {} });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    const fixture = TestBed.createComponent(BlueskyOAuthCallback);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(TestBed.inject(Auth).isAuthenticated).toBe(false);
+    expect(navigate).toHaveBeenCalledWith('/settings/connections/bluesky', { replaceUrl: true });
+    expect(sessionStorage.getItem('mockingbird_bsky_connector_return')).toBeNull();
+  });
+
+  it('sends a failed connector link back to the connection page, not sign-in', async () => {
+    sessionStorage.setItem('mockingbird_bsky_connector_return', '/settings/connections/bluesky');
+    bsky.finishOAuth.mockRejectedValue(new Error('access_denied'));
+
+    const fixture = TestBed.createComponent(BlueskyOAuthCallback);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const back = (fixture.nativeElement as HTMLElement).querySelector('a');
+    expect(back?.getAttribute('href')).toBe('/settings/connections/bluesky');
+    expect(back?.textContent).toContain('Back to the Bluesky connection');
   });
 });

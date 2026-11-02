@@ -72,10 +72,22 @@ for (const direction of ["ltr", "rtl"]) {
       page,
     }, testInfo) => {
       await page.goto(url("bluesky"));
-      await page
+      // OAuth leads; the app password waits, closed, as the last resort.
+      await expect(page.getByRole("button").first()).toHaveText(
+        /Continue with Bluesky/,
+      );
+      const appPassword = page.locator("mb-disclosure").filter({
+        hasText: "Use an app password instead",
+      });
+      await expect(appPassword.locator("details")).not.toHaveAttribute(
+        "open",
+        "",
+      );
+      await appPassword.getByText("Use an app password instead").click();
+      await appPassword
         .getByLabel("you.bsky.social", { exact: true })
         .fill("@preview.bsky.social");
-      const password = page.getByLabel("app password", { exact: true });
+      const password = appPassword.getByLabel("app password", { exact: true });
       await password.fill("reject");
       await page
         .getByRole("button", { name: "Link Bluesky", exact: true })

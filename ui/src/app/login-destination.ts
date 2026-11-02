@@ -35,3 +35,46 @@ export function takeLoginNext(): string {
     return '/home';
   }
 }
+
+/** Settings → Connections → Bluesky, where a connector OAuth link returns by default. */
+export const BLUESKY_CONNECTION_PAGE = '/settings/connections/bluesky';
+
+/**
+ * Carries the page that started a Bluesky *connector* link across the OAuth
+ * redirect. Separate from `next`: a connector link returns to where the reader
+ * was (the connection page, or a mini-app embedding it), not to a sign-in landing.
+ */
+const CONNECTOR_RETURN_KEY = 'mockingbird_bsky_connector_return';
+
+function connectorDestination(path: string | null | undefined): string {
+  return path && FOCUSED_APPS.some((app) => app.root === path) ? path : BLUESKY_CONNECTION_PAGE;
+}
+
+export function stashConnectorReturn(path: string): void {
+  try {
+    sessionStorage.setItem(CONNECTOR_RETURN_KEY, connectorDestination(path));
+  } catch {
+    // Storage blocked: the callback falls back to the connection page.
+  }
+}
+
+/** The stashed connector return, without consuming it, or null for a sign-in. */
+export function peekConnectorReturn(): string | null {
+  try {
+    const path = sessionStorage.getItem(CONNECTOR_RETURN_KEY);
+    return path === null ? null : connectorDestination(path);
+  } catch {
+    return null;
+  }
+}
+
+/** Read and clear the stashed connector return, re-checked against the allowlist. */
+export function takeConnectorReturn(): string {
+  const path = peekConnectorReturn();
+  try {
+    sessionStorage.removeItem(CONNECTOR_RETURN_KEY);
+  } catch {
+    // Nothing to clear when storage is blocked.
+  }
+  return path ?? BLUESKY_CONNECTION_PAGE;
+}

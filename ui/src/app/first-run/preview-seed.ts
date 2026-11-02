@@ -3,18 +3,7 @@ import { firstValueFrom, timeout } from 'rxjs';
 import { Api } from '../api';
 import { Account } from '../models';
 import { AnonymousFollows } from '../providers/anonymous/anonymous-follows';
-
-/**
- * Marks the anonymous account as being mid-preview.
- *
- * The preview enters Anonymous *before* the visitor has chosen anything, so
- * "does an anonymous account exist" can no longer answer "has this person
- * decided". A reload with the modal open would otherwise look exactly like a
- * returning anonymous user and skip the question forever, leaving three follows
- * nobody asked for. This flag is the difference, and it is cleared by the same
- * call that removes the seed.
- */
-const PREVIEW_KEY = 'mockingbird_first_run_preview';
+import { PREVIEW_KEY, type PreviewState, readPreviewState } from './preview-state';
 
 /** The server the hardcoded ids below belong to. */
 export const PREVIEW_SERVER = 'https://mastodon.social';
@@ -128,22 +117,8 @@ export class PreviewSeed {
     return this.state() !== null;
   }
 
-  private state(): { server: string; preexisting: string[] } | null {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(PREVIEW_KEY) ?? 'null') as {
-        server?: unknown;
-        preexisting?: unknown;
-      } | null;
-      if (typeof parsed?.server !== 'string') {
-        return null;
-      }
-      const preexisting = Array.isArray(parsed.preexisting)
-        ? parsed.preexisting.filter((id): id is string => typeof id === 'string')
-        : [];
-      return { server: parsed.server, preexisting };
-    } catch {
-      return null;
-    }
+  private state(): PreviewState | null {
+    return readPreviewState();
   }
 
   /**

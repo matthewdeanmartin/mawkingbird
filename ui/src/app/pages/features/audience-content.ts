@@ -55,7 +55,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Open the app preview, then visit RSS to add a feed or import your OPML subscriptions. Save an interesting link and try its reader view when extraction is available.',
     expectation:
-      'Article extraction depends on the source site and available proxy access. Mawkingbird does not bypass paywalls or guarantee that every page can be fetched.',
+      'Reader view works with most article pages. It respects paywalls, and a few sites refuse to be fetched or need a CORS proxy first.',
   },
   bluesky: {
     eyebrow: 'For Bluesky users',
@@ -95,7 +95,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Open the preview, choose Log in, then Bluesky. Once your timeline is in Home, add Mastodon under Settings → Connections, either read-only from a server or with your own account.',
     expectation:
-      'Mawkingbird is an independent client, not Bluesky or Mastodon. The Bluesky copy of a cross-post is always public, polls and content warnings stay on the Mastodon copy, and video publishing to Bluesky is not promised.',
+      'Mawkingbird is an independent client for both networks. When you cross-post, the Bluesky copy is always public, polls and content warnings stay on the Mastodon copy, and video cross-posting to Bluesky is not guaranteed yet.',
     guides: [
       { label: 'Use Bluesky and Mastodon together', href: '/help/new-to-mastodon/from-bluesky/' },
       { label: 'Sign in with Bluesky', href: '/help/start/sign-in-bluesky/' },
@@ -140,12 +140,12 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Start with the preview and browse a starter collection. Choose Mastodon or Bluesky, connect or create an account with that network, then follow a few people whose posts you want to see again.',
     expectation:
-      'Mawkingbird does not automatically transfer your Twitter followers, posts or identity. Its optional Twitter connector needs separate configuration and API access; you do not need it to explore Mastodon or Bluesky.',
+      'Bring your Twitter archive and Mawkingbird finds the people you followed who are already on Mastodon. Your followers, posts and identity stay behind; Mawkingbird does not automatically transfer them. Reading Twitter itself is optional and needs your own API access.',
     guides: [
       { label: 'Import your Twitter follows to Mastodon', href: '/twitter-to-mastodon/' },
       { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },
       { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
-      { label: 'Coming to Mastodon from X', href: '/help/new-to-mastodon/coming-from-x/' },
+      { label: 'Coming to Mastodon from Twitter', href: '/help/new-to-mastodon/coming-from-x/' },
       { label: 'Who to follow: starter kits', href: '/follow/' },
     ],
   },
@@ -187,7 +187,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Open the app preview, try the home feed’s media view, and open a picture. Connect Mastodon or Bluesky to follow photographers and build your own feed.',
     expectation:
-      'Mawkingbird does not connect to Instagram or import an Instagram feed. This is a photo-viewing experience for supported Mastodon and Bluesky content, not an Instagram Stories or Reels client.',
+      'Mawkingbird gives Mastodon and Bluesky photos a full-size, swipeable home. It does not connect to Instagram or import an Instagram feed, and it has no Stories or Reels.',
   },
   creators: {
     eyebrow: 'For writers, photographers and content creators',

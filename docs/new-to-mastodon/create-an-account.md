@@ -31,4 +31,4 @@ A new account's Home feed is empty until you follow someone.
 - [Search for subjects](../finding-people/search-interests.md) and follow the people who post about them.
 - Open a hashtag you care about and choose **Follow** to see its posts in Home.
 
-Next: [Coming to Mastodon from X](coming-from-x.md).
+Next: [Coming to Mastodon from Twitter](coming-from-x.md).

@@ -276,7 +276,7 @@ class HelpBuilder:
             links.append(
                 f'<a rel="next" href="{url_for(self.base, nxt.slug)}"><span>Next</span>{html.escape(nxt.nav_title)}</a>'
             )
-        return f'<nav class="pager" aria-label="More guides">{"".join(links)}</nav>'
+        return f'<div data-nosnippet><nav class="pager" aria-label="More guides">{"".join(links)}</nav></div>'
 
     def render_page(self, index: int) -> str:
         page = self.pages[index]
@@ -318,15 +318,15 @@ class HelpBuilder:
 </div></header>
 {self.breadcrumbs(page)}
 <div class="layout">
-<nav class="rail" aria-label="Help topics">
+<nav class="rail" aria-label="Help topics"><div data-nosnippet>
 {nav}
-</nav>
+</div></nav>
 <main class="column" id="guide">
-<details class="topics"><summary>All help topics</summary>
+<div data-nosnippet><details class="topics"><summary>All help topics</summary>
 <nav aria-label="Help topics (compact)">
 {nav}
 </nav>
-</details>
+</details></div>
 <article>
 {crumb}
 {page.body}

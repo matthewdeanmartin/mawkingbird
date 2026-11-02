@@ -348,22 +348,48 @@ export class BlueskySession implements ExpiringConnection {
 
   /** Redirect to the account's own PDS authorization screen. */
   async beginOAuthIdentity(identifier: string, adding: boolean): Promise<never> {
-    return this.oauth.signIn(identifier, adding);
+    return this.oauth.signIn(identifier, adding ? 'identity:add' : 'identity:login');
   }
 
   /**
-   * Finish an OAuth callback and add its DID to the first-class identity stable.
+   * Begin OAuth to link Bluesky as a **connector** under the active account.
+   *
+   * The preferred way to connect: no app password to make or paste, and the
+   * grant can be revoked from Bluesky's own settings. The callback returns to
+   * the same browser under the same active account, so {@link finishOAuth}
+   * resolves the same connector keys this instance chose at construction.
+   */
+  async beginOAuthConnector(identifier: string): Promise<never> {
+    if (this.isIdentity) {
+      throw new Error('This account is already signed in with Bluesky.');
+    }
+    return this.oauth.signIn(identifier, 'connector:link');
+  }
+
+  /**
+   * Finish an OAuth callback, as an identity or a connector depending on the
+   * intent that started it.
    *
    * Only the profile and an OAuth marker go to localStorage. The official SDK
    * owns the DPoP key and rotating token set in IndexedDB.
    */
-  async finishOAuthIdentity(): Promise<{ session: BskySession; adding: boolean }> {
+  async finishOAuth(): Promise<
+    | { kind: 'identity'; session: BskySession; adding: boolean }
+    | { kind: 'connector'; session: BskySession }
+  > {
     const result = await this.oauth.callback();
     const session: BskySession = {
       ...result.profile,
       authMethod: 'oauth',
       connectedAt: Date.now(),
     };
+    if (result.state === 'connector:link') {
+      if (this.isIdentity) {
+        throw new Error('This account is already signed in with Bluesky.');
+      }
+      this.persist(session);
+      return { kind: 'connector', session };
+    }
     const created = saveBlueskyIdentity(
       result.profile,
       { authMethod: 'oauth', connectedAt: session.connectedAt },
@@ -371,7 +397,7 @@ export class BlueskySession implements ExpiringConnection {
     );
     if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
     this.session.set(session);
-    return { session, adding: result.state === 'identity:add' };
+    return { kind: 'identity', session, adding: result.state === 'identity:add' };
   }
 
   /** Whether authenticated calls must go through the OAuth DPoP transport. */
@@ -496,7 +522,10 @@ export class BlueskySession implements ExpiringConnection {
    */
   unlink(): void {
     const current = this.session();
-    if (current?.authMethod === 'oauth') {
+    // The SDK keeps one session per DID. A connector for a DID that is also
+    // signed in here as an identity shares it, so unlinking the connector must
+    // not revoke the identity's sign-in.
+    if (current?.authMethod === 'oauth' && (this.isIdentity || !blueskyIdentity(current.did))) {
       // Revocation is best effort: local removal must still work offline.
       void this.oauth.revoke(current.did).catch(() => undefined);
     }
@@ -512,6 +541,10 @@ export class BlueskySession implements ExpiringConnection {
 
   /** Write the profile and the tokens to their separate keys. */
   private persist(session: BskySession): void {
+    if (session.authMethod === 'oauth') {
+      this.persistOAuth(session);
+      return;
+    }
     if (!session.accessJwt || !session.refreshJwt) {
       throw new Error('An app-password session is missing its token pair.');
     }
@@ -551,6 +584,29 @@ export class BlueskySession implements ExpiringConnection {
     if (appPassword && appPassword !== previous) {
       void this.syncCredentialToVault(session.handle, appPassword);
     }
+  }
+
+  /**
+   * Write an OAuth link: the profile plus a marker. The tokens and DPoP key stay
+   * in the SDK's IndexedDB store, so there is nothing secret to write or vault.
+   */
+  private persistOAuth(session: BskySession): void {
+    const {
+      authMethod: _authMethod,
+      accessJwt: _accessJwt,
+      refreshJwt: _refreshJwt,
+      appPassword: _appPassword,
+      connectedAt,
+      ...profile
+    } = session;
+    const credentials = { authMethod: 'oauth' as const, connectedAt };
+    if (this.isIdentity) {
+      saveBlueskyIdentity(profile, credentials, true);
+    } else {
+      localStorage.setItem(this.profileKey, JSON.stringify(profile));
+      localStorage.setItem(this.credentialsKey, JSON.stringify(credentials));
+    }
+    this.session.set(session);
   }
 
   /**

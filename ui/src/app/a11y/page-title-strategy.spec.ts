@@ -5,6 +5,7 @@ import { Router, TitleStrategy, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { PageTitleStrategy } from './page-title-strategy';
 import { environment } from '../../environments/environment';
+import { PREVIEW_KEY } from '../first-run/preview-state';
 
 @Component({ template: 'page' })
 class Page {}
@@ -60,6 +61,18 @@ describe('PageTitleStrategy', () => {
 
   it('prefers the page name over a tagline', async () => {
     expect(await go('/titled')).toBe(`Titled · ${environment.brand}`);
+  });
+
+  it('uses the tagline over the page name during the first-run preview', async () => {
+    // Crawlers reach the front page through the preview at /home; "Home" alone
+    // is what Google showed as the site's title.
+    localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server: 'https://example.social' }));
+    try {
+      expect(await go('/titled')).toBe(`${environment.brand} — Feeds in one place`);
+      expect(await go('/bookmarks')).toBe(`Bookmarks · ${environment.brand}`);
+    } finally {
+      localStorage.removeItem(PREVIEW_KEY);
+    }
   });
 
   it('replaces a previous page title rather than leaving it stale', async () => {

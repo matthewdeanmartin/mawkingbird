@@ -470,10 +470,8 @@ summary.action {
     min-height: 44px;
   }
 }
-.action-static {
-  color: var(--muted);
-  font-size: 13px;
-}
+/* `.action-static` marks a count that is not a control. Its look belongs to the
+   shared static post action, so it matches the counts beside it on every network. */
 
 /* An action waiting on the network.
    `[disabled]` alone was the entire feedback, and a disabled icon button is

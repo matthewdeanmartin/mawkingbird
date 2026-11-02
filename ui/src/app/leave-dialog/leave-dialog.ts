@@ -44,7 +44,7 @@ export type LeaveChoice = 'leave' | 'anonymous-data' | 'all-data';
 // i18n leaveDialog.deleteAnonymousThenLeave: Delete anonymous data, then leave
 // i18n leaveDialog.deleteAnonymousDetail: Follows, local lists, saved posts and followed hashtags from browsing without an account. Any signed-in accounts you have saved are kept.
 // i18n leaveDialog.removeAllThenLeave: Remove all browser data, then leave
-// i18n leaveDialog.removeAllDetailBluesky: Your saved Bluesky sign-in, plus every other saved account, connection and setting. Your Bluesky account itself is untouched — but you'll need your app password to return. This can't be undone.
+// i18n leaveDialog.removeAllDetailBlueskySignIn: Your saved Bluesky sign-in, plus every other saved account, connection and setting. Your Bluesky account itself is untouched — you'll sign in with Bluesky again to return. This can't be undone.
 // i18n leaveDialog.removeAllDetailDefault: Everything above, plus every saved account, connection and setting. This can't be undone.
 // i18n leaveDialog.backupDownloaded: Backup downloaded
 // i18n leaveDialog.downloadFirst: Download my data first

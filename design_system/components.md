@@ -429,6 +429,9 @@ rows can fit on one line; larger toolsets still wrap rather than shrink targets.
 Its containing action moves intact to another row. Counts with their own account
 list behavior remain separate buttons from Like/Boost toggles. Pass localized
 labels and the active locale; use accessible names for icon-only actions.
+A count with no action uses `span[mbPostAction]`: the same type, padding and
+height as the controls, with no pointer or hover. Place every count directly
+after its own icon so rows read the same on every network.
 
 The shared toolbar button stylesheet provides visual states; post actions add
 compact wrapping and retain 44px touch targets by default. No per-post sizing overrides are

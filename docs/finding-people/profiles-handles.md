@@ -37,6 +37,6 @@ Recommendations are opinions, not identity guarantees. Review each profile befor
 
 ## Open the original profile
 
-The account actions may offer **Open on** followed by the account's home site. This is useful when Mawkingbird cannot display part of a profile or when you want to confirm how it appears at its source.
+The account actions may offer **Open on** followed by the account's home site. Use it to see the profile exactly as its home site shows it.
 
 Next: [Follow, request, or unfollow](follow-unfollow.md).
