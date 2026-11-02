@@ -1,0 +1,1 @@
+var n="mockingbird_first_run_preview";function i(){try{let e=JSON.parse(localStorage.getItem(n)??"null");if(typeof e?.server!="string")return null;let r=Array.isArray(e.preexisting)?e.preexisting.filter(t=>typeof t=="string"):[];return{server:e.server,preexisting:r}}catch{return null}}export{n as a,i as b};
