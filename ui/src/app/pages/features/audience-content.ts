@@ -95,7 +95,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     gettingStarted:
       'Open the preview, choose Log in, then Bluesky. Once your timeline is in Home, add Mastodon under Settings → Connections, either read-only from a server or with your own account.',
     expectation:
-      'Mawkingbird is an independent client for both networks. When you cross-post, the Bluesky copy is always public, polls and content warnings stay on the Mastodon copy, and video cross-posting to Bluesky is not guaranteed yet.',
+      'Mawkingbird is an independent client for both networks. When you cross-post, the Bluesky copy is always public, polls and content warnings stay on the Mastodon copy, and a video goes to both.',
     guides: [
       { label: 'Use Bluesky and Mastodon together', href: '/help/new-to-mastodon/from-bluesky/' },
       { label: 'Sign in with Bluesky', href: '/help/start/sign-in-bluesky/' },

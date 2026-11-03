@@ -613,28 +613,39 @@ describe('StatusCard', () => {
       expect(likes.querySelector('[mbActionCount]')?.textContent).toContain('9');
     });
 
-    it('puts Bluesky counts in the same places, as static post actions', () => {
+    it('puts Bluesky counts in the same places, as buttons that open who engaged', () => {
+      const uri = 'at://did:plc:x/app.bsky.feed.post/1';
       const f = setUp(
         makeStatus({
-          id: 'bsky:at://did:plc:x/app.bsky.feed.post/1',
+          id: `bsky:${uri}`,
           provider: 'bluesky',
           reblogs_count: 7,
           favourites_count: 9,
+          providerRef: { uri, cid: 'c1' },
         }),
       );
       const items = row(f);
 
       const boosts = after(items, isBoost)!;
-      expect(boosts.matches('span[mbPostAction].action-static')).toBe(true);
+      expect(boosts.matches('button[mbPostAction].count-link')).toBe(true);
       expect(boosts.querySelector('[mbActionCount]')?.textContent).toContain('7');
 
       const likes = after(items, isFavourite)!;
-      expect(likes.matches('span[mbPostAction].action-static')).toBe(true);
+      expect(likes.matches('button[mbPostAction].count-link')).toBe(true);
       expect(likes.querySelector('[mbActionCount]')?.textContent).toContain('9');
 
       // Each count appears once: no second copy elsewhere in the row.
-      const counts = items.filter((item) => item.matches('.action-static'));
-      expect(counts).toHaveLength(2);
+      expect(items.filter((item) => item.matches('.count-link'))).toHaveLength(2);
+
+      (likes as HTMLButtonElement).click();
+      // The dialog renders natively (showModal), which jsdom lacks; its own spec
+      // covers the Bluesky lists. Here: the count opens likers for this post.
+      const card = f.componentInstance as unknown as {
+        accountListMode: () => string | null;
+        blueskyQuoteRef: { uri: string } | undefined;
+      };
+      expect(card.accountListMode()).toBe('favourited_by');
+      expect(card.blueskyQuoteRef?.uri).toBe(uri);
     });
   });
 

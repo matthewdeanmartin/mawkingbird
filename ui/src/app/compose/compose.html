@@ -833,6 +833,29 @@
     <div class="thread-hint muted" role="status">{{ notice }}</div>
   }
 
+  @if (bskyLabelOffered()) {
+    <!-- Mastodon's ⚠️ is one switch; Bluesky needs to know which kind of
+         content, so the label is picked here and sent as a self-label. -->
+    <div class="compose-selects">
+      <select
+        class="target-select"
+        [ngModel]="bskyLabel() ?? ''"
+        (ngModelChange)="bskyLabel.set($event || null)"
+        [title]="'compose.bskyLabel.title' | transloco"
+        [attr.aria-label]="'compose.bskyLabel.title' | transloco"
+      >
+        <option value="">{{ 'compose.bskyLabel.none' | transloco }}</option>
+        <option value="sexual">{{ 'compose.bskyLabel.sexual' | transloco }}</option>
+        <option value="nudity">{{ 'compose.bskyLabel.nudity' | transloco }}</option>
+        <option value="porn">{{ 'compose.bskyLabel.porn' | transloco }}</option>
+        <option value="graphic-media">{{ 'compose.bskyLabel.graphic' | transloco }}</option>
+      </select>
+    </div>
+    @if (!bskyLabel()) {
+      <div class="thread-hint muted">{{ 'compose.bskyLabel.hint' | transloco }}</div>
+    }
+  }
+
   @if (target() === 'bsky' && pollOpen()) {
     <!-- Images post to Bluesky now; polls still cannot, because the protocol has
          no poll record to write. -->

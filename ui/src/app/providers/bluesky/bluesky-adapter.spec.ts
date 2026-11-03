@@ -206,6 +206,35 @@ describe('adaptPost', () => {
   });
 });
 
+/**
+ * Labelled media stays covered: a post Bluesky marks as nudity, adult or
+ * graphic (by its author or a moderation service) arrives as sensitive.
+ */
+describe('adaptPost content labels', () => {
+  it('marks a post with a content label from a moderation service sensitive', () => {
+    const post = makePost({ labels: [{ val: 'porn', src: 'did:plc:labeler' }] });
+    expect(adaptPost(post).sensitive).toBe(true);
+  });
+
+  it("honours the author's own self-label", () => {
+    const post = makePost({
+      record: {
+        $type: 'app.bsky.feed.post',
+        text: 'Careful',
+        createdAt: '2026-07-14T10:00:00.000Z',
+        labels: { values: [{ val: 'graphic-media' }] },
+      },
+    });
+    expect(adaptPost(post).sensitive).toBe(true);
+  });
+
+  it('ignores withdrawn labels and labels that are not about content', () => {
+    expect(adaptPost(makePost({ labels: [{ val: 'nudity', neg: true }] })).sensitive).toBe(false);
+    expect(adaptPost(makePost({ labels: [{ val: '!no-unauthenticated' }] })).sensitive).toBe(false);
+    expect(adaptPost(makePost()).sensitive).toBe(false);
+  });
+});
+
 describe('adaptFeedItem', () => {
   it('wraps reposts like Mastodon boosts', () => {
     const item: BskyFeedItem = {

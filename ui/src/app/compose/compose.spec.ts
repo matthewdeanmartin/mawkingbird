@@ -12,6 +12,8 @@ import { Status } from '../models';
 import { Auth } from '../auth';
 import { Server } from '../server';
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
+import { BlueskyVideo, BlueskyVideoError } from '../providers/bluesky/bluesky-video';
+import { BlueskyLinkCard } from '../providers/bluesky/bluesky-link-card';
 import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
 import { ShortenerSettings } from '../providers/shortener/shortener-settings';
 import { Compose, PostTarget, describePostFailure } from './compose';
@@ -1915,6 +1917,86 @@ describe('Compose', () => {
 
     afterEach(() => vi.unstubAllGlobals());
 
+    /** The composer's Bluesky metadata controls, which ComposeInternals does not list. */
+    function meta(f: ComponentFixture<Compose>) {
+      return f.componentInstance as unknown as {
+        sensitive: WritableSignal<boolean>;
+        bskyLabel: WritableSignal<string | null>;
+        bskyLabelOffered: Signal<boolean>;
+      };
+    }
+
+    it('sends the post language as Bluesky langs', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).onLanguageChange('de');
+      internals(f).text.set('Guten Morgen, wie geht es dir heute? Das Wetter ist schön.');
+
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.langs).toEqual(['de']);
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/l', cid: 'l-cid' });
+    });
+
+    it('offers a Bluesky label for sensitive media and sends the one picked', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).text.set('Careful');
+      attach(f);
+      expect(meta(f).bskyLabelOffered()).toBe(false);
+
+      meta(f).sensitive.set(true);
+      f.detectChanges();
+      expect(meta(f).bskyLabelOffered()).toBe(true);
+      expect((f.nativeElement as HTMLElement).textContent).toContain('Pick a Bluesky label too');
+      meta(f).bskyLabel.set('graphic-media');
+
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+      httpMock.expectOne(UPLOAD_BLOB).flush(blobRef('labelled'));
+      await new Promise((r) => setTimeout(r, 0));
+
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.labels).toEqual({
+        $type: 'com.atproto.label.defs#selfLabels',
+        values: [{ val: 'graphic-media' }],
+      });
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/s', cid: 's-cid' });
+    });
+
+    it('attaches a link card to a link-only post, and posts without one when it fails', async () => {
+      linkBsky();
+      const card = {
+        $type: 'app.bsky.embed.external' as const,
+        external: { uri: 'https://example.com/post', title: 'A post', description: 'About it' },
+      };
+      const build = vi.fn().mockResolvedValueOnce(card).mockResolvedValueOnce(null);
+      Object.assign(TestBed.inject(BlueskyLinkCard), { build });
+
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).text.set('Worth a read: https://example.com/post.');
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(build).toHaveBeenCalledWith('https://example.com/post', expect.any(Boolean));
+      const withCard = httpMock.expectOne(CREATE_RECORD);
+      expect(withCard.request.body.record.embed).toEqual(card);
+      withCard.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/c', cid: 'c-cid' });
+      await new Promise((r) => setTimeout(r, 0));
+
+      internals(f).text.set('Another: https://example.com/down');
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+      const without = httpMock.expectOne(CREATE_RECORD);
+      expect(without.request.body.record.embed).toBeUndefined();
+      without.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/d', cid: 'd-cid' });
+    });
+
     function attach(f: ComponentFixture<Compose>, name = 'a.jpg', description = 'A photo'): void {
       internals(f).media.update((list) => [
         ...list,
@@ -2141,14 +2223,34 @@ describe('Compose', () => {
     });
 
     it('leaves video out and says so, rather than failing at submit', () => {
+      // Bluesky takes video now, but only on its own: picked beside a photo,
+      // the video cannot ride along and is refused at the pick, with the reason.
       linkBsky();
       const f = setUp();
       internals(f).target.set('bsky');
 
-      internals(f).uploadFiles([new File(['x'], 'clip.mp4', { type: 'video/mp4' })]);
+      internals(f).uploadFiles([
+        new File(['x'], 'a.jpg', { type: 'image/jpeg' }),
+        new File(['x'], 'clip.mp4', { type: 'video/mp4' }),
+      ]);
+
+      expect(
+        internals(f)
+          .media()
+          .map((m) => m.file?.type),
+      ).toEqual(['image/jpeg']);
+      expect(internals(f).mediaNotice()).toContain('the video was left out');
+    });
+
+    it('leaves audio out and says so, rather than failing at submit', () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+
+      internals(f).uploadFiles([new File(['x'], 'song.mp3', { type: 'audio/mpeg' })]);
 
       expect(internals(f).media()).toHaveLength(0);
-      expect(internals(f).mediaNotice()).toContain('images only');
+      expect(internals(f).mediaNotice()).toContain('images and video only');
     });
 
     it('caps at four images and says how many were left out', () => {
@@ -2162,6 +2264,148 @@ describe('Compose', () => {
 
       expect(internals(f).media()).toHaveLength(4);
       expect(internals(f).mediaNotice()).toContain('2 were left out');
+    });
+  });
+
+  /**
+   * Bluesky has taken video since 2024; only this client refused it. A video
+   * goes through Bluesky's video service (see bluesky-video.spec.ts) and must
+   * be the post's only media, so the composer enforces that when picking.
+   */
+  describe('posting video to Bluesky', () => {
+    const BLOB = { $type: 'blob', ref: { $link: 'bafy-video' }, mimeType: 'video/mp4', size: 4 };
+    let video: {
+      metadata: ReturnType<typeof vi.fn>;
+      checkLimits: ReturnType<typeof vi.fn>;
+      upload: ReturnType<typeof vi.fn>;
+    };
+
+    beforeEach(() => {
+      video = {
+        metadata: vi.fn().mockResolvedValue({ width: 1280, height: 720, duration: 30 }),
+        checkLimits: vi.fn().mockResolvedValue(undefined),
+        upload: vi.fn(async (_file: File, progress?: (p: unknown) => void) => {
+          progress?.({ phase: 'uploading' });
+          progress?.({ phase: 'processing', percent: 50 });
+          return BLOB;
+        }),
+      };
+      // The module is already instantiated by the outer setup, so the real
+      // service's methods are replaced in place.
+      Object.assign(TestBed.inject(BlueskyVideo), video);
+    });
+
+    const clip = (name = 'clip.mp4') => new File(['vid'], name, { type: 'video/mp4' });
+    const photo = (name = 'a.jpg') => new File(['x'], name, { type: 'image/jpeg' });
+
+    async function pick(f: ComponentFixture<Compose>, files: File[]): Promise<void> {
+      internals(f).uploadFiles(files);
+      await new Promise((r) => setTimeout(r, 0));
+    }
+
+    it('accepts one video on its own and holds it locally for a Bluesky-only post', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+
+      await pick(f, [clip()]);
+
+      httpMock.expectNone('/api/v1/media');
+      expect(internals(f).media()).toHaveLength(1);
+      expect(internals(f).mediaNotice()).toBe('');
+    });
+
+    it('refuses a video beside photos, attached or picked with it', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+
+      await pick(f, [photo(), clip()]);
+      expect(
+        internals(f)
+          .media()
+          .map((m) => m.file?.type),
+      ).toEqual(['image/jpeg']);
+      expect(internals(f).mediaNotice()).toContain('photos or a video, not both');
+
+      await pick(f, [clip()]);
+      expect(internals(f).media()).toHaveLength(1);
+      expect(internals(f).mediaNotice()).toContain('photos or a video, not both');
+    });
+
+    it('refuses anything more once a video is attached, and a second video', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+
+      await pick(f, [clip('one.mp4'), clip('two.mp4')]);
+      expect(internals(f).media()).toHaveLength(0);
+      expect(internals(f).mediaNotice()).toContain('one video per post');
+
+      await pick(f, [clip('one.mp4')]);
+      await pick(f, [photo()]);
+      expect(internals(f).media()).toHaveLength(1);
+      expect(internals(f).mediaNotice()).toContain('Remove the video');
+    });
+
+    it("refuses a video over Bluesky's size and length limits", async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+
+      const big = clip('big.mp4');
+      Object.defineProperty(big, 'size', { value: 301_000_000 });
+      await pick(f, [big]);
+      expect(internals(f).media()).toHaveLength(0);
+      expect(internals(f).mediaNotice()).toContain('300 MB');
+
+      video.metadata.mockResolvedValue({ width: 1280, height: 720, duration: 11 * 60 });
+      await pick(f, [clip('long.mp4')]);
+      expect(internals(f).media()).toHaveLength(0);
+      expect(internals(f).mediaNotice()).toContain('10-minute');
+    });
+
+    it('posts the video embed with alt text and aspect ratio', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).text.set('Look at this');
+      await pick(f, [clip()]);
+      f.componentInstance.setMediaDescription(0, 'Waves at dusk');
+
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(video.checkLimits).toHaveBeenCalled();
+      expect(video.upload.mock.calls[0][0].name).toBe('clip.mp4');
+      const post = httpMock.expectOne(CREATE_RECORD);
+      expect(post.request.body.record.embed).toEqual({
+        $type: 'app.bsky.embed.video',
+        video: BLOB,
+        alt: 'Waves at dusk',
+        aspectRatio: { width: 1280, height: 720 },
+      });
+      httpMock.expectNone('/api/v1/statuses');
+      post.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/v', cid: 'v-cid' });
+    });
+
+    it('says why when Bluesky refuses the video, and posts nothing there', async () => {
+      linkBsky();
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).text.set('Look at this');
+      await pick(f, [clip()]);
+      f.componentInstance.setMediaDescription(0, 'Waves at dusk');
+      video.checkLimits.mockRejectedValue(
+        new BlueskyVideoError('You have reached your daily video limit'),
+      );
+
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+
+      httpMock.expectNone(CREATE_RECORD);
+      expect(video.upload).not.toHaveBeenCalled();
+      expect(internals(f).crossPostError()).toContain('You have reached your daily video limit');
     });
   });
 

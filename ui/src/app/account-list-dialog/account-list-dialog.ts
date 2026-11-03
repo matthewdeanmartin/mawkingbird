@@ -2,8 +2,10 @@ import { accountProfilePath } from '../account-route';
 import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Api } from '../api';
+import { BlueskyApi } from '../providers/bluesky/bluesky-api';
+import { adaptAuthor } from '../providers/bluesky/bluesky-adapter';
 import { Account } from '../models';
 import { Terminology } from '../terminology';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,7 +23,10 @@ import { MbContentState } from '../design-system/content-state/content-state';
 /** Which set of accounts to show for a status. */
 export type AccountListMode = 'favourited_by' | 'reblogged_by';
 
-/** A modal listing the accounts that favourited or boosted a status. */
+/**
+ * A modal listing the accounts that favourited or boosted a status: from the
+ * Mastodon server, or from Bluesky when the post is a Bluesky one.
+ */
 @Component({
   selector: 'app-account-list-dialog',
   imports: [MbDialog, MbButton, MbContentState, RouterLink, TranslocoPipe],
@@ -31,10 +36,13 @@ export type AccountListMode = 'favourited_by' | 'reblogged_by';
 export class AccountListDialog implements OnInit {
   protected readonly accountProfilePath = accountProfilePath;
   private api = inject(Api);
+  private bskyApi = inject(BlueskyApi);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly statusId = input.required<string>();
   readonly mode = input.required<AccountListMode>();
+  /** The Bluesky post's at-uri. Set, the lists come from Bluesky instead of the server. */
+  readonly blueskyUri = input<string | null>(null);
   readonly closed = output<void>();
 
   protected accounts = signal<Account[]>([]);
@@ -54,14 +62,24 @@ export class AccountListDialog implements OnInit {
     this.load();
   }
 
+  private accounts$(): Observable<Account[]> {
+    const uri = this.blueskyUri();
+    const liked = this.mode() === 'favourited_by';
+    if (uri) {
+      return liked
+        ? this.bskyApi
+            .getLikes(uri)
+            .pipe(map((page) => page.likes.map((like) => adaptAuthor(like.actor))))
+        : this.bskyApi.getRepostedBy(uri).pipe(map((page) => page.repostedBy.map(adaptAuthor)));
+    }
+    return liked ? this.api.favouritedBy(this.statusId()) : this.api.rebloggedBy(this.statusId());
+  }
+
   protected load(): void {
     if (this.loading()) return;
     this.loading.set(true);
     this.failed.set(false);
-    const call: Observable<Account[]> =
-      this.mode() === 'favourited_by'
-        ? this.api.favouritedBy(this.statusId())
-        : this.api.rebloggedBy(this.statusId());
+    const call: Observable<Account[]> = this.accounts$();
     call.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (accounts) => {
         this.accounts.set(accounts);

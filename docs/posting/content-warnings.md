@@ -24,6 +24,6 @@ If the post includes media that should be hidden initially, also choose the sens
 
 Content warnings are a Fedi feature. Bluesky does not receive the content warning from Mawkingbird.
 
-If the destination is **Both**, the Fedi copy receives the warning and the Bluesky copy receives the body without it. Make sure the Bluesky copy is appropriate to publish openly without that warning layer.
+If the destination is **Both**, the Fedi copy receives the warning and the Bluesky copy receives the body without it. Make sure the Bluesky copy is appropriate to publish openly without that warning layer. For media, Bluesky has content labels instead; see [Add a photo or other media](media.md#sensitive-media).
 
 Next: [Choose who can see a post](visibility.md).

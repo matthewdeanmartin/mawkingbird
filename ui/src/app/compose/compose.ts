@@ -51,7 +51,17 @@ import {
   BskyImagesEmbed,
   BskyPostEmbed,
   BskyRef,
+  BskySelfLabelValue,
+  BskyVideoEmbed,
 } from '../providers/bluesky/bluesky-types';
+import {
+  BlueskyVideo,
+  BlueskyVideoError,
+  BSKY_VIDEO_MAX_BYTES,
+  BSKY_VIDEO_MAX_SECONDS,
+  isBlueskyVideo,
+} from '../providers/bluesky/bluesky-video';
+import { BlueskyLinkCard, firstLink } from '../providers/bluesky/bluesky-link-card';
 import { prepareImageForBluesky } from '../providers/bluesky/bluesky-image';
 import { PasteHistory } from '../providers/paste/paste-history';
 import { PasteExpiry } from '../providers/paste/paste-provider';
@@ -187,6 +197,9 @@ interface PostingOperation {
     embed?: BskyPostEmbed;
     replyTo?: BskyRef;
     quote?: BskyRef;
+    /** The post language as Bluesky `langs`, fixed when posting starts. */
+    langs?: string[];
+    label?: BskySelfLabelValue;
     complete: boolean;
     inFlight: boolean;
     failedAt: number | null;
@@ -341,9 +354,9 @@ function isAttachable(file: File): boolean {
   return /^(image|video|audio)\//.test(file.type);
 }
 
-/** Bluesky posts accept images only — no video, no audio. */
+/** Bluesky posts take images, or one video on its own. No audio. */
 function isBlueskyAttachable(file: File): boolean {
-  return file.type.startsWith('image/');
+  return file.type.startsWith('image/') || isBlueskyVideo(file);
 }
 
 /**
@@ -396,6 +409,13 @@ function dragHasFiles(event: DragEvent): boolean {
   return Array.from(event.dataTransfer?.types ?? []).includes('Files');
 }
 
+// i18n compose.bskyLabel.title: Bluesky content label
+// i18n compose.bskyLabel.none: Bluesky: no label
+// i18n compose.bskyLabel.sexual: Bluesky: suggestive
+// i18n compose.bskyLabel.nudity: Bluesky: nudity
+// i18n compose.bskyLabel.porn: Bluesky: adult content
+// i18n compose.bskyLabel.graphic: Bluesky: graphic media
+// i18n compose.bskyLabel.hint: Pick a Bluesky label too. Bluesky only hides media behind a warning when the post names what kind of content it is.
 // i18n compose.editing: Editing
 // i18n compose.cancelEdit: Cancel edit
 // i18n compose.dismissBuildStatus: Dismiss build status
@@ -540,6 +560,8 @@ export class Compose implements OnDestroy {
   private postConfirmation = inject(PostConfirmation);
   private linkShortening = inject(LinkShortening);
   private bskyApi = inject(BlueskyApi);
+  private bskyVideo = inject(BlueskyVideo);
+  private bskyLinkCard = inject(BlueskyLinkCard);
   protected bskySession = inject(BlueskySession);
   private drafts = inject(Drafts).forCurrentAccount();
   private customEmojis = inject(CustomEmojis);
@@ -1017,6 +1039,18 @@ export class Compose implements OnDestroy {
   protected cwOpen = signal(false);
   protected spoilerText = signal('');
   protected sensitive = signal(false);
+
+  /**
+   * Bluesky's content label for this post's media, or null for none.
+   *
+   * Mastodon has one "sensitive" switch; Bluesky asks which kind of content it
+   * is, and only labels it names will blur the media there. So when a
+   * sensitive post with media goes to Bluesky, the writer picks the label.
+   */
+  protected bskyLabel = signal<BskySelfLabelValue | null>(null);
+  protected readonly bskyLabelOffered = computed(
+    () => this.sensitive() && this.targetIncludesBsky() && this.media().length > 0,
+  );
 
   // Media.
   protected media = signal<PendingMedia[]>([]);
@@ -1788,15 +1822,20 @@ export class Compose implements OnDestroy {
       this.mediaNotice.set('');
       return;
     }
-    const attached = this.media();
-    const nonImage = attached.filter((m) => m.file && !isBlueskyAttachable(m.file)).length;
-    const overflow = Math.max(0, attached.length - BSKY_MAX_IMAGES);
+    const files = this.media().flatMap((m) => (m.file ? [m.file] : []));
+    const unsupported = files.filter((file) => !isBlueskyAttachable(file)).length;
+    const videos = files.filter(isBlueskyVideo).length;
+    const images = files.filter((file) => file.type.startsWith('image/')).length;
     this.mediaNotice.set(
-      nonImage
-        ? 'Bluesky takes images only — the rest will go to Fedi alone.'
-        : overflow
-          ? `Bluesky takes ${BSKY_MAX_IMAGES} images per post — the first ${BSKY_MAX_IMAGES} will go.`
-          : '',
+      unsupported
+        ? 'Bluesky takes images or one video — the rest will go to Fedi alone.'
+        : videos && images
+          ? 'Bluesky takes photos or a video, not both — only the photos will go to Bluesky.'
+          : videos > 1
+            ? 'Bluesky takes one video per post — only the first will go to Bluesky.'
+            : images > BSKY_MAX_IMAGES
+              ? `Bluesky takes ${BSKY_MAX_IMAGES} images per post — the first ${BSKY_MAX_IMAGES} will go.`
+              : '',
     );
   }
 
@@ -1807,28 +1846,97 @@ export class Compose implements OnDestroy {
     if (!this.canAttachMedia() || !files.length) {
       return;
     }
-    // Where Bluesky is a destination, its narrower rules bind: images only, four
-    // at most. Saying so at the point of picking beats letting a video ride
-    // along and fail at submit, or silently dropping it.
+    // Where Bluesky is a destination, its narrower rules bind: up to four
+    // images, or one video on its own. Saying so at the point of picking beats
+    // letting a file ride along and fail at submit, or silently dropping it.
     if (this.targetIncludesBsky()) {
-      const rejected = files.filter((f) => !isBlueskyAttachable(f));
-      files = files.filter(isBlueskyAttachable);
-      const room = BSKY_MAX_IMAGES - this.media().length;
-      const overflow = Math.max(0, files.length - Math.max(0, room));
-      files = files.slice(0, Math.max(0, room));
-      this.mediaNotice.set(
-        rejected.length
-          ? 'Bluesky posts take images only — video and audio were left out.'
-          : overflow
-            ? `Bluesky takes ${BSKY_MAX_IMAGES} images per post — the extra ${overflow === 1 ? 'one was' : `${overflow} were`} left out.`
-            : '',
-      );
+      const picked = this.pickForBluesky(files);
+      files = picked.files;
+      this.mediaNotice.set(picked.notice);
       if (!files.length) {
+        return;
+      }
+      const video = files.find(isBlueskyVideo);
+      if (video) {
+        void this.attachBlueskyVideo(video);
         return;
       }
     } else {
       this.mediaNotice.set('');
     }
+    this.attachFiles(files);
+  }
+
+  /**
+   * Which picked files a post that includes Bluesky can take, and why the rest
+   * were left out. A video must be the post's only media, so it is refused
+   * beside photos (attached or picked with it) and a second video is refused.
+   */
+  private pickForBluesky(files: File[]): { files: File[]; notice: string } {
+    const attached = this.media().flatMap((m) =>
+      m.file && isBlueskyAttachable(m.file) ? [m.file] : [],
+    );
+    if (attached.some(isBlueskyVideo)) {
+      return {
+        files: [],
+        notice:
+          'Bluesky takes one video per post with nothing beside it. Remove the video to attach something else.',
+      };
+    }
+    const unsupported = files.some((file) => !isBlueskyAttachable(file));
+    let allowed = files.filter(isBlueskyAttachable);
+    const videos = allowed.filter(isBlueskyVideo);
+    if (videos.length) {
+      if (!attached.length && allowed.length === 1) {
+        if (videos[0].size > BSKY_VIDEO_MAX_BYTES) {
+          return {
+            files: [],
+            notice: "That video is over Bluesky's 300 MB limit, so it was left out.",
+          };
+        }
+        return {
+          files: allowed,
+          notice: unsupported ? 'Bluesky takes images and video only — the rest was left out.' : '',
+        };
+      }
+      allowed = allowed.filter((file) => !isBlueskyVideo(file));
+      if (!allowed.length) {
+        return {
+          files: [],
+          notice:
+            videos.length > 1 && !attached.length
+              ? 'Bluesky takes one video per post — pick just one.'
+              : 'Bluesky takes photos or a video, not both, so the video was left out.',
+        };
+      }
+    }
+    const room = Math.max(0, BSKY_MAX_IMAGES - attached.length);
+    const overflow = Math.max(0, allowed.length - room);
+    return {
+      files: allowed.slice(0, room),
+      notice: videos.length
+        ? 'Bluesky takes photos or a video, not both, so the video was left out.'
+        : unsupported
+          ? 'Bluesky takes images and video only — the rest was left out.'
+          : overflow
+            ? `Bluesky takes ${BSKY_MAX_IMAGES} images per post — the extra ${overflow === 1 ? 'one was' : `${overflow} were`} left out.`
+            : '',
+    };
+  }
+
+  /** Check a Bluesky video's length from its own metadata before attaching it. */
+  private async attachBlueskyVideo(file: File): Promise<void> {
+    const metadata = await this.bskyVideo.metadata(file);
+    if (metadata && metadata.duration > BSKY_VIDEO_MAX_SECONDS) {
+      this.mediaNotice.set(
+        "That video is longer than Bluesky's 10-minute limit, so it was left out.",
+      );
+      return;
+    }
+    this.attachFiles([file]);
+  }
+
+  private attachFiles(files: File[]): void {
     for (const file of files) {
       // Bluesky-only: there is no Mastodon post to attach this to, so uploading
       // it there would spend a call and store a file nothing will reference.
@@ -2480,6 +2588,8 @@ export class Compose implements OnDestroy {
         preparedFacets: [],
         replyTo: this.blueskyReplyRef(),
         quote: this.blueskyQuoteRef(),
+        langs: this.postLanguage() ? [this.postLanguage()] : undefined,
+        label: this.bskyLabelOffered() ? (this.bskyLabel() ?? undefined) : undefined,
         complete: false,
         inFlight: false,
         failedAt: null,
@@ -2789,24 +2899,41 @@ export class Compose implements OnDestroy {
       this.postBskyPart(operation);
       return;
     }
-    // Images only, four at most — the protocol's cap. A "both" post can carry
-    // more on the Fedi leg, so this trims rather than refusing; the composer
-    // already said so when the target changed (`noteBlueskyMediaLimits`).
-    const images = this.media()
-      .filter((m) => m.file && isBlueskyAttachable(m.file))
-      .slice(0, BSKY_MAX_IMAGES);
-    if (!images.length) {
-      operation.bsky.embed = this.quoteEmbed(operation);
-      this.postBskyPart(operation);
+    // Up to four images, or one video on its own — the protocol's rules. A
+    // "both" post can carry more on the Fedi leg, so this trims rather than
+    // refusing; photos win over a video, matching what the composer said when
+    // the target changed (`noteBlueskyMediaLimits`).
+    const media = this.media().filter((m) => m.file && isBlueskyAttachable(m.file));
+    const images = media.filter((m) => !isBlueskyVideo(m.file!)).slice(0, BSKY_MAX_IMAGES);
+    const video = images.length ? undefined : media.find((m) => isBlueskyVideo(m.file!));
+    if (!images.length && !video) {
+      // No media and no quote: a link in the first post gets a card, as
+      // Mastodon would make on its own server. A card that cannot be built
+      // never holds the post back.
+      const link = operation.bsky.quote ? null : firstLink(operation.parts[0] ?? '');
+      if (!link) {
+        operation.bsky.embed = this.quoteEmbed(operation);
+        this.postBskyPart(operation);
+        return;
+      }
+      void this.bskyLinkCard.build(link, this.pseudonymity.cleanMedia()).then((card) => {
+        operation.bsky.embed = card ?? undefined;
+        this.postBskyPart(operation);
+      });
       return;
     }
     // Blobs must exist in the repo before the record that references them, so
     // the uploads finish first and the post carries the finished embed.
-    void this.uploadBskyImages(images).then((embed) => {
-      if (embed === null) {
+    const upload: Promise<BskyImagesEmbed | BskyVideoEmbed | string> = video
+      ? this.uploadBskyVideo(video)
+      : this.uploadBskyImages(images).then(
+          (embed) => embed ?? "Couldn't upload the image to Bluesky; nothing was posted there.",
+        );
+    void upload.then((embed) => {
+      if (typeof embed === 'string') {
         operation.bsky.inFlight = false;
         operation.bsky.failedAt = 0;
-        this.showPostingFailure(operation, true);
+        this.showPostingFailure(operation, embed);
         this.settlePosting(operation);
         return;
       }
@@ -2850,6 +2977,44 @@ export class Compose implements OnDestroy {
   }
 
   /**
+   * Upload a video through Bluesky's video service and build its embed.
+   *
+   * Returns the reason as a string on failure, in Bluesky's words where it
+   * gave some: a daily limit or an unverified email is something the writer
+   * can act on, and "couldn't upload" alone would hide it. Progress shows in
+   * the media notice, because processing a long video takes a while.
+   */
+  private async uploadBskyVideo(item: PendingMedia): Promise<BskyVideoEmbed | string> {
+    const file = item.file!;
+    try {
+      await this.bskyVideo.checkLimits();
+      const metadata = await this.bskyVideo.metadata(file);
+      const blob = await this.bskyVideo.upload(file, (progress) =>
+        this.mediaNotice.set(
+          progress.phase === 'uploading'
+            ? 'Uploading the video to Bluesky…'
+            : `Bluesky is processing the video${progress.percent ? ` (${Math.round(progress.percent)}%)` : ''}…`,
+        ),
+      );
+      this.mediaNotice.set('');
+      const alt = item.description.trim();
+      return {
+        $type: 'app.bsky.embed.video',
+        video: blob,
+        ...(alt ? { alt } : {}),
+        ...(metadata ? { aspectRatio: { width: metadata.width, height: metadata.height } } : {}),
+      };
+    } catch (error: unknown) {
+      this.mediaNotice.set('');
+      const reason =
+        error instanceof BlueskyVideoError
+          ? error.message
+          : "Couldn't upload the video to Bluesky.";
+      return `${reason} Nothing was posted there.`;
+    }
+  }
+
+  /**
    * One post of a Bluesky thread, then the next.
    *
    * Sequential rather than parallel because each reply needs the *previous*
@@ -2859,7 +3024,7 @@ export class Compose implements OnDestroy {
    */
   private quoteEmbed(
     operation: PostingOperation,
-    media?: BskyImagesEmbed,
+    media?: BskyImagesEmbed | BskyVideoEmbed,
   ): BskyPostEmbed | undefined {
     const quote = operation.bsky.quote;
     if (!quote) return media;
@@ -2894,6 +3059,13 @@ export class Compose implements OnDestroy {
               // First post only. Uploaded blob refs are retained on the
               // operation so an ambiguous record retry is byte-equivalent.
               embed: index === 0 ? operation.bsky.embed : undefined,
+              langs: operation.bsky.langs,
+              labels: operation.bsky.label
+                ? {
+                    $type: 'com.atproto.label.defs#selfLabels',
+                    values: [{ val: operation.bsky.label }],
+                  }
+                : undefined,
             },
             { rkey: tidFromSeed(`${operation.id}-${index}`), createdAt },
           );
@@ -2923,7 +3095,10 @@ export class Compose implements OnDestroy {
       });
   }
 
-  private showPostingFailure(operation: PostingOperation, imageUpload = false): void {
+  private showPostingFailure(
+    operation: PostingOperation,
+    mediaFailure: string | null = null,
+  ): void {
     if (operation.fedi.failure) {
       const completed = operation.fedi.statuses.length;
       const suffix = [
@@ -2944,9 +3119,7 @@ export class Compose implements OnDestroy {
       const partial = completed
         ? ` The first ${completed === 1 ? 'post' : `${completed} posts`} of the Bluesky thread were already published; retry will skip them.`
         : '';
-      const reason = imageUpload
-        ? "Couldn't upload the image to Bluesky; nothing was posted there."
-        : "Couldn't post to Bluesky.";
+      const reason = mediaFailure ?? "Couldn't post to Bluesky.";
       this.crossPostError.set(
         operation.fedi.complete
           ? `Posted to Fedi, but the Bluesky copy is incomplete. ${reason}${partial} Retry will only continue Bluesky.`
@@ -3010,6 +3183,7 @@ export class Compose implements OnDestroy {
     this.cwOpen.set(false);
     this.spoilerText.set('');
     this.sensitive.set(false);
+    this.bskyLabel.set(null);
     // Free the object URLs before dropping the list, or the files stay pinned
     // in memory for the life of the tab.
     for (const item of this.media()) {

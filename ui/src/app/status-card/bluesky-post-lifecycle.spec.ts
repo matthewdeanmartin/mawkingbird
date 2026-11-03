@@ -86,7 +86,10 @@ describe('Bluesky post lifecycle through the API and status card', () => {
     const record = {
       text: 'Original caption',
       langs: ['en'],
-      labels: { $type: 'com.atproto.label.defs#selfLabels', values: [{ val: 'nudity' }] },
+      labels: {
+        $type: 'com.atproto.label.defs#selfLabels' as const,
+        values: [{ val: 'nudity' as const }],
+      },
       reply: {
         root: { uri: 'root', cid: 'root-cid' },
         parent: { uri: 'parent', cid: 'parent-cid' },

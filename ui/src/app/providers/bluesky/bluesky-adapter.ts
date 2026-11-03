@@ -263,6 +263,22 @@ function adaptQuote(embed: BskyEmbedView | undefined): Quote | null {
   };
 }
 
+/** Labels that mean "hide the media until the reader asks", as bsky.app treats them. */
+const SENSITIVE_LABELS = new Set(['sexual', 'nudity', 'porn', 'graphic-media', 'gore']);
+
+/**
+ * Whether a post carries a content label, from its author or a moderation
+ * service. Mapped onto Mastodon's `sensitive`, which the card already honours,
+ * so labelled media stays covered here as it does on Bluesky.
+ */
+function isLabelledSensitive(post: BskyPostView): boolean {
+  const values = [
+    ...(post.labels ?? []).filter((label) => !label.neg).map((label) => label.val),
+    ...(post.record.labels?.values ?? []).map((label) => label.val),
+  ];
+  return values.some((value) => SENSITIVE_LABELS.has(value));
+}
+
 export function adaptPost(post: BskyPostView): Status {
   const ref: BskyRef = {
     uri: post.uri,
@@ -296,7 +312,7 @@ export function adaptPost(post: BskyPostView): Status {
     bookmarked: !!post.viewer?.bookmarked,
     muted: false,
     pinned: false,
-    sensitive: false,
+    sensitive: isLabelledSensitive(post),
     poll: null,
     quote_approval_policy: null,
     // First of the declared languages: the record carries an array, Mastodon's

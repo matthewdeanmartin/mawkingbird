@@ -1095,14 +1095,20 @@
               }}</span
             ></span
           >
-        } @else if (readOnlyStats) {
-          <!-- A network you can like on but whose likers list is not wired up
-               (Bluesky): the count still follows its ⭐, as a static item. -->
-          <span
+        } @else if (display.provider === 'bluesky') {
+          <!-- Bluesky's likers come from app.bsky.feed.getLikes; the count opens
+               the same account list as Mastodon's, right after its ⭐. -->
+          <button
+            type="button"
             mbPostAction
-            class="action action-static"
-            [title]="'statusCard.likesTitle' | transloco"
-            ><span
+            class="action count-link"
+            (click)="openAccountList('favourited_by', $event)"
+            [title]="'statusCard.favouritedBy' | transloco"
+            [attr.aria-label]="
+              'statusCard.favouritedByCount' | transloco: { count: display.favourites_count }
+            "
+          >
+            <span
               mbActionCount
               [count]="display.favourites_count"
               [label]="'statusCard.likes' | transloco"
@@ -1112,8 +1118,8 @@
                   | transloco
                     : { count: display.favourites_count, label: ('statusCard.likes' | transloco) }
               }}</span
-            ></span
-          >
+            >
+          </button>
         }
         @if (foreign) {
           @if (nitterLink; as nitter) {
@@ -1658,7 +1664,7 @@
           }
         }
         <ng-template #boostCount>
-          @if (capabilities.canUseServerActions && !foreign) {
+          @if ((capabilities.canUseServerActions && !foreign) || display.provider === 'bluesky') {
             <button
               type="button"
               mbPostAction
@@ -1793,6 +1799,7 @@
   @if (accountListMode(); as mode) {
     <app-account-list-dialog
       [statusId]="display.id"
+      [blueskyUri]="blueskyQuoteRef?.uri ?? null"
       [mode]="mode"
       (closed)="accountListMode.set(null)"
     />

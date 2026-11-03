@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, of, switchMap, tap } from 'rxjs';
-import { externalFetch } from '../external-fetch';
+import { Observable, switchMap, tap } from 'rxjs';
 import { BlueskyApi } from './bluesky-api';
 import { detectFacets } from './bluesky-facets';
 import { BlueskySession } from './bluesky-session';
+import { BlueskyPds } from './bluesky-pds';
 import { BskyConvoView, BskyChatLogEntry, BskyConvoList, BskyMessageView } from './bluesky-types';
 import { IndicatorEvents } from '../../indicator-events';
 
@@ -27,17 +27,13 @@ export function isChatScopeError(err: unknown): boolean {
   return err.status === 401 || /token scope/i.test(message);
 }
 
-interface DidDocument {
-  service?: { id: string; type: string; serviceEndpoint: string }[];
-}
-
 /** DM client: `chat.bsky.convo.*` proxied through the linked account's PDS. */
 @Injectable({ providedIn: 'root' })
 export class BlueskyChatApi {
   private indicatorEvents = inject(IndicatorEvents);
-  private http = inject(HttpClient);
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
+  private pdsResolver = inject(BlueskyPds);
 
   getConvoForMembers(did: string): Observable<{ convo: BskyConvoView }> {
     return this.chatGet(
@@ -121,30 +117,8 @@ export class BlueskyChatApi {
     return this.pds().pipe(switchMap((pds) => this.api.request<T>(nsid, body, CHAT_PROXY, pds)));
   }
 
-  /**
-   * The account's real PDS host. Proxied chat calls 501 on the bsky.social
-   * entryway, so the DID document's #atproto_pds endpoint is resolved once
-   * and remembered on the session.
-   */
+  /** The account's real PDS host; see {@link BlueskyPds}. */
   private pds(): Observable<string> {
-    const session = this.session.session();
-    if (!session) {
-      return of(''); // BlueskyApi raises the "not linked" error downstream
-    }
-    if (session.pdsUrl) {
-      return of(session.pdsUrl);
-    }
-    if (!session.did.startsWith('did:plc:')) {
-      return of(session.service); // did:web etc. — let the entryway try
-    }
-    return this.http
-      .get<DidDocument>(`https://plc.directory/${session.did}`, { context: externalFetch() })
-      .pipe(
-        map(
-          (doc) =>
-            doc.service?.find((s) => s.id === '#atproto_pds')?.serviceEndpoint ?? session.service,
-        ),
-        tap((url) => this.session.setPdsUrl(url)),
-      );
+    return this.pdsResolver.resolve();
   }
 }

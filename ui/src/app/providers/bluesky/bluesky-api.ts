@@ -9,7 +9,9 @@ import { externalFetch } from '../external-fetch';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPostSearch } from './bluesky-post-search';
 import {
+  BskyAuthor,
   BskyAuthorFeedFilter,
+  BskySelfLabels,
   BskyFacet,
   BskyFollowers,
   BskyFollows,
@@ -173,6 +175,22 @@ export class BlueskyApi {
     // what lets an anonymous visitor follow a handful of Bluesky accounts and
     // get a real Home feed out of it, with no login on either network.
     return this.publicGet<BskyTimeline>('app.bsky.feed.getAuthorFeed', params);
+  }
+
+  /**
+   * Who liked a post (`app.bsky.feed.getLikes`). Auth-optional on the AppView,
+   * so a reader with no Bluesky account sees the list too. One page of 100,
+   * the same depth the Mastodon list shows.
+   */
+  getLikes(uri: string): Observable<{ likes: { actor: BskyAuthor }[]; cursor?: string }> {
+    const params = new HttpParams().set('uri', uri).set('limit', '100');
+    return this.publicGet('app.bsky.feed.getLikes', params);
+  }
+
+  /** Who reposted a post (`app.bsky.feed.getRepostedBy`); see {@link getLikes}. */
+  getRepostedBy(uri: string): Observable<{ repostedBy: BskyAuthor[]; cursor?: string }> {
+    const params = new HttpParams().set('uri', uri).set('limit', '100');
+    return this.publicGet('app.bsky.feed.getRepostedBy', params);
   }
 
   /** Posts liked by the signed-in actor. Bluesky permits this only for self. */
@@ -524,6 +542,10 @@ export class BlueskyApi {
       facets?: BskyFacet[];
       reply?: { root: { uri: string; cid: string }; parent: { uri: string; cid: string } };
       embed?: BskyPostEmbed;
+      /** BCP-47 language tags; Bluesky's language filters and many feeds read them. */
+      langs?: string[];
+      /** Self-labels, such as a content warning for the post's media. */
+      labels?: BskySelfLabels;
     },
     identity?: { rkey: string; createdAt: string },
   ): Observable<CreateRecordResponse> {

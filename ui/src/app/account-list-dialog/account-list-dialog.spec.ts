@@ -70,3 +70,54 @@ describe('AccountListDialog shared states', () => {
     expect(request.cancelled).toBe(true);
   });
 });
+
+/**
+ * Bluesky posts list their likers and reposters from Bluesky itself, through
+ * the public AppView when no account is linked, so the counts work for everyone.
+ */
+describe('AccountListDialog for Bluesky posts', () => {
+  const URI = 'at://did:plc:x/app.bsky.feed.post/1';
+  let http: HttpTestingController;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    http = TestBed.inject(HttpTestingController);
+  });
+  afterEach(() => http.verify());
+
+  function render(mode: 'favourited_by' | 'reblogged_by') {
+    const fixture = TestBed.createComponent(AccountListDialog);
+    fixture.componentRef.setInput('statusId', `bsky:${URI}`);
+    fixture.componentRef.setInput('blueskyUri', URI);
+    fixture.componentRef.setInput('mode', mode);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('lists likers from getLikes, linking to their Bluesky profiles', () => {
+    const f = render('favourited_by');
+    const req = http.expectOne((r) => r.url.endsWith('/xrpc/app.bsky.feed.getLikes'));
+    expect(req.request.params.get('uri')).toBe(URI);
+    expect(req.request.params.get('limit')).toBe('100');
+    req.flush({
+      likes: [{ actor: { did: 'did:plc:a', handle: 'ana.bsky.social', displayName: 'Ana' } }],
+    });
+    f.detectChanges();
+
+    const row = (f.nativeElement as HTMLElement).querySelector('a.account-row')!;
+    expect(row.textContent).toContain('Ana');
+    expect(row.textContent).toContain('@ana.bsky.social');
+    http.expectNone('/api/v1/statuses/bsky:at://did:plc:x/app.bsky.feed.post/1/favourited_by');
+  });
+
+  it('lists reposters from getRepostedBy', () => {
+    const f = render('reblogged_by');
+    http
+      .expectOne((r) => r.url.endsWith('/xrpc/app.bsky.feed.getRepostedBy'))
+      .flush({ repostedBy: [{ did: 'did:plc:b', handle: 'bo.bsky.social' }] });
+    f.detectChanges();
+
+    expect((f.nativeElement as HTMLElement).textContent).toContain('@bo.bsky.social');
+  });
+});

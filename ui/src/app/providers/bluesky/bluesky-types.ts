@@ -75,6 +75,7 @@ export interface BskyPostRecord {
    */
   langs?: string[];
   facets?: BskyFacet[];
+  labels?: { values?: { val: string }[] };
   reply?: {
     root: { uri: string; cid: string };
     parent: { uri: string; cid: string };
@@ -116,12 +117,37 @@ export interface BlobUploadResponse {
  */
 export type BskyPostEmbed =
   | BskyImagesEmbed
+  | BskyVideoEmbed
+  | BskyExternalEmbed
   | BskyRecordEmbed
   | {
       $type: 'app.bsky.embed.recordWithMedia';
       record: BskyRecordEmbed;
-      media: BskyImagesEmbed;
+      media: BskyImagesEmbed | BskyVideoEmbed;
     };
+
+/** The self-label values Bluesky's own app offers a writer for their media. */
+export type BskySelfLabelValue = 'sexual' | 'nudity' | 'porn' | 'graphic-media';
+
+/** `com.atproto.label.defs#selfLabels`: labels an author puts on their own record. */
+export interface BskySelfLabels {
+  $type: 'com.atproto.label.defs#selfLabels';
+  values: { val: BskySelfLabelValue }[];
+}
+
+/** The write-side link card: `app.bsky.embed.external`. */
+export interface BskyExternalEmbed {
+  $type: 'app.bsky.embed.external';
+  external: { uri: string; title: string; description: string; thumb?: BskyBlobRef };
+}
+
+/** The write-side video embed. One video per post, never alongside images. */
+export interface BskyVideoEmbed {
+  $type: 'app.bsky.embed.video';
+  video: BskyBlobRef;
+  alt?: string;
+  aspectRatio?: { width: number; height: number };
+}
 export interface BskyRecordEmbed {
   $type: 'app.bsky.embed.record';
   record: { uri: string; cid: string };
@@ -172,6 +198,11 @@ export interface BskyPostView {
   likeCount?: number;
   indexedAt: string;
   viewer?: { like?: string; repost?: string; bookmarked?: boolean };
+  /**
+   * Labels on the post: the author's self-labels and those from moderation
+   * services, as the AppView hydrates them. `neg` withdraws an earlier label.
+   */
+  labels?: { val: string; src?: string; neg?: boolean }[];
 }
 
 /** Private bookmark page; blocked/not-found items do not have a post record. */

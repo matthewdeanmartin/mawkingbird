@@ -1413,3 +1413,23 @@ Control (`connection-bluesky.html`: 9→15 shared, 2→4 native buttons, all
 shared widgets). No candidate files were added or removed;
 `11-reconciliation.json` is unchanged. The inventory contains 585 candidate
 files across 1,622 sources.
+
+## Bluesky video posts, 2026-11-02
+
+Added `providers/bluesky/bluesky-video.ts` and `bluesky-pds.ts` (services, no
+markup) and Bluesky video handling in the composer.
+No candidate findings changed; only source line numbers moved in
+`compose.ts`. `11-reconciliation.json` is unchanged. The inventory contains
+585 candidate files across 1,624 sources. No shared widgets changed.
+
+## Bluesky engagement lists, labels and link cards, 2026-11-02
+
+`status-card.html` gains one native button: the Bluesky likes count is now a
+`button[mbPostAction].count-link` opening the shared AccountListDialog, as
+Mastodon's does (the reposts count reuses the existing count-link template).
+`compose.html` gains one native select for the Bluesky content label, in the
+existing `.compose-selects` row beside the composer's eight other selects, so
+it keeps that row's current disposition. `bluesky-link-card.ts` is a service
+with no markup. No candidate files were added or removed;
+`11-reconciliation.json` is unchanged. The inventory contains 585 candidate
+files across 1,625 sources. No shared widgets changed.
