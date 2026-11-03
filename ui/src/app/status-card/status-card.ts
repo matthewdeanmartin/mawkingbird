@@ -34,6 +34,14 @@ import { Router, RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../account-hover-card/account-hover-card';
 import { PreviewCardComponent } from '../preview-card/preview-card';
 import { AccountListDialog, AccountListMode } from '../account-list-dialog/account-list-dialog';
+import { BlueskyPostControlsDialog } from '../post-permissions/bluesky-post-controls-dialog';
+import { QuotesDialog } from '../account-list-dialog/quotes-dialog';
+import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
+import { BlueskyFeeds } from '../providers/bluesky/bluesky-feeds';
+import {
+  BlueskyPostControls,
+  BskyPostControlsValue,
+} from '../providers/bluesky/bluesky-post-controls';
 import { SaveToLibrary } from '../pages/read/save-to-library/save-to-library';
 import { Api } from '../api';
 import { Auth } from '../auth';
@@ -202,6 +210,22 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.translateWithAi: Translate with AI
 // i18n statusCard.editHistory: Edit history
 // i18n statusCard.pin: Pin
+// i18n statusCard.feedMore: Show more like this
+// i18n statusCard.feedLess: Show less like this
+// i18n statusCard.feedMoreSent: ✓ The feed will show more like this
+// i18n statusCard.feedLessSent: ✓ The feed will show less like this
+// i18n statusCard.feedFeedbackFailed: Couldn't send that to the feed.
+// i18n statusCard.muteBskyThread: Mute notifications from this thread
+// i18n statusCard.unmuteBskyThread: Unmute notifications from this thread
+// i18n statusCard.quotes: quotes
+// i18n statusCard.quotesTitle: See who quoted this
+// i18n statusCard.repliesLimited: Reply (the author limits who can reply)
+// i18n statusCard.repliesClosed: The author limits who can reply to this post
+// i18n statusCard.bskyControls: Reply and quote controls…
+// i18n statusCard.hideReply: Hide this reply in my thread
+// i18n statusCard.showReply: Show this reply in my thread
+// i18n statusCard.bskyControlsFailed: Couldn't read or change this post's Bluesky controls.
+// i18n statusCard.pinFailed: Couldn't change the pinned post on Bluesky.
 // i18n statusCard.muteThread: Mute thread
 // i18n statusCard.whoCanQuote: Who can quote
 // i18n statusCard.edit: Edit
@@ -384,6 +408,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     TagMuteMenu,
     MediaDownloadMenuItem,
     AccountListDialog,
+    BlueskyPostControlsDialog,
+    QuotesDialog,
     HistoryDialog,
     FormsModule,
     Compose,
@@ -549,6 +575,63 @@ export class StatusCard {
   private anonymousPublic = inject(AnonymousPublicApi);
   private blueskyApi = inject(BlueskyApi);
   private blueskySession = inject(BlueskySession);
+  private blueskyControls = inject(BlueskyPostControls);
+  private blueskyModeration = inject(BlueskyModeration);
+  private blueskyFeeds = inject(BlueskyFeeds);
+
+  /** The open Bluesky controls dialog's starting value, or null when closed. */
+  protected readonly bskyControls = signal<BskyPostControlsValue | null>(null);
+  protected readonly bskyControlsBusy = signal(false);
+  protected readonly bskyControlsError = signal('');
+  /** Set after this session hid or showed the reply; Bluesky does not say which it is. */
+  protected readonly bskyReplyHidden = signal(false);
+  protected readonly quotesOpen = signal(false);
+
+  /** Set when the post came from a feed that takes "show more / less like this". */
+  protected get bskyFeedFeedback(): BskyRef['feedFeedback'] {
+    return this.blueskySession.linked() ? this.blueskyQuoteRef?.feedFeedback : undefined;
+  }
+
+  sendFeedFeedback(more: boolean, event: Event): void {
+    this.closeMenu(event);
+    const ref = this.blueskyQuoteRef;
+    if (!ref?.feedFeedback) return;
+    this.blueskyFeeds.sendFeedback(ref.feedFeedback, ref.uri, more).subscribe({
+      next: () => this.feedFeedbackSent.set(more ? 'more' : 'less'),
+      error: () => this.actionError.set(this.transloco.translate('statusCard.feedFeedbackFailed')),
+    });
+  }
+
+  protected get blueskySessionLinked(): boolean {
+    return this.blueskySession.linked();
+  }
+
+  async toggleBskyThreadMuted(event: Event): Promise<void> {
+    this.closeMenu(event);
+    const ref = this.blueskyQuoteRef;
+    if (!ref) return;
+    const muted = !this.bskyThreadMuted();
+    try {
+      await this.blueskyModeration.setThreadMuted(ref.replyRoot.uri, muted);
+      this.bskyThreadMuted.set(muted);
+    } catch {
+      this.actionError.set(this.transloco.translate('statusCard.bskyControlsFailed'));
+    }
+  }
+
+  /** Quoted at least once, on a network whose quotes this client can list. */
+  protected get showQuotesCount(): boolean {
+    return (
+      (this.display.quotes_count ?? 0) > 0 &&
+      ((!this.foreign && this.capabilities.canUseServerActions) ||
+        this.display.provider === 'bluesky')
+    );
+  }
+
+  openQuotes(event: Event): void {
+    event.stopPropagation();
+    this.quotesOpen.set(true);
+  }
   private raindrop = inject(RaindropSession);
   private server = inject(Server);
   private transloco = inject(TranslocoService);
@@ -789,6 +872,18 @@ export class StatusCard {
 
   /** CW revealed by the viewer; resets whenever a different status is bound. */
   protected cwOpen = linkedSignal({ source: this.status, computation: (): boolean | null => null });
+  /** Feedback this card already sent to its feed; resets with the status. */
+  protected feedFeedbackSent = linkedSignal({
+    source: this.status,
+    computation: (): 'more' | 'less' | null => null,
+  });
+
+  /** Bluesky's thread mute, as the AppView reported it, until toggled here. */
+  protected readonly bskyThreadMuted = linkedSignal({
+    source: this.status,
+    computation: (status) =>
+      !!((status.reblog ?? status).providerRef as BskyRef | undefined)?.threadMuted,
+  });
 
   /** The CW label to show (a translation may carry its own spoiler text). */
   protected spoilerText = computed(
@@ -954,9 +1049,19 @@ export class StatusCard {
   protected lightboxIndex = signal<number | null>(null);
 
   /** Whether the logged-in user owns the displayed status (can edit/delete). */
-  protected isOwn = computed(
-    () => !this.capabilities.active && this.display.account.id === this.auth.account()?.id,
-  );
+  /**
+   * Whether the viewer wrote this post. A Bluesky post is theirs when the
+   * linked Bluesky account wrote it, whatever the app is signed in as: a
+   * Mastodon or Anonymous account with a Bluesky connector owns its Bluesky
+   * posts too, and needs delete, pin and reply controls on them.
+   */
+  protected isOwn = computed(() => {
+    if (this.display.provider === 'bluesky') {
+      const did = this.blueskySession.session()?.did;
+      return !!did && this.display.account.id === `bsky:${did}`;
+    }
+    return !this.capabilities.active && this.display.account.id === this.auth.account()?.id;
+  });
 
   /** True when this status quotes one of the viewer's own statuses (revocable). */
   protected canRevokeQuote = computed(() => {
@@ -1811,6 +1916,66 @@ export class StatusCard {
     return this.caps.reply || this.isLocalPractice;
   }
 
+  /** The author of this Bluesky post limits replies and the viewer is not allowed. */
+  protected get bskyReplyDisabled(): boolean {
+    return !!this.blueskyQuoteRef?.replyDisabled;
+  }
+
+  protected get replyLabel(): string {
+    return this.bskyReplyDisabled
+      ? 'statusCard.repliesClosed'
+      : this.blueskyQuoteRef?.repliesLimited
+        ? 'statusCard.repliesLimited'
+        : 'statusCard.reply';
+  }
+
+  /** A reply by someone else in a Bluesky thread the signed-in account started. */
+  protected get canHideBskyReply(): boolean {
+    const ref = this.blueskyQuoteRef;
+    const did = this.blueskySession.session()?.did;
+    return !!ref?.replyParentUri && !!did && ref.replyRoot.uri.startsWith(`at://${did}/`);
+  }
+
+  async openBskyControls(event: Event): Promise<void> {
+    this.closeMenu(event);
+    const ref = this.blueskyQuoteRef;
+    if (!ref) return;
+    this.bskyControlsError.set('');
+    try {
+      this.bskyControls.set(await this.blueskyControls.read(ref.uri));
+    } catch {
+      this.actionError.set(this.transloco.translate('statusCard.bskyControlsFailed'));
+    }
+  }
+
+  async saveBskyControls(value: BskyPostControlsValue): Promise<void> {
+    const ref = this.blueskyQuoteRef;
+    if (!ref || this.bskyControlsBusy()) return;
+    this.bskyControlsBusy.set(true);
+    this.bskyControlsError.set('');
+    try {
+      await this.blueskyControls.write(ref.uri, value);
+      this.bskyControls.set(null);
+    } catch {
+      this.bskyControlsError.set(this.transloco.translate('statusCard.bskyControlsFailed'));
+    } finally {
+      this.bskyControlsBusy.set(false);
+    }
+  }
+
+  async toggleBskyReplyHidden(event: Event): Promise<void> {
+    this.closeMenu(event);
+    const ref = this.blueskyQuoteRef;
+    if (!ref) return;
+    const hidden = !this.bskyReplyHidden();
+    try {
+      await this.blueskyControls.setReplyHidden(ref.replyRoot.uri, ref.uri, hidden);
+      this.bskyReplyHidden.set(hidden);
+    } catch {
+      this.actionError.set(this.transloco.translate('statusCard.bskyControlsFailed'));
+    }
+  }
+
   /** Public Mastodon edit history remains readable without a user token. */
   protected get canViewPublicHistory(): boolean {
     const ref = this.anonymousRef;
@@ -1899,7 +2064,7 @@ export class StatusCard {
 
   protected get canQuote(): boolean {
     return this.display.provider === 'bluesky'
-      ? this.blueskySession.linked()
+      ? this.blueskySession.linked() && !this.blueskyQuoteRef?.quoteDisabled
       : !this.foreign && this.capabilities.canCompose;
   }
   protected get blueskyQuoteRef(): BskyRef | undefined {
@@ -2264,6 +2429,16 @@ export class StatusCard {
   togglePin(event: Event): void {
     event.stopPropagation();
     const s = this.display;
+    const ref = this.blueskyQuoteRef;
+    if (ref) {
+      // Bluesky pins by naming the post on the profile record; one pin at a time.
+      const pinned = !s.pinned;
+      this.blueskyApi.setPinnedPost(pinned ? { uri: ref.uri, cid: ref.cid } : null).subscribe({
+        next: () => this.changed.emit({ ...s, pinned }),
+        error: () => this.actionError.set(this.transloco.translate('statusCard.pinFailed')),
+      });
+      return;
+    }
     const call = s.pinned ? this.api.unpin(s.id) : this.api.pin(s.id);
     call.subscribe((updated) => this.changed.emit(updated));
   }

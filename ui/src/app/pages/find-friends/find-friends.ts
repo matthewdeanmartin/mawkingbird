@@ -1,3 +1,4 @@
+import { MbContentLink } from '../../design-system/metadata/metadata';
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -5,6 +6,8 @@ import { DISCOVERY_WAYS } from '../../discovery-ways';
 import { contactPickerAvailable } from '../settings/import-export/contact-picker';
 
 /** Discovery starts with curated groups; search and import tools are opt-in. */
+// i18n pages.findFriends.bskyPacks: On Bluesky too?
+// i18n pages.findFriends.bskyPacksLink: Open Bluesky starter packs
 // i18n pages.findFriends.basic: Basic
 // i18n pages.findFriends.sections: Ways to find people
 // i18n pages.findFriends.heading: Find Friends
@@ -32,7 +35,7 @@ import { contactPickerAvailable } from '../settings/import-export/contact-picker
 // i18n pages.findFriends.invite.desc: Prewritten posts for inviting the people you already know to join you.
 @Component({
   selector: 'app-find-friends',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbContentLink, RouterLink, TranslocoPipe],
   templateUrl: './find-friends.html',
   styleUrl: './find-friends.css',
 })

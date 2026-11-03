@@ -62,4 +62,8 @@ Notifications offers only the networks you have signed in to. With both Mastodon
 
 The friends/followers filters and **Accounts New to Me** are available in the Mastodon-only view. Mastodon can receive live notifications when auto-refresh is enabled; use **Refresh** to check Bluesky. If one network fails, the other network's notifications remain visible alongside an error message.
 
+## Teach a Bluesky feed
+
+Some Bluesky feeds take feedback. On a post from one of those feeds, open ••• and choose **Show more like this** or **Show less like this**. The feed's maker decides what it does with it.
+
 Next: [Find people to follow](../finding-people/find-people.md).

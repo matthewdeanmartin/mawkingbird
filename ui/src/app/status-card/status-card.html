@@ -630,9 +630,10 @@
             class="action"
             [class.on]="replying()"
             [pressed]="replying()"
+            [disabled]="bskyReplyDisabled"
             (click)="toggleReply($event)"
-            [title]="'statusCard.reply' | transloco"
-            [attr.aria-label]="'statusCard.reply' | transloco"
+            [title]="replyLabel | transloco"
+            [attr.aria-label]="replyLabel | transloco"
           >
             <span aria-hidden="true">💬</span>
             <span
@@ -849,6 +850,10 @@
           @if (!foreign || readOnlyStats || auth.isAnonymous) {
             <ng-container [ngTemplateOutlet]="boostCount" />
           }
+          <ng-container
+            [ngTemplateOutlet]="quotesCount"
+            [ngTemplateOutletContext]="{ icon: true }"
+          />
         } @else if (auth.isAnonymous && display.provider !== 'bluesky') {
           @if (display.url) {
             <button
@@ -909,6 +914,10 @@
           >
             <span aria-hidden="true">❝</span>
           </button>
+          <ng-container
+            [ngTemplateOutlet]="quotesCount"
+            [ngTemplateOutletContext]="{ icon: false }"
+          />
         } @else if (!caps.reblog && readOnlyStats) {
           <!-- Read-only providers (Twitter) report real counts with no button to
                attach them to. When `caps.reblog` already rendered a button above,
@@ -1246,19 +1255,19 @@
               </button>
             }
             @if (isOwn()) {
+              <button
+                type="button"
+                mbPostAction
+                class="action"
+                [class.on]="display.pinned"
+                [pressed]="display.pinned"
+                (click)="togglePin($event)"
+                [title]="'statusCard.pin' | transloco"
+                [attr.aria-label]="'statusCard.pin' | transloco"
+              >
+                <span aria-hidden="true">📌</span>
+              </button>
               @if (display.provider !== 'bluesky') {
-                <button
-                  type="button"
-                  mbPostAction
-                  class="action"
-                  [class.on]="display.pinned"
-                  [pressed]="display.pinned"
-                  (click)="togglePin($event)"
-                  [title]="'statusCard.pin' | transloco"
-                  [attr.aria-label]="'statusCard.pin' | transloco"
-                >
-                  <span aria-hidden="true">📌</span>
-                </button>
                 <button
                   type="button"
                   mbPostAction
@@ -1390,6 +1399,18 @@
                       <button type="button" mbMenuItem (click)="permissionsOpen.set(true)">
                         {{ 'statusCard.permissions' | transloco }}
                       </button>
+                    } @else {
+                      <button type="button" mbMenuItem (click)="openBskyControls($event)">
+                        {{ 'statusCard.bskyControls' | transloco }}
+                      </button>
+                      <button type="button" mbMenuItem (click)="toggleBskyThreadMuted($event)">
+                        {{
+                          (bskyThreadMuted()
+                            ? 'statusCard.unmuteBskyThread'
+                            : 'statusCard.muteBskyThread'
+                          ) | transloco
+                        }}
+                      </button>
                     }
                     <button type="button" mbMenuItem (click)="mutePost($event)">
                       {{ 'statusCard.muteThisPost' | transloco }}
@@ -1441,6 +1462,53 @@
                   •••
                 </summary>
                 <div class="danger-menu-panel">
+                  @if (blueskyQuoteRef && blueskySessionLinked) {
+                    <button type="button" mbMenuItem (click)="toggleBskyThreadMuted($event)">
+                      {{
+                        (bskyThreadMuted()
+                          ? 'statusCard.unmuteBskyThread'
+                          : 'statusCard.muteBskyThread'
+                        ) | transloco
+                      }}
+                    </button>
+                  }
+                  @if (bskyFeedFeedback) {
+                    <!-- Only for a feed that asked for it (acceptsInteractions). -->
+                    <button
+                      type="button"
+                      mbMenuItem
+                      [disabled]="!!feedFeedbackSent()"
+                      (click)="sendFeedFeedback(true, $event)"
+                    >
+                      {{
+                        (feedFeedbackSent() === 'more'
+                          ? 'statusCard.feedMoreSent'
+                          : 'statusCard.feedMore'
+                        ) | transloco
+                      }}
+                    </button>
+                    <button
+                      type="button"
+                      mbMenuItem
+                      [disabled]="!!feedFeedbackSent()"
+                      (click)="sendFeedFeedback(false, $event)"
+                    >
+                      {{
+                        (feedFeedbackSent() === 'less'
+                          ? 'statusCard.feedLessSent'
+                          : 'statusCard.feedLess'
+                        ) | transloco
+                      }}
+                    </button>
+                  }
+                  @if (canHideBskyReply) {
+                    <button type="button" mbMenuItem (click)="toggleBskyReplyHidden($event)">
+                      {{
+                        (bskyReplyHidden() ? 'statusCard.showReply' : 'statusCard.hideReply')
+                          | transloco
+                      }}
+                    </button>
+                  }
                   @if (radioPost(); as postUrl) {
                     <a
                       mbMenuItem
@@ -1663,6 +1731,39 @@
             </details>
           }
         }
+        <ng-template #quotesCount let-icon="icon">
+          @if (showQuotesCount) {
+            <!-- After ❝: the toggle on Mastodon's own row, or its own ❝ where
+                 Quote lives in the share menu (Bluesky). -->
+            <button
+              type="button"
+              mbPostAction
+              class="action count-link"
+              (click)="openQuotes($event)"
+              [title]="'statusCard.quotesTitle' | transloco"
+              [attr.aria-label]="
+                'statusCard.countLabel'
+                  | transloco
+                    : { count: display.quotes_count, label: ('statusCard.quotes' | transloco) }
+              "
+            >
+              @if (icon) {
+                <span aria-hidden="true">❝</span>
+              }
+              <span
+                mbActionCount
+                [count]="display.quotes_count ?? 0"
+                [label]="'statusCard.quotes' | transloco"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco
+                      : { count: display.quotes_count, label: ('statusCard.quotes' | transloco) }
+                }}</span
+              >
+            </button>
+          }
+        </ng-template>
         <ng-template #boostCount>
           @if ((capabilities.canUseServerActions && !foreign) || display.provider === 'bluesky') {
             <button
@@ -1793,6 +1894,25 @@
       [statusRef]="display.provider === 'bluesky' ? $any(display.providerRef) : null"
       (closed)="showReport.set(false)"
       (submitted)="onReported()"
+    />
+  }
+
+  @if (quotesOpen()) {
+    <app-quotes-dialog
+      [statusId]="display.id"
+      [blueskyUri]="blueskyQuoteRef?.uri ?? null"
+      [canDetach]="isOwn() && display.provider === 'bluesky'"
+      (closed)="quotesOpen.set(false)"
+    />
+  }
+
+  @if (bskyControls(); as value) {
+    <app-bluesky-post-controls-dialog
+      [initial]="value"
+      [busy]="bskyControlsBusy()"
+      [error]="bskyControlsError()"
+      (closed)="bskyControls.set(null)"
+      (saved)="saveBskyControls($event)"
     />
   }
 

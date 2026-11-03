@@ -14,6 +14,7 @@ import { Server } from '../server';
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
 import { BlueskyVideo, BlueskyVideoError } from '../providers/bluesky/bluesky-video';
 import { BlueskyLinkCard } from '../providers/bluesky/bluesky-link-card';
+import { BlueskyPostControls } from '../providers/bluesky/bluesky-post-controls';
 import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
 import { ShortenerSettings } from '../providers/shortener/shortener-settings';
 import { Compose, PostTarget, describePostFailure } from './compose';
@@ -1925,6 +1926,55 @@ describe('Compose', () => {
         bskyLabelOffered: Signal<boolean>;
       };
     }
+
+    it('writes reply and quote limits beside a new thread once it is posted', async () => {
+      linkBsky();
+      const write = vi.fn().mockResolvedValue(undefined);
+      Object.assign(TestBed.inject(BlueskyPostControls), { write });
+      const f = setUp();
+      internals(f).target.set('bsky');
+      internals(f).text.set('Just for my followers to answer');
+      const controls = f.componentInstance as unknown as {
+        bskyControlsOffered: Signal<boolean>;
+        bskyPostControls: WritableSignal<unknown>;
+      };
+      expect(controls.bskyControlsOffered()).toBe(true);
+      controls.bskyPostControls.set({ replies: ['follower'], quotes: false });
+
+      internals(f).submit();
+      await new Promise((r) => setTimeout(r, 0));
+      httpMock
+        .expectOne(CREATE_RECORD)
+        .flush({ uri: 'at://did:plc:me/app.bsky.feed.post/t', cid: 't-cid' });
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(write).toHaveBeenCalledWith('at://did:plc:me/app.bsky.feed.post/t', {
+        replies: ['follower'],
+        quotes: false,
+      });
+    });
+
+    it('does not offer thread limits on a reply, which Bluesky only allows on a first post', () => {
+      linkBsky();
+      const f = setUp();
+      f.componentRef.setInput('initialTarget', 'bsky');
+      f.componentRef.setInput('blueskyReplyTo', {
+        uri: 'at://did:plc:peer/app.bsky.feed.post/p',
+        cid: 'p',
+        replyRoot: { uri: 'at://did:plc:peer/app.bsky.feed.post/p', cid: 'p' },
+        likeUri: null,
+        repostUri: null,
+        replyParentUri: null,
+        externalUri: null,
+      });
+      f.detectChanges();
+
+      expect(
+        (
+          f.componentInstance as unknown as { bskyControlsOffered: Signal<boolean> }
+        ).bskyControlsOffered(),
+      ).toBe(false);
+    });
 
     it('sends the post language as Bluesky langs', async () => {
       linkBsky();

@@ -1,3 +1,4 @@
+import { MbContentLink } from '../../design-system/metadata/metadata';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, inject, signal } from '@angular/core';
 import { StarterPackTextPipe } from '../../starter-pack-text';
@@ -8,6 +9,8 @@ import { SHIPPED_STARTER_KITS } from '../../starter-kits';
 import { KnownLanguages } from '../../trend-language-filter';
 import { UiLocale } from '../../i18n/locale';
 
+// i18n bundledStarterKits.bskyPacks: Looking for packs people made on Bluesky?
+// i18n bundledStarterKits.bskyPacksLink: Bluesky starter packs
 // i18n bundledStarterKits.languages: Pack languages
 // i18n bundledStarterKits.myLanguages: My languages
 // i18n bundledStarterKits.allLanguages: All languages
@@ -72,7 +75,7 @@ interface DiscoverySet {
  */
 @Component({
   selector: 'app-bundled-starter-kits',
-  imports: [RouterLink, StarterPackTextPipe, TranslocoPipe],
+  imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe],
   templateUrl: './bundled-starter-kits.html',
   styleUrl: './bundled-starter-kits.css',
 })

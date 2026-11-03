@@ -1433,3 +1433,40 @@ it keeps that row's current disposition. `bluesky-link-card.ts` is a service
 with no markup. No candidate files were added or removed;
 `11-reconciliation.json` is unchanged. The inventory contains 585 candidate
 files across 1,625 sources. No shared widgets changed.
+
+## Bluesky author controls and quotes, 2026-11-02
+
+Two new candidate files, both composed of shared widgets and reconciled as
+adopted scope: `quotes-dialog.ts` (Dialog, ContentState, Button; rows keep
+native thread routes) and `bluesky-post-controls-dialog.ts` (Dialog,
+Field/Control, Checkbox, Button, Help, Notice, like the Mastodon permissions
+dialog). `status-card.html` gains shared controls only: the quote count as a
+`button[mbPostAction].count-link`, the Bluesky controls and Hide reply as
+`mbMenuItem`s, and the existing 📌 post action now shown for Bluesky.
+`compose.html` gains one `mbPostAction` for the Bluesky controls. The inventory
+contains 587 candidate files across 1,628 sources. No shared widgets changed.
+
+## Bluesky moderation settings, 2026-11-03
+
+New page `settings-bluesky-moderation.html`, reconciled as adopted scope: it
+composes PageHeader, Section, Field/Control (inputs and three selects),
+Checkbox, Button, Notice and ContentState, with layout-only page CSS.
+`status-card.html` gains two `mbMenuItem`s (mute or unmute a Bluesky thread's
+notifications, in the owner and reader menus). Services and the moderation
+state store have no markup. The inventory contains 588 candidate files across
+1,633 sources. No shared widgets changed.
+
+## Bluesky starter packs and discovery, 2026-11-03
+
+Four new candidate files, all reconciled as adopted scope and composed of
+shared widgets: the starter packs hub and pack page (PageHeader, Section,
+Field/Control, Button, Notice, ContentState, ContentLink), the profile
+discovery block (Section, ContentLink) and the Bluesky people list (a shared
+Button per row with `aria-pressed`). `status-card.html` gains two `mbMenuItem`s
+for "show more / less like this" on posts from feeds that accept feedback. The
+inventory contains 592 candidate files across 1,642 sources. No shared widgets
+changed.
+`bundled-starter-kits.html` and `find-friends.html` each gain one shared
+`mbContentLink` pointing to Bluesky starter packs; their dispositions are
+unchanged. The discovery registry (`discovery-ways.ts`) is untouched, so Home's
+invitation-card rotation does not change.

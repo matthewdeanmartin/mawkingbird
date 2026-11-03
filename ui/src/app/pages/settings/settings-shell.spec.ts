@@ -100,6 +100,9 @@ describe('SettingsShell', () => {
         // Trusted accounts and the CW/sensitive switches are client-side, so they
         // work anonymously even though 'Muted & Blocked' beside them does not.
         'Trust: CW/Sensitive',
+        // A Bluesky connector works under Anonymous, and its moderation settings
+        // live on Bluesky, not on a Mastodon server.
+        'Bluesky moderation',
         'Notifications',
         // A feed URL carries no credential, so a reading list works with no
         // server identity at all — the most anonymous-capable page there is.

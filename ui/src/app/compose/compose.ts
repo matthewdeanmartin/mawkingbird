@@ -62,6 +62,11 @@ import {
   isBlueskyVideo,
 } from '../providers/bluesky/bluesky-video';
 import { BlueskyLinkCard, firstLink } from '../providers/bluesky/bluesky-link-card';
+import {
+  BlueskyPostControls,
+  BskyPostControlsValue,
+} from '../providers/bluesky/bluesky-post-controls';
+import { BlueskyPostControlsDialog } from '../post-permissions/bluesky-post-controls-dialog';
 import { prepareImageForBluesky } from '../providers/bluesky/bluesky-image';
 import { PasteHistory } from '../providers/paste/paste-history';
 import { PasteExpiry } from '../providers/paste/paste-provider';
@@ -200,6 +205,9 @@ interface PostingOperation {
     /** The post language as Bluesky `langs`, fixed when posting starts. */
     langs?: string[];
     label?: BskySelfLabelValue;
+    /** Reply and quote limits for a new thread, written once its first post exists. */
+    controls?: BskyPostControlsValue;
+    controlsFailed?: boolean;
     complete: boolean;
     inFlight: boolean;
     failedAt: number | null;
@@ -367,6 +375,12 @@ function isBlueskyAttachable(file: File): boolean {
  */
 const BSKY_MAX_IMAGES = 4;
 
+/** Anyone may reply and quote: Bluesky's default, which needs no gate records. */
+const DEFAULT_BSKY_CONTROLS: BskyPostControlsValue = { replies: 'everyone', quotes: true };
+
+const BSKY_CONTROLS_FAILED =
+  "Posted to Bluesky, but couldn't apply who can reply and quote. Set them from the post's ••• menu.";
+
 /**
  * A stand-in attachment for a file held locally, not uploaded anywhere yet.
  *
@@ -409,6 +423,7 @@ function dragHasFiles(event: DragEvent): boolean {
   return Array.from(event.dataTransfer?.types ?? []).includes('Files');
 }
 
+// i18n compose.bskyControls: Bluesky: who can reply and quote
 // i18n compose.bskyLabel.title: Bluesky content label
 // i18n compose.bskyLabel.none: Bluesky: no label
 // i18n compose.bskyLabel.sexual: Bluesky: suggestive
@@ -507,6 +522,7 @@ function dragHasFiles(event: DragEvent): boolean {
 @Component({
   selector: 'app-compose',
   imports: [
+    BlueskyPostControlsDialog,
     PostPermissions,
     MbHelp,
     MbButton,
@@ -562,6 +578,7 @@ export class Compose implements OnDestroy {
   private bskyApi = inject(BlueskyApi);
   private bskyVideo = inject(BlueskyVideo);
   private bskyLinkCard = inject(BlueskyLinkCard);
+  private bskyControls = inject(BlueskyPostControls);
   protected bskySession = inject(BlueskySession);
   private drafts = inject(Drafts).forCurrentAccount();
   private customEmojis = inject(CustomEmojis);
@@ -1051,6 +1068,21 @@ export class Compose implements OnDestroy {
   protected readonly bskyLabelOffered = computed(
     () => this.sensitive() && this.targetIncludesBsky() && this.media().length > 0,
   );
+
+  /**
+   * Who may reply to and quote a new Bluesky thread. Bluesky only accepts reply
+   * limits on a thread's first post, so these are offered for new posts, not
+   * replies, and written beside the post once it exists.
+   */
+  protected readonly bskyPostControls = signal<BskyPostControlsValue>(DEFAULT_BSKY_CONTROLS);
+  protected readonly bskyControlsOpen = signal(false);
+  protected readonly bskyControlsOffered = computed(
+    () => this.targetIncludesBsky() && !this.blueskyReplyRef(),
+  );
+  protected readonly bskyControlsSet = computed(() => {
+    const value = this.bskyPostControls();
+    return value.replies !== 'everyone' || !value.quotes;
+  });
 
   // Media.
   protected media = signal<PendingMedia[]>([]);
@@ -2590,6 +2622,10 @@ export class Compose implements OnDestroy {
         quote: this.blueskyQuoteRef(),
         langs: this.postLanguage() ? [this.postLanguage()] : undefined,
         label: this.bskyLabelOffered() ? (this.bskyLabel() ?? undefined) : undefined,
+        controls:
+          this.bskyControlsOffered() && this.bskyControlsSet()
+            ? this.bskyPostControls()
+            : undefined,
         complete: false,
         inFlight: false,
         failedAt: null,
@@ -3076,15 +3112,31 @@ export class Compose implements OnDestroy {
           const ref = { uri: created.uri, cid: created.cid };
           operation.bsky.parts.push({ ref, facets: sentFacets });
           operation.bsky.failedAt = null;
-          const last = index === operation.parts.length - 1;
-          if (!last) {
-            this.postBskyPart(operation);
+          const proceed = () => {
+            const last = index === operation.parts.length - 1;
+            if (!last) {
+              this.postBskyPart(operation);
+              return;
+            }
+            operation.bsky.inFlight = false;
+            operation.bsky.complete = true;
+            this.showPostingFailure(operation);
+            this.settlePosting(operation);
+            if (operation.bsky.controlsFailed) {
+              this.crossPostError.set(BSKY_CONTROLS_FAILED);
+            }
+          };
+          const controls = index === 0 ? operation.bsky.controls : undefined;
+          if (!controls) {
+            proceed();
             return;
           }
-          operation.bsky.inFlight = false;
-          operation.bsky.complete = true;
-          this.showPostingFailure(operation);
-          this.settlePosting(operation);
+          // The post exists now; its limits live beside it. A failure leaves
+          // it open to replies and quotes and says so, rather than failing it.
+          void this.bskyControls.write(created.uri, controls).then(proceed, () => {
+            operation.bsky.controlsFailed = true;
+            proceed();
+          });
         },
         error: () => {
           operation.bsky.inFlight = false;
@@ -3184,6 +3236,7 @@ export class Compose implements OnDestroy {
     this.spoilerText.set('');
     this.sensitive.set(false);
     this.bskyLabel.set(null);
+    this.bskyPostControls.set(DEFAULT_BSKY_CONTROLS);
     // Free the object URLs before dropping the list, or the files stay pinned
     // in memory for the life of the tab.
     for (const item of this.media()) {

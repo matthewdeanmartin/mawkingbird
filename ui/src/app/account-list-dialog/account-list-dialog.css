@@ -30,3 +30,21 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Quotes: the row keeps its link, with Detach beside it for the author's own post. */
+.quote-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quote-row .account-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.quote-row .acct {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

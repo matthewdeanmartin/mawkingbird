@@ -1,6 +1,6 @@
 # Bluesky parity roadmap, November 2026
 
-Status: sprints 1 and 2 code complete, awaiting live trials · 2026-11-02.
+Status: sprints 1–5 code complete, awaiting live trials · 2026-11-03. Manual test plans: `test_plans/`.
 
 Mawkingbird is a client first; Bluesky is one of its two networks. Today a
 Bluesky account can read, reply, like, repost, quote, bookmark, follow, block,
@@ -134,16 +134,108 @@ work; following someone offers related accounts.
 
 ## Sprint 6: chat
 
-Goal: the parts of Bluesky chat Mawkingbird does not do yet.
+Goal: the parts of Bluesky chat Mawkingbird does not do yet. Hand-off notes
+below are for whoever picks this up; check them against the code first.
 
-1. **Reactions** (`chat.bsky.convo.addReaction` / `removeReaction`).
-2. **Message requests**: accept (`acceptConvo`) and see requests apart from
-   accepted chats.
-3. **Leave and mute a conversation** (`leaveConvo`, `muteConvo`).
-4. **Delete a message for yourself** (`deleteMessageForSelf`).
-5. **Chat settings**: who can message you (`chat.bsky.actor.declaration`).
+### Where chat lives today
 
-Acceptance: each action round-trips with bsky.app.
+- `providers/bluesky/bluesky-chat-api.ts`: `getConvoForMembers`,
+  `listConvos`, `getMessages`, `sendMessage`, `updateRead`, and `getLog`
+  (defined, **never called**). Every call goes to the account's real PDS host
+  (`BlueskyPds.resolve()`, shared since sprint 1) with
+  `atproto-proxy: did:web:api.bsky.chat#bsky_chat`, through `BlueskyApi.get` /
+  `request`, so OAuth and app-password sessions both work. Add new calls as
+  `chatGet` / `chatPost` like the existing ones.
+- `pages/conversations/conversations.ts` (~1,350 lines) and `.html` (~600):
+  one page for Mastodon DMs and Bluesky chats. Bluesky state is
+  `bskyConvos`, `bskyMessages`, `bskyLoadError`, `bskySendError`,
+  `bskyScopeError` (app password without DM access). It is not i18n-exempt:
+  declare `// i18n` keys there.
+- Types in `bluesky-types.ts`: `BskyConvoView` (`id`, `rev`, `members`,
+  `lastMessage`, `muted`, `unreadCount`) and `BskyMessageView` (`id`, `rev`,
+  `text`, `facets`, `sender`, `sentAt`). Neither models `status` (request or
+  accepted) or `reactions` yet.
+- Specs: `conversations.spec.ts`, `conversations-networks.spec.ts`,
+  `bluesky-chat-api.spec.ts`.
+
+### Work items
+
+1. **Model the missing fields.** `BskyConvoView.status?: 'request' | 'accepted'`
+   and `BskyMessageView.reactions?: { value: string; sender: { did: string };
+   createdAt }[]`. Both are optional: older servers omit them, and a missing
+   status means accepted.
+2. **Message requests.** `listConvos` takes `status=request` or
+   `status=accepted` (and `readState=unread`). Show requests as their own
+   filter or section with a count, not mixed into chats. Actions:
+   `chat.bsky.convo.acceptConvo {convoId}` (moves it to accepted; replying
+   also accepts it) and leave (item 4) as "decline". Don't call `updateRead`
+   on a request until it is opened.
+3. **Reactions.** `chat.bsky.convo.addReaction {convoId, messageId, value}` and
+   `removeReaction` with the same body. `value` is one emoji grapheme. Bluesky
+   caps reactions per message per user (the server answers
+   `ReactionLimitReached`; show it). Render reactions under each message as
+   chips (emoji + count, pressed when yours), and offer a small picker. Reuse
+   the composer's `app-emoji-picker` rather than a new one. Use design-system
+   parts (Button `size="small"` or the post-action pattern) so it passes the
+   inventory review.
+4. **Leave and mute.** `chat.bsky.convo.leaveConvo {convoId}` removes it from
+   your list (it returns if the other person writes again);
+   `muteConvo` / `unmuteConvo {convoId}` silence notifications and are shown
+   by `convo.muted`. Put both in a per-conversation menu (`mbMenuItem`), with
+   leave confirmed through the existing confirm dialog.
+5. **Delete for me.** `chat.bsky.convo.deleteMessageForSelf {convoId, messageId}`
+   hides your copy only; the other side keeps it. Say so in the menu label
+   ("Delete for me") and confirm it. The view then gets a
+   `#deletedMessageView`; render it as "Message deleted".
+6. **Who can message you.** The `chat.bsky.actor.declaration` record
+   (`rkey: self`, collection `chat.bsky.actor.declaration`,
+   `allowIncoming: 'all' | 'following' | 'none'`). Read with
+   `com.atproto.repo.getRecord` (absent means `following`, Bluesky's default),
+   write with `putRecord` on the account's own repo (not proxied). Put it on
+   the Settings → Bluesky moderation page (sprint 4) as a fourth section, or in
+   Settings → Privacy if that reads better; one select, saved on change.
+7. **Optional: live updates.** `getLog` with a cursor returns `#logCreateMessage`,
+   `#logAddReaction`, `#logAcceptConvo` etc. since the cursor. Polling it every
+   ~10 s while the page is visible would replace re-listing. Only if time
+   allows; correctness of 1–6 comes first.
+
+### Pitfalls
+
+- **Scopes.** OAuth already asks for `transition:chat.bsky`. App-password
+  links need the "allow direct messages" option or every call 401s with a
+  token-scope error; `isChatScopeError` and the relink hint already cover it.
+- **Entryway.** Proxied chat calls 501 on `bsky.social`; always use the
+  resolved PDS (already handled by `chatGet` / `chatPost`).
+- **Anonymous** sessions have no chat; keep the existing gate.
+- **No proxy for media.** Chat has no media upload here; don't add one through
+  the Plus proxy.
+- **Bundle.** The conversations page is lazy. Keep new chat code out of root
+  imports; check `build:mockingbird` (initial is ~902 kB against a 900 kB
+  warning budget and 1 MB error budget; don't raise budgets).
+
+### Tests to write
+
+- `bluesky-chat-api.spec.ts`: each new call's NSID, body, PDS host and proxy
+  header; `listConvos` status filter.
+- `conversations-networks.spec.ts`: requests listed apart with a count; accept
+  moves a request; reactions render, toggle, and show the limit error; leave
+  and delete-for-me confirm first; muted state toggles.
+- Settings: the declaration select reads absent as "people I follow" and writes
+  `putRecord` to the right collection and rkey.
+- Then the usual gates (`make test`, inventory review, `build:mockingbird`,
+  help site if a guide changes) and a manual plan at
+  `test_plans/bsky-parity-sprint-6-chat.md` (two accounts: A and B).
+
+### Acceptance
+
+Each action round-trips with bsky.app: a request from a stranger appears under
+requests and accepting it moves it; a reaction made here shows on bsky.app and
+the other way round; leaving and muting match; delete-for-me hides only your
+copy; the "who can message you" setting matches bsky.app's.
+
+### Out of scope
+
+Group chats and chat media are not in Bluesky's public chat API.
 
 ## Not possible on Bluesky
 
@@ -237,3 +329,138 @@ No API exists, so these stay Mastodon-only or out of scope:
 - **Live trial:** post in German and check `langs` on bsky.app; post a link
   and check the card; post an image with a label and check it is blurred on
   bsky.app; open the like and repost lists on a busy post.
+
+### Sprint 3 progress (2026-11-02): code complete, needs a live trial
+
+- **Who can reply and quote** (`providers/bluesky/bluesky-post-controls.ts`).
+  Threadgate and postgate records at the post's rkey. Every write reads first
+  and keeps list rules, hidden replies and detached quotes made elsewhere; a
+  gate that would only restate the defaults is deleted instead of written.
+  A new dialog (`post-permissions/bluesky-post-controls-dialog.ts`) offers
+  everyone, nobody, or some people (mentioned, followers, following) and
+  quotes on or off. It opens from 🛡️ in the composer for a new Bluesky thread
+  (Bluesky only accepts reply limits on a first post), written right after
+  the post exists; a failure keeps the post and says to use the menu. On your
+  own posts it opens from ••• → **Reply and quote controls…**.
+- **Reading side.** `viewer.replyDisabled` disables Reply with "The author
+  limits who can reply to this post"; a limited thread you can reply to says
+  so in the button's label. `viewer.embeddingDisabled` takes Quote out of the
+  share menu.
+- **Hide replies.** In your own Bluesky thread, a reply's ••• menu offers
+  **Hide this reply in my thread** (threadgate `hiddenReplies`).
+- **Pinned post.** 📌 now shows on your own Bluesky posts and sets
+  `pinnedPost` on the profile record (one pin; read-modify-write guarded by
+  CID). The profile's first page asks for `includePins`, marks the
+  `#reasonPin` item pinned and drops its later duplicate.
+- **Ownership fix.** `isOwn()` compared a post's author with the signed-in app
+  account, so a Mastodon or Anonymous account with a Bluesky connector never
+  owned its own Bluesky posts (no delete, pin or controls). A Bluesky post is
+  now owned when the linked Bluesky account wrote it.
+- **Quotes.** `quotes_count` (Mastodon 4.5+, Bluesky `quoteCount`) shows as a
+  count after ❝ when a post was quoted, opening a quotes dialog
+  (`/api/v1/statuses/:id/quotes` or `app.bsky.feed.getQuotes`, 50 per load).
+  On your own Bluesky post each quote can be **Detach**ed (postgate
+  `detachedEmbeddingUris`) and reattached.
+- **Tests.** `bluesky-post-controls.spec.ts` (7), `bluesky-post-controls-dialog.spec.ts`
+  (3), `quotes-dialog.spec.ts` (3), status card (+5), composer (+2), adapter
+  (+3). One existing assertion changed on purpose: an own Bluesky post now
+  shows 📌. `make test` 9,124/9,124, 0 missing; build initial 901.75 kB
+  (+0.07 kB); help site; browser suites adoption-11, account-connections and
+  post-permissions 38/38 (the action-row test now waits for the Bluesky row
+  before measuring; it measured mid-render once).
+- **Deferred:** editing list rules (they are kept, not edited); knowing whether
+  a reply is already hidden when the page loads (the menu toggles from this
+  session's state); quote limits on replies; paging quotes past 50; saving
+  thread limits with drafts.
+- **Live trial:** limit replies to followers from the composer and check
+  bsky.app; turn quotes off on an old post; pin a post and see it lead your
+  profile on bsky.app; hide a reply in your thread; open the quotes of a
+  quoted post and detach one.
+
+### Sprint 4 progress (2026-11-03): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-sprint-4-moderation.md`.
+
+- **Settings → Bluesky moderation** (new page, People group, beside Muted &
+  Blocked; available to Anonymous with a Bluesky connector). Built only from
+  design-system parts (PageHeader, Section, Field/Control, Checkbox, Button,
+  Notice, ContentState), reconciled as adopted scope. Three sections: muted
+  words and tags, moderation lists, moderation services.
+- **Muted words.** Read and written as `mutedWordsPref` through
+  `putPreferences`; every write re-reads the whole preferences list and
+  replaces only that item, so bsky.app's other settings survive. Bluesky
+  leaves applying muted words to clients, so a small signal store
+  (`bluesky-moderation-state.ts`, no API dependencies) feeds
+  `StatusVisibility.activeFilters`: a match becomes a warn filter, collapsing
+  the post behind the existing "Filtered: …" stub. It follows bsky.app's
+  rules: whole word or phrase, tags-only, expiry, "not from people I follow",
+  never the viewer's own posts. Changes apply to cards already on screen.
+- **Moderation lists.** Subscribe by bsky.app list address or at-uri, as a mute
+  list (`muteActorList`) or a block list (`listblock` record); list and
+  unsubscribe (`getListMutes`, `getListBlocks`).
+- **Moderation services.** Subscribe by handle (checked with
+  `app.bsky.labeler.getServices`), list by name, remove (`labelersPref`).
+  AppView reads now send `atproto-accept-labelers` (Bluesky's own moderation
+  plus subscriptions; CORS checked on public.api.bsky.app, bsky.social and a
+  PDS) and skip it on proxied chat calls, so subscribed services' labels
+  arrive and sprint 2's label handling covers the media.
+- **Mute thread.** Bluesky posts' ••• menus offer mute or unmute
+  notifications from the thread (`muteThread` by root; state from
+  `viewer.threadMuted`).
+- **Loading.** The shell loads moderation once a Bluesky account is linked,
+  in the background. A first version blocked the Bluesky timeline on it; that
+  was dropped because muted words are reactive anyway and blocking forced
+  every timeline spec to answer an extra request.
+- **Tests.** `bluesky-moderation.spec.ts` (10: matcher rules, preference
+  preservation, list address parsing, labeler check, thread mute, labeler
+  header), `settings-bluesky-moderation.spec.ts` (5, including StatusVisibility
+  collapsing a matching post), status card (+1). The settings sidebar's
+  Anonymous list gained the page. `make test` 9,140/9,140, 0 missing; build
+  initial 901.91 kB (+0.16 kB); help site; browser suites 38/38.
+- **Deferred:** per-label visibility choices (show, warn, hide) for moderation
+  services' custom labels, and the adult-content switch; Bluesky's "hidden
+  posts" preference; moving Mastodon filters onto the same design-system page
+  pattern.
+
+### Sprint 5 progress (2026-11-03): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-sprint-5-discovery.md`. New UI throughout:
+Mastodon has no starter packs, and Mawkingbird's bundled Starter Kits stay a
+separate thing with their own pages.
+
+- **Service** (`providers/bluesky/bluesky-starter-packs.ts`). Parse a
+  `bsky.app/starter-pack/<handle>/<rkey>` link; load a pack and every member
+  across list pages (public reads, so no account needed); list an account's
+  packs; read the signed-in account's curate lists; create a pack in one
+  `applyWrites` (a new reference list, its list items, the pack record, TID
+  record keys, duplicates collapsed, capped at 150); `getSuggestions` and
+  `getSuggestedFollowsByActor`.
+- **Pages.** `/bluesky/starter-packs` (open by link, your packs, make one
+  from a list, Suggested for you) and `/bluesky/starter-packs/:actor/:rkey`
+  (name, creator, description, counts, Open on bsky.app, members, **Follow
+  all N** counting only people not yet followed, and "Similar to <name>" after
+  a single follow). A shared `BlueskyPeopleList` gives every list the same
+  rows and Follow buttons. All design-system parts; four new candidate files
+  reconciled as adopted scope.
+- **Profiles.** A Bluesky profile lists the starter packs it made and, after
+  you follow it there, similar accounts.
+- **Getting there.** One-line links on Find people (basic) and on the Starter
+  Kits page. Adding a discovery way was tried and reverted: the registry also
+  drives Home's invitation-card rotation, whose specs fix its makeup, and
+  changing that rotation is a product call, not part of this sprint.
+- **Show more / less like this.** Feeds whose generator view has
+  `acceptsInteractions` mark their posts with the feed service's DID and the
+  item's `feedContext` (looked up from the saved or popular feed cache when a
+  caller passes only a uri). The post's ••• menu sends
+  `app.bsky.feed.sendInteractions` (`requestMore` / `requestLess`) through the
+  account's PDS with `atproto-proxy: <did>#bsky_fg`, then shows it as sent.
+- **Help.** Starter Kits guide: a Bluesky starter packs section. Home feed
+  guide: teaching a Bluesky feed.
+- **Tests.** `bluesky-starter-packs.spec.ts` (4), the UI spec (10: people list,
+  pack page, hub, profile discovery), `bluesky-feed-feedback.spec.ts` (2),
+  status card (+1). `make test` 9,157/9,157, 0 missing; build initial
+  902.21 kB (+0.30 kB); help site; browser suites 38/38.
+- **Deferred:** go.bsky.app short links (they need a redirect lookup); picking
+  pack members by search rather than from a list; editing or deleting a pack;
+  showing a pack's feeds; opening bsky.app starter-pack links inside posts in
+  Mawkingbird instead of on bsky.app.

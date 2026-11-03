@@ -32,4 +32,15 @@ Accounts can move, change names, require approval, or disappear after a kit is a
 
 You can search for the person by their current full handle if you think the kit's copy is out of date.
 
+## Bluesky starter packs
+
+Bluesky has starter packs of its own: sets of accounts people make on Bluesky. They are separate from Mawkingbird's Starter Kits. Open **Bluesky starter packs** from the ways to find people.
+
+- **Open a pack:** paste its bsky.app link. You see who made it, what it is for, and everyone in it. Follow people one at a time, or choose **Follow all**.
+- **After you follow someone,** Mawkingbird may suggest similar accounts, as bsky.app does.
+- **Make a pack:** start from one of your Bluesky lists. The pack gets its own copy of the people on it, up to 150.
+- **On a Bluesky profile,** the packs that account made are listed under its header.
+
+Following needs a linked Bluesky account; reading a pack does not.
+
 Next: [Explore bundled Mastodon collections](collections.md).

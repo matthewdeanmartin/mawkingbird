@@ -1,0 +1,78 @@
+<a mbContentLink class="back" routerLink="/bluesky/starter-packs">{{
+  'bskyPack.allPacks' | transloco
+}}</a>
+
+@if (loading()) {
+  <mb-content-state kind="loading" announcement="status" [title]="'bskyPack.loading' | transloco" />
+} @else if (failed()) {
+  <mb-content-state kind="error" announcement="alert" [title]="'bskyPack.failed' | transloco">
+    <button mbButton type="button" variant="outline" (click)="load()">
+      {{ 'bskyPack.retry' | transloco }}
+    </button>
+  </mb-content-state>
+} @else if (pack(); as pack) {
+  <mb-page-header
+    [title]="pack.record.name"
+    [description]="'bskyPack.by' | transloco: { handle: pack.creator.handle }"
+  />
+  @if (pack.record.description) {
+    <p class="pack-description">{{ pack.record.description }}</p>
+  }
+  <p class="muted small">
+    {{
+      'bskyPack.counts'
+        | transloco
+          : {
+              members: pack.listItemCount ?? pack.members.length,
+              joined: pack.joinedAllTimeCount ?? 0,
+            }
+    }}
+    ·
+    <a mbContentLink [href]="bskyUrl()" target="_blank" rel="noopener noreferrer">{{
+      'bskyPack.openOnBluesky' | transloco
+    }}</a>
+  </p>
+
+  <div class="pack-actions">
+    @if (session.linked()) {
+      @if (toFollow()) {
+        <button mbButton type="button" [disabled]="followingAll()" (click)="followAll()">
+          {{
+            followingAll()
+              ? ('bskyPack.followingAll' | transloco)
+              : ('bskyPack.followAll' | transloco: { count: toFollow() })
+          }}
+        </button>
+      } @else {
+        <p class="muted">{{ 'bskyPack.allFollowed' | transloco }}</p>
+      }
+    } @else {
+      <p class="muted">
+        {{ 'bskyPack.linkToFollow' | transloco }}
+        <a mbContentLink routerLink="/settings/connections/bluesky">{{
+          'bskyPack.linkBluesky' | transloco
+        }}</a>
+      </p>
+    }
+  </div>
+  @if (notice(); as message) {
+    <mb-notice announcement="status">{{ message }}</mb-notice>
+  }
+  @if (error(); as message) {
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+  }
+
+  @if (similar(); as similar) {
+    <mb-section [title]="'bskyPack.similar' | transloco: { name: similar.name }">
+      <app-bluesky-people-list [people]="similar.people" (failed)="followFailed($event)" />
+    </mb-section>
+  }
+
+  <mb-section [title]="'bskyPack.people' | transloco">
+    <app-bluesky-people-list
+      [people]="pack.members"
+      (followed)="showSimilar($event)"
+      (failed)="followFailed($event)"
+    />
+  </mb-section>
+}

@@ -3,7 +3,8 @@ import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs'
 import { Status } from '../../models';
 import { adaptFeedItem } from './bluesky-adapter';
 import { BlueskyApi } from './bluesky-api';
-import { BSKY_CURATE_LIST, BskySavedFeed } from './bluesky-types';
+import { BSKY_CURATE_LIST, BskyFeedItem, BskySavedFeed } from './bluesky-types';
+import { BlueskyPds } from './bluesky-pds';
 
 /** A saved feed or list, hydrated enough to render a row. */
 export interface BlueskyFeedEntry {
@@ -18,6 +19,8 @@ export interface BlueskyFeedEntry {
   pinned: boolean;
   /** Members, for lists. Feeds have none by construction. */
   memberCount: number | null;
+  /** The feed service's DID, when it takes "show more / less like this". */
+  feedbackDid?: string;
 }
 
 export interface BlueskyFeedPage {
@@ -54,6 +57,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 @Injectable({ providedIn: 'root' })
 export class BlueskyFeeds {
   private api = inject(BlueskyApi);
+  private pds = inject(BlueskyPds);
 
   /** Cached for the tab's lifetime; preferences change rarely. */
   private cache = signal<BlueskyFeedEntry[] | null>(null);
@@ -107,6 +111,7 @@ export class BlueskyFeeds {
           description: generator.description ?? '',
           avatar: generator.avatar ?? null,
           creatorHandle: generator.creator.handle,
+          ...(generator.acceptsInteractions ? { feedbackDid: generator.did } : {}),
           pinned: pinnedByUri.get(generator.uri) ?? false,
           memberCount: null,
         })),
@@ -151,18 +156,56 @@ export class BlueskyFeeds {
 
   /** One page of an entry's posts. Both kinds return `feedViewPost[]`. */
   page(
-    entry: Pick<BlueskyFeedEntry, 'uri' | 'kind'>,
+    entry: Pick<BlueskyFeedEntry, 'uri' | 'kind' | 'feedbackDid'>,
     cursor: string | null,
   ): Observable<BlueskyFeedPage> {
+    // Callers often pass a bare uri; the saved or popular entry knows whether
+    // the feed takes "show more / less like this".
+    const feedback = {
+      feedbackDid:
+        entry.feedbackDid ??
+        [...(this.cache() ?? []), ...(this.popularCache() ?? [])].find((e) => e.uri === entry.uri)
+          ?.feedbackDid,
+    };
     const call =
       entry.kind === 'list'
         ? this.api.getListFeed(entry.uri, cursor)
         : this.api.getFeed(entry.uri, cursor);
     return call.pipe(
       map((timeline) => ({
-        statuses: timeline.feed.map(adaptFeedItem),
+        statuses: timeline.feed.map((item) => withFeedback(adaptFeedItem(item), item, feedback)),
         cursor: timeline.cursor && timeline.cursor !== cursor ? timeline.cursor : null,
       })),
+    );
+  }
+
+  /**
+   * Tell a feed to show more or less like a post (`sendInteractions`). It goes
+   * to the feed's own service, proxied through the account's PDS, the only
+   * host that can vouch for the account to a third party.
+   */
+  sendFeedback(
+    feedback: { generatorDid: string; feedContext?: string },
+    postUri: string,
+    more: boolean,
+  ): Observable<unknown> {
+    return this.pds.resolve().pipe(
+      switchMap((pds) =>
+        this.api.request(
+          'app.bsky.feed.sendInteractions',
+          {
+            interactions: [
+              {
+                item: postUri,
+                event: more ? 'app.bsky.feed.defs#requestMore' : 'app.bsky.feed.defs#requestLess',
+                ...(feedback.feedContext ? { feedContext: feedback.feedContext } : {}),
+              },
+            ],
+          },
+          { 'atproto-proxy': `${feedback.generatorDid}#bsky_fg` },
+          pds || undefined,
+        ),
+      ),
     );
   }
 
@@ -204,6 +247,7 @@ export class BlueskyFeeds {
           description: generator.description ?? '',
           avatar: generator.avatar ?? null,
           creatorHandle: generator.creator.handle,
+          ...(generator.acceptsInteractions ? { feedbackDid: generator.did } : {}),
           // Popularity is not pinning. These are other people's feeds that the
           // reader has not saved, so nothing here is promoted to a tab.
           pinned: false,
@@ -232,4 +276,18 @@ export function savedFeeds(preferences: { $type?: string }[]): BskySavedFeed[] {
     return items.filter((item) => item.type === 'feed' || item.type === 'list');
   }
   return [];
+}
+
+/** Mark a post from a feed that takes feedback, so its card can offer it. */
+function withFeedback(
+  status: Status,
+  item: BskyFeedItem,
+  entry: Pick<BlueskyFeedEntry, 'feedbackDid'>,
+): Status {
+  if (!entry.feedbackDid) return status;
+  const feedback = {
+    generatorDid: entry.feedbackDid,
+    ...(item.feedContext ? { feedContext: item.feedContext } : {}),
+  };
+  return { ...status, providerRef: { ...(status.providerRef as object), feedFeedback: feedback } };
 }

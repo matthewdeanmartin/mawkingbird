@@ -289,6 +289,11 @@ export function adaptPost(post: BskyPostView): Status {
     replyRoot: post.record.reply?.root ?? { uri: post.uri, cid: post.cid },
     replyParentUri: post.record.reply?.parent.uri ?? null,
     externalUri: externalUri(post.embed),
+    ...(post.viewer?.replyDisabled ? { replyDisabled: true } : {}),
+    ...(post.viewer?.embeddingDisabled ? { quoteDisabled: true } : {}),
+    ...(post.threadgate?.record?.allow ? { repliesLimited: true } : {}),
+    ...(post.author.viewer?.following ? { authorFollowed: true } : {}),
+    ...(post.viewer?.threadMuted ? { threadMuted: true } : {}),
   };
   return {
     provider: 'bluesky',
@@ -307,11 +312,12 @@ export function adaptPost(post: BskyPostView): Status {
     replies_count: post.replyCount ?? 0,
     reblogs_count: post.repostCount ?? 0,
     favourites_count: post.likeCount ?? 0,
+    quotes_count: post.quoteCount ?? 0,
     favourited: !!post.viewer?.like,
     reblogged: !!post.viewer?.repost,
     bookmarked: !!post.viewer?.bookmarked,
     muted: false,
-    pinned: false,
+    pinned: !!post.viewer?.pinned,
     sensitive: isLabelledSensitive(post),
     poll: null,
     quote_approval_policy: null,
@@ -326,6 +332,9 @@ export function adaptPost(post: BskyPostView): Status {
 
 /** A timeline item: a plain post, or a repost wrapped Mastodon-boost style. */
 export function adaptFeedItem(item: BskyFeedItem): Status {
+  if (item.reason?.$type.endsWith('#reasonPin')) {
+    return { ...adaptPost(item.post), pinned: true };
+  }
   const post = adaptPost(item.post);
   if (item.reason?.$type.endsWith('#reasonRepost') && item.reason.by) {
     return {

@@ -193,6 +193,11 @@
       "nextStep": "Sprint 12 adopts modal shell, loading/error/empty states, Retry and Close. Account rows retain native routes and specialized content layout."
     },
     {
+      "file": "ui/src/app/account-list-dialog/quotes-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Quotes list composes Dialog, ContentState (loading, error with Retry, empty) and Button, as AccountListDialog does. Rows keep native thread routes; the author-only Detach/Reattach is a small outline Button per row."
+    },
+    {
       "file": "ui/src/app/admin/accounts/admin-accounts.html",
       "disposition": "partial adoption",
       "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
@@ -493,6 +498,26 @@
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
+      "file": "ui/src/app/pages/bluesky-starter-packs/bluesky-people-list.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky people rows: native profile links with a shared Button per row (solid Follow, outline Following, aria-pressed). Row layout is local CSS."
+    },
+    {
+      "file": "ui/src/app/pages/bluesky-starter-packs/bluesky-profile-discovery.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Profile block composes Section and ContentLink, and reuses BlueskyPeopleList for similar accounts."
+    },
+    {
+      "file": "ui/src/app/pages/bluesky-starter-packs/bluesky-starter-pack-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Starter pack page composes PageHeader, Section, Button, Notice, ContentState (loading, error with Retry) and ContentLink; members via BlueskyPeopleList."
+    },
+    {
+      "file": "ui/src/app/pages/bluesky-starter-packs/bluesky-starter-packs-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Starter packs hub composes PageHeader, Section, Field/Control (input, textarea, select), Button, Notice, ContentState and ContentLink; suggestions via BlueskyPeopleList."
+    },
+    {
       "file": "ui/src/app/pages/bundled-starter-kits/bundled-starter-kits.html",
       "disposition": "backlog",
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
@@ -786,6 +811,11 @@
       "file": "ui/src/app/pages/settings/blue/blue-controls.html",
       "disposition": "backlog",
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+    },
+    {
+      "file": "ui/src/app/pages/settings/bluesky-moderation/settings-bluesky-moderation.html",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky moderation page composes PageHeader, Section, Field/Control (inputs and selects), Checkbox, Button, Notice and ContentState (not linked, loading, error with Retry, empty). Page CSS is layout only. Preserve per-section failure notices and the one-change-at-a-time busy state."
     },
     {
       "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.html",
@@ -1286,6 +1316,11 @@
       "file": "ui/src/app/post-permissions/post-permissions.ts",
       "disposition": "adopted scope",
       "nextStep": "Shared app permissions dialog composes Dialog, Field/Control, Button, Help and Notice. Preserve separate audience/discovery, published read-only audience, cancellation, focus return and permission failure feedback. See Post permissions Storybook and browser coverage."
+    },
+    {
+      "file": "ui/src/app/post-permissions/bluesky-post-controls-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky reply and quote controls compose Dialog, Field/Control selects, Checkbox, Button, Help and Notice, matching the Mastodon post permissions dialog. Preserve list-rule notice, busy state and failure feedback."
     },
     {
       "file": "ui/src/app/report-history/report-history.ts",

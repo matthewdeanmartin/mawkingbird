@@ -6,6 +6,7 @@ import { PrivateMedia } from '../../private-media';
 import { Pseudonymity } from '../../pseudonymity';
 import { cleanPostLinks } from '../../post-link-cleaning';
 import { externalFetch } from '../external-fetch';
+import { BlueskyModerationState, BSKY_MODERATION_DID } from './bluesky-moderation-state';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPostSearch } from './bluesky-post-search';
 import {
@@ -135,6 +136,20 @@ export class BlueskyApi {
   private indicatorEvents = inject(IndicatorEvents);
   private http = inject(HttpClient);
   private session = inject(BlueskySession);
+  private moderationState = inject(BlueskyModerationState);
+
+  /**
+   * Ask the AppView for labels from the moderation services the account
+   * subscribes to, as bsky.app does. Without this header only Bluesky's own
+   * moderation labels come back. Not sent on proxied calls (chat), which
+   * carry their own `atproto-proxy` header to a different service.
+   */
+  private labelerHeaders(extra: Record<string, string>): Record<string, string> {
+    const labelers = this.moderationState.labelers();
+    if (!labelers.length || extra['atproto-proxy']) return extra;
+    const dids = [BSKY_MODERATION_DID, ...labelers.filter((did) => did !== BSKY_MODERATION_DID)];
+    return { 'atproto-accept-labelers': dids.join(', '), ...extra };
+  }
 
   getTimeline(cursor: string | null): Observable<BskyTimeline> {
     let params = new HttpParams().set('limit', '20');
@@ -157,8 +172,13 @@ export class BlueskyApi {
     cursor: string | null,
     filter: BskyAuthorFeedFilter = 'posts_and_author_threads',
     publicOnly = false,
+    /** Lead with the author's pinned post. Only a profile wants it, never a merged feed. */
+    includePins = false,
   ): Observable<BskyTimeline> {
     let params = new HttpParams().set('actor', actor).set('limit', '20').set('filter', filter);
+    if (includePins) {
+      params = params.set('includePins', 'true');
+    }
     if (cursor) {
       params = params.set('cursor', cursor);
     }
@@ -185,6 +205,12 @@ export class BlueskyApi {
   getLikes(uri: string): Observable<{ likes: { actor: BskyAuthor }[]; cursor?: string }> {
     const params = new HttpParams().set('uri', uri).set('limit', '100');
     return this.publicGet('app.bsky.feed.getLikes', params);
+  }
+
+  /** Posts quoting a post (`app.bsky.feed.getQuotes`); auth-optional like {@link getLikes}. */
+  getQuotes(uri: string): Observable<{ posts: BskyPostView[]; cursor?: string }> {
+    const params = new HttpParams().set('uri', uri).set('limit', '50');
+    return this.publicGet('app.bsky.feed.getQuotes', params);
   }
 
   /** Who reposted a post (`app.bsky.feed.getRepostedBy`); see {@link getLikes}. */
@@ -666,6 +692,20 @@ export class BlueskyApi {
     );
   }
 
+  /**
+   * Pin a post to the profile, or unpin with null. Bluesky keeps one pinned
+   * post, named on the profile record, so this rewrites that record and keeps
+   * every other field (guarded by its CID).
+   */
+  setPinnedPost(post: { uri: string; cid: string } | null): Observable<CreateRecordResponse> {
+    return this.getOwnProfileRecord().pipe(
+      switchMap(({ value, cid }) => {
+        const { pinnedPost: _previous, ...rest } = value;
+        return this.putProfile(post ? { ...rest, pinnedPost: post } : rest, cid || undefined);
+      }),
+    );
+  }
+
   /** Replace the singleton profile record, guarded by the CID that was edited. */
   putProfile(record: BskyProfileRecord, swapRecord?: string): Observable<CreateRecordResponse> {
     const did = this.session.session()?.did ?? '';
@@ -715,6 +755,7 @@ export class BlueskyApi {
   ): Observable<T> {
     const query = params.toString();
     const url = `${serviceUrl ?? this.service()}/xrpc/${nsid}${query ? `?${query}` : ''}`;
+    extraHeaders = this.labelerHeaders(extraHeaders);
     if (this.session.isOAuthSession()) {
       return from(
         this.oauthJson<T>(url, {
@@ -749,6 +790,7 @@ export class BlueskyApi {
     if (!this.session.session()) {
       return this.http.get<T>(`${PUBLIC_APPVIEW}/xrpc/${nsid}`, {
         params,
+        headers: this.labelerHeaders({}),
         context: externalFetch(),
       });
     }

@@ -1,3 +1,4 @@
+import { BlueskyProfileDiscovery } from '../bluesky-starter-packs/bluesky-profile-discovery';
 import { ProfileSlideshow } from './profile-slideshow';
 import { Compose } from '../../compose/compose';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -236,6 +237,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    BlueskyProfileDiscovery,
     ProfileSlideshow,
     MediaDownloadMenuItem,
     CustomEmojiPipe,
@@ -447,6 +449,10 @@ export class Profile implements OnInit, OnDestroy {
   protected isBluesky = signal(false);
   /** The DID behind a Bluesky profile, for the follow toggle and paging. */
   private bskyDid = signal<string | null>(null);
+  /** The Bluesky account shown, for its starter packs and similar accounts. */
+  protected readonly bskyProfileDid = this.bskyDid.asReadonly();
+  /** Bumped when the viewer follows this Bluesky account here. */
+  protected readonly bskyFollowedTick = signal(0);
   /** Why this Bluesky profile's posts (or its follow toggle) failed, if they did. */
   protected bskyError = signal<string | null>(null);
   /** True while a follow/unfollow round-trip is in flight. */
@@ -498,6 +504,7 @@ export class Profile implements OnInit, OnDestroy {
             : a,
         );
         this.bskyFollowBusy.set(false);
+        if (!following) this.bskyFollowedTick.update((tick) => tick + 1);
         this.diagnostics.info('Profile', 'bsky:follow-toggled', { did, following: !following });
       },
       error: (error: unknown) => {
@@ -1666,7 +1673,7 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
     this.statusLoadSub = this.bskyApi
-      .getAuthorFeed(did, this.bskyCursor, this.bskyFilter())
+      .getAuthorFeed(did, this.bskyCursor, this.bskyFilter(), false, !this.bskyCursor)
       .subscribe({
         next: (page) => {
           if (seq !== this.loadSeq) {
@@ -1674,7 +1681,15 @@ export class Profile implements OnInit, OnDestroy {
           }
           this.bskyCursor = page.cursor ?? null;
           const statuses = page.feed.map(adaptFeedItem);
-          this.statuses.update((current) => [...current, ...statuses]);
+          // The pinned post leads the first page and may appear again in its
+          // own place; keep the first, pinned copy.
+          this.statuses.update((current) => {
+            const seen = new Set(current.map((status) => status.id));
+            return [
+              ...current,
+              ...statuses.filter((status) => !seen.has(status.id) && !!seen.add(status.id)),
+            ];
+          });
           // No cursor, or a page that added nothing: the history is complete.
           this.exhausted.set(!this.bskyCursor || statuses.length === 0);
           this.statusesLoading.set(false);

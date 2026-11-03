@@ -609,6 +609,11 @@ export class Api {
     return this.http.get<StatusEdit[]>(`/api/v1/statuses/${id}/history`);
   }
 
+  /** Posts quoting this one (Mastodon 4.5 and newer). */
+  quotesOf(id: string): Observable<Status[]> {
+    return this.http.get<Status[]>(`/api/v1/statuses/${id}/quotes`);
+  }
+
   favouritedBy(id: string): Observable<Account[]> {
     return this.http.get<Account[]>(`/api/v1/statuses/${id}/favourited_by`);
   }

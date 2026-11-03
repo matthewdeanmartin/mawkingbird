@@ -1,6 +1,6 @@
 import path from 'node:path';
 import process from 'node:process';
-import { spawnSync } from 'node:child_process';
+import { runQuietly } from './quiet-test-output.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const ng = path.join(root, 'node_modules', '@angular', 'cli', 'bin', 'ng.js');
@@ -19,8 +19,4 @@ const arguments_ = [
   ...includes.map((include) => `--include=${include}`),
   ...options,
 ];
-const result = spawnSync(process.execPath, arguments_, { cwd: root, stdio: 'inherit' });
-if (result.error) {
-  throw result.error;
-}
-process.exit(result.status ?? 1);
+process.exit(await runQuietly(process.execPath, arguments_, { cwd: root }));

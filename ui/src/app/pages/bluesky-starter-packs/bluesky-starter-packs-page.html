@@ -1,0 +1,121 @@
+<mb-page-header
+  [title]="'bskyPacks.title' | transloco"
+  [description]="'bskyPacks.intro' | transloco"
+/>
+
+<mb-section [title]="'bskyPacks.open.title' | transloco">
+  <form class="pack-form" (ngSubmit)="open()">
+    <mb-field [label]="'bskyPacks.open.address' | transloco">
+      <input
+        mbControl
+        type="url"
+        name="address"
+        [placeholder]="'bskyPacks.open.placeholder' | transloco"
+        [ngModel]="address()"
+        (ngModelChange)="address.set($event)"
+      />
+    </mb-field>
+    <button mbButton type="submit" [disabled]="!address().trim()">
+      {{ 'bskyPacks.open.submit' | transloco }}
+    </button>
+  </form>
+  @if (openError(); as message) {
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+  }
+</mb-section>
+
+@if (!session.linked()) {
+  <p class="muted">
+    {{ 'bskyPacks.notLinked' | transloco }}
+    <a mbContentLink routerLink="/settings/connections/bluesky">{{
+      'bskyPacks.linkBluesky' | transloco
+    }}</a>
+  </p>
+} @else {
+  <mb-section [title]="'bskyPacks.mine.title' | transloco">
+    @if (loadError(); as message) {
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+    } @else if (mine().length) {
+      <ul class="pack-list">
+        @for (pack of mine(); track pack.uri) {
+          <li>
+            <a mbContentLink [routerLink]="packPath(pack.uri)">{{ pack.record.name }}</a>
+            @if (pack.listItemCount !== undefined) {
+              <span class="muted small">{{
+                'bskyPacks.mine.people' | transloco: { count: pack.listItemCount }
+              }}</span>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <mb-content-state kind="empty" [title]="'bskyPacks.mine.empty' | transloco" />
+    }
+  </mb-section>
+
+  <mb-section [title]="'bskyPacks.create.title' | transloco">
+    @if (lists().length) {
+      <p class="muted">{{ 'bskyPacks.create.hint' | transloco: { max: max } }}</p>
+      <form class="pack-form" (ngSubmit)="create()">
+        <mb-field [label]="'bskyPacks.create.name' | transloco">
+          <input
+            mbControl
+            type="text"
+            name="name"
+            maxlength="50"
+            [ngModel]="name()"
+            (ngModelChange)="name.set($event)"
+            [disabled]="creating()"
+          />
+        </mb-field>
+        <mb-field [label]="'bskyPacks.create.description' | transloco">
+          <textarea
+            mbControl
+            name="description"
+            rows="3"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            [disabled]="creating()"
+          ></textarea>
+        </mb-field>
+        <mb-field [label]="'bskyPacks.create.list' | transloco">
+          <select
+            mbControl
+            name="list"
+            [ngModel]="listUri()"
+            (ngModelChange)="listUri.set($event)"
+            [disabled]="creating()"
+          >
+            <option value="">{{ 'bskyPacks.create.chooseList' | transloco }}</option>
+            @for (list of lists(); track list.uri) {
+              <option [value]="list.uri">
+                {{
+                  'bskyPacks.create.listCount'
+                    | transloco: { name: list.name, count: list.listItemCount ?? 0 }
+                }}
+              </option>
+            }
+          </select>
+        </mb-field>
+        <button mbButton type="submit" [disabled]="creating() || !name().trim() || !listUri()">
+          {{ 'bskyPacks.create.submit' | transloco }}
+        </button>
+      </form>
+      @if (createError(); as message) {
+        <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+      }
+    } @else {
+      <p class="muted">{{ 'bskyPacks.create.noLists' | transloco }}</p>
+    }
+  </mb-section>
+
+  <mb-section [title]="'bskyPacks.suggested.title' | transloco">
+    @if (suggested(); as people) {
+      @if (people.length) {
+        <app-bluesky-people-list [people]="people" />
+      } @else {
+        <mb-content-state kind="empty" [title]="'bskyPacks.suggested.empty' | transloco" />
+      }
+    }
+  </mb-section>
+}

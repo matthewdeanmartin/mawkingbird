@@ -1,3 +1,4 @@
+import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
 import { accountProfilePath } from '../account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
@@ -208,6 +209,7 @@ export class Shell implements OnInit, AccountSwitcher {
   /** A page's own rails (Forum), shown in place of the defaults while set. */
   protected readonly railOutlet = inject(RailOutlet);
   protected readonly accountProfilePath = accountProfilePath;
+  private bskyModeration = inject(BlueskyModeration);
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);
   protected auth = inject(Auth);
@@ -428,6 +430,10 @@ export class Shell implements OnInit, AccountSwitcher {
 
   constructor() {
     this.indicators.start();
+    // Bluesky muted words and moderation services, from the account's Bluesky
+    // preferences. Nothing happens without a linked Bluesky account. Muted
+    // words are signals, so cards already on screen filter once they arrive.
+    void this.bskyModeration.ensureLoaded();
     // Not in ngOnInit: that returns early for anonymous visitors, and route
     // focus has to work for them too.
     this.router.events

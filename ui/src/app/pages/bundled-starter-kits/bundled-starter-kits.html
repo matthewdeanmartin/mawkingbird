@@ -12,6 +12,12 @@
   <p class="intro muted small">
     {{ 'bundledStarterKits.intro' | packText: copyLanguage() }}
   </p>
+  <p class="muted small">
+    {{ 'bundledStarterKits.bskyPacks' | transloco }}
+    <a mbContentLink routerLink="/bluesky/starter-packs">{{
+      'bundledStarterKits.bskyPacksLink' | transloco
+    }}</a>
+  </p>
 
   <label class="kit-filter">
     <span>{{ 'bundledStarterKits.languages' | packText: copyLanguage() }}</span>

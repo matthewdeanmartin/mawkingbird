@@ -428,6 +428,10 @@ test("Bluesky counts sit after their icons in the same type as Mastodon's", asyn
   await choose(page, "Signed in");
   const mastodon = await measure();
   await choose(page, "Bluesky");
+  // Measure the Bluesky row only once it has replaced the Mastodon one.
+  await expect(
+    scope.getByRole("button", { name: "Boost, quote or share" }),
+  ).toBeVisible();
   const bluesky = await measure();
   expect(mastodon.counts).toEqual([true, true]);
   expect(bluesky.counts).toEqual([true, true]);

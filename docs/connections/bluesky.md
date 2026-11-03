@@ -22,6 +22,16 @@ Some self-hosted servers cannot do the approval step yet. Only then, use an app 
 2. If you want Bluesky direct messages in Mawkingbird Chat, allow direct-message access while creating it.
 3. On the connection page, open **Use an app password instead**, enter your handle and the app password, and choose **Link Bluesky**.
 
+## Moderation
+
+Open **Settings → Bluesky moderation**. These settings are saved to your Bluesky account, so bsky.app uses the same ones.
+
+- **Muted words and tags:** posts containing them are collapsed behind a notice you can open. Choose whether to look in text and tags or tags only, for how long, and whether to skip people you follow.
+- **Moderation lists:** paste the bsky.app address of a list someone keeps, then mute or block everyone on it.
+- **Moderation services:** add a service by its handle. Its labels then apply, and labelled media stays covered.
+
+To stop notifications from a busy thread, open a post's ••• menu and choose **Mute notifications from this thread**.
+
 ## Unlink
 
 Return to the connection page and choose **Unlink**. Mawkingbird forgets the Bluesky link in this browser and, for an approved link, asks Bluesky to revoke its access. If you used an app password, also delete it in Bluesky's settings.

@@ -1,0 +1,18 @@
+# One answer to "which line endings?" for every editor on every OS: LF.
+# Git (.gitattributes) and Prettier (ui/.prettierrc) say the same, so nothing
+# rewrites a file behind your back. VS Code, JetBrains, Visual Studio and
+# Notepad++ read this file natively. Indentation is Prettier's business.
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+
+# Windows-only scripts, which cmd.exe and PowerShell 5 expect in CRLF.
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
+
+# Makefiles need real tabs.
+[{Makefile,*.mk}]
+indent_style = tab

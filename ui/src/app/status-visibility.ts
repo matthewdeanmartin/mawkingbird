@@ -2,6 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { LocalModeration } from './local-moderation';
 import { MutedPosts } from './muted-posts';
 import { FilterContext, FilterResult, Status } from './models';
+import {
+  BlueskyModerationState,
+  matchMutedWord,
+} from './providers/bluesky/bluesky-moderation-state';
 
 /** Why a card renders as nothing — `null` means it renders normally. */
 export type HiddenReason = 'muted-post' | 'suppressed-author' | 'filter-hide';
@@ -20,15 +24,43 @@ export type HiddenReason = 'muted-post' | 'suppressed-author' | 'filter-hide';
 export class StatusVisibility {
   private mutedPosts = inject(MutedPosts);
   private localMod = inject(LocalModeration);
+  private bluesky = inject(BlueskyModerationState);
 
   /** Matched filters that apply in `context` — boost wrapper and target both. */
   activeFilters(status: Status, context: FilterContext): FilterResult[] {
     const results = status.reblog
       ? [...(status.filtered ?? []), ...(status.reblog.filtered ?? [])]
       : (status.filtered ?? []);
-    return results.filter(
-      (result) => Array.isArray(result?.filter?.context) && result.filter.context.includes(context),
-    );
+    return [
+      ...results.filter(
+        (result) =>
+          Array.isArray(result?.filter?.context) && result.filter.context.includes(context),
+      ),
+      ...this.blueskyMutedWord(status.reblog ?? status),
+    ];
+  }
+
+  /**
+   * Bluesky muted words as a warn filter. Bluesky's servers do not apply them;
+   * every client does, as bsky.app does: collapsed, with a way to show the post.
+   * Read from a signal, so editing the list re-evaluates every card.
+   */
+  private blueskyMutedWord(status: Status): FilterResult[] {
+    const word = matchMutedWord(status, this.bluesky.mutedWords(), this.bluesky.viewerDid());
+    if (!word) return [];
+    return [
+      {
+        filter: {
+          id: `bsky-muted:${word.id ?? word.value}`,
+          title: word.value,
+          context: ['home', 'notifications', 'public', 'thread', 'account'],
+          expires_at: word.expiresAt ?? null,
+          filter_action: 'warn',
+        },
+        keyword_matches: [word.value],
+        status_matches: null,
+      },
+    ];
   }
 
   /** A hide-action filter matched: the post renders as nothing at all. */

@@ -74,6 +74,7 @@ interface SettingsNavGroup {
 // i18n settings.nav.notifications: Notifications
 // i18n settings.nav.approveFollowRequests: Approve follow requests
 // i18n settings.nav.mutedBlocked: Muted & Blocked
+// i18n settings.nav.blueskyModeration: Bluesky moderation
 // i18n settings.nav.trustCwSensitive: Trust: CW/Sensitive
 // i18n settings.nav.bulkModeration: Bulk moderation
 // i18n settings.nav.filters: Filters
@@ -113,7 +114,15 @@ const NAV_GROUPS: SettingsNavGroup[] = [
   },
   {
     titleKey: 'settings.groups.people',
-    paths: ['moderation', 'follows', 'bulk-actions', 'import-export', 'invites', 'privacy'],
+    paths: [
+      'moderation',
+      'bluesky-moderation',
+      'follows',
+      'bulk-actions',
+      'import-export',
+      'invites',
+      'privacy',
+    ],
   },
   {
     // Its own heading rather than a line under Content: RSS is a reading list
@@ -244,6 +253,14 @@ export class SettingsShell {
       { labelKey: 'settings.nav.pseudonymity', path: 'pseudonymity', exact: true },
       { labelKey: 'settings.nav.approveFollowRequests', path: 'follows', exact: true },
       { labelKey: 'settings.nav.mutedBlocked', path: 'moderation', exact: true },
+      // Bluesky's muted words, lists and moderation services: shaped unlike
+      // Mastodon's filters and mutes, so a page of its own beside them.
+      {
+        labelKey: 'settings.nav.blueskyModeration',
+        path: 'bluesky-moderation',
+        exact: true,
+        anonymous: true,
+      },
       // The flipside of the line above — accounts you want *without* a doorway in
       // front of them — so it sits next to it. Client-side, hence anonymous: true.
       { labelKey: 'settings.nav.trustCwSensitive', path: 'content', exact: true, anonymous: true },

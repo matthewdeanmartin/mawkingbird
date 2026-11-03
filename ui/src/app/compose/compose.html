@@ -580,6 +580,19 @@
           </button>
         }
 
+        @if (bskyControlsOffered()) {
+          <button
+            type="button"
+            mbPostAction
+            [pressed]="bskyControlsSet()"
+            (click)="bskyControlsOpen.set(true)"
+            [title]="'compose.bskyControls' | transloco"
+            [aria-label]="'compose.bskyControls' | transloco"
+          >
+            <span aria-hidden="true">🛡️</span>
+          </button>
+        }
+
         <span class="emoji-anchor">
           <button
             type="button"
@@ -948,5 +961,13 @@
     [mastodon]="targetIncludesFedi()"
     (saved)="applyPermissions($event)"
     (closed)="permissionsOpen.set(false)"
+  />
+}
+
+@if (bskyControlsOpen()) {
+  <app-bluesky-post-controls-dialog
+    [initial]="bskyPostControls()"
+    (closed)="bskyControlsOpen.set(false)"
+    (saved)="bskyPostControls.set($event); bskyControlsOpen.set(false)"
   />
 }

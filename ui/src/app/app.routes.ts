@@ -431,6 +431,24 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/account-picker/account-picker').then((m) => m.AccountPicker),
       },
+      // Bluesky's starter packs: open, follow from and make them. Distinct from
+      // Mawkingbird's bundled Starter Kits, which have their own pages.
+      {
+        path: 'bluesky/starter-packs',
+        title: 'Bluesky starter packs',
+        loadComponent: () =>
+          import('./pages/bluesky-starter-packs/bluesky-starter-packs-page').then(
+            (m) => m.BlueskyStarterPacksPage,
+          ),
+      },
+      {
+        path: 'bluesky/starter-packs/:actor/:rkey',
+        title: 'Bluesky starter pack',
+        loadComponent: () =>
+          import('./pages/bluesky-starter-packs/bluesky-starter-pack-page').then(
+            (m) => m.BlueskyStarterPackPage,
+          ),
+      },
       {
         path: 'algo',
         title: 'Algo',
@@ -742,6 +760,17 @@ export const routes: Routes = [
             data: { anonymousFeature: 'Follow request approval', preloadSettings: true },
             loadComponent: () =>
               import('./pages/settings/follows/settings-follows').then((m) => m.SettingsFollows),
+          },
+          {
+            // Bluesky's own moderation; works with a Bluesky connector under any
+            // account, Anonymous included, so it has no anonymous guard.
+            path: 'bluesky-moderation',
+            title: 'Bluesky moderation',
+            data: { preloadSettings: true },
+            loadComponent: () =>
+              import('./pages/settings/bluesky-moderation/settings-bluesky-moderation').then(
+                (m) => m.SettingsBlueskyModeration,
+              ),
           },
           {
             path: 'moderation',

@@ -235,6 +235,41 @@ describe('adaptPost content labels', () => {
   });
 });
 
+/** What a post's author decided about replies, quotes and pinning, as other readers see it. */
+describe('adaptPost author controls', () => {
+  it('carries reply and quote limits for the status card', () => {
+    const status = adaptPost(
+      makePost({
+        viewer: { replyDisabled: true, embeddingDisabled: true },
+        threadgate: { record: { allow: [] } },
+        quoteCount: 4,
+      }),
+    );
+    expect(status.providerRef).toMatchObject({
+      replyDisabled: true,
+      quoteDisabled: true,
+      repliesLimited: true,
+    });
+    expect(status.quotes_count).toBe(4);
+  });
+
+  it('leaves an open post unmarked', () => {
+    const ref = adaptPost(makePost()).providerRef as Record<string, unknown>;
+    expect(ref['replyDisabled']).toBeUndefined();
+    expect(ref['quoteDisabled']).toBeUndefined();
+    expect(ref['repliesLimited']).toBeUndefined();
+  });
+
+  it('marks the pinned post that leads a profile feed', () => {
+    const status = adaptFeedItem({
+      post: makePost(),
+      reason: { $type: 'app.bsky.feed.defs#reasonPin' },
+    });
+    expect(status.pinned).toBe(true);
+    expect(status.reblog).toBeNull();
+  });
+});
+
 describe('adaptFeedItem', () => {
   it('wraps reposts like Mastodon boosts', () => {
     const item: BskyFeedItem = {

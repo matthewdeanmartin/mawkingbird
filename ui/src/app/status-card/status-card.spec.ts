@@ -1,3 +1,7 @@
+import { BlueskySession } from '../providers/bluesky/bluesky-session';
+import { BlueskyFeeds } from '../providers/bluesky/bluesky-feeds';
+import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
+import { BlueskyPostControls } from '../providers/bluesky/bluesky-post-controls';
 import { FollowTrust } from '../follow-trust';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../compose/compose';
@@ -646,6 +650,168 @@ describe('StatusCard', () => {
       };
       expect(card.accountListMode()).toBe('favourited_by');
       expect(card.blueskyQuoteRef?.uri).toBe(uri);
+    });
+  });
+
+  /**
+   * The controls Bluesky gives a post's author, and what other readers see of
+   * them: limited replies, quoting turned off, pins, hidden replies, quotes.
+   */
+  describe('Bluesky author controls', () => {
+    const ME = 'did:plc:me';
+    const MINE = `at://${ME}/app.bsky.feed.post/root`;
+
+    function linkBluesky(): void {
+      TestBed.inject(BlueskySession).session.set({
+        service: 'https://bsky.social',
+        handle: 'me.bsky.social',
+        did: ME,
+        accessJwt: 'a',
+        refreshJwt: 'r',
+      });
+    }
+
+    function bskyStatus(uri: string, author: string, ref: Record<string, unknown> = {}) {
+      const account = makeAccount(`bsky:${author}`);
+      return makeStatus({
+        id: `bsky:${uri}`,
+        provider: 'bluesky',
+        account,
+        providerRef: {
+          uri,
+          cid: 'c',
+          likeUri: null,
+          repostUri: null,
+          replyRoot: { uri, cid: 'c' },
+          replyParentUri: null,
+          externalUri: null,
+          ...ref,
+        },
+      });
+    }
+
+    it('disables Reply with the reason when the author limits replies', () => {
+      linkBluesky();
+      const f = setUp(
+        bskyStatus('at://did:plc:x/app.bsky.feed.post/1', 'did:plc:x', { replyDisabled: true }),
+      );
+      const reply = (f.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+        'button[title="The author limits who can reply to this post"]',
+      );
+      expect(reply?.disabled).toBe(true);
+    });
+
+    it('leaves Quote out of the share menu when the author turned quoting off', () => {
+      linkBluesky();
+      const open = setUp(bskyStatus('at://did:plc:x/app.bsky.feed.post/1', 'did:plc:x'));
+      const closed = setUp(
+        bskyStatus('at://did:plc:x/app.bsky.feed.post/2', 'did:plc:x', { quoteDisabled: true }),
+      );
+      const actions = (f: ComponentFixture<StatusCard>) =>
+        (f.componentInstance as unknown as { shareMenuActions: () => string[] }).shareMenuActions();
+      expect(actions(open)).toContain('quote');
+      expect(actions(closed)).not.toContain('quote');
+    });
+
+    it('treats a post by the linked Bluesky account as the viewer’s own, and pins it', () => {
+      linkBluesky();
+      const setPinnedPost = vi.fn(() => of({ uri: 'p', cid: 'p' }));
+      Object.assign(TestBed.inject(BlueskyApi), { setPinnedPost });
+      const f = setUp(bskyStatus(MINE, ME));
+      const changed: Status[] = [];
+      f.componentInstance.changed.subscribe((s: Status) => changed.push(s));
+
+      const pin = (f.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+        'button[title="Pin"]',
+      )!;
+      pin.click();
+
+      expect(setPinnedPost).toHaveBeenCalledWith({ uri: MINE, cid: 'c' });
+      expect(changed[0]?.pinned).toBe(true);
+      expect((f.nativeElement as HTMLElement).textContent).toContain('Reply and quote controls');
+    });
+
+    it('offers hiding a reply in the viewer’s own thread', async () => {
+      linkBluesky();
+      const setReplyHidden = vi.fn().mockResolvedValue(undefined);
+      Object.assign(TestBed.inject(BlueskyPostControls), { setReplyHidden });
+      const reply = 'at://did:plc:x/app.bsky.feed.post/r';
+      const f = setUp(
+        bskyStatus(reply, 'did:plc:x', {
+          replyRoot: { uri: MINE, cid: 'c' },
+          replyParentUri: MINE,
+        }),
+      );
+      const el = f.nativeElement as HTMLElement;
+      const hide = [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Hide this reply in my thread'),
+      )!;
+
+      hide.click();
+      await f.whenStable();
+
+      expect(setReplyHidden).toHaveBeenCalledWith(MINE, reply, true);
+    });
+
+    it('offers show more and less like this for a feed that asks for it', () => {
+      linkBluesky();
+      const sendFeedback = vi.fn(() => of({}));
+      Object.assign(TestBed.inject(BlueskyFeeds), { sendFeedback });
+      const uri = 'at://did:plc:x/app.bsky.feed.post/1';
+      const feedback = { generatorDid: 'did:web:cats.example', feedContext: 'ctx' };
+      const f = setUp(bskyStatus(uri, 'did:plc:x', { feedFeedback: feedback }));
+      const el = f.nativeElement as HTMLElement;
+      const less = [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Show less like this'),
+      )!;
+
+      less.click();
+      f.detectChanges();
+
+      expect(sendFeedback).toHaveBeenCalledWith(feedback, uri, false);
+      expect(el.textContent).toContain('The feed will show less like this');
+      const plain = setUp(bskyStatus('at://did:plc:x/app.bsky.feed.post/2', 'did:plc:x'));
+      expect((plain.nativeElement as HTMLElement).textContent).not.toContain('Show more like this');
+    });
+
+    it('mutes notifications from a Bluesky thread by its root', async () => {
+      linkBluesky();
+      const setThreadMuted = vi.fn().mockResolvedValue(undefined);
+      Object.assign(TestBed.inject(BlueskyModeration), { setThreadMuted });
+      const root = 'at://did:plc:x/app.bsky.feed.post/root';
+      const f = setUp(
+        bskyStatus('at://did:plc:x/app.bsky.feed.post/r', 'did:plc:x', {
+          replyRoot: { uri: root, cid: 'c' },
+          replyParentUri: root,
+        }),
+      );
+      const el = f.nativeElement as HTMLElement;
+      const mute = [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Mute notifications from this thread'),
+      )!;
+
+      mute.click();
+      await new Promise((r) => setTimeout(r, 0));
+      f.detectChanges();
+
+      expect(setThreadMuted).toHaveBeenCalledWith(root, true);
+      expect(el.textContent).toContain('Unmute notifications from this thread');
+    });
+
+    it('shows how often a Bluesky post was quoted, after its own ❝', () => {
+      linkBluesky();
+      const status = bskyStatus('at://did:plc:x/app.bsky.feed.post/1', 'did:plc:x');
+      const f = setUp({ ...status, quotes_count: 3 });
+      const quotes = (f.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+        'button[title="See who quoted this"]',
+      )!;
+
+      expect(quotes.textContent).toContain('❝');
+      expect(quotes.querySelector('[mbActionCount]')?.textContent).toContain('3');
+      quotes.click();
+      expect((f.componentInstance as unknown as { quotesOpen: () => boolean }).quotesOpen()).toBe(
+        true,
+      );
     });
   });
 
@@ -1773,7 +1939,8 @@ describe('StatusCard', () => {
     expect((f.componentInstance as unknown as { isOwn: Signal<boolean> }).isOwn()).toBe(true);
     const html = f.nativeElement as HTMLElement;
     expect(html.querySelector('[aria-label="Delete"]')).not.toBeNull();
-    expect(html.querySelector('[aria-label="Pin"]')).toBeNull();
+    // Pinning is no longer Mastodon-only: Bluesky pins through the profile record.
+    expect(html.querySelector('[aria-label="Pin"]')).not.toBeNull();
     expect(html.querySelector('[aria-label="Mute thread"]')).toBeNull();
     const editButton = html.querySelector<HTMLButtonElement>('[aria-label="Edit"]');
     expect(editButton).not.toBeNull();

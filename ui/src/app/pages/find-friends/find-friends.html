@@ -31,6 +31,15 @@
     </a>
   }
 }
+@if (level() === 'basic') {
+  <!-- Bluesky's own starter packs, beside Mawkingbird's kits: a different thing. -->
+  <p class="ff-bluesky muted small">
+    {{ 'pages.findFriends.bskyPacks' | transloco }}
+    <a mbContentLink routerLink="/bluesky/starter-packs">{{
+      'pages.findFriends.bskyPacksLink' | transloco
+    }}</a>
+  </p>
+}
 @if (level() === 'advanced') {
   <h2 class="ff-heading">{{ 'pages.findFriends.interestsHeading' | transloco }}</h2>
   <p class="muted small ff-sub">{{ 'pages.findFriends.interestsSub' | transloco }}</p>

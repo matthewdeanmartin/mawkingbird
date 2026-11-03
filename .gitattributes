@@ -1,5 +1,8 @@
-# Normalize line endings: store as LF in the repo, check out native on each OS.
-* text=auto
+# Line endings: LF in the repo and in every checkout, on every OS. Checking out
+# "native" (CRLF on Windows) fought Prettier, editors and tools that write LF,
+# and every git command warned about it. .editorconfig and ui/.prettierrc
+# agree. This overrides a machine's core.autocrlf for text files.
+* text=auto eol=lf
 
 # Files that break with CRLF must always be LF, even on Windows checkouts.
 *.sh   text eol=lf

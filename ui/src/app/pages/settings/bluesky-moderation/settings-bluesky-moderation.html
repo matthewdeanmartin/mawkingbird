@@ -1,0 +1,234 @@
+<mb-page-header
+  [title]="'settings.bskyModeration.title' | transloco"
+  [description]="'settings.bskyModeration.intro' | transloco"
+/>
+
+@if (!session.linked()) {
+  <mb-content-state
+    kind="empty"
+    [title]="'settings.bskyModeration.notLinked' | transloco"
+    [description]="'settings.bskyModeration.notLinkedHint' | transloco"
+  >
+    <a mbContentLink routerLink="/settings/connections/bluesky">{{
+      'settings.bskyModeration.linkBluesky' | transloco
+    }}</a>
+  </mb-content-state>
+} @else if (loading()) {
+  <mb-content-state
+    kind="loading"
+    announcement="status"
+    [title]="'settings.bskyModeration.loading' | transloco"
+  />
+} @else if (failed()) {
+  <mb-content-state
+    kind="error"
+    announcement="alert"
+    [title]="'settings.bskyModeration.failed' | transloco"
+  >
+    <button mbButton type="button" variant="outline" (click)="load()">
+      {{ 'settings.bskyModeration.retry' | transloco }}
+    </button>
+  </mb-content-state>
+} @else {
+  <mb-section [title]="'settings.bskyModeration.words.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.words.hint' | transloco }}</p>
+    <form class="mod-form" (ngSubmit)="addWord()">
+      <mb-field [label]="'settings.bskyModeration.words.value' | transloco">
+        <input
+          mbControl
+          type="text"
+          name="word"
+          autocapitalize="none"
+          [ngModel]="wordValue()"
+          (ngModelChange)="wordValue.set($event)"
+          [disabled]="busy()"
+        />
+      </mb-field>
+      <mb-field [label]="'settings.bskyModeration.words.where' | transloco">
+        <select
+          mbControl
+          name="where"
+          [ngModel]="wordWhere()"
+          (ngModelChange)="wordWhere.set($event)"
+          [disabled]="busy()"
+        >
+          <option value="everywhere">
+            {{ 'settings.bskyModeration.words.everywhere' | transloco }}
+          </option>
+          <option value="tags">{{ 'settings.bskyModeration.words.tagsOnly' | transloco }}</option>
+        </select>
+      </mb-field>
+      <mb-field [label]="'settings.bskyModeration.words.duration' | transloco">
+        <select
+          mbControl
+          name="duration"
+          [ngModel]="wordDays()"
+          (ngModelChange)="wordDays.set(+$event)"
+          [disabled]="busy()"
+        >
+          <option [ngValue]="0">{{ 'settings.bskyModeration.words.forever' | transloco }}</option>
+          <option [ngValue]="1">{{ 'settings.bskyModeration.words.day' | transloco }}</option>
+          <option [ngValue]="7">{{ 'settings.bskyModeration.words.week' | transloco }}</option>
+          <option [ngValue]="30">{{ 'settings.bskyModeration.words.month' | transloco }}</option>
+        </select>
+      </mb-field>
+      <mb-checkbox
+        [label]="'settings.bskyModeration.words.excludeFollowing' | transloco"
+        [checked]="wordExcludeFollowing()"
+        [disabled]="busy()"
+        (checkedChange)="wordExcludeFollowing.set($event)"
+      />
+      <button mbButton type="submit" [disabled]="busy() || !wordValue().trim()">
+        {{ 'settings.bskyModeration.words.add' | transloco }}
+      </button>
+    </form>
+    @if (wordsError(); as message) {
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+    }
+    @if (state.mutedWords().length) {
+      <ul class="mod-list">
+        @for (word of state.mutedWords(); track word.value) {
+          <li>
+            <span class="mod-name">
+              <strong>{{ word.value }}</strong>
+              <span class="muted small">{{ wordDetail(word) }}</span>
+            </span>
+            <button
+              mbButton
+              type="button"
+              variant="outline"
+              size="small"
+              [disabled]="busy()"
+              (click)="removeWord(word)"
+            >
+              {{ 'settings.bskyModeration.remove' | transloco }}
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <mb-content-state kind="empty" [title]="'settings.bskyModeration.words.empty' | transloco" />
+    }
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyModeration.lists.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.lists.hint' | transloco }}</p>
+    <form class="mod-form" (ngSubmit)="addList()">
+      <mb-field [label]="'settings.bskyModeration.lists.address' | transloco">
+        <input
+          mbControl
+          type="url"
+          name="list"
+          [placeholder]="'settings.bskyModeration.lists.placeholder' | transloco"
+          [ngModel]="listAddress()"
+          (ngModelChange)="listAddress.set($event)"
+          [disabled]="busy()"
+        />
+      </mb-field>
+      <mb-field [label]="'settings.bskyModeration.lists.as' | transloco">
+        <select
+          mbControl
+          name="purpose"
+          [ngModel]="listPurpose()"
+          (ngModelChange)="listPurpose.set($event)"
+          [disabled]="busy()"
+        >
+          <option value="mute">{{ 'settings.bskyModeration.lists.mute' | transloco }}</option>
+          <option value="block">{{ 'settings.bskyModeration.lists.block' | transloco }}</option>
+        </select>
+      </mb-field>
+      <button mbButton type="submit" [disabled]="busy() || !listAddress().trim()">
+        {{ 'settings.bskyModeration.lists.add' | transloco }}
+      </button>
+    </form>
+    @if (listsError(); as message) {
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+    }
+    @if (lists().length) {
+      <ul class="mod-list">
+        @for (list of lists(); track list.uri + list.purpose) {
+          <li>
+            <span class="mod-name">
+              <strong>{{ list.name }}</strong>
+              <span class="muted small">
+                {{
+                  (list.purpose === 'mute'
+                    ? 'settings.bskyModeration.lists.muteList'
+                    : 'settings.bskyModeration.lists.blockList'
+                  ) | transloco
+                }}
+                @if (list.creator) {
+                  · {{ 'settings.bskyModeration.lists.by' | transloco: { handle: list.creator } }}
+                }
+              </span>
+            </span>
+            <button
+              mbButton
+              type="button"
+              variant="outline"
+              size="small"
+              [disabled]="busy()"
+              (click)="removeList(list)"
+            >
+              {{ 'settings.bskyModeration.lists.unsubscribe' | transloco }}
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <mb-content-state kind="empty" [title]="'settings.bskyModeration.lists.empty' | transloco" />
+    }
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyModeration.services.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.services.hint' | transloco }}</p>
+    <form class="mod-form" (ngSubmit)="addService()">
+      <mb-field [label]="'settings.bskyModeration.services.handle' | transloco">
+        <input
+          mbControl
+          type="text"
+          name="service"
+          autocapitalize="none"
+          [ngModel]="serviceHandle()"
+          (ngModelChange)="serviceHandle.set($event)"
+          [disabled]="busy()"
+        />
+      </mb-field>
+      <button mbButton type="submit" [disabled]="busy() || !serviceHandle().trim()">
+        {{ 'settings.bskyModeration.services.add' | transloco }}
+      </button>
+    </form>
+    @if (servicesError(); as message) {
+      <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+    }
+    @if (services().length) {
+      <ul class="mod-list">
+        @for (service of services(); track service.did) {
+          <li>
+            <span class="mod-name">
+              <strong>{{ service.name }}</strong>
+              @if (service.handle) {
+                <span class="muted small">&#64;{{ service.handle }}</span>
+              }
+            </span>
+            <button
+              mbButton
+              type="button"
+              variant="outline"
+              size="small"
+              [disabled]="busy()"
+              (click)="removeService(service)"
+            >
+              {{ 'settings.bskyModeration.remove' | transloco }}
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <mb-content-state
+        kind="empty"
+        [title]="'settings.bskyModeration.services.empty' | transloco"
+      />
+    }
+  </mb-section>
+}

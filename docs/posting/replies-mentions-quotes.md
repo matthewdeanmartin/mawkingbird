@@ -38,4 +38,15 @@ Use a quote when you want to create a new post for your audience while referring
 
 Not every post can be quoted. The author, their network, or your connection may restrict the action. A quote is a fresh statement to your audience, so read the original carefully and add enough context for your readers.
 
+## Control replies and quotes on Bluesky
+
+On Bluesky you choose who can reply to a new post and whether it can be quoted. Before posting, choose 🛡️ in the composer. On a post you already published, open its ••• menu and choose **Reply and quote controls…**.
+
+- **Who can reply:** everyone, nobody, or only some people: those you mention, your followers, or people you follow.
+- **Who can quote:** anyone, or nobody.
+
+When someone limits replies to a post and you are not included, its Reply button is unavailable. A quote count (❝) opens the posts that quoted it. On your own Bluesky post you can **Detach** your post from a quote you do not want it in; the quote stays but no longer shows your post. In your own thread, open a reply's ••• menu and choose **Hide this reply in my thread**.
+
+Pin a post you wrote with 📌. On Bluesky, one post can be pinned at a time, and it leads your profile.
+
 Next: [Choose who can see a post](visibility.md).

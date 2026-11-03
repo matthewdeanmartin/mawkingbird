@@ -244,7 +244,7 @@ interface MetricsState {
   buckets: TimeBucket[];
   days: DayBucket[];
   errorRing: ApiError[];
-  /** Keyed by `type message`. */
+  /** Keyed by `type\0message`. */
   clientErrors: Map<string, ClientErrorGroup>;
 }
 

@@ -49,8 +49,17 @@ const added = testIds.filter((testId) => !protectedIds.has(testId));
 console.log(
   `Runtime test manifest: ${testIds.length} present, ${added.length} added, ${missing.length} missing.`,
 );
-if (added.length) {
-  console.log(added.map((testId) => `+ ${testId}`).join('\n'));
+// New tests are not a failure, and a long-unrefreshed manifest lists
+// thousands. Show a few; TEST_MANIFEST_VERBOSE=1 lists them all. Missing tests
+// below are the failure and always print in full.
+const shownAdded = process.env.TEST_MANIFEST_VERBOSE ? added : added.slice(0, 10);
+if (shownAdded.length) {
+  console.log(shownAdded.map((testId) => `+ ${testId}`).join('\n'));
+  if (shownAdded.length < added.length) {
+    console.log(
+      `+ …and ${added.length - shownAdded.length} more (TEST_MANIFEST_VERBOSE=1 lists all; npm run test:audit:update protects them)`,
+    );
+  }
 }
 if (missing.length) {
   console.error(missing.map((testId) => `- ${testId}`).join('\n'));

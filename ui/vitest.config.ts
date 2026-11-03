@@ -8,6 +8,9 @@ export default defineConfig({
     // overrides this when benchmarking different hardware.
     maxWorkers: 4,
     coverage: {
+      // One summary in the console; the per-file table (about 1,400 lines) is
+      // in coverage/index.html. Nothing in CI reads the other formats' files.
+      reporter: ['text-summary', 'html', 'json'],
       // Fresh full-suite baseline from 2026-08-02. These are floors, not goals:
       // performance work may raise them but must not silently reduce coverage.
       thresholds: {

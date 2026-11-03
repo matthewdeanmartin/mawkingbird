@@ -610,6 +610,13 @@
       @if (bskyError(); as error) {
         <div class="action-error" role="alert">{{ error }}</div>
       }
+      @if (bskyProfileDid(); as did) {
+        <app-bluesky-profile-discovery
+          [did]="did"
+          [name]="a.display_name || a.username"
+          [followedTick]="bskyFollowedTick()"
+        />
+      }
       @if (twitterStale()) {
         <!-- Saved posts are shown immediately and never refreshed on their own:
            a fetch costs a billable request, and arriving on a page is not a

@@ -15,7 +15,8 @@ export default defineConfig({
   // tests so large catalogue files cannot leave the other workers idle.
   fullyParallel: true,
   workers: 2,
-  reporter: "list",
+  // A dot per test and full detail for failures; VERBOSE=1 lists every test.
+  reporter: process.env.VERBOSE ? "list" : "dot",
   use: {
     baseURL: "http://127.0.0.1:6008",
     browserName: "chromium",

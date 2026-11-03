@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
+import { runQuietly } from './quiet-test-output.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const resultsDirectory = path.join(root, '.test-results');
@@ -24,12 +25,9 @@ if (coverage) {
   testArguments.push('--coverage');
 }
 
-const testRun = spawnSync(node, testArguments, { cwd: root, stdio: 'inherit' });
-if (testRun.error) {
-  throw testRun.error;
-}
-if (testRun.status !== 0) {
-  process.exit(testRun.status ?? 1);
+const testStatus = await runQuietly(node, testArguments, { cwd: root });
+if (testStatus !== 0) {
+  process.exit(testStatus);
 }
 
 const manifestArguments = [path.join(root, 'scripts', 'check-test-manifest.mjs')];

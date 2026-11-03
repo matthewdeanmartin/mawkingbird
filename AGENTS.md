@@ -9,6 +9,10 @@ Pack translations and app-wide UI locales are separate; preserve script tags.
 
 Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
 Run targeted specs during development, then the complete gate: cd ui && make test.
+Gate output is summarized: the build chunk table, per-file coverage (see
+ui/coverage/index.html) and the manifest's added-test list are hidden. Set
+VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to
+see them. Agents: redirect long gates to a log file and read its summary lines.
 This gate includes design:inventory-check before the test inventory and coverage suite.
 For every client change, inspect ui/package.json, ui/Makefile and the applicable
 .github/workflows checks; unit tests and a production build alone do not cover CI.

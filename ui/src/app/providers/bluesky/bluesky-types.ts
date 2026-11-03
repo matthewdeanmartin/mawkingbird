@@ -197,7 +197,17 @@ export interface BskyPostView {
   repostCount?: number;
   likeCount?: number;
   indexedAt: string;
-  viewer?: { like?: string; repost?: string; bookmarked?: boolean };
+  viewer?: {
+    like?: string;
+    repost?: string;
+    bookmarked?: boolean;
+    replyDisabled?: boolean;
+    embeddingDisabled?: boolean;
+    pinned?: boolean;
+    threadMuted?: boolean;
+  };
+  /** Present when the author limits replies; `record.allow` holds the rules. */
+  threadgate?: { uri?: string; record?: { allow?: unknown[] } };
   /**
    * Labels on the post: the author's self-labels and those from moderation
    * services, as the AppView hydrates them. `neg` withdraws an earlier label.
@@ -225,6 +235,8 @@ export function isBskyPostView(item: unknown): item is BskyPostView {
 
 export interface BskyFeedItem {
   post: BskyPostView;
+  /** Opaque context a feed attaches to an item, echoed back with feedback. */
+  feedContext?: string;
   reason?: { $type: string; by?: BskyAuthor; indexedAt?: string };
 }
 
@@ -279,6 +291,8 @@ export interface BskyGeneratorView {
   avatar?: string;
   likeCount?: number;
   indexedAt: string;
+  /** The feed takes "show more / less like this" through `sendInteractions`. */
+  acceptsInteractions?: boolean;
 }
 
 /** `app.bsky.graph.defs#listView`. `purpose` decides whether it is readable. */
@@ -292,6 +306,8 @@ export interface BskyListView {
   avatar?: string;
   listItemCount?: number;
   indexedAt: string;
+  /** For a moderation list: muted by the viewer, and the listblock record blocking it. */
+  viewer?: { muted?: boolean; blocked?: string };
 }
 
 /**
@@ -429,6 +445,21 @@ export interface BskyChatLogEntry {
 export interface BskyRef {
   uri: string;
   cid: string;
+  /**
+   * Set when the post's author limits who may reply and the viewer is not
+   * allowed (`viewer.replyDisabled`), or forbids quoting it
+   * (`viewer.embeddingDisabled`). Absent means allowed.
+   */
+  replyDisabled?: boolean;
+  quoteDisabled?: boolean;
+  /** True when the author limited replies at all, whether or not this viewer may reply. */
+  repliesLimited?: boolean;
+  /** The viewer follows the author; muted words set to "exclude people I follow" skip them. */
+  authorFollowed?: boolean;
+  /** The viewer muted this thread's notifications (`viewer.threadMuted`). */
+  threadMuted?: boolean;
+  /** Set when the post came from a feed that accepts "show more / less like this". */
+  feedFeedback?: { generatorDid: string; feedContext?: string };
   /** at-uri of the viewer's like/repost record, when they exist (needed to undo). */
   likeUri: string | null;
   repostUri: string | null;

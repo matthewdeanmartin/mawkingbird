@@ -166,6 +166,8 @@ export interface Status {
   replies_count: number;
   reblogs_count: number;
   favourites_count: number;
+  /** Times this post was quoted: Mastodon 4.5 and newer, and Bluesky's `quoteCount`. */
+  quotes_count?: number;
   favourited: boolean;
   reblogged: boolean;
   bookmarked: boolean;
