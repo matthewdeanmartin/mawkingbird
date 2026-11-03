@@ -9,6 +9,7 @@ import { MbControl, MbField } from '../../../design-system/field/field';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbPageHeader, MbSection } from '../../../design-system/page-header/page-header';
+import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedback';
 import {
   BlueskyModeration,
   BskyLabelerEntry,
@@ -19,6 +20,9 @@ import {
   BskyMutedWord,
 } from '../../../providers/bluesky/bluesky-moderation-state';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
+import { BlueskyChatApi } from '../../../providers/bluesky/bluesky-chat-api';
+import { BskyAllowIncoming } from '../../../providers/bluesky/bluesky-types';
+import { firstValueFrom } from 'rxjs';
 
 // i18n settings.bskyModeration.title: Bluesky moderation
 // i18n settings.bskyModeration.intro: Muted words, moderation lists and moderation services for your Bluesky account. They are saved to Bluesky, so bsky.app and other Bluesky apps use the same settings.
@@ -64,6 +68,14 @@ import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
 // i18n settings.bskyModeration.services.handle: Service handle
 // i18n settings.bskyModeration.services.add: Subscribe
 // i18n settings.bskyModeration.services.empty: Only Bluesky's own moderation.
+// i18n settings.bskyModeration.chat.title: Who can message you
+// i18n settings.bskyModeration.chat.hint: Who may start a Bluesky chat with you. Messages from anyone else are not delivered. People you already chat with can keep writing. Saved to Bluesky, so bsky.app shows the same choice.
+// i18n settings.bskyModeration.chat.label: Allow new messages from
+// i18n settings.bskyModeration.chat.all: Everyone
+// i18n settings.bskyModeration.chat.following: People I follow
+// i18n settings.bskyModeration.chat.none: No one
+// i18n settings.bskyModeration.chat.saved: Saved.
+// i18n settings.bskyModeration.chat.loadFailed: Couldn't read this setting from Bluesky.
 /**
  * Settings → Bluesky moderation.
  *
@@ -87,6 +99,7 @@ import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
     MbNotice,
     MbContentState,
     MbContentLink,
+    MbSaveFeedback,
   ],
   templateUrl: './settings-bluesky-moderation.html',
   styleUrl: './settings-bluesky-moderation.css',
@@ -95,6 +108,7 @@ export class SettingsBlueskyModeration implements OnInit {
   protected session = inject(BlueskySession);
   protected state = inject(BlueskyModerationState);
   private moderation = inject(BlueskyModeration);
+  private chat = inject(BlueskyChatApi);
   private i18n = inject(TranslocoService);
 
   protected loading = signal(false);
@@ -114,6 +128,11 @@ export class SettingsBlueskyModeration implements OnInit {
   protected listAddress = signal('');
   protected listPurpose = signal<'mute' | 'block'>('mute');
   protected serviceHandle = signal('');
+  /** null until read; a failed read leaves the select out and says so. */
+  protected allowIncoming = signal<BskyAllowIncoming | null>(null);
+  protected chatError = signal('');
+  protected chatLoadFailed = signal(false);
+  protected chatSaved = signal(false);
 
   ngOnInit(): void {
     void this.load();
@@ -131,6 +150,7 @@ export class SettingsBlueskyModeration implements OnInit {
       ]);
       this.lists.set(lists);
       this.services.set(services);
+      void this.loadAllowIncoming();
     } catch {
       this.failed.set(true);
     } finally {
@@ -207,6 +227,32 @@ export class SettingsBlueskyModeration implements OnInit {
       await this.moderation.removeLabeler(service.did);
       this.services.update((services) => services.filter((s) => s.did !== service.did));
     }, this.servicesError);
+  }
+
+  /** Read apart from the rest, so a chat-scope problem never hides moderation. */
+  private async loadAllowIncoming(): Promise<void> {
+    this.chatLoadFailed.set(false);
+    try {
+      this.allowIncoming.set(await firstValueFrom(this.chat.getAllowIncoming()));
+    } catch {
+      this.chatLoadFailed.set(true);
+    }
+  }
+
+  /** Saved on change; on failure the select goes back to what Bluesky has. */
+  protected async setAllowIncoming(value: BskyAllowIncoming): Promise<void> {
+    const previous = this.allowIncoming();
+    this.allowIncoming.set(value);
+    this.chatSaved.set(false);
+    const ok = await this.run(
+      () => firstValueFrom(this.chat.setAllowIncoming(value)).then(() => undefined),
+      this.chatError,
+    );
+    if (ok) {
+      this.chatSaved.set(true);
+    } else {
+      this.allowIncoming.set(previous);
+    }
   }
 
   /** One change at a time; a failure shows Bluesky's reason in that section. */

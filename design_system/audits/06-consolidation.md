@@ -1470,3 +1470,19 @@ changed.
 `mbContentLink` pointing to Bluesky starter packs; their dispositions are
 unchanged. The discovery registry (`discovery-ways.ts`) is untouched, so Home's
 invitation-card rotation does not change.
+
+## Bluesky chat: requests, reactions, leave, mute, delete for me, 2026-11-03
+
+`conversations.html` gains eight native `<button>` elements, all of them
+shared controls (the file now has ten shared findings): the "Requests (N)"
+list toggle, Accept and Decline on a message request, each Bluesky message's
+add-reaction button and reaction chips (all `mbButton` compact or small), and
+three `mbMenuItem`s in two `mb-post-menu`s (mute or unmute and leave in the chat
+header; "Delete for me" on each message). The reaction picker reuses the
+composer's `app-emoji-picker`. The file's existing native buttons, legacy pills
+and disclosures are unchanged, so its disposition stays "needs semantic
+review". `settings-bluesky-moderation.html` gains a fourth section, "Who can
+message you": one Field/Control select and the shared SaveFeedback. No
+candidate files were added or removed, so `11-reconciliation.json` is
+unchanged. The inventory contains 592 candidate files across 1,642 sources. No
+shared widgets changed.

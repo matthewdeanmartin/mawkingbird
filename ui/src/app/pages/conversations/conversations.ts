@@ -32,15 +32,25 @@ import {
 } from '../../chat/conversation-store';
 import { LlmConversation } from '../../chat/llm-conversation';
 import { ElizaService } from '../../eliza/eliza.service';
-import { BlueskyChatApi, isChatScopeError } from '../../providers/bluesky/bluesky-chat-api';
+import {
+  BlueskyChatApi,
+  isChatScopeError,
+  xrpcErrorCode,
+} from '../../providers/bluesky/bluesky-chat-api';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import {
+  BSKY_DELETED_MESSAGE,
   BskyChatMember,
   BskyConvoView,
   BskyMessageView,
 } from '../../providers/bluesky/bluesky-types';
+import { AppDialogs } from '../../app-dialogs';
+import { MbButton } from '../../design-system/button/button';
+import { MbMenuItem } from '../../design-system/menu/menu-item';
+import { MbPostMenu } from '../../design-system/menu/post-menu';
+import { EmojiPicker } from '../../emoji-picker/emoji-picker';
 import { Terminology } from '../../terminology';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { PageDiagnostics } from '../../page-diagnostics';
 
 /** localStorage map of chat key → ISO timestamp of the newest message seen there. */
@@ -75,6 +85,17 @@ export interface Chat {
   /** Bluesky chats only: plain-text preview + timestamp (no Status to lean on). */
   previewText?: string;
   lastAt?: string;
+  /** Bluesky only: a message request not yet accepted (listed apart from chats). */
+  request?: boolean;
+  /** Bluesky only: notifications for this chat are muted. */
+  muted?: boolean;
+}
+
+/** Emoji reactions on one message, grouped for the chips under its bubble. */
+export interface ReactionChip {
+  value: string;
+  count: number;
+  mine: boolean;
 }
 
 function readMap(): Record<string, string> {
@@ -187,7 +208,11 @@ export function stripLeadingMentions(html: string): string {
   imports: [
     CustomEmojiPipe,
     Compose,
+    EmojiPicker,
     FormsModule,
+    MbButton,
+    MbMenuItem,
+    MbPostMenu,
     HumanTimePipe,
     ReportDialog,
     RouterLink,
@@ -221,6 +246,8 @@ export class Conversations implements OnInit, OnDestroy {
   protected llm = inject(LlmConversation);
   protected ai = inject(AiAvailability);
   private eliza = inject(ElizaService);
+  private dialogs = inject(AppDialogs);
+  private i18n = inject(TranslocoService);
 
   /** The conversation shown for the selected bot, when one is selected. */
   protected currentConversationId = signal<string | null>(null);
@@ -264,6 +291,13 @@ export class Conversations implements OnInit, OnDestroy {
   protected bskyDraft = signal('');
   protected bskySending = signal(false);
   protected readonly bskyRefreshing = signal(false);
+  /** The chat list shows Bluesky message requests instead of chats. */
+  protected showRequests = signal(false);
+  /** Message whose reaction picker is open, by id. */
+  protected reactingTo = signal<string | null>(null);
+  /** i18n key of the last failed Bluesky chat action (reaction, mute, leave, delete). */
+  protected bskyActionError = signal<string | null>(null);
+  protected bskyRequestCount = computed(() => this.chats().filter((c) => c.request).length);
   /** Statuses known per public chat key (from notifications + streaming). */
   private publicStatuses = signal<Map<string, Status[]>>(new Map());
   /** Full accounts observed per public chat key. */
@@ -331,6 +365,7 @@ export class Conversations implements OnInit, OnDestroy {
         if (this.prefs.chatAudience() === 'mutuals' && chat.kind === 'bot') {
           this.prefs.setChatAudience('all');
         }
+        this.showRequests.set(!!chat.request);
         this.selectWithContext(chat, this.pendingContext());
         return;
       }
@@ -441,6 +476,8 @@ export class Conversations implements OnInit, OnDestroy {
         members: others,
         previewText: convo.lastMessage?.text ?? '',
         lastAt: convo.lastMessage?.sentAt,
+        request: convo.status === 'request',
+        muted: !!convo.muted,
       });
     }
     // Bot correspondents. Always present when available, with or without a
@@ -478,7 +515,14 @@ export class Conversations implements OnInit, OnDestroy {
     const kind = this.prefs.chatKind();
     const audience = this.prefs.chatAudience();
     const rels = this.rels();
+    // Requests are their own list, not mixed into chats or narrowed by filters.
+    if (this.showRequests()) {
+      return this.chats().filter((c) => c.request);
+    }
     return this.chats().filter((c) => {
+      if (c.request) {
+        return false;
+      }
       if (kind !== 'all' && c.kind !== kind) {
         return false;
       }
@@ -838,6 +882,8 @@ export class Conversations implements OnInit, OnDestroy {
     this.threadLoading.set(false);
     this.threadError.set(null);
     this.bskySendError.set(false);
+    this.bskyActionError.set(null);
+    this.reactingTo.set(null);
     this.selectedKey.set(chat.key);
     // Narrow screens show the chat list as a drawer over the transcript; once a
     // chat is chosen the list has done its job and the conversation should have
@@ -1071,12 +1117,15 @@ export class Conversations implements OnInit, OnDestroy {
       .pipe(timeout(15_000))
       .subscribe({
         next: ({ messages }) => {
-          // Newest-first from the API; deleted messages arrive without text.
-          const chronological = messages.filter((m) => m.text !== undefined).reverse();
+          // Newest-first from the API. Messages deleted for you arrive without
+          // text as a deletedMessageView and read "Message deleted".
+          const chronological = messages
+            .filter((m) => m.text !== undefined || isDeletedMessage(m))
+            .reverse();
           this.bskyMessages.set(chronological);
           this.threadLoading.set(false);
           this.scrollToBottom();
-          const newest = chronological.at(-1);
+          const newest = chronological.filter((m) => !isDeletedMessage(m)).at(-1);
           if (newest) {
             // Best-effort: a failed read-receipt shouldn't surface anywhere.
             this.bskyChat
@@ -1113,9 +1162,13 @@ export class Conversations implements OnInit, OnDestroy {
             if (this.selectedKey() !== chat.key) return;
             if (this.bskyDraft().trim() === text) this.bskyDraft.set('');
             this.bskyMessages.update((list) => [...list, message]);
+            // Replying to a message request accepts it, as on bsky.app.
             this.bskyConvos.update((list) =>
-              list.map((c) => (c.id === chat.convoId ? { ...c, lastMessage: message } : c)),
+              list.map((c) =>
+                c.id === chat.convoId ? { ...c, lastMessage: message, status: 'accepted' } : c,
+              ),
             );
+            if (chat.request) this.leaveRequestsIfEmpty();
             this.scrollToBottom();
           },
           error: (error: unknown) => {
@@ -1170,6 +1223,172 @@ export class Conversations implements OnInit, OnDestroy {
   protected retryThread(): void {
     const chat = this.selected();
     if (chat?.kind === 'bsky') this.loadBskyThread(chat);
+  }
+
+  // i18n pages.conversations.requests.show: Requests ({{count}})
+  // i18n pages.conversations.requests.showTitle: Message requests from people you haven't chatted with yet
+  // i18n pages.conversations.requests.back: ← Chats
+  // i18n pages.conversations.requests.empty: No message requests.
+  // i18n pages.conversations.requests.badge: Request
+  // i18n pages.conversations.requests.notice: {{name}} wants to chat. Accept to move this to your chats, or decline to remove it. Replying also accepts it.
+  // i18n pages.conversations.requests.accept: Accept
+  // i18n pages.conversations.requests.decline: Decline
+  // i18n pages.conversations.bskyMenu.label: Conversation options
+  // i18n pages.conversations.bskyMenu.close: Close
+  // i18n pages.conversations.bskyMenu.mute: Mute conversation
+  // i18n pages.conversations.bskyMenu.unmute: Unmute conversation
+  // i18n pages.conversations.bskyMenu.leave: Leave conversation
+  // i18n pages.conversations.mutedTitle: Muted: no notifications from this chat
+  // i18n pages.conversations.leaveConfirm.message: Leave this conversation? It is removed from your chats. If they write to you again, it comes back.
+  // i18n pages.conversations.leaveConfirm.confirm: Leave
+  // i18n pages.conversations.declineConfirm.message: Decline this message request? It is removed from your requests. If they write to you again, it comes back.
+  // i18n pages.conversations.declineConfirm.confirm: Decline
+  // i18n pages.conversations.actionFailed: That didn't work on Bluesky. Try again.
+
+  protected toggleRequests(): void {
+    this.showRequests.update((on) => !on);
+  }
+
+  /** Back to the chats list once the last request has been dealt with. */
+  private leaveRequestsIfEmpty(): void {
+    if (!this.bskyRequestCount()) this.showRequests.set(false);
+  }
+
+  protected acceptRequest(chat: Chat): void {
+    if (!chat.convoId) return;
+    this.bskyActionError.set(null);
+    this.bskyChat.acceptConvo(chat.convoId).subscribe({
+      next: () => {
+        this.bskyConvos.update((list) =>
+          list.map((c) => (c.id === chat.convoId ? { ...c, status: 'accepted' } : c)),
+        );
+        this.leaveRequestsIfEmpty();
+      },
+      error: (error: unknown) => this.bskyActionFailed('accept', error),
+    });
+  }
+
+  /** Leave a chat, or decline a request (the same call); confirmed first. */
+  protected async leaveBskyConvo(chat: Chat): Promise<void> {
+    if (!chat.convoId) return;
+    const prefix = chat.request ? 'declineConfirm' : 'leaveConfirm';
+    const ok = await this.dialogs.confirm(
+      this.i18n.translate(`pages.conversations.${prefix}.message`),
+      {
+        confirmLabel: this.i18n.translate(`pages.conversations.${prefix}.confirm`),
+        danger: true,
+      },
+    );
+    if (!ok) return;
+    this.bskyActionError.set(null);
+    this.bskyChat.leaveConvo(chat.convoId).subscribe({
+      next: () => {
+        this.bskyConvos.update((list) => list.filter((c) => c.id !== chat.convoId));
+        if (this.selectedKey() === chat.key) {
+          this.selectedKey.set(null);
+          this.bskyMessages.set([]);
+        }
+        this.leaveRequestsIfEmpty();
+      },
+      error: (error: unknown) => this.bskyActionFailed('leave', error),
+    });
+  }
+
+  protected toggleBskyMute(chat: Chat): void {
+    if (!chat.convoId) return;
+    this.bskyActionError.set(null);
+    this.bskyChat.setConvoMuted(chat.convoId, !chat.muted).subscribe({
+      next: ({ convo }) => {
+        this.bskyConvos.update((list) =>
+          list.map((c) =>
+            c.id === chat.convoId ? { ...c, muted: convo?.muted ?? !chat.muted } : c,
+          ),
+        );
+      },
+      error: (error: unknown) => this.bskyActionFailed('mute', error),
+    });
+  }
+
+  // i18n pages.conversations.reactions.add: Add reaction
+  // i18n pages.conversations.reactions.chip: {{emoji}} {{count}}
+  // i18n pages.conversations.reactions.limit: Bluesky allows only a few reactions from you on one message. Remove one first.
+  // i18n pages.conversations.messageMenu: Message options
+  // i18n pages.conversations.deleteForMe: Delete for me
+  // i18n pages.conversations.deleteConfirm.message: Delete this message for you only? It disappears from your view; the other person keeps their copy.
+  // i18n pages.conversations.deletedMessage: Message deleted
+
+  protected bskyIsDeleted(m: BskyMessageView): boolean {
+    return isDeletedMessage(m);
+  }
+
+  /** Reactions grouped by emoji in first-seen order; `mine` when you made one. */
+  protected reactionChips(m: BskyMessageView): ReactionChip[] {
+    const me = this.bsky.session()?.did;
+    const byValue = new Map<string, ReactionChip>();
+    for (const r of m.reactions ?? []) {
+      const chip = byValue.get(r.value) ?? { value: r.value, count: 0, mine: false };
+      chip.count++;
+      chip.mine ||= r.sender.did === me;
+      byValue.set(r.value, chip);
+    }
+    return [...byValue.values()];
+  }
+
+  protected toggleReactionPicker(m: BskyMessageView): void {
+    this.reactingTo.update((id) => (id === m.id ? null : m.id));
+  }
+
+  /** From the picker: Bluesky takes one native emoji, not a `:shortcode:`. */
+  protected pickReaction(m: BskyMessageView, value: string): void {
+    this.reactingTo.set(null);
+    if (value.startsWith(':')) return;
+    const mine = this.reactionChips(m).some((c) => c.value === value && c.mine);
+    if (!mine) this.setReaction(m, value, true);
+  }
+
+  protected toggleReaction(m: BskyMessageView, chip: ReactionChip): void {
+    this.setReaction(m, chip.value, !chip.mine);
+  }
+
+  private setReaction(m: BskyMessageView, value: string, on: boolean): void {
+    const convoId = this.selected()?.convoId;
+    if (!convoId) return;
+    this.bskyActionError.set(null);
+    this.bskyChat.setReaction(convoId, m.id, value, on).subscribe({
+      next: ({ message }) => this.replaceBskyMessage(message),
+      error: (error: unknown) => {
+        if (xrpcErrorCode(error) === 'ReactionLimitReached') {
+          this.bskyActionError.set('pages.conversations.reactions.limit');
+          return;
+        }
+        this.bskyActionFailed('reaction', error);
+      },
+    });
+  }
+
+  protected async deleteForMe(m: BskyMessageView): Promise<void> {
+    const convoId = this.selected()?.convoId;
+    if (!convoId) return;
+    const ok = await this.dialogs.confirm(
+      this.i18n.translate('pages.conversations.deleteConfirm.message'),
+      { confirmLabel: this.i18n.translate('pages.conversations.deleteForMe'), danger: true },
+    );
+    if (!ok) return;
+    this.bskyActionError.set(null);
+    this.bskyChat.deleteMessageForSelf(convoId, m.id).subscribe({
+      next: (deleted) =>
+        this.replaceBskyMessage({ ...deleted, $type: BSKY_DELETED_MESSAGE, text: undefined }),
+      error: (error: unknown) => this.bskyActionFailed('delete', error),
+    });
+  }
+
+  private replaceBskyMessage(updated: BskyMessageView): void {
+    this.bskyMessages.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
+  }
+
+  private bskyActionFailed(action: string, error: unknown): void {
+    this.bskyActionError.set('pages.conversations.actionFailed');
+    this.diagnostics.error('Conversations', `${action}:bluesky-error`, error);
   }
 
   // i18n pages.conversations.loadError.mastodon: Could not load all Mastodon conversations. Try again.
@@ -1344,6 +1563,10 @@ function hasMissingBlueskyMember(convo: BskyConvoView, myDid: string | undefined
       displayName === 'missing.invalid'
     );
   });
+}
+
+function isDeletedMessage(m: BskyMessageView): boolean {
+  return m.$type === BSKY_DELETED_MESSAGE;
 }
 
 function dedupeSort(statuses: Status[]): Status[] {

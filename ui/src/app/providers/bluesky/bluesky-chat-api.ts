@@ -1,11 +1,17 @@
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, switchMap, tap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { BlueskyApi } from './bluesky-api';
 import { detectFacets } from './bluesky-facets';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPds } from './bluesky-pds';
-import { BskyConvoView, BskyChatLogEntry, BskyConvoList, BskyMessageView } from './bluesky-types';
+import {
+  BskyAllowIncoming,
+  BskyConvoView,
+  BskyChatLogEntry,
+  BskyConvoList,
+  BskyMessageView,
+} from './bluesky-types';
 import { IndicatorEvents } from '../../indicator-events';
 
 /**
@@ -27,6 +33,16 @@ export function isChatScopeError(err: unknown): boolean {
   return err.status === 401 || /token scope/i.test(message);
 }
 
+const DECLARATION = 'chat.bsky.actor.declaration';
+
+/** The XRPC error name in a failed response body, such as `ReactionLimitReached`. */
+export function xrpcErrorCode(err: unknown): string {
+  if (!(err instanceof HttpErrorResponse)) {
+    return '';
+  }
+  return (err.error as { error?: string } | null)?.error ?? '';
+}
+
 /** DM client: `chat.bsky.convo.*` proxied through the linked account's PDS. */
 @Injectable({ providedIn: 'root' })
 export class BlueskyChatApi {
@@ -42,10 +58,17 @@ export class BlueskyChatApi {
     );
   }
 
-  listConvos(cursor?: string): Observable<BskyConvoList> {
+  /**
+   * Without `status` the chat service returns accepted chats and message
+   * requests together, each marked by `convo.status`; the page splits them.
+   */
+  listConvos(cursor?: string, status?: 'request' | 'accepted'): Observable<BskyConvoList> {
     let params = new HttpParams().set('limit', '50');
     if (cursor) {
       params = params.set('cursor', cursor);
+    }
+    if (status) {
+      params = params.set('status', status);
     }
     const did = this.session.session()?.did;
     return this.chatGet<BskyConvoList>('chat.bsky.convo.listConvos', params).pipe(
@@ -95,6 +118,73 @@ export class BlueskyChatApi {
 
   updateRead(convoId: string, messageId: string): Observable<unknown> {
     return this.chatPost('chat.bsky.convo.updateRead', { convoId, messageId });
+  }
+
+  /** Move a message request into your chats. Replying to it does the same. */
+  acceptConvo(convoId: string): Observable<unknown> {
+    return this.chatPost('chat.bsky.convo.acceptConvo', { convoId });
+  }
+
+  /** Drop a chat (or decline a request); it returns if the other side writes again. */
+  leaveConvo(convoId: string): Observable<unknown> {
+    return this.chatPost('chat.bsky.convo.leaveConvo', { convoId });
+  }
+
+  /** Silence (or restore) notifications for one chat; shown by `convo.muted`. */
+  setConvoMuted(convoId: string, muted: boolean): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost(muted ? 'chat.bsky.convo.muteConvo' : 'chat.bsky.convo.unmuteConvo', {
+      convoId,
+    });
+  }
+
+  /** Add or remove one emoji reaction; the answer is the updated message. */
+  setReaction(
+    convoId: string,
+    messageId: string,
+    value: string,
+    on: boolean,
+  ): Observable<{ message: BskyMessageView }> {
+    return this.chatPost(on ? 'chat.bsky.convo.addReaction' : 'chat.bsky.convo.removeReaction', {
+      convoId,
+      messageId,
+      value,
+    });
+  }
+
+  /** Hide a message from your own view only; the other side keeps their copy. */
+  deleteMessageForSelf(convoId: string, messageId: string): Observable<BskyMessageView> {
+    return this.chatPost('chat.bsky.convo.deleteMessageForSelf', { convoId, messageId });
+  }
+
+  /**
+   * Who may start a chat with you. The declaration is an ordinary record in the
+   * account's own repo, so it is read and written without the chat proxy; a
+   * missing record means Bluesky's default, people you follow.
+   */
+  getAllowIncoming(): Observable<BskyAllowIncoming> {
+    const params = new HttpParams()
+      .set('repo', this.session.session()?.did ?? '')
+      .set('collection', DECLARATION)
+      .set('rkey', 'self');
+    return this.api
+      .get<{ value?: { allowIncoming?: BskyAllowIncoming } }>('com.atproto.repo.getRecord', params)
+      .pipe(
+        map((record) => record.value?.allowIncoming ?? 'following'),
+        catchError((error: unknown) =>
+          xrpcErrorCode(error) === 'RecordNotFound'
+            ? of('following' as const)
+            : throwError(() => error),
+        ),
+      );
+  }
+
+  setAllowIncoming(allowIncoming: BskyAllowIncoming): Observable<unknown> {
+    return this.api.request('com.atproto.repo.putRecord', {
+      repo: this.session.session()?.did ?? '',
+      collection: DECLARATION,
+      rkey: 'self',
+      record: { $type: DECLARATION, allowIncoming },
+    });
   }
 
   /** Everything that happened across all convos since `cursor` (for polling). */

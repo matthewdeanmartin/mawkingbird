@@ -1,6 +1,6 @@
 # Bluesky parity roadmap, November 2026
 
-Status: sprints 1–5 code complete, awaiting live trials · 2026-11-03. Manual test plans: `test_plans/`.
+Status: sprints 1–6 code complete, awaiting live trials · 2026-11-03. Manual test plans: `test_plans/`.
 
 Mawkingbird is a client first; Bluesky is one of its two networks. Today a
 Bluesky account can read, reply, like, repost, quote, bookmark, follow, block,
@@ -464,3 +464,52 @@ separate thing with their own pages.
   pack members by search rather than from a list; editing or deleting a pack;
   showing a pack's feeds; opening bsky.app starter-pack links inside posts in
   Mawkingbird instead of on bsky.app.
+
+### Sprint 6 progress (2026-11-03): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-sprint-6-chat.md` (accounts A and B).
+Items 1–6 done; item 7 (live updates through `getLog`) deferred.
+
+- **Model.** `BskyConvoView.status` and `BskyMessageView.reactions` (both
+  optional; a missing status means accepted), `BskyReactionView`,
+  `BSKY_DELETED_MESSAGE` and `BskyAllowIncoming`.
+- **API** (`bluesky-chat-api.ts`). `listConvos(cursor, status)`,
+  `acceptConvo`, `leaveConvo`, `setConvoMuted` (mute/unmute),
+  `setReaction` (add/remove), `deleteMessageForSelf`, all through
+  `chatPost` (resolved PDS + chat proxy). `getAllowIncoming` /
+  `setAllowIncoming` read and `putRecord` `chat.bsky.actor.declaration/self`
+  in the account's own repo, unproxied; `RecordNotFound` reads as
+  `following`. `xrpcErrorCode` exposes the XRPC error name.
+- **Requests.** The page keeps one unfiltered `listConvos` call (the chat
+  service returns requests and chats together, marked by `status`) and splits
+  them: requests never appear among chats; a **Requests (N)** toggle shows
+  them alone, with the Who/Kind filters hidden. An open request has a bar
+  with Accept and Decline (leave, confirmed). Replying accepts it locally, as
+  the server does. `updateRead` still runs only when a chat is opened.
+  Following a notification to a request opens the requests list.
+- **Reactions.** Chips under each message (emoji + count, `aria-pressed` when
+  yours; choosing yours removes it), and an add-reaction button opening the
+  composer's `app-emoji-picker` inline. Custom `:shortcode:` picks are ignored
+  (Bluesky takes one native emoji). `ReactionLimitReached` gets its own
+  message; other failures a generic one.
+- **Mute and leave.** Header `mb-post-menu` with Mute/Unmute and Leave
+  (Decline for a request), leave confirmed through `AppDialogs.confirm`;
+  🔕 marks muted rows.
+- **Delete for me.** Per-message `mb-post-menu` with "Delete for me",
+  confirmed with copy saying the other side keeps theirs. Deleted views are
+  now kept in the transcript as "Message deleted" (they were filtered out
+  before) and skipped for `updateRead`.
+- **Who can message you.** Fourth section on Settings → Bluesky moderation:
+  one select saved on change with SaveFeedback; a refused save reverts the
+  select and shows Bluesky's reason; a failed read hides only this section.
+- **Help.** Bluesky connection guide: the new moderation bullet and a Chat
+  section.
+- **Design inventory.** `conversations.html` +8 native buttons, all shared
+  (`mbButton`, `mbMenuItem`); moderation page +1 select. Reviewed in
+  `06-consolidation.md`; no candidate files added or removed.
+- **Tests.** `bluesky-chat-api.spec.ts` (+10 with the `it.each` rows),
+  `conversations-networks.spec.ts` (+9), moderation settings (+3).
+  `make test` 9,179/9,179 (22 added, 0 missing); build initial 902.21 kB
+  (unchanged); help site; composer browser suite 10/10.
+- **Deferred:** `getLog` polling (refresh still re-lists); paging past the
+  first 50 convos (unchanged); a request count in the nav badge.

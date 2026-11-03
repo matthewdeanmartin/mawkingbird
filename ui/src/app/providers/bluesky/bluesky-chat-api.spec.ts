@@ -155,6 +155,93 @@ describe('BlueskyChatApi', () => {
     expect(sent?.id).toBe('m1');
   });
 
+  it('listConvos filters by request status when asked', () => {
+    const chat = seed();
+    chat.listConvos(undefined, 'request').subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === `${PDS}/xrpc/chat.bsky.convo.listConvos`);
+    expect(req.request.params.get('status')).toBe('request');
+    req.flush({ convos: [] });
+
+    chat.listConvos().subscribe();
+    const all = httpMock.expectOne((r) => r.url === `${PDS}/xrpc/chat.bsky.convo.listConvos`);
+    expect(all.request.params.has('status')).toBe(false);
+    all.flush({ convos: [] });
+  });
+
+  it.each([
+    ['acceptConvo', (c: BlueskyChatApi) => c.acceptConvo('c1'), { convoId: 'c1' }],
+    ['leaveConvo', (c: BlueskyChatApi) => c.leaveConvo('c1'), { convoId: 'c1' }],
+    ['muteConvo', (c: BlueskyChatApi) => c.setConvoMuted('c1', true), { convoId: 'c1' }],
+    ['unmuteConvo', (c: BlueskyChatApi) => c.setConvoMuted('c1', false), { convoId: 'c1' }],
+    [
+      'addReaction',
+      (c: BlueskyChatApi) => c.setReaction('c1', 'm1', '👍', true),
+      { convoId: 'c1', messageId: 'm1', value: '👍' },
+    ],
+    [
+      'removeReaction',
+      (c: BlueskyChatApi) => c.setReaction('c1', 'm1', '👍', false),
+      { convoId: 'c1', messageId: 'm1', value: '👍' },
+    ],
+    [
+      'deleteMessageForSelf',
+      (c: BlueskyChatApi) => c.deleteMessageForSelf('c1', 'm1'),
+      { convoId: 'c1', messageId: 'm1' },
+    ],
+  ] as const)('%s posts to the PDS through the chat proxy', (name, call, body) => {
+    const chat = seed();
+    call(chat).subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === `${PDS}/xrpc/chat.bsky.convo.${name}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.headers.get('atproto-proxy')).toBe(PROXY);
+    expect(req.request.body).toEqual(body);
+    req.flush({});
+  });
+
+  it('reads a missing chat declaration as "people I follow", without the chat proxy', () => {
+    const chat = seed();
+    let allow: string | undefined;
+    chat.getAllowIncoming().subscribe((v) => (allow = v));
+
+    const req = httpMock.expectOne((r) => r.url.endsWith('/xrpc/com.atproto.repo.getRecord'));
+    expect(req.request.params.get('repo')).toBe('did:plc:me');
+    expect(req.request.params.get('collection')).toBe('chat.bsky.actor.declaration');
+    expect(req.request.params.get('rkey')).toBe('self');
+    expect(req.request.headers.has('atproto-proxy')).toBe(false);
+    req.flush(
+      { error: 'RecordNotFound', message: 'Could not locate record' },
+      { status: 400, statusText: 'Bad Request' },
+    );
+
+    expect(allow).toBe('following');
+  });
+
+  it('reads and writes the chat declaration record in the account repo', () => {
+    const chat = seed();
+    let allow: string | undefined;
+    chat.getAllowIncoming().subscribe((v) => (allow = v));
+    httpMock
+      .expectOne((r) => r.url.endsWith('/xrpc/com.atproto.repo.getRecord'))
+      .flush({
+        uri: 'at://did:plc:me/chat.bsky.actor.declaration/self',
+        value: { allowIncoming: 'none' },
+      });
+    expect(allow).toBe('none');
+
+    chat.setAllowIncoming('all').subscribe();
+    const put = httpMock.expectOne((r) => r.url.endsWith('/xrpc/com.atproto.repo.putRecord'));
+    expect(put.request.headers.has('atproto-proxy')).toBe(false);
+    expect(put.request.body).toEqual({
+      repo: 'did:plc:me',
+      collection: 'chat.bsky.actor.declaration',
+      rkey: 'self',
+      record: { $type: 'chat.bsky.actor.declaration', allowIncoming: 'all' },
+    });
+    put.flush({ uri: 'at://x', cid: 'y' });
+  });
+
   it('updateRead posts the convo and message ids', () => {
     const chat = seed();
     chat.updateRead('convo-1', 'm9').subscribe();

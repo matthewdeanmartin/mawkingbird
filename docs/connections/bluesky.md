@@ -29,8 +29,20 @@ Open **Settings → Bluesky moderation**. These settings are saved to your Blues
 - **Muted words and tags:** posts containing them are collapsed behind a notice you can open. Choose whether to look in text and tags or tags only, for how long, and whether to skip people you follow.
 - **Moderation lists:** paste the bsky.app address of a list someone keeps, then mute or block everyone on it.
 - **Moderation services:** add a service by its handle. Its labels then apply, and labelled media stays covered.
+- **Who can message you:** choose everyone, people you follow, or no one. People you already chat with can keep writing.
 
 To stop notifications from a busy thread, open a post's ••• menu and choose **Mute notifications from this thread**.
+
+## Chat
+
+Bluesky direct messages appear in **Chat** beside your other conversations.
+
+- **Message requests:** messages from people you haven't chatted with wait under **Requests**, apart from your chats. Open one, then choose **Accept** or **Decline**. Replying also accepts it.
+- **Reactions:** choose the reaction button under a message and pick an emoji. Choose a reaction to remove your own. Bluesky limits how many reactions you can add to one message.
+- **Mute or leave:** use the ••• menu at the top of a conversation. Muting stops its notifications. Leaving removes it from your chats; it comes back if the other person writes again.
+- **Delete for me:** use a message's ••• menu. The message is removed from your view only; the other person keeps their copy.
+
+Group chats and sending photos in chat are not available, because Bluesky does not offer them to other apps.
 
 ## Unlink
 

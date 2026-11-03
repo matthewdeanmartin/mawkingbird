@@ -417,7 +417,19 @@ export interface BskyMessageView {
   facets?: BskyFacet[];
   sender: { did: string };
   sentAt: string;
+  /** Absent on older chat servers and on messages nobody reacted to. */
+  reactions?: BskyReactionView[];
 }
+
+/** One emoji reaction on a chat message; `value` is a single grapheme. */
+export interface BskyReactionView {
+  value: string;
+  sender: { did: string };
+  createdAt: string;
+}
+
+/** `$type` of a message the viewer deleted for themselves (it has no text). */
+export const BSKY_DELETED_MESSAGE = 'chat.bsky.convo.defs#deletedMessageView';
 
 export interface BskyConvoView {
   id: string;
@@ -425,8 +437,13 @@ export interface BskyConvoView {
   members: BskyChatMember[];
   lastMessage?: BskyMessageView;
   muted?: boolean;
+  /** A message request from someone you haven't accepted yet; absent means accepted. */
+  status?: 'request' | 'accepted';
   unreadCount: number;
 }
+
+/** Who may start a chat with the account (`chat.bsky.actor.declaration`). */
+export type BskyAllowIncoming = 'all' | 'following' | 'none';
 
 export interface BskyConvoList {
   convos: BskyConvoView[];

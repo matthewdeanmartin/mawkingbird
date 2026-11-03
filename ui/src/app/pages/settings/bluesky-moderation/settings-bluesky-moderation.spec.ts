@@ -6,6 +6,8 @@ import { Status } from '../../../models';
 import { BlueskyModeration } from '../../../providers/bluesky/bluesky-moderation';
 import { BlueskyModerationState } from '../../../providers/bluesky/bluesky-moderation-state';
 import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
+import { BlueskyChatApi } from '../../../providers/bluesky/bluesky-chat-api';
+import { of, throwError } from 'rxjs';
 import { StatusVisibility } from '../../../status-visibility';
 import { SettingsBlueskyModeration } from './settings-bluesky-moderation';
 
@@ -13,6 +15,7 @@ import { SettingsBlueskyModeration } from './settings-bluesky-moderation';
 describe('SettingsBlueskyModeration', () => {
   let linked: ReturnType<typeof signal<boolean>>;
   let moderation: Record<string, ReturnType<typeof vi.fn>>;
+  let chat: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(() => {
     linked = signal(true);
@@ -30,11 +33,16 @@ describe('SettingsBlueskyModeration', () => {
       removeMutedWord: vi.fn().mockResolvedValue(undefined),
       unsubscribeList: vi.fn().mockResolvedValue(undefined),
     };
+    chat = {
+      getAllowIncoming: vi.fn().mockReturnValue(of('following')),
+      setAllowIncoming: vi.fn().mockReturnValue(of({})),
+    };
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: BlueskySession, useValue: { linked } },
         { provide: BlueskyModeration, useValue: moderation },
+        { provide: BlueskyChatApi, useValue: chat },
       ],
     });
   });
@@ -101,6 +109,47 @@ describe('SettingsBlueskyModeration', () => {
     f.detectChanges();
 
     expect((f.nativeElement as HTMLElement).textContent).toContain('List not found');
+  });
+
+  it('shows who can message you and saves a change straight away', async () => {
+    const f = await render();
+    await f.whenStable();
+    const el = f.nativeElement as HTMLElement;
+    const select = el.querySelector<HTMLSelectElement>('select[name="allowIncoming"]')!;
+    expect(el.textContent).toContain('Who can message you');
+    expect(select.value).toBe('following');
+
+    select.value = 'none';
+    select.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    f.detectChanges();
+
+    expect(chat['setAllowIncoming']).toHaveBeenCalledWith('none');
+    expect(el.textContent).toContain('Saved.');
+  });
+
+  it('puts the choice back and says why when Bluesky refuses it', async () => {
+    chat['setAllowIncoming'].mockReturnValue(throwError(() => new Error('Bad token scope')));
+    const f = await render();
+    const page = f.componentInstance as unknown as {
+      setAllowIncoming(v: string): Promise<void>;
+      allowIncoming(): string | null;
+    };
+
+    await page.setAllowIncoming('all');
+    f.detectChanges();
+
+    expect(page.allowIncoming()).toBe('following');
+    expect((f.nativeElement as HTMLElement).textContent).toContain('Bad token scope');
+  });
+
+  it('keeps the moderation sections when the chat setting cannot be read', async () => {
+    chat['getAllowIncoming'].mockReturnValue(throwError(() => new Error('down')));
+    const el = (await render()).nativeElement as HTMLElement;
+
+    expect(el.textContent).toContain("Couldn't read this setting from Bluesky.");
+    expect(el.textContent).toContain('Spam accounts');
+    expect(el.querySelector('select[name="allowIncoming"]')).toBeNull();
   });
 });
 

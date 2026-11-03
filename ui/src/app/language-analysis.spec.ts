@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeLanguage, detectLanguage, segmentLanguageText } from '../language-detection';
+import {
+  analyzeLanguage,
+  detectLanguage,
+  DISCRIMINATING_WORDS,
+  segmentLanguageText,
+} from '../language-detection';
 import corpus from './language-detect.corpus.json';
 
 const ENGLISH = 'This is the book that we read with our friends.';
@@ -147,5 +152,96 @@ describe('language analysis and explanations', () => {
     expect(linked.prose.language).toBeNull();
     expect(analyzeLanguage('#Straße').language).toBe('de');
     expect(analyzeLanguage('https://example.test/#これは日本語').reasons).toEqual(['no-text']);
+  });
+});
+
+/** A real Brazilian post that reached an English-only feed with the wrong declaration. */
+const REPORTED_PORTUGUESE_LINES = [
+  'Deixa eu falar um negócio pra vcs',
+  'Usar Linux, estar no fediverso, usar software livre etc não te faz melhor do que ninguém',
+  'Essa conversa de superioridade moral é justamente o que impede mais pessoas de chegarem no movimento',
+  'Deixa as pessoa',
+  'Pela atenção, obrig',
+];
+
+describe('line-broken posts with thin evidence per line', () => {
+  it('reads the reported Portuguese post as Portuguese, one segment per line', () => {
+    const result = analyzeLanguage(REPORTED_PORTUGUESE_LINES.join('\n'));
+    expect(result.segments.filter((s) => s.kind === 'prose')).toHaveLength(5);
+    expect(result.language).toBe('pt');
+    expect(result.candidatesComplete).toBe(true);
+    expect(result.prose.language).toBe('pt');
+    expect(result.ruledOut).toContain('en');
+    expect(result.ruledOut).not.toContain('pt');
+  });
+
+  it('does not count the Romance pronoun "te" as Dutch', () => {
+    expect(DISCRIMINATING_WORDS.get('te')).toBeUndefined();
+    expect(analyzeLanguage(REPORTED_PORTUGUESE_LINES[1]).candidates).toEqual(['pt']);
+  });
+
+  it('gives blank, punctuation-only, digit-only and emoji-only lines no vote', () => {
+    const result = analyzeLanguage(`${ENGLISH}\n\n...\n!!!\n123 456\n😀😀\n${ENGLISH}`);
+    expect(result.language).toBe('en');
+    expect(result.segments.filter((s) => s.included)).toHaveLength(2);
+  });
+
+  it('lets a line with words but no clues abstain instead of vetoing', () => {
+    expect(analyzeLanguage(`${ENGLISH}\nok`).language).toBe('en');
+    expect(analyzeLanguage(`${DUTCH}\nhaha`).language).toBe('nl');
+  });
+
+  it('still vetoes on lines with conflicting or unsupported evidence', () => {
+    expect(analyzeLanguage(`${ENGLISH}\n${DUTCH}`).language).toBeNull();
+    expect(analyzeLanguage(`${ENGLISH}\nیہ اردو ہے`).language).toBeNull();
+    expect(analyzeLanguage(`${ENGLISH}\nnão sei mas estoy feliz`).language).toBeNull();
+  });
+
+  it('pools undecided lines, so short lines add up rather than each falling short', () => {
+    const result = analyzeLanguage('Bom dia!\nHoje vou à praia com a minha família.\nAté mais!');
+    expect(result.segments.every((s) => s.language === null)).toBe(true);
+    expect(result.language).toBe('pt');
+  });
+});
+
+describe('ruling languages out by their letters', () => {
+  it('rules out languages whose script is absent', () => {
+    const cyrillic = analyzeLanguage('Москва Киев Минск');
+    expect(cyrillic.language).toBeNull();
+    expect(cyrillic.ruledOut).toEqual(expect.arrayContaining(['en', 'pt', 'ja', 'zh', 'el']));
+    expect(cyrillic.ruledOut).not.toContain('ru');
+    expect(cyrillic.ruledOut).not.toContain('uk');
+    expect(analyzeLanguage(ENGLISH).ruledOut).toEqual(expect.arrayContaining(['ja', 'ru']));
+    expect(analyzeLanguage(ENGLISH).ruledOut).not.toContain('en');
+  });
+
+  it('rules out English for accented text when another language has a clue', () => {
+    const mixed = analyzeLanguage('não sei, mas é muito bom\nestoy feliz com a atenção');
+    expect(mixed.language).toBeNull();
+    expect(mixed.ruledOut).toContain('en');
+    expect(mixed.ruledOut).not.toContain('pt');
+  });
+
+  it.each([
+    'Visited Belém and São Paulo with my friend Conceição.',
+    'I had a café au lait at the Champs-Élysées with José and Zoë',
+    'Belém e São Paulo!!',
+    'naïve café',
+    'ok lol',
+  ])('keeps English open for borrowed spellings: %s', (text) => {
+    expect(analyzeLanguage(text).ruledOut).not.toContain('en');
+  });
+
+  it('never rules out a Latin language by spelling without its word table', () => {
+    expect(
+      analyzeLanguage('não sei, mas é muito bom\nestoy feliz com a atenção').ruledOut,
+    ).not.toContain('is');
+    expect(analyzeLanguage('Москва Киев Минск').ruledOut).toContain('is');
+  });
+
+  it('accepts every Vietnamese tone and vowel mark as Vietnamese', () => {
+    const text = 'Buổi sáng đẹp, hẹn gặp lại!';
+    expect(analyzeLanguage(text).ruledOut).not.toContain('vi');
+    expect(analyzeLanguage(text.normalize('NFD')).ruledOut).not.toContain('vi');
   });
 });

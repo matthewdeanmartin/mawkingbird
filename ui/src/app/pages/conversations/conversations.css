@@ -592,3 +592,63 @@
   border: 1px solid rgb(209 66 92 / 40%);
   background: rgb(209 66 92 / 10%);
 }
+
+/* Bluesky chat: message requests, reactions and deleted messages. */
+.chat-filters[hidden] {
+  display: none;
+}
+
+.requests-toggle {
+  margin: 6px 10px 0;
+}
+
+.kind-request {
+  background: var(--accent-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.muted-mark {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.request-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.request-bar p {
+  flex: 1 1 16rem;
+  margin: 0;
+}
+
+.bsky-action-error {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 6px 12px;
+}
+
+.bubble-deleted {
+  font-style: italic;
+}
+
+.bubble-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+/* The picker sits in the transcript's flow so the scroll pane never clips it. */
+.reaction-popover {
+  width: min(352px, 100%);
+  margin-top: 6px;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px var(--ds-overlay-shadow);
+}

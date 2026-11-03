@@ -1,6 +1,11 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import { ClientPrefs } from './client-prefs';
-import { detectScriptCandidates, LanguageAnalysis, LanguageDecision } from './language-detect';
+import {
+  detectScriptCandidates,
+  LangCode,
+  LanguageAnalysis,
+  LanguageDecision,
+} from './language-detect';
 import { Status, Tag } from './models';
 import { UiLocale } from './i18n/locale';
 import { analyzeStatusLanguage } from './status-language';
@@ -233,15 +238,30 @@ export class FeedLanguageFilter {
     )
       return null;
 
+    // Filtering only needs "none of yours", not which language it is instead.
+    // Letters or a script none of the allowed languages use rule them all out,
+    // even when the detector abstains between several it can't tell apart. A
+    // declaration of a language you read is then a misrepresentation. Allowed
+    // languages the detector cannot model are never ruled out, so they keep posts.
+    const allowed = this.allowed();
+    if (
+      analysis.ruledOut.length &&
+      [...allowed].every((lang) => analysis.ruledOut.includes(lang as LangCode))
+    )
+      return declared && allowed.has(declared) ? 'misrepresented' : 'foreign';
+
     // (b) Misrepresentation: declares one language, text is confidently another.
     if (declared && detected && declared !== detected) {
       return 'misrepresented';
     }
 
     // (a) Foreign: the post's effective language is one the user doesn't know.
-    // A declared language is trusted as-is; otherwise fall back to confident
-    // detection. If we have neither, we don't know — so we keep it.
-    const effective = declared ?? detected;
+    // A declared language is trusted unless its letters rule it out (Cyrillic
+    // labelled `en`); otherwise fall back to confident detection. If we have
+    // neither, we don't know — so we keep it.
+    const credible =
+      declared && !analysis.ruledOut.includes(declared as LangCode) ? declared : null;
+    const effective = credible ?? detected;
     if (effective && !this.allowed().has(bare(effective))) {
       return 'foreign';
     }

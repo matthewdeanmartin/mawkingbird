@@ -431,6 +431,40 @@ export const STOP_WORDS: Partial<Record<LangCode, string[]>> = {
     'está',
     'também',
     'pelo',
+    // Everyday Portuguese, each checked against the tables and against common
+    // words in Romanian (eu), Italian (essa, esse, vai), Catalan (meu), Spanish
+    // (gente, nada) and English place names (São Paulo), which are left out.
+    'pela',
+    'pelos',
+    'pelas',
+    'isto',
+    'nós',
+    'você',
+    'vocês',
+    'vc',
+    'vcs',
+    'pra',
+    'ninguém',
+    'então',
+    'fazer',
+    'faz',
+    'pessoa',
+    'pessoas',
+    'melhor',
+    'mesmo',
+    'ainda',
+    'depois',
+    'tem',
+    'estão',
+    'foi',
+    'há',
+    'só',
+    'bem',
+    'coisa',
+    'obrigado',
+    'obrigada',
+    'até',
+    'minha',
   ],
   it: [
     'molto',
@@ -707,6 +741,9 @@ export const HOMOGRAPHS = new Set([
   'kun',
   'está',
   'là', // French adverb and Vietnamese copula.
+  // Dutch "to", and the object pronoun "you" in Portuguese, Spanish, Italian,
+  // Romanian and French: "não te faz" was scoring Portuguese as half Dutch.
+  'te',
 ]);
 
 export const DISCRIMINATING_WORDS = (() => {
@@ -1011,6 +1048,13 @@ export interface LanguageDecision {
 export interface LanguageAnalysis extends LanguageDecision {
   /** The author's prose, independently of quotations and peripheral labels. */
   prose: LanguageDecision;
+  /**
+   * Languages the text cannot be in, judged by its letters: a script the
+   * language does not use, or several words spelled with letters it lacks while
+   * other clues point elsewhere. Holds even when `language` is null, so a filter
+   * can say "not anything you read" without naming what it is.
+   */
+  ruledOut: LangCode[];
   segments: (LanguageSegment & LanguageDecision & { included: boolean })[];
 }
 
@@ -1252,8 +1296,9 @@ export function analyzeLanguage(
     ...explainSegment(segment.text),
     included: relevant.has(segment),
   }));
-  const combined = combineDecisions(segments.filter((s) => s.included));
-  const prose = combineDecisions(segments.filter((s) => s.kind === 'prose' && hasLetters(s)));
+  const included = segments.filter((s) => s.included);
+  const combined = poolDecisions(included);
+  const prose = poolDecisions(segments.filter((s) => s.kind === 'prose' && hasLetters(s)));
   if (wasTruncated) {
     for (const decision of [combined, prose]) {
       decision.language = null;
@@ -1261,7 +1306,156 @@ export function analyzeLanguage(
       decision.reasons = [...new Set([...decision.reasons, 'truncated' as const])];
     }
   }
-  return { ...combined, prose, segments };
+  // Letters present in the sample are evidence even when truncated.
+  const ruledOut = ruledOutLanguages(included.map((s) => s.text).join('\n'));
+  return { ...combined, prose, segments, ruledOut };
+}
+
+/** Reasons that mean "nothing to go on", as opposed to evidence of something. */
+const SILENT_REASONS = new Set<LanguageReason>(['insufficient-clues', 'no-text']);
+
+/**
+ * Lines that settle nothing alone are read together, so a post's short lines
+ * ("Deixa as pessoa") pool their clues instead of each vetoing the verdict.
+ * Lines whose pooled reading still has no clue at all abstain beside decided
+ * lines. Conflicting clues and unsupported scripts are evidence and still veto,
+ * and two lines decided in different languages stay mixed.
+ */
+function poolDecisions(parts: (LanguageSegment & LanguageDecision)[]): LanguageDecision {
+  const decided = parts.filter((p) => p.language);
+  const open = parts.filter((p) => !p.language);
+  if (!open.length) return combineDecisions(decided);
+  const pooled = open.length === 1 ? open[0] : explainSegment(open.map((p) => p.text).join('\n'));
+  const silent =
+    !pooled.evidence.length &&
+    !pooled.candidates.length &&
+    pooled.reasons.every((reason) => SILENT_REASONS.has(reason));
+  return combineDecisions(silent && decided.length ? decided : [...decided, pooled]);
+}
+
+// ---------------------------------------------------------------------------
+// Ruling languages out by their letters
+// ---------------------------------------------------------------------------
+
+/** Scripts each non-Latin language is written in. */
+const LANGUAGE_SCRIPTS: Partial<Record<LangCode, RegExp>> = {
+  ru: /\p{Script=Cyrillic}/u,
+  uk: /\p{Script=Cyrillic}/u,
+  el: /\p{Script=Greek}/u,
+  ja: /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u,
+  ko: /\p{Script=Hangul}/u,
+  zh: /\p{Script=Han}/u,
+  ar: /\p{Script=Arabic}/u,
+  fa: /\p{Script=Arabic}/u,
+  he: /\p{Script=Hebrew}/u,
+  hi: /\p{Script=Devanagari}/u,
+  bn: /\p{Script=Bengali}/u,
+  ta: /\p{Script=Tamil}/u,
+  te: /\p{Script=Telugu}/u,
+  th: /\p{Script=Thai}/u,
+};
+
+/**
+ * Letters beyond a–z that each Latin-script language writes natively (CLDR
+ * main exemplars, lower case, composed). Borrowed spellings such as café in
+ * English are why a language is only ruled out with corroboration; see
+ * {@link ruledOutLanguages}. Vietnamese is checked by its marks instead.
+ */
+const LATIN_LETTERS: Partial<Record<LangCode, string>> = {
+  en: '',
+  de: 'äöüß',
+  fr: 'àâæçéèêëîïôœùûüÿ',
+  es: 'áéíñóúü',
+  pt: 'áâãàçéêíóôõú',
+  it: 'àèéìíîòóùú',
+  nl: 'áàéèëíïóöúü',
+  sv: 'åäöé',
+  da: 'æøåé',
+  no: 'æøåéèóòâô',
+  fi: 'äöåšž',
+  pl: 'ąćęłńóśźż',
+  tr: 'çğıöşüâîû',
+  eo: 'ĉĝĥĵŝŭ',
+  cs: 'áčďéěíňóřšťúůýž',
+  ca: 'àçéèíïòóúü',
+  id: 'é',
+  ro: 'ăâîșțşţ',
+  is: 'áðéíóúýþæö',
+};
+
+/** Vietnamese: đ plus vowels carrying its tone and vowel marks. */
+const VIETNAMESE_MARKS = /^[̛̣̀́̂̃̆̉]*$/u;
+
+function nativeLatinLetter(lang: LangCode, letter: string): boolean {
+  if (letter >= 'a' && letter <= 'z') return true;
+  if (lang === 'vi') {
+    if (letter === 'đ') return true;
+    const [base, ...marks] = letter.normalize('NFD');
+    return base >= 'a' && base <= 'z' && VIETNAMESE_MARKS.test(marks.join(''));
+  }
+  return (LATIN_LETTERS[lang] ?? '').includes(letter);
+}
+
+const RULE_OUT_LANGUAGES = (Object.keys(LANG_NAMES) as LangCode[]).filter((l) => l !== 'und');
+const TABLE_SETS = new Map(
+  (Object.entries(STOP_WORDS) as [LangCode, string[]][]).map(([lang, list]) => [
+    lang,
+    new Set(list),
+  ]),
+);
+
+/** Two clue-free words cannot rule a language out; "ok lol" stays open. */
+const RULE_OUT_MIN_WORDS = 2;
+/** Support for a language: distinct words from its table, shared or not. */
+const RULE_OUT_SUPPORT = 2;
+
+/**
+ * Languages these letters exclude. A non-Latin language is excluded when its
+ * script is absent. A Latin language is excluded when most letters are in
+ * another script, or when at least two distinct words use letters it lacks
+ * while it has fewer than two table words and another language has its own
+ * clue (a word, an exclusive spelling or another script). That corroboration is
+ * what keeps "Visited Belém and São Paulo" from ruling out English.
+ */
+export function ruledOutLanguages(text: string): LangCode[] {
+  const clean = detectionText(text).toLowerCase();
+  const tokens = [...new Set(words(clean))];
+  if (tokens.length < RULE_OUT_MIN_WORDS) return [];
+  const letters = clean.match(/\p{L}/gu) ?? [];
+  const latinShare = letters.filter((c) => /\p{Script=Latin}/u.test(c)).length / letters.length;
+  const { evidence } = latinEvidence(clean);
+  const marks = EXCLUSIVE_LETTERS.filter(({ re }) => re.test(clean)).map(({ lang }) => lang);
+  const otherScript = latinShare < 1;
+  // Letters beyond a–z, per word; most words have none and are skipped below.
+  const accented = tokens
+    .map((t) => [...t].filter((c) => (c < 'a' || c > 'z') && /\p{Script=Latin}/u.test(c)))
+    .filter((letters) => letters.length);
+  const out: LangCode[] = [];
+  for (const lang of RULE_OUT_LANGUAGES) {
+    const script = LANGUAGE_SCRIPTS[lang];
+    if (script) {
+      if (!script.test(clean)) out.push(lang);
+      continue;
+    }
+    const table = TABLE_SETS.get(lang);
+    const support = table ? tokens.filter((t) => table.has(t)).length : 0;
+    if (support >= RULE_OUT_SUPPORT) continue;
+    if (latinShare < 0.5) {
+      out.push(lang);
+      continue;
+    }
+    // Without a word table, support cannot be measured, so spelling alone never decides.
+    if (!table) continue;
+    const foreign = accented.filter((letters) =>
+      letters.some((c) => !nativeLatinLetter(lang, c)),
+    ).length;
+    const corroborated =
+      otherScript ||
+      [...evidence.keys()].some((other) => other !== lang) ||
+      marks.some((other) => other !== lang);
+    if (foreign >= RULE_OUT_MIN_WORDS && corroborated) out.push(lang);
+  }
+  return out;
 }
 
 /** For warnings and filters, supported evidence must dominate actual prose. */

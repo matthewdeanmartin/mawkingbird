@@ -32,8 +32,26 @@
       >
         {{ 'pages.conversations.refreshBluesky' | transloco }}
       </button>
+      <!-- Message requests are listed apart from chats, as on bsky.app. -->
+      @if (showRequests() || bskyRequestCount()) {
+        <button
+          mbButton
+          variant="compact"
+          type="button"
+          class="requests-toggle"
+          [attr.aria-pressed]="showRequests()"
+          [title]="'pages.conversations.requests.showTitle' | transloco"
+          (click)="toggleRequests()"
+        >
+          {{
+            showRequests()
+              ? ('pages.conversations.requests.back' | transloco)
+              : ('pages.conversations.requests.show' | transloco: { count: bskyRequestCount() })
+          }}
+        </button>
+      }
     }
-    <div class="chat-filters">
+    <div class="chat-filters" [hidden]="showRequests()">
       <!-- "All" means all *people*. Bots are the odd one out — a chat with Eliza
            or a language model is a different kind of thing from a chat with a
            person, and someone who wants one goes looking for it. Leaving this
@@ -134,6 +152,8 @@
       <p class="muted center small">
         {{ 'pages.conversations.emptyChats' | transloco }}
       </p>
+    } @else if (showRequests() && !visibleChats().length) {
+      <p class="muted center small">{{ 'pages.conversations.requests.empty' | transloco }}</p>
     } @else if (chats().length && !visibleChats().length) {
       <p class="muted center small">{{ 'pages.conversations.noMatch' | transloco }}</p>
     }
@@ -181,6 +201,20 @@
               <span class="kind-badge kind-bsky">{{
                 'pages.conversations.badge.bluesky' | transloco
               }}</span>
+              @if (c.request) {
+                <span class="kind-badge kind-request">{{
+                  'pages.conversations.requests.badge' | transloco
+                }}</span>
+              }
+              @if (c.muted) {
+                <span
+                  class="muted-mark"
+                  role="img"
+                  [attr.aria-label]="'pages.conversations.mutedTitle' | transloco"
+                  [title]="'pages.conversations.mutedTitle' | transloco"
+                  >🔕</span
+                >
+              }
             } @else if (c.kind === 'bot') {
               <!-- "This browser" rather than "Private": both are true, but the
                    surprising one is that nothing here leaves the machine. -->
@@ -276,6 +310,29 @@
             'pages.conversations.badge.private' | transloco
           }}</span>
         }
+        @if (chat.kind === 'bsky') {
+          <mb-post-menu
+            [label]="'pages.conversations.bskyMenu.label' | transloco"
+            [closeLabel]="'pages.conversations.bskyMenu.close' | transloco"
+          >
+            <button mbMenuItem type="button" (click)="toggleBskyMute(chat)">
+              {{
+                (chat.muted
+                  ? 'pages.conversations.bskyMenu.unmute'
+                  : 'pages.conversations.bskyMenu.mute'
+                ) | transloco
+              }}
+            </button>
+            <button mbMenuItem type="button" tone="danger" (click)="leaveBskyConvo(chat)">
+              {{
+                (chat.request
+                  ? 'pages.conversations.requests.decline'
+                  : 'pages.conversations.bskyMenu.leave'
+                ) | transloco
+              }}
+            </button>
+          </mb-post-menu>
+        }
         <!-- No moderation menu for bots: there is nobody to mute, block or
              report, and offering it would imply otherwise. -->
         @if (chat.accounts.length && chat.kind !== 'bot') {
@@ -304,6 +361,30 @@
           </details>
         }
       </header>
+
+      @if (chat.request) {
+        <div class="request-bar">
+          <p class="small">
+            {{ 'pages.conversations.requests.notice' | transloco: { name: title(chat) } }}
+          </p>
+          <button mbButton size="small" type="button" (click)="acceptRequest(chat)">
+            {{ 'pages.conversations.requests.accept' | transloco }}
+          </button>
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            tone="danger"
+            type="button"
+            (click)="leaveBskyConvo(chat)"
+          >
+            {{ 'pages.conversations.requests.decline' | transloco }}
+          </button>
+        </div>
+      }
+      @if (chat.kind === 'bsky' && bskyActionError(); as errorKey) {
+        <p class="muted small bsky-action-error" role="alert">{{ errorKey | transloco }}</p>
+      }
 
       @if (chat.kind === 'public') {
         <details class="public-banner">
@@ -429,10 +510,67 @@
                     }}
                   </div>
                 }
-                <div class="bubble-content">{{ m.text }}</div>
+                @if (bskyIsDeleted(m)) {
+                  <div class="bubble-content bubble-deleted muted">
+                    {{ 'pages.conversations.deletedMessage' | transloco }}
+                  </div>
+                } @else {
+                  <div class="bubble-content">{{ m.text }}</div>
+                  @if (reactionChips(m); as chips) {
+                    @if (chips.length) {
+                      <div class="bubble-reactions">
+                        @for (chip of chips; track chip.value) {
+                          <button
+                            mbButton
+                            variant="compact"
+                            size="small"
+                            type="button"
+                            class="reaction-chip"
+                            [attr.aria-pressed]="chip.mine"
+                            (click)="toggleReaction(m, chip)"
+                          >
+                            {{
+                              'pages.conversations.reactions.chip'
+                                | transloco: { emoji: chip.value, count: chip.count }
+                            }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  }
+                }
                 <div class="bubble-meta muted">
                   <span>{{ m.sentAt | humanTime }}</span>
+                  @if (!bskyIsDeleted(m)) {
+                    <span class="bubble-actions">
+                      <button
+                        mbButton
+                        variant="compact"
+                        size="small"
+                        type="button"
+                        [attr.aria-expanded]="reactingTo() === m.id"
+                        [title]="'pages.conversations.reactions.add' | transloco"
+                        [attr.aria-label]="'pages.conversations.reactions.add' | transloco"
+                        (click)="toggleReactionPicker(m)"
+                      >
+                        <span aria-hidden="true">☺+</span>
+                      </button>
+                      <mb-post-menu
+                        [label]="'pages.conversations.messageMenu' | transloco"
+                        [closeLabel]="'pages.conversations.bskyMenu.close' | transloco"
+                      >
+                        <button mbMenuItem type="button" tone="danger" (click)="deleteForMe(m)">
+                          {{ 'pages.conversations.deleteForMe' | transloco }}
+                        </button>
+                      </mb-post-menu>
+                    </span>
+                  }
                 </div>
+                @if (reactingTo() === m.id) {
+                  <div class="reaction-popover">
+                    <app-emoji-picker (picked)="pickReaction(m, $event)" />
+                  </div>
+                }
               </div>
             </div>
           }

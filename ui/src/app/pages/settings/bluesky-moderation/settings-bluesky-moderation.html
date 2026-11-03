@@ -231,4 +231,33 @@
       />
     }
   </mb-section>
+
+  <mb-section [title]="'settings.bskyModeration.chat.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.chat.hint' | transloco }}</p>
+    @if (chatLoadFailed()) {
+      <mb-notice tone="error" announcement="alert">{{
+        'settings.bskyModeration.chat.loadFailed' | transloco
+      }}</mb-notice>
+    } @else if (allowIncoming(); as allow) {
+      <mb-field [label]="'settings.bskyModeration.chat.label' | transloco">
+        <select
+          mbControl
+          name="allowIncoming"
+          [ngModel]="allow"
+          (ngModelChange)="setAllowIncoming($event)"
+          [disabled]="busy()"
+        >
+          <option value="all">{{ 'settings.bskyModeration.chat.all' | transloco }}</option>
+          <option value="following">
+            {{ 'settings.bskyModeration.chat.following' | transloco }}
+          </option>
+          <option value="none">{{ 'settings.bskyModeration.chat.none' | transloco }}</option>
+        </select>
+      </mb-field>
+      <mb-save-feedback
+        [state]="chatError() ? 'error' : chatSaved() ? 'saved' : 'idle'"
+        [message]="chatError() || ('settings.bskyModeration.chat.saved' | transloco)"
+      />
+    }
+  </mb-section>
 }

@@ -75,6 +75,48 @@ English sample. Bios take precedence over arbitrary display names.
 | Decomposed accents and halfwidth kana | Unicode normalization |
 | Arabic → Persian from shared pronouns | Require distinguishing words |
 | One Japanese post overrides an account | Aggregate post results; no global kana override |
+| Romance `te` ("não te faz") → Dutch | `te` is a homograph |
+| Short lines each too thin, so a line-broken post stays unknown | Undecided lines pooled; clue-free lines abstain |
+| Accented or non-Latin text labelled `en` reaches an English feed | Letters rule languages out (`ruledOut`) |
+
+## Line pooling and ruling out (2026-11-03)
+
+A Brazilian post, line-broken and declared English, reached an English-only
+feed. Each line was judged alone and had to be decided for the post to be; short
+lines ("Deixa as pessoa") had no clues, "te" counted as Dutch, and only one
+Portuguese word was exclusive. Three changes:
+
+- **Pooling.** `analyzeLanguage` reads lines that settle nothing on their own
+  together. If the pooled reading still has no clue at all, those lines abstain
+  beside decided lines (a quoted `"{{name}}"` no longer vetoes an English
+  sentence). Blank, punctuation, digit and emoji lines never had a vote.
+  Conflicting clues and unsupported scripts still veto, and two lines decided
+  in different languages remain mixed. One consequence: a clear English line
+  beside a clue-free French fragment ("le chat est là") reads as English.
+- **Words.** `te` joins `HOMOGRAPHS`. Portuguese gains everyday words
+  (`pela`, `você`, `pra`, `ninguém`, `pessoas`, …), each checked against the
+  tables and against Romanian `eu`, Italian `essa`/`esse`/`vai`, Catalan
+  `meu`, Spanish `gente`/`nada` and English `São Paulo`, which stay out.
+- **Ruling out.** `LanguageAnalysis.ruledOut` lists languages the letters
+  exclude, without naming the language: a non-Latin language when its script is
+  absent; a Latin language when most letters are another script, or when two
+  distinct words use letters outside its CLDR main exemplars while it has fewer
+  than two table words and another language has its own clue. That last
+  condition keeps "Visited Belém and São Paulo" English. Vietnamese is checked
+  by its marks; a language without a word table (Icelandic) is only ruled out by
+  script.
+
+`FeedLanguageFilter` uses it: when every allowed language is ruled out, the post
+is hidden (misrepresented if it claims one of them), and a declaration the
+letters rule out is not trusted as the post's language. A reader language the
+detector cannot model (Galician) is never ruled out, so it keeps posts.
+
+Measured on all 7,630 English UI strings: none rules out English; 27 verdicts
+moved from unknown to English and none the other way. No corpus case rules out
+its own language. `analyzeLanguage` p95 went from about 0.045 ms to 0.09 ms
+per post (results are cached per post). The share API and its audit numbers are
+unchanged. Tests pit Portuguese against all 17 other interface languages in
+both directions (`trend-language-filter.spec.ts`).
 
 ## Verification and limits
 

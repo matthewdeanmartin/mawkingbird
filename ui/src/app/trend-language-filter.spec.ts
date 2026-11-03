@@ -679,3 +679,103 @@ describe('AutoTranslateEligibility.isAlreadyTargetLanguage', () => {
     expect(eligibility.isAlreadyTargetLanguage(post(ENGLISH, 'en'), 'en')).toBe(false);
   });
 });
+
+/**
+ * Portuguese against every other language the app's interface ships in. The
+ * reported post arrived declared as English (or undeclared) in a feed narrowed
+ * to "my languages"; each reader must lose it, and a reader who adds
+ * Portuguese must keep it. The reverse direction checks that no other
+ * language's prose is taken for Portuguese.
+ */
+describe('Portuguese against every interface language', () => {
+  const READERS = 'en de es fr hi id it ja ko nl pl ru sv tr uk vi zh'.split(' ') as LangCode[];
+  const REPORTED = [
+    'Deixa eu falar um negócio pra vcs',
+    'Usar Linux, estar no fediverso, usar software livre etc não te faz melhor do que ninguém',
+    'Essa conversa de superioridade moral é justamente o que impede mais pessoas de chegarem no movimento',
+    'Deixa as pessoa',
+    'Pela atenção, obrig',
+  ].join('<br>');
+  let prefs: ClientPrefs;
+  let filter: FeedLanguageFilter;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({});
+    prefs = TestBed.inject(ClientPrefs);
+    filter = TestBed.inject(FeedLanguageFilter);
+    prefs.setHideForeignLangPosts(true);
+  });
+
+  it('covers all 17 other interface languages', () => {
+    expect(READERS).toHaveLength(17);
+    expect(new Set(READERS).size).toBe(17);
+    expect(READERS).not.toContain('pt');
+  });
+
+  it.each(READERS)('a %s-only reader loses the reported post however it is declared', (reader) => {
+    prefs.setFeedLanguages([reader]);
+    expect(filter.detectedLanguage(post(REPORTED, 'en'))).toBe('pt');
+    expect(filter.hideReason(post(REPORTED, null))).toBe('foreign');
+    expect(filter.hideReason(post(REPORTED, 'pt'))).toBe('foreign');
+    // Claiming the reader's own language is the misrepresentation case.
+    expect(filter.hideReason(post(REPORTED, reader))).toBe('misrepresented');
+    // The reported case: wrongly declared English is hidden for every reader.
+    expect(filter.shouldShow(post(REPORTED, 'en'))).toBe(false);
+  });
+
+  it.each(READERS)('a reader of %s and Portuguese keeps the reported post', (reader) => {
+    prefs.setFeedLanguages([reader, 'pt']);
+    expect(filter.shouldShow(post(REPORTED, 'en'))).toBe(true);
+    expect(filter.shouldShow(post(REPORTED, null))).toBe(true);
+  });
+
+  it.each(READERS)('a %s reader learning Portuguese keeps the reported post', (reader) => {
+    prefs.setFeedLanguages([reader]);
+    prefs.addLearningLanguage('pt');
+    expect(filter.shouldShow(post(REPORTED, 'en'))).toBe(true);
+  });
+
+  it.each(READERS)('%s prose is never taken for Portuguese', (source) => {
+    const text = corpus.find(({ lang }) => lang === source)!.text;
+    prefs.setFeedLanguages(['pt']);
+    expect(filter.detectedLanguage(post(text, 'pt'))).toBe(source);
+    expect(filter.hideReason(post(text, 'pt'))).toBe('misrepresented');
+    expect(filter.hideReason(post(text, null))).toBe('foreign');
+  });
+
+  it('hides undetermined text in a script the reader does not read, despite an English label', () => {
+    prefs.setFeedLanguages(['en']);
+    const cyrillic = post('Москва Киев Минск', 'en');
+    expect(filter.detectedLanguage(cyrillic)).toBeNull();
+    expect(filter.hideReason(cyrillic)).toBe('misrepresented');
+    prefs.setFeedLanguages(['ru']);
+    expect(filter.shouldShow(cyrillic)).toBe(true);
+  });
+
+  it('hides accented text that names no single language once English is ruled out', () => {
+    prefs.setFeedLanguages(['en']);
+    const mixed = post('não sei, mas é muito bom<br>estoy feliz com a atenção', 'en');
+    expect(filter.detectedLanguage(mixed)).toBeNull();
+    expect(filter.hideReason(mixed)).toBe('misrepresented');
+    prefs.setFeedLanguages(['en', 'pt']);
+    expect(filter.shouldShow(mixed)).toBe(true);
+  });
+
+  it.each([
+    'Visited Belém and São Paulo with my friend Conceição.',
+    'I had a café au lait at the Champs-Élysées with José and Zoë',
+    'Belém e São Paulo!!',
+  ])('keeps English-labelled text with borrowed accents: %s', (text) => {
+    prefs.setFeedLanguages(['en']);
+    expect(filter.shouldShow(post(text, 'en'))).toBe(true);
+  });
+
+  it('never rules out a reader language the detector cannot model', () => {
+    // Galician is close to Portuguese and has no rules here: keep, don't guess.
+    prefs.setFeedLanguages(['gl']);
+    expect(
+      filter.shouldShow(post('não sei, mas é muito bom<br>estoy feliz com a atenção', null)),
+    ).toBe(true);
+  });
+});
