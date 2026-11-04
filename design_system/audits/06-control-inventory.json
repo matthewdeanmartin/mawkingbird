@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1654,
-  "filesWithCandidates": 594,
+  "filesScanned": 1660,
+  "filesWithCandidates": 595,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5543,71 +5543,197 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 3
+          "line": 4
         },
         {
           "pattern": "shared",
-          "line": 5
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 22
+          "line": 7
         },
         {
           "pattern": "shared",
-          "line": 26
+          "line": 10
         },
         {
           "pattern": "shared",
-          "line": 48
+          "line": 24
         },
         {
           "pattern": "shared",
-          "line": 50
+          "line": 27
         },
         {
           "pattern": "shared",
-          "line": 68
+          "line": 39
         },
         {
           "pattern": "shared",
-          "line": 75
+          "line": 46
         },
         {
           "pattern": "shared",
-          "line": 83
+          "line": 49
         },
         {
           "pattern": "shared",
-          "line": 86
+          "line": 58
         },
         {
           "pattern": "shared",
-          "line": 103
+          "line": 63
         },
         {
           "pattern": "shared",
-          "line": 115
+          "line": 67
         },
         {
           "pattern": "shared",
+          "line": 72
+        },
+        {
+          "pattern": "shared",
+          "line": 100
+        },
+        {
+          "pattern": "shared",
+          "line": 106
+        },
+        {
+          "pattern": "shared",
+          "line": 109
+        },
+        {
+          "pattern": "shared",
+          "line": 126
+        },
+        {
+          "pattern": "shared",
+          "line": 133
+        },
+        {
+          "pattern": "shared",
+          "line": 149
+        },
+        {
+          "pattern": "shared",
+          "line": 156
+        },
+        {
+          "pattern": "shared",
+          "line": 159
+        },
+        {
+          "pattern": "shared",
+          "line": 179
+        },
+        {
+          "pattern": "shared",
+          "line": 186
+        },
+        {
+          "pattern": "shared",
+          "line": 194
+        },
+        {
+          "pattern": "shared",
+          "line": 197
+        },
+        {
+          "pattern": "shared",
+          "line": 202
+        },
+        {
+          "pattern": "shared",
+          "line": 230
+        },
+        {
+          "pattern": "shared",
+          "line": 242
+        },
+        {
+          "pattern": "shared",
+          "line": 259
+        },
+        {
+          "pattern": "shared",
+          "line": 264
+        },
+        {
+          "pattern": "shared",
+          "line": 265
+        },
+        {
+          "pattern": "shared",
+          "line": 266
+        },
+        {
+          "pattern": "shared",
+          "line": 267
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 38
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 46
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 49
+        },
+        {
+          "pattern": "nativeButtons",
           "line": 132
         },
         {
+          "pattern": "nativeButtons",
+          "line": 148
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 156
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 159
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/feed-builder/feed-preview.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
           "pattern": "shared",
-          "line": 137
+          "line": 4
         },
         {
           "pattern": "shared",
-          "line": 138
+          "line": 6
         },
         {
           "pattern": "shared",
-          "line": 139
+          "line": 7
         },
         {
           "pattern": "shared",
-          "line": 140
+          "line": 10
+        },
+        {
+          "pattern": "shared",
+          "line": 18
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 32
         }
       ]
     },

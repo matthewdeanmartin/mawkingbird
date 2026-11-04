@@ -367,47 +367,71 @@ export class AnonymousMastodonProvider implements FeedProvider {
       .pipe(map((page) => page.statuses));
   }
 
-  /** Independent, demand-driven cursor set for a local list timeline. */
+  /**
+   * Independent, demand-driven cursor set for a local list timeline, or for a
+   * feed that has not been followed yet: the Feed Builder preview passes the
+   * hashtags and people a topic page offers, read publicly and stored nowhere.
+   */
   createFollowFeed(
     follows: AnonymousFollow[],
     allowsStatus: (status: Status) => boolean = () => true,
+    tags: readonly string[] = [],
   ): AnonymousFollowFeedSession {
     const cursors: SourceCursor[] = follows.map((follow) => ({ follow, exhausted: false }));
+    const tagCursors: TagCursor[] = tags.map((tag) => ({ tag, exhausted: false }));
     const seen = new Set<string>();
-    return { fetchPage: () => this.fetchFollowFeedPage(cursors, seen, allowsStatus) };
+    return {
+      fetchPage: () => this.fetchFollowFeedPage(cursors, seen, allowsStatus, tagCursors),
+    };
   }
 
   private fetchFollowFeedPage(
     cursors: SourceCursor[],
     seen: Set<string>,
     allowsStatus: (status: Status) => boolean,
+    tagCursors: TagCursor[] = [],
   ): Observable<AnonymousFollowFeedPage> {
-    const active = cursors.filter((source) => !source.exhausted);
-    if (!active.length) return of({ statuses: [], warnings: [], hasMore: false, outcomes: [] });
+    const sources = [
+      ...cursors
+        .filter((source) => !source.exhausted)
+        .map((source) => ({
+          label: `@${source.follow.handle}`,
+          cursor: source,
+          fetch: () => this.fetchSource(source),
+        })),
+      ...tagCursors
+        .filter((source) => !source.exhausted)
+        .map((source) => ({
+          label: `#${source.tag}`,
+          cursor: source,
+          fetch: () => this.fetchTag(source),
+        })),
+    ];
+    if (!sources.length) return of({ statuses: [], warnings: [], hasMore: false, outcomes: [] });
     const warnings: string[] = [];
     // Recorded where each ending is already decided, rather than inferred later:
     // by the time the page is assembled, "returned nothing" and "was filtered to
     // nothing" and "threw" all look the same.
     const outcomes: SourceOutcome[] = [];
-    return of(...active).pipe(
+    return of(...sources).pipe(
       mergeMap(
         (source) =>
-          this.fetchSource(source).pipe(
+          source.fetch().pipe(
             map((statuses) => {
               const allowed = statuses.filter(allowsStatus);
               const filtered = allowed.length !== statuses.length;
-              if (filtered) source.exhausted = true;
+              if (filtered) source.cursor.exhausted = true;
               outcomes.push({
-                handle: source.follow.handle,
+                handle: source.label.slice(1),
                 ending: filtered ? 'filtered' : allowed.length ? 'ok' : 'empty',
                 fetched: allowed.length,
               });
               return allowed;
             }),
             catchError(() => {
-              source.exhausted = true;
-              warnings.push(`Could not load @${source.follow.handle}.`);
-              outcomes.push({ handle: source.follow.handle, ending: 'error', fetched: 0 });
+              source.cursor.exhausted = true;
+              warnings.push(`Could not load ${source.label}.`);
+              outcomes.push({ handle: source.label.slice(1), ending: 'error', fetched: 0 });
               return of<Status[]>([]);
             }),
           ),
@@ -425,7 +449,7 @@ export class AnonymousMastodonProvider implements FeedProvider {
             return true;
           }),
         warnings,
-        hasMore: cursors.some((source) => !source.exhausted),
+        hasMore: [...cursors, ...tagCursors].some((source) => !source.exhausted),
         outcomes,
       })),
     );

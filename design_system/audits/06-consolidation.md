@@ -1500,3 +1500,16 @@ pages' alternates (logic only, no new pattern). `features.html` and
 `follow-hub.html` each gain one shared `mbContentLink` to `/communities`; their
 dispositions are unchanged. The inventory contains 594 candidate files across
 1,654 sources. No shared widgets changed.
+
+## Topic pages become mini-apps (Builder and Preview), 2026-11-04
+
+`feed-builder-page.html` gains its signed-in Builder controls: an MbCheckbox for
+every hashtag and person (ticked by default), native `<button mbButton>`s for
+"Follow selected", select all/clear and per-hashtag Follow, and the shared
+FollowButton per person; signed out, its standalone header gains Builder and
+Preview links and a sign-in MbButton. Added one candidate:
+`feed-builder/feed-preview.html`, the Preview tab, which renders posts with the
+shared StatusCard and pages with an MbButton. `shell/mode-nav.ts` gains the
+topic pages as focused apps (Home · Builder · Preview); logic only. No control
+is restyled and no shared widget changed. The inventory contains 595 candidate
+files across 1,660 sources.

@@ -41,6 +41,38 @@
   flex-wrap: wrap;
   gap: 8px 24px;
 }
+.feed-tabs {
+  display: flex;
+  gap: 16px;
+}
+.feed-tabs [aria-current] {
+  font-weight: 700;
+}
+.sign-in-hint {
+  margin-block: 24px 0;
+}
+.bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-block: 12px 16px;
+}
+.people-actions {
+  margin-block: 28px 0;
+}
+.person-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+.preview-feed {
+  display: grid;
+  gap: 0;
+  margin-top: 16px;
+}
 :host-context(:lang(ja)) p,
 :host-context(:lang(ja)) li {
   line-break: strict;

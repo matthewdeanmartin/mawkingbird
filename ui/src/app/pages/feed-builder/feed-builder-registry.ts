@@ -41,3 +41,6 @@ export function feedBuilderPageAt(path: string): FeedBuilderEntry | undefined {
 
 /** The hub listing every topic page. English, like /follow/ and /tools/. */
 export const FEED_BUILDER_HUB = 'communities';
+
+/** A topic page's preview tab, below its path: the feed it builds, read anonymously. */
+export const FEED_BUILDER_PREVIEW = 'preview';

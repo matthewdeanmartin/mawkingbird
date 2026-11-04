@@ -29,7 +29,12 @@ import {
 import { toolDescription, toolTitle, toolsResolver } from './tool-copy';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
-import { feedBuilderRoutes } from './pages/feed-builder/feed-builder-routes';
+import {
+  feedBuilderPreviewRoutes,
+  feedBuilderRoutes,
+  feedBuilderSignedInChildren,
+} from './pages/feed-builder/feed-builder-routes';
+import { FEED_BUILDER_PAGES } from './pages/feed-builder/feed-builder-registry';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
@@ -210,7 +215,19 @@ export function toolPageLoader(tool: ToolPage): NonNullable<Route['loadComponent
 export const routes: Routes = [
   ...audienceRoutes,
   ...followRoutes,
+  // Topic starter-kit pages are mini-apps too (Home · Builder · Preview):
+  // signed in to Mastodon, the trimmed shell; otherwise the public page and its
+  // anonymous preview. The twin must come first, as for the focused tools.
+  ...FEED_BUILDER_PAGES.map((entry): Route => ({
+    path: entry.path,
+    canMatch: [mastodonSignedInMatch],
+    canActivateChild: [justMyServerUpdateGuard],
+    canDeactivate: [justMyServerUpdateCanDeactivate],
+    loadComponent: () => import('./shell/shell').then((m) => m.Shell),
+    children: feedBuilderSignedInChildren(entry),
+  })),
   ...feedBuilderRoutes,
+  ...feedBuilderPreviewRoutes,
   {
     path: 'features',
     title: 'Mastodon, reading and writing features',

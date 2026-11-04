@@ -1,5 +1,9 @@
 import { AppMode } from '../app-mode';
 import { TOOL_PAGES } from '../focused-tools';
+import {
+  FEED_BUILDER_PAGES,
+  FEED_BUILDER_PREVIEW,
+} from '../pages/feed-builder/feed-builder-registry';
 
 // i18n shell.modeNav.rss.reader: Read
 // i18n shell.modeNav.rss.readLater: Later
@@ -45,6 +49,8 @@ import { TOOL_PAGES } from '../focused-tools';
 // i18n shell.modeNav.similarTags.find: Hashtags
 // i18n shell.modeNav.languages.setup: Languages
 // i18n shell.modeNav.focused.invite: Invite
+// i18n shell.modeNav.feedBuilder.builder: Builder
+// i18n shell.modeNav.feedBuilder.preview: Preview
 
 /**
  * One tab of a mode's primary nav, as data rather than markup.
@@ -334,9 +340,43 @@ function focusedApp(
  * may return to. Tab labels are translated, so each `labelKey` is declared with
  * the other nav strings at the top of this file.
  */
-export const FOCUSED_APPS: readonly FocusedApp[] = TOOL_PAGES.map((tool) =>
-  focusedApp(tool.id, `/${tool.path}`, tool.tab),
-);
+const BUILDER_ICON = 'M4 6h16M4 12h10M4 18h7M17 15l3 3-3 3';
+const PREVIEW_ICON =
+  'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6';
+
+/**
+ * A topic starter-kit page (Feed Builder) as a mini-app: Home · Builder ·
+ * Preview. Builder is the page, with follow controls once signed in; Preview
+ * reads the feed the page would build, anonymously, never the reader's Home.
+ */
+function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
+  const preview = `${root}/${FEED_BUILDER_PREVIEW}`;
+  return {
+    id: `feed-builder-${topic}-${lang}`,
+    root,
+    items: [
+      {
+        id: 'builder',
+        labelKey: 'shell.modeNav.feedBuilder.builder',
+        icon: BUILDER_ICON,
+        link: root,
+        active: (url) => pathOf(url).replace(/\/$/, '') === root,
+      },
+      {
+        id: 'preview',
+        labelKey: 'shell.modeNav.feedBuilder.preview',
+        icon: PREVIEW_ICON,
+        link: preview,
+        active: onPath(preview),
+      },
+    ],
+  };
+}
+
+export const FOCUSED_APPS: readonly FocusedApp[] = [
+  ...TOOL_PAGES.map((tool) => focusedApp(tool.id, `/${tool.path}`, tool.tab)),
+  ...FEED_BUILDER_PAGES.map((page) => feedBuilderApp(page.topic, page.lang, `/${page.path}`)),
+];
 
 /** The mini-app a URL belongs to, or null for the ordinary app. */
 export function focusedAppFor(url: string): FocusedApp | null {

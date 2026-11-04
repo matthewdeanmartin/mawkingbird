@@ -103,6 +103,28 @@ describe('AnonymousMastodonProvider', () => {
     expect(follows.follows()).toHaveLength(1);
   });
 
+  it('reads hashtags beside accounts in a feed that was never followed (Feed Builder preview)', () => {
+    TestBed.inject(Auth).enterAnonymous('https://social.example');
+    const provider = TestBed.inject(AnonymousMastodonProvider);
+    const author = account('alice', 'https://social.example');
+    let page: { statuses: Status[]; hasMore: boolean } | undefined;
+    provider
+      .createFollowFeed([], () => true, ['SciFi'])
+      .fetchPage()
+      .subscribe((result) => (page = result));
+    httpMock
+      .expectOne((r) => r.url === 'https://social.example/api/v1/timelines/tag/SciFi')
+      .flush([status(author, '7')]);
+    expect(page?.statuses.map((item) => item.providerRef)).toEqual([
+      { server: 'https://social.example', statusId: '7', accountId: '1' },
+    ]);
+    // One post is less than a page: the tag is exhausted, and so is the feed.
+    expect(page?.hasMore).toBe(false);
+    // Nothing was followed or stored.
+    expect(TestBed.inject(AnonymousFollows).follows()).toEqual([]);
+    expect(TestBed.inject(AnonymousTags).tags()).toEqual([]);
+  });
+
   it('keeps exclusive friends out of followed hashtag results in streaming Home', () => {
     TestBed.inject(Auth).enterAnonymous('https://social.example');
     const follows = TestBed.inject(AnonymousFollows);

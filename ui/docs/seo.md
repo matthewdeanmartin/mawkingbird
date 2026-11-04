@@ -141,6 +141,20 @@ people are chosen.
   lazily; `report-bundle.mjs` keeps them out of the startup bundle. Routes carry
   `lang` and `seoAlternates`, so `<html lang>`, `hreflang`, the language menu
   (`LanguageVersions`) and the sitemap's alternates all agree.
+- **A mini-app**, like the focused tools: Home · Builder · Preview. Signed in to
+  Mastodon, `app.routes.ts` puts a twin of each page in the trimmed shell
+  (`feedBuilderSignedInChildren`); the pages are `FOCUSED_APPS` in
+  `shell/mode-nav.ts`, so `?next=` sign-in returns to them. Signed out, the
+  public page carries its own header with Builder and Preview links and a
+  sign-in button. In the Builder (signed in), every hashtag and person has a
+  checkbox, ticked by default (`FeedSelection`, in memory), a Follow button,
+  and "Follow selected" for each; people are followed through `ImportFollows`
+  by handle, so each resolves on the reader's server. Preview
+  (`<page>/preview`, client-only, not indexed) is the anonymous feed engine
+  reading the ticked hashtags and people from public timelines
+  (`AnonymousMastodonProvider.createFollowFeed` with tags), never the reader's
+  Home, and stores nothing. People link to Mawkingbird's own profile view
+  (`/accounts/@user@host`).
 - **Prerendered**: everything except the live "N posts this week" line under
   each hashtag (`TagActivity`), which is `@defer`red and read in the browser
   from mastodon.social's public, CORS-open tag history with plain `fetch`.

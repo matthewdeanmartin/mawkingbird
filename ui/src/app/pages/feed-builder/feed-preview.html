@@ -1,0 +1,37 @@
+<main class="features feed-page" [attr.lang]="lang">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink [routerLink]="hub">Mawkingbird · {{ chrome.hub }}</a>
+      <nav class="feed-tabs" [attr.aria-label]="chrome.eyebrow">
+        <a mbContentLink [routerLink]="root">{{ controls.builder }}</a>
+        <a mbContentLink [routerLink]="previewLink" aria-current="page">{{ controls.preview }}</a>
+      </nav>
+      <app-language-versions />
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{ controls.signIn }}</a>
+    </header>
+  }
+
+  <div class="kit-intro">
+    <p class="eyebrow">{{ chrome.eyebrow }}</p>
+    <h1>{{ copy.heading }}: {{ controls.preview }}</h1>
+    <p>{{ controls.previewIntro }}</p>
+    <a mbContentLink [routerLink]="root">{{ controls.backToBuilder }}</a>
+  </div>
+
+  <div class="preview-feed">
+    @for (status of statuses(); track status.id) {
+      <app-status-card [status]="status" />
+    }
+  </div>
+
+  @if (empty()) {
+    <p class="muted" role="status">{{ controls.previewEmpty }}</p>
+  }
+  @if (hasMore()) {
+    <div class="bulk-actions">
+      <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="loadMore()">
+        {{ loading() ? controls.loading : controls.loadMore }}
+      </button>
+    </div>
+  }
+</main>

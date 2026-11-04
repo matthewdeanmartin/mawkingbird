@@ -1,9 +1,15 @@
 <main class="features feed-page" [attr.lang]="lang">
-  <header>
-    <a mbContentLink [routerLink]="hub">Mawkingbird · {{ chrome.hub }}</a>
-    <app-language-versions />
-    <a mbButton routerLink="/">{{ chrome.openApp }}</a>
-  </header>
+  @if (!inShell) {
+    <header>
+      <a mbContentLink [routerLink]="hub">Mawkingbird · {{ chrome.hub }}</a>
+      <nav class="feed-tabs" [attr.aria-label]="chrome.eyebrow">
+        <a mbContentLink [routerLink]="root" aria-current="page">{{ controls.builder }}</a>
+        <a mbContentLink [routerLink]="previewLink">{{ controls.preview }}</a>
+      </nav>
+      <app-language-versions />
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{ controls.signIn }}</a>
+    </header>
+  }
 
   <div class="kit-intro">
     <p class="eyebrow">{{ chrome.eyebrow }}</p>
@@ -11,17 +17,57 @@
     @for (paragraph of copy.intro; track $index) {
       <p>{{ paragraph }}</p>
     }
+    @if (!inShell) {
+      <aside class="sign-in-hint">
+        <p>{{ controls.signedOutHint }}</p>
+        <div class="feature-actions">
+          <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{
+            controls.signIn
+          }}</a>
+          <a mbButton variant="outline" [routerLink]="previewLink">{{ controls.preview }}</a>
+        </div>
+      </aside>
+    }
   </div>
 
   <section aria-labelledby="tags-heading">
     <h2 id="tags-heading">{{ chrome.tagsHeading }}</h2>
     <p>{{ chrome.tagsIntro }}</p>
+    @if (inShell) {
+      <div class="bulk-actions">
+        <button
+          mbButton
+          type="button"
+          [disabled]="!tagsToFollow().length || followingTags()"
+          (click)="followSelectedTags()"
+        >
+          {{ controls.followSelectedTags(tagsToFollow().length) }}
+        </button>
+        <button mbButton variant="link" type="button" (click)="setAllTags(true)">
+          {{ controls.selectAll }}
+        </button>
+        <button mbButton variant="link" type="button" (click)="setAllTags(false)">
+          {{ controls.selectNone }}
+        </button>
+      </div>
+    }
     <ul class="tag-list">
-      @for (tag of tags(); track tag.name) {
+      @for (tag of tags; track tag.name) {
         <li>
-          <a mbContentLink [routerLink]="['/tags', tag.name]" [attr.lang]="tag.lang"
-            >#{{ tag.name }}</a
-          >
+          @if (inShell) {
+            <mb-checkbox
+              [label]="'#' + tag.name"
+              [checked]="selection.tagOn(key, tag.name)"
+              (checkedChange)="selection.setTag(key, tag.name, $event)"
+            />
+            <a mbContentLink [routerLink]="['/tags', tag.name]" [attr.lang]="tag.lang">{{
+              chrome.readTag(tag.name)
+            }}</a>
+          } @else {
+            <a mbContentLink [routerLink]="['/tags', tag.name]" [attr.lang]="tag.lang"
+              >#{{ tag.name }}</a
+            >
+          }
           @if (foreign(tag)) {
             <mb-badge>{{ chrome.englishTag }}</mb-badge>
           }
@@ -29,6 +75,11 @@
             <app-tag-activity [tag]="tag.name" [format]="chrome.activity" />
           } @placeholder {
             <span></span>
+          }
+          @if (inShell) {
+            <ng-container
+              *ngTemplateOutlet="tagFollow; context: { $implicit: tag.name }"
+            ></ng-container>
           }
           @if (tag.caution) {
             <p class="caution">{{ chrome.caution[tag.caution] }}</p>
@@ -38,22 +89,82 @@
     </ul>
   </section>
 
-  @if (futureTags().length) {
+  @if (futureTags.length) {
     <section aria-labelledby="future-heading">
       <h2 id="future-heading">{{ chrome.futureHeading }}</h2>
       <p>{{ chrome.futureIntro }}</p>
       <ul class="tag-list">
-        @for (tag of futureTags(); track tag.name) {
+        @for (tag of futureTags; track tag.name) {
           <li>
-            <a mbContentLink [routerLink]="['/tags', tag.name]">#{{ tag.name }}</a>
+            @if (inShell) {
+              <mb-checkbox
+                [label]="'#' + tag.name"
+                [checked]="selection.tagOn(key, tag.name)"
+                (checkedChange)="selection.setTag(key, tag.name, $event)"
+              />
+            } @else {
+              <a mbContentLink [routerLink]="['/tags', tag.name]">#{{ tag.name }}</a>
+            }
             <span class="muted">{{ chrome.futureBeside(tag.source ?? '') }}</span>
             <mb-badge tone="attention">{{
               tag.status === 'starting' ? chrome.futureStarting : chrome.futureNew
             }}</mb-badge>
+            @if (inShell) {
+              <ng-container
+                *ngTemplateOutlet="tagFollow; context: { $implicit: tag.name }"
+              ></ng-container>
+            }
           </li>
         }
       </ul>
     </section>
+  }
+
+  <ng-template #tagFollow let-name>
+    @switch (tagState(name)) {
+      @case ('following') {
+        <mb-badge>{{ controls.following }}</mb-badge>
+      }
+      @case ('failed') {
+        <span class="caution" role="alert">{{ controls.followFailed }}</span>
+      }
+      @default {
+        <button
+          mbButton
+          size="small"
+          variant="outline"
+          type="button"
+          [disabled]="tagState(name) === 'busy'"
+          (click)="followTag(name)"
+        >
+          {{ tagState(name) === 'busy' ? '…' : controls.follow }}
+        </button>
+      }
+    }
+  </ng-template>
+
+  @if (inShell) {
+    <div class="bulk-actions people-actions">
+      <button
+        mbButton
+        type="button"
+        [disabled]="!selectedPeople().length || peopleRunning()"
+        (click)="followSelectedPeople()"
+      >
+        {{ controls.followSelectedPeople(selectedPeople().length) }}
+      </button>
+      <button mbButton variant="link" type="button" (click)="setAllPeople(true)">
+        {{ controls.selectAll }}
+      </button>
+      <button mbButton variant="link" type="button" (click)="setAllPeople(false)">
+        {{ controls.selectNone }}
+      </button>
+      @if (peopleProgress(); as progress) {
+        <span class="muted" role="status">{{
+          controls.followProgress(progress.done, progress.total)
+        }}</span>
+      }
+    </div>
   }
 
   @for (group of shelves; track group.shelf) {
@@ -65,7 +176,7 @@
           <li>
             <img [src]="person.avatar" width="48" height="48" alt="" loading="lazy" />
             <div>
-              <a mbContentLink [href]="person.url" rel="noopener">{{ person.displayName }}</a>
+              <a mbContentLink [routerLink]="profile(person)">{{ person.displayName }}</a>
               <span class="handle">&#64;{{ person.acct }}</span>
               @if (person.bio) {
                 <p>{{ person.bio }}</p>
@@ -86,6 +197,22 @@
                   <mb-badge>{{ chrome.elsewhere[kind] }}</mb-badge>
                 }
               </div>
+              @if (inShell) {
+                <div class="person-actions">
+                  <mb-checkbox
+                    [label]="controls.include"
+                    [checked]="selection.personOn(key, person.acct)"
+                    (checkedChange)="selection.setPerson(key, person.acct, $event)"
+                  />
+                  @defer (on idle) {
+                    <app-follow-button
+                      [accountId]="person.id"
+                      [handle]="'@' + person.acct"
+                      [foreign]="account(person)"
+                    />
+                  }
+                </div>
+              }
             </div>
           </li>
         }

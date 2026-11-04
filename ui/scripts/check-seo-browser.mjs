@@ -517,12 +517,32 @@ try {
     assert.match(await page.getByRole('heading', { level: 1 }).textContent(), /Fantascienza/);
     assert.ok((await page.locator('.people li').count()) >= 5, 'topic page lists people');
     if (javaScriptEnabled) {
+      // The live line loads when its hashtag scrolls into view.
+      await page.locator('.tag-list li').first().scrollIntoViewIfNeeded();
       await page.locator('.activity').first().waitFor();
       assert.match(await page.locator('.activity').first().textContent(), /12 post/);
       await page.locator('a[href="/tags/Fantascienza"]').click();
       await page.waitForURL(`${origin}/tags/Fantascienza`);
       await page.waitForTimeout(500);
       assert.equal(new URL(page.url()).pathname, '/tags/Fantascienza');
+      // The preview is client-only (never prerendered; this test server has no
+      // SPA fallback) and reads public timelines, stubbed here. Reached the way a
+      // reader does, from the page's Preview tab; standalone, in its language.
+      await page.goto(`${origin}/${topicPage}/`);
+      await page.locator(`nav a[href="/${topicPage}/preview"]`).click();
+      await page.waitForURL(`${origin}/${topicPage}/preview`);
+      await page.getByRole('heading', { level: 1, name: /Anteprima/ }).waitFor();
+      assert.match(await page.getByRole('heading', { level: 1 }).textContent(), /Anteprima/);
+      assert.equal(
+        await page.locator(`nav a[href="/${topicPage}/preview"][aria-current="page"]`).count(),
+        1,
+      );
+      await page.setViewportSize({ width: 390, height: 900 });
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        'preview has no overflow at 390px',
+      );
+      await page.screenshot({ path: path.join(results, 'seo-topic-preview.png'), fullPage: true });
     } else {
       assert.equal(await page.locator('.activity').count(), 0, 'no live line without JavaScript');
     }
