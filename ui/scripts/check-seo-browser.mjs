@@ -462,6 +462,73 @@ try {
     assert.deepEqual(errors, [], `starter-kit pages have no runtime errors`);
     await context.close();
   }
+  // Topic starter-kit pages (Feed Builder): the client keeps the page's language,
+  // heading and lists, the live tag line appears only with JavaScript (from a
+  // stubbed tag history), and a hashtag opens in the app for a fresh visitor.
+  const topicPage = 'it/fantascienza-su-mastodon';
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('**/vendor/count.js', (route) =>
+      route.fulfill({ contentType: 'text/javascript', body: '' }),
+    );
+    await context.route('https://**/*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: route.request().url().includes('/api/v1/tags/')
+          ? JSON.stringify({ history: [{ day: '0', uses: '12', accounts: '5' }] })
+          : '[]',
+      }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [url, canonical] of [
+      [`${origin}/communities/`, 'https://mawkingbird.com/communities/'],
+      [`${origin}/${topicPage}/`, `https://mawkingbird.com/${topicPage}/`],
+    ]) {
+      await page.goto(url);
+      await page.getByRole('heading', { level: 1 }).waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), canonical);
+      assert.equal(
+        await page.locator('meta[name="robots"]').getAttribute('content'),
+        'index, follow',
+      );
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${url} has no overflow at ${width}px`,
+        );
+      }
+      await page.screenshot({
+        path: path.join(
+          results,
+          `seo-${url.includes(topicPage) ? 'topic' : 'communities'}-${javaScriptEnabled ? 'client' : 'static'}.png`,
+        ),
+        fullPage: true,
+      });
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.lang), 'it');
+    assert.match(await page.getByRole('heading', { level: 1 }).textContent(), /Fantascienza/);
+    assert.ok((await page.locator('.people li').count()) >= 5, 'topic page lists people');
+    if (javaScriptEnabled) {
+      await page.locator('.activity').first().waitFor();
+      assert.match(await page.locator('.activity').first().textContent(), /12 post/);
+      await page.locator('a[href="/tags/Fantascienza"]').click();
+      await page.waitForURL(`${origin}/tags/Fantascienza`);
+      await page.waitForTimeout(500);
+      assert.equal(new URL(page.url()).pathname, '/tags/Fantascienza');
+    } else {
+      assert.equal(await page.locator('.activity').count(), 0, 'no live line without JavaScript');
+    }
+    assert.deepEqual(errors, [], 'topic pages have no runtime errors');
+    await context.close();
+  }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
     await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),

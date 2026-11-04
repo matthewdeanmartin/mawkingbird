@@ -1,0 +1,56 @@
+<main class="features" lang="en">
+  <header>
+    <a mbContentLink routerLink="/features">Mawkingbird · Features</a>
+    <a mbButton routerLink="/">Open Mawkingbird</a>
+  </header>
+  <div class="kit-intro">
+    <p class="eyebrow">Starter kits</p>
+    <h1>Find your people on Mastodon</h1>
+    <p>
+      A new Mastodon account starts with an empty timeline. Each starter kit gathers one interest:
+      the hashtags people actually use, the people worth following, and the servers where the
+      community meets. You can read all of it before you make an account.
+    </p>
+    <p>
+      Every kit is written for its readers' language, and offers new local hashtags beside the busy
+      English ones, so smaller language communities can grow their own.
+    </p>
+  </div>
+  @for (item of topics; track item.topic) {
+    <section class="hub-topic" [attr.aria-labelledby]="'topic-' + item.topic">
+      <h2 [id]="'topic-' + item.topic">
+        <a mbContentLink [routerLink]="'/' + item.english.path" [attr.lang]="item.english.lang">{{
+          item.english.copy.heading
+        }}</a>
+      </h2>
+      <p [attr.lang]="item.english.lang">{{ item.english.copy.description }}</p>
+      @if (item.others.length) {
+        <ul>
+          @for (version of item.others; track version.path) {
+            <li>
+              <a
+                mbContentLink
+                [routerLink]="'/' + version.path"
+                [attr.lang]="version.lang"
+                [attr.hreflang]="version.lang"
+                >{{ version.copy.heading }}</a
+              >
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+  <aside>
+    <h2>Looking for a short list instead?</h2>
+    <p>
+      The hand-picked <a mbContentLink routerLink="/follow">starter lists</a> are short lists of
+      people around one interest, ready to follow in one click.
+    </p>
+  </aside>
+  <footer>
+    <a mbContentLink routerLink="/follow">Who to follow on Mastodon</a>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink href="/help/">Help</a>
+  </footer>
+</main>

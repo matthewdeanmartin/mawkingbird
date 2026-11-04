@@ -1,0 +1,572 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "FantasyBooks",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SpeculativeFiction",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "SciFiBooks",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "davidrevoy@framapiaf.org",
+      "id": "1341",
+      "url": "https://framapiaf.org/@davidrevoy",
+      "displayName": "David Revoy",
+      "avatar": "https://stockage.framapiaf.org/framapiaf/accounts/avatars/000/001/341/original/a8dbfa0977b5c5cf.jpg",
+      "bio": "🍄 Webcomic Artist • Fantasy humor 🌱 Weekly comic strips (Wed) • Longer series brewing in background 🎨 Only use Free/Libre & Open Source tools • CC-licensed • No AI",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-2500"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UCnAbNwJjusY7zQ__sQyJlSA",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "dianeduane@mastodon.social",
+      "id": "108192620577598422",
+      "url": "https://mastodon.social/@dianeduane",
+      "displayName": "Diane Duane",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/192/620/577/598/422/original/c684373299198298.jpg",
+      "bio": "40+ yrs in print, 50+ novels, asst'd TV/film, NYT B'seller List a few times, blah blah blah. She/her. Series: Young Wizards 1983-2020, Middle Kingdoms 1979-2019. ...For legal reasons, PLEASE don't se…",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UC5QT2PWpusevJLdqEz9iGow",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-09"
+      }
+    },
+    {
+      "acct": "nicolaz@mastodon.sdf.org",
+      "id": "109300505123687895",
+      "url": "https://mastodon.sdf.org/@Nicolaz",
+      "displayName": "Nicola Griffith SHE IS HERE",
+      "avatar": "https://mastodon.sdf.org/system/accounts/avatars/109/300/505/123/687/895/original/65385d184bbba795.png",
+      "bio": "Cats, crips, queers. Books, beauty, beers. And anything else I feel like. Writer (HILD, SPEAR, MENEWOOD, more). Wheelchair user with a PhD. New book, SHE IS HERE, coming 1/27/2026 Website: https:// n…",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCjGkoypkXuoOCg007-6sDQw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2019-12"
+      }
+    },
+    {
+      "acct": "pomarede@mastodon.social",
+      "id": "108198016418435792",
+      "url": "https://mastodon.social/@pomarede",
+      "displayName": "Daniel Pomarède",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/198/016/418/435/792/original/794f5e156c5eca48.jpg",
+      "bio": "cosmographer at university paris-saclay | mapping the universe | co-discoverer of # laniakea our home supercluster of galaxies | # dipolerepeller a void contributing to the motion of our galaxy | # c…",
+      "shelf": "youtube",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCLRW92CiiuE4m833GoS35wQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2024-09"
+      }
+    },
+    {
+      "acct": "solarpunkpresents@climatejustice.social",
+      "id": "112876620713568334",
+      "url": "https://climatejustice.social/@solarpunkpresents",
+      "displayName": "Solarpunk Presents Podcast",
+      "avatar": "https://climatejustice.social/system/accounts/avatars/112/876/620/713/568/334/original/23243880d3babf2f.png",
+      "bio": "The official Mastodon account for Solarpunk Presents. Posts by @ arielkroon and @ fastfrwrd",
+      "shelf": "youtube",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["patreon", "youtube"],
+      "youtube": {
+        "channelId": "UCsEdVsigLYIx9f2aTUu6scw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-10"
+      }
+    },
+    {
+      "acct": "maxim@mastodon.gamedev.place",
+      "id": "109269180998903950",
+      "url": "https://mastodon.gamedev.place/@maxim",
+      "displayName": "Alien 👽 Max | 🇺🇦 gamedev",
+      "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/109/269/180/998/903/950/original/5455a2412fd14c3f.jpg",
+      "bio": "Blog about gamedev 🗃️ programming experience 22 years 🎮 game development 7 years 🧶 programmer Erra: Exordium, CHARGE.R 🎫 porting to the consoles 🛠️ unity, unreal engine # gamedev # indiedev # videoga…",
+      "shelf": "youtube",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["bluesky", "youtube"],
+      "youtube": {
+        "channelId": "UCQd-rVTnnhGbo4x68hqeRDg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "mishellbaker@wandering.shop",
+      "id": "111644",
+      "url": "https://wandering.shop/@mishellbaker",
+      "displayName": "Mishell Baker gladly",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/000/111/644/original/97a8242a6972abc1.jpeg",
+      "bio": "Enjoy life. Be someone you would love. Make things better. World Fantasy, Nebula, Tiptree finalist repped by Russ Galen. Curator of happiness. Gamer, parent, computer science student, language nerd,…",
+      "shelf": "youtube",
+      "rank": 7,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCAimWgi4e6bVV6SG0XQjhCA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "itsgotstartrek@tenforward.social",
+      "id": "109308800047229030",
+      "url": "https://tenforward.social/@ItsGotStarTrek",
+      "displayName": "The It's Got Star Trek Podcast",
+      "avatar": "https://cdn.tenforward.social/accounts/avatars/109/308/800/047/229/030/original/4de385e586dab171.png",
+      "bio": "The It's Got Star Trek podcast offers a weekly, irreverent dive into all corners of the Star Trek franchise. 🖖 New episodes Mondays, 12:00 am ET Hosts Profiles Patrick: PatrickIrelan@fediscience.org…",
+      "shelf": "youtube",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCLZwJmoAzm_NHlBoCHF6_2Q",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "jeandenishaas@mastodon.art",
+      "id": "109264024493159442",
+      "url": "https://mastodon.art/@jeandenishaas",
+      "displayName": "Jean-Denis Haas",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/109/264/024/493/159/442/original/37a19fdb1737804a.png",
+      "bio": "🎬 Animation Director at Lucasfilm Animation, formerly anim supe on “How To Train Your Dragon”, “Star Trek: Prodigy” / ex-Framestore, Blizzard, Paramount/Nickelodeon, WB & ILM | Need help with animati…",
+      "shelf": "youtube",
+      "rank": 9,
+      "fame": ["wikidata", "youtube-10k"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCkOuZ5jhoA_b6knWz943g1Q",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2024-11"
+      }
+    },
+    {
+      "acct": "spark@social.makerforums.info",
+      "id": "109290294522294520",
+      "url": "https://social.makerforums.info/@Spark",
+      "displayName": "Spark",
+      "avatar": "https://social.makerforums.info/system/accounts/avatars/109/290/294/522/294/520/original/dd37e196abd959a0.png",
+      "bio": "I like to make things out of wood, plastics and imagination. [DE/EN]",
+      "shelf": "youtube",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["twitch", "website", "youtube"],
+      "youtube": {
+        "channelId": "UC1izb_ObDGwwTsi0uGTxeNw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "mewho@mastodon.social",
+      "id": "109370666865262646",
+      "url": "https://mastodon.social/@mewho",
+      "displayName": "meWho Rob",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/370/666/865/262/646/original/61d988dcabb91183.png",
+      "bio": "WebDev/hiker 💙 creating interactive Trek UI (#LCARS) on the web for everyone 🖖 Support my projects via Patreon • Ko-Fi • YouTube Maker of # TitanDS • # ProjectRITOS • # System47 screenSaver • # STARF…",
+      "shelf": "youtube",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["patreon", "website", "youtube"],
+      "youtube": {
+        "channelId": "UCuJSfFd-oSX-671sPQTHt5g",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "jasonstcyr@mstdn.ca",
+      "id": "109295143353288361",
+      "url": "https://mstdn.ca/@jasonstcyr",
+      "displayName": "Jason St-Cyr",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/295/143/353/288/361/original/a99d062c36e9f558.jpeg",
+      "bio": "Dad, Writer, YouTuber, Corporate DevRel-guy. Talking about tech stuff for work and # TTRPG and # writing stuff for fun! Opinions and stuff are mine, and sometimes odd. 🚹Pronouns: He/Him 🖖Captain: Pic…",
+      "shelf": "youtube",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCfMRA-Dn7mAlrfMiTQy0gNg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2024-11"
+      }
+    },
+    {
+      "acct": "pluralistic@mamot.fr",
+      "id": "303320",
+      "url": "https://mamot.fr/@pluralistic",
+      "displayName": "Cory Doctorow",
+      "avatar": "https://static.mamot.fr/accounts/avatars/000/303/320/original/4e35d3813c7dc984.png",
+      "bio": "By Cory Doctorow (GPG 0xBF3D9110957E5F4C) @ doctorow . Archived at pluralistic.net I post long threads. If you don't like these in your timeline but want to read them, I suggest unfollowing me here a…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "scalzi@mastodon.social",
+      "id": "226196",
+      "url": "https://mastodon.social/@scalzi",
+      "displayName": "Scalzi",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/226/196/original/93630beedf643ebb.jpg",
+      "bio": "I enjoy pie.",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "annaleen@wandering.shop",
+      "id": "109355127860497220",
+      "url": "https://wandering.shop/@annaleen",
+      "displayName": "Annalee Newitz 🍜",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/355/127/860/497/220/original/1d8fcedc05d30ca0.png",
+      "bio": "I write science fiction and science nonfiction. Author: A Wall Is Also a Road, Automatic Noodle, Stories Are Weapons. Bylines: Flaming Hydra, New Scientist, etc. Pod: Our Opinions Are Correct. Someti…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "microsff@mastodon.art",
+      "id": "109378607707585315",
+      "url": "https://mastodon.art/@MicroSFF",
+      "displayName": "Micro SF/F by O. Westin",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/109/378/607/707/585/315/original/93b5b7f8638d77ed.png",
+      "bio": "Very short science fiction/fantasy stories by O. Westin. Please Boost any you like. Patreon: https://www. patreon.com/microsff Home: http:// microsff.com/",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "bruces@mastodon.social",
+      "id": "16102",
+      "url": "https://mastodon.social/@bruces",
+      "displayName": "Bruce Sterling @bruces",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/016/102/original/83dec72fe4e4c20e.jpg",
+      "bio": "Bruce Sterling, an # author , # journalist , editor, # critic in # Turin , # Austin and # Ibiza # sciencefiction # fantascienza # BruceSterling https:// medium.com/@bruces",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "charliejane@wandering.shop",
+      "id": "109355247303050103",
+      "url": "https://wandering.shop/@charliejane",
+      "displayName": "Yoko's Asterisk 🏳️‍⚧",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/355/247/303/050/103/original/8c5e7d1344da39c5.jpeg",
+      "bio": "Author, Good Things Are Coming Your Way (spring 2027) about a magical social worker and a time-traveling vampire who team up to save history... and fall in love. Writer, Star Trek: Zero Point comic f…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "gregegansf@mathstodon.xyz",
+      "id": "109245240154101629",
+      "url": "https://mathstodon.xyz/@gregeganSF",
+      "displayName": "Greg Egan",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/245/240/154/101/629/original/11df23f9d8fee10d.jpg",
+      "bio": "I am a science fiction writer and computer programmer. Latest novel: MORPHOTROPHIC. Latest collection: SLEEP AND THE SOUL. Web site: gregegan.net",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "catvalente@wandering.shop",
+      "id": "110703347239720669",
+      "url": "https://wandering.shop/@Catvalente",
+      "displayName": "Catherynne M. Valente",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/110/703/347/239/720/669/original/7ac1a205191d7e48.jpeg",
+      "bio": "Queen of Lasers and NYT/USAT Bestselling author of Fairyland, Space Opera, Deathless, The Past Is Red, & more. Any/All",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "clarkesworld@mastodon.online",
+      "id": "109271396134031723",
+      "url": "https://mastodon.online/@clarkesworld",
+      "displayName": "Clarkesworld",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/271/396/134/031/723/original/8aae3b2eb9bec7f6.jpg",
+      "bio": "Neil Clarke: Editor of Clarkesworld Magazine, Forever Magazine, The Best Science Fiction of the Year series, and more. Five-time Hugo Award winner for Best Editor Short Form. Four-time Chesley Award…",
+      "shelf": "notable",
+      "rank": 9,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "michaelwhelan@mastodon.art",
+      "id": "111092429530988916",
+      "url": "https://mastodon.art/@MichaelWhelan",
+      "displayName": "Michael Whelan",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/111/092/429/530/988/916/original/db6d1768c0453d0e.png",
+      "bio": "Fine artist of Imaginative Realism. Illustrator of Science Fiction and Fantasy. Winner of 15 Hugo Awards. Inducted into the SF Hall of Fame in 2009.",
+      "shelf": "notable",
+      "rank": 10,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "markarayner@mas.to",
+      "id": "109309703259042207",
+      "url": "https://mas.to/@markarayner",
+      "displayName": "Mark A. Rayner",
+      "avatar": "https://media.mas.to/accounts/avatars/109/309/703/259/042/207/original/bb19878f3eef6fb2.png",
+      "bio": "Human-shaped, monkey-loving, robot-fighting, pirate-hearted, storytelling junkie, Mark is an award-winning author of satire and science fiction. (alt texts: avatar is mark looking worried in a space…",
+      "shelf": "notable",
+      "rank": 11,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["podcast", "website"]
+    },
+    {
+      "acct": "uncannymagazine@mastodon.social",
+      "id": "239599",
+      "url": "https://mastodon.social/@UncannyMagazine",
+      "displayName": "Uncanny Magazine",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/239/599/original/9aca900efc250dc7.jpg",
+      "bio": "Science Fiction & Fantasy Magazine Edited by Lynne M. Thomas & Michael Damian Thomas. 2016, 2017, 2018, 2019, 2020, 2022, 2023 Hugo & 2024 Locus Award Winner.",
+      "shelf": "notable",
+      "rank": 12,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "nickeast_indiewriter@mastodon.art",
+      "id": "114046890995156319",
+      "url": "https://mastodon.art/@NickEast_IndieWriter",
+      "displayName": "Nick East (Indie Writer)",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/114/046/890/995/156/319/original/b3245043f6598358.jpg",
+      "bio": "Aspiring fantasy author and geek, retired due to a bunch of chronic illnesses. The Last Philosopher is my first book under the subtitle, Nothing is Everything. It's been called imaginative, funny, an…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "hollygodarkly@wandering.shop",
+      "id": "109371665222235327",
+      "url": "https://wandering.shop/@HollyGoDarkly",
+      "displayName": "Erika Ensign",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/371/665/222/235/327/original/a76490cb538a5052.jpg",
+      "bio": "Podcaster (#DoctorWho, # UncannyMagazine , The Incomparable, # trivia , # books , # DnD , more) Writer (day-job, neglected blog) Geek (born-and-raised on # SFF ) Award-winner (Hugos, Parsecs, British…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "clacksee@wandering.shop",
+      "id": "108198409251757787",
+      "url": "https://wandering.shop/@clacksee",
+      "displayName": "Shouty person",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/108/198/409/251/757/787/original/8a77bd2a6c1ca8a6.jpeg",
+      "bio": "Si Clarke (she/her): sci-fi without the pew-pew Elliott Hay (two Ts and any pronouns): cosy vengeance Not all disabilities are visible. Not a woman. Canada-UK dual citizen. # Immunocompromised # Wear…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "benhigbie@mastodon.social",
+      "id": "110881351640006477",
+      "url": "https://mastodon.social/@BenHigbie",
+      "displayName": "Ben Higbie",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/881/351/640/006/477/original/86c504e6137cbb7a.jpg",
+      "bio": "I am an American expat living on an island in the Gulf of Thailand. I am an artist, art promoter & dealer & appreciator. My wife and I run a small animal assistance operation in our town. I sell quil…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "tim_eagon@dice.camp",
+      "id": "109305905987366934",
+      "url": "https://dice.camp/@Tim_Eagon",
+      "displayName": "Tim_Eagon",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/305/905/987/366/934/original/361275ee4a21d618.jpg",
+      "bio": "Proud geek, Badger, and table top gamer! RPG freelancer (#dnd, Murders & Acquisitions, CAPERS) and telecom worker. He/Him. DM's open",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "dancrescentwolf@pounced-on.me",
+      "id": "109403052751777793",
+      "url": "https://pounced-on.me/@dancrescentwolf",
+      "displayName": "DanCrescentWolf",
+      "avatar": "https://pouncedon.azureedge.net/data/accounts/avatars/109/403/052/751/777/793/original/2293848c2e5e2612.png",
+      "bio": "🔞 🔞 🔞 | | | digital artist from Austria | GER/ENG | | Doing art for a living since 2018 | . . I like sci-fi themes and cute characters ❤️ @ nilsding ❤️ 🐾 . 🐾 . 🐾 Website https:// dancrescentwolf.art",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "jdnicoll@wandering.shop",
+      "id": "109414106345307955",
+      "url": "https://wandering.shop/@jdnicoll",
+      "displayName": "James Davis Nicoll",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/414/106/345/307/955/original/7adfa0519547c32f.jpg",
+      "bio": "Essays @ http:// tor.com . Ursacki winner. 6x Hugo finalist. Editor, 6x Aurora-nominated Young People Read Old SFF. CSFFA Hall of Fame nominee. Perennial Darwin Award nominee.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "golgaloth@writing.exchange",
+      "id": "109273083797936226",
+      "url": "https://writing.exchange/@golgaloth",
+      "displayName": "Dave Dawkins (D. Harrigon)",
+      "avatar": "https://cdn.masto.host/writing/accounts/avatars/109/273/083/797/936/226/original/bd5d1f120c0dd0b6.jpg",
+      "bio": "Rich, fascinating stories, board game designs, and random thoughts, graciously provided by David Dawkins. # Writer # Writing # BoardGames # Fantasy # SciFi # Authodon",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "paullev@mastodon.social",
+      "id": "109259738495981019",
+      "url": "https://mastodon.social/@PaulLev",
+      "displayName": "Paul Levinson",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/259/738/495/981/019/original/c89ef96b9f577574.jpg",
+      "bio": "# author 20 books: # ScienceFiction novels (best known: The Silk Code, The Plot to Save Socrates), media/politics (best known: The Soft Edge, Digital McLuhan, New New Media); prof Fordham Univ in New…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "elysemgrasso@wandering.shop",
+      "id": "115143416852214026",
+      "url": "https://wandering.shop/@ElyseMGrasso",
+      "displayName": "Elyse M Grasso",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/115/143/416/852/214/026/original/53c2fccf56d5d5ef.jpg",
+      "bio": "Retired. Fiber arts. Books. Now writing and publishing SF&F.",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ami_angelwings@urusai.social",
+      "id": "109390453566879141",
+      "url": "https://urusai.social/@ami_angelwings",
+      "displayName": "Ami Angelwings",
+      "avatar": "https://files.urusai.social/accounts/avatars/109/390/453/566/879/141/original/c958412bc2c6a123.jpg",
+      "bio": "Queer Asian-Canadian geek girl. Owner of Escher Girls. she/her also may or may not be a cat Patreon: https://www. patreon.com/ami_angelwings Ko-Fi: https:// ko-fi.com/amiangelwings",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["twitch", "youtube"]
+    },
+    {
+      "acct": "dona@mastodon.art",
+      "id": "27766",
+      "url": "https://mastodon.art/@dona",
+      "displayName": "dona",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/000/027/766/original/fcc421dd5359b2a1.png",
+      "bio": "Illustrator, monthly blogger, here to prattle about daily life & being human. she/her I make art and sometimes play video games (I used to make them, too, in another life). Check my website for the p…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}

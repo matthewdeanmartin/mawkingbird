@@ -1,0 +1,48 @@
+/* Topic pages; layout and type from features.css, people lists from follow.css. */
+.tag-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.tag-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+.tag-list a {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.caution {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 6px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.hub-topic ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+:host-context(:lang(ja)) p,
+:host-context(:lang(ja)) li {
+  line-break: strict;
+  word-break: auto-phrase;
+}

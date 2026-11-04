@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1642,
-  "filesWithCandidates": 592,
+  "filesScanned": 1654,
+  "filesWithCandidates": 594,
   "inventory": [
     {
       "file": "ui/src/app/a11y/focus-trap.ts",
@@ -5261,11 +5261,11 @@
         },
         {
           "pattern": "shared",
-          "line": 31
+          "line": 32
         },
         {
           "pattern": "shared",
-          "line": 35
+          "line": 34
         },
         {
           "pattern": "shared",
@@ -5273,47 +5273,39 @@
         },
         {
           "pattern": "shared",
-          "line": 39
-        },
-        {
-          "pattern": "shared",
           "line": 41
         },
         {
           "pattern": "shared",
-          "line": 62
+          "line": 42
         },
         {
           "pattern": "shared",
-          "line": 79
+          "line": 44
         },
         {
           "pattern": "shared",
-          "line": 93
+          "line": 65
         },
         {
           "pattern": "shared",
-          "line": 107
+          "line": 82
         },
         {
           "pattern": "shared",
-          "line": 116
+          "line": 96
         },
         {
           "pattern": "shared",
-          "line": 117
+          "line": 110
         },
         {
           "pattern": "shared",
-          "line": 121
+          "line": 119
         },
         {
           "pattern": "shared",
-          "line": 122
-        },
-        {
-          "pattern": "shared",
-          "line": 123
+          "line": 120
         },
         {
           "pattern": "shared",
@@ -5338,6 +5330,18 @@
         {
           "pattern": "shared",
           "line": 129
+        },
+        {
+          "pattern": "shared",
+          "line": 130
+        },
+        {
+          "pattern": "shared",
+          "line": 131
+        },
+        {
+          "pattern": "shared",
+          "line": 132
         }
       ]
     },
@@ -5371,15 +5375,19 @@
         },
         {
           "pattern": "shared",
-          "line": 44
+          "line": 48
         },
         {
           "pattern": "shared",
-          "line": 45
+          "line": 49
         },
         {
           "pattern": "shared",
-          "line": 46
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 51
         }
       ]
     },
@@ -5488,6 +5496,118 @@
         {
           "pattern": "shared",
           "line": 39
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/feed-builder/feed-builder-hub.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 47
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 53
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/pages/feed-builder/feed-builder-page.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 5
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 26
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 68
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 83
+        },
+        {
+          "pattern": "shared",
+          "line": 86
+        },
+        {
+          "pattern": "shared",
+          "line": 103
+        },
+        {
+          "pattern": "shared",
+          "line": 115
+        },
+        {
+          "pattern": "shared",
+          "line": 132
+        },
+        {
+          "pattern": "shared",
+          "line": 137
+        },
+        {
+          "pattern": "shared",
+          "line": 138
+        },
+        {
+          "pattern": "shared",
+          "line": 139
+        },
+        {
+          "pattern": "shared",
+          "line": 140
         }
       ]
     },
@@ -5889,7 +6009,7 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 56
+          "line": 58
         }
       ]
     },

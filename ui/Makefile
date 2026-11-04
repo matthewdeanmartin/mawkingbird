@@ -29,6 +29,14 @@ starter-catalog-check:
 	node --test scripts/starter-locale-coverage.test.mjs
 	npm run starter-locales:report -- --check
 
+.PHONY: feedbuilder-update feedbuilder-check
+feedbuilder-update:
+	npm run feedbuilder:update $(if $(FEEDBUILDER),-- "$(FEEDBUILDER)",)
+
+feedbuilder-check:
+	npm run feedbuilder:check
+	node --test scripts/import-feed-builder.test.mjs
+
 .PHONY: help install format format-check lint storage subpaths i18n i18n-extract i18n-todo i18n-batch i18n-merge i18n-traps test test-ci build build-admin build-mockingbird security check check-ci
 
 help:
@@ -51,6 +59,8 @@ help:
 	@echo "  make test-seo           Prerender and verify the public SEO pages on demand"
 	@echo "  make starter-catalog-update  Bundle the sibling starter catalogue"
 	@echo "  make starter-catalog-check   Validate the bundle and importer offline"
+	@echo "  make feedbuilder-update      Bundle the reviewed Feed Builder topic pages"
+	@echo "  make feedbuilder-check       Validate the Feed Builder bundle and importer offline"
 	@echo "  make security           Audit production dependencies"
 	@echo "  make check              Full read-only quality gate"
 
@@ -147,6 +157,6 @@ test-seo: build-seo
 security:
 	npm audit --omit=dev --audit-level=high
 
-check: format-check lint design-check storage subpaths i18n starter-catalog-check test build security
+check: format-check lint design-check storage subpaths i18n starter-catalog-check feedbuilder-check test build security
 
 check-ci: check

@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "Phantastik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "rockpapershotgun@die-partei.social",
+      "id": "2872",
+      "url": "https://die-partei.social/@rockpapershotgun",
+      "displayName": "Rock Paper Shotgun",
+      "avatar": "https://die-partei.social/system/accounts/avatars/000/002/872/original/58a64cfd295cb120.jpg",
+      "bio": "Inoffical Rock Paper Shotgun RSS-Feed",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC5bKSAZBvV9AKlBJPG0Py-A",
+        "native": true,
+        "band": "100k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "t_matam_t@det.social",
+      "id": "109238820682509228",
+      "url": "https://det.social/@t_matam_t",
+      "displayName": "Theresa Hannig",
+      "avatar": "https://det.social/system/accounts/avatars/109/238/820/682/509/228/original/e07c467e4d59771b.jpg",
+      "bio": "Autorin | Politikwissenschaftlerin | Stadträtin | Europäerin | Feministin | # wikifueralle | Artikel 3 GG Fangirl | Grün | she/her 🇪🇺🇺🇳🏳️‍🌈 https:// theresahannig.de",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCvmeXY5hER1un0UbdguyAWQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2022-02"
+      }
+    },
+    {
+      "acct": "tanjakinkel@muenchen.social",
+      "id": "109308459955563486",
+      "url": "https://muenchen.social/@Tanjakinkel",
+      "displayName": "Tanja Kinkel",
+      "avatar": "https://media.muenchen.social/muc/accounts/avatars/109/308/459/955/563/486/original/37d708e770339888.jpeg",
+      "bio": "Geb. 27.09.1969 in Bamberg. Autorin, Vielleserin, Reisende. Liebt Geschichte, Fantasy, Gegenwart und Zukunft. Und Katzen.",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCZv_zbUb4tR6byX4606tykA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-03"
+      }
+    },
+    {
+      "acct": "viennawriter@literatur.social",
+      "id": "3",
+      "url": "https://literatur.social/@viennawriter",
+      "displayName": "Klaudia (aka jinxx)",
+      "avatar": "https://literatur.social/system/accounts/avatars/000/000/003/original/c498a159e7120020.jpg",
+      "bio": "# Autorin · # Schreiben # Writing # SciFi # ClimateFiction # CrimeFiction & # Utopia · # Podcasting · # Datenschutz & # ITSecurity # Awareness · # DigitaleInklusion · # Fediverse # fedi22 · ViennaWri…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "lenafalkenhagen@literatur.social",
+      "id": "108228732857742233",
+      "url": "https://literatur.social/@lenafalkenhagen",
+      "displayName": "Lena Falkenhagen",
+      "avatar": "https://literatur.social/system/accounts/avatars/108/228/732/857/742/233/original/4fb16de869ed30cb.png",
+      "bio": "Schriftstellerin, Autorin für Computerspiele, Bundesvorsitzende Verband deutscher Schriftsteller*innen. # Bücher # Literatur # Computerspiele # Games # Autorenrechte # SeriousGames www.falkenhagen.de",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "martinschemm@mastodon.social",
+      "id": "113928743621122082",
+      "url": "https://mastodon.social/@martinschemm",
+      "displayName": "Autor Martin Schemm",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/928/743/621/122/082/original/6148f96e8ce6a66e.jpg",
+      "bio": "Autor aus Hamburg, Historiker, Jg. 1964 Historischer Roman / Phantastik / Krimi Deutscher Phantastik Preis 2007 Weitere Hobbys: Reisen, Natur, Fotografie ... \"It is sometimes an appropriate response…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "nisjasper@literatur.social",
+      "id": "109383042273534298",
+      "url": "https://literatur.social/@nisjasper",
+      "displayName": "Mopsi Dick",
+      "avatar": "https://literatur.social/system/accounts/avatars/109/383/042/273/534/298/original/03b4b67ca14571aa.png",
+      "bio": "Autor. # queer # fantasy # sf ##weirdfiction # pnp # boxen # erzieher # systemik",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "arnebab@rollenspiel.social",
+      "id": "8590",
+      "url": "https://rollenspiel.social/@ArneBab",
+      "displayName": "ArneBab",
+      "avatar": "https://rollenspiel.social/system/accounts/avatars/000/008/590/original/ae92e6f24e7a262e.png",
+      "bio": "Physicist by training, PhD in climate science, software developer by trade, writes # freeculture by idealism. # TTRPG # Filk # Sketchnotes and # FreeSoftware . Maintains https:// floss.social/@Freene…",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ardeija@literatur.social",
+      "id": "108221122736734622",
+      "url": "https://literatur.social/@Ardeija",
+      "displayName": "Maike Claußnitzer",
+      "avatar": "https://literatur.social/system/accounts/avatars/108/221/122/736/734/622/original/b80620b20c10a480.jpg",
+      "bio": "Leseratte und vindaerinne wilder maere: Ich bin vor allem als Buchbloggerin und Fantasyautorin hier. In meinem Blog gibt es Rezensionen und gelegentlich auch Informationen über meine eigenen Romane u…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "steinstory@literatur.social",
+      "id": "109320898237528239",
+      "url": "https://literatur.social/@steinstory",
+      "displayName": "Maike Stein",
+      "avatar": "https://literatur.social/system/accounts/avatars/109/320/898/237/528/239/original/1e5b60eedf30a366.png",
+      "bio": "Natürlich gibt es Drachen! Of course there are dragons! Autorin und Drachenliebhaberin, logische Schlussfolgerung: ich schreibe am liebsten Fantasy, queere Figuren und Drachen inklusive.",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "sascha_raubal@muenchen.social",
+      "id": "109421812944724039",
+      "url": "https://muenchen.social/@Sascha_Raubal",
+      "displayName": "Sascha Raubal – Autor",
+      "avatar": "https://media.muenchen.social/muc/accounts/avatars/109/421/812/944/724/039/original/79d56808a9e33d46.jpg",
+      "bio": "Baujahr '72, also eher in der Alter-Sack-Fraktion zu finden. Dafür hatte ich wohl eine der ersten privaten Homepages Deutschlands, ist doch auch was. :-) Hauptberuf: Computerfuzzi Hier bin ich eher a…",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "titel@literatur.social",
+      "id": "106264137362629903",
+      "url": "https://literatur.social/@TITEL",
+      "displayName": "TITEL kulturmagazin",
+      "avatar": "https://literatur.social/system/accounts/avatars/106/264/137/362/629/903/original/ada49d70063d8f62.jpg",
+      "bio": "TITEL kulturmagazin wurde im Jahr 2000 mit dem Ziel gegründet, ein unabhängiges Magazin für eine aufgeschlossene und kritische Leserschaft zu etablieren. Die Darstellung kultureller Themen soll Quali…",
+      "shelf": "notable",
+      "rank": 9,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "janika_hoffmann@literatur.social",
+      "id": "109298024627852734",
+      "url": "https://literatur.social/@Janika_Hoffmann",
+      "displayName": "Janika_Hoffmann",
+      "avatar": "https://literatur.social/system/accounts/avatars/109/298/024/627/852/734/original/c9f07bdaf1ce2f60.png",
+      "bio": "Fantasy-Autorin, Game Writer, Streamerin | Literatur, Games, Vanlife & mehr: http:// twitch.tv/Janika_Hoffmann | Links: http:// linktr.ee/Janika_Hoffmann | she/her | 🇩🇪 / 🇦🇺 | 🏳️‍🌈",
+      "shelf": "notable",
+      "rank": 10,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["patreon", "twitch", "website"]
+    },
+    {
+      "acct": "frankboehmert@berlin.social",
+      "id": "114126894959883029",
+      "url": "https://berlin.social/@frankboehmert",
+      "displayName": "Frank Böhmert",
+      "avatar": "https://media-proxy.berlin.social/accounts/avatars/114/126/894/959/883/029/original/531d3166ed492b8c.png",
+      "bio": "Ich schaue meinen Geschichten beim Wachsen zu // I'm watching my stories grow Mitglied des PEN Berlin // member of PEN Berlin",
+      "shelf": "notable",
+      "rank": 11,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "diandralinnemann@mastodon.social",
+      "id": "113871011413360043",
+      "url": "https://mastodon.social/@diandralinnemann",
+      "displayName": "Diandra Linnemann",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/871/011/413/360/043/original/ea12253cc8a905e5.jpg",
+      "bio": "Autorin mit Vorliebe für Phantastik und Humor. Filled with rage, aber in niedlich. Pronomen: Sie/ihr",
+      "shelf": "notable",
+      "rank": 12,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "tiarael@mastodon.art",
+      "id": "32565",
+      "url": "https://mastodon.art/@tiarael",
+      "displayName": "vanlau",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/000/032/565/original/fab433c5b34eb7ec.gif",
+      "bio": "🌷 Freelanceartist, Twitch Partner & Art Teacher ☀️ Solarpunk & Fantasy 🪻 ✨ she/her | FlowerElf & BunnyFairy ✏ Commissions: Soon (april 26) 🌱 http:// vanlau.contactin.bio 🚫 no GenAi",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["patreon", "twitch", "website"]
+    },
+    {
+      "acct": "v_d_richards@literatur.social",
+      "id": "110306706152105314",
+      "url": "https://literatur.social/@v_d_richards",
+      "displayName": "Viktoria D. Richards/Uddelhexe",
+      "avatar": "https://literatur.social/system/accounts/avatars/110/306/706/152/105/314/original/d11a0e29509f7e12.png",
+      "bio": "She/Her from Germany 🇩🇪🇪🇺 Crime fighter by day, hobby Artist and writer for magical realism/urban fantasy/Mythical history with love for ancient egypt by night. Philosopher appearantly. You find my p…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "phantastopia@literatur.social",
+      "id": "114790911724166050",
+      "url": "https://literatur.social/@Phantastopia",
+      "displayName": "Sonja Tornefeld",
+      "avatar": "https://literatur.social/system/accounts/avatars/114/790/911/724/166/050/original/6c82eb5f08c341ff.jpg",
+      "bio": "# Indie - # Fantasy -Autorin und Amateurphilosophin aus # Paderborn . Außerdem: # Metalhead , praktiziert # Yoga , # Mutter von 4 Kindern, liebt # Gärtnern und findet, dass Liebe Liebe ist. # FCKNZS…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "_ryekdarkener_@mastodon.social",
+      "id": "108097090331071906",
+      "url": "https://mastodon.social/@_RyekDarkener_",
+      "displayName": "Ryek Darkener",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/097/090/331/071/906/original/8e1b77a62b775d0d.jpg",
+      "bio": "Schreibt # ScienceFiction , # UrbanFantasy , Mostly harmless. Hat Ahnung von IT und BWL. Und etwas Lebenserfahrung. Don’t feed the Plants! Deutsch/English # RandomtextRyek Impressum: Ryek Darkener c/…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "gmraphi@rollenspiel.social",
+      "id": "110236800474087970",
+      "url": "https://rollenspiel.social/@gmraphi",
+      "displayName": "GMRaphi",
+      "avatar": "https://rollenspiel.social/system/accounts/avatars/110/236/800/474/087/970/original/336892fdabfab540.jpg",
+      "bio": "Nerd aus der Schweiz 🇨🇭, forever Game Master und voll hier dafür! # ttrpg # pnpde : # dnd # Shadowrun # StarWars # StarTrek # Genesys # WorldOfDarkness # V5 # V20 # VampireTheMasquerade # MageTheAsce…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["twitch", "website"]
+    },
+    {
+      "acct": "schreibwolf@mastodon.social",
+      "id": "115079794368587104",
+      "url": "https://mastodon.social/@SchreibWolf",
+      "displayName": "Wolfgang Palloks",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/079/794/368/587/104/original/1efbf09adb47d904.jpg",
+      "bio": "Autor von *Mooslande* (Feb 2024) & *Mooslande 2 – WeltenMagie* (Apr/Mai 2025), VÖ *Mooslande 3 - SternenMagie\" im Oktober 2026! Fantasy trifft Thriller, Horror, Sci-Fi & Humor. Musikverrückt, Gamer,…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "carolin_schreibt@literatur.social",
+      "id": "114375310751565523",
+      "url": "https://literatur.social/@carolin_schreibt",
+      "displayName": "Carolin Lüders",
+      "avatar": "https://literatur.social/system/accounts/avatars/114/375/310/751/565/523/original/9dad61223cc3a06d.png",
+      "bio": "Ich bin Carolin (sie/ihr). Autorin und Künstlerin. Schreibe Fantasy, Science Fiction, Gedöns, gerne mit Queerness. Das Titelbild stammt von Udo Reitter auf Pixabay.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "evanesca@literatur.social",
+      "id": "109292774027532803",
+      "url": "https://literatur.social/@evanesca",
+      "displayName": "Katherina Ushachov",
+      "avatar": "https://literatur.social/system/accounts/avatars/109/292/774/027/532/803/original/c4ee1eb33ca02733.png",
+      "bio": "# SchreibendenLeben # Lektorat # Korrektorat # Spoonie Ich administriere nun ziemlich genau mein halbes Leben lang das \"Anti-Krea-Tief\". Online am Rumlungern seit 2003. Letzte Veröffentlichung: # Nov…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "andreavoelkner@mastodon.social",
+      "id": "115501995005940414",
+      "url": "https://mastodon.social/@andreavoelkner",
+      "displayName": "Andrea Völkner",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/501/995/005/940/414/original/b2f9034eae362617.png",
+      "bio": "Pfarrerin, Goth, schreibt Fantasy und Theologisches. Ich lebe und arbeite in Brandenburg. Ich liebe die Schwarze Szene, Phantastik und Festivals. Mir liegen außerdem Themen wie Diversität, Klima- und…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "moviescape@mastodon.social",
+      "id": "109353471240953872",
+      "url": "https://mastodon.social/@moviescape",
+      "displayName": "moviescape",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/353/471/240/953/872/original/6b85470128cd6015.png",
+      "bio": "Filmfreak 🎥 | Seriennarr 📺 | Musikfreund 🎸 | Leseratte 📚 | Blogger 💻 | Läufer 👟 | Und vor allem Vater 👨‍👩‍👧‍👦",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "anjaweinhold@mastodon.social",
+      "id": "113877964364990465",
+      "url": "https://mastodon.social/@anjaweinhold",
+      "displayName": "Anja Weinhold",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/877/964/364/990/465/original/04468ed29b91bc53.png",
+      "bio": "Ich bin gelernte Buchbinderin und komme aus dem beschaulichen Erzgebirge. # Schreiben ist meine große Passion und dieses Jahr erscheint mein erster richtiger Roman. Ich schreibe in den Genres Fantasy…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "tombud@mastodon.social",
+      "id": "108192727965097963",
+      "url": "https://mastodon.social/@tombud",
+      "displayName": "tombud",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/192/727/965/097/963/original/3a77d1bef5211ba6.png",
+      "bio": "Bookcover creations, Science Fiction, Fantasy. Hard Rock Fan, Gamer.",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}

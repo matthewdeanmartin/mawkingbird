@@ -64,6 +64,27 @@ const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true
   .sort();
 assert.ok(kitSlugs.length > 0, 'at least one starter kit is published');
 pages.push('follow', ...kitSlugs.map((slug) => `follow/${slug}`));
+// Feed Builder topic pages and their hub (src/app/pages/feed-builder/).
+const feedPaths = JSON.parse(
+  await readFile(
+    path.resolve(import.meta.dirname, '../src/app/pages/feed-builder/feed-builder-paths.json'),
+    'utf8',
+  ),
+);
+const feedPages = Object.entries(feedPaths).flatMap(([topic, langs]) =>
+  Object.entries(langs).map(([lang, pagePath]) => ({ topic, lang, path: pagePath })),
+);
+const feedPageAt = (page) => feedPages.find((entry) => entry.path === page);
+const feedAlternates = (entry) => {
+  const versions = feedPages.filter((other) => other.topic === entry.topic);
+  if (versions.length < 2) return [];
+  const english = versions.find((other) => other.lang === 'en');
+  return [
+    ...versions.map((other) => `${other.lang} https://mawkingbird.com/${other.path}/`),
+    ...(english ? [`x-default https://mawkingbird.com/${english.path}/`] : []),
+  ].sort();
+};
+pages.push('communities', ...feedPages.map((entry) => entry.path));
 const articles = new Map([
   ['about', /Why I asked a bot to create this/],
   ['funding', /Nothing below is a revenue model/],
@@ -91,6 +112,40 @@ for (const page of pages) {
       `${page} links to the in-app kit`,
     );
     assert.ok(doc.querySelector('a[href="/follow"]'), `${page} links back to the hub`);
+  } else if (page === 'communities') {
+    assert.equal(doc.querySelectorAll('h1').length, 1, 'communities has rendered content');
+    for (const entry of feedPages)
+      assert.ok(
+        doc.querySelector(`a[href="/${entry.path}"]`),
+        `communities links to ${entry.path}`,
+      );
+  } else if (feedPageAt(page)) {
+    // A topic page: its language, its lists, its versions, and nothing live.
+    const entry = feedPageAt(page);
+    assert.equal(doc.documentElement.lang, entry.lang, `${page} <html lang>`);
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has one heading`);
+    assert.ok(doc.querySelectorAll('.people li').length >= 5, `${page} lists its people`);
+    assert.ok(doc.querySelectorAll('a[href^="/tags/"]').length >= 3, `${page} links its hashtags`);
+    assert.equal(doc.querySelector('.activity'), null, `${page} prerenders no live tag activity`);
+    assert.ok(doc.querySelector('a[href="/communities"]'), `${page} links to the hub`);
+    assert.ok(
+      doc.querySelector('a[href="/accounts/@mawkingbird@mastodon.social"]'),
+      `${page} says where to ask for help or removal`,
+    );
+    assert.deepEqual(
+      [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+        .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+        .sort(),
+      feedAlternates(entry),
+      `${page} hreflang alternates`,
+    );
+    for (const version of feedPages.filter(
+      (other) => other.topic === entry.topic && other.path !== entry.path,
+    ))
+      assert.ok(
+        doc.querySelector(`a[hreflang="${version.lang}"][href="/${version.path}"]`),
+        `${page} links its ${version.lang} version`,
+      );
   } else if (page === 'tools') {
     // The index links every English tool page, from the same registry; the
     // translations get their own language's index.
@@ -186,6 +241,14 @@ for (const page of pages) {
     assert.equal(blocks.length, 1, `${page} has one structured-data block`);
     assert.equal(blocks[0]['@type'], 'ItemList');
     assert.equal(blocks[0].itemListElement.length, doc.querySelectorAll('.people li').length);
+  } else if (feedPageAt(page)) {
+    assert.equal(blocks.length, 1, `${page} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'CollectionPage');
+    assert.equal(blocks[0].inLanguage, feedPageAt(page).lang);
+    assert.equal(
+      blocks[0].mainEntity.itemListElement.length,
+      doc.querySelectorAll('.people li').length,
+    );
   } else {
     assert.equal(blocks.length, 0, `${page} has no structured data`);
   }
@@ -246,7 +309,9 @@ for (const url of sitemap.querySelectorAll('url')) {
       ? INDEX_ALTERNATES
       : entry
         ? expectedAlternates(entry)
-        : [],
+        : feedPageAt(page)
+          ? feedAlternates(feedPageAt(page))
+          : [],
     `sitemap alternates for ${page}`,
   );
 }

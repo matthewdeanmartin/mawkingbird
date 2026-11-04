@@ -1,0 +1,272 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "SFFF",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Imaginaire",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "nellyfg@mastodon.online",
+      "id": "108202671404709779",
+      "url": "https://mastodon.online/@NellyFG",
+      "displayName": "Nelly - Univers Fantasy",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/202/671/404/709/779/original/3187811eae5d2540.jpeg",
+      "bio": "Parle séries, films, bouquins - beaucoup, beaucoup de Fantasy Booktube de façon très irrégulière sur la chaine Univers Fantasy (critique, discussion, bla bla varié sur la SFFF)",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCNSMLkponJCr6XkNHaEYTPg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "gee@framapiaf.org",
+      "id": "1861",
+      "url": "https://framapiaf.org/@gee",
+      "displayName": "gee Ⓐ⚑",
+      "avatar": "https://stockage.framapiaf.org/framapiaf/accounts/avatars/000/001/861/original/bd7e1088e0f50398.jpg",
+      "bio": "Gribouilleur, scribouillard, docteur en informatique (généraliste conventionné secteur 42), anar, irréaliste & irresponsable, compagnon de route de # Framasoft et de l'#April.",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "hist_myth@mastodon.top",
+      "id": "109297190957320393",
+      "url": "https://mastodon.top/@hist_myth",
+      "displayName": "Histoires Mythiques",
+      "avatar": "https://mastodon.top/system/accounts/avatars/109/297/190/957/320/393/original/4dcaa08c206079e0.jpg",
+      "bio": "Mythographe. Autrice de SFFF (magie ! goules ! typographie !). Boulot : éditer, hobby : traduire du latin. Prend position. Elle/She. Nimium amatrix ingenii sui. Le Figaro m'a déjà traitée d'affidée d…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "elodiebouchet@toot.portes-imaginaire.org",
+      "id": "109291689888384405",
+      "url": "https://toot.portes-imaginaire.org/@elodiebouchet",
+      "displayName": "Élodie Bouchet",
+      "avatar": "https://toot.portes-imaginaire.org/system/accounts/avatars/109/291/689/888/384/405/original/5affb4863782e943.jpeg",
+      "bio": "Professeure de mathématiques en PCSI et autrice de fantasy (La Loi du Sanctuaire, Dans l'ombre de Voropui et Complots à Voropui). Je parle surtout de littératures de l'imaginaire et de broderie, mais…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "sylviedenis@piaille.fr",
+      "id": "116300926371105514",
+      "url": "https://piaille.fr/@SylvieDenis",
+      "displayName": "Sylvie Denis",
+      "avatar": "https://static.piaille.fr/accounts/avatars/116/300/926/371/105/514/original/9514e90639525686.png",
+      "bio": "Autrice et traductrice de SF depuis le siècle dernier. Pour savoir ce que je fais, lire des textes, m’aider à payer le loyer : https:// ko-fi.com/sylviedenis Envie de me faire lire votre nouvelle et…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "lavolte@lire.im",
+      "id": "114253468505486312",
+      "url": "https://re.lire.im/@LaVolte",
+      "displayName": "La Volte",
+      "avatar": "https://re.lire.im/system/accounts/avatars/114/253/468/505/486/312/original/4d20d7de245ae95d.png",
+      "bio": "Maison d'édition indépendante - https:// lavolte.net/ # ScienceFiction # Imaginaire # Littérature # Politique",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "amande_bleue@mastodon.social",
+      "id": "114207317337238615",
+      "url": "https://mastodon.social/@amande_bleue",
+      "displayName": "Amandine - illustratrice",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/207/317/337/238/615/original/91a3efc65681ffa5.png",
+      "bio": "Illustrations colorées et poétiques 🌸 Je travaille sur les représentations du féminin, inspirée par différents imaginaires tirés de la littérature, l’histoire de l’art et le cinéma.🌹 Un projet ? Tu p…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "milena_hime@shelter.moe",
+      "id": "109363687274635808",
+      "url": "https://shelter.moe/@Milena_Hime",
+      "displayName": "Claire Billaud",
+      "avatar": "https://shelter.moe/system/accounts/avatars/109/363/687/274/635/808/original/276506b4802cfb78.png",
+      "bio": "Informaticienne et autrice de fantastique et de science-fiction - Computer engineer and fantasy & sci-fi writer PP @ Shyle / Bannière Jipègue",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "librairie_chimeres@toot.portes-imaginaire.org",
+      "id": "111947083156152744",
+      "url": "https://toot.portes-imaginaire.org/@librairie_chimeres",
+      "displayName": "Librairie Chimères",
+      "avatar": "https://toot.portes-imaginaire.org/system/accounts/avatars/111/947/083/156/152/744/original/d36fe644bc6cade2.png",
+      "bio": "# Librairie spécialisée SFFF (Science-Fiction, Fantasy et Fantastique) et mondes de l'imaginaire, à Bruxelles : 404, avenue de la Couronne à 1050 Ixelles",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "s_arnier@lire.im",
+      "id": "113810012298861678",
+      "url": "https://re.lire.im/@s_arnier",
+      "displayName": "Stéphane Arnier",
+      "avatar": "https://re.lire.im/system/accounts/avatars/113/810/012/298/861/678/original/2c7c765fcdf89a67.png",
+      "bio": "Auteur d'imaginaire expatrié en Finlande. Écris des romans, des jeux de rôle, des articles. Aime le café serré et les forêts nordiques. Actualité : La Dernière Transhumance, duologie de fantasy nordi…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ilanthar@ludosphere.fr",
+      "id": "112241595074059930",
+      "url": "https://ludosphere.fr/@ilanthar",
+      "displayName": "ilanthar",
+      "avatar": "https://cdn.masto.host/ludospherefr/accounts/avatars/112/241/595/074/059/930/original/60120321cfd5e3e2.jpg",
+      "bio": "Cartographie imaginaire, worldbuilding & joueur avant tout! Fantasy cartographer, worldbuilder & rpg player CL on Cartographer's Guild No NFTs - Everything I do is human made",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "jeu2role@toot.portes-imaginaire.org",
+      "id": "106685475166790803",
+      "url": "https://toot.portes-imaginaire.org/@jeu2role",
+      "displayName": "Erwik",
+      "avatar": "https://toot.portes-imaginaire.org/system/accounts/avatars/106/685/475/166/790/803/original/3c2756fae6ade6ef.png",
+      "bio": "Je fais du jeu de rôle et c'est ma joie ! A rejoint Mastodon avant que ça soit à la mode Fier citoyen du Wokistan https:// jeu2role.fr/",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "leto@social.zdx.fr",
+      "id": "3",
+      "url": "https://social.zdx.fr/@leto",
+      "displayName": "Leto",
+      "avatar": "https://social.zdx.fr/system/accounts/avatars/000/000/003/original/cfc68bfd94d7c497.png",
+      "bio": "Chaos goddess. Seule maîtresse à bord de De l'autre côté des livres ( https://www. outrelivres.fr/ ) https:// fr.fiverr.com/s2/9ab2c488bb",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "aaribaud@mastodon.art",
+      "id": "10454",
+      "url": "https://mastodon.art/@aaribaud",
+      "displayName": "Albert ARIBAUD ✎",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/000/010/454/original/526fe4b14a2f9f44.gif",
+      "bio": "Amateur doodler/writer. French -- hence Hubert, the frog avatar. Disciple of Lu Tze, Seeker of Perplexity -- hence Hubert's befuddled look. Also: grandmaster of 아재 개그 EN introduction: https:// mastod…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "pleursdejoie@eldritch.cafe",
+      "id": "108204278424799798",
+      "url": "https://eldritch.cafe/@pleursdejoie",
+      "displayName": "Cèdre #StopGenocide",
+      "avatar": "https://eldritchcafe.files.fedi.monster/accounts/avatars/108/204/278/424/799/798/original/631a4c9b7c7d21f4.jpg",
+      "bio": "Botanique camarade S'intéresse à : # poésie # céramique # zines # édition # féminisme # transidentité # aromantisme Mes messages de flux se suppriment après 2 semaines. PP : photographie \"portrait d'…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["twitch"]
+    },
+    {
+      "acct": "oliviersaraja@mamot.fr",
+      "id": "20250",
+      "url": "https://mamot.fr/@oliviersaraja",
+      "displayName": "Olivier Saraja ☕️📚🦖🛸👻",
+      "avatar": "https://static.mamot.fr/accounts/avatars/000/020/250/original/8e6d5628414d1a3d.jpeg",
+      "bio": "Auteur # Fantastique # Occulte et # SF aux # Editionsdu38 Écriture: # auteur # editeur # SFFH # mastolivre # roman # edition # litterature # SF # fantastique # occulte # word # scrivener # antidote M…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ltdroihurleur@toot.portes-imaginaire.org",
+      "id": "112331018383039895",
+      "url": "https://toot.portes-imaginaire.org/@LTDRoiHurleur",
+      "displayName": "Le Roi Hurleur",
+      "avatar": "https://toot.portes-imaginaire.org/system/accounts/avatars/112/331/018/383/039/895/original/b997ff2650e69592.jpg",
+      "bio": "Vieil ermite des sous-sols. J’écris et je publie sous licence libre des nouvelles et romans. (illustrés parfois par François Gomes) https:// LatourduRoiHurleur.com ________________________________ Co…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}

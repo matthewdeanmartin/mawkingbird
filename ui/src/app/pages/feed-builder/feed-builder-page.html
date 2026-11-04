@@ -1,0 +1,143 @@
+<main class="features feed-page" [attr.lang]="lang">
+  <header>
+    <a mbContentLink [routerLink]="hub">Mawkingbird · {{ chrome.hub }}</a>
+    <app-language-versions />
+    <a mbButton routerLink="/">{{ chrome.openApp }}</a>
+  </header>
+
+  <div class="kit-intro">
+    <p class="eyebrow">{{ chrome.eyebrow }}</p>
+    <h1>{{ copy.heading }}</h1>
+    @for (paragraph of copy.intro; track $index) {
+      <p>{{ paragraph }}</p>
+    }
+  </div>
+
+  <section aria-labelledby="tags-heading">
+    <h2 id="tags-heading">{{ chrome.tagsHeading }}</h2>
+    <p>{{ chrome.tagsIntro }}</p>
+    <ul class="tag-list">
+      @for (tag of tags(); track tag.name) {
+        <li>
+          <a mbContentLink [routerLink]="['/tags', tag.name]" [attr.lang]="tag.lang"
+            >#{{ tag.name }}</a
+          >
+          @if (foreign(tag)) {
+            <mb-badge>{{ chrome.englishTag }}</mb-badge>
+          }
+          @defer (on viewport) {
+            <app-tag-activity [tag]="tag.name" [format]="chrome.activity" />
+          } @placeholder {
+            <span></span>
+          }
+          @if (tag.caution) {
+            <p class="caution">{{ chrome.caution[tag.caution] }}</p>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+
+  @if (futureTags().length) {
+    <section aria-labelledby="future-heading">
+      <h2 id="future-heading">{{ chrome.futureHeading }}</h2>
+      <p>{{ chrome.futureIntro }}</p>
+      <ul class="tag-list">
+        @for (tag of futureTags(); track tag.name) {
+          <li>
+            <a mbContentLink [routerLink]="['/tags', tag.name]">#{{ tag.name }}</a>
+            <span class="muted">{{ chrome.futureBeside(tag.source ?? '') }}</span>
+            <mb-badge tone="attention">{{
+              tag.status === 'starting' ? chrome.futureStarting : chrome.futureNew
+            }}</mb-badge>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @for (group of shelves; track group.shelf) {
+    <section [attr.aria-labelledby]="'shelf-' + group.shelf">
+      <h2 [id]="'shelf-' + group.shelf">{{ chrome.shelves[group.shelf].heading }}</h2>
+      <p>{{ chrome.shelves[group.shelf].intro }}</p>
+      <ul class="people">
+        @for (person of group.people; track person.acct) {
+          <li>
+            <img [src]="person.avatar" width="48" height="48" alt="" loading="lazy" />
+            <div>
+              <a mbContentLink [href]="person.url" rel="noopener">{{ person.displayName }}</a>
+              <span class="handle">&#64;{{ person.acct }}</span>
+              @if (person.bio) {
+                <p>{{ person.bio }}</p>
+              }
+              <div class="badges">
+                @if (person.youtube) {
+                  <a mbContentLink [href]="youtubeUrl(person)" rel="noopener">{{
+                    chrome.youtube(person.youtube.band)
+                  }}</a>
+                  @if (!person.youtube.native) {
+                    <span class="muted">{{ chrome.feedCopy }}</span>
+                  }
+                }
+                @for (code of person.fame; track code) {
+                  <mb-badge>{{ chrome.fame[code] }}</mb-badge>
+                }
+                @for (kind of elsewhere(person); track kind) {
+                  <mb-badge>{{ chrome.elsewhere[kind] }}</mb-badge>
+                }
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (servers.length) {
+    <section aria-labelledby="servers-heading">
+      <h2 id="servers-heading">{{ chrome.serversHeading }}</h2>
+      <p>{{ chrome.serversIntro }}</p>
+      <ul class="kit-links">
+        @for (server of servers; track server.domain) {
+          <li>
+            <a mbContentLink [href]="'https://' + server.domain + '/about'" rel="noopener">{{
+              server.domain
+            }}</a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section aria-labelledby="faq-heading">
+    <h2 id="faq-heading">{{ chrome.faqHeading }}</h2>
+    @for (item of copy.faq; track $index) {
+      <mb-disclosure [label]="item.q">
+        <p>{{ item.a }}</p>
+      </mb-disclosure>
+    }
+  </section>
+
+  <section aria-labelledby="choose-heading">
+    <h2 id="choose-heading">{{ chrome.chooseHeading }}</h2>
+    @for (paragraph of chrome.choose; track $index) {
+      <p>{{ paragraph }}</p>
+    }
+  </section>
+
+  <aside>
+    <h2>{{ chrome.helpHeading }}</h2>
+    <p>
+      {{ chrome.help }}
+      <a mbContentLink [routerLink]="helpPath">{{ chrome.helpLink }}</a>
+    </p>
+  </aside>
+
+  <footer>
+    <a mbContentLink [routerLink]="hub">{{ chrome.hub }}</a>
+    <a mbContentLink routerLink="/follow" lang="en">Who to follow on Mastodon</a>
+    <a mbContentLink routerLink="/features" lang="en">Mawkingbird features</a>
+    <a mbContentLink href="/help/" lang="en">Help</a>
+    <span class="muted">{{ chrome.updated(updated) }}</span>
+  </footer>
+</main>

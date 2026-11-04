@@ -133,6 +133,16 @@
       "nextStep": "Public starter-kit page reuses the feature layout and MbButton/MbContentLink. Keep the consent-filtered list from follow-kits.ts, decorative avatars with empty alt, and the follow action pointing at the in-app kit."
     },
     {
+      "file": "ui/src/app/pages/feed-builder/feed-builder-hub.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public /communities/ hub reuses the feature layout, MbButton and MbContentLink. Keep each topic page a routerLink with lang and hreflang on links to other languages."
+    },
+    {
+      "file": "ui/src/app/pages/feed-builder/feed-builder-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public topic starter-kit page reuses the feature layout and follow.css people list with MbButton, MbContentLink, MbBadge (English-tag, future-tag, fame and presence labels), MbDisclosure (questions) and the shared LanguageVersions menu. Keep decorative avatars with empty alt, hashtags as routerLinks to /tags, the live activity line deferred, and the help link inside the app."
+    },
+    {
       "file": "ui/src/app/pages/features/public-article.html",
       "disposition": "adopted scope",
       "nextStep": "Build-time copies of About, Funding and the Blog hub reuse the feature layout and MbButton/MbContentLink controls. Keep the essay text shared with the in-app virtual tweets and the help link a plain href to the static site."

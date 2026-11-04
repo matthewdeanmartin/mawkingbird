@@ -48,6 +48,7 @@ import * as toolsIndexPage from './app/pages/tools/tools-index';
 import { ToolsIndex } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
+import { feedBuilderRoutes } from './app/pages/feed-builder/feed-builder-routes';
 
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
@@ -168,6 +169,7 @@ export default (context: BootstrapContext) =>
         provideRouter([
           ...audienceRoutes,
           ...followRoutes,
+          ...feedBuilderRoutes,
           { path: '', pathMatch: 'full', component: ClientEntry },
           {
             path: 'features',
@@ -244,6 +246,10 @@ export default (context: BootstrapContext) =>
                   slug,
                 })),
             },
+            ...feedBuilderRoutes.map((route) => ({
+              path: route.path ?? '',
+              renderMode: RenderMode.Prerender as const,
+            })),
             ...audienceRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,

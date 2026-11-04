@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "es",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "CienciaFicción",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasía",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "rea_faol@mastodon.social",
+      "id": "108271629086069966",
+      "url": "https://mastodon.social/@Rea_Faol",
+      "displayName": "Rea L. López",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/271/629/086/069/966/original/f1af0d2cee379e9a.jpg",
+      "bio": "✍🏻 # Escritora de # fantasía estresada, # ilustradora y mamarracha. 🙃 Slowpoke y Psyduck son mis animales espirituales. 📖 Autora de # SueñosMalditos y # PortalesenlaNiebla Mentalmente casada con Sato…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCBmDBcGxXUg8zcsQMmny3Sg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "albertochimal@mstdn.mx",
+      "id": "202660",
+      "url": "https://mstdn.mx/@albertochimal",
+      "displayName": "Alberto Chimal",
+      "avatar": "https://mstdn.mx/system/accounts/avatars/000/202/660/original/1459d601dfd1940a.jpg",
+      "bio": "Escritor mexicano | Mexican writer 🇲🇽 Toots mostly in # Spanish he/him # libros # literatura # citas # artículos # EscrituraCreativa # cine # comics # arte # fotografía # música # actualidad # books…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "davidportodiaz@mastodon.social",
+      "id": "117238993380408996",
+      "url": "https://mastodon.social/@davidportodiaz",
+      "displayName": "David Porto Díaz",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/238/993/380/408/996/original/58d8ba54d1d9d9e9.png",
+      "bio": "Escritor gallego en Madrid. Fantasía, memoria y libros que dejan poso. Autor de Las manecillas del recuerdo (Monza Ediciones, 2026) y Samuel entre mundos (Libros Indie, 2025). # Fantasía # Libros # E…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "belenconde@masto.es",
+      "id": "109386693079415377",
+      "url": "https://masto.es/@BelenConde",
+      "displayName": "Belén Conde",
+      "avatar": "https://masto.es/system/accounts/avatars/109/386/693/079/415/377/original/f2587b7ea72762b9.jpg",
+      "bio": "Viajera, filóloga, esgrimista y guía en ciernes. Novelista humana de ficción, narrativa y minorías. Defensora de la literatura sin distinciones. Me gustan los libros, la naturaleza, el espacio, la mú…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "juanlo@masto.es",
+      "id": "114465401252958597",
+      "url": "https://masto.es/@juanlo",
+      "displayName": "juanlo",
+      "avatar": "https://masto.es/system/accounts/avatars/114/465/401/252/958/597/original/1e9a7b2177fdae4a.png",
+      "bio": "Convivo en lo psíquico con los heterónimos John L’Obrian y Lorenzo Gárez. Lo hago en lo físico con la perrita Tabi, mi compañera L y mi hermana M. ~~~ Alt-1: El juanlo. Larga barba blanca. Gorra negr…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "bazza@mograph.social",
+      "id": "28914",
+      "url": "https://mograph.social/@bazza",
+      "displayName": "Bazza 🔶",
+      "avatar": "https://mograph-social.s3.de.io.cloud.ovh.net/accounts/avatars/000/028/914/original/2854f75c7b9c2388.gif",
+      "bio": "⭐ Para más contenido, pueden ir a mi canal de PeerTube https:// fediverse.tv/@bazza 📺 ⭐ Este es mi Mastodon https:// mograph.social/@bazza donde comparto opiniones, avances de mi serie de animación y…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "maikciveira@mastodon.social",
+      "id": "113862238488170093",
+      "url": "https://mastodon.social/@MaikCiveira",
+      "displayName": "Maik Civeira",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/862/238/488/170/093/original/8277c530c3fd5620.jpeg",
+      "bio": "Profe, escritor y bloguero. Nerd profesional, friki antifascista. Las ideas son a prueba de balas. Él / He https://www. maikciveira.com/",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "aldeguerayala@tkz.one",
+      "id": "109342908398042093",
+      "url": "https://tkz.one/@AldeguerAyala",
+      "displayName": "J. A. Ayala 📚",
+      "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/342/908/398/042/093/original/956ba4425d5a348d.jpg",
+      "bio": "Autor de 'He visto cosas que vosotros... ¡también!', 'IES nº 2, el resurgir del odio' y de la trilogía de ficción 'La guerra de Irena' (Amazon). Blog: https:// lacoronapaganadeplata.blogspot .com/",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nikathesiren@tkz.one",
+      "id": "110821912158842588",
+      "url": "https://tkz.one/@nikathesiren",
+      "displayName": "Nika won't shut up about SBR 🏇🏇",
+      "avatar": "https://media.tkz.one/tkz/accounts/avatars/110/821/912/158/842/588/original/2cab943e334b6b51.png",
+      "bio": "🔸 Andaluza con orgullo. 🔹 Bi, fictosexual y autista Y como autista hablo MUCHO de mis hiperfijaciones. 🔸 desde oct 2018 [mastodon.social] y nov 2022 [mstdn.party]. 🔹 Española nativa, I know some engl…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "laposadadelcuervolector@masto.es",
+      "id": "116981002103694912",
+      "url": "https://masto.es/@laposadadelcuervolector",
+      "displayName": "La posada del Cuervo Lector",
+      "avatar": "https://masto.es/system/accounts/avatars/116/981/002/103/694/912/original/5757c179156d07c0.png",
+      "bio": "La posada donde las historias encuentran refugio y el cuervo las observa🐦‍⬛ Podcast sobre fantasía, terror, grimdark y libros que dejan huella📜",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "fictograma@mastodon.social",
+      "id": "115090106266289375",
+      "url": "https://mastodon.social/@fictograma",
+      "displayName": "Fictograma.com",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/090/106/266/289/375/original/8242bbceb53d91ce.jpg",
+      "bio": "Fictograma.com es una nueva plataforma de publicación de textos, cuentos, poemas y todo lo concerniente a las artes literarias. ¿Tienes un cuento o poema por publicar y no sabes dónde? ¡Publícalo en…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "osunac@masto.es",
+      "id": "109931853471253858",
+      "url": "https://masto.es/@osunac",
+      "displayName": "🖖 🅾🆂🆄🅽🅰🅲 🖖",
+      "avatar": "https://masto.es/system/accounts/avatars/109/931/853/471/253/858/original/c6738bd9dba24401.jpg",
+      "bio": "🇪🇸 Opinando sobre películas 🎬 que nadie ha visto y criticando las que todo el mundo ama. Mi criterio es tan cuestionable como mi horario de sueño 💤. 🇬🇧 Giving my opinion on movies 🎬 that nobody's see…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "torpeyvago@mastodon.social",
+      "id": "114529060400898160",
+      "url": "https://mastodon.social/@torpeyvago",
+      "displayName": "Torpeyvago🇪🇸🇪🇺🇵🇸🇺🇦",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/529/060/400/898/160/original/112da89f41d1b96d.png",
+      "bio": "«Delenda Miliardarii» Nací en plena Mancha hace más de medio siglo. La obsesión por la lectura devino en una temprana afición adolescente por la escritura, que se vio truncada por estudios y trabajos…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "albavalerom@mastodon.world",
+      "id": "109365762739726616",
+      "url": "https://mastodon.world/@AlbaValeroM",
+      "displayName": "Alba Valero",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/365/762/739/726/616/original/b5a9ec3309af4706.jpg",
+      "bio": "👩‍💻 Escritora de literatura fantástica 📘 El Deshonor de la Verdad y Destructores de Reyes ya la venta Otras redes: 1. Instagram: https:// instagram.com/albavalerom/ 2. Página de Facebook: https:// fa…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}

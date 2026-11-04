@@ -6,6 +6,11 @@ const root = path.resolve(import.meta.dirname, '..');
 export const STARTUP_EXCLUSIONS = [
   'src/app/starter-kits.ts',
   'src/app/bundled-starter-kits.generated.ts',
+  // Feed Builder topic pages: data, copy and shared words load with their page.
+  'src/app/pages/feed-builder/data/',
+  'src/app/pages/feed-builder/copy/',
+  'src/app/pages/feed-builder/feed-builder-chrome.ts',
+  'src/app/pages/feed-builder/feed-builder-data.ts',
 ];
 
 /** Follow static output imports only; importing a lazy chunk must not count it. */

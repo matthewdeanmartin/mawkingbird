@@ -29,6 +29,7 @@ import {
 import { toolDescription, toolTitle, toolsResolver } from './tool-copy';
 import { audienceRoutes } from './pages/features/audience-routes';
 import { followRoutes } from './pages/features/follow-routes';
+import { feedBuilderRoutes } from './pages/feed-builder/feed-builder-routes';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
@@ -209,6 +210,7 @@ export function toolPageLoader(tool: ToolPage): NonNullable<Route['loadComponent
 export const routes: Routes = [
   ...audienceRoutes,
   ...followRoutes,
+  ...feedBuilderRoutes,
   {
     path: 'features',
     title: 'Mastodon, reading and writing features',

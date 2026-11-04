@@ -17,6 +17,17 @@ const html = await readFile(new URL('index.csr.html', root), 'utf8');
 // Tool pages come from the one registry the app's routes and prerendering use.
 const focusedTools = await loadFocusedTools();
 const registryFiles = await registrySources();
+// Feed Builder topic pages ("starter kits"): one per topic and language, with
+// the hub at /communities/. Paths and their language sets come from one file.
+const feedPaths = JSON.parse(
+  await readFile(
+    new URL('../src/app/pages/feed-builder/feed-builder-paths.json', import.meta.url),
+    'utf8',
+  ),
+);
+const feedPages = Object.entries(feedPaths).flatMap(([topic, langs]) =>
+  Object.entries(langs).map(([lang, path]) => ({ topic, lang, path })),
+);
 const toolLinks = focusedTools
   .map((tool) => `      <li><a href="/${tool.path}/">${tool.title}</a></li>`)
   .join('\n');
@@ -38,6 +49,7 @@ const fallback = `<noscript>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
+      <li><a href="/communities/">Mastodon starter kits by interest</a></li>
       <li><a href="/tools/">Free tools for Mastodon and Bluesky</a></li>
 ${toolLinks}
       <li><a href="/about/">Why Mawkingbird exists</a></li>
@@ -81,6 +93,16 @@ const alternateLinks = (pairs) =>
     .join('');
 const alternates = (page) => {
   if (indexPages.includes(page)) return alternateLinks([...indexPair, ['x-default', 'tools']]);
+  const feedPage = feedPages.find((entry) => `${entry.path}/` === page);
+  if (feedPage) {
+    const versions = feedPages.filter((entry) => entry.topic === feedPage.topic);
+    if (versions.length < 2) return '';
+    const english = versions.find((entry) => entry.lang === 'en');
+    return alternateLinks([
+      ...versions.map((entry) => [entry.lang, entry.path]),
+      ...(english ? [['x-default', english.path]] : []),
+    ]);
+  }
   const tool = focusedTools.find((entry) => `${entry.path}/` === page);
   if (!tool) return '';
   const originalId = tool.translationOf ?? tool.id;
@@ -104,6 +126,8 @@ const entries = [
   ...focusedTools.map((tool) => `${tool.path}/`),
   'follow/',
   ...kits.map((slug) => `follow/${slug}/`),
+  'communities/',
+  ...feedPages.map((entry) => `${entry.path}/`),
 ]
   .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc>${alternates(page)}</url>`)
   .join('\n');
@@ -141,6 +165,19 @@ function withLastmod(xml) {
       ];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
+    const feed = 'src/app/pages/feed-builder/';
+    if (page === 'communities/') return [feed];
+    const feedPage = feedPages.find((entry) => `${entry.path}/` === page);
+    if (feedPage)
+      return [
+        `${feed}feed-builder-page.html`,
+        `${feed}feed-builder-page.ts`,
+        `${feed}feed-builder.css`,
+        `${feed}feed-builder-chrome.ts`,
+        `${feed}feed-builder-paths.json`,
+        `${feed}copy/${feedPage.topic}.ts`,
+        `${feed}data/${feedPage.topic}.${feedPage.lang}.json`,
+      ];
     throw new Error(`prepare-seo-index: no lastmod sources for sitemap page "${page}"`);
   };
   const git = (...args) => {

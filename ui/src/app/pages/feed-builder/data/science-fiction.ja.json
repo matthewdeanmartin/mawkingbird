@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "ja",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "ファンタジー",
+      "lang": "ja",
+      "kind": "tag"
+    },
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "スタートレック",
+      "lang": "ja",
+      "kind": "future",
+      "source": "StarTrek",
+      "status": "starting"
+    },
+    {
+      "name": "スターウォーズ",
+      "lang": "ja",
+      "kind": "future",
+      "source": "StarWars",
+      "status": "starting"
+    },
+    {
+      "name": "サイエンスフィクション",
+      "lang": "ja",
+      "kind": "future",
+      "source": "SciFi",
+      "status": "new"
+    },
+    {
+      "name": "ドクターフー",
+      "lang": "ja",
+      "kind": "future",
+      "source": "DoctorWho",
+      "status": "new"
+    }
+  ],
+  "people": [
+    {
+      "acct": "creativegene@pawoo.net",
+      "id": "153585",
+      "url": "https://pawoo.net/@creativegene",
+      "displayName": "aza／あざ（筒示明日香）",
+      "avatar": "https://img.pawoo.net/accounts/avatars/000/153/585/original/029bc56e02d006d2.jpg",
+      "bio": "https:// idcg.hatenablog.com/ 作家。主にライト文芸、大人向け小説のＳＦを執筆。ノベルゲーム（ビジュアルノベル）も制作。 【人物詳細（賞歴、商業情報有】 https:// plus.fm-p.jp/u/idcg/profile 【お仕事履歴】 https:// plus.fm-p.jp/u/idcg/free?id=3",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCQ_3BxdIVdHYHrI0xP3kUBw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-02"
+      }
+    },
+    {
+      "acct": "taiyo@ostatus.taiyolab.com",
+      "id": "109292246093315248",
+      "url": "https://ostatus.taiyolab.com/@taiyo",
+      "displayName": "藤井太洋, Taiyo Fujii",
+      "avatar": "https://files.ostatus.taiyolab.com/accounts/avatars/109/292/246/093/315/248/original/81a22abe74032009.jpg",
+      "bio": "長編SF小説『マン・カインド』好評発売中！ https://www. hayakawa-online.co.jp/shop/g/g 0000614514/ science fiction writer, author of ORBITAL CLOUD and Gene Mapper. https://www. amazon.com/Taiyo-Fujii/e/B00A7 3970E SF作家。2…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "4gamer@rss-mstdn.studiofreesia.com",
+      "id": "110447010604062035",
+      "url": "https://rss-mstdn.studiofreesia.com/@4gamer",
+      "displayName": "4Gamer.net − 注目の記事のみ",
+      "avatar": "https://rss-mstdn.studiofreesia.com/file/accounts/avatars/110/447/010/604/062/035/original/4386bb9156c381e4.png",
+      "bio": "日本最大級の総合ゲームサイトです。コンシューマゲームやオンラインゲーム，iPhone/iPadのゲーム，そしてPC のディープなハードウェア情報まで，日本だけでなく世界からも最新ゲームニュースをお届けします。ほかにも，ユーザーレビューなどのクチコミ情報も充実。 このアカウントはRSSフィードの内容を投稿するbotアカウントです。 このアカウントの投稿に関するお問い合わせは @ owner までお…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "denfaminicogamer@rss-mstdn.studiofreesia.com",
+      "id": "110447086614928442",
+      "url": "https://rss-mstdn.studiofreesia.com/@denfaminicogamer",
+      "displayName": "電ファミニコゲーマー – ゲームの面白い記事読ん",
+      "avatar": "https://rss-mstdn.studiofreesia.com/file/accounts/avatars/110/447/086/614/928/442/original/5bbedfef15acda94.png",
+      "bio": "「ゲームの面白い記事読んでみない？」あなたの時間を奪う、読み応えたっぷりの記事をお届けします。 このアカウントはRSSフィードの内容を投稿するbotアカウントです。 このアカウントの投稿に関するお問い合わせは @ owner までお願いします。",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "shinozakitakato@mstdn.yurutan.net",
+      "id": "111143178517656481",
+      "url": "https://mstdn.yurutan.net/@shinozakitakato",
+      "displayName": "ゆるたんねっと🐸篠崎尊都",
+      "avatar": "https://wsb.hostdon.ne.jp/sgm370/accounts/avatars/111/143/178/517/656/481/original/0bbc92e8bba2757d.jpg",
+      "bio": "同人サークル「ゆるたんねっと」の活動告知とサイト更新情報、個人的近況。旅や探索などの過去写真もアップしています。たまに北方探検家の歴史創作ネタも入るかも（お遊びです）。 Hostdon使用。おひとり鯖です。 絵文字リアクションも歓迎です（別鯖から確認させてもらっています。 # searchable_by_all_users",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "kuro0103@fedibird.com",
+      "id": "109625239468313184",
+      "url": "https://fedibird.com/@kuro0103",
+      "displayName": "上田早夕里事務所（Office TripleTwo）",
+      "avatar": "https://s3.fedibird.com/accounts/avatars/109/625/239/468/313/184/original/aae49582a6efe86b.png",
+      "bio": "作家・上田早夕里公式サイトのMastodon版です。事務所のスタッフが更新しています。X, Facebook 等が、通信障害で閲覧できないときのための予備アカウントです。 Official Website : https://www. ueda222.com",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "kouichirou@mastodon.social",
+      "id": "115785462324922367",
+      "url": "https://mastodon.social/@kouichirou",
+      "displayName": "清風",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/785/462/324/922/367/original/e5178b412a6266d2.jpeg",
+      "bio": "一次創作とハイファンタジー小説。 連載「見難い火傷の子」 世界観重視／挿絵あり 鉄道、技術、ものづくりなど、創作につながる話も気ままに発信します。 小説の更新情報を中心に、思いついたことをぼちぼち投下中。",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "yasukazu@mastodon.social",
+      "id": "115817360691050375",
+      "url": "https://mastodon.social/@yasukazu",
+      "displayName": "Yasukazu Sasame",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/817/360/691/050/375/original/1fb90b29bf9dfca4.jpg",
+      "bio": "Sci-fi作家。二万年後の銀河、を中心テーマ。哲学・世界観を軸に展開しています。",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "22554517@pawoo.net",
+      "id": "188829",
+      "url": "https://pawoo.net/@22554517",
+      "displayName": "小枝🎨",
+      "avatar": "https://img.pawoo.net/accounts/avatars/000/188/829/original/6a163cebf1d55494.jpeg",
+      "bio": "欠損美青年を描く人 | 一次創作 | ちょっと箍の外れた性癖を倫理の膜で覆って生きてる | 成人 | FRBご自由に | 日本語,English,한국어,Deutsch | she/her # 映画感想_koeda",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "wakeari_dango@mastodon.social",
+      "id": "116637855522818790",
+      "url": "https://mastodon.social/@wakeari_dango",
+      "displayName": "わけあり団子",
+      "avatar": "https://files.mastodon.social/accounts/avatars/116/637/855/522/818/790/original/384e440d46687a8c.png",
+      "bio": "人生で一度は小説を書いてみたい、そう思っていました。 今回時間ができ、ようやく書き上げることができました。 もしよければ読んでみてやってください。",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}

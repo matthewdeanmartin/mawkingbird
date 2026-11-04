@@ -9,6 +9,7 @@ import {
   toolVersions,
 } from '../../focused-tools';
 import { TOOLS_INDEX_ALTERNATES } from '../../seo';
+import { feedBuilderAlternates, feedBuilderPageAt } from '../feed-builder/feed-builder-registry';
 
 /** Each language named in itself, so a reader finds their own. */
 const ENDONYMS: Record<PageLanguage, string> = {
@@ -43,7 +44,8 @@ interface Version {
  * The page's language versions as one compact menu: the button names the
  * current language, the menu lists every version in its own name. Tool pages
  * read their versions from the registry, the tool indexes from
- * TOOLS_INDEX_ALTERNATES. Nothing renders for a page in one language only.
+ * TOOLS_INDEX_ALTERNATES, topic pages from the Feed Builder registry. Nothing
+ * renders for a page in one language only.
  *
  * The menu's links stay in the document while it is closed (a popover is
  * hidden, not removed), so the prerender carries a crawlable link to every
@@ -129,6 +131,8 @@ function versionsAt(path: string): Version[] {
     }));
   if (TOOLS_INDEX_ALTERNATES.some((index) => index.path === path))
     return named(TOOLS_INDEX_ALTERNATES);
+  const topicPage = feedBuilderPageAt(path);
+  if (topicPage) return named(feedBuilderAlternates(topicPage.topic));
   const tool = TOOL_PAGES.find((entry) => entry.path === path);
   if (!tool) return [];
   return named(

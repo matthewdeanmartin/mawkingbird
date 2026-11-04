@@ -109,6 +109,59 @@ UI snapshot does not carry the flags. Publishing it would need both changed.
 "Follow this kit in Mawkingbird" opens `/collections/starter/<slug>`, which
 `authGuard` lets a fresh visitor reach anonymously.
 
+## Topic starter kits: /communities/ (Feed Builder)
+
+"Starter kit" pages for one interest each, one page per topic and language:
+`/science-fiction-on-mastodon/`, `/de/science-fiction-auf-mastodon/`,
+`/it/fantascienza-su-mastodon/`, and so on, with the hub at `/communities/`
+(English). Internally the feature is called Feed Builder; the code lives in
+`src/app/pages/feed-builder/`. They differ from the `/follow/` lists: a topic
+page adds the hashtags worth following, new local hashtags to help start
+("future tags"), people grouped by shelf (YouTube creators, well-known names,
+community voices), the servers where the community gathers, questions, and how
+people are chosen.
+
+- **Data** comes from the private data repository's export
+  (`mawkingbird_starters/catalog/feedbuilder/`). `make feedbuilder-update`
+  imports it into `pages/feed-builder/data/<topic>.<lang>.json`; every field is
+  allow-listed, so nothing beyond what the page shows can arrive, and drafts the
+  owner has not approved are refused. `npm run feedbuilder:check` (run by every
+  `prebuild`) validates the bundle offline and fails when a bundled page has no
+  path or a path has no bundled page. Listing rules and curation happen in the
+  data repository; this one only renders.
+- **Paths** are `feed-builder-paths.json` (topic → language → path), the only
+  part that loads with the app. Slugs follow the tool pages' rules (ASCII, in
+  the language's folder, CJK pages keep the English slug, never renamed).
+- **Words**: each topic's pitch, title, description and questions are in
+  `copy/<topic>.ts`; the words every topic shares are in
+  `feed-builder-chrome.ts`, one block per language. Both are page copy, not app
+  dictionary keys, for the same reasons as the tool pages.
+- **Routes** (`feed-builder-routes.ts`) are shared by `app.routes.ts` and
+  `main.server.ts`. A resolver loads the page's data, copy and shared words
+  lazily; `report-bundle.mjs` keeps them out of the startup bundle. Routes carry
+  `lang` and `seoAlternates`, so `<html lang>`, `hreflang`, the language menu
+  (`LanguageVersions`) and the sitemap's alternates all agree.
+- **Prerendered**: everything except the live "N posts this week" line under
+  each hashtag (`TagActivity`), which is `@defer`red and read in the browser
+  from mastodon.social's public, CORS-open tag history with plain `fetch`.
+- **Structured data**: a `CollectionPage` whose `mainEntity` is the `ItemList`
+  of people shown.
+- **Help and removal** link to the project account inside the app
+  (`/accounts/@mawkingbird@mastodon.social`), never to the bare
+  mastodon.social URL, which stays `rel="me"` metadata only.
+- `check-seo-build.mjs` asserts each page's language, heading, people, tag
+  links, help link, hub link, `hreflang` set, visible links to its other
+  versions, structured data and the absence of live activity; the hub must link
+  every page. `prepare-seo-index.mjs` adds the hub and every page to the
+  sitemap with alternates and `lastmod` from the page's own data and copy files.
+
+To add a language to a topic: export it from the data repository, run
+`make feedbuilder-update`, add its path to `feed-builder-paths.json`, its loader
+to `DATA_LOADERS` (`feed-builder-data.ts`), its copy in `copy/<topic>.ts` and,
+for a new page language, its shared words in `feed-builder-chrome.ts`.
+To add a topic: the same, plus a `copy/<topic>.ts` and its `COPY_LOADERS` line
+(`copy/topic-copy.ts`).
+
 ## Help site: /help/
 
 The guides in `/docs` are published twice: to Read the Docs (mkdocs) and as

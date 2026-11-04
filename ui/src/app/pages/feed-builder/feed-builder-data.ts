@@ -1,0 +1,102 @@
+import { PageLanguage } from '../../focused-tools';
+import { FeedTopic } from './feed-builder-registry';
+
+/** One topic page's data, as exported by mawkingbird_starters and checked by the importer. */
+export interface FeedPageData {
+  version: 1;
+  topic: string;
+  lang: string;
+  status: 'reviewed' | 'draft';
+  generatedAt: string;
+  tags: FeedTag[];
+  people: FeedPerson[];
+  servers: { domain: string }[];
+}
+
+export interface FeedTag {
+  name: string;
+  /** The language most of the tag's posts are in. */
+  lang: string;
+  /** `future`: a local tag proposed beside a busy English one, to help start it. */
+  kind: 'tag' | 'future';
+  source?: string;
+  status?: 'starting' | 'new';
+  /** The model's sample flagged the tag; readers should preview it first. */
+  caution?: 'spam' | 'off-topic';
+}
+
+export type Shelf = 'youtube' | 'notable' | 'community';
+export type FameCode = 'wikidata' | 'wikipedia' | 'youtube-10k' | 'followers-2500';
+export type Elsewhere = 'bluesky' | 'youtube' | 'twitch' | 'patreon' | 'podcast' | 'website';
+
+export interface FeedPerson {
+  acct: string;
+  id: string;
+  url: string;
+  displayName: string;
+  avatar: string;
+  bio: string;
+  shelf: Shelf;
+  rank: number;
+  fame: FameCode[];
+  elsewhere: Elsewhere[];
+  youtube?: { channelId: string; band?: string; lastUpload?: string; native: boolean };
+}
+
+export const SHELF_ORDER: readonly Shelf[] = ['youtube', 'notable', 'community'];
+
+type Loader = () => Promise<{ default: unknown }>;
+
+/**
+ * Lazy loaders, one chunk per page. A new topic or language adds lines here;
+ * `feed-builder-data.spec.ts` fails when a routed page has no loader.
+ */
+export const DATA_LOADERS: Record<string, Loader> = {
+  'science-fiction.en': () => import('./data/science-fiction.en.json'),
+  'science-fiction.de': () => import('./data/science-fiction.de.json'),
+  'science-fiction.fr': () => import('./data/science-fiction.fr.json'),
+  'science-fiction.es': () => import('./data/science-fiction.es.json'),
+  'science-fiction.it': () => import('./data/science-fiction.it.json'),
+  'science-fiction.ja': () => import('./data/science-fiction.ja.json'),
+};
+
+export async function loadPageData(topic: FeedTopic, lang: PageLanguage): Promise<FeedPageData> {
+  const loader = DATA_LOADERS[`${topic}.${lang}`];
+  if (!loader) throw new Error(`No Feed Builder data for ${topic}/${lang}`);
+  return (await loader()).default as FeedPageData;
+}
+
+/** People grouped by shelf in rank order; empty shelves are left out. */
+export function shelves(people: readonly FeedPerson[]): { shelf: Shelf; people: FeedPerson[] }[] {
+  return SHELF_ORDER.map((shelf) => ({
+    shelf,
+    people: people.filter((person) => person.shelf === shelf).sort((a, b) => a.rank - b.rank),
+  })).filter((group) => group.people.length > 0);
+}
+
+/** schema.org: the page is a collection whose main entity is the list of people shown. */
+export function collectionPage(
+  data: FeedPageData,
+  copy: { title: string; description: string },
+  url: string,
+): object {
+  const people = shelves(data.people).flatMap((group) => group.people);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: copy.title,
+    description: copy.description,
+    url,
+    inLanguage: data.lang,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: people.length,
+      itemListElement: people.map((person, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: person.displayName,
+        url: person.url,
+      })),
+    },
+  };
+}

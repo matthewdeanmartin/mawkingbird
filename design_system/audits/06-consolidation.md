@@ -1486,3 +1486,17 @@ message you": one Field/Control select and the shared SaveFeedback. No
 candidate files were added or removed, so `11-reconciliation.json` is
 unchanged. The inventory contains 592 candidate files across 1,642 sources. No
 shared widgets changed.
+
+## Topic starter-kit pages (Feed Builder), 2026-11-04
+
+Added two candidates: `pages/feed-builder/feed-builder-hub.html` (`/communities/`)
+and `feed-builder-page.html` (one prerendered page per topic and language). Both
+reuse the feature-page layout and the `/follow/` people-list stylesheet with
+MbButton and MbContentLink; the topic page adds MbBadge for the English-tag,
+future-tag, fame and presence labels, MbDisclosure for its questions and the
+shared LanguageVersions menu. A small `feed-builder.css` lays out the tag list
+and badge row; no control is restyled. `language-versions.ts` gains the topic
+pages' alternates (logic only, no new pattern). `features.html` and
+`follow-hub.html` each gain one shared `mbContentLink` to `/communities`; their
+dispositions are unchanged. The inventory contains 594 candidate files across
+1,654 sources. No shared widgets changed.

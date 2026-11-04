@@ -1,0 +1,249 @@
+{
+  "version": 1,
+  "topic": "science-fiction",
+  "lang": "it",
+  "status": "reviewed",
+  "generatedAt": "2026-11-04T15:34:50+00:00",
+  "tags": [
+    {
+      "name": "Fantascienza",
+      "lang": "it",
+      "kind": "tag"
+    },
+    {
+      "name": "StarTrek",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Fantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SciFi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ScienceFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "StarWars",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "DoctorWho",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SFF",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "extratrek@mastodon.uno",
+      "id": "108215084355909271",
+      "url": "https://mastodon.uno/@extratrek",
+      "displayName": "Star Trek Italia - Extra Trek",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/108/215/084/355/909/271/original/0934907e4f3b5fbe.png",
+      "bio": "Fansite Italiano dedicato a Star Trek 🖖🏼 attivo dal 2017. Iscriviti al nostro canale Youtube attivando la 🔔 per seguire le nostre live settimanali. Seguici anche su gli altri nostri Social. Tutti i L…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCweNikVAwoZR0j6Kpe-TLaQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "klub99it@mastodon.uno",
+      "id": "113985405811136627",
+      "url": "https://mastodon.uno/@klub99it",
+      "displayName": "klub99.it",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/113/985/405/811/136/627/original/e67d9bc2a04c4dda.png",
+      "bio": "",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCRkIu0XTUpyG_2gfDj7Qzzw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "astronomia@mastodon.uno",
+      "id": "1787",
+      "url": "https://mastodon.uno/@astronomia",
+      "displayName": "🔭 Astronomia & SCI-FI 🖖",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/000/001/787/original/f18576d9c7482b3d.jpg",
+      "bio": "Esplora l'Universo attraverso l'account del Fediverso che dal 2020 è dedicato all'astronomia e alla Fantascenza seguici anche nella community di astronomia https:// mastodon.uno/@astronomia@diggi ta.…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "bluebabbler@mastodon.social",
+      "id": "245029",
+      "url": "https://mastodon.social/@bluebabbler",
+      "displayName": "Bluebabbler",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/245/029/original/846503a55db67533.png",
+      "bio": "Papà digitale. Sviluppatore antico. Outsider. Maglietta rossa. Scimmia di storie. Crea cose di # fantascienza che piacciono a pochi. ---- Italian digital dad. Ancient developer. Outsider. Redshirt. S…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mannivu@livellosegreto.it",
+      "id": "109483970183410936",
+      "url": "https://livellosegreto.it/@mannivu",
+      "displayName": "Manuel 🦡🦡 ⚾",
+      "avatar": "https://cdn.masto.host/livellosegretoit/accounts/avatars/109/483/970/183/410/936/original/9e1647a1e13c6260.png",
+      "bio": "Educatore professionale || Cavaliere senza macchia, ma con un po' di paura || 1991-idk || He/Him || Mi piacciono i libri, i fumetti, i videogiochi, i film e le serie TV. Praticamente tutto quello che…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "katttivizzima@mastodon.uno",
+      "id": "109154978474794283",
+      "url": "https://mastodon.uno/@katttivizzima",
+      "displayName": "Katy B. 📚 🥛",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/109/154/978/474/794/283/original/0f92eeae2b3cc737.png",
+      "bio": "I studied chemistry, physics and brewing technology, and yet ended up writing python code and novels (sci-fi and chinese fantasy). I spent years practising judo, kendo, iaido and ju-tai-jutsu, but no…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "artikid@dice.camp",
+      "id": "108215702915932638",
+      "url": "https://dice.camp/@artikid",
+      "displayName": "Artikid",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/108/215/702/915/932/638/original/0ffa14869c862992.jpg",
+      "bio": "Italian freelance artist, gamer, martial artist, He/him Posts about art, comics, sci-fi and fantasy, rpgs, martial arts",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "tizianocaviglia@mastodon.uno",
+      "id": "109342281938877047",
+      "url": "https://mastodon.uno/@tizianocaviglia",
+      "displayName": "Tiziano Caviglia",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/109/342/281/938/877/047/original/561c8fd4d4d316fd.png",
+      "bio": "full stack dev • blogger • fotografo • game designer",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "scifiuniverseit@mastodon.uno",
+      "id": "111353122205654483",
+      "url": "https://mastodon.uno/@SciFiUniverseIt",
+      "displayName": "Sci-Fi Universe Italia",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/111/353/122/205/654/483/original/e955873602439346.jpeg",
+      "bio": "Convention dedicata a tutti gli appassionati del genere, ai club e ai gruppi legati alla fantascienza, nonché ai loro associati e a chiunque sia interessato ad avvicinarsi al mondo delle # convention…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "simonealfarone@livellosegreto.it",
+      "id": "113488161089716697",
+      "url": "https://livellosegreto.it/@SimoneAlfarone",
+      "displayName": "Simone Alfarone",
+      "avatar": "https://cdn.masto.host/livellosegretoit/accounts/avatars/113/488/161/089/716/697/original/f6acf25b50d38b57.jpg",
+      "bio": "Disegnatore e prof. di Storia dell'arte, anche. Cerco cose.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "flaviotorba@mastodon.uno",
+      "id": "108204153328765048",
+      "url": "https://mastodon.uno/@flaviotorba",
+      "displayName": "Flavio Torba",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/108/204/153/328/765/048/original/4731156d829a9255.png",
+      "bio": "✒️ Scrivo di # fantascienza , # horror e disorientamento 📖 \"Stupenda creatura idiota\" (Delos Digital, 2024) https:// delos.digital/9788825427776/st upenda-creatura-idiota 📍Reggio Calabria",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "clayadventuresontheshelf@mastodon.uno",
+      "id": "109811479269030220",
+      "url": "https://mastodon.uno/@ClayAdventuresontheShelf",
+      "displayName": "MaMo",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/109/811/479/269/030/220/original/83537dc7278a7c66.jpg",
+      "bio": "Invento storie. Di creta, di carta, di parole o digitali. Niente paura: per lo più le tengo per me. Mi trovi anche qui: https://www. instagram.com/clay_adventures_ on_the_shelf/ Commissioni? Scrivimi!",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "valtagliaferri@mastodon.social",
+      "id": "114167134156775204",
+      "url": "https://mastodon.social/@valtagliaferri",
+      "displayName": "Valtagliaferri",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/167/134/156/775/204/original/9a5624624d3cba9d.jpg",
+      "bio": "# lettore , # scrittore e # podcaster",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "spaziogames@mastodon.social",
+      "id": "110690530566632862",
+      "url": "https://mastodon.social/@spaziogames",
+      "displayName": "SpazioGames.it",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/690/530/566/632/862/original/8151acb2a675c11c.jpeg",
+      "bio": "We take video games very seriously, since 2000.",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "stargatefanclubitalia@mastodon.uno",
+      "id": "111801834110421108",
+      "url": "https://mastodon.uno/@StargateFanclubItalia",
+      "displayName": "Stargate Fanclub Italia",
+      "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/111/801/834/110/421/108/original/66ea3c390c52a302.jpg",
+      "bio": "Stargate Fanclub Italia è l’associazione che raduna gli appassionati italiani di Stargate: la saga iniziata sul grande schermo nel 1994 e proseguita con tre serie tv e altri tre film. La nostra attiv…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": [
+    {
+      "domain": "wandering.shop"
+    }
+  ]
+}
