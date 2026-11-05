@@ -1,1 +1,0 @@
-import"./chunk-ZW5NV4UO.js";var r={"science-fiction":()=>import("./chunk-7LQ2NOYD.js")};async function t(o,i){let e=(await r[o]()).COPY[i];if(!e)throw new Error(`No ${i} copy for Feed Builder topic ${o}`);return e}export{t as loadTopicCopy};
