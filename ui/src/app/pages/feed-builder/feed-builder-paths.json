@@ -6,5 +6,12 @@
     "es": "es/ciencia-ficcion-en-mastodon",
     "it": "it/fantascienza-su-mastodon",
     "ja": "ja/science-fiction-on-mastodon"
+  },
+  "space-and-astronomy": {
+    "en": "space-and-astronomy-on-mastodon",
+    "de": "de/weltraum-und-astronomie-auf-mastodon",
+    "fr": "fr/espace-et-astronomie-sur-mastodon",
+    "es": "es/espacio-y-astronomia-en-mastodon",
+    "it": "it/spazio-e-astronomia-su-mastodon"
   }
 }

@@ -20,6 +20,7 @@ const COPY_LOADERS: Record<
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
   'science-fiction': () => import('./science-fiction'),
+  'space-and-astronomy': () => import('./space-and-astronomy'),
 };
 
 export async function loadTopicCopy(topic: FeedTopic, lang: PageLanguage): Promise<TopicCopy> {

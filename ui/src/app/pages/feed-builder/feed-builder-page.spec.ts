@@ -83,6 +83,22 @@ describe('Feed Builder topic pages', () => {
     expect(future?.querySelectorAll('mb-badge').length).toBeGreaterThan(0);
   });
 
+  it('renders the space and astronomy page in German with its own hashtags', async () => {
+    const el = await render(at('de/weltraum-und-astronomie-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Weltraum und Astronomie auf Mastodon');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#Raumfahrt');
+    expect(el.querySelector('a[href="https://spacey.space/about"]')).not.toBeNull();
+    expect(el.querySelectorAll('.people li').length).toBeGreaterThanOrEqual(5);
+  });
+
+  it('keeps tags seeded for other languages off the English space page', async () => {
+    const el = await render(at('space-and-astronomy-on-mastodon'));
+    const tags = el.querySelector('.tag-list')?.textContent ?? '';
+    expect(tags).toContain('#Astronomy');
+    expect(tags).not.toContain('#Spazio');
+  });
+
   it('shows a YouTube channel link and presence badges', async () => {
     const el = await render(at('it/fantascienza-su-mastodon'));
     const youtube = el.querySelector('#shelf-youtube')?.parentElement;
@@ -109,9 +125,15 @@ describe('Feed Builder hub and routes', () => {
     const [, ...pages] = feedBuilderRoutes;
     expect(pages.map((r) => r.path)).toEqual(FEED_BUILDER_PAGES.map((p) => p.path));
     for (const r of pages) {
+      const entry = feedBuilderPageAt(r.path ?? '');
+      // Every version of the topic, and only those: languages differ per topic.
+      const versions = FEED_BUILDER_PAGES.filter((p) => p.topic === entry?.topic);
       expect(r.data?.['seoIndexable']).toBe(true);
-      expect(r.data?.['lang']).toBe(feedBuilderPageAt(r.path ?? '')?.lang);
-      expect(r.data?.['seoAlternates'].length).toBe(6);
+      expect(r.data?.['lang']).toBe(entry?.lang);
+      expect(r.data?.['seoAlternates'].length).toBe(versions.length);
     }
+    // Sci-fi ships in six languages; space and astronomy without Japanese.
+    expect(FEED_BUILDER_PAGES.filter((p) => p.topic === 'science-fiction').length).toBe(6);
+    expect(FEED_BUILDER_PAGES.filter((p) => p.topic === 'space-and-astronomy').length).toBe(5);
   });
 });

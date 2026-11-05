@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "topic": "space-and-astronomy",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-05T22:01:18+00:00",
+  "tags": [
+    {
+      "name": "Espace",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Astronomie",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Spatial",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophysique",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophotographie",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Space",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astronomy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "NASA",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophotography",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Mars",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrodon",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Spaceflight",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophysics",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "JWST",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "cnes@social.numerique.gouv.fr",
+      "id": "111329127369237993",
+      "url": "https://social.numerique.gouv.fr/@cnes",
+      "displayName": "CNES",
+      "avatar": "https://social.numerique.gouv.fr/system/accounts/avatars/111/329/127/369/237/993/original/c908324f5774a455.jpg",
+      "bio": "L'actu du CNES, le Centre National d'Études Spatiales.",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCOixknKUV8AaCA5uaaBY0Bw",
+        "native": true,
+        "band": "100k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "astroiap@social.numerique.gouv.fr",
+      "id": "111573222209226900",
+      "url": "https://social.numerique.gouv.fr/@astroIAP",
+      "displayName": "IAP",
+      "avatar": "https://social.numerique.gouv.fr/system/accounts/avatars/111/573/222/209/226/900/original/04fbd4e2f4082eff.png",
+      "bio": "Institut d'astrophysique de Paris (#SorbonneUniversité, @ cnrs ) Officiel",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "youtube-10k"],
+      "elsewhere": ["bluesky"],
+      "youtube": {
+        "channelId": "UCfRWUz91H_vhZqGdy9k3s1w",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "mmontarges@mastodon.obspm.fr",
+      "id": "7676",
+      "url": "https://mastodon.obspm.fr/@mmontarges",
+      "displayName": "Dr. Miguel Montargès 🔭✨📡",
+      "avatar": "https://mastodon.obspm.fr/system/accounts/avatars/000/007/676/original/2e024600fa0c99b6.jpg",
+      "bio": "Assistant astronomer at LIRA at Observatoire de Paris - PSL. # Astrophysicist . My toots do not commit my institution. I study cool evolved # stars at high angular resolution using adaptive optics, i…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "yvandutil@mstdn.science",
+      "id": "109302471122977912",
+      "url": "https://mstdn.science/@YvanDutil",
+      "displayName": "Yvan Dutil",
+      "avatar": "https://static.mstdn.science/accounts/avatars/109/302/471/122/977/912/original/6c45b667c23d9b61.jpg",
+      "bio": "Astrophysicien, énergie, développement durable, radioprotection, systèmes spatiaux, mode de scrutin.",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "bilbo_le_hobbit@mamot.fr",
+      "id": "19055",
+      "url": "https://mamot.fr/@bilbo_le_hobbit",
+      "displayName": "bilbo_le_hobbit",
+      "avatar": "https://static.mamot.fr/accounts/avatars/000/019/055/original/2f6d5d009fc6f012.jpg",
+      "bio": "Astronome amateur, linuxien, ex-webmestre ( http://www. asso-sterenn.fr , @ sterenn ) . Mais aussi ferrovipathe et sensible aux questions climat et biodiversité (né en 323,8 ppm) Bref, curieux de tou…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "uxor@mastodon.xyz",
+      "id": "80581",
+      "url": "https://mastodon.xyz/@uxor",
+      "displayName": "uxor",
+      "avatar": "https://6-28.mastodon.xyz/accounts/avatars/000/080/581/original/632be1e91dbf9a4f.png",
+      "bio": "✅ I like to share about # mathematics , # astronomy , # science , # scilab , # athletics and # trail # running . I live in France near # lannion # Bretagne parfois le soir je pouete en Français sur l…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "leplanetolog@mastodon.social",
+      "id": "114879303644388852",
+      "url": "https://mastodon.social/@leplanetolog",
+      "displayName": "Le Planétolog",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/879/303/644/388/852/original/8310d41e12a4311d.png",
+      "bio": "Erwin Dehouck, enseignant-chercheur à l'Université Lyon 1. Je roule sur Mars par l'intermédiaire des rovers Curiosity, Perseverance et ExoMars. Ici je vous parle de ces trois missions passionnantes,…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "raphastronome@mamot.fr",
+      "id": "93332",
+      "url": "https://mamot.fr/@raphastronome",
+      "displayName": "RaphAstronome",
+      "avatar": "https://static.mamot.fr/accounts/avatars/000/093/332/original/eec9297a79f2ab4f.jpg",
+      "bio": "",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "hcottin@piaille.fr",
+      "id": "109301782709474088",
+      "url": "https://piaille.fr/@hcottin",
+      "displayName": "Hervé Cottin",
+      "avatar": "https://static.piaille.fr/accounts/avatars/109/301/782/709/474/088/original/fd64e112cfaf3ed9.jpg",
+      "bio": "Astrochimiste, professeur à l'UPEC et chercheur au LISA. Ici, surtout de l'exobiologie et de l'astronomie, saupoudrées de chimie... Président de la commission d'exobiologie de l'union astronomique in…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "stephanedubreuil@epsilon.social",
+      "id": "116127899853546325",
+      "url": "https://epsilon.social/@stephanedubreuil",
+      "displayName": "Stephane Dubreuil",
+      "avatar": "https://static.epsilon.social/accounts/avatars/116/127/899/853/546/325/original/8544b81b1ba28405.jpg",
+      "bio": "Tombé dans les télécoms quand le Minitel faisait encore du bruit, j’explore aujourd’hui l’IA, le digital et l’énergie comme un aventurier du futur. Économiste curieux et créatif, je connecte les idée…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "der_siebte_schatten@spacey.space",
+      "id": "114482765601384138",
+      "url": "https://spacey.space/@der_siebte_schatten",
+      "displayName": "Vivien \"𝕯𝖊𝖗 𝕾𝖎𝖊𝖇𝖙𝖊 𝕾𝖈𝖍𝖆𝖙𝖙𝖊𝖓\"",
+      "avatar": "https://cdn.masto.host/spaceyspace/accounts/avatars/114/482/765/601/384/138/original/8875d95348b3aed3.jpg",
+      "bio": "Étudiant double diplôme à l'ISAE-Supaéro, ingénieur télécoms spatiales 🛰, marin⚓, gamer 🎮, rôliste 🎲 et aspirant astronaute👨‍🚀 J'adore parler d'espace 🚀✨️ 🚀 Twitch Affiliate 🔗 https:// der-siebte-sch…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "alfred_de_la_haie@epsilon.social",
+      "id": "117317577504924527",
+      "url": "https://epsilon.social/@Alfred_De_La_Haie",
+      "displayName": "Alfred De La Haie",
+      "avatar": "https://static.epsilon.social/accounts/avatars/117/317/577/504/924/527/original/202915b6f8bbd225.png",
+      "bio": "Amateur d'étoiles, je caresse les galaxies et les nébuleuses. Setup : Celestron SCT NexStar 203/2032 Evolution 8 sur table équatoriale. Chercheur/suiveur Starsense, caméra ASI715MC temporairement ou…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "spacey.space"
+    }
+  ]
+}

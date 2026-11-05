@@ -1538,3 +1538,9 @@ under the text box: link-variant MbButtons that add a suggested tag on click,
 styled with the reply-mention hint's rule. No candidate file was added or
 removed, no control is restyled and no shared widget changed. The inventory
 contains 597 candidate files across 1,669 sources.
+
+## Topic pages: space and astronomy, 2026-11-05
+
+A second topic, `copy/space-and-astronomy.ts` (page copy only) and its data
+files; no template or control changed. The inventory contains 597 candidate
+files across 1,670 sources.

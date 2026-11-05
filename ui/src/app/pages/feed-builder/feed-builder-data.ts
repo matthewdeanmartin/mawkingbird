@@ -58,6 +58,11 @@ export const DATA_LOADERS: Record<string, Loader> = {
   'science-fiction.es': () => import('./data/science-fiction.es.json'),
   'science-fiction.it': () => import('./data/science-fiction.it.json'),
   'science-fiction.ja': () => import('./data/science-fiction.ja.json'),
+  'space-and-astronomy.en': () => import('./data/space-and-astronomy.en.json'),
+  'space-and-astronomy.de': () => import('./data/space-and-astronomy.de.json'),
+  'space-and-astronomy.fr': () => import('./data/space-and-astronomy.fr.json'),
+  'space-and-astronomy.es': () => import('./data/space-and-astronomy.es.json'),
+  'space-and-astronomy.it': () => import('./data/space-and-astronomy.it.json'),
 };
 
 export async function loadPageData(topic: FeedTopic, lang: PageLanguage): Promise<FeedPageData> {

@@ -1,0 +1,534 @@
+{
+  "version": 1,
+  "topic": "space-and-astronomy",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-05T22:01:18+00:00",
+  "tags": [
+    {
+      "name": "Space",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astronomy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "NASA",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophotography",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Mars",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrodon",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Spaceflight",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Astrophysics",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "JWST",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Stargazing",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "badastro@mastodon.social",
+      "id": "109259127563812354",
+      "url": "https://mastodon.social/@badastro",
+      "displayName": "Phil Plait",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/259/127/563/812/354/original/a89703e847bb4a4e.jpg",
+      "bio": "SCIENCE! # Astronomer , # scicomm , # author , etc. Newsletter: https:// badastronomy.beehiiv.com/",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC45SDrjKlPSY0bTvH6F7TOA",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2025-11"
+      }
+    },
+    {
+      "acct": "esoastronomy@mastodon.social",
+      "id": "114749560191874299",
+      "url": "https://mastodon.social/@esoastronomy",
+      "displayName": "ESO",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/749/560/191/874/299/original/e68dadf31192b028.jpg",
+      "bio": "The European Southern Observatory designs, builds & operates world-class observatories on the ground for the benefit of society. # astrodon # astronomy # astrophysics # space # science",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCE9jAWFTHSX5TWXofSWOz-g",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "mpi_astro@wisskomm.social",
+      "id": "109477802801756310",
+      "url": "https://wisskomm.social/@mpi_astro",
+      "displayName": "MPI für Astronomie",
+      "avatar": "https://wisskomm.social/system/accounts/avatars/109/477/802/801/756/310/original/657dc34af7c72d95.png",
+      "bio": "Astronomical research institute in Heidelberg specializing in exoplanet atmospheres, planet and star formation, galaxies and cosmology / Astronomisches Forschungsinstitut in Heidelberg mit Schwerpunk…",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCB0A0PJJEAXHr3EKTXp6GAg",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-07"
+      }
+    },
+    {
+      "acct": "pomarede@mastodon.social",
+      "id": "108198016418435792",
+      "url": "https://mastodon.social/@pomarede",
+      "displayName": "Daniel Pomarède",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/198/016/418/435/792/original/794f5e156c5eca48.jpg",
+      "bio": "cosmographer at university paris-saclay | mapping the universe | co-discoverer of # laniakea our home supercluster of galaxies | # dipolerepeller a void contributing to the motion of our galaxy | # c…",
+      "shelf": "youtube",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCLRW92CiiuE4m833GoS35wQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2024-09"
+      }
+    },
+    {
+      "acct": "megschwamb@mastodon.online",
+      "id": "108194334454828194",
+      "url": "https://mastodon.online/@megschwamb",
+      "displayName": "Meg Schwamb",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/194/334/454/828/194/original/518e5f2855a07c6c.jpeg",
+      "bio": "Planetary scientist & astronomer at Queen’s University Belfast: KBOs, Planet Four(Mars), exoplanets (Planet Hunters NGTS) ,LSST SSSC co-chair. Opinions posted are my own",
+      "shelf": "youtube",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UC-dKVDuQPXs8m5j-m1YQKRA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2024-07"
+      }
+    },
+    {
+      "acct": "ec_euclid@mastodon.social",
+      "id": "114596639332248372",
+      "url": "https://mastodon.social/@ec_euclid",
+      "displayName": "Euclid Consortium",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/596/639/332/248/372/original/c04a8bd43878f80c.png",
+      "bio": "Official Consortium of ESA's Euclid mission on the Universe's dark matter, energy & expansion, 15 European countries + USA + CAN + JAP, 2000+ scientists + engineers. Telescope successfully launched 1…",
+      "shelf": "youtube",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCZ3WFZWSD0zd8dPoM36sL5w",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-11"
+      }
+    },
+    {
+      "acct": "starrytimepod@universeodon.com",
+      "id": "109326247246322766",
+      "url": "https://universeodon.com/@starrytimepod",
+      "displayName": "Starry Time Podcast",
+      "avatar": "https://media.universeodon.com/accounts/avatars/109/326/247/246/322/766/original/3ac566820470626a.gif",
+      "bio": "Sisters Jordan and Kit ( @ kitirving ) cohost this # podcast featuring # astronomy & ret-cons(tellations) of # mythology . Season 3: Into the Wild is afoot! Follow for toots related to # astronomy ,…",
+      "shelf": "youtube",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCCjfXQ4sX8NuJsZ-aYcf8nQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "stargazerrob@mastodon.online",
+      "id": "108199952714533873",
+      "url": "https://mastodon.online/@stargazerrob",
+      "displayName": "Rob Tilsley",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/199/952/714/533/873/original/218ca75b6b695982.png",
+      "bio": "Astrophotographer Astrophotography Planetary",
+      "shelf": "youtube",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCi1W7O2B5hGs-5o_pdq9Oww",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2022-09"
+      }
+    },
+    {
+      "acct": "appagalcrochet@mstdn.social",
+      "id": "110528846111346278",
+      "url": "https://mstdn.social/@appagalcrochet",
+      "displayName": "Dobviews",
+      "avatar": "https://media.mstdn.social/accounts/avatars/110/528/846/111/346/278/original/56c2cdc6d048c09f.jpg",
+      "bio": "Novice astronomer and crochet artist who lives in Ohio with her wonderful husband.",
+      "shelf": "youtube",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCOPURyWQnWesrGLQEDGA35A",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "droniecarp@mastodon.social",
+      "id": "116210473966262763",
+      "url": "https://mastodon.social/@droniecarp",
+      "displayName": "Matt",
+      "avatar": "https://files.mastodon.social/accounts/avatars/116/210/473/966/262/763/original/14f27399de56b2cd.jpeg",
+      "bio": "Manufacturing Automation Systems Engineer by day. Amateur Photographer. Hobbyist Drone Pilot. Antifa Socialist.",
+      "shelf": "youtube",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCUpyOHzMljh-4XzgCIBmhKg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "mustapipa@scicomm.xyz",
+      "id": "109259233263010510",
+      "url": "https://scicomm.xyz/@mustapipa",
+      "displayName": "Mikko Tuomi",
+      "avatar": "https://media.scicomm.xyz/accounts/avatars/109/259/233/263/010/510/original/027f9ad010b1a03f.jpg",
+      "bio": "Astronomer, researcher at Helsinki University, discoverer of dozens of planets, notably the candidate habitable world # Proximab around the nearest star to the Sun, Proxima Centauri. Made of stardust…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "vicgrinberg@mastodon.social",
+      "id": "109258754451069494",
+      "url": "https://mastodon.social/@vicgrinberg",
+      "displayName": "Dr. Victoria Grinberg",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/258/754/451/069/494/original/241bb70043350a4d.jpg",
+      "bio": "- professional PhD astrophysicist # XraysAreTheBestRays - published author & artist - # ClimateCrisis & Astronomers for Planet Earth - science communication # VicisAstro - artwork # VicisArt - book r…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "elizabethtasker@mastodon.online",
+      "id": "109297010526408850",
+      "url": "https://mastodon.online/@elizabethtasker",
+      "displayName": "Elizabeth Tasker",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/297/010/526/408/850/original/1823b15e74825a23.jpg",
+      "bio": "UK astrophysicist working at the Japan Aerospace Exploration Agency (JAXA). Author of 'The Planet Factory'. Very into planets, cats and virtual reality (sometimes together). @girlandkat on twitter.",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "setiinstitute@mastodon.social",
+      "id": "110663880262592750",
+      "url": "https://mastodon.social/@setiinstitute",
+      "displayName": "SETI Institute",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/663/880/262/592/750/original/fb203a31eb16c3dd.png",
+      "bio": "Our mission is to lead humanity's quest to understand the origins and prevalence of life and intelligence in the universe and share that knowledge. # SETI # arewealone",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "markmccaughrean@mastodon.social",
+      "id": "108194517328875592",
+      "url": "https://mastodon.social/@markmccaughrean",
+      "displayName": "Mark McCaughrean",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/194/517/328/875/592/original/23e08b8ecac44c68.gif",
+      "bio": "Adjunct scientist, Max Planck Institute for Astronomy, Heidelberg / Former Senior Advisor for Science & Exploration at the European Space Agency / JWST Science Working Group Interdisciplinary Scienti…",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "coreyspowell@mastodon.social",
+      "id": "108199369635905314",
+      "url": "https://mastodon.social/@coreyspowell",
+      "displayName": "Corey S Powell",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/199/369/635/905/314/original/c1e859b9fa6a0178.jpg",
+      "bio": "Writer, editor, magazine maker, podcaster, procrastinator. Former editor of Discover and American Scientist magazines. Co-host of # ScienceRules podcast. Invisible Universe on Substack: https:// invi…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["followers-2500"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "astro_jcm@mastodon.online",
+      "id": "108199560729242104",
+      "url": "https://mastodon.online/@astro_jcm",
+      "displayName": "Juan Carlos Muñoz",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/199/560/729/242/104/original/0057bffc49acbe9a.jpeg",
+      "bio": "• Astronomer and science communicator • Media Officer at the European Southern Observatory - @ esoastronomy • Won't shut up about space • # astronomy # astrophysics # science # astrophotography # spa…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "akasci@fosstodon.org",
+      "id": "109243412522182078",
+      "url": "https://fosstodon.org/@AkaSci",
+      "displayName": "AkaSci 🛰️",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/243/412/522/182/078/original/3806e04aa7a61fea.jpg",
+      "bio": "SatCom Scientist Writing occasionally about science, space missions, astronomy, planetary science, satellites, Democracy and human rights. He/Him # science # space # technology # astronomy # satcom #…",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "sciencedesk@flipboard.social",
+      "id": "110068856921867174",
+      "url": "https://flipboard.social/@ScienceDesk",
+      "displayName": "Flipboard Science Desk",
+      "avatar": "https://m-cdn.flipboard.social/accounts/avatars/110/068/856/921/867/174/original/24762c40de74d3f0.png",
+      "bio": "Flipboard's page for news about science including space, climate change and more — from trusted sources. All posts written by human editors, especially for Mastodon. For more science coverage, follow…",
+      "shelf": "notable",
+      "rank": 9,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "kellylepo@scicomm.xyz",
+      "id": "114651947457715697",
+      "url": "https://scicomm.xyz/@KellyLepo",
+      "displayName": "Kelly Lepo",
+      "avatar": "https://media.scicomm.xyz/accounts/avatars/114/651/947/457/715/697/original/ff7b5ab52f93a229.png",
+      "bio": "Astronomer | Science communicator | Adult Lisa Simpson Freelance writer and editor. Former Education and Outreach Scientist at the Space Telescope Science Institute supporting JWST. Formerly @ kellyl…",
+      "shelf": "notable",
+      "rank": 10,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "alanboyle@mastodon.social",
+      "id": "109236538921218149",
+      "url": "https://mastodon.social/@alanboyle",
+      "displayName": "Alan Boyle",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/236/538/921/218/149/original/2f7ee2722ea99ecd.jpg",
+      "bio": "Mastermind of @ cosmiclog and Fiction Science podcast. Science journalist for GeekWire and Universe Today. Veteran of NBCNews.com. Author of \"The Case for Pluto.\" Bluesky: https:// bsky.app/profile/b…",
+      "shelf": "notable",
+      "rank": 11,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mpsgoettingen@academiccloud.social",
+      "id": "114612880971257232",
+      "url": "https://academiccloud.social/@mpsgoettingen",
+      "displayName": "MPS Göttingen",
+      "avatar": "https://academiccloud.social/system/accounts/avatars/114/612/880/971/257/232/original/003324845c643ed6.png",
+      "bio": "Max Planck Institute for Solar System Research, Göttingen, Germany MPI · Sun and Heliosphere · Solar and Stellar Interiors · Planetary Science International Max Planck Research School: @ imprs_solar…",
+      "shelf": "notable",
+      "rank": 12,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "spaceflight@spacey.space",
+      "id": "111868543886931091",
+      "url": "https://spacey.space/@spaceflight",
+      "displayName": "Spaceflight 🚀",
+      "avatar": "https://cdn.masto.host/spaceyspace/accounts/avatars/111/868/543/886/931/091/original/8b81884064cc93c2.jpg",
+      "bio": "Space news People writing about # space # exploration are mostly # cheerleaders 🥳 for the cause, rather than # independent # observers keeping a watchful eye https://www. forbes.com/sites/brucedormin…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "cosmos4u@scicomm.xyz",
+      "id": "109292188659580245",
+      "url": "https://scicomm.xyz/@cosmos4u",
+      "displayName": "Daniel Fischer",
+      "avatar": "https://media.scicomm.xyz/accounts/avatars/109/292/188/659/580/245/original/7625444802c7068f.jpg",
+      "bio": "Science writer in Germany since, gasp, 1982 specializing in all things space. Blogging all the time - in German - on https:// skyweek.wordpress.com Supports tootfinder",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "franco_vazza@mastodon.social",
+      "id": "109245061413598929",
+      "url": "https://mastodon.social/@franco_vazza",
+      "displayName": "franco_vazza",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/245/061/413/598/929/original/ffebcd2b1225ef89.png",
+      "bio": "# SimulatedUniverses # Electromagnetism_trivia # AstroPhysicsFactlet Professor in # Astrophysics at the University of # Bologna and # ERC grantee. I study the cosmic web, extragalactic magnetism and…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nick_stevens_graphics@mastodon.art",
+      "id": "109246709881947973",
+      "url": "https://mastodon.art/@Nick_Stevens_graphics",
+      "displayName": "Nick Stevens Graphics",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/109/246/709/881/947/973/original/5d2fc4a3515f9685.jpg",
+      "bio": "Graphical artist, specialising in Space subjects, particularly spacecraft of the Soviet Union, and unflown mission concepts. Fellow of the IAAA. Available for hire, video, stills, and Soviet Space co…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "michael_w_busch@mastodon.online",
+      "id": "108195706285118303",
+      "url": "https://mastodon.online/@michael_w_busch",
+      "displayName": "Michael Busch",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/195/706/285/118/303/original/9380e492fbf2ca11.jpg",
+      "bio": "Planetary astronomer, studying piles of rock in space. Reader of books. Drinker of tea. He/him. This is a personal account. To bigotry no sanction.",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "astrocampeu@mastodon.social",
+      "id": "114632758646783091",
+      "url": "https://mastodon.social/@astrocampEU",
+      "displayName": "Thomas Hanrath",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/632/758/646/783/091/original/6a229b5f84e6c634.png",
+      "bio": "",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "marsroverdriver@deepspace.social",
+      "id": "109327986410864538",
+      "url": "https://deepspace.social/@marsroverdriver",
+      "displayName": "Scott marsroverdriver Maxwell",
+      "avatar": "https://cdn.masto.host/deepspacesocial/accounts/avatars/109/327/986/410/864/538/original/6688efad49703a8f.png",
+      "bio": "On a small red light in the night sky lives hundreds of pounds of thinking metal sent from Earth. I used to tell it what to do. Opinions mine. He/him.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "philstooke@mastodon.social",
+      "id": "111507172664282019",
+      "url": "https://mastodon.social/@PhilStooke",
+      "displayName": "Phil Stooke",
+      "avatar": "https://files.mastodon.social/accounts/avatars/111/507/172/664/282/019/original/fbcdc0e28958d0d1.jpg",
+      "bio": "Professor Emeritus, University of Western Ontario. Space exploration and planetary cartography, historical and present. A longtime poster on unmannedspaceflight.com (RIP - but now archived at https:/…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "andrealuck@fosstodon.org",
+      "id": "108198326333272164",
+      "url": "https://fosstodon.org/@andrealuck",
+      "displayName": "Andrea Luck",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/108/198/326/333/272/164/original/e255e3d00a8082a9.jpeg",
+      "bio": "(He/Him) Space voyager 🛰️🪐 processing # Space images 💻 🌍 Glasgow, Scotland 🎞️Photostream: https://www. flickr.com/photos/192271236@N0 3/",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "orbitalgardens@spacey.space",
+      "id": "109308751051685561",
+      "url": "https://spacey.space/@OrbitalGardens",
+      "displayName": "Emma the Space Gardener 🌿🚀",
+      "avatar": "https://cdn.masto.host/spaceyspace/accounts/avatars/109/308/751/051/685/561/original/fcebd56be64fbc6f.jpg",
+      "bio": "I'm Emma (she/they), and I am mad keen on the idea of growing plants in space, so that's mostly what I talk about - # plants and # space . I also like mission patches, space food and # gardening on E…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "paulhammond51@fosstodon.org",
+      "id": "108271985436085153",
+      "url": "https://fosstodon.org/@PaulHammond51",
+      "displayName": "Paul Hammond",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/108/271/985/436/085/153/original/adeb2b29d0a83604.gif",
+      "bio": "Following Mars rovers",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "proseandpassion@mastodon.social",
+      "id": "632250",
+      "url": "https://mastodon.social/@proseandpassion",
+      "displayName": "michael",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/632/250/original/a2b1936d8b61fd18.jpeg",
+      "bio": "Science writer covering nano to astro via bio, but mostly bio these days (Latest book: Intertwined - from insects to icebergs, JHUP 2024). Known for cycling around Oxford with a cello on my back and/…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "spacey.space"
+    }
+  ]
+}
