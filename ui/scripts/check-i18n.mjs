@@ -619,12 +619,19 @@ if (localeCodes.length > 0) {
   console.log(`Coverage: ${coverage.join('  ')}`);
 }
 
+// Advisories are counted, not listed: most are deliberate (brand names stay in
+// English) and the list runs to hundreds. VERBOSE=1 lists them all.
 if (advisories.length > 0) {
-  console.log(`\nAdvisory (not failures):`);
-  for (const advisory of advisories.slice(0, 20)) {
-    console.log(`  - ${advisory}`);
-  }
-  if (advisories.length > 20) {
-    console.log(`  ...and ${advisories.length - 20} more.`);
+  if (process.env.VERBOSE) {
+    console.log(`\nAdvisory (not failures):`);
+    for (const advisory of advisories) {
+      console.log(`  - ${advisory}`);
+    }
+  } else {
+    const identical = advisories.filter((advisory) => advisory.endsWith('identical to English'));
+    console.log(
+      `Advisory (not failures): ${identical.length} identical to English, ` +
+        `${advisories.length - identical.length} over budget. VERBOSE=1 lists them.`,
+    );
   }
 }

@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { Api } from '../../api';
 import { FollowButton } from '../../follow-button/follow-button';
+import { FutureTagHints } from '../../future-tag-hints';
 import { HomeTopics } from '../../home-topics';
 import { ImportFollows } from '../../import-follows';
 import { loginDestination } from '../../login-destination';
@@ -49,11 +50,17 @@ class StatusCardStub {
   readonly status = input.required<Status>();
 }
 
-async function builder(inShell: boolean, followed: string[] = []) {
-  const page = await loadFeedPage(ENTRY);
-  const api = { followTag: vi.fn((name: string) => of({ name, following: true })) };
+async function builder(inShell: boolean, followed: string[] = [], entry = ENTRY) {
+  const page = await loadFeedPage(entry);
+  const api = {
+    followTag: vi.fn((name: string) => of({ name, following: true })),
+    lists: vi.fn(() => of([])),
+    createList: vi.fn((title: string) => of({ id: 'L1', title })),
+    updateList: vi.fn((list: object, exclusive: boolean) => of({ ...list, exclusive })),
+    addManyToList: vi.fn(() => of({})),
+  };
   const importer = {
-    rows: signal<{ handle: string; status: string }[]>([]),
+    rows: signal<{ handle: string; status: string; account?: { id: string } }[]>([]),
     running: signal(false),
     reset: vi.fn(),
     load: vi.fn(),
@@ -64,7 +71,7 @@ async function builder(inShell: boolean, followed: string[] = []) {
     imports: [FeedBuilderPage],
     providers: [
       provideRouter([]),
-      route({ page, lang: ENTRY.lang, inShell }, ENTRY.path),
+      route({ page, lang: entry.lang, inShell }, entry.path),
       { provide: Api, useValue: api },
       { provide: HomeTopics, useValue: { followed: async () => followed } },
       { provide: ImportFollows, useValue: importer },
@@ -82,7 +89,8 @@ async function builder(inShell: boolean, followed: string[] = []) {
     // The follow services arrive by dynamic import (never on the public page),
     // then the already-followed tags are read.
     const instance = fixture.componentInstance as unknown as { actions: () => unknown };
-    await vi.waitFor(() => expect(instance.actions()).not.toBeNull());
+    // The first import in a run compiles the module graph, which can take seconds.
+    await vi.waitFor(() => expect(instance.actions()).not.toBeNull(), { timeout: 5000 });
     await new Promise((resolve) => setTimeout(resolve));
   }
   fixture.detectChanges();
@@ -97,7 +105,7 @@ describe('Feed Builder as a mini-app', () => {
   it('is a focused app whose root sign-in may return to', () => {
     const app = focusedAppFor('/it/fantascienza-su-mastodon/preview');
     expect(app?.root).toBe('/it/fantascienza-su-mastodon');
-    expect(app?.items.map((item) => item.id)).toEqual(['builder', 'preview']);
+    expect(app?.items.map((item) => item.id)).toEqual(['builder', 'preview', 'flooding']);
     expect(loginDestination('/it/fantascienza-su-mastodon')).toBe('/it/fantascienza-su-mastodon');
   });
 
@@ -161,6 +169,60 @@ describe('Feed Builder as a mini-app', () => {
     await fixture.whenStable();
     expect(importer.load).toHaveBeenCalledWith(rest.map((p) => p.acct));
     expect(importer.start).toHaveBeenCalled();
+  });
+
+  it('offers a list of the people it followed once the batch is done, hidden from Home on request', async () => {
+    const { fixture, el, api, importer, page } = await builder(true);
+    expect(buttonNamed(el, /lista/)).toBeUndefined();
+    const [a, b, c] = page.data.people;
+    importer.rows.set([
+      { handle: a.acct, status: 'followed', account: { id: '11' } },
+      { handle: b.acct, status: 'not_found' },
+      { handle: c.acct, status: 'followed', account: { id: '33' } },
+    ]);
+    fixture.detectChanges();
+    const make = buttonNamed(el, /Mettili in una lista: Fantascienza e fantasy/) as HTMLElement;
+    const hide = el.querySelector('.list-actions mb-checkbox input') as HTMLInputElement;
+    expect(hide.checked).toBe(false);
+    hide.click();
+    fixture.detectChanges();
+    make.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(api.createList).toHaveBeenCalledWith('Fantascienza e fantasy');
+    expect(api.updateList).toHaveBeenCalledWith(expect.objectContaining({ id: 'L1' }), true);
+    expect(api.addManyToList).toHaveBeenCalledWith('L1', ['11', '33']);
+    expect(el.textContent).toContain('2 persone aggiunte alla lista Fantascienza e fantasy.');
+    expect(el.querySelector('.list-actions a[href="/lists/L1"]')).not.toBeNull();
+  });
+
+  it('no account yet: points at mastodon.social, the topic’s servers and the handle generator', async () => {
+    const { el } = await builder(false);
+    const hint = el.querySelector('.no-account') as HTMLElement;
+    const servers = [...hint.querySelectorAll('a[href^="https://"]')].map((a) =>
+      a.getAttribute('href'),
+    );
+    expect(servers[0]).toBe('https://mastodon.social/about');
+    expect(servers.length).toBeGreaterThan(1);
+    expect(servers.length).toBeLessThanOrEqual(4);
+    expect(hint.querySelector('a[href^="/"]')?.getAttribute('href')).toMatch(/handle|utente|nome/);
+    // Signed in, the step is gone.
+    TestBed.resetTestingModule();
+    expect((await builder(true)).el.querySelector('.no-account')).toBeNull();
+  });
+
+  it('remembers the page’s future tags for the composer once a hashtag is followed', async () => {
+    const ja = feedBuilderPageAt('ja/science-fiction-on-mastodon') as FeedBuilderEntry;
+    const { fixture, el } = await builder(true, [], ja);
+    const hints = TestBed.inject(FutureTagHints);
+    const remember = vi.spyOn(hints, 'remember').mockImplementation(() => undefined);
+    (buttonNamed(el, /ハッシュタグをフォロー/) as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const [key, topic] = remember.mock.calls.at(-1) ?? [];
+    expect(key).toBe('science-fiction.ja');
+    expect(topic?.lang).toBe('ja');
+    expect(topic?.futures).toContainEqual({ tag: 'スタートレック', source: 'StarTrek' });
+    expect(topic?.topicTags).toContain('StarTrek');
   });
 });
 

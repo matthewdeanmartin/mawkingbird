@@ -5,6 +5,7 @@
       <nav class="feed-tabs" [attr.aria-label]="chrome.eyebrow">
         <a mbContentLink [routerLink]="root" aria-current="page">{{ controls.builder }}</a>
         <a mbContentLink [routerLink]="previewLink">{{ controls.preview }}</a>
+        <a mbContentLink [routerLink]="floodingLink">{{ controls.flooding }}</a>
       </nav>
       <app-language-versions />
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{ controls.signIn }}</a>
@@ -26,6 +27,14 @@
           }}</a>
           <a mbButton variant="outline" [routerLink]="previewLink">{{ controls.preview }}</a>
         </div>
+        <p class="no-account muted">
+          {{ controls.noAccount }}
+          @for (domain of signUpServers; track domain; let last = $last) {
+            <a mbContentLink [href]="'https://' + domain + '/about'" rel="noopener">{{ domain }}</a
+            >{{ last ? '.' : ',' }}
+          }
+          <a mbContentLink [routerLink]="handleGenerator">{{ controls.pickHandle }}</a>
+        </p>
       </aside>
     }
   </div>
@@ -165,12 +174,45 @@
         }}</span>
       }
     </div>
+    @if (followedIds().length) {
+      <div class="bulk-actions list-actions">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          [disabled]="listBusy()"
+          (click)="makeList()"
+        >
+          {{ controls.makeList(copy.listTitle) }}
+        </button>
+        <mb-checkbox
+          [label]="controls.listExclusive"
+          [checked]="listExclusive()"
+          (checkedChange)="listExclusive.set($event)"
+        />
+        @if (listResult(); as result) {
+          <span class="muted" role="status">
+            @if (result === 'failed') {
+              {{ controls.listFailed }}
+            } @else {
+              {{ controls.listDone(result.added, result.title) }}
+              <a mbContentLink [routerLink]="'/lists/' + result.id">{{ controls.openList }}</a>
+            }
+          </span>
+        }
+      </div>
+    }
   }
 
   @for (group of shelves; track group.shelf) {
     <section [attr.aria-labelledby]="'shelf-' + group.shelf">
       <h2 [id]="'shelf-' + group.shelf">{{ chrome.shelves[group.shelf].heading }}</h2>
       <p>{{ chrome.shelves[group.shelf].intro }}</p>
+      @if (group.shelf === 'youtube' && youtubeChannels.length) {
+        @defer (on idle) {
+          <app-youtube-subscribe-all [channels]="youtubeChannels" [words]="controls" />
+        }
+      }
       <ul class="people">
         @for (person of group.people; track person.acct) {
           <li>
@@ -188,6 +230,11 @@
                   }}</a>
                   @if (!person.youtube.native) {
                     <span class="muted">{{ chrome.feedCopy }}</span>
+                  }
+                  @if (channel(person); as yt) {
+                    @defer (on idle) {
+                      <app-youtube-subscribe [channel]="yt" [words]="controls" />
+                    }
                   }
                 }
                 @for (code of person.fame; track code) {

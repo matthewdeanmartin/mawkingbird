@@ -5,6 +5,7 @@
       <nav class="feed-tabs" [attr.aria-label]="chrome.eyebrow">
         <a mbContentLink [routerLink]="root">{{ controls.builder }}</a>
         <a mbContentLink [routerLink]="previewLink" aria-current="page">{{ controls.preview }}</a>
+        <a mbContentLink [routerLink]="floodingLink">{{ controls.flooding }}</a>
       </nav>
       <app-language-versions />
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{ controls.signIn }}</a>
@@ -28,21 +29,7 @@
       <span class="muted">{{ controls.sampleNote(sample.tags, sample.people) }}</span>
     </div>
     @if (progress(); as p) {
-      <div class="sample-progress" role="status" aria-live="polite">
-        <span class="muted">{{ controls.sampling(p.done, p.planned) }}</span>
-        <div
-          class="progress-track"
-          role="progressbar"
-          [attr.aria-valuenow]="p.done"
-          [attr.aria-valuemin]="0"
-          [attr.aria-valuemax]="p.planned"
-        >
-          <div
-            class="progress-fill"
-            [style.width.%]="p.planned ? (p.done / p.planned) * 100 : 0"
-          ></div>
-        </div>
-      </div>
+      <app-feed-progress [progress]="p" [label]="controls.sampling(p.done, p.planned)" />
     }
     <div class="preview-feed">
       @for (status of statuses(); track status.id) {

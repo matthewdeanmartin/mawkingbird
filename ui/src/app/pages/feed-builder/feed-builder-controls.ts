@@ -27,6 +27,32 @@ export interface FeedControls {
   sampling: (done: number, planned: number) => string;
   sampleEmpty: string;
   backToBuilder: string;
+  flooding: string;
+  floodingIntro: string;
+  checkAgain: string;
+  floodingClear: string;
+  floodersHeading: string;
+  floodEvidence: (pct: number, tag: string, count: number, total: number) => string;
+  muteTemporary: string;
+  mutePermanent: string;
+  mutedTemporary: string;
+  mutedPermanent: string;
+  undoMute: string;
+  loudestHeading: string;
+  loudest: (acct: string, pct: number, total: number) => string;
+  noPosts: string;
+  muteNote: string;
+  subscribe: string;
+  subscribed: string;
+  subscribeAll: (count: number) => string;
+  watch: string;
+  noAccount: string;
+  pickHandle: string;
+  makeList: (title: string) => string;
+  listExclusive: string;
+  listDone: (added: number, title: string) => string;
+  openList: string;
+  listFailed: string;
 }
 
 const en: FeedControls = {
@@ -34,7 +60,7 @@ const en: FeedControls = {
   preview: 'Preview',
   signIn: 'Sign in with Mastodon',
   signedOutHint:
-    'Sign in with Mastodon to follow these hashtags and people in one go, or open the preview to read the feed first. No account yet? Any server works, and you can move later.',
+    'Sign in with Mastodon to follow these hashtags and people in one go, or open the preview to read the feed first.',
   include: 'Include',
   selectAll: 'Select all',
   selectNone: 'Clear',
@@ -52,6 +78,34 @@ const en: FeedControls = {
   sampling: (done, planned) => `Reading ${done} of ${planned} sources…`,
   sampleEmpty: 'No recent posts in this sample. Shuffle to try others.',
   backToBuilder: 'Back to the builder',
+  flooding: 'Flooding',
+  floodingIntro:
+    'Some accounts post so often that they bury everyone else under a hashtag. This reads the newest posts of the hashtags you ticked and shows anyone taking up a quarter or more of one. Mute them here, for a while or for good.',
+  checkAgain: 'Check again',
+  floodingClear: 'No one is flooding these hashtags right now.',
+  floodersHeading: 'Accounts flooding these hashtags',
+  floodEvidence: (pct, tag, count, total) => `${pct}% of #${tag} (${count} of ${total} posts)`,
+  muteTemporary: 'Mute for 8 hours',
+  mutePermanent: 'Mute permanently',
+  mutedTemporary: 'Muted for 8 hours',
+  mutedPermanent: 'Muted',
+  undoMute: 'Undo',
+  loudestHeading: 'Loudest account in each hashtag',
+  loudest: (acct, pct, total) => `@${acct}, ${pct}% of ${total} posts`,
+  noPosts: 'No recent posts.',
+  muteNote: 'Mutes hide an account from your feeds in Mawkingbird on this device.',
+  subscribe: 'Subscribe in Mawkingbird',
+  subscribed: 'Subscribed',
+  subscribeAll: (n) => `Subscribe to all ${n} YouTube channels`,
+  watch: 'Watch them in Mawkingbird',
+  noAccount:
+    'No account yet? Any server works, and you can move later. mastodon.social is a good first choice, or join one where this community gathers:',
+  pickHandle: 'Find a free username first',
+  makeList: (title) => `Put them in a list: ${title}`,
+  listExclusive: 'Hide their posts from Home',
+  listDone: (added, title) => `Added ${added} people to the list ${title}.`,
+  openList: 'Open the list',
+  listFailed: 'Could not make the list.',
 };
 
 const de: FeedControls = {
@@ -59,7 +113,7 @@ const de: FeedControls = {
   preview: 'Vorschau',
   signIn: 'Mit Mastodon anmelden',
   signedOutHint:
-    'Melde dich mit Mastodon an, um diesen Hashtags und Leuten auf einmal zu folgen, oder öffne die Vorschau und lies den Feed zuerst. Noch kein Konto? Jeder Server geht, und du kannst später umziehen.',
+    'Melde dich mit Mastodon an, um diesen Hashtags und Leuten auf einmal zu folgen, oder öffne die Vorschau und lies den Feed zuerst.',
   include: 'Dabei',
   selectAll: 'Alle auswählen',
   selectNone: 'Keine',
@@ -77,6 +131,36 @@ const de: FeedControls = {
   sampling: (done, planned) => `${done} von ${planned} Quellen gelesen …`,
   sampleEmpty: 'In dieser Auswahl gibt es keine neuen Beiträge. Misch neu, um andere zu probieren.',
   backToBuilder: 'Zurück zur Auswahl',
+  flooding: 'Dauerposter',
+  floodingIntro:
+    'Manche Konten posten so oft, dass sie unter einem Hashtag alle anderen verdrängen. Hier werden die neuesten Beiträge deiner ausgewählten Hashtags gelesen, und jedes Konto, das ein Viertel oder mehr davon ausmacht, wird angezeigt. Stummschalten kannst du es gleich hier, vorübergehend oder dauerhaft.',
+  checkAgain: 'Erneut prüfen',
+  floodingClear: 'Gerade überflutet niemand diese Hashtags.',
+  floodersHeading: 'Konten, die diese Hashtags überfluten',
+  floodEvidence: (pct, tag, count, total) =>
+    `${pct} % von #${tag} (${count} von ${total} Beiträgen)`,
+  muteTemporary: 'Für 8 Stunden stummschalten',
+  mutePermanent: 'Dauerhaft stummschalten',
+  mutedTemporary: 'Für 8 Stunden stumm',
+  mutedPermanent: 'Stummgeschaltet',
+  undoMute: 'Rückgängig',
+  loudestHeading: 'Das lauteste Konto je Hashtag',
+  loudest: (acct, pct, total) => `@${acct}, ${pct} % von ${total} Beiträgen`,
+  noPosts: 'Keine neuen Beiträge.',
+  muteNote:
+    'Stummgeschaltete Konten werden in Mawkingbird auf diesem Gerät aus deinen Feeds ausgeblendet.',
+  subscribe: 'In Mawkingbird abonnieren',
+  subscribed: 'Abonniert',
+  subscribeAll: (n) => `Alle ${n} YouTube-Kanäle abonnieren`,
+  watch: 'In Mawkingbird ansehen',
+  noAccount:
+    'Noch kein Konto? Jeder Server geht, und du kannst später umziehen. mastodon.social ist ein guter Anfang, oder du gehst dorthin, wo sich diese Community trifft:',
+  pickHandle: 'Erst einen freien Benutzernamen finden',
+  makeList: (title) => `In eine Liste packen: ${title}`,
+  listExclusive: 'Ihre Beiträge nicht auf der Startseite zeigen',
+  listDone: (added, title) => `${added} Leute zur Liste ${title} hinzugefügt.`,
+  openList: 'Liste öffnen',
+  listFailed: 'Die Liste konnte nicht angelegt werden.',
 };
 
 const fr: FeedControls = {
@@ -84,7 +168,7 @@ const fr: FeedControls = {
   preview: 'Aperçu',
   signIn: 'Se connecter avec Mastodon',
   signedOutHint:
-    'Connecte-toi avec Mastodon pour suivre ces hashtags et ces personnes d’un coup, ou ouvre l’aperçu pour lire le fil d’abord. Pas encore de compte ? N’importe quel serveur convient, et tu pourras déménager plus tard.',
+    'Connecte-toi avec Mastodon pour suivre ces hashtags et ces personnes d’un coup, ou ouvre l’aperçu pour lire le fil d’abord.',
   include: 'Inclure',
   selectAll: 'Tout sélectionner',
   selectNone: 'Aucun',
@@ -104,6 +188,35 @@ const fr: FeedControls = {
   sampling: (done, planned) => `${done} sources lues sur ${planned}…`,
   sampleEmpty: 'Aucun message récent dans cet échantillon. Mélange pour en essayer d’autres.',
   backToBuilder: 'Retour à la sélection',
+  flooding: 'Saturation',
+  floodingIntro:
+    'Certains comptes publient tant qu’ils noient tout le monde sous un hashtag. On lit ici les messages les plus récents des hashtags que tu as cochés et on montre tout compte qui en occupe un quart ou plus. Tu peux le masquer ici, pour un temps ou pour de bon.',
+  checkAgain: 'Vérifier à nouveau',
+  floodingClear: 'Personne ne sature ces hashtags en ce moment.',
+  floodersHeading: 'Comptes qui saturent ces hashtags',
+  floodEvidence: (pct, tag, count, total) =>
+    `${pct}\u202f% de #${tag} (${count} messages sur ${total})`,
+  muteTemporary: 'Masquer pendant 8 heures',
+  mutePermanent: 'Masquer définitivement',
+  mutedTemporary: 'Masqué pendant 8 heures',
+  mutedPermanent: 'Masqué',
+  undoMute: 'Annuler',
+  loudestHeading: 'Le compte le plus présent par hashtag',
+  loudest: (acct, pct, total) => `@${acct}, ${pct}\u202f% de ${total} messages`,
+  noPosts: 'Aucun message récent.',
+  muteNote: 'Un compte masqué disparaît de tes fils dans Mawkingbird, sur cet appareil.',
+  subscribe: 'S’abonner dans Mawkingbird',
+  subscribed: 'Abonné',
+  subscribeAll: (n) => `S’abonner aux ${n} chaînes YouTube`,
+  watch: 'Les regarder dans Mawkingbird',
+  noAccount:
+    'Pas encore de compte\u202f? N’importe quel serveur convient, et tu pourras déménager plus tard. mastodon.social est un bon premier choix, ou rejoins un serveur où se retrouve cette communauté\u00a0:',
+  pickHandle: 'Trouver d’abord un nom d’utilisateur libre',
+  makeList: (title) => `Les mettre dans une liste\u00a0: ${title}`,
+  listExclusive: 'Masquer leurs messages de l’accueil',
+  listDone: (added, title) => `${added} personnes ajoutées à la liste ${title}.`,
+  openList: 'Ouvrir la liste',
+  listFailed: 'Impossible de créer la liste.',
 };
 
 const es: FeedControls = {
@@ -111,7 +224,7 @@ const es: FeedControls = {
   preview: 'Vista previa',
   signIn: 'Iniciar sesión con Mastodon',
   signedOutHint:
-    'Inicia sesión con Mastodon para seguir estas etiquetas y personas de una vez, o abre la vista previa para leer el feed primero. ¿Aún sin cuenta? Cualquier servidor sirve, y puedes mudarte después.',
+    'Inicia sesión con Mastodon para seguir estas etiquetas y personas de una vez, o abre la vista previa para leer el feed primero.',
   include: 'Incluir',
   selectAll: 'Seleccionar todo',
   selectNone: 'Ninguno',
@@ -129,6 +242,35 @@ const es: FeedControls = {
   sampling: (done, planned) => `Leyendo ${done} de ${planned} fuentes…`,
   sampleEmpty: 'No hay publicaciones recientes en esta muestra. Mezcla para probar otras.',
   backToBuilder: 'Volver a la selección',
+  flooding: 'Saturación',
+  floodingIntro:
+    'Algunas cuentas publican tanto que tapan a todos los demás en una etiqueta. Aquí se leen las publicaciones más recientes de las etiquetas que marcaste y se muestra cualquier cuenta que ocupe un cuarto o más de una. Puedes silenciarla aquí, por un rato o para siempre.',
+  checkAgain: 'Volver a comprobar',
+  floodingClear: 'Ahora mismo nadie está saturando estas etiquetas.',
+  floodersHeading: 'Cuentas que saturan estas etiquetas',
+  floodEvidence: (pct, tag, count, total) =>
+    `${pct} % de #${tag} (${count} de ${total} publicaciones)`,
+  muteTemporary: 'Silenciar 8 horas',
+  mutePermanent: 'Silenciar para siempre',
+  mutedTemporary: 'Silenciada 8 horas',
+  mutedPermanent: 'Silenciada',
+  undoMute: 'Deshacer',
+  loudestHeading: 'La cuenta más presente en cada etiqueta',
+  loudest: (acct, pct, total) => `@${acct}, ${pct} % de ${total} publicaciones`,
+  noPosts: 'Sin publicaciones recientes.',
+  muteNote: 'Silenciar oculta la cuenta de tus feeds en Mawkingbird, en este dispositivo.',
+  subscribe: 'Suscribirse en Mawkingbird',
+  subscribed: 'Suscrito',
+  subscribeAll: (n) => `Suscribirse a los ${n} canales de YouTube`,
+  watch: 'Verlos en Mawkingbird',
+  noAccount:
+    '¿Aún sin cuenta? Cualquier servidor sirve, y puedes mudarte después. mastodon.social es una buena primera opción, o únete a uno donde se reúne esta comunidad:',
+  pickHandle: 'Busca primero un nombre de usuario libre',
+  makeList: (title) => `Ponerlos en una lista: ${title}`,
+  listExclusive: 'Ocultar sus publicaciones del inicio',
+  listDone: (added, title) => `${added} personas añadidas a la lista ${title}.`,
+  openList: 'Abrir la lista',
+  listFailed: 'No se pudo crear la lista.',
 };
 
 const it: FeedControls = {
@@ -136,7 +278,7 @@ const it: FeedControls = {
   preview: 'Anteprima',
   signIn: 'Accedi con Mastodon',
   signedOutHint:
-    'Accedi con Mastodon per seguire questi hashtag e queste persone in un colpo solo, oppure apri l’anteprima e leggi prima il feed. Non hai ancora un account? Va bene qualsiasi server, e puoi traslocare dopo.',
+    'Accedi con Mastodon per seguire questi hashtag e queste persone in un colpo solo, oppure apri l’anteprima e leggi prima il feed.',
   include: 'Includi',
   selectAll: 'Seleziona tutto',
   selectNone: 'Nessuno',
@@ -154,6 +296,34 @@ const it: FeedControls = {
   sampling: (done, planned) => `Lette ${done} fonti su ${planned}…`,
   sampleEmpty: 'Nessun post recente in questo campione. Mescola per provarne altri.',
   backToBuilder: 'Torna alla selezione',
+  flooding: 'Saturazione',
+  floodingIntro:
+    'Alcuni account pubblicano così tanto da sommergere tutti gli altri sotto un hashtag. Qui leggiamo i post più recenti degli hashtag che hai selezionato e mostriamo chi ne occupa un quarto o più. Puoi silenziarlo qui, per un po’ o per sempre.',
+  checkAgain: 'Controlla di nuovo',
+  floodingClear: 'Al momento nessuno sta saturando questi hashtag.',
+  floodersHeading: 'Account che saturano questi hashtag',
+  floodEvidence: (pct, tag, count, total) => `${pct}% di #${tag} (${count} post su ${total})`,
+  muteTemporary: 'Silenzia per 8 ore',
+  mutePermanent: 'Silenzia per sempre',
+  mutedTemporary: 'Silenziato per 8 ore',
+  mutedPermanent: 'Silenziato',
+  undoMute: 'Annulla',
+  loudestHeading: 'L’account più presente in ogni hashtag',
+  loudest: (acct, pct, total) => `@${acct}, ${pct}% di ${total} post`,
+  noPosts: 'Nessun post recente.',
+  muteNote: 'Un account silenziato sparisce dai tuoi feed in Mawkingbird, su questo dispositivo.',
+  subscribe: 'Iscriviti in Mawkingbird',
+  subscribed: 'Iscritto',
+  subscribeAll: (n) => `Iscriviti a tutti i ${n} canali YouTube`,
+  watch: 'Guardali in Mawkingbird',
+  noAccount:
+    'Non hai ancora un account? Va bene qualsiasi server, e puoi traslocare dopo. mastodon.social è una buona prima scelta, oppure iscriviti a uno dove si ritrova questa comunità:',
+  pickHandle: 'Trova prima un nome utente libero',
+  makeList: (title) => `Mettili in una lista: ${title}`,
+  listExclusive: 'Nascondi i loro post dalla home',
+  listDone: (added, title) => `${added} persone aggiunte alla lista ${title}.`,
+  openList: 'Apri la lista',
+  listFailed: 'Impossibile creare la lista.',
 };
 
 const ja: FeedControls = {
@@ -161,7 +331,7 @@ const ja: FeedControls = {
   preview: 'プレビュー',
   signIn: 'Mastodon でログイン',
   signedOutHint:
-    'Mastodon でログインすると、これらのハッシュタグと人をまとめてフォローできます。先にプレビューでフィードを読むこともできます。アカウントがまだなくても、どのサーバーで作っても大丈夫です。あとから引っ越せます。',
+    'Mastodon でログインすると、これらのハッシュタグと人をまとめてフォローできます。先にプレビューでフィードを読むこともできます。',
   include: '含める',
   selectAll: 'すべて選択',
   selectNone: '選択解除',
@@ -179,6 +349,35 @@ const ja: FeedControls = {
   sampling: (done, planned) => `${planned} 件中 ${done} 件を読み込み中…`,
   sampleEmpty: 'このサンプルには最近の投稿がありません。シャッフルして別のものを試してください。',
   backToBuilder: '選択に戻る',
+  flooding: '連投チェック',
+  floodingIntro:
+    '投稿が多すぎて、ハッシュタグのほかの投稿を埋もれさせてしまうアカウントがあります。ここでは選んだハッシュタグの最新投稿を読み、その 4 分の 1 以上を占めるアカウントを表示します。その場で、一時的または無期限にミュートできます。',
+  checkAgain: 'もう一度チェック',
+  floodingClear: '今のところ、これらのハッシュタグを連投で埋めているアカウントはありません。',
+  floodersHeading: 'ハッシュタグを連投で埋めているアカウント',
+  floodEvidence: (pct, tag, count, total) => `#${tag} の ${pct}%（${total} 件中 ${count} 件）`,
+  muteTemporary: '8 時間ミュート',
+  mutePermanent: '無期限にミュート',
+  mutedTemporary: '8 時間ミュート中',
+  mutedPermanent: 'ミュート中',
+  undoMute: '元に戻す',
+  loudestHeading: 'ハッシュタグごとに最も投稿の多いアカウント',
+  loudest: (acct, pct, total) => `@${acct}（${total} 件中 ${pct}%）`,
+  noPosts: '最近の投稿はありません。',
+  muteNote:
+    'ミュートすると、この端末の Mawkingbird のフィードにそのアカウントが表示されなくなります。',
+  subscribe: 'Mawkingbird で登録',
+  subscribed: '登録済み',
+  subscribeAll: (n) => `YouTube チャンネル ${n} 件をすべて登録`,
+  watch: 'Mawkingbird で見る',
+  noAccount:
+    'アカウントがまだなくても、どのサーバーで作っても大丈夫です。あとから引っ越せます。最初は mastodon.social がおすすめです。このコミュニティが集まるサーバーもあります：',
+  pickHandle: '先に空いているユーザー名を探す',
+  makeList: (title) => `リストにまとめる：${title}`,
+  listExclusive: 'ホームには表示しない',
+  listDone: (added, title) => `${added} 人をリスト「${title}」に追加しました。`,
+  openList: 'リストを開く',
+  listFailed: 'リストを作成できませんでした。',
 };
 
 export const FEED_CONTROLS: Partial<Record<PageLanguage, FeedControls>> = {

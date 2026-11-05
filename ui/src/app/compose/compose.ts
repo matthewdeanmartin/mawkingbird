@@ -79,6 +79,7 @@ import { renderStatusText } from './status-text';
 import { FeatureFlags } from '../feature-flags';
 import { KnownLanguages } from '../trend-language-filter';
 import { LANG_NAMES, LangCode, confidentLanguage } from '../language-detect';
+import { FutureTagHints, suggestFutureTags } from '../future-tag-hints';
 import { stripHtml } from '../sentiment';
 import { MataroaApi } from '../providers/mataroa/mataroa-api';
 import { MataroaSettings } from '../providers/mataroa/mataroa-settings';
@@ -511,6 +512,8 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.warn.threadsNoSchedule: Threads can't be scheduled — remove the extra posts.
 
 // i18n compose.postAs: Post as {{language}}
+// i18n compose.futureTagHint: Help a hashtag in this language grow:
+// i18n compose.futureTagAdd: Add #{{tag}}
 
 // i18n compose.blogDraft: Draft
 // i18n compose.switchTo: Switch to {{language}}
@@ -762,6 +765,20 @@ export class Compose implements OnDestroy {
    * worse than no button (decision 9 in sprint/openrouter-0-overview.md).
    */
   protected canUseTagHelper = computed(() => this.ai.enabled() && this.openrouter.connected());
+
+  /**
+   * Future tags from Feed Builder pages the reader built a feed from: offered
+   * when a post in that page's language uses one of its hashtags. Added only
+   * by a click, through the same path as the tag helper's suggestions.
+   */
+  private futureTagHints = inject(FutureTagHints);
+  protected futureTagSuggestions = computed(() =>
+    suggestFutureTags(
+      this.futureTagHints.topics(),
+      this.text(),
+      this.postLanguage() || this.detectedLanguage(),
+    ),
+  );
 
   // --- LLM "translate to" ---
   protected translateOpen = signal(false);

@@ -1513,3 +1513,28 @@ shared StatusCard and pages with an MbButton. `shell/mode-nav.ts` gains the
 topic pages as focused apps (Home · Builder · Preview); logic only. No control
 is restyled and no shared widget changed. The inventory contains 595 candidate
 files across 1,660 sources.
+
+## Topic pages: Flooding tab and YouTube subscribe, 2026-11-05
+
+Added two candidates: `feed-builder/feed-flooding.html`, the Flooding tab (MbButton
+for Check again and exactly two mute choices, 8 hours or permanent, through local
+mutes; an Undo link button; the people list from follow.css), and
+`feed-builder/youtube-subscribe.ts`, the Subscribe in Mawkingbird toggle and
+Subscribe to all button (MbButton, MbContentLink to /videos). The preview and the
+Flooding tab share a small `feed-progress.ts` bar, the friend finders' track and
+fill, with role="progressbar". `feed-builder-page.html` and `feed-preview.html`
+gain a Flooding link in their standalone headers, and the page gains the
+deferred YouTube controls. No control is restyled and no shared widget changed.
+The inventory contains 597 candidate files across 1,667 sources.
+
+## Topic pages: convert to list, no-account step, future-tag hint, 2026-11-05
+
+`feed-builder-page.html` gains, once the people batch has followed someone, an
+outline MbButton "Put them in a list" and an MbCheckbox for hiding the list from
+Home; the result links to the list with MbContentLink. Signed out, the sign-in
+hint gains a short no-account line of MbContentLinks (mastodon.social, the
+topic's servers, the handle generator). `compose.html` gains a future-tag hint
+under the text box: link-variant MbButtons that add a suggested tag on click,
+styled with the reply-mention hint's rule. No candidate file was added or
+removed, no control is restyled and no shared widget changed. The inventory
+contains 597 candidate files across 1,669 sources.

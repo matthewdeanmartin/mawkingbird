@@ -12,6 +12,7 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     description:
       'Sci-fi and fantasy writers, artists, YouTubers and fans on Mastodon, plus the hashtags worth following. Read it all before you make an account.',
     heading: 'Science fiction & fantasy on Mastodon',
+    listTitle: 'Science fiction & fantasy',
     intro: [
       'Mastodon has a lively science fiction and fantasy crowd: novelists and short-story writers, magazines, illustrators, critics, Star Trek and Doctor Who fans, and people who simply read a lot.',
       'Starting from an empty timeline is slow. This page gives you a head start: the hashtags people actually use, the people worth following, and the servers where the community gathers.',
@@ -36,6 +37,7 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     description:
       'Autorinnen, Künstler, YouTuber und Fans von Science-Fiction und Fantasy auf Mastodon, dazu die passenden Hashtags. Alles lesbar, bevor du ein Konto anlegst.',
     heading: 'Science-Fiction und Fantasy auf Mastodon',
+    listTitle: 'Science-Fiction und Fantasy',
     intro: [
       'Auf Mastodon gibt es eine lebendige Szene für Science-Fiction und Phantastik: Autorinnen und Autoren, Verlage, Illustratoren, Rezensenten, Fans von Star Trek und Doctor Who und viele, die einfach gern lesen.',
       'Mit einer leeren Startseite anzufangen ist mühsam. Diese Seite hilft dir beim Start: Hashtags, die wirklich benutzt werden, Leute, denen sich das Folgen lohnt, und Server, auf denen sich die Community trifft.',
@@ -56,25 +58,26 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     ],
   },
   fr: {
-    title: 'Science-fiction et fantasy sur Mastodon : qui suivre',
+    title: 'Science-fiction et fantasy sur Mastodon\u00a0: qui suivre',
     description:
       'Autrices, artistes, vidéastes et fans de science-fiction et de fantasy sur Mastodon, avec les hashtags à suivre. Tout se lit avant même de créer un compte.',
     heading: 'Science-fiction et fantasy sur Mastodon',
+    listTitle: 'Science-fiction et fantasy',
     intro: [
-      'Mastodon abrite une communauté vivante autour des littératures de l’imaginaire : romancières et nouvellistes, revues, illustrateurs, critiques, fans de Star Trek ou de Doctor Who, et beaucoup de grands lecteurs.',
-      'Partir d’un fil vide prend du temps. Cette page te donne une longueur d’avance : les hashtags vraiment utilisés, les personnes à suivre et les serveurs où la communauté se retrouve.',
+      'Mastodon abrite une communauté vivante autour des littératures de l’imaginaire\u00a0: romancières et nouvellistes, revues, illustrateurs, critiques, fans de Star Trek ou de Doctor Who, et beaucoup de grands lecteurs.',
+      'Partir d’un fil vide prend du temps. Cette page te donne une longueur d’avance\u00a0: les hashtags vraiment utilisés, les personnes à suivre et les serveurs où la communauté se retrouve.',
     ],
     faq: [
       {
-        q: 'Faut-il un compte pour lire ?',
-        a: 'Non. Chaque hashtag de cette page s’ouvre dans Mawkingbird sans compte. Pour suivre des personnes et des hashtags, il te faut un compte Mastodon sur n’importe quel serveur ; mastodon.social est un bon début, et tu pourras déménager plus tard avec tes abonnés.',
+        q: 'Faut-il un compte pour lire\u202f?',
+        a: 'Non. Chaque hashtag de cette page s’ouvre dans Mawkingbird sans compte. Pour suivre des personnes et des hashtags, il te faut un compte Mastodon sur n’importe quel serveur\u00a0; mastodon.social est un bon début, et tu pourras déménager plus tard avec tes abonnés.',
       },
       {
-        q: 'Pourquoi des hashtags en anglais ?',
+        q: 'Pourquoi des hashtags en anglais\u202f?',
         a: 'Beaucoup de conversations sur la SF passent par des hashtags anglais, y compris chez des gens qui écrivent en français. Nous montrons les plus actifs, et des hashtags français qui méritent de grandir, comme #SFFF et #Imaginaire.',
       },
       {
-        q: 'Comment apparaître sur cette liste ?',
+        q: 'Comment apparaître sur cette liste\u202f?',
         a: 'Parle de science-fiction ou de fantasy, utilise les hashtags ci-dessus et autorise ton serveur à suggérer ton profil (paramètres de confidentialité et de portée). La liste est mise à jour chaque mois.',
       },
     ],
@@ -84,6 +87,7 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     description:
       'Autoras, artistas, youtubers y fans de la ciencia ficción y la fantasía en Mastodon, con las etiquetas que vale la pena seguir. Léelo todo sin crear cuenta.',
     heading: 'Ciencia ficción y fantasía en Mastodon',
+    listTitle: 'Ciencia ficción y fantasía',
     intro: [
       'En Mastodon hay una comunidad muy viva de ciencia ficción y fantasía: novelistas y cuentistas, revistas, ilustradores, críticos, fans de Star Trek y Star Wars, y mucha gente que simplemente lee.',
       'Empezar con un inicio vacío cuesta. Esta página te da ventaja: las etiquetas que de verdad se usan, la gente a la que vale la pena seguir y los servidores donde se reúne la comunidad.',
@@ -108,6 +112,7 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     description:
       'Autrici, artisti, youtuber e fan di fantascienza e fantasy su Mastodon, con gli hashtag da seguire. Puoi leggere tutto prima ancora di creare un account.',
     heading: 'Fantascienza e fantasy su Mastodon',
+    listTitle: 'Fantascienza e fantasy',
     intro: [
       'Su Mastodon c’è una community vivace di fantascienza e fantasy: romanzieri e autori di racconti, riviste, illustratori, critici, fan di Star Trek e di Star Wars, e tante persone che leggono e basta.',
       'Partire da una home vuota è lento. Questa pagina ti dà una spinta: gli hashtag usati davvero, le persone da seguire e i server dove la community si ritrova.',
@@ -132,6 +137,7 @@ export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
     description:
       'Mastodon（マストドン）で活動する SF・ファンタジーの作家、アーティスト、YouTuber、ファンと、フォローしたいハッシュタグ。アカウントがなくても読めます。',
     heading: 'Mastodon（マストドン）の SF・ファンタジー',
+    listTitle: 'SF・ファンタジー',
     intro: [
       'Mastodon には、SF やファンタジーを書く人、描く人、読む人のにぎやかなコミュニティがあります。作家や雑誌、イラストレーター、レビュアー、スタートレックやスター・ウォーズのファンなどです。',
       '何もないホームから始めるのは大変です。このページでは、実際に使われているハッシュタグ、フォローしたい人、コミュニティが集まるサーバーをまとめて紹介します。',

@@ -1,22 +1,22 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { firstValueFrom, timeout } from 'rxjs';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { Status } from '../../models';
 import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
-import { adaptAnonymousStatus } from '../../providers/anonymous/anonymous-mastodon-provider';
-import { externalFetch } from '../../providers/external-fetch';
 import { StatusCard } from '../../status-card/status-card';
 import { LanguageVersions } from '../focused-apps/language-versions';
-import { FeedPerson } from './feed-builder-data';
-import { FEED_BUILDER_HUB, FEED_BUILDER_PREVIEW } from './feed-builder-registry';
+import {
+  FEED_BUILDER_FLOODING,
+  FEED_BUILDER_HUB,
+  FEED_BUILDER_PREVIEW,
+} from './feed-builder-registry';
 import { FeedPage } from './feed-builder-routes';
+import { FeedProgress } from './feed-progress';
+import { readPerson, readTag } from './feed-reader';
 import { SAMPLE, SampleProgress, samplePreview } from './feed-sample';
 import { FeedSelection } from './feed-selection';
-
-const REQUEST_TIMEOUT_MS = 8_000;
 
 /**
  * A topic page's Preview tab: a random sample of the feed the page builds,
@@ -31,7 +31,7 @@ const REQUEST_TIMEOUT_MS = 8_000;
  */
 @Component({
   selector: 'app-feed-preview',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, StatusCard],
+  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, StatusCard, FeedProgress],
   templateUrl: './feed-preview.html',
   styleUrls: ['../features/features.css', './feed-builder.css'],
 })
@@ -50,6 +50,7 @@ export class FeedPreview implements OnInit {
   protected readonly hub = `/${FEED_BUILDER_HUB}`;
   protected readonly root = `/${this.page.path}`;
   protected readonly previewLink = `/${this.page.path}/${FEED_BUILDER_PREVIEW}`;
+  protected readonly floodingLink = `/${this.page.path}/${FEED_BUILDER_FLOODING}`;
   protected readonly returnHere = { next: this.root };
 
   private readonly key = `${this.page.topic}.${this.page.lang}`;
@@ -82,8 +83,10 @@ export class FeedPreview implements OnInit {
       const posts = await samplePreview({
         tags: this.tags,
         people: this.people,
-        tagSampler: { fetch: (tag, limit) => this.readTag(tag, limit) },
-        personSampler: { fetch: (person, limit) => this.readPerson(person, limit) },
+        tagSampler: {
+          fetch: (tag, limit) => readTag(this.http, this.anonymous.server(), tag, limit),
+        },
+        personSampler: { fetch: (person, limit) => readPerson(this.http, person, limit) },
         onProgress: (progress) => {
           if (run === this.run) this.progress.set({ ...progress });
         },
@@ -95,36 +98,5 @@ export class FeedPreview implements OnInit {
         this.progress.set(null);
       }
     }
-  }
-
-  /** A hashtag's newest posts, from the anonymous reading server. */
-  private async readTag(tag: string, limit: number): Promise<Status[]> {
-    const server = this.anonymous.server();
-    const statuses = await firstValueFrom(
-      this.http
-        .get<Status[]>(`${server}/api/v1/timelines/tag/${encodeURIComponent(tag)}`, {
-          params: new HttpParams().set('limit', String(limit)),
-          context: externalFetch(),
-        })
-        .pipe(timeout(REQUEST_TIMEOUT_MS)),
-    );
-    return statuses.map((status) => adaptAnonymousStatus(status, server));
-  }
-
-  /** A person's newest own posts, from their home server, by the id the page carries. */
-  private async readPerson(person: FeedPerson, limit: number): Promise<Status[]> {
-    const server = `https://${person.acct.split('@')[1]}`;
-    const statuses = await firstValueFrom(
-      this.http
-        .get<Status[]>(`${server}/api/v1/accounts/${encodeURIComponent(person.id)}/statuses`, {
-          params: new HttpParams()
-            .set('limit', String(limit))
-            .set('exclude_replies', 'true')
-            .set('exclude_reblogs', 'true'),
-          context: externalFetch(),
-        })
-        .pipe(timeout(REQUEST_TIMEOUT_MS)),
-    );
-    return statuses.map((status) => adaptAnonymousStatus(status, server));
   }
 }

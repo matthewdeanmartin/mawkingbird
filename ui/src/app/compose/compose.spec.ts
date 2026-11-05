@@ -163,6 +163,36 @@ describe('Compose', () => {
     expect(element.querySelector('button[mbButton][mbPostAction]')).toBeNull();
   });
 
+  it('suggests a Feed Builder future tag for a post in its language, and adds it only on a click', () => {
+    localStorage.setItem(
+      'mockingbird_future_tag_hints',
+      JSON.stringify({
+        'science-fiction.it': {
+          lang: 'it',
+          futures: [{ tag: 'Fantascienza', source: 'ScienceFiction' }],
+          topicTags: ['ScienceFiction', 'SciFi'],
+        },
+      }),
+    );
+    const f = setUp();
+    const element = f.nativeElement as HTMLElement;
+    internals(f).postLanguage.set('it');
+    internals(f).text.set('Appena finito Dune #ScienceFiction');
+    f.detectChanges();
+    const add = element.querySelector('.future-tag-hint button') as HTMLButtonElement;
+    expect(add.textContent).toContain('#Fantascienza');
+    expect(internals(f).text()).toBe('Appena finito Dune #ScienceFiction');
+    add.click();
+    f.detectChanges();
+    expect(internals(f).text()).toBe('Appena finito Dune #ScienceFiction #Fantascienza');
+    expect(element.querySelector('.future-tag-hint')).toBeNull();
+    // Another language: no suggestion.
+    internals(f).postLanguage.set('en');
+    internals(f).text.set('Just finished Dune #ScienceFiction');
+    f.detectChanges();
+    expect(element.querySelector('.future-tag-hint')).toBeNull();
+  });
+
   // ---------------------------------------------------------------- alt text
 
   it('checks a manually typed reply handle before posting and keeps misspelled replies intact', async () => {

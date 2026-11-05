@@ -82,6 +82,16 @@
   @if (showReplyMentionHint() && (!chatMode() || chatToolsOpen())) {
     <p class="reply-mention-hint muted" [innerHTML]="'compose.replyMentionHint' | transloco"></p>
   }
+  @if (futureTagSuggestions().length && (!chatMode() || chatToolsOpen())) {
+    <p class="future-tag-hint muted">
+      {{ 'compose.futureTagHint' | transloco }}
+      @for (tag of futureTagSuggestions(); track tag) {
+        <button mbButton variant="link" type="button" (click)="useSuggestedTags([tag])">
+          {{ 'compose.futureTagAdd' | transloco: { tag } }}
+        </button>
+      }
+    </p>
+  }
   @if (
     !targetIncludesPaste() &&
     !targetIncludesBlog() &&

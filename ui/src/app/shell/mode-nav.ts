@@ -1,6 +1,7 @@
 import { AppMode } from '../app-mode';
 import { TOOL_PAGES } from '../focused-tools';
 import {
+  FEED_BUILDER_FLOODING,
   FEED_BUILDER_PAGES,
   FEED_BUILDER_PREVIEW,
 } from '../pages/feed-builder/feed-builder-registry';
@@ -51,6 +52,7 @@ import {
 // i18n shell.modeNav.focused.invite: Invite
 // i18n shell.modeNav.feedBuilder.builder: Builder
 // i18n shell.modeNav.feedBuilder.preview: Preview
+// i18n shell.modeNav.feedBuilder.flooding: Flooding
 
 /**
  * One tab of a mode's primary nav, as data rather than markup.
@@ -341,16 +343,19 @@ function focusedApp(
  * the other nav strings at the top of this file.
  */
 const BUILDER_ICON = 'M4 6h16M4 12h10M4 18h7M17 15l3 3-3 3';
+const FLOODING_ICON = 'M3 17c3-4 5-4 8 0s5 4 8 0M3 11c3-4 5-4 8 0s5 4 8 0M12 3v4';
 const PREVIEW_ICON =
   'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6';
 
 /**
  * A topic starter-kit page (Feed Builder) as a mini-app: Home · Builder ·
- * Preview. Builder is the page, with follow controls once signed in; Preview
- * reads the feed the page would build, anonymously, never the reader's Home.
+ * Preview · Flooding. Builder is the page, with follow controls once signed
+ * in; Preview reads a sample of the feed the page would build, anonymously,
+ * never the reader's Home; Flooding finds accounts flooding its hashtags.
  */
 function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
   const preview = `${root}/${FEED_BUILDER_PREVIEW}`;
+  const flooding = `${root}/${FEED_BUILDER_FLOODING}`;
   return {
     id: `feed-builder-${topic}-${lang}`,
     root,
@@ -368,6 +373,13 @@ function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
         icon: PREVIEW_ICON,
         link: preview,
         active: onPath(preview),
+      },
+      {
+        id: 'flooding',
+        labelKey: 'shell.modeNav.feedBuilder.flooding',
+        icon: FLOODING_ICON,
+        link: flooding,
+        active: onPath(flooding),
       },
     ],
   };

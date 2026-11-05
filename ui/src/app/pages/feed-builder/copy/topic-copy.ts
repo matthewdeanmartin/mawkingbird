@@ -8,6 +8,8 @@ export interface TopicCopy {
   /** Meta description, under 160 characters. */
   description: string;
   heading: string;
+  /** The Mastodon list "Convert to list" makes: the topic, short. */
+  listTitle: string;
   intro: string[];
   faq: { q: string; a: string }[];
 }

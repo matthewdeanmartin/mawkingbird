@@ -44,3 +44,6 @@ export const FEED_BUILDER_HUB = 'communities';
 
 /** A topic page's preview tab, below its path: the feed it builds, read anonymously. */
 export const FEED_BUILDER_PREVIEW = 'preview';
+
+/** A topic page's flooding check, below its path: who floods the ticked hashtags. */
+export const FEED_BUILDER_FLOODING = 'flooding';

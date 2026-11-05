@@ -61,7 +61,21 @@ if (shownAdded.length) {
     );
   }
 }
+// Missing tests fail the check. A renamed spec can drop dozens at once, so
+// past 20 they are grouped by file; TEST_MANIFEST_VERBOSE=1 lists every one.
 if (missing.length) {
-  console.error(missing.map((testId) => `- ${testId}`).join('\n'));
+  if (process.env.TEST_MANIFEST_VERBOSE || missing.length <= 20) {
+    console.error(missing.map((testId) => `- ${testId}`).join('\n'));
+  } else {
+    const byFile = new Map();
+    for (const testId of missing) {
+      const file = testId.slice(0, testId.indexOf(' :: '));
+      byFile.set(file, (byFile.get(file) ?? 0) + 1);
+    }
+    console.error(
+      [...byFile].map(([file, count]) => `- ${file}: ${count} missing`).join('\n') +
+        '\n(TEST_MANIFEST_VERBOSE=1 lists each missing test)',
+    );
+  }
   process.exitCode = 1;
 }

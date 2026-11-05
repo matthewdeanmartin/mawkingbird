@@ -143,9 +143,19 @@
       "nextStep": "Topic starter-kit page and its signed-in Builder tab: feature layout and follow.css people list with MbButton (sign-in, bulk follow, select all/clear, per-hashtag follow, all native buttons styled by mbButton), MbCheckbox (each hashtag and person, ticked by default), MbContentLink, MbBadge, MbDisclosure, the shared FollowButton and LanguageVersions. Keep decorative avatars with empty alt, profile links into the app, hashtags as routerLinks to /tags, the live activity line deferred, and the standalone header only when signed out."
     },
     {
+      "file": "ui/src/app/pages/feed-builder/feed-flooding.html",
+      "disposition": "adopted scope",
+      "nextStep": "A topic page's Flooding tab: feature layout and follow.css people list with MbButton for Check again and the two mute choices (8 hours or permanent, native buttons styled by mbButton; Undo as a link button), MbContentLink, LanguageVersions and the shared FeedProgress bar. Keep exactly two mute choices, local mutes only, and nothing about flooders stored or published."
+    },
+    {
       "file": "ui/src/app/pages/feed-builder/feed-preview.html",
       "disposition": "adopted scope",
       "nextStep": "A topic page's Preview tab: feature layout, the shared StatusCard for each post, MbButton for sign-in and Load more (native button styled by mbButton), MbContentLink and LanguageVersions. Keep it client-only and noindex, reading the ticked hashtags and people anonymously, never the reader's Home."
+    },
+    {
+      "file": "ui/src/app/pages/feed-builder/youtube-subscribe.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Subscribe in Mawkingbird (one channel, aria-pressed toggle) and Subscribe to all (one button plus a content link to /videos), both MbButton over VideoSubscriptions. Keep them inside @defer blocks so the prerender never reads browser storage."
     },
     {
       "file": "ui/src/app/pages/features/public-article.html",

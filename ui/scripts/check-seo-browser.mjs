@@ -543,6 +543,15 @@ try {
         'preview has no overflow at 390px',
       );
       await page.screenshot({ path: path.join(results, 'seo-topic-preview.png'), fullPage: true });
+      // The Flooding tab, the same way: client-only, in the page's language.
+      await page.locator(`nav a[href="/${topicPage}/flooding"]`).click();
+      await page.waitForURL(`${origin}/${topicPage}/flooding`);
+      await page.getByRole('heading', { level: 1, name: /Saturazione/ }).waitFor();
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        'flooding tab has no overflow at 390px',
+      );
+      await page.screenshot({ path: path.join(results, 'seo-topic-flooding.png'), fullPage: true });
     } else {
       assert.equal(await page.locator('.activity').count(), 0, 'no live line without JavaScript');
     }

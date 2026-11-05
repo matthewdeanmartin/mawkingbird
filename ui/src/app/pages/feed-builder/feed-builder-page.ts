@@ -12,10 +12,17 @@ import { FollowButton } from '../../follow-button/follow-button';
 import type { FeedFollowActions } from './feed-builder-actions';
 import { FeedPerson, FeedTag, shelves } from './feed-builder-data';
 import { personAccount, profileLink } from './feed-builder-people';
-import { FEED_BUILDER_HUB, FEED_BUILDER_PREVIEW } from './feed-builder-registry';
+import {
+  FEED_BUILDER_FLOODING,
+  FEED_BUILDER_HUB,
+  FEED_BUILDER_PREVIEW,
+} from './feed-builder-registry';
 import { FeedPage } from './feed-builder-routes';
 import { FeedSelection } from './feed-selection';
+import { convertToList } from './feed-list';
+import { TOOL_PAGES } from '../../focused-tools';
 import { TagActivity } from './tag-activity';
+import { YoutubeChannel, YoutubeSubscribe, YoutubeSubscribeAll } from './youtube-subscribe';
 
 /**
  * Where readers ask questions or ask to be removed: the project account, opened
@@ -51,6 +58,8 @@ type TagState = 'idle' | 'busy' | 'following' | 'failed';
     FollowButton,
     LanguageVersions,
     TagActivity,
+    YoutubeSubscribe,
+    YoutubeSubscribeAll,
   ],
   templateUrl: './feed-builder-page.html',
   styleUrls: ['../features/features.css', '../features/follow.css', './feed-builder.css'],
@@ -75,6 +84,7 @@ export class FeedBuilderPage implements OnInit {
   protected readonly hub = `/${FEED_BUILDER_HUB}`;
   protected readonly root = `/${this.page.path}`;
   protected readonly previewLink = `/${this.page.path}/${FEED_BUILDER_PREVIEW}`;
+  protected readonly floodingLink = `/${this.page.path}/${FEED_BUILDER_FLOODING}`;
   /** Sign-in comes back to this page (it is a mini-app root; see login-destination.ts). */
   protected readonly returnHere = { next: this.root };
   protected readonly helpPath = HELP_PATH;
@@ -100,6 +110,17 @@ export class FeedBuilderPage implements OnInit {
     this.page.data.people.map((person) => [person.acct, personAccount(person)]),
   );
 
+  /** Creators' YouTube channels, for "Subscribe in Mawkingbird" (video mode's subscriptions). */
+  private readonly channels = new Map<string, YoutubeChannel>(
+    this.page.data.people
+      .filter((person) => person.youtube)
+      .map((person) => [
+        person.acct,
+        { id: person.youtube?.channelId ?? '', title: person.displayName },
+      ]),
+  );
+  protected readonly youtubeChannels = [...this.channels.values()];
+
   /** Follow state per hashtag (lower case), from the server and from this page's clicks. */
   protected readonly tagStates = signal<Record<string, TagState>>({});
   protected readonly selectedTags = computed(() =>
@@ -121,6 +142,34 @@ export class FeedBuilderPage implements OnInit {
     const failed = rows.filter((row) => row.status === 'failed' || row.status === 'not_found');
     return { done, total: rows.length, failed: failed.length };
   });
+
+  /** Accounts the finished people batch followed, by their ids on the reader's server. */
+  protected readonly followedIds = computed(() => {
+    const importer = this.actions()?.importer;
+    if (!importer || importer.running() || !this.peopleProgress()) return [];
+    return importer
+      .rows()
+      .filter((row) => row.status === 'followed' && row.account)
+      .map((row) => row.account?.id ?? '');
+  });
+  protected readonly listExclusive = signal(false);
+  protected readonly listBusy = signal(false);
+  protected readonly listResult = signal<
+    { id: string; title: string; added: number } | 'failed' | null
+  >(null);
+
+  /** No account yet: mastodon.social or up to three of the topic's own servers, links only. */
+  protected readonly signUpServers = [
+    'mastodon.social',
+    ...this.servers.map((server) => server.domain).filter((domain) => domain !== 'mastodon.social'),
+  ].slice(0, 4);
+  protected readonly handleGenerator = `/${
+    (
+      TOOL_PAGES.find(
+        (tool) => (tool.translationOf ?? tool.id) === 'handle-generator' && tool.lang === this.lang,
+      ) ?? TOOL_PAGES.find((tool) => tool.id === 'handle-generator')
+    )?.path ?? 'mastodon-handle-generator'
+  }`;
 
   async ngOnInit(): Promise<void> {
     if (!this.inShell) return;
@@ -158,6 +207,10 @@ export class FeedBuilderPage implements OnInit {
     return profileLink(person);
   }
 
+  protected channel(person: FeedPerson): YoutubeChannel | null {
+    return this.channels.get(person.acct) ?? null;
+  }
+
   protected account(person: FeedPerson) {
     return this.accounts.get(person.acct) ?? null;
   }
@@ -183,6 +236,7 @@ export class FeedBuilderPage implements OnInit {
     try {
       await firstValueFrom(actions.api.followTag(tag));
       this.tagStates.update((states) => ({ ...states, [key]: 'following' }));
+      this.rememberFutureTags(actions);
     } catch {
       this.tagStates.update((states) => ({ ...states, [key]: 'failed' }));
     }
@@ -209,7 +263,47 @@ export class FeedBuilderPage implements OnInit {
     const importer = this.actions()?.importer;
     if (!importer || importer.running()) return;
     importer.reset();
+    this.listResult.set(null);
     importer.load(this.selectedPeople());
     await importer.start();
+  }
+
+  /**
+   * "Convert to list", offered once the people batch has finished: the
+   * accounts it followed, by the ids their handles resolved to on the
+   * reader's server, into a list named after the topic.
+   */
+  async makeList(): Promise<void> {
+    const actions = this.actions();
+    const ids = this.followedIds();
+    if (!actions || !ids.length || this.listBusy()) return;
+    this.listBusy.set(true);
+    this.listResult.set(null);
+    try {
+      const { list, added } = await convertToList(
+        actions.api,
+        this.copy.listTitle,
+        ids,
+        this.listExclusive(),
+      );
+      this.listResult.set({ id: list.id, title: list.title, added });
+    } catch {
+      this.listResult.set('failed');
+    } finally {
+      this.listBusy.set(false);
+    }
+  }
+
+  /**
+   * After any hashtag here is followed, the composer may suggest this page's
+   * future tags for posts in its language (`future-tag-hints.ts`).
+   */
+  private rememberFutureTags(actions: FeedFollowActions): void {
+    if (!this.futureTags.length) return;
+    actions.hints.remember(this.key, {
+      lang: this.lang,
+      futures: this.futureTags.map((tag) => ({ tag: tag.name, source: tag.source ?? '' })),
+      topicTags: this.allTags,
+    });
   }
 }

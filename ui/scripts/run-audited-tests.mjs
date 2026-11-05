@@ -1,4 +1,4 @@
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
@@ -27,7 +27,48 @@ if (coverage) {
 
 const testStatus = await runQuietly(node, testArguments, { cwd: root });
 if (testStatus !== 0) {
+  printFailures();
   process.exit(testStatus);
+}
+
+/**
+ * The JSON reporter is the only one, so a red run would otherwise end with no
+ * word of what failed. Name each failure with its first message line; the full
+ * stack stays in the report.
+ */
+function printFailures() {
+  let report;
+  try {
+    report = JSON.parse(readFileSync(resultsPath, 'utf8'));
+  } catch {
+    console.error(`No test report at ${resultsPath}; the run failed before Vitest finished.`);
+    return;
+  }
+  const failures = [];
+  for (const file of report.testResults ?? []) {
+    const relative = path.relative(root, file.name).replaceAll('\\', '/');
+    const failed = (file.assertionResults ?? []).filter((test) => test.status === 'failed');
+    if (file.status === 'failed' && !failed.length) {
+      failures.push(`✗ ${relative}: ${firstLine(file.message)}`);
+    }
+    for (const test of failed) {
+      failures.push(
+        `✗ ${relative} > ${test.fullName}\n    ${firstLine(test.failureMessages?.[0])}`,
+      );
+    }
+  }
+  console.error(
+    `\n${report.numFailedTests ?? '?'} of ${report.numTotalTests ?? '?'} tests failed ` +
+      `(full messages in ${path.relative(root, resultsPath)}):\n${failures.join('\n')}`,
+  );
+}
+
+function firstLine(message = '') {
+  return (
+    String(message)
+      .split('\n')
+      .find((line) => line.trim()) ?? '(no message)'
+  );
 }
 
 const manifestArguments = [path.join(root, 'scripts', 'check-test-manifest.mjs')];

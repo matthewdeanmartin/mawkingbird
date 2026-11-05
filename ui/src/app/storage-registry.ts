@@ -1242,6 +1242,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     sensitivity: 'cache',
     note: 'Whether this reader has any bookmarks, so Home can show a "Review bookmarks" button without asking the server on every load. A true is kept indefinitely; a false expires after a day. Holds no bookmark content — only the yes/no and when it was asked.',
   },
+  {
+    base: 'mockingbird_future_tag_hints',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Future tags from the Feed Builder topic pages whose hashtags this reader followed, so the composer can suggest them for posts in that language. Reveals which topics the reader follows.',
+  },
 ];
 
 /** Which sensitivities each export profile includes. */

@@ -41,7 +41,8 @@ textarea {
   opacity: 0.75;
 }
 
-.reply-mention-hint {
+.reply-mention-hint,
+.future-tag-hint {
   margin: 4px 2px 0;
   font-size: 0.8em;
   line-height: 1.35;

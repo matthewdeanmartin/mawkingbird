@@ -3,6 +3,7 @@ import { PageLanguage } from '../../focused-tools';
 import {
   FEED_BUILDER_HUB,
   FEED_BUILDER_PAGES,
+  FEED_BUILDER_FLOODING,
   FEED_BUILDER_PREVIEW,
   FeedBuilderEntry,
   FeedTopic,
@@ -49,18 +50,19 @@ export type FeedPage = Awaited<ReturnType<typeof loadFeedPage>>;
 
 const builderPage = () => import('./feed-builder-page').then((m) => m.FeedBuilderPage);
 const previewPage = () => import('./feed-preview').then((m) => m.FeedPreview);
+const floodingPage = () => import('./feed-flooding').then((m) => m.FeedFlooding);
 
 function pageTitle({ topic, lang }: FeedBuilderEntry): ResolveFn<string> {
   return async () => (await copyOf(topic, lang)).title;
 }
 
-function previewTitle(entry: FeedBuilderEntry): ResolveFn<string> {
+function tabTitle(entry: FeedBuilderEntry, tab: 'preview' | 'flooding'): ResolveFn<string> {
   return async () => {
     const [copy, { controlsFor }] = await Promise.all([
       copyOf(entry.topic, entry.lang),
       import('./feed-builder-controls'),
     ]);
-    return `${copy.heading}: ${controlsFor(entry.lang).preview}`;
+    return `${copy.heading}: ${controlsFor(entry.lang)[tab]}`;
   };
 }
 
@@ -87,18 +89,30 @@ function pageRoute(entry: FeedBuilderEntry): Route {
   };
 }
 
-/** The public preview: client-rendered and not indexed (its posts are other people's). */
-function previewRoute(entry: FeedBuilderEntry): Route {
-  return {
-    path: `${entry.path}/${FEED_BUILDER_PREVIEW}`,
-    title: previewTitle(entry),
-    data: { lang: entry.lang },
-    resolve: { page: () => loadFeedPage(entry) },
-    loadComponent: previewPage,
-  };
+/**
+ * The public Preview and Flooding tabs: client-rendered and not indexed (what
+ * they show is other people's posts, read live).
+ */
+function tabRoutes(entry: FeedBuilderEntry): Routes {
+  return [
+    {
+      path: `${entry.path}/${FEED_BUILDER_PREVIEW}`,
+      title: tabTitle(entry, 'preview'),
+      data: { lang: entry.lang },
+      resolve: { page: () => loadFeedPage(entry) },
+      loadComponent: previewPage,
+    },
+    {
+      path: `${entry.path}/${FEED_BUILDER_FLOODING}`,
+      title: tabTitle(entry, 'flooding'),
+      data: { lang: entry.lang },
+      resolve: { page: () => loadFeedPage(entry) },
+      loadComponent: floodingPage,
+    },
+  ];
 }
 
-/** The Builder and Preview tabs of a page's signed-in twin, inside the shell. */
+/** The Builder, Preview and Flooding tabs of a page's signed-in twin, inside the shell. */
 export function feedBuilderSignedInChildren(entry: FeedBuilderEntry): Routes {
   return [
     {
@@ -110,10 +124,17 @@ export function feedBuilderSignedInChildren(entry: FeedBuilderEntry): Routes {
     },
     {
       path: FEED_BUILDER_PREVIEW,
-      title: previewTitle(entry),
+      title: tabTitle(entry, 'preview'),
       data: { inShell: true, lang: entry.lang },
       resolve: { page: () => loadFeedPage(entry) },
       loadComponent: previewPage,
+    },
+    {
+      path: FEED_BUILDER_FLOODING,
+      title: tabTitle(entry, 'flooding'),
+      data: { inShell: true, lang: entry.lang },
+      resolve: { page: () => loadFeedPage(entry) },
+      loadComponent: floodingPage,
     },
   ];
 }
@@ -142,5 +163,5 @@ export const feedBuilderRoutes: Routes = [
   ...FEED_BUILDER_PAGES.map(pageRoute),
 ];
 
-/** Every page's public preview. Browser only: never prerendered. */
-export const feedBuilderPreviewRoutes: Routes = FEED_BUILDER_PAGES.map(previewRoute);
+/** Every page's public Preview and Flooding tabs. Browser only: never prerendered. */
+export const feedBuilderPreviewRoutes: Routes = FEED_BUILDER_PAGES.flatMap(tabRoutes);

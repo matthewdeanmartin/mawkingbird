@@ -1,0 +1,124 @@
+<main class="features feed-page" [attr.lang]="lang">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink [routerLink]="hub">Mawkingbird · {{ chrome.hub }}</a>
+      <nav class="feed-tabs" [attr.aria-label]="chrome.eyebrow">
+        <a mbContentLink [routerLink]="root">{{ controls.builder }}</a>
+        <a mbContentLink [routerLink]="previewLink">{{ controls.preview }}</a>
+        <a mbContentLink [routerLink]="floodingLink" aria-current="page">{{ controls.flooding }}</a>
+      </nav>
+      <app-language-versions />
+      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">{{ controls.signIn }}</a>
+    </header>
+  }
+
+  <div class="kit-intro">
+    <p class="eyebrow">{{ chrome.eyebrow }}</p>
+    <h1>{{ copy.heading }}: {{ controls.flooding }}</h1>
+    <p>{{ controls.floodingIntro }}</p>
+    <a mbContentLink [routerLink]="root">{{ controls.backToBuilder }}</a>
+  </div>
+
+  @if (nothingSelected) {
+    <p class="muted" role="status">{{ controls.previewEmpty }}</p>
+  } @else {
+    <div class="bulk-actions">
+      <button mbButton type="button" [disabled]="loading()" (click)="check()">
+        {{ controls.checkAgain }}
+      </button>
+      <span class="muted">{{ controls.muteNote }}</span>
+    </div>
+    @if (progress(); as p) {
+      <app-feed-progress [progress]="p" [label]="controls.sampling(p.done, p.planned)" />
+    }
+
+    @if (!loading()) {
+      <section aria-labelledby="flooders-heading">
+        <h2 id="flooders-heading">{{ controls.floodersHeading }}</h2>
+        @if (flooders().length) {
+          <ul class="people">
+            @for (flooder of flooders(); track flooder.account.acct) {
+              <li>
+                <img [src]="flooder.account.avatar" width="48" height="48" alt="" loading="lazy" />
+                <div>
+                  <strong>{{ flooder.account.display_name || flooder.account.username }}</strong>
+                  <span class="handle">&#64;{{ flooder.account.acct }}</span>
+                  @for (e of flooder.evidence; track e.tag) {
+                    <p>{{ controls.floodEvidence(pct(e.share), e.tag, e.count, e.total) }}</p>
+                  }
+                  <div class="person-actions">
+                    @switch (mutedAs(flooder.account)) {
+                      @case ('temporary') {
+                        <span class="muted" role="status">{{ controls.mutedTemporary }}</span>
+                        <button
+                          mbButton
+                          variant="link"
+                          type="button"
+                          (click)="undo(flooder.account)"
+                        >
+                          {{ controls.undoMute }}
+                        </button>
+                      }
+                      @case ('permanent') {
+                        <span class="muted" role="status">{{ controls.mutedPermanent }}</span>
+                        <button
+                          mbButton
+                          variant="link"
+                          type="button"
+                          (click)="undo(flooder.account)"
+                        >
+                          {{ controls.undoMute }}
+                        </button>
+                      }
+                      @default {
+                        <button
+                          mbButton
+                          size="small"
+                          type="button"
+                          (click)="mute(flooder.account, 'temporary')"
+                        >
+                          {{ controls.muteTemporary }}
+                        </button>
+                        <button
+                          mbButton
+                          size="small"
+                          variant="outline"
+                          type="button"
+                          (click)="mute(flooder.account, 'permanent')"
+                        >
+                          {{ controls.mutePermanent }}
+                        </button>
+                      }
+                    }
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p role="status">{{ controls.floodingClear }}</p>
+        }
+      </section>
+
+      @if (readings().length) {
+        <section aria-labelledby="loudest-heading">
+          <h2 id="loudest-heading">{{ controls.loudestHeading }}</h2>
+          <ul class="tag-list">
+            @for (reading of readings(); track reading.tag) {
+              <li>
+                <strong>#{{ reading.tag }}</strong>
+                @if (reading.loudest; as top) {
+                  <span class="muted">{{
+                    controls.loudest(top.account.acct, pct(top.share), reading.total)
+                  }}</span>
+                } @else {
+                  <span class="muted">{{ controls.noPosts }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
+  }
+</main>

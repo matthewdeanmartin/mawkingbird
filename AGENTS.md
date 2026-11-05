@@ -12,7 +12,11 @@ Run targeted specs during development, then the complete gate: cd ui && make tes
 Gate output is summarized: the build chunk table, per-file coverage (see
 ui/coverage/index.html) and the manifest's added-test list are hidden. Set
 VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to
-see them. Agents: redirect long gates to a log file and read its summary lines.
+see them; check:i18n counts its advisories unless VERBOSE=1. ui/.npmrc sets
+loglevel=warn, so npm's "notice run" lines are hidden. Agents: redirect long
+gates to a log file and read its summary lines; set NO_COLOR=1 FORCE_COLOR=0
+on test runs, and grep failures before opening a full dump. A red `make test`
+ends by naming each failed test with its first message line.
 This gate includes design:inventory-check before the test inventory and coverage suite.
 For every client change, inspect ui/package.json, ui/Makefile and the applicable
 .github/workflows checks; unit tests and a production build alone do not cover CI.

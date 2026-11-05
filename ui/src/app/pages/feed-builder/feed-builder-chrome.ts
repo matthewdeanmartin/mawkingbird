@@ -182,17 +182,17 @@ const fr: FeedChrome = {
   hub: 'Tous les kits de démarrage',
   tagsHeading: 'Des hashtags à suivre',
   tagsIntro:
-    'Sur Mastodon, tu peux suivre un hashtag comme une personne : ses messages arrivent dans ton fil d’accueil. Voici les plus actifs sur ce sujet. Ouvre-en un pour le lire tout de suite, sans compte.',
+    'Sur Mastodon, tu peux suivre un hashtag comme une personne\u00a0: ses messages arrivent dans ton fil d’accueil. Voici les plus actifs sur ce sujet. Ouvre-en un pour le lire tout de suite, sans compte.',
   englishTag: 'anglais',
   futureHeading: 'Aide à lancer ces hashtags',
   futureIntro:
-    'Les hashtags anglais les plus actifs ont des versions françaises qui démarrent à peine. Suis-en une à côté du tag anglais et utilise-la quand tu écris en français : c’est comme ça qu’un hashtag grandit.',
+    'Les hashtags anglais les plus actifs ont des versions françaises qui démarrent à peine. Suis-en une à côté du tag anglais et utilise-la quand tu écris en français\u00a0: c’est comme ça qu’un hashtag grandit.',
   futureBeside: (source) => `version française de #${source}`,
   futureNew: 'nouveau',
   futureStarting: 'démarre à peine',
   caution: {
-    spam: 'Souvent envahi de messages de vente : lis-le avant de le suivre.',
-    'off-topic': 'Souvent utilisé pour autre chose : lis-le avant de le suivre.',
+    spam: 'Souvent envahi de messages de vente\u00a0: lis-le avant de le suivre.',
+    'off-topic': 'Souvent utilisé pour autre chose\u00a0: lis-le avant de le suivre.',
   },
   shelves: {
     youtube: {
@@ -202,7 +202,7 @@ const fr: FeedChrome = {
     notable: {
       heading: 'Autrices, artistes et noms connus',
       intro:
-        'Des figures publiques du domaine : autrices et auteurs, artistes, éditeurs, revues et festivals.',
+        'Des figures publiques du domaine\u00a0: autrices et auteurs, artistes, éditeurs, revues et festivals.',
     },
     community: {
       heading: 'Voix de la communauté',
@@ -213,7 +213,7 @@ const fr: FeedChrome = {
     wikidata: 'Wikidata',
     wikipedia: 'Wikipédia',
     'youtube-10k': 'YouTube 10k+',
-    'followers-2500': '2 500+ abonnés',
+    'followers-2500': '2\u202f500+ abonnés',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -231,12 +231,12 @@ const fr: FeedChrome = {
     'N’importe quel serveur Mastodon peut suivre tout le monde, tu peux donc rester où tu es. Si tu cherches un serveur dédié à ce sujet, ceux-ci sont un bon point de départ.',
   chooseHeading: 'Comment nous choisissons',
   choose: [
-    'Une personne apparaît ici si elle a demandé à son serveur de la rendre découvrable, ou si c’est une figure publique avec des preuves publiques : une fiche Wikipédia ou Wikidata, une chaîne YouTube de 10 000 abonnés, ou 2 500 abonnés sur Mastodon.',
-    'Un compte qui semble vouloir rester discret est écarté : peu d’abonnés, listes d’abonnés masquées, pas de photo de profil, avec une demande de non-indexation. Quiconque désactive la découvrabilité n’est jamais listé.',
-    'Un modèle de langage vérifie que chaque personne parle vraiment du sujet, en citant ses propres messages. Chaque compte est revérifié tous les mois : les comptes silencieux disparaissent et reviennent dès qu’ils publient à nouveau.',
+    'Une personne apparaît ici si elle a demandé à son serveur de la rendre découvrable, ou si c’est une figure publique avec des preuves publiques\u00a0: une fiche Wikipédia ou Wikidata, une chaîne YouTube de 10\u202f000 abonnés, ou 2\u202f500 abonnés sur Mastodon.',
+    'Un compte qui semble vouloir rester discret est écarté\u00a0: peu d’abonnés, listes d’abonnés masquées, pas de photo de profil, avec une demande de non-indexation. Quiconque désactive la découvrabilité n’est jamais listé.',
+    'Un modèle de langage vérifie que chaque personne parle vraiment du sujet, en citant ses propres messages. Chaque compte est revérifié tous les mois\u00a0: les comptes silencieux disparaissent et reviennent dès qu’ils publient à nouveau.',
   ],
-  helpHeading: 'Besoin d’aide ?',
-  help: 'Des questions, ou tu figures ici et tu préfères ne pas y être ? Écris-nous sur Mastodon et tu seras retiré pour de bon.',
+  helpHeading: 'Besoin d’aide\u202f?',
+  help: 'Des questions, ou tu figures ici et tu préfères ne pas y être\u202f? Écris-nous sur Mastodon et tu seras retiré pour de bon.',
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Questions',
   readTag: (tag) => `Lire #${tag} dans Mawkingbird`,
