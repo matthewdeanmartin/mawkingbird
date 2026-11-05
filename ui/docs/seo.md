@@ -150,10 +150,14 @@ people are chosen.
   checkbox, ticked by default (`FeedSelection`, in memory), a Follow button,
   and "Follow selected" for each; people are followed through `ImportFollows`
   by handle, so each resolves on the reader's server. Preview
-  (`<page>/preview`, client-only, not indexed) is the anonymous feed engine
-  reading the ticked hashtags and people from public timelines
-  (`AnonymousMastodonProvider.createFollowFeed` with tags), never the reader's
-  Home, and stores nothing. People link to Mawkingbird's own profile view
+  (`<page>/preview`, client-only, not indexed) is a random sample of the feed
+  the page builds, read publicly the way anonymous Home reads (`feed-sample.ts`):
+  3 ticked hashtags at 5 posts from the anonymous reading server and 5 ticked
+  people at 3 posts from their own servers, one request each by the
+  home-server id the page carries. Sources that come back empty are topped off
+  from the rest of the selection; 16 requests is the ceiling. Shuffle draws
+  another sample; a progress bar shows requests made of those planned. Never
+  the reader's Home, and nothing is stored. People link to Mawkingbird's own profile view
   (`/accounts/@user@host`).
 - **Prerendered**: everything except the live "N posts this week" line under
   each hashtag (`TagActivity`), which is `@defer`red and read in the browser

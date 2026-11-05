@@ -22,8 +22,10 @@ export interface FeedControls {
   followProgress: (done: number, total: number) => string;
   previewIntro: string;
   previewEmpty: string;
-  loadMore: string;
-  loading: string;
+  shuffle: string;
+  sampleNote: (tags: number, people: number) => string;
+  sampling: (done: number, planned: number) => string;
+  sampleEmpty: string;
   backToBuilder: string;
 }
 
@@ -45,8 +47,10 @@ const en: FeedControls = {
   previewIntro:
     'This is the feed this page builds, read from public posts: the hashtags and people you ticked, newest first. Nothing is followed and your Home is untouched.',
   previewEmpty: 'Nothing to show yet. Tick some hashtags or people in the builder.',
-  loadMore: 'Load more',
-  loading: 'Loading…',
+  shuffle: 'Shuffle',
+  sampleNote: (t, p) => `A random sample: ${t} hashtags and ${p} people at a time.`,
+  sampling: (done, planned) => `Reading ${done} of ${planned} sources…`,
+  sampleEmpty: 'No recent posts in this sample. Shuffle to try others.',
   backToBuilder: 'Back to the builder',
 };
 
@@ -68,8 +72,10 @@ const de: FeedControls = {
   previewIntro:
     'So sieht der Feed aus, den diese Seite zusammenstellt, aus öffentlichen Beiträgen: die ausgewählten Hashtags und Leute, das Neueste zuerst. Niemandem wird gefolgt, deine Startseite bleibt unverändert.',
   previewEmpty: 'Noch nichts zu zeigen. Wähle in der Auswahl Hashtags oder Leute aus.',
-  loadMore: 'Mehr laden',
-  loading: 'Lädt …',
+  shuffle: 'Neu mischen',
+  sampleNote: (t, p) => `Eine Zufallsauswahl: jeweils ${t} Hashtags und ${p} Leute.`,
+  sampling: (done, planned) => `${done} von ${planned} Quellen gelesen …`,
+  sampleEmpty: 'In dieser Auswahl gibt es keine neuen Beiträge. Misch neu, um andere zu probieren.',
   backToBuilder: 'Zurück zur Auswahl',
 };
 
@@ -89,11 +95,14 @@ const fr: FeedControls = {
   followFailed: 'Échec du suivi',
   followProgress: (done, total) => `${done} sur ${total} suivis`,
   previewIntro:
-    'Voici le fil que compose cette page, à partir de messages publics : les hashtags et les personnes cochés, du plus récent au plus ancien. Personne n’est suivi et ton fil d’accueil ne change pas.',
+    'Voici le fil que compose cette page, à partir de messages publics\u00a0: les hashtags et les personnes cochés, du plus récent au plus ancien. Personne n’est suivi et ton fil d’accueil ne change pas.',
   previewEmpty:
     'Rien à afficher pour l’instant. Coche des hashtags ou des personnes dans la sélection.',
-  loadMore: 'Charger plus',
-  loading: 'Chargement…',
+  shuffle: 'Mélanger',
+  sampleNote: (t, p) =>
+    `Un échantillon au hasard\u00a0: ${t} hashtags et ${p} personnes à la fois.`,
+  sampling: (done, planned) => `${done} sources lues sur ${planned}…`,
+  sampleEmpty: 'Aucun message récent dans cet échantillon. Mélange pour en essayer d’autres.',
   backToBuilder: 'Retour à la sélection',
 };
 
@@ -115,8 +124,10 @@ const es: FeedControls = {
   previewIntro:
     'Este es el feed que arma esta página con publicaciones públicas: las etiquetas y personas marcadas, lo más nuevo primero. No sigues a nadie y tu inicio no cambia.',
   previewEmpty: 'Todavía no hay nada. Marca etiquetas o personas en la selección.',
-  loadMore: 'Cargar más',
-  loading: 'Cargando…',
+  shuffle: 'Mezclar',
+  sampleNote: (t, p) => `Una muestra al azar: ${t} etiquetas y ${p} personas cada vez.`,
+  sampling: (done, planned) => `Leyendo ${done} de ${planned} fuentes…`,
+  sampleEmpty: 'No hay publicaciones recientes en esta muestra. Mezcla para probar otras.',
   backToBuilder: 'Volver a la selección',
 };
 
@@ -138,8 +149,10 @@ const it: FeedControls = {
   previewIntro:
     'Questo è il feed che questa pagina compone dai post pubblici: gli hashtag e le persone selezionati, i più recenti in alto. Non segui nessuno e la tua home non cambia.',
   previewEmpty: 'Ancora niente da mostrare. Seleziona hashtag o persone nella pagina Selezione.',
-  loadMore: 'Carica altri',
-  loading: 'Caricamento…',
+  shuffle: 'Mescola',
+  sampleNote: (t, p) => `Un campione a caso: ${t} hashtag e ${p} persone alla volta.`,
+  sampling: (done, planned) => `Lette ${done} fonti su ${planned}…`,
+  sampleEmpty: 'Nessun post recente in questo campione. Mescola per provarne altri.',
   backToBuilder: 'Torna alla selezione',
 };
 
@@ -161,8 +174,10 @@ const ja: FeedControls = {
   previewIntro:
     'このページで作られるフィードを、公開投稿から表示しています。選んだハッシュタグと人の投稿が新しい順に並びます。誰もフォローせず、ホームも変わりません。',
   previewEmpty: 'まだ表示するものがありません。「選ぶ」でハッシュタグや人を選んでください。',
-  loadMore: 'さらに読み込む',
-  loading: '読み込み中…',
+  shuffle: 'シャッフル',
+  sampleNote: (t, p) => `ランダムに選んだハッシュタグ ${t} 個と ${p} 人を表示しています。`,
+  sampling: (done, planned) => `${planned} 件中 ${done} 件を読み込み中…`,
+  sampleEmpty: 'このサンプルには最近の投稿がありません。シャッフルして別のものを試してください。',
   backToBuilder: '選択に戻る',
 };
 

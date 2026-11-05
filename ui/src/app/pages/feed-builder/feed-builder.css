@@ -68,6 +68,24 @@
   gap: 8px 16px;
   margin-top: 8px;
 }
+.sample-progress {
+  margin-block: 8px 16px;
+}
+/* The same bar as the friend finders' (friend-finder.css): requests made of the
+   requests this sample will make. */
+.progress-track {
+  height: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--border);
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--accent);
+  transition: width 0.2s;
+}
 .preview-feed {
   display: grid;
   gap: 0;

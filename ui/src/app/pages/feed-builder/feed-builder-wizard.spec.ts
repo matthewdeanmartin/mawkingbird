@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, input, signal } from '@angular/core';
 import { TestBed, DeferBlockBehavior } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -9,7 +11,6 @@ import { HomeTopics } from '../../home-topics';
 import { ImportFollows } from '../../import-follows';
 import { loginDestination } from '../../login-destination';
 import { Status } from '../../models';
-import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-mastodon-provider';
 import { focusedAppFor } from '../../shell/mode-nav';
 import { StatusCard } from '../../status-card/status-card';
 import { FeedBuilderPage } from './feed-builder-page';
@@ -166,60 +167,99 @@ describe('Feed Builder as a mini-app', () => {
 describe('Feed Builder preview', () => {
   async function preview(inShell: boolean) {
     const page = await loadFeedPage(ENTRY);
-    const fetchPage = vi.fn(() =>
-      of({
-        statuses: [{ id: 'p1' }, { id: 'p2' }] as Status[],
-        warnings: [],
-        hasMore: false,
-        outcomes: [],
-      }),
-    );
-    const provider = { createFollowFeed: vi.fn(() => ({ fetchPage })) };
     TestBed.configureTestingModule({
       imports: [FeedPreview],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         route({ page, lang: ENTRY.lang, inShell }, `${ENTRY.path}/preview`),
-        { provide: AnonymousMastodonProvider, useValue: provider },
       ],
     });
     TestBed.overrideComponent(FeedPreview, {
       remove: { imports: [StatusCard] },
       add: { imports: [StatusCardStub] },
     });
-    return { page, provider, fetchPage };
+    await TestBed.compileComponents();
+    return { page, http: TestBed.inject(HttpTestingController) };
   }
 
-  it('reads the ticked tags and people anonymously, never Home', async () => {
-    const { page, provider } = await preview(true);
+  const answer = (prefix: string, n: number) =>
+    Array.from({ length: n }, (_, i) => ({
+      id: `${prefix}${i}`,
+      uri: `https://x/${prefix}${i}`,
+      created_at: new Date(Date.UTC(2026, 10, 4) - i * 60_000).toISOString(),
+      account: { id: '1', username: 'a', acct: 'a' },
+      reblog: null,
+      in_reply_to_id: null,
+    }));
+
+  /** Answer every outstanding request, and say how many there were. */
+  async function flushRound(http: HttpTestingController, posts = 5): Promise<string[]> {
+    const urls: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      await new Promise((resolve) => setTimeout(resolve));
+      const pending = http.match(() => true);
+      if (!pending.length) break;
+      for (const request of pending) {
+        urls.push(request.request.urlWithParams);
+        request.flush(
+          answer(`r${urls.length}-`, Number(request.request.params.get('limit') ?? posts)),
+        );
+      }
+    }
+    return urls;
+  }
+
+  it('reads a small random sample of the ticked tags and people, never Home', async () => {
+    const { page, http } = await preview(true);
     const selection = TestBed.inject(FeedSelection);
-    selection.setAllTags('science-fiction.it', [], true);
-    selection.setAllPeople('science-fiction.it', [], true);
     selection.setTag('science-fiction.it', 'StarWars', false);
     selection.setPerson('science-fiction.it', page.data.people[0].acct, false);
-    await TestBed.compileComponents();
     const fixture = TestBed.createComponent(FeedPreview);
     fixture.detectChanges();
+    const urls = await flushRound(http);
     await fixture.whenStable();
     fixture.detectChanges();
-    const calls = provider.createFollowFeed.mock.calls as unknown as [
-      { handle: string; readRef: { accountId: string } }[],
-      unknown,
-      string[],
-    ][];
-    const [follows, , tags] = calls[0];
-    expect(tags).not.toContain('StarWars');
-    expect(tags).toContain('Fantascienza');
-    expect(follows.length).toBe(page.data.people.length - 1);
-    // Read through each person's home-server id; nothing is followed.
-    expect(follows[0].readRef.accountId).toMatch(/^\d+$/);
+    const tagCalls = urls.filter((url) => url.includes('/timelines/tag/'));
+    const personCalls = urls.filter((url) => url.includes('/accounts/'));
+    expect(tagCalls.length).toBe(3);
+    expect(personCalls.length).toBe(5);
+    expect(tagCalls.every((url) => url.includes('limit=5'))).toBe(true);
+    expect(personCalls.every((url) => url.includes('limit=3'))).toBe(true);
+    expect(tagCalls.some((url) => url.includes('/tag/StarWars'))).toBe(false);
+    const firstPerson = page.data.people[0];
+    expect(personCalls.some((url) => url.includes(`/accounts/${firstPerson.id}/`))).toBe(false);
+    // Each person is read from their own server by the id the page carries.
+    expect(
+      personCalls.every((url) => /^https:\/\/[^/]+\/api\/v1\/accounts\/\d+\/statuses/.test(url)),
+    ).toBe(true);
+    expect(urls.some((url) => url.includes('/timelines/home'))).toBe(false);
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelectorAll('article').length).toBe(2);
-    expect(el.querySelector('header')).toBeNull();
+    expect(el.querySelectorAll('article').length).toBe(3 * 5 + 5 * 3);
+    http.verify();
   });
 
-  it('says what to do when nothing is ticked', async () => {
-    const { provider, page } = await preview(false);
+  it('draws a new sample on Shuffle, with a progress bar while it reads', async () => {
+    const { http } = await preview(false);
+    const fixture = TestBed.createComponent(FeedPreview);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('[role="progressbar"]')).not.toBeNull();
+    await flushRound(http);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(el.querySelector('[role="progressbar"]')).toBeNull();
+    (el.querySelector('.bulk-actions button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(el.querySelector('[role="progressbar"]')).not.toBeNull();
+    const second = await flushRound(http);
+    expect(second.length).toBe(8);
+    http.verify();
+  });
+
+  it('says what to do when nothing is ticked, and asks no server', async () => {
+    const { page, http } = await preview(false);
     const selection = TestBed.inject(FeedSelection);
     selection.setAllTags(
       'science-fiction.it',
@@ -231,11 +271,10 @@ describe('Feed Builder preview', () => {
       page.data.people.map((p) => p.acct),
       false,
     );
-    await TestBed.compileComponents();
     const fixture = TestBed.createComponent(FeedPreview);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(provider.createFollowFeed).not.toHaveBeenCalled();
+    http.expectNone(() => true);
     expect(el.textContent).toContain('Ancora niente da mostrare');
     expect(el.querySelector('header a[aria-current="page"]')?.textContent).toContain('Anteprima');
   });
