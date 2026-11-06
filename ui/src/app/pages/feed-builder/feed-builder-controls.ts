@@ -46,6 +46,9 @@ export interface FeedControls {
   subscribed: string;
   subscribeAll: (count: number) => string;
   watch: string;
+  followGroup: (count: number) => string;
+  followOnMastodon: (count: number) => string;
+  alreadyFollowing: (count: number) => string;
   noAccount: string;
   pickHandle: string;
   makeList: (title: string) => string;
@@ -98,6 +101,9 @@ const en: FeedControls = {
   subscribed: 'Subscribed',
   subscribeAll: (n) => `Subscribe to all ${n} YouTube channels`,
   watch: 'Watch them in Mawkingbird',
+  followGroup: (n) => `Follow ${n}`,
+  followOnMastodon: (n) => `Follow ${n} on Mastodon`,
+  alreadyFollowing: (n) => `${n} already followed`,
   noAccount:
     'No account yet? Any server works, and you can move later. mastodon.social is a good first choice, or join one where this community gathers:',
   pickHandle: 'Find a free username first',
@@ -153,6 +159,9 @@ const de: FeedControls = {
   subscribed: 'Abonniert',
   subscribeAll: (n) => `Alle ${n} YouTube-Kanäle abonnieren`,
   watch: 'In Mawkingbird ansehen',
+  followGroup: (n) => `${n} folgen`,
+  followOnMastodon: (n) => `${n} auf Mastodon folgen`,
+  alreadyFollowing: (n) => `${n} folgst du schon`,
   noAccount:
     'Noch kein Konto? Jeder Server geht, und du kannst später umziehen. mastodon.social ist ein guter Anfang, oder du gehst dorthin, wo sich diese Community trifft:',
   pickHandle: 'Erst einen freien Benutzernamen finden',
@@ -209,6 +218,9 @@ const fr: FeedControls = {
   subscribed: 'Abonné',
   subscribeAll: (n) => `S’abonner aux ${n} chaînes YouTube`,
   watch: 'Les regarder dans Mawkingbird',
+  followGroup: (n) => `Suivre les ${n}`,
+  followOnMastodon: (n) => `Suivre les ${n} sur Mastodon`,
+  alreadyFollowing: (n) => `${n} déjà suivis`,
   noAccount:
     'Pas encore de compte\u202f? N’importe quel serveur convient, et tu pourras déménager plus tard. mastodon.social est un bon premier choix, ou rejoins un serveur où se retrouve cette communauté\u00a0:',
   pickHandle: 'Trouver d’abord un nom d’utilisateur libre',
@@ -263,6 +275,9 @@ const es: FeedControls = {
   subscribed: 'Suscrito',
   subscribeAll: (n) => `Suscribirse a los ${n} canales de YouTube`,
   watch: 'Verlos en Mawkingbird',
+  followGroup: (n) => `Seguir a ${n}`,
+  followOnMastodon: (n) => `Seguir a ${n} en Mastodon`,
+  alreadyFollowing: (n) => `${n} ya seguidas`,
   noAccount:
     '¿Aún sin cuenta? Cualquier servidor sirve, y puedes mudarte después. mastodon.social es una buena primera opción, o únete a uno donde se reúne esta comunidad:',
   pickHandle: 'Busca primero un nombre de usuario libre',
@@ -316,6 +331,9 @@ const it: FeedControls = {
   subscribed: 'Iscritto',
   subscribeAll: (n) => `Iscriviti a tutti i ${n} canali YouTube`,
   watch: 'Guardali in Mawkingbird',
+  followGroup: (n) => `Segui ${n}`,
+  followOnMastodon: (n) => `Segui ${n} su Mastodon`,
+  alreadyFollowing: (n) => `${n} già seguiti`,
   noAccount:
     'Non hai ancora un account? Va bene qualsiasi server, e puoi traslocare dopo. mastodon.social è una buona prima scelta, oppure iscriviti a uno dove si ritrova questa comunità:',
   pickHandle: 'Trova prima un nome utente libero',
@@ -370,6 +388,9 @@ const ja: FeedControls = {
   subscribed: '登録済み',
   subscribeAll: (n) => `YouTube チャンネル ${n} 件をすべて登録`,
   watch: 'Mawkingbird で見る',
+  followGroup: (n) => `${n} 人をフォロー`,
+  followOnMastodon: (n) => `マストドンで ${n} 人をフォロー`,
+  alreadyFollowing: (n) => `${n} 個はフォロー済み`,
   noAccount:
     'アカウントがまだなくても、どのサーバーで作っても大丈夫です。あとから引っ越せます。最初は mastodon.social がおすすめです。このコミュニティが集まるサーバーもあります：',
   pickHandle: '先に空いているユーザー名を探す',

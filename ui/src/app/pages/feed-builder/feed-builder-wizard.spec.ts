@@ -130,6 +130,7 @@ describe('Feed Builder as a mini-app', () => {
     expect(el.textContent).toContain('Seguito');
     const followTags = buttonNamed(el, /hashtag selezionati/) as HTMLButtonElement;
     expect(followTags.textContent).toContain(String(tagBoxes.length - 1));
+    expect(followTags.parentElement?.textContent).toContain('1 già seguiti');
 
     TestBed.inject(FeedSelection).setTag('science-fiction.it', 'StarWars', false);
     fixture.detectChanges();
@@ -169,6 +170,30 @@ describe('Feed Builder as a mini-app', () => {
     await fixture.whenStable();
     expect(importer.load).toHaveBeenCalledWith(rest.map((p) => p.acct));
     expect(importer.start).toHaveBeenCalled();
+  });
+
+  it('follows one group from the summary table, or the ones also on YouTube', async () => {
+    const { fixture, el, importer, page } = await builder(true);
+    const community = page.data.people.filter((p) => p.shelf === 'community');
+    const [skip, ...keep] = community;
+    TestBed.inject(FeedSelection).setPerson('science-fiction.it', skip.acct, false);
+    fixture.detectChanges();
+    const shelfRow = [...el.querySelectorAll('.people-groups tbody tr')].find(
+      (r) => r.querySelector('th')?.textContent?.trim() === page.chrome.shelves.community.heading,
+    ) as Element;
+    expect(shelfRow.querySelector('.count')?.textContent?.trim()).toBe(String(community.length));
+    expect(shelfRow.querySelector('button')?.textContent).toContain(`Segui ${keep.length}`);
+    (shelfRow.querySelector('button') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(importer.load).toHaveBeenLastCalledWith(keep.map((p) => p.acct));
+
+    const youtube = page.data.people.filter((p) => p.youtube && p.acct !== skip.acct);
+    const also = el.querySelector('#also-youtube-heading')?.parentElement as HTMLElement;
+    (buttonNamed(also, /su Mastodon/) as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(new Set(importer.load.mock.calls.at(-1)?.[0])).toEqual(
+      new Set(youtube.map((p) => p.acct)),
+    );
   });
 
   it('offers a list of the people it followed once the batch is done, hidden from Home on request', async () => {

@@ -1544,3 +1544,27 @@ contains 597 candidate files across 1,669 sources.
 A second topic, `copy/space-and-astronomy.ts` (page copy only) and its data
 files; no template or control changed. The inventory contains 597 candidate
 files across 1,670 sources.
+
+## Topic pages: people summary table and "Also on YouTube", 2026-11-05
+
+`feed-builder-page.html` opens its people with a summary table (a native
+`<table>`, one row per shelf and an Everyone total), each row with a small
+MbButton that follows that shelf's ticked people; the old "Follow selected"
+bar keeps only its select all/clear link buttons. The YouTube controls move
+out of the YouTube shelf into an "Also on YouTube" section after the shelves:
+an outline MbButton following the ticked creators on Mastodon, the existing
+Subscribe to all and per-channel Subscribe toggles, and MbContentLinks to each
+profile and channel. The hashtag bar gains a muted "already followed" count.
+`feed-flooding.html` names each flooder with an MbContentLink to their profile
+(new tab) and now loads follow.css for its people list. No candidate file was
+added or removed, no control is restyled and no shared widget changed. The
+inventory contains 597 candidate files across 1,670 sources.
+
+## Topic pages: Plant Based Living, 2026-11-05
+
+Added English and German topic data, lazy loaders and `copy/plant-based-living.ts`.
+No template, shared widget or control changed for this integration. Compared the
+regenerated inventory with the working-tree inventory before this change: all
+597 candidate entries are identical, no candidates were added or removed, and
+source count increased from 1,670 to 1,671. The reconciliation file needs no
+entry changes.

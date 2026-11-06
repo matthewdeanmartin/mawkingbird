@@ -121,6 +121,18 @@ export class FeedBuilderPage implements OnInit {
   );
   protected readonly youtubeChannels = [...this.channels.values()];
 
+  /**
+   * The people with a YouTube channel, in shelf order. They overlap the
+   * shelves (every YouTube creator is also counted in a shelf), so the page
+   * lists them once more at the bottom, under "Also on YouTube", rather than
+   * as a fourth group.
+   */
+  protected readonly youtubePeople = this.shelves.flatMap((group) =>
+    group.people.filter((person) => person.youtube),
+  );
+  private readonly youtubeAccts = this.youtubePeople.map((person) => person.acct);
+  protected readonly peopleCount = this.allPeople.length;
+
   /** Follow state per hashtag (lower case), from the server and from this page's clicks. */
   protected readonly tagStates = signal<Record<string, TagState>>({});
   protected readonly selectedTags = computed(() =>
@@ -131,6 +143,26 @@ export class FeedBuilderPage implements OnInit {
   );
   protected readonly tagsToFollow = computed(() =>
     this.selectedTags().filter((tag) => this.tagState(tag) !== 'following'),
+  );
+  /** Ticked tags left out of the Follow count because they are followed already. */
+  protected readonly tagsAlreadyFollowed = computed(
+    () => this.selectedTags().length - this.tagsToFollow().length,
+  );
+  /** Ticked people per shelf, for the summary table's per-group Follow buttons. */
+  protected readonly selectedByShelf = computed(
+    () =>
+      new Map(
+        this.shelves.map((group) => [
+          group.shelf,
+          this.selection.selectedPeople(
+            this.key,
+            group.people.map((person) => person.acct),
+          ),
+        ]),
+      ),
+  );
+  protected readonly selectedYoutube = computed(() =>
+    this.selection.selectedPeople(this.key, this.youtubeAccts),
   );
   protected readonly followingTags = signal(false);
 
@@ -254,17 +286,17 @@ export class FeedBuilderPage implements OnInit {
   }
 
   /**
-   * Follow every ticked person, through the same importer the in-app starter
+   * Follow every ticked person (or the ticked ones in one group), through the same importer the in-app starter
    * kits use. By handle, not by the exported id: the id is the person's home
    * server's, so each handle is resolved on the reader's own server first.
    * Rate limits are respected, and a large batch asks for confirmation.
    */
-  async followSelectedPeople(): Promise<void> {
+  async followSelectedPeople(accts: readonly string[] = this.selectedPeople()): Promise<void> {
     const importer = this.actions()?.importer;
-    if (!importer || importer.running()) return;
+    if (!importer || importer.running() || !accts.length) return;
     importer.reset();
     this.listResult.set(null);
-    importer.load(this.selectedPeople());
+    importer.load([...accts]);
     await importer.start();
   }
 

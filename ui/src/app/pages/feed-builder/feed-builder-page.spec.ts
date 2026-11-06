@@ -92,11 +92,54 @@ describe('Feed Builder topic pages', () => {
     expect(el.querySelectorAll('.people li').length).toBeGreaterThanOrEqual(5);
   });
 
+  it('renders the approved Plant Based Living selection with its positive outreach scope', async () => {
+    const el = await render(at('plant-based-living-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('Plant Based Living');
+    expect(el.textContent).toContain('Whether you are vegan, vegetarian or simply curious');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#VeganFood');
+    expect(el.querySelector('a[href="/tags/Vegan"]')).toBeNull();
+    expect(el.querySelector('a[href="/tags/Veganism"]')).toBeNull();
+    expect(el.querySelector('a[href="https://veganism.social/about"]')).not.toBeNull();
+    expect(el.querySelectorAll('.people li').length).toBeGreaterThanOrEqual(8);
+  });
+
+  it('renders the German plant-based edition with its local and future tags', async () => {
+    const el = await render(at('de/pflanzlich-leben-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Pflanzlich leben auf Mastodon');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#Vegetarisch');
+    expect(el.querySelector('#future-heading')?.parentElement?.textContent).toContain(
+      '#Pflanzenbasiert',
+    );
+    expect(
+      FEED_BUILDER_PAGES.filter((p) => p.topic === 'plant-based-living').map((p) => p.lang),
+    ).toEqual(['en', 'de']);
+  });
+
   it('keeps tags seeded for other languages off the English space page', async () => {
     const el = await render(at('space-and-astronomy-on-mastodon'));
     const tags = el.querySelector('.tag-list')?.textContent ?? '';
     expect(tags).toContain('#Astronomy');
     expect(tags).not.toContain('#Spazio');
+  });
+
+  it('sums the shelves in a table and lists the YouTube creators once more at the end', async () => {
+    const el = await render(at('science-fiction-on-mastodon'));
+    const counts = [...el.querySelectorAll('.people-groups tbody .count')].map((td) =>
+      Number(td.textContent),
+    );
+    const total = Number(el.querySelector('.people-groups tfoot .count')?.textContent);
+    expect(counts.length).toBeGreaterThan(1);
+    expect(counts.reduce((a, b) => a + b, 0)).toBe(total);
+    expect(el.querySelectorAll('.people li').length).toBe(total);
+    const also = el.querySelector('#also-youtube-heading')?.parentElement as HTMLElement;
+    const listed = also.querySelectorAll('.youtube-people li').length;
+    expect(listed).toBeGreaterThan(0);
+    expect(also.textContent).toContain(`${listed} of the ${total} people above`);
+    // After every shelf, not among them.
+    const sections = [...el.querySelectorAll('section')];
+    const shelves = sections.filter((s) => s.querySelector('[id^="shelf-"]'));
+    expect(sections.indexOf(also)).toBeGreaterThan(sections.indexOf(shelves[shelves.length - 1]));
   });
 
   it('shows a YouTube channel link and presence badges', async () => {

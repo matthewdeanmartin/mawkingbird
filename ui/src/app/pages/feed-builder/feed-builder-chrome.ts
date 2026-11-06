@@ -37,6 +37,12 @@ export interface FeedChrome {
   helpLink: string;
   faqHeading: string;
   readTag: (tag: string) => string;
+  peopleHeading: string;
+  groupColumn: string;
+  countColumn: string;
+  everyone: string;
+  alsoYoutubeHeading: string;
+  alsoYoutubeIntro: (count: number, total: number) => string;
   otherLanguages: string;
   updated: (date: string) => string;
 }
@@ -104,6 +110,13 @@ const en: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Questions',
   readTag: (tag) => `Read #${tag} in Mawkingbird`,
+  peopleHeading: 'People to follow',
+  groupColumn: 'Group',
+  countColumn: 'People',
+  everyone: 'Everyone',
+  alsoYoutubeHeading: 'Also on YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} of the ${total} people above also make videos on YouTube. Follow them on Mastodon, subscribe to their channels in Mawkingbird to see new videos without a YouTube account, or both.`,
   otherLanguages: 'This page in other languages',
   updated: (date) => `Updated ${date}`,
 };
@@ -172,6 +185,13 @@ const de: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Fragen',
   readTag: (tag) => `#${tag} in Mawkingbird lesen`,
+  peopleHeading: 'Leute zum Folgen',
+  groupColumn: 'Gruppe',
+  countColumn: 'Leute',
+  everyone: 'Alle',
+  alsoYoutubeHeading: 'Auch auf YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} der ${total} Leute oben machen auch Videos auf YouTube. Folge ihnen auf Mastodon, abonniere ihre Kanäle in Mawkingbird, um neue Videos ohne YouTube-Konto zu sehen, oder beides.`,
   otherLanguages: 'Diese Seite in anderen Sprachen',
   updated: (date) => `Stand: ${date}`,
 };
@@ -240,6 +260,13 @@ const fr: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Questions',
   readTag: (tag) => `Lire #${tag} dans Mawkingbird`,
+  peopleHeading: 'Des personnes à suivre',
+  groupColumn: 'Groupe',
+  countColumn: 'Personnes',
+  everyone: 'Tout le monde',
+  alsoYoutubeHeading: 'Aussi sur YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} des ${total} personnes ci-dessus font aussi des vidéos sur YouTube. Suis-les sur Mastodon, abonne-toi à leurs chaînes dans Mawkingbird pour voir les nouvelles vidéos sans compte YouTube, ou les deux.`,
   otherLanguages: 'Cette page dans d’autres langues',
   updated: (date) => `Mis à jour le ${date}`,
 };
@@ -308,6 +335,13 @@ const es: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Preguntas',
   readTag: (tag) => `Leer #${tag} en Mawkingbird`,
+  peopleHeading: 'Personas a seguir',
+  groupColumn: 'Grupo',
+  countColumn: 'Personas',
+  everyone: 'Todos',
+  alsoYoutubeHeading: 'También en YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} de las ${total} personas de arriba también hacen vídeos en YouTube. Síguelas en Mastodon, suscríbete a sus canales en Mawkingbird para ver los vídeos nuevos sin cuenta de YouTube, o ambas cosas.`,
   otherLanguages: 'Esta página en otros idiomas',
   updated: (date) => `Actualizado el ${date}`,
 };
@@ -375,6 +409,13 @@ const it: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'Domande',
   readTag: (tag) => `Leggi #${tag} in Mawkingbird`,
+  peopleHeading: 'Persone da seguire',
+  groupColumn: 'Gruppo',
+  countColumn: 'Persone',
+  everyone: 'Tutti',
+  alsoYoutubeHeading: 'Anche su YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} delle ${total} persone qui sopra fanno anche video su YouTube. Seguile su Mastodon, iscriviti ai loro canali in Mawkingbird per vedere i nuovi video senza un account YouTube, o entrambe le cose.`,
   otherLanguages: 'Questa pagina in altre lingue',
   updated: (date) => `Aggiornato il ${date}`,
 };
@@ -442,6 +483,13 @@ const ja: FeedChrome = {
   helpLink: '@mawkingbird@mastodon.social',
   faqHeading: 'よくある質問',
   readTag: (tag) => `#${tag} を Mawkingbird で読む`,
+  peopleHeading: 'フォローしたい人',
+  groupColumn: 'グループ',
+  countColumn: '人数',
+  everyone: '全員',
+  alsoYoutubeHeading: 'YouTube にもいる人',
+  alsoYoutubeIntro: (n, total) =>
+    `上の ${total} 人のうち ${n} 人は YouTube でも動画を投稿しています。マストドン（Mastodon）でフォローすることも、YouTube アカウントなしで新しい動画を見られるよう Mawkingbird でチャンネルを登録することも、両方することもできます。`,
   otherLanguages: 'ほかの言語のページ',
   updated: (date) => `${date} 更新`,
 };

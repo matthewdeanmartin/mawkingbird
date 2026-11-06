@@ -558,6 +558,66 @@ try {
     assert.deepEqual(errors, [], 'topic pages have no runtime errors');
     await context.close();
   }
+  // The approved plant-based editions retain their selection and SEO after hydration.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    for (const [lang, slug, heading, tag, count] of [
+      ['en', 'plant-based-living-on-mastodon', 'Plant Based Living', 'VeganFood', 13],
+      [
+        'de',
+        'de/pflanzlich-leben-auf-mastodon',
+        'Pflanzlich leben auf Mastodon',
+        'Vegetarisch',
+        11,
+      ],
+    ]) {
+      await page.goto(`${origin}/${slug}/`);
+      await page.getByRole('heading', { level: 1, name: heading, exact: true }).waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(await page.locator('html').getAttribute('lang'), lang);
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="en"]').getAttribute('href'),
+        'https://mawkingbird.com/plant-based-living-on-mastodon/',
+      );
+      assert.equal(
+        await page.locator('head link[hreflang="de"]').getAttribute('href'),
+        'https://mawkingbird.com/de/pflanzlich-leben-auf-mastodon/',
+      );
+      assert.equal(await page.locator('head link[hreflang="fr"]').count(), 0);
+      assert.equal(await page.locator('.people li').count(), count);
+      assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
+      assert.equal(await page.locator('a[href="/tags/Vegan"]').count(), 0);
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug}: no overflow at ${width}px`,
+        );
+      }
+      await page.screenshot({
+        path: path.join(
+          results,
+          `seo-plant-based-${lang}-${javaScriptEnabled ? 'client' : 'static'}.png`,
+        ),
+        fullPage: true,
+      });
+    }
+    assert.deepEqual(errors, [], 'plant-based pages have no runtime errors');
+    await context.close();
+  }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
     await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),

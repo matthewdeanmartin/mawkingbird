@@ -41,7 +41,13 @@
               <li>
                 <img [src]="flooder.account.avatar" width="48" height="48" alt="" loading="lazy" />
                 <div>
-                  <strong>{{ flooder.account.display_name || flooder.account.username }}</strong>
+                  <a
+                    mbContentLink
+                    [routerLink]="profile(flooder.account)"
+                    target="_blank"
+                    rel="noopener"
+                    >{{ flooder.account.display_name || flooder.account.username }}</a
+                  >
                   <span class="handle">&#64;{{ flooder.account.acct }}</span>
                   @for (e of flooder.evidence; track e.tag) {
                     <p>{{ controls.floodEvidence(pct(e.share), e.tag, e.count, e.total) }}</p>

@@ -13,5 +13,9 @@
     "fr": "fr/espace-et-astronomie-sur-mastodon",
     "es": "es/espacio-y-astronomia-en-mastodon",
     "it": "it/spazio-e-astronomia-su-mastodon"
+  },
+  "plant-based-living": {
+    "en": "plant-based-living-on-mastodon",
+    "de": "de/pflanzlich-leben-auf-mastodon"
   }
 }

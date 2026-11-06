@@ -58,8 +58,35 @@
   gap: 8px 12px;
   margin-block: 12px 16px;
 }
-.people-actions {
-  margin-block: 28px 0;
+/* People: one row per shelf, the total last; the lists follow below. */
+.people-groups {
+  border-collapse: collapse;
+  margin-block: 8px 4px;
+  max-width: 100%;
+}
+.people-groups th,
+.people-groups td {
+  padding: 8px 16px 8px 0;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: middle;
+}
+.people-groups thead th {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+.people-groups tbody th {
+  font-weight: 400;
+}
+.people-groups tfoot th,
+.people-groups tfoot td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+.people-groups .count {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
 }
 .list-actions {
   margin-block: 12px 0;

@@ -142,6 +142,9 @@ describe('Flooding tab', () => {
       b.textContent?.trim(),
     );
     expect(choices).toEqual(['Silenzia per 8 ore', 'Silenzia per sempre']);
+    const name = flooderRow.querySelector('a[target="_blank"]') as HTMLAnchorElement;
+    expect(decodeURIComponent(name.getAttribute('href') ?? '')).toContain('@spammer@x.social');
+    expect(name.getAttribute('rel')).toContain('noopener');
   });
 
   it('mutes for 8 hours, or for good, in Mawkingbird; Undo lifts it', async () => {

@@ -121,6 +121,11 @@ page adds the hashtags worth following, new local hashtags to help start
 community voices), the servers where the community gathers, questions, and how
 people are chosen.
 
+Plant Based Living has approved English (`/plant-based-living-on-mastodon/`)
+and German (`/de/pflanzlich-leben-auf-mastodon/`) editions. Its copy explains
+the positive-outreach selection and the limits of public hashtag feeds; only
+these two editions are registered.
+
 - **Data** comes from the private data repository's export
   (`mawkingbird_starters/catalog/feedbuilder/`). `make feedbuilder-update`
   imports it into `pages/feed-builder/data/<topic>.<lang>.json`; every field is

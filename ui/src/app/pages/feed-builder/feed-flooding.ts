@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LocalModeration } from '../../local-moderation';
+import { qualifiedHandle } from '../../account-handle';
+import { accountRoutePath } from '../../account-route';
 import { Account } from '../../models';
 import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { LanguageVersions } from '../focused-apps/language-versions';
@@ -34,7 +36,7 @@ export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
   selector: 'app-feed-flooding',
   imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FeedProgress],
   templateUrl: './feed-flooding.html',
-  styleUrls: ['../features/features.css', './feed-builder.css'],
+  styleUrls: ['../features/features.css', '../features/follow.css', './feed-builder.css'],
 })
 export class FeedFlooding implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -94,6 +96,14 @@ export class FeedFlooding implements OnInit {
         this.progress.set(null);
       }
     }
+  }
+
+  /**
+   * The flooder's profile in Mawkingbird, by handle only: the id came from the
+   * server the hashtag was read on and may mean someone else on the reader's.
+   */
+  protected profile(account: Account): (string | number)[] {
+    return accountRoutePath({ handle: qualifiedHandle(account) ?? account.acct });
   }
 
   protected pct(share: number): number {

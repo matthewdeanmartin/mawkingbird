@@ -19,6 +19,7 @@ const COPY_LOADERS: Record<
   FeedTopic,
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
+  'plant-based-living': () => import('./plant-based-living'),
   'science-fiction': () => import('./science-fiction'),
   'space-and-astronomy': () => import('./space-and-astronomy'),
 };
