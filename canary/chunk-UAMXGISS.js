@@ -1,0 +1,1 @@
+import"./chunk-ZW5NV4UO.js";var r={"plant-based-living":()=>import("./chunk-RGWOIOAH.js"),"science-fiction":()=>import("./chunk-622Q4ECQ.js"),"space-and-astronomy":()=>import("./chunk-FMWDIR26.js")};async function t(i,o){let e=(await r[i]()).COPY[o];if(!e)throw new Error(`No ${o} copy for Feed Builder topic ${i}`);return e}export{t as loadTopicCopy};
