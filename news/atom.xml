@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title>Mawkingbird News</title>
+  <subtitle>What changed in Mawkingbird, the Mastodon and Bluesky client, and why.</subtitle>
+  <link rel="alternate" type="text/html" href="https://mawkingbird.com/news/"/>
+  <link rel="self" type="application/atom+xml" href="https://mawkingbird.com/news/atom.xml"/>
+  <id>https://mawkingbird.com/news/</id>
+  <updated>2026-11-07T00:00:00.000Z</updated>
+  <author><name>Mawkingbird</name><uri>https://mawkingbird.com/</uri></author>
+  <generator uri="https://www.npmjs.com/package/fediblog">fediblog</generator>
+  <entry>
+    <title>Find your people: Mastodon communities by interest</title>
+    <link rel="alternate" type="text/html" href="https://mawkingbird.com/news/posts/communities-by-interest/"/>
+    <id>https://mawkingbird.com/news/posts/communities-by-interest/</id>
+    <published>2026-11-07T00:00:00.000Z</published>
+    <updated>2026-11-07T00:00:00.000Z</updated>
+    <summary>New pages gather the hashtags, people and servers for one interest at a time, in several languages. Read them all without an account.</summary>
+    <category term="Launches"/>
+    <category term="Communities"/>
+    <content type="html">&lt;p&gt;A new Mastodon account starts with an empty timeline. Finding the people who
+post about what you care about is the slow part, and it is where many people
+give up.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://mawkingbird.com/communities/&quot;&gt;Mastodon communities by interest&lt;/a&gt; is our
+answer. Each page covers one interest and gathers three things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hashtags&lt;/strong&gt; people actually use for that interest.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;People&lt;/strong&gt; worth following, from writers and YouTubers to active community
+members.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Servers&lt;/strong&gt; where the community meets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can read all of it, and preview the feed it would build, before you make an
+account.&lt;/p&gt;
+&lt;h2&gt;The first topics&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/science-fiction-on-mastodon/&quot;&gt;Science fiction &amp;amp; fantasy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/space-and-astronomy-on-mastodon/&quot;&gt;Space &amp;amp; astronomy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/math-on-mastodon/&quot;&gt;Math&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/gardening-and-houseplants-on-mastodon/&quot;&gt;Gardening &amp;amp; houseplants&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/plant-based-living-on-mastodon/&quot;&gt;Plant-based living&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mawkingbird.com/esp32-and-single-board-computers-on-mastodon/&quot;&gt;ESP32 &amp;amp; single-board computers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Not only in English&lt;/h2&gt;
+&lt;p&gt;Pages are written for readers in their own language: German, French, Spanish,
+Italian and Japanese so far, depending on the topic. Beside the busy English
+hashtags, they suggest local ones, so smaller language communities can grow
+their own.&lt;/p&gt;
+&lt;h2&gt;Then build your feed&lt;/h2&gt;
+&lt;p&gt;When you are ready, pick the tags and people you want, sign in with any Mastodon
+account, and Mawkingbird follows them for you. If a hashtag turns out to be
+flooded by a few very busy accounts, the page helps you spot them and mute them
+before they take over your timeline.&lt;/p&gt;
+&lt;p&gt;Tell us which interest should come next by replying to this post on Mastodon.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Release notes: radio, forums and a calmer menu</title>
+    <link rel="alternate" type="text/html" href="https://mawkingbird.com/news/posts/release-notes-october/"/>
+    <id>https://mawkingbird.com/news/posts/release-notes-october/</id>
+    <published>2026-11-06T00:00:00.000Z</published>
+    <updated>2026-11-06T00:00:00.000Z</updated>
+    <summary>What changed in Mawkingbird from mid-October to early November, including radio, forums, a slide show, better Bluesky support and tools in more languages.</summary>
+    <category term="Release notes"/>
+    <content type="html">&lt;p&gt;Mawkingbird is a Mastodon and Bluesky client that runs in your browser. Here is
+what changed between mid-October and early November.&lt;/p&gt;
+&lt;h2&gt;Listening and reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Radio.&lt;/strong&gt; Posts that share music and audio now play as a radio station, with
+a Listen page, embeds from common audio sites and preferences for what plays.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Studio&lt;/strong&gt; for preparing audio posts and finding your audio that is ready to share.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Forum.&lt;/strong&gt; A new mode that finds the people talking to each other in a feed
+and shows each conversation as a whole discussion.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Slide show&lt;/strong&gt; for posts with several images.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Read later&lt;/strong&gt; got better.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Finding things&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Similar hashtags&lt;/strong&gt; suggest tags next to the one you&amp;#39;re reading.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mastodon communities by interest&lt;/strong&gt;: see
+&lt;a href=&quot;https://mawkingbird.com/news/posts/communities-by-interest/&quot;&gt;the launch post&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Home timeline tuning has new options.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Getting around&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;App modes&lt;/strong&gt; and a reworked, slimmer main menu.&lt;/li&gt;
+&lt;li&gt;Layout fixes on profiles, on the home toolbar and in the account picker.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;retry button&lt;/strong&gt; when a page fails to load.&lt;/li&gt;
+&lt;li&gt;Images are no longer lost when you edit a post.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Bluesky&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Many fixes and improvements for Bluesky accounts across the app.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Free tools, in more languages&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;New single-purpose tools, such as downloading a post&amp;#39;s media and saving
+bookmarks.&lt;/li&gt;
+&lt;li&gt;Guides for people arriving from Twitter.&lt;/li&gt;
+&lt;li&gt;Every language the app is translated into now has its own landing pages.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Questions or bugs? Reply to this post on Mastodon, or see
+&lt;a href=&quot;https://mawkingbird.com/help/&quot;&gt;Help&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
+</feed>
