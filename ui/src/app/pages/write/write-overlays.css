@@ -88,6 +88,49 @@
   flex-wrap: wrap;
 }
 
+/* --- version history --- */
+
+.versions-dialog {
+  width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.versions-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.version-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.version-meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.dialog .version-preview {
+  grid-column: 1;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.version-row > :last-child {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
 /* --- publish wizard --- */
 
 .wizard {

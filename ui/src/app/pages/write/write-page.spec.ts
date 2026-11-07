@@ -14,7 +14,7 @@ import { ClientPrefs } from '../../client-prefs';
 import { Pseudonymity } from '../../pseudonymity';
 import { PrivateMedia } from '../../private-media';
 import { throwError } from 'rxjs';
-import { DraftMedia, Drafts } from '../../drafts';
+import { DraftMedia, DraftVersion, Drafts } from '../../drafts';
 import { Account, ScheduledStatus, Status } from '../../models';
 import { PostTarget } from '../../compose/compose';
 import { TranslateResult } from '../../compose/translate-dialog/translate-dialog';
@@ -121,6 +121,11 @@ interface PageInternals {
   visibility: Signal<string>;
   visibilityLockReason: Signal<string | null>;
   setVisibility(value: string): void;
+  autosavePaused: WritableSignal<boolean>;
+  wordTotal: Signal<number>;
+  versionList: WritableSignal<DraftVersion[]>;
+  openVersions(): void;
+  restoreVersion(version: DraftVersion): void;
 }
 
 function internals(fixture: ComponentFixture<WritePage>): PageInternals {
@@ -452,7 +457,7 @@ describe('WritePage', () => {
 
   // ------------------------------------------------------- unsaved-work guard
 
-  it('browser Back exits zen without losing the draft, then protects route departure', async () => {
+  it('browser Back exits zen without losing the draft, then protects route departure', () => {
     const fixture = setUp();
     const page = internals(fixture);
     page.newDraft();
@@ -461,10 +466,9 @@ describe('WritePage', () => {
     expect(fixture.componentInstance.canLeave()).toBe(false);
     expect(TestBed.inject(WritingZen).active()).toBe(false);
     expect(page.body()).toBe('keep this new writing');
-    const leave = fixture.componentInstance.canLeave();
-    expect(page.pendingSwitch()).not.toBeNull();
-    page.saveAndContinue();
-    await expect(leave).resolves.toBe(true);
+    // Leaving saves rather than asking: there is nothing the writer has to decide.
+    expect(fixture.componentInstance.canLeave()).toBe(true);
+    expect(page.pendingSwitch()).toBeNull();
     expect(TestBed.inject(Drafts).drafts()[0].segments).toEqual(['keep this new writing']);
   });
 
@@ -473,17 +477,22 @@ describe('WritePage', () => {
     const page = internals(fixture);
     page.newDraft();
     page.onBodyInput('only copy');
-    const leave = fixture.componentInstance.canLeave();
     const storage = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('full');
     });
-    page.saveAndContinue();
-    expect(page.pendingSwitch()).not.toBeNull();
-    expect(page.dirty()).toBe(true);
-    expect(page.body()).toBe('only copy');
-    storage.mockRestore();
-    page.cancelSwitch();
-    await expect(leave).resolves.toBe(false);
+    try {
+      const leave = fixture.componentInstance.canLeave();
+      expect(page.pendingSwitch()).not.toBeNull();
+      page.saveAndContinue();
+      expect(page.pendingSwitch()).not.toBeNull();
+      expect(page.dirty()).toBe(true);
+      expect(page.body()).toBe('only copy');
+      storage.mockRestore();
+      page.cancelSwitch();
+      await expect(leave).resolves.toBe(false);
+    } finally {
+      storage.mockRestore();
+    }
   });
 
   it('keeps saved text with transient media on route departure and warns on reload', async () => {
@@ -501,6 +510,24 @@ describe('WritePage', () => {
     await expect(leave).resolves.toBe(false);
   });
 
+  it('autosaves unsaved writing and switches without asking', () => {
+    saveLocal(['a saved draft']);
+    const fixture = setUp();
+    const page = internals(fixture);
+
+    page.newDraft();
+    page.onBodyInput('unsaved work');
+    page.open(page.sources.items().find((i) => i.preview === 'a saved draft')!);
+
+    expect(page.pendingSwitch()).toBeNull();
+    expect(page.body()).toBe('a saved draft');
+    expect(
+      TestBed.inject(Drafts)
+        .drafts()
+        .map((d) => d.segments[0]),
+    ).toContain('unsaved work');
+  });
+
   it('holds up a switch while there is unsaved writing', () => {
     saveLocal(['a saved draft']);
     const fixture = setUp();
@@ -508,6 +535,7 @@ describe('WritePage', () => {
 
     page.newDraft();
     page.onBodyInput('unsaved work');
+    page.autosavePaused.set(true);
     page.open(page.sources.items()[0]);
 
     // The switch has not happened: the editor still holds the unsaved body.
@@ -522,7 +550,9 @@ describe('WritePage', () => {
 
     page.newDraft();
     page.onBodyInput('unsaved work');
+    page.autosavePaused.set(true);
     page.open(page.sources.items().find((i) => i.preview === 'a saved draft')!);
+    expect(page.pendingSwitch()).not.toBeNull();
     page.saveAndContinue();
 
     expect(
@@ -558,6 +588,7 @@ describe('WritePage', () => {
 
     page.newDraft();
     page.onBodyInput('unsaved work');
+    page.autosavePaused.set(true);
     page.open(page.sources.items()[0]);
     page.discardAndContinue();
 
@@ -572,7 +603,9 @@ describe('WritePage', () => {
 
     page.newDraft();
     page.onBodyInput('unsaved work');
+    page.autosavePaused.set(true);
     page.open(page.sources.items()[0]);
+    expect(page.pendingSwitch()).not.toBeNull();
     page.cancelSwitch();
 
     expect(page.pendingSwitch()).toBeNull();
@@ -592,6 +625,99 @@ describe('WritePage', () => {
 
     expect(page.pendingSwitch()).toBeNull();
     expect(page.body()).toBe('a saved draft');
+  });
+
+  // ------------------------------------------------------ autosave & versions
+
+  it('autosaves quietly two seconds after typing stops', () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('first');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(1000);
+    page.onBodyInput('first words');
+    fixture.detectChanges();
+    vi.advanceTimersByTime(1500);
+    expect(TestBed.inject(Drafts).drafts()).toHaveLength(0);
+
+    vi.advanceTimersByTime(600);
+    const drafts = TestBed.inject(Drafts).drafts();
+    expect(drafts).toHaveLength(1);
+    expect(drafts[0].segments).toEqual(['first words']);
+    expect(page.dirty()).toBe(false);
+    expect(page.notice()).toBeNull();
+  });
+
+  it('pauses autosave instead of forking a copy when another tab changed the draft', () => {
+    const id = saveLocal(['mine']);
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.open(page.sources.items().find((i) => i.preview === 'mine')!);
+    page.onBodyInput('mine, edited here');
+    // Another tab edits the same draft.
+    const drafts = TestBed.inject(Drafts);
+    drafts.update(
+      id,
+      { ...drafts.get(id)!, segments: ['edited elsewhere'] },
+      drafts.get(id)!.updatedAt,
+    );
+    fixture.detectChanges();
+    vi.advanceTimersByTime(2100);
+
+    expect(page.autosavePaused()).toBe(true);
+    expect(drafts.drafts()).toHaveLength(1);
+    expect(drafts.get(id)!.segments).toEqual(['edited elsewhere']);
+    expect(page.body()).toBe('mine, edited here');
+  });
+
+  it('keeps versions and restores one without losing the current text', () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('version one');
+    page.save();
+    vi.advanceTimersByTime(60_000);
+    page.onBodyInput('version two');
+    page.save();
+    const id = page.editing()!.localId!;
+
+    page.openVersions();
+    expect(page.versionList().map((v) => v.snapshot.segments[0])).toEqual([
+      'version two',
+      'version one',
+    ]);
+    page.restoreVersion(page.versionList()[1]);
+
+    expect(page.body()).toBe('version one');
+    expect(TestBed.inject(Drafts).get(id)!.segments).toEqual(['version one']);
+    expect(
+      TestBed.inject(Drafts)
+        .versions(id)
+        .map((v) => v.snapshot.segments[0]),
+    ).toEqual(['version one', 'version two', 'version one']);
+  });
+
+  it('counts words without the thread markers', () => {
+    const page = internals(setUp());
+    page.newDraft();
+    page.onBodyInput('one two three\n\n---\n\nfour');
+    expect(page.wordTotal()).toBe(4);
+  });
+
+  it('saves on Ctrl+S and opens the publish step on Ctrl+Enter', () => {
+    const fixture = setUp();
+    const page = internals(fixture);
+    page.newDraft();
+    page.onBodyInput('shortcut text');
+    const save = new KeyboardEvent('keydown', { key: 's', ctrlKey: true, cancelable: true });
+    document.dispatchEvent(save);
+    expect(save.defaultPrevented).toBe(true);
+    expect(TestBed.inject(Drafts).drafts()[0].segments).toEqual(['shortcut text']);
+
+    const publish = vi.spyOn(page, 'publish');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }));
+    expect(publish).toHaveBeenCalled();
   });
 
   // --------------------------------------------------------------------- zen

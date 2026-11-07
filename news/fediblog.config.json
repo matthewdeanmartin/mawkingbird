@@ -43,5 +43,13 @@
       "mastodonClient"
     ]
   },
-  "mawkingbird": true
+  "mawkingbird": true,
+  "goatcounter": {
+    "endpoint": "https://mawkingbird.goatcounter.com/count",
+    "script": "../vendor/count.js",
+    "optOut": {
+      "storageKey": "mockingbird_client_prefs",
+      "field": "analytics"
+    }
+  }
 }

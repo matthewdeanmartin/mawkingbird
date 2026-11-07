@@ -43,7 +43,7 @@ Mawkingbird also publishes guides to [Mastodon communities by interest](https://
 - [Plant-based living](https://mawkingbird.com/plant-based-living-on-mastodon/)
 - [ESP32 and single-board computers on Mastodon](https://mawkingbird.com/esp32-and-single-board-computers-on-mastodon/)
 
-Each page has a **Preview** of what the hashtags look like right now. Signed in to Mastodon, you can follow the tags and people from the page.
+Each page has a **Preview** of what the hashtags look like right now. Signed in to Mastodon, you can follow the tags and people from the page. Hashtags and people you already follow are marked as followed and left out when you follow several at once. While Mawkingbird follows them, a window shows its progress. Keep the page open until it finishes, or choose **Stop**.
 
 ## Bluesky starter packs
 

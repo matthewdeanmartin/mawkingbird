@@ -56,6 +56,16 @@ export interface FeedControls {
   listDone: (added: number, title: string) => string;
   openList: string;
   listFailed: string;
+  /** People (not hashtags) already followed, beside Follow all. */
+  peopleAlreadyFollowing: (count: number) => string;
+  /** The "Follow all" progress dialog. */
+  bulkRunningTitle: string;
+  bulkDoneTitle: string;
+  bulkKeepOpen: string;
+  bulkLeaveBlocked: string;
+  bulkFailed: (count: number) => string;
+  stop: string;
+  close: string;
 }
 
 const en: FeedControls = {
@@ -112,6 +122,14 @@ const en: FeedControls = {
   listDone: (added, title) => `Added ${added} people to the list ${title}.`,
   openList: 'Open the list',
   listFailed: 'Could not make the list.',
+  peopleAlreadyFollowing: (n) => `${n} already followed`,
+  bulkRunningTitle: 'Following…',
+  bulkDoneTitle: 'Done',
+  bulkKeepOpen: 'Keep this page open until it finishes.',
+  bulkLeaveBlocked: 'Still following. Wait for it to finish, or press Stop.',
+  bulkFailed: (n) => `${n} could not be followed`,
+  stop: 'Stop',
+  close: 'Close',
 };
 
 const de: FeedControls = {
@@ -170,6 +188,14 @@ const de: FeedControls = {
   listDone: (added, title) => `${added} Leute zur Liste ${title} hinzugefügt.`,
   openList: 'Liste öffnen',
   listFailed: 'Die Liste konnte nicht angelegt werden.',
+  peopleAlreadyFollowing: (n) => `${n} folgst du schon`,
+  bulkRunningTitle: 'Folgen läuft…',
+  bulkDoneTitle: 'Fertig',
+  bulkKeepOpen: 'Lass diese Seite offen, bis es fertig ist.',
+  bulkLeaveBlocked: 'Es läuft noch. Warte, bis es fertig ist, oder drücke Stopp.',
+  bulkFailed: (n) => `Bei ${n} hat das Folgen nicht geklappt`,
+  stop: 'Stopp',
+  close: 'Schließen',
 };
 
 const fr: FeedControls = {
@@ -229,6 +255,14 @@ const fr: FeedControls = {
   listDone: (added, title) => `${added} personnes ajoutées à la liste ${title}.`,
   openList: 'Ouvrir la liste',
   listFailed: 'Impossible de créer la liste.',
+  peopleAlreadyFollowing: (n) => `${n} déjà suivis`,
+  bulkRunningTitle: 'Abonnement en cours…',
+  bulkDoneTitle: 'Terminé',
+  bulkKeepOpen: 'Gardez cette page ouverte jusqu’à la fin.',
+  bulkLeaveBlocked: 'C’est encore en cours. Attendez la fin, ou appuyez sur Arrêter.',
+  bulkFailed: (n) => `${n} n’ont pas pu être suivis`,
+  stop: 'Arrêter',
+  close: 'Fermer',
 };
 
 const es: FeedControls = {
@@ -286,6 +320,14 @@ const es: FeedControls = {
   listDone: (added, title) => `${added} personas añadidas a la lista ${title}.`,
   openList: 'Abrir la lista',
   listFailed: 'No se pudo crear la lista.',
+  peopleAlreadyFollowing: (n) => `${n} ya seguidos`,
+  bulkRunningTitle: 'Siguiendo…',
+  bulkDoneTitle: 'Listo',
+  bulkKeepOpen: 'Deja esta página abierta hasta que termine.',
+  bulkLeaveBlocked: 'Todavía está en marcha. Espera a que termine o pulsa Detener.',
+  bulkFailed: (n) => `No se pudo seguir a ${n}`,
+  stop: 'Detener',
+  close: 'Cerrar',
 };
 
 const it: FeedControls = {
@@ -342,6 +384,14 @@ const it: FeedControls = {
   listDone: (added, title) => `${added} persone aggiunte alla lista ${title}.`,
   openList: 'Apri la lista',
   listFailed: 'Impossibile creare la lista.',
+  peopleAlreadyFollowing: (n) => `${n} già seguiti`,
+  bulkRunningTitle: 'Follow in corso…',
+  bulkDoneTitle: 'Fatto',
+  bulkKeepOpen: 'Tieni aperta questa pagina finché non ha finito.',
+  bulkLeaveBlocked: 'È ancora in corso. Aspetta che finisca o premi Ferma.',
+  bulkFailed: (n) => `${n} non seguiti per un errore`,
+  stop: 'Ferma',
+  close: 'Chiudi',
 };
 
 const ja: FeedControls = {
@@ -399,6 +449,14 @@ const ja: FeedControls = {
   listDone: (added, title) => `${added} 人をリスト「${title}」に追加しました。`,
   openList: 'リストを開く',
   listFailed: 'リストを作成できませんでした。',
+  peopleAlreadyFollowing: (n) => `${n} 人はフォロー済み`,
+  bulkRunningTitle: 'フォロー中…',
+  bulkDoneTitle: '完了',
+  bulkKeepOpen: '終わるまでこのページを開いたままにしてください。',
+  bulkLeaveBlocked: 'まだ処理中です。終わるまで待つか、「停止」を押してください。',
+  bulkFailed: (n) => `${n} 件はフォローできませんでした`,
+  stop: '停止',
+  close: '閉じる',
 };
 
 export const FEED_CONTROLS: Partial<Record<PageLanguage, FeedControls>> = {

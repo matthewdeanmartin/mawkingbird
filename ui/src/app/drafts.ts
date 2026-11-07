@@ -92,8 +92,24 @@ export interface DraftHandoff {
   publishImmediately?: boolean;
 }
 
+/** One checkpoint in a draft's version history. */
+export interface DraftVersion {
+  at: string;
+  snapshot: DraftSnapshot;
+}
+
 const DRAFTS_KEY = 'mockingbird_drafts';
 const AUTOSAVE_KEY = 'mockingbird_compose_autosave';
+const VERSIONS_KEY = 'mockingbird_draft_versions';
+
+/** How many checkpoints each draft keeps. */
+export const MAX_DRAFT_VERSIONS = 20;
+
+/**
+ * Saves closer together than this refresh the newest checkpoint instead of
+ * adding one, so a burst of autosaves while typing costs one slot, not twenty.
+ */
+export const DRAFT_VERSION_GAP_MS = 5 * 60 * 1000;
 
 /** True when a snapshot has anything worth keeping. */
 export function draftHasContent(d: DraftSnapshot): boolean {
@@ -130,11 +146,13 @@ export function emptyDraftSnapshot(visibility: string): DraftSnapshot {
 export class AccountDrafts {
   private readonly draftsKey: string;
   private readonly autosaveKey: string;
+  private readonly versionsKey: string;
   readonly drafts;
 
   constructor(namespace: string) {
     this.draftsKey = `${DRAFTS_KEY}${namespace}`;
     this.autosaveKey = `${AUTOSAVE_KEY}${namespace}`;
+    this.versionsKey = `${VERSIONS_KEY}${namespace}`;
     this.drafts = signal<Draft[]>(loadJson<Draft[]>(this.draftsKey) ?? []);
     window.addEventListener('storage', (event) => {
       if (event.storageArea === localStorage && event.key === this.draftsKey) {
@@ -218,8 +236,60 @@ export class AccountDrafts {
     const outcome = storeJson(this.draftsKey, next);
     if (outcome.durable) {
       this.drafts.set(next);
+      this.removeVersions(id);
     }
     return outcome;
+  }
+
+  // --- version history ---
+
+  /** A draft's checkpoints, newest first. */
+  versions(id: string): DraftVersion[] {
+    return this.loadVersions()[id] ?? [];
+  }
+
+  /**
+   * Checkpoint a draft's saved state.
+   *
+   * Within {@link DRAFT_VERSION_GAP_MS} of the newest checkpoint, the newest is
+   * refreshed rather than a new one added — unless `force` is set, which an
+   * explicit Save and a restore use so the moment the writer chose is kept.
+   * An identical snapshot is never stored twice.
+   *
+   * History is a convenience: when storage is full it is trimmed, and if it
+   * still does not fit it is skipped. It must never block saving the draft.
+   */
+  recordVersion(id: string, snapshot: DraftSnapshot, force = false, now = Date.now()): void {
+    const all = this.loadVersions();
+    const list = all[id] ?? [];
+    const newest = list[0];
+    if (newest && sameSnapshot(newest.snapshot, snapshot)) {
+      return;
+    }
+    const entry: DraftVersion = { at: new Date(now).toISOString(), snapshot };
+    const recent = newest && now - Date.parse(newest.at) < DRAFT_VERSION_GAP_MS;
+    const next = !force && recent ? [entry, ...list.slice(1)] : [entry, ...list];
+    all[id] = next.slice(0, MAX_DRAFT_VERSIONS);
+    if (storeJson(this.versionsKey, all).durable) {
+      return;
+    }
+    // Out of room: keep only the newest few for every draft and try once more.
+    for (const key of Object.keys(all)) {
+      all[key] = all[key].slice(0, 3);
+    }
+    storeJson(this.versionsKey, all);
+  }
+
+  private removeVersions(id: string): void {
+    const all = this.loadVersions();
+    if (id in all) {
+      delete all[id];
+      storeJson(this.versionsKey, all);
+    }
+  }
+
+  private loadVersions(): Record<string, DraftVersion[]> {
+    return loadJson<Record<string, DraftVersion[]>>(this.versionsKey) ?? {};
   }
 
   // --- composer handoff ---
@@ -325,6 +395,12 @@ export class Drafts {
   remove(id: string): DraftStorageOutcome {
     return this.active().remove(id);
   }
+  versions(id: string): DraftVersion[] {
+    return this.active().versions(id);
+  }
+  recordVersion(id: string, snapshot: DraftSnapshot, force = false): void {
+    this.active().recordVersion(id, snapshot, force);
+  }
   autosave(contextKey: string, snapshot: DraftSnapshot): DraftStorageOutcome {
     return this.active().autosave(contextKey, snapshot);
   }
@@ -344,6 +420,10 @@ export class Drafts {
   takeHandoff(): DraftHandoff | null {
     return this.active().takeHandoff();
   }
+}
+
+function sameSnapshot(a: DraftSnapshot, b: DraftSnapshot): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
 
 function loadJson<T>(key: string): T | null {

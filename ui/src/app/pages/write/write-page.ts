@@ -32,7 +32,14 @@ import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BloggerSession } from '../../providers/blogger/blogger-session';
 import { HugoSettings } from '../../providers/hugo/hugo-settings';
 import { MataroaSettings } from '../../providers/mataroa/mataroa-settings';
-import { Draft, DraftMedia, DraftSnapshot, Drafts, draftHasContent } from '../../drafts';
+import {
+  Draft,
+  DraftMedia,
+  DraftSnapshot,
+  DraftVersion,
+  Drafts,
+  draftHasContent,
+} from '../../drafts';
 import { HumanTimePipe } from '../../human-time.pipe';
 import { MAX_POST_CHARS, PostTarget } from '../../compose/compose';
 import {
@@ -97,6 +104,15 @@ import { PostConfirmation } from '../../post-confirmation';
 import { Terminology } from '../../terminology';
 
 type DraftFilter = 'all' | DraftKind;
+
+/** Autosave fires this long after the last change. */
+const AUTOSAVE_DELAY_MS = 2000;
+
+// i18n pages.write.autosave.conflict: Autosave paused: this draft was changed in another tab. Choose Save draft to keep both versions.
+// i18n pages.write.autosave.failed: Autosave paused: this browser's storage is full. Your writing is still here; free some space and choose Save draft.
+// i18n pages.write.wordCount.one: {{count}} word
+// i18n pages.write.wordCount.other: {{count}} words
+// i18n pages.write.readingTime: {{minutes}} min read
 
 interface FilterChip {
   id: DraftFilter;
@@ -472,6 +488,8 @@ export class WritePage implements OnInit, OnDestroy {
   protected dirty = signal(false);
   protected notice = signal<Notice | null>(null);
   protected saveError = signal<string | null>(null);
+  /** Set after an autosave conflict or failure; an explicit Save clears it. */
+  protected autosavePaused = signal(false);
   private noticeTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected filter = signal<DraftFilter>('all');
@@ -702,6 +720,10 @@ export class WritePage implements OnInit, OnDestroy {
 
   protected overLimitCount = computed(() => this.segments().filter((s) => s.overLimit).length);
 
+  /** Words in the body, not counting `---` thread markers. */
+  protected wordTotal = computed(() => wordCount(this.body().replace(/^\s*---\s*$/gm, ' ')));
+  protected readingTime = computed(() => readingMinutes(this.wordTotal()));
+
   protected hasContent = computed(() => draftHasContent(this.snapshot()));
 
   private resolveLeave: ((leave: boolean) => void) | null = null;
@@ -711,8 +733,9 @@ export class WritePage implements OnInit, OnDestroy {
       this.exitZen();
       return false;
     }
-    if (this.mediaTransferred || (!this.dirty() && !this.media().length)) return true;
-    if (!draftHasContent(this.snapshot()) && !this.media().length) return true;
+    if (this.mediaTransferred) return true;
+    const saved = this.flushAutosave();
+    if (saved && !this.media().length) return true;
     this.resolveLeave?.(false);
     return new Promise<boolean>((resolve) => {
       this.resolveLeave = resolve;
@@ -727,7 +750,9 @@ export class WritePage implements OnInit, OnDestroy {
 
   @HostListener('window:beforeunload', ['$event'])
   protectUnload(event: BeforeUnloadEvent): void {
-    if (!this.mediaTransferred && (this.media().length || (this.dirty() && this.hasContent()))) {
+    // localStorage writes are synchronous, so a last autosave still lands here.
+    const saved = this.mediaTransferred || this.flushAutosave();
+    if (!this.mediaTransferred && (this.media().length || !saved)) {
       event.preventDefault();
       event.returnValue = '';
     }
@@ -742,6 +767,15 @@ export class WritePage implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       if (/:[a-z0-9_]+:/i.test(this.body())) this.customEmojis.ensureLoaded();
+    });
+    // Autosave: every change restarts the timer, so it fires once typing pauses.
+    effect((onCleanup) => {
+      this.snapshot();
+      if (!this.editing() || !this.dirty() || this.autosavePaused() || !this.hasContent()) {
+        return;
+      }
+      const timer = setTimeout(() => this.save(true), AUTOSAVE_DELAY_MS);
+      onCleanup(() => clearTimeout(timer));
     });
     // Prune sidecar entries for drafts that are gone. Runs off the live list
     // rather than on a timer: nothing else can tell the workspace a draft was
@@ -1206,7 +1240,7 @@ export class WritePage implements OnInit, OnDestroy {
    * copy taken from another kind becomes local on its first save, and from then
    * on updates in place too; the source it was copied from is never touched.
    */
-  protected save(): void {
+  protected save(quiet = false): void {
     const current = this.editing();
     if (!current || !this.hasContent()) {
       return;
@@ -1216,9 +1250,25 @@ export class WritePage implements OnInit, OnDestroy {
     if (current.localId) {
       const updated = this.drafts.update(current.localId, snapshot, current.savedAt ?? '');
       if (updated.updated) {
-        this.afterSave(current, current.localId, updated.updatedAt!, {
-          key: 'pages.write.saved.plain',
-        });
+        this.afterSave(
+          current,
+          current.localId,
+          updated.updatedAt!,
+          { key: 'pages.write.saved.plain' },
+          snapshot,
+          quiet,
+        );
+        return;
+      }
+      // An autosave never forks a second copy behind the writer's back. It
+      // stops and says why; an explicit Save then keeps both versions.
+      if (quiet && (updated.conflict || !updated.durable)) {
+        this.autosavePaused.set(true);
+        this.saveError.set(
+          this.transloco.translate<string>(
+            updated.conflict ? 'pages.write.autosave.conflict' : 'pages.write.autosave.failed',
+          ),
+        );
         return;
       }
       // Deleted underneath us — in another tab, or from /drafts. Saving a fresh
@@ -1228,11 +1278,17 @@ export class WritePage implements OnInit, OnDestroy {
         this.saveError.set(
           'This draft could not be saved in your browser. Your writing is still here.',
         );
+        if (quiet) this.autosavePaused.set(true);
         return;
       }
-      this.afterSave(current, saved.id, saved.updatedAt, {
-        key: 'pages.write.saved.replacedDeleted',
-      });
+      this.afterSave(
+        current,
+        saved.id,
+        saved.updatedAt,
+        { key: 'pages.write.saved.replacedDeleted' },
+        snapshot,
+        quiet,
+      );
       return;
     }
     const saved = this.drafts.save(snapshot);
@@ -1240,6 +1296,7 @@ export class WritePage implements OnInit, OnDestroy {
       this.saveError.set(
         'This draft could not be saved in your browser. Your writing is still here.',
       );
+      if (quiet) this.autosavePaused.set(true);
       return;
     }
     this.afterSave(
@@ -1252,10 +1309,34 @@ export class WritePage implements OnInit, OnDestroy {
             params: { origin: this.transloco.translate<string>(kindNounKey(current.origin)) },
           }
         : { key: 'pages.write.saved.plain' },
+      snapshot,
+      quiet,
     );
   }
 
-  private afterSave(current: Editing, localId: string, updatedAt: string, notice: Notice): void {
+  /**
+   * Save now if autosave would, so leaving or switching drafts does not have to
+   * ask. Returns true when nothing unsaved is left behind.
+   */
+  private flushAutosave(): boolean {
+    if (this.dirty() && this.hasContent() && !this.autosavePaused()) {
+      this.save(true);
+    }
+    return !this.dirty() || !this.hasContent();
+  }
+
+  private afterSave(
+    current: Editing,
+    localId: string,
+    updatedAt: string,
+    notice: Notice,
+    snapshot: DraftSnapshot,
+    quiet = false,
+  ): void {
+    this.drafts.recordVersion(localId, snapshot, !quiet || this.forceNextVersion);
+    if (!quiet) {
+      this.autosavePaused.set(false);
+    }
     const key = `local:${localId}`;
     // Carry the split mode across, so a copy that has just become a real draft
     // keeps the mode it was written in.
@@ -1271,6 +1352,11 @@ export class WritePage implements OnInit, OnDestroy {
       savedAt: updatedAt,
     });
     this.dirty.set(false);
+    // Autosave is silent, except the first time a copy becomes a local draft:
+    // the writer needs to hear that the original is still where it was.
+    if (quiet && notice.key === 'pages.write.saved.plain') {
+      return;
+    }
     // A whole extra key rather than gluing on a clause: "Saved." plus a bolted-on
     // sentence is exactly the concatenation the migration guide forbids, because
     // English word order isn't universal.
@@ -1333,7 +1419,81 @@ export class WritePage implements OnInit, OnDestroy {
     }
   }
 
+  // ---------------------------------------------------------- version history
+
+  // i18n pages.write.versions.button: Versions
+  // i18n pages.write.versions.title: Earlier versions
+  // i18n pages.write.versions.intro: Write keeps the last 20 versions of this draft in this browser. Restoring one keeps the current text as a version too, so nothing is lost.
+  // i18n pages.write.versions.empty: No earlier versions yet. They appear as you write and save.
+  // i18n pages.write.versions.restore: Restore
+  // i18n pages.write.versions.current: Current
+  // i18n pages.write.versions.close: Close
+  // i18n pages.write.versions.restored: Restored the version from {{time}}.
+  protected versionsOpen = signal(false);
+  private forceNextVersion = false;
+  protected versionList = signal<DraftVersion[]>([]);
+
+  protected openVersions(): void {
+    const id = this.editing()?.localId;
+    if (!id) {
+      return;
+    }
+    this.flushAutosave();
+    this.versionList.set(this.drafts.versions(id));
+    this.versionsOpen.set(true);
+  }
+
+  protected closeVersions(): void {
+    this.versionsOpen.set(false);
+  }
+
+  /** A short single-line preview of a checkpoint, for the version list. */
+  protected versionPreview(version: DraftVersion): string {
+    const text = joinSegments(version.snapshot.segments).replace(/\s+/g, ' ').trim();
+    return text.length > 120 ? `${text.slice(0, 119)}…` : text;
+  }
+
+  protected versionWords(version: DraftVersion): number {
+    return wordCount(version.snapshot.segments.join(' '));
+  }
+
+  /** True when a checkpoint is exactly what the editor holds now. */
+  protected isCurrentVersion(version: DraftVersion): boolean {
+    return JSON.stringify(version.snapshot) === JSON.stringify(this.snapshot());
+  }
+
+  protected restoreVersion(version: DraftVersion): void {
+    const current = this.editing();
+    if (!current?.localId) {
+      return;
+    }
+    // Keep what is in the editor now as its own checkpoint before replacing it.
+    this.flushAutosave();
+    this.drafts.recordVersion(current.localId, this.snapshot(), true);
+    this.applyFeatureSnapshot(version.snapshot);
+    if (!version.snapshot.poll) {
+      this.pollOpen.set(false);
+      this.pollOptions.set(['', '']);
+    }
+    this.body.set(joinSegments(version.snapshot.segments));
+    this.dirty.set(true);
+    this.resetProofreading();
+    // Forced so the restored text is its own checkpoint rather than being
+    // folded into the one taken just above.
+    this.forceNextVersion = true;
+    this.save(true);
+    this.forceNextVersion = false;
+    this.versionsOpen.set(false);
+    this.flash({
+      key: 'pages.write.versions.restored',
+      params: { time: new Date(version.at).toLocaleString() },
+    });
+  }
+
   private resetAuthoringState(): void {
+    this.versionsOpen.set(false);
+    this.autosavePaused.set(false);
+    this.saveError.set(null);
     for (const item of this.media()) {
       releaseDraftMedia(item);
     }
@@ -1738,7 +1898,8 @@ export class WritePage implements OnInit, OnDestroy {
    * body per context, so switching drafts twice would overwrite it.
    */
   private guard(action: () => void): void {
-    if ((this.dirty() && draftHasContent(this.snapshot())) || this.media().length) {
+    const saved = this.flushAutosave();
+    if (!saved || this.media().length) {
       this.pendingSwitch.set({ run: action });
       return;
     }
@@ -1799,6 +1960,32 @@ export class WritePage implements OnInit, OnDestroy {
    * it stays on screen precisely because a mode you cannot see the way out of
    * is a trap.
    */
+  /**
+   * Ctrl/Cmd+S saves the draft (instead of the browser's "Save page") and
+   * Ctrl/Cmd+Enter opens the publish step, which still asks before anything
+   * is sent. Both stand down while any dialog is open. `?` is the app-wide
+   * shortcut sheet in Hotkeys, which lists these too.
+   */
+  @HostListener('document:keydown', ['$event'])
+  protected onShortcut(event: KeyboardEvent): void {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) {
+      return;
+    }
+    const key = event.key.toLowerCase();
+    if (key !== 's' && key !== 'enter') {
+      return;
+    }
+    if (document.querySelector('[aria-modal="true"]')) {
+      return;
+    }
+    event.preventDefault();
+    if (key === 's') {
+      this.save();
+    } else if (!this.zen.active()) {
+      this.publish();
+    }
+  }
+
   protected onZenKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -1836,6 +2023,17 @@ export class WritePage implements OnInit, OnDestroy {
  * the way they are typed, rather than silently collapsing a three-post thread
  * into one paragraph.
  */
+/** Whitespace-separated words, as writers count them. */
+export function wordCount(text: string): number {
+  const words = text.trim().match(/\S+/g);
+  return words ? words.length : 0;
+}
+
+/** Minutes to read at ~230 words a minute, never less than one for any text. */
+export function readingMinutes(words: number): number {
+  return words === 0 ? 0 : Math.max(1, Math.round(words / 230));
+}
+
 function joinSegments(segments: readonly string[]): string {
   return segments.filter((s) => s.trim() !== '').join('\n\n---\n\n');
 }

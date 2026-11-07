@@ -128,6 +128,8 @@ export function feedBuilderSignedInChildren(entry: FeedBuilderEntry): Routes {
       title: pageTitle(entry),
       data: { inShell: true, lang: entry.lang },
       resolve: { page: () => loadFeedPage(entry) },
+      // Not while a "Follow all" is running: leaving would hide its progress.
+      canDeactivate: [(page: { canLeave: () => boolean }) => page.canLeave()],
       loadComponent: builderPage,
     },
     {

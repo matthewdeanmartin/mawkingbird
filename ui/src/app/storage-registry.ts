@@ -637,6 +637,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Unpublished drafts scoped by server and account. Unscoped keys are no longer loaded.',
   },
   {
+    base: 'mockingbird_draft_versions',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'content',
+    note: 'Earlier versions of each saved draft (up to 20 per draft), for "Restore version" in Write. Scoped by server and account; removed with the draft.',
+  },
+  {
     base: 'mockingbird_compose_autosave',
     storage: 'local',
     suffix: 'account',

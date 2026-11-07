@@ -1,14 +1,16 @@
-import { Component, Injector, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, Injector, OnInit, computed, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbBadge } from '../../design-system/badge/badge';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
+import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../focused-apps/language-versions';
 import { FollowButton } from '../../follow-button/follow-button';
+import { Account } from '../../models';
 import type { FeedFollowActions } from './feed-builder-actions';
 import { FeedPerson, FeedTag, shelves } from './feed-builder-data';
 import { personAccount, profileLink } from './feed-builder-people';
@@ -55,6 +57,7 @@ type TagState = 'idle' | 'busy' | 'following' | 'failed';
     MbBadge,
     MbButton,
     MbCheckbox,
+    MbDialog,
     MbContentLink,
     MbDisclosure,
     FollowButton,
@@ -169,6 +172,45 @@ export class FeedBuilderPage implements OnInit {
   );
   protected readonly followingTags = signal(false);
 
+  /**
+   * Each person's account on the reader's own server, from a cheap
+   * `accounts/lookup` (no webfinger). Null: the server has never seen them, so
+   * the reader cannot be following them. Empty until looked up.
+   */
+  protected readonly localAccounts = signal<ReadonlyMap<string, Account | null>>(new Map());
+  /** People the reader already follows (or asked to), by handle. */
+  private readonly followedPeople = computed(() => {
+    const follows = this.actions()?.follows;
+    const done = new Set<string>();
+    if (!follows) return done;
+    for (const [acct, local] of this.localAccounts()) {
+      const status = local ? follows.status(local.id) : 'unknown';
+      if (status === 'following' || status === 'requested') done.add(acct);
+    }
+    return done;
+  });
+  protected readonly peopleToFollow = computed(() => this.unfollowed(this.selectedPeople()));
+  /** Ticked people left out of the Follow count because they are followed already. */
+  protected readonly peopleAlreadyFollowed = computed(
+    () => this.selectedPeople().length - this.peopleToFollow().length,
+  );
+
+  /**
+   * The "Follow all" progress dialog: which batch it reports on, while it runs
+   * and after, until closed. It is modal, so a stray click cannot navigate away
+   * mid-batch; canLeave() and beforeunload cover Back and closing the tab.
+   */
+  protected readonly bulk = signal<'tags' | 'people' | null>(null);
+  protected readonly tagRun = signal({ done: 0, failed: 0, total: 0 });
+  private stopTags = false;
+  protected readonly leaveBlocked = signal(false);
+  protected readonly bulkRunning = computed(() => this.followingTags() || this.peopleRunning());
+  protected readonly bulkProgress = computed(() => {
+    if (this.bulk() === 'tags') return this.tagRun();
+    const people = this.peopleProgress();
+    return people ? { done: people.done, failed: people.failed, total: people.total } : null;
+  });
+
   /** The importer's progress, while it holds this page's people. */
   protected readonly peopleProgress = computed(() => {
     const rows = this.actions()?.importer.rows() ?? [];
@@ -223,6 +265,72 @@ export class FeedBuilderPage implements OnInit {
     } catch {
       // Unknown follow state: every tag offers Follow, which is harmless to repeat.
     }
+    void this.loadPeopleFollowState(actions);
+  }
+
+  /**
+   * Who on this page the reader already follows. Each person is looked up on
+   * the reader's server, four at a time, then one relationships request per
+   * 40 through FollowState, which the Follow buttons read too. A failed lookup
+   * leaves that person as "Follow", which is harmless to repeat.
+   */
+  private async loadPeopleFollowState(actions: FeedFollowActions): Promise<void> {
+    const found = new Map<string, Account | null>();
+    const queue = [...this.allPeople];
+    const lookUp = async () => {
+      for (let acct = queue.shift(); acct; acct = queue.shift()) {
+        try {
+          found.set(acct, await firstValueFrom(actions.api.lookupAccount(acct)));
+        } catch {
+          found.set(acct, null);
+        }
+      }
+    };
+    await Promise.all(Array.from({ length: 4 }, lookUp));
+    try {
+      await actions.follows.resolve(
+        [...found.values()].filter((account): account is Account => !!account).map((a) => a.id),
+      );
+    } catch {
+      // Relationships unavailable: buttons stay as they were.
+    }
+    this.localAccounts.set(found);
+  }
+
+  /** The reader's own account for this person, when their server knows them. */
+  protected localAccount(person: FeedPerson): Account | null {
+    return this.localAccounts().get(person.acct) ?? null;
+  }
+
+  protected unfollowed(accts: readonly string[]): string[] {
+    const followed = this.followedPeople();
+    return accts.filter((acct) => !followed.has(acct));
+  }
+
+  /** Route guard (signed-in builder): not while a batch is following. */
+  canLeave(): boolean {
+    if (!this.bulkRunning()) return true;
+    this.leaveBlocked.set(true);
+    return false;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  protectUnload(event: BeforeUnloadEvent): void {
+    if (this.bulkRunning()) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
+  protected stopBulk(): void {
+    if (this.bulk() === 'tags') this.stopTags = true;
+    else this.actions()?.importer.stop();
+  }
+
+  protected closeBulk(): void {
+    if (this.bulkRunning()) return;
+    this.bulk.set(null);
+    this.leaveBlocked.set(false);
   }
 
   protected tagState(tag: string): TagState {
@@ -277,12 +385,26 @@ export class FeedBuilderPage implements OnInit {
     }
   }
 
-  /** Follow every ticked hashtag not followed yet, one at a time. */
+  /** Follow every ticked hashtag not followed yet, one at a time, in the progress dialog. */
   async followSelectedTags(): Promise<void> {
     if (this.followingTags()) return;
+    const tags = this.tagsToFollow();
+    if (!tags.length) return;
+    this.stopTags = false;
+    this.tagRun.set({ done: 0, failed: 0, total: tags.length });
+    this.bulk.set('tags');
     this.followingTags.set(true);
     try {
-      for (const tag of this.tagsToFollow()) await this.followTag(tag);
+      for (const tag of tags) {
+        if (this.stopTags) break;
+        await this.followTag(tag);
+        const failed = this.tagState(tag) === 'failed';
+        this.tagRun.update((run) => ({
+          ...run,
+          done: run.done + (failed ? 0 : 1),
+          failed: run.failed + (failed ? 1 : 0),
+        }));
+      }
     } finally {
       this.followingTags.set(false);
     }
@@ -294,13 +416,18 @@ export class FeedBuilderPage implements OnInit {
    * server's, so each handle is resolved on the reader's own server first.
    * Rate limits are respected, and a large batch asks for confirmation.
    */
-  async followSelectedPeople(accts: readonly string[] = this.selectedPeople()): Promise<void> {
+  async followSelectedPeople(accts: readonly string[] = this.peopleToFollow()): Promise<void> {
     const importer = this.actions()?.importer;
-    if (!importer || importer.running() || !accts.length) return;
+    // People already followed are left out (and counted as such beside the button).
+    const toFollow = this.unfollowed(accts);
+    if (!importer || importer.running() || !toFollow.length) return;
     importer.reset();
     this.listResult.set(null);
-    importer.load([...accts]);
+    importer.load(toFollow);
+    this.bulk.set('people');
     await importer.start();
+    // Cancelled at the confirmation step: nothing ran, so no dialog.
+    if (!importer.rows().some((row) => row.status !== 'pending')) this.bulk.set(null);
   }
 
   /**

@@ -1639,3 +1639,36 @@ with it whenever that header adopts the shared button. Every other file has the
 same candidates as before, apart from line shifts. Source files stay at 1,678
 and candidate files at 598, with none added or removed. No shared widget
 changed. Reconciliation entries remain complete.
+
+## Community pages: followed people and the Follow all dialog, 2026-11-07
+
+`feed-builder-page.html` now shows a "Follow all" progress dialog through the
+shared `mb-dialog`, with a Stop or Close `mbButton`. It also picks each person's
+Follow button from the reader's own account record, and adds an "already
+followed" note for people beside the existing one for hashtags. Reviewed the
+diff with a per-file count comparison against HEAD. That file went from
+`shared` 41 and `nativeButtons` 8 to 44 and 10. The new shared items are the
+dialog and its two buttons. The two new `nativeButtons` are those same
+`<button mbButton>` elements, which the audit counts as native tags, as it
+does for the page's existing `mbButton` buttons. The progress bar is a native
+`<progress>` with one width rule in `feed-builder.css`. Every other file is
+unchanged apart from line shifts. Source files stay at 1,678 and candidate
+files at 598, with none added or removed. No shared widget changed.
+Reconciliation entries remain complete.
+
+## Write: autosave, version history and word count, 2026-11-07
+
+Write (`write-page.html`) gained a Versions button in the editor header, a
+version-history dialog, and a word count (plus reading time in the preview
+bar). Reviewed the diff with a per-file count comparison against the previous
+inventory. The only changes are in `write-page.html`: `nativeButtons` 47 to 50,
+`legacyPills` 33 to 36 and `overlays` 2 to 3. The three new buttons (Versions,
+each row's Restore, and Close) use the same `btn btn-outline btn-sm` / `btn`
+classes as the editor's existing Save and unsaved-work dialog buttons, and the
+new overlay is a copy of that page's own unsaved-work dialog pattern
+(`overlay` + `dialog` + `appFocusTrap`). They move with those whenever Write
+adopts `mbButton` and `mb-dialog`. The Write group added to `shortcut-help.ts`
+is data only and adds no candidates. Every other file is unchanged apart from
+line shifts. Source files stay at 1,678 and candidate files at 598, with none
+added or removed. No shared widget changed. Reconciliation entries remain
+complete.

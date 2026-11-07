@@ -3,10 +3,11 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { Component, input, signal } from '@angular/core';
 import { TestBed, DeferBlockBehavior } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { Api } from '../../api';
 import { FollowButton } from '../../follow-button/follow-button';
+import { FollowState } from '../../follow-state';
 import { FutureTagHints } from '../../future-tag-hints';
 import { HomeTopics } from '../../home-topics';
 import { ImportFollows } from '../../import-follows';
@@ -50,7 +51,13 @@ class StatusCardStub {
   readonly status = input.required<Status>();
 }
 
-async function builder(inShell: boolean, followed: string[] = [], entry = ENTRY) {
+async function builder(
+  inShell: boolean,
+  followed: string[] = [],
+  entry = ENTRY,
+  extraProviders: unknown[] = [],
+  apiExtras: Record<string, unknown> = {},
+) {
   const page = await loadFeedPage(entry);
   const api = {
     followTag: vi.fn((name: string) => of({ name, following: true })),
@@ -58,6 +65,7 @@ async function builder(inShell: boolean, followed: string[] = [], entry = ENTRY)
     createList: vi.fn((title: string) => of({ id: 'L1', title })),
     updateList: vi.fn((list: object, exclusive: boolean) => of({ ...list, exclusive })),
     addManyToList: vi.fn(() => of({})),
+    ...apiExtras,
   };
   const importer = {
     rows: signal<{ handle: string; status: string; account?: { id: string } }[]>([]),
@@ -65,6 +73,7 @@ async function builder(inShell: boolean, followed: string[] = [], entry = ENTRY)
     reset: vi.fn(),
     load: vi.fn(),
     start: vi.fn(async () => undefined),
+    stop: vi.fn(),
   };
   TestBed.configureTestingModule({
     deferBlockBehavior: DeferBlockBehavior.Manual,
@@ -75,6 +84,7 @@ async function builder(inShell: boolean, followed: string[] = [], entry = ENTRY)
       { provide: Api, useValue: api },
       { provide: HomeTopics, useValue: { followed: async () => followed } },
       { provide: ImportFollows, useValue: importer },
+      ...(extraProviders as never[]),
     ],
   });
   TestBed.overrideComponent(FeedBuilderPage, {
@@ -219,6 +229,98 @@ describe('Feed Builder as a mini-app', () => {
     expect(api.addManyToList).toHaveBeenCalledWith('L1', ['11', '33']);
     expect(el.textContent).toContain('2 persone aggiunte alla lista Fantascienza e fantasy.');
     expect(el.querySelector('.list-actions a[href="/lists/L1"]')).not.toBeNull();
+  });
+
+  it('shows who is followed already, and leaves them out of Follow all', async () => {
+    const page = await loadFeedPage(ENTRY);
+    const [known, ...rest] = page.data.people;
+    // Only the first person is known to the reader's server, and followed.
+    const lookupAccount = vi.fn((acct: string) =>
+      acct === known.acct ? of({ id: 'local-1', acct }) : throwError(() => new Error('404')),
+    );
+    const follows = {
+      resolve: vi.fn(async () => undefined),
+      status: (id: string) => (id === 'local-1' ? 'following' : 'not-following'),
+      busyWith: () => false,
+    };
+    const { fixture, el, importer } = await builder(
+      true,
+      [],
+      ENTRY,
+      [{ provide: FollowState, useValue: follows }],
+      { lookupAccount },
+    );
+    await vi.waitFor(() => expect(follows.resolve).toHaveBeenCalledWith(['local-1']));
+    fixture.detectChanges();
+    const selection = TestBed.inject(FeedSelection);
+    selection.setAllPeople(
+      'science-fiction.it',
+      page.data.people.map((p) => p.acct),
+      true,
+    );
+    fixture.detectChanges();
+    const followAll = buttonNamed(el, /persone selezionate/) as HTMLButtonElement;
+    expect(followAll.textContent).toContain(String(rest.length));
+    expect(followAll.closest('section')?.textContent).toContain('1 già seguiti');
+    // The person's button acts on the reader's own record, so it can say Following.
+    const internals = fixture.componentInstance as unknown as {
+      localAccount: (p: { acct: string }) => { id: string } | null;
+    };
+    expect(internals.localAccount(known)?.id).toBe('local-1');
+    expect(internals.localAccount(rest[0])).toBeNull();
+    followAll.click();
+    await fixture.whenStable();
+    expect(importer.load).toHaveBeenCalledWith(rest.map((p) => p.acct));
+  });
+
+  it('follows in a dialog that shows progress and holds the page until done', async () => {
+    const { fixture, el, importer, page } = await builder(true);
+    const people = page.data.people.map((p) => p.acct).slice(0, 3);
+    importer.start.mockImplementation(async () => {
+      importer.running.set(true);
+      importer.rows.set(
+        people.map((handle, i) => ({ handle, status: i ? 'pending' : 'followed' })),
+      );
+    });
+    TestBed.inject(FeedSelection).setAllPeople(
+      'science-fiction.it',
+      page.data.people.map((p) => p.acct),
+      false,
+    );
+    for (const acct of people)
+      TestBed.inject(FeedSelection).setPerson('science-fiction.it', acct, true);
+    fixture.detectChanges();
+    (buttonNamed(el, /persone selezionate/) as HTMLButtonElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const dialog = el.querySelector('mb-dialog') as HTMLElement;
+    expect(dialog.textContent).toContain('Follow in corso');
+    expect(dialog.textContent).toContain('1 di 3 seguiti');
+    expect(dialog.querySelector('progress')?.getAttribute('max')).toBe('3');
+    // Back is refused while it runs, and the dialog says why; closing the tab asks first.
+    const page$ = fixture.componentInstance as unknown as { canLeave: () => boolean };
+    expect(page$.canLeave()).toBe(false);
+    fixture.detectChanges();
+    expect(dialog.textContent).toContain('È ancora in corso');
+    const unload = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(unload);
+    expect(unload.defaultPrevented).toBe(true);
+    (buttonNamed(dialog, /Ferma/) as HTMLButtonElement).click();
+    expect(importer.stop).toHaveBeenCalled();
+    // Finished: a Close button, and the page may be left.
+    importer.running.set(false);
+    importer.rows.set(people.map((handle) => ({ handle, status: 'followed' })));
+    fixture.detectChanges();
+    expect(el.querySelector('mb-dialog')?.textContent).toContain('Fatto');
+    expect(page$.canLeave()).toBe(true);
+    (
+      buttonNamed(
+        el.querySelector('mb-dialog') as HTMLElement,
+        /^\s*Chiudi\s*$/,
+      ) as HTMLButtonElement
+    ).click();
+    fixture.detectChanges();
+    expect(el.querySelector('mb-dialog')).toBeNull();
   });
 
   it('no account yet: points at mastodon.social, the topic’s servers and the handle generator', async () => {

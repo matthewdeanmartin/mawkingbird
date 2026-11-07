@@ -35,6 +35,11 @@
                   noun: segments().length === 1 ? words().post : words().posts,
                 }
         }}
+        ·
+        {{
+          (wordTotal() === 1 ? 'pages.write.wordCount.one' : 'pages.write.wordCount.other')
+            | transloco: { count: wordTotal() }
+        }}
         @if (overLimitCount()) {
           <span class="over">
             ·
@@ -257,6 +262,11 @@
                 <span class="dirty-dot" [title]="'pages.write.title.unsavedChanges' | transloco"
                   >•</span
                 >
+              }
+              @if (current.localId) {
+                <button class="btn btn-outline btn-sm" type="button" (click)="openVersions()">
+                  {{ 'pages.write.versions.button' | transloco }}
+                </button>
               }
             </div>
 
@@ -803,6 +813,14 @@
                           noun: segments().length === 1 ? words().post : words().posts,
                         }
                 }}
+                ·
+                {{
+                  (wordTotal() === 1 ? 'pages.write.wordCount.one' : 'pages.write.wordCount.other')
+                    | transloco: { count: wordTotal() }
+                }}
+                @if (readingTime() > 1) {
+                  · {{ 'pages.write.readingTime' | transloco: { minutes: readingTime() } }}
+                }
                 @if (overLimitCount()) {
                   <span class="over">
                     ·
@@ -1063,6 +1081,69 @@
         }
       </section>
     }
+  </div>
+}
+
+@if (versionsOpen()) {
+  <div
+    class="overlay"
+    role="presentation"
+    tabindex="-1"
+    (click)="closeVersions()"
+    (keyup.escape)="closeVersions()"
+  >
+    <div
+      class="dialog versions-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="versions-title"
+      aria-describedby="versions-intro"
+      appFocusTrap
+      (dismissed)="closeVersions()"
+      (click)="$event.stopPropagation()"
+      (keyup)="$event.stopPropagation()"
+    >
+      <h3 id="versions-title">{{ 'pages.write.versions.title' | transloco }}</h3>
+      <p id="versions-intro" class="muted">{{ 'pages.write.versions.intro' | transloco }}</p>
+      @if (versionList().length) {
+        <ol class="versions-list">
+          @for (version of versionList(); track version.at) {
+            <li class="version-row">
+              <div class="version-meta">
+                <strong>{{ version.at | humanTime }}</strong>
+                <span class="muted small">
+                  {{
+                    (versionWords(version) === 1
+                      ? 'pages.write.wordCount.one'
+                      : 'pages.write.wordCount.other'
+                    ) | transloco: { count: versionWords(version) }
+                  }}
+                </span>
+              </div>
+              <p class="version-preview">{{ versionPreview(version) }}</p>
+              @if (isCurrentVersion(version)) {
+                <span class="muted small">{{ 'pages.write.versions.current' | transloco }}</span>
+              } @else {
+                <button
+                  class="btn btn-outline btn-sm"
+                  type="button"
+                  (click)="restoreVersion(version)"
+                >
+                  {{ 'pages.write.versions.restore' | transloco }}
+                </button>
+              }
+            </li>
+          }
+        </ol>
+      } @else {
+        <p>{{ 'pages.write.versions.empty' | transloco }}</p>
+      }
+      <div class="unsaved-actions">
+        <button class="btn" type="button" (click)="closeVersions()">
+          {{ 'pages.write.versions.close' | transloco }}
+        </button>
+      </div>
+    </div>
   </div>
 }
 

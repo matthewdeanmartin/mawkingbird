@@ -180,9 +180,9 @@
                   *ngTemplateOutlet="
                     followPeople;
                     context: {
-                      $implicit: selectedByShelf().get(group.shelf) ?? [],
+                      $implicit: unfollowed(selectedByShelf().get(group.shelf) ?? []),
                       label: controls.followGroup(
-                        (selectedByShelf().get(group.shelf) ?? []).length
+                        unfollowed(selectedByShelf().get(group.shelf) ?? []).length
                       ),
                       variant: 'outline',
                     }
@@ -203,8 +203,8 @@
                 *ngTemplateOutlet="
                   followPeople;
                   context: {
-                    $implicit: selectedPeople(),
-                    label: controls.followSelectedPeople(selectedPeople().length),
+                    $implicit: peopleToFollow(),
+                    label: controls.followSelectedPeople(peopleToFollow().length),
                     variant: 'solid',
                   }
                 "
@@ -222,6 +222,9 @@
         <button mbButton variant="link" type="button" (click)="setAllPeople(false)">
           {{ controls.selectNone }}
         </button>
+        @if (peopleAlreadyFollowed()) {
+          <span class="muted">{{ controls.peopleAlreadyFollowing(peopleAlreadyFollowed()) }}</span>
+        }
         @if (peopleProgress(); as progress) {
           <span class="muted" role="status">{{
             controls.followProgress(progress.done, progress.total)
@@ -310,11 +313,18 @@
                     (checkedChange)="selection.setPerson(key, person.acct, $event)"
                   />
                   @defer (on idle) {
-                    <app-follow-button
-                      [accountId]="person.id"
-                      [handle]="'@' + person.acct"
-                      [foreign]="account(person)"
-                    />
+                    <!-- The reader's own record for this person when their server
+                         knows them, so the button can say Following; otherwise
+                         the foreign record, resolved on click. -->
+                    @if (localAccount(person); as local) {
+                      <app-follow-button [accountId]="local.id" [handle]="'@' + person.acct" />
+                    } @else {
+                      <app-follow-button
+                        [accountId]="person.id"
+                        [handle]="'@' + person.acct"
+                        [foreign]="account(person)"
+                      />
+                    }
                   }
                 </div>
               }
@@ -412,3 +422,38 @@
     <span class="muted">{{ chrome.updated(updated) }}</span>
   </footer>
 </main>
+
+@if (bulk()) {
+  <mb-dialog
+    [title]="bulkRunning() ? controls.bulkRunningTitle : controls.bulkDoneTitle"
+    [closeLabel]="controls.close"
+    [showClose]="!bulkRunning()"
+    (dismissed)="closeBulk()"
+  >
+    @if (bulkProgress(); as progress) {
+      <p role="status">{{ controls.followProgress(progress.done, progress.total) }}</p>
+      <progress
+        class="bulk-progress"
+        [value]="progress.done + progress.failed"
+        [max]="progress.total || 1"
+      ></progress>
+      @if (progress.failed) {
+        <p>{{ controls.bulkFailed(progress.failed) }}</p>
+      }
+    }
+    @if (bulkRunning()) {
+      <p class="muted">
+        {{ leaveBlocked() ? controls.bulkLeaveBlocked : controls.bulkKeepOpen }}
+      </p>
+    }
+    <div mbDialogActions>
+      @if (bulkRunning()) {
+        <button mbButton variant="outline" type="button" (click)="stopBulk()">
+          {{ controls.stop }}
+        </button>
+      } @else {
+        <button mbButton type="button" (click)="closeBulk()">{{ controls.close }}</button>
+      }
+    </div>
+  </mb-dialog>
+}

@@ -34,6 +34,14 @@ pins its hash. To upgrade, run `npm pack` in the fediblog checkout, replace the
 tarball, and run `npm install` here. Once fediblog is on npm, change the
 dependency to the published version and delete `vendor/`.
 
+## Page views and security
+
+News counts page views in the app's GoatCounter (`mawkingbird.goatcounter.com`)
+with the app's vendored `/vendor/count.js`. It honours the app's analytics
+switch (`analytics` in the `mockingbird_client_prefs` storage key) and counts
+nothing on canary or test, like the app. Pages carry a Content-Security-Policy
+with `script-src 'self'`, as the app's do.
+
 ## Theme
 
 `fediblog.config.json` joins `design_system/tokens.css` and `theme.css` into

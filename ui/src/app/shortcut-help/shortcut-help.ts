@@ -24,6 +24,14 @@ const GROUPS: ShortcutGroup[] = [
     ],
   },
   {
+    title: 'Write page',
+    rows: [
+      { keys: ['ctrl', 'enter'], label: 'Review and publish' },
+      { keys: ['ctrl', 's'], label: 'Save draft now' },
+      { keys: ['esc'], label: 'Leave zen mode' },
+    ],
+  },
+  {
     title: 'Timeline',
     rows: [
       { keys: ['j'], label: 'Move down in the list' },

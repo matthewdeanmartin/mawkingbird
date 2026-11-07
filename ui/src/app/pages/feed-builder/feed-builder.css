@@ -112,3 +112,8 @@
   line-break: strict;
   word-break: auto-phrase;
 }
+
+/* The "Follow all" dialog's progress bar spans the dialog. */
+.bulk-progress {
+  width: 100%;
+}

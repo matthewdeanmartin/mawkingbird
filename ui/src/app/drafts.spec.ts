@@ -263,6 +263,53 @@ describe('Drafts', () => {
     expect(drafts.drafts()).toHaveLength(0);
   });
 
+  it('recordVersion() refreshes the newest checkpoint within the gap, adds one after it', () => {
+    const store = new AccountDrafts('_versions');
+    const t0 = Date.parse('2026-11-07T10:00:00Z');
+    store.recordVersion('d1', snapshot({ segments: ['a'] }), false, t0);
+    store.recordVersion('d1', snapshot({ segments: ['ab'] }), false, t0 + 60_000);
+    expect(store.versions('d1').map((v) => v.snapshot.segments[0])).toEqual(['ab']);
+
+    store.recordVersion('d1', snapshot({ segments: ['abc'] }), false, t0 + 10 * 60_000);
+    expect(store.versions('d1').map((v) => v.snapshot.segments[0])).toEqual(['abc', 'ab']);
+  });
+
+  it('recordVersion() with force always adds, but never stores an identical snapshot twice', () => {
+    const store = new AccountDrafts('_versions');
+    const t0 = Date.parse('2026-11-07T10:00:00Z');
+    store.recordVersion('d1', snapshot({ segments: ['a'] }), true, t0);
+    store.recordVersion('d1', snapshot({ segments: ['b'] }), true, t0 + 1000);
+    store.recordVersion('d1', snapshot({ segments: ['b'] }), true, t0 + 2000);
+    expect(store.versions('d1').map((v) => v.snapshot.segments[0])).toEqual(['b', 'a']);
+  });
+
+  it('keeps at most 20 checkpoints per draft', () => {
+    const store = new AccountDrafts('_versions');
+    for (let i = 0; i < 25; i++) {
+      store.recordVersion('d1', snapshot({ segments: [`v${i}`] }), true, i * 1000);
+    }
+    const versions = store.versions('d1');
+    expect(versions).toHaveLength(20);
+    expect(versions[0].snapshot.segments[0]).toBe('v24');
+  });
+
+  it('remove() also deletes the draft history', () => {
+    const drafts = TestBed.inject(Drafts);
+    const { id } = drafts.save(snapshot());
+    drafts.recordVersion(id, snapshot(), true);
+    expect(drafts.versions(id)).toHaveLength(1);
+    drafts.remove(id);
+    expect(drafts.versions(id)).toEqual([]);
+  });
+
+  it('a full history store never breaks recording', () => {
+    const store = new AccountDrafts('_versions');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError');
+    });
+    expect(() => store.recordVersion('d1', snapshot(), true)).not.toThrow();
+  });
+
   it('draftHasContent() is true for text, CW or poll — not blank segments', () => {
     expect(draftHasContent(snapshot())).toBe(true);
     expect(draftHasContent(snapshot({ segments: ['', ' '] }))).toBe(false);
