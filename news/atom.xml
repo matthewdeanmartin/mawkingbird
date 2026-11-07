@@ -7,7 +7,7 @@
   <id>https://mawkingbird.com/news/</id>
   <updated>2026-11-07T00:00:00.000Z</updated>
   <author><name>Mawkingbird</name><uri>https://mawkingbird.com/</uri></author>
-  <generator uri="https://www.npmjs.com/package/fediblog">fediblog</generator>
+  <generator>fediblog</generator>
   <entry>
     <title>Find your people: Mastodon communities by interest</title>
     <link rel="alternate" type="text/html" href="https://mawkingbird.com/news/posts/communities-by-interest/"/>
@@ -49,7 +49,7 @@ their own.&lt;/p&gt;
 account, and Mawkingbird follows them for you. If a hashtag turns out to be
 flooded by a few very busy accounts, the page helps you spot them and mute them
 before they take over your timeline.&lt;/p&gt;
-&lt;p&gt;Tell us which interest should come next by replying to this post on Mastodon.&lt;/p&gt;
+&lt;p&gt;Tell us which interest should come next in the comments below.&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -97,7 +97,7 @@ bookmarks.&lt;/li&gt;
 &lt;li&gt;Guides for people arriving from Twitter.&lt;/li&gt;
 &lt;li&gt;Every language the app is translated into now has its own landing pages.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Questions or bugs? Reply to this post on Mastodon, or see
+&lt;p&gt;Questions or bugs? Leave a comment below, or see
 &lt;a href=&quot;https://mawkingbird.com/help/&quot;&gt;Help&lt;/a&gt;.&lt;/p&gt;
 </content>
   </entry>
