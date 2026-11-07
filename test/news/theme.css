@@ -1,0 +1,82 @@
+/* ../design_system/tokens.css */
+/* New semantic roles under review; existing app tokens come from ui/src/styles.css. */
+:root {
+  --ds-identity-shadow: rgb(0 0 0 / 18%);
+  --ds-switch-thumb: #fff;
+  --ds-switch-shadow: rgb(0 0 0 / 25%);
+  --ds-warning-text: #93400a;
+  --ds-error-text: #a41037;
+  --ds-action-fill: color-mix(in srgb, var(--accent) 42%, #000);
+  --ds-action-ink: #fff;
+  --ds-action-text: var(--ds-action-fill);
+  --ds-action-hover: color-mix(in srgb, var(--ds-action-fill) 90%, var(--text));
+  --ds-danger-fill: #a41037;
+  --ds-overlay-backdrop: rgba(0, 0, 0, 0.4);
+  --ds-overlay-shadow: rgba(0, 0, 0, 0.3);
+  --ds-reader-shadow: rgb(0 0 0 / 18%);
+  --ds-reader-invalid: var(--danger, #c2255c);
+}
+
+:root[data-theme="dark"] {
+  --ds-warning-text: #ffc387;
+  --ds-error-text: #ff9db4;
+  --ds-action-fill: color-mix(in srgb, var(--accent) 35%, #fff);
+  --ds-action-ink: #10171e;
+  --ds-danger-fill: #ff9db4;
+}
+
+/* theme.css */
+/*
+ * Mawkingbird's theme for /news/ (fediblog). design_system/tokens.css is joined
+ * in front of this file (see fediblog.config.json). That file holds the
+ * semantic roles; the base colours it builds on live in ui/src/styles.css, and
+ * are repeated here the way scripts/help_static/help.css repeats them. Keep
+ * them in step. News has no JavaScript theme switch, so dark mode follows the
+ * operating system, like Help.
+ */
+:root {
+  --bg: #f7f9f9;
+  --col-bg: #ffffff;
+  --border: #e1e8ed;
+  --text: #14171a;
+  --muted: #46535e;
+  --accent: #1da1f2;
+  --accent-soft: #e8f5fe;
+  --action: #0b4a70;
+  --app-font-family:
+    'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --fb-bg: var(--bg);
+  --fb-surface: var(--col-bg);
+  --fb-text: var(--text);
+  --fb-muted: var(--muted);
+  --fb-border: var(--border);
+  --fb-link: var(--action);
+  --fb-accent: var(--accent);
+  --fb-accent-soft: var(--accent-soft);
+  --fb-button-bg: var(--ds-action-fill);
+  --fb-button-text: var(--ds-action-ink);
+  --fb-focus: var(--accent);
+  --fb-error: var(--ds-error-text);
+  --fb-font: var(--app-font-family);
+  --fb-width: 600px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10171e;
+    --col-bg: #15202b;
+    --border: #38444d;
+    --text: #f7f9f9;
+    --muted: #a8b8c4;
+    --accent: #4fb6f5;
+    --accent-soft: color-mix(in srgb, var(--accent) 18%, var(--col-bg));
+    --action: #8fd0f8;
+    /* tokens.css keys its dark values on [data-theme='dark'], which News never sets. */
+    --ds-action-fill: color-mix(in srgb, var(--accent) 35%, #fff);
+    --ds-action-ink: #10171e;
+    --ds-error-text: #ff9db4;
+    color-scheme: dark;
+  }
+}
