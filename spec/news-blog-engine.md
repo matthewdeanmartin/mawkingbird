@@ -113,8 +113,14 @@ separate from Mawkingbird's, as the owner accepted. News shares the
 mawkingbird.com origin, so its browser storage is the app's too. Its keys use
 the `fediblog:` prefix (`fediblog:session`, `fediblog:apps`, `fediblog:server`
 in localStorage; `fediblog:pending` in sessionStorage) and never touch the
-app's keys. A post without a `mastodon:` URL says comments open once it is
-shared. The engine credit ("Built with fediblog") is gone until the engine is
+app's keys. Signed in as @mawkingbird@mastodon.social, the account menu
+offers **Publish posts** (`news/publish/`, `noindex`). It lists posts as linked,
+found or not published and publishes an editable toot with the default hashtags
+from `publish.hashtags` (#mawkingbird #mastodonClient) plus the post's own
+`hashtags:`, which are separate from its blog `tags:`. A post without a
+`mastodon:` URL finds the account's toot that links it when the page loads
+(owner's choice, 2026-11-07); with no such toot it says comments open once it
+is shared. The engine credit ("Built with fediblog") is gone until the engine is
 public; see the engine's TODO.md.
 
 **Reply in Mawkingbird.** The button links to

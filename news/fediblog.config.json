@@ -33,5 +33,11 @@
       "icon": "info"
     }
   ],
+  "publish": {
+    "hashtags": [
+      "mawkingbird",
+      "mastodonClient"
+    ]
+  },
   "mawkingbird": true
 }

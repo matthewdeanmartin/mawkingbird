@@ -12,11 +12,18 @@ Angular engine whose comments are Mastodon replies. The design is in
    it is ready.
 2. Preview it: `make news NEWS_OUT=.news-site` from the repository root, then
    serve `.news-site` at `/news/`. Add `NEWS_ARGS=--drafts` to include drafts.
-3. Publish (production deploy), then toot the post from
-   `@mawkingbird@mastodon.social`.
-4. Add the toot's URL as `mastodon:` in the front matter and deploy again.
-   Replies to that toot are now the post's comments. To hide a reply, list its
-   URL under `hiddenReplies:`.
+3. Deploy, then open https://mawkingbird.com/news/, sign in (top right) as
+   `@mawkingbird@mastodon.social`, and choose **Publish posts** in the account
+   menu. Edit the prefilled toot if you like and press **Publish**. Comments
+   work at once: the post finds its toot when it loads.
+4. Optional: paste the `mastodon:` line the publish page shows (Copy) into the
+   front matter and deploy again. That skips the lookup, and the post keeps its
+   comments after the toot drops out of the account's latest 120. To hide a
+   reply, list its URL under `hiddenReplies:`.
+
+`tags:` organise the blog. `hashtags:` are only for the announcing toot,
+added to the defaults `#mawkingbird #mastodonClient` (`publish.hashtags` in
+`fediblog.config.json`).
 
 ## Engine version
 
