@@ -4,7 +4,7 @@ const { test, expect } = createRequire(
 )("@playwright/test");
 test("post permissions use shared controls, preserve cancellation and published audience at narrow width", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(
     "/iframe.html?id=adoption-post-permissions--shared-dialog&viewMode=story",
@@ -26,7 +26,9 @@ test("post permissions use shared controls, preserve cancellation and published 
   expect(applyBox.x - (cancelBox.x + cancelBox.width)).toBeGreaterThanOrEqual(
     8,
   );
-  await page.screenshot({ path: ".test-results/permissions-mobile.png" });
+  await page.screenshot({
+    path: testInfo.outputPath("permissions-mobile.png"),
+  });
   await dialog
     .getByLabel("Public timelines and discovery", { exact: true })
     .selectOption({ label: "Keep out of public timelines (unlisted)" });
@@ -59,7 +61,7 @@ test("post permissions use shared controls, preserve cancellation and published 
 
 test("mini composer keeps permissions in the compact tool row", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/iframe.html?id=adoption-composer--compact&viewMode=story");
   const button = page.getByRole("button", {
@@ -75,14 +77,14 @@ test("mini composer keeps permissions in the compact tool row", async ({
   const box = await button.boundingBox();
   expect(box.width).toBeLessThanOrEqual(48);
   expect(box.height).toBeLessThanOrEqual(48);
-  await page.screenshot({ path: ".test-results/composer-mobile.png" });
+  await page.screenshot({ path: testInfo.outputPath("composer-mobile.png") });
   await button.click();
   await expect(page.getByRole("dialog")).toBeVisible();
 });
 
 test("notification dismissal follows compact inline actions on a phone", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(
     "/iframe.html?id=adoption-notification-layout--compact-actions&viewMode=story",
@@ -99,7 +101,7 @@ test("notification dismissal follows compact inline actions on a phone", async (
     await expect(button.locator("..")).toHaveClass("mention-actions");
   }
   await page.screenshot({
-    path: ".test-results/notifications-mobile.png",
+    path: testInfo.outputPath("notifications-mobile.png"),
     fullPage: true,
   });
 });
@@ -115,5 +117,5 @@ test("mutual post tint uses the current theme background", async ({ page }) => {
     (el) => getComputedStyle(el).backgroundColor,
   );
   expect(color).not.toBe("rgba(0, 0, 0, 0)");
-  await page.screenshot({ path: ".test-results/mutual-post.png" });
+  await page.screenshot({ path: testInfo.outputPath("mutual-post.png") });
 });
