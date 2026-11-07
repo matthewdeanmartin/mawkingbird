@@ -1,6 +1,7 @@
 # News: a reusable Angular blog engine with Mastodon comments
 
-Status: draft for owner review, 2026-11-07. No code yet.
+Status: implemented 2026-11-07 (fediblog 0.1.0, vendored). See "Implementation
+notes" at the end for what shipped and what is still open.
 
 ## Why
 
@@ -17,7 +18,7 @@ comments" points back at Mawkingbird.
 | --- | --- |
 | Engine | Separate Angular project, its own repository and npm package, MIT. |
 | Mawkingbird's site | `https://mawkingbird.com/news/`, built in this repo's CI and copied into the Pages artifact, like `/help/`. |
-| Comment thread per post | Manual: publish the post, toot it from `@mawkingbird@mastodon.social`, put the status URL in the post's front matter. CI automation later. |
+| Comment thread per post | Manual: publish the post, toot it from `@mawkingbird@mastodon.social`, put the status URL in the post's front matter. No CI automation planned. |
 | Menu | Help is the one reading entry; the help home's "More from Mawkingbird" section will link News once it exists. |
 
 ## Shape
@@ -62,14 +63,57 @@ comments" points back at Mawkingbird.
 - `/news/` must not depend on the app bundle; it stays fast and crawlable
   without JavaScript.
 
-## Open questions for the owner
+## Owner answers (2026-11-07)
 
-1. Engine name and repository (for example `mastodon-comments-blog`, or a
-   bird name to match).
-2. Which mastodon.social status should "Reply in Mawkingbird" open: the
-   reader's signed-in account in the app, or anonymous reading first?
-3. First posts: release notes, the Feed Builder launch, the /legal rename?
-4. Should the help site later adopt the same tokens (replacing the Read the
-   Docs theme's colours), or keep its own look?
-5. Later: CI tooting on publish (needs a token secret and an idempotency
-   guard), and per-post share images.
+1. **Name and repository:** `fediblog` (repository and npm package).
+2. **"Reply in Mawkingbird":** opens the status in the app as the reader's
+   signed-in account; readers who are not signed in go through sign-in first.
+3. **First posts:** release notes and the Feed Builder launch. No post about
+   the /legal rename.
+4. **Help site theme:** adopt the shared tokens later. Map
+   `design_system/tokens.css` onto the Read the Docs theme through `extra_css`.
+5. **Later work:** plan per-post share images (`og:image`). CI tooting on
+   publish is not planned; the status URL stays manual.
+
+## Implementation notes (2026-11-07)
+
+**Engine.** `fediblog` lives in its own local repository at
+`C:\github\mimb\fediblog` (MIT, git-initialised, not yet pushed or published).
+The package ships a small Angular 21 app. `fediblog build` turns the config and
+posts into a JSON manifest, then runs `ng build` with `outputMode: static`. The
+server reads the manifest from disk during prerender, so the browser bundle holds
+no posts, and TransferState carries only the current page's data. Afterwards the
+CLI writes theme.css, Atom, RSS and the sitemap, and checks that every expected
+page exists. `--url … --noindex` builds a preview copy. The engine has
+`npm run check`: typecheck, 23 node tests and a Playwright check of a built
+example. That check covers hydration without console errors, the thread with a
+mocked API, scripts in replies not running, the failure path, the reply form and
+pages without JavaScript.
+
+**In this repo.** `news/` holds the config, Mawkingbird's theme, the posts and
+`vendor/fediblog-0.1.0.tgz`, pinned by hash in `news/package-lock.json` (see
+`news/README.md`). Run `make news` or `make news-check`. Production builds News
+through `make mockingbird MOCKINGBIRD_SEO=true`. Canary and test build noindex
+previews, and client-build.yml builds it on every push. robots.txt announces
+`/news/sitemap.xml` (checked by `check-seo-build.mjs`). Links: the app footer
+(beside Help) and the help home.
+
+**Reply in Mawkingbird.** The button links to
+`/statuses/anonymous-status.<base64url of {server, id, originalUrl}>`. For a
+reader signed in to Mastodon, the thread page resolves the status through their
+own server, so they can reply as themselves. A reader who is not signed in sees
+it read-only, because `authGuard` treats `/statuses/…` links as public. The app
+has no "sign in, then return to this URL" step, so the answer to question 2
+(readers who are not signed in sign in first) is only half met. Meeting it fully
+needs a return URL carried through login. That is an app change affecting every
+public status link, so it is not made here.
+
+**Open.**
+- The owner creates the GitHub repository and publishes `fediblog` to npm. Then
+  `news/package.json` switches from the vendored tarball to `fediblog@0.1.0`.
+- Toot both first posts and add their `mastodon:` URLs. Until then they show no
+  comments section.
+- Not linked yet from `/legal/` or the root `noscript` overview.
+- Per-post share images (question 5). Help adopting the shared tokens
+  (question 4).
+- News has no GoatCounter tracking.

@@ -290,7 +290,8 @@ for (const page of pages) {
   for (const link of doc.querySelectorAll('a[href^="/"]:not([href^="//"])')) {
     const href = link.getAttribute('href');
     const target = new URL(href, 'https://mawkingbird.com/').pathname;
-    if (target === '/' || target.startsWith('/help/')) continue;
+    // Help and News are static sites built outside the app, with their own files.
+    if (target === '/' || target.startsWith('/help/') || target.startsWith('/news/')) continue;
     const bare = target.replace(/^\/|\/$/g, '');
     if (publicPaths.has(bare))
       assert.ok(target.endsWith('/'), `${page || 'root'} links ${href} without its trailing slash`);
@@ -416,4 +417,6 @@ const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
 assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/sitemap.xml/);
 // The static help site (scripts/build_help.py) publishes its own sitemap.
 assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/help\/sitemap.xml/);
+// So does the static news site (news/, built by fediblog).
+assert.match(robots, /Sitemap: https:\/\/mawkingbird.com\/news\/sitemap.xml/);
 console.log('SEO HTML checks passed: content, canonicals, cards, verification links and sitemap.');

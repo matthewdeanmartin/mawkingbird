@@ -29,6 +29,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
 // i18n footer.legal: About & legal
 // i18n footer.features: Discover
 // i18n footer.help: Help
+// i18n footer.news: News
 // i18n footer.failWhale: Fail whale
 // i18n footer.hotkeys: ? Keyboard
 // i18n footer.hotkeys.title: Keyboard shortcuts (or press ? anywhere)
@@ -98,6 +99,9 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
         <span class="footer-separator" aria-hidden="true">·</span>
         <!-- Static guides outside the Angular app: a plain href, relative to <base href>. -->
         <a href="help/">{{ 'footer.help' | transloco }}</a>
+        <span class="footer-separator" aria-hidden="true">·</span>
+        <!-- Project news: a static blog (news/, fediblog), also outside the app. -->
+        <a href="news/">{{ 'footer.news' | transloco }}</a>
         <span class="footer-separator" aria-hidden="true">·</span>
         <button
           class="link"

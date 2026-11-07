@@ -219,3 +219,5 @@ __marimo__/
 
 # Static help site preview (make help-site HELP_OUT=.help-site)
 /.help-site
+# Static news preview (make news NEWS_OUT=.news-site)
+/.news-site

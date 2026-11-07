@@ -3,9 +3,11 @@ import { createServer } from 'node:http';
 import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
+import { artifactDir } from './artifacts.mjs';
 
 const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
-const results = path.resolve(import.meta.dirname, '../.test-results');
+// Screenshots and failure dumps, outside the working tree (artifacts.mjs).
+const results = artifactDir('seo-browser');
 const audiencePages = [
   ['readers', 'Make room for the stories you want to read'],
   ['bluesky', 'Read Bluesky and Mastodon in one place'],

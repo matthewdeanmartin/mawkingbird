@@ -1615,3 +1615,12 @@ legal: one footer link added in `app-footer.ts`, one menu row removed from
 added one `shared` link each to the features and audience footers and two to
 `public-article.html`. Source files 1,674 to 1,678; candidate files 597 to 598.
 No shared widget changed.
+
+## News footer link, 2026-11-07
+
+Added a plain `href="news/"` link (and a separator) after Help in
+`app-footer.ts`, for the static /news/ blog. Reviewed the diff: the footer's two
+`nativeButtons` candidates moved from lines 90 and 102 to 91 and 106; there are
+no new candidates. Source files stay at 1,678 and candidate files at 598, with
+none added or removed. No shared widget changed. Reconciliation entries remain
+complete.

@@ -291,6 +291,23 @@ in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
 menu and the welcome modal link to it; the modal's links open new tabs so its
 two answers stay the only way out.
 
+## News: /news/
+
+Project news is a static blog at `https://mawkingbird.com/news/`, built from
+`news/posts/*.md` by fediblog. fediblog is a separate MIT-licensed Angular engine,
+vendored as `news/vendor/*.tgz` and pinned by `news/package-lock.json`; see
+`news/README.md` and `spec/news-blog-engine.md`. It prerenders the index, the
+archive, each post and each tag into `dist-mockingbird/browser/news/`, plus Atom,
+RSS and `news/sitemap.xml`, which `robots.txt` announces. Pages carry canonical
+URLs with trailing slashes, `BlogPosting`/`BreadcrumbList` data and
+`fediverse:creator`. Comments are replies to the post's Mastodon status. The
+browser fetches them after load, and they are never prerendered or in the sitemap.
+Production runs it from `make mockingbird MOCKINGBIRD_SEO=true`. Canary and test
+build previews with `NEWS_ARGS="--url …/canary/news/ --noindex"` (robots
+noindex, no sitemap). Like Help, it is a real directory, outside the app and its
+bundle, and in-app links to it are relative plain `href`s (`news/`). The app
+footer and the help home link it.
+
 ## Focused mini-apps
 
 Public, prerendered pages for one task each, aimed at people searching for that

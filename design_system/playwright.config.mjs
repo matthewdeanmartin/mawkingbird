@@ -1,5 +1,7 @@
 import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { artifactRoot } from "../ui/scripts/artifacts.mjs";
 
 const { defineConfig } = createRequire(
   new URL("../ui/package.json", import.meta.url),
@@ -8,7 +10,8 @@ const { defineConfig } = createRequire(
 export default defineConfig({
   testDir: "./tests",
   testMatch: "**/*.browser.mjs",
-  outputDir: "./test-results",
+  // Failure screenshots and traces, outside the working tree (artifacts.mjs).
+  outputDir: path.join(artifactRoot, "design-system-browser"),
   forbidOnly: true,
   retries: 0,
   // Each test owns its browser context and artifact paths; schedule individual

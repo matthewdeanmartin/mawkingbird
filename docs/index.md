@@ -36,6 +36,7 @@ Use the search box to find a feature or a phrase you see in Mawkingbird. Each gu
 
 These pages are about the project rather than how to use it:
 
+- [News](https://mawkingbird.com/news/): what changed in Mawkingbird, and why
 - [About & legal](https://mawkingbird.com/legal/): credits, privacy, and your server's rules and terms
 - [Why Mawkingbird exists](https://mawkingbird.com/about/)
 - [How Mawkingbird is funded](https://mawkingbird.com/funding/)

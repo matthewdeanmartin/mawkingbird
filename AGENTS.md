@@ -14,7 +14,11 @@ ui/coverage/index.html) and the manifest's added-test list are hidden. Set
 VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to
 see them; check:i18n counts its advisories unless VERBOSE=1. ui/.npmrc sets
 loglevel=warn, so npm's "notice run" lines are hidden. Agents: redirect long
-gates to a log file and read its summary lines; set NO_COLOR=1 FORCE_COLOR=0
+gates to a log file and read its summary lines. Never write logs, screenshots or
+scratch files into the working tree. Put them under the artifact folder:
+`L=$(node ui/scripts/artifacts.mjs logs); make test > "$L/test.log" 2>&1`
+(OS temp/mawkingbird, or $MAWKINGBIRD_ARTIFACTS). Test reports and browser
+screenshots already go there. Set NO_COLOR=1 FORCE_COLOR=0
 on test runs, and grep failures before opening a full dump. A red `make test`
 ends by naming each failed test with its first message line.
 This gate includes design:inventory-check before the test inventory and coverage suite.

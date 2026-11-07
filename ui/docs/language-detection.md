@@ -193,9 +193,10 @@ results include Traditional Chinese; callers' persisted `zh-Hant` preferences
 and storage keys are unchanged.
 
 To verify the extraction boundary locally, run
-`npx tsc -p src/language-detection/tsconfig.json` from `ui/`. This compiles with
-only the ES2022 library and no ambient platform types, emitting JavaScript and
-declarations into `.test-results/language-detection/`.
+`npx tsc -p src/language-detection/tsconfig.json --outDir "$(node scripts/artifacts.mjs language-detection)"`
+from `ui/`. This compiles with only the ES2022 library and no ambient platform
+types, emitting JavaScript and declarations outside the working tree (see
+`scripts/artifacts.mjs`).
 
 ## Structured analysis and reader knowledge
 

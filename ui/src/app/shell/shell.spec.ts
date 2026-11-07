@@ -848,11 +848,15 @@ describe('Shell zen modes', () => {
       'Server rules & terms · Privacy · About & legal',
       'Source · MIT License',
       'Report a bug · Fail whale',
-      'Discover · Help · ? Keyboard',
+      'Discover · Help · News · ? Keyboard',
     ]);
     // The static help site is outside the Angular app: a base-relative plain href.
     expect(footer.querySelector('a[href="help/"]:not([routerLink])')?.textContent?.trim()).toBe(
       'Help',
+    );
+    // So is the static news blog (news/, built by fediblog).
+    expect(footer.querySelector('a[href="news/"]:not([routerLink])')?.textContent?.trim()).toBe(
+      'News',
     );
     expect(
       footer.querySelector('a[href="https://github.com/matthewdeanmartin/mawkingbird/"]'),

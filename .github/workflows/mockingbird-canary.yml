@@ -38,6 +38,8 @@ jobs:
         run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/canary/
       - name: Build /canary/help/ preview (noindex)
         run: make help-site HELP_ARGS="--base /canary/help/ --noindex"
+      - name: Build /canary/news/ preview (noindex)
+        run: make news NEWS_ARGS="--url https://mawkingbird.com/canary/news/ --noindex"
       - name: Add canary marker
         run: printf '%s\n' "$GITHUB_SHA" > ui/dist-mockingbird/browser/canary-commit.txt
       - name: Publish /canary/ to gh-pages
@@ -77,6 +79,8 @@ jobs:
         run: node ui/scripts/write-bluesky-oauth-metadata.mjs ui/dist-mockingbird/browser https://mawkingbird.com/test/
       - name: Build /test/help/ preview (noindex)
         run: make help-site HELP_ARGS="--base /test/help/ --noindex"
+      - name: Build /test/news/ preview (noindex)
+        run: make news NEWS_ARGS="--url https://mawkingbird.com/test/news/ --noindex"
       - name: Add test marker
         run: printf '%s\n' "$GITHUB_SHA" > ui/dist-mockingbird/browser/test-commit.txt
       - name: Verify this really is a test build

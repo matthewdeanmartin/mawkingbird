@@ -21985,11 +21985,11 @@
       "findings": [
         {
           "pattern": "nativeButtons",
-          "line": 90
+          "line": 91
         },
         {
           "pattern": "nativeButtons",
-          "line": 102
+          "line": 106
         }
       ]
     },

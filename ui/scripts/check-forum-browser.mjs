@@ -5,17 +5,17 @@
 // Covers the scan and its call counter, the discussion rule (no storms, no lone
 // posts), facets as links, the People facet, opening a discussion without a
 // refetch, staying in Forum when a post is opened, layout insets, the narrow
-// layouts, and page errors. Screenshots land in .test-results/forum-*.png.
+// layouts, and page errors. Screenshots land in <artifacts>/forum-browser/forum-*.png (artifacts.mjs).
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
+import { artifactDir } from './artifacts.mjs';
 import { routeApi } from './forum-browser-fixture.mjs';
 
 const root = path.resolve('dist-mockingbird/browser');
-const results = path.resolve('.test-results');
-await fs.mkdir(results, { recursive: true });
+const results = artifactDir('forum-browser');
 const mime = {
   '.js': 'text/javascript',
   '.css': 'text/css',

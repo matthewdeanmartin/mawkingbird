@@ -3,9 +3,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
+import { artifactDir } from './artifacts.mjs';
 
 const root = path.resolve('dist-mockingbird/browser');
-await fs.mkdir('.test-results', { recursive: true });
+// Screenshots, outside the working tree (artifacts.mjs).
+const results = artifactDir('radio-browser');
 const mime = {
   '.js': 'text/javascript',
   '.css': 'text/css',
@@ -327,7 +329,7 @@ try {
   await page.getByRole('button', { name: 'Save playlist locally', exact: true }).click();
   await page.getByText('Playlist saved in this browser.', { exact: true }).waitFor();
   assert.ok(new URL(page.url()).hash.startsWith('#playlist='));
-  await page.screenshot({ path: '.test-results/radio-playlist-desktop.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-playlist-desktop.png`, fullPage: true });
   const restored = await page.context().newPage();
   restored.on('pageerror', (error) => errors.push(error.message));
   await restored.route('**/api/**', apiFixture);
@@ -362,7 +364,7 @@ try {
     .waitFor();
   assert.equal(await page.locator('app-radio-dock').isVisible(), false, 'Listen replaces the dock');
   assert.equal(await page.locator('audio[data-radio]').evaluate((audio) => audio.paused), false);
-  await page.screenshot({ path: '.test-results/listen-desktop.png', fullPage: true });
+  await page.screenshot({ path: `${results}/listen-desktop.png`, fullPage: true });
   await page.goBack();
   await page.locator('app-radio-dock.full-view').waitFor();
   const startedAt = await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime);
@@ -419,9 +421,9 @@ try {
   await page.waitForFunction(
     () => !document.querySelector('app-radio-controls')?.classList.contains('fullscreen'),
   );
-  await page.screenshot({ path: '.test-results/radio-desktop.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-desktop.png`, fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: '.test-results/radio-mobile.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-mobile.png`, fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page
     .locator('app-radio-dock')
@@ -456,10 +458,10 @@ try {
   await page.locator('.filename').getByText('recording.wav', { exact: true }).waitFor();
   assert.equal(await composer.inputValue(), 'Prepared locally');
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: '.test-results/radio-studio-mobile.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-studio-mobile.png`, fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.screenshot({ path: '.test-results/radio-studio-desktop.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-studio-desktop.png`, fullPage: true });
   const pagesBeforeReload = accountPages;
   await page.goto(`${base}/radio/studio?view=catalogue`);
   await page.getByText('All available history has been scanned.').waitFor();
@@ -553,7 +555,7 @@ try {
     .getByRole('button', { name: 'Listen on Mixcloud in Radio', exact: true })
     .waitFor();
   await audioToolbar.getByRole('button', { name: 'Open on Mixcloud', exact: true }).waitFor();
-  await page.screenshot({ path: '.test-results/radio-post-toolbar.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-post-toolbar.png`, fullPage: true });
   await page.getByRole('button', { name: 'Load Spotify player', exact: true }).click();
   await page.locator('iframe[title="Spotify"]').waitFor();
   assert.equal(providerRequests, 1, 'Only the chosen provider loads');
@@ -612,7 +614,7 @@ try {
   await dockFitsColumn();
   await page.setViewportSize({ width: 1100, height: 1000 });
   await dockFitsColumn();
-  await page.screenshot({ path: '.test-results/radio-dock-tablet.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-dock-tablet.png`, fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await dockFitsColumn();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
@@ -643,7 +645,7 @@ try {
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
   await page.setViewportSize({ width: 390, height: 844 });
   await dockFitsColumn();
-  await page.screenshot({ path: '.test-results/radio-embed-mobile.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-embed-mobile.png`, fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await dock.getByRole('button', { name: 'Pause', exact: true }).click();
   await dock.getByRole('button', { name: 'Play', exact: true }).waitFor();
@@ -656,7 +658,7 @@ try {
     .getByRole('link', { name: 'Settings', exact: true })
     .click();
   assert.equal(await page.locator('app-radio-page nav').count(), 0);
-  await page.screenshot({ path: '.test-results/radio-settings.png', fullPage: true });
+  await page.screenshot({ path: `${results}/radio-settings.png`, fullPage: true });
   await page.getByRole('button', { name: 'Remove SoundCloud', exact: true }).click();
   await page.getByText(/No services are allowed yet/).waitFor();
   assert.equal(
