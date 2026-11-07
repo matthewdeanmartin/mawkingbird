@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import {
   languageFolder,
@@ -28,6 +28,15 @@ const feedPaths = JSON.parse(
 const feedPages = Object.entries(feedPaths).flatMap(([topic, langs]) =>
   Object.entries(langs).map(([lang, path]) => ({ topic, lang, path })),
 );
+// One communities hub per language with topic pages, all alternates of one another.
+const feedHubs = Object.entries(
+  JSON.parse(
+    await readFile(
+      new URL('../src/app/pages/feed-builder/feed-builder-hubs.json', import.meta.url),
+      'utf8',
+    ),
+  ),
+).map(([lang, hub]) => ({ lang, path: hub.path }));
 const toolLinks = focusedTools
   .map((tool) => `      <li><a href="/${tool.path}/">${tool.title}</a></li>`)
   .join('\n');
@@ -48,12 +57,12 @@ const fallback = `<noscript>
       <li><a href="/for/creators/">Writing and photography</a></li>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
-      <li><a href="/follow/">Who to follow on Mastodon: starter kits</a></li>
-      <li><a href="/communities/">Mastodon starter kits by interest</a></li>
+      <li><a href="/follow/">Who to follow on Mastodon: hand-picked starter kits</a></li>
+      <li><a href="/communities/">Mastodon communities by interest: hashtags, people and servers</a></li>
       <li><a href="/tools/">Free tools for Mastodon and Bluesky</a></li>
 ${toolLinks}
       <li><a href="/about/">Why Mawkingbird exists</a></li>
-      <li><a href="/blog/">Blog</a></li>
+      <li><a href="/legal/">About and legal</a></li>
     </ul>
   </main>
 </noscript>`;
@@ -67,6 +76,29 @@ await writeFile(
   new URL('index.html', root),
   html.replace('</head>', `${appData}</head>`).replace('</body>', `${fallback}</body>`),
 );
+
+// Renamed public pages. GitHub Pages cannot send a 301, so the old address
+// keeps a page that redirects at once and names the new one as canonical; search
+// engines treat that as a permanent move. Not in the sitemap.
+const MOVED = { blog: 'legal' };
+for (const [from, to] of Object.entries(MOVED)) {
+  const target = `https://mawkingbird.com/${to}/`;
+  await mkdir(new URL(`${from}/`, root), { recursive: true });
+  await writeFile(
+    new URL(`${from}/index.html`, root),
+    `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved</title>
+<link rel="canonical" href="${target}">
+<meta http-equiv="refresh" content="0; url=/${to}/">
+</head>
+<body><p>This page moved to <a href="/${to}/">${target}</a>.</p></body>
+</html>
+`,
+  );
+}
 
 // Tool pages are listed from the registry; starter-kit pages follow the bundled
 // kits, which change with catalogue refreshes, so their entries come from what
@@ -93,6 +125,13 @@ const alternateLinks = (pairs) =>
     .join('');
 const alternates = (page) => {
   if (indexPages.includes(page)) return alternateLinks([...indexPair, ['x-default', 'tools']]);
+  if (feedHubs.some((hub) => `${hub.path}/` === page))
+    return feedHubs.length < 2
+      ? ''
+      : alternateLinks([
+          ...feedHubs.map((hub) => [hub.lang, hub.path]),
+          ['x-default', feedHubs.find((hub) => hub.lang === 'en').path],
+        ]);
   const feedPage = feedPages.find((entry) => `${entry.path}/` === page);
   if (feedPage) {
     const versions = feedPages.filter((entry) => entry.topic === feedPage.topic);
@@ -126,7 +165,7 @@ const entries = [
   ...focusedTools.map((tool) => `${tool.path}/`),
   'follow/',
   ...kits.map((slug) => `follow/${slug}/`),
-  'communities/',
+  ...feedHubs.map((hub) => `${hub.path}/`),
   ...feedPages.map((entry) => `${entry.path}/`),
 ]
   .map((page) => `  <url><loc>https://mawkingbird.com/${page}</loc>${alternates(page)}</url>`)
@@ -150,7 +189,7 @@ function withLastmod(xml) {
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
     if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
     if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
-    if (page === 'blog/') return ['src/app/pages/docs/'];
+    if (page === 'legal/') return ['src/app/pages/docs/'];
     // Mini-app pages: their own directory (or the one they share), the page
     // chrome they share, and the registry entry that titles and describes them.
     const tool = focusedTools.find((entry) => `${entry.path}/` === page);
@@ -166,7 +205,7 @@ function withLastmod(xml) {
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
     const feed = 'src/app/pages/feed-builder/';
-    if (page === 'communities/') return [feed];
+    if (feedHubs.some((hub) => `${hub.path}/` === page)) return [feed];
     const feedPage = feedPages.find((entry) => `${entry.path}/` === page);
     if (feedPage)
       return [

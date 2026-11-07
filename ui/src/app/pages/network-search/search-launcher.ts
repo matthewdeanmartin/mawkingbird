@@ -7,6 +7,7 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BLUESKY_WIRE_TYPE } from '../search/search-wire';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 export type SearchNetwork = 'mastodon' | 'bluesky';
 
@@ -56,7 +57,7 @@ const TYPES: Record<SearchNetwork, readonly TypeOption[]> = {
  */
 @Component({
   selector: 'app-search-launcher',
-  imports: [TranslocoPipe, FormsModule, RouterLink, MbButton, MbControl, MbField],
+  imports: [TranslocoPipe, FormsModule, RouterLink, AppOnlyLinkRel, MbButton, MbControl, MbField],
   templateUrl: './search-launcher.html',
   styles: `
     .launcher {

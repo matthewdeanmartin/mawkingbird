@@ -14,7 +14,7 @@ import { FeedPerson, FeedTag, shelves } from './feed-builder-data';
 import { personAccount, profileLink } from './feed-builder-people';
 import {
   FEED_BUILDER_FLOODING,
-  FEED_BUILDER_HUB,
+  feedBuilderHubFor,
   FEED_BUILDER_PREVIEW,
 } from './feed-builder-registry';
 import { FeedPage } from './feed-builder-routes';
@@ -23,6 +23,7 @@ import { convertToList } from './feed-list';
 import { TOOL_PAGES } from '../../focused-tools';
 import { TagActivity } from './tag-activity';
 import { YoutubeChannel, YoutubeSubscribe, YoutubeSubscribeAll } from './youtube-subscribe';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * Where readers ask questions or ask to be removed: the project account, opened
@@ -50,6 +51,7 @@ type TagState = 'idle' | 'busy' | 'following' | 'failed';
   imports: [
     NgTemplateOutlet,
     RouterLink,
+    AppOnlyLinkRel,
     MbBadge,
     MbButton,
     MbCheckbox,
@@ -81,7 +83,8 @@ export class FeedBuilderPage implements OnInit {
   protected readonly page = this.route.snapshot.data['page'] as FeedPage;
   /** Set on the signed-in twin, where the shell supplies header, nav and account menu. */
   protected readonly inShell = this.route.snapshot.data['inShell'] === true;
-  protected readonly hub = `/${FEED_BUILDER_HUB}`;
+  /** The communities hub in this page's language (English when it has none). */
+  protected readonly hub = `/${feedBuilderHubFor(this.page.lang).path}`;
   protected readonly root = `/${this.page.path}`;
   protected readonly previewLink = `/${this.page.path}/${FEED_BUILDER_PREVIEW}`;
   protected readonly floodingLink = `/${this.page.path}/${FEED_BUILDER_FLOODING}`;

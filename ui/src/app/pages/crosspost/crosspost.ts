@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { CrosspostWorkbench } from './crosspost-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * The Mastodon + Bluesky crossposter as a focused mini-app.
@@ -16,7 +17,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-crosspost',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -33,7 +41,14 @@ export class Crosspost {
  */
 @Component({
   selector: 'app-crosspost-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -49,7 +64,14 @@ export class CrosspostDe extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -65,7 +87,14 @@ export class CrosspostJa extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -81,7 +110,14 @@ export class CrosspostFr extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -97,7 +133,14 @@ export class CrosspostEs extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -113,7 +156,14 @@ export class CrosspostZhHant extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -129,7 +179,14 @@ export class CrosspostKo extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -145,7 +202,14 @@ export class CrosspostPt extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -161,7 +225,14 @@ export class CrosspostIt extends Crosspost {
  */
 @Component({
   selector: 'app-crosspost-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -173,7 +244,14 @@ export class CrosspostPl extends Crosspost {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-crosspost-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -185,7 +263,14 @@ export class CrosspostUk extends Crosspost {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -197,7 +282,14 @@ export class CrosspostHi extends Crosspost {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -209,7 +301,14 @@ export class CrosspostNl extends Crosspost {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -221,7 +320,14 @@ export class CrosspostId extends Crosspost {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -233,7 +339,14 @@ export class CrosspostRu extends Crosspost {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -245,7 +358,14 @@ export class CrosspostSv extends Crosspost {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -257,7 +377,14 @@ export class CrosspostVi extends Crosspost {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-crosspost-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, CrosspostWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    CrosspostWorkbench,
+  ],
   templateUrl: './crosspost.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

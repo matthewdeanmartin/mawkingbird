@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { PseudonymityWorkbench } from './pseudonymity-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * "How to be (pseudo)anonymous on Mastodon" as a focused mini-app.
@@ -16,7 +17,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-anonymous-on-mastodon',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -33,7 +41,14 @@ export class AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -49,7 +64,14 @@ export class AnonymousOnMastodonDe extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -65,7 +87,14 @@ export class AnonymousOnMastodonJa extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -81,7 +110,14 @@ export class AnonymousOnMastodonFr extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -97,7 +133,14 @@ export class AnonymousOnMastodonEs extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -113,7 +156,14 @@ export class AnonymousOnMastodonZhHant extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -129,7 +179,14 @@ export class AnonymousOnMastodonKo extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -145,7 +202,14 @@ export class AnonymousOnMastodonPt extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -161,7 +225,14 @@ export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
  */
 @Component({
   selector: 'app-anonymous-on-mastodon-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -173,7 +244,14 @@ export class AnonymousOnMastodonPl extends AnonymousOnMastodon {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -185,7 +263,14 @@ export class AnonymousOnMastodonUk extends AnonymousOnMastodon {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -197,7 +282,14 @@ export class AnonymousOnMastodonHi extends AnonymousOnMastodon {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -209,7 +301,14 @@ export class AnonymousOnMastodonNl extends AnonymousOnMastodon {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -221,7 +320,14 @@ export class AnonymousOnMastodonId extends AnonymousOnMastodon {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -233,7 +339,14 @@ export class AnonymousOnMastodonRu extends AnonymousOnMastodon {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -245,7 +358,14 @@ export class AnonymousOnMastodonSv extends AnonymousOnMastodon {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -257,7 +377,14 @@ export class AnonymousOnMastodonVi extends AnonymousOnMastodon {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-anonymous-on-mastodon-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, PseudonymityWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    PseudonymityWorkbench,
+  ],
   templateUrl: './anonymous-on-mastodon.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

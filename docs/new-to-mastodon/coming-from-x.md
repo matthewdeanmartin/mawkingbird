@@ -22,7 +22,7 @@ If you miss a feed sorted by what is popular, Mawkingbird's **Algo** tab sorts p
 
 ## Your followers do not come with you
 
-Your Twitter followers, posts and handle stay on Twitter; no service moves them to Mastodon. But if you download your Twitter archive, Mawkingbird can [find the people you followed](https://mawkingbird.com/twitter-to-mastodon/) who are already on Mastodon, so you can follow them again. The [starter kits](../finding-people/starter-kits.md) fill in the rest.
+Your Twitter followers, posts and handle stay on Twitter; no service moves them to Mastodon. But if you download your Twitter archive, Mawkingbird can [find the people you followed](https://mawkingbird.com/twitter-to-mastodon/) who are already on Mastodon, so you can follow them again. The [starter kits](../finding-people/starter-kits.md) fill in the rest, and the [Mastodon communities by interest](https://mawkingbird.com/communities/) show where people who share your hobbies already post.
 
 If friends have already moved, ask them for their full Mastodon handles and [import them as a list](../finding-people/import-follow-list.md).
 

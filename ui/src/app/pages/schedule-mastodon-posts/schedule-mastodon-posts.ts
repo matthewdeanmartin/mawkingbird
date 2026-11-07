@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { ScheduleWorkbench } from './schedule-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * Bulk Mastodon scheduling as a focused mini-app.
@@ -17,7 +18,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-schedule-mastodon-posts',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -34,7 +42,14 @@ export class ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -50,7 +65,14 @@ export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -66,7 +88,14 @@ export class ScheduleMastodonPostsJa extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -82,7 +111,14 @@ export class ScheduleMastodonPostsFr extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -98,7 +134,14 @@ export class ScheduleMastodonPostsEs extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -114,7 +157,14 @@ export class ScheduleMastodonPostsZhHant extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -130,7 +180,14 @@ export class ScheduleMastodonPostsKo extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -146,7 +203,14 @@ export class ScheduleMastodonPostsPt extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -162,7 +226,14 @@ export class ScheduleMastodonPostsIt extends ScheduleMastodonPosts {
  */
 @Component({
   selector: 'app-schedule-mastodon-posts-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -174,7 +245,14 @@ export class ScheduleMastodonPostsPl extends ScheduleMastodonPosts {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -186,7 +264,14 @@ export class ScheduleMastodonPostsUk extends ScheduleMastodonPosts {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -198,7 +283,14 @@ export class ScheduleMastodonPostsHi extends ScheduleMastodonPosts {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -210,7 +302,14 @@ export class ScheduleMastodonPostsNl extends ScheduleMastodonPosts {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -222,7 +321,14 @@ export class ScheduleMastodonPostsId extends ScheduleMastodonPosts {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -234,7 +340,14 @@ export class ScheduleMastodonPostsRu extends ScheduleMastodonPosts {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -246,7 +359,14 @@ export class ScheduleMastodonPostsSv extends ScheduleMastodonPosts {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -258,7 +378,14 @@ export class ScheduleMastodonPostsVi extends ScheduleMastodonPosts {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-schedule-mastodon-posts-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ScheduleWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ScheduleWorkbench,
+  ],
   templateUrl: './schedule-mastodon-posts.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

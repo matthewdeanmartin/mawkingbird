@@ -11,7 +11,7 @@ You do not need a person's name to find people worth following. Search for a sub
 5. Open a useful result and visit its author's profile.
 6. Choose **Follow** if you want future posts from that account.
 
-The suggested interests are examples, not the boundaries of what you can search for.
+The suggested interests are examples, not the boundaries of what you can search for. For some subjects there is a ready-made guide to that [Mastodon community](https://mawkingbird.com/communities/) with the hashtags and people worth following.
 
 ## Search directly
 

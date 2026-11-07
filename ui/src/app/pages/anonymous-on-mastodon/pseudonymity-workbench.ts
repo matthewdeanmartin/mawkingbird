@@ -76,6 +76,7 @@ import {
 } from './pseudonymity-plan';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { routeLanguage } from '../../page-language';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * The signed-in body of /how-to-be-anonymous-on-mastodon.
@@ -97,6 +98,7 @@ import { routeLanguage } from '../../page-language';
     MbCheckbox,
     MbNotice,
     RouterLink,
+    AppOnlyLinkRel,
   ],
   templateUrl: './pseudonymity-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',

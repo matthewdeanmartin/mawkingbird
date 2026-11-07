@@ -7,6 +7,7 @@ import { FriendBridgeWorkbench } from './friend-bridge-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
 import { originalPath, toolPageAt } from '../../focused-tools';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /** The network names a direction reads from and searches on. */
 export interface BridgeCopy {
@@ -33,7 +34,14 @@ const COPY: Record<BridgeNetwork, Omit<BridgeCopy, 'root'>> = {
  */
 @Component({
   selector: 'app-friend-bridge',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -69,7 +77,14 @@ export function bridgeSourceOf(route: ActivatedRoute): BridgeNetwork {
  */
 @Component({
   selector: 'app-friend-bridge-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -79,7 +94,14 @@ export class FriendBridgeDe extends FriendBridge {}
 /** The Japanese pages, both directions; see FriendBridgeDe. */
 @Component({
   selector: 'app-friend-bridge-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -89,7 +111,14 @@ export class FriendBridgeJa extends FriendBridge {}
 /** The French pages, both directions; see FriendBridgeDe. */
 @Component({
   selector: 'app-friend-bridge-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -103,7 +132,14 @@ export class FriendBridgeFr extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -117,7 +153,14 @@ export class FriendBridgeEs extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -131,7 +174,14 @@ export class FriendBridgeZhHant extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -145,7 +195,14 @@ export class FriendBridgeKo extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -159,7 +216,14 @@ export class FriendBridgePt extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -173,7 +237,14 @@ export class FriendBridgeIt extends FriendBridge {}
  */
 @Component({
   selector: 'app-friend-bridge-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -183,7 +254,14 @@ export class FriendBridgePl extends FriendBridge {}
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-friend-bridge-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -193,7 +271,14 @@ export class FriendBridgeUk extends FriendBridge {}
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -203,7 +288,14 @@ export class FriendBridgeHi extends FriendBridge {}
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -213,7 +305,14 @@ export class FriendBridgeNl extends FriendBridge {}
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -223,7 +322,14 @@ export class FriendBridgeId extends FriendBridge {}
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -233,7 +339,14 @@ export class FriendBridgeRu extends FriendBridge {}
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -243,7 +356,14 @@ export class FriendBridgeSv extends FriendBridge {}
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -253,7 +373,14 @@ export class FriendBridgeVi extends FriendBridge {}
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-friend-bridge-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendBridgeWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendBridgeWorkbench,
+  ],
   templateUrl: './friend-bridge.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

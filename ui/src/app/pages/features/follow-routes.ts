@@ -13,15 +13,15 @@ const kitDescription: ResolveFn<string> = async (route) =>
 const kitIndexable: ResolveFn<boolean> = async (route) =>
   !!(await kits()).publicKit(kitSlug(route));
 const kitStructuredData: ResolveFn<object | undefined> = async (route) => {
-  const { kitItemList, publicKit } = await kits();
+  const { kitPage, publicKit } = await kits();
   const kit = publicKit(kitSlug(route));
-  return kit ? kitItemList(kit) : undefined;
+  return kit ? kitPage(kit) : undefined;
 };
 
 export const followRoutes: Routes = [
   {
     path: 'follow',
-    title: 'Who to follow on Mastodon: starter kits',
+    title: 'Who to follow on Mastodon: hand-picked starter kits',
     data: { seoIndexable: true, seoDescription: FOLLOW_DESCRIPTION },
     loadComponent: () => import('./follow-hub').then((m) => m.FollowHub),
   },

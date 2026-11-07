@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { MastodonAnalyticsPanel } from './mastodon-analytics-panel';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * Mastodon account analytics as a focused mini-app.
@@ -15,7 +16,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-mastodon-analytics',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -32,7 +40,14 @@ export class MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -48,7 +63,14 @@ export class MastodonAnalyticsDe extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -64,7 +86,14 @@ export class MastodonAnalyticsJa extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -80,7 +109,14 @@ export class MastodonAnalyticsFr extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -96,7 +132,14 @@ export class MastodonAnalyticsEs extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -112,7 +155,14 @@ export class MastodonAnalyticsZhHant extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -128,7 +178,14 @@ export class MastodonAnalyticsKo extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -144,7 +201,14 @@ export class MastodonAnalyticsPt extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -160,7 +224,14 @@ export class MastodonAnalyticsIt extends MastodonAnalytics {
  */
 @Component({
   selector: 'app-mastodon-analytics-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -172,7 +243,14 @@ export class MastodonAnalyticsPl extends MastodonAnalytics {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-mastodon-analytics-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -184,7 +262,14 @@ export class MastodonAnalyticsUk extends MastodonAnalytics {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -196,7 +281,14 @@ export class MastodonAnalyticsHi extends MastodonAnalytics {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -208,7 +300,14 @@ export class MastodonAnalyticsNl extends MastodonAnalytics {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -220,7 +319,14 @@ export class MastodonAnalyticsId extends MastodonAnalytics {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -232,7 +338,14 @@ export class MastodonAnalyticsRu extends MastodonAnalytics {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -244,7 +357,14 @@ export class MastodonAnalyticsSv extends MastodonAnalytics {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -256,7 +376,14 @@ export class MastodonAnalyticsVi extends MastodonAnalytics {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-analytics-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, MastodonAnalyticsPanel],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    MastodonAnalyticsPanel,
+  ],
   templateUrl: './mastodon-analytics.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

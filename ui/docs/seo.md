@@ -34,6 +34,23 @@ describes photo viewing on supported networks, not an Instagram connection;
 the Twitter/X guide does not promise automatic account migration. Audience
 content is lazy-loaded and stays out of the app's initial bundle.
 
+## Trailing slashes and app links
+
+Every public page is published as `<path>/index.html`, so GitHub Pages answers
+`/features` with a 301 to `/features/`. `PublicPageUrlSerializer`
+(`src/app/public-page-urls.ts`, provided in both `app.config.ts` and
+`main.server.ts`) gives links to indexable routes (`seoIndexable` in `data` or
+`resolve`, except `seoCanonicalPath` routes such as `/home`) their trailing
+slash, and parses the slashed form back to the same route. App routes keep their
+form; `/login` is a registered OAuth redirect address.
+
+App routes (`/login`, `/accounts/…`, `/tags/…`, a topic page's `preview`) have
+no prerendered file, so crawlers get the SPA fallback's 404. Public page
+components import `AppOnlyLinkRel` next to `RouterLink`; it adds
+`rel="nofollow"` to such links and keeps a link's own `rel`. A new public
+component must import it too: `check-seo-build.mjs` fails on a slashless link
+to a public page or a followed link into the app.
+
 The feature-area navigation uses this document's pathname plus a fragment. Bare
 `href="#reading"` links would resolve against the root `<base href="/">` and
 open the app instead. The feature reference and audience pages share the same
@@ -72,9 +89,9 @@ posts to the sitemap. Do not use robots.txt blocking as a substitute for noindex
 When adding another public page, keep its client route, server route, sitemap
 entry and HTML checks in sync.
 
-## Project pages: About, Funding and Blog
+## Project pages: About, Funding and About & legal
 
-`/about/`, `/funding/` and `/blog/` are prerendered by `PublicArticle`
+`/about/`, `/funding/` and `/legal/` (About & legal, formerly `/blog/`) are prerendered by `PublicArticle`
 (`pages/features/public-article.ts`), registered only in `main.server.ts`. In the
 browser the same URLs belong to the signed-in shell and render the essays as
 virtual tweets; the essay text lives once in `pages/docs/public-copy.ts`, so the
@@ -85,9 +102,19 @@ JavaScript would turn the prerendered page into `noindex`.
 These routes sit under the shell's `authGuard`. A fresh visitor (or a crawler
 running JavaScript) used to be sent to `/`, which the entry dispatcher turns
 into `/home`, so the article vanished. `authGuard` now enters Anonymous for
-`/about`, `/funding`, `/blog` and `/credits`, as it already did for public posts,
+`/about`, `/funding`, `/legal` and `/credits`, as it already did for public posts,
 profiles and tags. Such a visitor skips the welcome modal, exactly like someone
 arriving on a shared post link.
+
+`/legal/` was `/blog/` until 2026-11-07; it never held posts. The browser
+redirects `/blog` to `/legal`, and `prepare-seo-index.mjs` writes a static
+`blog/index.html` that refreshes at once to `/legal/` and names it canonical
+(GitHub Pages cannot send a 301). It carries no `noindex`: one signal, the move.
+Add any later rename to `MOVED` there; `check-seo-build.mjs` checks the page.
+
+The `...` menu has one reading entry, Help (the help site). The help home's
+"More from Mawkingbird" section links About & legal and the project pages, and
+the app footer links About & legal next to Privacy.
 
 ## Starter kits: /follow/
 
@@ -120,6 +147,37 @@ page adds the hashtags worth following, new local hashtags to help start
 ("future tags"), people grouped by shelf (YouTube creators, well-known names,
 community voices), the servers where the community gathers, questions, and how
 people are chosen.
+
+The two hubs target different searches and say so in their titles: `/follow/`
+is "Who to follow on Mastodon" (short people lists); `/communities/` is
+"Mastodon communities by interest" (hashtags, people and servers). They link to
+each other; keep that vocabulary when adding links to them.
+
+### One hub per language
+
+Every language with a topic page has its own hub, listed in
+`feed-builder-hubs.json` (path and link label) with its words in
+`copy/hub-copy.ts`: `/communities/` (English, every topic in every language),
+`/de/mastodon-communities/`, `/fr/communautes-mastodon/`, and so on. A language
+hub lists its own pages and links the English hub and its language's tool index.
+Hubs are hreflang alternates of one another; each topic page's "All
+communities" link and breadcrumb point to its own language's hub, and every tool
+index includes `<app-communities-link>`, which links its language's hub once
+one exists.
+
+To keep it that way, `feed-builder-registry.spec.ts` fails when a language has
+a topic page but no hub (or a hub but no page, or no hub copy), and
+`check-seo-build.mjs` fails when a built hub misses one of its pages, a topic
+page does not link its language hub, or a tool index does not link its hub.
+When the first page in a new language is approved, add its hub entry and copy
+in the same change.
+
+### Breadcrumbs
+
+Topic pages and `/follow/<slug>/` are schema.org `CollectionPage`s whose
+`breadcrumb` is a `BreadcrumbList` (`src/app/breadcrumbs.ts`): Mawkingbird ›
+hub › page. The people are the `mainEntity` list. `check-seo-build.mjs` checks
+both trails.
 
 Plant Based Living has approved English (`/plant-based-living-on-mastodon/`)
 and German (`/de/pflanzlich-leben-auf-mastodon/`) editions. Its copy explains

@@ -1,7 +1,10 @@
 import { ResolveFn, Route, Routes } from '@angular/router';
 import { PageLanguage } from '../../focused-tools';
 import {
-  FEED_BUILDER_HUB,
+  FEED_BUILDER_HUBS,
+  FeedBuilderHub,
+  feedBuilderHubAlternates,
+  feedBuilderHubFor,
   FEED_BUILDER_PAGES,
   FEED_BUILDER_FLOODING,
   FEED_BUILDER_PREVIEW,
@@ -20,9 +23,9 @@ import {
  * load with the app; data, copy and words are imported by the resolvers, so
  * the startup bundle carries none of them.
  */
-export const COMMUNITIES_TITLE = 'Mastodon starter kits by interest: communities to follow';
+export const COMMUNITIES_TITLE = 'Mastodon communities by interest: hashtags, people and servers';
 export const COMMUNITIES_DESCRIPTION =
-  'Starter kits for interests on Mastodon: the hashtags worth following, the people worth following and where each community gathers. In several languages.';
+  'Find Mastodon communities by interest: the hashtags worth following, the people worth following and the servers where each community gathers. In several languages.';
 
 const copyOf = async (topic: FeedTopic, lang: PageLanguage) =>
   (await import('./copy/topic-copy')).loadTopicCopy(topic, lang);
@@ -73,7 +76,12 @@ function pageRoute(entry: FeedBuilderEntry): Route {
   const structuredData: ResolveFn<object> = async () => {
     const page = await loadFeedPage(entry);
     const { collectionPage } = await import('./feed-builder-data');
-    return collectionPage(page.data, page.copy, `https://mawkingbird.com/${path}/`);
+    const hub = feedBuilderHubFor(lang);
+    return collectionPage(page.data, page.copy, `https://mawkingbird.com/${path}/`, [
+      { name: 'Mawkingbird', path: '' },
+      { name: hub.label, path: hub.path },
+      { name: page.copy.heading, path },
+    ]);
   };
   return {
     path,
@@ -151,15 +159,37 @@ async function loadHub() {
 
 export type FeedHubEntry = Awaited<ReturnType<typeof loadHub>>[number];
 
-/** The hub and every page: public, prerendered, in the sitemap. */
-export const feedBuilderRoutes: Routes = [
-  {
-    path: FEED_BUILDER_HUB,
-    title: COMMUNITIES_TITLE,
-    data: { seoIndexable: true, seoDescription: COMMUNITIES_DESCRIPTION, lang: 'en' },
-    resolve: { entries: loadHub },
+const hubCopy = async (lang: PageLanguage) => (await import('./copy/hub-copy')).hubCopyFor(lang);
+
+/**
+ * One hub per language with topic pages (feed-builder-hubs.json). English
+ * lists every topic in every language; the others list their own language's
+ * pages. All are hreflang alternates of one another.
+ */
+function hubRoute({ lang, path }: FeedBuilderHub): Route {
+  const english = lang === 'en';
+  return {
+    path,
+    pathMatch: 'full',
+    title: english ? COMMUNITIES_TITLE : async () => (await hubCopy(lang)).title,
+    data: {
+      seoIndexable: true,
+      lang,
+      seoAlternates: feedBuilderHubAlternates(),
+      ...(english ? { seoDescription: COMMUNITIES_DESCRIPTION } : {}),
+    },
+    resolve: {
+      entries: loadHub,
+      copy: () => hubCopy(lang),
+      ...(english ? {} : { seoDescription: async () => (await hubCopy(lang)).description }),
+    },
     loadComponent: () => import('./feed-builder-hub').then((m) => m.FeedBuilderHub),
-  },
+  };
+}
+
+/** The hubs and every page: public, prerendered, in the sitemap. */
+export const feedBuilderRoutes: Routes = [
+  ...FEED_BUILDER_HUBS.map(hubRoute),
   ...FEED_BUILDER_PAGES.map(pageRoute),
 ];
 

@@ -328,9 +328,10 @@
                  prominently (page-menu-link, and the storage-summary card). -->
               <a routerLink="/observability">{{ 'shell.menu.observability' | transloco }}</a>
 
-              <!-- Docs & grab-bag -->
+              <!-- Reading. One entry: "Docs" next to "Help" read as the same thing.
+               The help site's home links on to About & legal (/legal), which the
+               footer also links. -->
               <div class="menu-divider"></div>
-              <a routerLink="/blog">{{ 'shell.menu.docs' | transloco }}</a>
               <!-- The static help site lives outside the Angular app, so a plain href
                relative to <base href> (/help/ in production, /canary/help/ on canary). -->
               <a href="help/">{{ 'shell.menu.help' | transloco }}</a>

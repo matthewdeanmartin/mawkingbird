@@ -5,11 +5,12 @@ import { ENGLISH_TOOLS } from '../../focused-tools';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /** Public English reference; independent of session, instance and runtime dictionaries. */
 @Component({
   selector: 'app-features',
-  imports: [RouterLink, MbButton, MbContentLink, MbNavigation, MbNavLink],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, MbNavigation, MbNavLink],
   templateUrl: './features.html',
   styleUrl: './features.css',
 })

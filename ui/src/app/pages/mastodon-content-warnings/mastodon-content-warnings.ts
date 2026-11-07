@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { ContentWarningsWorkbench } from './content-warnings-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * "How to turn off content warnings on Mastodon" as a focused mini-app, at
@@ -16,7 +17,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-mastodon-content-warnings',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -33,7 +41,14 @@ export class MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -49,7 +64,14 @@ export class MastodonContentWarningsDe extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -65,7 +87,14 @@ export class MastodonContentWarningsJa extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -83,7 +112,14 @@ export class MastodonContentWarningsFr extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -101,7 +137,14 @@ export class MastodonContentWarningsEs extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -117,7 +160,14 @@ export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -133,7 +183,14 @@ export class MastodonContentWarningsKo extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -149,7 +206,14 @@ export class MastodonContentWarningsPt extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -167,7 +231,14 @@ export class MastodonContentWarningsIt extends MastodonContentWarnings {
  */
 @Component({
   selector: 'app-mastodon-content-warnings-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -179,7 +250,14 @@ export class MastodonContentWarningsPl extends MastodonContentWarnings {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -191,7 +269,14 @@ export class MastodonContentWarningsUk extends MastodonContentWarnings {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -203,7 +288,14 @@ export class MastodonContentWarningsHi extends MastodonContentWarnings {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -215,7 +307,14 @@ export class MastodonContentWarningsNl extends MastodonContentWarnings {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -227,7 +326,14 @@ export class MastodonContentWarningsId extends MastodonContentWarnings {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -239,7 +345,14 @@ export class MastodonContentWarningsRu extends MastodonContentWarnings {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -251,7 +364,14 @@ export class MastodonContentWarningsSv extends MastodonContentWarnings {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -263,7 +383,14 @@ export class MastodonContentWarningsVi extends MastodonContentWarnings {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-content-warnings-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, ContentWarningsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    ContentWarningsWorkbench,
+  ],
   templateUrl: './mastodon-content-warnings.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

@@ -1,6 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 // i18n focusedNextSteps.title: Next: make Mawkingbird your everyday Mastodon app
 // i18n focusedNextSteps.home.title: Open your home feed
@@ -27,7 +28,7 @@ export interface NextStepCard {
  */
 @Component({
   selector: 'app-focused-next-steps',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, AppOnlyLinkRel, TranslocoPipe],
   template: `
     <section class="next-steps" aria-labelledby="next-steps-title">
       <h2 id="next-steps-title">{{ 'focusedNextSteps.title' | transloco }}</h2>

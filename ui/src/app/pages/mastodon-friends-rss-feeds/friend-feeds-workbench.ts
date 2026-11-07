@@ -15,6 +15,7 @@ import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-s
 // i18n focusedTools.feeds.results: Open the results
 // i18n focusedTools.feeds.find: Find my friends' feeds
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * The signed-in body of /mastodon-friends-rss-feeds: the "Find your friends'
@@ -28,7 +29,14 @@ import { TranslocoPipe } from '@jsverse/transloco';
  */
 @Component({
   selector: 'app-friend-feeds-workbench',
-  imports: [TranslocoPipe, FriendFeedsDialog, FocusedNextSteps, MbButton, RouterLink],
+  imports: [
+    TranslocoPipe,
+    FriendFeedsDialog,
+    FocusedNextSteps,
+    MbButton,
+    RouterLink,
+    AppOnlyLinkRel,
+  ],
   template: `
     <section class="panel">
       <h2>{{ 'focusedTools.feeds.title' | transloco }}</h2>

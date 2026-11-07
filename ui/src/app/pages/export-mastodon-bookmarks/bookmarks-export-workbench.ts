@@ -11,6 +11,7 @@ import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-s
 import { ExportMode, bookmarkFileHtml, exportEntries, sharedLink } from './bookmark-export';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { routeTranslate } from '../../page-language';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 // i18n focusedTools.bookmarks.readTitle: 1. Read your bookmarks
 // i18n focusedTools.bookmarks.readBody: Your bookmarks are read from your Mastodon server, 40 at a time.
@@ -52,7 +53,15 @@ import { routeTranslate } from '../../page-language';
  */
 @Component({
   selector: 'app-bookmarks-export-workbench',
-  imports: [TranslocoPipe, FocusedNextSteps, MbButton, MbNotice, MbRadioGroup, RouterLink],
+  imports: [
+    TranslocoPipe,
+    FocusedNextSteps,
+    MbButton,
+    MbNotice,
+    MbRadioGroup,
+    RouterLink,
+    AppOnlyLinkRel,
+  ],
   templateUrl: './bookmarks-export-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',
   styles: `

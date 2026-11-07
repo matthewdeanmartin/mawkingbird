@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { AmnestyWorkbench } from './amnesty-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * Mute Amnesty and Block Amnesty as a focused mini-app: unmute or unblock
@@ -13,7 +14,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -30,7 +38,14 @@ export class MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -46,7 +61,14 @@ export class MastodonMuteBlockAmnestyDe extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -62,7 +84,14 @@ export class MastodonMuteBlockAmnestyJa extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -78,7 +107,14 @@ export class MastodonMuteBlockAmnestyFr extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -96,7 +132,14 @@ export class MastodonMuteBlockAmnestyEs extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -112,7 +155,14 @@ export class MastodonMuteBlockAmnestyZhHant extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -128,7 +178,14 @@ export class MastodonMuteBlockAmnestyKo extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -144,7 +201,14 @@ export class MastodonMuteBlockAmnestyPt extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -160,7 +224,14 @@ export class MastodonMuteBlockAmnestyIt extends MastodonMuteBlockAmnesty {
  */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -174,7 +245,14 @@ export class MastodonMuteBlockAmnestyPl extends MastodonMuteBlockAmnesty {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -188,7 +266,14 @@ export class MastodonMuteBlockAmnestyUk extends MastodonMuteBlockAmnesty {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -202,7 +287,14 @@ export class MastodonMuteBlockAmnestyHi extends MastodonMuteBlockAmnesty {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -216,7 +308,14 @@ export class MastodonMuteBlockAmnestyNl extends MastodonMuteBlockAmnesty {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -230,7 +329,14 @@ export class MastodonMuteBlockAmnestyId extends MastodonMuteBlockAmnesty {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -244,7 +350,14 @@ export class MastodonMuteBlockAmnestyRu extends MastodonMuteBlockAmnesty {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -258,7 +371,14 @@ export class MastodonMuteBlockAmnestySv extends MastodonMuteBlockAmnesty {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -272,7 +392,14 @@ export class MastodonMuteBlockAmnestyVi extends MastodonMuteBlockAmnesty {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-mute-block-amnesty-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, AmnestyWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    AmnestyWorkbench,
+  ],
   templateUrl: './mastodon-mute-block-amnesty.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

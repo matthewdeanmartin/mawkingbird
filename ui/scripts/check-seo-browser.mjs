@@ -135,12 +135,12 @@ try {
         return box && box.top < innerHeight && box.bottom > 0;
       }, fragment);
     }
-    assert.equal(await page.locator('footer a[href="/for/readers"]').count(), 1);
-    assert.equal(await page.locator('footer a[href="/for/bluesky"]').count(), 1);
-    assert.equal(await page.locator('footer a[href="/for/twitter-exodus"]').count(), 1);
-    assert.equal(await page.locator('footer a[href="/for/instagram"]').count(), 1);
-    assert.equal(await page.locator('footer a[href="/for/creators"]').count(), 1);
-    assert.equal(await page.locator('footer a[href="/for/power-users"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/readers/"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/bluesky/"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/twitter-exodus/"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/instagram/"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/creators/"]').count(), 1);
+    assert.equal(await page.locator('footer a[href="/for/power-users/"]').count(), 1);
     if (javaScriptEnabled)
       assert.deepEqual(
         await page.evaluate(() => window.__seoPageViews.map((path) => path.replace(/\/$/, ''))),
@@ -198,22 +198,22 @@ try {
       await page
         .getByRole('link', { name: 'Discover all Mawkingbird features', exact: true })
         .click();
-      await page.waitForURL(`${origin}/features`);
+      await page.waitForURL(`${origin}/features/`);
       const enteredFeaturesAt = await page.evaluate(() => performance.timeOrigin);
       await page
         .getByRole('navigation', { name: 'Feature areas' })
         .getByRole('link', { name: 'Reading', exact: true })
         .click();
-      await page.waitForURL(`${origin}/features#reading`);
+      await page.waitForURL(`${origin}/features/#reading`);
       assert.equal(
         await page.evaluate(() => performance.timeOrigin),
         enteredFeaturesAt,
         'section links also stay in the document after client navigation to /features',
       );
       await page.locator('footer').getByRole('link', { name: 'For readers', exact: true }).click();
-      await page.waitForURL(`${origin}/for/readers`);
+      await page.waitForURL(`${origin}/for/readers/`);
       await page.getByRole('link', { name: 'For creators', exact: true }).click();
-      await page.waitForURL(`${origin}/for/creators`);
+      await page.waitForURL(`${origin}/for/creators/`);
       await page.getByRole('heading', { name: audiencePages[4][1], exact: true }).waitFor();
       assert.equal(
         await page.locator('link[rel="canonical"]').getAttribute('href'),
@@ -365,7 +365,7 @@ try {
   for (const [slug, heading, inApp] of [
     ['about', 'Why Mawkingbird exists', 'Why I asked a bot to create this.'],
     ['funding', 'How Mawkingbird is funded', 'Nothing below is a revenue model'],
-    ['blog', 'Mawkingbird blog', 'Credits & Privacy'],
+    ['legal', 'About & legal', 'Credits & Privacy'],
   ]) {
     for (const javaScriptEnabled of [false, true]) {
       const context = await browser.newContext({ javaScriptEnabled });

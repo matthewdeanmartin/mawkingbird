@@ -133,9 +133,14 @@
       "nextStep": "Public starter-kit page reuses the feature layout and MbButton/MbContentLink. Keep the consent-filtered list from follow-kits.ts, decorative avatars with empty alt, and the follow action pointing at the in-app kit."
     },
     {
+      "file": "ui/src/app/pages/feed-builder/communities-link.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Tool indexes' link to their language's communities hub: a single MbContentLink, rendered only when the hub exists. Keep it a plain routerLink so the prerender carries it."
+    },
+    {
       "file": "ui/src/app/pages/feed-builder/feed-builder-hub.html",
       "disposition": "adopted scope",
-      "nextStep": "Public /communities/ hub reuses the feature layout, MbButton and MbContentLink. Keep each topic page a routerLink with lang and hreflang on links to other languages."
+      "nextStep": "Public communities hubs (/communities/ and one per language) reuse the feature layout, MbButton and MbContentLink. Keep each topic page a routerLink with lang and hreflang on links to other languages."
     },
     {
       "file": "ui/src/app/pages/feed-builder/feed-builder-page.html",

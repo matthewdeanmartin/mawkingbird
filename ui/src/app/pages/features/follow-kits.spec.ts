@@ -4,7 +4,7 @@ import { Account } from '../../models';
 import {
   MIN_PUBLIC_KIT_SIZE,
   PUBLIC_KITS,
-  kitItemList,
+  kitPage,
   plainBio,
   publicKit,
   searchListable,
@@ -104,10 +104,21 @@ describe('public starter-kit pages', () => {
     const [published] = toPublicKits([
       kit('mixed', [person('a'), person('b'), person('c'), person('quiet', { noindex: true })]),
     ]);
-    const list = kitItemList(published) as {
-      numberOfItems: number;
-      itemListElement: { position: number; name: string; url: string }[];
+    const page = kitPage(published) as {
+      '@type': string;
+      breadcrumb: { itemListElement: { position: number; name: string; item: string }[] };
+      mainEntity: {
+        numberOfItems: number;
+        itemListElement: { position: number; name: string; url: string }[];
+      };
     };
+    expect(page['@type']).toBe('CollectionPage');
+    expect(page.breadcrumb.itemListElement.map((crumb) => crumb.item)).toEqual([
+      'https://mawkingbird.com/',
+      'https://mawkingbird.com/follow/',
+      `https://mawkingbird.com/follow/${published.slug}/`,
+    ]);
+    const list = page.mainEntity;
     expect(list.numberOfItems).toBe(3);
     expect(list.itemListElement.map((item) => item.position)).toEqual([1, 2, 3]);
     expect(list.itemListElement.map((item) => item.url)).toEqual(

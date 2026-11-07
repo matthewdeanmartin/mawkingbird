@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { BookmarksExportWorkbench } from './bookmarks-export-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * "Export your Mastodon bookmarks" as a focused mini-app: every native bookmark
@@ -14,7 +15,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -31,7 +39,14 @@ export class ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -47,7 +62,14 @@ export class ExportMastodonBookmarksDe extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -63,7 +85,14 @@ export class ExportMastodonBookmarksJa extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -79,7 +108,14 @@ export class ExportMastodonBookmarksFr extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -95,7 +131,14 @@ export class ExportMastodonBookmarksEs extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -111,7 +154,14 @@ export class ExportMastodonBookmarksZhHant extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -127,7 +177,14 @@ export class ExportMastodonBookmarksKo extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -143,7 +200,14 @@ export class ExportMastodonBookmarksPt extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -159,7 +223,14 @@ export class ExportMastodonBookmarksIt extends ExportMastodonBookmarks {
  */
 @Component({
   selector: 'app-export-mastodon-bookmarks-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -171,7 +242,14 @@ export class ExportMastodonBookmarksPl extends ExportMastodonBookmarks {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -183,7 +261,14 @@ export class ExportMastodonBookmarksUk extends ExportMastodonBookmarks {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -195,7 +280,14 @@ export class ExportMastodonBookmarksHi extends ExportMastodonBookmarks {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -207,7 +299,14 @@ export class ExportMastodonBookmarksNl extends ExportMastodonBookmarks {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -219,7 +318,14 @@ export class ExportMastodonBookmarksId extends ExportMastodonBookmarks {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -231,7 +337,14 @@ export class ExportMastodonBookmarksRu extends ExportMastodonBookmarks {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -243,7 +356,14 @@ export class ExportMastodonBookmarksSv extends ExportMastodonBookmarks {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -255,7 +375,14 @@ export class ExportMastodonBookmarksVi extends ExportMastodonBookmarks {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-export-mastodon-bookmarks-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, BookmarksExportWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    BookmarksExportWorkbench,
+  ],
   templateUrl: './export-mastodon-bookmarks.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

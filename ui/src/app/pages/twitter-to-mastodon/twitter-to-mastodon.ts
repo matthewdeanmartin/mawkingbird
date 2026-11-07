@@ -6,6 +6,7 @@ import { TwitterArchiveImport } from '../settings/import-export/twitter-archive-
 import { TwitterImportNextSteps } from './twitter-import-next-steps';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * The Twitter importer as its own small app, for people who arrive searching
@@ -20,6 +21,7 @@ import { LanguageVersions } from '../focused-apps/language-versions';
   selector: 'app-twitter-to-mastodon',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -43,6 +45,7 @@ export class TwitterToMastodon {
   selector: 'app-twitter-to-mastodon-de',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -64,6 +67,7 @@ export class TwitterToMastodonDe extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-ja',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -85,6 +89,7 @@ export class TwitterToMastodonJa extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-fr',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -106,6 +111,7 @@ export class TwitterToMastodonFr extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-es',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -127,6 +133,7 @@ export class TwitterToMastodonEs extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-zh-hant',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -148,6 +155,7 @@ export class TwitterToMastodonZhHant extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-ko',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -169,6 +177,7 @@ export class TwitterToMastodonKo extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-pt',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -190,6 +199,7 @@ export class TwitterToMastodonPt extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-it',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -211,6 +221,7 @@ export class TwitterToMastodonIt extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-pl',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -228,6 +239,7 @@ export class TwitterToMastodonPl extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-uk',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -245,6 +257,7 @@ export class TwitterToMastodonUk extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-hi',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -262,6 +275,7 @@ export class TwitterToMastodonHi extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-nl',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -279,6 +293,7 @@ export class TwitterToMastodonNl extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-id',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -296,6 +311,7 @@ export class TwitterToMastodonId extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-ru',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -313,6 +329,7 @@ export class TwitterToMastodonRu extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-sv',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -330,6 +347,7 @@ export class TwitterToMastodonSv extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-vi',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,
@@ -347,6 +365,7 @@ export class TwitterToMastodonVi extends TwitterToMastodon {}
   selector: 'app-twitter-to-mastodon-tr',
   imports: [
     RouterLink,
+    AppOnlyLinkRel,
     MbButton,
     MbContentLink,
     LanguageVersions,

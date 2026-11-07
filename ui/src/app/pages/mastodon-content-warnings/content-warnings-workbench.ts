@@ -8,6 +8,7 @@ import { Server } from '../../server';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { FocusedNextSteps, toolInviteLink } from '../focused-apps/focused-next-steps';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 // i18n focusedTools.cw.here: In Mawkingbird
 // i18n focusedTools.cw.expand: Auto-expand content warnings
@@ -54,7 +55,7 @@ const MEDIA_DISPLAY: Record<string, string> = {
  */
 @Component({
   selector: 'app-content-warnings-workbench',
-  imports: [TranslocoPipe, FocusedNextSteps, FormsModule, MbCheckbox, RouterLink],
+  imports: [TranslocoPipe, FocusedNextSteps, FormsModule, MbCheckbox, RouterLink, AppOnlyLinkRel],
   templateUrl: './content-warnings-workbench.html',
   styleUrl: '../focused-apps/focused-page.css',
   styles: `

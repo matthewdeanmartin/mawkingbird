@@ -1,5 +1,6 @@
 import { BUNDLED_STARTER_KITS, BundledStarterKit } from '../../bundled-starter-kits.generated';
 import { Account } from '../../models';
+import { breadcrumbList } from '../../breadcrumbs';
 
 /**
  * Public, search-engine-facing copies of the hand-picked starter kits.
@@ -104,18 +105,28 @@ export function publicKit(slug: string | null | undefined): PublicKit | null {
 }
 
 /** schema.org ItemList of the people a kit page shows, in the same order. */
-export function kitItemList(kit: PublicKit): object {
+export function kitPage(kit: PublicKit): object {
   return {
     '@context': 'https://schema.org',
-    '@type': 'ItemList',
+    '@type': 'CollectionPage',
     name: kit.heading,
     description: kit.description,
-    numberOfItems: kit.accounts.length,
-    itemListElement: kit.accounts.map((account, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: account.name,
-      url: account.url,
-    })),
+    url: `https://mawkingbird.com/follow/${kit.slug}/`,
+    inLanguage: 'en',
+    breadcrumb: breadcrumbList([
+      { name: 'Mawkingbird', path: '' },
+      { name: 'Who to follow on Mastodon', path: 'follow' },
+      { name: kit.heading, path: `follow/${kit.slug}` },
+    ]),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: kit.accounts.length,
+      itemListElement: kit.accounts.map((account, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: account.name,
+        url: account.url,
+      })),
+    },
   };
 }

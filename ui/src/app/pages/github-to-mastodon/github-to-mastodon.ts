@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { GitHubFriendsWorkbench } from './github-friends-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * GitHub friends → Mastodon as a focused mini-app.
@@ -15,7 +16,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-github-to-mastodon',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -32,7 +40,14 @@ export class GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -48,7 +63,14 @@ export class GithubToMastodonDe extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -64,7 +86,14 @@ export class GithubToMastodonJa extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -80,7 +109,14 @@ export class GithubToMastodonFr extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -96,7 +132,14 @@ export class GithubToMastodonEs extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -112,7 +155,14 @@ export class GithubToMastodonZhHant extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -128,7 +178,14 @@ export class GithubToMastodonKo extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -144,7 +201,14 @@ export class GithubToMastodonPt extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -160,7 +224,14 @@ export class GithubToMastodonIt extends GithubToMastodon {
  */
 @Component({
   selector: 'app-github-to-mastodon-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -172,7 +243,14 @@ export class GithubToMastodonPl extends GithubToMastodon {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-github-to-mastodon-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -184,7 +262,14 @@ export class GithubToMastodonUk extends GithubToMastodon {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -196,7 +281,14 @@ export class GithubToMastodonHi extends GithubToMastodon {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -208,7 +300,14 @@ export class GithubToMastodonNl extends GithubToMastodon {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -220,7 +319,14 @@ export class GithubToMastodonId extends GithubToMastodon {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -232,7 +338,14 @@ export class GithubToMastodonRu extends GithubToMastodon {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -244,7 +357,14 @@ export class GithubToMastodonSv extends GithubToMastodon {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -256,7 +376,14 @@ export class GithubToMastodonVi extends GithubToMastodon {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-github-to-mastodon-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, GitHubFriendsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    GitHubFriendsWorkbench,
+  ],
   templateUrl: './github-to-mastodon.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

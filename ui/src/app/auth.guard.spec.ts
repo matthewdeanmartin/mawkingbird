@@ -42,6 +42,8 @@ describe('authGuard', () => {
     '/about/',
     '/funding/',
     '/blog',
+    '/legal',
+    '/legal/',
     '/credits',
     '/collections/starter',
     '/collections/starter/infosec',

@@ -20,7 +20,7 @@ export const ABOUT_DESCRIPTION =
 export const FUNDING_DESCRIPTION =
   'How Mawkingbird is funded and built: free and open source, who pays for hosting and connections, and what a paid option might add.';
 export const FOLLOW_DESCRIPTION =
-  'New to Mastodon? Start with hand-picked starter kits of people to follow, grouped by interest, and follow a whole kit in one step with Mawkingbird.';
+  'New to Mastodon? Start with short, hand-picked starter kits of people to follow, and follow a whole kit in one step with Mawkingbird.';
 export const TOOLS_DESCRIPTION =
   'Free single-purpose tools for Mastodon and Bluesky: pick a handle, find your Twitter, Bluesky and phone contacts, schedule posts, and tidy up your account.';
 /**
@@ -123,8 +123,8 @@ export const TOOLS_INDEX_ALTERNATES: PageAlternate[] = [
     path: languageFolder(lang),
   })),
 ];
-export const BLOG_DESCRIPTION =
-  'Notes from the Mawkingbird project: why the client exists, how it is funded, the software it ships and how it handles your data.';
+export const LEGAL_DESCRIPTION =
+  "About Mawkingbird and its legal pages: why the client exists, how it is funded, credits and privacy, and your server's rules and terms.";
 
 /**
  * schema.org description of the app itself, for the front page and /features/.

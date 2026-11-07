@@ -38,7 +38,7 @@ import { FEED_BUILDER_PAGES } from './pages/feed-builder/feed-builder-registry';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
-  BLOG_DESCRIPTION,
+  LEGAL_DESCRIPTION,
   FRONT_PAGE_TAGLINE,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
@@ -365,6 +365,9 @@ export const routes: Routes = [
   // German pages moved into /de/ on 2026-10-31, hours after first going live.
   { path: 'mastodon-bilder-herunterladen', redirectTo: 'de/mastodon-bilder-herunterladen' },
   { path: 'mastodon-auf-deutsch', redirectTo: 'de/mastodon-auf-deutsch' },
+  // /blog was renamed About & legal on 2026-11-07; the static build keeps a
+  // redirect page at /blog/ for search engines (prepare-seo-index.mjs).
+  { path: 'blog', pathMatch: 'full', redirectTo: 'legal' },
   ...TOOL_PAGES.flatMap((tool) => {
     const english = ENGLISH_TOOLS.find((entry) => entry.id === tool.id);
     return focusedAppRoutes({
@@ -1149,13 +1152,13 @@ export const routes: Routes = [
       // the shell now (rendered as a virtual tweet), so the reader keeps the top
       // nav, rails and footer instead of dropping into a bare full-page layout.
       {
-        // Route is `/blog` (the user's framing: these are "blog-post"-style
-        // pages), not `/docs` — the mock backend's FastAPI serves Swagger UI at
-        // `/docs`, so an in-app `/docs` route would be shadowed on hard-nav.
-        path: 'blog',
-        title: 'Blog',
+        // About & legal: the project pages plus the server's own rules and terms.
+        // Formerly `/blog` (it never held posts); not `/docs`, which the mock
+        // backend's FastAPI serves as Swagger UI.
+        path: 'legal',
+        title: 'About & legal',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: { seoIndexable: true, seoDescription: BLOG_DESCRIPTION },
+        data: { seoIndexable: true, seoDescription: LEGAL_DESCRIPTION },
         loadComponent: () => import('./pages/docs/docs').then((m) => m.Docs),
       },
       {

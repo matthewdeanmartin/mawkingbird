@@ -23,6 +23,7 @@ import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
 import { Availability, checkHandle, normalizeDomain, signUpUrl } from './handle-availability';
 import { handleVariants } from './handle-variants';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 type Status = Availability | 'checking';
 
@@ -113,6 +114,7 @@ export const STEP_TITLES: Record<HandleStep, string> = {
     TranslocoPipe,
     FormsModule,
     RouterLink,
+    AppOnlyLinkRel,
     FocusedNextSteps,
     MbButton,
     MbControl,

@@ -845,7 +845,7 @@ describe('Shell zen modes', () => {
         [...row.querySelectorAll('a, button')].map((link) => link.textContent?.trim()).join(' · '),
       ),
     ).toEqual([
-      'Server rules & terms · Privacy',
+      'Server rules & terms · Privacy · About & legal',
       'Source · MIT License',
       'Report a bug · Fail whale',
       'Discover · Help · ? Keyboard',

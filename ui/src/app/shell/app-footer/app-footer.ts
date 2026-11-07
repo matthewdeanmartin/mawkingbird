@@ -26,6 +26,7 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
 // i18n footer.license: MIT License
 // i18n footer.reportBug: Report a bug
 // i18n footer.privacy: Privacy
+// i18n footer.legal: About & legal
 // i18n footer.features: Discover
 // i18n footer.help: Help
 // i18n footer.failWhale: Fail whale
@@ -45,6 +46,8 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
         </a>
         <span class="footer-separator" aria-hidden="true">·</span>
         <a routerLink="/credits" fragment="privacy">{{ 'footer.privacy' | transloco }}</a>
+        <span class="footer-separator" aria-hidden="true">·</span>
+        <a routerLink="/legal">{{ 'footer.legal' | transloco }}</a>
       </p>
       <p class="footer-row">
         <a

@@ -10,6 +10,7 @@ import {
 } from '../../focused-tools';
 import { TOOLS_INDEX_ALTERNATES } from '../../seo';
 import { feedBuilderAlternates, feedBuilderPageAt } from '../feed-builder/feed-builder-registry';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /** Each language named in itself, so a reader finds their own. */
 const ENDONYMS: Record<PageLanguage, string> = {
@@ -53,7 +54,7 @@ interface Version {
  */
 @Component({
   selector: 'app-language-versions',
-  imports: [RouterLink, MbPopover],
+  imports: [RouterLink, AppOnlyLinkRel, MbPopover],
   template: `@if (versions.length > 1) {
     <mb-popover [label]="currentName" layout="list">
       <ul>

@@ -6,6 +6,7 @@ import { SearchLauncher, SearchNetwork } from './search-launcher';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
 import { originalPath, toolPageAt } from '../../focused-tools';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * Search as a focused mini-app, at two URLs: /mastodon-search and
@@ -17,7 +18,7 @@ import { originalPath, toolPageAt } from '../../focused-tools';
  */
 @Component({
   selector: 'app-network-search',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
 })
@@ -48,7 +49,7 @@ export function networkOf(route: ActivatedRoute): SearchNetwork {
  */
 @Component({
   selector: 'app-network-search-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.de.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -58,7 +59,7 @@ export class NetworkSearchDe extends NetworkSearch {}
 /** The Japanese pages, both networks; see NetworkSearchDe. */
 @Component({
   selector: 'app-network-search-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.ja.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -68,7 +69,7 @@ export class NetworkSearchJa extends NetworkSearch {}
 /** The French pages, both networks; see NetworkSearchDe. */
 @Component({
   selector: 'app-network-search-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.fr.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -82,7 +83,7 @@ export class NetworkSearchFr extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.es.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -96,7 +97,7 @@ export class NetworkSearchEs extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.zh-hant.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -110,7 +111,7 @@ export class NetworkSearchZhHant extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.ko.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -124,7 +125,7 @@ export class NetworkSearchKo extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.pt.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -138,7 +139,7 @@ export class NetworkSearchPt extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.it.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -152,7 +153,7 @@ export class NetworkSearchIt extends NetworkSearch {}
  */
 @Component({
   selector: 'app-network-search-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.pl.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -162,7 +163,7 @@ export class NetworkSearchPl extends NetworkSearch {}
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-network-search-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.uk.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -172,7 +173,7 @@ export class NetworkSearchUk extends NetworkSearch {}
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.hi.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -182,7 +183,7 @@ export class NetworkSearchHi extends NetworkSearch {}
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.nl.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -192,7 +193,7 @@ export class NetworkSearchNl extends NetworkSearch {}
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.id.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -202,7 +203,7 @@ export class NetworkSearchId extends NetworkSearch {}
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.ru.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -212,7 +213,7 @@ export class NetworkSearchRu extends NetworkSearch {}
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.sv.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -222,7 +223,7 @@ export class NetworkSearchSv extends NetworkSearch {}
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.vi.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],
@@ -232,7 +233,7 @@ export class NetworkSearchVi extends NetworkSearch {}
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-network-search-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, SearchLauncher],
   templateUrl: './network-search.tr.html',
   styleUrls: ['../focused-apps/focused-page.css', './network-search.css'],
   providers: [provideRouteLanguage()],

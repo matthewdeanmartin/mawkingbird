@@ -9,7 +9,7 @@ import { StatusCard } from '../../status-card/status-card';
 import { LanguageVersions } from '../focused-apps/language-versions';
 import {
   FEED_BUILDER_FLOODING,
-  FEED_BUILDER_HUB,
+  feedBuilderHubFor,
   FEED_BUILDER_PREVIEW,
 } from './feed-builder-registry';
 import { FeedPage } from './feed-builder-routes';
@@ -17,6 +17,7 @@ import { FeedProgress } from './feed-progress';
 import { readPerson, readTag } from './feed-reader';
 import { SAMPLE, SampleProgress, samplePreview } from './feed-sample';
 import { FeedSelection } from './feed-selection';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * A topic page's Preview tab: a random sample of the feed the page builds,
@@ -31,7 +32,15 @@ import { FeedSelection } from './feed-selection';
  */
 @Component({
   selector: 'app-feed-preview',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, StatusCard, FeedProgress],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    StatusCard,
+    FeedProgress,
+  ],
   templateUrl: './feed-preview.html',
   styleUrls: ['../features/features.css', './feed-builder.css'],
 })
@@ -47,7 +56,8 @@ export class FeedPreview implements OnInit {
   protected readonly controls = this.page.controls;
   protected readonly copy = this.page.copy;
   protected readonly lang = this.page.lang;
-  protected readonly hub = `/${FEED_BUILDER_HUB}`;
+  /** The communities hub in this page's language (English when it has none). */
+  protected readonly hub = `/${feedBuilderHubFor(this.page.lang).path}`;
   protected readonly root = `/${this.page.path}`;
   protected readonly previewLink = `/${this.page.path}/${FEED_BUILDER_PREVIEW}`;
   protected readonly floodingLink = `/${this.page.path}/${FEED_BUILDER_FLOODING}`;

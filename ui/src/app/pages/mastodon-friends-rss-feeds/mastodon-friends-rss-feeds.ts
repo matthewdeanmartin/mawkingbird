@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { FriendFeedsWorkbench } from './friend-feeds-workbench';
 import { provideRouteLanguage } from '../../page-language';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * "Find the RSS feeds of everyone you follow" as a focused mini-app: profile
@@ -15,7 +16,14 @@ import { LanguageVersions } from '../focused-apps/language-versions';
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.html',
   styleUrl: '../focused-apps/focused-page.css',
 })
@@ -32,7 +40,14 @@ export class MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.de.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -48,7 +63,14 @@ export class MastodonFriendsRssFeedsDe extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.ja.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -64,7 +86,14 @@ export class MastodonFriendsRssFeedsJa extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.fr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -80,7 +109,14 @@ export class MastodonFriendsRssFeedsFr extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.es.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -96,7 +132,14 @@ export class MastodonFriendsRssFeedsEs extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.zh-hant.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -112,7 +155,14 @@ export class MastodonFriendsRssFeedsZhHant extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.ko.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -128,7 +178,14 @@ export class MastodonFriendsRssFeedsKo extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.pt.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -144,7 +201,14 @@ export class MastodonFriendsRssFeedsPt extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.it.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -160,7 +224,14 @@ export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
  */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.pl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -172,7 +243,14 @@ export class MastodonFriendsRssFeedsPl extends MastodonFriendsRssFeeds {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.uk.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -184,7 +262,14 @@ export class MastodonFriendsRssFeedsUk extends MastodonFriendsRssFeeds {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.hi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -196,7 +281,14 @@ export class MastodonFriendsRssFeedsHi extends MastodonFriendsRssFeeds {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.nl.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -208,7 +300,14 @@ export class MastodonFriendsRssFeedsNl extends MastodonFriendsRssFeeds {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.id.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -220,7 +319,14 @@ export class MastodonFriendsRssFeedsId extends MastodonFriendsRssFeeds {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.ru.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -232,7 +338,14 @@ export class MastodonFriendsRssFeedsRu extends MastodonFriendsRssFeeds {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.sv.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -244,7 +357,14 @@ export class MastodonFriendsRssFeedsSv extends MastodonFriendsRssFeeds {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.vi.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -256,7 +376,14 @@ export class MastodonFriendsRssFeedsVi extends MastodonFriendsRssFeeds {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-friends-rss-feeds-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FriendFeedsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FriendFeedsWorkbench,
+  ],
   templateUrl: './mastodon-friends-rss-feeds.tr.html',
   styleUrl: '../focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

@@ -7,7 +7,7 @@ import { Features } from './app/pages/features/features';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
-  BLOG_DESCRIPTION,
+  LEGAL_DESCRIPTION,
   FEATURES_DESCRIPTION,
   FUNDING_DESCRIPTION,
   TOOLS_DESCRIPTION,
@@ -49,6 +49,7 @@ import { ToolsIndex } from './app/pages/tools/tools-index';
 import { audienceRoutes } from './app/pages/features/audience-routes';
 import { followRoutes } from './app/pages/features/follow-routes';
 import { feedBuilderRoutes } from './app/pages/feed-builder/feed-builder-routes';
+import { providePublicPageUrls } from './app/public-page-urls';
 
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
@@ -67,7 +68,7 @@ class ClientEntry {}
 const articles: { path: PublicArticleKind; title: string; description: string }[] = [
   { path: 'about', title: 'About', description: ABOUT_DESCRIPTION },
   { path: 'funding', title: 'Funding', description: FUNDING_DESCRIPTION },
-  { path: 'blog', title: 'Blog', description: BLOG_DESCRIPTION },
+  { path: 'legal', title: 'About & legal', description: LEGAL_DESCRIPTION },
 ];
 
 // The focused mini-apps' public pages (focused-tools.json; focusedAppRoutes in
@@ -161,70 +162,73 @@ const tools = FOCUSED_TOOLS.map((tool) => ({
   component: toolComponent(tool),
 }));
 
+const publicRoutes: Route[] = [
+  ...audienceRoutes,
+  ...followRoutes,
+  ...feedBuilderRoutes,
+  { path: '', pathMatch: 'full', component: ClientEntry },
+  {
+    path: 'features',
+    component: Features,
+    title: 'Mastodon, reading and writing features',
+    data: {
+      seoIndexable: true,
+      seoDescription: FEATURES_DESCRIPTION,
+      seoStructuredData: APP_STRUCTURED_DATA,
+    },
+  },
+  {
+    path: 'tools',
+    component: ToolsIndex,
+    title: 'Free tools for Mastodon and Bluesky',
+    data: {
+      seoIndexable: true,
+      seoDescription: TOOLS_DESCRIPTION,
+      lang: 'en',
+      seoAlternates: TOOLS_INDEX_ALTERNATES,
+    },
+  },
+  ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang): Route => ({
+    path: languageFolder(lang),
+    pathMatch: 'full',
+    component: (toolsIndexPage as Record<string, Type<unknown>>)[
+      toolComponentName({ component: 'ToolsIndex' }, lang)
+    ],
+    title: TOOLS_INDEXES[lang].title,
+    data: {
+      seoIndexable: true,
+      seoDescription: TOOLS_INDEXES[lang].description,
+      lang,
+      seoAlternates: TOOLS_INDEX_ALTERNATES,
+    },
+    resolve: { tools: toolsResolver(lang) },
+  })),
+  ...tools.map(({ path, title, description, lang, alternates, component }) => ({
+    path,
+    component,
+    title,
+    data: {
+      seoIndexable: true,
+      seoDescription: description,
+      lang,
+      seoAlternates: alternates,
+    },
+  })),
+  ...articles.map(({ path, title, description }) => ({
+    path,
+    component: PublicArticle,
+    title,
+    data: { article: path, seoIndexable: true, seoDescription: description },
+  })),
+];
+
 export default (context: BootstrapContext) =>
   bootstrapApplication(
     PublicRoot,
     {
       providers: [
-        provideRouter([
-          ...audienceRoutes,
-          ...followRoutes,
-          ...feedBuilderRoutes,
-          { path: '', pathMatch: 'full', component: ClientEntry },
-          {
-            path: 'features',
-            component: Features,
-            title: 'Mastodon, reading and writing features',
-            data: {
-              seoIndexable: true,
-              seoDescription: FEATURES_DESCRIPTION,
-              seoStructuredData: APP_STRUCTURED_DATA,
-            },
-          },
-          {
-            path: 'tools',
-            component: ToolsIndex,
-            title: 'Free tools for Mastodon and Bluesky',
-            data: {
-              seoIndexable: true,
-              seoDescription: TOOLS_DESCRIPTION,
-              lang: 'en',
-              seoAlternates: TOOLS_INDEX_ALTERNATES,
-            },
-          },
-          ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang): Route => ({
-            path: languageFolder(lang),
-            pathMatch: 'full',
-            component: (toolsIndexPage as Record<string, Type<unknown>>)[
-              toolComponentName({ component: 'ToolsIndex' }, lang)
-            ],
-            title: TOOLS_INDEXES[lang].title,
-            data: {
-              seoIndexable: true,
-              seoDescription: TOOLS_INDEXES[lang].description,
-              lang,
-              seoAlternates: TOOLS_INDEX_ALTERNATES,
-            },
-            resolve: { tools: toolsResolver(lang) },
-          })),
-          ...tools.map(({ path, title, description, lang, alternates, component }) => ({
-            path,
-            component,
-            title,
-            data: {
-              seoIndexable: true,
-              seoDescription: description,
-              lang,
-              seoAlternates: alternates,
-            },
-          })),
-          ...articles.map(({ path, title, description }) => ({
-            path,
-            component: PublicArticle,
-            title,
-            data: { article: path, seoIndexable: true, seoDescription: description },
-          })),
-        ]),
+        provideRouter(publicRoutes),
+        providePublicPageUrls(publicRoutes),
         { provide: TitleStrategy, useClass: PageTitleStrategy },
         provideServerRendering(
           withRoutes([

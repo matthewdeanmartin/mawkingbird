@@ -4,7 +4,13 @@ import { of } from 'rxjs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { FeedBuilderHub } from './feed-builder-hub';
 import { FeedBuilderPage } from './feed-builder-page';
-import { FEED_BUILDER_PAGES, FeedBuilderEntry, feedBuilderPageAt } from './feed-builder-registry';
+import {
+  FEED_BUILDER_HUB,
+  FEED_BUILDER_HUBS,
+  FEED_BUILDER_PAGES,
+  FeedBuilderEntry,
+  feedBuilderPageAt,
+} from './feed-builder-registry';
 import { feedBuilderRoutes, loadFeedPage } from './feed-builder-routes';
 
 function route(data: object, path: string) {
@@ -198,22 +204,35 @@ describe('Feed Builder topic pages', () => {
 });
 
 describe('Feed Builder hub and routes', () => {
-  it('links every topic page from the hub', async () => {
-    const hubRoute = feedBuilderRoutes[0];
-    const entries = await (hubRoute.resolve?.['entries'] as () => Promise<unknown>)();
-    TestBed.configureTestingModule({
-      imports: [FeedBuilderHub],
-      providers: [provideRouter([]), route({ entries }, 'communities')],
-    });
-    const fixture = TestBed.createComponent(FeedBuilderHub);
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    for (const { path } of FEED_BUILDER_PAGES)
-      expect(el.querySelector(`a[href="/${path}"]`), path).not.toBeNull();
+  it('links every topic page from the English hub, and each language hub its own', async () => {
+    const hubRoutes = feedBuilderRoutes.slice(0, FEED_BUILDER_HUBS.length);
+    expect(hubRoutes.map((r) => r.path)).toEqual(FEED_BUILDER_HUBS.map((hub) => hub.path));
+    for (const hubRoute of hubRoutes) {
+      const lang = hubRoute.data?.['lang'];
+      const resolve = hubRoute.resolve as Record<string, () => Promise<unknown>>;
+      const [entries, copy] = await Promise.all([resolve['entries'](), resolve['copy']()]);
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [FeedBuilderHub],
+        providers: [provideRouter([]), route({ entries, copy, lang }, hubRoute.path ?? '')],
+      });
+      const fixture = TestBed.createComponent(FeedBuilderHub);
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelector('main')?.getAttribute('lang')).toBe(lang);
+      const listed =
+        lang === 'en' ? FEED_BUILDER_PAGES : FEED_BUILDER_PAGES.filter((p) => p.lang === lang);
+      for (const { path } of listed)
+        expect(el.querySelector(`a[href="/${path}"]`), `${lang}: ${path}`).not.toBeNull();
+      if (lang !== 'en')
+        expect(el.querySelector(`a[href="/${FEED_BUILDER_HUB}"]`), lang).not.toBeNull();
+      expect(hubRoute.data?.['seoIndexable']).toBe(true);
+      expect(hubRoute.data?.['seoAlternates'].length).toBe(FEED_BUILDER_HUBS.length);
+    }
   });
 
   it('routes every page as indexable, in its language, with all its versions', () => {
-    const [, ...pages] = feedBuilderRoutes;
+    const pages = feedBuilderRoutes.slice(FEED_BUILDER_HUBS.length);
     expect(pages.map((r) => r.path)).toEqual(FEED_BUILDER_PAGES.map((p) => p.path));
     for (const r of pages) {
       const entry = feedBuilderPageAt(r.path ?? '');

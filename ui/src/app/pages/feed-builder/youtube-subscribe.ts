@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { CHANNEL_ID, VideoSubscriptions } from '../../providers/videos/video-subscriptions';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 export interface YoutubeChannel {
   id: string;
@@ -58,7 +59,7 @@ export class YoutubeSubscribe {
 /** Subscribe to every creator's channel on the YouTube shelf at once. */
 @Component({
   selector: 'app-youtube-subscribe-all',
-  imports: [MbButton, MbContentLink, RouterLink],
+  imports: [MbButton, MbContentLink, RouterLink, AppOnlyLinkRel],
   template: `<div class="youtube-all">
     <button mbButton type="button" [disabled]="!missing().length" (click)="subscribeAll()">
       {{ words().subscribeAll(channels().length) }}

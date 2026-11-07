@@ -9,6 +9,8 @@ import {
   FocusedTool,
   FocusedToolGroup,
 } from '../../focused-tools';
+import { AppOnlyLinkRel } from '../../public-page-urls';
+import { CommunitiesLink } from '../feed-builder/communities-link';
 
 /**
  * /tools: every focused tool page, grouped, from the same registry that routes
@@ -17,7 +19,7 @@ import {
  */
 @Component({
   selector: 'app-tools-index',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -48,7 +50,7 @@ function groupsIn(titles: Record<FocusedToolGroup, string>) {
  */
 @Component({
   selector: 'app-tools-index-de',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.de.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -66,7 +68,7 @@ export class ToolsIndexDe extends ToolsIndex {
 /** /ja/: the Japanese pages, the same way. */
 @Component({
   selector: 'app-tools-index-ja',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.ja.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -84,7 +86,7 @@ export class ToolsIndexJa extends ToolsIndex {
 /** /fr/: the French pages, the same way. */
 @Component({
   selector: 'app-tools-index-fr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.fr.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -102,7 +104,7 @@ export class ToolsIndexFr extends ToolsIndex {
 /** /es/: the Spanish pages, the same way. */
 @Component({
   selector: 'app-tools-index-es',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.es.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -120,7 +122,7 @@ export class ToolsIndexEs extends ToolsIndex {
 /** /zh-hant/: the Traditional Chinese pages, the same way. */
 @Component({
   selector: 'app-tools-index-zh-hant',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.zh-hant.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -138,7 +140,7 @@ export class ToolsIndexZhHant extends ToolsIndex {
 /** /ko/: the Korean pages, the same way. */
 @Component({
   selector: 'app-tools-index-ko',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.ko.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -156,7 +158,7 @@ export class ToolsIndexKo extends ToolsIndex {
 /** /pt/: the Portuguese (Brazil) pages, the same way. */
 @Component({
   selector: 'app-tools-index-pt',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.pt.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -174,7 +176,7 @@ export class ToolsIndexPt extends ToolsIndex {
 /** /it/: the Italian pages, the same way. */
 @Component({
   selector: 'app-tools-index-it',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.it.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -192,7 +194,7 @@ export class ToolsIndexIt extends ToolsIndex {
 /** /pl/: the Polish pages, the same way. */
 @Component({
   selector: 'app-tools-index-pl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.pl.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -210,7 +212,7 @@ export class ToolsIndexPl extends ToolsIndex {
 /** /uk/: the Ukrainian pages, the same way. */
 @Component({
   selector: 'app-tools-index-uk',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.uk.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -228,7 +230,7 @@ export class ToolsIndexUk extends ToolsIndex {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-hi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.hi.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -246,7 +248,7 @@ export class ToolsIndexHi extends ToolsIndex {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-nl',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.nl.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -264,7 +266,7 @@ export class ToolsIndexNl extends ToolsIndex {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-id',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.id.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -282,7 +284,7 @@ export class ToolsIndexId extends ToolsIndex {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-ru',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.ru.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -300,7 +302,7 @@ export class ToolsIndexRu extends ToolsIndex {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-sv',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.sv.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -318,7 +320,7 @@ export class ToolsIndexSv extends ToolsIndex {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-vi',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.vi.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
@@ -336,7 +338,7 @@ export class ToolsIndexVi extends ToolsIndex {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-tools-index-tr',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, CommunitiesLink],
   templateUrl: './tools-index.tr.html',
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })

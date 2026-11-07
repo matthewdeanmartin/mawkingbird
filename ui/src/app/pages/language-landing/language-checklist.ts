@@ -9,6 +9,7 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbNotice } from '../../design-system/notice/notice';
 import { FocusedNextSteps } from '../focused-apps/focused-next-steps';
 import { LanguageLandingCopy, LanguageSetting } from './language-landing.copy';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * The signed-in half of a language landing page: the reader's language
@@ -21,7 +22,7 @@ import { LanguageLandingCopy, LanguageSetting } from './language-landing.copy';
  */
 @Component({
   selector: 'app-language-checklist',
-  imports: [RouterLink, MbButton, MbCheckbox, MbNotice, FocusedNextSteps],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbCheckbox, MbNotice, FocusedNextSteps],
   template: `
     <section class="panel" aria-labelledby="checklist-title">
       <h2 id="checklist-title">{{ copy().checklist.title }}</h2>

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { PUBLIC_KITS } from './follow-kits';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * `/follow/`: the public index of hand-picked starter kits, for people new to
@@ -11,7 +12,7 @@ import { PUBLIC_KITS } from './follow-kits';
  */
 @Component({
   selector: 'app-follow-hub',
-  imports: [RouterLink, MbButton, MbContentLink],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink],
   templateUrl: './follow-hub.html',
   styleUrls: ['./features.css', './follow.css'],
 })

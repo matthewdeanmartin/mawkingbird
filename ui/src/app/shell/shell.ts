@@ -123,7 +123,6 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.menu.invites: Invites
 // i18n shell.menu.analytics: Analytics
 // i18n shell.menu.observability: Observability
-// i18n shell.menu.docs: Docs
 // i18n shell.menu.help: Help
 // i18n shell.menu.canary: Canary ↗
 // i18n shell.menu.faults: Faults

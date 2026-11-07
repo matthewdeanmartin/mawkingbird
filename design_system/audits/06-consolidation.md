@@ -1591,3 +1591,27 @@ Added approved English and German data, lazy loaders and topic copy. Compared
 against the gardening working-tree inventory: source files increased from 1,673
 to 1,674; all 597 candidate entries are identical. No control or shared widget
 changed. No candidate was added or removed; reconciliation remains complete.
+
+## Public page links: trailing slashes and nofollow, 2026-11-07
+
+Added `src/app/public-page-urls.ts` (URL serializer and the `AppOnlyLinkRel`
+directive, imported beside `RouterLink` in public page components), plus
+"Starter kits by interest" links on `/features`, the audience footers and
+`/blog`. Source files increased from 1,674 to 1,675; still 597 candidate files,
+none added or removed. Reviewed the diff: the new candidates are the added
+`mbContentLink` footer and article links (`shared` pattern, no local styling);
+the other changes are line shifts from the extra import line. No shared widget
+changed. Reconciliation entries remain complete.
+
+## Communities hubs per language, About & legal, 2026-11-07
+
+Added a communities hub per language (`feed-builder-hub.html` now renders the
+English hub and the language hubs; its candidates grew from 8 to 14, all
+`shared` MbContentLink/MbButton uses), `communities-link.ts` (one MbContentLink,
+new candidate file, reconciled as adopted scope), `copy/hub-copy.ts`,
+`breadcrumbs.ts` and `feed-builder-registry.spec.ts`. Renamed /blog to About &
+legal: one footer link added in `app-footer.ts`, one menu row removed from
+`shell.html` (line shifts only). The /follow vs /communities link text changes
+added one `shared` link each to the features and audience footers and two to
+`public-article.html`. Source files 1,674 to 1,678; candidate files 597 to 598.
+No shared widget changed.

@@ -1,5 +1,6 @@
 import { PageLanguage } from '../../focused-tools';
 import { FeedTopic } from './feed-builder-registry';
+import { breadcrumbList, Crumb } from '../../breadcrumbs';
 
 /** One topic page's data, as exported by mawkingbird_starters and checked by the importer. */
 export interface FeedPageData {
@@ -96,6 +97,8 @@ export function collectionPage(
   data: FeedPageData,
   copy: { title: string; description: string },
   url: string,
+  /** Front page › hub › this page; see breadcrumbs.ts. */
+  crumbs: readonly Crumb[] = [],
 ): object {
   const people = shelves(data.people).flatMap((group) => group.people);
   return {
@@ -105,6 +108,7 @@ export function collectionPage(
     description: copy.description,
     url,
     inLanguage: data.lang,
+    ...(crumbs.length ? { breadcrumb: breadcrumbList(crumbs) } : {}),
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: people.length,

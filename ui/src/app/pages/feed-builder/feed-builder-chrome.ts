@@ -50,7 +50,7 @@ export interface FeedChrome {
 const en: FeedChrome = {
   eyebrow: 'Mastodon starter kit',
   openApp: 'Open Mawkingbird',
-  hub: 'All starter kits',
+  hub: 'All communities',
   tagsHeading: 'Hashtags worth following',
   tagsIntro:
     'On Mastodon you can follow a hashtag like a person: its posts arrive in your Home feed. These are the busiest ones for this topic. Open one to read it now, no account needed.',
@@ -124,7 +124,7 @@ const en: FeedChrome = {
 const de: FeedChrome = {
   eyebrow: 'Mastodon-Starterkit',
   openApp: 'Mawkingbird öffnen',
-  hub: 'Alle Starterkits',
+  hub: 'Alle Communities',
   tagsHeading: 'Hashtags, denen du folgen kannst',
   tagsIntro:
     'Auf Mastodon kannst du einem Hashtag folgen wie einer Person: Seine Beiträge erscheinen auf deiner Startseite. Das hier sind die aktivsten zum Thema. Öffne einen und lies sofort mit, auch ohne Konto.',
@@ -199,7 +199,7 @@ const de: FeedChrome = {
 const fr: FeedChrome = {
   eyebrow: 'Kit de démarrage Mastodon',
   openApp: 'Ouvrir Mawkingbird',
-  hub: 'Tous les kits de démarrage',
+  hub: 'Toutes les communautés',
   tagsHeading: 'Des hashtags à suivre',
   tagsIntro:
     'Sur Mastodon, tu peux suivre un hashtag comme une personne\u00a0: ses messages arrivent dans ton fil d’accueil. Voici les plus actifs sur ce sujet. Ouvre-en un pour le lire tout de suite, sans compte.',
@@ -274,7 +274,7 @@ const fr: FeedChrome = {
 const es: FeedChrome = {
   eyebrow: 'Kit de inicio de Mastodon',
   openApp: 'Abrir Mawkingbird',
-  hub: 'Todos los kits de inicio',
+  hub: 'Todas las comunidades',
   tagsHeading: 'Etiquetas que vale la pena seguir',
   tagsIntro:
     'En Mastodon puedes seguir una etiqueta igual que a una persona: sus publicaciones llegan a tu inicio. Estas son las más activas del tema. Abre una para leerla ya, sin cuenta.',
@@ -349,7 +349,7 @@ const es: FeedChrome = {
 const it: FeedChrome = {
   eyebrow: 'Starter kit di Mastodon',
   openApp: 'Apri Mawkingbird',
-  hub: 'Tutti gli starter kit',
+  hub: 'Tutte le comunità',
   tagsHeading: 'Hashtag da seguire',
   tagsIntro:
     'Su Mastodon puoi seguire un hashtag come una persona: i suoi post arrivano nella tua home. Questi sono i più attivi sull’argomento. Aprine uno per leggerlo subito, senza account.',
@@ -423,7 +423,7 @@ const it: FeedChrome = {
 const ja: FeedChrome = {
   eyebrow: 'Mastodon（マストドン）スターターキット',
   openApp: 'Mawkingbird を開く',
-  hub: 'すべてのスターターキット',
+  hub: 'すべてのコミュニティ',
   tagsHeading: 'フォローしたいハッシュタグ',
   tagsIntro:
     'Mastodon では、人と同じようにハッシュタグもフォローできます。フォローすると、そのタグの投稿がホームに届きます。ここにあるのは、このテーマで特に活発なタグです。開けば、アカウントがなくてもすぐに読めます。',

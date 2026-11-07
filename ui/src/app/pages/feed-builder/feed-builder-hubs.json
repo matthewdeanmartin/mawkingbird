@@ -1,0 +1,8 @@
+{
+  "en": { "path": "communities", "label": "Mastodon communities by interest" },
+  "de": { "path": "de/mastodon-communities", "label": "Mastodon-Communities nach Interessen" },
+  "fr": { "path": "fr/communautes-mastodon", "label": "Communautés Mastodon par centre d’intérêt" },
+  "es": { "path": "es/comunidades-de-mastodon", "label": "Comunidades de Mastodon por intereses" },
+  "it": { "path": "it/comunita-mastodon", "label": "Comunità Mastodon per interesse" },
+  "ja": { "path": "ja/mastodon-communities", "label": "興味別のMastodonコミュニティ" }
+}

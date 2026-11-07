@@ -5,17 +5,20 @@ import { FeatureFlags } from '../../feature-flags';
 import { SearchServer } from '../../search-server';
 import { SearchServerAbout } from '../../search-server-about';
 import { ServerAbout } from '../../server-about';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
- * Docs hub: a centre-column index of the "blog-post"-style pages (Design,
+ * About & legal (/legal, formerly /blog): a centre-column index of the "blog-post"-style pages (Design,
  * Credits) plus the server's own legal pages (Rules, Terms) when it publishes
  * them. This is where Server rules / Terms / Credits moved to once they came off
  * the More menu — reachable, but no longer taking a top-level slot.
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
-// i18n docs.head: Docs
+// i18n docs.legalHead: About & legal
 // i18n docs.tools.title: Tools
 // i18n docs.tools.detail: Free single-purpose tools: pick a handle, find your friends, schedule posts, tidy up your account.
+// i18n docs.communities.title: Mastodon communities by interest
+// i18n docs.communities.detail: Hashtags, people and servers for one interest at a time: science fiction, math, gardening and more.
 // i18n docs.design.title: Design
 // i18n docs.design.detail: Why this client exists.
 // i18n docs.plans.title: Plans
@@ -34,7 +37,7 @@ import { ServerAbout } from '../../server-about';
 // i18n docs.searchServerTerms.detail: Your search server's terms of service.
 @Component({
   selector: 'app-docs',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, AppOnlyLinkRel, TranslocoPipe],
   templateUrl: './docs.html',
   styleUrl: './docs.css',
 })

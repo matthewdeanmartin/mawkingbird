@@ -32,6 +32,19 @@ Accounts can move, change names, require approval, or disappear after a kit is a
 
 You can search for the person by their current full handle if you think the kit's copy is out of date.
 
+## Mastodon communities by interest
+
+Mawkingbird also publishes guides to [Mastodon communities by interest](https://mawkingbird.com/communities/): one page per subject, with the hashtags worth following, people grouped by kind, and the servers where that community gathers. You can read them without signing in, and some are available in several languages.
+
+- [Science fiction on Mastodon](https://mawkingbird.com/science-fiction-on-mastodon/)
+- [Space and astronomy on Mastodon](https://mawkingbird.com/space-and-astronomy-on-mastodon/)
+- [Math on Mastodon](https://mawkingbird.com/math-on-mastodon/)
+- [Gardening and houseplants on Mastodon](https://mawkingbird.com/gardening-and-houseplants-on-mastodon/)
+- [Plant-based living](https://mawkingbird.com/plant-based-living-on-mastodon/)
+- [ESP32 and single-board computers on Mastodon](https://mawkingbird.com/esp32-and-single-board-computers-on-mastodon/)
+
+Each page has a **Preview** of what the hashtags look like right now. Signed in to Mastodon, you can follow the tags and people from the page.
+
 ## Bluesky starter packs
 
 Bluesky has starter packs of its own: sets of accounts people make on Bluesky. They are separate from Mawkingbird's Starter Kits. Open **Bluesky starter packs** from the ways to find people.

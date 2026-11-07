@@ -32,6 +32,16 @@ Mastodon is not one website but many connected servers. These guides explain it 
 
 Use the search box to find a feature or a phrase you see in Mawkingbird. Each guide covers one small job, so you can read what you need and get back to the app.
 
+## More from Mawkingbird
+
+These pages are about the project rather than how to use it:
+
+- [About & legal](https://mawkingbird.com/legal/): credits, privacy, and your server's rules and terms
+- [Why Mawkingbird exists](https://mawkingbird.com/about/)
+- [How Mawkingbird is funded](https://mawkingbird.com/funding/)
+- [Mastodon communities by interest](https://mawkingbird.com/communities/) and [who to follow](https://mawkingbird.com/follow/)
+- [Free tools for Mastodon and Bluesky](https://mawkingbird.com/tools/)
+
 [Open Mawkingbird](https://mawkingbird.com/){ .btn }
 
 Want to report a bug, improve these guides, or work on the client? See

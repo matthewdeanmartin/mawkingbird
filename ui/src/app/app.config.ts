@@ -10,6 +10,7 @@ import {
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { providePublicPageUrls } from './public-page-urls';
 import { authInterceptor } from './auth.interceptor';
 import { healthInterceptor } from './health.interceptor';
 import { serverInterceptor } from './server.interceptor';
@@ -34,6 +35,8 @@ export const appConfig: ApplicationConfig = {
     // Per-route document titles; see page-title-strategy.ts for why the
     // default strategy is not enough.
     { provide: TitleStrategy, useClass: PageTitleStrategy },
+    // Public pages are linked with their trailing slash; see public-page-urls.ts.
+    providePublicPageUrls(routes),
     provideRouter(
       routes,
       // A cancelled Back (zen/unsaved writing) must restore the history index,

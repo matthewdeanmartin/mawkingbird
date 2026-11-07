@@ -17,6 +17,8 @@ A starter kit is a suggested group of accounts. It is the easiest choice when yo
 
 You are choosing suggestions, not joining a permanent group. You can unfollow any account later.
 
+For a single interest, such as science fiction, math or gardening, the [Mastodon communities by interest](https://mawkingbird.com/communities/) also list the hashtags and servers where that community gathers.
+
 ## Search by subject
 
 Choose one of the suggested interests on **Find Friends**, or choose **Search posts for anything else**. Search for a subject you would enjoy reading about.

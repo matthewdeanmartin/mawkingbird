@@ -3,8 +3,9 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { DESIGN_BODY, FUNDING_BODY } from '../docs/public-copy';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
-export type PublicArticleKind = 'about' | 'funding' | 'blog';
+export type PublicArticleKind = 'about' | 'funding' | 'legal';
 
 interface PublicArticleContent {
   heading: string;
@@ -15,11 +16,11 @@ interface PublicArticleContent {
 const ARTICLES: Record<PublicArticleKind, PublicArticleContent> = {
   about: { heading: 'Why Mawkingbird exists', body: DESIGN_BODY },
   funding: { heading: 'How Mawkingbird is funded', body: FUNDING_BODY },
-  blog: { heading: 'Mawkingbird blog' },
+  legal: { heading: 'About & legal' },
 };
 
 /**
- * Build-time copy of About, Funding and the Blog hub for search engines.
+ * Build-time copy of About, Funding and the About & legal hub for search engines.
  *
  * Only `main.server.ts` routes here. In the browser the same URLs belong to the
  * signed-in shell, which renders these essays as virtual tweets; there is no
@@ -28,7 +29,7 @@ const ARTICLES: Record<PublicArticleKind, PublicArticleContent> = {
  */
 @Component({
   selector: 'app-public-article',
-  imports: [RouterLink, MbButton, MbContentLink],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink],
   templateUrl: './public-article.html',
   styleUrl: './features.css',
 })

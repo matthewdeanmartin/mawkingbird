@@ -1,4 +1,5 @@
 import paths from './feed-builder-paths.json';
+import hubs from './feed-builder-hubs.json';
 import { PageAlternate, PageLanguage } from '../../focused-tools';
 
 /**
@@ -39,8 +40,39 @@ export function feedBuilderPageAt(path: string): FeedBuilderEntry | undefined {
   return FEED_BUILDER_PAGES.find((page) => page.path === path);
 }
 
-/** The hub listing every topic page. English, like /follow/ and /tools/. */
-export const FEED_BUILDER_HUB = 'communities';
+/**
+ * One communities hub per language that has a topic page, from
+ * feed-builder-hubs.json (also read by the SEO build scripts). English, at
+ * /communities/, lists every topic in every language; each other hub lists its
+ * language's pages. A language with a topic page but no hub, or a hub with no
+ * page, fails feed-builder-registry.spec.ts and check-seo-build.mjs.
+ */
+export interface FeedBuilderHub {
+  lang: PageLanguage;
+  path: string;
+  /** The hub's name in its language, for links to it from other pages. */
+  label: string;
+}
+
+export const FEED_BUILDER_HUBS: readonly FeedBuilderHub[] = (
+  Object.entries(hubs) as [PageLanguage, { path: string; label: string }][]
+).map(([lang, { path, label }]) => ({ lang, path, label }));
+
+/** The English hub, which lists every topic in every language. */
+export const FEED_BUILDER_HUB = hubs.en.path;
+
+/** The hub for a page in `lang`; English when that language has none. */
+export function feedBuilderHubFor(lang: string): FeedBuilderHub {
+  return (
+    FEED_BUILDER_HUBS.find((hub) => hub.lang === lang) ??
+    FEED_BUILDER_HUBS.find((hub) => hub.lang === 'en')!
+  );
+}
+
+/** Every hub, for hreflang between them. */
+export function feedBuilderHubAlternates(): PageAlternate[] {
+  return FEED_BUILDER_HUBS.map(({ lang, path }) => ({ lang, path }));
+}
 
 /** A topic page's preview tab, below its path: the feed it builds, read anonymously. */
 export const FEED_BUILDER_PREVIEW = 'preview';

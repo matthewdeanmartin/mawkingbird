@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { PUBLIC_KITS, publicKit } from './follow-kits';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /**
  * `/follow/<slug>/`: one hand-picked starter kit as a public page. The people
@@ -15,7 +16,7 @@ import { PUBLIC_KITS, publicKit } from './follow-kits';
  */
 @Component({
   selector: 'app-follow-kit',
-  imports: [RouterLink, MbButton, MbContentLink, DecimalPipe],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, DecimalPipe],
   templateUrl: './follow-kit.html',
   styleUrls: ['./features.css', './follow.css'],
 })

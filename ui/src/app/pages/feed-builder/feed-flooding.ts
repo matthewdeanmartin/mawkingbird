@@ -11,7 +11,7 @@ import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { LanguageVersions } from '../focused-apps/language-versions';
 import {
   FEED_BUILDER_FLOODING,
-  FEED_BUILDER_HUB,
+  feedBuilderHubFor,
   FEED_BUILDER_PREVIEW,
 } from './feed-builder-registry';
 import { FeedPage } from './feed-builder-routes';
@@ -20,6 +20,7 @@ import { FeedProgress } from './feed-progress';
 import { readTag } from './feed-reader';
 import { SampleProgress } from './feed-sample';
 import { FeedSelection } from './feed-selection';
+import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /** The temporary mute: Feed Doctor's, for a flood that will pass. */
 export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
@@ -34,7 +35,7 @@ export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
  */
 @Component({
   selector: 'app-feed-flooding',
-  imports: [RouterLink, MbButton, MbContentLink, LanguageVersions, FeedProgress],
+  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, FeedProgress],
   templateUrl: './feed-flooding.html',
   styleUrls: ['../features/features.css', '../features/follow.css', './feed-builder.css'],
 })
@@ -51,7 +52,8 @@ export class FeedFlooding implements OnInit {
   protected readonly controls = this.page.controls;
   protected readonly copy = this.page.copy;
   protected readonly lang = this.page.lang;
-  protected readonly hub = `/${FEED_BUILDER_HUB}`;
+  /** The communities hub in this page's language (English when it has none). */
+  protected readonly hub = `/${feedBuilderHubFor(this.page.lang).path}`;
   protected readonly root = `/${this.page.path}`;
   protected readonly previewLink = `/${this.page.path}/${FEED_BUILDER_PREVIEW}`;
   protected readonly floodingLink = `/${this.page.path}/${FEED_BUILDER_FLOODING}`;
