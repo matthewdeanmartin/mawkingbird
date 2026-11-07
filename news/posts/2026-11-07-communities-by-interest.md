@@ -3,6 +3,7 @@ title: 'Find your people: Mastodon communities by interest'
 description: New pages gather the hashtags, people and servers for one interest at a time, in several languages. Read them all without an account.
 date: 2026-11-07
 tags: [Launches, Communities]
+mastodon: https://mastodon.social/@mawkingbird/117576899286046665
 ---
 
 A new Mastodon account starts with an empty timeline. Finding the people who

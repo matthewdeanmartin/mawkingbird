@@ -3,6 +3,7 @@ title: 'Release notes: radio, forums and a calmer menu'
 description: What changed in Mawkingbird from mid-October to early November, including radio, forums, a slide show, better Bluesky support and tools in more languages.
 date: 2026-11-06
 tags: [Release notes]
+mastodon: https://mastodon.social/@mawkingbird/117576900326806692
 ---
 
 Mawkingbird is a Mastodon and Bluesky client that runs in your browser. Here is

@@ -4,7 +4,8 @@
   "description": "Mawkingbird News at /news/, built with the fediblog engine. See spec/news-blog-engine.md.",
   "scripts": {
     "check": "fediblog check --config fediblog.config.json",
-    "build": "fediblog build --config fediblog.config.json --quiet --out"
+    "build": "fediblog build --config fediblog.config.json --quiet --out",
+    "link": "fediblog link --config fediblog.config.json"
   },
   "devDependencies": {
     "fediblog": "file:vendor/fediblog-0.1.0.tgz"

@@ -133,6 +133,22 @@ has no "sign in, then return to this URL" step, so the answer to question 2
 needs a return URL carried through login. That is an app change affecting every
 public status link, so it is not made here.
 
+**Linking toots (2026-11-07).** `make news` (and `make news-link`) first runs
+`fediblog link`. It reads @mawkingbird's public toots and writes each published
+post's `mastodon:` line into its front matter; commit those edits. A lookup
+failure only warns; `NEWS_LINK=false` skips it. The config's `previews` (canary,
+test) make toots that link a preview copy count too. The first two toots were
+published from canary. The publish page now always links the real
+`https://mawkingbird.com/news/…` address, and shows a notice on preview builds.
+
+**Doubled handles (2026-11-07).** mawkingbird.com is behind Cloudflare with
+Email Address Obfuscation on. `@user@server` handles look like email addresses,
+so Cloudflare rewrites them into an obfuscated span, and its decoder and
+Angular hydration then both write the handle. News now wraps every page in
+`<!--email_off-->`. The app's prerendered pages are still affected (38 handles
+on /science-fiction-on-mastodon/ on 2026-11-07). The fix is to turn the
+setting off for the zone (owner, in Cloudflare).
+
 **Open.**
 - The owner creates the GitHub repository and publishes `fediblog` to npm. Then
   `news/package.json` switches from the vendored tarball to `fediblog@0.1.0`.

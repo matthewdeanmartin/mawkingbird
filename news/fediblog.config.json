@@ -2,6 +2,10 @@
   "title": "Mawkingbird News",
   "description": "What changed in Mawkingbird, the Mastodon and Bluesky client, and why.",
   "url": "https://mawkingbird.com/news/",
+  "previews": [
+    "https://mawkingbird.com/canary/news/",
+    "https://mawkingbird.com/test/news/"
+  ],
   "lang": "en",
   "author": {
     "name": "Mawkingbird",

@@ -16,10 +16,12 @@ Angular engine whose comments are Mastodon replies. The design is in
    `@mawkingbird@mastodon.social`, and choose **Publish posts** in the account
    menu. Edit the prefilled toot if you like and press **Publish**. Comments
    work at once: the post finds its toot when it loads.
-4. Optional: paste the `mastodon:` line the publish page shows (Copy) into the
-   front matter and deploy again. That skips the lookup, and the post keeps its
-   comments after the toot drops out of the account's latest 120. To hide a
-   reply, list its URL under `hiddenReplies:`.
+4. Run `make news-link` (or any `make news`) and commit the change. It looks
+   up @mawkingbird's public toots and writes each published post's `mastodon:`
+   line into its front matter. That saves readers the lookup, and the post keeps
+   its comments after the toot drops out of the account's latest 120. The publish
+   page's Copy button does the same by hand. To hide a reply, list its URL under
+   `hiddenReplies:`.
 
 `tags:` organise the blog. `hashtags:` are only for the announcing toot,
 added to the defaults `#mawkingbird #mastodonClient` (`publish.hashtags` in
