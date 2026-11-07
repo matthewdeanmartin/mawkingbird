@@ -43,5 +43,5 @@ what changed between mid-October and early November.
 - Guides for people arriving from Twitter.
 - Every language the app is translated into now has its own landing pages.
 
-Questions or bugs? Reply to this post on Mastodon, or see
+Questions or bugs? Leave a comment below, or see
 [Help](https://mawkingbird.com/help/).

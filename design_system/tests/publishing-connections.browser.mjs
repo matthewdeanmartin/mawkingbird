@@ -24,10 +24,14 @@ for (const direction of ["ltr", "rtl"]) {
         fullPage: true,
       });
     });
+    // Blog connections no longer offer to put the blog on the profile
+    // (2026-10-31): the profile shows only social posts. Pin that down.
+    const noProfileOptIn = (page) =>
+      expect(page.getByRole("checkbox", { name: /profile/i })).toHaveCount(0);
     const url = (story) =>
       `/iframe.html?id=${story}&viewMode=story&globals=theme:${direction === "rtl" ? "dark" : "light"};accent:purple;direction:${direction}`;
 
-    test("Blogger radio selection, profile opt-in, sign-out versus forget", async ({
+    test("Blogger radio selection, no profile opt-in, sign-out versus forget", async ({
       page,
     }) => {
       await page.goto(url("adoption-publishing-connections--blogger"));
@@ -42,18 +46,20 @@ for (const direction of ["ltr", "rtl"]) {
       await expect(
         page.getByRole("radio", { name: "Second preview blog", exact: true }),
       ).toBeChecked();
-      const include = page.getByRole("checkbox", {
-        name: "Include my blog's posts in my profile feed",
+      await noProfileOptIn(page);
+      await page.getByRole("button", { name: "Sign out", exact: true }).click();
+      await expect(
+        page.getByText(/is still remembered\. Sign in again/),
+      ).toBeVisible();
+      const forget = page.getByRole("button", {
+        name: "Forget this blog",
         exact: true,
       });
-      await include.check();
-      await page.getByRole("button", { name: "Sign out", exact: true }).click();
-      await expect(include).toBeChecked();
-      await expect(page.getByText(/still remembered/)).toBeVisible();
-      await page
-        .getByRole("button", { name: "Forget this blog", exact: true })
-        .click();
-      await expect(include).toHaveCount(0);
+      await forget.click();
+      await expect(forget).toHaveCount(0);
+      await expect(
+        page.getByText(/is still remembered\. Sign in again/),
+      ).toHaveCount(0);
       const details = page.locator("mb-disclosure details");
       if (!(await details.getAttribute("open"))) {
         if (!(await details.evaluate((element) => element.open)))
@@ -66,7 +72,7 @@ for (const direction of ["ltr", "rtl"]) {
       await expect(page.locator('mb-notice [role="status"]')).toBeVisible();
     });
 
-    test("Hugo native validation, rejected credential, profile and POSSE choices", async ({
+    test("Hugo native validation, rejected credential, no profile opt-in, POSSE choice", async ({
       page,
     }) => {
       await page.goto(url("adoption-publishing-connections--hugo"));
@@ -87,12 +93,7 @@ for (const direction of ["ltr", "rtl"]) {
       await expect(token).toHaveValue("reject");
       await token.fill("preview");
       await save.click();
-      const profile = page.getByRole("checkbox", {
-        name: "Include my blog's posts on my profile",
-        exact: true,
-      });
-      await profile.check();
-      await expect(profile).toBeChecked();
+      await noProfileOptIn(page);
       const posse = page.getByRole("checkbox", {
         name: "Record interactions on my blog",
         exact: true,
@@ -131,12 +132,7 @@ for (const direction of ["ltr", "rtl"]) {
       await key.fill("preview");
       await save.click();
       await expect(page.locator('mb-notice [role="status"]')).toBeVisible();
-      await page
-        .getByRole("checkbox", {
-          name: "Include my blog's RSS feed in my profile feed",
-          exact: true,
-        })
-        .check();
+      await noProfileOptIn(page);
       await page
         .getByRole("button", { name: "Disconnect", exact: true })
         .click();

@@ -327,6 +327,21 @@ describe('Lists', () => {
     expect(newListInput(fixture)).toBeNull();
   });
 
+  it('ends the landing list with Mawkingbird News, read through the RSS reader', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    fixture.detectChanges();
+
+    const rows = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.feed-category-list > li'),
+    ];
+    const news = rows.at(-1)!.querySelector('a.feed-category-row') as HTMLAnchorElement;
+    expect(news.textContent).toContain('Mawkingbird News');
+    // The news blog's Atom feed, resolved against <base href> (news/ beside the app).
+    const feed = new URL('news/atom.xml', document.baseURI).href;
+    expect(decodeURIComponent(news.getAttribute('href') ?? '')).toBe(`/accounts/rss:${feed}`);
+  });
+
   it('adds opened categories above the catalogue and lets the reader pin them', () => {
     const fixture = setUp();
     httpMock.expectOne('/api/v1/lists').flush([]);

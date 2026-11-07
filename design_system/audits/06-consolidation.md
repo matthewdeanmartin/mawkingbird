@@ -1624,3 +1624,18 @@ Added a plain `href="news/"` link (and a separator) after Help in
 no new candidates. Source files stay at 1,678 and candidate files at 598, with
 none added or removed. No shared widget changed. Reconciliation entries remain
 complete.
+
+## Site News menu row; Pastes and Links move to Write, 2026-11-07
+
+The `...` menu (`shell.html`) dropped its Pastes and Links rows and gained a
+plain `href="news/"` Site News row above Help. Write's header
+(`write-page.html`) now links Pastes and Links beside "All drafts →", behind the
+same feature flags. The Feeds landing list (`lists.html`) ends with a Mawkingbird
+News row, styled like the other category rows. Reviewed the diff with a
+per-file count comparison against HEAD. The only new candidates are 2
+`legacyPills` in `write-page.html` (31 to 33): the two new header links use the
+same `btn btn-outline btn-sm` link style as "All drafts →" beside them, and move
+with it whenever that header adopts the shared button. Every other file has the
+same candidates as before, apart from line shifts. Source files stay at 1,678
+and candidate files at 598, with none added or removed. No shared widget
+changed. Reconciliation entries remain complete.

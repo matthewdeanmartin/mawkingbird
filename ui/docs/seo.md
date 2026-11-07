@@ -112,7 +112,8 @@ redirects `/blog` to `/legal`, and `prepare-seo-index.mjs` writes a static
 (GitHub Pages cannot send a 301). It carries no `noindex`: one signal, the move.
 Add any later rename to `MOVED` there; `check-seo-build.mjs` checks the page.
 
-The `...` menu has one reading entry, Help (the help site). The help home's
+The `...` menu has two reading entries, Site News (the news blog) and Help (the
+help site). The help home's
 "More from Mawkingbird" section links About & legal and the project pages, and
 the app footer links About & legal next to Privacy.
 
@@ -306,7 +307,9 @@ Production runs it from `make mockingbird MOCKINGBIRD_SEO=true`. Canary and test
 build previews with `NEWS_ARGS="--url …/canary/news/ --noindex"` (robots
 noindex, no sitemap). Like Help, it is a real directory, outside the app and its
 bundle, and in-app links to it are relative plain `href`s (`news/`). The app
-footer and the help home link it.
+footer, the `...` menu (Site News), the `/feeds` landing list and Help link it.
+`news/auth/` (the sign-in return page for commenting) is `noindex` and not in
+the sitemap.
 
 ## Focused mini-apps
 

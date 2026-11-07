@@ -57,6 +57,8 @@ class BuildHelpTest(unittest.TestCase):
         welcome = self.read("start/welcome/index.html")
         self.assertIn('href="/help/start/welcome/"', home)
         self.assertIn('href="/help/#top"', welcome)
+        # Every guide's footer links the news blog (news/, outside the app).
+        self.assertIn('<a href="/news/">News</a>', welcome)
         self.assertIn('href="https://joinmastodon.org/" rel="noopener"', welcome)
         self.assertIn('class="btn"', home)
         self.assertIn('<link rel="canonical" href="https://mawkingbird.com/help/start/welcome/">', welcome)

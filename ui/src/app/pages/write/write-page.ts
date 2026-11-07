@@ -350,6 +350,9 @@ export class WritePage implements OnInit, OnDestroy {
   protected prefs = inject(ClientPrefs);
   private api = inject(Api);
   private featureFlags = inject(FeatureFlags);
+  /** Header links to /pastes and /links, which left the ... menu. */
+  protected readonly pastesEnabled = this.featureFlags.enabled('pastebin');
+  protected readonly linksEnabled = this.featureFlags.enabled('links');
   private bskySession = inject(BlueskySession);
   private mataroa = inject(MataroaSettings);
   private blogger = inject(BloggerSession);

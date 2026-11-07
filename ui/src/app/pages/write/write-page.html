@@ -121,6 +121,18 @@
         <a class="btn btn-outline btn-sm" routerLink="/drafts">{{
           'pages.write.allDrafts' | transloco
         }}</a>
+        <!-- Pastes and short links: other things you publish, moved here from the
+             ... menu, which had no room left. -->
+        @if (pastesEnabled) {
+          <a class="btn btn-outline btn-sm" routerLink="/pastes">{{
+            'shell.menu.pastes' | transloco
+          }}</a>
+        }
+        @if (linksEnabled) {
+          <a class="btn btn-outline btn-sm" routerLink="/links">{{
+            'shell.menu.links' | transloco
+          }}</a>
+        }
       </div>
     </div>
     <p class="page-note">{{ 'pages.write.pageNote' | transloco }}</p>

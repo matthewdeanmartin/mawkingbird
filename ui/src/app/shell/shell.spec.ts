@@ -577,6 +577,19 @@ describe('Shell account switching', () => {
     ).toContain('Videos');
   });
 
+  it('lists Site News just above Help, and leaves Pastes and Links to Write', () => {
+    TestBed.inject(FeatureFlags).setState('pastebin', 'production');
+    TestBed.inject(FeatureFlags).setState('links', 'production');
+    const fixture = createShell();
+    const menu = fixture.nativeElement.querySelector('details.more-menu') as HTMLElement;
+    // Static sites outside the app: base-relative plain hrefs, not routerLinks.
+    const news = menu.querySelector('a[href="news/"]:not([routerLink])') as HTMLAnchorElement;
+    expect(news.textContent?.trim()).toBe('Site News');
+    expect(news.nextElementSibling?.getAttribute('href')).toBe('help/');
+    expect(menu.querySelector('a[href="/pastes"]')).toBeNull();
+    expect(menu.querySelector('a[href="/links"]')).toBeNull();
+  });
+
   it('opens onboarding from the More menu and closes the menu', () => {
     const fixture = createShell();
     const menu = fixture.nativeElement.querySelector('details.more-menu') as HTMLDetailsElement;

@@ -76,6 +76,17 @@
         }
       </li>
     }
+    <!-- Project news, always last: the news blog's Atom feed in the RSS reader. -->
+    <li>
+      <a
+        class="list-row feed-category-row"
+        [routerLink]="newsFeedLink"
+        (click)="rememberFeed($event)"
+      >
+        <span>{{ 'pages.lists.landing.news' | transloco }}</span>
+        <span class="muted small">{{ 'pages.lists.landing.newsHint' | transloco }}</span>
+      </a>
+    </li>
   </ul>
 }
 

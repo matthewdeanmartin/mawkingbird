@@ -336,8 +336,8 @@ class HelpBuilder:
 </div>
 <footer class="site-footer">
 <a href="{app}features/">Features</a>
-<a href="{app}blog/">Blog</a>
-<a href="{app}about/">About</a>
+<a href="{app}news/">News</a>
+<a href="{app}legal/">About &amp; legal</a>
 <a href="https://github.com/matthewdeanmartin/mawkingbird" rel="noopener">Source code</a>
 </footer>
 </body>

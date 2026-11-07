@@ -1,5 +1,6 @@
 import { OtherServers } from '../other-servers/other-servers';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DOCUMENT } from '@angular/common';
 import { MbButton } from '../../design-system/button/button';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { RecentFeeds } from '../../recent-feeds';
@@ -80,6 +81,8 @@ import { FEED_SECTIONS, FeedSection } from '../../lists/feed-sections';
 // i18n pages.lists.recent.unpinLabel: Unpin
 // i18n pages.lists.landing.allFeeds: All feeds
 // i18n pages.lists.landing.allFeedsHint: everything on one page
+// i18n pages.lists.landing.news: Mawkingbird News
+// i18n pages.lists.landing.newsHint: what changed in Mawkingbird
 // i18n pages.lists.sections.all: All
 // i18n pages.lists.sections.featuredTags: Your Featured Hashtags
 // i18n pages.lists.create: Create
@@ -353,6 +356,15 @@ export class Lists implements OnInit {
 
   /** The picker is pointless on a route that already shows one kind. */
   protected readonly showSectionPicker = this.filter === 'all';
+
+  /**
+   * Mawkingbird News (news/, a static blog outside the app) read through the
+   * RSS reader. From <base href>, so canary reads its own preview's feed.
+   */
+  protected readonly newsFeedLink = [
+    '/accounts',
+    'rss:' + new URL('news/atom.xml', inject(DOCUMENT).baseURI).href,
+  ];
 
   /** True when `section` renders this kind — the template's per-section guard. */
   protected showsSection(section: FeedSection): boolean {

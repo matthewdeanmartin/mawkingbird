@@ -303,12 +303,7 @@
                   'shell.menu.scheduled' | transloco
                 }}</a>
               }
-              @if (featureFlags.enabled('pastebin')) {
-                <a routerLink="/pastes">{{ 'shell.menu.pastes' | transloco }}</a>
-              }
-              @if (featureFlags.enabled('links')) {
-                <a routerLink="/links">{{ 'shell.menu.links' | transloco }}</a>
-              }
+              <!-- Pastes and Links live on Write's header (this menu had no room). -->
 
               <!-- Find people to follow. Starter Kits and "Find my friends" used to
                sit here as separate rows; both are now on the Find Friends hub,
@@ -328,12 +323,14 @@
                  prominently (page-menu-link, and the storage-summary card). -->
               <a routerLink="/observability">{{ 'shell.menu.observability' | transloco }}</a>
 
-              <!-- Reading. One entry: "Docs" next to "Help" read as the same thing.
-               The help site's home links on to About & legal (/legal), which the
-               footer also links. -->
+              <!-- Reading: Site News and Help. ("Docs" next to "Help" read as the same
+               thing, so there is no Docs row.) The help site's home links on to
+               About & legal (/legal), which the footer also links. -->
               <div class="menu-divider"></div>
-              <!-- The static help site lives outside the Angular app, so a plain href
-               relative to <base href> (/help/ in production, /canary/help/ on canary). -->
+              <!-- The static news blog (news/, fediblog) and help site live outside
+               the Angular app, so plain hrefs relative to <base href> (/news/ and
+               /help/ in production, /canary/… on canary). -->
+              <a href="news/">{{ 'shell.menu.news' | transloco }}</a>
               <a href="help/">{{ 'shell.menu.help' | transloco }}</a>
               @if (!isCanary) {
                 <!-- Relative to <base href>: /canary/ on the custom domain and

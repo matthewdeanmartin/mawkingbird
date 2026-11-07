@@ -3,16 +3,35 @@
   "description": "What changed in Mawkingbird, the Mastodon and Bluesky client, and why.",
   "url": "https://mawkingbird.com/news/",
   "lang": "en",
-  "author": { "name": "Mawkingbird", "url": "https://mawkingbird.com/" },
+  "author": {
+    "name": "Mawkingbird",
+    "url": "https://mawkingbird.com/"
+  },
   "mastodon": "@mawkingbird@mastodon.social",
   "posts": "posts",
-  "theme": ["../design_system/tokens.css", "theme.css"],
+  "theme": [
+    "../design_system/tokens.css",
+    "theme.css"
+  ],
   "image": "https://mawkingbird.com/mockingbird_hand.png",
   "icon": "https://mawkingbird.com/favicon-32x32.png",
+  "logo": "https://mawkingbird.com/mockingbird_hand_104.png",
   "nav": [
-    { "label": "Open Mawkingbird", "href": "https://mawkingbird.com/" },
-    { "label": "Help", "href": "https://mawkingbird.com/help/" },
-    { "label": "About & legal", "href": "https://mawkingbird.com/legal/" }
+    {
+      "label": "Open Mawkingbird",
+      "href": "https://mawkingbird.com/",
+      "icon": "app"
+    },
+    {
+      "label": "Help",
+      "href": "https://mawkingbird.com/help/",
+      "icon": "help"
+    },
+    {
+      "label": "About & legal",
+      "href": "https://mawkingbird.com/legal/",
+      "icon": "info"
+    }
   ],
   "mawkingbird": true
 }

@@ -124,6 +124,7 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.menu.analytics: Analytics
 // i18n shell.menu.observability: Observability
 // i18n shell.menu.help: Help
+// i18n shell.menu.news: Site News
 // i18n shell.menu.canary: Canary ↗
 // i18n shell.menu.faults: Faults
 // i18n shell.menu.apiDocs: API Docs ↗

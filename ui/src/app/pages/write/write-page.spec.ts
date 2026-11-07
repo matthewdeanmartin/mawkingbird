@@ -9,6 +9,7 @@ import { BlueskyPublication } from './bluesky-publication';
 import { WritePublication } from './write-publication';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
+import { FeatureFlags } from '../../feature-flags';
 import { ClientPrefs } from '../../client-prefs';
 import { Pseudonymity } from '../../pseudonymity';
 import { PrivateMedia } from '../../private-media';
@@ -272,6 +273,26 @@ describe('WritePage', () => {
     expect(manage.textContent?.trim()).toBe('Manage');
     expect(manage.getAttribute('href')).toBe('/drafts');
     expect(manage.previousElementSibling?.textContent?.trim()).toBe('New');
+  });
+
+  it('links Pastes and Links from the header, now that the ... menu does not', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    const flags = TestBed.inject(FeatureFlags);
+    flags.setState('pastebin', 'production');
+    flags.setState('links', 'production');
+    const head = (setUp().nativeElement as HTMLElement).querySelector('.write-head')!;
+    expect(head.querySelector('a[href="/pastes"]')?.textContent?.trim()).toBe('Pastes');
+    expect(head.querySelector('a[href="/links"]')?.textContent?.trim()).toBe('Links');
+  });
+
+  it('hides the Pastes and Links header links when those features are off', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    const flags = TestBed.inject(FeatureFlags);
+    flags.setState('pastebin', 'off');
+    flags.setState('links', 'off');
+    const head = (setUp().nativeElement as HTMLElement).querySelector('.write-head')!;
+    expect(head.querySelector('a[href="/pastes"]')).toBeNull();
+    expect(head.querySelector('a[href="/links"]')).toBeNull();
   });
 
   it('continues a local draft in place — the same draft, not a copy', () => {

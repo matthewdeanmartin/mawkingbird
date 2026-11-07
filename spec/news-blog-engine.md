@@ -19,7 +19,7 @@ comments" points back at Mawkingbird.
 | Engine | Separate Angular project, its own repository and npm package, MIT. |
 | Mawkingbird's site | `https://mawkingbird.com/news/`, built in this repo's CI and copied into the Pages artifact, like `/help/`. |
 | Comment thread per post | Manual: publish the post, toot it from `@mawkingbird@mastodon.social`, put the status URL in the post's front matter. No CI automation planned. |
-| Menu | Help is the one reading entry; the help home's "More from Mawkingbird" section will link News once it exists. |
+| Menu | Originally: Help is the one reading entry. Changed 2026-11-07 by the owner: "Site News" sits above Help in the `...` menu, and Pastes and Links moved to Write's header to make room. |
 
 ## Shape
 
@@ -96,7 +96,26 @@ pages without JavaScript.
 through `make mockingbird MOCKINGBIRD_SEO=true`. Canary and test build noindex
 previews, and client-build.yml builds it on every push. robots.txt announces
 `/news/sitemap.xml` (checked by `check-seo-build.mjs`). Links: the app footer
-(beside Help) and the help home.
+(beside Help), the `...` menu ("Site News", above Help), the last row of the
+`/feeds` landing list ("Mawkingbird News", which reads `news/atom.xml` in the
+RSS reader), the help home and every help page's footer.
+
+**Layout (2026-11-07).** News uses the app shell's grid: title over the left
+rail, menu icons over the 600px column, sign-in over the right rail. The rails
+are blank, and they collapse at the app's breakpoints (1240px and 1000px).
+`news/theme.css` sets the engine's `--fb-rail-left`, `--fb-column`,
+`--fb-rail-right` and `--fb-gap` to the shell's widths.
+
+**Comments and sign-in (2026-11-07).** Readers can sign in with their own
+Mastodon account (OAuth from the browser; redirect `news/auth/`, `noindex`) and
+reply on the page, to the post or to one comment. This is a second sign-in,
+separate from Mawkingbird's, as the owner accepted. News shares the
+mawkingbird.com origin, so its browser storage is the app's too. Its keys use
+the `fediblog:` prefix (`fediblog:session`, `fediblog:apps`, `fediblog:server`
+in localStorage; `fediblog:pending` in sessionStorage) and never touch the
+app's keys. A post without a `mastodon:` URL says comments open once it is
+shared. The engine credit ("Built with fediblog") is gone until the engine is
+public; see the engine's TODO.md.
 
 **Reply in Mawkingbird.** The button links to
 `/statuses/anonymous-status.<base64url of {server, id, originalUrl}>`. For a
@@ -111,8 +130,9 @@ public status link, so it is not made here.
 **Open.**
 - The owner creates the GitHub repository and publishes `fediblog` to npm. Then
   `news/package.json` switches from the vendored tarball to `fediblog@0.1.0`.
-- Toot both first posts and add their `mastodon:` URLs. Until then they show no
-  comments section.
+  Tracked in the engine's `TODO.md`.
+- Toot both first posts and add their `mastodon:` URLs. Until then they say
+  comments open once the post is shared.
 - Not linked yet from `/legal/` or the root `noscript` overview.
 - Per-post share images (question 5). Help adopting the shared tokens
   (question 4).

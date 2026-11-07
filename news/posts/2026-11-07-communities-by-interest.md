@@ -43,4 +43,4 @@ account, and Mawkingbird follows them for you. If a hashtag turns out to be
 flooded by a few very busy accounts, the page helps you spot them and mute them
 before they take over your timeline.
 
-Tell us which interest should come next by replying to this post on Mastodon.
+Tell us which interest should come next in the comments below.
