@@ -40,7 +40,7 @@ describe('FirstRunModal', () => {
 
   /**
    * Says out loud that the timeline behind the modal is a sample. Without it,
-   * three seeded follows read as "this app picked who I follow".
+   * seeded follows read as "this app picked who I follow".
    */
   it('tells the visitor the posts behind it are a sample', () => {
     const { fixture } = open();

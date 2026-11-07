@@ -4,7 +4,7 @@
  * The preview enters Anonymous *before* the visitor has chosen anything, so
  * "does an anonymous account exist" can no longer answer "has this person
  * decided". A reload with the modal open would otherwise look exactly like a
- * returning anonymous user and skip the question forever, leaving three follows
+ * returning anonymous user and skip the question forever, leaving follows
  * nobody asked for. This flag is the difference, and it is cleared by the same
  * call that removes the seed.
  *

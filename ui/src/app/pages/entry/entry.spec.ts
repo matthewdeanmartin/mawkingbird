@@ -135,7 +135,7 @@ describe('EntryPage', () => {
     const auth = TestBed.inject(Auth);
     expect(auth.isAnonymous).toBe(true);
     expect(TestBed.inject(PreviewSeed).active).toBe(true);
-    expect(TestBed.inject(AnonymousFollows).count()).toBe(3);
+    expect(TestBed.inject(AnonymousFollows).count()).toBe(2);
     expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
   });
 
@@ -165,7 +165,7 @@ describe('EntryPage', () => {
 
     expect(TestBed.inject(Server).baseUrl()).toBe('https://mas.to');
     expect(TestBed.inject(PreviewSeed).active).toBe(true);
-    expect(TestBed.inject(AnonymousFollows).count()).toBe(3);
+    expect(TestBed.inject(AnonymousFollows).count()).toBe(2);
   });
 
   /**

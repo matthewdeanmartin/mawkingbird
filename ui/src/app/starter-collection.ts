@@ -53,10 +53,8 @@ function starter(name: string, handle: string, id: string): StarterAccount {
  * Authenticated users still resolve handles on their own instance before a real follow.
  */
 export const STARTER_COLLECTION: readonly StarterAccount[] = [
-  starter('Eugen Rochko', 'Gargron@mastodon.social', '1'),
   starter('Mastodon', 'Mastodon@mastodon.social', '13179'),
   starter('Mastodon Engineering', 'MastodonEngineering@mastodon.social', '110752047556790864'),
-  starter('Foone', 'foone@digipres.club', '109388102040291211'),
   starter('The Retroist', 'retroist@mastodon.social', '108193834673661187'),
   starter('FediTips', 'FediTips@social.growyourown.services', '111589347315890061'),
   starter('Electronic Frontier Foundation', 'eff@mastodon.social', '41055'),

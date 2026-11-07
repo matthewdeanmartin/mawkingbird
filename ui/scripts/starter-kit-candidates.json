@@ -27,7 +27,6 @@
       "livingcomputers@mastodon.sdf.org",
       "oldvcr@oldbytes.space",
       "clifford@retro.social",
-      "foone@digipres.club",
       "textfiles@mastodon.social",
       "museumofcomputing@mastodon.social",
       "computerhistory@mastodon.social",
@@ -183,7 +182,6 @@
     "blurb": "Mastodon, ActivityPub, Fediverse engineering, infrastructure, governance, and help.",
     "handles": [
       "Mastodon@mastodon.social",
-      "Gargron@mastodon.social",
       "feditips@mstdn.social",
       "dansup@mastodon.social",
       "evan@cosocial.ca",

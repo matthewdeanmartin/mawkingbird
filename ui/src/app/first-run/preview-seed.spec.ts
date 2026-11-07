@@ -54,16 +54,17 @@ describe('PreviewSeed', () => {
    * network. If this ever needed the batch response to produce follows, a
    * blocked request would leave the modal sitting over an empty feed.
    */
-  it('seeds three follows from the compiled-in snapshot, before any response', async () => {
+  it('seeds one follow per preview account from the compiled-in snapshot, before any response', async () => {
     const seeding = seed.seed(PREVIEW_SERVER);
-    expect(follows.count()).toBe(3);
+    expect(PREVIEW_ACCOUNT_IDS).toHaveLength(2);
+    expect(follows.count()).toBe(PREVIEW_ACCOUNT_IDS.length);
     expect(seed.active).toBe(true);
 
     http.expectOne((req) => req.url.includes('/api/v1/accounts')).flush([]);
     await seeding;
   });
 
-  it('asks for all three ids in one batched call', async () => {
+  it('asks for every preview id in one batched call', async () => {
     const seeding = seed.seed(PREVIEW_SERVER);
     const req = http.expectOne((r) => r.url.includes('/api/v1/accounts'));
 
@@ -76,13 +77,13 @@ describe('PreviewSeed', () => {
     const seeding = seed.seed(PREVIEW_SERVER);
     http
       .expectOne((r) => r.url.includes('/api/v1/accounts'))
-      .flush([account(PREVIEW_ACCOUNT_IDS[0], 'Gargron')]);
+      .flush([account(PREVIEW_ACCOUNT_IDS[0], 'Mastodon')]);
     await seeding;
 
     const refreshed = follows.findByAccountId(PREVIEW_ACCOUNT_IDS[0]);
-    expect(refreshed?.account.display_name).toBe('Fresh Gargron');
-    // The other two keep the snapshot rather than vanishing.
-    expect(follows.count()).toBe(3);
+    expect(refreshed?.account.display_name).toBe('Fresh Mastodon');
+    // The others keep the snapshot rather than vanishing.
+    expect(follows.count()).toBe(PREVIEW_ACCOUNT_IDS.length);
   });
 
   /** A blocked or rate-limited lookup costs a stale avatar, never the preview. */
@@ -91,7 +92,7 @@ describe('PreviewSeed', () => {
     http.expectOne((r) => r.url.includes('/api/v1/accounts')).error(new ProgressEvent('blocked'));
     await seeding;
 
-    expect(follows.count()).toBe(3);
+    expect(follows.count()).toBe(PREVIEW_ACCOUNT_IDS.length);
   });
 
   /** The hardcoded ids are mastodon.social's; elsewhere they mean nothing. */
@@ -99,7 +100,7 @@ describe('PreviewSeed', () => {
     await seed.seed('https://mas.to');
 
     http.expectNone((r) => r.url.includes('/api/v1/accounts'));
-    expect(follows.count()).toBe(3);
+    expect(follows.count()).toBe(PREVIEW_ACCOUNT_IDS.length);
   });
 
   it('removes every seeded follow on clear, and ends the preview', async () => {
@@ -118,8 +119,8 @@ describe('PreviewSeed', () => {
    * visitor's back is worse than leaving a seeded follow behind.
    */
   it('keeps an account the visitor followed themselves during the preview', async () => {
-    // Follow one of the three *before* seeding, so it is theirs, not ours.
-    const mine = account(PREVIEW_ACCOUNT_IDS[1], 'Mastodon');
+    // Follow one of them *before* seeding, so it is theirs, not ours.
+    const mine = account(PREVIEW_ACCOUNT_IDS[0], 'Mastodon');
     follows.follow(mine, PREVIEW_SERVER);
 
     const seeding = seed.seed(PREVIEW_SERVER);
@@ -129,19 +130,19 @@ describe('PreviewSeed', () => {
     seed.clear();
 
     expect(follows.count()).toBe(1);
-    expect(follows.findByAccountId(PREVIEW_ACCOUNT_IDS[1])).not.toBeNull();
+    expect(follows.findByAccountId(PREVIEW_ACCOUNT_IDS[0])).not.toBeNull();
   });
 
   /**
    * ProPublica is a *remote* account (`@ProPublica@newsie.social`) that
    * mastodon.social knows by a local id. Follows are keyed on the federated
    * handle, not the id, so a snapshot whose `acct` was wrong would seed under
-   * one key and refresh under another — leaving four follows, two of them half
-   * populated. This pins seed and refresh to the same key.
+   * one key and refresh under another — leaving an extra, half-populated follow.
+   * This pins seed and refresh to the same key.
    */
   it('seeds and refreshes a federated account as one follow', async () => {
     const seeding = seed.seed(PREVIEW_SERVER);
-    const federatedId = PREVIEW_ACCOUNT_IDS[2];
+    const federatedId = PREVIEW_ACCOUNT_IDS[1];
     const fresh = {
       ...account(federatedId, 'ProPublica'),
       acct: 'ProPublica@newsie.social',
@@ -151,7 +152,7 @@ describe('PreviewSeed', () => {
     http.expectOne((r) => r.url.includes('/api/v1/accounts')).flush([fresh]);
     await seeding;
 
-    expect(follows.count()).toBe(3);
+    expect(follows.count()).toBe(PREVIEW_ACCOUNT_IDS.length);
     expect(follows.findByAccountId(federatedId)?.account.display_name).toBe('ProPublica Refreshed');
   });
 

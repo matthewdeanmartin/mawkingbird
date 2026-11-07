@@ -9,12 +9,13 @@ import { PREVIEW_KEY, type PreviewState, readPreviewState } from './preview-stat
 export const PREVIEW_SERVER = 'https://mastodon.social';
 
 /**
- * The three accounts a first-time visitor sees, chosen by the product owner.
+ * The accounts a first-time visitor sees, chosen by the product owner.
  *
- * Three, not a whole starter kit: seeding a kit costs 20+ API calls before the
- * first post appears, and three reads as a timeline just as well. One founder,
- * one official account, one real newsroom — so the preview is not wall-to-wall
- * meta-Mastodon.
+ * A couple, not a whole starter kit: seeding a kit costs 20+ API calls before
+ * the first post appears, and a couple of active accounts read as a timeline as
+ * well. One official account and one real newsroom, so the preview is not
+ * wall-to-wall meta-Mastodon. Only organisations: a person's account can be
+ * their personal life too, which a stranger's first screen should not seed.
  *
  * The ids are mastodon.social's. `Account` bodies are compiled in rather than
  * fetched because `AnonymousFollows.follow()` stores the whole account and the
@@ -24,19 +25,6 @@ export const PREVIEW_SERVER = 'https://mastodon.social';
  * rather than an empty preview.
  */
 const PREVIEW_ACCOUNTS: readonly Account[] = [
-  snapshot({
-    id: '1',
-    username: 'Gargron',
-    acct: 'Gargron',
-    display_name: 'Eugen Rochko',
-    note: '<p>Executive Strategy &amp; Product Advisor, Founder of Mastodon. Film photography, prog metal, Dota 2. Likes all things analog.</p>',
-    url: 'https://mastodon.social/@Gargron',
-    avatar:
-      'https://files.mastodon.social/accounts/avatars/000/000/001/original/6b2384b33799a0dd.png',
-    followers_count: 382052,
-    following_count: 731,
-    statuses_count: 82034,
-  }),
   snapshot({
     id: '13179',
     username: 'Mastodon',
@@ -100,11 +88,11 @@ function snapshot(
 export const PREVIEW_ACCOUNT_IDS: readonly string[] = PREVIEW_ACCOUNTS.map((a) => a.id);
 
 /**
- * Seeds and removes the three follows behind the first-run preview.
+ * Seeds and removes the follows behind the first-run preview.
  *
  * The seed is temporary by contract: **every** exit from the first-run modal
  * clears it, including the ones that lead to a real login. An anonymous account
- * left carrying three follows the visitor never chose is the failure this
+ * left carrying follows the visitor never chose is the failure this
  * service exists to prevent.
  */
 @Injectable({ providedIn: 'root' })
@@ -133,7 +121,7 @@ export class PreviewSeed {
   }
 
   /**
-   * Follow the three preview accounts, then refresh them from the live server.
+   * Follow the preview accounts, then refresh them from the live server.
    *
    * Follows are seeded from the compiled-in snapshot **first** so the timeline
    * can start rendering without waiting on the network; the batch call then
@@ -178,7 +166,7 @@ export class PreviewSeed {
    *
    * Only removes accounts this service seeded, matched the way
    * `AnonymousFollows` keys them. Someone who genuinely followed one of the
-   * three during the preview keeps that follow — un-following it behind their
+   * accounts during the preview keeps that follow — un-following it behind their
    * back would be worse than leaving it.
    */
   clear(): void {

@@ -4,15 +4,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const sources = [
-  ['mastodon.social', '116777306758391615'],
   ['fosstodon.org', '116855054431403069'],
   ['cyberplace.social', '116834282425494228'],
   ['fosstodon.org', '116768884064559349'],
   ['fosstodon.org', '116776403249838997'],
-  ['mastodon.social', '116533503334952204'],
   ['mastodon.social', '116540107831540575'],
   ['mastodon.me.uk', '116924486223172384'],
-  ['mastodon.social', '116784146949292427'],
   ['fosstodon.org', '116854987292715462'],
   ['mastodon.social', '116843436442889237'],
 ];
