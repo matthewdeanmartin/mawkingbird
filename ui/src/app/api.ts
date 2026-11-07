@@ -2,7 +2,19 @@ import { AppDialogs } from './app-dialogs';
 import { TranslocoService } from '@jsverse/transloco';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, Subject, catchError, of, defer, map, switchMap, tap } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  Subject,
+  catchError,
+  of,
+  defer,
+  expand,
+  map,
+  reduce,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { accountScopeSuffix } from './account-scope';
 import { PrivateMedia } from './private-media';
 import { Pseudonymity } from './pseudonymity';
@@ -506,6 +518,43 @@ export class Api {
           nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
         })),
       );
+  }
+
+  /**
+   * Every scheduled status, following `Link` pagination up to `maxPages`.
+   *
+   * The first request is the same plain call as {@link scheduledStatuses}
+   * (the server's default page), so a short list costs exactly what it did;
+   * only an account with more rows pays for the extra pages. Counting limits
+   * and listing parked drafts both need every row, not the first twenty.
+   */
+  allScheduledStatuses(maxPages = 10): Observable<ScheduledStatus[]> {
+    const first = this.http
+      .get<ScheduledStatus[]>('/api/v1/scheduled_statuses', { observe: 'response' })
+      .pipe(
+        map((response) => ({
+          rows: response.body ?? [],
+          nextMaxId: nextMaxIdFrom(response.headers.get('Link')),
+        })),
+      );
+    return first.pipe(
+      expand((page, index) =>
+        page.nextMaxId && page.rows.length && index + 1 < maxPages
+          ? this.scheduledStatusesPage(page.nextMaxId)
+          : EMPTY,
+      ),
+      reduce((all, page) => [...all, ...page.rows], [] as ScheduledStatus[]),
+    );
+  }
+
+  /**
+   * Move a scheduled status to a new time. Mastodon's PUT only accepts
+   * `scheduled_at`; changing the text means scheduling a replacement.
+   */
+  rescheduleStatus(id: string, scheduledAt: string): Observable<ScheduledStatus> {
+    return this.http.put<ScheduledStatus>(`/api/v1/scheduled_statuses/${id}`, {
+      scheduled_at: scheduledAt,
+    });
   }
 
   cancelScheduledStatus(id: string): Observable<void> {

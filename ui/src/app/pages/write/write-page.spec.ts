@@ -14,7 +14,7 @@ import { ClientPrefs } from '../../client-prefs';
 import { Pseudonymity } from '../../pseudonymity';
 import { PrivateMedia } from '../../private-media';
 import { throwError } from 'rxjs';
-import { DraftMedia, DraftVersion, Drafts } from '../../drafts';
+import { DraftHandoff, DraftMedia, DraftVersion, Drafts } from '../../drafts';
 import { Account, ScheduledStatus, Status } from '../../models';
 import { PostTarget } from '../../compose/compose';
 import { TranslateResult } from '../../compose/translate-dialog/translate-dialog';
@@ -126,6 +126,14 @@ interface PageInternals {
   versionList: WritableSignal<DraftVersion[]>;
   openVersions(): void;
   restoreVersion(version: DraftVersion): void;
+  parkOnServer(): void;
+  isParking: Signal<boolean>;
+  replacing: WritableSignal<{ id: string } | null>;
+  pendingScheduledId: WritableSignal<string | null>;
+  quotedStatusId: WritableSignal<string | undefined>;
+  quotedStatus: WritableSignal<Status | null>;
+  removeQuote(): void;
+  openHandoff(handoff: DraftHandoff): void;
 }
 
 function internals(fixture: ComponentFixture<WritePage>): PageInternals {
@@ -1982,6 +1990,200 @@ describe('WritePage', () => {
   });
 
   // ------------------------------------------------------- editor conveniences
+
+  // ------------------------------------------- parking and scheduled replace
+
+  // ------------------------------------------------------------------ quotes
+
+  describe('quotes', () => {
+    const quotedPost = {
+      id: 'q1',
+      content: '<p>the quoted words</p>',
+      spoiler_text: '',
+      account: { id: 'a1', username: 'author', acct: 'author', display_name: 'Author' },
+      media_attachments: [],
+    } as unknown as Status;
+
+    function handOff(): DraftHandoff {
+      TestBed.inject(Drafts).handoff(
+        {
+          segments: ['what I think about it'],
+          spoilerText: '',
+          sensitive: false,
+          visibility: 'public',
+          poll: null,
+          quotedStatusId: 'q1',
+        },
+        undefined,
+        {
+          media: [
+            { media: { id: 'm1', type: 'image' } as DraftMedia['media'], description: 'pic' },
+          ],
+          quotedStatus: quotedPost,
+        },
+      );
+      return TestBed.inject(Drafts).takeHandoff()!;
+    }
+
+    it('opens a Fullscreen edit handoff with its text, images and quote', () => {
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.openHandoff(handOff());
+      fixture.detectChanges();
+
+      expect(page.body()).toBe('what I think about it');
+      expect(page.media().map((m) => m.media.id)).toEqual(['m1']);
+      expect(page.quotedStatusId()).toBe('q1');
+      expect(page.dirty()).toBe(true);
+      const preview = (fixture.nativeElement as HTMLElement).querySelector('app-quote-preview');
+      expect(preview?.textContent).toContain('the quoted words');
+    });
+
+    it('publishes the quote to Mastodon only, and can drop it', async () => {
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.openHandoff(handOff());
+      page.media.set([]);
+
+      expect(page.targetUnsupportedReason('bsky')).toContain('Quotes are published to Mastodon');
+      expect(page.targetUnsupportedReason('fedi')).toBeNull();
+
+      const publish = vi
+        .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+        .mockResolvedValue();
+      await page.wizardFinish();
+      expect(publish.mock.calls[0][0].quotedStatusId).toBe('q1');
+
+      page.openHandoff(handOff());
+      page.removeQuote();
+      expect(page.quotedStatusId()).toBeUndefined();
+      expect(page.targetUnsupportedReason('bsky')).not.toContain('Quotes');
+    });
+
+    it('keeps the quote in a saved draft and loads its preview when reopened', () => {
+      signIn();
+      const id = TestBed.inject(Drafts).save({
+        segments: ['saved comment'],
+        spoilerText: '',
+        sensitive: false,
+        visibility: 'public',
+        poll: null,
+        quotedStatusId: 'q1',
+      }).id;
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.open(page.sources.items().find((item) => item.id === id)!);
+
+      httpMock.expectOne('/api/v1/statuses/q1').flush(quotedPost);
+      expect(page.quotedStatusId()).toBe('q1');
+      expect(page.quotedStatus()?.id).toBe('q1');
+    });
+  });
+
+  describe('parking and replacing scheduled posts', () => {
+    function row(id: string, at: string, extra: Partial<ScheduledStatus> = {}): ScheduledStatus {
+      return {
+        id,
+        scheduled_at: at,
+        params: { text: `post ${id}` },
+        media_attachments: [],
+        ...extra,
+      } as unknown as ScheduledStatus;
+    }
+
+    async function settle(): Promise<void> {
+      for (let i = 0; i < 20; i++) await Promise.resolve();
+    }
+
+    it('parks on the first far-future day that still has room under the daily limit', () => {
+      signIn();
+      const fixture = setUp();
+      const page = internals(fixture);
+      // The clock is pinned to 2026-08-08; a park lands 99 years out.
+      const full = Array.from({ length: 25 }, (_, i) => row(`p${i}`, '2125-08-08T12:00:00Z'));
+      httpMock.expectOne(SCHEDULED_URL).flush(full);
+      fixture.detectChanges();
+      page.newDraft();
+      page.onBodyInput('keep this with its picture');
+
+      page.parkOnServer();
+
+      expect(new Date(page.wizardScheduleAt()).toISOString().slice(0, 10)).toBe('2125-08-09');
+      expect(page.isParking()).toBe(true);
+    });
+
+    it('opens a scheduled post with its text, images and time, ready to replace', () => {
+      signIn();
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.pendingScheduledId.set('s1');
+      httpMock.expectOne(SCHEDULED_URL).flush([
+        row('s1', '2026-09-01T10:00:00.000Z', {
+          params: { text: 'old text' },
+          media_attachments: [
+            { id: 'm1', type: 'image', url: 'https://m/1.png', description: 'a cat' },
+          ],
+        } as unknown as Partial<ScheduledStatus>),
+      ]);
+      flushStatusScans([]);
+      fixture.detectChanges();
+
+      expect(page.body()).toBe('old text');
+      expect(page.media().map((m) => [m.media.id, m.description])).toEqual([['m1', 'a cat']]);
+      expect(new Date(page.wizardScheduleAt()).toISOString()).toBe('2026-09-01T10:00:00.000Z');
+      expect(page.replacing()).toEqual({ id: 's1' });
+    });
+
+    it('schedules the new version first, then cancels the original', async () => {
+      signIn();
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.pendingScheduledId.set('s1');
+      httpMock.expectOne(SCHEDULED_URL).flush([row('s1', '2026-09-01T10:00:00.000Z')]);
+      flushStatusScans([]);
+      fixture.detectChanges();
+      page.onBodyInput('better text');
+      const publish = vi
+        .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+        .mockResolvedValue();
+      const dialog = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+
+      const done = page.wizardFinish();
+      await settle();
+      expect(publish).toHaveBeenCalledTimes(1);
+      expect(publish.mock.calls[0][0].segments).toEqual(['better text']);
+      httpMock.expectOne({ url: `${SCHEDULED_URL}/s1`, method: 'DELETE' }).flush(null);
+      await done;
+
+      expect(page.notice()?.key).toBe('pages.write.replace.done');
+      dialog.mockRestore();
+    });
+
+    it('leaves the original alone when the replacement is declined or fails', async () => {
+      signIn();
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.pendingScheduledId.set('s1');
+      httpMock.expectOne(SCHEDULED_URL).flush([row('s1', '2026-09-01T10:00:00.000Z')]);
+      flushStatusScans([]);
+      fixture.detectChanges();
+      page.onBodyInput('maybe');
+      const publish = vi
+        .spyOn(fixture.debugElement.injector.get(WritePublication), 'publish')
+        .mockRejectedValue(new Error('refused'));
+      const dialog = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+
+      await page.wizardFinish();
+      expect(publish).not.toHaveBeenCalled();
+
+      dialog.mockResolvedValue(true);
+      await page.wizardFinish();
+      expect(publish).toHaveBeenCalledTimes(1);
+      httpMock.expectNone({ url: `${SCHEDULED_URL}/s1`, method: 'DELETE' });
+      expect(page.replacing()).toEqual({ id: 's1' });
+      dialog.mockRestore();
+    });
+  });
 
   describe('editor conveniences', () => {
     it('shows the raw split by default and can render it instead', () => {

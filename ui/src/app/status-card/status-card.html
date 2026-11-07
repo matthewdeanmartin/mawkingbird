@@ -1850,20 +1850,16 @@
       }
 
       @if (quoting()) {
-        <div class="inline-compose" (click)="$event.stopPropagation()">
-          <!-- A quote is a fresh statement to your own audience, not a reply to
-               a conversation, so it goes through Drafts like any other post. -->
-          <app-compose
-            [quotedStatusId]="display.provider === 'bluesky' ? undefined : display.id"
-            [blueskyQuote]="blueskyQuoteRef"
-            [initialTarget]="display.provider === 'bluesky' ? 'bsky' : 'fedi'"
-            initialVisibility="public"
-            [gateable]="true"
-            [compact]="true"
-            [placeholder]="'statusCard.addComment' | transloco"
-            (posted)="onQuoted($event)"
-          />
-        </div>
+        <!-- A quote is a fresh statement to your own audience, not a reply to a
+             conversation: it opens as its own dialog, your words above the
+             quoted post, and goes through Drafts like any other post. -->
+        <app-quote-dialog
+          (click)="$event.stopPropagation()"
+          [status]="display"
+          [blueskyQuote]="blueskyQuoteRef"
+          (posted)="onQuoted($event)"
+          (closed)="quoting.set(false)"
+        />
       }
 
       @if (shareCompose(); as request) {

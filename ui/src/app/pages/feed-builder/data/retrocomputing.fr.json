@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "topic": "retrocomputing",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T22:19:41+00:00",
+  "tags": [
+    {
+      "name": "Rétroinformatique",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "InformatiqueAncienne",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "OrdinateursAnciens",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "RetroComputing",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "C64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Amiga",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Commodore64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ZXSpectrum",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Demoscene",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "DOS",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "akaikoshi@mastodon.social",
+      "id": "114134646286590210",
+      "url": "https://mastodon.social/@akaikoshi",
+      "displayName": "akaikōshi",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/134/646/286/590/210/original/955bfe7ccb7c1352.jpeg",
+      "bio": "akaikōshi is an oldskool phantom demogroup born in 2025 - our only aim : produce intros/demos/cracktros to spread peace and love all over the world - haters go away – or you will be photonized in the…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UC9Vg_Wnrd7SaE4L81ElJZBg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-05"
+      }
+    },
+    {
+      "acct": "mmu_man@m.g3l.org",
+      "id": "351",
+      "url": "https://m.g3l.org/@mmu_man",
+      "displayName": "mmu_man",
+      "avatar": "https://m.g3l.org/system/accounts/avatars/000/000/351/original/1c0d7f98321e37c7.jpeg",
+      "bio": "# FreeSoftware # HaikuOS # LQDN",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "namip@computermuseum.social",
+      "id": "112343274007155904",
+      "url": "https://computermuseum.social/@namip",
+      "displayName": "NAM-IP Computer Museum",
+      "avatar": "https://computermuseum.social/system/accounts/avatars/112/343/274/007/155/904/original/4906dfee48deca09.jpg",
+      "bio": "Musée de l'informatique/Computer Museum De la mécanographie au micro-ordinateur From punched card to micro-computers https://www. nam-ip.be Namur (Belgium)",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "jelora@mastodon.gargantia.fr",
+      "id": "1",
+      "url": "https://mastodon.gargantia.fr/@jelora",
+      "displayName": "Jelora",
+      "avatar": "https://mastodon.gargantia.fr/system/accounts/avatars/000/000/001/original/efae3afbc953d2b5.png",
+      "bio": "Mec goth (il/lui) Répare du vieux matos Fait des expérimentations en électronique et en impression 3D Rédige tout ça sur un blog ( https://www. jelora.fr ) Collectionne les vinyles et cassettes A un…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "occitel@mastodon.social",
+      "id": "108520921660161028",
+      "url": "https://mastodon.social/@occitel",
+      "displayName": "Silicium",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/520/921/660/161/028/original/f2e22a4063e68a85.jpg",
+      "bio": "Retrogaming & retrocomputing preservation society since 1994 Toulouse, France",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "rajah@m.g3l.org",
+      "id": "427",
+      "url": "https://m.g3l.org/@Rajah",
+      "displayName": "Rajah Lone",
+      "avatar": "https://m.g3l.org/system/accounts/avatars/000/000/427/original/054781b69f02cf03.jpg",
+      "bio": "Semi-elfe, asocial, chaotic good|neutral, sapiosexuel mais pas nyctalope. # retrocomputing # natation # musiquebaroque # fantasy # sciences",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "dma_sc@mastodon.gamedev.place",
+      "id": "112706104910150015",
+      "url": "https://mastodon.gamedev.place/@dma_sc",
+      "displayName": "Dma-Sc",
+      "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/112/706/104/910/150/015/original/e891947959cf7762.jpeg",
+      "bio": "FunkyChipper using 💾 & 🎶 Demoscene & game music composer, mainly on Atari ST(e)",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "oldbytes.space"
+    }
+  ]
+}

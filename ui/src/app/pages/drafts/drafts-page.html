@@ -9,6 +9,20 @@
 <p class="page-note">
   {{ 'pages.drafts.intro' | transloco }}
 </p>
+@if (!auth.isAnonymous && sources.loaded()) {
+  <p class="page-note muted small">
+    {{
+      'pages.drafts.quota.used'
+        | transloco
+          : {
+              used: sources.scheduledUsage().used,
+              parked: sources.scheduledUsage().parked,
+              limit: totalLimit,
+              daily: dailyLimit,
+            }
+    }}
+  </p>
+}
 
 <!-- Thoughtful posting's writing surface. Saves only: the post itself happens
      later from a row below, which is the gap the whole feature is for. -->
@@ -176,6 +190,11 @@
                 {{ 'pages.drafts.convert.schedule' | transloco }}
               </button>
             }
+            @if (item.kind === 'scheduled' && featureFlags.enabled('write')) {
+              <a routerLink="/write" [queryParams]="{ scheduled: item.id }">
+                {{ 'pages.drafts.scheduled.editParked' | transloco }}
+              </a>
+            }
             @if (item.kind === 'scheduled') {
               <!-- The one action here that removes its source, so it is asked
                    about and kept visually apart from the copies above it. -->
@@ -240,6 +259,18 @@
         </div>
       </div>
       <div class="draft-actions">
+        @if (featureFlags.enabled('write')) {
+          <a
+            class="btn btn-outline btn-sm"
+            routerLink="/write"
+            [queryParams]="{ scheduled: s.id }"
+            [title]="'pages.drafts.scheduled.editTitle' | transloco"
+            >{{ 'pages.drafts.scheduled.edit' | transloco }}</a
+          >
+        }
+        <button class="btn btn-outline btn-sm" type="button" (click)="askReschedule(s)">
+          {{ 'pages.drafts.reschedule.button' | transloco }}
+        </button>
         <button
           class="btn btn-outline btn-sm"
           type="button"
@@ -358,6 +389,58 @@
         {{
           (busy() ? 'pages.drafts.pasteDialog.pasting' : 'pages.drafts.pasteDialog.create')
             | transloco
+        }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Reschedule dialog. Mastodon can move a scheduled post but not edit it. -->
+@if (pendingReschedule(); as pending) {
+  <div
+    class="convert-backdrop"
+    role="presentation"
+    tabindex="-1"
+    (click)="pendingReschedule.set(null)"
+    (keyup.escape)="pendingReschedule.set(null)"
+  ></div>
+  <div
+    class="convert-dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'pages.drafts.reschedule.title' | transloco"
+  >
+    <h3>{{ 'pages.drafts.reschedule.title' | transloco }}</h3>
+    <p class="muted">{{ scheduledPreview(pending.scheduled) }}</p>
+    <label class="convert-field">
+      <span>{{ 'pages.drafts.reschedule.label' | transloco }}</span>
+      <input
+        type="datetime-local"
+        [ngModel]="pending.at"
+        (ngModelChange)="setRescheduleAt($event)"
+        name="rescheduleAt"
+      />
+    </label>
+    @if (rescheduleProblem(); as problem) {
+      <p class="muted small" role="alert">{{ problem }}</p>
+    } @else {
+      <p class="muted small">{{ 'pages.drafts.reschedule.note' | transloco }}</p>
+    }
+    @if (actionError()) {
+      <p class="small" role="alert">{{ actionError() }}</p>
+    }
+    <div class="convert-actions">
+      <button class="btn btn-outline btn-sm" type="button" (click)="pendingReschedule.set(null)">
+        {{ 'pages.drafts.cancel' | transloco }}
+      </button>
+      <button
+        class="btn btn-sm"
+        type="button"
+        [disabled]="busy() || !!rescheduleProblem()"
+        (click)="confirmReschedule()"
+      >
+        {{
+          (busy() ? 'pages.drafts.reschedule.saving' : 'pages.drafts.reschedule.save') | transloco
         }}
       </button>
     </div>

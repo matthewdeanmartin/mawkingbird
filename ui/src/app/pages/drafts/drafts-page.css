@@ -106,7 +106,8 @@
   box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
 }
 
-.row-menu-panel button {
+.row-menu-panel button,
+.row-menu-panel a {
   width: 100%;
   padding: 7px 9px;
   border: 0;
@@ -117,9 +118,13 @@
   white-space: nowrap;
   cursor: pointer;
   font: inherit;
+  display: block;
+  box-sizing: border-box;
+  text-decoration: none;
 }
 
-.row-menu-panel button:hover {
+.row-menu-panel button:hover,
+.row-menu-panel a:hover {
   background: var(--border);
 }
 

@@ -1,0 +1,621 @@
+{
+  "version": 1,
+  "topic": "retrocomputing",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T22:19:41+00:00",
+  "tags": [
+    {
+      "name": "RetroComputing",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Amiga",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Commodore64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ZXSpectrum",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "DOS",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "VintageComputing",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "AtariST",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "MSX",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "AmstradCPC",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ComputerHistory",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "CPM",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "off-topic"
+    },
+    {
+      "name": "AppleII",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "VintageMac",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "BBCMicro",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RetroProgramming",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "TRS80",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "PDP11",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RISCOS",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SoftwarePreservation",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "AcornArchimedes",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "jonn_blanchard@retrochat.online",
+      "id": "108202884595037166",
+      "url": "https://retrochat.online/@jonn_blanchard",
+      "displayName": "Dr Johnny Blanchard",
+      "avatar": "https://cdn.masto.host/retrochatonline/accounts/avatars/108/202/884/595/037/166/original/083d097d36ca02b9.jpeg",
+      "bio": "Author, technology archaeologist, YouTuber, screenwriter, playwright Retro/Vintage Gaming and Computing Videos https:// makertube.net/c/reenthused/vid eos https://www. youtube.com/@reenthused Short f…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "youtube-10k"],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCYF-5rMVfnI48w48EW2g3hA",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "muzej@mastodon.social",
+      "id": "110990163462280926",
+      "url": "https://mastodon.social/@muzej",
+      "displayName": "Computer History Museum 🇸🇮",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/990/163/462/280/926/original/4ff4574315347282.jpg",
+      "bio": "🖥️🏛️🇸🇮 Računalniški muzej / Computer History Museum Slovenia 👉 https:// linktr.ee/racunalniskimuzej",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UCXLzcA6CjABrNkrtTQEXESg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-01"
+      }
+    },
+    {
+      "acct": "gamesthatwerent@mastodon.world",
+      "id": "109324717880856535",
+      "url": "https://mastodon.world/@gamesthatwerent",
+      "displayName": "Games That Weren't",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/324/717/880/856/535/original/c9c72605186b926e.jpg",
+      "bio": "We are an Cancelled & Unreleased Video games archive with prototypes, developer history and assets for many computers and consoles of all ages. A non-profit large archive dedicated to preserving lost…",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": ["wikidata"],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCf16cjzO5xIT5Qfd87xDiPA",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "root42@chaos.social",
+      "id": "108197118634352812",
+      "url": "https://chaos.social/@root42",
+      "displayName": "root42",
+      "avatar": "https://assets.chaos.social/accounts/avatars/108/197/118/634/352/812/original/b1884dc3c749b084.jpeg",
+      "bio": "https://www. youtube.com/root42 Coding, tinkering, ancient hardware and software. he/him # retrogaming # letscode # demoscene If you want to support me, you can do so at the links below. I also have…",
+      "shelf": "youtube",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["patreon", "website", "youtube"],
+      "youtube": {
+        "channelId": "UCPjFa_UZBUDzdJTIEdyGjIQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "ronscompvids@bitbang.social",
+      "id": "11410",
+      "url": "https://bitbang.social/@RonsCompVids",
+      "displayName": "Ron's Computer Videos🖥️📼",
+      "avatar": "https://files.bitbang.social/accounts/avatars/000/011/410/original/39bd71443c2cbdd1.png",
+      "bio": "Ron's Computer Videos is a retrocomputing repair and exploration channel with a focus on Apple II, early Macintosh, and MS-DOS era PCs. He/Him/They",
+      "shelf": "youtube",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UC7rp0lLtW_ZSbs453_8PCxw",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "bluescsi@hachyderm.io",
+      "id": "109303106863377738",
+      "url": "https://hachyderm.io/@BlueSCSI",
+      "displayName": "BlueSCSI",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/109/303/106/863/377/738/original/18ba2cfbc9770c51.png",
+      "bio": "Open Source, Open Hardware, Open Design SCSI emulator for your Vintage Computer! Build your own SCSI device today! Toots by https:// mastodon.social/@nulleric",
+      "shelf": "youtube",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCmXMW2xn1_tz0LlrQqE0ejA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-06"
+      }
+    },
+    {
+      "acct": "seg@oldbytes.space",
+      "id": "108201437666461744",
+      "url": "https://oldbytes.space/@Seg",
+      "displayName": "(ノಠ益ಠ)ノ彡 ᖇETᖇO ᖇOᗩᗪKIᒪᒪ (ʘ言ʘ╬)",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/108/201/437/666/461/744/original/5597160310471389.png",
+      "bio": "code artist retrocoder of all the things but especially the Atari ST # retrocoding # retrocomputing # retrogaming # Atari # AtariST",
+      "shelf": "youtube",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCD4YnY_vSWO0mL1EuF_dyuQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-07"
+      }
+    },
+    {
+      "acct": "jimblimey@retrochat.online",
+      "id": "110012156804369646",
+      "url": "https://retrochat.online/@jimblimey",
+      "displayName": "Jim Blimey",
+      "avatar": "https://cdn.masto.host/retrochatonline/accounts/avatars/110/012/156/804/369/646/original/79973a768ca61882.jpg",
+      "bio": "Player of games, writer of code, drinker of beer, streamer of nonsense, an acquired taste. https:// twitch.tv/jimblimey",
+      "shelf": "youtube",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["twitch", "website", "youtube"],
+      "youtube": {
+        "channelId": "UCtwHE8jt1d7IX2ldBG7g3MA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "ryanfb@digipres.club",
+      "id": "110384704250698800",
+      "url": "https://digipres.club/@ryanfb",
+      "displayName": "Ryan Baumann",
+      "avatar": "https://digipres-club.s3.bhs.io.cloud.ovh.net/accounts/avatars/110/384/704/250/698/800/original/c02113cc8cf5472e.png",
+      "bio": "📜 Papyri, Ancient Greek, Latin, computers, video games, cats, etc. https:// papyri.info maintainer Creator of https:// podqueue.fm , the missing \"Listen Later\" for audio on the web",
+      "shelf": "youtube",
+      "rank": 9,
+      "fame": ["wikidata"],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCbJPgx661mOhDlsrpQhHdkg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-12"
+      }
+    },
+    {
+      "acct": "dersammler@oldbytes.space",
+      "id": "109659190314385391",
+      "url": "https://oldbytes.space/@derSammler",
+      "displayName": "derSammler",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/659/190/314/385/391/original/57cbf99db589be4b.jpg",
+      "bio": "Sammler von Retro-Hardware, -Software und Videospielen und aktuell im Aufbau eines Computer-Museums. Ausgebildeter Fachinformatiker und Multimedia Designer, derzeit tätig als IT-Admin und Software-En…",
+      "shelf": "youtube",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCaqe1xDjjbUk8_V92JnWPIw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-01"
+      }
+    },
+    {
+      "acct": "lucaslove@chaos.social",
+      "id": "114981952766953115",
+      "url": "https://chaos.social/@lucaslove",
+      "displayName": "Lucas ✦",
+      "avatar": "https://assets.chaos.social/accounts/avatars/114/981/952/766/953/115/original/d08eacd4b286962b.jpg",
+      "bio": "Plant Mom. Currently working on https:// amore.computer and https:// juststash.app . On some days I work on https:// macrowave.co , https:// kompressor.app or https:// pagi.lucas.love . Previously: h…",
+      "shelf": "youtube",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCPePk40DlAqOIJVQD42Ldkg",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "jtruk@mastodon.social",
+      "id": "7261",
+      "url": "https://mastodon.social/@jtruk",
+      "displayName": "James / jtruk / crow",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/007/261/original/35288bd2b09dc26d.png",
+      "bio": "Dev, Design, Startups, Creative Tech. # Demoscene # LiveCoding # ByteJam # Pico8 # TIC80 # ThreeJS # RasPi # Strudel # emfCamp # Microcontroller tinkerer. Newcastle, North East England. Likes pretty…",
+      "shelf": "youtube",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCyKFmRA68ndNasEDoqlKlJQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-06"
+      }
+    },
+    {
+      "acct": "simontatham@hachyderm.io",
+      "id": "111096602447828617",
+      "url": "https://hachyderm.io/@simontatham",
+      "displayName": "Simon Tatham",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/111/096/602/447/828/617/original/f8b7e5b8f2520fa3.png",
+      "bio": "Free software developer and hobby mathematician. Author and lead developer of # PuTTY , and \"Simon Tatham's Portable Puzzle Collection\", a set of one-player puzzle games running on many platforms. Al…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "david_chisnall@infosec.exchange",
+      "id": "111867038214333074",
+      "url": "https://infosec.exchange/@david_chisnall",
+      "displayName": "David Chisnall (*Now with 50% more sarcasm!*)",
+      "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/111/867/038/214/333/074/original/948015da7238758d.jpg",
+      "bio": "I am Director of System Architecture at SCI Semiconductor and a Visiting Researcher at the University of Cambridge Computer Laboratory. I remain actively involved in the # CHERI project, where I led…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "kenshirriff@oldbytes.space",
+      "id": "109383430520326113",
+      "url": "https://oldbytes.space/@kenshirriff",
+      "displayName": "Ken Shirriff",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/383/430/520/326/113/original/f5d9ffb23a260301.jpg",
+      "bio": "Computer history. Reverse-engineering old chips. Restored Apollo Guidance Computer, Xerox Alto. Ex-Google, Sun, Msft. So-called boffin.",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "bsdphk@fosstodon.org",
+      "id": "109364019495677618",
+      "url": "https://fosstodon.org/@bsdphk",
+      "displayName": "Poul-Henning Kamp",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/364/019/495/677/618/original/f1a453cb90f5c993.png",
+      "bio": "Author of Vinyl-Cache (The FOSS project formerly known as Varnish-Cache), a lot of FreeBSD and various other stuff.",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "metin@graphics.social",
+      "id": "110854990838032375",
+      "url": "https://graphics.social/@metin",
+      "displayName": "Metin Seven",
+      "avatar": "https://cdn.masto.host/graphicssocial/accounts/avatars/110/854/990/838/032/375/original/9cfb5f3bbd877b4f.png",
+      "bio": "🎨 Designer, illustrator, sculptor 🤖🤛 No to gen-AI slop 🌍 Eurasian in the Netherlands 🐣 Born in Brussels 🥕 Herbivore ⛔ Lifelong car-free 🚶 Hiker 🌳 Nemophilist 🔠 Hyperlexic polyglot ⌛ Former… 🧑‍💻 Blend…",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "nina_kali_nina@tech.lgbt",
+      "id": "109093165028047640",
+      "url": "https://tech.lgbt/@nina_kali_nina",
+      "displayName": "Nina Kalinina",
+      "avatar": "https://media.tech.lgbt/accounts/avatars/109/093/165/028/047/640/original/7463f84b80dc117a.jpg",
+      "bio": "This profile is not managed by Terraform. Or, as my \"professional\" email signature says, \"IT expert and mixed media artificer\". Proud to be an LLM hater. A late millennial, yet I grew up with a ZX Sp…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "janbeta@chaos.social",
+      "id": "108193563796459140",
+      "url": "https://chaos.social/@janbeta",
+      "displayName": "Jan Beta",
+      "avatar": "https://assets.chaos.social/accounts/avatars/108/193/563/796/459/140/original/9d61e09901f716c0.jpeg",
+      "bio": "I repair/hack/make/destroy stuff on YouTube/PeerTube. RetroComputing, VintageAudio, Tinkering. Co-hosting the Elektroschrott podcast. As unprofessional as it gets. Anti-fascist. Chaotic good. C64 rul…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "paulrickards@mastodon.social",
+      "id": "445781",
+      "url": "https://mastodon.social/@paulrickards",
+      "displayName": "paulrickards",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/445/781/original/b000e5ebb13e22aa.png",
+      "bio": "Artist exploring vintage plotters with modern code. Retrocomputing repair and collecting. Mixes the best of new and old. He/him # RetroComputing # PenPlotter # c64 # nobot # nobots # noai 🏳️‍🌈",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "flexion@oldbytes.space",
+      "id": "109297640631374672",
+      "url": "https://oldbytes.space/@flexion",
+      "displayName": "/usr/people/flexion",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/297/640/631/374/672/original/43814b2c659eaf91.png",
+      "bio": "In love with # SiliconGraphics , OS/2, # ChipTune music, and Björk Guðmundsdóttir; full-time IRIX developer; # demoscene coder; FidoNet 2:301/708; ICQ 2278816; Neurodivergent + segfaulting; /he/him/1…",
+      "shelf": "notable",
+      "rank": 9,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "a2_4am@mastodon.social",
+      "id": "108472103943588335",
+      "url": "https://mastodon.social/@a2_4am",
+      "displayName": "4am ❧",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/472/103/943/588/335/original/e501ec226abbb5d2.png",
+      "bio": "I live on track $00. he/him",
+      "shelf": "notable",
+      "rank": 10,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "rc2014@oldbytes.space",
+      "id": "108200481872372027",
+      "url": "https://oldbytes.space/@rc2014",
+      "displayName": "RC2014",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/108/200/481/872/372/027/original/d318bdcbafa26371.jpg",
+      "bio": "The official account for RC2014, a Z80 based retro computer kit. UK based with global shipping. Posts probably include retro computing or hobby electronics related content but may include other cool…",
+      "shelf": "notable",
+      "rank": 11,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "martijnbraam@fosstodon.org",
+      "id": "61783",
+      "url": "https://fosstodon.org/@martijnbraam",
+      "displayName": "Martijn Braam",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/000/061/783/original/e8cc9a5332e74811.jpg",
+      "bio": "Opensource software developer for OpenSwitcher. Sometimes makes some random hardware. Slowly getting closer to being a full time FOSS developer :D",
+      "shelf": "notable",
+      "rank": 12,
+      "fame": ["followers-2500"],
+      "elsewhere": ["patreon", "website"]
+    },
+    {
+      "acct": "extelec@mstdn.social",
+      "id": "108203289302617416",
+      "url": "https://mstdn.social/@Extelec",
+      "displayName": "Extreme Electronics",
+      "avatar": "https://media.mstdn.social/accounts/avatars/108/203/289/302/617/416/original/91c713379899171c.jpg",
+      "bio": "Tesla coils - HV experiments - 3D printing - Programming - Kits via @ ExtKits - Gaussfest Organiser - Electronics and shed science. - Retro computing https://www. extremeelectronics.co.uk Playing wit…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "gammitin@mastodon.social",
+      "id": "110560273065633215",
+      "url": "https://mastodon.social/@Gammitin",
+      "displayName": "Gammitin (Ben) 💾",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/560/273/065/633/215/original/84ec49d9dd1cbe17.jpeg",
+      "bio": "Come with me now on a journey through time and space, to the world of... Gammitin's lab. 🤓 Retro / Vintage Computer Mad Scientist 🥼💽📀💾 ☕ https:// ko-fi.com/gammitin Enq: gammitinofficial@gmail.com [D…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "diyelectromusic@mastodon.social",
+      "id": "109247398697341845",
+      "url": "https://mastodon.social/@diyelectromusic",
+      "displayName": "diyelectromusic",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/247/398/697/341/845/original/d3c9caa1f2702ed9.png",
+      "bio": "Simple DIY electronic music projects - # Arduino , # RaspberryPi # MIDI , # synthdiy , where music and # STEM overlap. Home of the # LoFiOrchestra and follower of # MakersHour . I also try to list ev…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "futurewas8bit@oldbytes.space",
+      "id": "109332002855567253",
+      "url": "https://oldbytes.space/@futurewas8bit",
+      "displayName": "Rod Hull - www.tfw8b.com",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/332/002/855/567/253/original/b552d83de245447b.jpg",
+      "bio": "The Future was 8bit, and still is in my house.. C64p, SD2IEC, Penultimate+ Cart, divMMC Future, all sorts. VIC20's rulez. Commodore, Sinclair, BBC, Oric, Dragon Like a lot of us, I'm new to Mastodon.…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["patreon", "website", "youtube"]
+    },
+    {
+      "acct": "eschaton@mastodon.social",
+      "id": "131321",
+      "url": "https://mastodon.social/@eschaton",
+      "displayName": "Chris Hanson",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/131/321/original/26ff9bdc28975579.jpg",
+      "bio": "I used to work on tools for people to do work. Now I play with old computers and do other retiree things. Ed Zitron is right. Ceterum censeo LLMs esse delenda.",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mistfunk@oldbytes.space",
+      "id": "109289024229699832",
+      "url": "https://oldbytes.space/@mistfunk",
+      "displayName": "Mistigris computer arts",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/289/024/229/699/832/original/8bbbc9b8bc2f5215.png",
+      "bio": "Vintage computer arts collective, c. 1994-1998... and now, today. ANSI, ASCII, teletext, hirez, tracking, coding and lit. ++NO CARRIER",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "brouhaha@mastodon.social",
+      "id": "27729",
+      "url": "https://mastodon.social/@brouhaha",
+      "displayName": "🇺🇦 haxadecimal 🚫👑",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/027/729/original/95248bda6f9a51c7.jpg",
+      "bio": "Proud to be Antifa, like my grandfather, who was killed fighting fascism in WWII, and was posthumously awarded the Air Medal and the Purple Heart. # microcontroller # firmware # C # CPlusPlus # FPGA…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "smallsco@oldbytes.space",
+      "id": "109293334978714340",
+      "url": "https://oldbytes.space/@smallsco",
+      "displayName": "Scott Small 🇨🇦",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/293/334/978/714/340/original/caf439f2d9171a52.jpg",
+      "bio": "Just a 40something Canadian dude from # VancouverIsland who's into # RetroComputing (mainly old # Apple / # Mac stuff), # Programming , and general # Technology enthusiast. Also love to # Travel ! I…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "adelfaure@mastodon.art",
+      "id": "109273598724872017",
+      "url": "https://mastodon.art/@adelfaure",
+      "displayName": "Adel Faure ⏚🍉",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/109/273/598/724/872/017/original/0be1f5196bbcf70f.gif",
+      "bio": "ASCII artist and live coding performer trying to make video games No ai, no crypto, no fascists He/him https://www. adelfaure.net/ Cookie Collective, Mistigris, Textmode Friends Support me on https:/…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "voxel@merveilles.town",
+      "id": "94514",
+      "url": "https://merveilles.town/@voxel",
+      "displayName": "voxel",
+      "avatar": "https://assets.merveilles.town/accounts/avatars/000/094/514/original/e13ad064d9a907bf.png",
+      "bio": "Low bit and retro developer",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "c64@techhub.social",
+      "id": "109342992230374868",
+      "url": "https://techhub.social/@c64",
+      "displayName": "Commodore 64 News #c64",
+      "avatar": "https://files.techhub.social/accounts/avatars/109/342/992/230/374/868/original/eb30c2627870513e.png",
+      "bio": "All the latest Commodore 64 news and events. Also, the home of # c64month a celebration of all things Commodore 64 throughout August! Updated by @ Glen Hashtags: # commodore64 # commodore # C64month…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "sushee@ohai.social",
+      "id": "115044249154185755",
+      "url": "https://ohai.social/@sushee",
+      "displayName": "Su-Shee",
+      "avatar": "https://files.ohai.social/accounts/avatars/115/044/249/154/185/755/original/a2669ad2da29b1e9.png",
+      "bio": "jaqueline of all trades. \"irgendwas mit computern\". minimalist code and simple things. \"my code, of course, begins with 4GH\". \"the quality that has no name.\"",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "oldbytes.space"
+    }
+  ]
+}

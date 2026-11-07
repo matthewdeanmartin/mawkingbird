@@ -1,4 +1,10 @@
 {
+  "retrocomputing": {
+    "en": "retrocomputing-on-mastodon",
+    "de": "de/retrocomputing-auf-mastodon",
+    "fr": "fr/retroinformatique-sur-mastodon",
+    "es": "es/retroinformatica-en-mastodon"
+  },
   "esp32-and-single-board-computers": {
     "en": "esp32-and-single-board-computers-on-mastodon",
     "de": "de/esp32-und-einplatinencomputer-auf-mastodon"

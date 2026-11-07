@@ -53,6 +53,10 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'retrocomputing.en': () => import('./data/retrocomputing.en.json'),
+  'retrocomputing.de': () => import('./data/retrocomputing.de.json'),
+  'retrocomputing.fr': () => import('./data/retrocomputing.fr.json'),
+  'retrocomputing.es': () => import('./data/retrocomputing.es.json'),
   'esp32-and-single-board-computers.en': () =>
     import('./data/esp32-and-single-board-computers.en.json'),
   'esp32-and-single-board-computers.de': () =>

@@ -1672,3 +1672,59 @@ is data only and adds no candidates. Every other file is unchanged apart from
 line shifts. Source files stay at 1,678 and candidate files at 598, with none
 added or removed. No shared widget changed. Reconciliation entries remain
 complete.
+
+## Topic pages: Retrocomputing, 2026-11-07
+
+Added one lazy copy source and four approved data editions; source count is
+1,679, up from 1,678. No topic template or shared widget changed. Reviewed the
+inventory against the pre-topic snapshot: the same 598 candidate paths remain.
+Concurrent draft/scheduling work shifts lines and adds reschedule/park controls
+in drafts-page.html and write-page.html; these remain in their existing
+reconciliation entries. No candidate files were added or removed. This refresh
+records that working tree without modifying those unrelated source changes.
+
+## Drafts and Write: reschedule, edit scheduled, park on server, 2026-11-07
+
+Reviewed the per-file counts against HEAD. Two files change. In
+`drafts-page.html`, `nativeButtons` went from 16 to 19, `legacyPills` from 12 to
+16 and `overlays` from 3 to 4. The candidates are:
+
+- the "Change time" button and the "Edit" link on each upcoming scheduled row;
+- the reschedule dialog, with its Cancel and Move buttons;
+- an "Edit on the server" link in the row ••• menu.
+
+They copy the page's own `btn btn-outline btn-sm` buttons and its
+`convert-backdrop`/`convert-dialog` pattern (the park dialog beside it), and the
+menu link is styled like the menu's buttons. In `write-page.html`,
+`nativeButtons` went from 50 to 52 and `legacyPills` from 36 to 38: a "Park on
+server" button beside "Now" in both the editor bar and the wizard's "when"
+step. These use the classes of the neighbouring Save draft button and wizard
+buttons. All of them move with those controls when either page adopts
+`mbButton` and `mb-dialog`. Candidate files are unchanged, with none added or
+removed. No shared widget changed. Reconciliation entries remain complete.
+
+## Quote posts: quote dialog, Fullscreen edit, quotes in Write, 2026-11-07
+
+Quoting from a post now opens `app-quote-dialog`
+(`compose/quote-dialog/quote-dialog.ts`) instead of the inline reply-style box.
+The dialog is the shared `mb-dialog` around the existing composer, with a new
+plain-text `app-quote-preview` (`compose/quote-preview/quote-preview.ts`) below
+it. Source files go from 1,679 to 1,681 (those two), and candidate files from
+598 to 599. The new candidate is `quote-dialog.ts` with one `shared` item, the
+dialog itself, and it has a reconciliation entry. `quote-preview.ts` has no
+candidates.
+
+Reviewed the per-file counts against the previous inventory:
+
+- `compose.html`: `shared` 33 to 34 and `nativeButtons` 33 to 34. This is the
+  new "Fullscreen edit" `<button mbButton variant="outline">` beside Post,
+  which the audit counts both as shared and as a native tag, like the Post
+  button next to it.
+- `write-page.html`: `nativeButtons` 52 to 53 and `legacyPills` 38 to 39. This
+  is the "Remove quote" button under the quoted post, using the same
+  `btn btn-outline btn-sm` as the editor's other buttons.
+- `status-card.html` has the same candidates as before. Its inline quote
+  `app-compose` became `app-quote-dialog`, and neither is a lexical candidate
+  there.
+
+No shared widget changed.

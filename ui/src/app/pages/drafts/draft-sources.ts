@@ -110,7 +110,7 @@ export class DraftSources {
       }
     };
 
-    this.api.scheduledStatuses().subscribe({
+    this.api.allScheduledStatuses().subscribe({
       next: (rows) => {
         this.scheduled.set(rows);
         settle();
@@ -138,6 +138,32 @@ export class DraftSources {
         settle();
       },
     });
+  }
+
+  /** Every scheduled time on the account, parked or not, for limit checks. */
+  readonly scheduledTimes = computed(() => this.scheduled().map((s) => new Date(s.scheduled_at)));
+
+  /** One scheduled row by id, parked or not. */
+  scheduledById(id: string): ScheduledStatus | undefined {
+    return this.scheduled().find((s) => s.id === id);
+  }
+
+  /** Scheduled times of every row but one — the row being moved. */
+  scheduledTimesExcept(id: string): Date[] {
+    return this.scheduled()
+      .filter((s) => s.id !== id)
+      .map((s) => new Date(s.scheduled_at));
+  }
+
+  /** How many scheduled slots are in use, and how many of those are parked drafts. */
+  readonly scheduledUsage = computed(() => {
+    const all = this.scheduled();
+    return { used: all.length, parked: all.filter((s) => isParkedSchedule(s)).length };
+  });
+
+  /** Replace a row after the server moved it (reschedule). */
+  replaceScheduled(row: ScheduledStatus): void {
+    this.scheduled.update((list) => list.map((s) => (s.id === row.id ? row : s)));
   }
 
   /** Drop a parked schedule from the list after it is cancelled server-side. */

@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MbButton } from '../design-system/button/button';
 import { MbPostAction, MbPostActions } from '../design-system/post-actions/post-actions';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { attachmentSource, mediaUrl, VideoSource } from '../video-player/media-source';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -631,6 +631,10 @@ export class Compose implements OnDestroy {
   readonly blueskyQuote = input<BskyRef | undefined>(undefined);
   /** When set, the composed Mastodon status quotes this status id. */
   readonly quotedStatusId = input<string | undefined>(undefined);
+  /** The quoted status itself, passed on to Write by "Fullscreen edit". */
+  readonly quotedStatus = input<Status | undefined>(undefined);
+  /** Show "Fullscreen edit" beside Post, which moves this post into Write. */
+  readonly fullscreenEdit = input(false);
   /**
    * The box's prompt. Empty means "use the default", which is a translation key
    * rather than an English literal: an `input()` default is evaluated before an
@@ -756,6 +760,7 @@ export class Compose implements OnDestroy {
 
   // --- LLM tag helper (sprint openrouter-5) ---
   private openrouter = inject(OpenRouterSession);
+  private router = inject(Router);
   private ai = inject(AiAvailability);
   protected tagHelperOpen = signal(false);
 
@@ -2286,6 +2291,26 @@ export class Compose implements OnDestroy {
     anchor.href = `data:application/json;charset=utf-8,${encodeURIComponent(payload)}`;
     anchor.download = `mockingbird-draft-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
     anchor.click();
+  }
+
+  // i18n compose.fullscreenEdit: Fullscreen edit
+  // i18n compose.fullscreenEditTitle: Continue this post in Write, with more room. Your text, images and quote come with it.
+  /**
+   * Move this post into Write: text, settings, images and quote travel in the
+   * one-navigation handoff, and this box's autosave slot is cleared so the text
+   * does not come back here later as well.
+   */
+  protected async openInWrite(): Promise<void> {
+    this.drafts.handoff(this.snapshot(), undefined, {
+      media: this.media(),
+      quotedStatus: this.quotedStatus(),
+    });
+    if (this.autosaveTimer) {
+      clearTimeout(this.autosaveTimer);
+      this.autosaveTimer = null;
+    }
+    this.drafts.clearAutosave(this.contextKey());
+    await this.router.navigate(['/write'], { queryParams: { handoff: 1 } });
   }
 
   private flushAutosave(): void {

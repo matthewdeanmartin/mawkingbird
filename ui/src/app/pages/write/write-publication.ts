@@ -104,6 +104,8 @@ export class WritePublication {
       sensitive: snapshot.sensitive,
       language: snapshot.postLanguage || undefined,
       mediaIds: media.map((item) => item.media.id),
+      // Only the first post carries the quote; the rest reply to it.
+      quotedStatusId: snapshot.quotedStatusId,
       poll: snapshot.poll
         ? {
             options: snapshot.poll.options.filter((option) => option.trim()),

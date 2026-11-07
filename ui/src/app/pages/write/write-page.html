@@ -286,6 +286,23 @@
             </div>
           </div>
 
+          @if (quotedStatusId()) {
+            <div class="write-quote">
+              @if (quotedStatus(); as quoted) {
+                <app-quote-preview [status]="quoted" />
+              } @else {
+                <p class="muted small">{{ 'pages.write.quote.unavailable' | transloco }}</p>
+              }
+              <button class="btn btn-outline btn-sm" type="button" (click)="removeQuote()">
+                {{ 'pages.write.quote.remove' | transloco }}
+              </button>
+            </div>
+          }
+          @if (replacing()) {
+            <p class="split-hint muted" role="note">
+              {{ 'pages.write.replace.banner' | transloco }}
+            </p>
+          }
           <p class="split-hint muted">{{ modeHint(splitMode()) | transloco }}</p>
 
           @if (cwOpen()) {
@@ -775,6 +792,17 @@
             >
               {{ 'pages.write.now' | transloco }}
             </button>
+            @if (canPark()) {
+              <button
+                class="btn btn-outline btn-sm"
+                type="button"
+                [title]="'pages.write.park.title' | transloco"
+                [attr.aria-pressed]="isParking()"
+                (click)="parkOnServer()"
+              >
+                {{ 'pages.write.park.button' | transloco }}
+              </button>
+            }
             @if (wizardScheduleAt() && !canScheduleSelectedTarget()) {
               <span class="muted small">
                 {{ 'pages.write.scheduleSingleTarget' | transloco: { post: words().post } }}
@@ -1368,8 +1396,21 @@
             >
               {{ 'pages.write.now' | transloco }}
             </button>
+            @if (canPark()) {
+              <button
+                class="btn btn-outline"
+                type="button"
+                [title]="'pages.write.park.title' | transloco"
+                [attr.aria-pressed]="isParking()"
+                (click)="parkOnServer()"
+              >
+                {{ 'pages.write.park.button' | transloco }}
+              </button>
+            }
             <p class="muted small">
-              @if (wizardScheduleAt()) {
+              @if (isParking()) {
+                {{ 'pages.write.park.note' | transloco }}
+              } @else if (wizardScheduleAt()) {
                 {{ 'pages.write.holdsUntilPublish' | transloco }}
               } @else {
                 {{ 'pages.write.emptyPublishesNow' | transloco }}

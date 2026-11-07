@@ -19,6 +19,7 @@ const COPY_LOADERS: Record<
   FeedTopic,
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
+  retrocomputing: () => import('./retrocomputing'),
   'esp32-and-single-board-computers': () => import('./esp32-and-single-board-computers'),
   'gardening-and-houseplants': () => import('./gardening-and-houseplants'),
   'plant-based-living': () => import('./plant-based-living'),

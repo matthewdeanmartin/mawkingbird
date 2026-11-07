@@ -1775,6 +1775,19 @@ describe('StatusCard', () => {
     expect(internals(f).replying()).toBe(false);
   });
 
+  it('Quote opens a dialog with the quoted post under the text box, not an inline reply box', () => {
+    const f = setUp();
+    f.componentInstance.toggleQuote(fakeEvent());
+    f.detectChanges();
+    const element = f.nativeElement as HTMLElement;
+
+    const dialog = element.querySelector('app-quote-dialog');
+    expect(dialog).not.toBeNull();
+    expect(dialog!.querySelector('app-compose')).not.toBeNull();
+    expect(dialog!.querySelector('app-quote-preview')).not.toBeNull();
+    expect(element.querySelector('.inline-compose app-compose')).toBeNull();
+  });
+
   // ---------------------------------------------------------------- onReplied / onQuoted
 
   it('onReplied: closes the reply composer and emits changed with incremented replies_count', () => {

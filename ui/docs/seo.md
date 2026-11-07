@@ -595,3 +595,9 @@ ESP32 and Single-board Computers has approved English
 (`/de/esp32-und-einplatinencomputer-auf-mastodon/`) editions. Microcontrollers,
 SBCs, board makers and recurring board projects are in scope. Relevant quiet or
 zero-post tags remain followable community seeds. Other languages are withheld.
+
+Retrocomputing has approved English (/retrocomputing-on-mastodon/), German
+(/de/retrocomputing-auf-mastodon/), French (/fr/retroinformatique-sur-mastodon/)
+and Spanish (/es/retroinformatica-en-mastodon/) editions. Vintage hardware,
+restoration, emulation and software preservation are in scope. Useful quiet tags
+remain selectable. Italian and Japanese are withheld for insufficient people.

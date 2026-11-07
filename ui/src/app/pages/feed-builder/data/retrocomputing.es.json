@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "topic": "retrocomputing",
+  "lang": "es",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T22:19:41+00:00",
+  "tags": [
+    {
+      "name": "Retroinformática",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "InformáticaClásica",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "OrdenadoresClásicos",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "RetroComputing",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "C64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Amiga",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Commodore64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ZXSpectrum",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Demoscene",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "DOS",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "retrovulcano@tkz.one",
+      "id": "109409184281315591",
+      "url": "https://tkz.one/@retrovulcano",
+      "displayName": "RETROVULCANO",
+      "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/409/184/281/315/591/original/610467d3837c3ffe.jpeg",
+      "bio": "🕹️ Atari • Spectrum • Commodore 64 • Evercade 💻 Usuario de openSUSE 🖖 Dif-tor heh smusma 🌐 https:// retrovulcano.es",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "pulsayjuega@mastodon.social",
+      "id": "116069069495717109",
+      "url": "https://mastodon.social/@pulsayjuega",
+      "displayName": "PULSA Y JUEGA",
+      "avatar": "https://files.mastodon.social/accounts/avatars/116/069/069/495/717/109/original/da812150f51e37ef.jpeg",
+      "bio": "🎮 Revivimos la historia de los videojuegos clásicos. 🕹️ Spectrum · C64 · Amiga · MSX · Amstrad · Atari · ColecoVision · Intellivision · Videopac+ · Evercade 👾 Análisis, noticias y curiosidades retro.…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "juanfr@mastodon.social",
+      "id": "109495759427238792",
+      "url": "https://mastodon.social/@juanfr",
+      "displayName": "Juan F. Ramírez",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/495/759/427/238/792/original/fae8e43c03acc0be.jpeg",
+      "bio": "Your daily dose of # zxspectrum nostalgia Málaga, Spain 🇪🇸🇪🇺",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "homecomputer@masto.es",
+      "id": "110346917602477774",
+      "url": "https://masto.es/@homecomputer",
+      "displayName": "Home Computer",
+      "avatar": "https://masto.es/system/accounts/avatars/110/346/917/602/477/774/original/cbde576c29afc975.jpg",
+      "bio": "Usuario y coleccionista de home computers y consolas clásicas de videojuegos desde 1999. Creador y administrador del sitio web Home Computer. Cofundador de Retrocomputacion.com, la mayor comunidad de…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "computeremuzone@mastodon.social",
+      "id": "113226997575034130",
+      "url": "https://mastodon.social/@ComputerEmuzone",
+      "displayName": "Computer Emuzone",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/226/997/575/034/130/original/185af8e0fd873dee.png",
+      "bio": "https:// computeremuzone.com La página de los juegos españoles | The page of the Spanish games",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nextric@tkz.one",
+      "id": "112650356455756628",
+      "url": "https://tkz.one/@Nextric",
+      "displayName": "Nextric",
+      "avatar": "https://media.tkz.one/tkz/accounts/avatars/112/650/356/455/756/628/original/5b5c04549b0c9238.png",
+      "bio": "",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "oldbytes.space"
+    }
+  ]
+}

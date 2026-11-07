@@ -108,6 +108,29 @@ export function utcDay(at: Date): string {
   return at.toISOString().slice(0, 10);
 }
 
+/**
+ * The first time at or after `start`, stepping a whole day at a time, whose
+ * UTC day still has room under {@link DAILY_LIMIT}; null if none within
+ * `maxDays`.
+ *
+ * This is what keeps parking from failing: every draft parked "99 years from
+ * today" would otherwise share one day, and the server counts its 25-a-day
+ * limit by the scheduled date, so the 26th park on any one day was refused.
+ */
+export function firstDayWithRoom(
+  start: Date,
+  existing: readonly Date[],
+  maxDays = 366,
+): Date | null {
+  const perDay = new Map<string, number>();
+  for (const at of existing) perDay.set(utcDay(at), (perDay.get(utcDay(at)) ?? 0) + 1);
+  for (let offset = 0; offset < maxDays; offset++) {
+    const at = new Date(start.getTime() + offset * 24 * 60 * 60 * 1000);
+    if ((perDay.get(utcDay(at)) ?? 0) < DAILY_LIMIT) return at;
+  }
+  return null;
+}
+
 export interface LimitProblem {
   kind: 'total' | 'daily';
   /** For `daily`: the UTC day that is over. */

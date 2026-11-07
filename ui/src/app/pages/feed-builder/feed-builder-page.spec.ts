@@ -130,6 +130,24 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en', 'de']);
   });
 
+  for (const [path, lang, count, tag] of [
+    ['retrocomputing-on-mastodon', 'en', 36, 'SoftwarePreservation'],
+    ['de/retrocomputing-auf-mastodon', 'de', 18, 'Heimcomputer'],
+    ['fr/retroinformatique-sur-mastodon', 'fr', 7, 'Rétroinformatique'],
+    ['es/retroinformatica-en-mastodon', 'es', 6, 'Retroinformática'],
+  ] as const) {
+    it(`renders the approved ${lang} retrocomputing edition with quiet subject tags`, async () => {
+      const el = await render(at(path));
+      expect(el.querySelector('main')?.getAttribute('lang')).toBe(lang);
+      expect(el.querySelectorAll('.people li').length).toBe(count);
+      expect(el.querySelector('.tag-list')?.textContent).toContain(`#${tag}`);
+      expect(el.querySelector('a[href="https://oldbytes.space/about"]')).not.toBeNull();
+      expect(
+        FEED_BUILDER_PAGES.filter((p) => p.topic === 'retrocomputing').map((p) => p.lang),
+      ).toEqual(['en', 'de', 'fr', 'es']);
+    });
+  }
+
   it('renders approved gardening editions with quiet subject tags', async () => {
     const el = await render(at('gardening-and-houseplants-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('Gardening and houseplants');

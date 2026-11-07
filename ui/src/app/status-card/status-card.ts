@@ -55,6 +55,7 @@ import { HistoryDialog } from '../history-dialog/history-dialog';
 import { Lightbox } from '../lightbox/lightbox';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
+import { QuoteDialog } from '../compose/quote-dialog/quote-dialog';
 import { MbButton } from '../design-system/button/button';
 import { listenParams, radioPostRef } from '../radio-links';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
@@ -390,6 +391,7 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     ExternalPlayerHost,
     NgTemplateOutlet,
     MbButton,
+    QuoteDialog,
     PostPermissions,
     MbMenuItem,
     MbToolbar,

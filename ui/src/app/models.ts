@@ -176,6 +176,16 @@ export interface Status {
   sensitive: boolean;
   poll: Poll | null;
   quote_approval_policy: string | null;
+  /**
+   * Mastodon 4.5+: who may quote this post, and what that means for the viewer.
+   * `current_user` is 'denied' when the author does not allow you to quote it,
+   * and 'manual' when your quote waits for the author's approval.
+   */
+  quote_approval?: {
+    automatic?: string[];
+    manual?: string[];
+    current_user?: 'automatic' | 'manual' | 'denied' | 'unknown';
+  } | null;
   /** ISO 639 language code Mastodon detected/declared for the post. Nullable. */
   language?: string | null;
   media_attachments: MediaAttachment[];

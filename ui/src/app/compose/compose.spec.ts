@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AppDialogs } from '../app-dialogs';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -109,6 +110,7 @@ interface ComposeInternals {
   shortenLinks(): Promise<void>;
   acceptShortenerConsent(): Promise<void>;
   declineShortenerConsent(): void;
+  openInWrite(): Promise<void>;
 }
 
 function internals(fixture: ComponentFixture<Compose>): ComposeInternals {
@@ -250,6 +252,25 @@ describe('Compose', () => {
     await vi.waitFor(() => expect(internals(f).crossPostError()).toBeTruthy());
     httpMock.expectNone('/api/v1/statuses');
     expect(internals(f).text()).toBe('@someoneelse changed');
+  });
+
+  it('Fullscreen edit hands text and quote to Write', async () => {
+    const f = setUp();
+    const quotedStatus = { id: 'q1', content: '<p>quoted</p>' } as unknown as Status;
+    f.componentRef.setInput('quotedStatusId', 'q1');
+    f.componentRef.setInput('quotedStatus', quotedStatus);
+    f.componentRef.setInput('fullscreenEdit', true);
+    f.detectChanges();
+    internals(f).text.set('my thoughts on this');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+
+    await internals(f).openInWrite();
+
+    const handoff = TestBed.inject(Drafts).takeHandoff();
+    expect(handoff?.snapshot.segments).toEqual(['my thoughts on this']);
+    expect(handoff?.snapshot.quotedStatusId).toBe('q1');
+    expect(handoff?.quotedStatus).toBe(quotedStatus);
+    expect(navigate).toHaveBeenCalledWith(['/write'], { queryParams: { handoff: 1 } });
   });
 
   describe('alt text', () => {

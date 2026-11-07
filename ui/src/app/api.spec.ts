@@ -38,6 +38,31 @@ describe('Api service (HTTP isolated)', () => {
     return { id: '7', following: false, blocking: false, ...overrides } as Relationship;
   }
 
+  it('follows Link pages to list every scheduled status', async () => {
+    const settle = () => new Promise((resolve) => setTimeout(resolve));
+    let rows: { id: string }[] | undefined;
+    api.allScheduledStatuses().subscribe((r) => (rows = r));
+    await settle();
+    // The first request is the plain default page, exactly as before.
+    httpMock.expectOne('/api/v1/scheduled_statuses').flush([{ id: '3' }, { id: '2' }], {
+      headers: { Link: '<https://m.example/api/v1/scheduled_statuses?max_id=2>; rel="next"' },
+    });
+    await settle();
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/scheduled_statuses' && r.params.get('max_id') === '2')
+      .flush([{ id: '1' }]);
+    await settle();
+
+    expect(rows?.map((r) => r.id)).toEqual(['3', '2', '1']);
+  });
+
+  it('reschedules with only scheduled_at, the one field Mastodon lets you change', () => {
+    api.rescheduleStatus('s1', '2099-01-01T00:00:00.000Z').subscribe();
+    const req = httpMock.expectOne({ url: '/api/v1/scheduled_statuses/s1', method: 'PUT' });
+    expect(req.request.body).toEqual({ scheduled_at: '2099-01-01T00:00:00.000Z' });
+    req.flush({});
+  });
+
   it('publishes quote policy and mutes notifications only after the post exists', () => {
     let result: Status | undefined;
     api

@@ -70,6 +70,12 @@ describe('Write publication', () => {
       spoilerText: 'CW',
     });
   });
+  it('quotes from the first post only; the rest of the thread replies to it', async () => {
+    postStatus.mockReturnValueOnce(of({ id: 'one' })).mockReturnValueOnce(of({ id: 'two' }));
+    await publisher.publish({ ...draft(), quotedStatusId: 'q1' }, [], '');
+    expect(postStatus.mock.calls[0][1].quotedStatusId).toBe('q1');
+    expect(postStatus.mock.calls[1][1].quotedStatusId).toBeUndefined();
+  });
   it('retries only unfinished posts with the same idempotency key', async () => {
     postStatus
       .mockReturnValueOnce(of({ id: 'one' }))

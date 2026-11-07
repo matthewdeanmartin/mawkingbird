@@ -396,3 +396,17 @@
   text-align: center;
   padding: 20px 12px;
 }
+
+/* The quoted post sits under the text that comments on it, as it will publish. */
+.write-quote {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.write-quote app-quote-preview {
+  display: block;
+  width: 100%;
+}

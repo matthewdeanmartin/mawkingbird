@@ -2,6 +2,7 @@ import { Draft, DraftSnapshot } from '../../drafts';
 import { ScheduledStatus, Status } from '../../models';
 import { PasteRecord } from '../../providers/paste/paste-history';
 import { stripHtml } from '../../sentiment';
+import { firstDayWithRoom } from '../schedule-mastodon-posts/schedule-plan';
 
 /**
  * The four mechanisms that can hold an unpublished post.
@@ -58,6 +59,24 @@ export type DraftSource =
  * comfortably past any real "publish this later" intent.
  */
 export const PARKED_SCHEDULE_YEARS = 10;
+
+/** Where a new park lands: this many years out, well past {@link PARKED_SCHEDULE_YEARS}. */
+export const PARK_YEARS_OUT = 99;
+
+/**
+ * The time to park a post at: {@link PARK_YEARS_OUT} years from now, moved forward a
+ * day at a time past days that already hold Mastodon's 25-a-day maximum.
+ *
+ * Every park made on one day used to land on the same far-future day, so the
+ * 26th park that day was refused. `existing` is every scheduled time on the
+ * account, parked or not.
+ */
+export function parkTime(existing: readonly Date[], now: Date = new Date()): Date {
+  const start = new Date(now);
+  start.setFullYear(start.getFullYear() + PARK_YEARS_OUT);
+  start.setSeconds(0, 0);
+  return firstDayWithRoom(start, existing) ?? start;
+}
 
 /**
  * How far back to look for posts-to-self. Without a bound, /drafts fills up with

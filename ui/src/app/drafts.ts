@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { MediaAttachment } from './models';
+import { MediaAttachment, Status } from './models';
 import { accountScopeSuffix } from './account-scope';
 import { Auth } from './auth';
 import { Server } from './server';
@@ -90,6 +90,8 @@ export interface DraftHandoff {
   scheduleAt?: string;
   /** The destination choice was the final confirmation; send as soon as seeded. */
   publishImmediately?: boolean;
+  /** The quoted post itself, so Write can show it without fetching it again. */
+  quotedStatus?: Status;
 }
 
 /** One checkpoint in a draft's version history. */

@@ -12,6 +12,7 @@ import {
   computed,
   effect,
   inject,
+  untracked,
   signal,
   viewChild,
 } from '@angular/core';
@@ -36,6 +37,7 @@ import {
   Draft,
   DraftMedia,
   DraftSnapshot,
+  DraftHandoff,
   DraftVersion,
   Drafts,
   draftHasContent,
@@ -82,7 +84,15 @@ import { WriteBoard } from './board/write-board';
 import { WritingZen } from '../../writing-zen';
 import { PkmItem, PkmSource } from '../../pkm/pkm-source';
 import { PKM_KINDS, PkmKind, pkmLabel, pkmNounKey, withPkmTag } from '../../pkm/pkm-tags';
-import { DraftItem, DraftKind, toSnapshot } from '../drafts/draft-items';
+import {
+  DraftItem,
+  DraftKind,
+  PARKED_SCHEDULE_YEARS,
+  parkTime,
+  scheduledDraftItem,
+  toSnapshot,
+} from '../drafts/draft-items';
+import { toLocalInput } from '../schedule-mastodon-posts/schedule-plan';
 import { DraftSources } from '../drafts/draft-sources';
 import {
   SPLIT_MODES,
@@ -102,6 +112,9 @@ import { BlueskyPublication, blueskyThreadError } from './bluesky-publication';
 import { WritePublication } from './write-publication';
 import { PostConfirmation } from '../../post-confirmation';
 import { Terminology } from '../../terminology';
+import { AppDialogs } from '../../app-dialogs';
+import { ScheduledStatus, Status } from '../../models';
+import { QuotePreview } from '../../compose/quote-preview/quote-preview';
 
 type DraftFilter = 'all' | DraftKind;
 
@@ -310,6 +323,7 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    QuotePreview,
     PostPermissions,
     CustomEmojiPipe,
     MbPostAction,
@@ -771,7 +785,13 @@ export class WritePage implements OnInit, OnDestroy {
     // Autosave: every change restarts the timer, so it fires once typing pauses.
     effect((onCleanup) => {
       this.snapshot();
-      if (!this.editing() || !this.dirty() || this.autosavePaused() || !this.hasContent()) {
+      if (
+        !this.editing() ||
+        !this.dirty() ||
+        this.autosavePaused() ||
+        this.replacing() ||
+        !this.hasContent()
+      ) {
         return;
       }
       const timer = setTimeout(() => this.save(true), AUTOSAVE_DELAY_MS);
@@ -784,6 +804,20 @@ export class WritePage implements OnInit, OnDestroy {
       if (this.sources.loaded()) {
         this.workspace.prune(this.sources.items().map((item) => item.key));
       }
+    });
+    // ?scheduled=<id> opens a scheduled post for replacing, once the list is in.
+    effect(() => {
+      const id = this.pendingScheduledId();
+      if (!id || !this.sources.loaded()) return;
+      const row = this.sources.scheduledById(id);
+      untracked(() => {
+        this.pendingScheduledId.set(null);
+        if (row) {
+          this.openScheduledForReplace(row);
+        } else {
+          this.saveError.set(this.transloco.translate<string>('pages.write.replace.notFound'));
+        }
+      });
     });
   }
 
@@ -799,6 +833,11 @@ export class WritePage implements OnInit, OnDestroy {
       }
     } else if (this.route.snapshot.queryParamMap.has('new')) {
       this.newDraft();
+    }
+    this.pendingScheduledId.set(this.route.snapshot.queryParamMap.get('scheduled'));
+    if (this.route.snapshot.queryParamMap.has('handoff')) {
+      const handoff = this.drafts.takeHandoff();
+      if (handoff) this.openHandoff(handoff);
     }
   }
 
@@ -1319,6 +1358,11 @@ export class WritePage implements OnInit, OnDestroy {
    * ask. Returns true when nothing unsaved is left behind.
    */
   private flushAutosave(): boolean {
+    // Replacing a scheduled post: a text-only local copy would drop its images,
+    // so leaving asks instead (discarding leaves the original scheduled).
+    if (this.replacing()) {
+      return !this.dirty() && !this.media().length;
+    }
     if (this.dirty() && this.hasContent() && !this.autosavePaused()) {
       this.save(true);
     }
@@ -1384,6 +1428,7 @@ export class WritePage implements OnInit, OnDestroy {
       visibility: this.visibility(),
       quoteApprovalPolicy: this.quoteApprovalPolicy(),
       muteNotifications: this.muteNotifications(),
+      quotedStatusId: this.quotedStatusId(),
       poll: this.pollOpen()
         ? {
             options: this.pollOptions(),
@@ -1403,6 +1448,8 @@ export class WritePage implements OnInit, OnDestroy {
     this.visibilityState.choose(snapshot.visibility);
     this.quoteApprovalPolicy.set(snapshot.quoteApprovalPolicy);
     this.muteNotifications.set(!!snapshot.muteNotifications);
+    this.quotedStatusId.set(snapshot.quotedStatusId);
+    if (snapshot.quotedStatusId) this.loadQuotedStatus(snapshot.quotedStatusId);
     this.spoilerText.set(snapshot.spoilerText);
     this.cwOpen.set(!!snapshot.spoilerText);
     this.sensitive.set(snapshot.sensitive);
@@ -1417,6 +1464,98 @@ export class WritePage implements OnInit, OnDestroy {
       this.pollMultiple.set(snapshot.poll.multiple);
       this.pollExpiresIn.set(snapshot.poll.expiresIn);
     }
+  }
+
+  // ------------------------------------------------------------------ quotes
+
+  // i18n pages.write.quote.remove: Remove quote
+  // i18n pages.write.quote.unavailable: Quoting a post that could not be loaded. It is still quoted when you publish.
+  // i18n pages.write.quote.mastodonOnly: Quotes are published to Mastodon from Write. Choose Mastodon, or remove the quote.
+  /** The Mastodon status this post quotes, if any. Sent on the first post only. */
+  protected quotedStatusId = signal<string | undefined>(undefined);
+  /** The quoted status, for the preview under the editor. */
+  protected quotedStatus = signal<Status | null>(null);
+
+  protected removeQuote(): void {
+    this.quotedStatusId.set(undefined);
+    this.quotedStatus.set(null);
+    this.dirty.set(true);
+  }
+
+  /** Fetch the quoted post for the preview; a failure just shows a plainer note. */
+  private loadQuotedStatus(id: string): void {
+    if (this.quotedStatus()?.id === id || this.auth.isAnonymous) return;
+    this.api.getStatus(id).subscribe({
+      next: (status) => {
+        if (this.quotedStatusId() === id) this.quotedStatus.set(status);
+      },
+      error: () => undefined,
+    });
+  }
+
+  /**
+   * A post handed over by a small composer's "Fullscreen edit": its text,
+   * settings, images and quote become a new draft here. It is marked unsaved,
+   * so autosave keeps the text as soon as the writer pauses.
+   */
+  private openHandoff(handoff: DraftHandoff): void {
+    this.resetAuthoringState();
+    this.quotedStatus.set(handoff.quotedStatus ?? null);
+    this.applyFeatureSnapshot(handoff.snapshot);
+    this.body.set(joinSegments(handoff.snapshot.segments));
+    this.media.set(handoff.media ?? []);
+    this.editing.set({
+      key: `new:${Date.now()}`,
+      localId: null,
+      origin: null,
+      titleKey: 'pages.write.editing.newDraft',
+      savedAt: null,
+    });
+    this.dirty.set(true);
+    this.focusEditor();
+  }
+
+  // ------------------------------------------------- replacing a scheduled post
+
+  // i18n pages.write.editing.replacingScheduled: Editing a scheduled post
+  // i18n pages.write.replace.banner: Publishing schedules this version first, then cancels the original. If scheduling fails, the original stays as it was.
+  // i18n pages.write.replace.confirm: Replace the scheduled post? This version is scheduled first, and the original is cancelled only after that works.
+  // i18n pages.write.replace.done: Replaced. The original scheduled post was cancelled.
+  // i18n pages.write.replace.cancelFailed: The new version is scheduled, but the original could not be cancelled, so both are scheduled now. Remove the original under Drafts.
+  // i18n pages.write.replace.notFound: That scheduled post was not found. It may have been published or cancelled already.
+  // i18n pages.write.replace.mastodonOnly: A scheduled Mastodon post can only be replaced on Mastodon.
+  /** The scheduled post this editor replaces when published, if any. */
+  protected replacing = signal<{ id: string } | null>(null);
+  private readonly pendingScheduledId = signal<string | null>(null);
+  private readonly dialogs = inject(AppDialogs);
+
+  /**
+   * Load a scheduled post (upcoming or parked) with its text, images and time.
+   * Mastodon cannot edit a scheduled post's text, so publishing schedules a
+   * replacement and only then cancels the original.
+   */
+  private openScheduledForReplace(row: ScheduledStatus): void {
+    this.guard(() => {
+      const item = scheduledDraftItem(row);
+      const snapshot = toSnapshot(item.source, this.prefs.defaultVisibility());
+      this.resetAuthoringState();
+      this.applyFeatureSnapshot(snapshot);
+      this.body.set(joinSegments(snapshot.segments));
+      this.media.set(
+        row.media_attachments.map((media) => ({ media, description: media.description ?? '' })),
+      );
+      this.wizardScheduleAt.set(toLocalInput(new Date(row.scheduled_at)));
+      this.replacing.set({ id: row.id });
+      this.editing.set({
+        key: item.key,
+        localId: null,
+        origin: 'scheduled',
+        titleKey: 'pages.write.editing.replacingScheduled',
+        savedAt: null,
+      });
+      this.dirty.set(false);
+      this.focusEditor();
+    });
   }
 
   // ---------------------------------------------------------- version history
@@ -1491,6 +1630,9 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   private resetAuthoringState(): void {
+    this.replacing.set(null);
+    this.quotedStatusId.set(undefined);
+    this.quotedStatus.set(null);
     this.versionsOpen.set(false);
     this.autosavePaused.set(false);
     this.saveError.set(null);
@@ -1568,6 +1710,30 @@ export class WritePage implements OnInit, OnDestroy {
 
   protected readonly stepTitleKey = stepTitleKey;
   protected readonly targetLabel = targetLabel;
+
+  // i18n pages.write.park.button: Park on server
+  // i18n pages.write.park.title: Keep this as a draft on your server, images included, by scheduling it far in the future
+  // i18n pages.write.park.note: Parked: publishing now keeps this on your server as a draft, images included, dated far in the future. Find it under Drafts; it will not go out.
+  /**
+   * Park instead of publish: schedule far in the future, on the first day with
+   * room under Mastodon's 25-a-day limit. Mastodon keeps a scheduled post's
+   * images, so this is how a draft with images survives on the server.
+   */
+  protected parkOnServer(): void {
+    this.setWizardScheduleAt(toLocalInput(parkTime(this.sources.scheduledTimes())));
+  }
+
+  /** True when the chosen time is a park rather than a real publish date. */
+  protected isParking = computed(() => {
+    const at = Date.parse(this.wizardScheduleAt());
+    if (Number.isNaN(at)) return false;
+    const threshold = new Date();
+    threshold.setFullYear(threshold.getFullYear() + PARKED_SCHEDULE_YEARS);
+    return at > threshold.getTime();
+  });
+
+  /** Parking needs a signed-in Mastodon account and a single post. */
+  protected canPark = computed(() => !this.auth.isAnonymous && this.segments().length === 1);
 
   protected canScheduleSelectedTarget = computed(
     () => this.wizardTarget() === 'fedi' && this.segments().length === 1,
@@ -1742,6 +1908,12 @@ export class WritePage implements OnInit, OnDestroy {
     const hasPoll = this.pollOpen();
     const hasCw = this.cwOpen() && !!this.spoilerText().trim();
     const hasLanguage = !!this.postLanguage() && this.languageExplicit();
+    if (this.quotedStatusId() && target !== 'fedi') {
+      return this.transloco.translate('pages.write.quote.mastodonOnly');
+    }
+    if (this.replacing() && target !== 'fedi') {
+      return this.transloco.translate('pages.write.replace.mastodonOnly');
+    }
     if (scheduled && this.muteNotifications())
       return this.transloco.translate('permissions.scheduleMute');
     if (scheduled && threaded) {
@@ -1835,6 +2007,13 @@ export class WritePage implements OnInit, OnDestroy {
       this.wizardError.set('A poll needs at least two choices.');
       return;
     }
+    const replacing = this.replacing();
+    if (
+      replacing &&
+      !(await this.dialogs.confirm(this.transloco.translate<string>('pages.write.replace.confirm')))
+    ) {
+      return;
+    }
     const confirmation = this.postConfirmation.confirm(this.auth.account()?.acct);
     if (!(typeof confirmation === 'boolean' ? confirmation : await confirmation)) return;
     this.wizardBusy.set(true);
@@ -1847,17 +2026,30 @@ export class WritePage implements OnInit, OnDestroy {
         await this.prepareMediaForTarget(this.wizardTarget());
       }
       await this.publication.publish({ ...this.snapshot(), target }, this.media(), at);
+      const replaced = replacing ? await this.cancelReplacedOriginal(replacing.id) : null;
       this.scheduledHere.set(!!at);
       this.dirty.set(false);
       this.wizardStep.set(null);
       this.newDraft();
       this.publishedHere.set(true);
+      if (replaced) this.flash(replaced);
     } catch (error: unknown) {
       this.wizardError.set(
         error instanceof Error ? error.message : "The attachments couldn't be prepared.",
       );
     } finally {
       this.wizardBusy.set(false);
+    }
+  }
+
+  /** Cancel the original once its replacement exists; returns the notice to show. */
+  private async cancelReplacedOriginal(id: string): Promise<Notice> {
+    try {
+      await firstValueFrom(this.api.cancelScheduledStatus(id));
+      this.sources.forgetScheduled(id);
+      return { key: 'pages.write.replace.done' };
+    } catch {
+      return { key: 'pages.write.replace.cancelFailed' };
     }
   }
 

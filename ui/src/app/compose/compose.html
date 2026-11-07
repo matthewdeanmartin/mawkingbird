@@ -700,6 +700,17 @@
           {{ text().length }}
         }
       </span>
+      @if (fullscreenEdit()) {
+        <button
+          type="button"
+          mbButton
+          variant="outline"
+          [title]="'compose.fullscreenEditTitle' | transloco"
+          (click)="openInWrite()"
+        >
+          {{ 'compose.fullscreenEdit' | transloco }}
+        </button>
+      }
       <!-- Thoughtful posting: this composer saves, it does not publish. The
            post happens later from /drafts, which is the entire point. -->
       <button

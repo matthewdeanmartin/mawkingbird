@@ -15,9 +15,15 @@ import { PasteHistory } from '../../providers/paste/paste-history';
 import { ClientPrefs } from '../../client-prefs';
 import { PasteExpiry } from '../../providers/paste/paste-provider';
 import { PasteProviderRegistry } from '../../providers/paste/paste-provider-registry';
-import { DraftItem, DraftKind, toSnapshot } from './draft-items';
+import { DraftItem, DraftKind, parkTime, toSnapshot } from './draft-items';
 import { DraftSources } from './draft-sources';
 import { Terminology } from '../../terminology';
+import {
+  DAILY_LIMIT,
+  TOTAL_LIMIT,
+  limitProblems,
+  toLocalInput,
+} from '../schedule-mastodon-posts/schedule-plan';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 /** Filter chips above the merged list; 'all' is the default. */
@@ -70,19 +76,9 @@ interface PendingUnpark {
  * if the server refuses a date this far away, that surfaces as an ordinary
  * error rather than something we try to predict or clamp.
  */
-function defaultParkDate(): string {
-  const at = new Date();
-  at.setFullYear(at.getFullYear() + PARK_YEARS_OUT);
-  at.setSeconds(0, 0);
-  // `datetime-local` wants a local-time string with no zone suffix.
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return (
-    `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())}` +
-    `T${pad(at.getHours())}:${pad(at.getMinutes())}`
-  );
+function defaultParkDate(existing: readonly Date[]): string {
+  return toLocalInput(parkTime(existing));
 }
-
-const PARK_YEARS_OUT = 99;
 
 /**
  * Explain a refused park using the server's own words where it gave any.
@@ -206,6 +202,23 @@ function kindNoun(kind: DraftKind): string {
 // i18n pages.drafts.errors.removeScheduled: That parked post couldn't be cancelled on the server.
 // i18n pages.drafts.errors.removeSelf: That private note couldn't be deleted.
 // i18n pages.drafts.errors.cancelScheduled: That scheduled post couldn't be cancelled.
+// i18n pages.drafts.errors.parkThread: Threads can't be parked. Mastodon can only hold single posts, so keep this one as a local draft, or join it into one post first.
+// i18n pages.drafts.errors.scheduleFull: Your server already holds {{limit}} scheduled posts, Mastodon's limit. Cancel or unpark one first.
+// i18n pages.drafts.errors.parkDayFull: That day already has {{limit}} scheduled posts, Mastodon's daily limit. Pick another day.
+// i18n pages.drafts.errors.rescheduleFailure: That time was refused{{detail}}. Nothing was changed.
+// i18n pages.drafts.notice.rescheduled: Moved. It will publish at the new time.
+// i18n pages.drafts.reschedule.button: Change time
+// i18n pages.drafts.scheduled.edit: Edit
+// i18n pages.drafts.scheduled.editTitle: Edit in Write, images included. Publishing there schedules the new version and then cancels this one.
+// i18n pages.drafts.scheduled.editParked: Edit on the server, images included
+// i18n pages.drafts.reschedule.title: Change the publish time
+// i18n pages.drafts.reschedule.label: Publish at
+// i18n pages.drafts.reschedule.note: Mastodon can move a scheduled post, but not change its text. To change the text, use Edit.
+// i18n pages.drafts.reschedule.tooSoon: Pick a time at least five minutes from now.
+// i18n pages.drafts.reschedule.dayFull: That day already has {{limit}} scheduled posts, Mastodon's daily limit. Pick another day.
+// i18n pages.drafts.reschedule.save: Move
+// i18n pages.drafts.reschedule.saving: Moving…
+// i18n pages.drafts.quota.used: {{used}} of {{limit}} scheduled slots used on your server, {{parked}} of them by parked drafts. Mastodon allows {{limit}} in all and {{daily}} on any one day; other server software may differ.
 // i18n pages.drafts.preview.mediaPost: (media post)
 // i18n pages.drafts.preview.emptyPost: (empty post)
 // i18n pages.drafts.remove.local.title: Delete this draft?
@@ -255,6 +268,8 @@ export class DraftsPage implements OnInit {
   protected pendingCancel = signal<ScheduledStatus | null>(null);
   protected pendingPaste = signal<PendingPaste | null>(null);
   protected pendingPark = signal<PendingPark | null>(null);
+  protected readonly totalLimit = TOTAL_LIMIT;
+  protected readonly dailyLimit = DAILY_LIMIT;
   protected pendingUnpark = signal<PendingUnpark | null>(null);
   /** Set when a removal fails server-side; the row stays put. */
   protected removeError = signal<string | null>(null);
@@ -378,7 +393,75 @@ export class DraftsPage implements OnInit {
   /** Open the park dialog to hold a copy as a far-future scheduled post. */
   protected askConvertToSchedule(item: DraftItem): void {
     this.actionError.set(null);
-    this.pendingPark.set({ item, at: defaultParkDate() });
+    const snapshot = toSnapshot(item.source, this.prefs.defaultVisibility());
+    if (snapshot.segments.filter((s) => s.trim()).length > 1) {
+      this.actionError.set(this.transloco.translate('pages.drafts.errors.parkThread'));
+      return;
+    }
+    if (this.sources.scheduledUsage().used >= TOTAL_LIMIT) {
+      this.actionError.set(
+        this.transloco.translate('pages.drafts.errors.scheduleFull', { limit: TOTAL_LIMIT }),
+      );
+      return;
+    }
+    this.pendingPark.set({ item, at: defaultParkDate(this.sources.scheduledTimes()) });
+  }
+
+  // ------------------------------------------------------------- reschedule
+
+  protected pendingReschedule = signal<{ scheduled: ScheduledStatus; at: string } | null>(null);
+
+  protected askReschedule(scheduled: ScheduledStatus): void {
+    this.actionError.set(null);
+    this.pendingReschedule.set({
+      scheduled,
+      at: toLocalInput(new Date(scheduled.scheduled_at)),
+    });
+  }
+
+  protected setRescheduleAt(at: string): void {
+    const pending = this.pendingReschedule();
+    if (pending) this.pendingReschedule.set({ ...pending, at });
+  }
+
+  /** Why a new time can't be used, or null. Checked before asking the server. */
+  protected rescheduleProblem(): string | null {
+    const pending = this.pendingReschedule();
+    if (!pending) return null;
+    const at = new Date(pending.at);
+    if (Number.isNaN(at.getTime())) {
+      return this.transloco.translate('pages.drafts.errors.invalidDate');
+    }
+    if (at.getTime() - Date.now() < 5 * 60 * 1000) {
+      return this.transloco.translate('pages.drafts.reschedule.tooSoon');
+    }
+    const others = this.sources.scheduledTimesExcept(pending.scheduled.id);
+    if (limitProblems([at], others).some((p) => p.kind === 'daily')) {
+      return this.transloco.translate('pages.drafts.reschedule.dayFull', { limit: DAILY_LIMIT });
+    }
+    return null;
+  }
+
+  protected confirmReschedule(): void {
+    const pending = this.pendingReschedule();
+    if (!pending || this.busy() || this.rescheduleProblem()) return;
+    this.busy.set(true);
+    this.api.rescheduleStatus(pending.scheduled.id, new Date(pending.at).toISOString()).subscribe({
+      next: (row) => {
+        this.busy.set(false);
+        this.pendingReschedule.set(null);
+        this.sources.replaceScheduled(row);
+        this.flash(this.transloco.translate('pages.drafts.notice.rescheduled'));
+      },
+      error: (err: unknown) => {
+        this.busy.set(false);
+        this.actionError.set(
+          this.transloco.translate('pages.drafts.errors.rescheduleFailure', {
+            detail: parkFailure(err),
+          }),
+        );
+      },
+    });
   }
 
   /** Ask before bringing a parked post back as an editable local draft. */
@@ -582,6 +665,12 @@ export class DraftsPage implements OnInit {
     const at = new Date(pending.at);
     if (Number.isNaN(at.getTime())) {
       this.actionError.set(this.transloco.translate('pages.drafts.errors.invalidDate'));
+      return;
+    }
+    if (limitProblems([at], this.sources.scheduledTimes()).some((p) => p.kind === 'daily')) {
+      this.actionError.set(
+        this.transloco.translate('pages.drafts.errors.parkDayFull', { limit: DAILY_LIMIT }),
+      );
       return;
     }
     const snapshot = toSnapshot(pending.item.source, this.prefs.defaultVisibility());

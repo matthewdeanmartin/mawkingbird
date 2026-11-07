@@ -771,6 +771,53 @@ try {
     assert.deepEqual(errors, [], 'board pages and communities have no runtime errors');
     await context.close();
   }
+  // Approved retrocomputing editions remain discoverable and retain quiet tags.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    const editions = [
+      ['en', 'retrocomputing-on-mastodon', 36, 'SoftwarePreservation'],
+      ['de', 'de/retrocomputing-auf-mastodon', 18, 'Heimcomputer'],
+      ['fr', 'fr/retroinformatique-sur-mastodon', 7, 'Rétroinformatique'],
+      ['es', 'es/retroinformatica-en-mastodon', 6, 'Retroinformática'],
+    ];
+    for (const [lang, slug, count, tag] of editions) {
+      await page.goto(`${origin}/${slug}/`);
+      await page.locator('main h1').waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(await page.locator('main').getAttribute('lang'), lang);
+      assert.equal(await page.locator('.people li').count(), count);
+      assert.ok((await page.locator('.tag-list').allTextContents()).join(' ').includes(`#${tag}`));
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const [editionLang, path] of editions)
+        assert.equal(
+          await page.locator(`head link[hreflang="${editionLang}"]`).getAttribute('href'),
+          `https://mawkingbird.com/${path}/`,
+        );
+      for (const withheld of ['it', 'ja'])
+        assert.equal(await page.locator(`head link[hreflang="${withheld}"]`).count(), 0);
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      }
+    }
+    await page.goto(`${origin}/communities/`);
+    for (const [, slug] of editions)
+      await page.locator(`a[href="/${slug}/"], a[href="/${slug}"]`).first().waitFor();
+    assert.deepEqual(errors, [], 'retrocomputing pages and hub have no runtime errors');
+    await context.close();
+  }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
     await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),

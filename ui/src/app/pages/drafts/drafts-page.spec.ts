@@ -42,6 +42,10 @@ interface PageInternals {
   pendingUnpark: WritableSignal<{ item: DraftItem } | null>;
   confirmConvertToPaste(): void;
   confirmConvertToSchedule(): void;
+  askReschedule(scheduled: ScheduledStatus): void;
+  setRescheduleAt(at: string): void;
+  confirmReschedule(): void;
+  rescheduleProblem(): string | null;
   writing: WritableSignal<boolean>;
   openWriter(): void;
 }
@@ -629,6 +633,95 @@ describe('DraftsPage', () => {
 
     expect(drafts.drafts()).toHaveLength(1);
     expect(internals(f).notice()).toContain('still here');
+  });
+
+  function saveDraft(segments: string[]): void {
+    TestBed.inject(Drafts).save({
+      segments,
+      spoilerText: '',
+      sensitive: false,
+      visibility: 'public',
+      poll: null,
+    });
+  }
+
+  function scheduledAt(id: string, at: Date): ScheduledStatus {
+    return {
+      id,
+      scheduled_at: at.toISOString(),
+      params: { text: `post ${id}` },
+      media_attachments: [],
+    } as unknown as ScheduledStatus;
+  }
+
+  it('parks on the next far-future day with room when the default day already has 25', () => {
+    signIn();
+    saveDraft(['park me']);
+    const start = new Date();
+    start.setFullYear(start.getFullYear() + 99);
+    start.setSeconds(0, 0);
+    const full = Array.from({ length: 25 }, (_, i) => scheduledAt(`p${i}`, start));
+    const f = setUp();
+    httpMock.expectOne(SCHEDULED_URL).flush(full);
+    httpMock.expectOne(STATUSES_URL).flush([]);
+    f.detectChanges();
+
+    internals(f).askConvertToSchedule(itemOfKind(f, 'local'));
+    internals(f).confirmConvertToSchedule();
+
+    const req = httpMock.expectOne('/api/v1/statuses');
+    const nextDay = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+    expect(req.request.body.scheduled_at.slice(0, 10)).toBe(nextDay.toISOString().slice(0, 10));
+  });
+
+  it('refuses to park a thread instead of squashing it into one post', () => {
+    signIn();
+    saveDraft(['first post', 'second post']);
+    const f = setUp();
+    httpMock.expectOne(SCHEDULED_URL).flush([]);
+    httpMock.expectOne(STATUSES_URL).flush([]);
+    f.detectChanges();
+
+    internals(f).askConvertToSchedule(itemOfKind(f, 'local'));
+
+    expect(internals(f).pendingPark()).toBeNull();
+    expect(internals(f).actionError()).toContain("Threads can't be parked");
+    httpMock.expectNone('/api/v1/statuses');
+  });
+
+  it('moves an upcoming scheduled post to a new time', () => {
+    signIn();
+    const soon = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const f = setUp();
+    httpMock.expectOne(SCHEDULED_URL).flush([scheduledAt('s1', soon)]);
+    httpMock.expectOne(STATUSES_URL).flush([]);
+    f.detectChanges();
+
+    internals(f).askReschedule(scheduledAt('s1', soon));
+    internals(f).setRescheduleAt('2099-01-02T09:30');
+    internals(f).confirmReschedule();
+
+    const req = httpMock.expectOne({ url: `${SCHEDULED_URL}/s1`, method: 'PUT' });
+    expect(req.request.body).toEqual({ scheduled_at: new Date('2099-01-02T09:30').toISOString() });
+    req.flush(scheduledAt('s1', new Date('2099-01-02T09:30')));
+    expect(internals(f).notice()).toContain('Moved');
+  });
+
+  it('will not move a scheduled post to a day that is already full', () => {
+    signIn();
+    const day = new Date('2099-03-03T12:00');
+    const soon = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const full = Array.from({ length: 25 }, (_, i) => scheduledAt(`p${i}`, day));
+    const f = setUp();
+    httpMock.expectOne(SCHEDULED_URL).flush([scheduledAt('s1', soon), ...full]);
+    httpMock.expectOne(STATUSES_URL).flush([]);
+    f.detectChanges();
+
+    internals(f).askReschedule(scheduledAt('s1', soon));
+    internals(f).setRescheduleAt('2099-03-03T12:00');
+    expect(internals(f).rescheduleProblem()).toContain('daily limit');
+    internals(f).confirmReschedule();
+    httpMock.expectNone({ url: `${SCHEDULED_URL}/s1`, method: 'PUT' });
   });
 
   // The boss's call: a server refusing a distant date is ordinary error

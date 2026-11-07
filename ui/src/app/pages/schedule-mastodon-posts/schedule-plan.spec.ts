@@ -6,6 +6,7 @@ import {
   TOTAL_LIMIT,
   cadenceTime,
   defaultStart,
+  firstDayWithRoom,
   limitProblems,
   parseLocal,
   postTime,
@@ -89,6 +90,25 @@ describe('schedule plan', () => {
     expect(limitProblems(days(2), days(TOTAL_LIMIT - 1))).toContainEqual({
       kind: 'total',
       count: TOTAL_LIMIT + 1,
+    });
+  });
+
+  describe('firstDayWithRoom', () => {
+    const start = new Date('2125-06-01T10:00:00Z');
+
+    it('keeps the start when its day has room', () => {
+      expect(firstDayWithRoom(start, [])).toEqual(start);
+    });
+
+    it('steps a whole day at a time past full days, keeping the time of day', () => {
+      const full = (iso: string) => Array.from({ length: DAILY_LIMIT }, () => new Date(iso));
+      const existing = [...full('2125-06-01T03:00:00Z'), ...full('2125-06-02T20:00:00Z')];
+      expect(firstDayWithRoom(start, existing)).toEqual(new Date('2125-06-03T10:00:00Z'));
+    });
+
+    it('gives up after maxDays rather than looping forever', () => {
+      const existing = Array.from({ length: DAILY_LIMIT }, () => new Date(start));
+      expect(firstDayWithRoom(start, existing, 1)).toBeNull();
     });
   });
 });

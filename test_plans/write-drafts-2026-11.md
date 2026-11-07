@@ -44,11 +44,47 @@ lands; untested sections say so.
 
 ## 4. Quote posts
 
-Not built yet.
+- [ ] On Mastodon M, choose Quote on someone's post. A dialog opens: your text
+      box first, the quoted post below it. It does not look like a reply.
+- [ ] Post a quote from the dialog. It publishes as a quote (check on the web
+      UI of your server).
+- [ ] Type a few words, attach an image, then choose **Fullscreen edit**. Write
+      opens with the text, the image and the quoted post under the editor. Wait
+      3 seconds: it is autosaved as a local draft.
+- [ ] Publish it from Write as a thread (add a `---` split). Only the first post
+      is a quote; the second replies to the first.
+- [ ] Try to choose Bluesky as the destination while quoting: Write says quotes
+      go to Mastodon. **Remove quote** clears it.
+- [ ] Reopen the saved draft from the drafts list: the quoted post preview loads.
+- [ ] Quote a post whose author allows only followers to quote, from an account
+      that does not follow them: the dialog says quoting is not allowed and
+      shows no text box. (Needs a 4.5 server that sends `quote_approval`.)
+- [ ] Quote a post that needs the author's approval: the dialog says so.
+- [ ] Bluesky: Quote on a Bluesky post opens the same dialog without
+      Fullscreen edit, and still posts to Bluesky.
 
 ## 5. Scheduling and parking
 
-Not built yet.
+- [ ] /drafts shows "N of 300 scheduled slots used, M of them by parked
+      drafts". With more than 20 scheduled posts, all of them are listed.
+- [ ] Park 26 single-post drafts on one day (or seed 25 scheduled posts on the
+      default park day). The 26th lands on the next day instead of failing.
+- [ ] Park a draft that is a thread: it is refused with an explanation and
+      nothing is sent.
+- [ ] On an upcoming scheduled post, **Change time** to tomorrow: the time
+      changes on the server (check the web UI). A time under 5 minutes away, or
+      a day that already has 25, is refused before sending.
+- [ ] On an upcoming scheduled post with an image, choose **Edit**. Write opens
+      with the text, image and time. Change the text and publish: confirm the
+      prompt. The new version is scheduled with the image, and the original is
+      gone. **Verify the image survived:** this reuses the original's uploaded
+      media id, which a live server must accept.
+- [ ] Same, but decline the prompt: nothing changes on the server.
+- [ ] Parked post with an image → ••• → **Edit on the server**: same flow,
+      and the time stays far in the future.
+- [ ] In Write, attach an image, choose **Park on server**, then publish. The
+      post appears under Drafts as parked with 📎 1, and does not go out.
+- [ ] Park on server is not offered for a thread.
 
 ## Findings
 

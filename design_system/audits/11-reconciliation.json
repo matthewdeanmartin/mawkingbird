@@ -323,6 +323,11 @@
       "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."
     },
     {
+      "file": "ui/src/app/compose/quote-dialog/quote-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Quote dialog composes the shared Dialog around the existing composer and a plain-text quoted-post preview; Fullscreen edit and Post are the composer's own MbButtons. Keep the denied/manual quote notices and the text-above-quote order."
+    },
+    {
       "file": "ui/src/app/compose/tag-helper-dialog/tag-helper-dialog.html",
       "disposition": "backlog",
       "nextStep": "Preview this overlay with its real form/actions, focus return, cancellation and failure states before adopting MbDialog/MbPopover and shared controls."
