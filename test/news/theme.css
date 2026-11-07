@@ -59,7 +59,14 @@
   --fb-focus: var(--accent);
   --fb-error: var(--ds-error-text);
   --fb-font: var(--app-font-family);
-  --fb-width: 600px;
+  /* The app shell's grid (ui/src/styles.css, ui/src/app/shell/shell.css), so
+     News lines up with Home: title over the left rail, menu over the centre
+     column, sign-in over the right rail. */
+  --fb-rail-left: 290px;
+  --fb-column: 600px;
+  --fb-rail-right: 320px;
+  --fb-gap: 16px;
+  --fb-topbar-height: 64px;
   color-scheme: light;
 }
 
