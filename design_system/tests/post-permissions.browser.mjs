@@ -106,7 +106,9 @@ test("notification dismissal follows compact inline actions on a phone", async (
   });
 });
 
-test("mutual post tint uses the current theme background", async ({ page }) => {
+test("mutual post tint uses the current theme background", async ({
+  page,
+}, testInfo) => {
   await page.goto(
     "/iframe.html?id=start-here-sprint-11-review--provider-tools&viewMode=story",
   );
