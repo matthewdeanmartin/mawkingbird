@@ -1,0 +1,479 @@
+{
+  "version": 1,
+  "topic": "esp32-and-single-board-computers",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T14:35:45+00:00",
+  "tags": [
+    {
+      "name": "RaspberryPi",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "off-topic"
+    },
+    {
+      "name": "ESP32",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Arduino",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ESPHome",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "BananaPi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "MicroPython",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ESP8266",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RP2040",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SeeedStudio",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RaspberryPiPico",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RP2350",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Adafruit",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SingleBoardComputer",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "OrangePi",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "CircuitPython",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Radxa",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ODROID",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "PINE64",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "SparkFun",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "BeagleBoard",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "olimex@mastodon.social",
+      "id": "1142553",
+      "url": "https://mastodon.social/@olimex",
+      "displayName": "Olimex",
+      "avatar": "https://files.mastodon.social/accounts/avatars/001/142/553/original/4581c655aca4538d.jpg",
+      "bio": "Open Source Hardware evangelist. Designing OSHW linux computers certified by OSHWA. https://www. olimex.com",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCBLijWZ1jr_6VrIlhp3fFtw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "notenoughtech@mastodon.world",
+      "id": "109534435487878064",
+      "url": "https://mastodon.world/@notenoughtech",
+      "displayName": "Mat (notenoughtech)",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/534/435/487/878/064/original/97a11c0572ac7ba9.jpg",
+      "bio": "Maker and artist at heart, a robotics engineer in making, a content creator and an avid cyclist. I write about tech, home automation and 3D printing.",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["youtube-10k"],
+      "elsewhere": ["patreon", "youtube"],
+      "youtube": {
+        "channelId": "UC7V__uBIaZotHn_smHJShGQ",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "bret@fosstodon.org",
+      "id": "109292765768718936",
+      "url": "https://fosstodon.org/@bret",
+      "displayName": "Bret",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/292/765/768/718/936/original/5dc41e145e8b8517.png",
+      "bio": "I write about and test Raspberry Pi SBCs (and the maaany alternatives) and their accessories so you don't have to.",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["bluesky", "youtube"],
+      "youtube": {
+        "channelId": "UCl11r81OgYyILyIvMUQDSwA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2024-04"
+      }
+    },
+    {
+      "acct": "mirobotech@mastodon.social",
+      "id": "116092980427333527",
+      "url": "https://mastodon.social/@mirobotech",
+      "displayName": "mirobo technology",
+      "avatar": "https://files.mastodon.social/accounts/avatars/116/092/980/427/333/527/original/2f48946b5f7413a0.png",
+      "bio": "Hi, I'm John, the Chief Human at mirobo.tech (sounds like 'my robo' 🤖 ). Retired high school computer technology teacher. Creating and sharing electronics, microcontroller, and robotics projects and…",
+      "shelf": "youtube",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCQh-fdAHlHlQpoLZJ9-xgRQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-05"
+      }
+    },
+    {
+      "acct": "contextfree@hachyderm.io",
+      "id": "109365065473164368",
+      "url": "https://hachyderm.io/@contextfree",
+      "displayName": "Tom",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/109/365/065/473/164/368/original/3c9fbe316e2563ef.jpg",
+      "bio": "I make videos about programming languages and more. | he/him | God is good. Black lives matter.",
+      "shelf": "youtube",
+      "rank": 5,
+      "fame": ["youtube-10k"],
+      "elsewhere": ["bluesky", "youtube"],
+      "youtube": {
+        "channelId": "UCS4FAVeYW_IaZqAbqhlvxlA",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "stm32world@mastodon.social",
+      "id": "113853310292521526",
+      "url": "https://mastodon.social/@stm32world",
+      "displayName": "STM32World",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/853/310/292/521/526/original/f430ccd29263c83b.png",
+      "bio": "Webmaster of the STM32World Wiki ( https:// stm32world.com/wiki ) and Youtube Channel ( https:// youtube.com/@stm32world ).",
+      "shelf": "youtube",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC6qVyJDWpX5iC0emlLRTCzQ",
+        "native": false,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "loudfpv@mastodon.social",
+      "id": "109258806896821569",
+      "url": "https://mastodon.social/@loudfpv",
+      "displayName": "LouD",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/258/806/896/821/569/original/f9458c90faeb9ae6.jpg",
+      "bio": "Clojure by day, Eighties kid that codes and solders by night. # retro # c64 # reverseengineering # clojure # hardware # hacking",
+      "shelf": "youtube",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCOu1hPBTsEbG7ZFnk9-29KQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "meshtastic@mastodon.social",
+      "id": "112040859912009623",
+      "url": "https://mastodon.social/@meshtastic",
+      "displayName": "Meshtastic",
+      "avatar": "https://files.mastodon.social/accounts/avatars/112/040/859/912/009/623/original/1934a0b885f6d679.png",
+      "bio": "Your favorite open source, off-grid, encrypted mesh communication platform that runs on affordable radios",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "adafruit@fosstodon.org",
+      "id": "98984",
+      "url": "https://fosstodon.org/@adafruit",
+      "displayName": "adafruit",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/000/098/984/original/5c2363f06d4cf18c.png",
+      "bio": "Brooklyn, NY USA - Manufacturer, open-source hardware, certified Minority and Woman-owned Business Enterprise (M/WBE) Teaching, sharing, # engineering # DIY # electronics # opensource # opensourcehar…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["youtube"]
+    },
+    {
+      "acct": "esphome@fosstodon.org",
+      "id": "109541945500916114",
+      "url": "https://fosstodon.org/@esphome",
+      "displayName": "ESPHome",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/541/945/500/916/114/original/8c9fb2247ef382ec.png",
+      "bio": "ESPHome is the easiest way to use ESP8266/ESP32/Pi Pico W via simple config files and control them remotely via home automation systems like @ homeassistant",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "arturo182@mastodon.social",
+      "id": "270080",
+      "url": "https://mastodon.social/@arturo182",
+      "displayName": "arturo182",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/270/080/original/abac5a72347396d5.jpg",
+      "bio": "HW & SW Founder of @ solder.party He/him",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "bananapi@mastodon.social",
+      "id": "110851990225938214",
+      "url": "https://mastodon.social/@bananapi",
+      "displayName": "Banana Pi Open Source Hardware",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/851/990/225/938/214/original/17f011b60904f882.jpg",
+      "bio": "",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "andysc@mastodon.iow.social",
+      "id": "236",
+      "url": "https://mastodon.iow.social/@andysc",
+      "displayName": "Andy S-C",
+      "avatar": "https://s3.eu-west-2.amazonaws.com/iowmast/accounts/avatars/000/000/236/original/93b914be38a00556.jpg",
+      "bio": "Innovation Leader - IBM SPEED team. Distinguished Engineer, Master Inventor. Co-inventor of MQTT, IoT, Quantum computing. Long distance runner. 3D printing, Maker. My views are my own.",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "circuitpython@fosstodon.org",
+      "id": "109317485651909218",
+      "url": "https://fosstodon.org/@circuitpython",
+      "displayName": "CircuitPython",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/317/485/651/909/218/original/b7be7208a5909c5f.png",
+      "bio": "CircuitPython is a version of Python for microcontrollers. Help: https:// adafru.it/discord Info: https:// circuitpython.org/ https:// adafruit.com/circuitpython https:// github.com/adafruit/circuitp…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "armbian@fosstodon.org",
+      "id": "109365956768424870",
+      "url": "https://fosstodon.org/@armbian",
+      "displayName": "Armbian Linux",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/365/956/768/424/870/original/871f90f2ca0d82cf.png",
+      "bio": "Linux for custom hardware",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "diyelectromusic@mastodon.social",
+      "id": "109247398697341845",
+      "url": "https://mastodon.social/@diyelectromusic",
+      "displayName": "diyelectromusic",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/247/398/697/341/845/original/d3c9caa1f2702ed9.png",
+      "bio": "Simple DIY electronic music projects - # Arduino , # RaspberryPi # MIDI , # synthdiy , where music and # STEM overlap. Home of the # LoFiOrchestra and follower of # MakersHour . I also try to list ev…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "blitzcitydiy@mastodon.social",
+      "id": "485507",
+      "url": "https://mastodon.social/@blitzcitydiy",
+      "displayName": "Liz [BlitzCityDIY]",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/485/507/original/bc4b1f6271b3966b.png",
+      "bio": "She/her. Music technology, woodworking, knitting, all forms of media and cats.",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "todbot@mastodon.social",
+      "id": "109237638243937525",
+      "url": "https://mastodon.social/@todbot",
+      "displayName": "Tod Kurt (todbot)",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/237/638/243/937/525/original/adf08a05ecb50e0f.jpeg",
+      "bio": "runs ThingM, maker of blink(1) USB LED & BlinkM, co-founder CrashSpaceLA hackerspace, Pasadena, CA, he/him # electronics # circuitpython # arduino # rgbled # usbhid # blink1 # raspberrypipico # diysy…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "paulstoffregen@mastodon.social",
+      "id": "1294518",
+      "url": "https://mastodon.social/@PaulStoffregen",
+      "displayName": "Paul Stoffregen",
+      "avatar": "https://files.mastodon.social/accounts/avatars/001/294/518/original/370f9862c41510a4.jpg",
+      "bio": "Entrepreneur & electrical engineer with a passion for overly ambitious projects. he/him",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ishotjr@chaos.social",
+      "id": "108256896874816057",
+      "url": "https://chaos.social/@ishotjr",
+      "displayName": "ishotjr ✨💙✨💗✨",
+      "avatar": "https://assets.chaos.social/accounts/avatars/108/256/896/874/816/057/original/8e977c3fefa88b40.png",
+      "bio": "",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ghalfacree@mastodon.social",
+      "id": "17465",
+      "url": "https://mastodon.social/@ghalfacree",
+      "displayName": "Gareth Halfacree",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/017/465/original/ec5c198b3a56a060.jpg",
+      "bio": "# Technology , # science , and # computing # journalist and # photojournalist . # Author , # Microbit & # RaspberryPi User Guides. Custom PC columnist. Bylines Hackster.io, Make: Magazine, The Regist…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["patreon", "website"]
+    },
+    {
+      "acct": "polykit@chaos.social",
+      "id": "109318442123969905",
+      "url": "https://chaos.social/@polykit",
+      "displayName": "Polykit",
+      "avatar": "https://assets.chaos.social/accounts/avatars/109/318/442/123/969/905/original/d9cd9dd55a742f3c.png",
+      "bio": "DIY Eurorack Synthesizers from Berlin, operator of @ MakerTube # synthdiy # synth # synthesizers # modular # eurorack # electronics # maker # peertube # makertube # beekeeping # berlin # kreuzberg",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "tschak@oldbytes.space",
+      "id": "108291572887219032",
+      "url": "https://oldbytes.space/@tschak",
+      "displayName": "Thomas Cherryhomes",
+      "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/108/291/572/887/219/032/original/ff0cabfe512cd1b9.jpg",
+      "bio": "Hacker, Artist, Engineer, Polymath, Goofball; Cynic.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["youtube"]
+    },
+    {
+      "acct": "amcewen@mastodon.me.uk",
+      "id": "781",
+      "url": "https://mastodon.me.uk/@amcewen",
+      "displayName": "Adrian McEwen",
+      "avatar": "https://mastodon.me.uk/system/accounts/avatars/000/000/781/original/097a59292f3ba435.jpg",
+      "bio": "Founder of @ MCQN_Ltd . Creator of Bubblino. Co-founder of @ DoESLiverpool . Author of Designing the Internet Of Things. Tech at @ museuminabox . Ramblings on # IoT , # bikes , # urbanism and # Liver…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "kevsmac@mastodon.social",
+      "id": "108198290034302257",
+      "url": "https://mastodon.social/@kevsmac",
+      "displayName": "Kevin McAleer 🤖 Robot Maker",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/198/290/034/302/257/original/be1209b66ba6be87.jpeg",
+      "bio": "I make videos about robots on YouTube! https://www. youtube.com/kevinmcaleer28 Also checkout www.kevsrobots.com for robot projects and downloadable files",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "deadprogram@social.tinygo.org",
+      "id": "109285709604604922",
+      "url": "https://social.tinygo.org/@deadprogram",
+      "displayName": "deadprogram",
+      "avatar": "https://cdn.masto.host/socialtinygoorg/accounts/avatars/109/285/709/604/604/922/original/b6170869af393cab.jpg",
+      "bio": "Technologist for hire, open source developer, businessperson, author, speaker, iconoclast. TinyGo - https:// tinygo.org Gobot - https:// gobot.io GoCV - https:// gocv.io Ringleader of The Hybrid Grou…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "skickar@infosec.exchange",
+      "id": "109315639299690293",
+      "url": "https://infosec.exchange/@skickar",
+      "displayName": "Kody Kinzie",
+      "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/109/315/639/299/690/293/original/cbd9601fa72d3f54.jpg",
+      "bio": "▪ Hacker/Security Researcher ▪ Host Null Byte, Retia on YouTube ▪ Retia LLC Founder",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

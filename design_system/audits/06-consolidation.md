@@ -1568,3 +1568,26 @@ regenerated inventory with the working-tree inventory before this change: all
 597 candidate entries are identical, no candidates were added or removed, and
 source count increased from 1,670 to 1,671. The reconciliation file needs no
 entry changes.
+
+## Topic pages: Math, 2026-11-06
+
+Added approved English, German and French data, lazy loaders and `copy/math.ts`.
+No template, shared widget or control changed. Reviewed the regenerated inventory
+against HEAD: all 597 candidate entries are identical, no candidate files were
+added or removed, and source count increased from 1,671 to 1,672. The existing
+`11-reconciliation.json` entries still cover every candidate and need no changes.
+
+## Topic pages: Gardening and Houseplants, 2026-11-06
+
+Added approved English, German and French data, lazy loaders and topic copy.
+The regenerated inventory has 1,673 source files (one more than the math working
+tree) and the same 597 candidate files. Reviewed the diff: no candidate or source
+line changed. No template or shared widget changed; reconciliation entries
+remain complete and need no additions or removals.
+
+## Topic pages: ESP32 and Single-board Computers, 2026-11-07
+
+Added approved English and German data, lazy loaders and topic copy. Compared
+against the gardening working-tree inventory: source files increased from 1,673
+to 1,674; all 597 candidate entries are identical. No control or shared widget
+changed. No candidate was added or removed; reconciliation remains complete.

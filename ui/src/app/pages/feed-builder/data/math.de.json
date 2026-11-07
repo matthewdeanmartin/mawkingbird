@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "topic": "math",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-06T13:45:03+00:00",
+  "tags": [
+    {
+      "name": "Mathematik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Mathe",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Math",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "Mathematics",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "NumberTheory",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Maths",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Geometry",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Geometrie",
+      "lang": "de",
+      "kind": "future",
+      "source": "Geometry",
+      "status": "starting"
+    },
+    {
+      "name": "Zahlentheorie",
+      "lang": "de",
+      "kind": "future",
+      "source": "NumberTheory",
+      "status": "new"
+    }
+  ],
+  "people": [
+    {
+      "acct": "ipn_kiel@eduresearch.social",
+      "id": "113202548021097961",
+      "url": "https://eduresearch.social/@IPN_Kiel",
+      "displayName": "IPN Kiel",
+      "avatar": "https://eduresearch.social/system/accounts/avatars/113/202/548/021/097/961/original/3fcbc368e51ba749.png",
+      "bio": "Hier trötet das Leibniz-Institut für die Pädagogik der Naturwissenschaften und Mathematik über Publikationen, Veranstaltungen und andere Neuigkeiten.",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC6hz0k5jrbrEDT9Oyj7Snjw",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "zbmath@mathstodon.xyz",
+      "id": "109439350975052553",
+      "url": "https://mathstodon.xyz/@zbMATH",
+      "displayName": "zbMATH Open",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/439/350/975/052/553/original/3690146750ea2eb4.jpg",
+      "bio": "zbMATH Open is the world’s most comprehensive and longest-running reviewing service in mathematics, edited by the European Mathematical Society @ EuroMathSoc , the Heidelberg Academy of Sciences and…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "eurekakreuzwort@mastodon.online",
+      "id": "109275990971619987",
+      "url": "https://mastodon.online/@EurekaKreuzwort",
+      "displayName": "Eureka! Fakten",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/275/990/971/619/987/original/dfd3f897078485c8.png",
+      "bio": "Täglich neue # Fakten ! 🤯 Bereit für unendlichen Rätselspaß? Eureka Kreuzworträtsel jetzt als App erhältlich!",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "eigenraum@podcasts.social",
+      "id": "109272983838245337",
+      "url": "https://podcasts.social/@Eigenraum",
+      "displayName": "Eigenraum",
+      "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/272/983/838/245/337/original/66b9bc290289dcca.png",
+      "bio": "Ich bin der Eigenraum, ein Podcast über Mathematik und ihre Geschichten. Für Interaktion mit dem Podcast seid ihr hier genau richtig! - Mein Sprecher ist @ tomkalei - Automatisierte ActivityPub Ankün…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["patreon", "website"]
+    },
+    {
+      "acct": "petraschwer@mathstodon.xyz",
+      "id": "109268244768575469",
+      "url": "https://mathstodon.xyz/@PetraSchwer",
+      "displayName": "Petra Schwer",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/268/244/768/575/469/original/7a618fe1033d221c.jpg",
+      "bio": "Mathematician based in Heidelberg, Germany. Making research math visible - how we think - what we do - how math works. I study groups and geometric spaces, all things symmetry. Also: coffee, art and…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "lutz_@bildung.social",
+      "id": "109268017941348937",
+      "url": "https://bildung.social/@lutz_",
+      "displayName": "lutz_",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/268/017/941/348/937/original/50758c19c75fbb58.jpeg",
+      "bio": "@ lutz_ Lehrer in BW | Hinter dem Horizont geht's weiter | # twlz # FediLZ # moodle # GeoGebra # TeXLaTeX # Lerntheken # phyphox # TaskCards # Verkehrswende # Autokorrektur # Klimakrise # brotbacken…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "e_es@chaos.social",
+      "id": "108199374631020812",
+      "url": "https://chaos.social/@e_es",
+      "displayName": "e_es",
+      "avatar": "https://assets.chaos.social/accounts/avatars/108/199/374/631/020/812/original/2d759b13e0bce821.png",
+      "bio": "",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "cmdrsprocket@mathstodon.xyz",
+      "id": "110654334059017024",
+      "url": "https://mathstodon.xyz/@cmdrSprocket",
+      "displayName": "cmdrSprocket",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/110/654/334/059/017/024/original/1cfdf4c9a51cffd4.jpg",
+      "bio": "Astronomy, Bread, Computer, Dad jokes, Mathematics, Metal and More. Avatar: A photo of a green rusty sprocket Banner: A photo of a Penrose Tesselation in an autumn color theme",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "mathinklusion@bildung.social",
+      "id": "109256633195502803",
+      "url": "https://bildung.social/@mathinklusion",
+      "displayName": "mathinklusion",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/256/633/195/502/803/original/8de945c393a61eb4.jpg",
+      "bio": "Dozentin in der Lehrkräfteausbildung, Mathe, Inklusion, Differenzierung, Heterogenität",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "dzlmathe@eduresearch.social",
+      "id": "113011560620823526",
+      "url": "https://eduresearch.social/@dzlmathe",
+      "displayName": "DZLM",
+      "avatar": "https://eduresearch.social/system/accounts/avatars/113/011/560/620/823/526/original/10fc8e88fbe57d9e.png",
+      "bio": "Hier postet die Abteilung Fachbezogener Erkenntnistransfer des Leibniz-Inst. @ IPN_Kiel & das Netzwerk des Deutschen Zentrums für Lehrkräftebildung Mathematik",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "nicoformanek@mathstodon.xyz",
+      "id": "113748348845587703",
+      "url": "https://mathstodon.xyz/@nicoformanek",
+      "displayName": "Nico Formánek",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/113/748/348/845/587/703/original/38013082151d7e39.jpg",
+      "bio": "I am a philosopher interested in computational methods in science.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "christophmark0@mastodon.social",
+      "id": "117247726734442346",
+      "url": "https://mastodon.social/@christophmark0",
+      "displayName": "Christoph",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/247/726/734/442/346/original/e7c113a2fac01361.jpg",
+      "bio": "Chinese language learner, art enthusiast, mathematician",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "solvetoplay@mastodon.social",
+      "id": "117412546463938281",
+      "url": "https://mastodon.social/@solvetoplay",
+      "displayName": "Solve To Play",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/412/546/463/938/281/original/02cafe95a34f9a04.jpg",
+      "bio": "Solve To Play sperrt Spiele und Apps auf dem iPhone oder iPad deines Kindes, bis es ein paar Rechenaufgaben gelöst hat: Einmaleins, Plus und Minus, Zahlzerlegung, Uhr lesen und mehr. Kein Account, ke…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "24hprof@mastodon.de",
+      "id": "115877603751740421",
+      "url": "https://mastodon.de/@24hprof",
+      "displayName": "24hprof",
+      "avatar": "https://media.mastodon.de/accounts/avatars/115/877/603/751/740/421/original/e9a28781733db64f.jpg",
+      "bio": "Das Lehrportal (Lehre und Wissen für alle)",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "mathstodon.xyz"
+    }
+  ]
+}

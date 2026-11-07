@@ -103,6 +103,54 @@ describe('Feed Builder topic pages', () => {
     expect(el.querySelectorAll('.people li').length).toBeGreaterThanOrEqual(8);
   });
 
+  it('renders approved English and German board communities with quiet relevant tags', async () => {
+    const en = await render(at('esp32-and-single-board-computers-on-mastodon'));
+    expect(en.querySelector('h1')?.textContent).toContain('ESP32 and single-board computers');
+    for (const tag of ['ESP32', 'BeagleBoard', 'Radxa', 'CircuitPython', 'Adafruit'])
+      expect(en.querySelector(`a[href="/tags/${tag}"]`)).not.toBeNull();
+    expect(en.textContent).toContain('even with no posts');
+    expect(en.querySelectorAll('.people li').length).toBe(27);
+  });
+
+  it('renders the German board community and only the approved editions', async () => {
+    const de = await render(at('de/esp32-und-einplatinencomputer-auf-mastodon'));
+    expect(de.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(de.querySelector('.tag-list')?.textContent).toContain('#Einplatinencomputer');
+    expect(de.querySelectorAll('.people li').length).toBe(5);
+    expect(
+      FEED_BUILDER_PAGES.filter((p) => p.topic === 'esp32-and-single-board-computers').map(
+        (p) => p.lang,
+      ),
+    ).toEqual(['en', 'de']);
+  });
+
+  it('renders approved gardening editions with quiet subject tags', async () => {
+    const el = await render(at('gardening-and-houseplants-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('Gardening and houseplants');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#Succulents');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#Hydroponics');
+    expect(el.textContent).toContain('even when their tags are quiet');
+    expect(el.querySelectorAll('.people li').length).toBe(14);
+    expect(
+      FEED_BUILDER_PAGES.filter((p) => p.topic === 'gardening-and-houseplants').map((p) => p.lang),
+    ).toEqual(['en', 'de', 'fr']);
+  });
+
+  it('renders approved math editions with local tags and selectable number theory', async () => {
+    const el = await render(at('de/mathematik-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Mathematik auf Mastodon');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#Mathematik');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#NumberTheory');
+    expect(el.querySelector('a[href="https://mathstodon.xyz/about"]')).not.toBeNull();
+    expect(el.querySelectorAll('.people li').length).toBe(14);
+    expect(FEED_BUILDER_PAGES.filter((p) => p.topic === 'math').map((p) => p.lang)).toEqual([
+      'en',
+      'de',
+      'fr',
+    ]);
+  });
+
   it('renders the German plant-based edition with its local and future tags', async () => {
     const el = await render(at('de/pflanzlich-leben-auf-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');

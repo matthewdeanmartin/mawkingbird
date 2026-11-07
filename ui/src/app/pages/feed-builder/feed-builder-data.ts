@@ -52,6 +52,16 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'esp32-and-single-board-computers.en': () =>
+    import('./data/esp32-and-single-board-computers.en.json'),
+  'esp32-and-single-board-computers.de': () =>
+    import('./data/esp32-and-single-board-computers.de.json'),
+  'gardening-and-houseplants.en': () => import('./data/gardening-and-houseplants.en.json'),
+  'gardening-and-houseplants.de': () => import('./data/gardening-and-houseplants.de.json'),
+  'gardening-and-houseplants.fr': () => import('./data/gardening-and-houseplants.fr.json'),
+  'math.en': () => import('./data/math.en.json'),
+  'math.de': () => import('./data/math.de.json'),
+  'math.fr': () => import('./data/math.fr.json'),
   'plant-based-living.en': () => import('./data/plant-based-living.en.json'),
   'plant-based-living.de': () => import('./data/plant-based-living.de.json'),
   'science-fiction.en': () => import('./data/science-fiction.en.json'),

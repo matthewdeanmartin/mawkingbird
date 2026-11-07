@@ -126,6 +126,20 @@ and German (`/de/pflanzlich-leben-auf-mastodon/`) editions. Its copy explains
 the positive-outreach selection and the limits of public hashtag feeds; only
 these two editions are registered.
 
+Gardening and Houseplants has approved English (`/gardening-and-houseplants-on-mastodon/`),
+German (`/de/garten-und-zimmerpflanzen-auf-mastodon/`) and French
+(`/fr/jardinage-et-plantes-interieur-sur-mastodon/`) editions. Useful quiet subject
+tags remain followable; activity and sample cautions remain honest. Farming and
+animal husbandry are outside this selection. Spanish, Italian and Japanese
+were withheld for insufficient strong matches. No dedicated server is listed.
+
+Math has approved English (`/math-on-mastodon/`), German
+(`/de/mathematik-auf-mastodon/`) and French (`/fr/mathematiques-sur-mastodon/`)
+editions. Research, teaching, puzzles and recreational mathematics are in scope.
+Number theory remains selectable; concentration warnings concern individual
+authors in hashtag samples, not how many people use Mathstodon. Spanish, Italian
+and Japanese did not meet the people floor and have no registered routes.
+
 - **Data** comes from the private data repository's export
   (`mawkingbird_starters/catalog/feedbuilder/`). `make feedbuilder-update`
   imports it into `pages/feed-builder/data/<topic>.<lang>.json`; every field is
@@ -497,3 +511,9 @@ After deployment, inspect the actual HTML for `/` and `/features/`, fetch the
 image and sitemap, then test new shares in Mastodon and Bluesky. Existing cards
 may be cached by the sharing service. Both `sitemap.xml` and `help/sitemap.xml`
 should be submitted in Google Search Console; this does not guarantee ranking.
+
+ESP32 and Single-board Computers has approved English
+(`/esp32-and-single-board-computers-on-mastodon/`) and German
+(`/de/esp32-und-einplatinencomputer-auf-mastodon/`) editions. Microcontrollers,
+SBCs, board makers and recurring board projects are in scope. Relevant quiet or
+zero-post tags remain followable community seeds. Other languages are withheld.

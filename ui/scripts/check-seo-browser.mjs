@@ -618,6 +618,157 @@ try {
     assert.deepEqual(errors, [], 'plant-based pages have no runtime errors');
     await context.close();
   }
+  // Math keeps the approved language set and NumberTheory through hydration.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`${origin}/fr/mathematiques-sur-mastodon/`);
+    await page
+      .getByRole('heading', { level: 1, name: 'Les mathématiques sur Mastodon', exact: true })
+      .waitFor();
+    if (javaScriptEnabled)
+      await page.waitForFunction(() =>
+        document.querySelector('app-root')?.hasAttribute('ng-version'),
+      );
+    assert.equal(await page.locator('html').getAttribute('lang'), 'fr');
+    assert.equal(await page.locator('.people li').count(), 13);
+    assert.ok(await page.locator('a[href="/tags/NumberTheory"]').count());
+    assert.ok(await page.locator('a[href="https://mathstodon.xyz/about"]').count());
+    for (const [lang, slug] of [
+      ['en', 'math-on-mastodon'],
+      ['de', 'de/mathematik-auf-mastodon'],
+      ['fr', 'fr/mathematiques-sur-mastodon'],
+    ]) {
+      assert.equal(
+        await page.locator(`head link[hreflang="${lang}"]`).getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+    }
+    for (const lang of ['es', 'it', 'ja'])
+      assert.equal(await page.locator(`head link[hreflang="${lang}"]`).count(), 0);
+    assert.equal(
+      await page.locator('link[rel="canonical"]').getAttribute('href'),
+      'https://mawkingbird.com/fr/mathematiques-sur-mastodon/',
+    );
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        `math: no overflow at ${width}px`,
+      );
+    }
+    await page.screenshot({
+      path: path.join(results, `seo-math-fr-${javaScriptEnabled ? 'client' : 'static'}.png`),
+      fullPage: true,
+    });
+    assert.deepEqual(errors, [], 'math page has no runtime errors');
+    await context.close();
+  }
+  // Gardening retains quiet subject tags and only the three approved editions.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    const slug = 'gardening-and-houseplants-on-mastodon';
+    await page.goto(`${origin}/${slug}/`);
+    await page
+      .getByRole('heading', {
+        level: 1,
+        name: 'Gardening and houseplants on Mastodon',
+        exact: true,
+      })
+      .waitFor();
+    if (javaScriptEnabled)
+      await page.waitForFunction(() =>
+        document.querySelector('app-root')?.hasAttribute('ng-version'),
+      );
+    assert.equal(await page.locator('.people li').count(), 14);
+    for (const tag of ['Succulents', 'Hydroponics', 'Cacti'])
+      assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
+    for (const [lang, path] of [
+      ['en', slug],
+      ['de', 'de/garten-und-zimmerpflanzen-auf-mastodon'],
+      ['fr', 'fr/jardinage-et-plantes-interieur-sur-mastodon'],
+    ])
+      assert.equal(
+        await page.locator(`head link[hreflang="${lang}"]`).getAttribute('href'),
+        `https://mawkingbird.com/${path}/`,
+      );
+    for (const lang of ['es', 'it', 'ja'])
+      assert.equal(await page.locator(`head link[hreflang="${lang}"]`).count(), 0);
+    assert.equal(
+      await page.locator('link[rel="canonical"]').getAttribute('href'),
+      `https://mawkingbird.com/${slug}/`,
+    );
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        `gardening: no overflow at ${width}px`,
+      );
+    }
+    await page.goto(`${origin}/communities/`);
+    await page.locator(`a[href="/${slug}/"], a[href="/${slug}"]`).first().waitFor();
+    assert.deepEqual(errors, [], 'gardening page and communities have no runtime errors');
+    await context.close();
+  }
+  // Both board editions retain useful quiet tags, in static and hydrated pages.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    const editions = [
+      ['en', 'esp32-and-single-board-computers-on-mastodon', 27, ['ESP32', 'BeagleBoard', 'Radxa']],
+      ['de', 'de/esp32-und-einplatinencomputer-auf-mastodon', 5, ['ESP32', 'Einplatinencomputer']],
+    ];
+    for (const [lang, slug, count, tags] of editions) {
+      await page.goto(`${origin}/${slug}/`);
+      await page.locator('main h1').waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal(await page.locator('main').getAttribute('lang'), lang);
+      assert.equal(await page.locator('.people li').count(), count);
+      for (const tag of tags) assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/${slug}/`,
+      );
+      for (const [editionLang, path] of editions)
+        assert.equal(
+          await page.locator(`head link[hreflang="${editionLang}"]`).getAttribute('href'),
+          `https://mawkingbird.com/${path}/`,
+        );
+      for (const withheld of ['fr', 'es', 'it', 'ja'])
+        assert.equal(await page.locator(`head link[hreflang="${withheld}"]`).count(), 0);
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `boards ${lang}: no overflow at ${width}px`,
+        );
+      }
+    }
+    await page.goto(`${origin}/communities/`);
+    for (const [, slug] of editions)
+      await page.locator(`a[href="/${slug}/"], a[href="/${slug}"]`).first().waitFor();
+    assert.deepEqual(errors, [], 'board pages and communities have no runtime errors');
+    await context.close();
+  }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
     await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),

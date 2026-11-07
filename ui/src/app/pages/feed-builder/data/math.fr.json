@@ -1,0 +1,217 @@
+{
+  "version": 1,
+  "topic": "math",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-06T13:45:03+00:00",
+  "tags": [
+    {
+      "name": "Mathématiques",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Math",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "Mathematics",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "NumberTheory",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Maths",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Geometry",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Géométrie",
+      "lang": "fr",
+      "kind": "future",
+      "source": "Geometry",
+      "status": "starting"
+    },
+    {
+      "name": "ThéorieDesNombres",
+      "lang": "fr",
+      "kind": "future",
+      "source": "NumberTheory",
+      "status": "new"
+    }
+  ],
+  "people": [
+    {
+      "acct": "freakonometrics@mastodon.social",
+      "id": "37964",
+      "url": "https://mastodon.social/@freakonometrics",
+      "displayName": "Arthur Charpentier ⏚ 🇨🇦",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/037/964/original/710277c575e452f4.jpg",
+      "bio": "Dad of three & born-again # mathematician . # Statistician , # economist , fellow # actuary & # data addict. Professor & researcher in Montréal. Previously in Paris, Hong Kong (香港), Leuven, Rennes an…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "antoinechambertloir@mathstodon.xyz",
+      "id": "42098",
+      "url": "https://mathstodon.xyz/@antoinechambertloir",
+      "displayName": "⏚ Antoine Chambert-Loir",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/000/042/098/original/32360b78d62f6ef7.jpg",
+      "bio": "- Apprentice mathematician (Professor at Université Paris Cité), interested in algebraic geometry, number theory and (more recently) proof formalization - Apprentice musician (drums, tabla, cajon; pr…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "davidchavalarias@piaille.fr",
+      "id": "109550454932462222",
+      "url": "https://piaille.fr/@davidchavalarias",
+      "displayName": "David Chavalarias - FR",
+      "avatar": "https://static.piaille.fr/accounts/avatars/109/550/454/932/462/222/original/a8db3544b454f857.png",
+      "bio": "Directeur de Recherche CNRS au CAMS/EHESS et Directeur de l'Institut des Systèmes Complexes de Paris Île-de-France. Toots en français, mes messages n'engagent que moi.",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "arte@tooter.social",
+      "id": "109563532838121533",
+      "url": "https://tooter.social/@arte",
+      "displayName": "ARTE",
+      "avatar": "https://storage.tooter.social/accounts/avatars/109/563/532/838/121/533/original/c132d0ccd923e029.png",
+      "bio": "ARTE, la chaîne culturelle européenne, en français ! Compte non-officiel mis en place par @ raph . Sera remis au média s'il en fait la demande.",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "rnbm@mastodon.social",
+      "id": "113118791667047219",
+      "url": "https://mastodon.social/@RNBM",
+      "displayName": "RNBM",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/118/791/667/047/219/original/a46593ad152d9d6b.jpg",
+      "bio": "Le Réseau National des # Bibliothèques de # Mathématiques est un réseau thématique du @CNRS dédié à la # Documentation mathématique française",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "jeanbaptisteet4@mathstodon.xyz",
+      "id": "109354373289725149",
+      "url": "https://mathstodon.xyz/@JeanBaptisteEt4",
+      "displayName": "Jean-Baptiste Etienne",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/354/373/289/725/149/original/9bde26795b9fbdd3.png",
+      "bio": "Professeur de Mathématiques / Profesor de Matematicas. Celtibère. # maths # geogebra # mathart # profmaths # MTBoS # ITeachMath # MathEd # MathsEd # geogebra ambassador 2023-2024 ( https://www. geoge…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "auclairchristophe@mastodon.mim-libre.fr",
+      "id": "109286164423751007",
+      "url": "https://mastodon.mim-libre.fr/@auclairchristophe",
+      "displayName": "multimaths",
+      "avatar": "https://mastodon.mim-libre.fr/system/accounts/avatars/109/286/164/423/751/007/original/b968e5827ce561df.png",
+      "bio": "Professeur de mathématiques, apprenti-développeur d' # applis_maths gratuites.",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nicolay_lilicre@piaille.fr",
+      "id": "109284230186810864",
+      "url": "https://piaille.fr/@nicolay_lilicre",
+      "displayName": "Cyril I. 🧮📐",
+      "avatar": "https://static.piaille.fr/accounts/avatars/109/284/230/186/810/864/original/98888f5e78df7678.jpeg",
+      "bio": "# Prof . de # Maths au collège (#TZR en # REP cette année)👨‍🏫 et # RRUPN 🧑‍💻 Docteur et ancien Ingénieur de # Recherche en # Sciences de l'#Alimentation.👨‍🔬 Heureux papa d'une petite fille de 5ans ;…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nsi_xyz@mathstodon.xyz",
+      "id": "109276984737641698",
+      "url": "https://mathstodon.xyz/@nsi_xyz",
+      "displayName": "nsi_xyz",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/276/984/737/641/698/original/142b64e53bd23b3a.png",
+      "bio": "Enseignant de # maths et # nsi . 42% # nsi , 32% # python3 , 16% # maths , 8% # NumWorks .",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "fgrosshans@mathstodon.xyz",
+      "id": "109540939518649163",
+      "url": "https://mathstodon.xyz/@fgrosshans",
+      "displayName": "Frédéric Grosshans",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/540/939/518/649/163/original/55ef9b587f8de74b.jpg",
+      "bio": "A French researcher in quantum information, expressing his own views. A few old toots at https:// qubit-social.xyz/@fgrosshans",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "cogezsebastien@mastodon.mim-libre.fr",
+      "id": "109274097947933158",
+      "url": "https://mastodon.mim-libre.fr/@cogezsebastien",
+      "displayName": "Sebastien Cogez",
+      "avatar": "https://mastodon.mim-libre.fr/system/accounts/avatars/109/274/097/947/933/158/original/bf8789199244ee40.jpg",
+      "bio": "Enseignant, RefNum, ..., développeur d'applis libres MathsMentales et QCMCam",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "tomari@mathstodon.xyz",
+      "id": "117239309323383800",
+      "url": "https://mathstodon.xyz/@tomari",
+      "displayName": "Thomas Richard",
+      "avatar": "https://mathstodon.xyz/avatars/original/missing.png",
+      "bio": "Mathématicien dans le 94.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "axabra@mathstodon.xyz",
+      "id": "116637549721063364",
+      "url": "https://mathstodon.xyz/@Axabra",
+      "displayName": "Axabra",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/116/637/549/721/063/364/original/132b40fd36e5d868.png",
+      "bio": "Poet decoding the machinery of existence. Equations as compass, geometry as blade",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "mathstodon.xyz"
+    }
+  ]
+}

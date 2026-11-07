@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "topic": "gardening-and-houseplants",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T03:14:57+00:00",
+  "tags": [
+    {
+      "name": "Gardening",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Garden",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Succulents",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Orchids",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Greenhouse",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Houseplants",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "IndoorPlants",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "Bonsai",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "GardenDesign",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Cacti",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Hydroponics",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bloomscrolling",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "jblue@mastodon.world",
+      "id": "109373806828946837",
+      "url": "https://mastodon.world/@jblue",
+      "displayName": "J blue",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/373/806/828/946/837/original/879557b5d7706e2b.png",
+      "bio": "Music, plants, food # bloomscrolling # bookstodon # ClimateChangeGardening # ClimateCrisis # compositon # cooking # cycling # fermenting # FoodSecurity # foraging # gardening # InsektenSamstag # musi…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-2500"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "stramon1um@fediscience.org",
+      "id": "116739275025578040",
+      "url": "https://fediscience.org/@stramon1um",
+      "displayName": "Mauro Maver",
+      "avatar": "https://fediscience.org/system/accounts/avatars/116/739/275/025/578/040/original/4ccaa21fec8eb7e7.jpeg",
+      "bio": "Assistant Professor in Plant Nutrition and Plant Physiology at the Biotechnology Dept. - University of Verona, Italy 🇮🇹 # PlantScience # PlantBiology # Rhizosphere # Research # RStats # Gaeilge",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mywildlifeallotment@mastodon.online",
+      "id": "109298068780901886",
+      "url": "https://mastodon.online/@MyWildlifeAllotment",
+      "displayName": "My Wildlife Allotment",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/298/068/780/901/886/original/b4bfe82fea5b69f3.jpg",
+      "bio": "I mainly post pictures of my # allotments which are full of flowers, fruit, veg & # wildlife . Winner of the BBC Gardeners' World Magazine 'Garden of the Year 2021' and 'Best of the Best 2026' Compet…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "craftygardennz@mastodon.nz",
+      "id": "108200364978914149",
+      "url": "https://mastodon.nz/@craftygardennz",
+      "displayName": "Crafty Gardener NZ",
+      "avatar": "https://o.mastodon.nz/accounts/avatars/108/200/364/978/914/149/original/19fb787d83c4f17d.jpeg",
+      "bio": "Hello there, I'm a Gen X small business owner and lifestyle blogger. I mostly share my crafting and gardening adventures in Dunedin, New Zealand. I have a PhD in Plant Biochemistry, and a certificate…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "thechattygardener@mastodon.online",
+      "id": "109267753197097624",
+      "url": "https://mastodon.online/@thechattygardener",
+      "displayName": "The Chatty Gardener",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/267/753/197/097/624/original/ee9ab6e4575bccad.jpg",
+      "bio": "Cotswold-based award-winning journalist, blogger, photographer & gardener. Member of Garden Media Guild and Professional Garden Photographer's Association.",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "amake@mastodon.social",
+      "id": "420314",
+      "url": "https://mastodon.social/@amake",
+      "displayName": "Aaron “Eat Shit, MAGA” MK",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/420/314/original/781376f7a40ca69b.png",
+      "bio": "Software engineer/虚業er in Yokohama 住日哈臺的美僑 he/him views are yours",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "perkinsy@aus.social",
+      "id": "108234649938196168",
+      "url": "https://aus.social/@perkinsy",
+      "displayName": "Yvonne Perkins",
+      "avatar": "https://mediacdn.aus.social/accounts/avatars/108/234/649/938/196/168/original/d51cea87bdf4a594.jpg",
+      "bio": "Writer (technical writing, blogging at stumblingpast.com), digital history, owner of # OfficeKitty (see profile pic). Enjoys gardening in # Melbourne # Australia Interests: # StreetGardening , # Offi…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "feinschmeckergarten@norden.social",
+      "id": "109539286330817970",
+      "url": "https://norden.social/@feinschmeckergarten",
+      "displayName": "Arne",
+      "avatar": "https://media.norden.social/accounts/avatars/109/539/286/330/817/970/original/7a9d7c2909fcddb5.png",
+      "bio": "In the very north of Germany (#zone7a), I try to grow delicious # food in a sustainable way. Beside our # NoDig naturalistic # garden & # VegPatch , I run a # MarketGarden / # allotment . I love # co…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "permasolarpotter@mastodon.green",
+      "id": "114739575775931833",
+      "url": "https://mastodon.green/@PermaSolarPotter",
+      "displayName": "PermaSolarPotter",
+      "avatar": "https://files.mastodon.green/accounts/avatars/114/739/575/775/931/833/original/293870925783ef2a.jpeg",
+      "bio": "Second account for @potterybyosa where I discuss # gardening , # nativeplants , # composting , # permaculture , etc. Zone 10a. Recently started # spinning native cotton from my garden. Solar powered…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "vegplotter@mastodon.world",
+      "id": "109319596208062098",
+      "url": "https://mastodon.world/@vegplotter",
+      "displayName": "VegPlotter",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/319/596/208/062/098/original/635a9a750f6a84e0.png",
+      "bio": "Official mastodon account of the best # vegetablegarden and # allotment planning app. Use https:// vegplotter.com , The easiest way to plan your garden.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "robertcadena@mastodon.social",
+      "id": "109244370883178295",
+      "url": "https://mastodon.social/@robertcadena",
+      "displayName": "Robert Cadena",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/244/370/883/178/295/original/20213f4cf1e4eef8.png",
+      "bio": "Liked of most things. Eats bread, mostly. www.robertxcadena.com",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mk30@regenerate.social",
+      "id": "109321033260721058",
+      "url": "https://regenerate.social/@mk30",
+      "displayName": "mk30",
+      "avatar": "https://regenerate.s3proxy.de/accounts/avatars/109/321/033/260/721/058/original/430e882f794241b6.jpg",
+      "bio": "wastewater specialist in training (back in school), art doodler, plant person, aspiring forest hag, living off-grid on hawai'i island. aloha 'aina! this is my plant/gardening account. for other stuff…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "tradescantiahub@scicomm.xyz",
+      "id": "108441796159053144",
+      "url": "https://scicomm.xyz/@TradescantiaHub",
+      "displayName": "Tradescantia Hub",
+      "avatar": "https://media.scicomm.xyz/accounts/avatars/108/441/796/159/053/144/original/acb31ae2b8ee5ebd.png",
+      "bio": "Tradescantia (Commelinaceae) researcher, and cultivar registration authority for the genus.",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "arrrrrmin@mastodon.art",
+      "id": "112705939541251924",
+      "url": "https://mastodon.art/@arrrrrmin",
+      "displayName": "arrrrrmin",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/112/705/939/541/251/924/original/593558a8dd5331c5.png",
+      "bio": "On a journey of learnings to grow plants and bonsai 🪴♥️ # bonsai # trees # succulents # mosstodon Posting in english and from time to time in german.",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

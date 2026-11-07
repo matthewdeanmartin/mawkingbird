@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "topic": "esp32-and-single-board-computers",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-07T14:35:45+00:00",
+  "tags": [
+    {
+      "name": "MicroPython",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "ESP8266",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Mikrocontroller",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "RaspberryPiPico",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "CircuitPython",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Einplatinencomputer",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "RaspberryPi",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "off-topic"
+    },
+    {
+      "name": "ESP32",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "commander1024@chaos.social",
+      "id": "39226",
+      "url": "https://chaos.social/@Commander1024",
+      "displayName": "Сталкер Commander1024",
+      "avatar": "https://assets.chaos.social/accounts/avatars/000/039/226/original/83fcfd50069c084b.jpg",
+      "bio": "Hacker, Netzindividuum, Fachinformatiker, Network Engineer, Stalker Möchte ausschließlich ROT13 verschlüsselt angesprochen werden.",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "strobelstefan@mastodon.social",
+      "id": "275782",
+      "url": "https://mastodon.social/@strobelstefan",
+      "displayName": "Stefans Weblog",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/275/782/original/4610ffcd4f043f7d.png",
+      "bio": "Mit ganz viel 🤘🎸 und 🦸💪 für digitale Themen. | # RaspberryPi 🍓 | # Nextcloud ☁️ | # YubiKey 🔑 | # Git 📚 | # macOS 🍎 | # Synology | # openmediavault | # Linux 🐧 | # Ansible 🤖 | # OpenWrt 🛜 | # TeXLaTe…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "dl7ag@mastodon.radio",
+      "id": "109246010077103543",
+      "url": "https://mastodon.radio/@DL7AG",
+      "displayName": "DL7AG ✅",
+      "avatar": "https://mastodon.radio/system/accounts/avatars/109/246/010/077/103/543/original/d44b36f2924ad17e.jpeg",
+      "bio": "# HAM since 1979 and located in Berlin (JO62pl) # homebrew # qrp # digimodes # satellite # RaspberryPi # Apple # macOS # Linux + lived in Iceland for many months.",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "oerinformatik@bildung.social",
+      "id": "109248105167764206",
+      "url": "https://bildung.social/@oerinformatik",
+      "displayName": "oer-informatik.de",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/248/105/167/764/206/original/733597f6ea562f3e.jpeg",
+      "bio": "Hier poste ich, wenn es etwas neues im meinem Blog zu Informatikthemen gibt: für Interessierte aller Art, Lehrer*innen und Auszubildende (v.a. Fachinformatik/Anwendungsentwicklung) .",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "piandmore@troet.cafe",
+      "id": "109835839069789472",
+      "url": "https://troet.cafe/@piandmore",
+      "displayName": "Pi and More (26.9. / Trier)",
+      "avatar": "https://media.troet.cafe/troet/accounts/avatars/109/835/839/069/789/472/original/c52498273f2fec11.png",
+      "bio": "Pi and More ist die älteste deutsche Community-Veranstaltung rund um den Raspberry Pi, Arduino und andere \"kleine Computer\". Sie findet bereits seit 2012 an wechselnden Orten statt. | https:// piandm…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

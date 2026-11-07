@@ -1,4 +1,13 @@
 {
+  "esp32-and-single-board-computers": {
+    "en": "esp32-and-single-board-computers-on-mastodon",
+    "de": "de/esp32-und-einplatinencomputer-auf-mastodon"
+  },
+  "gardening-and-houseplants": {
+    "en": "gardening-and-houseplants-on-mastodon",
+    "de": "de/garten-und-zimmerpflanzen-auf-mastodon",
+    "fr": "fr/jardinage-et-plantes-interieur-sur-mastodon"
+  },
   "science-fiction": {
     "en": "science-fiction-on-mastodon",
     "de": "de/science-fiction-auf-mastodon",
@@ -13,6 +22,11 @@
     "fr": "fr/espace-et-astronomie-sur-mastodon",
     "es": "es/espacio-y-astronomia-en-mastodon",
     "it": "it/spazio-e-astronomia-su-mastodon"
+  },
+  "math": {
+    "en": "math-on-mastodon",
+    "de": "de/mathematik-auf-mastodon",
+    "fr": "fr/mathematiques-sur-mastodon"
   },
   "plant-based-living": {
     "en": "plant-based-living-on-mastodon",
