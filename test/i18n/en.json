@@ -536,6 +536,29 @@
     "title": "People to follow",
     "updated": "Catalogue updated {{date}}"
   },
+  "codeBlocks": {
+    "copied": "Copied",
+    "copy": "Copy code",
+    "copyFailed": "Couldn't copy. Select the code and copy it instead.",
+    "copyNamed": "Copy {{name}} code",
+    "open": "Open in {{playground}}",
+    "save": "Save as {{file}}"
+  },
+  "codeImage": {
+    "attach": "Attach image",
+    "cancel": "Cancel",
+    "close": "Close",
+    "code": "Code",
+    "count": "{{count}} of {{limit}} characters for the description",
+    "failed": "The image could not be made in this browser.",
+    "intro": "Paste code to post it as an image. The code itself becomes the image description, so screen readers and search still get the text.",
+    "language": "Language",
+    "plain": "Plain text",
+    "preview": "Preview of the code image",
+    "title": "Code image",
+    "tooLong": "Too long for an image description ({{limit}} characters). Share it as a paste instead, or post a shorter excerpt.",
+    "tooManyLines": "Only the first {{max}} lines fit in the image."
+  },
   "commandBar": {
     "doctor": "Doctor",
     "myTags": "My tags",
@@ -4118,6 +4141,7 @@
     "write.chips.scheduled": "⏳ Parked",
     "write.chips.self": "🔒 Self",
     "write.clear": "Clear",
+    "write.codeImage": "Code image: paste code, attach it as a picture with the code as its description",
     "write.connections": "Connections",
     "write.connectorLabel": "Connector:",
     "write.contentWarning": "Content warning",
