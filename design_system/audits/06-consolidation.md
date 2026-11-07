@@ -1728,3 +1728,25 @@ Reviewed the per-file counts against the previous inventory:
   there.
 
 No shared widget changed.
+
+## Code blocks: fences, highlighting, ••• menu rows, code image, 2026-11-07
+
+Fenced code now renders as `<pre class="mb-code">`, with lazily loaded syntax
+colours, in posts and in Write's preview. A new `code-blocks/` folder adds seven
+source files (1,681 to 1,688). Two of them are new candidate files (599 to
+601), and both have reconciliation entries:
+
+- `code-image-dialog.ts`: `shared` 3 (the `mb-dialog` and two `mbButton`s),
+  `nativeButtons` 2 (those same buttons as native tags) and `selects` 1 (the
+  language picker).
+- `code-menu-items.ts`: `nativeButtons` 3. These are the Copy, Save and Open
+  rows in a post's ••• menu, which copy the media-download row beside them
+  exactly.
+
+`write-page.html` went from `nativeButtons` 53 to 54. That is the "Code image"
+tool button (`</>`), which uses the `write-tool` class of the poll, CW and
+emoji buttons next to it. `status-card.html` gains only
+`<app-code-menu-items>` and the `appHighlightCode` binding, neither of which is
+a candidate. The `pre.mb-code` and token styles live in `styles.css`, using new
+`--code-*` tokens for light and dark. Every token colour is at least 6:1
+against its code background. No shared widget changed.

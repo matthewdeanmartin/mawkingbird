@@ -56,6 +56,8 @@ import { Lightbox } from '../lightbox/lightbox';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { QuoteDialog } from '../compose/quote-dialog/quote-dialog';
+import { HighlightCode } from '../code-blocks/highlight-code';
+import { CodeMenuItems } from '../code-blocks/code-menu-items';
 import { MbButton } from '../design-system/button/button';
 import { listenParams, radioPostRef } from '../radio-links';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
@@ -392,6 +394,8 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
     NgTemplateOutlet,
     MbButton,
     QuoteDialog,
+    HighlightCode,
+    CodeMenuItems,
     PostPermissions,
     MbMenuItem,
     MbToolbar,

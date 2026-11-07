@@ -51,12 +51,49 @@ describe('applyMinimalMarkdown', () => {
   });
 
   it('anything weird turns markdown off entirely', () => {
-    const fenced = '<p>```<br>let x = 1<br>```<br>and **bold**</p>';
-    expect(applyMinimalMarkdown(fenced)).toBe(fenced);
+    // Fenced code is no longer "weird" (it renders as a block, below); an
+    // unclosed fence is still left exactly as written.
+    const unclosed = '<p>```<br>let x = 1<br>and **bold**</p>';
+    expect(applyMinimalMarkdown(unclosed)).toBe(
+      '<p>```<br>let x = 1<br>and <strong>bold</strong></p>',
+    );
     const mdLink = '<p>[click](https://x.test) and **bold**</p>';
     expect(applyMinimalMarkdown(mdLink)).toBe(mdLink);
     const mdImage = '<p>![alt](https://x.test/i.png) and *i*</p>';
     expect(applyMinimalMarkdown(mdImage)).toBe(mdImage);
+  });
+
+  describe('fenced code', () => {
+    it('renders a fence as a code block and keeps markdown working around it', () => {
+      const html = '<p>```python<br>x = 1  # *not italic*<br>```<br>and **bold**</p>';
+      expect(applyMinimalMarkdown(html)).toBe(
+        '<pre class="mb-code"><code class="language-python">x = 1  # *not italic*</code></pre>' +
+          '<p>and <strong>bold</strong></p>',
+      );
+    });
+
+    it('keeps blank lines inside the block and links outside it', () => {
+      const html =
+        '<p>see <a href="https://x.test">x.test</a></p><p>```js<br>a()</p><p>b()<br>```</p>';
+      expect(applyMinimalMarkdown(html)).toBe(
+        '<p>see <a href="https://x.test">x.test</a></p>' +
+          '<pre class="mb-code"><code class="language-javascript">a()\n\nb()</code></pre>',
+      );
+    });
+
+    it('escapes code instead of interpreting it as HTML', () => {
+      const html = '<p>```<br>&lt;script&gt;alert(1)&lt;/script&gt;<br>```</p>';
+      expect(applyMinimalMarkdown(html)).toBe(
+        '<pre class="mb-code"><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>',
+      );
+    });
+
+    it('still renders code when the rest of the post has an unsupported construct', () => {
+      const html = '<p>[link](https://x.test) **b**</p><p>```<br>x<br>```</p>';
+      expect(applyMinimalMarkdown(html)).toBe(
+        '<p>[link](https://x.test) **b**</p><pre class="mb-code"><code>x</code></pre>',
+      );
+    });
   });
 
   it('passes plain content through untouched', () => {

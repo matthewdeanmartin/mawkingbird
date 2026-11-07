@@ -86,6 +86,27 @@ lands; untested sections say so.
       post appears under Drafts as parked with 📎 1, and does not go out.
 - [ ] Park on server is not offered for a thread.
 
+## 6. Code blocks
+
+- [ ] Post from Write (or any client) a status containing a fenced block such
+      as ```` ```python ```` … ```` ``` ````. In Mawkingbird's timeline it shows
+      as a coloured code block; text and links around it still render.
+- [ ] The same post in another app (or Mastodon web) shows the plain ``` lines
+      (expected: posts stay plain text).
+- [ ] Write's rendered preview shows the block coloured too.
+- [ ] A post with an unclosed ``` stays as typed.
+- [ ] ••• menu on that post: Copy code puts exactly the code on the clipboard;
+      Save as snippet.py downloads it; Open in Python Tutor opens a tab with the
+      code loaded. Try TypeScript (TypeScript Playground) and Rust too.
+- [ ] A post with two blocks names each: "Copy Python code", "Copy SQL code".
+- [ ] A post without code shows no code rows in the ••• menu.
+- [ ] Dark theme: code colours are readable.
+- [ ] Write → `</>` Code image: paste ~20 lines of Python, pick Python, see
+      the preview, Attach. The image is attached with the code as its
+      description. Publish; check the image and its alt text on the web UI.
+- [ ] Code over 1,500 characters: Attach is disabled and the dialog suggests a
+      paste instead.
+
 ## Findings
 
 _None yet._

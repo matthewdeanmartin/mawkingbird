@@ -134,6 +134,7 @@ interface PageInternals {
   quotedStatus: WritableSignal<Status | null>;
   removeQuote(): void;
   openHandoff(handoff: DraftHandoff): void;
+  attachCodeImage(result: { file: File; description: string }): void;
 }
 
 function internals(fixture: ComponentFixture<WritePage>): PageInternals {
@@ -2220,6 +2221,27 @@ describe('WritePage', () => {
      * Scheduling without walking the wizard. The control writes the same signal
      * the wizard's "when" step does, so a time set here is the time published.
      */
+    it('shows a fenced block as code in the rendered preview', () => {
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.newDraft();
+      page.onBodyInput('Look:\n\n```python\nprint("hi")\n```');
+      expect(page.previewHtml()[0]).toContain(
+        '<pre class="mb-code"><code class="language-python">print("hi")</code></pre>',
+      );
+    });
+
+    it('attaches a code image with the code as its description', () => {
+      const fixture = setUp();
+      const page = internals(fixture);
+      page.newDraft();
+      const file = new File(['png'], 'code-python.png', { type: 'image/png' });
+      page.attachCodeImage({ file, description: 'print("hi")' });
+      expect(page.media()).toHaveLength(1);
+      expect(page.media()[0].description).toBe('print("hi")');
+      expect(page.altTextMissing()).toBe(false);
+    });
+
     it('schedules from the editor bar and clears again', () => {
       const fixture = setUp();
       const page = internals(fixture);

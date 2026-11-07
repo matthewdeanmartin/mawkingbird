@@ -115,6 +115,8 @@ import { Terminology } from '../../terminology';
 import { AppDialogs } from '../../app-dialogs';
 import { ScheduledStatus, Status } from '../../models';
 import { QuotePreview } from '../../compose/quote-preview/quote-preview';
+import { HighlightCode } from '../../code-blocks/highlight-code';
+import { CodeImageDialog, CodeImageResult } from '../../code-blocks/code-image-dialog';
 
 type DraftFilter = 'all' | DraftKind;
 
@@ -324,6 +326,8 @@ export interface Notice {
   selector: 'app-write-page',
   imports: [
     QuotePreview,
+    HighlightCode,
+    CodeImageDialog,
     PostPermissions,
     CustomEmojiPipe,
     MbPostAction,
@@ -1099,6 +1103,20 @@ export class WritePage implements OnInit, OnDestroy {
     }
     event.preventDefault();
     this.addFiles(files);
+  }
+
+  // i18n pages.write.codeImage: Code image: paste code, attach it as a picture with the code as its description
+  protected codeImageOpen = signal(false);
+
+  /** Attach the code image, with the code itself as its description. */
+  protected attachCodeImage(result: CodeImageResult): void {
+    this.codeImageOpen.set(false);
+    this.addFiles([result.file]);
+    this.media.update((items) =>
+      items.map((item) =>
+        item.file === result.file ? { ...item, description: result.description } : item,
+      ),
+    );
   }
 
   private addFiles(files: File[]): void {

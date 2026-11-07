@@ -1,18 +1,20 @@
+import { renderFences } from './code-blocks/code-fences';
+
 /**
  * Minimal markdown for status content: **bold**, *italic*, `code`, and
  * #-headers. Modeled on Elk's approach — parse the (already-sanitized-by-
  * Angular-later) HTML, transform *text nodes only*, never touch tags or
  * attributes — so a `*` inside a URL or attribute can't be mangled.
  *
- * Anything weird turns markdown off: fenced code blocks, markdown links and
- * images are constructs we don't render, so their presence returns the input
- * unchanged rather than half-rendering it. Unpaired markers simply stay
+ * Fenced code blocks become `<pre class="mb-code">` first (see
+ * code-blocks/code-fences.ts); the rest of the post then gets the inline subset.
+ * Markdown links and images are constructs we don't render, so their presence
+ * leaves everything outside code blocks unchanged rather than half-rendered. Unpaired markers simply stay
  * literal — each construct only matches a complete pair on one line.
  */
 
 /** Constructs we don't support — seeing one disables markdown for the post. */
 const WEIRD = [
-  /```|~~~/, // fenced code blocks
   /!?\[[^\]]*\]\([^)]*\)/, // markdown links / images
 ];
 
@@ -117,13 +119,20 @@ function transformParagraph(doc: Document, p: Element): void {
  * when it contains constructs outside the supported subset.
  */
 export function applyMinimalMarkdown(html: string): string {
-  if (!html || WEIRD.some((re) => re.test(html))) {
+  if (!html) {
     return html;
   }
-  if (!/[*`]|#{1,6}\s/.test(html)) {
-    return html; // nothing markdown-ish at all
+  const fenced = /```|~~~/.test(html);
+  const weird = WEIRD.some((re) => re.test(html));
+  if (!fenced && (weird || !/[*`]|#{1,6}\s/.test(html))) {
+    return html; // unsupported constructs, or nothing markdown-ish at all
   }
   const doc = new DOMParser().parseFromString(html, 'text/html');
+  const changed = fenced && renderFences(doc);
+  if (weird) {
+    // Code blocks still render; the unsupported construct keeps the rest literal.
+    return changed ? doc.body.innerHTML : html;
+  }
   for (const p of [...doc.body.querySelectorAll('p')]) {
     transformParagraph(doc, p);
   }

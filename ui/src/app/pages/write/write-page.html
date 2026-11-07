@@ -522,6 +522,16 @@
             >
               ⚠️
             </button>
+            <button
+              class="write-tool"
+              type="button"
+              [disabled]="pollOpen()"
+              (click)="codeImageOpen.set(true)"
+              [aria-label]="'pages.write.codeImage' | transloco"
+              [title]="'pages.write.codeImage' | transloco"
+            >
+              &lt;/&gt;
+            </button>
             <span class="write-emoji-anchor">
               <button
                 class="write-tool"
@@ -883,6 +893,7 @@
                     <div
                       class="segment-text"
                       [innerHTML]="previewHtml()[i] | customEmoji: customEmojis.emojis()"
+                      [appHighlightCode]="previewHtml()[i]"
                     ></div>
                   } @else {
                     <div class="segment-text">{{ segment.text }}</div>
@@ -1110,6 +1121,10 @@
       </section>
     }
   </div>
+}
+
+@if (codeImageOpen()) {
+  <app-code-image-dialog (attached)="attachCodeImage($event)" (closed)="codeImageOpen.set(false)" />
 }
 
 @if (versionsOpen()) {

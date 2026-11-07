@@ -33,16 +33,21 @@ order within each section. Facts were checked against the code on 2026-11-07.
 
 ## Code fences
 
-- Render ` ```lang ` blocks as code in the preview and the timeline. Today any
-  fence turns off all markdown for the post (`markdown.ts`).
-- Syntax highlighting, loaded lazily only for posts that contain a fence (keep it out of
-  the initial bundle), with a copy button and language label.
+Done 2026-11-07 (`ui/src/app/code-blocks/`): fences render as code blocks in posts
+and Write's preview; lazily loaded highlight.js colours a curated language set; the
+••• menu offers Copy code, Save as snippet.ext and Open in a playground (Python
+Tutor, TypeScript Playground, Rust Playground, Compiler Explorer); Write has a
+client-side "Code image" dialog with the code as the image description.
+
+Still open:
+
 - "Post as Markdown" on servers that accept `content_type: text/markdown`
-  (glitch-soc, Akkoma/Pleroma, GoToSocial).
-- "Open in…" links that put the code in the URL fragment: Python Tutor, TypeScript
-  Playground, Compiler Explorer, Rust Playground. CodePen/JSFiddle need a POST form,
-  which our CSP (`form-action 'self'`) blocks.
+  (glitch-soc, Akkoma/Pleroma, GoToSocial). Declined for now: Mawkingbird-only.
+- Wrap and line-number toggles on code blocks. Declined for now.
 - "Move code to a paste/Gist" on a fence in Write.
+- Code image from the small composer.
+- CodePen/JSFiddle prefill needs a POST form, which our CSP (`form-action 'self'`)
+  blocks.
 - **Running code (later, optional).** Needs a runner page on a separate registrable
   domain (not a subdomain), framed with `sandbox="allow-scripts"` and fed by
   `postMessage`. A `srcdoc`/`blob:` frame inherits our `script-src 'self'` CSP, and a

@@ -217,6 +217,7 @@
               [innerHTML]="
                 (appendMode() ? originalContent() : renderedContent()) | customEmoji: display.emojis
               "
+              [appHighlightCode]="appendMode() ? originalContent() : renderedContent()"
             ></div>
           </div>
 
@@ -1359,6 +1360,7 @@
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
+                    <app-code-menu-items [content]="display.content" />
                     @if (downloadable(); as posts) {
                       <app-media-download-menu-item
                         [statuses]="posts"
@@ -1532,6 +1534,7 @@
                   @if (canMuteTags() && postTags().length) {
                     <app-tag-mute-menu [tags]="postTags()" />
                   }
+                  <app-code-menu-items [content]="display.content" />
                   @if (downloadable(); as posts) {
                     <app-media-download-menu-item
                       [statuses]="posts"
@@ -1655,6 +1658,7 @@
                 @if (canMuteTags() && postTags().length) {
                   <app-tag-mute-menu [tags]="postTags()" />
                 }
+                <app-code-menu-items [content]="display.content" />
                 @if (downloadable(); as posts) {
                   <app-media-download-menu-item
                     [statuses]="posts"

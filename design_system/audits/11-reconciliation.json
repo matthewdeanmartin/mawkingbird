@@ -13,6 +13,16 @@
       "nextStep": "External player uses Button for load and close, labelled cross-origin iframes and visible error text. Preserve narrow viewport sizing, no autoplay on initial load, content-warning boundaries in callers, and teardown of widget listeners. Persistent Radio widgets remain visible in the dock."
     },
     {
+      "file": "ui/src/app/code-blocks/code-image-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Code image dialog composes the shared Dialog with MbButton Cancel and Attach. The language select and monospace code textarea are native; move them to Field/Control when Write adopts shared fields. Keep the description-limit notice and the disabled Attach state."
+    },
+    {
+      "file": "ui/src/app/code-blocks/code-menu-items.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Copy, Save as file and Open in playground rows in a post's ••• menu, styled exactly like the media-download and tag-mute rows beside them. Adopt MbMenuItem together with those rows; keep one set of rows per fenced block."
+    },
+    {
       "file": "ui/src/app/pages/forum/forum-discussion-page.ts",
       "disposition": "adopted scope",
       "nextStep": "One Forum discussion: a link-weight MbButton back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."

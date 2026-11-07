@@ -1049,6 +1049,80 @@ a.tab:hover {
   font-size: 0.9em;
 }
 
+/* Fenced code blocks (code-blocks/code-fences.ts), in posts and Write's preview.
+   Syntax colours come from code-highlight.ts, loaded only when one is on screen.
+   Token colours keep at least 4.5:1 against --code-bg in both themes. */
+:root {
+  --code-bg: #f6f8fa;
+  --code-keyword: #a3215c;
+  --code-string: #0b6b2c;
+  --code-number: #0550ae;
+  --code-comment: #57606a;
+  --code-title: #6639ba;
+  --code-meta: #8a4600;
+}
+:root[data-theme='dark'] {
+  --code-bg: #0d151d;
+  --code-keyword: #ff8fb8;
+  --code-string: #8ddb8c;
+  --code-number: #79c0ff;
+  --code-comment: #9aa7b2;
+  --code-title: #d2a8ff;
+  --code-meta: #ffb070;
+}
+pre.mb-code {
+  margin: 8px 0;
+  padding: 10px 12px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+  max-height: 32em;
+  font-size: 0.85em;
+  line-height: 1.45;
+  white-space: pre;
+  tab-size: 4;
+}
+pre.mb-code > code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+.mb-code .hljs-keyword,
+.mb-code .hljs-built_in,
+.mb-code .hljs-literal,
+.mb-code .hljs-selector-tag {
+  color: var(--code-keyword);
+}
+.mb-code .hljs-string,
+.mb-code .hljs-regexp,
+.mb-code .hljs-attr,
+.mb-code .hljs-symbol {
+  color: var(--code-string);
+}
+.mb-code .hljs-number,
+.mb-code .hljs-variable,
+.mb-code .hljs-template-variable {
+  color: var(--code-number);
+}
+.mb-code .hljs-comment,
+.mb-code .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.mb-code .hljs-title,
+.mb-code .hljs-section,
+.mb-code .hljs-type,
+.mb-code .hljs-name {
+  color: var(--code-title);
+}
+.mb-code .hljs-meta,
+.mb-code .hljs-tag,
+.mb-code .hljs-params {
+  color: var(--code-meta);
+}
+
 /* Server emoji stay inline at text size in posts, names and previews. */
 .custom-emoji {
   display: inline-block;
