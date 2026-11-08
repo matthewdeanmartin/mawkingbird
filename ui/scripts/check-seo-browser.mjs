@@ -818,6 +818,50 @@ try {
     assert.deepEqual(errors, [], 'retrocomputing pages and hub have no runtime errors');
     await context.close();
   }
+  // DMV is English-only and belongs in the hub's Society category.
+  for (const javaScriptEnabled of [false, true]) {
+    const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    const slug = 'dc-maryland-virginia-on-mastodon';
+    await page.goto(`${origin}/${slug}/`);
+    await page
+      .getByRole('heading', {
+        level: 1,
+        name: 'DC, Maryland and Virginia on Mastodon',
+        exact: true,
+      })
+      .waitFor();
+    assert.equal(await page.locator('.people li').count(), 13);
+    assert.ok(await page.locator('a[href="/tags/PrinceGeorgesCounty"]').count());
+    assert.equal(
+      await page.locator('link[rel="canonical"]').getAttribute('href'),
+      `https://mawkingbird.com/${slug}/`,
+    );
+    for (const lang of ['de', 'fr', 'es', 'it', 'ja'])
+      assert.equal(await page.locator(`head link[hreflang="${lang}"]`).count(), 0);
+    await page.goto(`${origin}/communities/?c=society&lang=de`);
+    const topic = page.locator(`a[href="/${slug}/"], a[href="/${slug}"]`).first();
+    await topic.waitFor();
+    if (javaScriptEnabled) {
+      await page.waitForSelector('.hub-category-heading');
+      assert.equal(await page.locator('.hub-category-heading').textContent(), 'Society');
+      assert.equal(await page.locator('a[href*="retrocomputing-on-mastodon"]').count(), 0);
+      assert.ok((await page.locator('main').textContent()).includes('in English'));
+    } else {
+      assert.ok(await page.locator('#category-society').count());
+    }
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    }
+    assert.deepEqual(errors, [], 'DMV and Society hub have no runtime errors');
+    await context.close();
+  }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
     await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),

@@ -1750,3 +1750,33 @@ emoji buttons next to it. `status-card.html` gains only
 a candidate. The `pre.mb-code` and token styles live in `styles.css`, using new
 `--code-*` tokens for light and dark. Every token colour is at least 6:1
 against its code background. No shared widget changed.
+
+## Communities hub categories, slide-show link, dialog action gaps, 2026-11-07
+
+The communities hubs gained a categories rail and a language filter. Two new
+source files (`feed-builder-categories.ts` and its spec) take the count from
+1,688 to 1,690. There are no new candidate files (still 601).
+
+- `feed-builder-hub.html`: `shared` 14 to 22, plus `nativeButtons` 1 and
+  `selects` 1. The rail is `nav[mbNavigation]` with `a[mbNavLink]` rows, as in
+  Settings. On phones it opens as an `mb-dialog` drawer from one outline
+  `mbButton`, which is the native button counted. The language filter is a
+  `select[mbControl]` in a compact `mb-field`. The topic links are still
+  `mbContentLink` routerLinks.
+- `profile-slideshow.html`: `shared` 11 to 12 and `nativeButtons` 11 to 12.
+  This is the "Copy link" `mbButton` for the slide-show deep link
+  (`?slideshow=1&posts=N&speed=S`).
+
+The mute-tags (`tag-filter-dialog.ts`), code-image and media-download dialogs
+wrapped their actions in `<div mbDialogActions>`. The dialog footer's 8px gap
+then applied to that div rather than to the buttons, so the buttons touched.
+They now use `<ng-container mbDialogActions>`, like `confirm-dialog.html`, and
+their candidate counts are unchanged. No shared widget changed.
+
+## Topic pages: DMV, 2026-11-08
+
+Added one lazy English copy source and approved data edition. Compared with the
+pre-DMV working-tree inventory: sources increased from 1,690 to 1,691; all 601
+candidate entries are identical. The existing Society category now contains DMV.
+No template or shared widget changed for this integration. Candidate paths are
+unchanged, so reconciliation needs no additions or removals.

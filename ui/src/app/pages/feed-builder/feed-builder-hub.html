@@ -1,4 +1,4 @@
-<main class="features" [attr.lang]="lang">
+<main class="features hub" [attr.lang]="lang">
   <header>
     @if (english) {
       <a mbContentLink routerLink="/features">Mawkingbird · Features</a>
@@ -8,39 +8,128 @@
       <a mbButton routerLink="/">{{ copy.openApp }}</a>
     }
   </header>
-  <div class="kit-intro">
-    <p class="eyebrow">{{ copy.eyebrow }}</p>
-    <h1>{{ copy.heading }}</h1>
-    @for (paragraph of copy.intro; track $index) {
-      <p>{{ paragraph }}</p>
-    }
-  </div>
-  @if (english) {
-    @for (item of topics; track item.topic) {
-      <section class="hub-topic" [attr.aria-labelledby]="'topic-' + item.topic">
-        <h2 [id]="'topic-' + item.topic">
-          <a mbContentLink [routerLink]="'/' + item.english.path" [attr.lang]="item.english.lang">{{
-            item.english.copy.heading
-          }}</a>
-        </h2>
-        <p [attr.lang]="item.english.lang">{{ item.english.copy.description }}</p>
-        @if (item.others.length) {
-          <ul>
-            @for (version of item.others; track version.path) {
-              <li>
-                <a
-                  mbContentLink
-                  [routerLink]="'/' + version.path"
-                  [attr.lang]="version.lang"
-                  [attr.hreflang]="version.lang"
-                  >{{ version.copy.heading }}</a
-                >
-              </li>
-            }
-          </ul>
+  <div class="hub-head">
+    <div class="kit-intro">
+      <p class="eyebrow">{{ copy.eyebrow }}</p>
+      <h1>{{ copy.heading }}</h1>
+      @for (paragraph of copy.intro; track $index) {
+        <p>{{ paragraph }}</p>
+      }
+    </div>
+    <mb-field class="hub-language" density="compact" [label]="words.language">
+      <select mbControl [value]="language()" (change)="chooseLanguage($any($event.target).value)">
+        @for (option of languages; track option.code) {
+          <option
+            [value]="option.code"
+            [selected]="option.code === language()"
+            [attr.lang]="option.code"
+          >
+            {{ option.name }}
+          </option>
         }
-      </section>
-    }
+      </select>
+    </mb-field>
+  </div>
+
+  <div class="hub-phone-nav">
+    <button
+      #railTrigger
+      type="button"
+      mbButton
+      variant="outline"
+      size="small"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="drawerOpen()"
+      (click)="drawerOpen.set(true)"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" />
+      </svg>
+      {{ openGroup()?.name ?? words.allTopics }}
+    </button>
+  </div>
+
+  <div class="hub-wrap">
+    <div class="hub-side">
+      <ng-container [ngTemplateOutlet]="rail" />
+    </div>
+    <div class="hub-content">
+      @if (openGroup(); as group) {
+        <h2 class="hub-category-heading">{{ group.name }}</h2>
+        @for (item of group.topics; track item.topic) {
+          <section class="hub-topic" [attr.aria-labelledby]="'topic-' + item.topic">
+            <h3 [id]="'topic-' + item.topic">
+              <a
+                mbContentLink
+                [routerLink]="'/' + item.primary.path"
+                [attr.lang]="item.primary.lang"
+                [attr.hreflang]="item.primary.lang"
+                >{{ item.primary.copy.heading }}</a
+              >
+              @if (item.fallback) {
+                <span class="hub-fallback">{{ words.inEnglish }}</span>
+              }
+            </h3>
+            <p [attr.lang]="item.primary.lang">{{ item.primary.copy.description }}</p>
+            @if (item.others.length) {
+              <ul>
+                @for (version of item.others; track version.path) {
+                  <li>
+                    <a
+                      mbContentLink
+                      [routerLink]="'/' + version.path"
+                      [attr.lang]="version.lang"
+                      [attr.hreflang]="version.lang"
+                      >{{ version.copy.heading }}</a
+                    >
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+      } @else {
+        @for (group of groups(); track group.id) {
+          <section class="hub-group" [attr.aria-labelledby]="'category-' + group.id">
+            <h2 class="hub-group-heading" [id]="'category-' + group.id">
+              <a [href]="categoryHref(group.id)" (click)="chooseCategory($event, group.id)">{{
+                group.name
+              }}</a>
+            </h2>
+            <ul class="hub-compact">
+              @for (item of group.topics; track item.topic) {
+                <li>
+                  <a
+                    mbContentLink
+                    [routerLink]="'/' + item.primary.path"
+                    [attr.lang]="item.primary.lang"
+                    [attr.hreflang]="item.primary.lang"
+                    >{{ item.primary.copy.heading }}</a
+                  >
+                  @if (item.fallback) {
+                    <span class="hub-fallback">{{ words.inEnglish }}</span>
+                  }
+                  @for (version of item.others; track version.path) {
+                    <a
+                      class="hub-version"
+                      mbContentLink
+                      [routerLink]="'/' + version.path"
+                      [attr.lang]="version.lang"
+                      [attr.hreflang]="version.lang"
+                      [attr.title]="version.copy.heading"
+                      >{{ version.lang.toUpperCase() }}</a
+                    >
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      }
+    </div>
+  </div>
+
+  @if (english) {
     <aside>
       <h2>{{ copy.moreHeading }}</h2>
       <p>
@@ -49,14 +138,6 @@
       </p>
     </aside>
   } @else {
-    @for (page of ownPages; track page.path) {
-      <section class="hub-topic" [attr.aria-labelledby]="'topic-' + page.topic">
-        <h2 [id]="'topic-' + page.topic">
-          <a mbContentLink [routerLink]="'/' + page.path">{{ page.copy.heading }}</a>
-        </h2>
-        <p>{{ page.copy.description }}</p>
-      </section>
-    }
     <aside>
       <h2>{{ copy.moreHeading }}</h2>
       <ul>
@@ -78,3 +159,39 @@
     <a mbContentLink href="/help/">{{ copy.help }}</a>
   </footer>
 </main>
+
+@if (phone() && drawerOpen()) {
+  <mb-dialog
+    presentation="drawer"
+    [title]="words.railLabel"
+    [closeLabel]="words.closeRail"
+    [returnFocusTo]="railButton()?.nativeElement ?? null"
+    [closeOnBackdrop]="true"
+    (dismissed)="drawerOpen.set(false)"
+  >
+    <ng-container [ngTemplateOutlet]="rail" />
+  </mb-dialog>
+}
+
+<ng-template #rail>
+  <nav mbNavigation class="hub-nav" [label]="words.railLabel">
+    <a
+      mbNavLink
+      [href]="categoryHref(null)"
+      [current]="category() === null"
+      (click)="chooseCategory($event, null)"
+      >{{ words.allTopics }}</a
+    >
+    @for (group of groups(); track group.id) {
+      <a
+        mbNavLink
+        [href]="categoryHref(group.id)"
+        [current]="category() === group.id"
+        (click)="chooseCategory($event, group.id)"
+      >
+        <span>{{ group.name }}</span>
+        <span class="hub-count">{{ group.topics.length }}</span>
+      </a>
+    }
+  </nav>
+</ng-template>

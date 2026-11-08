@@ -75,7 +75,7 @@ import { normalizeHashtag } from '../hashtag';
     @if (error()) {
       <p role="alert">{{ error() | transloco }}</p>
     }
-    <div mbDialogActions>
+    <ng-container mbDialogActions>
       <button mbButton type="button" variant="outline" [disabled]="saving()" (click)="finish()()">
         {{ 'common.cancel' | transloco }}
       </button>
@@ -87,7 +87,7 @@ import { normalizeHashtag } from '../hashtag';
       >
         {{ (saving() ? 'tagFilter.saving' : 'settings.filters.create') | transloco }}
       </button>
-    </div>
+    </ng-container>
   </mb-dialog>`,
 })
 export class TagFilterDialog {

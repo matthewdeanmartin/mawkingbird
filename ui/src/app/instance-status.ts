@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Server } from './server';
+import { ServerHealth } from './server-health';
 import { serverRole } from './server-role';
 
 export type StatusLinkKind = 'official' | 'administrator-provided' | 'third-party';
@@ -108,13 +109,26 @@ function isSafeExternalUrl(candidate: string): boolean {
 export class InstanceStatus {
   private http = inject(HttpClient);
   private server = inject(Server);
+  private health = inject(ServerHealth);
 
   private cache = signal<Record<string, DiscoveryRecord>>(this.loadCache());
 
-  /** The current instance's domain, or null for the mock / unsafe origins. */
-  readonly currentDomain = computed(() => normalizeInstanceDomain(this.server.baseUrl()));
+  /** The selected instance's domain, or null for the mock / unsafe origins. */
+  private readonly selectedDomain = computed(() => normalizeInstanceDomain(this.server.baseUrl()));
 
-  /** The best status link for the current instance, or null when none is trustworthy. */
+  /**
+   * The instance the fail whale is about: the host of the request that
+   * actually failed, else the selected instance. They differ during sign-in,
+   * when the login page still has its mastodon.social default selected while
+   * the request that went unanswered was to the instance being signed in to;
+   * naming (and linking the status page of) the default there was wrong.
+   */
+  readonly currentDomain = computed(() => {
+    const origin = this.health.failure()?.origin;
+    return (origin && normalizeInstanceDomain(origin)) || this.selectedDomain();
+  });
+
+  /** The best status link for {@link currentDomain}, or null when none is trustworthy. */
   readonly statusLink = computed<StatusLink | null>(() => {
     const domain = this.currentDomain();
     if (!domain) {
@@ -147,7 +161,9 @@ export class InstanceStatus {
   });
 
   constructor() {
-    effect(() => this.discover(this.currentDomain()));
+    // Discovery reads the *selected* instance's about page (a relative request),
+    // so it must be keyed by that domain, never by a failed request's host.
+    effect(() => this.discover(this.selectedDomain()));
   }
 
   /** Scan the instance's about page for an administrator-published status link. */

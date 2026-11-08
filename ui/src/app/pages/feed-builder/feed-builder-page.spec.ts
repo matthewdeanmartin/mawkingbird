@@ -8,6 +8,7 @@ import {
   FEED_BUILDER_HUB,
   FEED_BUILDER_HUBS,
   FEED_BUILDER_PAGES,
+  FEED_BUILDER_TOPICS,
   FeedBuilderEntry,
   feedBuilderPageAt,
 } from './feed-builder-registry';
@@ -148,6 +149,16 @@ describe('Feed Builder topic pages', () => {
     });
   }
 
+  it('renders the English-only DMV edition with regional posting scope and quiet local tags', async () => {
+    const el = await render(at('dc-maryland-virginia-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('DC, Maryland and Virginia');
+    expect(el.querySelectorAll('.people li').length).toBe(13);
+    expect(el.textContent).toContain('not simply people who live here');
+    expect(el.querySelector('.tag-list')?.textContent).toContain('#PrinceGeorgesCounty');
+    expect(el.querySelector('a[href="https://dmv.community/about"]')).not.toBeNull();
+    expect(FEED_BUILDER_PAGES.filter((p) => p.topic === 'dmv').map((p) => p.lang)).toEqual(['en']);
+  });
+
   it('renders approved gardening editions with quiet subject tags', async () => {
     const el = await render(at('gardening-and-houseplants-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('Gardening and houseplants');
@@ -247,6 +258,57 @@ describe('Feed Builder hub and routes', () => {
       expect(hubRoute.data?.['seoIndexable']).toBe(true);
       expect(hubRoute.data?.['seoAlternates'].length).toBe(FEED_BUILDER_HUBS.length);
     }
+  });
+
+  it("files topics under categories, leads with the reader's language, and opens one category", async () => {
+    const hubRoute = feedBuilderRoutes[0];
+    const resolve = hubRoute.resolve as Record<string, () => Promise<unknown>>;
+    const [entries, copy] = await Promise.all([resolve['entries'](), resolve['copy']()]);
+    const languages = vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['de-DE', 'en']);
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [FeedBuilderHub],
+      providers: [provideRouter([]), route({ entries, copy, lang: 'en' }, hubRoute.path ?? '')],
+    });
+    const fixture = TestBed.createComponent(FeedBuilderHub);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    languages.mockRestore();
+    const el = fixture.nativeElement as HTMLElement;
+
+    // Rail: All topics, then only categories that have pages.
+    const rail = [...el.querySelectorAll('.hub-side nav a')].map((a) => a.textContent?.trim());
+    expect(rail[0]).toBe('All topics');
+    expect(rail.some((name) => name?.startsWith('Tech'))).toBe(true);
+    expect(rail.some((name) => name?.startsWith('Music'))).toBe(false);
+    expect((el.querySelector('select') as HTMLSelectElement).value).toBe('de');
+
+    // Compact first page: German pages lead, English stands in where there is none.
+    const tech = [...el.querySelectorAll('#category-tech + ul li > a:first-child')];
+    expect(tech.map((a) => a.getAttribute('href'))).toContain('/de/retrocomputing-auf-mastodon');
+    for (const list of el.querySelectorAll('.hub-compact')) {
+      const fallback = [...list.children].map((li) => !!li.querySelector('.hub-fallback'));
+      expect(fallback, 'translated topics before English stand-ins').toEqual(
+        [...fallback].sort((a, b) => Number(a) - Number(b)),
+      );
+    }
+    // Plant-based living has a German page; a topic with none shows "in English".
+    expect(el.querySelectorAll('.hub-fallback').length).toBe(
+      FEED_BUILDER_TOPICS.filter(
+        (topic) => !FEED_BUILDER_PAGES.some((p) => p.topic === topic && p.lang === 'de'),
+      ).length,
+    );
+    // Every version is still linked, so nothing is lost to the filter.
+    for (const { path } of FEED_BUILDER_PAGES)
+      expect(el.querySelector(`a[href="/${path}"]`), path).not.toBeNull();
+
+    // Opening a category shows just its topics, with descriptions.
+    (el.querySelector('.hub-side nav a:nth-child(2)') as HTMLAnchorElement).click();
+    fixture.detectChanges();
+    expect(el.querySelector('.hub-category-heading')?.textContent).toContain('Tech');
+    expect(el.querySelectorAll('.hub-content .hub-topic').length).toBe(2);
+    expect(el.querySelector('.hub-content .hub-topic p')?.textContent?.trim()).not.toBe('');
   });
 
   it('routes every page as indexable, in its language, with all its versions', () => {

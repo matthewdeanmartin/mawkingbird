@@ -81,14 +81,14 @@ export interface CodeImageResult {
       @if (previewUrl(); as url) {
         <img class="preview" [src]="url" [alt]="'codeImage.preview' | transloco" />
       }
-      <div mbDialogActions>
+      <ng-container mbDialogActions>
         <button mbButton variant="outline" type="button" (click)="closed.emit()">
           {{ 'codeImage.cancel' | transloco }}
         </button>
         <button mbButton type="button" [disabled]="!canAttach()" (click)="attach()">
           {{ 'codeImage.attach' | transloco }}
         </button>
-      </div>
+      </ng-container>
     </mb-dialog>
   `,
   styles: `

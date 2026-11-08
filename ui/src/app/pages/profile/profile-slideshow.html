@@ -41,16 +41,21 @@
       ) | transloco
     }}
   </button>
+  <button mbButton variant="outline" (click)="copyLink()" [title]="deepLink()">
+    {{
+      (copied() ? 'pages.profile.slideshow.copied' : 'pages.profile.slideshow.copyLink') | transloco
+    }}
+  </button>
   <button mbButton variant="outline" (click)="closed.emit()">
     {{ 'pages.profile.slideshow.close' | transloco }}
   </button>
 </div>
 <div class="details">
   <span>{{
-    'pages.profile.slideshow.position'
+    (limit() ? 'pages.profile.slideshow.latest' : 'pages.profile.slideshow.position')
       | transloco: { current: slides().length ? index() + 1 : 0, total: slides().length }
   }}</span>
-  @if (!exhausted()) {
+  @if (!limit() && !exhausted()) {
     <button mbButton variant="outline" size="small" (click)="older()" [disabled]="loading()">
       {{
         (loading() ? 'pages.profile.slideshow.loading' : 'pages.profile.slideshow.older')

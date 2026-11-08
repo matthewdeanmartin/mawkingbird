@@ -95,7 +95,7 @@
     {
       "file": "ui/src/app/pages/profile/profile-slideshow.html",
       "disposition": "adopted scope",
-      "nextStep": "Slideshow playback, speed, fullscreen, history and content-warning actions use MbButton. Preserve keyboard access, bounded presentation layout, chronological playback, readable overflow and explicit sensitive-content reveal."
+      "nextStep": "Slideshow playback, speed, fullscreen, history, copy-link and content-warning actions use MbButton. Preserve keyboard access, bounded presentation layout, chronological playback, readable overflow and explicit sensitive-content reveal."
     },
     {
       "file": "ui/src/app/pages/other-servers/other-servers.html",
@@ -150,7 +150,7 @@
     {
       "file": "ui/src/app/pages/feed-builder/feed-builder-hub.html",
       "disposition": "adopted scope",
-      "nextStep": "Public communities hubs (/communities/ and one per language) reuse the feature layout, MbButton and MbContentLink. Keep each topic page a routerLink with lang and hreflang on links to other languages."
+      "nextStep": "Public communities hubs (/communities/ and one per language) reuse the feature layout, MbButton and MbContentLink, with a Settings-style MbNavigation category rail (an MbDialog drawer on phones) and an MbField/MbControl language select. Keep each topic page a routerLink with lang and hreflang on links to other languages, every version linked whatever the language filter, and the rail’s links relative query links."
     },
     {
       "file": "ui/src/app/pages/feed-builder/feed-builder-page.html",

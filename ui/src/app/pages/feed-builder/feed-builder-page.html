@@ -284,7 +284,9 @@
           <li>
             <img [src]="person.avatar" width="48" height="48" alt="" loading="lazy" />
             <div>
-              <a mbContentLink [routerLink]="profile(person)">{{ person.displayName }}</a>
+              <a mbContentLink [routerLink]="profile(person)" target="_blank" rel="noopener">{{
+                person.displayName
+              }}</a>
               <span class="handle">&#64;{{ person.acct }}</span>
               @if (person.bio) {
                 <p>{{ person.bio }}</p>
@@ -359,7 +361,9 @@
       <ul class="tag-list youtube-people">
         @for (person of youtubePeople; track person.acct) {
           <li>
-            <a mbContentLink [routerLink]="profile(person)">{{ person.displayName }}</a>
+            <a mbContentLink [routerLink]="profile(person)" target="_blank" rel="noopener">{{
+              person.displayName
+            }}</a>
             <a mbContentLink [href]="youtubeUrl(person)" rel="noopener">{{
               chrome.youtube(person.youtube?.band)
             }}</a>

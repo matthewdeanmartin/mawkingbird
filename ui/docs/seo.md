@@ -601,3 +601,9 @@ Retrocomputing has approved English (/retrocomputing-on-mastodon/), German
 and Spanish (/es/retroinformatica-en-mastodon/) editions. Vintage hardware,
 restoration, emulation and software preservation are in scope. Useful quiet tags
 remain selectable. Italian and Japanese are withheld for insufficient people.
+
+DMV has one approved English edition (/dc-maryland-virginia-on-mastodon/),
+classified under Society in feed-builder-categories.ts. The hub includes it in
+All topics and the Society filter; other language filters show the English
+fallback, not a translated page. Accounts must regularly post about DC, Maryland
+or Virginia, not merely reside there. Relevant quiet local tags remain selectable.

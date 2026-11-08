@@ -1,5 +1,5 @@
 import { BlueskyProfileDiscovery } from '../bluesky-starter-packs/bluesky-profile-discovery';
-import { ProfileSlideshow } from './profile-slideshow';
+import { ProfileSlideshow, SlideshowOptions, slideshowOptionsFrom } from './profile-slideshow';
 import { Compose } from '../../compose/compose';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { accountProfilePath } from '../../account-route';
@@ -273,6 +273,8 @@ export class Profile implements OnInit, OnDestroy {
   // i18n pages.profile.actions.retry: Retry
   protected showReply = signal(false);
   protected showSlideshow = signal(false);
+  /** Post count and speed from a `?slideshow=1&posts=10&speed=3` deep link. */
+  protected slideshowOptions = signal<SlideshowOptions | null>(null);
   protected readonly qualifiedHandle = qualifiedHandle;
   // i18n pages.profile.actions.openInRadio: Open in Radio
   protected radioHandle = computed(() => {
@@ -988,6 +990,23 @@ export class Profile implements OnInit, OnDestroy {
     ),
   );
 
+  /**
+   * Leave the slide show. A deep link opened it from the query string, so drop
+   * those params too, or a reload would put the reader straight back in.
+   */
+  protected closeSlideshow(): void {
+    this.showSlideshow.set(false);
+    this.slideshowOptions.set(null);
+    if (this.route.snapshot?.queryParamMap?.has('slideshow')) {
+      void this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { slideshow: null, posts: null, speed: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
+  }
+
   /** Return to the previous page (e.g. back to search results). */
   goBack(): void {
     this.location.back();
@@ -1049,6 +1068,11 @@ export class Profile implements OnInit, OnDestroy {
         this.tab.set('posts');
       }
       this.openPhoto.set(wantsMedia ? params.get('photo') : null);
+      const slideshow = slideshowOptionsFrom(params);
+      if (slideshow) {
+        this.slideshowOptions.set(slideshow);
+        this.showSlideshow.set(true);
+      }
     });
   }
 

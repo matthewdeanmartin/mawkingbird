@@ -4,7 +4,8 @@
     [loading]="loadingMore() || loading()"
     [exhausted]="exhausted()"
     (loadOlder)="loadMore()"
-    (closed)="showSlideshow.set(false)"
+    [options]="slideshowOptions()"
+    (closed)="closeSlideshow()"
   />
 } @else {
   <ng-template #contactButtons>

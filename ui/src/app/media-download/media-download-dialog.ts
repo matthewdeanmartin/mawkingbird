@@ -163,7 +163,7 @@ export type MediaPageLoader = (
       }
     }
     <!-- One footer outside the @switch: a projected slot must be a root node. -->
-    <div mbDialogActions>
+    <ng-container mbDialogActions>
       @switch (phase()) {
         @case ('choose') {
           <button mbButton type="button" variant="outline" (click)="close()">
@@ -187,7 +187,7 @@ export type MediaPageLoader = (
           </button>
         }
       }
-    </div>
+    </ng-container>
   </mb-dialog>`,
   styles: `
     fieldset {

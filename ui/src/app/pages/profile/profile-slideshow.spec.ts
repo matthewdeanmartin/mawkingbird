@@ -5,7 +5,7 @@ import { TrustedAccounts } from '../../trusted-accounts';
 import { FollowTrust } from '../../follow-trust';
 import { Status } from '../../models';
 import { ReadingZen } from '../../reading-zen';
-import { ProfileSlideshow } from './profile-slideshow';
+import { ProfileSlideshow, slideshowOptionsFrom, slideshowQuery } from './profile-slideshow';
 
 function post(id: string, day: number): Status {
   return {
@@ -37,7 +37,47 @@ afterEach(() => {
   TestBed.resetTestingModule();
   vi.useRealTimers();
 });
+describe('slide show deep links', () => {
+  const read = (query: string) => slideshowOptionsFrom(new URLSearchParams(query));
+  it('reads post count and speed, and ignores links without the flag', () => {
+    expect(read('slideshow=1&posts=10&speed=3')).toEqual({ posts: 10, seconds: 3 });
+    expect(read('slideshow=1')).toEqual({ posts: null, seconds: null });
+    expect(read('posts=10&speed=3')).toBeNull();
+    expect(read('slideshow=0&posts=10')).toBeNull();
+  });
+  it('clamps out-of-range values and drops nonsense', () => {
+    expect(read('slideshow=1&posts=5000&speed=0.1')).toEqual({ posts: 200, seconds: 0.5 });
+    expect(read('slideshow=1&posts=-3&speed=99')).toEqual({ posts: null, seconds: 30 });
+    expect(read('slideshow=1&posts=lots&speed=fast')).toEqual({ posts: null, seconds: null });
+  });
+  it('writes a query that reads back the same', () => {
+    const query = slideshowQuery({ posts: 10, seconds: 1.5 });
+    expect(query).toBe('slideshow=1&posts=10&speed=1.5');
+    expect(read(query)).toEqual({ posts: 10, seconds: 1.5 });
+  });
+});
 describe('ProfileSlideshow', () => {
+  it('limits a deep link to the newest posts at its speed, paging back until it has them', () => {
+    vi.useFakeTimers();
+    const fixture = TestBed.createComponent(ProfileSlideshow);
+    const loadOlder = vi.fn();
+    fixture.componentInstance.loadOlder.subscribe(loadOlder);
+    fixture.componentRef.setInput('options', { posts: 2, seconds: 4 });
+    fixture.componentRef.setInput('statuses', [post('only', 15)]);
+    fixture.detectChanges();
+    expect(loadOlder).toHaveBeenCalled();
+    fixture.componentRef.setInput('statuses', [post('a', 15), post('b', 16), post('c', 17)]);
+    fixture.detectChanges();
+    const c = fixture.componentInstance;
+    expect(c.slides().map((s) => s.id)).toEqual(['b', 'c']);
+    expect(c.seconds()).toBe(4);
+    expect(c.current()?.id).toBe('b');
+    vi.advanceTimersByTime(4000);
+    expect(c.current()?.id).toBe('c');
+    vi.advanceTimersByTime(4000);
+    expect(c.current()?.id).toBe('b');
+    expect(new URL(c.deepLink()).search).toBe('?slideshow=1&posts=2&speed=4');
+  });
   it('plays chronologically every 2.5 seconds, loops, and stops', () => {
     vi.useFakeTimers();
     const fixture = setup();

@@ -15,6 +15,12 @@ export interface HealthFailure {
   status: number;
   /** The request that failed, path only — enough to place it, no query secrets. */
   url: string;
+  /**
+   * Origin of the request that failed (`https://example.social`), or null when
+   * the URL was relative or unparseable. During sign-in this is often *not* the
+   * selected server, so the whale names and links this host rather than guessing.
+   */
+  origin: string | null;
   /** Angular's message, or the server's own if it sent one. */
   message: string;
   /** When it happened, for "is this stale?" and for pasting into a bug report. */
@@ -82,6 +88,7 @@ export class ServerHealth {
       this.failure.set({
         status: err.status,
         url: pathOf(err.url),
+        origin: originOf(err.url),
         message: describe(err),
         at: new Date(now),
         online: navigator.onLine,
@@ -163,6 +170,18 @@ function pathOf(url: string | null): string {
     return parsed.pathname + parsed.search;
   } catch {
     return url;
+  }
+}
+
+/** Origin of an absolute request URL; null for a relative or unparseable one. */
+function originOf(url: string | null): string | null {
+  if (!url || !/^https?:\/\//i.test(url)) {
+    return null;
+  }
+  try {
+    return new URL(url).origin;
+  } catch {
+    return null;
   }
 }
 

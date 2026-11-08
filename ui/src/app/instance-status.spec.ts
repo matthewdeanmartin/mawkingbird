@@ -1,9 +1,10 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { InstanceStatus, normalizeInstanceDomain } from './instance-status';
 import { Server } from './server';
+import { ServerHealth } from './server-health';
 
 const ABOUT_URL = '/api/v1/instance/extended_description';
 
@@ -70,6 +71,31 @@ describe('InstanceStatus', () => {
     expect(link.kind).toBe('official');
     expect(link.label).toBe('Check instance status');
     httpMock.expectNone(ABOUT_URL);
+  });
+
+  it('names and links the host that failed, not the selected default, during sign-in', () => {
+    // The login page preselects mastodon.social; the unanswered request went elsewhere.
+    server.setBaseUrl('https://mastodon.social');
+    const status = init();
+    TestBed.inject(ServerHealth).markDown(
+      new HttpErrorResponse({ status: 0, url: 'https://example.social/api/v1/apps' }),
+    );
+    expect(status.currentDomain()).toBe('example.social');
+    const link = status.statusLink()!;
+    expect(link.url).toBe('https://fediverse.observer/example.social');
+    expect(link.kind).toBe('third-party');
+    // Discovery stays keyed to the selected server, whose about page it reads.
+    httpMock.expectNone(ABOUT_URL);
+  });
+
+  it('falls back to the selected server when the failed request had no origin', () => {
+    server.setBaseUrl('https://mastodon.social');
+    const status = init();
+    TestBed.inject(ServerHealth).markDown(
+      new HttpErrorResponse({ status: 0, url: '/api/v1/timelines/home' }),
+    );
+    expect(status.currentDomain()).toBe('mastodon.social');
+    expect(status.statusLink()!.url).toBe('https://status.mastodon.social/');
   });
 
   it('discovers an administrator-provided status link from the about page', () => {
