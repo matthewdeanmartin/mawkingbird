@@ -1,4 +1,5 @@
 import { AppDialogs } from '../../app-dialogs';
+import { LocalModeration } from '../../local-moderation';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../../compose/compose';
 import { provideHttpClient } from '@angular/common/http';
@@ -354,6 +355,31 @@ describe('Profile block/unblock', () => {
     req.flush({ id: '900', blocking: true } as Relationship);
 
     expect(cmp.relationship().blocking).toBe(true);
+  });
+
+  it('lifts a leftover browser-local block without sending a new server block', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    const moderation = TestBed.inject(LocalModeration);
+    moderation.block(cmp.account());
+    expect(cmp.localBlocked()).toBe(true);
+
+    cmp.requestBlock();
+
+    httpMock.expectNone('/api/v1/accounts/900/block');
+    expect(moderation.isSuppressed(cmp.account())).toBe(false);
+  });
+
+  it('unmutes on the server and clears any leftover browser-local mute too', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    const moderation = TestBed.inject(LocalModeration);
+    moderation.mute(cmp.account(), null);
+
+    cmp.unmute();
+
+    httpMock.expectOne('/api/v1/accounts/900/unmute').flush({ id: '900', muting: false });
+    expect(moderation.isSuppressed(cmp.account())).toBe(false);
   });
 
   it('offers private follow in the profile menu without changing the public relationship', () => {

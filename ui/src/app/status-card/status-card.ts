@@ -1208,38 +1208,40 @@ export class StatusCard {
   }
 
   /**
-   * Mute this card's author for `seconds` (null = indefinitely). Always records
-   * a client-side mute (works for every provider, including read-only
-   * Anonymous), and additionally issues the real server-side mute when the
-   * viewer has that capability, so an authenticated account stays in sync.
+   * Mute this card's author for `seconds` (null = indefinitely). A viewer whose
+   * server manages relationships mutes there only — one mute, undone from the
+   * profile like any other — and this visit hides what is already on screen.
+   * Anyone else (read-only Anonymous, a foreign post) gets the browser-local mute.
    */
   muteAuthorLocally(event: Event, seconds: number | null): void {
     event.stopPropagation();
-    this.localMod.mute(this.display.account, seconds);
+    const account = this.display.account;
     if (this.capabilities.canManageRelationships && !this.foreign) {
-      this.api.muteAccount(this.display.account.id, seconds ?? undefined).subscribe({
+      this.api.muteAccount(account.id, seconds ?? undefined).subscribe({
+        next: () => this.localMod.hideAfterServerAction(account),
         error: () => this.actionError.set(this.transloco.translate('statusCard.mutedServerFailed')),
       });
+      return;
     }
+    this.localMod.mute(account, seconds);
   }
 
-  /**
-   * Block this card's author. Always records a client-side block (hides them
-   * everywhere, works for every provider); also issues the real server-side
-   * block when the viewer can, keeping an authenticated account in sync.
-   */
+  /** Block this card's author: on the server when the viewer can, otherwise locally. */
   blockAuthorLocally(event: Event): void {
     event.stopPropagation();
-    this.localMod.block(this.display.account);
+    const account = this.display.account;
     if (this.capabilities.canManageRelationships && !this.foreign) {
-      this.api.block(this.display.account.id).subscribe({
+      this.api.block(account.id).subscribe({
+        next: () => this.localMod.hideAfterServerAction(account),
         error: () =>
           this.actionError.set(this.transloco.translate('statusCard.blockedServerFailed')),
       });
+      return;
     }
+    this.localMod.block(account);
   }
 
-  /** Lift a local block/mute on this card's author (client-side only). */
+  /** Lift a browser-local block/mute on this card's author. */
   unsuppressAuthorLocally(event: Event): void {
     event.stopPropagation();
     this.localMod.clear(this.display.account);

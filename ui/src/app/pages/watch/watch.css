@@ -48,10 +48,37 @@ h2 {
   --video-player-max-height: min(70dvh, calc(100dvh - 12rem));
 }
 .watch-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   min-height: 0;
+}
+/* The chat scrolls on its own; the video post above it keeps to a share of the
+   column so the chat box never leaves the screen. */
+.watch-conversation app-party-conversation {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.watch-root {
+  flex: 0 1 auto;
+  max-height: 40%;
   overflow-y: auto;
   overscroll-behavior-y: contain;
-  scrollbar-gutter: stable;
+}
+.watch-topic {
+  flex: 0 1 auto;
+  max-height: 50%;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+.watch-topic > summary {
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--muted);
 }
 @media (max-width: 850px) {
   :host {

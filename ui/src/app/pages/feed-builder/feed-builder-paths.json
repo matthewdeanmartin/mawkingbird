@@ -1,4 +1,8 @@
 {
+  "romance-books": {
+    "en": "romance-books-on-mastodon",
+    "de": "de/liebesromane-auf-mastodon"
+  },
   "buddhism": { "en": "buddhism-on-mastodon" },
   "war-in-ukraine": {
     "en": "war-in-ukraine-on-mastodon"

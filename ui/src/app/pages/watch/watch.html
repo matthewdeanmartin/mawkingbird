@@ -48,21 +48,30 @@
       }
     </section>
     @if (loader.status(); as status) {
-      <aside
-        class="watch-conversation"
-        tabindex="0"
-        [attr.aria-label]="'watch.conversation' | transloco"
-      >
-        <app-status-card
-          [status]="status"
-          [showMedia]="false"
-          [partyTagsEnabled]="true"
-          (partyTagAdded)="party()?.addTag($event)"
-          filterContext="thread"
-          (changed)="loader.status.set($event)"
-          (deleted)="loader.status.set(null)"
-          (replied)="onReply($event)"
-        />
+      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+        <ng-template #rootCard>
+          <app-status-card
+            [status]="status"
+            [showMedia]="false"
+            [partyTagsEnabled]="true"
+            (partyTagAdded)="party()?.addTag($event)"
+            filterContext="thread"
+            (changed)="loader.status.set($event)"
+            (deleted)="loader.status.set(null)"
+            (replied)="onReply($event)"
+          />
+        </ng-template>
+        @if (partyPrefs.view() === 'compact') {
+          <!-- The video post collapses to a channel topic line in compact view. -->
+          <details class="watch-topic">
+            <summary>📺 {{ topic() }}</summary>
+            <ng-container [ngTemplateOutlet]="rootCard" />
+          </details>
+        } @else {
+          <div class="watch-root">
+            <ng-container [ngTemplateOutlet]="rootCard" />
+          </div>
+        }
         @if (loader.publicContextUnavailable()) {
           <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
         }
@@ -71,18 +80,16 @@
           [comments]="loader.descendants()"
           [session]="partySession()"
           [initialTags]="partyTags()"
+          [canReply]="canReply()"
           (changed)="onCommentChanged($event)"
           (deleted)="onCommentDeleted($event)"
           (replied)="onReply($event)"
+          (repliesDue)="loader.refreshReplies()"
         />
       </aside>
     }
     @if (!loader.status()) {
-      <aside
-        class="watch-conversation"
-        tabindex="0"
-        [attr.aria-label]="'watch.conversation' | transloco"
-      >
+      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
         <app-party-conversation [session]="partySession()" [initialTags]="partyTags()" />
       </aside>
     }

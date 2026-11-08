@@ -1,9 +1,10 @@
 import { Component, input, output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Subject } from 'rxjs';
 import { PartyConversation } from './party-conversation';
+import { WatchPartyPrefs } from '../../providers/videos/watch-party-prefs';
 import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
 import { Api } from '../../api';
@@ -39,8 +40,11 @@ describe('Temporary party conversations', () => {
   let fixture: ComponentFixture<PartyConversation>;
   let feeds: Map<string, Subject<Status[]>>;
   let streams: Map<string, Subject<StreamEvent>>;
-  let api: { tagTimeline: ReturnType<typeof vi.fn> };
+  let api: { tagTimeline: ReturnType<typeof vi.fn>; postStatus: ReturnType<typeof vi.fn> };
+  let posted: Subject<Status>;
   beforeEach(() => {
+    localStorage.clear();
+    posted = new Subject<Status>();
     feeds = new Map();
     streams = new Map();
     api = {
@@ -49,6 +53,7 @@ describe('Temporary party conversations', () => {
         feeds.set(tag, feed);
         return feed;
       }),
+      postStatus: vi.fn(() => posted),
     };
     TestBed.configureTestingModule({
       imports: [PartyConversation],
@@ -72,6 +77,7 @@ describe('Temporary party conversations', () => {
           useValue: {
             rendersNothing: (status: Status) =>
               status.filtered?.some((filter) => filter.filter.filter_action === 'hide') ?? false,
+            activeFilters: (status: Status) => status.filtered ?? [],
           },
         },
       ],
@@ -84,7 +90,10 @@ describe('Temporary party conversations', () => {
     fixture.componentRef.setInput('session', 'first');
     fixture.detectChanges();
   });
-  afterEach(() => fixture.destroy());
+  afterEach(() => {
+    fixture.destroy();
+    vi.useRealTimers();
+  });
   function items(): { status: Status; context: string }[] {
     return (
       fixture.componentInstance as unknown as { mixed(): { status: Status; context: string }[] }
@@ -164,5 +173,184 @@ describe('Temporary party conversations', () => {
     }
     expect(api.tagTimeline).toHaveBeenCalledTimes(10);
     expect(items()).toHaveLength(200);
+  });
+
+  describe('chat room controls', () => {
+    const descriptors = ['showModal', 'close'].map(
+      (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+    );
+    beforeAll(() => {
+      for (const [name] of descriptors)
+        Object.defineProperty(HTMLDialogElement.prototype, name, {
+          configurable: true,
+          value(this: HTMLDialogElement) {
+            this.open = name === 'showModal';
+          },
+        });
+    });
+    afterAll(() => {
+      for (const [name, descriptor] of descriptors) {
+        if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+        else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+      }
+    });
+    const root = { ...post('9'), id: 'root' } as Status;
+    const state = () =>
+      fixture.componentInstance as unknown as {
+        prefs: WatchPartyPrefs;
+        setMode(mode: string): void;
+        setRefresh(refresh: string): void;
+        tagDialog(): boolean;
+        cancelTagDialog(): void;
+        joinFromDialog(): void;
+        draft: { set(value: string): void };
+        chat: { set(value: string): void };
+        send(): void;
+        lines(): { text: string; cw: string; media: boolean; nick: string }[];
+        activeChatters(): number;
+      };
+    beforeEach(() => {
+      fixture.componentRef.setInput('root', root);
+      fixture.detectChanges();
+    });
+
+    it('opens as a compact chat of replies and hashtag together, updating live', () => {
+      expect(state().prefs.view()).toBe('compact');
+      expect(state().prefs.mode()).toBe('both');
+      expect(state().prefs.refresh()).toBe('stream');
+      expect(fixture.nativeElement.getAttribute('data-view')).toBe('compact');
+    });
+
+    it('shows only replies, only the hashtag, or both', () => {
+      fixture.componentRef.setInput('comments', [post('1')]);
+      fixture.componentInstance.addTag('Show');
+      feeds.get('Show')!.next([post('2')]);
+      fixture.detectChanges();
+      expect(items().map((item) => item.status.id)).toEqual(['1', '2']);
+      state().setMode('replies');
+      expect(items().map((item) => item.status.id)).toEqual(['1']);
+      state().setMode('hashtag');
+      expect(items().map((item) => item.status.id)).toEqual(['2']);
+    });
+
+    it('asks for the show hashtag in a dialog, and backs out of Hashtag mode on cancel', () => {
+      state().setMode('hashtag');
+      fixture.detectChanges();
+      expect(state().tagDialog()).toBe(true);
+      expect(document.querySelector('dialog')).not.toBeNull();
+      state().cancelTagDialog();
+      expect(state().prefs.mode()).toBe('both');
+
+      state().setMode('hashtag');
+      state().draft.set('#Show');
+      state().joinFromDialog();
+      expect(state().tagDialog()).toBe(false);
+      expect(state().prefs.mode()).toBe('hashtag');
+      expect(feeds.has('Show')).toBe(true);
+    });
+
+    it('shows the hashtag too when one is joined while only replies are shown', () => {
+      state().setMode('replies');
+      state().draft.set('#Show');
+      state().joinFromDialog();
+      expect(state().prefs.mode()).toBe('both');
+    });
+
+    it('opens hashtag streams only in Live and closes them for polling or manual', () => {
+      state().setRefresh('manual');
+      fixture.detectChanges();
+      fixture.componentInstance.addTag('Show');
+      expect(streams.has('Show')).toBe(false);
+      state().setRefresh('stream');
+      fixture.detectChanges();
+      expect(streams.get('Show')!.observed).toBe(true);
+      state().setRefresh('poll60');
+      fixture.detectChanges();
+      expect(streams.get('Show')!.observed).toBe(false);
+    });
+
+    it('polls replies and hashtags at the chosen interval, and never in manual', () => {
+      vi.useFakeTimers();
+      const due = vi.fn();
+      fixture.componentInstance.repliesDue.subscribe(due);
+      state().setRefresh('poll5');
+      fixture.detectChanges();
+      fixture.componentInstance.addTag('Show');
+      feeds.get('Show')!.next([]);
+      api.tagTimeline.mockClear();
+      vi.advanceTimersByTime(5000);
+      expect(due).toHaveBeenCalledTimes(1);
+      expect(api.tagTimeline).toHaveBeenCalledTimes(1);
+
+      state().setRefresh('manual');
+      fixture.detectChanges();
+      vi.advanceTimersByTime(120000);
+      expect(due).toHaveBeenCalledTimes(1);
+    });
+
+    it('posts chat publicly with the show hashtag, and as a reply when replies are shown', () => {
+      fixture.componentRef.setInput('canReply', true);
+      fixture.componentInstance.addTag('Show');
+      fixture.detectChanges();
+      const replied = vi.fn();
+      fixture.componentInstance.replied.subscribe(replied);
+      state().chat.set('here we go');
+      state().send();
+      expect(api.postStatus).toHaveBeenCalledWith(
+        'here we go #Show',
+        { inReplyToId: 'root', visibility: 'public' },
+        expect.any(String),
+      );
+      posted.next(post('5'));
+      expect(replied).toHaveBeenCalledWith(post('5'));
+
+      state().setMode('hashtag');
+      state().chat.set('already #show tagged');
+      state().send();
+      expect(api.postStatus).toHaveBeenLastCalledWith(
+        'already #show tagged',
+        { visibility: 'public' },
+        expect.any(String),
+      );
+    });
+
+    it('keeps content warnings closed and marks media on compact lines', () => {
+      fixture.componentRef.setInput('comments', [
+        {
+          ...post('1'),
+          account: { id: 'a', username: 'kat', acct: 'kat' },
+          content: '<p>the twist</p>',
+          spoiler_text: 'finale',
+        },
+        {
+          ...post('2'),
+          account: { id: 'b', username: 'bo', acct: 'bo@else.test' },
+          content: '<p>look</p>',
+          media_attachments: [{ id: 'm' }],
+        },
+      ]);
+      fixture.detectChanges();
+      const lines = [...fixture.nativeElement.querySelectorAll('.line-text')].map(
+        (line: Element) => line.textContent ?? '',
+      );
+      expect(lines[0]).toContain('<kat>');
+      expect(lines[0]).not.toContain('twist');
+      expect(state().lines()[0].cw).toBe('finale');
+      expect(lines[1]).toContain('<bo>');
+      expect(lines[1]).toContain('📷');
+      expect(lines[1]).toContain('look');
+      expect(state().lines()[1].nick).toBe('bo');
+    });
+
+    it('counts people who posted in the last ten minutes as chatting', () => {
+      const recent = new Date().toISOString();
+      fixture.componentRef.setInput('comments', [
+        { ...post('1'), created_at: recent, account: { id: 'a', acct: 'kat' } },
+        { ...post('2'), created_at: recent, account: { id: 'a', acct: 'kat' } },
+        { ...post('3'), account: { id: 'b', acct: 'old' } },
+      ]);
+      fixture.detectChanges();
+      expect(state().activeChatters()).toBe(1);
+    });
   });
 });

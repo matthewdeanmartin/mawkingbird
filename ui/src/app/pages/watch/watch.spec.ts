@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WatchQueue } from '../../providers/videos/watch-queue';
 import { Watch } from './watch';
 import { PartyConversation } from './party-conversation';
+import { WatchPartyPrefs } from '../../providers/videos/watch-party-prefs';
 import { ThreadLoader } from '../read/thread-loader';
 import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
@@ -36,6 +37,8 @@ class PartyStub {
   readonly comments = input<Status[]>([]);
   readonly session = input('');
   readonly initialTags = input<readonly string[]>([]);
+  readonly canReply = input(false);
+  readonly repliesDue = output<void>();
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
@@ -50,6 +53,11 @@ describe('Watch post access and reveal gates', () => {
     loading: ReturnType<typeof signal<boolean>>;
     loadError: ReturnType<typeof signal<string | null>>;
     publicContextUnavailable: ReturnType<typeof signal<boolean>>;
+    isAnonymousPublic: ReturnType<typeof signal<boolean>>;
+    isTwitter: ReturnType<typeof signal<boolean>>;
+    isRss: ReturnType<typeof signal<boolean>>;
+    isMessageStatus: ReturnType<typeof signal<boolean>>;
+    refreshReplies: ReturnType<typeof vi.fn>;
     load: ReturnType<typeof vi.fn>;
     destroy: ReturnType<typeof vi.fn>;
   };
@@ -86,6 +94,11 @@ describe('Watch post access and reveal gates', () => {
       loading: signal(false),
       loadError: signal<string | null>(null),
       publicContextUnavailable: signal(false),
+      isAnonymousPublic: signal(false),
+      isTwitter: signal(false),
+      isRss: signal(false),
+      isMessageStatus: signal(false),
+      refreshReplies: vi.fn(),
       load: vi.fn(),
       destroy: vi.fn(),
     };
@@ -283,5 +296,56 @@ describe('Watch post access and reveal gates', () => {
     blocked.set(true);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
+  describe('party chat wiring', () => {
+    beforeEach(() => localStorage.clear());
+    const party = () =>
+      fixture.debugElement.query(By.directive(PartyStub)).componentInstance as PartyStub;
+
+    it('collapses the video post to a topic line in compact view and a card otherwise', () => {
+      mount();
+      loader.status.set({
+        ...status(),
+        content: '<p>Episode <b>one</b></p>',
+        account: { id: 'a', username: 'kat' },
+      } as Status);
+      fixture.detectChanges();
+      const topic = fixture.nativeElement.querySelector('.watch-topic summary');
+      expect(topic.textContent).toContain('<kat> Episode one');
+      expect(fixture.nativeElement.querySelector('.watch-root')).toBeNull();
+
+      TestBed.inject(WatchPartyPrefs).setView('cards');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.watch-topic')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.watch-root')).not.toBeNull();
+    });
+
+    it('shows a content warning, not the post text, in the topic line', () => {
+      mount();
+      loader.status.set({ ...status(), content: 'the twist', spoiler_text: 'finale' } as Status);
+      fixture.detectChanges();
+      const topic = fixture.nativeElement.querySelector('.watch-topic summary').textContent;
+      expect(topic).toContain('finale');
+      expect(topic).not.toContain('twist');
+    });
+
+    it('lets the chat reply only to a post on the signed-in server', () => {
+      mount();
+      loader.status.set(status());
+      fixture.detectChanges();
+      expect(party().canReply()).toBe(true);
+      loader.isAnonymousPublic.set(true);
+      fixture.detectChanges();
+      expect(party().canReply()).toBe(false);
+    });
+
+    it('re-reads replies when the chat asks for them', () => {
+      mount();
+      loader.status.set(status());
+      fixture.detectChanges();
+      party().repliesDue.emit();
+      expect(loader.refreshReplies).toHaveBeenCalledTimes(1);
+    });
   });
 });

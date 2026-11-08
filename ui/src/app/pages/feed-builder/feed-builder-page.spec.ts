@@ -50,6 +50,32 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the approved English Romance Books edition', async () => {
+    const el = await render(at('romance-books-on-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');
+    expect(el.querySelector('h1')?.textContent).toContain('Romance books on Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(15);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(20);
+    expect(el.querySelector('a[href="/tags/RomanceBooks"]')).not.toBeNull();
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'romance-books').map((page) => page.lang),
+    ).toEqual(['en', 'de']);
+  });
+
+  it('renders German Romance Books with native copy and useful quiet tags', async () => {
+    const el = await render(at('de/liebesromane-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Liebesromane auf Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(5);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(4);
+    expect(el.querySelector('a[href="/tags/Liebesromane"]')).not.toBeNull();
+    expect(el.textContent).toContain('noch gar keinen Beiträgen');
+  });
+
   it('renders Buddhism with the owner-approved selection and tag holds', async () => {
     const el = await render(at('buddhism-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('Buddhism on Mastodon');

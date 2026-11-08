@@ -496,7 +496,7 @@
                   }}
                 </div>
                 <hr class="menu-rule" />
-                @if (useLocalModeration ? localMuted() : relationship()?.muting) {
+                @if (localMuted() || (!useLocalModeration && relationship()?.muting)) {
                   <button class="menu-danger" type="button" (click)="unmute()">
                     {{ 'pages.profile.moderation.unmute' | transloco }}
                   </button>
@@ -514,7 +514,7 @@
                 }
                 <button class="menu-danger" type="button" (click)="requestBlock()">
                   {{
-                    ((useLocalModeration ? localBlocked() : relationship()?.blocking)
+                    (localBlocked() || (!useLocalModeration && relationship()?.blocking)
                       ? 'pages.profile.moderation.unblock'
                       : 'pages.profile.moderation.block'
                     ) | transloco

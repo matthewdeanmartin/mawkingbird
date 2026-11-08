@@ -113,9 +113,9 @@
       "nextStep": "Page Header frames the full account picker, the account filter uses Field/Control and add-account actions use Button. Account rows remain native full-width buttons matching the shell account menu's switch rows pending a shared identity-row action. Preserve the visible filter label, Enter-to-switch on a single match, the live result count, the shell's AccountSwitcher flow and the single-column wrap at phone width."
     },
     {
-      "file": "ui/src/app/pages/watch/party-conversation.ts",
+      "file": "ui/src/app/pages/watch/party-conversation.html",
       "disposition": "adopted scope",
-      "nextStep": "Temporary party tags use Field/Control, Button and Help. Preserve label associations, removable tag names, keyboard access and bounded narrow layouts; feed posts reuse StatusCard."
+      "nextStep": "The party chat bar uses Toolbar (compact view, refresh, add hashtag), compact Field/Control selects for mode and refresh cadence and a Popover nick list; party tags are added through Dialog with Field/Control and Button; the chat box uses Field/Control and Button. Compact chat lines and nick-list rows stay native full-width buttons because they are text rows, not Button presentations; migrate them if a shared list-row action appears. Preserve label associations, aria-expanded on lines, aria-pressed on nicks, the role=log region, removable tag names, keyboard access and bounded narrow layouts; expanded lines and card view reuse StatusCard."
     },
     {
       "file": "ui/src/app/tag-filter-dialog/tag-filter-dialog.ts",

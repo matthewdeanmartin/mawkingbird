@@ -2430,6 +2430,9 @@ export class Profile implements OnInit, OnDestroy {
       this.localMod.clear(acc);
       return;
     }
+    // A browser-local mute left from before server mutes stopped writing one
+    // would otherwise keep hiding them after the server mute is lifted.
+    this.localMod.clear(acc);
     this.api.unmuteAccount(acc.id).subscribe((updated) => this.relationship.set(updated));
   }
 
@@ -2459,6 +2462,13 @@ export class Profile implements OnInit, OnDestroy {
       }
       return;
     }
+    // A browser-local block left from before server blocks stopped writing
+    // one: lifting it is the whole action, never a new server block.
+    if (!rel?.blocking && this.localBlocked()) {
+      this.localMod.clear(acc);
+      return;
+    }
+    if (rel?.blocking) this.localMod.clear(acc);
     const call = rel?.blocking ? this.api.unblockAccount(acc.id) : this.api.block(acc.id);
     call.subscribe((updated) => this.relationship.set(updated));
   }
@@ -2466,7 +2476,7 @@ export class Profile implements OnInit, OnDestroy {
   requestBlock(): void {
     const alreadyBlocked = this.useLocalModeration
       ? this.localBlocked()
-      : this.relationship()?.blocking;
+      : this.relationship()?.blocking || this.localBlocked();
     if (alreadyBlocked) {
       this.toggleBlock();
       return;

@@ -8,7 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { Location } from '@angular/common';
+import { Location, NgTemplateOutlet } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -27,6 +27,8 @@ import { MbButton } from '../../design-system/button/button';
 import { parseAnonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { Status } from '../../models';
 import { PartyConversation } from './party-conversation';
+import { WatchPartyPrefs } from '../../providers/videos/watch-party-prefs';
+import { stripHtml } from '../../sentiment';
 import { QueueButton } from '../../video-player/queue-button';
 import {
   pickWatchParams,
@@ -61,6 +63,7 @@ import {
     PartyConversation,
     QueueButton,
     RouterLink,
+    NgTemplateOutlet,
   ],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
@@ -70,6 +73,7 @@ export class Watch {
   protected party = viewChild(PartyConversation);
   protected partySession = computed(() => JSON.stringify(this.params()));
   protected loader = inject(ThreadLoader);
+  protected partyPrefs = inject(WatchPartyPrefs);
   private route = inject(ActivatedRoute);
   private server = inject(Server);
   private auth = inject(Auth);
@@ -181,6 +185,33 @@ export class Watch {
       identity = next;
     });
   }
+
+  /** The video post as a one-line channel topic; a content warning stands in for its text. */
+  protected readonly topic = computed(() => {
+    const status = this.loader.status();
+    if (!status) return '';
+    const name = status.account?.username ?? '';
+    const text = status.spoiler_text
+      ? `⚠ ${status.spoiler_text}`
+      : stripHtml(status.content ?? '') || (this.source()?.title ?? '');
+    return name ? `<${name}> ${text}` : text;
+  });
+
+  /** The chat box can reply to the video post only when it lives on the signed-in server. */
+  protected readonly canReply = computed(() => {
+    const status = this.loader.status();
+    return (
+      !!status &&
+      this.auth.kind() === 'mastodon' &&
+      !this.auth.isAnonymous &&
+      !this.loader.isAnonymousPublic() &&
+      !this.loader.isTwitter() &&
+      !this.loader.isRss() &&
+      !this.loader.isMessageStatus() &&
+      (!status.provider || status.provider === 'mastodon') &&
+      /^[A-Za-z0-9_-]+$/.test(status.id)
+    );
+  });
 
   /** `?tags=a,b`: hashtags a party opened from the finder starts with. */
   protected readonly partyTags = computed(() =>

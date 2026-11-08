@@ -200,3 +200,51 @@ describe('ThreadLoader with a preloaded thread', () => {
     httpMock.expectOne('/api/v1/statuses/1');
   });
 });
+
+/** Watch keeps a thread open as a live chat and re-reads its replies on a timer. */
+describe('ThreadLoader refreshing replies', () => {
+  let httpMock: HttpTestingController;
+  let loader: ThreadLoader;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ThreadLoader,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: Auth, useValue: { lacksMastodonToken: false } },
+        { provide: SearchServer, useValue: { active: () => false } },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    loader = TestBed.inject(ThreadLoader);
+  });
+
+  it('re-reads the context quietly, keeping the post, and one request at a time', () => {
+    loader.load('1');
+    httpMock.expectOne('/api/v1/statuses/1').flush(localStatus('1'));
+    httpMock.expectOne('/api/v1/statuses/1/context').flush({ ancestors: [], descendants: [] });
+    expect(loader.canRefreshReplies).toBe(true);
+
+    loader.refreshReplies();
+    loader.refreshReplies();
+    const context = httpMock.expectOne('/api/v1/statuses/1/context');
+    expect(loader.loading()).toBe(false);
+    context.flush({ ancestors: [], descendants: [localStatus('2')] });
+    expect(loader.status()?.id).toBe('1');
+    expect(loader.descendants().map((post) => post.id)).toEqual(['2']);
+
+    loader.refreshReplies();
+    httpMock
+      .expectOne('/api/v1/statuses/1/context')
+      .flush('down', { status: 503, statusText: 'Service Unavailable' });
+    expect(loader.descendants().map((post) => post.id)).toEqual(['2']);
+  });
+
+  it('never polls Twitter, whose replies are paid per request', () => {
+    loader.load('twitter:123');
+    loader.refreshReplies();
+    expect(loader.canRefreshReplies).toBe(false);
+    httpMock.expectNone((request) => request.url.endsWith('/context'));
+  });
+});

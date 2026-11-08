@@ -616,6 +616,13 @@ and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 
+Romance Books has approved English and German editions at
+`/romance-books-on-mastodon/` and `/de/liebesromane-auf-mastodon/`, under Arts and
+culture. Native copy and people data load lazily. The shared topic registry
+supplies client/server routes, sitemap entries and language alternates.
+Relevant quiet tags remain available; recurring romance book content and
+substantive author updates determine account relevance.
+
 Buddhism has one approved English edition at `/buddhism-on-mastodon/`, under
 Society: nine accounts and 37 tags after saved owner holds. All traditions,
 including secular approaches, remain in scope; tag holds do not exclude a

@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "topic": "romance-books",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T15:25:48+00:00",
+  "tags": [
+    {
+      "name": "RomanceBooks",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Romantasy",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Romancelandia",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "RomanceReaders",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "RomanceReads",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "HistoricalRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RomanticSuspense",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "QueerRomance",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "ParanormalRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ContemporaryRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "FantasyRomance",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "SapphicRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RegencyRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RomanceNovels",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "LGBTQRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RomanceAuthors",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "IndieRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RomanticComedyBooks",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "InspirationalRomance",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "YARomance",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "stephanieburgis@wandering.shop",
+      "id": "109292964027520802",
+      "url": "https://wandering.shop/@stephanieburgis",
+      "displayName": "Stephanie Burgis",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/292/964/027/520/802/original/2ab3731bdc28ae71.png",
+      "bio": "I write sparkling fantasy rom-coms for adults and fun MG fantasy adventures. I also drink frothy coffee, bake as much as possible, drink excessive amounts of hot chocolate, play with fountain pens, a…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["patreon", "website"]
+    },
+    {
+      "acct": "wendypalmer@mastodon.au",
+      "id": "109429782168310669",
+      "url": "https://mastodon.au/@wendypalmer",
+      "displayName": "Wendy Palmer",
+      "avatar": "https://o.mastodon.au/accounts/avatars/109/429/782/168/310/669/original/fd8cb303ddf92df9.jpeg",
+      "bio": "I write romantic fantasy fiction (CWs on website) and family-friendly puzzle walk trails while enjoying farm life with goats, alpacas & bees in WA's South West Boojarah region. No “AI” involved in an…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ceciliatan@wandering.shop",
+      "id": "109317485123753665",
+      "url": "https://wandering.shop/@ceciliatan",
+      "displayName": "Cecilia Tan",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/317/485/123/753/665/original/58099725b85be374.jpg",
+      "bio": "Writer/editor. Queer, bisexual/bigender. I contain multitudes but she/her is fine (they/them OK too). https:// linktr.ee/ceciliatan",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "ce_murphy@wandering.shop",
+      "id": "109846909839432162",
+      "url": "https://wandering.shop/@ce_murphy",
+      "displayName": "CE (Catie) Murphy",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/846/909/839/432/162/original/b335d495a356388c.jpg",
+      "bio": "Writer, mostly of novels. Left-leaning liberal feminist. Also mommy, wife, friend. She/her.",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "jaeauthor@mastodon.social",
+      "id": "109960804014595927",
+      "url": "https://mastodon.social/@JaeAuthor",
+      "displayName": "JaeAuthor",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/960/804/014/595/927/original/969f02340019e9a8.jpg",
+      "bio": "🏳️‍🌈 Award-winning # queer author of # sapphic romance, avid reader, ice cream & stationery addict. She/her # SapphicMigration # SapphicBooks # LesbianBooks",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "lianabrooks@mastodon.online",
+      "id": "108195192538322188",
+      "url": "https://mastodon.online/@LianaBrooks",
+      "displayName": "Liana Brooks",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/195/192/538/322/188/original/5e84c0a68ef089a9.jpg",
+      "bio": "Novelist/작가 - American Author in Korea - Freelance Editor - Former Journalist - Escaped Marine Biologist - Not Immortal - Ehlers-Danlos Spoonie - Rroma - She/Her/Your Worship www.LianaBrooks.com",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "michaeljoseph@tech.lgbt",
+      "id": "109248828498646450",
+      "url": "https://tech.lgbt/@michaeljoseph",
+      "displayName": "Michael",
+      "avatar": "https://media.tech.lgbt/accounts/avatars/109/248/828/498/646/450/original/5991a1e51000e6a9.jpg",
+      "bio": "Retired Web Developer who now only works on my own web sites. Spend lots of time reading and reviewing gay books. # gayRomance # MMRomance Currently in Cebu, the Philippines",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "womenusingwords@mastodon.social",
+      "id": "109878370285252373",
+      "url": "https://mastodon.social/@WomenUsingWords",
+      "displayName": "Women Using Words",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/878/370/285/252/373/original/cdc636d411370d92.jpeg",
+      "bio": "an avid reader, reviewer and blogger of books and audiobooks",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "jentwimom@wandering.shop",
+      "id": "116053934925232591",
+      "url": "https://wandering.shop/@JenTwimom",
+      "displayName": "Jen Twimom",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/116/053/934/925/232/591/original/276aca98cd044b2e.png",
+      "bio": "Lover of # romance , # UrbanFantasy & more. # Books & # audiobooks . # Blogger . # Reviewer . Part of # RomancelandiaClub Wife. Mom. # CMCon26 # FeaturedBlogger . Co-host of # FitReaders She/Her",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "sophiajanehayden_author@indieauthors.social",
+      "id": "113873538981101188",
+      "url": "https://indieauthors.social/@sophiajanehayden_author",
+      "displayName": "Sophia Jane Hayden, Author",
+      "avatar": "https://storage.googleapis.com/indieauthors/accounts/avatars/113/873/538/981/101/188/original/f8acc876ce556cf5.png",
+      "bio": "I have always loved a good story: around the dinner table, in a book, on the screen! Imagination is free, writing is hard, storytelling is EVERYTHING! I've traveled quite a lot, love nature and fine…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "jm_brister@mastodon.social",
+      "id": "110640974427087973",
+      "url": "https://mastodon.social/@jm_brister",
+      "displayName": "J. M. Brister 🌻",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/640/974/427/087/973/original/f14c04b7c4a64ff6.png",
+      "bio": "❤️Emotionally devastating romance author ♿️Metal’s biggest homebound cheerleader 😁The Nicest Person on the Internet* *conditions apply",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "superwendy@kind.social",
+      "id": "116343379933203557",
+      "url": "https://kind.social/@SuperWendy",
+      "displayName": "SuperWendy",
+      "avatar": "https://cdn.masto.host/kindsocial/accounts/avatars/116/343/379/933/203/557/original/4847720264674d37.jpg",
+      "bio": "Romance reader, RWA Librarian of the Year 2011, Detroit Tigers fan, tea addict, # TBRChallenge hostess.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "andy_the_frazzled@lgbtqia.space",
+      "id": "115323660264363325",
+      "url": "https://lgbtqia.space/@andy_the_frazzled",
+      "displayName": "Andy Brokaw 🖤🩶🤍💚🤍🩶🖤",
+      "avatar": "https://cdn2.miau.pub/accounts/avatars/115/323/660/264/363/325/original/de84b5cdf48a3be5.png",
+      "bio": "ey/they 🖤🩶🤍💚🤍🩶🖤 🖤🩶🤍💜 🩷💛🩵 🤍💛💙🩷💜 ❄️❄️❄️ Agender asexual panromantic writer of queernormative polyamorous romantasy, teacher of skiing, and resident kook of the Cascade Mountains Also an anxious bipolar…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "graysonbell@writing.exchange",
+      "id": "109300725672741375",
+      "url": "https://writing.exchange/@GraysonBell",
+      "displayName": "Grayson Bell 🏳️‍🌈 🏳️‍⚧️",
+      "avatar": "https://cdn.masto.host/writing/accounts/avatars/109/300/725/672/741/375/original/82c95346c547ce1c.png",
+      "bio": "I am an autistic, gay, transgender author of queer fiction (he/him). 🏳️‍🌈 🏳️‍⚧️ I write both romance and sci-fi, and am currently working on the sci-fi series called \"The Cycles of Revelation.\" I als…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "spowter@mastodon.social",
+      "id": "114219405883420409",
+      "url": "https://mastodon.social/@spowter",
+      "displayName": "Sara Powter",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/219/405/883/420/409/original/66d83554855452da.png",
+      "bio": "Writer of Australian Historical Fiction",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

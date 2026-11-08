@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "topic": "romance-books",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T15:25:48+00:00",
+  "tags": [
+    {
+      "name": "Liebesroman",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Liebesromane",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "RomanceBooks",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Romantasy",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "yousweet42@literatur.social",
+      "id": "109366229612628244",
+      "url": "https://literatur.social/@YouSweet42",
+      "displayName": "YouSweet42",
+      "avatar": "https://literatur.social/system/accounts/avatars/109/366/229/612/628/244/original/d6bd4b83676fcc8f.png",
+      "bio": "Jutta Swietlinski (she/her). 👩🌈 Bittersweet-and-sour, sometimes sharp. 🧂 German cis♀️, free thinker, queer feminist, sapphic writer. ✍️🏳️‍🌈 My ❤️ beats for reading, writing, words & language(s)! 🖋️📖🖍…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "smarziart@mastodon.art",
+      "id": "109250093009960352",
+      "url": "https://mastodon.art/@smarziart",
+      "displayName": "Stephanie Marzian",
+      "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/109/250/093/009/960/352/original/a1c53d4373c5adf5.png",
+      "bio": "# Autorin # Illustratorin Herzlich Willkommen! Hier gibt es viel Kreatives und Lesestoff! 🧚‍♀️📖✨ # London # Christmas # Romance in 24 Kapiteln! ❤️ \"Die Legende der Mistelzweigküsse\" # Liebesroman # W…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "dairabaer@literatur.social",
+      "id": "110341975741673039",
+      "url": "https://literatur.social/@dairabaer",
+      "displayName": "Daira Bär",
+      "avatar": "https://literatur.social/system/accounts/avatars/110/341/975/741/673/039/original/b018fcdd12fdd21f.jpg",
+      "bio": "Herzlich Willkommen. Ich bin Daira Bär. Romanautorin, Bloggerin und Podcasterin",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "patrick_grabowski@mastodon.social",
+      "id": "115371173446524503",
+      "url": "https://mastodon.social/@Patrick_Grabowski",
+      "displayName": "Patrick",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/371/173/446/524/503/original/504d6b6b21146ee5.jpg",
+      "bio": "Hobbyautor und Freizeitfotograf. Die großen Durchbrüche überlasse ich anderen. In meinen Geschichten tauchen wir in eine Welt, in der Fantasy, Mythos und Realtät ineinander verschwimmen. Außerhalb de…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "lunacathedras@mastodon.social",
+      "id": "117467259856365560",
+      "url": "https://mastodon.social/@lunacathedras",
+      "displayName": "Luna Cathedras",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/467/259/856/365/560/original/1d84ba0b477aa4cd.jpeg",
+      "bio": "Autorin Romance & Romantasy",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

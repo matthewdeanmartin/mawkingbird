@@ -434,6 +434,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Account-scoped watch queue: Watch-page params (post ids, servers, YouTube ids) plus titles and posters of videos saved to watch. Reveals viewing intent; included only in personal backups.',
   },
   {
+    base: 'mockingbird_watch_party',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Device-wide watch party chat choices: compact or card view, replies/hashtag mode and refresh cadence. No tags, posts or accounts.',
+  },
+  {
     base: 'mockingbird_rss_feeds',
     storage: 'local',
     suffix: 'account',

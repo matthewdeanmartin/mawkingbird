@@ -23,6 +23,7 @@ import { Drafts } from '../drafts';
 import { Status, Translation } from '../models';
 import { RadioHandoff } from '../radio-handoff';
 import { ProviderPreferences } from '../audio-embeds/provider-preferences';
+import { LocalModeration } from '../local-moderation';
 import { StatusCard } from './status-card';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { of, throwError } from 'rxjs';
@@ -2688,6 +2689,37 @@ describe('StatusCard', () => {
 
       expect(redraftInternals(f).redrafting()).toBe(false);
       expect(deleted.map((s) => s.id)).toEqual(['1']);
+    });
+  });
+
+  // --------------------------------------------------- author mute and block
+
+  describe('author mute and block on a Mastodon account', () => {
+    interface ModerationInternals {
+      muteAuthorLocally(event: Event, seconds: number | null): void;
+      blockAuthorLocally(event: Event): void;
+    }
+    const card = (f: ComponentFixture<StatusCard>) =>
+      f.componentInstance as unknown as ModerationInternals;
+
+    it('mutes on the server only, then hides the author for this visit without storing it', () => {
+      const f = setUp();
+      card(f).muteAuthorLocally(fakeEvent(), 3600);
+      const moderation = TestBed.inject(LocalModeration);
+      expect(moderation.isSuppressed(makeAccount())).toBe(false);
+      httpMock.expectOne('/api/v1/accounts/1/mute').flush({ id: '1', muting: true });
+      expect(moderation.isSuppressed(makeAccount())).toBe(true);
+      expect(moderation.isMuted(makeAccount())).toBe(false);
+      expect(localStorage.getItem('mockingbird_local_moderation') ?? '').not.toContain('user1');
+    });
+
+    it('blocks on the server only and keeps the post when the server refuses', () => {
+      const f = setUp();
+      card(f).blockAuthorLocally(fakeEvent());
+      httpMock
+        .expectOne('/api/v1/accounts/1/block')
+        .flush('no', { status: 500, statusText: 'Server Error' });
+      expect(TestBed.inject(LocalModeration).isSuppressed(makeAccount())).toBe(false);
     });
   });
 

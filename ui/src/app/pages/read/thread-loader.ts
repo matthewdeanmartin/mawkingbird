@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { finalize, map, Observable, Subscription } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -117,6 +117,41 @@ export class ThreadLoader {
     return s ? [...this.ancestors(), s, ...this.descendants()] : [];
   });
 
+  /**
+   * Re-reads the focus post's replies, for a page that keeps a thread open as
+   * a live conversation (Watch's party chat). Null where that is not possible
+   * or not free: local, pasted and RSS threads have nothing new to fetch, and
+   * Twitter replies are paid per request, so they are never polled.
+   */
+  private repliesSource: (() => Observable<Status[]>) | null = null;
+  private refreshingReplies = false;
+
+  /** Whether {@link refreshReplies} can fetch anything for this thread. */
+  get canRefreshReplies(): boolean {
+    return !!this.repliesSource;
+  }
+
+  /** Quietly replace the replies with a fresh read; a failed read keeps the old ones. */
+  refreshReplies(): void {
+    const source = this.repliesSource;
+    if (!source || this.refreshingReplies || !this.status()) return;
+    this.refreshingReplies = true;
+    this.sub.add(
+      source()
+        .pipe(finalize(() => (this.refreshingReplies = false)))
+        .subscribe({
+          next: (replies) => this.descendants.set(replies),
+          error: () => {
+            /* The replies already shown stay; the next refresh retries. */
+          },
+        }),
+    );
+  }
+
+  private mastodonReplies(id: string): () => Observable<Status[]> {
+    return () => this.api.getContext(id).pipe(map((context) => context.descendants));
+  }
+
   /** Drop any in-flight requests. Callers must do this on destroy. */
   destroy(): void {
     this.sub.unsubscribe();
@@ -125,6 +160,8 @@ export class ThreadLoader {
 
   load(id: string): void {
     this.destroy();
+    this.refreshingReplies = false;
+    this.repliesSource = null;
     this.loading.set(true);
     this.loadError.set(null);
     this.status.set(null);
@@ -147,6 +184,8 @@ export class ThreadLoader {
       this.ancestors.set(preloaded.ancestors);
       this.descendants.set(preloaded.descendants);
       this.loading.set(false);
+      if (/^[A-Za-z0-9_-]+$/.test(id) && !isElizaId(id))
+        this.repliesSource = this.mastodonReplies(id);
       return;
     }
 
@@ -182,6 +221,7 @@ export class ThreadLoader {
       return;
     }
 
+    this.repliesSource = this.mastodonReplies(id);
     this.sub.add(
       this.api.getStatus(id).subscribe({
         next: (s) => {
@@ -268,6 +308,7 @@ export class ThreadLoader {
             return;
           }
           this.status.set(resolved);
+          this.repliesSource = this.mastodonReplies(resolved.id);
           this.publicOriginalUrl.set(ref.originalUrl ?? null);
           this.loading.set(false);
           // A local id, so the ordinary context endpoint applies — and with it
@@ -290,6 +331,8 @@ export class ThreadLoader {
   /** Public Mastodon status and context; a blocked context never hides the post. */
   private loadAnonymousPublic(ref: AnonymousPublicRef): void {
     this.isAnonymousPublic.set(true);
+    this.repliesSource = () =>
+      this.anonymousPublic.getContext(ref).pipe(map((context) => context.descendants));
     this.publicOriginalUrl.set(ref.originalUrl ?? null);
     this.sub.add(
       this.anonymousPublic.getStatus(ref).subscribe({
@@ -342,6 +385,8 @@ export class ThreadLoader {
 
   /** Bluesky thread: `getPostThread` mapped onto ancestors/descendants. */
   private loadBsky(uri: string): void {
+    this.repliesSource = () =>
+      this.bsky.getPostThread(uri).pipe(map(({ thread }) => flattenReplies(thread.replies ?? [])));
     this.sub.add(
       this.bsky.getPostThread(uri).subscribe({
         next: ({ thread }) => {

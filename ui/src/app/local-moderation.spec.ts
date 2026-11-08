@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { Account } from './models';
-import { LocalModeration, accountKey } from './local-moderation';
+import { LocalModeration, accountKey, moderationKey } from './local-moderation';
 
 const KEY = 'mockingbird_local_moderation';
 
@@ -93,5 +93,76 @@ describe('LocalModeration', () => {
     const stored = JSON.parse(localStorage.getItem(KEY)!);
     expect(stored.entries['gone']).toBeUndefined();
     expect(stored.entries['kept']).toBeDefined();
+  });
+
+  describe('across accounts and servers', () => {
+    const mistersql = (overrides: Partial<Account> = {}) =>
+      account({
+        id: '301226',
+        username: 'mistersql',
+        acct: 'mistersql',
+        url: 'https://mastodon.social/@mistersql',
+        ...overrides,
+      });
+
+    it('qualifies a bare local acct with its server, so namesakes elsewhere stay visible', () => {
+      const svc = TestBed.inject(LocalModeration);
+      svc.mute(mistersql(), null);
+      expect(moderationKey(mistersql())).toBe('mistersql@mastodon.social');
+      // Trusted accounts share accountKey; its shape is unchanged.
+      expect(accountKey(mistersql())).toBe('mistersql');
+      expect(svc.isMuted(mistersql({ id: 'x', acct: 'mistersql@mastodon.social' }))).toBe(true);
+      expect(svc.isMuted(mistersql({ id: '5', url: 'https://other.example/@mistersql' }))).toBe(
+        false,
+      );
+    });
+
+    it('never hides the reader their own account, even under an old shared entry', () => {
+      // Written by an earlier version while signed in as a different account.
+      localStorage.setItem(
+        KEY,
+        JSON.stringify({
+          version: 1,
+          entries: {
+            mistersql: { kind: 'mute', expiresAt: Number.MAX_SAFE_INTEGER, acct: 'mistersql' },
+          },
+        }),
+      );
+      const svc = TestBed.inject(LocalModeration);
+      expect(svc.isSuppressed(mistersql())).toBe(true);
+      svc.useViewer(() => ({ key: 'me', self: { id: '301226', acct: 'mistersql' } }));
+      expect(svc.isSuppressed(mistersql())).toBe(false);
+      expect(svc.isMuted(mistersql())).toBe(false);
+    });
+
+    it('clears old bare-key entries along with the qualified one', () => {
+      localStorage.setItem(
+        KEY,
+        JSON.stringify({
+          version: 1,
+          entries: {
+            mistersql: { kind: 'block', expiresAt: Number.MAX_SAFE_INTEGER, acct: 'mistersql' },
+          },
+        }),
+      );
+      const svc = TestBed.inject(LocalModeration);
+      svc.clear(mistersql());
+      expect(svc.isSuppressed(mistersql())).toBe(false);
+      expect(JSON.parse(localStorage.getItem(KEY)!).entries).toEqual({});
+    });
+
+    it('hides a server-muted author for this visit and this account only, storing nothing', () => {
+      const svc = TestBed.inject(LocalModeration);
+      svc.useViewer(() => ({ key: 'mawkingbird', self: { id: '1', acct: 'mawkingbird' } }));
+      svc.hideAfterServerAction(mistersql());
+      expect(svc.isSuppressed(mistersql())).toBe(true);
+      expect(svc.isMuted(mistersql())).toBe(false);
+      expect(localStorage.getItem(KEY) ?? '{"entries":{}}').not.toContain('mistersql');
+
+      svc.useViewer(() => ({ key: 'mistersql', self: { id: '301226', acct: 'mistersql' } }));
+      expect(svc.isSuppressed(mistersql())).toBe(false);
+      svc.useViewer(() => ({ key: 'someone-else', self: { id: '7', acct: 'other' } }));
+      expect(svc.isSuppressed(mistersql())).toBe(false);
+    });
   });
 });

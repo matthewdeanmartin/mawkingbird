@@ -19,6 +19,7 @@ import {
   mastodonConnectorServer,
 } from './providers/mastodon/mastodon-connector';
 import { Server } from './server';
+import { LocalModeration } from './local-moderation';
 import { SessionDiagnostics } from './session-diagnostics';
 import { markOnboardingPending } from './onboarding/onboarding-store';
 
@@ -270,6 +271,22 @@ export class Auth {
     }
     return this.mastodonAccount();
   });
+
+  /**
+   * Tells the browser-local mute list who is reading, so it never hides the
+   * reader's own account and keeps this visit's server mutes to this account.
+   * A computed, read only when the list is asked, rather than an effect: reading
+   * `account` eagerly would settle a Bluesky profile before it has loaded.
+   */
+  private readonly moderationViewer = inject(LocalModeration).useViewer(
+    computed(() => {
+      const account = this.account();
+      return {
+        key: `${this.kind() ?? ''}:${this.token() ?? ''}:${account?.id ?? ''}`,
+        self: account ? { id: account.id, acct: account.acct } : null,
+      };
+    }),
+  );
 
   /** Every account the tester has logged into and not removed. */
   readonly sessions = signal<Session[]>(loadSessions());

@@ -1,0 +1,264 @@
+<div class="party-bar">
+  <mb-toolbar density="compact" embedded [label]="'watch.party.toolbar' | transloco">
+    <button
+      type="button"
+      mbToolbarButton
+      [pressed]="prefs.view() === 'compact'"
+      [title]="'watch.party.compactTitle' | transloco"
+      (click)="toggleView()"
+    >
+      💬 {{ 'watch.party.compact' | transloco }}
+    </button>
+    <button
+      type="button"
+      mbToolbarButton
+      [title]="'watch.party.refresh' | transloco"
+      [disabled]="!!busy().length"
+      (click)="refresh()"
+    >
+      ↻ {{ 'watch.party.refreshShort' | transloco }}
+    </button>
+    <button type="button" mbToolbarButton (click)="openTagDialog()">
+      # {{ 'watch.party.addTag' | transloco }}
+    </button>
+  </mb-toolbar>
+  @if (root()) {
+    <mb-field hideLabel density="compact" [label]="'watch.party.modeLabel' | transloco">
+      <select
+        mbControl
+        [ngModel]="prefs.mode()"
+        (ngModelChange)="setMode($event)"
+        [attr.aria-label]="'watch.party.modeLabel' | transloco"
+      >
+        <option value="both">{{ 'watch.party.mode.both' | transloco }}</option>
+        <option value="replies">{{ 'watch.party.mode.replies' | transloco }}</option>
+        <option value="hashtag">{{ 'watch.party.mode.hashtag' | transloco }}</option>
+      </select>
+    </mb-field>
+  }
+  <mb-field hideLabel density="compact" [label]="'watch.party.refreshLabel' | transloco">
+    <select
+      mbControl
+      [ngModel]="prefs.refresh()"
+      (ngModelChange)="setRefresh($event)"
+      [attr.aria-label]="'watch.party.refreshLabel' | transloco"
+      [title]="
+        prefs.refresh() === 'stream' ? ('watch.party.refreshMode.streamTitle' | transloco) : ''
+      "
+    >
+      <option value="stream">{{ 'watch.party.refreshMode.stream' | transloco }}</option>
+      <option value="poll5">{{ 'watch.party.refreshMode.poll5' | transloco }}</option>
+      <option value="poll15">{{ 'watch.party.refreshMode.poll15' | transloco }}</option>
+      <option value="poll60">{{ 'watch.party.refreshMode.poll60' | transloco }}</option>
+      <option value="manual">{{ 'watch.party.refreshMode.manual' | transloco }}</option>
+    </select>
+  </mb-field>
+  <mb-popover
+    layout="list"
+    [label]="'watch.party.chattersLabel' | transloco: { count: activeChatters() }"
+  >
+    @for (person of chatters(); track person.account) {
+      <button
+        type="button"
+        class="nick-row"
+        [attr.aria-pressed]="highlight() === person.account"
+        [attr.aria-label]="'watch.party.highlight' | transloco: { nick: person.account }"
+        (click)="toggleHighlight(person.account)"
+      >
+        <span class="nick" [style.--nick-hue]="person.hue">{{ person.nick }}</span>
+        @if (person.active) {
+          <span class="active">● {{ 'watch.party.active' | transloco }}</span>
+        }
+      </button>
+    } @empty {
+      <p class="muted">{{ 'watch.party.chattersEmpty' | transloco }}</p>
+    }
+  </mb-popover>
+</div>
+
+@if (tags().length) {
+  <div class="party-tags">
+    @for (tag of tags(); track tag) {
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        size="small"
+        [attr.aria-label]="'watch.party.remove' | transloco: { tag }"
+        (click)="removeTag(tag)"
+      >
+        #{{ tag }} ×
+      </button>
+    }
+  </div>
+}
+@if (failed().length) {
+  <p role="alert" class="party-note">
+    {{ 'watch.party.failed' | transloco: { tags: failed().join(', ') } }}
+  </p>
+}
+
+<div class="chat-frame">
+  <div
+    #log
+    class="chat-log"
+    role="log"
+    aria-live="polite"
+    [attr.aria-busy]="!!busy().length"
+    tabindex="0"
+    [attr.aria-label]="'watch.party.toolbar' | transloco"
+    (scroll)="onScroll()"
+  >
+    @if (hasMore()) {
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        size="small"
+        class="more"
+        [disabled]="!!busy().length"
+        (click)="more()"
+      >
+        {{ 'watch.party.more' | transloco }}
+      </button>
+    }
+    @if (prefs.view() === 'compact') {
+      @for (line of lines(); track line.key) {
+        <div class="line" [class.highlighted]="highlight() === line.account">
+          <button
+            type="button"
+            class="line-text"
+            [attr.aria-expanded]="expanded().has(line.key)"
+            (click)="toggleLine(line.key)"
+          >
+            <span class="time">[{{ line.time }}]</span>
+            <span class="nick" [style.--nick-hue]="line.hue">&lt;{{ line.nick }}&gt;</span>
+            @if (line.filtered) {
+              <span class="muted">{{ 'watch.party.filtered' | transloco }}</span>
+            } @else if (line.cw) {
+              <span class="cw">⚠ {{ 'watch.party.cw' | transloco: { text: line.cw } }}</span>
+            } @else {
+              @if (line.media) {
+                <span class="muted">📷 {{ 'watch.party.media' | transloco }}</span>
+              }
+              {{ line.text }}
+            }
+          </button>
+          @if (expanded().has(line.key)) {
+            <app-status-card
+              [status]="line.status"
+              [filterContext]="line.context"
+              [partyTagsEnabled]="true"
+              (partyTagAdded)="addTag($event)"
+              (changed)="changed.emit($event); update($event)"
+              (deleted)="deleted.emit($event); erase($event)"
+              (replied)="replied.emit($event)"
+            />
+          }
+        </div>
+      } @empty {
+        <ng-container [ngTemplateOutlet]="empty" />
+      }
+    } @else {
+      @for (item of mixed(); track item.key) {
+        <div [class.highlighted]="highlight() === (item.status.reblog ?? item.status).account.acct">
+          <app-status-card
+            [status]="item.status"
+            [filterContext]="item.context"
+            [partyTagsEnabled]="true"
+            (partyTagAdded)="addTag($event)"
+            (changed)="changed.emit($event); update($event)"
+            (deleted)="deleted.emit($event); erase($event)"
+            (replied)="replied.emit($event)"
+          />
+        </div>
+      } @empty {
+        <ng-container [ngTemplateOutlet]="empty" />
+      }
+    }
+  </div>
+  @if (unseen()) {
+    <button mbButton type="button" size="small" class="new-pill" (click)="jumpToEnd()">
+      {{ 'watch.party.newMessages' | transloco: { count: unseen() } }}
+    </button>
+  }
+</div>
+
+<ng-template #empty>
+  @if (busy().length) {
+    <p role="status" class="muted">{{ 'watch.party.loading' | transloco }}</p>
+  } @else if (mode() === 'hashtag' && !tags().length) {
+    <p class="muted">
+      {{ 'watch.party.emptyHashtag' | transloco }}
+      <button mbButton type="button" variant="outline" size="small" (click)="openTagDialog()">
+        # {{ 'watch.party.addTag' | transloco }}
+      </button>
+    </p>
+  } @else {
+    <p class="muted">{{ 'watch.party.empty' | transloco }}</p>
+  }
+</ng-template>
+
+@if (!canPost()) {
+  <p class="party-note muted">{{ 'watch.party.signInToChat' | transloco }}</p>
+} @else if (!chatTag() && !chatReplies()) {
+  <p class="party-note muted">{{ 'watch.party.needTarget' | transloco }}</p>
+} @else {
+  <form class="chat-box" (ngSubmit)="send()">
+    <mb-field density="compact" [hideLabel]="true" [label]="'watch.party.chatLabel' | transloco">
+      <input
+        mbControl
+        name="chat"
+        autocomplete="off"
+        maxlength="480"
+        [ngModel]="chat()"
+        (ngModelChange)="chat.set($event); sendFailed.set(false)"
+        [placeholder]="
+          chatTag()
+            ? ('watch.party.chatPlaceholderTag' | transloco: { tag: chatTag() })
+            : ('watch.party.chatPlaceholderReply' | transloco)
+        "
+      />
+    </mb-field>
+    <button mbButton type="submit" size="small" [disabled]="!chat().trim() || sending()">
+      {{ 'watch.party.send' | transloco }}
+    </button>
+  </form>
+  @if (sendFailed()) {
+    <p role="alert" class="party-note">{{ 'watch.party.sendFailed' | transloco }}</p>
+  }
+}
+
+@if (tagDialog()) {
+  <mb-dialog
+    [title]="'watch.party.dialog.title' | transloco"
+    [closeLabel]="'watch.party.dialog.cancel' | transloco"
+    [description]="'watch.party.temporary' | transloco"
+    [closeOnBackdrop]="true"
+    (dismissed)="cancelTagDialog()"
+  >
+    <form id="party-tag-form" (ngSubmit)="joinFromDialog()">
+      <mb-field [label]="'watch.party.tags' | transloco">
+        <input
+          mbControl
+          name="tags"
+          autocomplete="off"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+          [placeholder]="'watch.party.placeholder' | transloco"
+        />
+      </mb-field>
+      @if (validation()) {
+        <p role="alert">{{ 'watch.party.invalid' | transloco }}</p>
+      }
+    </form>
+    <div mbDialogActions>
+      <button mbButton type="button" variant="outline" (click)="cancelTagDialog()">
+        {{ 'watch.party.dialog.cancel' | transloco }}
+      </button>
+      <button mbButton type="submit" form="party-tag-form" [disabled]="!draft().trim()">
+        {{ 'watch.party.dialog.join' | transloco }}
+      </button>
+    </div>
+  </mb-dialog>
+}

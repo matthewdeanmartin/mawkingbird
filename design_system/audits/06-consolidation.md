@@ -1785,6 +1785,40 @@ then applied to that div rather than to the buttons, so the buttons touched.
 They now use `<ng-container mbDialogActions>`, like `confirm-dialog.html`, and
 their candidate counts are unchanged. No shared widget changed.
 
+## Watch party chat room, 2026-11-08
+
+The party chat moves its template from `pages/watch/party-conversation.ts`
+into `party-conversation.html`, so that candidate path is replaced in
+`11-reconciliation.json` (602 candidates, unchanged). The new
+`watch-party-prefs.ts` and the component stylesheet take the scanned count
+from 1,694 to 1,697.
+
+- `party-conversation.html`: `shared` 7 to 21, `nativeButtons` 4 to 12 and
+  `selects` 0 to 2. A compact `mb-toolbar` (Compact toggle, Refresh, Add
+  hashtag) follows the Home filter toolbar; mode and refresh cadence are
+  compact Field/Control selects; the active-chatters list is an `mb-popover`;
+  hashtags are added through `mb-dialog` instead of an inline input; and a
+  Field/Control chat box with an `mbButton` Send sits under the log. Compact
+  chat lines and nick rows are native full-width buttons (text rows that
+  expand or highlight), and the "new messages" pill is an `mbButton`.
+- `watch.html`: `disclosure` 0 to 1. In compact view the video post collapses
+  into a native `<details>` topic line that opens to the existing StatusCard.
+
+The same change makes Mastodon mutes and blocks server-only. The profile's
+Unmute/Unblock conditions now also cover a leftover browser-local entry, which
+shifts lines in `profile.html` and `status-card` without changing any control
+counts.
+
+No shared widget changed.
+
+## Topic pages: Romance Books, 2026-11-08
+
+Added one lazy copy source for approved English and German editions. Compared
+with the immediately preceding working-tree inventory, sources increased from
+1,697 to 1,698; all 602 candidate entries are identical. No template or shared
+widget changed. Candidate paths are unchanged, so reconciliation requires no
+additions or removals. Existing concurrent watch-party audit changes remain.
+
 ## Topic pages: DMV, 2026-11-08
 
 Added one lazy English copy source and approved data edition. Compared with the
