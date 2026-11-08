@@ -50,6 +50,31 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders Buddhism with the owner-approved selection and tag holds', async () => {
+    const el = await render(at('buddhism-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('Buddhism on Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(9);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(37);
+    for (const tag of ['Theravada', 'Mahayana', 'Nichiren', 'ZenBuddhism', 'MettaMeditation'])
+      expect(el.querySelector(`a[href="/tags/${tag}"]`)).not.toBeNull();
+    for (const tag of [
+      'Dharma',
+      'Sangha',
+      'Zen',
+      'Metta',
+      'Thien',
+      'JodoShinshu',
+      'SecularBuddhism',
+      'Vipassana',
+    ])
+      expect(el.querySelector(`a[href="/tags/${tag}"]`)).toBeNull();
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'buddhism').map((page) => page.lang),
+    ).toEqual(['en']);
+  });
+
   it('renders the approved Ukraine edition with saved tag holds excluded', async () => {
     const el = await render(at('war-in-ukraine-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('War in Ukraine on Mastodon');

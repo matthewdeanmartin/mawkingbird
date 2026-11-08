@@ -616,6 +616,11 @@ and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 
+Buddhism has one approved English edition at `/buddhism-on-mastodon/`, under
+Society: nine accounts and 37 tags after saved owner holds. All traditions,
+including secular approaches, remain in scope; tag holds do not exclude a
+tradition. Relevant quiet tags remain followable. Other languages are withheld.
+
 Owner direction (2026-11-07): routine topic data/copy/registry additions use
 proportionate checks. Run the approved importer validation and targeted Feed
 Builder specs, format changed files, and check category/language/route coverage.
@@ -626,3 +631,8 @@ schema and snapshot checks, not the Angular suite. Full application/build/SEO
 gates apply when shared runtime, routing or publishing behavior changes. Do not
 chase unrelated test failures in a SIG update. See the private new-topic playbook
 for the full workflow.
+
+Follower prominence badges distinguish `followers-2500` (2,500+) from
+`followers-625` (625+). The private builder uses the lower threshold for
+non-English editions; existing 2,500+ badges remain accurate. This is a shelf
+prominence signal, not a minimum follower count for community inclusion.

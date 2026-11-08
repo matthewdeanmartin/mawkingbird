@@ -58,6 +58,7 @@ describe('FindFriends', () => {
     expect(rowTitles(fixture)).toEqual([
       'Starter packs',
       'Collections',
+      'Communities by interest',
       'Invite your friends',
       'Offsite directories',
     ]);
@@ -67,6 +68,7 @@ describe('FindFriends', () => {
     expect(links).toEqual([
       '/bundled-starter-kits?kind=packs',
       '/bundled-starter-kits?kind=collections',
+      '/communities',
       '/invites',
       '/offsite-directories',
     ]);
@@ -93,7 +95,7 @@ describe('FindFriends', () => {
       .querySelector<HTMLButtonElement>('.discovery-tabs button')!
       .click();
     fixture.detectChanges();
-    expect(rowTitles(fixture)).toHaveLength(4);
+    expect(rowTitles(fixture)).toHaveLength(5);
     expect((fixture.nativeElement as HTMLElement).querySelector('.ff-interests')).toBeNull();
   });
 

@@ -2,7 +2,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { DISCOVERY_WAYS } from '../../discovery-ways';
+import { DISCOVERY_WAYS, DiscoveryWay } from '../../discovery-ways';
 import { contactPickerAvailable } from '../settings/import-export/contact-picker';
 
 /** Discovery starts with curated groups; search and import tools are opt-in. */
@@ -11,6 +11,8 @@ import { contactPickerAvailable } from '../settings/import-export/contact-picker
 // i18n pages.findFriends.basic: Basic
 // i18n pages.findFriends.sections: Ways to find people
 // i18n pages.findFriends.heading: Find Friends
+// i18n discovery.communities.title: Communities by interest
+// i18n discovery.communities.description: Build a feed around your interests with people and hashtags from the Communities hub.
 // i18n pages.findFriends.intro: Every way this app can help you find people to follow, in one place.
 // i18n pages.findFriends.starterKits.title: Ready-made sets of people
 // i18n pages.findFriends.starterKits.desc: Follow a whole set of accounts at once — the fastest way to get a timeline worth reading. Sets we assembled, and real collections curated by other people.
@@ -41,7 +43,17 @@ import { contactPickerAvailable } from '../settings/import-export/contact-picker
 })
 export class FindFriends {
   protected readonly level = signal<'basic' | 'advanced'>('basic');
-  protected readonly ways = DISCOVERY_WAYS;
+  protected readonly ways: readonly DiscoveryWay[] = [
+    ...DISCOVERY_WAYS.slice(0, 2),
+    {
+      id: 'communities',
+      level: 'basic',
+      title: 'discovery.communities.title',
+      description: 'discovery.communities.description',
+      route: '/communities',
+    },
+    ...DISCOVERY_WAYS.slice(2),
+  ];
 
   /**
    * Whether this device can offer the phone's own contact picker.

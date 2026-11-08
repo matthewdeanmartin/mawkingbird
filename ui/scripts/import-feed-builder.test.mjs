@@ -86,6 +86,12 @@ test('rejects malformed people and tags', () => {
   );
 });
 
+test('accepts both follower prominence badges without exposing private follower counts', () => {
+  for (const fame of [['followers-625'], ['followers-2500']]) {
+    assert.deepEqual(validatePage(page({ people: [person({ fame })] })).people[0].fame, fame);
+  }
+});
+
 test('a bio is measured in characters, not UTF-16 units', () => {
   const emoji = '🚀'.repeat(200);
   assert.equal(validatePage(page({ people: [person({ bio: emoji })] })).people[0].bio, emoji);

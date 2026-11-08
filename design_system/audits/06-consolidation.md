@@ -249,6 +249,11 @@ gain an `embedded` input that only hides their Settings back link and page
 header (line shifts, no new findings). `features.html` gains three MbContentLinks.
 No shared widget changed.
 
+## Topic pages: Buddhism, 2026-11-08
+
+Added one lazy English copy source. Sources increased from 1,693 to 1,694;
+all 602 candidate entries are unchanged. No reconciliation edits are needed.
+
 ## Topic pages: War in Ukraine, 2026-11-08
 
 Added one lazy English copy source and approved data edition under Society.

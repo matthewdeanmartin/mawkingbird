@@ -34,7 +34,7 @@ const onlyKeys = (object, allowed, where) => {
     assert(allowed.includes(key), `${where}: unexpected field "${key}"`);
 };
 
-const FAME = ['wikidata', 'wikipedia', 'youtube-10k', 'followers-2500'];
+const FAME = ['wikidata', 'wikipedia', 'youtube-10k', 'followers-2500', 'followers-625'];
 const ELSEWHERE = ['bluesky', 'youtube', 'twitch', 'patreon', 'podcast', 'website'];
 const SHELVES = ['youtube', 'notable', 'community'];
 const BANDS = ['<1k', '1k+', '10k+', '100k+', '1M+'];

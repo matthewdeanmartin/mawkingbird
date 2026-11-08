@@ -19,6 +19,7 @@ const COPY_LOADERS: Record<
   FeedTopic,
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
+  buddhism: () => import('./buddhism'),
   'war-in-ukraine': () => import('./war-in-ukraine'),
   dmv: () => import('./dmv'),
   retrocomputing: () => import('./retrocomputing'),

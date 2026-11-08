@@ -84,6 +84,7 @@ const en: FeedChrome = {
     wikipedia: 'Wikipedia',
     'youtube-10k': 'YouTube 10k+',
     'followers-2500': '2,500+ followers',
+    'followers-625': '625+ followers',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -159,6 +160,7 @@ const de: FeedChrome = {
     wikipedia: 'Wikipedia',
     'youtube-10k': 'YouTube 10k+',
     'followers-2500': '2.500+ Follower',
+    'followers-625': '625+ Follower',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -234,6 +236,7 @@ const fr: FeedChrome = {
     wikipedia: 'Wikipédia',
     'youtube-10k': 'YouTube 10k+',
     'followers-2500': '2\u202f500+ abonnés',
+    'followers-625': '625+ abonnés',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -309,6 +312,7 @@ const es: FeedChrome = {
     wikipedia: 'Wikipedia',
     'youtube-10k': 'YouTube 10k+',
     'followers-2500': '2500+ seguidores',
+    'followers-625': '625+ seguidores',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -383,6 +387,7 @@ const it: FeedChrome = {
     wikipedia: 'Wikipedia',
     'youtube-10k': 'YouTube 10k+',
     'followers-2500': '2.500+ follower',
+    'followers-625': '625+ follower',
   },
   elsewhere: {
     bluesky: 'Bluesky',
@@ -457,6 +462,7 @@ const ja: FeedChrome = {
     wikipedia: 'Wikipedia',
     'youtube-10k': 'YouTube 1万人以上',
     'followers-2500': 'フォロワー 2,500 人以上',
+    'followers-625': 'フォロワー 625 人以上',
   },
   elsewhere: {
     bluesky: 'Bluesky',

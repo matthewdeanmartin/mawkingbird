@@ -27,7 +27,8 @@ export interface FeedTag {
 }
 
 export type Shelf = 'youtube' | 'notable' | 'community';
-export type FameCode = 'wikidata' | 'wikipedia' | 'youtube-10k' | 'followers-2500';
+export type FameCode =
+  'wikidata' | 'wikipedia' | 'youtube-10k' | 'followers-2500' | 'followers-625';
 export type Elsewhere = 'bluesky' | 'youtube' | 'twitch' | 'patreon' | 'podcast' | 'website';
 
 export interface FeedPerson {
@@ -53,6 +54,7 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'buddhism.en': () => import('./data/buddhism.en.json'),
   'war-in-ukraine.en': () => import('./data/war-in-ukraine.en.json'),
   'dmv.en': () => import('./data/dmv.en.json'),
   'retrocomputing.en': () => import('./data/retrocomputing.en.json'),
