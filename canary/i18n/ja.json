@@ -5063,6 +5063,7 @@
     "thisPost": "この投稿"
   },
   "shell": {
+    "modeNav.feedBuilder.communities": "コミュニティ",
     "account.addBluesky": "+ Blueskyアカウントを追加",
     "account.addMastodon": "+ Mastodonアカウントを追加",
     "account.anonymous": "匿名",

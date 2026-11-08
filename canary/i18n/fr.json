@@ -92,6 +92,7 @@
     "unranked": "Les bornes simultanées à 95 % ne permettent pas d’établir un classement complet."
   },
   "shell": {
+    "modeNav.feedBuilder.communities": "Communautés",
     "account.addBluesky": "+ Ajouter un compte Bluesky",
     "account.addMastodon": "+ Ajouter un compte Mastodon",
     "account.anonymous": "Anonyme",
