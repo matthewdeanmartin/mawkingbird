@@ -19,6 +19,8 @@ export type FeatureFlagId =
   | 'connector-hugo'
   | 'connector-openrouter'
   | 'connector-raindrop'
+  | 'connector-mymemory'
+  | 'connector-apertium'
   | 'connector-github'
   | 'connector-dropbox'
   | 'connector-link-shortener'
@@ -97,6 +99,10 @@ interface StoredFeatureFlags {
 // i18n flags.connectorOpenrouter.label: OpenRouter
 // i18n flags.connectorOpenrouter.description: AI search queries, hashtag suggestions and translation for read-only providers.
 // i18n flags.connectorRaindrop.label: Raindrop.io
+// i18n flags.connectorMymemory.label: MyMemory
+// i18n flags.connectorMymemory.description: Free translation through MyMemory when your server and browser cannot.
+// i18n flags.connectorApertium.label: Apertium
+// i18n flags.connectorApertium.description: Free open-source translation through apertium.org when your server and browser cannot.
 // i18n flags.connectorRaindrop.description: Saving posts and their links to a Raindrop.io collection.
 // i18n flags.connectorGithub.label: GitHub
 // i18n flags.connectorGithub.description: Finding the people you follow on GitHub, and reading unread notifications.
@@ -211,6 +217,20 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     id: 'connector-openrouter',
     labelKey: 'flags.connectorOpenrouter.label',
     descriptionKey: 'flags.connectorOpenrouter.description',
+    defaultState: 'production',
+    group: 'connectors',
+  },
+  {
+    id: 'connector-mymemory',
+    labelKey: 'flags.connectorMymemory.label',
+    descriptionKey: 'flags.connectorMymemory.description',
+    defaultState: 'production',
+    group: 'connectors',
+  },
+  {
+    id: 'connector-apertium',
+    labelKey: 'flags.connectorApertium.label',
+    descriptionKey: 'flags.connectorApertium.description',
     defaultState: 'production',
     group: 'connectors',
   },

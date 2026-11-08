@@ -958,6 +958,11 @@
       "nextStep": "Token connection batch: native credential controls use Field/Control, actions Button, page titles PageHeader, guidance and feedback Notice, and links ContentLink. Real-page Storybook fixtures cover rejection, pending validation, connection and disconnect at narrow LTR/RTL widths. Preserve provider-specific validation and credential storage semantics."
     },
     {
+      "file": "ui/src/app/pages/settings/connections/free-translator/connection-free-translator.html",
+      "disposition": "adopted scope",
+      "nextStep": "MyMemory and Apertium connector page (one component, two routes): MbPageHeader, MbNotice for the privacy statement and results, MbCheckbox for the opt-in switch, MbField/MbControl for the MyMemory email, MbButton for Save and Test, MbContentLink for links. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/settings/connections/settings-connections.css",
       "disposition": "lexical only",
       "nextStep": "Matches are comments, selector strings or documentation, not new rendered controls. Review the corresponding template separately; this is not a CSS exemption."

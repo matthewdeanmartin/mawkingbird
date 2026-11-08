@@ -662,8 +662,22 @@ export class Api {
     return this.http.post<Status>(`/api/v1/statuses/${id}/unmute`, {});
   }
 
-  translate(id: string): Observable<Translation> {
-    return this.http.post<Translation>(`/api/v1/statuses/${id}/translate`, {});
+  /**
+   * Server translation. `lang` is the **target**; the source is always the post's
+   * declared language (Mastodon's TranslateStatusService) and cannot be overridden.
+   */
+  translate(id: string, lang?: string): Observable<Translation> {
+    return this.http.post<Translation>(`/api/v1/statuses/${id}/translate`, lang ? { lang } : {});
+  }
+
+  /**
+   * Which source → target pairs this server can translate (Mastodon 4.1+). Public.
+   * `{}` means no translation provider is configured; older servers answer 404.
+   */
+  translationLanguages(): Observable<Record<string, string[]>> {
+    return this.http.get<Record<string, string[]>>('/api/v1/instance/translation_languages', {
+      context: serverRole('background'),
+    });
   }
 
   statusHistory(id: string): Observable<StatusEdit[]> {

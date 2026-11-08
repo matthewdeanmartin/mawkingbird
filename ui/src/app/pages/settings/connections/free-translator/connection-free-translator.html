@@ -1,0 +1,76 @@
+<a mbContentLink class="conn-back" [routerLink]="['/settings/connections']">{{
+  'settings.connections.backLink' | transloco
+}}</a>
+
+<mb-page-header [title]="copy.title | transloco" />
+<div class="connection-intro">
+  <p>{{ copy.intro | transloco }}</p>
+  <p class="muted small">{{ copy.quota | transloco }}</p>
+</div>
+
+<mb-notice>{{ copy.privacy | transloco }}</mb-notice>
+
+<div class="free-translator-row">
+  <mb-checkbox
+    name="freeTranslatorEnabled"
+    [checked]="enabled()"
+    (checkedChange)="setEnabled($event)"
+    [label]="'settings.connections.freeTranslator.enable' | transloco"
+    [hint]="'settings.connections.freeTranslator.enableHint' | transloco"
+  />
+</div>
+
+@if (which === 'mymemory') {
+  <form class="free-translator-form" (ngSubmit)="saveEmail()">
+    <mb-field
+      [label]="'settings.connections.freeTranslator.email' | transloco"
+      [hint]="'settings.connections.freeTranslator.emailHint' | transloco"
+      [error]="emailError() ?? ''"
+    >
+      <input
+        mbControl
+        type="email"
+        name="mymemoryEmail"
+        autocomplete="off"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+      />
+    </mb-field>
+    <button mbButton variant="outline" type="submit">
+      {{ 'settings.connections.freeTranslator.saveEmail' | transloco }}
+    </button>
+  </form>
+  @if (emailNotice(); as msg) {
+    <mb-notice announcement="status">{{ msg }}</mb-notice>
+  }
+} @else {
+  <p>
+    <a mbContentLink href="https://apertium.org/apy/listPairs" target="_blank" rel="noopener">{{
+      'settings.connections.freeTranslator.apertium.pairs' | transloco
+    }}</a>
+  </p>
+}
+
+<p class="muted small">
+  {{
+    'settings.connections.freeTranslator.usage'
+      | transloco: { today: usage.today(which), limit: usage.hardLimit(which) }
+  }}
+</p>
+
+<div class="free-translator-row">
+  <button mbButton variant="outline" type="button" [disabled]="testing()" (click)="test()">
+    {{
+      testing()
+        ? ('settings.connections.freeTranslator.testing' | transloco)
+        : ('settings.connections.freeTranslator.test' | transloco)
+    }}
+  </button>
+</div>
+@if (testResult(); as result) {
+  <mb-notice
+    [tone]="result.ok ? 'info' : 'error'"
+    [announcement]="result.ok ? 'status' : 'alert'"
+    >{{ result.text }}</mb-notice
+  >
+}

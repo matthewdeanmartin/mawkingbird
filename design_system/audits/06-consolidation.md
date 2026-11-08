@@ -1829,6 +1829,21 @@ counts.
 
 No shared widget changed.
 
+## Translation fallback chain, 2026-11-08
+
+New candidate file
+`pages/settings/connections/free-translator/connection-free-translator.html`
+(MyMemory and Apertium connector page) built only from shared widgets:
+MbPageHeader, MbNotice, MbCheckbox, MbField/MbControl, MbButton and
+MbContentLink. The status card's "Translate from which language?" picker
+reuses the existing translator-chooser overlay (`.tc-overlay`/`.tc-dialog`,
+legacy `btn` classes and a native `<select>`), matching the chooser beside it;
+both move to MbDialog together. The 🌐 button's condition changed, not its
+control. Settings → Internationalization gains an ordered engine list and one
+native checkbox, matching that page's existing `checkline` rows. Inventory:
+1,716 sources, 604 candidates (one added, reconciled in
+11-reconciliation.json). No shared widget changed.
+
 ## Likes, bookmarks, history; announcement reactions; My server, 2026-11-08
 
 The Bookmarks page's provider row (pill `.tabs`) became an `MbToolbar` of

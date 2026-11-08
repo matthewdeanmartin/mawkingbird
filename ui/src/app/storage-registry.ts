@@ -823,6 +823,27 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Up to 200 browser-only private post references per social account. Never included in settings sync or shareable exports.',
   },
   {
+    base: 'mockingbird_connector_mymemory',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'MyMemory translation connector: on/off and the optional email that raises its quota. The email makes it private; absent when off with no email.',
+  },
+  {
+    base: 'mockingbird_connector_apertium',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Apertium translation connector switched on. Absent when off.',
+  },
+  {
+    base: 'mockingbird_translation_pairs_cache',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'cache',
+    note: 'Which language pairs each server (24 h) and Apertium (7 days) can translate, so unsupported pairs are skipped instead of answered with 403.',
+  },
+  {
     base: 'mockingbird_post_history',
     storage: 'local',
     suffix: 'account',

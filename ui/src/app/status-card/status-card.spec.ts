@@ -34,6 +34,8 @@ import {
 import { AiTranslate } from '../ai-translate';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
 import { TranslationUsage } from '../translation-usage';
+import { RouteOutcome, TranslationRouter } from '../translation/translation-router';
+import { TranslationConnectors } from '../translation/translation-connectors';
 import { TranslationPreference } from '../translation-preference';
 import { AnonymousBookmarks } from '../providers/anonymous/anonymous-bookmarks';
 import { Pseudonymity } from '../pseudonymity';
@@ -53,6 +55,7 @@ interface StatusCardInternals {
   saving: WritableSignal<boolean>;
   translation: WritableSignal<Translation | null>;
   translating: WritableSignal<boolean>;
+  translateError: WritableSignal<string | null>;
   pollSelection: WritableSignal<number[]>;
   showPolicyMenu: WritableSignal<boolean>;
   permissionsOpen: WritableSignal<boolean>;
@@ -263,6 +266,20 @@ describe('StatusCard', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  /**
+   * The translation chain asks the server which pairs it can do before translating.
+   * Answer that, then wait for the request a test expects to follow.
+   */
+  async function answerPairs(list: Record<string, string[]> | 404 = 404): Promise<void> {
+    const req = await vi.waitFor(() =>
+      httpMock.expectOne('/api/v1/instance/translation_languages'),
+    );
+    if (list === 404) req.flush('', { status: 404, statusText: 'Not Found' });
+    else req.flush(list);
+  }
+
+  const awaitRequest = (url: string) => vi.waitFor(() => httpMock.expectOne(url));
 
   it('offers a portable Radio link for continuous audio and removes it for private posts, video and inline-only players', () => {
     const status = makeStatus({
@@ -2080,33 +2097,47 @@ describe('StatusCard', () => {
 
   it('offers a one-request server override while preserving the setting and budget', async () => {
     vi.spyOn(TestBed.inject(AiTranslate), 'targetLanguage').mockReturnValue('en');
+    // Declared German, reads as English: the override asks the server to translate
+    // from the post's own label, the only source Mastodon uses.
     const f = setUp(
-      makeStatus({ id: '11', content: '<p>This is the book that we read with our friends.</p>' }),
+      makeStatus({
+        id: '11',
+        language: 'de',
+        content: '<p>This is the book that we read with our friends.</p>',
+      }),
     );
     f.componentInstance.toggleTranslate(fakeEvent());
-    f.detectChanges();
+    const button = await vi.waitFor(() => {
+      f.detectChanges();
+      const found = [...(f.nativeElement as HTMLElement).querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Translate anyway?'),
+      );
+      expect(found).toBeDefined();
+      return found!;
+    });
     httpMock.expectNone('/api/v1/statuses/11/translate');
-    const button = [...(f.nativeElement as HTMLElement).querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Translate anyway?'),
-    );
-    expect(button).toBeDefined();
     expect(f.nativeElement.textContent).not.toContain('turn this check off');
-    button!.click();
-    httpMock.expectOne('/api/v1/statuses/11/translate').flush({ content: '<p>Translated</p>' });
+    button.click();
+    await answerPairs();
+    (await awaitRequest('/api/v1/statuses/11/translate')).flush({ content: '<p>Translated</p>' });
+    await vi.waitFor(() => expect(internals(f).translation()).not.toBeNull());
     expect(TestBed.inject(ClientPrefs).skipSameLanguageTranslation()).toBe(true);
     f.componentInstance.toggleTranslate(fakeEvent());
+    expect(internals(f).translation()).toBeNull();
     f.componentInstance.toggleTranslate(fakeEvent());
+    await vi.waitFor(() => expect(internals(f).translateError()).toContain('appears to be in'));
     const budget = vi.spyOn(TestBed.inject(TranslationUsage), 'canSpend').mockReturnValue(false);
     await f.componentInstance.translateAnyway(fakeEvent());
-    expect(budget).toHaveBeenCalledWith('mastodon');
+    await vi.waitFor(() => expect(budget).toHaveBeenCalledWith('mastodon'));
     httpMock.expectNone('/api/v1/statuses/11/translate');
   });
 
-  it('toggleTranslate: calls /translate and stores result', () => {
-    const f = setUp(makeStatus({ id: '11' }));
+  it('toggleTranslate: calls /translate and stores result', async () => {
+    const f = setUp(makeStatus({ id: '11', language: 'de' }));
     f.componentInstance.toggleTranslate(fakeEvent());
 
-    const req = httpMock.expectOne('/api/v1/statuses/11/translate');
+    await answerPairs();
+    const req = await awaitRequest('/api/v1/statuses/11/translate');
     const translation: Translation = {
       content: '<p>Hello</p>',
       spoiler_text: '',
@@ -2115,7 +2146,7 @@ describe('StatusCard', () => {
     };
     req.flush(translation);
 
-    expect(internals(f).translation()).toEqual(translation);
+    await vi.waitFor(() => expect(internals(f).translation()).toEqual(translation));
     expect(internals(f).translating()).toBe(false);
   });
 
@@ -2135,13 +2166,117 @@ describe('StatusCard', () => {
     expect(internals(f).translation()).toBeNull();
   });
 
-  it('toggleTranslate: clears translating flag on HTTP error', () => {
-    const f = setUp(makeStatus({ id: '11' }));
+  describe('translation fallback chain', () => {
+    const route = (outcome: RouteOutcome) =>
+      vi.spyOn(TestBed.inject(TranslationRouter), 'translate').mockResolvedValue(outcome);
+
+    it('renders a third-party translation as text, naming the engine and the source', async () => {
+      route({
+        kind: 'text',
+        text: '<b>Good morning</b>',
+        engine: 'mymemory',
+        source: 'de',
+        target: 'en',
+      });
+      const f = setUp(makeStatus({ id: '11', language: 'en' }));
+      f.componentInstance.toggleTranslate(fakeEvent());
+      const el = f.nativeElement as HTMLElement;
+      await vi.waitFor(() => {
+        f.detectChanges();
+        expect(el.querySelector('.chain-translation')).not.toBeNull();
+      });
+      const block = el.querySelector('.chain-translation')!;
+      expect(block.textContent).toContain('<b>Good morning</b>');
+      expect(block.querySelector('b')).toBeNull();
+      expect(block.textContent).toContain('Translated from German by MyMemory');
+      // A second press puts it away.
+      f.componentInstance.toggleTranslate(fakeEvent());
+      f.detectChanges();
+      expect(el.querySelector('.chain-translation')).toBeNull();
+    });
+
+    it('asks which language to translate from, then translates from the pick', async () => {
+      const translate = route({ kind: 'ask', candidates: ['nl'], target: 'en' });
+      const f = setUp(makeStatus({ id: '11', language: 'en' }));
+      f.componentInstance.toggleTranslate(fakeEvent());
+      const el = f.nativeElement as HTMLElement;
+      await vi.waitFor(() => {
+        f.detectChanges();
+        expect(el.textContent).toContain('Translate from which language?');
+      });
+      const select = el.querySelector('.source-picker-field select') as HTMLSelectElement;
+      expect(select.value).toBe('nl');
+      translate.mockResolvedValue({
+        kind: 'text',
+        text: 'Hello',
+        engine: 'browser',
+        source: 'nl',
+        target: 'en',
+      });
+      const go = [...el.querySelectorAll('.tc-dialog button')].find(
+        (b) => b.textContent?.trim() === 'Translate',
+      ) as HTMLButtonElement;
+      go.click();
+      await vi.waitFor(() => {
+        f.detectChanges();
+        expect(el.textContent).toContain('Translated from Dutch by This browser');
+      });
+      expect(translate).toHaveBeenLastCalledWith(
+        expect.objectContaining({ source: 'nl', force: true, mode: 'manual' }),
+      );
+      expect(el.textContent).not.toContain('Translate from which language?');
+    });
+
+    it('names every engine that refused, and points at the free translators when they are off', async () => {
+      route({
+        kind: 'failed',
+        source: 'eo',
+        target: 'en',
+        attempts: [
+          { engine: 'mastodon', reason: 'unsupported' },
+          { engine: 'browser', reason: 'unsupported' },
+          { engine: 'mymemory', reason: 'off' },
+          { engine: 'apertium', reason: 'off' },
+          { engine: 'openrouter', reason: 'off' },
+        ],
+      });
+      const f = setUp(makeStatus({ id: '11', language: 'eo' }));
+      f.componentInstance.toggleTranslate(fakeEvent());
+      const el = f.nativeElement as HTMLElement;
+      await vi.waitFor(() => {
+        f.detectChanges();
+        expect(el.querySelector('[role="alert"]')).not.toBeNull();
+      });
+      const alert = el.querySelector('[role="alert"]')!.textContent!;
+      expect(alert).toContain("Couldn't translate this post.");
+      expect(alert).toContain(
+        'Your server doesn’t translate Esperanto → English'.replace('’', "'"),
+      );
+      expect(alert).toContain('This browser');
+      expect(alert).toContain('Turn on free translators');
+    });
+
+    it('shows the 🌐 button to Anonymous when a free translator is on', () => {
+      localStorage.setItem('mastodon_mock_account_mode', 'anonymous');
+      TestBed.inject(TranslationConnectors).setMyMemoryEnabled(true);
+      const f = setUp(makeStatus({ id: '11' }));
+      const globe = [...(f.nativeElement as HTMLElement).querySelectorAll('button')].find(
+        (b) => b.getAttribute('aria-label') === 'Translate',
+      );
+      expect(globe).toBeDefined();
+    });
+  });
+
+  it('toggleTranslate: clears translating flag on HTTP error', async () => {
+    const f = setUp(makeStatus({ id: '11', language: 'de' }));
     f.componentInstance.toggleTranslate(fakeEvent());
-    httpMock
-      .expectOne('/api/v1/statuses/11/translate')
-      .flush('', { status: 503, statusText: 'Unavailable' });
-    expect(internals(f).translating()).toBe(false);
+    await answerPairs();
+    (await awaitRequest('/api/v1/statuses/11/translate')).flush('', {
+      status: 503,
+      statusText: 'Unavailable',
+    });
+    await vi.waitFor(() => expect(internals(f).translating()).toBe(false));
+    expect(internals(f).translateError()).toContain("Couldn't translate this post.");
   });
 
   // ---------------------------------------------------------------- pollPercent

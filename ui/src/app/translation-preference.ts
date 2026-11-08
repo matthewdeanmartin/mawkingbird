@@ -50,8 +50,8 @@ export class TranslationPreference {
   readonly options: readonly { value: TranslationChoice; label: string; hint: string }[] = [
     {
       value: 'server',
-      label: 'Your server',
-      hint: "Uses the instance's own translation. Free, and needs no setup.",
+      label: 'Automatic (free first)',
+      hint: 'Your server, then this browser, then MyMemory and Apertium if you turned them on, and AI last if connected.',
     },
     {
       value: 'ai',

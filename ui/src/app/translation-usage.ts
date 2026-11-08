@@ -49,9 +49,16 @@ const STORAGE_KEY = 'mockingbird_translation_usage';
  * which is DeepL or LibreTranslate behind the scenes depending on how the admin
  * configured it. `openrouter` is {@link AiTranslate} going out to a chosen model.
  */
-export type TranslationEngine = 'mastodon' | 'openrouter';
+export type TranslationEngine = 'mastodon' | 'browser' | 'mymemory' | 'apertium' | 'openrouter';
 
-export const TRANSLATION_ENGINES: readonly TranslationEngine[] = ['mastodon', 'openrouter'];
+/** Also the fallback chain's order (see translation/translation-router.ts). */
+export const TRANSLATION_ENGINES: readonly TranslationEngine[] = [
+  'mastodon',
+  'browser',
+  'mymemory',
+  'apertium',
+  'openrouter',
+];
 
 /** How each engine is named wherever a human reads it. */
 export const ENGINE_LABELS: Record<TranslationEngine, string> = {
@@ -59,6 +66,9 @@ export const ENGINE_LABELS: Record<TranslationEngine, string> = {
   // someone deciding where to spend a daily allowance deserves to know what they are
   // about to hit.
   mastodon: 'Mastodon (DeepL/LibreTranslate)',
+  browser: 'This browser (on device)',
+  mymemory: 'MyMemory (characters)',
+  apertium: 'Apertium',
   openrouter: 'AI (OpenRouter)',
 };
 
@@ -92,8 +102,30 @@ export const DEFAULT_OPENROUTER_SOFT_LIMIT = 25;
 /** Default hard limit for OpenRouter. The runaway guard on the paid path. */
 export const DEFAULT_OPENROUTER_HARD_LIMIT = 100;
 
+/**
+ * The browser's translator runs on this device: nothing to protect but the count, so
+ * the limit is effectively off.
+ */
+export const DEFAULT_BROWSER_LIMIT = 1_000_000;
+
+/**
+ * MyMemory meters **characters**, not calls: 5,000 a day anonymously, 50,000 with an
+ * email (see MYMEMORY_EMAIL_DAILY_CHARS). Counted the same way here so the client stops
+ * before the service starts answering with errors.
+ */
+export const DEFAULT_MYMEMORY_SOFT_LIMIT = 4_000;
+export const DEFAULT_MYMEMORY_HARD_LIMIT = 5_000;
+export const MYMEMORY_EMAIL_DAILY_CHARS = 50_000;
+
+/** Apertium's public server publishes no quota; be a polite guest. */
+export const DEFAULT_APERTIUM_SOFT_LIMIT = 100;
+export const DEFAULT_APERTIUM_HARD_LIMIT = 500;
+
 const DEFAULT_LIMITS: Record<TranslationEngine, { soft: number; hard: number }> = {
   mastodon: { soft: DEFAULT_MASTODON_SOFT_LIMIT, hard: DEFAULT_MASTODON_HARD_LIMIT },
+  browser: { soft: DEFAULT_BROWSER_LIMIT, hard: DEFAULT_BROWSER_LIMIT },
+  mymemory: { soft: DEFAULT_MYMEMORY_SOFT_LIMIT, hard: DEFAULT_MYMEMORY_HARD_LIMIT },
+  apertium: { soft: DEFAULT_APERTIUM_SOFT_LIMIT, hard: DEFAULT_APERTIUM_HARD_LIMIT },
   openrouter: { soft: DEFAULT_OPENROUTER_SOFT_LIMIT, hard: DEFAULT_OPENROUTER_HARD_LIMIT },
 };
 
@@ -126,7 +158,13 @@ function emptyEngine(): EngineUsage {
 }
 
 function emptyState(): StoredUsage {
-  return { mastodon: emptyEngine(), openrouter: emptyEngine() };
+  return {
+    mastodon: emptyEngine(),
+    browser: emptyEngine(),
+    mymemory: emptyEngine(),
+    apertium: emptyEngine(),
+    openrouter: emptyEngine(),
+  };
 }
 
 /** One engine's stored counters, or a fresh set when the shape is unrecognisable. */
@@ -156,6 +194,9 @@ function read(): StoredUsage {
     // other half's honest count.
     return {
       mastodon: readEngine(parsed?.mastodon),
+      browser: readEngine(parsed?.browser),
+      mymemory: readEngine(parsed?.mymemory),
+      apertium: readEngine(parsed?.apertium),
       openrouter: readEngine(parsed?.openrouter),
     };
   } catch {

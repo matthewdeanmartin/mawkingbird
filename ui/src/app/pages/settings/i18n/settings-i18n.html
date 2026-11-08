@@ -258,6 +258,36 @@
     </div>
 
     <div class="srow">
+      <span class="slabel">{{ 'settings.i18n.engines' | transloco }}</span>
+      <div class="scontrol">
+        <span class="hint">{{ 'settings.i18n.engines.hint' | transloco }}</span>
+        <ol class="engine-chain">
+          @for (row of engineRows(); track row.engine) {
+            <li>
+              <strong>{{ engineLabels[row.engine] }}</strong>
+              <span class="hint">{{ row.stateKey | transloco: row.params }}</span>
+              @if (row.link) {
+                <a [routerLink]="row.link">{{ 'settings.i18n.engines.setUp' | transloco }}</a>
+              }
+            </li>
+          }
+        </ol>
+        @if (browserSupported) {
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [ngModel]="prefs.browserTranslator()"
+              (ngModelChange)="prefs.setBrowserTranslator($event)"
+              name="browserTranslator"
+            />
+            {{ 'settings.i18n.browserTranslator' | transloco }}
+          </label>
+          <span class="hint">{{ 'settings.i18n.browserTranslator.hint' | transloco }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="srow">
       <span class="slabel">{{ 'settings.i18n.budget' | transloco }}</span>
       <div class="scontrol">
         <span class="hint">

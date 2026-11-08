@@ -11,6 +11,7 @@ import { DropboxSession } from '../../../providers/dropbox/dropbox-session';
 import { RaindropSession } from '../../../providers/raindrop/raindrop-session';
 import { GitHubSession } from '../../../providers/github/github-session';
 import { OpenRouterSession } from '../../../providers/openrouter/openrouter-session';
+import { TranslationConnectors } from '../../../translation/translation-connectors';
 import { CorsProxySettings } from '../../../providers/cors-proxy/cors-proxy-settings';
 import { ShortenerSettings } from '../../../providers/shortener/shortener-settings';
 import { TwitterSettings } from '../../../providers/twitter/twitter-settings';
@@ -128,6 +129,7 @@ export class SettingsConnections implements OnInit {
   private raindrop = inject(RaindropSession);
   private github = inject(GitHubSession);
   private openrouter = inject(OpenRouterSession);
+  private translators = inject(TranslationConnectors);
   private corsProxy = inject(CorsProxySettings);
   private shortener = inject(ShortenerSettings);
   private twitter = inject(TwitterSettings);
@@ -254,6 +256,10 @@ export class SettingsConnections implements OnInit {
           return { entry, connected: this.bsky.session() !== null, unavailableReason: null };
         case 'openrouter':
           return { entry, connected: this.openrouter.connected(), unavailableReason: null };
+        case 'mymemory':
+          return { entry, connected: this.translators.myMemoryEnabled(), unavailableReason: null };
+        case 'apertium':
+          return { entry, connected: this.translators.apertiumEnabled(), unavailableReason: null };
         case 'raindrop':
           return { entry, connected: this.raindrop.connected(), unavailableReason: null };
         case 'github':

@@ -18,6 +18,7 @@ anything that went wrong under **Findings**.
 | [Sprint 4: moderation](bsky-parity-sprint-4-moderation.md) | Muted words, mute thread, moderation lists, moderation services | Not run |
 | [Sprint 5: discovery](bsky-parity-sprint-5-discovery.md) | Starter packs, suggestions, show more / less like this | Not run |
 | [Write and Drafts](write-drafts-2026-11.md) | Autosave, versions, shortcuts, quote dialog, scheduling and parking | Not run |
+| [Translation fallback](translation-fallback-2026-11.md) | Pair pre-check, browser translator, MyMemory, Apertium, source-language picker | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

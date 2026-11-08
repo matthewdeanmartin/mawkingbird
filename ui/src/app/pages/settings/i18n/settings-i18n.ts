@@ -14,6 +14,11 @@ import {
   TranslationUsage,
 } from '../../../translation-usage';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { RouterLink } from '@angular/router';
+import { OpenRouterSession } from '../../../providers/openrouter/openrouter-session';
+import { BrowserTranslator } from '../../../translation/browser-translator';
+import { TranslationPairCatalog } from '../../../translation/pair-catalog';
+import { TranslationConnectors } from '../../../translation/translation-connectors';
 
 /** Languages offered in the "add a language" picker — the ones we can name. */
 const PICKER_ORDER: LangCode[] = [
@@ -95,8 +100,22 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.translateAll.hint: Unbounded, and priced accordingly: every post in a language you don't read becomes a translation. Useful for reading a timeline you share no language with. Watch the daily count below.
 // i18n settings.i18n.useAi: Let automatic translation spend OpenRouter credit ($$$)
 // i18n settings.i18n.useAi.hint: Off by default. Choosing AI for the 🌐 button is one press you decided on; this is a loop that runs while you scroll, so it's a separate choice. Left off, automatic translation uses {{engine}} only.
+// i18n settings.i18n.engines: Translators
+// i18n settings.i18n.engines.hint: Pressing 🌐 tries these in order until one can translate the post. Automatic translation uses the free ones only (AI only if you allow it below).
+// i18n settings.i18n.engines.setUp: Set up
+// i18n settings.i18n.engines.on: On
+// i18n settings.i18n.engines.off: Off
+// i18n settings.i18n.engines.noServer: Not available without a signed-in Mastodon account
+// i18n settings.i18n.engines.serverUnknown: Your server does not say which languages it translates; it is asked anyway
+// i18n settings.i18n.engines.serverLanguages: Translates from {{count}} languages
+// i18n settings.i18n.engines.serverNone: Your server has no translator set up, so it is skipped
+// i18n settings.i18n.engines.browserMissing: This browser has no built-in translator (Chrome 138 or newer on a computer has one)
+// i18n settings.i18n.engines.aiLast: Connected; used last, because it spends credits
+// i18n settings.i18n.engines.notConnected: Not connected
+// i18n settings.i18n.browserTranslator: Use this browser's built-in translator
+// i18n settings.i18n.browserTranslator.hint: Translates on this device, so the post never leaves your computer. The first time for each language, the browser downloads a language model.
 // i18n settings.i18n.budget: Translation budget
-// i18n settings.i18n.budget.hint: Translations are counted per day and per service, and the two budgets are kept separate — running out on one never blocks the other. Counts reset at midnight, your time. Only the number of translations is stored, never what was translated.
+// i18n settings.i18n.budget.hint: Translations are counted per day and per service, and each service has its own budget — running out on one never blocks the others. Counts reset at midnight, your time. Only the number of translations is stored, never what was translated.
 // i18n settings.i18n.budget.count: {{today}} today · {{left}} left
 // i18n settings.i18n.budget.usedUp: Today's limit is used up. Translation with this service resumes at midnight, or raise the limit below.
 // i18n settings.i18n.budget.warned: Past the point where you asked to be warned. Still working, up to the limit.
@@ -112,7 +131,7 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.inferred.notSet: not set
 @Component({
   selector: 'app-settings-i18n',
-  imports: [FormsModule, TranslocoPipe, LocalePicker],
+  imports: [FormsModule, TranslocoPipe, LocalePicker, RouterLink],
   templateUrl: './settings-i18n.html',
 })
 export class SettingsI18n implements OnInit {
@@ -194,6 +213,9 @@ export class SettingsI18n implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.auth.isAnonymous && !this.auth.lacksMastodonToken) {
+      void this.pairCatalog.serverLanguageCount().then((count) => this.serverLanguages.set(count));
+    }
     // Posting default language is a server-side "you know this" signal. Fetch it
     // (skip for the anonymous browser-local account, which has no credentials)
     // and fold it into the explicit list so it survives offline too.
@@ -214,7 +236,62 @@ export class SettingsI18n implements OnInit {
   // --- translation budgets (i18n sprint 1) ---
 
   protected readonly usage = inject(TranslationUsage);
-  protected readonly engines = TRANSLATION_ENGINES;
+  /** The browser's translator runs on this device: there is no budget worth setting. */
+  protected readonly engines = TRANSLATION_ENGINES.filter((engine) => engine !== 'browser');
+
+  // --- the fallback chain, in order (sprint/translation-fallback-2026-11.md) ---
+  private readonly browserTranslator = inject(BrowserTranslator);
+  private readonly connectors = inject(TranslationConnectors);
+  private readonly pairCatalog = inject(TranslationPairCatalog);
+  private readonly openrouter = inject(OpenRouterSession);
+  protected readonly browserSupported = this.browserTranslator.supported();
+  /** Source languages the home server translates; null while unknown. */
+  private readonly serverLanguages = signal<number | null>(null);
+
+  protected readonly engineRows = computed(() =>
+    TRANSLATION_ENGINES.map((engine) => {
+      const row = (
+        stateKey: string,
+        params: Record<string, unknown> = {},
+        link: string | null = null,
+      ) => ({
+        engine,
+        stateKey,
+        params,
+        link,
+      });
+      switch (engine) {
+        case 'mastodon': {
+          if (this.auth.isAnonymous || this.auth.lacksMastodonToken)
+            return row('settings.i18n.engines.noServer');
+          const count = this.serverLanguages();
+          if (count === null) return row('settings.i18n.engines.serverUnknown');
+          return count
+            ? row('settings.i18n.engines.serverLanguages', { count })
+            : row('settings.i18n.engines.serverNone');
+        }
+        case 'browser':
+          if (!this.browserSupported) return row('settings.i18n.engines.browserMissing');
+          return row(
+            this.prefs.browserTranslator()
+              ? 'settings.i18n.engines.on'
+              : 'settings.i18n.engines.off',
+          );
+        case 'mymemory':
+          return this.connectors.myMemoryEnabled()
+            ? row('settings.i18n.engines.on')
+            : row('settings.i18n.engines.off', {}, '/settings/connections/mymemory');
+        case 'apertium':
+          return this.connectors.apertiumEnabled()
+            ? row('settings.i18n.engines.on')
+            : row('settings.i18n.engines.off', {}, '/settings/connections/apertium');
+        case 'openrouter':
+          return this.openrouter.connected()
+            ? row('settings.i18n.engines.aiLast')
+            : row('settings.i18n.engines.notConnected', {}, '/settings/connections/openrouter');
+      }
+    }),
+  );
   protected readonly engineLabels = ENGINE_LABELS;
 
   /**
@@ -226,16 +303,14 @@ export class SettingsI18n implements OnInit {
    */
   protected readonly draftLimits = signal<
     Record<TranslationEngine, { soft: string; hard: string }>
-  >({
-    mastodon: {
-      soft: `${this.usage.softLimit('mastodon')}`,
-      hard: `${this.usage.hardLimit('mastodon')}`,
-    },
-    openrouter: {
-      soft: `${this.usage.softLimit('openrouter')}`,
-      hard: `${this.usage.hardLimit('openrouter')}`,
-    },
-  });
+  >(
+    Object.fromEntries(
+      TRANSLATION_ENGINES.map((engine) => [
+        engine,
+        { soft: String(this.usage.softLimit(engine)), hard: String(this.usage.hardLimit(engine)) },
+      ]),
+    ) as Record<TranslationEngine, { soft: string; hard: string }>,
+  );
 
   protected setDraft(engine: TranslationEngine, field: 'soft' | 'hard', value: string): void {
     this.draftLimits.update((all) => ({ ...all, [engine]: { ...all[engine], [field]: value } }));

@@ -31,6 +31,8 @@ export type ConnectionId =
   | 'raindrop'
   | 'bluesky'
   | 'openrouter'
+  | 'mymemory'
+  | 'apertium'
   | 'cors-proxy'
   | 'link-shortener'
   | 'twitter'
@@ -109,6 +111,8 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
   blogger: 'connector-blogger',
   hugo: 'connector-hugo',
   openrouter: 'connector-openrouter',
+  mymemory: 'connector-mymemory',
+  apertium: 'connector-apertium',
   raindrop: 'connector-raindrop',
   github: 'connector-github',
   // The `pastebin` flag, not a connector flag of its own: what this turns on is
@@ -154,6 +158,14 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
 // i18n settings.connections.catalog.openrouter.pitch: One key, hundreds of AI models, billed by usage.
 // i18n settings.connections.catalog.openrouter.enables.search: Turn plain English into Mastodon search queries
 // i18n settings.connections.catalog.openrouter.enables.hashtags: Suggest hashtags that actually have activity
+// i18n settings.connections.catalog.mymemory.label: MyMemory
+// i18n settings.connections.catalog.mymemory.pitch: A free translation service, 5,000 characters a day (50,000 with an email).
+// i18n settings.connections.catalog.mymemory.enables.translate: Translate posts your server and browser cannot
+// i18n settings.connections.catalog.mymemory.enables.anonymous: Translation for Anonymous, with no account anywhere
+// i18n settings.connections.catalog.apertium.label: Apertium
+// i18n settings.connections.catalog.apertium.pitch: Free, open-source translation, strongest for related and minority languages.
+// i18n settings.connections.catalog.apertium.enables.translate: Translate posts your server and browser cannot
+// i18n settings.connections.catalog.apertium.enables.minority: Catalan, Galician, Occitan, Basque and other languages big services skip
 // i18n settings.connections.catalog.raindrop.label: Raindrop.io
 // i18n settings.connections.catalog.raindrop.pitch: The Raindrop.io bookmarking service.
 // i18n settings.connections.catalog.raindrop.enables.bookmarks: A second place to save bookmarks
@@ -312,6 +324,29 @@ export const CONNECTION_CATALOG: readonly ConnectionCatalogEntry[] = [
     enables: [
       'settings.connections.catalog.openrouter.enables.search',
       'settings.connections.catalog.openrouter.enables.hashtags',
+    ],
+  },
+  {
+    id: 'mymemory',
+    label: 'settings.connections.catalog.mymemory.label',
+    emoji: '🌍',
+    pitch: 'settings.connections.catalog.mymemory.pitch',
+    // An on/off switch and an optional email, stored unscoped like OpenRouter.
+    scope: 'browser',
+    enables: [
+      'settings.connections.catalog.mymemory.enables.translate',
+      'settings.connections.catalog.mymemory.enables.anonymous',
+    ],
+  },
+  {
+    id: 'apertium',
+    label: 'settings.connections.catalog.apertium.label',
+    emoji: '🔤',
+    pitch: 'settings.connections.catalog.apertium.pitch',
+    scope: 'browser',
+    enables: [
+      'settings.connections.catalog.apertium.enables.translate',
+      'settings.connections.catalog.apertium.enables.minority',
     ],
   },
   {

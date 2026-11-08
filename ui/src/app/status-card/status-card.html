@@ -253,9 +253,33 @@
             </div>
           }
 
+          <!-- Every engine but the server returns plain text from a third party, a
+               model or the browser: rendered as TEXT, like the AI block above. -->
+          @if (chainTranslation(); as ct) {
+            <div class="ai-translation chain-translation" (click)="$event.stopPropagation()">
+              <p class="ai-translation-text">{{ ct.text }}</p>
+              <div class="translation-note muted small">
+                {{
+                  (autoTranslated() ? 'statusCard.chain.noteAutomatic' : 'statusCard.chain.note')
+                    | transloco: { from: languageLabel(ct.source), engine: engineName(ct.engine) }
+                }}
+                <button class="link-button" type="button" (click)="changeSource($event)">
+                  {{ 'statusCard.chain.change' | transloco }}
+                </button>
+              </div>
+            </div>
+          }
+
           @if (aiTranslating()) {
             <div class="translation-note muted small" role="status">
               {{ 'statusCard.translating' | transloco }}
+            </div>
+          } @else if (downloadProgress() !== null) {
+            <div class="translation-note muted small" role="status">
+              {{
+                'statusCard.chain.downloading'
+                  | transloco: { percent: ((downloadProgress() ?? 0) * 100).toFixed(0) }
+              }}
             </div>
           }
 
@@ -267,10 +291,10 @@
                   {{ 'statusCard.translateAnyway' | transloco }}
                 </button>
               }
-              @if (msg.includes('AI translation')) {
-                <button class="link-button" type="button" (click)="onAiTranslateClick($event)">
-                  {{ 'statusCard.useAiTranslation' | transloco }}
-                </button>
+              @if (suggestConnectors()) {
+                <a class="link-button" routerLink="/settings/connections">
+                  {{ 'statusCard.chain.connectors' | transloco }}
+                </a>
               }
             </div>
           }
@@ -1202,17 +1226,15 @@
           <!-- Server translation needs a status the server actually has. For a
                read-only provider it could only 404 on an id it cannot resolve,
                so those posts get the AI button below instead. -->
-          @if (
-            capabilities.canUseServerActions &&
-            display.provider !== 'bluesky' &&
-            !serverCannotTranslate
-          ) {
+          <!-- The fallback chain: shown whenever some engine could translate this post
+               (the server, this browser, an opted-in free service, or AI). -->
+          @if (showChainTranslate()) {
             <button
               type="button"
               mbPostAction
               class="action"
-              [class.on]="!!translation()"
-              [pressed]="!!translation()"
+              [class.on]="!!translation() || !!chainTranslation()"
+              [pressed]="!!translation() || !!chainTranslation()"
               [disabled]="translating()"
               (click)="translateByPreference($event)"
               [title]="'statusCard.translate' | transloco"
@@ -1964,6 +1986,53 @@
       (chosen)="chooseBookmark($event)"
       (closed)="showBookmarkProviders.set(false)"
     />
+  }
+
+  @if (sourcePicker()) {
+    <div
+      class="tc-overlay"
+      role="presentation"
+      tabindex="-1"
+      (click)="sourcePicker.set(null)"
+      (keyup.escape)="sourcePicker.set(null)"
+    >
+      <div
+        class="tc-dialog"
+        role="dialog"
+        aria-labelledby="source-picker-title"
+        (click)="$event.stopPropagation()"
+        (keyup)="$event.stopPropagation()"
+      >
+        <h3 id="source-picker-title">{{ 'statusCard.chain.pickSource' | transloco }}</h3>
+        <p class="muted small">{{ 'statusCard.chain.pickSourceHint' | transloco }}</p>
+        <label class="source-picker-field">
+          <span>{{ 'statusCard.chain.pickSourceLabel' | transloco }}</span>
+          <select [value]="pickedSource()" (change)="pickedSource.set($any($event.target).value)">
+            <option value="" disabled>
+              {{ 'statusCard.chain.pickSourcePlaceholder' | transloco }}
+            </option>
+            @for (lang of pickerLanguages(); track lang.code) {
+              <option [value]="lang.code" [selected]="lang.code === pickedSource()">
+                {{ lang.name }}
+              </option>
+            }
+          </select>
+        </label>
+        <div class="tc-options">
+          <button
+            class="btn"
+            type="button"
+            [disabled]="!pickedSource()"
+            (click)="translateFromPicked($event)"
+          >
+            {{ 'statusCard.translate' | transloco }}
+          </button>
+          <button class="btn btn-outline" type="button" (click)="sourcePicker.set(null)">
+            {{ 'statusCard.notNow' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
   }
 
   @if (translateChoiceOpen()) {

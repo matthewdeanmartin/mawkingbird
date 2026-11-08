@@ -605,6 +605,24 @@ export const routes: Routes = [
                   ),
               },
               {
+                path: 'mymemory',
+                title: 'MyMemory',
+                data: { translator: 'mymemory' },
+                loadComponent: () =>
+                  import('./pages/settings/connections/free-translator/connection-free-translator').then(
+                    (m) => m.ConnectionFreeTranslator,
+                  ),
+              },
+              {
+                path: 'apertium',
+                title: 'Apertium',
+                data: { translator: 'apertium' },
+                loadComponent: () =>
+                  import('./pages/settings/connections/free-translator/connection-free-translator').then(
+                    (m) => m.ConnectionFreeTranslator,
+                  ),
+              },
+              {
                 path: 'bluesky',
                 title: 'Bluesky',
                 loadComponent: () =>

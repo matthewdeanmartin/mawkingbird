@@ -1,0 +1,17 @@
+.free-translator-row {
+  margin: 12px 0;
+}
+
+.free-translator-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.free-translator-form mb-field {
+  flex: 1;
+  min-width: 0;
+  flex-basis: 220px;
+}

@@ -453,6 +453,7 @@ interface StoredPrefs {
   autoTranslateMode?: AutoTranslateMode;
   translateAllForeign?: boolean;
   autoTranslateUsesAi?: boolean;
+  browserTranslator?: boolean;
   skipSameLanguageTranslation?: boolean;
 }
 
@@ -938,6 +939,11 @@ export class ClientPrefs {
    * uses the instance endpoint unless this is explicitly switched on.
    */
   readonly autoTranslateUsesAi = signal<boolean>(false);
+  /**
+   * Whether translation may use the browser's own on-device translator (Chrome's
+   * Translator API) when the server cannot. On by default: nothing leaves the device.
+   */
+  readonly browserTranslator = signal<boolean>(true);
 
   /**
    * Refuse a translation when the post already looks like the target language.
@@ -1340,6 +1346,10 @@ export class ClientPrefs {
     this.autoTranslateUsesAi.set(on);
   }
 
+  setBrowserTranslator(on: boolean): void {
+    this.browserTranslator.set(on);
+  }
+
   setSkipSameLanguageTranslation(on: boolean): void {
     this.skipSameLanguageTranslation.set(on);
   }
@@ -1539,6 +1549,7 @@ export class ClientPrefs {
     );
     this.loadBool(stored.translateAllForeign, this.translateAllForeign);
     this.loadBool(stored.autoTranslateUsesAi, this.autoTranslateUsesAi);
+    this.loadBool(stored.browserTranslator, this.browserTranslator);
     this.loadBool(stored.skipSameLanguageTranslation, this.skipSameLanguageTranslation);
   }
 
@@ -1612,6 +1623,7 @@ export class ClientPrefs {
       autoTranslateMode: this.autoTranslateMode(),
       translateAllForeign: this.translateAllForeign(),
       autoTranslateUsesAi: this.autoTranslateUsesAi(),
+      browserTranslator: this.browserTranslator(),
       skipSameLanguageTranslation: this.skipSameLanguageTranslation(),
     };
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));

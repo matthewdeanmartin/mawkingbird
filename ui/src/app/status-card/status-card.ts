@@ -93,6 +93,15 @@ import { AiAvailability } from '../ai-availability';
 import { AiTranslate, AiTranslation, languageName } from '../ai-translate';
 import { TranslationPreference } from '../translation-preference';
 import { ENGINE_LABELS, TranslationEngine, TranslationUsage } from '../translation-usage';
+import {
+  Attempt,
+  CHAIN_ENGINE_NAMES,
+  SkipReason,
+  ChainTranslation,
+  TranslationRouter,
+} from '../translation/translation-router';
+import { languageDisplayName } from '../translation/language-codes';
+import { POSTING_LANGUAGE_OPTIONS } from '../language-detect';
 import { AutoTranslateEligibility } from '../trend-language-filter';
 import { MutedPosts } from '../muted-posts';
 import { LocalModeration } from '../local-moderation';
@@ -167,7 +176,6 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.showSensitiveContent: Show sensitive content
 // i18n statusCard.quotedPostUnavailable: Quoted post is unavailable.
 // i18n statusCard.translating: Translating…
-// i18n statusCard.useAiTranslation: Use AI translation
 // i18n statusCard.votes: {{count}} votes
 // i18n statusCard.vote: Vote
 // i18n statusCard.pollResult: {{percent}}% · {{count}} votes
@@ -286,9 +294,23 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.externalLinkSaved: External link saved to Raindrop.io.
 // i18n statusCard.postSavedToRaindrop: Post saved to Raindrop.io.
 // i18n statusCard.raindropBookmarkFailed: Raindrop.io couldn't save that bookmark.
-// i18n statusCard.serverTranslateFailedWithAi: Your server couldn't translate this. Try AI translation instead.
-// i18n statusCard.serverTranslateFailed: Your server couldn't translate this post.
 // i18n statusCard.translateAnyway: Translate anyway?
+// i18n statusCard.chain.note: Translated from {{from}} by {{engine}} · machine translation, so treat the wording as approximate
+// i18n statusCard.chain.noteAutomatic: Translated from {{from}} by {{engine}} · automatic
+// i18n statusCard.chain.change: Wrong language?
+// i18n statusCard.chain.downloading: Downloading this browser's language model… {{percent}}%
+// i18n statusCard.chain.connectors: Turn on free translators
+// i18n statusCard.chain.pickSource: Translate from which language?
+// i18n statusCard.chain.pickSourceHint: We could not tell which language this post is in, and its own label says it is already in yours.
+// i18n statusCard.chain.pickSourceLabel: Language of the post
+// i18n statusCard.chain.pickSourcePlaceholder: Choose a language
+// i18n statusCard.chain.failed: Couldn't translate this post.
+// i18n statusCard.chain.wrongTag: {{engine}} would translate from the post's label, which looks wrong
+// i18n statusCard.chain.noProvider: {{engine}} has no translator set up
+// i18n statusCard.chain.unsupported: {{engine}} doesn't translate {{from}} → {{to}}
+// i18n statusCard.chain.needsDownload: {{engine}} needs to download {{from}} → {{to}} first; press 🌐 again
+// i18n statusCard.chain.budget: {{engine}} has used today's limit ({{limit}})
+// i18n statusCard.chain.tried: {{engine}} couldn't translate it
 // i18n statusCard.sameLanguageNotice: This post appears to be in {{target}}.
 // i18n statusCard.translationLimit: You've used today's {{engine}} translation limit ({{limit}}). It resets at midnight, or you can raise it in Settings → Internationalization.
 // i18n statusCard.modelTranslateFailed: The model couldn't translate this.
@@ -388,6 +410,19 @@ function compactContentLinks(content: string, embeddedPostUrl: string | null): s
   }
   return doc.body.innerHTML;
 }
+
+/** The failure-message line for each reason an engine gave up ("off" etc. are not listed). */
+const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
+  off: 'statusCard.chain.tried',
+  'no-server': 'statusCard.chain.tried',
+  'auto-excluded': 'statusCard.chain.tried',
+  'wrong-tag': 'statusCard.chain.wrongTag',
+  'no-provider': 'statusCard.chain.noProvider',
+  unsupported: 'statusCard.chain.unsupported',
+  'needs-download': 'statusCard.chain.needsDownload',
+  budget: 'statusCard.chain.budget',
+  failed: 'statusCard.chain.tried',
+};
 
 @Component({
   selector: 'app-status-card',
@@ -2464,47 +2499,170 @@ export class StatusCard {
   }
 
   // --- translation ---
-  toggleTranslate(event: Event, force = false): void {
+  /**
+   * The 🌐 press: run the fallback chain (server → this browser → MyMemory →
+   * Apertium → AI), or put the translation away if one is showing.
+   *
+   * `source` is a language the reader picked in "Translate from which language?";
+   * `force` overrides the "already in your language" refusal.
+   */
+  toggleTranslate(event: Event, force = false, source?: string): void {
     event.stopPropagation();
-    if (this.translation()) {
+    if (!source && (this.translation() || this.chainTranslation())) {
       this.translation.set(null);
+      this.chainTranslation.set(null);
       return;
     }
-    // Already in your language: the call would hand back the post you are reading, so
-    // it is refused before it costs a request or a slot in the daily budget.
-    if (!force && this.alreadyInTargetLanguage()) {
-      this.sameLanguageEngine.set('server');
-      this.translateError.set(this.sameLanguageMessage());
-      return;
-    }
-    this.sameLanguageEngine.set(null);
-    // Metered against the instance's own budget, which is separate from OpenRouter's
-    // (see TranslationUsage). Checked before the call, not after: a limit that only
-    // notices once the request is in flight has not limited anything.
-    if (!this.usage.canSpend('mastodon')) {
-      this.translateError.set(this.limitMessage('mastodon'));
-      return;
-    }
+    void this.runChain('manual', { force, source });
+  }
+
+  // --- fallback chain (sprint/translation-fallback-2026-11.md) ---
+  private translationRouter = inject(TranslationRouter);
+
+  /** A plain-text translation from any engine but the server. Never `[innerHTML]`. */
+  protected chainTranslation = signal<ChainTranslation | null>(null);
+  /** Open while asking "Translate from which language?". */
+  protected sourcePicker = signal<{ candidates: string[] } | null>(null);
+  protected pickedSource = signal('');
+  /** Browser model download progress, 0–1, while one is running. */
+  protected downloadProgress = signal<number | null>(null);
+  /** The last failure named a connector the reader has not switched on. */
+  protected suggestConnectors = signal(false);
+
+  /** The post the server could translate, if asked: signed in, and a post it has. */
+  protected get serverPathAvailable(): boolean {
+    return (
+      this.capabilities.canUseServerActions &&
+      this.display.provider !== 'bluesky' &&
+      !this.serverCannotTranslate
+    );
+  }
+
+  /** Whether the 🌐 button has any engine behind it. */
+  protected showChainTranslate = computed(
+    () =>
+      this.serverPathAvailable || this.translationRouter.hasFallback(this.openrouterConnected()),
+  );
+
+  private async runChain(
+    mode: 'manual' | 'auto',
+    options: { force?: boolean; source?: string } = {},
+  ): Promise<boolean> {
+    const manual = mode === 'manual';
     this.translating.set(true);
-    this.translateError.set(null);
-    this.usage.record('mastodon');
-    this.api.translate(this.display.id).subscribe({
-      next: (t) => {
-        this.translation.set(t);
-        this.translating.set(false);
-      },
-      error: () => {
-        this.translating.set(false);
-        // Most servers have no translation provider configured at all, so this is
-        // the common path rather than an edge. Offer the way out instead of
-        // dead-ending on a button that did nothing.
-        this.translateError.set(
-          this.openrouter.connected()
-            ? this.transloco.translate('statusCard.serverTranslateFailedWithAi')
-            : this.transloco.translate('statusCard.serverTranslateFailed'),
-        );
-      },
-    });
+    if (manual) {
+      this.translateError.set(null);
+      this.sameLanguageEngine.set(null);
+      this.suggestConnectors.set(false);
+      this.sourcePicker.set(null);
+    }
+    try {
+      const outcome = await this.translationRouter.translate({
+        status: this.display,
+        mode,
+        force: options.force,
+        source: options.source,
+        serverCanTranslate: this.serverPathAvailable,
+        aiAvailable: this.openrouterConnected(),
+        onProgress: (loaded) => this.downloadProgress.set(loaded),
+      });
+      switch (outcome.kind) {
+        case 'server':
+          this.chainTranslation.set(null);
+          this.translation.set(outcome.translation);
+          return true;
+        case 'text':
+          this.translation.set(null);
+          this.chainTranslation.set({
+            text: outcome.text,
+            engine: outcome.engine,
+            source: outcome.source,
+            target: outcome.target,
+          });
+          return true;
+        case 'same':
+          if (manual) {
+            this.sameLanguageEngine.set('server');
+            this.translateError.set(this.sameLanguageMessage());
+          }
+          return false;
+        case 'ask':
+          if (manual) {
+            this.pickedSource.set(outcome.candidates[0] ?? '');
+            this.sourcePicker.set({ candidates: outcome.candidates });
+          }
+          return false;
+        case 'failed':
+          if (manual) this.translateError.set(this.chainFailureMessage(outcome));
+          return false;
+      }
+    } finally {
+      this.translating.set(false);
+      this.downloadProgress.set(null);
+    }
+  }
+
+  /** Names every engine that was tried and why it said no — never a bare "failed". */
+  private chainFailureMessage(outcome: {
+    attempts: Attempt[];
+    source: string;
+    target: string;
+  }): string {
+    const from = languageDisplayName(outcome.source);
+    const to = languageDisplayName(outcome.target);
+    const lines: string[] = [];
+    let connectorOff = false;
+    for (const { engine, reason } of outcome.attempts) {
+      if (reason === 'off') {
+        if (engine === 'mymemory' || engine === 'apertium') connectorOff = true;
+        continue;
+      }
+      if (reason === 'no-server' || reason === 'auto-excluded') continue;
+      lines.push(
+        this.transloco.translate(CHAIN_REASON_KEYS[reason], {
+          engine: CHAIN_ENGINE_NAMES[engine],
+          from,
+          to,
+          limit: this.usage.hardLimit(engine),
+        }),
+      );
+    }
+    this.suggestConnectors.set(connectorOff);
+    const head = this.transloco.translate('statusCard.chain.failed');
+    return lines.length ? `${head} ${lines.join(' · ')}` : head;
+  }
+
+  /** Re-run with the language picked in "Translate from which language?". */
+  translateFromPicked(event: Event): void {
+    const source = this.pickedSource();
+    if (!source) return;
+    this.sourcePicker.set(null);
+    this.toggleTranslate(event, true, source);
+  }
+
+  /** "Change" under a translation: pick a different source language. */
+  changeSource(event: Event): void {
+    event.stopPropagation();
+    const current = this.chainTranslation()?.source ?? '';
+    this.pickedSource.set(current);
+    this.sourcePicker.set({ candidates: current ? [current] : [] });
+  }
+
+  /** Every language the picker offers, the detector's candidates first. */
+  protected pickerLanguages = computed(() => {
+    const first = this.sourcePicker()?.candidates ?? [];
+    const rest = POSTING_LANGUAGE_OPTIONS.map((option) => option.code).filter(
+      (code) => !first.includes(code),
+    );
+    return [...first, ...rest].map((code) => ({ code, name: languageDisplayName(code) }));
+  });
+
+  protected engineName(engine: TranslationEngine): string {
+    return CHAIN_ENGINE_NAMES[engine];
+  }
+
+  protected languageLabel(code: string): string {
+    return languageDisplayName(code);
   }
 
   // --- AI translation (anonymous-great sprint 3) ---
@@ -2773,7 +2931,7 @@ export class StatusCard {
    * it has tried.
    */
   private async autoTranslate(): Promise<void> {
-    if (this.autoTried || this.translation() || this.aiTranslation()) {
+    if (this.autoTried || this.translation() || this.aiTranslation() || this.chainTranslation()) {
       return;
     }
     if (!this.eligibility.shouldTranslate(this.display)) {
@@ -2789,51 +2947,14 @@ export class StatusCard {
     this.detachObserver();
     this.appendMode.set(this.eligibility.appends(this.display));
 
-    // Automatic translation uses the instance endpoint unless the reader has explicitly
-    // allowed it to spend OpenRouter credit. A read-only provider's post has no server
-    // translation to ask for, so AI is the only engine that could work — but that is
-    // still not permission to spend, so it is skipped rather than silently upgraded.
-    const useAi = this.prefs.autoTranslateUsesAi() && this.openrouterConnected();
-    if (this.serverCannotTranslate && !useAi) {
-      return;
-    }
-
-    const engine = useAi ? 'openrouter' : 'mastodon';
-    if (!this.usage.canSpend(engine)) {
-      // Silent: an automatic pass hitting its ceiling is the budget working, not an
-      // error the reader needs interrupting for. The count is on the settings screen.
-      return;
-    }
-
+    // The same chain as the button, minus what a scroll must not do: AI only when the
+    // reader allowed automatic translation to spend OpenRouter credit, and no browser
+    // model downloads (those need a press). Budgets are checked per engine inside.
     this.autoTranslated.set(true);
-    if (useAi) {
-      this.usage.record('openrouter');
-      this.aiTranslating.set(true);
-      try {
-        this.aiTranslation.set(await this.aiTranslate.translateHtml(this.display.content));
-      } catch {
-        // A failed automatic translation leaves the original post exactly as it was,
-        // which is a perfectly good outcome. Errors belong to translations the reader
-        // asked for by pressing something.
-        this.autoTranslated.set(false);
-      } finally {
-        this.aiTranslating.set(false);
-      }
-      return;
-    }
-
-    this.usage.record('mastodon');
-    this.translating.set(true);
-    this.api.translate(this.display.id).subscribe({
-      next: (t) => {
-        this.translation.set(t);
-        this.translating.set(false);
-      },
-      error: () => {
-        this.translating.set(false);
-        this.autoTranslated.set(false);
-      },
-    });
+    const translated = await this.runChain('auto');
+    // A failed automatic translation leaves the original post exactly as it was, which
+    // is a perfectly good outcome. Errors belong to translations the reader asked for.
+    if (!translated) this.autoTranslated.set(false);
   }
 
   /**
