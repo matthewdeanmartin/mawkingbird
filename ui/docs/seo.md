@@ -616,6 +616,13 @@ and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 
+Historical Fiction has an approved English edition at
+`/historical-fiction-on-mastodon/`, under Arts and culture: ten people and
+12 tags. Other languages are withheld. Copy and data stay lazy-loaded; the
+shared topic registry supplies client/server routes and sitemap inclusion.
+Relevant quiet tags remain available alongside recurring historical-fiction
+book content and substantive author updates.
+
 Mystery and Crime has approved English and German editions at
 `/mystery-and-crime-on-mastodon/` and `/de/krimis-auf-mastodon/`, under Arts and
 culture. English has ten people and 20 tags; German has ten people and seven

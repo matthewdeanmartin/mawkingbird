@@ -1829,6 +1829,13 @@ counts.
 
 No shared widget changed.
 
+## Topic pages: Historical Fiction, 2026-11-08
+
+Added one lazy English copy source. The immediately preceding working-tree
+inventory increases from 1,700 to 1,701 sources; all 602 candidate entries are
+identical. No template or shared widget changed. Candidate paths are unchanged,
+so reconciliation requires no additions or removals.
+
 ## Topic pages: Mystery and Crime, 2026-11-08
 
 Added one lazy native-copy source for English and German. The immediately

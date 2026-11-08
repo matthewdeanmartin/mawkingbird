@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "topic": "historical-fiction",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T17:40:35+00:00",
+  "tags": [
+    {
+      "name": "HistoricalFiction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalRomance",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "HistFic",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalFantasy",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "HistoricalCrime",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "off-topic"
+    },
+    {
+      "name": "HistoricalMystery",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalNovel",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalNovels",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalFictionBooks",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalThriller",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalFictionReaders",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "HistoricalFictionAuthors",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "contentcatnip@mastodon.social",
+      "id": "110394645573120681",
+      "url": "https://mastodon.social/@contentcatnip",
+      "displayName": "Content Catnip",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/394/645/573/120/681/original/b7210c37536c2ad3.png",
+      "bio": "A Quirky Internet Wunderkammer by a psychadelic Mana Wahine # Māori named # ContentCatnip - # quirky emissaries about # art # culture # music # history # animals # paganism # activism # empathy # boo…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["youtube"],
+      "youtube": {
+        "channelId": "UCwpdw2GtC3B6vm0XQrctJkA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2024-08"
+      }
+    },
+    {
+      "acct": "stephenwhq@mastodon.social",
+      "id": "238156",
+      "url": "https://mastodon.social/@stephenwhq",
+      "displayName": "Stephen Cox \"Buy Wiz-4!!\"",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/238/156/original/48174f8ae496d476.jpg",
+      "bio": "Warm intelligent accessible # SFF Wiz-4 from Wizards Tower Press \"2 intimate first contact stories\" THE CROOKED MEDIUM's GUIDE TO MURDER - spooky, sapphic, Victorian . Sequel THE CROOKED MEDIUM's GUI…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "hayesstw@c.im",
+      "id": "109307334003174359",
+      "url": "https://c.im/@hayesstw",
+      "displayName": "Stephen Hayes",
+      "avatar": "https://s3.c.im/accounts/avatars/109/307/334/003/174/359/original/4870baf0c6ce41d9.jpg",
+      "bio": "Freelance writer, editor, teacher, missiologist, Orthodox deacon, Inklings fan, church & family historian, interested in theology & literature. Author of historical adventure/fantasy novels, mainly f…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "druidjournal@mastodon.social",
+      "id": "108134769242731970",
+      "url": "https://mastodon.social/@druidjournal",
+      "displayName": "Jeff Lilly",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/134/769/242/731/970/original/b2745434b6811475.jpeg",
+      "bio": "Computational linguist (speech recognition), husband, father, druid. Assorted hobbies: writing, photography, conlangs, sketching, hiking, music. He/him.",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "tudortweep@mastodonapp.uk",
+      "id": "109304506370787884",
+      "url": "https://mastodonapp.uk/@TudorTweep",
+      "displayName": "G. Lawrence, Tudor Tooter",
+      "avatar": "https://files.mastodonapp.uk/accounts/avatars/109/304/506/370/787/884/original/36c3d78bde0249fd.jpg",
+      "bio": "# Author , # Archer , # Runner , Erratic # Gardener and Sometime Baker, Kung Fu Blue Belt. Writes # Historical Fiction and Fantasy. She/her. # Book lover, # History obsessed, particularly # Tudors an…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "booktweeting@zirk.us",
+      "id": "109287797123728277",
+      "url": "https://zirk.us/@booktweeting",
+      "displayName": "Julia S.",
+      "avatar": "https://zirkus-media.fra1.cdn.digitaloceanspaces.com/accounts/avatars/109/287/797/123/728/277/original/37fdf2cf9f7c837c.jpeg",
+      "bio": "Non-stop book reviewer. Writer, editor, auntie, godmother, curmudgeon. You might have seen me elsewhere! booktweeting.com is my website.",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "spowter@mastodon.social",
+      "id": "114219405883420409",
+      "url": "https://mastodon.social/@spowter",
+      "displayName": "Sara Powter",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/219/405/883/420/409/original/66d83554855452da.png",
+      "bio": "Writer of Australian Historical Fiction",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "patfurstenberg@mastodon.social",
+      "id": "113558923754911374",
+      "url": "https://mastodon.social/@PatFurstenberg",
+      "displayName": "Patricia Furstenberg",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/558/923/754/911/374/original/f256300d2382e698.jpg",
+      "bio": "Mother. 🖋Writer. Former MD. Flâneuse interested historical fiction, folklore, legends, myths, castles.🏰 Romanian living in South Africa.",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "archaeolibrarian@mastodon.social",
+      "id": "113752597283943091",
+      "url": "https://mastodon.social/@Archaeolibrarian",
+      "displayName": "Archaeolibrarian",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/752/597/283/943/091/original/f9076daaf9334d11.png",
+      "bio": "Reviewers in most genres, spreading the love wherever we can. https:// archaeolibrarian.wixsite.com/w ebsite",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "sundialmag@mastodon.social",
+      "id": "110069219172531252",
+      "url": "https://mastodon.social/@sundialmag",
+      "displayName": "Sundial Magazine",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/069/219/172/531/252/original/67277e76aa89f253.jpg",
+      "bio": "A literary magazine for historical fiction. Submissions are temporarily closed. https:// sites.google.com/view/sundial- magazine/",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}
