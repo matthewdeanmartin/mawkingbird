@@ -515,6 +515,15 @@
     "title": "Follow {{count}} accounts or topics?",
     "warning": "Accounts may receive follow notifications or follow requests. Unfollowing later won't take those notifications back."
   },
+  "bulkWords": {
+    "add": "Add all",
+    "cancel": "Cancel",
+    "count": "{{count}} to add",
+    "hint": "Paste or type a list, one word or phrase per line. The settings below apply to every line. Blank lines and repeats are skipped.",
+    "label": "One per line",
+    "open": "Add many at once…",
+    "title": "Add many at once"
+  },
   "bundledStarterKits": {
     "account.one": "{{count}} account",
     "account.other": "{{count}} accounts",
