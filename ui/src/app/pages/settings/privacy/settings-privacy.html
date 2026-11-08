@@ -149,6 +149,18 @@
         [hint]="'settings.privacy.analytics.hint' | transloco"
       />
     </mb-settings-row>
+    <mb-settings-row [heading]="'settings.privacy.history' | transloco">
+      <mb-checkbox
+        name="postHistory"
+        [checked]="prefs.postHistory()"
+        (checkedChange)="prefs.setPostHistory($event)"
+        [label]="'settings.privacy.history.label' | transloco"
+        [hint]="'settings.privacy.history.hint' | transloco"
+      />
+      <a routerLink="/bookmarks" [queryParams]="{ tab: 'history' }">{{
+        'settings.privacy.history.open' | transloco
+      }}</a>
+    </mb-settings-row>
   </div>
   <app-report-history />
 </div>

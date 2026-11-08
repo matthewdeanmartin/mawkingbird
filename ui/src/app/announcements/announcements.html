@@ -11,22 +11,24 @@
     <div class="label">{{ 'announcements.label' | transloco }}</div>
     <div class="content" [innerHTML]="a.content"></div>
     <div class="reactions">
-      @for (r of a.reactions; track r.name) {
-        <button class="reaction" [class.on]="r.me" (click)="toggleReaction(a, r.name)">
-          {{ r.name }} <span>{{ r.count }}</span>
+      @for (r of chips(a); track r.name) {
+        <button
+          type="button"
+          class="reaction"
+          [class.on]="r.me"
+          [class.unused]="!r.count"
+          [attr.aria-pressed]="r.me"
+          [title]="'announcements.react' | transloco: { emoji: r.name }"
+          (click)="toggleReaction(a, r.name)"
+        >
+          @if (r.url) {
+            <img class="custom-emoji" [src]="r.url" [alt]="':' + r.name + ':'" />
+          } @else {
+            <span>{{ r.name }}</span>
+          }
+          <span class="count">{{ r.count }}</span>
         </button>
       }
-      <span class="picker">
-        @for (e of quickReactions; track e) {
-          <button
-            class="add-reaction"
-            [title]="'announcements.react' | transloco: { emoji: e }"
-            (click)="toggleReaction(a, e)"
-          >
-            {{ e }}
-          </button>
-        }
-      </span>
     </div>
   </div>
 }

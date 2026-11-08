@@ -208,3 +208,38 @@ export class AnnouncementStore {
     localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
   }
 }
+
+/** The quick picks every announcement offers, whether or not anyone has used them yet. */
+export const QUICK_REACTIONS: readonly string[] = ['👍', '🎉', '❤️', '🚀'];
+
+/** One reaction button: an emoji (or custom emoji image) with its count. */
+export interface ReactionChip {
+  name: string;
+  count: number;
+  me: boolean;
+  /** Image for a custom emoji; null for unicode. */
+  url: string | null;
+}
+
+/**
+ * The server's reactions followed by any quick pick nobody has used yet, each
+ * with a count. One row, one button per emoji: quick picks used to sit beside
+ * the counted chips without numbers, so a server that returned no reactions
+ * looked like a client that forgot to show them.
+ */
+export function reactionChips(
+  a: Announcement,
+  quick: readonly string[] = QUICK_REACTIONS,
+): ReactionChip[] {
+  const chips: ReactionChip[] = (a.reactions ?? []).map((r) => ({
+    name: r.name,
+    count: typeof r.count === 'number' ? r.count : Number(r.count) || 0,
+    me: !!r.me,
+    url: r.static_url ?? r.url ?? null,
+  }));
+  for (const name of quick) {
+    if (!chips.some((chip) => chip.name === name))
+      chips.push({ name, count: 0, me: false, url: null });
+  }
+  return chips;
+}

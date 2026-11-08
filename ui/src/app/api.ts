@@ -420,6 +420,18 @@ export class Api {
     return this.http.get<Status>(`/api/v1/statuses/${id}`);
   }
 
+  /**
+   * Several statuses in one request (`GET /api/v1/statuses?id[]=`, Mastodon 4.3+).
+   * Ids the server cannot show are absent from the reply, so match on id, not order.
+   */
+  getStatuses(ids: string[]): Observable<Status[]> {
+    let params = new HttpParams();
+    for (const id of ids) {
+      params = params.append('id[]', id);
+    }
+    return this.http.get<Status[]>('/api/v1/statuses', { params });
+  }
+
   getContext(id: string): Observable<Context> {
     return this.http.get<Context>(`/api/v1/statuses/${id}/context`);
   }

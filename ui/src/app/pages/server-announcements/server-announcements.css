@@ -86,8 +86,7 @@
   margin-top: 8px;
 }
 
-.reaction,
-.add-reaction {
+.reaction {
   border: 1px solid var(--border);
   border-radius: 999px;
   background: transparent;
@@ -102,9 +101,58 @@
   border-color: var(--accent);
 }
 
-.picker {
+.reaction {
   display: inline-flex;
+  align-items: center;
   gap: 4px;
+}
+
+.reaction.unused {
+  opacity: 0.65;
+}
+
+.reaction .count {
+  font-variant-numeric: tabular-nums;
+}
+
+.custom-emoji {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: contain;
+}
+
+.server-facts {
+  margin: 0 16px 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.server-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0 0 8px;
+}
+
+.server-role dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.server-role dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.server-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .dismiss-one {

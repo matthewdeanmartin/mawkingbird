@@ -1,5 +1,5 @@
-import { Type } from '@angular/core';
-import { CanMatchFn, ResolveFn, Route, Routes } from '@angular/router';
+import { inject, Type } from '@angular/core';
+import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
 import { authGuard, mastodonSignedInMatch, signedInMatch } from './auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
@@ -211,6 +211,9 @@ export function toolPageLoader(tool: ToolPage): NonNullable<Route['loadComponent
   const name = toolComponentName(page, toolLanguage(tool));
   return () => page.load().then((module) => (module as Record<string, Type<unknown>>)[name]);
 }
+
+/** Sends /favourites to the Likes view of the bookmarks hub. */
+const likesHubRedirect: CanActivateFn = () => inject(Router).parseUrl('/bookmarks?tab=likes');
 
 export const routes: Routes = [
   ...audienceRoutes,
@@ -1098,9 +1101,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/search/search').then((m) => m.Search),
       },
       {
+        // Likes is a view of the Likes, bookmarks & history page now. The old path
+        // stays linkable (hotkey f, released builds); Anonymous still gets the
+        // unavailable page first, since it has no likes to show.
         path: 'favourites',
         title: 'Likes',
-        canActivate: [anonymousUnavailableGuard],
+        canActivate: [anonymousUnavailableGuard, likesHubRedirect],
         data: { anonymousFeature: 'Likes' },
         loadComponent: () => import('./pages/favourites/favourites').then((m) => m.Favourites),
       },

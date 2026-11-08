@@ -273,10 +273,18 @@
 
               <!-- Feed-likes -->
               <div class="menu-divider"></div>
-              @if (!auth.isAnonymous) {
-                <a routerLink="/favourites">{{ 'shell.menu.likes' | transloco }}</a>
+              <!-- One row for the whole Likes / Bookmarks / History / Read Later page.
+                 Anonymous has no likes, so its label leaves them out. -->
+              <a routerLink="/bookmarks">{{
+                (auth.isAnonymous
+                  ? 'shell.menu.bookmarksHistory'
+                  : 'shell.menu.likesBookmarksHistory'
+                ) | transloco
+              }}</a>
+              <!-- The server card lives in the right rail, which a phone never shows. -->
+              @if (!auth.isBlueskyPrimary) {
+                <a routerLink="/server">{{ 'shell.menu.myServer' | transloco }}</a>
               }
-              <a routerLink="/bookmarks">{{ 'shell.menu.bookmarks' | transloco }}</a>
               <!-- Lists and Tags moved to the Feeds landing page's drill-down
                  category list (2 clicks: Feeds -> Lists / Feeds -> Tags) — this
                  menu had no room left. Their routes (/feeds/lists, /feeds/tags)

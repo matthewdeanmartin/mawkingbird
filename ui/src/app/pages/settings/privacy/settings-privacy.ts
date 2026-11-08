@@ -65,6 +65,10 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
 // i18n settings.privacy.analytics: Analytics
 // i18n settings.privacy.analytics.label: Count my page views
 // i18n settings.privacy.analytics.hint: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at, and never a query string. Turn this off and the analytics script is never loaded at all: nothing is fetched, counted or sent. The script is served from this site, not from a third party. This one is stored in your browser, so there is nothing to save and nothing to fail.
+// i18n settings.privacy.history: History
+// i18n settings.privacy.history.label: Remember posts I scroll past
+// i18n settings.privacy.history.hint: Keeps the last 500 posts you scrolled past (author, link and the first 150 characters) in this browser, separately for each account, so you can find one again under Likes, bookmarks, history. Never sent anywhere. Turning this off stops recording; what is already there stays until you clear it.
+// i18n settings.privacy.history.open: Open History
 // i18n common.errorPrefix: ⚠ {{message}}
 @Component({
   selector: 'app-settings-privacy',

@@ -50,6 +50,22 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the approved English Literary Fiction edition', async () => {
+    const el = await render(at('literary-fiction-on-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');
+    expect(el.querySelector('h1')?.textContent).toContain('Literary fiction on Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(8);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(11);
+    expect(el.querySelector('a[href="/tags/LiteraryFiction"]')).not.toBeNull();
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'literary-fiction').map(
+        (page) => page.lang,
+      ),
+    ).toEqual(['en']);
+  });
+
   it('renders the approved English Historical Fiction edition', async () => {
     const el = await render(at('historical-fiction-on-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');

@@ -1,28 +1,40 @@
-<nav class="tabs provider-tabs" [aria-label]="'pages.bookmarks.provider' | transloco">
-  <button class="tab" [class.active]="provider() === 'native'" (click)="selectProvider('native')">
-    {{ 'pages.bookmarks.native' | transloco }}
+<mb-toolbar class="provider-tabs" [label]="'pages.bookmarks.provider' | transloco">
+  <button mbToolbarButton [pressed]="provider() === 'native'" (click)="selectProvider('native')">
+    {{ 'pages.bookmarks.tab.bookmarks' | transloco }}
+  </button>
+  @if (!auth.isAnonymous) {
+    <button mbToolbarButton [pressed]="provider() === 'likes'" (click)="selectProvider('likes')">
+      {{ 'pages.bookmarks.tab.likes' | transloco }}
+    </button>
+  }
+  <button mbToolbarButton [pressed]="provider() === 'history'" (click)="selectProvider('history')">
+    {{ 'pages.bookmarks.tab.history' | transloco }}
+  </button>
+  <button
+    mbToolbarButton
+    [pressed]="provider() === 'read-later'"
+    (click)="selectProvider('read-later')"
+  >
+    {{ 'pages.bookmarks.readLater' | transloco }}
   </button>
   @if (raindrop.connected()) {
     <button
-      class="tab"
-      [class.active]="provider() === 'raindrop'"
+      mbToolbarButton
+      [pressed]="provider() === 'raindrop'"
       (click)="selectProvider('raindrop')"
     >
       {{ 'pages.bookmarks.raindrop' | transloco }}
     </button>
   }
-  <button
-    class="tab"
-    [class.active]="provider() === 'read-later'"
-    (click)="selectProvider('read-later')"
-  >
-    {{ 'pages.bookmarks.readLater' | transloco }}
-  </button>
-</nav>
+</mb-toolbar>
 
 @if (provider() === 'read-later') {
   <p class="read-later-intro muted">{{ 'pages.bookmarks.readLaterHint' | transloco }}</p>
   <app-library-panel [embedded]="true" />
+} @else if (provider() === 'likes') {
+  <app-favourites />
+} @else if (provider() === 'history') {
+  <app-history-panel />
 } @else {
   @if (message()) {
     <p class="notice success" role="status">{{ message() }}</p>

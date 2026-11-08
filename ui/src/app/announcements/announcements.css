@@ -69,23 +69,16 @@
   color: var(--accent);
 }
 
-.picker {
-  display: inline-flex;
-  gap: 2px;
-  margin-left: 4px;
+.reaction.unused {
+  opacity: 0.65;
 }
 
-.add-reaction {
-  border: none;
-  background: none;
-  font-size: 15px;
-  cursor: pointer;
-  opacity: 0.6;
-  padding: 2px 4px;
-  border-radius: 6px;
+.reaction .count {
+  font-variant-numeric: tabular-nums;
 }
 
-.add-reaction:hover {
-  opacity: 1;
-  background: var(--border);
+.custom-emoji {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: contain;
 }

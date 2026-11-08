@@ -30,6 +30,46 @@
   <div class="page-head">{{ 'serverAnnouncements.title' | transloco }}</div>
 }
 
+<section class="server-facts" [attr.aria-label]="'serverAnnouncements.facts' | transloco">
+  <dl class="server-roles">
+    <div class="server-role">
+      <dt>{{ 'shell.rail.feedsPosting' | transloco }}</dt>
+      <dd>{{ host() || ('shell.dead.thisServer' | transloco) }}</dd>
+    </div>
+    @if (searchServer.active()) {
+      <div class="server-role">
+        <dt>{{ 'shell.rail.search' | transloco }}</dt>
+        <dd>{{ searchServer.host() }}</dd>
+      </div>
+    }
+  </dl>
+  <ul class="server-links">
+    <li>
+      <a routerLink="/server-rules">{{ 'serverAnnouncements.rules' | transloco }}</a>
+    </li>
+    <li>
+      <a [href]="aboutUrl()" target="_blank" rel="noopener noreferrer">
+        {{
+          'shell.rail.donateTo'
+            | transloco: { server: host() || ('shell.dead.thisServer' | transloco) }
+        }}
+      </a>
+    </li>
+    @if (searchServer.active() && searchServer.donateUrl(); as donate) {
+      <li>
+        <a [href]="donate" target="_blank" rel="noopener noreferrer">
+          {{ 'shell.rail.donateSearch' | transloco: { server: searchServer.host() } }}
+        </a>
+      </li>
+    }
+    <li>
+      <a href="https://joinmastodon.org/sponsors" target="_blank" rel="noopener noreferrer">
+        {{ 'shell.rail.donateMastodon' | transloco }}
+      </a>
+    </li>
+  </ul>
+</section>
+
 <div class="server-announcement-actions">
   @if (store.activeCount()) {
     <button type="button" class="btn btn-outline btn-sm" (click)="store.dismissAll()">
@@ -65,22 +105,24 @@
       </div>
       <div class="content" [innerHTML]="a.content"></div>
       <div class="reactions">
-        @for (r of a.reactions; track r.name) {
-          <button class="reaction" [class.on]="r.me" (click)="store.toggleReaction(a, r.name)">
-            {{ r.name }} <span>{{ r.count }}</span>
+        @for (r of chips(a); track r.name) {
+          <button
+            type="button"
+            class="reaction"
+            [class.on]="r.me"
+            [class.unused]="!r.count"
+            [attr.aria-pressed]="r.me"
+            [title]="'serverAnnouncements.react' | transloco: { emoji: r.name }"
+            (click)="store.toggleReaction(a, r.name)"
+          >
+            @if (r.url) {
+              <img class="custom-emoji" [src]="r.url" [alt]="':' + r.name + ':'" />
+            } @else {
+              <span>{{ r.name }}</span>
+            }
+            <span class="count">{{ r.count }}</span>
           </button>
         }
-        <span class="picker">
-          @for (e of quickReactions; track e) {
-            <button
-              class="add-reaction"
-              [title]="'serverAnnouncements.react' | transloco: { emoji: e }"
-              (click)="store.toggleReaction(a, e)"
-            >
-              {{ e }}
-            </button>
-          }
-        </span>
       </div>
       @if (!isDismissed(a.id)) {
         <button class="link dismiss-one" type="button" (click)="store.dismiss(a.id)">

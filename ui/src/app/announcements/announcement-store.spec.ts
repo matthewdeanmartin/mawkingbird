@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../auth';
 import { Announcement } from '../models';
-import { AnnouncementStore } from './announcement-store';
+import { AnnouncementStore, reactionChips } from './announcement-store';
 
 function announcement(id: string, read = true): Announcement {
   return {
@@ -226,5 +226,38 @@ describe('AnnouncementStore', () => {
     expect(store.total()).toBe(0);
     current.flush([announcement('3')]);
     expect(store.all()[0].id).toBe('3');
+  });
+});
+
+describe('reactionChips', () => {
+  const announcement = (reactions: Announcement['reactions']) =>
+    ({ id: '1', content: '', reactions }) as unknown as Announcement;
+
+  it('gives every emoji a count, quick picks included at zero, with no duplicates', () => {
+    const chips = reactionChips(
+      announcement([{ name: '👍', count: 12, me: true, url: null, static_url: null }]),
+    );
+    expect(chips.map((c) => [c.name, c.count, c.me])).toEqual([
+      ['👍', 12, true],
+      ['🎉', 0, false],
+      ['❤️', 0, false],
+      ['🚀', 0, false],
+    ]);
+  });
+
+  it('keeps server order first and shows custom emoji as images', () => {
+    const chips = reactionChips(
+      announcement([
+        {
+          name: 'blobcat',
+          count: 3,
+          me: false,
+          url: 'https://x/anim.gif',
+          static_url: 'https://x/still.png',
+        },
+      ]),
+    );
+    expect(chips[0]).toEqual({ name: 'blobcat', count: 3, me: false, url: 'https://x/still.png' });
+    expect(chips).toHaveLength(5);
   });
 });

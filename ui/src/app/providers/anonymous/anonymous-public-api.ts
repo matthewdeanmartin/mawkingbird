@@ -187,6 +187,21 @@ export class AnonymousPublicApi {
       );
   }
 
+  /**
+   * Several public statuses from one server in one request. Verified
+   * unauthenticated against mastodon.social; older servers answer an error, and
+   * callers fall back to {@link getStatus} per id.
+   */
+  getStatuses(server: string, ids: string[]): Observable<Status[]> {
+    const query = ids.map((id) => `id[]=${encodeURIComponent(id)}`).join('&');
+    return this.http
+      .get<Status[]>(`${server}/api/v1/statuses?${query}`, { context: externalFetch() })
+      .pipe(
+        timeout(REQUEST_TIMEOUT_MS),
+        map((statuses) => statuses.map((status) => adaptAnonymousStatus(status, server))),
+      );
+  }
+
   getContext(ref: AnonymousPublicRef): Observable<Context> {
     return this.http
       .get<Context>(`${ref.server}/api/v1/statuses/${encodeURIComponent(ref.id)}/context`, {

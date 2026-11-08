@@ -30,6 +30,7 @@ export const HUB_CATEGORIES = [
 export type HubCategory = (typeof HUB_CATEGORIES)[number];
 
 export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
+  'literary-fiction': 'culture',
   'historical-fiction': 'culture',
   'mystery-and-crime': 'culture',
   'romance-books': 'culture',

@@ -431,6 +431,7 @@ interface StoredPrefs {
   customTerminology?: Partial<CustomTerminology>;
   zenMode?: boolean;
   analytics?: boolean;
+  postHistory?: boolean;
   requireAltText?: boolean;
   autoLoadYoutubeWatch?: boolean;
   thoughtfulPosting?: boolean;
@@ -757,6 +758,11 @@ export class ClientPrefs {
    * statement about this browser rather than about an identity.
    */
   readonly analytics = signal<boolean>(true);
+  /**
+   * Whether the History tab records posts as they scroll past. On by default;
+   * the list itself is per account and browser-only (see {@link PostHistory}).
+   */
+  readonly postHistory = signal<boolean>(true);
   /** Opt-in: refuse to post while any attached image lacks alt text. */
   readonly requireAltText = signal<boolean>(true);
   readonly autoLoadYoutubeWatch = signal<boolean>(false);
@@ -1203,6 +1209,11 @@ export class ClientPrefs {
     this.analytics.set(on);
   }
 
+  /** Turn post history recording on or off. Existing history is kept. */
+  setPostHistory(on: boolean): void {
+    this.postHistory.set(on);
+  }
+
   setRequireAltText(on: boolean): void {
     this.requireAltText.set(on);
   }
@@ -1500,6 +1511,7 @@ export class ClientPrefs {
     this.customTerminology.set(normalizeCustomTerminology(stored.customTerminology));
     this.loadBool(stored.zenMode, this.zenMode);
     this.loadBool(stored.analytics, this.analytics);
+    this.loadBool(stored.postHistory, this.postHistory);
     this.loadBool(stored.requireAltText, this.requireAltText);
     this.loadBool(stored.autoLoadYoutubeWatch, this.autoLoadYoutubeWatch);
     this.loadBool(stored.thoughtfulPosting, this.thoughtfulPosting);
@@ -1578,6 +1590,7 @@ export class ClientPrefs {
       customTerminology: this.customTerminology(),
       zenMode: this.zenMode(),
       analytics: this.analytics(),
+      postHistory: this.postHistory(),
       requireAltText: this.requireAltText(),
       autoLoadYoutubeWatch: this.autoLoadYoutubeWatch(),
       thoughtfulPosting: this.thoughtfulPosting(),

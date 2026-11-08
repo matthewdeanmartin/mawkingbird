@@ -33,7 +33,7 @@ interface BookmarksInternals {
   loading: WritableSignal<boolean>;
   exhausted: WritableSignal<boolean>;
   nativePage: WritableSignal<number>;
-  provider: WritableSignal<'native' | 'raindrop' | 'read-later'>;
+  provider: WritableSignal<'native' | 'likes' | 'history' | 'raindrop' | 'read-later'>;
   collections: WritableSignal<RaindropCollection[]>;
   raindropBookmarks: WritableSignal<RaindropBookmark[]>;
   raindropPage: WritableSignal<number>;
@@ -47,7 +47,7 @@ interface BookmarksInternals {
   nextPage(): void;
   previousPage(): void;
   firstPage(): void;
-  selectProvider(provider: 'native' | 'raindrop' | 'read-later'): void;
+  selectProvider(provider: 'native' | 'likes' | 'history' | 'raindrop' | 'read-later'): void;
   selectRaindropCollection(id: number): void;
   applyFilter(event?: Event): void;
   clearFilter(): void;
@@ -138,8 +138,13 @@ describe('Bookmarks', () => {
     const tabs = [
       ...fixture.nativeElement.querySelectorAll('.provider-tabs button'),
     ] as HTMLButtonElement[];
-    expect(tabs.map((button) => button.textContent?.trim())).toEqual(['Native', 'Read Later']);
-    tabs[1].click();
+    expect(tabs.map((button) => button.textContent?.trim())).toEqual([
+      'Bookmarks',
+      'Likes',
+      'History',
+      'Read Later',
+    ]);
+    tabs[3].click();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Saved article');
     expect(fixture.nativeElement.textContent).toContain('In progress');
@@ -167,6 +172,39 @@ describe('Bookmarks', () => {
     internals(fixture).selectProvider('read-later');
     internals(fixture).selectProvider('native');
     httpMock.expectNone((request) => request.url.includes('/bookmarks'));
+  });
+
+  it('switches views with a toolbar, not a row of tabs', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([]);
+    const toolbar = fixture.nativeElement.querySelector('mb-toolbar.provider-tabs') as HTMLElement;
+    expect(toolbar.getAttribute('role')).toBe('toolbar');
+    const pressed = [...toolbar.querySelectorAll('button[aria-pressed="true"]')];
+    expect(pressed.map((b) => b.textContent?.trim())).toEqual(['Bookmarks']);
+  });
+
+  it('opens History from ?tab=history without fetching Native bookmarks', () => {
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', 'get').mockReturnValue(
+      convertToParamMap({ tab: 'history' }),
+    );
+    localStorage.setItem('mastodon_mock_token', 'alice');
+    const fixture = setUp();
+    expect(internals(fixture).provider()).toBe('history');
+    expect(fixture.nativeElement.querySelector('app-history-panel')).not.toBeNull();
+    httpMock.expectNone((request) => request.url.includes('/bookmarks'));
+  });
+
+  it('hides Likes from Anonymous and ignores ?tab=likes there', () => {
+    localStorage.setItem('mastodon_mock_account_mode', 'anonymous');
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', 'get').mockReturnValue(
+      convertToParamMap({ tab: 'likes' }),
+    );
+    const fixture = setUp();
+    expect(internals(fixture).provider()).toBe('native');
+    const labels = [...fixture.nativeElement.querySelectorAll('.provider-tabs button')].map(
+      (b: Element) => b.textContent?.trim(),
+    );
+    expect(labels).toEqual(['Bookmarks', 'History', 'Read Later']);
   });
 
   describe('With video', () => {
@@ -320,7 +358,7 @@ describe('Bookmarks', () => {
 
     const text = fixture.nativeElement.textContent as string;
     const folderTabs = fixture.nativeElement.querySelectorAll('.folder-tabs .tab');
-    expect(text).toContain('Native');
+    expect(text).toContain('Bookmarks');
     expect(text).toContain('Raindrop');
     expect(folderTabs).toHaveLength(4);
     expect(folderTabs[3].textContent).toContain('Folder 3');

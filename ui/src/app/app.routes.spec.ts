@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { describe, expect, it } from 'vitest';
 import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
+import { anonymousUnavailableGuard } from './providers/anonymous/anonymous-route.guard';
 import {
   TRANSLATED_PATHS,
   TranslatedLanguage,
@@ -152,7 +153,10 @@ describe('application routes', () => {
   });
 
   it('keeps interaction-only routes guarded from Anonymous', () => {
-    expect(shellChild('favourites')?.canActivate).toHaveLength(1);
+    // Anonymous is refused first; everyone else is sent on to the Likes view.
+    const guards = shellChild('favourites')?.canActivate;
+    expect(guards).toHaveLength(2);
+    expect(guards?.[0]).toBe(anonymousUnavailableGuard);
   });
 
   it('guards the writing workspace behind the write feature flag', () => {

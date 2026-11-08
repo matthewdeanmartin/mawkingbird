@@ -823,6 +823,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Up to 200 browser-only private post references per social account. Never included in settings sync or shareable exports.',
   },
   {
+    base: 'mockingbird_post_history',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'History: the last 500 posts this account scrolled past (network, server, id, author, first 150 characters). Browser-only; never synced or exported publicly.',
+  },
+  {
     base: 'mockingbird_private_follows',
     storage: 'local',
     suffix: 'account',

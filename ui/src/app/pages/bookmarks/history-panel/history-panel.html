@@ -1,0 +1,105 @@
+@if (!store) {
+  <mb-content-state [title]="'pages.bookmarks.history.noAccount' | transloco" />
+} @else {
+  <p class="history-intro muted">
+    {{ 'pages.bookmarks.history.intro' | transloco: { limit } }}
+  </p>
+
+  @if (!prefs.postHistory()) {
+    <p class="history-off" role="status">
+      {{ 'pages.bookmarks.history.off' | transloco }}
+      <a routerLink="/settings/privacy">{{ 'pages.bookmarks.history.turnOn' | transloco }}</a>
+    </p>
+  }
+
+  <div class="history-filter" role="search">
+    <label for="history-filter-input">{{
+      'pages.bookmarks.history.filterLabel' | transloco
+    }}</label>
+    <input
+      id="history-filter-input"
+      type="search"
+      [value]="query()"
+      [placeholder]="'pages.bookmarks.history.placeholder' | transloco"
+      (input)="setQuery($any($event.target).value)"
+    />
+    <span class="muted small">
+      {{
+        'pages.bookmarks.history.count'
+          | transloco: { shown: matching().length, total: all().length }
+      }}
+    </span>
+  </div>
+
+  @if (all().length) {
+    <mb-toolbar density="compact" [label]="'pages.bookmarks.history.actions' | transloco">
+      @if (confirming()) {
+        <button mbToolbarButton (click)="clear()">
+          {{ 'pages.bookmarks.history.confirmClear' | transloco: { count: all().length } }}
+        </button>
+        <button mbToolbarButton (click)="confirming.set(false)">
+          {{ 'pages.bookmarks.history.cancel' | transloco }}
+        </button>
+      } @else {
+        <button mbToolbarButton (click)="confirming.set(true)">
+          {{ 'pages.bookmarks.history.clear' | transloco }}
+        </button>
+      }
+    </mb-toolbar>
+  }
+
+  @if (!all().length) {
+    <mb-content-state [title]="'pages.bookmarks.history.empty' | transloco" />
+  } @else if (!matching().length) {
+    <mb-content-state [title]="'pages.bookmarks.history.noMatch' | transloco" />
+  } @else {
+    @for (entry of visible(); track entry.key) {
+      <div class="history-item">
+        <p class="seen muted small">
+          {{ 'pages.bookmarks.history.seen' | transloco: { time: (seenIso(entry) | humanTime) } }}
+        </p>
+        @if (cards().get(entry.key); as status) {
+          <app-status-card [status]="status" [recordHistory]="false" />
+        } @else if (cards().has(entry.key)) {
+          <div class="fallback">
+            <p class="who">
+              <strong>{{ entry.name || entry.author }}</strong>
+              <span class="muted">&#64;{{ entry.author }}</span>
+            </p>
+            <p class="snippet">{{ entry.text }}</p>
+            <p class="muted small">{{ 'pages.bookmarks.history.unavailable' | transloco }}</p>
+            <div class="fallback-actions">
+              @if (entry.url) {
+                <a mbButton variant="link" [href]="entry.url" target="_blank" rel="noopener">
+                  {{ 'pages.bookmarks.history.open' | transloco }}
+                </a>
+              }
+              <button mbButton variant="link" type="button" (click)="forget(entry)">
+                {{ 'pages.bookmarks.history.forget' | transloco }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="fallback pending">
+            <p class="who">
+              <strong>{{ entry.name || entry.author }}</strong>
+              <span class="muted">&#64;{{ entry.author }}</span>
+            </p>
+            <p class="snippet muted">{{ entry.text }}</p>
+          </div>
+        }
+      </div>
+    }
+    @if (remaining() > 0) {
+      <div class="more">
+        <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="more()">
+          {{
+            loading()
+              ? ('pages.bookmarks.history.loading' | transloco)
+              : ('pages.bookmarks.history.loadMore' | transloco: { count: remaining() })
+          }}
+        </button>
+      </div>
+    }
+  }
+}

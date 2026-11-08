@@ -54,6 +54,7 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'literary-fiction.en': () => import('./data/literary-fiction.en.json'),
   'historical-fiction.en': () => import('./data/historical-fiction.en.json'),
   'mystery-and-crime.en': () => import('./data/mystery-and-crime.en.json'),
   'mystery-and-crime.de': () => import('./data/mystery-and-crime.de.json'),

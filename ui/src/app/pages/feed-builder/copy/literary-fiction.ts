@@ -1,0 +1,30 @@
+import { PageLanguage } from '../../../focused-tools';
+import { TopicCopy } from './topic-copy';
+
+export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
+  en: {
+    title: 'Literary fiction on Mastodon: people and hashtags to follow',
+    description:
+      'Discover literary novels, short stories, readers and writers on Mastodon. Choose people and hashtags, then preview your literary fiction feed.',
+    heading: 'Literary fiction on Mastodon',
+    listTitle: 'Literary fiction',
+    intro: [
+      'Find novels and short stories that stay with you, and people to discuss them with. Explore literary fiction through reading recommendations, reviews, close reading and writers sharing their work, including translated fiction and experimental prose.',
+      'Choose people and hashtags, then preview their posts before following. Useful subject tags remain available even when quiet. Accounts are selected for recurring literary-fiction content and substantive writing updates, not just a word in a profile.',
+    ],
+    faq: [
+      {
+        q: 'Do I need an account?',
+        a: 'Browse and preview public posts without an account. Sign in with your Mastodon account to follow your selection or create a list.',
+      },
+      {
+        q: 'What belongs in this community?',
+        a: 'Literary novels and short fiction, from contemporary realism and translated literature to experimental prose and magical realism. Reading, reviewing, editing, translating and writing fiction all count. Genre boundaries can overlap; recurring discussion of literary fiction matters more than a label. Poetry, nonfiction or general writing advice alone do not qualify. Hashtags are open conversations, so preview their posts before choosing.',
+      },
+      {
+        q: 'How do I get onto this list?',
+        a: 'Share literary-fiction content regularly and allow your server to suggest your profile. Substantive updates about your own fiction count too; a bio keyword alone does not. For help or removal, contact @mawkingbird@mastodon.social.',
+      },
+    ],
+  },
+};

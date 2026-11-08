@@ -1,14 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Announcement } from '../models';
-import { AnnouncementStore } from './announcement-store';
+import {
+  AnnouncementStore,
+  QUICK_REACTIONS,
+  ReactionChip,
+  reactionChips,
+} from './announcement-store';
 
 // i18n announcements.dismiss: Dismiss
 // i18n announcements.label: 📣 Announcement
 // i18n announcements.react: React {{emoji}}
-
-// A few quick-pick reactions; the API accepts any unicode emoji shortcode/char.
-const QUICK_REACTIONS = ['👍', '🎉', '❤️', '🚀'];
 
 /**
  * Active instance announcements shown above a timeline (dismiss + react).
@@ -36,6 +38,11 @@ export class Announcements implements OnInit {
 
   dismiss(a: Announcement): void {
     this.store.dismiss(a.id);
+  }
+
+  /** Every reaction with its count, quick picks included at 0. */
+  protected chips(a: Announcement): ReactionChip[] {
+    return reactionChips(a, this.quickReactions);
   }
 
   toggleReaction(a: Announcement, name: string): void {

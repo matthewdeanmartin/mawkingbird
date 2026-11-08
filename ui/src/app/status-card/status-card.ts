@@ -1,5 +1,6 @@
 import { blueskyRouteFor } from '../bluesky-links';
 import { accountScopeSuffix } from '../account-scope';
+import { PostHistory } from '../post-history';
 import { MbMenuItem } from '../design-system/menu/menu-item';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
@@ -722,6 +723,8 @@ export class StatusCard {
   protected md = applyMinimalMarkdown;
 
   readonly status = input.required<Status>();
+  /** Off where re-recording would reorder the list being read (the History tab). */
+  readonly recordHistory = input(true);
   /**
    * Which timeline this card renders in — content filters are scoped per
    * context (a filter can apply to home but not threads, say).
@@ -2683,6 +2686,7 @@ export class StatusCard {
 
   private eligibility = inject(AutoTranslateEligibility);
   private host = inject(ElementRef<HTMLElement>);
+  private postHistory = inject(PostHistory);
   private featureFlags = inject(FeatureFlags);
   private injector = inject(Injector);
 
@@ -2709,6 +2713,12 @@ export class StatusCard {
   private observer: IntersectionObserver | null = null;
 
   constructor() {
+    // History: remember this post once it is mostly on screen (read lazily, so
+    // inputs set after construction still count).
+    const stopHistory = this.postHistory.watch(this.host.nativeElement, () =>
+      this.recordHistory() ? this.status() : null,
+    );
+    inject(DestroyRef).onDestroy(stopHistory);
     // The trigger is set up reactively rather than in ngOnInit because the mode can
     // change while cards are on screen: switching to `hover` mid-scroll must detach the
     // observers immediately, not at the next navigation.

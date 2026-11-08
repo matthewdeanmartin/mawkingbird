@@ -19,15 +19,20 @@ import { PageDiagnostics } from '../../page-diagnostics';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptPost } from '../../providers/bluesky/bluesky-adapter';
 import { BskyRef, isBskyPostView } from '../../providers/bluesky/bluesky-types';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { Favourites } from '../favourites/favourites';
+import { HistoryPanel } from './history-panel/history-panel';
 import { isVideoStatus } from '../../video-player/video-discovery';
 
-type BookmarkProvider = 'native' | 'raindrop' | 'read-later';
+type BookmarkProvider = 'native' | 'likes' | 'history' | 'raindrop' | 'read-later';
 type LibraryView = 'all' | 'authors' | 'hashtags' | 'media' | 'video';
 
 const PAGE_SIZE = 20;
 
 // i18n pages.bookmarks.provider: Bookmark provider
-// i18n pages.bookmarks.native: Native
+// i18n pages.bookmarks.tab.bookmarks: Bookmarks
+// i18n pages.bookmarks.tab.likes: Likes
+// i18n pages.bookmarks.tab.history: History
 // i18n pages.bookmarks.raindrop: Raindrop
 // i18n pages.bookmarks.readLater: Read Later
 // i18n pages.bookmarks.readLaterHint: Your Reader library: articles saved for later, in progress, and finished. Use the book button on an article or long post to save it here.
@@ -55,10 +60,21 @@ const PAGE_SIZE = 20;
 // i18n pages.bookmarks.pageNumber: Page {{page}}
 // i18n pages.bookmarks.placeholder.native: Words or author on this page
 // i18n pages.bookmarks.placeholder.raindrop: Search Raindrop
-/** Native bookmarks, Raindrop and the Reader's reading shelves in one destination. */
+/**
+ * Likes, bookmarks and history in one destination: native bookmarks, likes
+ * (signed-in only), posts scrolled past, the Reader's reading shelves and Raindrop.
+ */
 @Component({
   selector: 'app-bookmarks',
-  imports: [StatusCard, TranslocoPipe, LibraryPanel],
+  imports: [
+    StatusCard,
+    TranslocoPipe,
+    LibraryPanel,
+    Favourites,
+    HistoryPanel,
+    MbToolbar,
+    MbToolbarButton,
+  ],
   templateUrl: './bookmarks.html',
   styleUrl: './bookmarks.css',
 })
@@ -144,7 +160,13 @@ export class Bookmarks implements OnInit {
   private applyParams(params: ParamMap): void {
     const tab = params.get('tab');
     const provider: BookmarkProvider =
-      tab === 'read-later' ? tab : tab === 'raindrop' && this.raindrop.connected() ? tab : 'native';
+      tab === 'read-later' || tab === 'history'
+        ? tab
+        : tab === 'likes' && !this.auth.isAnonymous
+          ? tab
+          : tab === 'raindrop' && this.raindrop.connected()
+            ? tab
+            : 'native';
     if (provider !== this.provider() || !this.providerChosen) {
       this.providerChosen = true;
       this.selectProvider(provider);

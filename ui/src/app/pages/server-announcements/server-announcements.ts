@@ -1,9 +1,17 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { InstanceInfo } from '../../models';
+import { RouterLink } from '@angular/router';
+import { Announcement, InstanceInfo } from '../../models';
+import { SearchServer } from '../../search-server';
+import { Server } from '../../server';
 import { Api } from '../../api';
-import { AnnouncementStore } from '../../announcements/announcement-store';
+import {
+  AnnouncementStore,
+  QUICK_REACTIONS,
+  ReactionChip,
+  reactionChips,
+} from '../../announcements/announcement-store';
 
 // i18n serverAnnouncements.announcements.one: {{active}} active this month · v{{version}} · {{count}} announcement
 // i18n serverAnnouncements.announcements.other: {{active}} active this month · v{{version}} · {{count}} announcements
@@ -16,9 +24,8 @@ import { AnnouncementStore } from '../../announcements/announcement-store';
 // i18n serverAnnouncements.new: new
 // i18n serverAnnouncements.dismiss: dismiss
 // i18n serverAnnouncements.react: React {{emoji}}
-
-// Same quick picks as the banner; the API accepts any unicode emoji.
-const QUICK_REACTIONS = ['👍', '🎉', '❤️', '🚀'];
+// i18n serverAnnouncements.facts: Server details
+// i18n serverAnnouncements.rules: 📜 Server rules
 
 /**
  * The server, presented as a profile.
@@ -36,13 +43,31 @@ const QUICK_REACTIONS = ['👍', '🎉', '❤️', '🚀'];
  */
 @Component({
   selector: 'app-server-announcements',
-  imports: [DatePipe, TranslocoPipe],
+  imports: [DatePipe, TranslocoPipe, RouterLink],
   templateUrl: './server-announcements.html',
   styleUrl: './server-announcements.css',
 })
 export class ServerAnnouncements implements OnInit {
   private api = inject(Api);
   protected store = inject(AnnouncementStore);
+  private server = inject(Server);
+  protected searchServer = inject(SearchServer);
+
+  /**
+   * The rail's server card facts, here because the rail is hidden on a phone
+   * and this page is what the ⋯ menu's "My server" opens.
+   */
+  protected readonly host = computed(() => {
+    try {
+      return new URL(this.server.baseUrl()).host;
+    } catch {
+      return '';
+    }
+  });
+  /** Mastodon instances put donation details on their /about page. */
+  protected readonly aboutUrl = computed(() =>
+    this.host() ? `https://${this.host()}/about` : '/about',
+  );
 
   protected readonly quickReactions = QUICK_REACTIONS;
   protected instance = signal<InstanceInfo | null>(null);
@@ -67,6 +92,11 @@ export class ServerAnnouncements implements OnInit {
       next: (info) => this.instance.set(info),
       error: () => this.instance.set(null),
     });
+  }
+
+  /** Every reaction with its count, quick picks included at 0. */
+  protected chips(a: Announcement): ReactionChip[] {
+    return reactionChips(a, this.quickReactions);
   }
 
   protected isDismissed(id: string): boolean {

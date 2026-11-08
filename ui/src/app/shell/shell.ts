@@ -109,8 +109,9 @@ import { ModeSwitch } from './mode-switch';
 // i18n shell.nav.more: More
 // i18n shell.menu.settings: Settings
 // i18n shell.menu.onboarding: Onboarding
-// i18n shell.menu.likes: Likes
-// i18n shell.menu.bookmarks: Bookmarks
+// i18n shell.menu.likesBookmarksHistory: Likes, bookmarks, history
+// i18n shell.menu.bookmarksHistory: Bookmarks, history
+// i18n shell.menu.myServer: My server
 // i18n shell.menu.manageRss: Manage RSS feeds
 // i18n shell.menu.watchParties: Watch parties
 // i18n shell.menu.write: Write

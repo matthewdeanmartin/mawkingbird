@@ -616,6 +616,13 @@ and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 
+Literary Fiction has an approved English edition at
+`/literary-fiction-on-mastodon/`, under Arts and culture: eight people and
+11 tags. Other languages are withheld. Copy and data stay lazy-loaded; the
+shared topic registry supplies client/server routes and sitemap inclusion.
+Relevant quiet tags remain available alongside recurring literary-fiction
+discussion and substantive author updates.
+
 Historical Fiction has an approved English edition at
 `/historical-fiction-on-mastodon/`, under Arts and culture: ten people and
 12 tags. Other languages are withheld. Copy and data stay lazy-loaded; the

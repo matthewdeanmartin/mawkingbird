@@ -10,6 +10,7 @@ import { FEED_BUILDER_HUBS, FEED_BUILDER_TOPICS } from './feed-builder-registry'
 
 describe('communities hub categories', () => {
   it('files every topic page under a declared category', () => {
+    expect(TOPIC_CATEGORY['literary-fiction']).toBe('culture');
     expect(TOPIC_CATEGORY['historical-fiction']).toBe('culture');
     expect(TOPIC_CATEGORY['mystery-and-crime']).toBe('culture');
     for (const topic of FEED_BUILDER_TOPICS) {

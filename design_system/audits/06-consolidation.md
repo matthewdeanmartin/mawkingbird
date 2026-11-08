@@ -1829,6 +1829,28 @@ counts.
 
 No shared widget changed.
 
+## Likes, bookmarks, history; announcement reactions; My server, 2026-11-08
+
+The Bookmarks page's provider row (pill `.tabs`) became an `MbToolbar` of
+`MbToolbarButton [pressed]` view buttons: Bookmarks, Likes (hidden for
+Anonymous), History, Read Later and Raindrop. New candidate file
+`pages/bookmarks/history-panel/history-panel.html` uses MbToolbar for Clear
+history, MbButton for Load more and the unavailable-post actions, and
+MbContentState for empty states; its filter is a plain search field matching
+the Bookmarks filter. The announcement banner and the server page dropped the
+separate uncounted quick-pick buttons (`.picker`/`.add-reaction`): every
+reaction is one counted `.reaction` chip. The server page gained a facts block
+of links and a definition list, no new controls. The Privacy page adds one
+MbCheckbox. Inventory: 1,706 sources, 603 candidates (one added, reconciled in
+11-reconciliation.json). No shared widget changed.
+
+## Topic pages: Literary Fiction, 2026-11-08
+
+Added one lazy English copy source. The immediately preceding working-tree
+inventory increases from 1,701 to 1,702 sources; all 602 candidate entries are
+identical. No template or shared widget changed. Candidate paths are unchanged,
+so reconciliation requires no additions or removals.
+
 ## Topic pages: Historical Fiction, 2026-11-08
 
 Added one lazy English copy source. The immediately preceding working-tree

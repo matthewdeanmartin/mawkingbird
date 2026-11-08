@@ -548,6 +548,11 @@
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
+      "file": "ui/src/app/pages/bookmarks/history-panel/history-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "History view of the Likes, bookmarks, history page: MbToolbar/MbToolbarButton for Clear history, MbButton for Load more and the unavailable-post actions, MbContentState for empty states. The filter input is a plain search field like the Bookmarks filter beside it; move both to MbField together. Keep new controls on shared widgets."
+    },
+    {
       "file": "ui/src/app/pages/bluesky-starter-packs/bluesky-people-list.ts",
       "disposition": "adopted scope",
       "nextStep": "Bluesky people rows: native profile links with a shared Button per row (solid Follow, outline Following, aria-pressed). Row layout is local CSS."

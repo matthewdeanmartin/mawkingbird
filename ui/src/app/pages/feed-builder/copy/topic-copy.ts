@@ -19,6 +19,7 @@ const COPY_LOADERS: Record<
   FeedTopic,
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
+  'literary-fiction': () => import('./literary-fiction'),
   'historical-fiction': () => import('./historical-fiction'),
   'mystery-and-crime': () => import('./mystery-and-crime'),
   'romance-books': () => import('./romance-books'),
