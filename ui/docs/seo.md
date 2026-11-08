@@ -219,7 +219,7 @@ and Japanese did not meet the people floor and have no registered routes.
   lazily; `report-bundle.mjs` keeps them out of the startup bundle. Routes carry
   `lang` and `seoAlternates`, so `<html lang>`, `hreflang`, the language menu
   (`LanguageVersions`) and the sitemap's alternates all agree.
-- **A mini-app**, like the focused tools: Home · Builder · Preview · Flooding. Signed in to
+- **A mini-app**, like the focused tools: Home · Communities · Builder · Preview · Flooding. Communities returns to the matching language hub. Signed in to
   Mastodon, `app.routes.ts` puts a twin of each page in the trimmed shell
   (`feedBuilderSignedInChildren`); the pages are `FOCUSED_APPS` in
   `shell/mode-nav.ts`, so `?next=` sign-in returns to them. Signed out, the
@@ -607,6 +607,12 @@ classified under Society in feed-builder-categories.ts. The hub includes it in
 All topics and the Society filter; other language filters show the English
 fallback, not a translated page. Accounts must regularly post about DC, Maryland
 or Virginia, not merely reside there. Relevant quiet local tags remain selectable.
+
+War in Ukraine has an approved English edition at
+`/war-in-ukraine-on-mastodon/`, under Society: 22 accounts and 13 tags. Saved
+owner holds are excluded. Other languages are withheld for insufficient strong
+matches. The route registry supplies the hub, server routes and sitemap; data
+and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 

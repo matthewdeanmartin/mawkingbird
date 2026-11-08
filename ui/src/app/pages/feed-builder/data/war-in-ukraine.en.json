@@ -1,0 +1,354 @@
+{
+  "version": 1,
+  "topic": "war-in-ukraine",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T02:52:03+00:00",
+  "tags": [
+    {
+      "name": "Ukraine",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "UkraineWar",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Kyiv",
+      "lang": "en",
+      "kind": "tag",
+      "caution": "spam"
+    },
+    {
+      "name": "WarInUkraine",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Zaporizhzhia",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Donbas",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "UkraineNews",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "UkraineReconstruction",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Mariupol",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bucha",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "UkraineOSINT",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RussianInvasion",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "RussiaUkraineWar",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "scottlucas@journa.host",
+      "id": "109377488038355178",
+      "url": "https://journa.host/@ScottLucas",
+      "displayName": "Scott Lucas",
+      "avatar": "https://assets.journa.host/accounts/avatars/109/377/488/038/355/178/original/96710d4175f67ad4.jpg",
+      "bio": "Professor, Clinton Institute, University College Dublin/Professor Emeritus, University of Birmingham; Founder, EA WorldView (eaworldview.com); Political analyst on TV and radio. YouTube: https://www.…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "youtube-10k"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC-gFmft_qDq_b4THMw2ixeA",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "militarylandnet@mstdn.social",
+      "id": "109522470534309613",
+      "url": "https://mstdn.social/@militarylandnet",
+      "displayName": "Militarylandnet",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/522/470/534/309/613/original/e30d1cc3d147ad79.png",
+      "bio": "A database dedicated to 🇺🇦 Ukrainian regular and volunteer military units, combined with a news source primarily focused on the Ukrainian Armed Forces.",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCvPtJQlY3mqT7y1R2ZSlaGw",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2025-02"
+      }
+    },
+    {
+      "acct": "timkmak@journa.host",
+      "id": "109325842935182319",
+      "url": "https://journa.host/@timkmak",
+      "displayName": "Tim Mak",
+      "avatar": "https://assets.journa.host/accounts/avatars/109/325/842/935/182/319/original/285189effff00e00.png",
+      "bio": "Founder, The Counteroffensive Media Group. Compelling reporting on human stories to illustrate the news. Fmr US Army medic. https:// linktr.ee/counteroffensivenews",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "noelreports@mstdn.social",
+      "id": "109350354142501254",
+      "url": "https://mstdn.social/@noelreports",
+      "displayName": "NOELREPORTS 🇪🇺 🇺🇦",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/350/354/142/501/254/original/821ff8a3fb370896.png",
+      "bio": "Media platform covering global conflict zones. Focus on the Russian-Ukrainian war. If you'd like to support our voluntary work: http:// buymeacoffee.com/noelreports .",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-2500"],
+      "elsewhere": ["bluesky", "patreon"]
+    },
+    {
+      "acct": "free_press@mstdn.social",
+      "id": "109573830240801294",
+      "url": "https://mstdn.social/@Free_Press",
+      "displayName": "Aure Free Press",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/573/830/240/801/294/original/3fb65adb2017c4ea.jpeg",
+      "bio": "Home of \"The Dispatch\" News Happens Here First Independent journalism focused on early reporting, clarity, and context. No clickbait. No noise. Just verified news and informed analysis. Follow for br…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["followers-2500"],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "eugenemcparland@mastodon.ie",
+      "id": "109310076374782341",
+      "url": "https://mastodon.ie/@EugeneMcParland",
+      "displayName": "Eugene McParland 🇺🇦",
+      "avatar": "https://cdn.masto.host/mastodonie/accounts/avatars/109/310/076/374/782/341/original/bd6f7de7f1d3dff8.jpg",
+      "bio": "\"Wise men learn more from fools than fools from the wise.“ — Cato the Elder",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "hanse_mina@mastodon.social",
+      "id": "111758658145435045",
+      "url": "https://mastodon.social/@hanse_mina",
+      "displayName": "Hanse Mina",
+      "avatar": "https://files.mastodon.social/accounts/avatars/111/758/658/145/435/045/original/9a77d77a41b1ac8b.jpg",
+      "bio": "Bsky: https:// bsky.app/profile/mina-hanse.bs ky.social Donate to Ukraine: https:// u24.gov.ua Donate to Ukraine Animals: https:// uanimals.org # NAFO",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "rvps2001@mastodon.social",
+      "id": "110201612528639347",
+      "url": "https://mastodon.social/@rvps2001",
+      "displayName": "Russia-Ukraine Daily News",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/201/612/528/639/347/original/301ba7ad8cd3ea94.png",
+      "bio": "I run a daily newsletter about Russia, Ukraine, and the war: https:// russia-ukraine-newsletter.beeh iiv.com/subscribe Telegram: https:// t.me/russiaukrainedaily Please consider supporting my work: h…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "meduza_en@masto.ai",
+      "id": "109382563637552870",
+      "url": "https://masto.ai/@meduza_en",
+      "displayName": "Meduza in English",
+      "avatar": "https://s3.masto.ai/accounts/avatars/109/382/563/637/552/870/original/9ea60915d874926c.jpg",
+      "bio": "Breaking news in Russia, investigative reports, interviews, and opinions. In English. You’re welcome.",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "aliide@mstdn.social",
+      "id": "109286976668227994",
+      "url": "https://mstdn.social/@aliide",
+      "displayName": "Aliide",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/286/976/668/227/994/original/b87fee5ff06ba905.jpg",
+      "bio": "Journalist, author, cat butler. I write about # Russia , the # Baltic states, and # Ukraine . I don't write about diatoms, I just think they're cool. Views own. Hi!",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "ragnarbjartur@masto.ai",
+      "id": "109364257564808852",
+      "url": "https://masto.ai/@ragnarbjartur",
+      "displayName": "Ragnar Bjartur Gudmundsson",
+      "avatar": "https://s3.masto.ai/accounts/avatars/109/364/257/564/808/852/original/39ccb7e1df21491e.jpg",
+      "bio": "Political scientist & economist obsessed with data and on a mission to turn it into actionable information. Been mostly active on Twitter, where I've reported on the war in 🇺🇦.",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ukraine@masto.ai",
+      "id": "111109402971337579",
+      "url": "https://masto.ai/@ukraine",
+      "displayName": "Слава Україні 🇺🇦",
+      "avatar": "https://s3.masto.ai/accounts/avatars/111/109/402/971/337/579/original/ba28e7b13686602a.webp",
+      "bio": "Welcome to this Ukraine News account! The most up-to-date source for news and analysis on the war in # Ukraine . This account provides a curated selection of news articles, analysis, and commentary f…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "markstoneman@zirk.us",
+      "id": "109292538717358794",
+      "url": "https://zirk.us/@markstoneman",
+      "displayName": "Mark R. Stoneman",
+      "avatar": "https://zirkus-media.fra1.cdn.digitaloceanspaces.com/accounts/avatars/109/292/538/717/358/794/original/f8347e5187ec9276.jpeg",
+      "bio": "Historian, editor, and translator for hire (🇩🇪 to 🇺🇸) · this 🦣 bridges to 🦋 @markstoneman.org · my main 🦋 is @markstoneman.com · he/him · longtime resident of Washington, DC, now caregiving in Conway…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ukrdef@mstdn.social",
+      "id": "112823290858606584",
+      "url": "https://mstdn.social/@ukrdef",
+      "displayName": "Defending Ukraine",
+      "avatar": "https://media.mstdn.social/accounts/avatars/112/823/290/858/606/584/original/1fe10405b61435ec.jpg",
+      "bio": "Partially automated news about the Russian aggression in Ukraine. Plus own opinions. Posts are searchable within a timeframe of 3 months, and then automatically wiped. On the Fediverse since 2022, be…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "diodorus@masto.ai",
+      "id": "109334268874319317",
+      "url": "https://masto.ai/@diodorus",
+      "displayName": "Alexander Howlett",
+      "avatar": "https://s3.masto.ai/accounts/avatars/109/334/268/874/319/317/original/556b2655eefd05f9.jpeg",
+      "bio": "Naval and Military Historian https:// cawarstudies.wordpress.com/ https:// alexanderhowlett.com/",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "7of9@mas.to",
+      "id": "110521335097487928",
+      "url": "https://mas.to/@7of9",
+      "displayName": "7of9",
+      "avatar": "https://media.mas.to/accounts/avatars/110/521/335/097/487/928/original/72b12fac960286bf.jpg",
+      "bio": "",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "hippyjo@c.im",
+      "id": "109422744368981057",
+      "url": "https://c.im/@hippyjo",
+      "displayName": "Jayme",
+      "avatar": "https://s3.c.im/accounts/avatars/109/422/744/368/981/057/original/6940fa7ccf8292fc.jpg",
+      "bio": "Student Worker at the University of Life Champion of compassion, dreamer of the impossible. I make things, do stuff, and have adventures. Mindfully practicing gratitude and seeking greater awareness…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ans@ukrainian.network",
+      "id": "109392620282114266",
+      "url": "https://ukrainian.network/@ans",
+      "displayName": "Ансельм Шмідт 🌻",
+      "avatar": "https://f0-ukrainian-network.fra1.digitaloceanspaces.com/accounts/avatars/109/392/620/282/114/266/original/99903b668c6ee020.jpg",
+      "bio": "Grant Consultant at the University of Tartu in Estonia with a background in area studies, humanities, and social sciences focusing on Eastern Europe and # Ukraine . Among other things, focusing on be…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "thekyivindependent_unofficial@activitypub.writeworks.uk",
+      "id": "2",
+      "url": "https://activitypub.writeworks.uk/author/thekyivindependent_unofficial/",
+      "displayName": "Kyiv Independent Daily Headlines",
+      "avatar": "https://activitypub.writeworks.uk/wp-content/uploads/2025/04/cropped-KI-logo-120x120.png",
+      "bio": "Unofficial posting for The Kyiv Independent daily update & summary from Ukraine Website: kyivindependent.com/ Need instant translation in your browser? Use the plug-in/extension ‘Translate Web Pages’…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "rogue_corq@mas.corq.co",
+      "id": "111541861063195058",
+      "url": "https://mas.corq.co/@rogue_corq",
+      "displayName": "rogue_corq",
+      "avatar": "https://mas.corq.co/system/accounts/avatars/111/541/861/063/195/058/original/1396e298969bdf5b.png",
+      "bio": "🇺🇦 # UKRAINE # fellas # cyber # linux # agitprop # cats # Україна # NFL # infosec # NAFO booster, Amateur Gardener. 🇺🇦 All cats boosted. Literal herder of # cats (I manage a local feral colony.) 😼 **…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ramontaba@toad.social",
+      "id": "109542372075630120",
+      "url": "https://toad.social/@ramontaba",
+      "displayName": "Ramon Baback",
+      "avatar": "https://cdn.toad.social/accounts/avatars/109/542/372/075/630/120/original/d68ec3cdd30485a9.png",
+      "bio": "Ukraine, Europe, USA, Earth. Politics, history, liberty, patriotism, social justice, science. https:// bsky.app/profile/ramontaback.b sky.social",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ukraine@pubeurope.com",
+      "id": "114000247800426447",
+      "url": "https://pubeurope.com/@ukraine",
+      "displayName": "Ukraine",
+      "avatar": "https://media.pubeurope.com/accounts/avatars/114/000/247/800/426/447/original/cb7627e55c27d1ae.png",
+      "bio": "# Ukraine # UA # Europe # Europa # EU",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

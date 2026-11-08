@@ -54,7 +54,7 @@ export function validatePage(page, { allowDraft = false } = {}) {
     page.status === 'reviewed' || (allowDraft && page.status === 'draft'),
     `${where}: status "${page.status}" is not publishable (approve it in mawkingbird_starters)`,
   );
-  assert(Array.isArray(page.tags) && page.tags.length <= 20, `${where}: invalid tags`);
+  assert(Array.isArray(page.tags) && page.tags.length <= 40, `${where}: invalid tags`);
   const tagNames = new Set();
   for (const tag of page.tags) {
     onlyKeys(tag, ['name', 'lang', 'kind', 'source', 'status', 'caution'], `${where} tag`);

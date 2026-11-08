@@ -780,6 +780,26 @@ describe('Shell app-mode nav', () => {
     expect(host.querySelector('.more-menu')).not.toBeNull();
   });
 
+  it('links from a topic back to Communities between Home and Builder', async () => {
+    const router = TestBed.inject(Router);
+    router.resetConfig([{ path: '**', component: PageRail }]);
+    const fixture = render();
+    await router.navigateByUrl('/plant-based-living-on-mastodon');
+    fixture.detectChanges();
+    expect(tabs(fixture).slice(0, 3)).toEqual([
+      '/home',
+      '/communities',
+      '/plant-based-living-on-mastodon',
+    ]);
+    const link = fixture.nativeElement.querySelector(
+      '.primary-nav a[href="/communities"]',
+    ) as HTMLAnchorElement;
+    expect(link.querySelector('svg')).not.toBeNull();
+    link.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/communities');
+  });
+
   it('shows a page’s own rail in place of the default, and the default again after', () => {
     const outlet = TestBed.inject(RailOutlet);
     const page = {};

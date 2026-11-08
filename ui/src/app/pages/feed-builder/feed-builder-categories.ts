@@ -30,6 +30,7 @@ export const HUB_CATEGORIES = [
 export type HubCategory = (typeof HUB_CATEGORIES)[number];
 
 export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
+  'war-in-ukraine': 'society',
   dmv: 'society',
   retrocomputing: 'tech',
   'esp32-and-single-board-computers': 'tech',

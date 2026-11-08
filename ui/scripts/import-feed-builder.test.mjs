@@ -57,6 +57,19 @@ test('every field is allow-listed, so nothing private can slip through', () => {
   );
 });
 
+test('accepts forty distinct tags and rejects a larger selection', () => {
+  const tags = Array.from({ length: 40 }, (_, i) => ({
+    name: `Topic${i}`,
+    lang: 'en',
+    kind: 'tag',
+  }));
+  assert.equal(validatePage(page({ tags })).tags.length, 40);
+  assert.throws(
+    () => validatePage(page({ tags: [...tags, { name: 'Overflow', lang: 'en', kind: 'tag' }] })),
+    /invalid tags/,
+  );
+});
+
 test('rejects malformed people and tags', () => {
   assert.throws(() => validatePage(page({ people: [person({ id: '' })] })), /home-instance ID/);
   assert.throws(() => validatePage(page({ people: [person({ url: 'http://x/@a' })] })), /URL/);

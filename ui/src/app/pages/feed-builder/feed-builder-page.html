@@ -431,7 +431,7 @@
   <mb-dialog
     [title]="bulkRunning() ? controls.bulkRunningTitle : controls.bulkDoneTitle"
     [closeLabel]="controls.close"
-    [showClose]="!bulkRunning()"
+    [showClose]="false"
     (dismissed)="closeBulk()"
   >
     @if (bulkProgress(); as progress) {

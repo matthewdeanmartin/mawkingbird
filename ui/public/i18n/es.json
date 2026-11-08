@@ -5924,6 +5924,7 @@
     "thisPost": "Esta publicación"
   },
   "shell": {
+    "modeNav.feedBuilder.communities": "Comunidades",
     "account.addBluesky": "+ Añadir cuenta de Bluesky",
     "account.addMastodon": "+ Añadir cuenta de Mastodon",
     "account.anonymous": "Anónimo",

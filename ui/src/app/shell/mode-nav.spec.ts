@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { APP_MODES } from '../app-mode';
+import {
+  FEED_BUILDER_HUBS,
+  FEED_BUILDER_PAGES,
+  feedBuilderHubFor,
+} from '../pages/feed-builder/feed-builder-registry';
 import { FOCUSED_APPS, focusedAppFor, MODE_ENTRIES, MODE_NAV, suggestedMode } from './mode-nav';
 
 describe('MODE_NAV', () => {
@@ -158,10 +163,24 @@ describe('FOCUSED_APPS', () => {
 });
 
 describe('every focused app', () => {
+  it('puts the matching language hub before Builder on every topic', () => {
+    for (const page of FEED_BUILDER_PAGES) {
+      const app = focusedAppFor(`/${page.path}`)!;
+      expect(app.items.slice(0, 2).map((item) => item.id)).toEqual(['communities', 'builder']);
+      expect(app.items[0].link).toBe(`/${feedBuilderHubFor(page.lang).path}`);
+      expect(app.items[0].active(`/${page.path}/preview`)).toBe(false);
+    }
+  });
+
   it('marks exactly one of its tabs current on each of its pages', () => {
     for (const app of FOCUSED_APPS) {
       for (const item of app.items) {
-        expect(focusedAppFor(item.link)?.id, item.link).toBe(app.id);
+        if (item.id === 'communities') {
+          expect(FEED_BUILDER_HUBS.map((hub) => `/${hub.path}`)).toContain(item.link);
+          expect(focusedAppFor(item.link)).toBeNull();
+        } else {
+          expect(focusedAppFor(item.link)?.id, item.link).toBe(app.id);
+        }
         expect(
           app.items.filter((other) => other.active(item.link)),
           item.link,

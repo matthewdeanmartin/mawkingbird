@@ -1,6 +1,7 @@
 import { AppMode } from '../app-mode';
 import { TOOL_PAGES } from '../focused-tools';
 import {
+  feedBuilderHubFor,
   FEED_BUILDER_FLOODING,
   FEED_BUILDER_PAGES,
   FEED_BUILDER_PREVIEW,
@@ -51,6 +52,7 @@ import {
 // i18n shell.modeNav.languages.setup: Languages
 // i18n shell.modeNav.focused.invite: Invite
 // i18n shell.modeNav.feedBuilder.builder: Builder
+// i18n shell.modeNav.feedBuilder.communities: Communities
 // i18n shell.modeNav.feedBuilder.preview: Preview
 // i18n shell.modeNav.feedBuilder.flooding: Flooding
 
@@ -348,18 +350,26 @@ const PREVIEW_ICON =
   'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6';
 
 /**
- * A topic starter-kit page (Feed Builder) as a mini-app: Home · Builder ·
+ * A topic starter-kit page (Feed Builder) as a mini-app: Home · Communities · Builder ·
  * Preview · Flooding. Builder is the page, with follow controls once signed
  * in; Preview reads a sample of the feed the page would build, anonymously,
  * never the reader's Home; Flooding finds accounts flooding its hashtags.
  */
 function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
+  const hub = `/${feedBuilderHubFor(lang).path}`;
   const preview = `${root}/${FEED_BUILDER_PREVIEW}`;
   const flooding = `${root}/${FEED_BUILDER_FLOODING}`;
   return {
     id: `feed-builder-${topic}-${lang}`,
     root,
     items: [
+      {
+        id: 'communities',
+        labelKey: 'shell.modeNav.feedBuilder.communities',
+        icon: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
+        link: hub,
+        active: onPath(hub),
+      },
       {
         id: 'builder',
         labelKey: 'shell.modeNav.feedBuilder.builder',

@@ -3069,6 +3069,7 @@
     "translateAnyway": "Trotzdem übersetzen?"
   },
   "shell": {
+    "modeNav.feedBuilder.communities": "Communitys",
     "account.addBluesky": "+ Bluesky-Konto hinzufügen",
     "account.addMastodon": "+ Mastodon-Konto hinzufügen",
     "account.anonymous": "Anonym",

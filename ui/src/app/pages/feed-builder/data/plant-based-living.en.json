@@ -3,7 +3,7 @@
   "topic": "plant-based-living",
   "lang": "en",
   "status": "reviewed",
-  "generatedAt": "2026-11-06T02:21:33+00:00",
+  "generatedAt": "2026-11-08T03:35:43+00:00",
   "tags": [
     {
       "name": "Vegetarian",
@@ -101,18 +101,6 @@
       "elsewhere": []
     },
     {
-      "acct": "2003mugishaphocit@mastodon.social",
-      "id": "115563894722913318",
-      "url": "https://mastodon.social/@2003MugishaPhocit",
-      "displayName": "MUGISHA PHOCIT",
-      "avatar": "https://files.mastodon.social/accounts/avatars/115/563/894/722/913/318/original/9acc88b689281cf6.jpeg",
-      "bio": "Director and founder of Green Youth Movement a regestered organisation Number 875BY306 leading the fight against hunger and environmental degradation in central western uganda through regenerative fa…",
-      "shelf": "community",
-      "rank": 6,
-      "fame": [],
-      "elsewhere": []
-    },
-    {
       "acct": "veganeasy@veganism.social",
       "id": "110546136284660685",
       "url": "https://veganism.social/@veganeasy",
@@ -120,7 +108,7 @@
       "avatar": "https://sfo3.digitaloceanspaces.com/veganism-space/accounts/avatars/110/546/136/284/660/685/original/b2833cd36339353b.jpg",
       "bio": "Vegan Easy is a grassroots initiative by Animal Liberation Victoria, helping people kickstart a kinder life. We promote veganism as the ethical, rational, and earth friendly lifestyle that it is. Sig…",
       "shelf": "community",
-      "rank": 7,
+      "rank": 6,
       "fame": [],
       "elsewhere": ["youtube"]
     },
@@ -132,7 +120,7 @@
       "avatar": "https://sfo3.digitaloceanspaces.com/veganism-space/accounts/avatars/110/655/212/315/475/116/original/c313e02fc4e1f1ff.png",
       "bio": "Minimalism, health, organic healthy plant-based food, nature, environment, biodiversity, animal & human rights Ⓥ etc. In finnish at @ Dragofix Additional stuff: tootfinder",
       "shelf": "community",
-      "rank": 8,
+      "rank": 7,
       "fame": [],
       "elsewhere": []
     },
@@ -144,7 +132,7 @@
       "avatar": "https://files.mastodon.social/accounts/avatars/000/362/838/original/7f75585020824181.jpeg",
       "bio": "🤓 Researching & writing about # StrategicCommunication # journalism # lobbies # CriticalAnimalStudies 🌱 Interested in # intersectionality , # ecofeminism , free radios, art, # zines , # veganism # co…",
       "shelf": "community",
-      "rank": 9,
+      "rank": 8,
       "fame": [],
       "elsewhere": []
     },
@@ -156,7 +144,7 @@
       "avatar": "https://a.mindlycdn.com/accounts/avatars/109/345/289/985/595/541/original/308187e1d96a7af6.jpg",
       "bio": "Librarian in a county system. Big proponent of kindness and compassion. I love to chat and interact. If you've followed me and not gotten a follow back, it's likely because we haven't interacted yet!…",
       "shelf": "community",
-      "rank": 10,
+      "rank": 9,
       "fame": [],
       "elsewhere": []
     },
@@ -168,7 +156,7 @@
       "avatar": "https://sfo3.digitaloceanspaces.com/veganism-space/accounts/avatars/113/316/280/273/302/462/original/296c9a095b952c9f.png",
       "bio": "Vegan-Inspector is a free and open-source app that scans barcodes and informs you whether a product is vegan or vegetarian. Attribution for leaf background: free background photos from https:// pngtr…",
       "shelf": "community",
-      "rank": 11,
+      "rank": 10,
       "fame": [],
       "elsewhere": ["website"]
     },
@@ -180,7 +168,7 @@
       "avatar": "https://sfo3.digitaloceanspaces.com/veganism-space/accounts/avatars/114/189/304/358/784/426/original/d4445391adc7b2c4.png",
       "bio": "Vegan For The Animals 🐖🐔🐟 Wir veranstalten einen veganen Mitbringbrunch in Mainz! 🌿 Jeden ersten Sonntag im Monat begrüßen wir VeganerInnen, und solche, die es gerne werden wollen! ☀️ Ein super Ort z…",
       "shelf": "community",
-      "rank": 12,
+      "rank": 11,
       "fame": [],
       "elsewhere": []
     }

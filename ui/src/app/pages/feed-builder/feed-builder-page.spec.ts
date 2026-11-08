@@ -50,6 +50,29 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the approved Ukraine edition with saved tag holds excluded', async () => {
+    const el = await render(at('war-in-ukraine-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('War in Ukraine on Mastodon');
+    expect(el.querySelectorAll('.people li').length).toBe(22);
+    expect(el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li').length).toBe(
+      13,
+    );
+    for (const tag of ['Ukraine', 'UkraineReconstruction', 'UkraineOSINT'])
+      expect(el.querySelector(`a[href="/tags/${tag}"]`)).not.toBeNull();
+    for (const tag of [
+      'Crimea',
+      'Kharkiv',
+      'Kherson',
+      'StandWithUkraine',
+      'UkraineAid',
+      'UkraineRefugees',
+    ])
+      expect(el.querySelector(`a[href="/tags/${tag}"]`)).toBeNull();
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'war-in-ukraine').map((page) => page.lang),
+    ).toEqual(['en']);
+  });
+
   it('renders the English page: pitch, tags, shelves, servers, questions, help', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
     const el = await render(at('science-fiction-on-mastodon'));

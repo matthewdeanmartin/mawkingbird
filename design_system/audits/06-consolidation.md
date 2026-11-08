@@ -249,6 +249,13 @@ gain an `embedded` input that only hides their Settings back link and page
 header (line shifts, no new findings). `features.html` gains three MbContentLinks.
 No shared widget changed.
 
+## Topic pages: War in Ukraine, 2026-11-08
+
+Added one lazy English copy source and approved data edition under Society.
+Sources increased from 1,692 to 1,693. Compared with the pre-topic inventory,
+all 602 candidate entries are identical; no reconciliation changes are needed.
+No template or shared widget changed.
+
 ## Twitter importer mini-app, 2026-10-28
 
 Reviewed 1,236 source files and 259 candidate files. Two candidates are added.

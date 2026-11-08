@@ -115,7 +115,13 @@ describe('Feed Builder as a mini-app', () => {
   it('is a focused app whose root sign-in may return to', () => {
     const app = focusedAppFor('/it/fantascienza-su-mastodon/preview');
     expect(app?.root).toBe('/it/fantascienza-su-mastodon');
-    expect(app?.items.map((item) => item.id)).toEqual(['builder', 'preview', 'flooding']);
+    expect(app?.items.map((item) => item.id)).toEqual([
+      'communities',
+      'builder',
+      'preview',
+      'flooding',
+    ]);
+    expect(app?.items[0].link).toBe('/it/comunita-mastodon');
     expect(loginDestination('/it/fantascienza-su-mastodon')).toBe('/it/fantascienza-su-mastodon');
   });
 
@@ -312,6 +318,11 @@ describe('Feed Builder as a mini-app', () => {
     importer.rows.set(people.map((handle) => ({ handle, status: 'followed' })));
     fixture.detectChanges();
     expect(el.querySelector('mb-dialog')?.textContent).toContain('Fatto');
+    expect(
+      [...dialog.querySelectorAll('button')].filter((button) =>
+        /^\s*Chiudi\s*$/.test(button.textContent ?? ''),
+      ),
+    ).toHaveLength(1);
     expect(page$.canLeave()).toBe(true);
     (
       buttonNamed(
