@@ -663,3 +663,10 @@ Follower prominence badges distinguish `followers-2500` (2,500+) from
 `followers-625` (625+). The private builder uses the lower threshold for
 non-English editions; existing 2,500+ badges remain accurate. This is a shelf
 prominence signal, not a minimum follower count for community inclusion.
+
+US Politics has one approved English edition at `/us-politics-on-mastodon/`,
+under Society: 15 public accounts and five tags. Copy and data load lazily;
+the topic registry supplies client/server routes and sitemap entries. Copy
+explicitly distinguishes curated accounts from open hashtag streams and offers
+an account-only selection by unchecking tags. No claim of equal ideological
+representation is made. Canadian Politics remains a separate private draft.

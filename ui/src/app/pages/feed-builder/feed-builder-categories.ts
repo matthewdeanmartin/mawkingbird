@@ -36,6 +36,7 @@ export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
   'romance-books': 'culture',
   buddhism: 'society',
   'war-in-ukraine': 'society',
+  uspol: 'society',
   dmv: 'society',
   retrocomputing: 'tech',
   'esp32-and-single-board-computers': 'tech',

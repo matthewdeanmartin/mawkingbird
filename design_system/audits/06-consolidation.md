@@ -1939,3 +1939,11 @@ candidates 604 to 605, with the banner reconciled in 11-reconciliation.json.
 The command bar's refresh check and the hidden one-source switcher change
 conditions and labels on existing `mbToolbarButton`s, not controls. No shared
 widget changed.
+
+### US politics starter kit (2026-11-08)
+
+Reviewed the regenerated control inventory after adding the English USPOL copy.
+The source-file count increases by one; all 605 candidate files, control counts
+and evidence lines are unchanged. The page uses the existing Feed Builder
+components. No candidates were added or removed, so 11-reconciliation.json
+requires no entry changes. No shared design widget changed.

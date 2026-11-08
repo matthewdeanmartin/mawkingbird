@@ -25,6 +25,7 @@ const COPY_LOADERS: Record<
   'romance-books': () => import('./romance-books'),
   buddhism: () => import('./buddhism'),
   'war-in-ukraine': () => import('./war-in-ukraine'),
+  uspol: () => import('./uspol'),
   dmv: () => import('./dmv'),
   retrocomputing: () => import('./retrocomputing'),
   'esp32-and-single-board-computers': () => import('./esp32-and-single-board-computers'),

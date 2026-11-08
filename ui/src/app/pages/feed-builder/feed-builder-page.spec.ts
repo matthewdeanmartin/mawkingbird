@@ -159,6 +159,20 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders the approved English US politics selection with open-tag guidance', async () => {
+    const el = await render(at('us-politics-on-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('US politics on Mastodon');
+    expect(el.querySelectorAll('.people li').length).toBe(15);
+    expect(el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li').length).toBe(
+      5,
+    );
+    expect(el.querySelector('a[href="/tags/CivicEngagement"]')).not.toBeNull();
+    expect(el.textContent).toContain('Hashtags are open streams');
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'uspol').map((page) => page.lang),
+    ).toEqual(['en']);
+  });
+
   it('renders the approved Ukraine edition with saved tag holds excluded', async () => {
     const el = await render(at('war-in-ukraine-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('War in Ukraine on Mastodon');

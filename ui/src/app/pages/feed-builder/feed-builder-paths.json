@@ -1,6 +1,10 @@
 {
-  "literary-fiction": { "en": "literary-fiction-on-mastodon" },
-  "historical-fiction": { "en": "historical-fiction-on-mastodon" },
+  "literary-fiction": {
+    "en": "literary-fiction-on-mastodon"
+  },
+  "historical-fiction": {
+    "en": "historical-fiction-on-mastodon"
+  },
   "mystery-and-crime": {
     "en": "mystery-and-crime-on-mastodon",
     "de": "de/krimis-auf-mastodon"
@@ -9,7 +13,9 @@
     "en": "romance-books-on-mastodon",
     "de": "de/liebesromane-auf-mastodon"
   },
-  "buddhism": { "en": "buddhism-on-mastodon" },
+  "buddhism": {
+    "en": "buddhism-on-mastodon"
+  },
   "war-in-ukraine": {
     "en": "war-in-ukraine-on-mastodon"
   },
@@ -54,5 +60,8 @@
   "plant-based-living": {
     "en": "plant-based-living-on-mastodon",
     "de": "de/pflanzlich-leben-auf-mastodon"
+  },
+  "uspol": {
+    "en": "us-politics-on-mastodon"
   }
 }

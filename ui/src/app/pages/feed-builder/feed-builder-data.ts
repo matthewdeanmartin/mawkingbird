@@ -62,6 +62,7 @@ export const DATA_LOADERS: Record<string, Loader> = {
   'romance-books.de': () => import('./data/romance-books.de.json'),
   'buddhism.en': () => import('./data/buddhism.en.json'),
   'war-in-ukraine.en': () => import('./data/war-in-ukraine.en.json'),
+  'uspol.en': () => import('./data/uspol.en.json'),
   'dmv.en': () => import('./data/dmv.en.json'),
   'retrocomputing.en': () => import('./data/retrocomputing.en.json'),
   'retrocomputing.de': () => import('./data/retrocomputing.de.json'),
