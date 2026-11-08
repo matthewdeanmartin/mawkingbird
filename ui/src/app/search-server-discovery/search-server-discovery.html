@@ -5,27 +5,21 @@
         {{ startText() }}
       </button>
       <p class="muted small sd-note">
-        {{ 'searchServerDiscovery.idle.note' | transloco }}
+        {{ 'searchServerDiscovery.idle.snapshotNote' | transloco }}
       </p>
     }
     @case ('searching') {
       <div class="sd-searching">
         <span mbSpinner class="spinner" aria-hidden="true"></span>
-        <span>
-          {{ 'searchServerDiscovery.searching.label' | transloco }}
-          <span class="muted small">{{
-            'searchServerDiscovery.searching.tried' | transloco: { count: tried() }
+        @if (checking()) {
+          <span>{{
+            'searchServerDiscovery.checking.label' | transloco: { domain: checking() }
           }}</span>
-        </span>
+        }
         <button mbPostAction size="small" class="text-button" type="button" (click)="cancel()">
           {{ 'searchServerDiscovery.searching.cancel' | transloco }}
         </button>
       </div>
-      @if (directorySource() === 'bundled') {
-        <p class="muted small sd-note">
-          {{ 'searchServerDiscovery.searching.bundledNote' | transloco }}
-        </p>
-      }
     }
     @case ('found') {
       @if (candidate(); as server) {
@@ -70,16 +64,21 @@
     }
     @case ('exhausted') {
       <p class="muted small">
-        {{ 'searchServerDiscovery.exhausted.note' | transloco }}
+        @if (snapshotNone(); as none) {
+          {{ 'searchServerDiscovery.exhausted.none' | transloco: none }}
+        } @else {
+          {{ 'searchServerDiscovery.exhausted.note' | transloco }}
+        }
       </p>
-      <button mbButton variant="outline" type="button" (click)="startSearch()">
-        {{ 'searchServerDiscovery.exhausted.retry' | transloco }}
-      </button>
+      @if (!snapshotNone()) {
+        <button mbButton variant="outline" type="button" (click)="startSearch()">
+          {{ 'searchServerDiscovery.exhausted.retry' | transloco }}
+        </button>
+      }
     }
   }
 
-  <!-- The hunt shows its work. Fifty silent probes look broken; a list of hosts and
-       why each was skipped looks like progress, and it is. -->
+  <!-- Servers whose live confirmation failed, and why. -->
   @if (attempts().length) {
     <ul class="sd-attempts">
       @for (attempt of attempts(); track attempt.domain) {

@@ -50,6 +50,32 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the approved English Mystery and Crime edition', async () => {
+    const el = await render(at('mystery-and-crime-on-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');
+    expect(el.querySelector('h1')?.textContent).toContain('Mystery and crime books on Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(10);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(20);
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'mystery-and-crime').map(
+        (page) => page.lang,
+      ),
+    ).toEqual(['en', 'de']);
+  });
+
+  it('renders the German Krimis edition with native copy', async () => {
+    const el = await render(at('de/krimis-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Krimis auf Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(10);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(7);
+    expect(el.textContent).toContain('noch gar keinen Beiträgen');
+  });
+
   it('renders the approved English Romance Books edition', async () => {
     const el = await render(at('romance-books-on-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');

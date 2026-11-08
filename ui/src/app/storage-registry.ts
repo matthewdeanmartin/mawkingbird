@@ -578,7 +578,15 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'private',
-    note: 'Muted words, accounts and domains. Often discloses more than a follow list.',
+    note: 'Retired device-wide mute/block list shared by every account. Deleted on load; kept registered so a wipe or backup still recognises it.',
+  },
+  {
+    base: 'mockingbird_anonymous_moderation',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    group: 'anonymous',
+    note: "The Anonymous account's browser-local muted and blocked authors. Signed-in accounts mute on their server instead. Often discloses more than a follow list.",
   },
   {
     base: 'mockingbird_muted_posts',

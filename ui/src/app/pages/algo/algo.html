@@ -159,7 +159,7 @@
           </a>
           <footer class="algo-link-meta muted small">
             <span
-              >{{ sourceLabelKey(link.post) | transloco }} · &#64;{{
+              >{{ sourceLabelKey(link.post) | transloco: { tag: link.post.tag } }} · &#64;{{
                 link.status.account.acct
               }}</span
             >
@@ -189,7 +189,7 @@
 } @else {
   @for (p of visible(); track p.status.id) {
     <div class="algo-item">
-      <p class="algo-source muted small">{{ sourceLabelKey(p) | transloco }}</p>
+      <p class="algo-source muted small">{{ sourceLabelKey(p) | transloco: { tag: p.tag } }}</p>
       <app-status-card
         [status]="p.status"
         (changed)="onChanged(p, $event)"

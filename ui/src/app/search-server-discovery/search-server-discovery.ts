@@ -15,17 +15,16 @@ import { rejectReason, SearchServerRejects } from '../search-server-rejects';
 import { Terminology } from '../terminology';
 
 // i18n searchServerDiscovery.start: Find a search server
-// i18n searchServerDiscovery.idle.note: Checks randomly selected servers for one that answers search anonymously — both accounts and posts. Nothing changes until you approve one.
-// i18n searchServerDiscovery.searching.label: Looking for a server that allows search…
-// i18n searchServerDiscovery.searching.tried: {{count}} tried
+// i18n searchServerDiscovery.idle.snapshotNote: Offers servers from Mawkingbird's directory that allowed anonymous search — both accounts and posts — when last checked, and confirms one still does. Nothing changes until you approve one.
+// i18n searchServerDiscovery.checking.label: Checking that {{domain}} still allows search…
 // i18n searchServerDiscovery.searching.cancel: Cancel
-// i18n searchServerDiscovery.searching.bundledNote: Using the bundled Mastodon server directory.
 // i18n searchServerDiscovery.candidate.allowsSearch: {{domain}} allows anonymous search
 // i18n searchServerDiscovery.candidate.found: Found {{accounts}} accounts and {{statuses}} {{posts}} for the test queries.
 // i18n searchServerDiscovery.candidate.use: Use this search server
 // i18n searchServerDiscovery.candidate.keepLooking: Keep looking
-// i18n searchServerDiscovery.exhausted.note: Couldn’t find a server that allows anonymous search right now. Your search server has not changed.
-// i18n searchServerDiscovery.exhausted.retry: Search again
+// i18n searchServerDiscovery.exhausted.none: None of the {{checked}} servers in Mawkingbird's directory allowed anonymous search when last checked ({{date}}). Your search server has not changed; you can still type one in.
+// i18n searchServerDiscovery.exhausted.note: No other server in the directory allows anonymous search right now. Your search server has not changed.
+// i18n searchServerDiscovery.exhausted.retry: Check again
 // i18n searchServerDiscovery.rejects.skipping.one: Skipping {{count}} server already checked and rejected.
 // i18n searchServerDiscovery.rejects.skipping.other: Skipping {{count}} servers already checked and rejected.
 // i18n searchServerDiscovery.rejects.forget: Forget them and re-check
@@ -43,32 +42,47 @@ export interface DiscoveredSearchServer extends ServerSuggestion {
   statuses: number;
 }
 
-/** One host we walked past, kept so the hunt shows its work. */
+/** One host that failed its live confirmation, kept so the check shows its work. */
 interface Attempt {
   domain: string;
   reason: string;
 }
 
+/** One server's anonymous-search support, as `npm run search-servers:snapshot` found it. */
+export interface SearchServerFlags {
+  domain: string;
+  accounts: boolean;
+  posts: boolean;
+  tagsOnly: boolean;
+}
+
+/** `public/search-servers.json`. */
+export interface SearchServerSnapshot {
+  checkedAt: string;
+  checked: number;
+  servers: SearchServerFlags[];
+}
+
+const SNAPSHOT_URL = 'search-servers.json';
+
 /** How many rejections to keep on screen. Enough to look alive, not a wall of text. */
 const VISIBLE_ATTEMPTS = 6;
 
 /**
- * Finds an instance that will actually answer anonymous search.
+ * Offers a server that will actually answer anonymous search.
  *
- * A sibling of `server-discovery/`, and close to it on purpose — that component is
- * already mounted in two places (`login.html`, `settings-server.html`) and the
- * random-walk-with-three-workers shape is proven. Three things differ:
+ * It used to walk the whole Mastodon directory live, probing server after
+ * server for minutes, and in practice no server in the directory qualified, so
+ * every hunt ended empty. Which servers qualify is now measured ahead of time
+ * by `npm run search-servers:snapshot` and shipped as `search-servers.json`.
+ * This component reads it and offers qualifying servers one at a time, each
+ * confirmed with a single live probe first, since a server can change its
+ * mind after the snapshot. When none qualified it says so at once, with the
+ * count and date, instead of making anyone wait.
  *
- *  - The bar is {@link isUsableSearchServer}, not reachability: accounts *and* posts
- *    must come back. Posts are asked for by hashtag, because anonymous full-text
- *    search is off on every server in the directory, and a *list of matching tag
- *    names* does not count — plenty of hosts answer a tag query with the tag and no
- *    timeline, which looks like a result set and isn't one.
- *  - Failures are recorded in {@link SearchServerRejects}, so the next hunt starts
- *    where this one left off instead of re-probing the same ~1000 duds.
- *  - It narrates. A sweep through fifty servers that says only "searching…" looks
- *    broken; `mastodon.example — search needs a login` scrolling past is the
- *    feature working.
+ * The bar is still {@link isUsableSearchServer}: accounts *and* posts. A failed
+ * live confirmation goes to {@link SearchServerRejects}, and the next candidate
+ * is tried.
  */
 @Component({
   selector: 'app-search-server-discovery',
@@ -84,7 +98,7 @@ export class SearchServerDiscovery implements OnDestroy {
   private readonly rejects = inject(SearchServerRejects);
   private readonly transloco = inject(TranslocoService);
 
-  /** Excluded from the hunt — usually the server already in use for search. */
+  /** Excluded from the offer — usually the server already in use for search. */
   readonly currentServer = input('');
   /**
    * The button's text. Empty means "use the default", which is a translation
@@ -100,12 +114,15 @@ export class SearchServerDiscovery implements OnDestroy {
 
   protected readonly state = signal<DiscoveryState>('idle');
   protected readonly candidate = signal<DiscoveredSearchServer | null>(null);
-  protected readonly tried = signal(0);
+  /** The server being confirmed live right now. */
+  protected readonly checking = signal('');
   protected readonly attempts = signal<Attempt[]>([]);
-  protected readonly directorySource = this.directory.source;
   protected readonly rejectCount = this.rejects.count;
+  /** Set when the snapshot itself had no qualifying server, for the note. */
+  protected readonly snapshotNone = signal<{ checked: number; date: string } | null>(null);
 
   private readonly attempted = new Set<string>();
+  private snapshot: Promise<SearchServerSnapshot | null> | null = null;
   private searchAbort: AbortController | null = null;
   private searchSequence = 0;
 
@@ -117,21 +134,29 @@ export class SearchServerDiscovery implements OnDestroy {
     this.cancel(false);
     if (reset) {
       this.attempted.clear();
-      this.tried.set(0);
       this.attempts.set([]);
     }
     this.candidate.set(null);
+    this.snapshotNone.set(null);
+    this.checking.set('');
     this.state.set('searching');
     const sequence = ++this.searchSequence;
     this.searchAbort = new AbortController();
 
-    await this.directory.ready();
+    const [snapshot] = await Promise.all([this.loadSnapshot(), this.directory.ready()]);
     if (sequence !== this.searchSequence) {
       return;
     }
+    const usable = (snapshot?.servers ?? []).filter((server) => server.accounts && server.posts);
+    if (!usable.length) {
+      this.snapshotNone.set({
+        checked: snapshot?.checked ?? 0,
+        date: snapshot?.checkedAt ? new Date(snapshot.checkedAt).toLocaleDateString() : '?',
+      });
+      this.state.set('exhausted');
+      return;
+    }
 
-    // Three exclusion sources: this session's attempts, the persistent reject
-    // list, and whatever is already in use.
     const excluded = new Set([...this.attempted, ...this.rejects.domains()]);
     const currentDomain = this.currentServer()
       .replace(/^https?:\/\//, '')
@@ -140,18 +165,41 @@ export class SearchServerDiscovery implements OnDestroy {
     if (currentDomain) {
       excluded.add(currentDomain);
     }
-    const queue = this.directory.shuffled(excluded);
-    if (!queue.length) {
-      this.state.set('exhausted');
-      return;
-    }
-
-    await Promise.all(
-      Array.from({ length: Math.min(3, queue.length) }, () => this.runWorker(queue, sequence)),
+    const details = new Map(
+      this.directory.shuffled().map((server) => [server.domain.toLowerCase(), server]),
     );
-    if (sequence === this.searchSequence && this.state() === 'searching') {
-      this.state.set('exhausted');
+    const queue = usable
+      .map((server) => server.domain.toLowerCase())
+      .filter((domain) => !excluded.has(domain));
+
+    for (const domain of queue) {
+      this.attempted.add(domain);
+      this.checking.set(domain);
+      const probe = await probeSearchServer(`https://${domain}`, this.searchAbort?.signal, 6000);
+      if (sequence !== this.searchSequence) {
+        return;
+      }
+      if (isUsableSearchServer(probe)) {
+        const known = details.get(domain);
+        this.candidate.set({
+          domain,
+          description: known?.description ?? '',
+          category: known?.category ?? '',
+          users: known?.users ?? 0,
+          accounts: probe.accounts,
+          statuses: probe.statuses ?? 0,
+        });
+        this.state.set('found');
+        return;
+      }
+      // An aborted probe is not a verdict: a cancelled check must not poison
+      // the reject list with hosts we never really asked.
+      if (this.searchAbort?.signal.aborted) {
+        return;
+      }
+      this.recordRejection(domain, probe);
     }
+    this.state.set('exhausted');
   }
 
   protected cancel(showIdle = true): void {
@@ -171,7 +219,7 @@ export class SearchServerDiscovery implements OnDestroy {
     }
   }
 
-  /** Forget every rejected server, so the next hunt re-probes from scratch. */
+  /** Forget every rejected server, so the next look re-checks them. */
   protected forgetRejects(): void {
     this.rejects.clear();
   }
@@ -185,49 +233,17 @@ export class SearchServerDiscovery implements OnDestroy {
     return '';
   }
 
-  private async runWorker(queue: ServerSuggestion[], sequence: number): Promise<void> {
-    while (sequence === this.searchSequence && this.state() === 'searching') {
-      const server = queue.shift();
-      if (!server) {
-        return;
-      }
-      const domain = server.domain.toLowerCase();
-      this.attempted.add(domain);
-      this.tried.update((count) => count + 1);
-
-      const probe = await probeSearchServer(
-        `https://${server.domain}`,
-        this.searchAbort?.signal,
-        6000,
-      );
-
-      if (isUsableSearchServer(probe)) {
-        if (sequence !== this.searchSequence || this.state() !== 'searching') {
-          return;
-        }
-        this.candidate.set({
-          ...server,
-          accounts: probe.accounts,
-          statuses: probe.statuses ?? 0,
-        });
-        this.state.set('found');
-        this.searchAbort?.abort();
-        return;
-      }
-
-      // An aborted probe is not a verdict — a cancelled hunt must not poison the
-      // reject list with hosts we never really asked.
-      if (this.searchAbort?.signal.aborted) {
-        return;
-      }
-      this.recordRejection(domain, probe);
-    }
+  /** The shipped snapshot, fetched once per component; null when it cannot be read. */
+  private loadSnapshot(): Promise<SearchServerSnapshot | null> {
+    this.snapshot ??= fetch(new URL(SNAPSHOT_URL, document.baseURI).toString())
+      .then((response) => (response.ok ? (response.json() as Promise<SearchServerSnapshot>) : null))
+      .catch(() => null);
+    return this.snapshot;
   }
 
   private recordRejection(domain: string, probe: SearchServerProbe): void {
     this.rejects.add(domain, probe.status);
-    // Tags-only is worth naming while it scrolls past: it is the failure that looks
-    // most like success, so seeing it go by is what makes the bar legible.
+    // Tags-only is worth naming: it is the failure that looks most like success.
     const reason = isTagsOnly(probe) ? 'hashtags only, no posts' : rejectReason(probe.status);
     this.attempts.update((list) => [{ domain, reason }, ...list].slice(0, VISIBLE_ATTEMPTS));
   }

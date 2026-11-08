@@ -451,7 +451,10 @@ describe('Shell account switching', () => {
       ) as HTMLAnchorElement;
       expect(findFriends.textContent).toContain('Find Friends');
       expect(fixture.nativeElement.querySelector('.anonymous-post-login')).toBeNull();
-      expect(fixture.nativeElement.querySelector('app-profile-stack .stack')).toBeNull();
+      // Anonymous has one rail card of its own: the way back to its own profile.
+      expect(
+        fixture.nativeElement.querySelector('app-profile-stack .stack')?.textContent,
+      ).toContain('Anonymous');
     },
   );
 

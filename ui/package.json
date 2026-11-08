@@ -42,6 +42,7 @@
     "format": "prettier --write \"src/**/*.{ts,html,css,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,css,scss}\"",
     "servers:snapshot": "node scripts/update-server-snapshot.mjs",
+    "search-servers:snapshot": "node scripts/update-search-servers.mjs",
     "check:storage": "node scripts/check-storage-registry.mjs",
     "check:terminology": "node scripts/check-terminology.mjs",
     "i18n:extract": "node scripts/extract-i18n.mjs",

@@ -82,7 +82,7 @@
                 <button class="btn btn-outline" type="button" (click)="turnCalmOff()">
                   {{ action.label }}
                 </button>
-              } @else {
+              } @else if (canAct(action)) {
                 <button class="btn btn-outline" type="button" (click)="act(action)">
                   {{ action.label }}
                 </button>

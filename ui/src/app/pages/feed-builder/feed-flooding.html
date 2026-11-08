@@ -77,23 +77,25 @@
                         </button>
                       }
                       @default {
-                        <button
-                          mbButton
-                          size="small"
-                          type="button"
-                          (click)="mute(flooder.account, 'temporary')"
-                        >
-                          {{ controls.muteTemporary }}
-                        </button>
-                        <button
-                          mbButton
-                          size="small"
-                          variant="outline"
-                          type="button"
-                          (click)="mute(flooder.account, 'permanent')"
-                        >
-                          {{ controls.mutePermanent }}
-                        </button>
+                        @if (canMute(flooder.account)) {
+                          <button
+                            mbButton
+                            size="small"
+                            type="button"
+                            (click)="mute(flooder.account, 'temporary')"
+                          >
+                            {{ controls.muteTemporary }}
+                          </button>
+                          <button
+                            mbButton
+                            size="small"
+                            variant="outline"
+                            type="button"
+                            (click)="mute(flooder.account, 'permanent')"
+                          >
+                            {{ controls.mutePermanent }}
+                          </button>
+                        }
                       }
                     }
                   </div>

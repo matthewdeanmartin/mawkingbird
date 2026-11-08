@@ -95,6 +95,7 @@ import { ENGINE_LABELS, TranslationEngine, TranslationUsage } from '../translati
 import { AutoTranslateEligibility } from '../trend-language-filter';
 import { MutedPosts } from '../muted-posts';
 import { LocalModeration } from '../local-moderation';
+import { AuthorModeration, ModerationTarget } from '../author-moderation';
 import { FollowTrust } from '../follow-trust';
 import { TrustedAccounts } from '../trusted-accounts';
 import { StatusVisibility } from '../status-visibility';
@@ -573,6 +574,7 @@ export class StatusCard {
   private router = inject(Router);
   private mutedPosts = inject(MutedPosts);
   private localMod = inject(LocalModeration);
+  private authorModeration = inject(AuthorModeration);
   private visibility = inject(StatusVisibility);
   protected capabilities = inject(AnonymousCapabilities);
   private hugo = inject(HugoSettings);
@@ -1207,38 +1209,38 @@ export class StatusCard {
     this.mutedPosts.mute(this.display.id);
   }
 
+  /** Who mutes this author: the Anonymous browser list, or the reader's server. */
+  private get moderationTarget(): ModerationTarget {
+    return {
+      account: this.display.account,
+      provider: this.display.provider,
+      native: !this.foreign && this.display.provider !== 'bluesky',
+    };
+  }
+
+  /** Whether any mute/block route exists for this author and reader. */
+  protected canModerateAuthor(): boolean {
+    return this.authorModeration.route(this.moderationTarget) !== null;
+  }
+
   /**
-   * Mute this card's author for `seconds` (null = indefinitely). A viewer whose
-   * server manages relationships mutes there only — one mute, undone from the
-   * profile like any other — and this visit hides what is already on screen.
-   * Anyone else (read-only Anonymous, a foreign post) gets the browser-local mute.
+   * Mute this card's author for `seconds` (null = indefinitely). Anonymous mutes
+   * in this browser; a signed-in reader mutes on their own server only, and this
+   * visit hides what is already on screen.
    */
   muteAuthorLocally(event: Event, seconds: number | null): void {
     event.stopPropagation();
-    const account = this.display.account;
-    if (this.capabilities.canManageRelationships && !this.foreign) {
-      this.api.muteAccount(account.id, seconds ?? undefined).subscribe({
-        next: () => this.localMod.hideAfterServerAction(account),
-        error: () => this.actionError.set(this.transloco.translate('statusCard.mutedServerFailed')),
-      });
-      return;
-    }
-    this.localMod.mute(account, seconds);
+    this.authorModeration.mute(this.moderationTarget, seconds).subscribe({
+      error: () => this.actionError.set(this.transloco.translate('statusCard.mutedServerFailed')),
+    });
   }
 
-  /** Block this card's author: on the server when the viewer can, otherwise locally. */
+  /** Block this card's author: in this browser for Anonymous, otherwise on the server. */
   blockAuthorLocally(event: Event): void {
     event.stopPropagation();
-    const account = this.display.account;
-    if (this.capabilities.canManageRelationships && !this.foreign) {
-      this.api.block(account.id).subscribe({
-        next: () => this.localMod.hideAfterServerAction(account),
-        error: () =>
-          this.actionError.set(this.transloco.translate('statusCard.blockedServerFailed')),
-      });
-      return;
-    }
-    this.localMod.block(account);
+    this.authorModeration.block(this.moderationTarget).subscribe({
+      error: () => this.actionError.set(this.transloco.translate('statusCard.blockedServerFailed')),
+    });
   }
 
   /** Lift a browser-local block/mute on this card's author. */

@@ -1,5 +1,4 @@
 import { AppDialogs } from '../../app-dialogs';
-import { LocalModeration } from '../../local-moderation';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../../compose/compose';
 import { provideHttpClient } from '@angular/common/http';
@@ -357,29 +356,16 @@ describe('Profile block/unblock', () => {
     expect(cmp.relationship().blocking).toBe(true);
   });
 
-  it('lifts a leftover browser-local block without sending a new server block', () => {
+  it('mutes a signed-in Mastodon profile on the server only, never in the browser list', () => {
     const fixture = setUp();
     const cmp = fixture.componentInstance as any;
-    const moderation = TestBed.inject(LocalModeration);
-    moderation.block(cmp.account());
-    expect(cmp.localBlocked()).toBe(true);
 
-    cmp.requestBlock();
+    cmp.mute(3600);
 
-    httpMock.expectNone('/api/v1/accounts/900/block');
-    expect(moderation.isSuppressed(cmp.account())).toBe(false);
-  });
-
-  it('unmutes on the server and clears any leftover browser-local mute too', () => {
-    const fixture = setUp();
-    const cmp = fixture.componentInstance as any;
-    const moderation = TestBed.inject(LocalModeration);
-    moderation.mute(cmp.account(), null);
-
-    cmp.unmute();
-
-    httpMock.expectOne('/api/v1/accounts/900/unmute').flush({ id: '900', muting: false });
-    expect(moderation.isSuppressed(cmp.account())).toBe(false);
+    httpMock.expectOne('/api/v1/accounts/900/mute').flush({ id: '900', muting: true });
+    expect(cmp.relationship().muting).toBe(true);
+    expect(localStorage.getItem('mockingbird_anonymous_moderation')).toBeNull();
+    expect(cmp.localMuted()).toBe(false);
   });
 
   it('offers private follow in the profile menu without changing the public relationship', () => {

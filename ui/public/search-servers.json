@@ -1,0 +1,2360 @@
+{
+  "version": 1,
+  "checkedAt": "2026-11-08T16:18:46.724Z",
+  "checked": 336,
+  "usable": 0,
+  "servers": [
+    {
+      "domain": "mastodon.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "infosec.exchange",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.jp",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hachyderm.io",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "piaille.fr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.vivaldi.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.world",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "troet.cafe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.uno",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.gamedev.place",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "techhub.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.tchncs.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.nl",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "norden.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "occm.cc",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "flipboard.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kolektiva.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mathstodon.xyz",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastoturk.org",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "defcon.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tech.lgbt",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "nrw.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodonapp.uk",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "universeodon.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.ca",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toot.community",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "masto.es",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "c.im",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "sueden.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tkz.one",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "sfba.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.sdf.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.party",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.scot",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "det.social",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "ruhr.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.ie",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hessen.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ohai.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodontech.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "pouet.chapril.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "livellosegreto.it",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.nu",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ieji.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.linux.pizza",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "indieweb.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.eus",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "muenchen.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ioc.exchange",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.green",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.cologne",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.au",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.anoxinon.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodont.cat",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fediscience.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "uri.life",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ruby.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "nerdculture.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "metalhead.club",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "cyberplace.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "masto.nu",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mindly.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "m.otter.homes",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.ml",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "dresden.network",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodontti.fi",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "sunny.garden",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "phpc.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toot.wales",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "climatejustice.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.com.pl",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fairy.id",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "furry.engineer",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "noc.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "sciences.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "freiburg.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bark.lgbt",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.plus",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.me.uk",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "blorbo.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastorol.es",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "c7.io",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tooting.ch",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bonn.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mementomori.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "rollenspiel.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mast.lat",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "rivals.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.business",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "rheinneckar.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "discuss.systems",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.games",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mapstodon.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "wien.rocks",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "lgbtqia.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "privacysafe.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.sciences.re",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "masto.pt",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon-belgium.be",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "snabelen.no",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tilde.zone",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "wehavecookies.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hcommons.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "retro.pizza",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "library.love",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "ursal.zone",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "cupoftea.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "expressional.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "sakurajima.moe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "darmstadt.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "woof.tech",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ludosphere.fr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.gal",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "glasgow.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "mastodon.berlin",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "gaygeek.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "en.osm.town",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "shelter.moe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "burma.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kanoa.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "graz.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bookstodon.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "peoplemaking.games",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "muenster.im",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "urusai.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mast.dragon-fly.club",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "qdon.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "union.place",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "musician.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "gardenstate.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "socel.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "pawb.fun",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "famichiki.jp",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "witter.cz",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.uy",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toad.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "veganism.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "qaf.men",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "oslo.town",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mstdn.dk",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tooot.im",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "4bear.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "machteburch.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "theblower.au",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "poliversity.it",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.la",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "eupolicy.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "musicworld.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "xarxa.cloud",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "pnw.zone",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "toot.kif.rocks",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "libretooth.gr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "spore.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bahn.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "opalstack.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mustard.blog",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mountains.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "masto.nyc",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "thecanadian.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hear-me.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "archaeo.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "dizl.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "graphics.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.roadfm.fr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tea.codes",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "vkl.world",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "disabled.social",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "burningboard.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "furries.club",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fedi.at",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "utopia.cool",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ciberlandia.pt",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "babka.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mikumikudance.cloud",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "mastodon.energy",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.pnpde.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "cultur.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon-swiss.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "is.nota.live",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tuiter.rocks",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "dmv.community",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "frikiverse.zone",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "gamepad.club",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mendeddrum.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "donphan.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "masto.yttrx.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "muri.network",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "tchafia.be",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.politicaconciencia.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hispagatos.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mast.hpc.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "puntarella.party",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "wargamers.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bzh.social",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "masto.nobigtech.es",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.silicon.moe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "h4.io",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "norcal.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fulda.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.africa",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "tyrol.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "lou.lt",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "arvr.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "w3c.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "khiar.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "burnout.cafe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "esq.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toot.garden",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "drupal.community",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ani.work",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "datasci.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.pirateparty.be",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "lsbt.me",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "epsilon.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "gayfr.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "opencoaster.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "epicure.social",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "toot.funami.tech",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "socialbc.ca",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mograph.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "exquisite.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "lewacki.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hometech.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "theatl.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "indieauthors.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "friendsofdesoto.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "katholisch.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "leipzig.town",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fribygda.no",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "est.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "genealysis.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.vlaanderen",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "pointless.chat",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "elekk.xyz",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "frankfurt.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "seocommunity.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "hoosier.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kurry.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "karlsruhe-social.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.tn",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "apobangpo.space",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "frontrange.co",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toot.re",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fairmove.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "retro-gaiden.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "devianze.city",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "mstdn.animexx.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "colorid.es",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toki.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "umbracocommunity.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.cr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.wien",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "okla.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.sg",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.cl",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "nwb.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ruhrpott.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "gamerstavern.online",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "rail.chat",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "cwb.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "rheinhessen.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "twoot.site",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "techtoots.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "raphus.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.pub.solar",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "jazztodon.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "toots.nu",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.bot",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "elizur.me",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "h-net.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "klog.tw",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "turtleisland.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "blackqueer.life",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "camp.smolnet.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bologna.one",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "woodworking.group",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.cipherbliss.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "growers.social",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "birdon.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "paktodon.asia",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "biplus.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.iow.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.babb.no",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.free-solutions.org",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "squawk.mytransponder.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.frl",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "skastodon.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "episcodon.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ailbhean.co-shaoghal.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kcmo.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.diva.exchange",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.hosnet.fr",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.bachgau.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "silversword.online",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fpv.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kzoo.to",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mcr.wtf",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "cville.online",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "nfld.me",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "mastodon.ph",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "23.illuminati.org",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "connectop.us",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "lounge.town",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "mastodon.ee",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.bahia.no",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "synapse.cafe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.ferrocarril.net",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "polsci.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "creators.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "syzito.xyz",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.mg",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "troet.fediverse.at",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "mastodon.re",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.main-angler.de",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "dariox.club",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bvb.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "kjas.no",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "ms.maritime.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "darticulate.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "psu.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "social.sndevs.com",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "devhub.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "earth.law",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "newforest.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "nutmeg.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "saint-paul.us",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "bath.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "fpl.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "douzepoints.social",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "ceilidh.online",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "social.avali.zone",
+      "status": "unreachable",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    },
+    {
+      "domain": "planetearth.social",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "wxw.moe",
+      "status": "ok",
+      "accounts": true,
+      "posts": false,
+      "tagsOnly": true
+    },
+    {
+      "domain": "learningdisability.social",
+      "status": "auth-required",
+      "accounts": false,
+      "posts": false,
+      "tagsOnly": false
+    }
+  ]
+}

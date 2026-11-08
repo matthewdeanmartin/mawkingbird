@@ -53,6 +53,7 @@ import {
 } from './bluesky-refine';
 import { ResultGrouping } from './mawkingbird-search';
 import { LocalModeration } from '../../local-moderation';
+import { AuthorModeration } from '../../author-moderation';
 import { parseBlueskyQuery, serializeBlueskyQuery } from './bluesky-query-serializer';
 import {
   sortAccounts,
@@ -330,6 +331,7 @@ export class BlueskySearchPanel {
   private graph = inject(BlueskyGraph);
   private diagnostics = inject(PageDiagnostics);
   private localMod = inject(LocalModeration);
+  private authorModeration = inject(AuthorModeration);
   protected session = inject(BlueskySession);
   private auth = inject(Auth);
   private anonymousFollows = inject(AnonymousFollows);
@@ -866,17 +868,23 @@ export class BlueskySearchPanel {
   /**
    * Mute an author everywhere, not just in this search.
    *
-   * The same escalation the Mastodon panel offers, through the same
-   * `LocalModeration` store — it is client-side, so it works against Bluesky
-   * accounts exactly as it does against Mastodon ones.
+   * The same escalation the Mastodon panel offers, through AuthorModeration:
+   * the Anonymous account's browser list, or the linked Bluesky account's mute.
    */
   protected muteAuthorEverywhere(acct: string): void {
     const account = this.statuses().find((s) => s.account.acct === acct)?.account;
     if (!account) {
       return;
     }
-    this.localMod.mute(account, null);
     this.excludedAuthors.update((set) => new Set(set).add(acct));
+    this.authorModeration.mute({ account, provider: 'bluesky' }, null).subscribe({
+      error: () =>
+        this.excludedAuthors.update((set) => {
+          const next = new Set(set);
+          next.delete(acct);
+          return next;
+        }),
+    });
     this.diagnostics.info('Search', 'user:mute-from-search', {
       from: 'flood-control',
       network: 'bluesky',
@@ -887,7 +895,13 @@ export class BlueskySearchPanel {
   protected isAuthorMuted(acct: string): boolean {
     this.localMod.entries();
     const account = this.statuses().find((s) => s.account.acct === acct)?.account;
-    return !!account && this.localMod.isMuted(account);
+    return !!account && this.authorModeration.isMuted({ account, provider: 'bluesky' });
+  }
+
+  /** Whether this reader can mute the author at all. */
+  protected canMuteAuthor(acct: string): boolean {
+    const account = this.statuses().find((s) => s.account.acct === acct)?.account;
+    return !!account && this.authorModeration.route({ account, provider: 'bluesky' }) !== null;
   }
 
   /** Patch a field of the criteria object without replacing the rest. */

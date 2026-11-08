@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LocalModeration } from '../../local-moderation';
+import { AuthorModeration } from '../../author-moderation';
 import { qualifiedHandle } from '../../account-handle';
 import { accountRoutePath } from '../../account-route';
 import { Account } from '../../models';
@@ -30,8 +31,9 @@ export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
  * newest posts of the ticked hashtags (a fixed budget, `FLOOD_CHECK`) and
  * shows any account taking up a quarter or more of one, by Feed Doctor's
  * rule, with two choices on the spot: mute for 8 hours, or for good. Mutes
- * are Mawkingbird's own (`LocalModeration`), so they work signed in or
- * anonymous. Nothing about flooders is stored or published by the page.
+ * go through AuthorModeration: the Anonymous account's browser list, or the
+ * reader's own server, so they work signed in or anonymous. Nothing about
+ * flooders is stored or published by the page.
  */
 @Component({
   selector: 'app-feed-flooding',
@@ -45,6 +47,7 @@ export class FeedFlooding implements OnInit {
   private readonly anonymous = inject(AnonymousAccount);
   private readonly selection = inject(FeedSelection);
   protected readonly moderation = inject(LocalModeration);
+  private readonly authorModeration = inject(AuthorModeration);
 
   protected readonly page = this.route.snapshot.data['page'] as FeedPage;
   protected readonly inShell = this.route.snapshot.data['inShell'] === true;
@@ -114,16 +117,30 @@ export class FeedFlooding implements OnInit {
 
   protected mutedAs(account: Account): 'temporary' | 'permanent' | null {
     const how = this.muted()[account.acct.toLowerCase()];
-    return how && this.moderation.isMuted(account) ? how : null;
+    this.moderation.entries();
+    return how && this.authorModeration.isMuted({ account }) ? how : null;
+  }
+
+  /** Whether this reader can mute anyone here (a signed-in reader without write access cannot). */
+  protected canMute(account: Account): boolean {
+    return this.authorModeration.route({ account }) !== null;
   }
 
   protected mute(account: Account, how: 'temporary' | 'permanent'): void {
-    this.moderation.mute(account, how === 'temporary' ? TEMPORARY_MUTE_SECONDS : null);
-    this.muted.update((all) => ({ ...all, [account.acct.toLowerCase()]: how }));
+    // The account was read from the hashtag's server, so a signed-in mute
+    // looks it up on the reader's own server by handle first.
+    this.authorModeration
+      .mute({ account }, how === 'temporary' ? TEMPORARY_MUTE_SECONDS : null)
+      .subscribe({
+        next: () => this.muted.update((all) => ({ ...all, [account.acct.toLowerCase()]: how })),
+        error: () => {
+          /* The buttons stay, so the reader can try again. */
+        },
+      });
   }
 
   protected undo(account: Account): void {
-    this.moderation.clear(account);
+    this.authorModeration.unmute({ account }).subscribe();
     this.muted.update((all) => {
       const next = { ...all };
       delete next[account.acct.toLowerCase()];

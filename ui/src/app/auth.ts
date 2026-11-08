@@ -283,6 +283,7 @@ export class Auth {
       const account = this.account();
       return {
         key: `${this.kind() ?? ''}:${this.token() ?? ''}:${account?.id ?? ''}`,
+        anonymous: this.kind() === 'anonymous',
         self: account ? { id: account.id, acct: account.acct } : null,
       };
     }),

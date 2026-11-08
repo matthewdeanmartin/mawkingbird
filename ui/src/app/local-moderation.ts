@@ -1,7 +1,17 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { Account } from './models';
 
-const STORE_KEY = 'mockingbird_local_moderation';
+/**
+ * The Anonymous account's own mute/block list. Signed-in readers mute on their
+ * server instead (see AuthorModeration), so the list belongs to Anonymous alone
+ * and is cleared with the rest of its data.
+ */
+const STORE_KEY = 'mockingbird_anonymous_moderation';
+/**
+ * The retired list every account on the device shared. Its entries cannot be
+ * traced to whoever made them, so they are dropped rather than migrated.
+ */
+const LEGACY_STORE_KEY = 'mockingbird_local_moderation';
 const STATE_VERSION = 1;
 
 /** A far-future timestamp standing in for "no expiry" (block / mute forever). */
@@ -62,11 +72,18 @@ const legacyKey = accountKey;
 export interface ModerationViewer {
   /** Changes whenever the active account does (a token, or the provider kind). */
   key: string;
+  /** Only the Anonymous reader's own list applies; nobody else has one. */
+  anonymous: boolean;
   self: Pick<Account, 'id' | 'acct'> | null;
 }
 
 function load(): StoredState {
   const empty: StoredState = { version: STATE_VERSION, entries: {} };
+  try {
+    localStorage.removeItem(LEGACY_STORE_KEY);
+  } catch {
+    // Unavailable storage has nothing to retire.
+  }
   try {
     const parsed = JSON.parse(
       localStorage.getItem(STORE_KEY) ?? 'null',
@@ -115,7 +132,11 @@ function load(): StoredState {
 @Injectable({ providedIn: 'root' })
 export class LocalModeration {
   private state = signal<StoredState>(load());
-  private viewerSource = signal<() => ModerationViewer>(() => ({ key: '', self: null }));
+  private viewerSource = signal<() => ModerationViewer>(() => ({
+    key: '',
+    anonymous: true,
+    self: null,
+  }));
   /**
    * Who is reading, read lazily from what Auth hands over (see {@link useViewer})
    * so that asking never forces the signed-in account to resolve early.
@@ -153,7 +174,7 @@ export class LocalModeration {
   }
 
   private entryFor(account: Pick<Account, 'acct' | 'url' | 'id'>): Entry | undefined {
-    if (this.isSelf(account)) return undefined;
+    if (!this.viewer().anonymous || this.isSelf(account)) return undefined;
     const entries = this.state().entries;
     const entry = entries[moderationKey(account)] ?? entries[legacyKey(account)];
     return entry && entry.expiresAt > Date.now() ? entry : undefined;

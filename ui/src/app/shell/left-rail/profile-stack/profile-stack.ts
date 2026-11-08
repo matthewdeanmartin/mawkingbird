@@ -9,7 +9,13 @@ import { VerifiedBadge } from '../../../verified-badge/verified-badge';
 import { scopedKey } from '../../../account-scope';
 import { RailProfile } from './rail-profile';
 import { RailProfiles } from './rail-profiles';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { AppDialogs } from '../../../app-dialogs';
+import { SessionTeardown } from '../../../session-teardown';
+
+// i18n shell.profile.resetAnonymous: Reset Anonymous…
+// i18n shell.profile.resetAnonymousConfirm: Start Anonymous over? This clears the accounts and hashtags you follow, your lists, bookmarks, mutes and cached feeds in this browser. Your chosen server stays.
+// i18n shell.profile.resetAnonymousAction: Reset
 
 // i18n shell.profile.active: active
 // i18n shell.profile.show: Show {{network}} profile for {{name}}
@@ -53,6 +59,9 @@ function loadSelected(key: string): string | null {
 export class ProfileStack implements OnInit {
   private railProfiles = inject(RailProfiles);
   private auth = inject(Auth);
+  private dialogs = inject(AppDialogs);
+  private teardown = inject(SessionTeardown);
+  private transloco = inject(TranslocoService);
 
   private readonly storageKey = scopedKey(SELECTED_KEY_BASE);
   private chosen = signal<string | null>(loadSelected(this.storageKey));
@@ -94,6 +103,24 @@ export class ProfileStack implements OnInit {
    */
   switchToLocal(): void {
     this.auth.enterAnonymous();
+    location.reload();
+  }
+
+  /**
+   * Clear the Anonymous session's browser-local data but stay in it, then
+   * reload for the same reason as {@link switchToLocal}: that state was read at
+   * construction all over the app.
+   */
+  async resetAnonymous(): Promise<void> {
+    const confirmed = await this.dialogs.confirm(
+      this.transloco.translate('shell.profile.resetAnonymousConfirm'),
+      {
+        confirmLabel: this.transloco.translate('shell.profile.resetAnonymousAction'),
+        danger: true,
+      },
+    );
+    if (!confirmed) return;
+    this.teardown.resetAnonymousData();
     location.reload();
   }
 }

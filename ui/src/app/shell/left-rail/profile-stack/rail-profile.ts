@@ -46,4 +46,6 @@ export interface RailProfile {
   active: boolean;
   /** Present when the card offers to make this identity the active one. */
   switchTo?: 'anonymous';
+  /** The active Anonymous card offers to start its browser-local data over. */
+  resettable?: boolean;
 }

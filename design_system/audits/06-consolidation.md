@@ -1785,6 +1785,24 @@ then applied to that div rather than to the buttons, so the buttons touched.
 They now use `<ng-container mbDialogActions>`, like `confirm-dialog.html`, and
 their candidate counts are unchanged. No shared widget changed.
 
+## Anonymous-only browser mutes and Anonymous fixes, 2026-11-08
+
+Mutes and blocks now go through one service, `author-moderation.ts`, so
+scanned files go from 1,698 to 1,699. Candidates stay at 602, and
+`11-reconciliation.json` is unchanged.
+
+- `profile-stack.html`: `shared` 1 to 2, `nativeButtons` 2 to 3 and
+  `legacyPills` 1 to 2. This is one outline `mbButton`, "Reset Anonymous…",
+  on the Anonymous card. It reuses the existing `switch-btn` class beside
+  Switch, and confirms through AppDialogs.
+- The post card, photo viewer, Search, Bluesky search, Feed Builder flooding
+  and Feed Doctor wrap their existing mute/block controls in `@if` so the
+  controls appear only where the reader can mute that author. The profile
+  photo grid and viewer add a text `role="alert"` beside the existing Load
+  more button. No control counts change in those files.
+
+No shared widget changed.
+
 ## Watch party chat room, 2026-11-08
 
 The party chat moves its template from `pages/watch/party-conversation.ts`
@@ -1810,6 +1828,14 @@ shifts lines in `profile.html` and `status-card` without changing any control
 counts.
 
 No shared widget changed.
+
+## Topic pages: Mystery and Crime, 2026-11-08
+
+Added one lazy native-copy source for English and German. The immediately
+preceding working-tree inventory increases from 1,699 to 1,700 sources; all
+602 candidate entries are identical. No template or shared widget changed.
+Candidate paths are unchanged, so reconciliation requires no additions or
+removals. Concurrent unrelated audit edits are preserved.
 
 ## Topic pages: Romance Books, 2026-11-08
 

@@ -326,7 +326,10 @@ describe('Algo page', () => {
         display_name: 'B',
       } as never;
       feed.posts.set([makePost('kept', 'original', true, '<p>still here</p>'), blocked]);
-      TestBed.inject(LocalModeration).block(blocked.status.account);
+      // Browser-local blocks are the Anonymous reader's.
+      const moderation = TestBed.inject(LocalModeration);
+      moderation.useViewer(() => ({ key: 'anonymous', anonymous: true, self: null }));
+      moderation.block(blocked.status.account);
       fixture.detectChanges();
 
       expect(text()).toContain('still here');

@@ -57,6 +57,9 @@
        whether to keep going further back through someone's pictures. -->
 @if (!exhausted() && !loading()) {
   <div class="media-more">
+    @if (moreFailed() && !loadingMore()) {
+      <p role="alert" class="muted">{{ 'pages.profile.media.moreFailed' | transloco }}</p>
+    }
     <button type="button" class="btn btn-outline" [disabled]="loadingMore()" (click)="more.emit()">
       {{
         loadingMore()

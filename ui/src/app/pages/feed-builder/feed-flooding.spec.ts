@@ -94,7 +94,12 @@ function route(data: object, path: string) {
 }
 
 describe('Flooding tab', () => {
-  beforeEach(() => localStorage.clear());
+  // Browser-local mutes belong to the Anonymous account; a signed-in reader
+  // mutes on their server (author-moderation.spec.ts).
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem('mastodon_mock_account_mode', 'anonymous');
+  });
   afterEach(() => localStorage.clear());
 
   async function render() {

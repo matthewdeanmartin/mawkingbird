@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AppDialogs } from '../../../app-dialogs';
 import { Auth } from '../../../auth';
 import { Account } from '../../../models';
 import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
@@ -108,6 +109,36 @@ describe('ProfileStack', () => {
 
     expect(TestBed.inject(Auth).isAnonymous).toBe(true);
     expect(reload).toHaveBeenCalled();
+  });
+
+  it('shows the active Anonymous identity with its follows and hashtags, and resets it', async () => {
+    const reload = vi.fn();
+    stubLocation({ onReload: reload });
+    localStorage.setItem('mockingbird_anonymous_tags', '{"version":1,"tags":["cats"]}');
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous();
+    TestBed.inject(AnonymousAccount).activate('https://mastodon.social');
+    const fixture = TestBed.createComponent(ProfileStack);
+    fixture.detectChanges();
+    httpMock.match(() => true).forEach((req) => req.flush([]));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Anonymous');
+    expect(fixture.nativeElement.textContent).toContain('Hashtags');
+    // The Anonymous card has no Switch, so its one card button is Reset.
+    const reset = fixture.nativeElement.querySelector('.switch-btn') as HTMLButtonElement | null;
+    expect(reset).not.toBeNull();
+
+    vi.spyOn(TestBed.inject(AppDialogs), 'confirm').mockResolvedValue(true);
+    await fixture.componentInstance.resetAnonymous();
+    expect(localStorage.getItem('mockingbird_anonymous_tags')).toBeNull();
+    expect(localStorage.getItem('mockingbird_anonymous_account')).not.toBeNull();
+    expect(reload).toHaveBeenCalled();
+  });
+
+  it('shows no Anonymous card to a signed-in reader', () => {
+    const fixture = setUp();
+    expect(fixture.nativeElement.textContent).not.toContain('Anonymous');
   });
 
   it('renders nothing when there is no identity at all', () => {

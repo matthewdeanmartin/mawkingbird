@@ -7,6 +7,7 @@ import { Account, Status, Tag } from './models';
 import { AnonymousAccount } from './providers/anonymous/anonymous-account';
 import { AnonymousAlgoSource } from './providers/anonymous/anonymous-algo-source';
 import { AnonymousFollows } from './providers/anonymous/anonymous-follows';
+import { AnonymousTags } from './providers/anonymous/anonymous-tags';
 
 /** Which bucket found the post — shown as the "why you're seeing this" line. */
 export type AlgoSource = 'mutual' | 'boost' | 'original' | 'hashtag' | 'rss';
@@ -18,6 +19,14 @@ export interface AlgoPost {
   friend: boolean;
   /** Smoothed engagement of the boost target — see {@link engagementScore}. */
   score: number;
+  /** For a `hashtag` post, the followed hashtag it came from, so the label can name it. */
+  tag?: string;
+}
+
+/** A post read from a followed hashtag's timeline, with that hashtag. */
+interface TaggedStatus {
+  status: Status;
+  tag: string;
 }
 
 /** Factory call budget; each build obeys the account’s configured maximum. */
@@ -192,7 +201,7 @@ export class AlgoFeed {
             home,
             mutualStatuses,
             tagName: null as string | null,
-            tagStatuses: [] as Status[],
+            tagStatuses: [] as TaggedStatus[],
           };
           if (
             !this.options.hashtag ||
@@ -219,7 +228,9 @@ export class AlgoFeed {
                 map((pages) => ({
                   ...done,
                   tagName: selected.map((tag) => tag.name).join(', '),
-                  tagStatuses: pages.flat(),
+                  tagStatuses: pages.flatMap((page, index) =>
+                    page.map((status) => ({ status, tag: selected[index].name })),
+                  ),
                 })),
               );
             }),
@@ -262,25 +273,54 @@ export class AlgoFeed {
     });
   }
 
+  /**
+   * Anonymous Algo ranks the stored corpus, which Home, lists and earlier builds
+   * all fill and which outlives any follow. So each post must earn its place
+   * against what the reader follows *now*: an account they follow (or boosted
+   * by one), or a hashtag they follow — named on the label. Anything else is
+   * left out, so an unfollowed account or tag stops showing up at once.
+   */
   private assembleAnonymous(statuses: Status[]): void {
     const follows = this.injector.get(AnonymousFollows);
     const anonymous = this.injector.get(AnonymousAccount);
+    const followedTags = new Map(
+      this.injector
+        .get(AnonymousTags)
+        .tags()
+        .map((tag) => [tag.toLowerCase(), tag] as const),
+    );
+    const server = anonymous.server();
     const pool = new Map<string, AlgoPost>();
     for (const status of statuses) {
       const target = status.reblog ?? status;
       const key = target.url || `${target.provider ?? 'mastodon'}:${target.id}`;
       if (pool.has(key)) continue;
-      const friend = follows.isFollowing(target.account, anonymous.server());
-      const source: AlgoSource =
-        target.provider === 'rss'
-          ? 'rss'
-          : status.reblog
-            ? 'boost'
-            : friend
-              ? 'original'
-              : 'hashtag';
+      let source: AlgoSource;
+      let tag: string | undefined;
+      let friend = false;
+      if (target.provider === 'rss') {
+        source = 'rss';
+      } else if (status.reblog && follows.isFollowing(status.account, server)) {
+        source = 'boost';
+        friend = true;
+      } else if (!status.reblog && follows.isFollowing(target.account, server)) {
+        source = 'original';
+        friend = true;
+      } else {
+        tag = (target.tags ?? [])
+          .map((item) => followedTags.get(item.name.toLowerCase()))
+          .find((name): name is string => !!name);
+        if (!tag) continue;
+        source = 'hashtag';
+      }
       if (!this.options[source]) continue;
-      pool.set(key, { status, source, friend, score: this.score(status, source) });
+      pool.set(key, {
+        status,
+        source,
+        friend,
+        score: this.score(status, source),
+        ...(tag ? { tag } : {}),
+      });
     }
     this.posts.set(
       [...pool.values()]
@@ -332,12 +372,12 @@ export class AlgoFeed {
     following: Account[],
     home: Status[],
     mutualStatuses: Status[],
-    tagStatuses: Status[],
+    tagStatuses: TaggedStatus[],
   ): void {
     const followingIds = new Set(following.map((a) => a.id));
     // Dedupe on the boost target so a post never appears twice under two wrappers.
     const pool = new Map<string, AlgoPost>();
-    const add = (status: Status, source: AlgoSource, friend: boolean): void => {
+    const add = (status: Status, source: AlgoSource, friend: boolean, tag?: string): void => {
       const target = status.reblog ?? status;
       // This is the good stuff: no likes, no entry.
       if (
@@ -348,7 +388,13 @@ export class AlgoFeed {
         return;
       }
       if (!pool.has(target.id)) {
-        pool.set(target.id, { status, source, friend, score: this.score(status, source) });
+        pool.set(target.id, {
+          status,
+          source,
+          friend,
+          score: this.score(status, source),
+          ...(tag ? { tag } : {}),
+        });
       }
     };
 
@@ -368,9 +414,9 @@ export class AlgoFeed {
         add(s, 'original', true);
       }
     }
-    for (const s of tagStatuses) {
+    for (const { status: s, tag } of tagStatuses) {
       if (!s.reblog && (!this.options.excludeOwn || s.account.id !== myId)) {
-        add(s, 'hashtag', followingIds.has(s.account.id));
+        add(s, 'hashtag', followingIds.has(s.account.id), tag);
       }
     }
 

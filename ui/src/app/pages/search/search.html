@@ -825,7 +825,7 @@
                           <span class="muted small muted-flag">{{
                             'pages.search.refine.muted' | transloco
                           }}</span>
-                        } @else {
+                        } @else if (canMuteAuthor(a.value)) {
                           <button
                             type="button"
                             class="link-btn"

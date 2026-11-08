@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { Account } from './models';
 import { LocalModeration, accountKey, moderationKey } from './local-moderation';
 
-const KEY = 'mockingbird_local_moderation';
+const KEY = 'mockingbird_anonymous_moderation';
+const LEGACY_KEY = 'mockingbird_local_moderation';
 
 function account(overrides: Partial<Account> = {}): Account {
   return {
@@ -117,10 +118,9 @@ describe('LocalModeration', () => {
       );
     });
 
-    it('never hides the reader their own account, even under an old shared entry', () => {
-      // Written by an earlier version while signed in as a different account.
+    it('drops the retired list every account on the device shared', () => {
       localStorage.setItem(
-        KEY,
+        LEGACY_KEY,
         JSON.stringify({
           version: 1,
           entries: {
@@ -129,39 +129,53 @@ describe('LocalModeration', () => {
         }),
       );
       const svc = TestBed.inject(LocalModeration);
+      expect(svc.isSuppressed(mistersql())).toBe(false);
+      expect(localStorage.getItem(LEGACY_KEY)).toBeNull();
+    });
+
+    it('applies only to the Anonymous reader, never to a signed-in account', () => {
+      const svc = TestBed.inject(LocalModeration);
+      svc.mute(mistersql(), null);
       expect(svc.isSuppressed(mistersql())).toBe(true);
-      svc.useViewer(() => ({ key: 'me', self: { id: '301226', acct: 'mistersql' } }));
+      svc.useViewer(() => ({ key: 'mastodon:t:1', anonymous: false, self: null }));
       expect(svc.isSuppressed(mistersql())).toBe(false);
       expect(svc.isMuted(mistersql())).toBe(false);
     });
 
-    it('clears old bare-key entries along with the qualified one', () => {
-      localStorage.setItem(
-        KEY,
-        JSON.stringify({
-          version: 1,
-          entries: {
-            mistersql: { kind: 'block', expiresAt: Number.MAX_SAFE_INTEGER, acct: 'mistersql' },
-          },
-        }),
-      );
+    it('never hides the reader their own account', () => {
       const svc = TestBed.inject(LocalModeration);
-      svc.clear(mistersql());
+      svc.mute(mistersql(), null);
+      svc.useViewer(() => ({
+        key: 'anonymous',
+        anonymous: true,
+        self: { id: '301226', acct: 'mistersql' },
+      }));
       expect(svc.isSuppressed(mistersql())).toBe(false);
-      expect(JSON.parse(localStorage.getItem(KEY)!).entries).toEqual({});
     });
 
     it('hides a server-muted author for this visit and this account only, storing nothing', () => {
       const svc = TestBed.inject(LocalModeration);
-      svc.useViewer(() => ({ key: 'mawkingbird', self: { id: '1', acct: 'mawkingbird' } }));
+      svc.useViewer(() => ({
+        key: 'mawkingbird',
+        anonymous: false,
+        self: { id: '1', acct: 'mawkingbird' },
+      }));
       svc.hideAfterServerAction(mistersql());
       expect(svc.isSuppressed(mistersql())).toBe(true);
       expect(svc.isMuted(mistersql())).toBe(false);
       expect(localStorage.getItem(KEY) ?? '{"entries":{}}').not.toContain('mistersql');
 
-      svc.useViewer(() => ({ key: 'mistersql', self: { id: '301226', acct: 'mistersql' } }));
+      svc.useViewer(() => ({
+        key: 'mistersql',
+        anonymous: false,
+        self: { id: '301226', acct: 'mistersql' },
+      }));
       expect(svc.isSuppressed(mistersql())).toBe(false);
-      svc.useViewer(() => ({ key: 'someone-else', self: { id: '7', acct: 'other' } }));
+      svc.useViewer(() => ({
+        key: 'someone-else',
+        anonymous: false,
+        self: { id: '7', acct: 'other' },
+      }));
       expect(svc.isSuppressed(mistersql())).toBe(false);
     });
   });

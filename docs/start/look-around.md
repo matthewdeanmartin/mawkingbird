@@ -28,6 +28,10 @@ Some actions require a signed-in account. Mawkingbird will tell you when you rea
 
 Anonymous follows and preferences stay on this device in this browser. They are not attached to an online account. Clearing this browser's saved site data, using a private window, or moving to another device may make them disappear.
 
+Muting or blocking someone while browsing anonymously is also kept only in this browser, and only for anonymous browsing. Once you sign in, mutes and blocks go to your own account on its server instead.
+
+The **Anonymous** card in the left column shows how many accounts and hashtags you follow; select **Hashtags** to see them. **Reset Anonymous…** on that card starts over: it clears your follows, hashtags, lists, bookmarks, mutes and saved feeds in this browser, and keeps your chosen server.
+
 ## Sign in later
 
 Choose **Login** in the main navigation when you are ready. Signing in gives Mawkingbird access to the feed and actions allowed by your existing account.

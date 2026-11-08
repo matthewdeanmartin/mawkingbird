@@ -57,6 +57,7 @@ const FRIEND_SOURCES: readonly AlgoSource[] = ['mutual', 'original'];
 // i18n pages.algo.source.boost: Boosted into your feed
 // i18n pages.algo.source.original: Top post from your feed
 // i18n pages.algo.source.hashtag: From a hashtag you follow
+// i18n pages.algo.source.hashtagNamed: From #{{tag}}, a hashtag you follow
 // i18n pages.algo.source.rss: From an RSS feed you follow
 
 interface AlgoLink {
@@ -189,7 +190,9 @@ export class Algo implements OnInit {
   }
 
   sourceLabelKey(post: AlgoPost): string {
-    return SOURCE_LABELS[post.source];
+    return post.source === 'hashtag' && post.tag
+      ? 'pages.algo.source.hashtagNamed'
+      : SOURCE_LABELS[post.source];
   }
 
   setAudience(audience: AlgoAudience): void {

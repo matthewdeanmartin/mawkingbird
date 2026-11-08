@@ -102,6 +102,17 @@ describe('ProfilePhotoView comments', () => {
     expect(button()).toBeNull();
   });
 
+  it('says so when loading more pictures failed, instead of appearing to do nothing', () => {
+    const fixture = setUp(makeStatus());
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+    expect(fixture.nativeElement.querySelector('.photo-counter [role="alert"]')).toBeNull();
+    fixture.componentRef.setInput('moreFailed', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.photo-counter [role="alert"]')).not.toBeNull();
+    // The retry is still there.
+    expect(fixture.nativeElement.querySelector('.photo-counter button')).not.toBeNull();
+  });
+
   it('offers Load more in the Next position only at the end of loaded media', () => {
     const fixture = setUp(makeStatus());
     httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });

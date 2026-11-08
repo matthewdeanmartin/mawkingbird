@@ -23,6 +23,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n pages.profile.media.sensitiveBadge: Sensitive
 // i18n pages.profile.media.loading: Loading…
 // i18n pages.profile.media.more: More
+// i18n pages.profile.media.moreFailed: Couldn't load more pictures.
 @Component({
   selector: 'app-profile-media-grid',
   imports: [TranslocoPipe],
@@ -37,6 +38,8 @@ export class ProfileMediaGrid {
   readonly loadingMore = input(false);
   /** No more media to fetch — hides the More button. */
   readonly exhausted = input(false);
+  /** The last request for more failed; say so beside the retry. */
+  readonly moreFailed = input(false);
   /** Why the wall is empty or short, when something went wrong. */
   readonly error = input<string | null>(null);
 

@@ -85,6 +85,18 @@
             {{ 'shell.profile.switch' | transloco }}
           </button>
         }
+        @if (card.resettable) {
+          <button
+            type="button"
+            mbButton
+            variant="outline"
+            size="small"
+            class="switch-btn"
+            (click)="resetAnonymous()"
+          >
+            {{ 'shell.profile.resetAnonymous' | transloco }}
+          </button>
+        }
       </div>
     </article>
   </section>

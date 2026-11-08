@@ -139,6 +139,32 @@ export class RailProfiles {
   readonly profiles = computed<RailProfile[]>(() => {
     const cards: RailProfile[] = [];
     const active = this.auth.account();
+    if (active && this.auth.isAnonymous) {
+      // Only while Anonymous is the active identity: a signed-in reader is not
+      // shown a card for it. Everything on it is browser-local, so the
+      // figures are this browser's follows and followed hashtags.
+      cards.push({
+        key: 'anonymous',
+        badge: '🎭',
+        network: 'Anonymous',
+        displayName: active.display_name || active.username,
+        handle: active.username,
+        avatar: active.avatar_static || active.avatar,
+        stats: [
+          {
+            label: 'Following',
+            value: this.anonymousFollows.count(),
+            link: accountProfilePath(active),
+            queryParams: { tab: 'following' },
+          },
+          { label: 'Hashtags', value: this.anonymousTags.count(), link: ['/feeds/tags'] },
+        ],
+        link: accountProfilePath(active),
+        account: active,
+        active: true,
+        resettable: true,
+      });
+    }
     if (active && !this.auth.isAnonymous) {
       // The active card names the network the app is signed in *to*. Before
       // Bluesky could be an identity this was a two-way choice, and anything

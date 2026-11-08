@@ -10,6 +10,7 @@ import { Account, Status } from './models';
 import { AnonymousAccount } from './providers/anonymous/anonymous-account';
 import { AnonymousAlgoSource } from './providers/anonymous/anonymous-algo-source';
 import { AnonymousFollows } from './providers/anonymous/anonymous-follows';
+import { AnonymousTags } from './providers/anonymous/anonymous-tags';
 
 function makeAccount(id: string): Account {
   return { id, username: `u${id}`, acct: `u${id}`, display_name: `User ${id}` } as Account;
@@ -135,6 +136,8 @@ describe('AlgoFeed', () => {
     // The home boost wrapper deduped away: its target was already in as 'mutual'.
     expect(posts.map((p) => p.status.id)).toEqual(['mp', 'target', 'orig', 'tp']);
     expect(posts.map((p) => p.source)).toEqual(['mutual', 'mutual', 'original', 'hashtag']);
+    // The hashtag post says which followed tag it came from.
+    expect(posts.at(-1)?.tag).toBe('cats');
     // Replies and my own posts are excluded.
     expect(posts.some((p) => p.status.id === 'reply' || p.status.id === 'mine')).toBe(false);
     // Hashtag post by a non-followed account is platform content.
@@ -280,6 +283,24 @@ describe('AlgoFeed Anonymous corpus path', () => {
       account: friend,
       favourites_count: 0,
     });
+    // Left in the corpus by an earlier follow, or a list, and followed no more.
+    const stranger = makeStatus('stranger', {
+      provider: 'anonymous-mastodon',
+      url: 'https://elsewhere.example/@x/1',
+      account: makeAccount('stranger'),
+      favourites_count: 3,
+    });
+    const strangerBoost = makeStatus('boost', {
+      provider: 'anonymous-mastodon',
+      account: makeAccount('stranger'),
+      reblog: makeStatus('boosted', { url: 'https://elsewhere.example/@y/2' }),
+    });
+    const cat = makeStatus('cat', {
+      provider: 'anonymous-mastodon',
+      url: 'https://elsewhere.example/@z/3',
+      account: makeAccount('catperson'),
+      tags: [{ name: 'Cats', url: 'https://elsewhere.example/tags/cats' }],
+    });
     TestBed.configureTestingModule({
       providers: [
         { provide: HomeAlgoSettings, useValue: { value: () => HOME_FACTORY } },
@@ -287,23 +308,44 @@ describe('AlgoFeed Anonymous corpus path', () => {
         { provide: Auth, useValue: { account, isAnonymous: true } },
         {
           provide: AnonymousAlgoSource,
-          useValue: { refresh: () => of({ statuses: [rss, publicPost], acquired: true }) },
+          useValue: {
+            refresh: () =>
+              of({ statuses: [rss, publicPost, stranger, strangerBoost, cat], acquired: true }),
+          },
         },
         {
           provide: AnonymousFollows,
           useValue: { isFollowing: (candidate: Account) => candidate.id === friend.id },
         },
         { provide: AnonymousAccount, useValue: { server: () => 'https://mastodon.social' } },
+        { provide: AnonymousTags, useValue: { tags: () => ['cats'] } },
       ],
     });
+  });
+
+  it('keeps only posts from current follows and tags, and names the tag', () => {
+    const feed = TestBed.inject(AlgoFeed);
+    feed.refresh();
+
+    const ids = feed.posts().map((post) => post.status.id);
+    expect(ids).not.toContain('stranger');
+    expect(ids).not.toContain('boost');
+    const cat = feed.posts().find((post) => post.status.id === 'cat');
+    expect(cat?.source).toBe('hashtag');
+    expect(cat?.tag).toBe('cats');
   });
 
   it('builds from public/RSS snapshots without authenticated API calls or a like floor', () => {
     const feed = TestBed.inject(AlgoFeed);
     feed.refresh();
 
-    expect(new Set(feed.posts().map((post) => post.source))).toEqual(new Set(['original', 'rss']));
-    expect(feed.posts().every((post) => post.status.favourites_count === 0)).toBe(true);
+    expect(new Set(feed.posts().map((post) => post.source))).toEqual(
+      new Set(['original', 'rss', 'hashtag']),
+    );
+    // No like floor: the unliked RSS and followed posts are still in.
+    expect(feed.posts().map((post) => post.status.id)).toEqual(
+      expect.arrayContaining(['rss', 'public']),
+    );
     expect(feed.callsUsed()).toBe(1);
     expect(feed.loading()).toBe(false);
   });

@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, input, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, Observable, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPopover } from '../design-system/popover/popover';
@@ -175,22 +176,48 @@ export class AccountPreview {
     this.loadedFor = account.id;
     this.pinnedPosts.set([]);
     this.pinnedError.set(false);
+    const options = { pinned: true, limit: 3 };
+    const anonymous = this.auth.isAnonymous;
     const ref =
       parseAnonymousAccountRouteRef(account.id) ??
-      (this.auth.isAnonymous && !account.id.includes(':')
+      (anonymous && !account.id.includes(':')
         ? { server: this.anonymous.server(), id: account.id }
         : null);
     if (!ref && account.id.includes(':')) return;
-    const options = { pinned: true, limit: 3 };
-    const request = ref
+    let request: Observable<Status[]> = ref
       ? this.publicApi.getAccountStatuses(ref, options)
       : this.api.getAccountStatuses(account.id, options);
+    // Anonymous reads through someone else's server, which may refuse
+    // unauthenticated reads or hold only a partial copy of a remote account.
+    // The account's own server is the one that has its pinned posts.
+    const home = anonymous && ref ? homeServer(account, ref.server) : null;
+    if (home && ref) {
+      const fallback = request;
+      request = this.publicApi.lookupAccount(home, account.username).pipe(
+        switchMap((found) =>
+          this.publicApi.getAccountStatuses({ server: home, id: found.id }, options),
+        ),
+        catchError(() => fallback),
+      );
+    }
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (posts) => this.pinnedPosts.set(posts.slice(0, 3)),
       error: () => {
         this.loadedFor = undefined;
-        this.pinnedError.set(true);
+        // Pinned posts are a bonus in a preview. Anonymous cannot do anything
+        // about a server that refuses them, so it just goes without.
+        this.pinnedError.set(!anonymous);
       },
     });
+  }
+}
+
+/** The account's own server, when it differs from the one it was read through. */
+function homeServer(account: Account, readThrough: string): string | null {
+  try {
+    const origin = new URL(account.url).origin;
+    return origin !== new URL(readThrough).origin ? origin : null;
+  } catch {
+    return null;
   }
 }

@@ -299,7 +299,7 @@
                       {{ 'pages.profile.moderation.muteFor' | transloco }}
                     </div>
                     <div class="mute-durations">
-                      @for (d of muteDurations; track d.label) {
+                      @for (d of visibleMuteDurations; track d.label) {
                         <button type="button" (click)="mute(d.seconds)">
                           {{ d.label | transloco }}
                         </button>
@@ -496,30 +496,32 @@
                   }}
                 </div>
                 <hr class="menu-rule" />
-                @if (localMuted() || (!useLocalModeration && relationship()?.muting)) {
-                  <button class="menu-danger" type="button" (click)="unmute()">
-                    {{ 'pages.profile.moderation.unmute' | transloco }}
+                @if (canModerate) {
+                  @if (useLocalModeration ? localMuted() : relationship()?.muting) {
+                    <button class="menu-danger" type="button" (click)="unmute()">
+                      {{ 'pages.profile.moderation.unmute' | transloco }}
+                    </button>
+                  } @else {
+                    <div class="menu-note muted small">
+                      {{ 'pages.profile.moderation.muteFor' | transloco }}
+                    </div>
+                    <div class="mute-durations">
+                      @for (d of muteDurations; track d.label) {
+                        <button type="button" (click)="mute(d.seconds)">
+                          {{ d.label | transloco }}
+                        </button>
+                      }
+                    </div>
+                  }
+                  <button class="menu-danger" type="button" (click)="requestBlock()">
+                    {{
+                      ((useLocalModeration ? localBlocked() : relationship()?.blocking)
+                        ? 'pages.profile.moderation.unblock'
+                        : 'pages.profile.moderation.block'
+                      ) | transloco
+                    }}
                   </button>
-                } @else {
-                  <div class="menu-note muted small">
-                    {{ 'pages.profile.moderation.muteFor' | transloco }}
-                  </div>
-                  <div class="mute-durations">
-                    @for (d of muteDurations; track d.label) {
-                      <button type="button" (click)="mute(d.seconds)">
-                        {{ d.label | transloco }}
-                      </button>
-                    }
-                  </div>
                 }
-                <button class="menu-danger" type="button" (click)="requestBlock()">
-                  {{
-                    (localBlocked() || (!useLocalModeration && relationship()?.blocking)
-                      ? 'pages.profile.moderation.unblock'
-                      : 'pages.profile.moderation.block'
-                    ) | transloco
-                  }}
-                </button>
                 <!-- Reporting and removing a follower keep their canManageRelationships
                    guard; they sit last because they are the rarest, not because they
                    matter least. -->
@@ -951,6 +953,7 @@
         [loading]="mediaLoading() || (statusesLoading() && !mediaItems().length)"
         [loadingMore]="mediaLoadingMore()"
         [exhausted]="mediaExhausted()"
+        [moreFailed]="mediaMoreFailed()"
         [error]="mediaError()"
         (opened)="openPhotoItem($event)"
         (more)="loadMoreMedia()"
@@ -965,6 +968,7 @@
         [activeKey]="photoKey"
         [loadingMore]="mediaLoadingMore()"
         [exhausted]="mediaExhausted()"
+        [moreFailed]="mediaMoreFailed()"
         [publicRef]="publicRef"
         (closed)="closePhoto()"
         (navigated)="navigatePhoto($event)"

@@ -20,14 +20,14 @@ import { HumanTimePipe } from '../../../human-time.pipe';
 import { HumanCountPipe } from '../../../human-count.pipe';
 import { RenderedHtmlLinks } from '../../../rendered-html-links';
 import { TrustedAccounts } from '../../../trusted-accounts';
-import { LocalModeration } from '../../../local-moderation';
+import { AuthorModeration, ModerationTarget } from '../../../author-moderation';
 import { StatusActions } from '../../../providers/status-actions';
 import { AnonymousCapabilities } from '../../../providers/anonymous/anonymous-capabilities';
 import { ProviderCapabilities } from '../../../providers/provider';
 import { AnonymousPublicApi } from '../../../providers/anonymous/anonymous-public-api';
 import { AnonymousPublicRef } from '../../../providers/anonymous/anonymous-route-ref';
 import { accountRoutePath } from '../../../account-route';
-import { Status } from '../../../models';
+import { Account, Status } from '../../../models';
 import { ProfileMediaItem } from './profile-media-item';
 import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
 import { BskyRef } from '../../../providers/bluesky/bluesky-types';
@@ -127,7 +127,7 @@ export class ProfilePhotoView {
   private api = inject(Api);
   private anonymousPublic = inject(AnonymousPublicApi);
   private trusted = inject(TrustedAccounts);
-  private localMod = inject(LocalModeration);
+  private authorModeration = inject(AuthorModeration);
   private actions = inject(StatusActions);
   private blueskyApi = inject(BlueskyApi);
   private capabilities = inject(AnonymousCapabilities);
@@ -149,6 +149,8 @@ export class ProfilePhotoView {
   readonly wantMore = output<void>();
   readonly loadingMore = input(false);
   readonly exhausted = input(false);
+  /** The last request for more failed; say so rather than appear to do nothing. */
+  readonly moreFailed = input(false);
 
   protected loadMore(): void {
     if (!this.loadingMore() && !this.exhausted()) this.wantMore.emit();
@@ -515,12 +517,20 @@ export class ProfilePhotoView {
 
   // --- moderation, mirroring the status card's ··· menu ---
 
-  /** True when block/mute happen in this browser rather than on a server. */
-  protected useLocalModeration = computed(
-    () => this.auth.isAnonymous || !this.capabilities.canManageRelationships,
-  );
+  /** True when block/mute happen in this browser (Anonymous) rather than on a server. */
+  protected useLocalModeration = computed(() => this.auth.isAnonymous);
 
   protected isOwnPost = computed(() => this.post()?.account.id === this.auth.account()?.id);
+
+  private moderationTarget(account: Account): ModerationTarget {
+    return { account, provider: this.post()?.provider, native: !this.publicRef() };
+  }
+
+  /** Whether the author can be muted or blocked at all for this reader. */
+  protected canModerateAuthor = computed(() => {
+    const account = this.post()?.account;
+    return !!account && this.authorModeration.route(this.moderationTarget(account)) !== null;
+  });
 
   protected blockAuthor(): void {
     const account = this.post()?.account;
@@ -528,13 +538,12 @@ export class ProfilePhotoView {
     if (!account) {
       return;
     }
-    if (this.useLocalModeration()) {
-      this.localMod.block(account);
-      this.flash(`Blocked @${account.acct} in this browser.`);
-      return;
-    }
-    this.api.block(account.id).subscribe({
-      next: () => this.flash(`Blocked @${account.acct}.`),
+    const local = this.useLocalModeration();
+    this.authorModeration.block(this.moderationTarget(account)).subscribe({
+      next: () =>
+        this.flash(
+          local ? `Blocked @${account.acct} in this browser.` : `Blocked @${account.acct}.`,
+        ),
       error: () => this.actionError.set('Could not block this account.'),
     });
   }
@@ -545,13 +554,10 @@ export class ProfilePhotoView {
     if (!account) {
       return;
     }
-    if (this.useLocalModeration()) {
-      this.localMod.mute(account, null);
-      this.flash(`Muted @${account.acct} in this browser.`);
-      return;
-    }
-    this.api.muteAccount(account.id).subscribe({
-      next: () => this.flash(`Muted @${account.acct}.`),
+    const local = this.useLocalModeration();
+    this.authorModeration.mute(this.moderationTarget(account), null).subscribe({
+      next: () =>
+        this.flash(local ? `Muted @${account.acct} in this browser.` : `Muted @${account.acct}.`),
       error: () => this.actionError.set('Could not mute this account.'),
     });
   }

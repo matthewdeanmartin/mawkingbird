@@ -13,6 +13,26 @@ describe('SessionTeardown', () => {
     teardown = TestBed.inject(SessionTeardown);
   });
 
+  describe('resetAnonymousData', () => {
+    it('clears what Anonymous stored but keeps the identity and its server', () => {
+      localStorage.setItem('mockingbird_anonymous_account', '{"server":"https://mastodon.social"}');
+      localStorage.setItem('mockingbird_anonymous_follows', '{"follows":[]}');
+      localStorage.setItem('mockingbird_anonymous_tags', '["cats"]');
+      localStorage.setItem('mockingbird_anonymous_moderation', '{"version":1,"entries":{}}');
+      localStorage.setItem('mockingbird_anonymous_feed_corpus', '{"statuses":[]}');
+      localStorage.setItem('mockingbird_client_prefs', '{"theme":"dark"}');
+
+      teardown.resetAnonymousData();
+
+      expect(localStorage.getItem('mockingbird_anonymous_account')).not.toBeNull();
+      expect(localStorage.getItem('mockingbird_anonymous_follows')).toBeNull();
+      expect(localStorage.getItem('mockingbird_anonymous_tags')).toBeNull();
+      expect(localStorage.getItem('mockingbird_anonymous_moderation')).toBeNull();
+      expect(localStorage.getItem('mockingbird_anonymous_feed_corpus')).toBeNull();
+      expect(localStorage.getItem('mockingbird_client_prefs')).not.toBeNull();
+    });
+  });
+
   describe('clearAnonymousData', () => {
     it('backs up and removes anonymous scoped drafts while retaining other owners and legacy data', () => {
       const anonymous = 'mockingbird_drafts_https%3A%2F%2Fone.example_anonymous';

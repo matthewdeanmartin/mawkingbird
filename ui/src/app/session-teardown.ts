@@ -28,6 +28,9 @@ import { STORAGE_KEYS, classifyStorageKey, matchesKey } from './storage-registry
 /** IndexedDB databases the app creates. Not in the key registry, which is localStorage-only. */
 const INDEXED_DB_NAMES = ['mockingbird_rss', 'mockingbird_twitter'] as const;
 
+/** The Anonymous identity and its server, kept by {@link SessionTeardown.resetAnonymousData}. */
+const ANONYMOUS_IDENTITY_KEY = 'mockingbird_anonymous_account';
+
 function isAnonymousData(key: string): boolean {
   const spec = classifyStorageKey(key);
   return spec?.group === 'anonymous' || (spec?.suffix === 'account' && key.endsWith('_anonymous'));
@@ -56,6 +59,18 @@ export class SessionTeardown {
    */
   clearAnonymousData(storage: Storage = localStorage): number {
     return this.removeMatching(storage, isAnonymousData);
+  }
+
+  /**
+   * Start Anonymous over without leaving it: everything the Anonymous session
+   * stored — follows, hashtags, lists, bookmarks, mutes, preferences, cached
+   * feeds — except the identity itself and its chosen server.
+   */
+  resetAnonymousData(storage: Storage = localStorage): number {
+    return this.removeMatching(
+      storage,
+      (key) => isAnonymousData(key) && key !== ANONYMOUS_IDENTITY_KEY,
+    );
   }
 
   /**

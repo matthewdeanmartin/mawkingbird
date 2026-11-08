@@ -616,6 +616,12 @@ and copy remain lazy-loaded. Public hashtag feeds remain open and uncurated.
 
 ### Routine SIG validation
 
+Mystery and Crime has approved English and German editions at
+`/mystery-and-crime-on-mastodon/` and `/de/krimis-auf-mastodon/`, under Arts and
+culture. English has ten people and 20 tags; German has ten people and seven
+tags. Native copy and data stay lazy-loaded. The topic registry supplies
+client/server routes, sitemap entries and language alternates.
+
 Romance Books has approved English and German editions at
 `/romance-books-on-mastodon/` and `/de/liebesromane-auf-mastodon/`, under Arts and
 culture. Native copy and people data load lazily. The shared topic registry

@@ -6,7 +6,7 @@ import { ClientPrefs } from '../../client-prefs';
 import { FeedAggregator } from '../../providers/feed-aggregator';
 import { ProviderRegistry } from '../../providers/provider-registry';
 import { Auth } from '../../auth';
-import { LocalModeration } from '../../local-moderation';
+import { AuthorModeration } from '../../author-moderation';
 import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
 import { AnonymousMastodonProvider } from '../../providers/anonymous/anonymous-mastodon-provider';
@@ -59,7 +59,7 @@ export class FeedDoctorPage implements OnInit {
   private auth = inject(Auth);
   private provider = inject(AnonymousMastodonProvider);
   private follows = inject(AnonymousFollows);
-  private moderation = inject(LocalModeration);
+  private moderation = inject(AuthorModeration);
   private anonymous = inject(AnonymousAccount);
   private aggregator = inject(FeedAggregator);
   private registry = inject(ProviderRegistry);
@@ -315,7 +315,8 @@ export class FeedDoctorPage implements OnInit {
   /**
    * Apply an action the user picked.
    *
-   * Local moderation, so this works for an anonymous reader — the whole point. The
+   * Mutes go through AuthorModeration: the Anonymous account's browser list (an
+   * anonymous reader is who this page is for), or a signed-in reader's server. The
    * page never acts on its own: every mute and unfollow here is a click.
    */
   protected act(action: DoctorAction): void {
@@ -324,14 +325,24 @@ export class FeedDoctorPage implements OnInit {
       return;
     }
     if (action.kind === 'mute' && action.seconds) {
-      this.moderation.mute(account, action.seconds);
-      this.note(account, 'Muted for 8 hours.');
+      this.moderation.mute({ account }, action.seconds).subscribe({
+        next: () => this.note(account, 'Muted for 8 hours.'),
+        error: () => this.note(account, 'Could not mute this account.'),
+      });
       return;
     }
     if (action.kind === 'unfollow') {
       this.follows.unfollow(account, this.anonymous.server());
       this.note(account, 'Unfollowed.');
     }
+  }
+
+  /** A mute is offered only where this reader can mute that account. */
+  protected canAct(action: DoctorAction): boolean {
+    return (
+      action.kind !== 'mute' ||
+      (!!action.account && this.moderation.route({ account: action.account }) !== null)
+    );
   }
 
   private note(account: Account, message: string): void {

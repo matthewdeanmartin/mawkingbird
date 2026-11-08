@@ -1576,8 +1576,8 @@
                   >
                     {{ 'statusCard.muteThisPost' | transloco }}
                   </button>
-                  <!-- Client-side mute/block: works for every provider (incl.
-                       read-only Anonymous), stored locally with timed expiry. -->
+                  <!-- Author mute/block: the Anonymous account's browser list, or the
+                       reader's own server. Not offered where neither applies. -->
                   @if (authorBlockedLocally() || authorMutedLocally()) {
                     <button type="button" (click)="unsuppressAuthorLocally($event)">
                       {{
@@ -1586,7 +1586,7 @@
                       }}
                       &#64;{{ display.account.acct }}
                     </button>
-                  } @else {
+                  } @else if (canModerateAuthor()) {
                     <div class="menu-note muted small">
                       {{ 'statusCard.muteAccountFor' | transloco: { acct: display.account.acct } }}
                     </div>
@@ -1708,7 +1708,7 @@
                     }}
                     &#64;{{ display.account.acct }}
                   </button>
-                } @else {
+                } @else if (canModerateAuthor()) {
                   <div class="menu-note muted small">
                     {{ 'statusCard.muteAccountFor' | transloco: { acct: display.account.acct } }}
                   </div>

@@ -618,6 +618,8 @@ export class Profile implements OnInit, OnDestroy {
   private mediaStatuses = signal<Status[]>([]);
   protected mediaLoading = signal(false);
   protected mediaLoadingMore = signal(false);
+  /** The last "load more pictures" request failed; the button offers a retry. */
+  protected mediaMoreFailed = signal(false);
   protected mediaExhausted = signal(false);
   protected mediaError = signal<string | null>(null);
   /** The `?photo=` key of the open picture, or null when the wall is showing. */
@@ -788,6 +790,7 @@ export class Profile implements OnInit, OnDestroy {
     }
     const seq = this.mediaSeq;
     this.mediaLoadingMore.set(true);
+    this.mediaMoreFailed.set(false);
     this.mediaSub.add(
       this.getAccountStatuses(id, {
         onlyMedia: true,
@@ -808,7 +811,11 @@ export class Profile implements OnInit, OnDestroy {
           this.mediaStatuses.update((list) => [...list, ...batch.filter((s) => !seen.has(s.id))]);
           this.mediaExhausted.set(batch.length < Profile.MEDIA_PAGE);
         },
-        error: () => this.mediaLoadingMore.set(false),
+        error: () => {
+          // Said out loud: a silent failure reads as the button blinking.
+          this.mediaLoadingMore.set(false);
+          if (seq === this.mediaSeq) this.mediaMoreFailed.set(true);
+        },
       }),
     );
   }
@@ -1214,6 +1221,7 @@ export class Profile implements OnInit, OnDestroy {
     this.mediaStatuses.set([]);
     this.mediaLoading.set(false);
     this.mediaLoadingMore.set(false);
+    this.mediaMoreFailed.set(false);
     this.mediaExhausted.set(false);
     this.mediaError.set(null);
     this.openPhoto.set(null);
@@ -2315,7 +2323,30 @@ export class Profile implements OnInit, OnDestroy {
     if (this.useBlueskyModeration) {
       return false;
     }
-    return this.auth.isAnonymous || !this.capabilities.canManageRelationships;
+    // Browser-local moderation is the Anonymous account's alone. A signed-in
+    // reader mutes on their server, or is offered no mute at all.
+    return this.auth.isAnonymous;
+  }
+
+  /** Whether this reader can mute or block this profile anywhere. */
+  protected get canModerate(): boolean {
+    if (this.useBlueskyModeration || this.useLocalModeration) return true;
+    return (
+      this.capabilities.canManageRelationships &&
+      !this.isRss() &&
+      !this.isTwitter() &&
+      !this.isBluesky()
+    );
+  }
+
+  /**
+   * Bluesky mutes have no duration, so a signed-in reader is offered only the
+   * indefinite one rather than a timed choice that would quietly become forever.
+   */
+  protected get visibleMuteDurations(): { label: string; seconds: number | null }[] {
+    return this.useBlueskyModeration && !this.auth.isAnonymous
+      ? this.muteDurations.filter((d) => d.seconds === null)
+      : this.muteDurations;
   }
 
   /** Local block/mute state, re-read through the moderation signal. */
@@ -2393,9 +2424,9 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
     if (this.useBlueskyModeration) {
-      // Bluesky mutes have no duration; a timed mute stays local so the "for 5
-      // minutes" choice keeps meaning what it says.
-      if (seconds !== null) {
+      // Bluesky mutes have no duration. Only Anonymous, whose browser list
+      // does have one, is offered a timed choice (see visibleMuteDurations).
+      if (seconds !== null && this.auth.isAnonymous) {
         this.localMod.mute(acc, seconds);
         return;
       }
@@ -2430,8 +2461,7 @@ export class Profile implements OnInit, OnDestroy {
       this.localMod.clear(acc);
       return;
     }
-    // A browser-local mute left from before server mutes stopped writing one
-    // would otherwise keep hiding them after the server mute is lifted.
+    // Also lift any hide this visit applied after a server mute.
     this.localMod.clear(acc);
     this.api.unmuteAccount(acc.id).subscribe((updated) => this.relationship.set(updated));
   }
@@ -2462,13 +2492,6 @@ export class Profile implements OnInit, OnDestroy {
       }
       return;
     }
-    // A browser-local block left from before server blocks stopped writing
-    // one: lifting it is the whole action, never a new server block.
-    if (!rel?.blocking && this.localBlocked()) {
-      this.localMod.clear(acc);
-      return;
-    }
-    if (rel?.blocking) this.localMod.clear(acc);
     const call = rel?.blocking ? this.api.unblockAccount(acc.id) : this.api.block(acc.id);
     call.subscribe((updated) => this.relationship.set(updated));
   }
@@ -2476,7 +2499,7 @@ export class Profile implements OnInit, OnDestroy {
   requestBlock(): void {
     const alreadyBlocked = this.useLocalModeration
       ? this.localBlocked()
-      : this.relationship()?.blocking || this.localBlocked();
+      : this.relationship()?.blocking;
     if (alreadyBlocked) {
       this.toggleBlock();
       return;

@@ -208,10 +208,16 @@ describe('RailProfiles', () => {
     rail.load();
     httpMock.expectNone((req) => req.url.includes('followed_tags'));
 
-    expect(rail.profiles()).toHaveLength(0);
+    // One card while Anonymous: the way back to the reader's own Anonymous
+    // profile, with browser-local figures.
+    const hashtags = () =>
+      rail.profiles()[0].stats.find((stat) => stat.label === 'Hashtags')?.value;
+    expect(rail.profiles().map((card) => card.network)).toEqual(['Anonymous']);
+    expect(rail.profiles()[0].link).toBeDefined();
+    expect(hashtags()).toBe(0);
     TestBed.inject(AnonymousTags).follow('caturday');
     expect(TestBed.inject(AnonymousTags).count()).toBe(1);
-    expect(rail.profiles()).toHaveLength(0);
+    expect(hashtags()).toBe(1);
   });
 
   it('shows the signed-in Mastodon connector beside a Bluesky primary identity', () => {

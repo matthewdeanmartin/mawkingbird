@@ -82,6 +82,9 @@
             'pages.profile.media.positionOfTotal'
               | transloco: { position: position(), total: total() }
           }}
+          @if (moreFailed() && !loadingMore()) {
+            <span role="alert">{{ 'pages.profile.media.moreFailed' | transloco }}</span>
+          }
           @if (!exhausted()) {
             <button
               class="btn btn-outline btn-sm"
@@ -253,17 +256,20 @@
                     <button type="button" role="menuitem" (click)="reportPost()">
                       {{ 'pages.profile.media.report' | transloco }}
                     </button>
-                    <button type="button" role="menuitem" (click)="muteAuthor()">
-                      {{
-                        'pages.profile.media.muteHandle' | transloco: { handle: p.account.username }
-                      }}
-                    </button>
-                    <button type="button" role="menuitem" class="danger" (click)="blockAuthor()">
-                      {{
-                        'pages.profile.media.blockHandle'
-                          | transloco: { handle: p.account.username }
-                      }}
-                    </button>
+                    @if (canModerateAuthor()) {
+                      <button type="button" role="menuitem" (click)="muteAuthor()">
+                        {{
+                          'pages.profile.media.muteHandle'
+                            | transloco: { handle: p.account.username }
+                        }}
+                      </button>
+                      <button type="button" role="menuitem" class="danger" (click)="blockAuthor()">
+                        {{
+                          'pages.profile.media.blockHandle'
+                            | transloco: { handle: p.account.username }
+                        }}
+                      </button>
+                    }
                   }
                 </div>
               }

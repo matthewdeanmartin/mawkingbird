@@ -116,6 +116,7 @@ import { isTagsOnly, probeSearchServer, SearchServerStatus } from '../../search-
 import { normalizeHostUrl } from '../../host-url';
 import { Terminology } from '../../terminology';
 import { LocalModeration } from '../../local-moderation';
+import { AuthorModeration } from '../../author-moderation';
 import { TranslatedText } from '../../i18n/translated';
 
 type SearchType = 'accounts' | 'statuses' | 'hashtags';
@@ -438,6 +439,7 @@ export class Search implements OnInit, OnDestroy {
   private diagnostics = inject(PageDiagnostics);
   /** For the "mute everywhere" escalation on an excluded author. */
   private localMod = inject(LocalModeration);
+  private authorModeration = inject(AuthorModeration);
   protected saved = inject(SavedSearches);
   protected recent = inject(RecentSearches);
   protected searchServer = inject(SearchServer);
@@ -1497,19 +1499,26 @@ export class Search implements OnInit, OnDestroy {
    * Mute an author everywhere, not just in this search — the escalation for
    * "this account is a problem", as opposed to "this account is noise here".
    *
-   * Goes through {@link LocalModeration} rather than the server so it works
-   * anonymously and against any instance, matching how block/mute already
-   * behave elsewhere in the app. The author is also excluded from the current
-   * results, because otherwise muting them would leave them on screen until
-   * the next search.
+   * Goes through {@link AuthorModeration}: the Anonymous account's browser
+   * list, or the reader's own server, looked up there by handle because results
+   * may come from a separate search server. The author is also excluded from the
+   * current results, because otherwise muting them would leave them on screen
+   * until the next search.
    */
   protected muteAuthorEverywhere(acct: string): void {
     const account = (this.results()?.statuses ?? []).find((s) => s.account.acct === acct)?.account;
     if (!account) {
       return;
     }
-    this.localMod.mute(account, null);
     this.excludedAuthors.update((set) => new Set(set).add(acct));
+    this.authorModeration.mute({ account }, null).subscribe({
+      error: () =>
+        this.excludedAuthors.update((set) => {
+          const next = new Set(set);
+          next.delete(acct);
+          return next;
+        }),
+    });
     this.diagnostics.info('Search', 'user:mute-from-search', { from: 'flood-control' });
   }
 
@@ -1517,7 +1526,13 @@ export class Search implements OnInit, OnDestroy {
   protected isAuthorMuted(acct: string): boolean {
     this.localMod.entries();
     const account = (this.results()?.statuses ?? []).find((s) => s.account.acct === acct)?.account;
-    return !!account && this.localMod.isMuted(account);
+    return !!account && this.authorModeration.isMuted({ account });
+  }
+
+  /** Whether this reader can mute the author at all (never for a source they can't reach). */
+  protected canMuteAuthor(acct: string): boolean {
+    const account = (this.results()?.statuses ?? []).find((s) => s.account.acct === acct)?.account;
+    return !!account && this.authorModeration.route({ account }) !== null;
   }
 
   protected isRepeatExpanded(id: string): boolean {

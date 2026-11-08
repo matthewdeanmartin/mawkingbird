@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccountPreview } from './account-preview';
 import { Account } from '../models';
 import { Auth } from '../auth';
+import { AnonymousAccount } from '../providers/anonymous/anonymous-account';
 
 describe('Member account preview', () => {
   let http: HttpTestingController;
@@ -76,5 +77,72 @@ describe('Member account preview', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-account-hover-card')).toBeNull();
     expect(button.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  describe('as Anonymous', () => {
+    function open(account: Partial<Account>) {
+      TestBed.inject(Auth).enterAnonymous();
+      TestBed.inject(AnonymousAccount).activate('https://mastodon.social');
+      const fixture = TestBed.createComponent(AccountPreview);
+      fixture.componentRef.setInput('account', {
+        username: 'bob',
+        display_name: 'Bob',
+        note: '',
+        avatar: '',
+        avatar_static: '',
+        statuses_count: 1,
+        followers_count: 1,
+        following_count: 1,
+        ...account,
+      } as Account);
+      fixture.detectChanges();
+      const panel = fixture.nativeElement.querySelector('[popover]') as HTMLElement;
+      panel.showPopover = vi.fn();
+      panel.hidePopover = vi.fn();
+      (fixture.nativeElement.querySelector('.summary') as HTMLElement).dispatchEvent(
+        new FocusEvent('focusin', { bubbles: true }),
+      );
+      fixture.detectChanges();
+      return { fixture, panel };
+    }
+
+    it('reads pinned posts from the account’s own server', () => {
+      const { fixture, panel } = open({
+        id: '9',
+        acct: 'bob@home.example',
+        url: 'https://home.example/@bob',
+      });
+      http
+        .expectOne((request) => request.url === 'https://home.example/api/v1/accounts/lookup')
+        .flush({ id: '42', username: 'bob', acct: 'bob' });
+      http.expectOne('https://home.example/api/v1/accounts/42/statuses?pinned=true&limit=3').flush([
+        {
+          id: 'p',
+          content: '<p>Pinned at home</p>',
+          spoiler_text: '',
+          account: { username: 'bob', acct: 'bob' },
+        },
+      ]);
+      fixture.detectChanges();
+      expect(panel.textContent).toContain('Pinned at home');
+    });
+
+    it('goes without pinned posts, quietly, when no server will give them', () => {
+      const { fixture, panel } = open({
+        id: '9',
+        acct: 'bob@home.example',
+        url: 'https://home.example/@bob',
+      });
+      http
+        .expectOne((request) => request.url === 'https://home.example/api/v1/accounts/lookup')
+        .flush('no', { status: 401, statusText: 'Unauthorized' });
+      http
+        .expectOne((request) =>
+          request.url.startsWith('https://mastodon.social/api/v1/accounts/9/statuses'),
+        )
+        .flush('no', { status: 401, statusText: 'Unauthorized' });
+      fixture.detectChanges();
+      expect(panel.textContent).not.toContain('accountPreview.pinnedError');
+    });
   });
 });
