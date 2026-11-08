@@ -44,10 +44,38 @@
           [disabled]="busy()"
         />
       </mb-field>
+      <ng-container [ngTemplateOutlet]="wordRule" />
+      <button mbButton type="submit" [disabled]="busy() || !wordValue().trim()">
+        {{ 'settings.bskyModeration.words.add' | transloco }}
+      </button>
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        [disabled]="busy()"
+        (click)="bulkOpen.set(true)"
+      >
+        {{ 'bulkWords.open' | transloco }}
+      </button>
+    </form>
+    @if (bulkOpen()) {
+      <app-bulk-words-dialog
+        [key]="mutedWordKey"
+        [busy]="busy()"
+        (added)="addWords($event)"
+        (closed)="bulkOpen.set(false)"
+      >
+        <ng-container [ngTemplateOutlet]="wordRule" />
+        @if (wordsError(); as message) {
+          <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+        }
+      </app-bulk-words-dialog>
+    }
+    <!-- One rule for the form and for a pasted list, so both read the same choices. -->
+    <ng-template #wordRule>
       <mb-field [label]="'settings.bskyModeration.words.where' | transloco">
         <select
           mbControl
-          name="where"
           [ngModel]="wordWhere()"
           (ngModelChange)="wordWhere.set($event)"
           [disabled]="busy()"
@@ -61,7 +89,6 @@
       <mb-field [label]="'settings.bskyModeration.words.duration' | transloco">
         <select
           mbControl
-          name="duration"
           [ngModel]="wordDays()"
           (ngModelChange)="wordDays.set(+$event)"
           [disabled]="busy()"
@@ -78,16 +105,13 @@
         [disabled]="busy()"
         (checkedChange)="wordExcludeFollowing.set($event)"
       />
-      <button mbButton type="submit" [disabled]="busy() || !wordValue().trim()">
-        {{ 'settings.bskyModeration.words.add' | transloco }}
-      </button>
-    </form>
+    </ng-template>
     @if (wordsError(); as message) {
       <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
     }
     @if (state.mutedWords().length) {
       <ul class="mod-list">
-        @for (word of state.mutedWords(); track word.value) {
+        @for (word of state.mutedWords(); track mutedWordKey(word.value)) {
           <li>
             <span class="mod-name">
               <strong>{{ word.value }}</strong>

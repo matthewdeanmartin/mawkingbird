@@ -40,3 +40,9 @@
   color: var(--muted);
   font-size: 12.5px;
 }
+
+.kw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

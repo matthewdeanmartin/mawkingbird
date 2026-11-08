@@ -25,6 +25,8 @@ interface SettingsFilterEditInternals {
   removeKeywordRow(index: number): void;
   setKeyword(index: number, key: 'keyword' | 'whole_word', value: string | boolean): void;
   save(): void;
+  bulkWholeWord: WritableSignal<boolean>;
+  addKeywords(words: string[]): void;
 }
 
 function internals(fixture: ComponentFixture<SettingsFilterEdit>): SettingsFilterEditInternals {
@@ -157,5 +159,33 @@ describe('SettingsFilterEdit', () => {
     expect(add.request.method).toBe('POST');
     expect(add.request.body).toEqual({ keyword: 'ending', whole_word: true });
     add.flush({ id: 'k2', keyword: 'ending', whole_word: true });
+  });
+
+  it('adds a pasted list with one whole-word rule, skipping words the filter has', () => {
+    configure('42');
+    const fixture = TestBed.createComponent(SettingsFilterEdit);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v2/filters/42').flush(makeFilter());
+
+    const c = internals(fixture);
+    c.bulkWholeWord.set(false);
+    c.addKeywords(['Finale', 'cliffhanger', 'twist']);
+    expect(c.keywords()).toEqual([
+      { id: 'k1', keyword: 'finale', whole_word: true },
+      { id: null, keyword: 'cliffhanger', whole_word: false },
+      { id: null, keyword: 'twist', whole_word: false },
+    ]);
+    // A duplicate typed by hand is sent once, quietly.
+    c.addKeywordRow();
+    c.setKeyword(3, 'keyword', ' TWIST ');
+    c.save();
+
+    httpMock.expectOne('/api/v2/filters/42').flush(makeFilter());
+    const adds = httpMock.match('/api/v2/filters/42/keywords');
+    expect(adds.map((req) => req.request.body)).toEqual([
+      { keyword: 'cliffhanger', whole_word: false },
+      { keyword: 'twist', whole_word: false },
+    ]);
+    adds.forEach((req) => req.flush({}));
   });
 });

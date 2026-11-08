@@ -30,6 +30,7 @@ describe('SettingsBlueskyModeration', () => {
         .fn()
         .mockResolvedValue([{ did: 'did:plc:mod', name: 'Mod', handle: 'mod.example' }]),
       addMutedWord: vi.fn().mockResolvedValue(undefined),
+      addMutedWords: vi.fn().mockResolvedValue(undefined),
       removeMutedWord: vi.fn().mockResolvedValue(undefined),
       unsubscribeList: vi.fn().mockResolvedValue(undefined),
     };
@@ -95,6 +96,34 @@ describe('SettingsBlueskyModeration', () => {
     const [word] = moderation['addMutedWord'].mock.calls[0];
     expect(word).toMatchObject({ value: 'big game', targets: ['tag'], actorTarget: 'all' });
     expect(Date.parse(word.expiresAt) - Date.now()).toBeGreaterThan(6.9 * 86_400_000);
+  });
+
+  it('mutes a pasted list in one go, every word under the rule chosen in the dialog', async () => {
+    const f = await render();
+    const el = f.nativeElement as HTMLElement;
+    const open = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Add many at once'),
+    )!;
+    open.click();
+    f.detectChanges();
+    const dialog = document.body.querySelector('app-bulk-words-dialog')!;
+    // The rule controls are in the dialog, beside the list.
+    expect(dialog.querySelectorAll('select').length).toBe(2);
+    const page = f.componentInstance as unknown as {
+      wordExcludeFollowing: { set(v: boolean): void };
+      addWords(values: string[]): Promise<void>;
+      bulkOpen(): boolean;
+    };
+    page.wordExcludeFollowing.set(true);
+    await page.addWords(['xyzzy', 'plugh']);
+
+    expect(moderation['addMutedWords']).toHaveBeenCalledTimes(1);
+    const [words] = moderation['addMutedWords'].mock.calls[0];
+    expect(words).toEqual([
+      { value: 'xyzzy', targets: ['content', 'tag'], actorTarget: 'exclude-following' },
+      { value: 'plugh', targets: ['content', 'tag'], actorTarget: 'exclude-following' },
+    ]);
+    expect(page.bulkOpen()).toBe(false);
   });
 
   it('shows a failure in its own section', async () => {

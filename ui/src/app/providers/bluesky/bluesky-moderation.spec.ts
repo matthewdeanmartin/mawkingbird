@@ -143,6 +143,32 @@ describe('BlueskyModeration', () => {
     expect(prefs.some((p) => p.$type === 'app.bsky.actor.defs#savedFeedsPrefV2')).toBe(true);
   });
 
+  it('mutes a whole list in one write, with one rule, dropping repeats', async () => {
+    const rule = { targets: ['tag'] as BskyMutedWord['targets'], actorTarget: 'all' as const };
+    await moderation.addMutedWords(
+      ['xyzzy', '#Plugh', 'XYZZY', '  ', 'OLD'].map((value) => ({ value, ...rule })),
+    );
+    expect(request).toHaveBeenCalledTimes(1);
+    const muted = prefs.find((p) => p.$type === 'app.bsky.actor.defs#mutedWordsPref')!['items'];
+    // 'OLD' replaced 'old' with the new rule; the second xyzzy is the one kept.
+    expect(muted).toEqual([
+      { value: 'Plugh', ...rule },
+      { value: 'XYZZY', ...rule },
+      { value: 'OLD', ...rule },
+    ]);
+    expect(state.mutedWords().length).toBe(3);
+  });
+
+  it('shows stored duplicates once, cleans them on the next write, and unmutes all copies', async () => {
+    prefs[1]['items'] = [word('xyzzy'), word('#XYZZY'), word('keep')];
+    await moderation.ensureLoaded();
+    expect(state.mutedWords().map((w) => w.value)).toEqual(['#XYZZY', 'keep']);
+
+    await moderation.removeMutedWord('#XYZZY');
+    expect(state.mutedWords().map((w) => w.value)).toEqual(['keep']);
+    expect(prefs[prefs.length - 1]['items']).toEqual([word('keep')]);
+  });
+
   it('subscribes to a moderation service only when it is one', async () => {
     await moderation.addLabeler('@mod.example');
     expect(state.labelers()).toEqual(['did:plc:labeler']);

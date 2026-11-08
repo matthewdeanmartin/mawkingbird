@@ -66,23 +66,35 @@ export class BlueskyModeration {
   }
 
   async addMutedWord(word: BskyMutedWord): Promise<void> {
-    await this.editPreference(MUTED_WORDS_PREF, (current) => {
-      const items = (current?.['items'] as BskyMutedWord[] | undefined) ?? [];
-      const value = word.value.trim().replace(/^#/, '');
-      const rest = items.filter((item) => item.value.toLowerCase() !== value.toLowerCase());
-      return { ...current, $type: MUTED_WORDS_PREF, items: [...rest, { ...word, value }] };
-    });
+    await this.addMutedWords([word]);
   }
 
+  /**
+   * Mute several words in one preferences write. A word already muted (in any
+   * case, with or without its #) takes the new rule; repeats within the list
+   * collapse to one. Duplicates already in the account, from an older client or
+   * bsky.app, are dropped quietly on the same write.
+   */
+  async addMutedWords(words: readonly BskyMutedWord[]): Promise<void> {
+    const added = words
+      .map((word) => ({ ...word, value: word.value.trim().replace(/^#/, '') }))
+      .filter((word) => word.value);
+    if (!added.length) return;
+    await this.editPreference(MUTED_WORDS_PREF, (current) => ({
+      ...current,
+      $type: MUTED_WORDS_PREF,
+      items: dedupeMutedWords([...itemsOf(current), ...added]),
+    }));
+  }
+
+  /** Unmute a word: every stored copy of it, whatever its case or #. */
   async removeMutedWord(value: string): Promise<void> {
-    await this.editPreference(MUTED_WORDS_PREF, (current) => {
-      const items = (current?.['items'] as BskyMutedWord[] | undefined) ?? [];
-      return {
-        ...current,
-        $type: MUTED_WORDS_PREF,
-        items: items.filter((item) => item.value !== value),
-      };
-    });
+    const key = mutedWordKey(value);
+    await this.editPreference(MUTED_WORDS_PREF, (current) => ({
+      ...current,
+      $type: MUTED_WORDS_PREF,
+      items: dedupeMutedWords(itemsOf(current)).filter((item) => mutedWordKey(item.value) !== key),
+    }));
   }
 
   async labelers(): Promise<BskyLabelerEntry[]> {
@@ -225,9 +237,32 @@ export class BlueskyModeration {
   }
 }
 
+function itemsOf(pref: Preference | undefined): BskyMutedWord[] {
+  return (pref?.['items'] as BskyMutedWord[] | undefined) ?? [];
+}
+
+/** What makes two muted words the same: case and a leading # do not. */
+export function mutedWordKey(value: string): string {
+  return value.trim().replace(/^#/, '').toLowerCase();
+}
+
+/**
+ * One entry per word, the last one winning (it is the newest rule), kept in
+ * the position of that last entry. Empty values are dropped.
+ */
+export function dedupeMutedWords(items: readonly BskyMutedWord[]): BskyMutedWord[] {
+  const last = new Map<string, number>();
+  items.forEach((item, index) => {
+    if (item?.value && mutedWordKey(item.value)) last.set(mutedWordKey(item.value), index);
+  });
+  return items.filter(
+    (item, index) => !!item?.value && last.get(mutedWordKey(item.value)) === index,
+  );
+}
+
 function mutedWordsOf(preferences: Preference[]): BskyMutedWord[] {
   const pref = preferences.find((p) => p.$type === MUTED_WORDS_PREF);
-  return ((pref?.['items'] as BskyMutedWord[] | undefined) ?? []).filter((w) => !!w?.value);
+  return dedupeMutedWords(itemsOf(pref));
 }
 
 function labelersOf(preferences: Preference[]): string[] {

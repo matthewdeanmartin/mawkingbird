@@ -13,6 +13,11 @@
       "nextStep": "External player uses Button for load and close, labelled cross-origin iframes and visible error text. Preserve narrow viewport sizing, no autoplay on initial load, content-warning boundaries in callers, and teardown of widget listeners. Persistent Radio widgets remain visible in the dock."
     },
     {
+      "file": "ui/src/app/bulk-words-dialog/bulk-words-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Bulk muted-word entry uses Dialog, Field/Control (one textarea, one word per line) and Button; the page projects its own rule controls, which apply to every line. Preserve blank-line and repeat skipping, the live count, one write per list, busy state and focus return."
+    },
+    {
       "file": "ui/src/app/code-blocks/code-image-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Code image dialog composes the shared Dialog with MbButton Cancel and Attach. The language select and monospace code textarea are native; move them to Field/Control when Write adopts shared fields. Keep the description-limit notice and the disabled Attach state."

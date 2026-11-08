@@ -607,3 +607,16 @@ classified under Society in feed-builder-categories.ts. The hub includes it in
 All topics and the Society filter; other language filters show the English
 fallback, not a translated page. Accounts must regularly post about DC, Maryland
 or Virginia, not merely reside there. Relevant quiet local tags remain selectable.
+
+### Routine SIG validation
+
+Owner direction (2026-11-07): routine topic data/copy/registry additions use
+proportionate checks. Run the approved importer validation and targeted Feed
+Builder specs, format changed files, and check category/language/route coverage.
+Review design inventory changes when a new source file changes its count.
+Use an available preview for a focused smoke check; do not rebuild production
+and all SEO pages solely for a new topic. Data-only refreshes need importer,
+schema and snapshot checks, not the Angular suite. Full application/build/SEO
+gates apply when shared runtime, routing or publishing behavior changes. Do not
+chase unrelated test failures in a SIG update. See the private new-topic playbook
+for the full workflow.

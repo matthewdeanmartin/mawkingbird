@@ -1,5 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BulkWordsDialog } from '../../../bulk-words-dialog/bulk-words-dialog';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../../design-system/button/button';
@@ -14,6 +16,7 @@ import {
   BlueskyModeration,
   BskyLabelerEntry,
   BskyModerationList,
+  mutedWordKey,
 } from '../../../providers/bluesky/bluesky-moderation';
 import {
   BlueskyModerationState,
@@ -88,6 +91,8 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-settings-bluesky-moderation',
   imports: [
     FormsModule,
+    NgTemplateOutlet,
+    BulkWordsDialog,
     RouterLink,
     TranslocoPipe,
     MbPageHeader,
@@ -125,6 +130,8 @@ export class SettingsBlueskyModeration implements OnInit {
   protected wordWhere = signal<'everywhere' | 'tags'>('everywhere');
   protected wordDays = signal(0);
   protected wordExcludeFollowing = signal(false);
+  protected bulkOpen = signal(false);
+  protected readonly mutedWordKey = mutedWordKey;
   protected listAddress = signal('');
   protected listPurpose = signal<'mute' | 'block'>('mute');
   protected serviceHandle = signal('');
@@ -158,18 +165,32 @@ export class SettingsBlueskyModeration implements OnInit {
     }
   }
 
-  protected async addWord(): Promise<void> {
-    const value = this.wordValue().trim();
-    if (!value) return;
+  /** The form's rule (where, how long, who) applied to one word. */
+  private mutedWord(value: string): BskyMutedWord {
     const days = this.wordDays();
-    const word: BskyMutedWord = {
+    return {
       value,
       targets: this.wordWhere() === 'tags' ? ['tag'] : ['content', 'tag'],
       actorTarget: this.wordExcludeFollowing() ? 'exclude-following' : 'all',
       ...(days ? { expiresAt: new Date(Date.now() + days * 86_400_000).toISOString() } : {}),
     };
-    if (await this.run(() => this.moderation.addMutedWord(word), this.wordsError)) {
+  }
+
+  protected async addWord(): Promise<void> {
+    const value = this.wordValue().trim();
+    if (!value) return;
+    if (
+      await this.run(() => this.moderation.addMutedWord(this.mutedWord(value)), this.wordsError)
+    ) {
       this.wordValue.set('');
+    }
+  }
+
+  /** A pasted list, one write, the same rule for every word. */
+  protected async addWords(values: string[]): Promise<void> {
+    const words = values.map((value) => this.mutedWord(value));
+    if (await this.run(() => this.moderation.addMutedWords(words), this.wordsError)) {
+      this.bulkOpen.set(false);
     }
   }
 

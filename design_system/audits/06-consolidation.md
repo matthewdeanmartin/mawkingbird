@@ -1780,3 +1780,24 @@ pre-DMV working-tree inventory: sources increased from 1,690 to 1,691; all 601
 candidate entries are identical. The existing Society category now contains DMV.
 No template or shared widget changed for this integration. Candidate paths are
 unchanged, so reconciliation needs no additions or removals.
+
+## Muted words: add many at once, quiet de-duplication, 2026-11-07
+
+A new shared `bulk-words-dialog/bulk-words-dialog.ts` takes the scanned
+count from 1,691 to 1,692. It is a new candidate file (601 to 602) with
+a reconciliation entry: `shared` 5 (`mb-dialog`, `mb-field`, the
+`mbControl` textarea and two `mbButton`s) and `nativeButtons` 2 (those same
+buttons as native tags). It takes one word or phrase per line, and the page
+projects its own rule controls, which apply to the whole list.
+
+- `settings-bluesky-moderation.html`: `shared` 39 to 41 and `nativeButtons`
+  7 to 8. These are the outline "Add many at once…" `mbButton` and the
+  dialog. The where, duration and not-following controls moved into an
+  `ng-template` shared by the form and the dialog, so the selects are still
+  counted once each.
+- `settings-filter-edit.html`: `shared` 0 to 1 (an `mb-checkbox` for whole
+  word in the dialog), and `nativeButtons` 3 to 4 and `legacyPills` 4 to 5. The
+  "Add many at once…" button uses the same `btn btn-outline btn-sm` as
+  "+ Add keyword" beside it.
+
+No shared widget changed.

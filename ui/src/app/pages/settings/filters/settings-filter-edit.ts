@@ -7,6 +7,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { forkJoin, Observable, of } from 'rxjs';
 import { Api } from '../../../api';
 import { ContentFilter, FilterAction, FilterContext, FilterKeyword } from '../../../models';
+import { BulkWordsDialog } from '../../../bulk-words-dialog/bulk-words-dialog';
+import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 
 interface ContextOption {
   value: FilterContext;
@@ -62,7 +64,15 @@ interface KeywordRow {
 // i18n common.cancel: Cancel
 @Component({
   selector: 'app-settings-filter-edit',
-  imports: [DatePipe, FormsModule, RouterLink, TranslocoPipe, FilterWizard],
+  imports: [
+    DatePipe,
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+    FilterWizard,
+    BulkWordsDialog,
+    MbCheckbox,
+  ],
   templateUrl: './settings-filter-edit.html',
   styleUrl: './settings-filter-edit.css',
 })
@@ -173,6 +183,47 @@ export class SettingsFilterEdit implements OnInit {
     this.keywords.update((list) => [...list, { id: null, keyword: '', whole_word: true }]);
   }
 
+  protected bulkOpen = signal(false);
+  /** The whole-word rule for a pasted list, applied to every line. */
+  protected bulkWholeWord = signal(true);
+
+  /**
+   * Add a pasted list as new rows with one whole-word rule. Words already in
+   * the filter are skipped, and empty rows tidied away; saving sends them.
+   */
+  protected addKeywords(words: string[]): void {
+    const have = new Set(this.keywords().map((row) => keywordKey(row.keyword)));
+    const added = words
+      .filter((word) => !have.has(keywordKey(word)))
+      .map((keyword) => ({ id: null, keyword, whole_word: this.bulkWholeWord() }));
+    this.keywords.update((list) => [
+      ...list.filter((row) => row.id !== null || row.keyword.trim()),
+      ...added,
+    ]);
+    if (!this.keywords().length) this.addKeywordRow();
+    this.bulkOpen.set(false);
+  }
+
+  /**
+   * The rows to send as new keywords: trimmed, each once, and none the filter
+   * already has. A word typed twice is quietly sent once.
+   */
+  private newKeywords(): { keyword: string; whole_word: boolean }[] {
+    const seen = new Set(
+      this.keywords()
+        .filter((row) => row.id !== null)
+        .map((row) => keywordKey(row.keyword)),
+    );
+    const out: { keyword: string; whole_word: boolean }[] = [];
+    for (const row of this.keywords()) {
+      const keyword = row.keyword.trim();
+      if (row.id !== null || !keyword || seen.has(keywordKey(keyword))) continue;
+      seen.add(keywordKey(keyword));
+      out.push({ keyword, whole_word: row.whole_word });
+    }
+    return out;
+  }
+
   removeKeywordRow(index: number): void {
     const row = this.keywords()[index];
     if (row?.id) {
@@ -205,9 +256,7 @@ export class SettingsFilterEdit implements OnInit {
   }
 
   private createNew(title: string): void {
-    const keywords = this.keywords()
-      .filter((row) => row.keyword.trim())
-      .map((row) => ({ keyword: row.keyword.trim(), whole_word: row.whole_word }));
+    const keywords = this.newKeywords();
     this.api
       .createFilter({
         title,
@@ -240,9 +289,9 @@ export class SettingsFilterEdit implements OnInit {
     const keywordCalls: Observable<unknown>[] = [
       this.api.updateFilter(id, changes),
       ...this.removedKeywordIds.map((kid) => this.api.deleteFilterKeyword(kid)),
-      ...this.keywords()
-        .filter((row) => row.id === null && row.keyword.trim())
-        .map((row) => this.api.addFilterKeyword(id, row.keyword.trim(), row.whole_word)),
+      ...this.newKeywords().map((row) =>
+        this.api.addFilterKeyword(id, row.keyword, row.whole_word),
+      ),
     ];
     forkJoin(keywordCalls.length ? keywordCalls : [of(null)]).subscribe({
       next: () => void this.router.navigate(['/settings/filters']),
@@ -252,4 +301,9 @@ export class SettingsFilterEdit implements OnInit {
       },
     });
   }
+}
+
+/** Mastodon matches keywords without regard to case; so does this list. */
+function keywordKey(keyword: string): string {
+  return keyword.trim().toLowerCase();
 }

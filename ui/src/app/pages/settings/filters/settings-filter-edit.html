@@ -138,9 +138,23 @@
           </div>
         }
       </div>
-      <button type="button" class="btn btn-outline btn-sm" (click)="addKeywordRow()">
-        {{ 'settings.filters.addKeyword' | transloco }}
-      </button>
+      <div class="kw-actions">
+        <button type="button" class="btn btn-outline btn-sm" (click)="addKeywordRow()">
+          {{ 'settings.filters.addKeyword' | transloco }}
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="bulkOpen.set(true)">
+          {{ 'bulkWords.open' | transloco }}
+        </button>
+      </div>
+      @if (bulkOpen()) {
+        <app-bulk-words-dialog (added)="addKeywords($event)" (closed)="bulkOpen.set(false)">
+          <mb-checkbox
+            [label]="'settings.filters.wholeWord' | transloco"
+            [checked]="bulkWholeWord()"
+            (checkedChange)="bulkWholeWord.set($event)"
+          />
+        </app-bulk-words-dialog>
+      }
       <p class="hint">
         {{ 'settings.filters.wholeWord.hint' | transloco }}
       </p>
