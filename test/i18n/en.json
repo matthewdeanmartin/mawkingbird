@@ -136,6 +136,13 @@
     "pinned": "Pinned posts",
     "pinnedError": "Pinned posts couldn't be loaded."
   },
+  "accountTab": {
+    "continue": "Continue as {{active}}",
+    "otherTab": "This tab is still signed in as {{loaded}}, but another tab switched to {{active}}. Likes, boosts, replies and posts are paused here so nothing goes out from the wrong account.",
+    "reload": "Reload as {{active}}",
+    "restored": "This tab was showing {{loaded}} before it reloaded, and is now signed in as {{active}}. Likes, boosts, replies and posts are paused until you choose.",
+    "unknownAccount": "a different account"
+  },
   "adminAccounts": {
     "actions.approve": "Approve",
     "actions.delete": "Delete",
@@ -3393,6 +3400,8 @@
     "profile.twitter.savedPosts": "Saved posts from an earlier visit.",
     "profile.twitter.showOnFeeds": "Show this account on your Feeds page. Not a follow on Twitter — nobody is notified.",
     "profile.twitter.stopShowing": "Stop showing this account on your Feeds page",
+    "profile.zoomAvatar": "View full-size profile photo",
+    "profile.zoomHeader": "View full-size header image",
     "rss.addFeed.checking": "Checking…",
     "rss.addFeed.continue": "Continue",
     "rss.addFeed.couldNotFollow": "Could not follow that account.",
@@ -3981,6 +3990,8 @@
     "search.results.trendingHashtags": "Trending hashtags",
     "search.results.tryAgain": "Try again",
     "search.results.viewAndFollow": "View and follow #{{tag}}",
+    "search.results.weekUses": "{{count}} posts this week",
+    "search.results.weekUsesNone": "No posts this week",
     "search.saved.anonymous": "· anon",
     "search.saved.deleteLabel": "Delete saved search",
     "search.saved.deleteTitle": "Delete",
@@ -4061,6 +4072,10 @@
     "search.syntax.wordsNote": "Bare words match loosely. The operators tighten that up.",
     "search.syntax.writtenInLanguage": "Written in this language (two-letter code)",
     "search.syntax.writtenInLanguageBsky": "Written in this language (two-letter code)",
+    "search.tagSort.activity": "Most active",
+    "search.tagSort.alpha": "A–Z",
+    "search.tagSort.label": "Sort hashtags",
+    "search.tagSort.relevance": "Best match",
     "search.thread.deep": "Deeper in a thread",
     "search.thread.direct": "Replies to the thread",
     "search.thread.top": "Top-level posts",
@@ -7812,6 +7827,8 @@
     "add": "+ Add",
     "addTitle": "Add #{{tag}} to the hashtags compared",
     "failed": "Couldn't update this tag. Please try again.",
+    "mute": "Mute",
+    "muteTitle": "Hide posts tagged #{{tag}} with a filter on your Mastodon account",
     "similar": "Similar",
     "similarTitle": "Hashtags that often appear with #{{tag}}"
   },
