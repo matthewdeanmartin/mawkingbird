@@ -76,6 +76,8 @@ describe('CommandBar', () => {
   });
   it('uses independent toolbar focus groups and leaves navigation links outside them', async () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    // Two sources, so the Feed sources toolbar renders (one source hides it).
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
     const fixture = setUp(true);
     fixture.componentRef.setInput('showFeedViews', true);
     fixture.componentRef.setInput('showFeedDoctor', true);
@@ -112,6 +114,7 @@ describe('CommandBar', () => {
   });
   it('separates actions, presentation and filters in that order', () => {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
     const fixture = setUp(true);
     for (const key of ['showRefresh', 'showFeedViews', 'showFeedDoctor']) {
       fixture.componentRef.setInput(key, true);
@@ -129,7 +132,7 @@ describe('CommandBar', () => {
       '🩺 Doctor',
     ]);
     expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text', '🖼️ Media', '🔗 Articles']);
-    expect(labels(rows[2])).toEqual(['🦣 Fedi']);
+    expect(labels(rows[2])).toEqual(['🦣 Fedi', '📡 RSS']);
   });
   beforeEach(() => {
     localStorage.clear();
@@ -162,6 +165,18 @@ describe('CommandBar', () => {
     expect(bluesky).toHaveLength(1);
     (bluesky[0] as HTMLButtonElement).click();
     expect(TestBed.inject(ClientPrefs).isProviderVisible('bluesky')).toBe(false);
+  });
+
+  it('turns the refresh arrow into a check while a refresh found nothing new', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showRefresh', true);
+    fixture.detectChanges();
+    const button = (fixture.nativeElement as HTMLElement).querySelector('.refresh-button')!;
+    expect(button.textContent?.trim()).toBe('🔄 More');
+    fixture.componentRef.setInput('refreshDone', true);
+    fixture.detectChanges();
+    expect(button.textContent?.trim()).toBe('✅ More');
+    expect(button.classList).toContain('refresh-done');
   });
 
   it('toggles feed reader mode via ClientPrefs (stamped on <html>)', () => {
@@ -256,10 +271,25 @@ describe('CommandBar', () => {
     expect(prefs.showImages()).toBe(true);
   });
 
-  it('keeps the authenticated Fedi control available when no foreign provider is linked', () => {
+  it('hides a one-source switcher, since Fedi alone switches nothing', () => {
     const el = setUp(true).nativeElement as HTMLElement;
-    expect(el.textContent).toContain('Fedi');
-    expect(el.textContent).not.toContain('RSS');
+    expect(el.querySelector('.provider-group')).toBeNull();
+    expect(el.textContent).not.toContain('Fedi');
+  });
+
+  it('still shows a lone source that is turned off, so it can be turned back on', () => {
+    TestBed.inject(ClientPrefs).toggleProvider('mastodon');
+    const fixture = setUp(true);
+    const el = fixture.nativeElement as HTMLElement;
+    const fedi = [...el.querySelectorAll('.provider-group button')].find((b) =>
+      b.textContent?.includes('Fedi'),
+    ) as HTMLButtonElement;
+    expect(fedi).toBeTruthy();
+    expect(fedi.getAttribute('aria-pressed')).toBe('false');
+    fedi.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(ClientPrefs).isProviderVisible('mastodon')).toBe(true);
+    expect(el.querySelector('.provider-group')).toBeNull();
   });
 
   it('does not show an irrelevant Fedi control for Anonymous with no local source', () => {

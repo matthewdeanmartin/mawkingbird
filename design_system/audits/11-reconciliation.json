@@ -3021,6 +3021,11 @@
       "file": "ui/src/app/pages/twitter-to-mastodon/twitter-to-mastodon.tr.html",
       "disposition": "adopted scope",
       "nextStep": "Turkish SEO localization: Polish twin of twitter-to-mastodon.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered page using MbContentLink and MbButton in the feature-page header; the importer is the shared twitter-archive-import component. Keep new controls on shared widgets."
+    },
+    {
+      "file": "ui/src/app/account-tab-guard/account-tab-banner.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Account-changed-in-another-tab banner: a sticky role=alert notice with one MbButton (Reload as @x for another tab, Continue as @x after a restored reload). Preserve the alert role, that reads are never blocked, and the single action per reason."
     }
   ]
 }

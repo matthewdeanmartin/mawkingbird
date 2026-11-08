@@ -212,6 +212,27 @@ describe('self profile local actions', () => {
     TestBed.inject(HttpTestingController).expectNone(() => true);
   });
 
+  it('opens the profile photo and header full size in the image viewer', () => {
+    const fixture = setUp(false);
+    fixture.componentInstance['account'].update((account) => ({
+      ...account!,
+      avatar: 'https://example.social/avatar.png',
+      avatar_static: 'https://example.social/avatar.png',
+      header: 'https://example.social/header.png',
+    }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-lightbox')).toBeNull();
+    el.querySelector<HTMLButtonElement>('.avatar-zoom')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-lightbox')).not.toBeNull();
+    expect(fixture.componentInstance['profileImageIndex']()).toBe(0);
+    fixture.componentInstance['profileImageIndex'].set(null);
+    fixture.detectChanges();
+    el.querySelector<HTMLButtonElement>('.banner-zoom')!.click();
+    expect(fixture.componentInstance['profileImageIndex']()).toBe(1);
+  });
+
   it('shows bot identity and opens the slideshow from the profile menu', () => {
     const fixture = setUp(false);
     fixture.componentInstance['account'].update((account) => ({ ...account!, bot: true }));

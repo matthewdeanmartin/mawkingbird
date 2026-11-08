@@ -1,3 +1,4 @@
+import { Lightbox } from '../../lightbox/lightbox';
 import { BlueskyProfileDiscovery } from '../bluesky-starter-packs/bluesky-profile-discovery';
 import { ProfileSlideshow, SlideshowOptions, slideshowOptionsFrom } from './profile-slideshow';
 import { Compose } from '../../compose/compose';
@@ -9,6 +10,8 @@ import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../app-dialogs';
 import { BulkFollowConfirmation } from '../../bulk-follow-confirmation';
 // i18n pages.profile.privateFollow.add: Private follow
+// i18n pages.profile.zoomAvatar: View full-size profile photo
+// i18n pages.profile.zoomHeader: View full-size header image
 // i18n pages.profile.privateFollow.remove: Remove private follow
 // i18n pages.profile.privateFollow.hint: Adds public posts to Home without following on the network. Kept in this browser only.
 // i18n pages.profile.privateFollow.failed: Could not save this change. Private follows are limited to 50 accounts; check the limit and your browser storage in Pseudonymity settings.
@@ -41,7 +44,7 @@ import { Terminology } from '../../terminology';
 import { Auth } from '../../auth';
 import { LocalModeration } from '../../local-moderation';
 import { TrustedAccounts } from '../../trusted-accounts';
-import { Account, Collection, Relationship, Status } from '../../models';
+import { Account, Collection, MediaAttachment, Relationship, Status } from '../../models';
 import { homeServerLink } from '../../home-server-link';
 import {
   emptyProfileSearch,
@@ -237,6 +240,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    Lightbox,
     BlueskyProfileDiscovery,
     ProfileSlideshow,
     MediaDownloadMenuItem,
@@ -2350,6 +2354,57 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   /** Local block/mute state, re-read through the moderation signal. */
+  /**
+   * Full-size profile photo and header in the shared image viewer. The photo
+   * comes first; the header is the second slide when there is one, so a tap on
+   * either opens the viewer at that image.
+   */
+  protected profileImages = computed<MediaAttachment[]>(() => {
+    const a = this.account();
+    if (!a) return [];
+    const images: MediaAttachment[] = [];
+    const avatar = a.avatar || a.avatar_static;
+    if (avatar) {
+      images.push({
+        id: 'profile-avatar',
+        type: 'image',
+        url: avatar,
+        preview_url: a.avatar_static || avatar,
+        description: a.display_name || a.username,
+      });
+    }
+    const header = a.header || a.header_static;
+    if (header && !/\/headers\/original\/missing\.png$/.test(header)) {
+      images.push({
+        id: 'profile-header',
+        type: 'image',
+        url: header,
+        preview_url: a.header_static || header,
+        description: null,
+      });
+    }
+    return images;
+  });
+  protected profileImageIndex = signal<number | null>(null);
+  /** Hidden behind blur when blocked or muted, so not offered at full size either. */
+  protected imagesHidden = computed(
+    () =>
+      !!(
+        this.relationship()?.blocking ||
+        this.relationship()?.muting ||
+        this.localBlocked() ||
+        this.localMuted()
+      ),
+  );
+  protected headerZoomable = computed(
+    () => !this.imagesHidden() && this.profileImages().some((image) => image.id === 'profile-header'),
+  );
+  protected openProfileImage(id: 'profile-avatar' | 'profile-header'): void {
+    if (this.imagesHidden()) return;
+    const index = this.profileImages().findIndex((image) => image.id === id);
+    if (index >= 0) this.profileImageIndex.set(index);
+  }
+
   protected localBlocked = computed(() => {
     this.localMod.entries();
     const acc = this.account();

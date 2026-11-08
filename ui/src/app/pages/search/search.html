@@ -1267,6 +1267,7 @@
                   [name]="h.name"
                   [info]="h"
                   [offerSimilar]="true"
+                  [offerMute]="true"
                   (similar)="showSimilar([$event])"
                 />
               </div>
@@ -1400,10 +1401,39 @@
         }
         @if (results(); as r) {
           @if (r.hashtags.length && !similarTags().length) {
-            <div class="page-head">{{ 'pages.search.results.hashtags' | transloco }}</div>
-            @for (h of r.hashtags; track h.name) {
-              <div class="result-tag">
-                <a [routerLink]="['/tags', h.name]">#{{ h.name }}</a>
+            <div class="page-head tag-results-head">
+              {{ 'pages.search.results.hashtags' | transloco }}
+              @if (r.hashtags.length > 1) {
+                <label class="sort-by">
+                  <span class="muted small">{{ 'pages.search.refine.sort' | transloco }}</span>
+                  <select
+                    [ngModel]="hashtagSort()"
+                    (ngModelChange)="hashtagSort.set($event)"
+                    [attr.aria-label]="'pages.search.tagSort.label' | transloco"
+                  >
+                    @for (s of hashtagSorts; track s.value) {
+                      <option [value]="s.value">{{ s.label | transloco }}</option>
+                    }
+                  </select>
+                </label>
+              }
+            </div>
+            @for (h of sortedHashtags(); track h.name) {
+              <div class="result-tag" [class.tag-inactive]="hashtagWeekUses(h) === 0">
+                <a [routerLink]="['/tags', h.name]"
+                  >#{{ h.name }}
+                  @if (missingTag() !== h.name) {
+                    @if (hashtagWeekUses(h); as uses) {
+                      <span class="muted tag-uses">{{
+                        'pages.search.results.weekUses' | transloco: { count: uses.toLocaleString() }
+                      }}</span>
+                    } @else if (hashtagWeekUses(h) === 0) {
+                      <span class="muted tag-uses">{{
+                        'pages.search.results.weekUsesNone' | transloco
+                      }}</span>
+                    }
+                  }</a
+                >
                 @if (missingTag() === h.name) {
                   <span class="muted small">{{ 'pages.search.results.noPosts' | transloco }}</span>
                 }
@@ -1411,6 +1441,7 @@
                   [name]="h.name"
                   [info]="h"
                   [offerSimilar]="true"
+                  [offerMute]="true"
                   (similar)="showSimilar([$event])"
                 />
               </div>

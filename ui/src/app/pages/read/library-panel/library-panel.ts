@@ -78,6 +78,8 @@ export class LibraryPanel {
   readonly embedded = input(false);
 
   readonly closed = output<void>();
+  /** A document was chosen from the list; the reader closes the panel so it can be read. */
+  readonly picked = output<string>();
 
   /**
    * Row positions while this panel is mounted.

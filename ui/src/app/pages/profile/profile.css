@@ -204,6 +204,30 @@
   background-position: center;
 }
 
+.banner-zoom {
+  display: block;
+  width: calc(100% + 32px);
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}
+.banner-zoom:focus-visible,
+.avatar-zoom:focus-visible {
+  outline: 2px solid var(--accent, currentColor);
+  outline-offset: 2px;
+}
+.avatar-zoom {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 9999px;
+  line-height: 0;
+  cursor: zoom-in;
+}
+.avatar-zoom:disabled {
+  cursor: default;
+}
+
 .profile-top {
   position: relative;
   display: flex;

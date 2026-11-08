@@ -22,10 +22,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { catchError, EMPTY, map, Observable, of, Subscription } from 'rxjs';
+import { catchError, EMPTY, from, map, mergeMap, Observable, of, Subscription } from 'rxjs';
+import {
+  HASHTAG_SORTS,
+  HASHTAG_STATS_CONCURRENCY,
+  HASHTAG_STATS_LIMIT,
+  HashtagSort,
+  hashtagUses,
+  sortHashtags,
+} from './hashtag-activity';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
-import { Account, Relationship, SearchResults, Status, Tag } from '../../models';
+import { Account, Hashtag, Relationship, SearchResults, Status, Tag } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 import { AccountSearchHelp } from './account-search-help/account-search-help';
 import { AnonymousCapabilities } from '../../providers/anonymous/anonymous-capabilities';
@@ -367,6 +375,12 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.results.viewAndFollow: View and follow #{{tag}}
 // i18n pages.search.results.trendingHashtags: Trending hashtags
 // i18n pages.search.results.recentUses: {{count}} recent uses
+// i18n pages.search.results.weekUses: {{count}} posts this week
+// i18n pages.search.results.weekUsesNone: No posts this week
+// i18n pages.search.tagSort.label: Sort hashtags
+// i18n pages.search.tagSort.relevance: Best match
+// i18n pages.search.tagSort.activity: Most active
+// i18n pages.search.tagSort.alpha: A–Z
 // i18n pages.search.results.chooseSearchServer: Choose a search server
 // i18n pages.search.searchSaved: Search saved.
 // i18n pages.search.enrichError: Could not load activity dates. Try again.
@@ -1098,6 +1112,14 @@ export class Search implements OnInit, OnDestroy {
   /** How many statuses were requested but capped away by the budget (anon fan-out). */
   protected tagsDropped = signal(0);
   protected missingTag = signal<string | null>(null);
+  protected readonly hashtagSorts = HASHTAG_SORTS;
+  protected readonly hashtagSort = signal<HashtagSort>('relevance');
+  /** Looked-up usage counts by lowercase name, for rows that came without history. */
+  private readonly fetchedTagUses = signal<ReadonlyMap<string, number | null>>(new Map());
+  private tagStatsSub?: Subscription;
+  protected readonly sortedHashtags = computed(() =>
+    sortHashtags(this.results()?.hashtags ?? [], this.hashtagSort(), (h) => this.hashtagWeekUses(h)),
+  );
   protected readonly mediaFilters = signal<SearchMediaType[]>([]);
   // i18n pages.search.mediaHome: No search terms: scanning your home feed for matching media. Add keywords to search indexed posts instead.
   protected readonly mediaHome = signal(false);
@@ -1913,6 +1935,47 @@ export class Search implements OnInit, OnDestroy {
       .subscribe((tags) => this.trendingTags.set(tags));
   }
 
+  /** A result row's usage over the server's window, or null while unknown. */
+  protected hashtagWeekUses(tag: Hashtag): number | null {
+    if (this.missingTag() === tag.name) return 0;
+    return hashtagUses(tag.history) ?? this.fetchedTagUses().get(tag.name.toLowerCase()) ?? null;
+  }
+
+  /**
+   * Search results usually carry usage history; some servers (and the mock)
+   * leave it empty. Look those rows up one tag at a time, a few at once, so the
+   * activity sort and "posts this week" line work. Anonymous lookups spend the
+   * search's API budget and stop when it is gone.
+   */
+  private loadHashtagStats(tags: readonly Hashtag[]): void {
+    this.tagStatsSub?.unsubscribe();
+    this.fetchedTagUses.set(new Map());
+    let missing = tags
+      .filter((t) => t.name !== this.missingTag() && hashtagUses(t.history) === null)
+      .slice(0, HASHTAG_STATS_LIMIT)
+      .map((t) => t.name);
+    const anonymous = this.capabilities.active;
+    if (anonymous) missing = missing.slice(0, Math.max(0, this.apiBudget() - this.callsUsed()));
+    if (!missing.length) return;
+    const host = anonymous ? this.searchHost() : '';
+    this.tagStatsSub = from(missing)
+      .pipe(
+        mergeMap(
+          (name) =>
+            (anonymous ? this.anonymousPublic.getTag(host, name) : this.api.getTag(name)).pipe(
+              map((tag) => [name, hashtagUses(tag.history)] as const),
+              catchError(() => of([name, null] as const)),
+            ),
+          HASHTAG_STATS_CONCURRENCY,
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(([name, uses]) => {
+        if (anonymous) this.callsUsed.update((c) => c + 1);
+        this.fetchedTagUses.update((current) => new Map(current).set(name.toLowerCase(), uses));
+      });
+  }
+
   /** Sum of a tag's recent-history `uses` for the "N recent uses" line. */
   tagUses(tag: Tag): number {
     return (tag.history ?? []).reduce((sum, h) => sum + Number(h.uses || 0), 0);
@@ -2488,6 +2551,8 @@ export class Search implements OnInit, OnDestroy {
     this.callsUsed.set(0);
     this.tagsDropped.set(0);
     this.missingTag.set(null);
+    this.tagStatsSub?.unsubscribe();
+    this.fetchedTagUses.set(new Map());
     this.nextOffset = 0;
     this.oldestId = '';
     this.executedQuery = q;
@@ -2560,6 +2625,7 @@ export class Search implements OnInit, OnDestroy {
           this.results.set(r);
         }
         this.callsUsed.update((c) => c + cost);
+        if (type === 'hashtags') this.loadHashtagStats(r.hashtags);
         this.rememberCursors(r);
         this.searching.set(false);
         this.diagnostics.info('Search', 'load:success', {

@@ -60,6 +60,7 @@ import { RadioOutlet } from '../radio-outlet';
 import { RailOutlet } from '../rail-outlet';
 import { focusedAppFor, MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
+import { AccountTabBanner } from '../account-tab-guard/account-tab-banner';
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
 // i18n shell.deployment.canary: Canary
@@ -179,6 +180,7 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    AccountTabBanner,
     MbContentState,
     MbButton,
     PlusPrice,

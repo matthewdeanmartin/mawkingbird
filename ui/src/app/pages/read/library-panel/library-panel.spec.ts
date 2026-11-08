@@ -52,6 +52,19 @@ describe('LibraryPanel', () => {
     expect(decodeURIComponent(link!.getAttribute('href')!)).toContain('/read/rss:f::g');
   });
 
+  it('reports the picked document so the reader can close the panel', () => {
+    library.open(doc('1', 'Pick me'));
+    fixture.detectChanges();
+    const picked: string[] = [];
+    fixture.componentInstance.picked.subscribe((id) => picked.push(id));
+    // Ctrl-click: RouterLink leaves it to the browser, so no navigation
+    // outlives the test, while the panel's own click handler still runs.
+    el()
+      .querySelector<HTMLAnchorElement>('.rail-feed')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true }));
+    expect(picked).toEqual(['1']);
+  });
+
   it('marks the document being read as the current one', () => {
     library.open(doc('1', 'This one'));
     library.open(doc('2', 'Not this one'));

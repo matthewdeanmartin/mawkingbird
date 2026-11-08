@@ -1,4 +1,6 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { AccountTabGuard } from './account-tab-guard/account-tab-guard';
 import { inject } from '@angular/core';
 import { Auth } from './auth';
 import { EXTERNAL_FETCH } from './providers/external-fetch';
@@ -6,6 +8,8 @@ import { SEARCH_SERVER_REQUEST, SearchServer } from './search-server';
 import { Server } from './server';
 import { mastodonConnectorServer } from './providers/mastodon/mastodon-connector';
 import { normalizeHostUrl } from './host-url';
+
+const READ_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 /** Attach the Mastodon token only to the selected instance's API. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -50,6 +54,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
   const token = auth.token();
+  // A write with this tab's token while another tab has switched accounts (or
+  // after this tab reloaded as someone else) would act as an account the reader
+  // did not see the post under. Stop it here, the one place every authenticated
+  // request passes; the shell's banner says why. Reads are never blocked.
+  if (token && !READ_METHODS.has(req.method) && !inject(AccountTabGuard).allowWrite()) {
+    return throwError(
+      () =>
+        new HttpErrorResponse({
+          url: req.url,
+          status: 0,
+          statusText: 'Account changed in another tab',
+          error: { error: 'Account changed in another tab' },
+        }),
+    );
+  }
   if (token) {
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }

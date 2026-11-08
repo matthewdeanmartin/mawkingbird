@@ -1,5 +1,6 @@
 import { TagState } from './tag-state';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, Type } from '@angular/core';
+import { NgComponentOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, firstValueFrom, of, throwError } from 'rxjs';
@@ -9,15 +10,19 @@ import { Auth } from '../auth';
 import { Tag } from '../models';
 import { TagBundles } from '../lists/tag-bundles';
 import { AnonymousTags } from '../providers/anonymous/anonymous-tags';
+import { Server } from '../server';
+import type { TagFilterDialog } from '../tag-filter-dialog/tag-filter-dialog';
 
 // i18n tagActions.failed: Couldn't update this tag. Please try again.
 // i18n tagActions.similar: Similar
 // i18n tagActions.similarTitle: Hashtags that often appear with #{{tag}}
 // i18n tagActions.add: + Add
 // i18n tagActions.addTitle: Add #{{tag}} to the hashtags compared
+// i18n tagActions.mute: Mute
+// i18n tagActions.muteTitle: Hide posts tagged #{{tag}} with a filter on your Mastodon account
 @Component({
   selector: 'app-tag-actions',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [FormsModule, NgComponentOutlet, TranslocoPipe],
   templateUrl: './tag-actions.html',
   styleUrl: './tag-actions.css',
 })
@@ -31,11 +36,43 @@ export class TagActions {
   /** Offer "+ Add": add this hashtag to a similar-hashtags comparison. */
   readonly offerAdd = input(false);
   readonly add = output<string>();
+  /**
+   * Offer "Mute": a server-side keyword filter on the signed-in Mastodon
+   * account. Never offered to Anonymous or Bluesky: browser-local mutes are
+   * Anonymous's alone, and Anonymous has no tag filter.
+   */
+  readonly offerMute = input(false);
   protected auth = inject(Auth);
   protected bundles = inject(TagBundles);
   private api = inject(Api);
   private anonymousTags = inject(AnonymousTags);
   private state = inject(TagState);
+  private server = inject(Server);
+  protected canMute = computed(
+    () => this.offerMute() && this.auth.kind() === 'mastodon' && !!this.auth.token(),
+  );
+  protected muting = signal<string[] | null>(null);
+  protected muteDialog = signal<Type<TagFilterDialog> | null>(null);
+  protected muteFailed = signal(false);
+  protected finishMute = () => this.muting.set(null);
+
+  constructor() {
+    // A dialog opened for one account must not save onto the next.
+    let identity: string | undefined;
+    effect(() => {
+      const next = `${this.auth.kind()}:${this.auth.token()}:${this.server.baseUrl()}`;
+      if (identity !== undefined && identity !== next) this.muting.set(null);
+      identity = next;
+    });
+  }
+
+  protected openMute(): void {
+    this.muteFailed.set(false);
+    this.muting.set([this.name()]);
+    void import('../tag-filter-dialog/tag-filter-dialog')
+      .then((module) => this.muteDialog.set(module.TagFilterDialog))
+      .catch(() => this.muteFailed.set(true));
+  }
   protected current = computed(() => {
     const name = this.name().toLowerCase();
     const info = this.info();

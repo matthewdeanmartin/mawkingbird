@@ -17,9 +17,13 @@
   <p role="alert">{{ 'drafts.saveFailed' | transloco }}</p>
 }
 
-@if (noNewPosts() && view() === 'feed' && !loading()) {
-  <p class="muted center small" role="status">{{ 'pages.home.noNewPosts' | transloco }}</p>
-}
+<!-- No-new-posts is shown as a check on the refresh button (no layout shift);
+     this live region carries it to screen readers. -->
+<p class="sr-only" role="status">
+  @if (noNewPosts() && view() === 'feed' && !loading()) {
+    {{ 'pages.home.noNewPosts' | transloco }}
+  }
+</p>
 
 @if (!auth.isAnonymous) {
   <app-announcements />
@@ -113,6 +117,7 @@
     [showImages]="true"
     [showReaderControls]="false"
     [showRefresh]="!live()"
+    [refreshDone]="noNewPosts() && !loading()"
     [showFeedViews]="!videoOnly"
     [showVideo]="true"
     [showMyTags]="!videoOnly"

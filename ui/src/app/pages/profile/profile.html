@@ -77,24 +77,38 @@
       </mb-dialog>
     }
     <header class="profile-header">
-      <div
-        class="header-banner"
-        [style.background-image]="a.header ? 'url(' + a.header + ')' : ''"
-      ></div>
+      @if (headerZoomable()) {
+        <button
+          type="button"
+          class="header-banner banner-zoom"
+          [style.background-image]="a.header ? 'url(' + a.header + ')' : ''"
+          [attr.aria-label]="'pages.profile.zoomHeader' | transloco"
+          (click)="openProfileImage('profile-header')"
+        ></button>
+      } @else {
+        <div
+          class="header-banner"
+          [style.background-image]="a.header ? 'url(' + a.header + ')' : ''"
+        ></div>
+      }
       <div class="profile-top">
-        <img
-          class="avatar"
-          [style.filter]="
-            relationship()?.blocking || relationship()?.muting || localBlocked() || localMuted()
-              ? 'blur(12px)'
-              : null
-          "
-          [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
-          [alt]="a.username"
-          width="80"
-          height="80"
-          loading="eager"
-        />
+        <button
+          type="button"
+          class="avatar-zoom"
+          [disabled]="imagesHidden() || !profileImages().length"
+          [attr.aria-label]="'pages.profile.zoomAvatar' | transloco"
+          (click)="openProfileImage('profile-avatar')"
+        >
+          <img
+            class="avatar"
+            [style.filter]="imagesHidden() ? 'blur(12px)' : null"
+            [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+            [alt]="a.username"
+            width="80"
+            height="80"
+            loading="eager"
+          />
+        </button>
         @if (isSelf()) {
           <div class="profile-buttons">
             <details class="account-danger-menu">
@@ -702,6 +716,13 @@
         }
       </div>
     </header>
+    @if (profileImageIndex() !== null) {
+      <app-lightbox
+        [items]="profileImages()"
+        [startIndex]="profileImageIndex()!"
+        (closed)="profileImageIndex.set(null)"
+      />
+    }
 
     @if (featured().length) {
       <section class="featured-card">

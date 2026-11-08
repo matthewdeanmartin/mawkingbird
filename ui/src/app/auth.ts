@@ -88,6 +88,16 @@ function storedKind(): AccountKind | null {
   }
 }
 
+/** FNV-1a, as eight hex digits: enough to tell accounts apart, useless as a credential. */
+function shortHash(value: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
 /** A saved login: a token plus a snapshot of the account it belongs to. */
 export interface Session {
   /** Stable local id joining this session to its token in storage. */
@@ -566,6 +576,52 @@ export class Auth {
     this.account.set(account);
     this.prefs.setDefaultVisibility(account.source?.privacy);
     return true;
+  }
+
+  /**
+   * Whether storage still names the account this tab is acting as.
+   *
+   * Every tab shares one localStorage but keeps its own copy of the identity
+   * in memory. When another tab switches accounts, storage moves and this tab
+   * does not, so the two disagree until this tab reloads. Writes from a tab in
+   * that state are stopped by `accountTabInterceptor`.
+   */
+  matchesStoredAccount(): boolean {
+    try {
+      const kind = storedKind();
+      if (kind !== this.kind()) return false;
+      if (kind === 'mastodon') return localStorage.getItem(TOKEN_KEY) === this.token();
+      if (kind === 'bluesky') return blueskyIdentityDid() === this.blueskyDid();
+      return true;
+    } catch {
+      // Unreadable storage cannot prove a switch happened.
+      return true;
+    }
+  }
+
+  /**
+   * A non-secret key for the account this tab is acting as: the kind plus a
+   * short hash of the token or the DID. It goes into sessionStorage, so it
+   * must never be the token itself.
+   */
+  identityKey(): string {
+    const kind = this.kind();
+    if (kind === 'mastodon') return `mastodon:${shortHash(this.token() ?? '')}`;
+    if (kind === 'bluesky') return `bluesky:${shortHash(this.blueskyDid() ?? '')}`;
+    return kind ?? 'none';
+  }
+
+  /** The handle of the account storage names now, for "switched to @x" copy. */
+  storedAccountHandle(): string | null {
+    try {
+      const kind = storedKind();
+      if (kind === 'anonymous') return null;
+      if (kind === 'bluesky') return blueskyIdentityAccount()?.account?.acct ?? null;
+      const token = localStorage.getItem(TOKEN_KEY);
+      return loadSessions().find((session) => session.token === token)?.account?.acct ?? null;
+    } catch {
+      return null;
+    }
   }
 
   /**

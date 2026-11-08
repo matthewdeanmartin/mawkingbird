@@ -1068,6 +1068,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'In-flight Mastodon OAuth attempt: client secret, PKCE verifier and state.',
   },
   {
+    base: 'mockingbird_tab_account',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Which account this tab last acted as (kind plus a short hash, never a token), so a tab that reloads as a different account pauses writes until the reader chooses.',
+  },
+  {
     base: 'mockingbird_app_mode',
     storage: 'session',
     suffix: 'none',

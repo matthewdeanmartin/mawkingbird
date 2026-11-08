@@ -1917,3 +1917,25 @@ projects its own rule controls, which apply to the whole list.
   "+ Add keyword" beside it.
 
 No shared widget changed.
+
+## Hashtag search, profile photo, reader library, refresh check, tab account guard, 2026-11-08
+
+Sources 1,716 to 1,719 (`pages/search/hashtag-activity.ts`,
+`account-tab-guard/account-tab-guard.ts` and `account-tab-banner.ts`);
+candidates 604 to 605, with the banner reconciled in 11-reconciliation.json.
+
+- `account-tab-banner.ts` (new): `shared` 2 and `nativeButtons` 2, which are one
+  `mbButton` per conflict reason (Reload as @x, or Continue as @x), shown in a
+  sticky `role="alert"` notice above the routed page.
+- `tag-actions.html`: `legacyPills` 6 to 7 and `nativeButtons` 6 to 7. The new
+  "Mute" button uses the same `btn btn-sm btn-outline` as Similar and + Add
+  beside it, and lazy-loads the existing tag filter `MbDialog`.
+- `search.html`: `selects` 11 to 12. The hashtag results' sort is the same
+  `.sort-by` native select as the people sort.
+- `profile.html`: `nativeButtons` 66 to 68. The avatar and header banner are
+  unstyled zoom buttons wrapping the existing image and banner. They open the
+  shared lightbox.
+
+The command bar's refresh check and the hidden one-source switcher change
+conditions and labels on existing `mbToolbarButton`s, not controls. No shared
+widget changed.

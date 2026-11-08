@@ -182,6 +182,9 @@ const ARTICLE_TARGET = 10;
 // i18n pages.home.window.lastDay: the last day
 // i18n pages.home.window.lastWeek: the last week
 // i18n pages.home.feedSource.query: your home timeline
+/** How long the refresh button shows its "nothing new" check. */
+const NO_NEW_POSTS_MS = 2500;
+
 @Component({
   selector: 'app-home',
   providers: [HomeSource],
@@ -343,6 +346,7 @@ export class Home implements OnInit, OnDestroy {
   private homeNavigationSub?: Subscription;
   // i18n pages.home.noNewPosts: No newer posts since your last refresh.
   protected noNewPosts = signal(false);
+  private noNewPostsTimer?: ReturnType<typeof setTimeout>;
   private refreshBaseline: Set<string> | null = null;
   private flags = inject(FeatureFlags);
   private pasteFeeds = inject(PasteFeedSubscriptions);
@@ -1029,6 +1033,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    clearTimeout(this.noNewPostsTimer);
     this.myTagsGeneration++;
     this.homeNavigationSub?.unsubscribe();
     this.liveSub?.unsubscribe();
@@ -1107,10 +1112,16 @@ export class Home implements OnInit, OnDestroy {
   private finishRefresh(): void {
     const baseline = this.refreshBaseline;
     if (!baseline) return;
-    this.noNewPosts.set(
-      !this.statuses().some((status) => !baseline.has(canonicalStatusKey(status))),
+    const nothingNew = !this.statuses().some(
+      (status) => !baseline.has(canonicalStatusKey(status)),
     );
+    this.noNewPosts.set(nothingNew);
     this.refreshBaseline = null;
+    // The check on the refresh button is a moment's confirmation, not a state.
+    clearTimeout(this.noNewPostsTimer);
+    if (nothingNew) {
+      this.noNewPostsTimer = setTimeout(() => this.noNewPosts.set(false), NO_NEW_POSTS_MS);
+    }
   }
 
   load(forceRefresh = false): void {

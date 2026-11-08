@@ -505,6 +505,7 @@
     }
     <main class="column" id="main" tabindex="-1" #mainColumn>
       <app-proxy-limit-notice />
+      <app-account-tab-banner />
       <router-outlet />
       @if (radioOutlet.component(); as radioDock) {
         <ng-container *ngComponentOutlet="radioDock" />

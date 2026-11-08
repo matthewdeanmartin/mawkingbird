@@ -686,3 +686,16 @@
 .result-tag > a {
   overflow-wrap: anywhere;
 }
+
+/* Hashtag results heading: the title, with the sort beside it. */
+.tag-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* A tag nobody used this week is rarely worth following or muting. */
+.result-tag.tag-inactive > a {
+  opacity: 0.7;
+}

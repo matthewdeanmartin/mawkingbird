@@ -45,6 +45,7 @@
                 [routerLink]="['/read', row.id]"
                 [replaceUrl]="!embedded()"
                 [attr.aria-current]="row.id === currentId() ? 'true' : null"
+                (click)="picked.emit(row.id)"
               >
                 <span class="names">
                   <span class="name">{{ row.title }}</span>

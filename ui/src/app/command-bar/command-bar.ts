@@ -37,12 +37,21 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
         @if (showRefresh() || showFeedViews()) {
           <mb-toolbar label="Feed actions" density="compact" embedded>
             @if (showRefresh()) {
+              <!-- After a refresh that found nothing, the arrow briefly becomes a
+                   check instead of a sentence pushing the feed down. The host
+                   page announces the result to screen readers. -->
               <button
                 mbToolbarButton
+                class="refresh-button"
+                [class.refresh-done]="refreshDone()"
                 (click)="refresh.emit()"
-                title="Reload the feed from the newest posts"
+                [title]="
+                  refreshDone()
+                    ? ('pages.home.noNewPosts' | transloco)
+                    : 'Reload the feed from the newest posts'
+                "
               >
-                🔄 More
+                {{ refreshDone() ? '✅' : '🔄' }} More
               </button>
             }
             @if (showFeedViews()) {
@@ -171,7 +180,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
       @if (providerChips() || showFilters()) {
         <div class="command-row filter-row" role="group" aria-label="Feed filters">
           <ng-content />
-          @if (providerChips() && hasSourceControls()) {
+          @if (providerChips() && showSourceSwitcher()) {
             <!-- WHAT: networks included in this feed. The label is intentionally a
              code comment rather than visible toolbar furniture. -->
             <mb-toolbar class="provider-group" label="Feed sources" density="compact" embedded>
@@ -280,13 +289,28 @@ export class CommandBar {
     this.registry.linked().some((provider) => provider.id === 'anonymous-mastodon'),
   );
 
-  protected readonly hasSourceControls = computed(
-    () =>
-      (!this.auth.isAnonymous && !this.auth.isBlueskyPrimary) ||
-      this.anonymousFedi() ||
-      this.privateFedi() ||
-      this.sourceProviders().length > 0,
-  );
+  /** Provider ids behind each Feed sources button, in the order they render. */
+  protected readonly sourceIds = computed<ProviderId[]>(() => {
+    const ids: ProviderId[] = [];
+    if ((!this.auth.isAnonymous && !this.auth.isBlueskyPrimary) || this.privateFedi()) {
+      ids.push('mastodon');
+    }
+    if (this.anonymousFedi()) ids.push('anonymous-mastodon');
+    for (const provider of this.sourceProviders()) ids.push(provider.id);
+    return ids;
+  });
+
+  /**
+   * A one-button switcher (just Fedi, say) switches nothing, and on a phone the
+   * row costs scarce height. It still shows when that one source is turned
+   * off, because that button is the only way to turn it back on.
+   */
+  protected readonly showSourceSwitcher = computed(() => {
+    const ids = this.sourceIds();
+    if (ids.length > 1) return true;
+    return ids.length === 1 && !this.prefs.isProviderVisible(ids[0]);
+  });
+
 
   /**
    * Whether to show a manual refresh button — for pages where live streaming
@@ -294,6 +318,8 @@ export class CommandBar {
    * fetch newer posts.
    */
   readonly showRefresh = input(false);
+  /** Briefly true after a refresh that brought nothing new: the arrow shows a check. */
+  readonly refreshDone = input(false);
   /** Whether this page merges foreign providers (home) — shows the filter chips. */
   readonly providerChips = input(false);
   readonly showFilters = input(false);

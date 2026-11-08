@@ -48,6 +48,16 @@
       {{ 'tagActions.add' | transloco }}
     </button>
   }
+  @if (canMute()) {
+    <button
+      type="button"
+      class="btn btn-sm btn-outline"
+      [title]="'tagActions.muteTitle' | transloco: { tag: name() }"
+      (click)="openMute()"
+    >
+      {{ 'tagActions.mute' | transloco }}
+    </button>
+  }
   @if (offerSimilar()) {
     <button
       type="button"
@@ -61,6 +71,17 @@
 </div>
 @if (error(); as error) {
   <p role="alert">{{ error === 'tagActions.failed' ? (error | transloco) : error }}</p>
+}
+@if (muting(); as tags) {
+  @if (muteDialog(); as dialog) {
+    <ng-container
+      [ngComponentOutlet]="dialog"
+      [ngComponentOutletInputs]="{ tags, finish: finishMute }"
+    />
+  }
+  @if (muteFailed()) {
+    <p role="alert">{{ 'tagFilter.failed' | transloco }}</p>
+  }
 }
 @if (picker()) {
   <div class="bundle-picker">

@@ -149,6 +149,11 @@ export class ReadPage implements OnInit, OnDestroy {
     void this.router.navigate(['/write']);
   }
 
+  /** Picking a document closes the library so the document is what you see. */
+  protected closeLibrary(): void {
+    if (this.libraryOpen()) this.prefs.setReaderLibraryOpen(false);
+  }
+
   protected toggleLibrary(): void {
     this.prefs.setReaderLibraryOpen(!this.libraryOpen());
   }
