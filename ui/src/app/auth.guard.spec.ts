@@ -38,6 +38,8 @@ describe('authGuard', () => {
     '/tags/books',
     '/radio?acct=singer%40sea.example',
     '/radio?post=https%3A%2F%2Fsea.example%2F%40singer%2F123',
+    '/watch?post=117583797572986016&server=https:%2F%2Fmstdn.social&youtube=Usr4VpMQjQ0',
+    '/watch?youtube=Usr4VpMQjQ0',
     '/about',
     '/about/',
     '/funding/',
@@ -83,6 +85,8 @@ describe('authGuard', () => {
     '/collections/starter/a/b',
     '/searches',
     '/search/saved',
+    '/watch',
+    '/watchlist',
   ])('keeps paths that only resemble project pages private: %s', (url) => {
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
     expect(result).toBeInstanceOf(UrlTree);

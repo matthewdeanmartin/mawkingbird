@@ -9,6 +9,7 @@ import { Watch } from './watch';
 import { PartyConversation } from './party-conversation';
 import { WatchPartyPrefs } from '../../providers/videos/watch-party-prefs';
 import { ThreadLoader } from '../read/thread-loader';
+import { anonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
 import { StatusCard } from '../../status-card/status-card';
 import { Status } from '../../models';
 import { Auth } from '../../auth';
@@ -249,6 +250,45 @@ describe('Watch post access and reveal gates', () => {
       'Switch to the server',
     );
     expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
+  it('lets Anonymous open a shared link to a post on another server', () => {
+    TestBed.overrideProvider(Auth, {
+      useValue: {
+        kind: signal('anonymous'),
+        token: signal(null),
+        account: signal(null),
+        isAnonymous: true,
+      },
+    });
+    params.next(
+      convertToParamMap({
+        post: '117583797572986016',
+        youtube: 'Usr4VpMQjQ0',
+        server: 'https://mstdn.social',
+      }),
+    );
+    mount();
+    expect(loader.load).toHaveBeenCalledWith(
+      anonymousStatusRouteRef({ server: 'https://mstdn.social', id: '117583797572986016' }),
+    );
+  });
+
+  it('still refuses Anonymous a non-https server for a server-local ID', () => {
+    TestBed.overrideProvider(Auth, {
+      useValue: {
+        kind: signal('anonymous'),
+        token: signal(null),
+        account: signal(null),
+        isAnonymous: true,
+      },
+    });
+    params.next(convertToParamMap({ post: '1', youtube: 'x', server: 'http://elsewhere.test' }));
+    mount();
+    expect(loader.load).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('[role=alert]').textContent).toContain(
+      'Switch to the server',
+    );
   });
 
   it('does not use a YouTube fallback to bypass an unavailable post', () => {

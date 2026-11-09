@@ -43,10 +43,16 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // pages hand their query straight to it: a front page with a sign-in question
   // in between is the distraction those pages exist to remove.
   const search = link.pathname === '/search';
+  // A shared Watch link: a public post's video, or a bare YouTube video. The
+  // page itself loads the post from the server the link names.
+  const publicWatch =
+    link.pathname === '/watch' &&
+    (link.searchParams.has('post') || link.searchParams.has('youtube'));
   if (
     publicRadio ||
     projectPage ||
     search ||
+    publicWatch ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {
     auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');

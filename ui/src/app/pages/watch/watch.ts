@@ -24,7 +24,10 @@ import { Server } from '../../server';
 import { Auth } from '../../auth';
 import { ReadingZen } from '../../reading-zen';
 import { MbButton } from '../../design-system/button/button';
-import { parseAnonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
+import {
+  anonymousStatusRouteRef,
+  parseAnonymousStatusRouteRef,
+} from '../../providers/anonymous/anonymous-route-ref';
 import { Status } from '../../models';
 import { PartyConversation } from './party-conversation';
 import { WatchPartyPrefs } from '../../providers/videos/watch-party-prefs';
@@ -154,6 +157,7 @@ export class Watch {
         return;
       }
       const suppliedServer = params.get('server');
+      let target = post;
       if (!parseAnonymousStatusRouteRef(post) && !post.includes(':')) {
         try {
           const url = new URL(suppliedServer ?? '');
@@ -162,15 +166,23 @@ export class Watch {
             url.password ||
             url.origin !== new URL(this.server.baseUrl() || location.origin).origin
           ) {
-            this.error.set('watch.wrongServer');
-            return;
+            // A shared link names its post by the sharer's server-local ID. A
+            // signed-in account cannot fetch that ID from its own server, but
+            // Anonymous reads public posts from any server, so it loads the
+            // post where it lives. This is what makes a shared /watch link work
+            // for a visitor with no account.
+            if (!this.auth.isAnonymous || url.protocol !== 'https:' || !/^\d+$/.test(post)) {
+              this.error.set('watch.wrongServer');
+              return;
+            }
+            target = anonymousStatusRouteRef({ server: url.origin, id: post });
           }
         } catch {
           this.error.set('watch.wrongServer');
           return;
         }
       }
-      this.loader.load(post);
+      this.loader.load(target);
     });
     // Account changes invalidate the original authorization and stop the player.
     let identity: string | undefined;
