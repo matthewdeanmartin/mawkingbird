@@ -98,20 +98,23 @@ const HANGUL = /\p{Script=Hangul}/u;
  * The case this exists for is everyday Misskey: a kanji-only line ("草",
  * Misskey's "lol") beside a kana line made the whole note "unsure", and the
  * reader was asked "Translate from which language?" over plainly Japanese text
- * (owner report, 2026-11-10). Deliberately narrow: a note mixing English and
- * Japanese keeps its honest "mixed" answer.
+ * (owner report, 2026-11-10). Deliberately narrow: it reads only the author's
+ * prose, and only when that prose is undecided, so a note mixing English and
+ * Japanese, or Korean prose quoting Japanese, keeps its honest "mixed" answer.
  */
 export function settleCjkByScript(
   analysis: LanguageAnalysis,
   segments: readonly LanguageSegment[],
 ): LanguageAnalysis {
-  if (analysis.language) return analysis;
+  // Only when the author's own prose is undecided: prose in one language with a
+  // quotation in another is genuinely mixed and must stay so.
+  if (analysis.language || analysis.prose.language) return analysis;
   const cjk = new Set(['ja', 'zh', 'ko']);
   if (!analysis.candidates.length || !analysis.candidates.every((c) => cjk.has(c))) {
     return analysis;
   }
   const text = segments
-    .filter((s) => s.kind === 'prose' || s.kind === 'quote')
+    .filter((s) => s.kind === 'prose')
     .map((s) => s.text)
     .join(' ');
   const language =
