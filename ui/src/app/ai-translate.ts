@@ -21,6 +21,8 @@ export interface AiTranslation {
   model: string;
   /** The language we asked for, as a display name. */
   target: string;
+  /** What the call cost in US dollars, when OpenRouter said (only from translateTextWithCost). */
+  costUsd?: number | null;
 }
 
 /** Language names for the codes the app already offers, plus the common rest. */
@@ -115,5 +117,27 @@ export class AiTranslate {
       source,
     });
     return { text: translated, model: this.model.modelId(), target };
+  }
+
+  /**
+   * {@link translateText}, with what the call cost: for the daily dollar budget
+   * (T2). Separate so callers that do not budget keep the plain path.
+   */
+  async translateTextWithCost(text: string, targetCode?: string): Promise<AiTranslation> {
+    const source = text.trim();
+    if (!source) {
+      throw new Error('There is nothing to translate.');
+    }
+    const target = languageName(targetCode || this.targetLanguage());
+    const translated = await this.chat.completeWithCost({
+      prompt: this.prompts.render('translate', { text: source, target }),
+      source,
+    });
+    return {
+      text: translated.text,
+      model: this.model.modelId(),
+      target,
+      costUsd: translated.costUsd,
+    };
   }
 }

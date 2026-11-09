@@ -531,3 +531,43 @@ defaults to production (since the T1 login fixes).
   (confirmed), "Follows you"; notifications Approve / Deny for follow requests.
 - Not done: creating polls, Misskey drafts, report UI, renote state for
   renotes made before this visit (the API does not expose it).
+
+---
+
+## T2 progress (2026-11-10): code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-t2-ai-translation.md`.
+
+### T1 fixes from the owner's report (same day)
+
+- **"Translate from which language?" over plainly Japanese notes.** The
+  detector left a kanji-only line (草) beside kana lines undecided. New
+  `settleCjkByScript` (status-language.ts): when every candidate is CJK, kana
+  means Japanese and Hangul means Korean. Mixed English/Japanese stays mixed.
+  And a Misskey note still undecided with Japanese among the candidates is
+  translated from Japanese instead of asking (Change still picks).
+- **Wordless posts:** `hasTranslatableText` (no letters after removing URLs,
+  mentions, hashtags and `:emoji:`) hides 🌐 and skips automatic mode; the
+  router refuses them before any engine.
+- **Translate on scroll did nothing on misskey.design:** no server
+  translator, no free engine on, and AI excluded from automatic mode. T2
+  below makes AI the automatic engine (under a cap) when OpenRouter is
+  connected; the Home notice and the Home offer both turn it on.
+
+### As built
+
+- `AiBudget` (`translation/ai-budget.ts`): daily dollar cap, default $0.25,
+  from OpenRouter's reported cost per call (`usage: { include: true }`,
+  `OpenRouterChat.completeWithCost`). Over the cap the AI step refuses and
+  `AiBudgetPrompt` (in the shell) asks once a day: **Raise today** (one more
+  cap, today only) or **Not today**. Settings → Languages shows today's spend
+  and edits the standing cap.
+- `AiBatchTranslator`: automatic translations within 500 ms (or 10 posts /
+  6,000 characters) go in one request asking for a JSON array; the cost is
+  shared across the batch. Pressed translations stay single
+  (`AiTranslate.translateTextWithCost`). The prompt explains Japanese net
+  slang (草, ｗ, 〜ンゴ) and keeps 🖼/☐ lines.
+- Call-count limits for OpenRouter unchanged (25/100, below Mastodon's by
+  design); a batch counts as one call, so 100 calls ≈ 1,000 posts.
+- Automatic mode starts a screen ahead of the viewport (rootMargin 600 px).
+- Not done: "retranslate with a better model" (second tier).

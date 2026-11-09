@@ -82,6 +82,35 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders Ukrainian Culture with approved accounts and no hashtags', async () => {
+    const el = await render(at('uk/kultura-ta-zakhoplennia-na-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('uk');
+    expect(el.querySelector('h1')?.textContent).toContain('Культура та захоплення');
+    expect(el.querySelectorAll('.people li')).toHaveLength(10);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(0);
+    expect(el.textContent).toContain('лише акаунти');
+    expect(el.textContent).toContain('30 місяців');
+    expect(el.textContent).toContain('Увійти через Mastodon');
+    expect(el.querySelector('a[href="/uk/spilnoty-mastodon"]')).not.toBeNull();
+  });
+
+  it('renders Ukrainian Technology with native controls and quiet-tag guidance', async () => {
+    const el = await render(at('uk/tekhnolohii-na-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('uk');
+    expect(el.querySelector('h1')?.textContent).toContain('Технології українською');
+    expect(el.querySelectorAll('.people li')).toHaveLength(13);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(3);
+    expect(el.textContent).toContain('#Програмування');
+    expect(el.textContent).toContain('30 місяців');
+    expect(el.textContent).toContain('Увійти через Mastodon');
+    expect(el.textContent).toContain('twiukraine.com');
+    expect(el.querySelector('a[href="/uk/spilnoty-mastodon"]')).not.toBeNull();
+  });
+
   it('renders Dutch Politics with approved accounts and open-tag limitations', async () => {
     const el = await render(at('nl/nederlandse-politiek-op-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('nl');
@@ -568,6 +597,7 @@ describe('Feed Builder hub and routes', () => {
     ).toContain('Melayu');
     expect(el.querySelector('select option[value="vi"]')?.textContent).toContain('Tiếng Việt');
     expect(el.querySelector('select option[value="nl"]')?.textContent).toContain('Nederlands');
+    expect(el.querySelector('select option[value="uk"]')?.textContent).toContain('Українська');
     expect(el.querySelector('a[href="/nl/nederlandstalige-cultuur-op-mastodon"]')).not.toBeNull();
     expect(el.querySelector('a[href="/nl/nederlandse-politiek-op-mastodon"]')).not.toBeNull();
     expect(el.querySelector('a[href="/vi/cong-dong-viet-tren-mastodon"]')).not.toBeNull();
@@ -579,7 +609,7 @@ describe('Feed Builder hub and routes', () => {
     (el.querySelector('.hub-side nav a:nth-child(2)') as HTMLAnchorElement).click();
     fixture.detectChanges();
     expect(el.querySelector('.hub-category-heading')?.textContent).toContain('Tech');
-    expect(el.querySelectorAll('.hub-content .hub-topic').length).toBe(2);
+    expect(el.querySelectorAll('.hub-content .hub-topic').length).toBe(3);
     expect(el.querySelector('.hub-content .hub-topic p')?.textContent?.trim()).not.toBe('');
   });
 

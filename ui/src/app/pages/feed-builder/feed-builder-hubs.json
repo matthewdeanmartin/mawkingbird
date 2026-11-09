@@ -34,5 +34,9 @@
   "nl": {
     "path": "nl/mastodon-gemeenschappen",
     "label": "Mastodon-gemeenschappen per interesse"
+  },
+  "uk": {
+    "path": "uk/spilnoty-mastodon",
+    "label": "Спільноти Mastodon за інтересами"
   }
 }

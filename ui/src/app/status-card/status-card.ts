@@ -104,6 +104,7 @@ import {
   SkipReason,
   ChainTranslation,
   TranslationRouter,
+  hasTranslatableText,
 } from '../translation/translation-router';
 import { languageDisplayName } from '../translation/language-codes';
 import { POSTING_LANGUAGE_OPTIONS } from '../language-detect';
@@ -2572,8 +2573,9 @@ export class StatusCard {
   /** Whether the 🌐 button has any engine behind it. */
   protected showChainTranslate = computed(
     () =>
-      this.serverPathAvailable ||
-      this.translationRouter.hasFallback(this.openrouterConnected(), this.display),
+      hasTranslatableText(this.display.reblog ?? this.display) &&
+      (this.serverPathAvailable ||
+        this.translationRouter.hasFallback(this.openrouterConnected(), this.display)),
   );
 
   private async runChain(
@@ -2935,9 +2937,10 @@ export class StatusCard {
           void this.autoTranslate();
         }
       },
-      // A little over half the card visible: enough that it is genuinely being read,
-      // rather than clipping the viewport edge during a fast scroll.
-      { threshold: 0.6 },
+      // Ahead of the reader (T2): start when the card is within about a screen
+      // below the viewport, so the translation is usually there on arrival.
+      // Batched AI makes this cheap: posts arriving together share one call.
+      { rootMargin: '0px 0px 600px 0px', threshold: 0 },
     );
     this.observer.observe(this.host.nativeElement);
   }
@@ -2967,6 +2970,10 @@ export class StatusCard {
       return;
     }
     if (!this.eligibility.shouldTranslate(this.display)) {
+      return;
+    }
+    // Only emoji, links or mentions: nothing for an engine to do.
+    if (!hasTranslatableText(this.display.reblog ?? this.display)) {
       return;
     }
     // Silent here, unlike the manual path: nobody asked, so there is nothing to explain.

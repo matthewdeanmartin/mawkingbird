@@ -26,6 +26,23 @@ export interface HubCopy {
 }
 
 export const HUB_COPY: Partial<Record<PageLanguage, HubCopy>> = {
+  uk: {
+    title: 'Спільноти Mastodon за інтересами',
+    description:
+      'Знайди україномовних авторів і теми на Mastodon. Переглянь публічні дописи та обери, на кого й на що підписатися.',
+    eyebrow: 'Спільноти',
+    openApp: 'Відкрити Mawkingbird',
+    heading: 'Спільноти Mastodon за інтересами',
+    intro: [
+      'Знайди людей і теми на Mastodon, які тобі цікаві. Публічні дописи можна читати без реєстрації.',
+      'Кожна добірка об’єднує акаунти й хештеги за темою. Обирай, що додати до своєї стрічки.',
+    ],
+    moreHeading: 'Більше можливостей',
+    allLanguages: 'Усі теми й мови (англійською)',
+    tools: 'Безкоштовні інструменти для Mastodon і Bluesky (англійською)',
+    help: 'Допомога (англійською)',
+    features: 'Про Mawkingbird (англійською)',
+  },
   nl: {
     title: 'Mastodon-gemeenschappen per interesse',
     description:

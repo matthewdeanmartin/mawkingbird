@@ -245,7 +245,17 @@
       [title]="'pages.home.misskey.noEngine.title' | transloco"
     >
       <p>{{ 'pages.home.misskey.noEngine.body' | transloco: { server: misskeyHost() } }}</p>
-      <button mbButton type="button" (click)="turnOnMyMemory()">
+      @if (canOfferAutoAi()) {
+        <button mbButton type="button" (click)="useAiForAutomatic()">
+          {{ 'pages.home.misskey.noEngine.useAi' | transloco: { cap: aiCapLabel() } }}
+        </button>
+      }
+      <button
+        mbButton
+        [variant]="canOfferAutoAi() ? 'outline' : 'solid'"
+        type="button"
+        (click)="turnOnMyMemory()"
+      >
         {{ 'pages.home.misskey.noEngine.myMemory' | transloco }}
       </button>
       <a routerLink="/settings/connections">{{

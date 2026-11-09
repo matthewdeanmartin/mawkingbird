@@ -153,14 +153,33 @@ describe('TranslationRouter with Misskey notes', () => {
     });
   });
 
-  it('still asks the reader when the server cannot help with an undetermined note', async () => {
+  // Changed 2026-11-10 (owner): asking 'which language?' over Misskey notes
+  // wasted the reader's time. Undecided with Japanese among the candidates
+  // now means Japanese; Change under the result still lets them pick.
+  it('assumes Japanese for an undetermined Misskey note when the server cannot help', async () => {
     detected = { language: null, candidates: ['ja', 'zh'] };
+    TestBed.inject(TranslationConnectors).setMyMemoryEnabled(true);
+    const my = vi
+      .spyOn(TestBed.inject(FreeTranslators), 'myMemory')
+      .mockResolvedValue('Fine weather');
     const pending = router.translate(request({ status: note({ content: '<p>天気晴朗</p>' }) }));
     (await vi.waitFor(() => http.expectOne(TRANSLATE))).flush(
       { error: { code: 'UNAVAILABLE' } },
       { status: 400, statusText: 'Bad Request' },
     );
-    await expect(pending).resolves.toMatchObject({ kind: 'ask', candidates: ['ja', 'zh'] });
+    await expect(pending).resolves.toMatchObject({
+      kind: 'text',
+      engine: 'mymemory',
+      source: 'ja',
+    });
+    expect(my).toHaveBeenCalledWith(expect.any(String), 'ja', 'en', '');
+  });
+
+  it('still asks when Japanese is not among the candidates', async () => {
+    detected = { language: null, candidates: ['zh', 'ko'] };
+    vi.mocked(router.misskeyServerTranslates).mockResolvedValue(false);
+    const outcome = await router.translate(request({ status: note({ content: '<p>天氣</p>' }) }));
+    expect(outcome).toMatchObject({ kind: 'ask' });
   });
 
   it('does not pay twice for the same note seen again (a renote)', async () => {

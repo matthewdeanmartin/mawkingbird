@@ -55,6 +55,8 @@ type Loader = () => Promise<{ default: unknown }>;
  */
 export const DATA_LOADERS: Record<string, Loader> = {
   'dutch-politics.nl': () => import('./data/dutch-politics.nl.json'),
+  'ukrainian-culture.uk': () => import('./data/ukrainian-culture.uk.json'),
+  'ukrainian-technology.uk': () => import('./data/ukrainian-technology.uk.json'),
   'dutch-culture.nl': () => import('./data/dutch-culture.nl.json'),
   'vietnam.vi': () => import('./data/vietnam.vi.json'),
   'malaysia.ms': () => import('./data/malaysia.ms.json'),

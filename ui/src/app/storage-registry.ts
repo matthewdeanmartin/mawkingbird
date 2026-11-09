@@ -394,6 +394,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'One in-flight MiAuth sign-in: session id, server, whether adding an account. Tab-lived and consumed by the callback; the session id becomes a token once.',
   },
   {
+    base: 'mockingbird_ai_translation_budget',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Daily dollar cap for AI (OpenRouter) translation, and the amount spent today as reported by OpenRouter per call. Browser-wide, like the OpenRouter key and the other translation budgets. The spend is a number, not content.',
+  },
+  {
     base: 'mockingbird_misskey_translate_offer',
     storage: 'local',
     suffix: 'account',

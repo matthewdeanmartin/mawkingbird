@@ -6,6 +6,7 @@ import { MbControl, MbField } from '../design-system/field/field';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PlusPrice } from '../providers/account/plus-price';
 import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
+import { AiBudgetPrompt } from '../translation/ai-budget-prompt';
 import { ProxyLimitNotice } from '../providers/cors-proxy/proxy-limit-notice';
 import {
   Component,
@@ -186,6 +187,7 @@ function isWideUrl(url: string): boolean {
     MbButton,
     PlusPrice,
     PlusPaywallDialog,
+    AiBudgetPrompt,
     ProxyLimitNotice,
     RouterOutlet,
     RouterLink,

@@ -16,6 +16,10 @@ import { TranslationConnectors } from './translation-connectors';
 import { Auth } from '../auth';
 import { MisskeyApi, MisskeyApiError } from '../providers/misskey/misskey-api';
 import { TranslationCache, translationCacheKey } from './translation-cache';
+import { AiBudget } from './ai-budget';
+import { AiAvailability } from '../ai-availability';
+import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
+import { AiBatchTranslator } from './ai-batch';
 
 /** Why an engine was passed over. Shown to the reader when every engine fails. */
 export type SkipReason =
@@ -92,6 +96,15 @@ export class TranslationRouter {
   private auth = inject(Auth);
   private misskey = inject(MisskeyApi);
   private cache = inject(TranslationCache);
+  private aiBudget = inject(AiBudget);
+  private batch = inject(AiBatchTranslator);
+  private aiAvailability = inject(AiAvailability);
+  private openrouter = inject(OpenRouterSession);
+
+  /** OpenRouter connected and AI features on: the reader can pay for AI translation. */
+  aiConnected(): boolean {
+    return this.aiAvailability.enabled() && this.openrouter.connected();
+  }
   /** Misskey servers that said they cannot translate (no DeepL key, or role policy). */
   private readonly misskeyUnavailable = new Set<string>();
   /** Per server: does its `meta` say a translator is configured? Asked once. */
@@ -121,6 +134,10 @@ export class TranslationRouter {
    * be told rather than left to wonder.
    */
   async automaticEngineAvailable(source: string, misskeyServer: string | null): Promise<boolean> {
+    // AI, when the reader allowed it for automatic mode and today's budget has room.
+    if (this.aiConnected() && this.prefs.autoTranslateUsesAi() && this.aiBudget.canSpend()) {
+      return true;
+    }
     if (misskeyServer && !this.misskeyUnavailable.has(misskeyServer)) {
       if (await this.misskeyServerTranslates(misskeyServer)) return true;
     }
@@ -161,6 +178,11 @@ export class TranslationRouter {
   async translate(request: RouteRequest): Promise<RouteOutcome> {
     const status = request.status.reblog ?? request.status;
     const target = bareLanguage(request.target || this.ai.targetLanguage());
+    // Nothing to translate (only emoji, links, mentions or tags): no engine is
+    // asked, so no call is spent. The card hides its button for these too.
+    if (!hasTranslatableText(status)) {
+      return { kind: 'failed', attempts: [], source: '', target };
+    }
     let source: string;
     let fromTag: boolean;
     const declared = bareLanguage(status.language);
@@ -190,9 +212,23 @@ export class TranslationRouter {
           const outcome = await this.misskeyOnly(request, status, target);
           if (outcome) return outcome;
         }
-        return request.mode === 'manual'
-          ? { kind: 'ask', candidates: decision.candidates, target }
-          : { kind: 'failed', attempts: [], source: '', target };
+        // Still undecided on a Misskey note, with Japanese among the
+        // candidates (usually a short kanji-only line): Misskey is
+        // overwhelmingly Japanese, so translating from Japanese beats asking
+        // the reader every time (owner report, 2026-11-10). "Change" under the
+        // result still lets them pick.
+        if (
+          status.provider === 'misskey' &&
+          decision.candidates.includes('ja') &&
+          target !== 'ja'
+        ) {
+          source = 'ja';
+          fromTag = false;
+        } else {
+          return request.mode === 'manual'
+            ? { kind: 'ask', candidates: decision.candidates, target }
+            : { kind: 'failed', attempts: [], source: '', target };
+        }
       } else {
         source = decision.source;
         fromTag = decision.fromTag;
@@ -324,9 +360,21 @@ export class TranslationRouter {
         if (!request.aiAvailable) return 'off';
         if (auto && !this.prefs.autoTranslateUsesAi()) return 'auto-excluded';
         if (!this.usage.canSpend('openrouter')) return 'budget';
-        this.usage.record('openrouter');
+        // The dollar cap (default $0.25 a day) is the real limit; reaching it
+        // offers, once a day, to raise it rather than stopping silently.
+        if (!this.aiBudget.canSpend()) {
+          this.aiBudget.refused();
+          return 'budget';
+        }
         try {
-          const result = await this.ai.translateText(text, target);
+          // Scrolling sends posts in batches (one call per screenful), which
+          // count as one call each in the usage limits; a pressed button is
+          // answered alone, since the reader is waiting.
+          if (!auto) this.usage.record('openrouter');
+          const result = auto
+            ? await this.batch.translate(text, target)
+            : await this.ai.translateTextWithCost(text, target);
+          this.aiBudget.record(result.costUsd ?? null);
           return { kind: 'text', text: result.text, engine, source, target };
         } catch {
           return 'failed';
@@ -444,3 +492,21 @@ export const CHAIN_ENGINE_NAMES: Record<TranslationEngine, string> = {
   apertium: 'Apertium',
   openrouter: 'AI (OpenRouter)',
 };
+
+/**
+ * Whether a post has words worth translating.
+ *
+ * Misskey notes are often only emoji, custom emoji (`:blobcat:`), a link or a
+ * mention. Sending those to a translator spends a call (or money) to get the
+ * same thing back. Counts letters left after removing URLs, mentions,
+ * hashtags and custom-emoji shortcodes; one letter is enough, since a single
+ * kanji (草, "lol") is a word.
+ */
+export function hasTranslatableText(status: Status): boolean {
+  const text = plainText(status)
+    .replace(/https?:\/\/\S+/g, ' ')
+    .replace(/(^|\s)@[\w.-]+(@[\w.-]+)?/g, ' ')
+    .replace(/(^|\s)#[^\s#]+/gu, ' ')
+    .replace(/:[a-z0-9_+-]+:/gi, ' ');
+  return /\p{L}/u.test(text);
+}

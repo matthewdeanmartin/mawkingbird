@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "topic": "ukrainian-technology",
+  "lang": "uk",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T23:11:07+00:00",
+  "tags": [
+    {
+      "name": "Програмування",
+      "lang": "uk",
+      "kind": "tag"
+    },
+    {
+      "name": "Кібербезпека",
+      "lang": "uk",
+      "kind": "tag"
+    },
+    {
+      "name": "Самохостинг",
+      "lang": "uk",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "rootnationua@mastodon.social",
+      "id": "109341817543357799",
+      "url": "https://mastodon.social/@RootNationUA",
+      "displayName": "RootNationUA",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/341/817/543/357/799/original/7bae9881cfee7dc4.jpg",
+      "bio": "Root Nation українською",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "tokar_ua@social.kyiv.dcomm.net.ua",
+      "id": "109421701830055003",
+      "url": "https://social.kyiv.dcomm.net.ua/@tokar_ua",
+      "displayName": "Tokar.ua",
+      "avatar": "https://social.kyiv.dcomm.net.ua/system/accounts/avatars/109/421/701/830/055/003/original/6018b3cb1987660e.jpg",
+      "bio": "Незалежне ЗМІ про штучний інтелект, винаходи, кібербезпеку English version: @ enTokarMedia",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-625"],
+      "elsewhere": ["youtube"]
+    },
+    {
+      "acct": "olexande@twiukraine.com",
+      "id": "112416599763141256",
+      "url": "https://twiukraine.com/@olexande",
+      "displayName": "olexande🇺🇦",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/112/416/599/763/141/256/original/f4297e73c984b717.jpg",
+      "bio": "",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "gamerua@masto.ink",
+      "id": "116333523419845652",
+      "url": "https://masto.ink/@gamerua",
+      "displayName": "Владислав",
+      "avatar": "https://media.masto.ink/accounts/avatars/116/333/523/419/845/652/original/d970452b246a91ce.png",
+      "bio": "Викладаю, Веду Youtube канал про Linux та ігри, винаходу, рухаю науку.",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["youtube"]
+    },
+    {
+      "acct": "noleron@social.noleron.com",
+      "id": "110821635065489303",
+      "url": "https://social.noleron.com/@noleron",
+      "displayName": "Project Noleron",
+      "avatar": "https://media.noleron.com/accounts/avatars/110/821/635/065/489/303/original/d0b9ee81b0e610d4.png",
+      "bio": "Project Noleron - новини про сервіси, їх стан, майбутні сервіси. aspe:keys.noleron.com:SA6B2L6W37JVVWAO2SEMBLDL2A",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "5ht@twiukraine.com",
+      "id": "2614",
+      "url": "https://twiukraine.com/@5HT",
+      "displayName": "རྣམ་དག་སྟོན་པ",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/000/002/614/original/9db236197af1b6ab.jpg",
+      "bio": "«Аксіосис»: видавництво одного автора — https:// axiosis.top .",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "phrippy@social.kyiv.dcomm.net.ua",
+      "id": "109591915448329686",
+      "url": "https://social.kyiv.dcomm.net.ua/@phrippy",
+      "displayName": "Сірожа",
+      "avatar": "https://social.kyiv.dcomm.net.ua/system/accounts/avatars/109/591/915/448/329/686/original/5f52e957a70f4ec6.png",
+      "bio": "Rus - ні, peace - да. Розмовляю на Ukrainian and Esperanto. Можу зібрати кубик Рубика, писати на Ruby, рубати дрова або москалів. ArchLinux one love",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ananas_ua@social.kyiv.dcomm.net.ua",
+      "id": "114652401578839404",
+      "url": "https://social.kyiv.dcomm.net.ua/@ananas_ua",
+      "displayName": "Ігор Василів",
+      "avatar": "https://social.kyiv.dcomm.net.ua/system/accounts/avatars/114/652/401/578/839/404/original/c3e47b511b77275e.jpg",
+      "bio": "Інженер філософії завжди початкового рівня",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "maxhasegawa@twiukraine.com",
+      "id": "113939859095516678",
+      "url": "https://twiukraine.com/@maxhasegawa",
+      "displayName": "Max",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/113/939/859/095/516/678/original/2aaa86d778e45c24.webp",
+      "bio": "# Linux # AI # Coding # Programming # UA",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "yrskrs@twiukraine.com",
+      "id": "113871483215454317",
+      "url": "https://twiukraine.com/@yrskrs",
+      "displayName": "Юрій",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/113/871/483/215/454/317/original/278c43c532ed15fe.jpeg",
+      "bio": "Вчителюю, але тут для того, щоб бути розслабленим.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "polymer505@social.noleron.com",
+      "id": "116334638336157879",
+      "url": "https://social.noleron.com/@polymer505",
+      "displayName": "Polymer505",
+      "avatar": "https://media.noleron.com/accounts/avatars/116/334/638/336/157/879/original/df325345237bc29e.jpeg",
+      "bio": "Цікавлюсь технологіями, компьютерами, Linux та відкритим софтом. Використовую # ArchLinux з KDE Plasma Постити можу рідко # UAverse # Україна # Linux # Технології # OpenSource",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "usan@twiukraine.com",
+      "id": "116334558674345052",
+      "url": "https://twiukraine.com/@USan",
+      "displayName": "USan",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/116/334/558/674/345/052/original/8f2b93d4fad4bd29.jpg",
+      "bio": "Україна, Linux, Drupal, Електроніка",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "thelazarchuk@mastodon.social",
+      "id": "116690152767617397",
+      "url": "https://mastodon.social/@thelazarchuk",
+      "displayName": "Fedir Lazarchuk",
+      "avatar": "https://files.mastodon.social/accounts/avatars/116/690/152/767/617/397/original/f09e0d94f45b09c6.png",
+      "bio": "🌍 🇺🇦 Україна | Ukraine 📍 Львів | Lviv ☀️ Life · 🌲 Nature · 💻 Tech · 📱 Digital",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "twiukraine.com"
+    },
+    {
+      "domain": "social.noleron.com"
+    },
+    {
+      "domain": "masto.ink"
+    }
+  ]
+}

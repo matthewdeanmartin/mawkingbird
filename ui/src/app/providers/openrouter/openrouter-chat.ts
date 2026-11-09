@@ -56,10 +56,25 @@ export interface CompleteOptions {
   /** The source text, so the guard can sanity-check the reply's length. */
   source?: string;
   maxTokens?: number;
+  /**
+   * Return the model's text as-is, skipping the single-post guard (which
+   * checks the reply against one source text). For structured replies such as
+   * a batch of translations, which the caller parses and checks itself.
+   */
+  raw?: boolean;
 }
 
 interface ChatResponse {
   choices?: { message?: { content?: unknown } }[];
+  /** With `usage: { include: true }`: what the call cost, in credits (US dollars). */
+  usage?: { cost?: unknown };
+}
+
+/** A completion and what it cost, when OpenRouter said. */
+export interface CostedCompletion {
+  text: string;
+  /** US dollars; null when the reply carried no cost. */
+  costUsd: number | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -109,6 +124,15 @@ export class OpenRouterChat {
    * content uses.
    */
   async complete(options: CompleteOptions): Promise<string> {
+    return (await this.completeWithCost(options)).text;
+  }
+
+  /**
+   * {@link complete}, plus the call's cost. Asks OpenRouter for usage
+   * accounting (`usage: { include: true }`), so a dollar budget can count real
+   * spend rather than guess from token counts and a price table.
+   */
+  async completeWithCost(options: CompleteOptions): Promise<CostedCompletion> {
     const key = this.session.apiKey();
     if (!key) {
       throw new Error('Connect OpenRouter first.');
@@ -123,6 +147,7 @@ export class OpenRouterChat {
           model: this.choice.modelId(),
           max_tokens: options.maxTokens ?? MAX_COMPLETION_TOKENS,
           messages: [{ role: 'user', content: options.prompt }],
+          usage: { include: true },
         }),
       });
     } catch {
@@ -133,8 +158,16 @@ export class OpenRouterChat {
       throw new Error(await this.describeFailure(response));
     }
 
-    const content = ((await response.json()) as ChatResponse).choices?.[0]?.message?.content;
-    return cleanTextCompletion(content, { source: options.source });
+    const json = (await response.json()) as ChatResponse;
+    const cost = json.usage?.cost;
+    return {
+      text: options.raw
+        ? typeof json.choices?.[0]?.message?.content === 'string'
+          ? (json.choices[0].message.content as string)
+          : ''
+        : cleanTextCompletion(json.choices?.[0]?.message?.content, { source: options.source }),
+      costUsd: typeof cost === 'number' && Number.isFinite(cost) ? cost : null,
+    };
   }
 
   private async attempt(

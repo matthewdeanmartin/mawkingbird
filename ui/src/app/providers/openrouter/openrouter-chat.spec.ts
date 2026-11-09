@@ -131,4 +131,25 @@ describe('OpenRouterChat', () => {
     await expect(TestBed.inject(OpenRouterChat).suggest(ask)).rejects.toThrow(/Connect OpenRouter/);
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('asks for usage accounting and returns the call cost (T2 dollar budget)', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () =>
+        Promise.resolve({
+          choices: [{ message: { content: 'Good morning' } }],
+          usage: { cost: 0.00042 },
+        }),
+    } as Response);
+    const result = await chat().completeWithCost({ prompt: 'Translate', source: 'おはよう' });
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(init.body as string).usage).toEqual({ include: true });
+    expect(result).toEqual({ text: 'Good morning', costUsd: 0.00042 });
+  });
+
+  it('reports a null cost when the reply has none', async () => {
+    fetchMock.mockResolvedValue(reply('Good morning'));
+    expect((await chat().completeWithCost({ prompt: 'p', source: 'おはよう' })).costUsd).toBeNull();
+  });
 });

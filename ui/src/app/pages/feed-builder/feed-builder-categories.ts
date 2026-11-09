@@ -36,6 +36,8 @@ export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
   'mystery-and-crime': 'culture',
   'romance-books': 'culture',
   'dutch-politics': 'society',
+  'ukrainian-culture': 'culture',
+  'ukrainian-technology': 'tech',
   'dutch-culture': 'culture',
   vietnam: 'international-regions',
   malaysia: 'international-regions',
@@ -107,6 +109,27 @@ const EN: HubNavWords = {
 
 export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   en: EN,
+  uk: {
+    categories: {
+      'international-regions': 'Регіони світу',
+      tech: 'Технології',
+      science: 'Наука',
+      society: 'Суспільство',
+      culture: 'Мистецтво й культура',
+      music: 'Музика',
+      'games-and-sport': 'Ігри та спорт',
+      nature: 'Природа й тварини',
+      'home-and-garden': 'Дім і сад',
+      'food-and-drink': 'Їжа й напої',
+    },
+    allTopics: 'Усі теми',
+    railLabel: 'Категорії',
+    openRail: 'Категорії',
+    closeRail: 'Закрити категорії',
+    language: 'Мова',
+    everyLanguage: 'Усі мови',
+    inEnglish: 'англійською',
+  },
   nl: {
     categories: {
       'international-regions': 'Regio’s wereldwijd',

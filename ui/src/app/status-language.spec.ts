@@ -149,3 +149,28 @@ describe('reader language assessment', () => {
     expect(eligibility.skipReason(status(DUTCH))).toBeNull();
   });
 });
+
+/**
+ * Misskey notes (2026-11-10): Japanese text with kana must be *confidently*
+ * Japanese. The owner was asked "Translate from which language?" over notes
+ * full of Japanese, which wastes the reader's time: kana settle it.
+ */
+describe('Japanese Misskey notes', () => {
+  const samples = [
+    '<p>今日はいい天気ですね。散歩に行ってきます！</p>',
+    '<p>新しい絵を描きました🎨 見てください</p>',
+    '<p>おはようございます☀️</p>',
+    '<p>ねむい</p>',
+    '<p>これ好き <a href="https://misskey.design/search?q=%23art">#art</a></p>',
+    '<p>@<a href="https://misskey.design/@ai">ai</a> ありがとう！</p>',
+    '<p>草</p><p>ほんとそれ</p>',
+  ];
+  for (const html of samples) {
+    it(`is confidently Japanese: ${html}`, () => {
+      const result = analyzeStatusLanguage(html);
+      expect({ language: result.language, candidates: result.candidates }).toMatchObject({
+        language: 'ja',
+      });
+    });
+  }
+});

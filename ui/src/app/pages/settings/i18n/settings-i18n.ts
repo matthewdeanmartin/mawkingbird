@@ -13,6 +13,8 @@ import {
   TranslationEngine,
   TranslationUsage,
 } from '../../../translation-usage';
+import { AiBudget, formatUsd } from '../../../translation/ai-budget';
+import { MbControl, MbField } from '../../../design-system/field/field';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { OpenRouterSession } from '../../../providers/openrouter/openrouter-session';
@@ -106,6 +108,10 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.engines.on: On
 // i18n settings.i18n.engines.off: Off
 // i18n settings.i18n.engines.noServer: Not available without a signed-in Mastodon account
+// i18n settings.i18n.aiDollars: AI translation (OpenRouter), in dollars
+// i18n settings.i18n.aiDollars.today: Spent today: {{spent}} of {{limit}}
+// i18n settings.i18n.aiDollars.cap: Daily limit (US dollars)
+// i18n settings.i18n.aiDollars.hint: Read from what OpenRouter reports each translation cost. When the limit is reached, AI translation pauses and you are asked once whether to raise it for the day; free translators keep working.
 // i18n settings.i18n.engines.misskeyServer: For Misskey posts: your Misskey server, if its admin set up translation.
 // i18n settings.i18n.engines.misskeyNotSignedIn: Only when you are signed in with Misskey.
 // i18n settings.i18n.engines.serverUnknown: Your server does not say which languages it translates; it is asked anyway
@@ -133,7 +139,7 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.inferred.notSet: not set
 @Component({
   selector: 'app-settings-i18n',
-  imports: [FormsModule, TranslocoPipe, LocalePicker, RouterLink],
+  imports: [FormsModule, TranslocoPipe, LocalePicker, RouterLink, MbField, MbControl],
   templateUrl: './settings-i18n.html',
 })
 export class SettingsI18n implements OnInit {
@@ -238,6 +244,9 @@ export class SettingsI18n implements OnInit {
   // --- translation budgets (i18n sprint 1) ---
 
   protected readonly usage = inject(TranslationUsage);
+  protected readonly aiBudget = inject(AiBudget);
+  protected readonly aiSpent = computed(() => formatUsd(this.aiBudget.spentTodayUsd()));
+  protected readonly aiLimitToday = computed(() => formatUsd(this.aiBudget.limitTodayUsd()));
   /** The browser's translator runs on this device: there is no budget worth setting. */
   protected readonly engines = TRANSLATION_ENGINES.filter((engine) => engine !== 'browser');
 

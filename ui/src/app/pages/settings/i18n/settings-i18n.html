@@ -294,6 +294,31 @@
           {{ 'settings.i18n.budget.hint' | transloco }}
         </span>
 
+        <div class="budget-block ai-dollar-budget">
+          <div class="budget-head">
+            <strong>{{ 'settings.i18n.aiDollars' | transloco }}</strong>
+          </div>
+          <span class="hint">
+            {{
+              'settings.i18n.aiDollars.today'
+                | transloco: { spent: aiSpent(), limit: aiLimitToday() }
+            }}
+          </span>
+          <mb-field [label]="'settings.i18n.aiDollars.cap' | transloco" density="compact">
+            <input
+              mbControl
+              type="number"
+              name="aiDailyCap"
+              min="0"
+              step="0.05"
+              inputmode="decimal"
+              [ngModel]="aiBudget.capUsd()"
+              (ngModelChange)="aiBudget.setCap(+$event)"
+            />
+          </mb-field>
+          <span class="hint">{{ 'settings.i18n.aiDollars.hint' | transloco }}</span>
+        </div>
+
         @for (engine of engines; track engine) {
           <div class="budget-block">
             <div class="budget-head">

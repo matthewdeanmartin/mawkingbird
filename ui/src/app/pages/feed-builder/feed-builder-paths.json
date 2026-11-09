@@ -91,5 +91,11 @@
   },
   "dutch-politics": {
     "nl": "nl/nederlandse-politiek-op-mastodon"
+  },
+  "ukrainian-technology": {
+    "uk": "uk/tekhnolohii-na-mastodon"
+  },
+  "ukrainian-culture": {
+    "uk": "uk/kultura-ta-zakhoplennia-na-mastodon"
   }
 }

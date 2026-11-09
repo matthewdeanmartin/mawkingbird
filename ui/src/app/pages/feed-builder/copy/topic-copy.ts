@@ -24,6 +24,8 @@ const COPY_LOADERS: Record<
   'mystery-and-crime': () => import('./mystery-and-crime'),
   'romance-books': () => import('./romance-books'),
   'dutch-politics': () => import('./dutch-politics'),
+  'ukrainian-culture': () => import('./ukrainian-culture'),
+  'ukrainian-technology': () => import('./ukrainian-technology'),
   'dutch-culture': () => import('./dutch-culture'),
   vietnam: () => import('./vietnam'),
   malaysia: () => import('./malaysia'),

@@ -81,5 +81,49 @@ export function analyzeStatusLanguage(html: string, spoiler = ''): LanguageAnaly
     flush();
   }
   visit(template.content, 'prose');
-  return analyzeLanguage(segments, html.length + spoiler.length > limit);
+  return settleCjkByScript(
+    analyzeLanguage(segments, html.length + spoiler.length > limit),
+    segments,
+  );
+}
+
+const KANA = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
+const HANGUL = /\p{Script=Hangul}/u;
+
+/**
+ * Settle a Japanese/Chinese/Korean tie by script, which the detector leaves open.
+ *
+ * Kana are used only by Japanese and Hangul only by Korean, so a note whose
+ * candidates are all CJK and which contains either is not ambiguous at all.
+ * The case this exists for is everyday Misskey: a kanji-only line ("草",
+ * Misskey's "lol") beside a kana line made the whole note "unsure", and the
+ * reader was asked "Translate from which language?" over plainly Japanese text
+ * (owner report, 2026-11-10). Deliberately narrow: a note mixing English and
+ * Japanese keeps its honest "mixed" answer.
+ */
+export function settleCjkByScript(
+  analysis: LanguageAnalysis,
+  segments: readonly LanguageSegment[],
+): LanguageAnalysis {
+  if (analysis.language) return analysis;
+  const cjk = new Set(['ja', 'zh', 'ko']);
+  if (!analysis.candidates.length || !analysis.candidates.every((c) => cjk.has(c))) {
+    return analysis;
+  }
+  const text = segments
+    .filter((s) => s.kind === 'prose' || s.kind === 'quote')
+    .map((s) => s.text)
+    .join(' ');
+  const language =
+    KANA.test(text) && analysis.candidates.includes('ja')
+      ? 'ja'
+      : HANGUL.test(text) && analysis.candidates.includes('ko')
+        ? 'ko'
+        : null;
+  if (!language) return analysis;
+  return {
+    ...analysis,
+    language,
+    prose: analysis.prose.language ? analysis.prose : { ...analysis.prose, language },
+  };
 }

@@ -9,6 +9,8 @@
 }
 <div [hidden]="!!switchingServer()">
   <app-plus-paywall-dialog />
+  <!-- Once a day, when AI translation reaches its dollar cap (T2). -->
+  <app-ai-budget-prompt />
   <!-- The test-deployment marker, deliberately OUTSIDE the writing-zen block: zen
      hides the chrome, and "which deployment am I on" is not chrome. It is the
      one thing that must be true on every screen of this build, because the

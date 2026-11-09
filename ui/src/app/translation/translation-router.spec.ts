@@ -165,7 +165,7 @@ describe('TranslationRouter', () => {
 
   it('never spends AI in automatic mode unless the reader allowed it', async () => {
     pairs({ ok: false, reason: 'no-provider' });
-    const ai = vi.spyOn(TestBed.inject(AiTranslate), 'translateText');
+    const ai = vi.spyOn(TestBed.inject(AiTranslate), 'translateTextWithCost');
     const outcome = await router.translate(request({ mode: 'auto', aiAvailable: true }));
     expect(ai).not.toHaveBeenCalled();
     expect(outcome).toMatchObject({
@@ -175,7 +175,7 @@ describe('TranslationRouter', () => {
 
   it('uses AI last when connected, for a manual press', async () => {
     pairs({ ok: false, reason: 'no-provider' });
-    vi.spyOn(TestBed.inject(AiTranslate), 'translateText').mockResolvedValue({
+    vi.spyOn(TestBed.inject(AiTranslate), 'translateTextWithCost').mockResolvedValue({
       text: 'Good morning',
       model: 'm',
       target: 'English',

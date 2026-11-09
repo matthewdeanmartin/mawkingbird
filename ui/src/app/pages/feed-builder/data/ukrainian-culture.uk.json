@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "topic": "ukrainian-culture",
+  "lang": "uk",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T23:23:33+00:00",
+  "tags": [],
+  "people": [
+    {
+      "acct": "kutok@twiukraine.com",
+      "id": "110667299029771792",
+      "url": "https://twiukraine.com/@kutok",
+      "displayName": "Куток",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/110/667/299/029/771/792/original/4aaba416be7be350.png",
+      "bio": "Куток – це український вільний майданчик, на якому обговорюють і розповідають про ігри, кіно, аніме, розробку, технології та популярну культуру загалом.",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "rozhkovsky@twiukraine.com",
+      "id": "2",
+      "url": "https://twiukraine.com/@rozhkovsky",
+      "displayName": "Кіберерудит",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/000/000/002/original/828f74db6af6d7d9.png",
+      "bio": "Space and time should be considered together and in relation to each other. https:// rozhkovsky.com",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "forest_ivi@twiukraine.com",
+      "id": "112332617546209948",
+      "url": "https://twiukraine.com/@forest_ivi",
+      "displayName": "Акамі",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/112/332/617/546/209/948/original/f92d8f8d2393d918.jpg",
+      "bio": "Українська майстриня м'якеньких іграшок і аксесуарів. Фанатка закусок до пива і морепродуктів. Драценяча мама🍀",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "hikka@social.noleron.com",
+      "id": "113317806852007005",
+      "url": "https://social.noleron.com/@hikka",
+      "displayName": "Hikka",
+      "avatar": "https://media.noleron.com/accounts/avatars/113/317/806/852/007/005/original/f6bea5d32e628720.png",
+      "bio": "Hikka - український список аніме, манґи та ранобе - https:// hikka.io",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "cat_who_saved_books@social.noleron.com",
+      "id": "112435177352445500",
+      "url": "https://social.noleron.com/@cat_who_saved_books",
+      "displayName": "Кіт, що рятував книжки",
+      "avatar": "https://media.noleron.com/accounts/avatars/112/435/177/352/445/500/original/12659d5b77aa4690.jpg",
+      "bio": "Дуже люблю книги і маю бажання поділитись цією любов'ю з вами ) Розповідаю про книги і все, що з ними пов'язано",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "rossetnocpes@social.noleron.com",
+      "id": "113669517155538450",
+      "url": "https://social.noleron.com/@rossetnocpes",
+      "displayName": "Andrii | ~rosset-nocpes",
+      "avatar": "https://media.noleron.com/accounts/avatars/113/669/517/155/538/450/original/bb9adae6be413eae.jpeg",
+      "bio": "Звуть Андрій) I use Arch btw До біса обожнюю ДнД, MMORPG, CRPG І подобається аніме",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "illuyupo@twiukraine.com",
+      "id": "117395405623626962",
+      "url": "https://twiukraine.com/@illuyupo",
+      "displayName": "Yuliia P.",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/117/395/405/623/626/962/original/b9f72819e845e817.png",
+      "bio": "Шось роблю",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "lilova@twiukraine.com",
+      "id": "111298107281233941",
+      "url": "https://twiukraine.com/@lilova",
+      "displayName": "ліза малює",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/111/298/107/281/233/941/original/04da70bf0116ffc5.jpg",
+      "bio": "☆ малюю ☆ вчуся робити гендпоук тату ☆ творчість без шкоди для тварин",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nareshti@masto.ink",
+      "id": "114421362281435033",
+      "url": "https://masto.ink/@nareshti",
+      "displayName": "Нарешті",
+      "avatar": "https://media.masto.ink/accounts/avatars/114/421/362/281/435/033/original/80a528e50a1b0377.png",
+      "bio": "Нарешті • Розмовний online клуб української мови Щотижня модеровані зустрічі для практики української • Zoom • Цікаві теми та гості, без підготовки, добровільний донат",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "mra_q@twiukraine.com",
+      "id": "114229154998884151",
+      "url": "https://twiukraine.com/@MRa_Q",
+      "displayName": "MRa_Q",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/twiukraine/accounts/avatars/114/229/154/998/884/151/original/53319c3dacecb584.png",
+      "bio": "Обліковка для виствітлення всілякого пов'язаного зі стрімерською діяльністю",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "twiukraine.com"
+    },
+    {
+      "domain": "social.noleron.com"
+    },
+    {
+      "domain": "masto.ink"
+    }
+  ]
+}

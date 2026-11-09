@@ -724,7 +724,83 @@ const nl: FeedChrome = {
   updated: (date) => `Bijgewerkt op ${date}`,
 };
 
+const uk: FeedChrome = {
+  eyebrow: 'Стартова добірка Mastodon',
+  openApp: 'Відкрити Mawkingbird',
+  hub: 'Усі спільноти',
+  tagsHeading: 'Тематичні хештеги',
+  tagsIntro:
+    'На хештеги можна підписуватися, як на людей: дописи з ними потраплятимуть у домашню стрічку. Деякі теги поки тихі. Відкрий тег і переглянь його перед підпискою.',
+  englishTag: 'Англійською',
+  futureHeading: 'Допоможи розвинути ці хештеги',
+  futureIntro:
+    'Місцеві відповідники популярних англійських хештегів лише набирають обертів. Використовуй їх у дописах українською, щоб іншим було легше знайти тему.',
+  futureBeside: (source) => `місцевий відповідник #${source}`,
+  futureNew: 'новий',
+  futureStarting: 'на початку',
+  caution: {
+    spam: 'У вибірці багато рекламних дописів. Переглянь перед підпискою.',
+    'off-topic': 'Тег часто використовують поза темою. Переглянь перед підпискою.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Автори з каналами YouTube',
+      intro: 'Автори, які також публікують відео на YouTube.',
+    },
+    notable: {
+      heading: 'Відомі автори й організації',
+      intro: 'Публічні автори, видання та організації цієї тематики.',
+    },
+    community: {
+      heading: 'Учасники спільноти',
+      intro: 'Люди, які пишуть на цю тему й дозволяють рекомендувати свій профіль.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube: 10 тис.+',
+    'followers-2500': '2500+ підписників',
+    'followers-625': '625+ підписників',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Подкаст',
+    website: 'Сайт',
+  },
+  youtube: (band) => (band ? `Канал YouTube, підписників: ${band}` : 'Канал YouTube'),
+  feedCopy: 'публікує нові відео',
+  activity: (posts) => `Дописів за тиждень на mastodon.social: ${posts.toLocaleString('uk')}`,
+  serversHeading: 'Де спілкується спільнота',
+  serversIntro:
+    'З будь-якого сервера Mastodon можна підписуватися на інших. Якщо обираєш сервер, придивись до цих спільнот та їхніх правил.',
+  chooseHeading: 'Як ми обираємо',
+  choose: [
+    'Перевіряємо публічні дописи за темою та мовою. Невеликі акаунти, які дозволяють рекомендувати свій профіль, також можуть потрапити до добірки.',
+    'Поважаємо явну заборону рекомендувати профіль, заборону вебіндексації та прохання про видалення. Налаштування внутрішнього повнотекстового пошуку Mastodon розглядаємо окремо.',
+    'Для невеликих мовних спільнот допускаємо рідші дописи й меншу добірку. Це не скасовує перевірок тематики, змісту та приватності. Деталі активності наведені в описі теми.',
+  ],
+  helpHeading: 'Потрібна допомога?',
+  help: 'Маєш запитання або хочеш прибрати свій акаунт із добірки? Напиши нам у Mastodon.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Запитання',
+  readTag: (tag) => `Читати #${tag} у Mawkingbird`,
+  peopleHeading: 'На кого підписатися',
+  groupColumn: 'Група',
+  countColumn: 'Акаунти',
+  everyone: 'Усі',
+  alsoYoutubeHeading: 'Також на YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `Серед ${total} акаунтів є ${n} з каналами YouTube. Можна підписатися на них у Mastodon або дивитися нові відео через Mawkingbird.`,
+  otherLanguages: 'Ця сторінка іншими мовами',
+  updated: (date) => `Оновлено: ${date}`,
+};
+
 export const FEED_CHROME: Partial<Record<PageLanguage, FeedChrome>> = {
+  uk,
   nl,
   en,
   de,

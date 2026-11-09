@@ -3041,6 +3041,11 @@
       "file": "ui/src/app/account-tab-guard/account-tab-banner.ts",
       "disposition": "adopted scope",
       "nextStep": "Account-changed-in-another-tab banner: a sticky role=alert notice with one MbButton (Reload as @x for another tab, Continue as @x after a restored reload). Preserve the alert role, that reads are never blocked, and the single action per reason."
+    },
+    {
+      "file": "ui/src/app/translation/ai-budget-prompt.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Concurrent translation work: shared MbDialog and MbButton actions; native settings navigation link. Preserve labelled dismissal, focus return, daily budget consent and free-translation fallback. Runtime verification belongs to the translation change."
     }
   ]
 }

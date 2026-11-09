@@ -95,6 +95,7 @@ import { MisskeyCompose } from '../../providers/misskey/misskey-compose';
 import { MisskeyAuth } from '../../providers/misskey/misskey-auth';
 import { TranslationRouter } from '../../translation/translation-router';
 import { TranslationConnectors } from '../../translation/translation-connectors';
+import { AiBudget, formatUsd } from '../../translation/ai-budget';
 import { MbNotice } from '../../design-system/notice/notice';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
 import { MbField, MbControl } from '../../design-system/field/field';
@@ -231,6 +232,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.misskey.noEngine.title: Nothing can translate yet
 // i18n pages.home.misskey.noEngine.body: Automatic translation is on, but {{server}} has no translator of its own and no free translator is switched on. Turn on MyMemory (free, about 5,000 characters a day; post text is sent to translated.net), or press 🌐 Translate on any post once to download this browser's own translator, if it has one.
 // i18n pages.home.misskey.noEngine.myMemory: Turn on MyMemory
+// i18n pages.home.misskey.noEngine.useAi: Use AI (OpenRouter), up to {{cap}} a day
 // i18n pages.home.misskey.noEngine.settings: Choose a translator
 // i18n pages.home.misskey.timeline.home: Home
 // i18n pages.home.misskey.timeline.social: Social
@@ -400,6 +402,7 @@ export class Home implements OnInit, OnDestroy {
     this.translationConnectors.myMemoryEnabled();
     this.translationConnectors.apertiumEnabled();
     this.prefs.browserTranslator();
+    this.prefs.autoTranslateUsesAi();
     if (!on) {
       this.noAutomaticEngine.set(false);
       return;
@@ -415,10 +418,25 @@ export class Home implements OnInit, OnDestroy {
     this.translationConnectors.setMyMemoryEnabled(true);
   }
 
+  private readonly aiBudget = inject(AiBudget);
+  /** OpenRouter is connected but not allowed for automatic translation yet. */
+  protected readonly canOfferAutoAi = computed(
+    () => this.translationRouter.aiConnected() && !this.prefs.autoTranslateUsesAi(),
+  );
+  protected readonly aiCapLabel = computed(() => formatUsd(this.aiBudget.capUsd()));
+
+  /** Let automatic translation use AI, under the daily dollar cap. */
+  protected useAiForAutomatic(): void {
+    this.prefs.setAutoTranslateUsesAi(true);
+  }
+
   protected answerMisskeyTranslateOffer(accept: boolean): void {
     if (accept) {
       this.prefs.setAutoTranslateMode('view');
       this.prefs.setTranslateAllForeign(true);
+      // With OpenRouter connected, automatic translation may use it, under the
+      // daily dollar cap (owner decision 2026-11-09: automatic, under a cap).
+      if (this.translationRouter.aiConnected()) this.prefs.setAutoTranslateUsesAi(true);
     }
     writeFlag(MK_TRANSLATE_OFFER_KEY);
     this.misskeyOfferAnswered.set(true);

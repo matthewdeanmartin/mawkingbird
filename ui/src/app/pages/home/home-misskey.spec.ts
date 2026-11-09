@@ -13,6 +13,7 @@ import { Home } from './home';
 import { MISSKEY_PERMISSIONS } from '../../providers/misskey/misskey-auth';
 import { BrowserTranslator } from '../../translation/browser-translator';
 import { TranslationConnectors } from '../../translation/translation-connectors';
+import { TranslationRouter } from '../../translation/translation-router';
 
 const SERVER = 'https://misskey.design';
 
@@ -159,5 +160,33 @@ describe('Home as a Misskey account', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('app-misskey-compose')).not.toBeNull();
     expect(el.querySelector('.home-misskey-approve')).toBeNull();
+  });
+
+  it('offers AI in the no-translator notice when OpenRouter is connected', async () => {
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.setAutoTranslateMode('view');
+    prefs.setTranslateAllForeign(true);
+    vi.spyOn(TestBed.inject(BrowserTranslator), 'supported').mockReturnValue(false);
+    vi.spyOn(TestBed.inject(TranslationRouter), 'aiConnected').mockReturnValue(true);
+    const fixture = await setUp();
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/meta`))).flush({
+      translatorAvailable: false,
+    });
+    let useAi: HTMLButtonElement | undefined;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      useAi = Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll('.home-no-translator button'),
+      ).find((b) => b.textContent?.includes('$0.25')) as HTMLButtonElement | undefined;
+      expect(useAi).toBeDefined();
+    });
+    useAi!.click();
+    expect(prefs.autoTranslateUsesAi()).toBe(true);
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.home-no-translator'),
+      ).toBeNull();
+    });
   });
 });
