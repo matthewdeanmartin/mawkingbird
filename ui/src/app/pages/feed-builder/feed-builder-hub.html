@@ -67,7 +67,9 @@
                 >{{ item.primary.copy.heading }}</a
               >
               @if (item.fallback) {
-                <span class="hub-fallback">{{ words.inEnglish }}</span>
+                <span class="hub-fallback">{{
+                  item.primary.lang === 'en' ? words.inEnglish : languageName(item.primary.lang)
+                }}</span>
               }
             </h3>
             <p [attr.lang]="item.primary.lang">{{ item.primary.copy.description }}</p>
@@ -107,7 +109,9 @@
                     >{{ item.primary.copy.heading }}</a
                   >
                   @if (item.fallback) {
-                    <span class="hub-fallback">{{ words.inEnglish }}</span>
+                    <span class="hub-fallback">{{
+                      item.primary.lang === 'en' ? words.inEnglish : languageName(item.primary.lang)
+                    }}</span>
                   }
                   @for (version of item.others; track version.path) {
                     <a

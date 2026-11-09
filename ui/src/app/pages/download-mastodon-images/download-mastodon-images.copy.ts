@@ -1,4 +1,4 @@
-import { PageLanguage } from '../../focused-tools';
+import { ToolLanguage } from '../../focused-tools';
 
 /**
  * The prerendered words of the media download page, one set per language.
@@ -22,7 +22,7 @@ export interface DownloadImagesCopy {
   questions: { q: string; a: string }[];
 }
 
-export const DOWNLOAD_IMAGES_COPY: Record<PageLanguage, DownloadImagesCopy> = {
+export const DOWNLOAD_IMAGES_COPY: Record<ToolLanguage, DownloadImagesCopy> = {
   en: {
     path: '/download-mastodon-images',
     openApp: 'Open the app',

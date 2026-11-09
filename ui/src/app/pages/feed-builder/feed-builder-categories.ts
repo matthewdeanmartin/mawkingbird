@@ -25,6 +25,7 @@ export const HUB_CATEGORIES = [
   'nature',
   'home-and-garden',
   'food-and-drink',
+  'international-regions',
 ] as const;
 
 export type HubCategory = (typeof HUB_CATEGORIES)[number];
@@ -34,6 +35,8 @@ export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
   'historical-fiction': 'culture',
   'mystery-and-crime': 'culture',
   'romance-books': 'culture',
+  vietnam: 'international-regions',
+  malaysia: 'international-regions',
   bicycling: 'games-and-sport',
   running: 'games-and-sport',
   buddhism: 'society',
@@ -80,6 +83,7 @@ export interface HubNavWords {
 
 const EN: HubNavWords = {
   categories: {
+    'international-regions': 'International Regions',
     tech: 'Tech',
     science: 'Science',
     society: 'Society',
@@ -101,8 +105,51 @@ const EN: HubNavWords = {
 
 export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   en: EN,
+  vi: {
+    categories: {
+      'international-regions': 'Các khu vực trên thế giới',
+      tech: 'Công nghệ',
+      science: 'Khoa học',
+      society: 'Xã hội',
+      culture: 'Nghệ thuật và văn hóa',
+      music: 'Âm nhạc',
+      'games-and-sport': 'Trò chơi và thể thao',
+      nature: 'Thiên nhiên và động vật',
+      'home-and-garden': 'Nhà cửa và vườn',
+      'food-and-drink': 'Ẩm thực',
+    },
+    allTopics: 'Mọi chủ đề',
+    railLabel: 'Danh mục',
+    openRail: 'Danh mục',
+    closeRail: 'Đóng danh mục',
+    language: 'Ngôn ngữ',
+    everyLanguage: 'Mọi ngôn ngữ',
+    inEnglish: 'bằng tiếng Anh',
+  },
+  ms: {
+    categories: {
+      'international-regions': 'Rantau antarabangsa',
+      tech: 'Teknologi',
+      science: 'Sains',
+      society: 'Masyarakat',
+      culture: 'Seni dan budaya',
+      music: 'Muzik',
+      'games-and-sport': 'Permainan dan sukan',
+      nature: 'Alam dan haiwan',
+      'home-and-garden': 'Rumah dan taman',
+      'food-and-drink': 'Makanan dan minuman',
+    },
+    allTopics: 'Semua topik',
+    railLabel: 'Kategori',
+    openRail: 'Kategori',
+    closeRail: 'Tutup kategori',
+    language: 'Bahasa',
+    everyLanguage: 'Semua bahasa',
+    inEnglish: 'dalam bahasa Inggeris',
+  },
   de: {
     categories: {
+      'international-regions': 'Internationale Regionen',
       tech: 'Technik',
       science: 'Wissenschaft',
       society: 'Gesellschaft',
@@ -123,6 +170,7 @@ export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   },
   fr: {
     categories: {
+      'international-regions': 'Régions du monde',
       tech: 'Technologie',
       science: 'Sciences',
       society: 'Société',
@@ -143,6 +191,7 @@ export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   },
   es: {
     categories: {
+      'international-regions': 'Regiones del mundo',
       tech: 'Tecnología',
       science: 'Ciencia',
       society: 'Sociedad',
@@ -163,6 +212,7 @@ export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   },
   it: {
     categories: {
+      'international-regions': 'Regioni del mondo',
       tech: 'Tecnologia',
       science: 'Scienza',
       society: 'Società',
@@ -183,6 +233,7 @@ export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   },
   ja: {
     categories: {
+      'international-regions': '世界の地域',
       tech: 'テクノロジー',
       science: '科学',
       society: '社会',

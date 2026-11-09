@@ -500,7 +500,165 @@ const ja: FeedChrome = {
   updated: (date) => `${date} 更新`,
 };
 
-export const FEED_CHROME: Partial<Record<PageLanguage, FeedChrome>> = { en, de, fr, es, it, ja };
+const ms: FeedChrome = {
+  eyebrow: 'Kit permulaan Mastodon',
+  openApp: 'Buka Mawkingbird',
+  hub: 'Semua komuniti',
+  tagsHeading: 'Hashtag untuk diikuti',
+  tagsIntro:
+    'Ikuti hashtag untuk melihat siarannya dalam suapan Utama. Buka hashtag untuk membaca tanpa akaun.',
+  englishTag: 'Bahasa Inggeris',
+  futureHeading: 'Bantu mulakan hashtag ini',
+  futureIntro:
+    'Gunakan hashtag tempatan bersama hashtag bahasa Inggeris untuk membantu komuniti berkembang.',
+  futureBeside: (source) => `versi tempatan #${source}`,
+  futureNew: 'baharu',
+  futureStarting: 'baru bermula',
+  caution: {
+    spam: 'Banyak siaran jualan: baca dahulu sebelum mengikuti.',
+    'off-topic': 'Sering digunakan untuk topik lain: baca dahulu.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Pencipta dengan saluran YouTube',
+      intro: 'Pencipta video yang turut berkongsi di Mastodon.',
+    },
+    notable: {
+      heading: 'Penulis, seniman dan tokoh dikenali',
+      intro: 'Akaun awam yang berkongsi tentang topik ini.',
+    },
+    community: {
+      heading: 'Suara komuniti',
+      intro: 'Akaun komuniti untuk diterokai, termasuk yang jarang menulis.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube 10k+',
+    'followers-2500': '2,500+ pengikut',
+    'followers-625': '625+ pengikut',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Podcast',
+    website: 'Laman web',
+  },
+  youtube: (band) => (band ? `Saluran YouTube, ${band} pelanggan` : 'Saluran YouTube'),
+  feedCopy: 'berkongsi video baharu',
+  activity: (posts) => `${posts.toLocaleString('ms')} siaran minggu ini di mastodon.social`,
+  serversHeading: 'Tempat komuniti berkumpul',
+  serversIntro:
+    'Anda boleh mengikuti akaun dari mana-mana pelayan Mastodon tanpa berpindah pelayan.',
+  chooseHeading: 'Cara kami memilih',
+  choose: [
+    'Kit komuniti kecil ini merangkumi akaun dengan kaitan setempat yang kelihatan dalam profil atau siaran awam. Tiada jumlah minimum pengikut atau siaran; akaun dengan siaran dalam tempoh 30 bulan lalu boleh disertakan.',
+    'Kami menghormati permintaan supaya profil tidak diindeks di web dan pilihan untuk tidak ditemui. Mematikan carian teks penuh Mastodon sahaja tidak menghalang penyenaraian di sini.',
+    'Kandungan disemak untuk kesesuaian keluarga dan kegunaan kepada pembaca. Bahasa dan kekerapan siaran berbeza-beza. Pratonton sebelum mengikuti; suapan mungkin berubah selepas semakan.',
+  ],
+  helpHeading: 'Perlukan bantuan?',
+  help: 'Ada soalan atau mahu dikeluarkan daripada senarai? Hubungi kami di Mastodon; permintaan anda akan dihormati.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Soalan lazim',
+  readTag: (tag) => `Baca #${tag} di Mawkingbird`,
+  peopleHeading: 'Akaun untuk diikuti',
+  groupColumn: 'Kumpulan',
+  countColumn: 'Akaun',
+  everyone: 'Semua',
+  alsoYoutubeHeading: 'Juga di YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} daripada ${total} akaun ini turut menghasilkan video di YouTube. Ikuti di Mastodon atau langgan saluran mereka di Mawkingbird.`,
+  otherLanguages: 'Halaman ini dalam bahasa lain',
+  updated: (date) => `Dikemas kini ${date}`,
+};
+
+const vi: FeedChrome = {
+  eyebrow: 'Bộ khởi đầu Mastodon',
+  openApp: 'Mở Mawkingbird',
+  hub: 'Tất cả cộng đồng',
+  tagsHeading: 'Hashtag để theo dõi',
+  tagsIntro:
+    'Theo dõi hashtag để xem bài viết trong bảng tin. Bạn có thể đọc mà không cần tài khoản.',
+  englishTag: 'Tiếng Anh',
+  futureHeading: 'Cùng phát triển hashtag',
+  futureIntro: 'Dùng hashtag tiếng Việt cùng hashtag tiếng Anh để giúp cộng đồng phát triển.',
+  futureBeside: (s) => `phiên bản tiếng Việt của #${s}`,
+  futureNew: 'mới',
+  futureStarting: 'vừa bắt đầu',
+  caution: {
+    spam: 'Nhiều bài bán hàng: hãy đọc trước khi theo dõi.',
+    'off-topic': 'Thường dùng cho chủ đề khác: hãy đọc trước.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Nhà sáng tạo có kênh YouTube',
+      intro: 'Những người làm video cũng chia sẻ trên Mastodon.',
+    },
+    notable: {
+      heading: 'Tác giả, nghệ sĩ và gương mặt quen thuộc',
+      intro: 'Tài khoản công khai chia sẻ về chủ đề này.',
+    },
+    community: {
+      heading: 'Tiếng nói cộng đồng',
+      intro: 'Những tài khoản để khám phá, kể cả người ít đăng bài.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube 10k+',
+    'followers-2500': '2.500+ người theo dõi',
+    'followers-625': '625+ người theo dõi',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Podcast',
+    website: 'Trang web',
+  },
+  youtube: (band) => (band ? `Kênh YouTube, ${band} người đăng ký` : 'Kênh YouTube'),
+  feedCopy: 'chia sẻ video mới',
+  activity: (n) => `${n.toLocaleString('vi')} bài tuần này trên mastodon.social`,
+  serversHeading: 'Nơi cộng đồng gặp gỡ',
+  serversIntro:
+    'Bạn có thể theo dõi tài khoản trên mọi máy chủ Mastodon mà không cần chuyển máy chủ.',
+  chooseHeading: 'Cách chúng tôi lựa chọn',
+  choose: [
+    'Tài khoản viết tiếng Việt ở bất cứ đâu đều có thể được chọn, kể cả khi không nêu nơi ở. Tài khoản viết tiếng Anh cần có mối liên hệ rõ ràng với Việt Nam.',
+    'Không yêu cầu số người theo dõi hay số bài tối thiểu. Tài khoản có bài trong 30 tháng qua có thể tham gia. Chúng tôi tôn trọng lựa chọn không được tìm thấy và yêu cầu không lập chỉ mục web; tắt tìm kiếm toàn văn Mastodon không tự động loại tài khoản.',
+    'Nội dung được xem xét về tính phù hợp với gia đình và ích lợi cho người đọc. Hãy xem trước: nội dung có thể thay đổi sau khi được chọn.',
+  ],
+  helpHeading: 'Cần trợ giúp?',
+  help: 'Có câu hỏi hoặc muốn được gỡ khỏi danh sách? Hãy liên hệ trên Mastodon; chúng tôi sẽ tôn trọng yêu cầu của bạn.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Câu hỏi thường gặp',
+  readTag: (tag) => `Đọc #${tag} trên Mawkingbird`,
+  peopleHeading: 'Tài khoản để theo dõi',
+  groupColumn: 'Nhóm',
+  countColumn: 'Tài khoản',
+  everyone: 'Tất cả',
+  alsoYoutubeHeading: 'Cũng có trên YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} trong ${total} tài khoản cũng làm video trên YouTube. Theo dõi trên Mastodon hoặc đăng ký kênh trong Mawkingbird.`,
+  otherLanguages: 'Trang này bằng ngôn ngữ khác',
+  updated: (date) => `Cập nhật ${date}`,
+};
+
+export const FEED_CHROME: Partial<Record<PageLanguage, FeedChrome>> = {
+  en,
+  de,
+  fr,
+  es,
+  it,
+  ja,
+  vi,
+  ms,
+};
 
 export function chromeFor(lang: PageLanguage): FeedChrome {
   return FEED_CHROME[lang] ?? en;

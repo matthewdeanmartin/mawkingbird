@@ -14,6 +14,7 @@ import { AppOnlyLinkRel } from '../../public-page-urls';
 
 /** Each language named in itself, so a reader finds their own. */
 const ENDONYMS: Record<PageLanguage, string> = {
+  ms: 'Bahasa Melayu',
   en: 'English',
   de: 'Deutsch',
   es: 'Español',

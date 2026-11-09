@@ -1995,3 +1995,12 @@ Reviewed the regenerated inventory: 1,724 source files and 605 candidate files.
 Only the source-file count increased for the new topic copy. No control findings
 or candidate paths changed; 11-reconciliation.json needs no edits. No shared
 widget changed.
+
+## Malaysia regional kit integration, 2026-11-09
+
+Reviewed the regenerated inventory: 1,725 source files and 605 candidate files.
+The Malaysia copy adds one source. The language menu and hub fallback-language
+labels move existing control line references. No control counts or candidate paths changed, so
+11-reconciliation.json needs no edit. No shared widget changed.
+
+Vietnamese Feed Builder addition (2026-11-09): reviewed inventory refresh. Only filesScanned increases for new topic copy; candidate inventory and candidate files unchanged. No reconciliation entries needed.

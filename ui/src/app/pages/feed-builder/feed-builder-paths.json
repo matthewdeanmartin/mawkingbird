@@ -79,5 +79,11 @@
     "en": "bicycling-on-mastodon",
     "de": "de/radfahren-auf-mastodon",
     "fr": "fr/velo-sur-mastodon"
+  },
+  "malaysia": {
+    "ms": "ms/malaysia-di-mastodon"
+  },
+  "vietnam": {
+    "vi": "vi/cong-dong-viet-tren-mastodon"
   }
 }

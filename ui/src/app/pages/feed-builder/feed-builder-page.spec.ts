@@ -82,6 +82,29 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders the approved Vietnamese kit with native controls and inclusive language guidance', async () => {
+    const el = await render(at('vi/cong-dong-viet-tren-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('vi');
+    expect(el.querySelector('h1')?.textContent).toContain('Cộng đồng Việt');
+    expect(el.querySelectorAll('.people li')).toHaveLength(12);
+    expect(el.querySelectorAll('.tag-list li')).toHaveLength(0);
+    expect(el.textContent).toContain('30 tháng');
+    expect(el.textContent).toContain('ở nước ngoài');
+    expect(el.querySelector('a[href="/vi/cong-dong-mastodon"]')).not.toBeNull();
+  });
+
+  it('renders the approved Malaysia regional kit with Malay controls and mixed-language guidance', async () => {
+    const el = await render(at('ms/malaysia-di-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('ms');
+    expect(el.querySelector('h1')?.textContent).toContain('Malaysia di Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(25);
+    expect(el.querySelectorAll('.tag-list li')).toHaveLength(0);
+    expect(el.textContent).toContain('bahasa Inggeris');
+    expect(el.textContent).toContain('30 bulan');
+    expect(el.textContent).not.toContain('Every account is checked again each month');
+    expect(el.querySelector('a[href="/ms/komuniti-mastodon"]')).not.toBeNull();
+  });
+
   it('renders the approved English Mystery and Crime edition', async () => {
     const el = await render(at('mystery-and-crime-on-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');
@@ -507,6 +530,13 @@ describe('Feed Builder hub and routes', () => {
         (topic) => !FEED_BUILDER_PAGES.some((p) => p.topic === topic && p.lang === 'de'),
       ).length,
     );
+    expect(
+      el
+        .querySelector('a[href="/ms/malaysia-di-mastodon"]')
+        ?.parentElement?.querySelector('.hub-fallback')?.textContent,
+    ).toContain('Melayu');
+    expect(el.querySelector('select option[value="vi"]')?.textContent).toContain('Tiếng Việt');
+    expect(el.querySelector('a[href="/vi/cong-dong-viet-tren-mastodon"]')).not.toBeNull();
     // Every version is still linked, so nothing is lost to the filter.
     for (const { path } of FEED_BUILDER_PAGES)
       expect(el.querySelector(`a[href="/${path}"]`), path).not.toBeNull();

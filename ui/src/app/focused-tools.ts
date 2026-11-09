@@ -45,7 +45,7 @@ export interface ToolPage {
    * in it for every visitor (see `provideRouteLanguage`), and it becomes the
    * prerender's `<html lang>`.
    */
-  lang?: PageLanguage;
+  lang?: ToolLanguage;
   /**
    * For a page in another language, the `id` of the English tool it
    * translates. The two link to each other with `hreflang`. Only English
@@ -73,6 +73,7 @@ export interface ToolCopy {
 
 /** Languages a public page can be written in. */
 export type PageLanguage =
+  | 'ms'
   | 'en'
   | 'de'
   | 'es'
@@ -98,7 +99,10 @@ export function languageFolder(lang: PageLanguage): string {
 }
 
 /** The languages tool pages are translated into, from `paths.json`. */
-export type TranslatedLanguage = Exclude<PageLanguage, 'en'>;
+export type TranslatedLanguage = keyof typeof translatedPaths;
+
+/** Tool translations are independent of starter-kit page languages. */
+export type ToolLanguage = 'en' | TranslatedLanguage;
 
 export type FocusedToolGroup = 'start' | 'languages' | 'search' | 'people' | 'post' | 'account';
 
@@ -149,7 +153,7 @@ export const TOOL_PAGES: readonly ToolPage[] = ENGLISH_TOOLS.flatMap((tool) => [
 ]);
 
 /** The language a tool page is written in. */
-export function toolLanguage(tool: ToolPage): PageLanguage {
+export function toolLanguage(tool: ToolPage): ToolLanguage {
   return tool.lang ?? 'en';
 }
 

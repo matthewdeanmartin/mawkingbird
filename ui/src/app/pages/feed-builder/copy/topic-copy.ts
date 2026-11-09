@@ -23,6 +23,8 @@ const COPY_LOADERS: Record<
   'historical-fiction': () => import('./historical-fiction'),
   'mystery-and-crime': () => import('./mystery-and-crime'),
   'romance-books': () => import('./romance-books'),
+  vietnam: () => import('./vietnam'),
+  malaysia: () => import('./malaysia'),
   bicycling: () => import('./bicycling'),
   running: () => import('./running'),
   buddhism: () => import('./buddhism'),

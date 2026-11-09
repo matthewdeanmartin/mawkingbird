@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
-import { PageLanguage } from '../../focused-tools';
+import { ToolLanguage } from '../../focused-tools';
 import { provideRouteLanguage } from '../../page-language';
 import { MediaDownloadWorkbench } from './media-download-workbench';
 import { DOWNLOAD_IMAGES_COPY } from './download-mastodon-images.copy';
@@ -39,8 +39,8 @@ export class DownloadMastodonImages {
   private readonly data = inject(ActivatedRoute).snapshot.data;
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = this.data['inShell'] === true;
-  protected readonly lang: PageLanguage =
-    (this.data['lang'] as PageLanguage) in DOWNLOAD_IMAGES_COPY ? this.data['lang'] : 'en';
+  protected readonly lang: ToolLanguage =
+    (this.data['lang'] as ToolLanguage) in DOWNLOAD_IMAGES_COPY ? this.data['lang'] : 'en';
   protected readonly copy = DOWNLOAD_IMAGES_COPY[this.lang];
   protected readonly returnHere = { next: this.copy.path };
 }

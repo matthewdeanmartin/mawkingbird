@@ -80,6 +80,7 @@ interface HubTopicView {
   ],
 })
 export class FeedBuilderHub {
+  protected readonly languageName = languageName;
   private readonly route = inject(ActivatedRoute).snapshot;
   private readonly location = inject(Location);
   private readonly entries = this.route.data['entries'] as FeedHubEntry[];
@@ -89,7 +90,10 @@ export class FeedBuilderHub {
   protected readonly english = this.lang === 'en';
   protected readonly englishHub = `/${FEED_BUILDER_HUB}`;
   /** This language's tool index: /tools for English, the language folder otherwise. */
-  protected readonly toolsIndex = this.english ? '/tools' : `/${languageFolder(this.lang)}`;
+  protected readonly toolsIndex =
+    this.english || this.lang === 'ms' || this.lang === 'vi'
+      ? '/tools'
+      : `/${languageFolder(this.lang)}`;
 
   /** Languages with at least one topic page, in hub order, each named in itself. */
   protected readonly languages = FEED_BUILDER_HUBS.map((hub) => hub.lang)

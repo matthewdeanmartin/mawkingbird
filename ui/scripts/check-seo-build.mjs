@@ -174,8 +174,32 @@ for (const page of pages) {
     const entry = feedPageAt(page);
     assert.equal(doc.documentElement.lang, entry.lang, `${page} <html lang>`);
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has one heading`);
-    assert.ok(doc.querySelectorAll('.people li').length >= 5, `${page} lists its people`);
-    assert.ok(doc.querySelectorAll('a[href^="/tags/"]').length >= 3, `${page} links its hashtags`);
+    const data = JSON.parse(
+      await readFile(
+        path.resolve(
+          import.meta.dirname,
+          `../src/app/pages/feed-builder/data/${entry.topic}.${entry.lang}.json`,
+        ),
+        'utf8',
+      ),
+    );
+    assert.equal(
+      doc.querySelectorAll('.people li').length,
+      data.people.length,
+      `${page} lists every approved account`,
+    );
+    // Regional kits can be accounts-only. Check the exact approved tags rather
+    // than imposing an unrelated publishing quota on every language.
+    const linkedTags = new Set(
+      [...doc.querySelectorAll('a[href^="/tags/"]')].map((link) =>
+        decodeURIComponent(link.getAttribute('href').slice('/tags/'.length)),
+      ),
+    );
+    assert.deepEqual(
+      [...linkedTags].sort(),
+      data.tags.map((tag) => tag.name).sort(),
+      `${page} links every approved hashtag`,
+    );
     assert.equal(doc.querySelector('.activity'), null, `${page} prerenders no live tag activity`);
     assert.ok(
       doc.querySelector(`a[href="/${hubFor(entry.lang).path}/"]`),

@@ -1,6 +1,6 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1724,
+  "filesScanned": 1726,
   "filesWithCandidates": 605,
   "inventory": [
     {
@@ -5803,39 +5803,27 @@
         },
         {
           "pattern": "shared",
-          "line": 79
+          "line": 81
         },
         {
           "pattern": "shared",
-          "line": 103
+          "line": 105
         },
         {
           "pattern": "shared",
-          "line": 115
+          "line": 119
         },
         {
           "pattern": "shared",
-          "line": 136
+          "line": 140
         },
         {
           "pattern": "shared",
-          "line": 145
+          "line": 149
         },
         {
           "pattern": "shared",
-          "line": 148
-        },
-        {
-          "pattern": "shared",
-          "line": 155
-        },
-        {
-          "pattern": "shared",
-          "line": 156
-        },
-        {
-          "pattern": "shared",
-          "line": 158
+          "line": 152
         },
         {
           "pattern": "shared",
@@ -5843,19 +5831,31 @@
         },
         {
           "pattern": "shared",
-          "line": 164
+          "line": 160
         },
         {
           "pattern": "shared",
-          "line": 177
+          "line": 162
         },
         {
           "pattern": "shared",
-          "line": 179
+          "line": 163
         },
         {
           "pattern": "shared",
-          "line": 187
+          "line": 168
+        },
+        {
+          "pattern": "shared",
+          "line": 181
+        },
+        {
+          "pattern": "shared",
+          "line": 183
+        },
+        {
+          "pattern": "shared",
+          "line": 191
         },
         {
           "pattern": "nativeButtons",
@@ -6625,7 +6625,7 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 59
+          "line": 60
         }
       ]
     },

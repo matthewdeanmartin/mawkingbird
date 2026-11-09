@@ -26,6 +26,40 @@ export interface HubCopy {
 }
 
 export const HUB_COPY: Partial<Record<PageLanguage, HubCopy>> = {
+  vi: {
+    title: 'Cộng đồng Mastodon theo sở thích',
+    description:
+      'Khám phá cộng đồng và tài khoản để theo dõi trên Mastodon. Xem trước các bài viết công khai rồi chọn theo sở thích của bạn.',
+    eyebrow: 'Cộng đồng',
+    openApp: 'Mở Mawkingbird',
+    heading: 'Cộng đồng Mastodon theo sở thích',
+    intro: [
+      'Khám phá cộng đồng Mastodon qua những tài khoản được chọn. Bạn có thể đọc bài viết công khai trước khi tạo tài khoản.',
+      'Hướng dẫn này viết bằng tiếng Việt. Ngôn ngữ bài đăng tùy theo từng tài khoản; xem mô tả trên mỗi trang.',
+    ],
+    moreHeading: 'Khám phá thêm',
+    allLanguages: 'Mọi chủ đề và ngôn ngữ (bằng tiếng Anh)',
+    tools: 'Công cụ miễn phí cho Mastodon và Bluesky (bằng tiếng Anh)',
+    help: 'Trợ giúp (bằng tiếng Anh)',
+    features: 'Tính năng Mawkingbird (bằng tiếng Anh)',
+  },
+  ms: {
+    title: 'Komuniti Mastodon mengikut minat',
+    description:
+      'Temui akaun dan komuniti untuk diikuti di Mastodon. Baca dahulu, kemudian pilih akaun yang sesuai dengan minat anda.',
+    eyebrow: 'Komuniti',
+    openApp: 'Buka Mawkingbird',
+    heading: 'Komuniti Mastodon mengikut minat',
+    intro: [
+      'Temui komuniti di Mastodon melalui senarai akaun pilihan. Anda boleh membaca siaran awam sebelum membuka akaun.',
+      'Panduan ini ditulis dalam bahasa Melayu. Bahasa siaran berbeza mengikut akaun; lihat penerangan pada setiap halaman.',
+    ],
+    moreHeading: 'Lagi',
+    allLanguages: 'Semua topik dan bahasa (dalam bahasa Inggeris)',
+    tools: 'Alat percuma untuk Mastodon dan Bluesky (dalam bahasa Inggeris)',
+    help: 'Bantuan (dalam bahasa Inggeris)',
+    features: 'Ciri Mawkingbird (dalam bahasa Inggeris)',
+  },
   en: {
     title: '',
     description: '',
