@@ -35,6 +35,8 @@ export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
   'historical-fiction': 'culture',
   'mystery-and-crime': 'culture',
   'romance-books': 'culture',
+  'dutch-politics': 'society',
+  'dutch-culture': 'culture',
   vietnam: 'international-regions',
   malaysia: 'international-regions',
   bicycling: 'games-and-sport',
@@ -105,6 +107,27 @@ const EN: HubNavWords = {
 
 export const HUB_NAV_WORDS: Partial<Record<PageLanguage, HubNavWords>> = {
   en: EN,
+  nl: {
+    categories: {
+      'international-regions': 'Regio’s wereldwijd',
+      tech: 'Technologie',
+      science: 'Wetenschap',
+      society: 'Samenleving',
+      culture: 'Kunst en cultuur',
+      music: 'Muziek',
+      'games-and-sport': 'Spellen en sport',
+      nature: 'Natuur en dieren',
+      'home-and-garden': 'Huis en tuin',
+      'food-and-drink': 'Eten en drinken',
+    },
+    allTopics: 'Alle onderwerpen',
+    railLabel: 'Categorieën',
+    openRail: 'Categorieën',
+    closeRail: 'Categorieën sluiten',
+    language: 'Taal',
+    everyLanguage: 'Alle talen',
+    inEnglish: 'in het Engels',
+  },
   vi: {
     categories: {
       'international-regions': 'Các khu vực trên thế giới',

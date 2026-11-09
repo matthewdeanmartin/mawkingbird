@@ -32,6 +32,7 @@ class SettingsPreview {
   readonly response = signal("Fail once");
   readonly requests = signal<string[]>([]);
   readonly analytics = signal(false);
+  readonly postHistory = signal(true);
   readonly visibility = signal("public");
   readonly language = signal("en");
   readonly knownLanguages = signal(["en"]);
@@ -179,6 +180,8 @@ export default {
             return {
               analytics: s.analytics,
               setAnalytics: (v: boolean) => s.analytics.set(v),
+              postHistory: s.postHistory,
+              setPostHistory: (v: boolean) => s.postHistory.set(v),
               setDefaultVisibility: (v: string) => s.visibility.set(v),
               setPostingLanguage: (v: string) => s.language.set(v),
               addKnownLanguage: (v: string) =>
@@ -189,6 +192,8 @@ export default {
               ClientPrefs,
               | "analytics"
               | "setAnalytics"
+              | "postHistory"
+              | "setPostHistory"
               | "setDefaultVisibility"
               | "setPostingLanguage"
               | "addKnownLanguage"

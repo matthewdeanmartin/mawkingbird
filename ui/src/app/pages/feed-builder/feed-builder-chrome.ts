@@ -649,7 +649,83 @@ const vi: FeedChrome = {
   updated: (date) => `Cập nhật ${date}`,
 };
 
+const nl: FeedChrome = {
+  eyebrow: 'Mastodon-startpakket',
+  openApp: 'Mawkingbird openen',
+  hub: 'Alle gemeenschappen',
+  tagsHeading: 'Hashtags om te volgen',
+  tagsIntro:
+    'Volg een hashtag om berichten in je tijdlijn te zien. Bekijk eerst de berichten: sommige tags zijn rustig of worden ook voor andere onderwerpen gebruikt.',
+  englishTag: 'Engels',
+  futureHeading: 'Help deze hashtags groeien',
+  futureIntro:
+    'Gebruik een Nederlandstalige hashtag naast de Engelse om anderen te helpen elkaar te vinden.',
+  futureBeside: (s) => `de Nederlandstalige variant van #${s}`,
+  futureNew: 'nieuw',
+  futureStarting: 'net begonnen',
+  caution: {
+    spam: 'Veel verkoopberichten: bekijk de tag voordat je hem volgt.',
+    'off-topic': 'Ook voor andere onderwerpen gebruikt: bekijk eerst de berichten.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Makers met een YouTube-kanaal',
+      intro: 'Videomakers die ook op Mastodon delen.',
+    },
+    notable: {
+      heading: 'Bekende stemmen en organisaties',
+      intro: 'Publieke accounts die over dit onderwerp schrijven.',
+    },
+    community: {
+      heading: 'Stemmen uit de gemeenschap',
+      intro: 'Actieve accounts die gevonden willen worden en over dit onderwerp delen.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube 10k+',
+    'followers-2500': '2.500+ volgers',
+    'followers-625': '625+ volgers',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Podcast',
+    website: 'Website',
+  },
+  youtube: (band) => (band ? `YouTube-kanaal, ${band} abonnees` : 'YouTube-kanaal'),
+  feedCopy: 'deelt nieuwe video’s',
+  activity: (n) => `${n.toLocaleString('nl')} berichten deze week op mastodon.social`,
+  serversHeading: 'Waar de gemeenschap samenkomt',
+  serversIntro:
+    'Je kunt accounts op andere Mastodon-servers volgen zonder zelf van server te wisselen.',
+  chooseHeading: 'Hoe we kiezen',
+  choose: [
+    'We bekijken openbare profielen en berichten op relevantie en bruikbaarheid. Accounts moeten recent actief zijn. De voorwaarden voor deelname staan bij het onderwerp.',
+    'We respecteren privacykeuzes en verzoeken om niet door webzoekmachines geïndexeerd te worden. Het uitschakelen van Mastodons eigen tekstzoekfunctie is op zichzelf geen uitsluiting.',
+    'Een selectie is een momentopname. Bekijk de berichten en bepaal zelf wie en wat je wilt volgen.',
+  ],
+  helpHeading: 'Hulp nodig?',
+  help: 'Vragen of liever niet op de lijst? Neem contact op via Mastodon. We respecteren verwijderverzoeken.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Veelgestelde vragen',
+  readTag: (tag) => `Lees #${tag} in Mawkingbird`,
+  peopleHeading: 'Accounts om te volgen',
+  groupColumn: 'Groep',
+  countColumn: 'Accounts',
+  everyone: 'Iedereen',
+  alsoYoutubeHeading: 'Ook op YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} van deze ${total} accounts maken ook YouTube-video’s. Volg ze op Mastodon of abonneer je in Mawkingbird.`,
+  otherLanguages: 'Deze pagina in andere talen',
+  updated: (date) => `Bijgewerkt op ${date}`,
+};
+
 export const FEED_CHROME: Partial<Record<PageLanguage, FeedChrome>> = {
+  nl,
   en,
   de,
   fr,

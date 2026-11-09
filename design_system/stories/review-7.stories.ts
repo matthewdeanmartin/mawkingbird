@@ -25,6 +25,7 @@ class ReviewState {
   readonly request = signal("No credential changes yet.");
   readonly created = signal("No announcement created yet.");
   readonly analytics = signal(false);
+  readonly postHistory = signal(true);
   failLocked = true;
 }
 @Component({
@@ -70,6 +71,8 @@ class ReviewState {
         return {
           analytics: state.analytics,
           setAnalytics: (value: boolean) => state.analytics.set(value),
+          postHistory: state.postHistory,
+          setPostHistory: (value: boolean) => state.postHistory.set(value),
           setDefaultVisibility: () => undefined,
           addKnownLanguage: () => undefined,
         };

@@ -82,6 +82,37 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders Dutch Politics with approved accounts and open-tag limitations', async () => {
+    const el = await render(at('nl/nederlandse-politiek-op-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('nl');
+    expect(el.querySelector('h1')?.textContent).toContain('Nederlandse politiek');
+    expect(el.querySelectorAll('.people li')).toHaveLength(19);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(3);
+    expect(el.querySelector('a[href="/tags/TweedeKamer"]')).not.toBeNull();
+    expect(el.textContent).toContain('geen onafhankelijke journalistiek');
+    expect(el.textContent).toContain('82%');
+    expect(el.textContent).toContain('Kleine persoonlijke accounts');
+    expect(el.textContent).toContain('social.overheid.nl');
+    expect(el.querySelector('a[href="/nl/mastodon-gemeenschappen"]')).not.toBeNull();
+  });
+
+  it('renders Dutch Culture with native controls and honest quiet-tag guidance', async () => {
+    const el = await render(at('nl/nederlandstalige-cultuur-op-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('nl');
+    expect(el.querySelector('h1')?.textContent).toContain('Nederlandstalige cultuur');
+    expect(el.querySelectorAll('.people li')).toHaveLength(46);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(4);
+    expect(el.querySelector('a[href="/tags/Boeken"]')).not.toBeNull();
+    expect(el.textContent).toContain('optionele, rustige tags');
+    expect(el.textContent).toContain('Inloggen met Mastodon');
+    expect(el.textContent).toContain('mastodon.nl');
+    expect(el.querySelector('a[href="/nl/mastodon-gemeenschappen"]')).not.toBeNull();
+  });
+
   it('renders the approved Vietnamese kit with native controls and inclusive language guidance', async () => {
     const el = await render(at('vi/cong-dong-viet-tren-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('vi');
@@ -536,6 +567,9 @@ describe('Feed Builder hub and routes', () => {
         ?.parentElement?.querySelector('.hub-fallback')?.textContent,
     ).toContain('Melayu');
     expect(el.querySelector('select option[value="vi"]')?.textContent).toContain('Tiếng Việt');
+    expect(el.querySelector('select option[value="nl"]')?.textContent).toContain('Nederlands');
+    expect(el.querySelector('a[href="/nl/nederlandstalige-cultuur-op-mastodon"]')).not.toBeNull();
+    expect(el.querySelector('a[href="/nl/nederlandse-politiek-op-mastodon"]')).not.toBeNull();
     expect(el.querySelector('a[href="/vi/cong-dong-viet-tren-mastodon"]')).not.toBeNull();
     // Every version is still linked, so nothing is lost to the filter.
     for (const { path } of FEED_BUILDER_PAGES)

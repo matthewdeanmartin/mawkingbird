@@ -85,5 +85,11 @@
   },
   "vietnam": {
     "vi": "vi/cong-dong-viet-tren-mastodon"
+  },
+  "dutch-culture": {
+    "nl": "nl/nederlandstalige-cultuur-op-mastodon"
+  },
+  "dutch-politics": {
+    "nl": "nl/nederlandse-politiek-op-mastodon"
   }
 }

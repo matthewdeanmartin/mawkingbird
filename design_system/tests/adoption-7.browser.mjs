@@ -99,7 +99,8 @@ for (const [theme, width, direction] of [
   }, info) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto(`${review}&globals=theme:${theme};direction:${direction}`);
-    await expect(page.locator("mb-checkbox")).toHaveCount(6);
+    // Six before Privacy gained its Post history checkbox (2026-11-08).
+    await expect(page.locator("mb-checkbox")).toHaveCount(7);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

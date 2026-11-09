@@ -94,6 +94,26 @@ class ServerSelectionPreview {
         resource instanceof Request ? resource.url : String(resource),
         location.href,
       );
+      // Search discovery reads the shipped snapshot of qualifying servers
+      // before its live probe. It is a static asset of the app, so it loads in
+      // every mode; "unreachable" applies to the probe below.
+      if (url.pathname.endsWith("/search-servers.json"))
+        return new Response(
+          JSON.stringify({
+            version: 1,
+            checkedAt: "2026-11-08T00:00:00.000Z",
+            checked: 1,
+            servers: [
+              {
+                domain: "community.example",
+                accounts: true,
+                posts: true,
+                tagsOnly: false,
+              },
+            ],
+          }),
+          { headers: { "Content-Type": "application/json" } },
+        );
       if (!url.pathname.startsWith("/api/") && url.hostname !== "media.example")
         return original(resource, options);
       const abort = options?.signal;
@@ -165,7 +185,8 @@ export default {
                 state.directory.filter((server) =>
                   server.domain.includes(query),
                 ),
-              shuffled: (excluded: Set<string>) =>
+              // Same default as MastodonServers: search discovery passes none.
+              shuffled: (excluded: ReadonlySet<string> = new Set()) =>
                 state.directory.filter(
                   (server) => !server.local && !excluded.has(server.domain),
                 ),

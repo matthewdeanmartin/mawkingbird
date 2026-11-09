@@ -26,6 +26,23 @@ export interface HubCopy {
 }
 
 export const HUB_COPY: Partial<Record<PageLanguage, HubCopy>> = {
+  nl: {
+    title: 'Mastodon-gemeenschappen per interesse',
+    description:
+      'Ontdek Nederlandstalige accounts en onderwerpen op Mastodon. Bekijk openbare berichten en kies wie en wat je wilt volgen.',
+    eyebrow: 'Gemeenschappen',
+    openApp: 'Mawkingbird openen',
+    heading: 'Mastodon-gemeenschappen per interesse',
+    intro: [
+      'Ontdek mensen en onderwerpen op Mastodon die bij je interesses passen. Je kunt openbare berichten bekijken voordat je een account maakt.',
+      'Elke pagina brengt accounts en hashtags rond een onderwerp samen. Kies zelf wat je wilt volgen.',
+    ],
+    moreHeading: 'Meer ontdekken',
+    allLanguages: 'Alle onderwerpen en talen (in het Engels)',
+    tools: 'Gratis tools voor Mastodon en Bluesky',
+    help: 'Hulp (in het Engels)',
+    features: 'Mawkingbird ontdekken (in het Engels)',
+  },
   vi: {
     title: 'Cộng đồng Mastodon theo sở thích',
     description:

@@ -54,6 +54,8 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'dutch-politics.nl': () => import('./data/dutch-politics.nl.json'),
+  'dutch-culture.nl': () => import('./data/dutch-culture.nl.json'),
   'vietnam.vi': () => import('./data/vietnam.vi.json'),
   'malaysia.ms': () => import('./data/malaysia.ms.json'),
   'bicycling.en': () => import('./data/bicycling.en.json'),

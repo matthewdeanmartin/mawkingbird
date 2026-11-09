@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "topic": "dutch-politics",
+  "lang": "nl",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T16:53:11+00:00",
+  "tags": [
+    {
+      "name": "TweedeKamer",
+      "lang": "nl",
+      "kind": "tag"
+    },
+    {
+      "name": "Gemeenteraad",
+      "lang": "nl",
+      "kind": "tag"
+    },
+    {
+      "name": "RaadvanState",
+      "lang": "nl",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "volkskrant@mastodon.nl",
+      "id": "109545960107794477",
+      "url": "https://mastodon.nl/@volkskrant",
+      "displayName": "De Volkskrant",
+      "avatar": "https://mastodon.nl/system/accounts/avatars/109/545/960/107/794/477/original/d4bdd51f2219f33e.jpg",
+      "bio": "Onafhankelijk, betrouwbaar, toegankelijk: volg de Volkskrant voor nieuws, opinie en achtergrondverhalen.",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "nrc@nrc.social",
+      "id": "117274956642962088",
+      "url": "https://nrc.social/@NRC",
+      "displayName": "NRC",
+      "avatar": "https://nrc.social/system/accounts/avatars/117/274/956/642/962/088/original/c0737a8a45e6861e.png",
+      "bio": "",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "bartgroothuis@mastodon.online",
+      "id": "108210459966916091",
+      "url": "https://mastodon.online/@bartgroothuis",
+      "displayName": "Bart Groothuis",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/210/459/966/916/091/original/7711a5f6d421fabd.png",
+      "bio": "Member of European Parliament for VVD/RENEW Europe. All things cyber, defence, foreign interference, trade, digital.",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "nos@mastodon.social",
+      "id": "7929",
+      "url": "https://mastodon.social/@NOS",
+      "displayName": "NOS",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/007/929/original/nos.jpg",
+      "bio": "Altijd. Overal. NOS.",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "cbsstatistiek@social.overheid.nl",
+      "id": "112240382032769378",
+      "url": "https://social.overheid.nl/@CBSstatistiek",
+      "displayName": "CBSstatistiek",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/112/240/382/032/769/378/original/4e1ef67d520dcb32.png",
+      "bio": "Centraal Bureau voor de Statistiek | Nieuws, feiten en cijfers over economie en samenleving | Voor wat er feitelijk gebeurt |",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "sandradehaan@mastodon.nl",
+      "id": "109295759678386955",
+      "url": "https://mastodon.nl/@SandraDeHaan",
+      "displayName": "Sandra de Haan in Heeze",
+      "avatar": "https://mastodon.nl/system/accounts/avatars/109/295/759/678/386/955/original/32f414d7926b70e3.jpg",
+      "bio": "Actief bij politieke partij PRO Heeze-Leende en bij milieuwerkgroep IVN Heeze-Leende. Volgt transitie veehouderij en de politiek er omheen met interesse. Vult sociale media voor enkele organisaties.…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["followers-625"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "staatssecretarisbzk@social.overheid.nl",
+      "id": "112552928327036126",
+      "url": "https://social.overheid.nl/@staatssecretarisbzk",
+      "displayName": "Eric van der Burg",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/112/552/928/327/036/126/original/702ada6d65e575de.png",
+      "bio": "Staatssecretaris van Binnenlandse Zaken - Koninkrijksrelaties en Slagvaardige Overheid | Redactie door @ minbzk",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata", "followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "ministerbzk@social.overheid.nl",
+      "id": "112478960657210695",
+      "url": "https://social.overheid.nl/@MinisterBZK",
+      "displayName": "Pieter Heerma",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/112/478/960/657/210/695/original/d5f928c50ae4c696.png",
+      "bio": "Minister van Binnenlandse Zaken en Koninkrijksrelaties | dit account wordt beheerd door @ minbzk https:// minbzk.nl",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata", "followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "acm@social.overheid.nl",
+      "id": "111164295072056040",
+      "url": "https://social.overheid.nl/@acm",
+      "displayName": "Autoriteit Consument & Markt",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/111/164/295/072/056/040/original/48776ebb9200f088.jpg",
+      "bio": "Wij zijn een onafhankelijke toezichthouder die zich sterk maakt voor mensen en bedrijven. Belangrijke thema's voor ons zijn energietransitie en verduurzaming, digitale economie en innovatie en weerba…",
+      "shelf": "notable",
+      "rank": 9,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "stasdigi@social.overheid.nl",
+      "id": "116136964046814946",
+      "url": "https://social.overheid.nl/@stasdigi",
+      "displayName": "Willemijn Aerdts",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/116/136/964/046/814/946/original/c59c182fb46c37d7.jpeg",
+      "bio": "Staatssecretaris van Economische Zaken – Digitale economie en soevereiniteit | Redactie door het ministerie van Economische Zaken en Klimaat",
+      "shelf": "notable",
+      "rank": 10,
+      "fame": ["wikidata", "followers-625"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "digitaleoverheid@social.overheid.nl",
+      "id": "112160963918388900",
+      "url": "https://social.overheid.nl/@DigitaleOverheid",
+      "displayName": "Digitale Overheid",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/112/160/963/918/388/900/original/861ca52377e4bf19.jpeg",
+      "bio": "Voor professionals die werken aan digitalisering van de overheid. Met informatie over ambities, plannen, wetgeving, nieuws en achtergronden over de praktijk.",
+      "shelf": "notable",
+      "rank": 11,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ministerezk@social.overheid.nl",
+      "id": "116680951460399805",
+      "url": "https://social.overheid.nl/@MinisterEZK",
+      "displayName": "Heleen Herbert",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/116/680/951/460/399/805/original/181d203116892e96.png",
+      "bio": "Minister van Economische Zaken en Klimaat | Redactie door het ministerie van Economische Zaken en Klimaat ( @ MinisterieEZK )",
+      "shelf": "notable",
+      "rank": 12,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "marloesdekoning@nrc.social",
+      "id": "117274972292442433",
+      "url": "https://nrc.social/@MarloesdeKoning",
+      "displayName": "Marloes de Koning",
+      "avatar": "https://nrc.social/system/accounts/avatars/117/274/972/292/442/433/original/4d2cfd89b5461478.png",
+      "bio": "Ik schrijf voor NRC over technologie en macht. In mijn verhalen gaat het vaak over digitale autonomie, digitaal geld, sociale media en digitale identiteit. Ik ben de admin van de NRC-mastodon-server.…",
+      "shelf": "notable",
+      "rank": 13,
+      "fame": ["wikidata", "followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "raadvanstate@social.overheid.nl",
+      "id": "110853963219695967",
+      "url": "https://social.overheid.nl/@raadvanstate",
+      "displayName": "Raad van State",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/110/853/963/219/695/967/original/055af22fdca46914.jpg",
+      "bio": "Onafhankelijk adviseur over wetgeving en bestuur en de hoogste algemene bestuursrechter van Nederland.",
+      "shelf": "notable",
+      "rank": 14,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "kiesraad@social.overheid.nl",
+      "id": "113957392139784135",
+      "url": "https://social.overheid.nl/@kiesraad",
+      "displayName": "Kiesraad",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/113/957/392/139/784/135/original/cbf008b146f12770.jpg",
+      "bio": "De Kiesraad is centraal stembureau, adviesorgaan én infocentrum over kiesrecht en verkiezingen. Op dit account houden we je op de hoogte van de software die we ontwikkelen ter ondersteuning van het v…",
+      "shelf": "notable",
+      "rank": 15,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "markbeekhuis@mastodon.nl",
+      "id": "108197489648780495",
+      "url": "https://mastodon.nl/@MarkBeekhuis",
+      "displayName": "Mark Beekhuis",
+      "avatar": "https://mastodon.nl/system/accounts/avatars/108/197/489/648/780/495/original/a5058c0d158c7917.jpg",
+      "bio": "Energie- en klimaatverslaggever bij BNR. En maker van de vrijdagse politieke podcast Studio Den Haag",
+      "shelf": "notable",
+      "rank": 16,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "provincienoordbrabant@social.overheid.nl",
+      "id": "113985661974342082",
+      "url": "https://social.overheid.nl/@provincienoordbrabant",
+      "displayName": "Provincie Noord-Brabant",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/113/985/661/974/342/082/original/aa9303145990205f.jpg",
+      "bio": "Officiële Mastodon van de provincie Noord-Brabant met het laatste nieuws van de provincie.",
+      "shelf": "notable",
+      "rank": 17,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "minfinancien@social.overheid.nl",
+      "id": "114019195109851971",
+      "url": "https://social.overheid.nl/@minfinancien",
+      "displayName": "Ministerie van Financiën",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/114/019/195/109/851/971/original/2f50d7ecebe4e443.png",
+      "bio": "Officieel account van het ministerie van Financiën. Hier delen we nieuws en informatie over de rijksbegroting, belastingen en financiële markten. Beheerd door de directie Communicatie. Vragen? Klik o…",
+      "shelf": "notable",
+      "rank": 18,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "psbrabant@social.overheid.nl",
+      "id": "114041712339226303",
+      "url": "https://social.overheid.nl/@psbrabant",
+      "displayName": "Provinciale Staten N-Brabant",
+      "avatar": "https://social.overheid.nl/system/accounts/avatars/114/041/712/339/226/303/original/d172af8d25a8cb48.png",
+      "bio": "Aan het hoofd van de provincie staan Provinciale Staten. Zij kiezen Gedeputeerde Staten en hebben 3 rollen: de volksvertegenwoordigende, kaderstellende en controlerende rol. Brabant telt 55 Statenled…",
+      "shelf": "notable",
+      "rank": 19,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    }
+  ],
+  "servers": [
+    {
+      "domain": "mastodon.nl"
+    },
+    {
+      "domain": "social.overheid.nl"
+    },
+    {
+      "domain": "nrc.social"
+    }
+  ]
+}

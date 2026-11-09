@@ -2004,3 +2004,17 @@ labels move existing control line references. No control counts or candidate pat
 11-reconciliation.json needs no edit. No shared widget changed.
 
 Vietnamese Feed Builder addition (2026-11-09): reviewed inventory refresh. Only filesScanned increases for new topic copy; candidate inventory and candidate files unchanged. No reconciliation entries needed.
+
+### Dutch Culture integration (2026-11-09)
+
+Reviewed the regenerated inventory after adding Dutch Culture copy and Dutch page
+labels. Only filesScanned changed (1726 to 1727); all 605 candidate files and their
+control records are unchanged. No additions/removals to reconcile in
+11-reconciliation.json. No shared widget implementation changed.
+
+### Dutch Politics integration (2026-11-09)
+
+Reviewed the inventory after adding Dutch Politics copy. Source count increased
+from 1727 to 1728; all 605 candidate files and control records remain unchanged.
+No added/removed candidates require changes to 11-reconciliation.json. No shared
+widget implementation changed.

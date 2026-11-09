@@ -30,5 +30,9 @@
   "vi": {
     "path": "vi/cong-dong-mastodon",
     "label": "Cộng đồng Mastodon theo sở thích"
+  },
+  "nl": {
+    "path": "nl/mastodon-gemeenschappen",
+    "label": "Mastodon-gemeenschappen per interesse"
   }
 }
