@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "topic": "bicycling",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T02:44:07+00:00",
+  "tags": [
+    {
+      "name": "Vélo",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Cyclotourisme",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "Cycling",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bicycling",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bikepacking",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "emeline@piaille.fr",
+      "id": "109282396882183410",
+      "url": "https://piaille.fr/@emeline",
+      "displayName": "Emeline Parizel",
+      "avatar": "https://static.piaille.fr/accounts/avatars/109/282/396/882/183/410/original/02f80b74090ba90a.jpg",
+      "bio": "🚴‍♀️ Cheffe de projets web et cycliste engagée 🔥 Mon vélo s'appelle Olympe 📖 Paris - Athènes à vélo dans un livre pour enfants 💚 Organisatrice de la \"Cyclo pour le Climat\" Paris # Cycling4Climate # v…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "velocite63@pouet.chapril.org",
+      "id": "109272857382105873",
+      "url": "https://pouet.chapril.org/@velocite63",
+      "displayName": "Vélo-Cité 63",
+      "avatar": "https://pouet.chapril.org/system/accounts/avatars/109/272/857/382/105/873/original/df50203e8f52d9f8.jpg",
+      "bio": "Association pour le # vélo urbain à Clermont et villes du Puy-de-Dôme Atelier VéloBoulotDodo & VéloÉcole affilié l'Heureux-Cyclage, l'AF3V et la FUB",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "aurelien_naoned@masto.bike",
+      "id": "110491732233621260",
+      "url": "https://masto.bike/@aurelien_naoned",
+      "displayName": "Aurélien Boulé Fournier",
+      "avatar": "https://masto.bike/system/accounts/avatars/110/491/732/233/621/260/original/d62aaa46e5772e9c.png",
+      "bio": "Élu nantais : Métropole ​> délégué aux modes actifs, transport scolaire & logistique urbaine Ville ​> délégué aux enjeux bretons, interculturalité & lecture publique Militant # UDB . Parti de gauche…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "velocampusnantes@piaille.fr",
+      "id": "113941920432819611",
+      "url": "https://piaille.fr/@velocampusnantes",
+      "displayName": "Vélocampus Nantes",
+      "avatar": "https://static.piaille.fr/accounts/avatars/113/941/920/432/819/611/original/9f04be894357393c.png",
+      "bio": "🚲 Vélocampus, association créée en 1997 par des étudiants·es, mais ouverte à tous·tes ! 🚴‍♂️ Location et autoréparation de vélo 🔧 📍 Nantes, Mohrronnière - Petit Port",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mont2roues@masto.bike",
+      "id": "109886759678111500",
+      "url": "https://masto.bike/@mont2roues",
+      "displayName": "Mont2Roues",
+      "avatar": "https://masto.bike/system/accounts/avatars/109/886/759/678/111/500/original/a2a61938bb75abba.png",
+      "bio": "Mont2Roues est une association de défense et de promotion des mobilités actives (marche à pied, vélo, trottinette, rollers, …) comme moyen de déplacement économique, écologique, sain, peu polluant et…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "choisirlevelo@masto.bike",
+      "id": "117211797463365828",
+      "url": "https://masto.bike/@Choisirlevelo",
+      "displayName": "Choisir le Vélo",
+      "avatar": "https://masto.bike/system/accounts/avatars/117/211/797/463/365/828/original/1f508860676c5048.png",
+      "bio": "Association de promotion l’usage du vélo au quotidien dans les Alpes-Maritimes. Services proposés : • Ateliers d’auto réparation de vélos • Vente de vélos d'occasion • Essais de vélo cargos • Vélo éc…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

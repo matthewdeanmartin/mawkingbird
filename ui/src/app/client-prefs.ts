@@ -433,7 +433,13 @@ interface StoredPrefs {
   analytics?: boolean;
   postHistory?: boolean;
   requireAltText?: boolean;
+  /**
+   * Superseded by `watchYoutubeAutoLoad` and no longer read. It defaulted to
+   * off and every save wrote it out, so a stored `false` records the old
+   * default, not a choice. Kept in the type so old blobs still parse.
+   */
   autoLoadYoutubeWatch?: boolean;
+  watchYoutubeAutoLoad?: boolean;
   thoughtfulPosting?: boolean;
   autoShowMiniComposer?: boolean;
   warnOnPkmPublish?: boolean;
@@ -766,7 +772,13 @@ export class ClientPrefs {
   readonly postHistory = signal<boolean>(true);
   /** Opt-in: refuse to post while any attached image lacks alt text. */
   readonly requireAltText = signal<boolean>(true);
-  readonly autoLoadYoutubeWatch = signal<boolean>(false);
+  /**
+   * Load the YouTube player as soon as Watch opens. On by default: Watch is the
+   * page you go to in order to watch, and a shared /watch link should play
+   * without an extra click. Feed previews still wait for a click (inline players
+   * ignore this), and the video itself still starts paused.
+   */
+  readonly autoLoadYoutubeWatch = signal<boolean>(true);
 
   /**
    * Thoughtful posting: nothing publishes straight from a text box.
@@ -1523,7 +1535,7 @@ export class ClientPrefs {
     this.loadBool(stored.analytics, this.analytics);
     this.loadBool(stored.postHistory, this.postHistory);
     this.loadBool(stored.requireAltText, this.requireAltText);
-    this.loadBool(stored.autoLoadYoutubeWatch, this.autoLoadYoutubeWatch);
+    this.loadBool(stored.watchYoutubeAutoLoad, this.autoLoadYoutubeWatch);
     this.loadBool(stored.thoughtfulPosting, this.thoughtfulPosting);
     this.loadBool(stored.autoShowMiniComposer, this.autoShowMiniComposer);
     this.customBg.set(normalizeColor(stored.customBg ?? null));
@@ -1603,7 +1615,7 @@ export class ClientPrefs {
       analytics: this.analytics(),
       postHistory: this.postHistory(),
       requireAltText: this.requireAltText(),
-      autoLoadYoutubeWatch: this.autoLoadYoutubeWatch(),
+      watchYoutubeAutoLoad: this.autoLoadYoutubeWatch(),
       thoughtfulPosting: this.thoughtfulPosting(),
       autoShowMiniComposer: this.autoShowMiniComposer(),
       warnOnPkmPublish: this.warnOnPkmPublish(),

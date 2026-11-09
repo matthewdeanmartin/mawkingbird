@@ -33,6 +33,20 @@ describe('ClientPrefs', () => {
     expect(JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}').requireAltText).toBe(true);
   });
 
+  it('loads YouTube on Watch by default, ignoring the old saved-default field', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ autoLoadYoutubeWatch: false }));
+    expect(create().autoLoadYoutubeWatch()).toBe(true);
+  });
+
+  it('keeps an explicit Watch auto-load opt-out', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ watchYoutubeAutoLoad: false }));
+    const prefs = create();
+    expect(prefs.autoLoadYoutubeWatch()).toBe(false);
+    prefs.autoLoadYoutubeWatch.set(true);
+    TestBed.tick();
+    expect(JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}').watchYoutubeAutoLoad).toBe(true);
+  });
+
   it('defaults to auto theme, blue accent, posting guards off, fixed blue checks', () => {
     const prefs = create();
     expect(prefs.themeMode()).toBe('auto');

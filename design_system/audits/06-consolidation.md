@@ -1977,7 +1977,6 @@ Source and candidate counts are unchanged by this change (1,722 and 605).
 
 No shared widget changed; 11-reconciliation.json needs no edits.
 
-
 Running topic integration: reviewed regenerated inventory, 1723 source files and
 605 candidate files. The sole inventory change is the new copy source; no
 candidate findings changed. Reconciliation candidate set is unchanged, so
@@ -1989,3 +1988,10 @@ Search's query box gains `autocomplete="off"`, so the browser's shared form
 history no longer offers another account's searches. Only evidence line
 numbers moved: 1,723 sources and 605 candidates, every count unchanged. No
 candidates were added or removed; no shared widget changed.
+
+## Bicycling topic integration, 2026-11-08
+
+Reviewed the regenerated inventory: 1,724 source files and 605 candidate files.
+Only the source-file count increased for the new topic copy. No control findings
+or candidate paths changed; 11-reconciliation.json needs no edits. No shared
+widget changed.

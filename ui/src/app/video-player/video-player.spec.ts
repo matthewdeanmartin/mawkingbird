@@ -105,6 +105,8 @@ describe('VideoPlayer user control', () => {
   });
 
   it('activates YouTube by clicking its preview image', () => {
+    // Watch auto-loads YouTube by default; this covers the opted-out viewer.
+    TestBed.inject(ClientPrefs).autoLoadYoutubeWatch.set(false);
     mount({
       ...youtubeSource('https://youtu.be/0KoeY54M5VA')!,
       poster: 'https://example.test/poster.jpg',
@@ -258,6 +260,8 @@ describe('VideoPlayer user control', () => {
   });
 
   it('does not load an iframe or SDK before explicit external-player activation', () => {
+    // Watch auto-loads YouTube by default; this covers the opted-out viewer.
+    TestBed.inject(ClientPrefs).autoLoadYoutubeWatch.set(false);
     mount(youtubeSource('https://youtu.be/dQw4w9WgXcQ')!);
     expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
     expect(fixture.nativeElement.querySelector('.description')).toBeNull();
@@ -267,6 +271,8 @@ describe('VideoPlayer user control', () => {
   });
 
   it('starting another player closes YouTube and requires explicit reactivation', () => {
+    // Watch auto-loads YouTube by default; this covers the opted-out viewer.
+    TestBed.inject(ClientPrefs).autoLoadYoutubeWatch.set(false);
     mount(youtubeSource('https://youtu.be/dQw4w9WgXcQ')!);
     fixture.nativeElement.querySelector('button').click();
     fixture.detectChanges();
@@ -283,6 +289,8 @@ describe('VideoPlayer user control', () => {
   });
 
   it('loads a single YouTube video with no autoplay, loop or playlist, and never plays on readiness', async () => {
+    // Watch auto-loads YouTube by default; this covers the opted-out viewer.
+    TestBed.inject(ClientPrefs).autoLoadYoutubeWatch.set(false);
     mount(youtubeSource('https://youtu.be/dQw4w9WgXcQ?t=12&autoplay=1&list=evil')!);
     fixture.nativeElement.querySelector('button').click();
     fixture.detectChanges();

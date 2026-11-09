@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "topic": "bicycling",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T02:44:07+00:00",
+  "tags": [
+    {
+      "name": "Fahrrad",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Radfahren",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Mountainbike",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Radtour",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Cycling",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bicycling",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Bikepacking",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "adfc@mastodon.social",
+      "id": "109244499145918891",
+      "url": "https://mastodon.social/@ADFC",
+      "displayName": "ADFC Bundesverband",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/244/499/145/918/891/original/9d08d5e879b91d81.jpg",
+      "bio": "Allgemeiner Deutscher Fahrrad-Club e. V. 🚲 Weil Radfahren glücklich macht! 🐘 Offizieller Account 🤝 240.000 Mitglieder unterstützen unsere Arbeit. Sei dabei! https://www. adfc.de/mitgliedschaft 🧡 Bitt…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UCVQ2nAnLoNwA0K8WKvHJwqQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-03"
+      }
+    },
+    {
+      "acct": "adfc_dresden@dresden.network",
+      "id": "111971687248692110",
+      "url": "https://dresden.network/@ADFC_Dresden",
+      "displayName": "ADFC Dresden",
+      "avatar": "https://dresden.s3proxy.de/accounts/avatars/111/971/687/248/692/110/original/4cf4a30428f5360b.jpg",
+      "bio": "Hier trötet der ADFC Dresden. Unterwegs für aktive Mobilität in Dresden seit 1987. http:// adfc-dresden.de/impressum",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["followers-625"],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCTa5m9ANLoPUQZCVGGE3weQ",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "xtaran@chaos.social",
+      "id": "200793",
+      "url": "https://chaos.social/@xtaran",
+      "displayName": "Axel 🚴😷🐧🐪⌨ | #WeAreNatenom",
+      "avatar": "https://assets.chaos.social/accounts/avatars/000/200/793/original/c362edaaea4a94a7.jpg",
+      "bio": "# Brompton + # Recumbent 🚴 Bicyclist; ⌨ # MechanicalKeyboard + 🖲 # Trackball # Geek 🤓🧔😷6×💉; 🐧#Linux # Sysadmin + digital # forensics expert by day; # Debian Developer by night; 🐧 # LUGS ; 🚀 # CCCZH ;…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "mjaschen@mastodon.social",
+      "id": "112884781773002095",
+      "url": "https://mastodon.social/@mjaschen",
+      "displayName": "Marcus Jaschen",
+      "avatar": "https://files.mastodon.social/accounts/avatars/112/884/781/773/002/095/original/062c4918630bf2b9.png",
+      "bio": "Web-Apps, Serverzeug, Radsport, Holz, OpenStreetMap. Hosting 🗺️ bikerouter.de @ bikerouter",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "herrklamauk@troet.cafe",
+      "id": "108214034808531501",
+      "url": "https://troet.cafe/@HerrKlamauk",
+      "displayName": "Herr Klamauk",
+      "avatar": "https://media.troet.cafe/troet/accounts/avatars/108/214/034/808/531/501/original/87cb2d88c9a073a5.png",
+      "bio": "Kunst & Mobilität | # Hannover",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["followers-625"],
+      "elsewhere": ["twitch", "youtube"]
+    },
+    {
+      "acct": "adfc_region_hannover@mastodon.social",
+      "id": "111708945111824384",
+      "url": "https://mastodon.social/@ADFC_Region_Hannover",
+      "displayName": "ADFC Region Hannover e.V.",
+      "avatar": "https://files.mastodon.social/accounts/avatars/111/708/945/111/824/384/original/10fab5a02b61da0b.jpeg",
+      "bio": "Wir sind die Interessenvertretung der Radfahrer*innen in der Region Hannover. Deine Stimme für den Radverkehr. Willst auch Du ehrenamtlich tätig werden für die Mobilitätswende? 🧡 Bitte beachte unsere…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "warumichradfahre@nrw.social",
+      "id": "109270014241441729",
+      "url": "https://nrw.social/@warumichradfahre",
+      "displayName": "Axel Fell",
+      "avatar": "https://media.nrw.social/accounts/avatars/109/270/014/241/441/729/original/c4c88a81cef59464.png",
+      "bio": "he/his er/sein Autor von warumichradfahre.blog 🚴‍♂️ | Alltagsradler, ADFC Tourguide & ÖPNV-Nutzer. Berichte über Radinfrastruktur, Faltrad-Leben & kleine Fluchten im Rheinland. 🇪🇺",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "adfc_ma@rheinneckar.social",
+      "id": "115326490188304305",
+      "url": "https://rheinneckar.social/@adfc_ma",
+      "displayName": "ADFC Mannheim",
+      "avatar": "https://rheinneckar.social/system/accounts/avatars/115/326/490/188/304/305/original/c8b805302bfcf9a1.png",
+      "bio": "Wir sind die Lobby der Radfahrenden in Mannheim",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "schreibmax@troet.cafe",
+      "id": "109536973115146143",
+      "url": "https://troet.cafe/@schreibmax",
+      "displayName": "Schreibmax",
+      "avatar": "https://media.troet.cafe/troet/accounts/avatars/109/536/973/115/146/143/original/55e267555f13a38a.png",
+      "bio": "Vater, Ehemann, Ingenieur und Erzähler. Schreibe hier über Schreiben, Radfahren, Technik (vor allem Raumfahrt) und Wissenschaft und was mich sonst interessiert. Gelegentlich auch mal Fußball.",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ars_velo@nrw.social",
+      "id": "115945065174323100",
+      "url": "https://nrw.social/@Ars_Velo",
+      "displayName": "Ars Velo",
+      "avatar": "https://media.nrw.social/accounts/avatars/115/945/065/174/323/100/original/5de7afafa54aa3ef.png",
+      "bio": "Radfahren ist nicht nur eine umweltfreundliche Fortbewegungsart, sondern bietet auch viele gesundheitliche Vorteile. Es ist auch eine wunderbare Möglichkeit, die Umwelt zu schonen und die Zeit an der…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

@@ -34,6 +34,7 @@ export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
   'historical-fiction': 'culture',
   'mystery-and-crime': 'culture',
   'romance-books': 'culture',
+  bicycling: 'games-and-sport',
   running: 'games-and-sport',
   buddhism: 'society',
   'war-in-ukraine': 'society',

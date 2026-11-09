@@ -159,6 +159,24 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders only the approved Bicycling editions', async () => {
+    for (const [path, lang, heading, count, tag] of [
+      ['bicycling-on-mastodon', 'en', 'Bicycling on Mastodon', 8, 'Cycling'],
+      ['de/radfahren-auf-mastodon', 'de', 'Radfahren auf Mastodon', 10, 'Radfahren'],
+      ['fr/velo-sur-mastodon', 'fr', 'Le vélo sur Mastodon', 6, 'Vélo'],
+    ] as const) {
+      TestBed.resetTestingModule();
+      const el = await render(at(path));
+      expect(el.querySelector('main')?.getAttribute('lang')).toBe(lang);
+      expect(el.querySelector('h1')?.textContent).toContain(heading);
+      expect(el.querySelectorAll('.people li')).toHaveLength(count);
+      expect(el.querySelector('a[href="/tags/' + encodeURIComponent(tag) + '"]')).not.toBeNull();
+    }
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'bicycling').map((page) => page.lang),
+    ).toEqual(['en', 'de', 'fr']);
+  });
+
   it('renders only the approved Running editions with community accounts', async () => {
     for (const [path, lang, heading, count, tag] of [
       ['running-on-mastodon', 'en', 'Running on Mastodon', 8, 'Running'],
