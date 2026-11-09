@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { RECENT_SEARCH_LIMIT, RecentSearches } from './recent-searches';
+import { Auth } from '../../auth';
 
 describe('RecentSearches', () => {
   let recent: RecentSearches;
@@ -13,6 +14,22 @@ describe('RecentSearches', () => {
 
   afterEach(() => {
     localStorage.clear();
+  });
+
+  it('keeps each account’s searches to itself, even without a reload', () => {
+    const auth = TestBed.inject(Auth);
+    auth.setToken('scifi-token');
+    recent.record('william gibson', 'statuses');
+    expect(recent.all().map((r) => r.query)).toEqual(['william gibson']);
+
+    auth.setToken('tech-token');
+    expect(recent.all()).toEqual([]);
+    recent.record('python316', 'statuses');
+
+    auth.switchTo('scifi-token');
+    expect(recent.all().map((r) => r.query)).toEqual(['william gibson']);
+    auth.switchTo('tech-token');
+    expect(recent.all().map((r) => r.query)).toEqual(['python316']);
   });
 
   it('records what was searched, newest first', () => {

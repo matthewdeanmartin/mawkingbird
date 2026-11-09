@@ -1,5 +1,6 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, linkedSignal, untracked } from '@angular/core';
 import { scopedKey } from '../../account-scope';
+import { Auth } from '../../auth';
 
 /**
  * The queries you actually typed, remembered automatically.
@@ -76,7 +77,19 @@ function load(): RecentState {
 /** Browser-local recent search history, scoped per account (see {@link scopedKey}). */
 @Injectable({ providedIn: 'root' })
 export class RecentSearches {
-  private state = signal(load());
+  private auth = inject(Auth);
+  /**
+   * Re-read whenever the signed-in identity changes. Most account switches
+   * reload the page, but not all (adding an account, reverting a failed
+   * switch), and a list read once at startup would otherwise keep showing the
+   * previous account's searches under the new one.
+   */
+  private state = linkedSignal(() => {
+    // Kind and token are what the storage scope is derived from.
+    this.auth.kind();
+    this.auth.token();
+    return untracked(load);
+  });
 
   readonly all = computed(() => this.state().searches);
   readonly count = computed(() => this.all().length);

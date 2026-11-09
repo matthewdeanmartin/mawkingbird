@@ -13,8 +13,11 @@
          which is how the two engines drifted into looking like separate apps —
          the box, the Search button and every control beside them are shared, and
          only what they *do* switches on the network. -->
+    <!-- autocomplete off: the browser's own form history is shared by every
+         account in this browser; the per-account Recent row replaces it. -->
     <input
       type="text"
+      autocomplete="off"
       [ngModel]="query()"
       (ngModelChange)="query.set($event)"
       (keyup.enter)="run()"

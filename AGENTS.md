@@ -9,6 +9,21 @@ Pack translations and app-wide UI locales are separate; preserve script tags.
 
 Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
 Run targeted specs during development, then the complete gate: cd ui && make test.
+
+Exception — routine Feed Builder SIG additions/data refreshes (owner reaffirmed
+2026-11-08): use the minimal gate in the sibling
+`mawkingbird_starters/spec/feed-builder/new-topic-playbook.md`. Data-only changes
+need schema/import validation and changed-topic counts/languages plus unchanged
+other snapshots. New topics using existing infrastructure add targeted Feed
+Builder specs, changed-file formatting and design inventory review/check when
+needed. Copy, lazy loader registrations, registry routes and hub mappings are
+routine topic data work: do not run the full unit suite, production/SEO builds,
+full-site SEO browser suite, design-verify or backend integration just for these.
+Use an existing current preview for a focused smoke when available; otherwise
+record it as not run. This exception applies to the broader full-test, runtime
+build and SEO gate instructions below. Shared implementation changes still
+require the relevant full gates. Do not alter protected test baselines.
+
 Gate output is summarized: the build chunk table, per-file coverage (see
 ui/coverage/index.html) and the manifest's added-test list are hidden. Set
 VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to

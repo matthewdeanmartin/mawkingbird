@@ -186,6 +186,58 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+  describe('Video view fill', () => {
+    const page = (prefix: string, videos = 0): Status[] =>
+      Array.from({ length: 20 }, (_, i) => ({
+        ...makeStatus(`${prefix}${String(i).padStart(2, '0')}`),
+        media_attachments:
+          i < videos
+            ? [{ id: `m${prefix}${i}`, type: 'video', url: 'v.mp4', preview_url: '', description: null }]
+            : [],
+      }));
+    const nextPage = () =>
+      httpMock.match(
+        (r) => r.url === '/api/v1/timelines/home' && r.params.has('max_id'),
+      );
+
+    function setUpFull(): ComponentFixture<Home> {
+      const fixture = TestBed.createComponent(Home);
+      fixture.detectChanges();
+      flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page('a'));
+      httpMock.expectOne('/api/v1/announcements').flush([]);
+      return fixture;
+    }
+
+    it('pages at most five times looking for videos, then leaves it to Load more', () => {
+      const fixture = setUpFull();
+      internals(fixture).setView('video');
+      for (const prefix of ['b', 'c', 'd', 'e', 'f']) {
+        TestBed.tick();
+        const requests = nextPage();
+        expect(requests).toHaveLength(1);
+        flushHomePage(requests[0], page(prefix));
+      }
+      TestBed.tick();
+      expect(nextPage()).toHaveLength(0);
+      expect(internals(fixture).statuses()).toHaveLength(120);
+    });
+
+    it('stops as soon as there are twenty videos', () => {
+      const fixture = setUpFull();
+      internals(fixture).setView('video');
+      TestBed.tick();
+      flushHomePage(nextPage()[0], page('b', 20));
+      TestBed.tick();
+      expect(nextPage()).toHaveLength(0);
+    });
+
+    it('does not page from the plain feed view', () => {
+      setUpFull();
+      TestBed.tick();
+      expect(nextPage()).toHaveLength(0);
+    });
+  });
+
   it('filters by every page of followed tags, including boosted posts, and restores the feed when disabled', async () => {
     const fixture = setUp();
     const home = internals(fixture);

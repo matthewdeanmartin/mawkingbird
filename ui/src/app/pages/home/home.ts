@@ -7,7 +7,16 @@ import { reconcileStatus } from '../../reconcile-status';
 import { FeedCtaStore } from '../../feed-cta-store';
 import { accountScopeSuffix } from '../../account-scope';
 import { FeedCta } from '../../feed-ctas';
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
@@ -111,6 +120,16 @@ const BOOKMARK_PAGE_SIZE = 20;
  * whose posts rarely carry links stops at the feed maximum instead.
  */
 const ARTICLE_TARGET = 10;
+
+/**
+ * The Video view pages toward this many videos, spending at most
+ * {@link VIDEO_FILL_PAGES} extra timeline requests per visit to the view.
+ * Videos are rare in most timelines, so without paging the view could show
+ * nothing at all; without the request cap it could page through a whole
+ * feed looking for them.
+ */
+const VIDEO_TARGET = 20;
+const VIDEO_FILL_PAGES = 5;
 
 // i18n pages.home.nudge.title: Your timeline gets better with every follow.
 // i18n pages.home.nudge.follow.one: You follow {{count}} account — import a follow list or browse directories to fill your feed.
@@ -585,6 +604,50 @@ export class Home implements OnInit, OnDestroy {
   }
 
   protected videos = computed(() => this.visible().filter(isVideoStatus));
+
+  /** Extra pages fetched for the Video view since it was last opened or refreshed. */
+  private videoFillPages = 0;
+
+  /**
+   * Fill the Video view: whenever it is showing, idle, short of
+   * {@link VIDEO_TARGET} and the feed has more, fetch one more page. Each page
+   * that lands re-runs this, up to {@link VIDEO_FILL_PAGES} pages. An effect
+   * rather than a call from `setView`, so `/videos/fedi` (which opens in this
+   * view before the first page has arrived) fills the same way.
+   */
+  private readonly fillVideos = effect(() => {
+    if (this.view() !== 'video' || this.loading() || this.autoLoading()) return;
+    if (this.videos().length >= VIDEO_TARGET || this.videoFillPages >= VIDEO_FILL_PAGES) return;
+    if (!this.feedHasMore() || this.capActive()) return;
+    if (this.statuses().length >= this.prefs.feedMax()) return;
+    untracked(() => this.fetchVideoPage());
+  });
+
+  private fetchVideoPage(): void {
+    this.videoFillPages++;
+    this.autoLoading.set(true);
+    const before = this.statuses().length;
+    this.pageSub = this.nextFeedPage().subscribe({
+      next: (more) => {
+        this.mergeStatuses(more);
+        this.diagnostics.info('video:autoload-page', {
+          page: this.videoFillPages,
+          received: more.length,
+          videos: this.videos().length,
+        });
+        this.publishMastodon(more);
+        this.cacheAnonymousHome();
+        // Nothing new arrived: paging further would just repeat the request.
+        if (this.statuses().length <= before) this.videoFillPages = VIDEO_FILL_PAGES;
+        this.autoLoading.set(false);
+      },
+      error: (error: unknown) => {
+        this.diagnostics.error('video:autoload-error', error);
+        this.videoFillPages = VIDEO_FILL_PAGES;
+        this.autoLoading.set(false);
+      },
+    });
+  }
   private homeScope = '';
   private readonly homeDefaultEffect = effect(() => {
     const scope = this.homeDefaults.scope();
@@ -654,6 +717,8 @@ export class Home implements OnInit, OnDestroy {
       this.prefs.setFeedReader(false);
       this.homeTextFocus.set(false);
     }
+    // Each trip to the Video view gets a fresh paging budget.
+    if (view === 'video' && this.view() !== 'video') this.videoFillPages = 0;
     this.view.set(view);
     this.saveHomeVisit();
     if (view !== 'media') {
@@ -1131,6 +1196,7 @@ export class Home implements OnInit, OnDestroy {
       ? new Set(this.statuses().map((status) => canonicalStatusKey(status)))
       : null;
     if (!forceRefresh) this.noNewPosts.set(false);
+    this.videoFillPages = 0;
     this.pageSub?.unsubscribe();
     this.autoLoading.set(false);
     this.loading.set(true);

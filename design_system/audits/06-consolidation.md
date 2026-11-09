@@ -1982,3 +1982,10 @@ Running topic integration: reviewed regenerated inventory, 1723 source files and
 605 candidate files. The sole inventory change is the new copy source; no
 candidate findings changed. Reconciliation candidate set is unchanged, so
 11-reconciliation.json needs no edit.
+
+## Per-account search history; Home Video fill, 2026-11-08
+
+Search's query box gains `autocomplete="off"`, so the browser's shared form
+history no longer offers another account's searches. Only evidence line
+numbers moved: 1,723 sources and 605 candidates, every count unchanged. No
+candidates were added or removed; no shared widget changed.

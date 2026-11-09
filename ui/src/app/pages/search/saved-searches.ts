@@ -1,6 +1,7 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, linkedSignal, untracked } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { scopedKey } from '../../account-scope';
+import { Auth } from '../../auth';
 import { MawkingbirdSearch } from './mawkingbird-search';
 import { BlueskyPostSearch } from '../../providers/bluesky/bluesky-post-search';
 
@@ -108,7 +109,19 @@ function load(): SavedSearchState {
 @Injectable({ providedIn: 'root' })
 export class SavedSearches {
   private transloco = inject(TranslocoService);
-  private state = signal(load());
+  private auth = inject(Auth);
+  /**
+   * Re-read whenever the signed-in identity changes. Most account switches
+   * reload the page, but not all (adding an account, reverting a failed
+   * switch), and a list read once at startup would otherwise keep showing the
+   * previous account's searches under the new one.
+   */
+  private state = linkedSignal(() => {
+    // Kind and token are what the storage scope is derived from.
+    this.auth.kind();
+    this.auth.token();
+    return untracked(load);
+  });
 
   readonly all = computed(() => this.state().searches);
   readonly count = computed(() => this.all().length);
