@@ -269,6 +269,14 @@
     "uses.one": "{{count}} use",
     "uses.other": "{{count}} uses"
   },
+  "aiBudget": {
+    "body": "AI translation has spent {{spent}} of today's {{limit}}. Raise today's limit to keep translating with AI? Free translators still work either way.",
+    "close": "Close",
+    "notToday": "Not today",
+    "raise": "Raise today to {{limit}}",
+    "settings": "Change the daily limit",
+    "title": "Today's AI translation budget is used up"
+  },
   "analytics": {
     "login": "Log in to see your analytics.",
     "title": "Analytics"
@@ -2433,6 +2441,7 @@
     "home.misskey.noEngine.myMemory": "Turn on MyMemory",
     "home.misskey.noEngine.settings": "Choose a translator",
     "home.misskey.noEngine.title": "Nothing can translate yet",
+    "home.misskey.noEngine.useAi": "Use AI (OpenRouter), up to {{cap}} a day",
     "home.misskey.timeline.global": "Global",
     "home.misskey.timeline.home": "Home",
     "home.misskey.timeline.local": "Local",
@@ -6549,6 +6558,10 @@
     "i18n.add": "Add",
     "i18n.addLang": "Add a language…",
     "i18n.addLearning": "Add a language you're learning…",
+    "i18n.aiDollars": "AI translation (OpenRouter), in dollars",
+    "i18n.aiDollars.cap": "Daily limit (US dollars)",
+    "i18n.aiDollars.hint": "Read from what OpenRouter reports each translation cost. When the limit is reached, AI translation pauses and you are asked once whether to raise it for the day; free translators keep working.",
+    "i18n.aiDollars.today": "Spent today: {{spent}} of {{limit}}",
     "i18n.appendTranslation": "Show translation under the original",
     "i18n.appendTranslation.hint": "Unchecked, the translation replaces the original. Checked, you get both — which is the point of learning, but costs one translation per language on a post.",
     "i18n.auto": "auto",
