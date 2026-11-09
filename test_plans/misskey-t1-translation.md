@@ -5,9 +5,10 @@ Roadmap: `sprint/misskey-and-language-learning-roadmap-2026-11.md`.
 
 ## Setup
 
-- Signed in to Mawkingbird with a Misskey account (misskey.design works:
-  its admin has DeepL translation on; check by pressing "Translate" on a note
-  in Misskey's own web UI first).
+- Signed in to Mawkingbird with a Misskey account. **misskey.design has no
+  translator** (its meta says `translatorAvailable: false`, checked
+  2026-11-09): use it for the no-translator steps (15, 17, 18). For steps 7–10
+  you need a server whose Misskey web UI shows a Translate button on notes.
 - Interface language English. Settings → Languages: automatic translation
   **off**, so the one-time offer appears.
 - Optionally MyMemory switched on (Settings → Connections) for the fallback
@@ -67,6 +68,15 @@ Roadmap: `sprint/misskey-and-language-learning-roadmap-2026-11.md`.
       MyMemory / Apertium, and the server is not asked again this visit.
 - [ ] 16. A Mastodon account's posts never go to a Misskey server (check the
       Network tab: no `notes/translate` while signed in with Mastodon).
+
+### Nothing to translate with (found 2026-11-09)
+
+- [ ] 17. On misskey.design with MyMemory off, accept the offer: Home shows
+      "Nothing can translate yet", naming misskey.design.
+- [ ] 18. Press **Turn on MyMemory**: the notice goes and Japanese notes start
+      translating as they scroll in (by MyMemory). Alternatively, in Chrome,
+      press 🌐 on one Japanese note to download the browser's translator; after
+      that, scrolling translates on device, and after a reload the notice is gone.
 
 ## Known gaps (T1 follow-up)
 

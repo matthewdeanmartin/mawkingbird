@@ -1,5 +1,6 @@
 import { blueskyRouteFor } from '../bluesky-links';
 import { StatusReactions } from './status-reactions';
+import { MbHelp } from '../design-system/help/help';
 import { accountScopeSuffix } from '../account-scope';
 import { PostHistory } from '../post-history';
 import { MbMenuItem } from '../design-system/menu/menu-item';
@@ -172,6 +173,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.showLess: Show less
 // i18n statusCard.translatedVia: Translated via {{provider}}
 // i18n statusCard.translatedViaAutomatic: Translated via {{provider}} · automatic
+// i18n statusCard.translationInfo: About this translation
 // i18n statusCard.aiTranslationNote: Translated into {{target}} by {{model}} · machine translation, so treat the wording as approximate
 // i18n statusCard.aiTranslation: AI translation
 // i18n statusCard.showSensitiveContent: Show sensitive content
@@ -430,6 +432,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   selector: 'app-status-card',
   imports: [
     StatusReactions,
+    MbHelp,
     ExternalPlayerHost,
     NgTemplateOutlet,
     MbButton,

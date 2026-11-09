@@ -229,12 +229,12 @@
 
           @if (translation()) {
             <div class="translation-note muted small">
-              {{
+              <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                 (autoTranslated()
                   ? 'statusCard.translatedViaAutomatic'
                   : 'statusCard.translatedVia'
                 ) | transloco: { provider: translation()!.provider }
-              }}
+              }}</mb-help>
             </div>
           }
 
@@ -246,9 +246,9 @@
             <div class="ai-translation" (click)="$event.stopPropagation()">
               <p class="ai-translation-text">{{ ai.text }}</p>
               <div class="translation-note muted small">
-                {{
+                <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   'statusCard.aiTranslationNote' | transloco: { target: ai.target, model: ai.model }
-                }}
+                }}</mb-help>
               </div>
             </div>
           }
@@ -259,10 +259,10 @@
             <div class="ai-translation chain-translation" (click)="$event.stopPropagation()">
               <p class="ai-translation-text">{{ ct.text }}</p>
               <div class="translation-note muted small">
-                {{
+                <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   (autoTranslated() ? 'statusCard.chain.noteAutomatic' : 'statusCard.chain.note')
                     | transloco: { from: languageLabel(ct.source), engine: engineName(ct.engine) }
-                }}
+                }}</mb-help>
                 <button class="link-button" type="button" (click)="changeSource($event)">
                   {{ 'statusCard.chain.change' | transloco }}
                 </button>

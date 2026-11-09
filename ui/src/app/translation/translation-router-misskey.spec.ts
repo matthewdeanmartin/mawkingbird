@@ -53,6 +53,8 @@ describe('TranslationRouter with Misskey notes', () => {
     );
     TestBed.inject(Auth).enterMisskey(key);
     router = TestBed.inject(TranslationRouter);
+    // The server's meta is asked once per server; most tests assume a translator.
+    vi.spyOn(router, 'misskeyServerTranslates').mockResolvedValue(true);
     detected = { language: 'ja', candidates: ['ja'] };
     vi.spyOn(TestBed.inject(FeedLanguageFilter), 'languageAssessment').mockImplementation(
       () => detected as never,
@@ -114,6 +116,30 @@ describe('TranslationRouter with Misskey notes', () => {
     expect(my).toHaveBeenCalledWith(expect.any(String), 'ja', 'en', '');
     // Not asked again this session.
     expect(router.misskeyCanTry(note({ id: 'mk:n2' }))).toBe(false);
+  });
+
+  it('skips a server whose meta says it has no translator, without spending', async () => {
+    vi.mocked(router.misskeyServerTranslates).mockRestore();
+    TestBed.inject(TranslationConnectors).setMyMemoryEnabled(true);
+    vi.spyOn(TestBed.inject(FreeTranslators), 'myMemory').mockResolvedValue('Nice');
+    const pending = router.translate(request());
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/meta`))).flush({
+      translatorAvailable: false,
+    });
+    await expect(pending).resolves.toMatchObject({ kind: 'text', engine: 'mymemory' });
+    http.expectNone(TRANSLATE);
+    expect(TestBed.inject(TranslationUsage).today('misskey')).toBe(0);
+  });
+
+  it('reports no automatic engine when the server has none and nothing else is on', async () => {
+    vi.mocked(router.misskeyServerTranslates).mockResolvedValue(false);
+    await expect(router.automaticEngineAvailable('ja', SERVER)).resolves.toBe(false);
+    TestBed.inject(TranslationConnectors).setMyMemoryEnabled(true);
+    await expect(router.automaticEngineAvailable('ja', SERVER)).resolves.toBe(true);
+  });
+
+  it('counts the server translator as an automatic engine when it has one', async () => {
+    await expect(router.automaticEngineAvailable('ja', SERVER)).resolves.toBe(true);
   });
 
   it('lets the server detect the language when the local detector cannot (kanji only)', async () => {

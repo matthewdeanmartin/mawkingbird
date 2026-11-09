@@ -458,6 +458,18 @@ Manual plan: `test_plans/misskey-t1-translation.md`.
 - Home: a one-time offer per Misskey account, "Translate as you scroll?",
   which sets automatic mode `view` and "translate all foreign posts".
 
+### Found in the owner's live try (2026-11-09)
+
+- misskey.design has **no translator** (`meta.translatorAvailable: false`),
+  so after accepting the offer nothing translated: automatic mode may not
+  download a browser model, and MyMemory/Apertium are opt-in (Apertium has no
+  Japanese). Fixes: the router reads `translatorAvailable` once per server and
+  skips its translator without spending; Home shows "Nothing can translate
+  yet" while automatic mode is on and no engine can run without a click, with
+  **Turn on MyMemory** and a link to the translator settings.
+- The "Translated … by … · machine translation" line under every translated
+  post is now behind an `mb-help` popover (owner: seeing it everywhere is noise).
+
 ### Not done in T1 (follow-up)
 
 - Display names, bios, profile fields, custom-emoji names, channel/antenna

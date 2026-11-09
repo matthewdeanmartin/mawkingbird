@@ -219,6 +219,22 @@
     </mb-notice>
   }
 
+  @if (noAutomaticEngine()) {
+    <mb-notice
+      class="home-no-translator"
+      announcement="status"
+      [title]="'pages.home.misskey.noEngine.title' | transloco"
+    >
+      <p>{{ 'pages.home.misskey.noEngine.body' | transloco: { server: misskeyHost() } }}</p>
+      <button mbButton type="button" (click)="turnOnMyMemory()">
+        {{ 'pages.home.misskey.noEngine.myMemory' | transloco }}
+      </button>
+      <a routerLink="/settings/connections">{{
+        'pages.home.misskey.noEngine.settings' | transloco
+      }}</a>
+    </mb-notice>
+  }
+
   @if (auth.isMisskeyPrimary) {
     <mb-toolbar
       class="home-misskey-timelines"

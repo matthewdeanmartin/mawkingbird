@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Translation footnotes behind help; no-translator notice, 2026-11-09
+
+Reviewed 1,741 source files and 606 candidate files; no candidate is added.
+The status card's three translation footnotes (server, AI, fallback chain)
+move into the shared `mb-help` popover instead of a line under every
+translated post. Home gains an `mb-notice` for Misskey accounts when
+automatic translation is on but no engine can run, with one `MbButton`
+(turn on MyMemory) and a settings link. No shared widget changed.
+
 ## Misskey translation offer and wrong-door hint, 2026-11-09
 
 Reviewed 1,741 source files and 606 candidate files; no candidate is added.

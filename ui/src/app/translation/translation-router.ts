@@ -94,6 +94,46 @@ export class TranslationRouter {
   private cache = inject(TranslationCache);
   /** Misskey servers that said they cannot translate (no DeepL key, or role policy). */
   private readonly misskeyUnavailable = new Set<string>();
+  /** Per server: does its `meta` say a translator is configured? Asked once. */
+  private readonly misskeyTranslator = new Map<string, Promise<boolean>>();
+
+  /**
+   * Whether a Misskey server has a translator, from its public `meta`. Unknown
+   * (meta failed) counts as yes: one real attempt then settles it.
+   */
+  misskeyServerTranslates(server: string): Promise<boolean> {
+    let answer = this.misskeyTranslator.get(server);
+    if (!answer) {
+      answer = firstValueFrom(this.misskey.meta(server)).then(
+        (meta) => meta.translatorAvailable !== false,
+        () => true,
+      );
+      this.misskeyTranslator.set(server, answer);
+    }
+    return answer;
+  }
+
+  /**
+   * Whether automatic translation has any engine it may use for `source` →
+   * the reader's language, without a click: the Misskey server's translator,
+   * MyMemory, Apertium, or a browser model that is already downloaded. False
+   * means automatic mode will silently do nothing, which the reader should
+   * be told rather than left to wonder.
+   */
+  async automaticEngineAvailable(source: string, misskeyServer: string | null): Promise<boolean> {
+    if (misskeyServer && !this.misskeyUnavailable.has(misskeyServer)) {
+      if (await this.misskeyServerTranslates(misskeyServer)) return true;
+    }
+    if (this.connectors.myMemoryEnabled()) return true;
+    const target = bareLanguage(this.ai.targetLanguage());
+    if (this.connectors.apertiumEnabled() && (await this.pairs.apertiumPair(source, target))) {
+      return true;
+    }
+    if (this.prefs.browserTranslator() && this.browser.supported()) {
+      return (await this.browser.availability(source, target)) === 'available';
+    }
+    return false;
+  }
 
   /**
    * Whether this post can go to the reader's Misskey server: a Misskey note,
@@ -322,6 +362,10 @@ export class TranslationRouter {
     if (!this.misskeyCanTry(status)) return status.provider === 'misskey' ? 'off' : 'no-server';
     if (!this.usage.canSpend('misskey')) return 'budget';
     const ref = status.providerRef as { server: string; noteId: string };
+    if (!(await this.misskeyServerTranslates(ref.server))) {
+      this.misskeyUnavailable.add(ref.server);
+      return 'no-provider';
+    }
     this.usage.record('misskey');
     try {
       const result = await firstValueFrom(this.misskey.translate(ref.noteId, target));

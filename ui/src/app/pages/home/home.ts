@@ -87,6 +87,9 @@ import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { MK_TIMELINES, MisskeyProvider } from '../../providers/misskey/misskey-provider';
 import { MkTimeline } from '../../providers/misskey/misskey-types';
+import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
+import { TranslationRouter } from '../../translation/translation-router';
+import { TranslationConnectors } from '../../translation/translation-connectors';
 import { MbNotice } from '../../design-system/notice/notice';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
 import { MbField, MbControl } from '../../design-system/field/field';
@@ -217,6 +220,10 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.misskey.translateOffer.body: Many Misskey posts are in Japanese. Translate posts that are not in your languages automatically as they scroll into view? Your Misskey server's translator is tried first, then the free translators. Change this any time in Settings → Languages.
 // i18n pages.home.misskey.translateOffer.yes: Translate as I scroll
 // i18n pages.home.misskey.translateOffer.no: No thanks
+// i18n pages.home.misskey.noEngine.title: Nothing can translate yet
+// i18n pages.home.misskey.noEngine.body: Automatic translation is on, but {{server}} has no translator of its own and no free translator is switched on. Turn on MyMemory (free, about 5,000 characters a day; post text is sent to translated.net), or press 🌐 Translate on any post once to download this browser's own translator, if it has one.
+// i18n pages.home.misskey.noEngine.myMemory: Turn on MyMemory
+// i18n pages.home.misskey.noEngine.settings: Choose a translator
 // i18n pages.home.misskey.timeline.home: Home
 // i18n pages.home.misskey.timeline.social: Social
 // i18n pages.home.misskey.timeline.local: Local
@@ -364,6 +371,40 @@ export class Home implements OnInit, OnDestroy {
       !this.misskeyOfferAnswered() &&
       (this.prefs.autoTranslateMode() === 'off' || !this.prefs.translateAllForeign()),
   );
+
+  private readonly translationRouter = inject(TranslationRouter);
+  private readonly translationConnectors = inject(TranslationConnectors);
+  /**
+   * Automatic translation is on for a Misskey account, but no engine may run
+   * without a click: the server has no translator (misskey.design, for one),
+   * MyMemory and Apertium are off, and the browser model is not downloaded.
+   * Automatic mode fails silently by design, so say it here instead.
+   */
+  protected readonly noAutomaticEngine = signal(false);
+  protected readonly misskeyHost = computed(() => {
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server;
+    return server ? new URL(server).host : '';
+  });
+  private readonly checkAutomaticEngine = effect(() => {
+    const on = this.auth.isMisskeyPrimary && this.prefs.autoTranslateMode() !== 'off';
+    // Dependencies: switching any engine on re-asks.
+    this.translationConnectors.myMemoryEnabled();
+    this.translationConnectors.apertiumEnabled();
+    this.prefs.browserTranslator();
+    if (!on) {
+      this.noAutomaticEngine.set(false);
+      return;
+    }
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server ?? null;
+    // Japanese is the case this exists for; most Misskey servers are Japanese.
+    void this.translationRouter
+      .automaticEngineAvailable('ja', server)
+      .then((ok) => this.noAutomaticEngine.set(!ok));
+  });
+
+  protected turnOnMyMemory(): void {
+    this.translationConnectors.setMyMemoryEnabled(true);
+  }
 
   protected answerMisskeyTranslateOffer(accept: boolean): void {
     if (accept) {

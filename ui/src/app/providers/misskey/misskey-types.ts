@@ -103,6 +103,8 @@ export interface MkMeta {
   iconUrl?: string | null;
   maxNoteTextLength?: number;
   policies?: { ltlAvailable?: boolean; gtlAvailable?: boolean };
+  /** Whether the admin configured a translator (a DeepL key) for `notes/translate`. */
+  translatorAvailable?: boolean;
 }
 
 /** `POST /api/miauth/{session}/check`. */

@@ -10,6 +10,8 @@ import { saveMisskeyIdentity } from '../../providers/misskey/misskey-identity-st
 import { Streaming } from '../../streaming';
 import { FakeStreaming } from '../../testing/fake-streaming';
 import { Home } from './home';
+import { BrowserTranslator } from '../../translation/browser-translator';
+import { TranslationConnectors } from '../../translation/translation-connectors';
 
 const SERVER = 'https://misskey.design';
 
@@ -109,5 +111,34 @@ describe('Home as a Misskey account', () => {
       (fixture.nativeElement as HTMLElement).querySelector('.home-translate-offer'),
     ).toBeNull();
     expect(text(fixture)).not.toContain('Translate as you scroll?');
+  });
+
+  it('says so when automatic translation is on but nothing can translate', async () => {
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.setAutoTranslateMode('view');
+    prefs.setTranslateAllForeign(true);
+    vi.spyOn(TestBed.inject(BrowserTranslator), 'supported').mockReturnValue(false);
+    const fixture = await setUp();
+    // misskey.design-style: the server reports no translator.
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/meta`))).flush({
+      translatorAvailable: false,
+    });
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.home-no-translator'),
+      ).not.toBeNull();
+    });
+    const turnOn = (fixture.nativeElement as HTMLElement).querySelector(
+      '.home-no-translator button',
+    ) as HTMLButtonElement;
+    turnOn.click();
+    expect(TestBed.inject(TranslationConnectors).myMemoryEnabled()).toBe(true);
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.home-no-translator'),
+      ).toBeNull();
+    });
   });
 });
