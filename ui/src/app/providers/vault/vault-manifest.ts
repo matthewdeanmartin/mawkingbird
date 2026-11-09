@@ -157,6 +157,11 @@ export const NOT_VAULTED: readonly { base: string; reason: string }[] = [
     reason: 'Same as mastodon_mock_token, one per saved session.',
   },
   {
+    base: 'mockingbird_misskey_identity_credentials',
+    reason:
+      'Same as mastodon_mock_token: a MiAuth token is the Misskey account itself, issued by an approval flow that is cheap to repeat on a new device. Unlike a Bluesky app password, nothing was hand-obtained that would otherwise have to be copied between devices.',
+  },
+  {
     base: 'mockingbird_raindrop_credentials',
     reason:
       'A dead key from the superseded Raindrop OAuth flow. `RaindropSession` deletes it on every construction and nothing writes it, so vaulting it would sync a credential the app is actively trying to forget — and would resurrect it on every device on the next read. The live Raindrop credential is mockingbird_raindrop_token.',

@@ -183,7 +183,8 @@ export class Bookmarks implements OnInit {
   private ensureNativeLoaded(): void {
     if (this.nativeStarted) return;
     this.nativeStarted = true;
-    if (this.auth.isAnonymous) {
+    // A Misskey account's bookmarks are browser-local for now, like Anonymous's.
+    if (this.auth.isAnonymous || this.auth.isMisskeyPrimary) {
       this.showMoreAnonymous();
       this.loading.set(false);
     } else {
@@ -262,7 +263,7 @@ export class Bookmarks implements OnInit {
       return;
     }
     if (this.exhausted() || this.loadingMore()) return;
-    if (this.auth.isAnonymous) this.showMoreAnonymous();
+    if (this.auth.isAnonymous || this.auth.isMisskeyPrimary) this.showMoreAnonymous();
     else this.loadNative(true);
   }
 

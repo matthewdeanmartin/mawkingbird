@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Misskey sign-in and Home timelines, 2026-11-09
+
+Reviewed 1,740 source files and 606 candidate files. One candidate is
+added: `pages/login-misskey/login-misskey.html`, the MiAuth sign-in page, with
+one shared `MbButton` submit in the same card layout as the Bluesky page.
+Home gains a `mb-toolbar` of `mbToolbarButton`s for the Misskey timeline
+(Home, Social, Local, Global) and an `MbButton` Retry on the Misskey error
+notice; the shell account menu gains one `menu-action` item like its
+neighbours. The status card gains a read-only reaction list in its own
+`status-reactions` component (no controls, so not a candidate).
+Existing candidates shift lines only. No shared widget changed.
+
 ## Polish tool pages, 2026-11-01
 
 Reviewed 1,485 source files and 449 candidate files. Seventeen candidates are

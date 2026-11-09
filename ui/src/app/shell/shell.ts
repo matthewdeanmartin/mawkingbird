@@ -140,6 +140,7 @@ import { AccountTabBanner } from '../account-tab-guard/account-tab-banner';
 // i18n shell.account.unavailable: Account details unavailable
 // i18n shell.account.addMastodon: + Add Mastodon account
 // i18n shell.account.addBluesky: + Add Bluesky account
+// i18n shell.account.addMisskey: + Add Misskey account
 // i18n shell.account.exitAnonymous: Exit anonymous
 // i18n shell.account.logout: Log out
 // i18n shell.account.menuFor: Account menu for {{name}}
@@ -657,7 +658,7 @@ export class Shell implements OnInit, AccountSwitcher {
     // verify. Reaching the call below without one fails, and the error branch
     // calls `exitToLoggedOut()` — so before this, a Bluesky-primary session
     // signed itself out on every single boot.
-    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) {
+    if (this.auth.isAnonymous || this.auth.isForeignPrimary) {
       return;
     }
     if (!this.auth.account()) {
@@ -774,6 +775,7 @@ export class Shell implements OnInit, AccountSwitcher {
     // tokenless identity has no token to restore, and `exitToLoggedOut()` would
     // strand the user signed out of an account that was working a moment ago.
     const previousWasBluesky = this.auth.isBlueskyPrimary;
+    const previousWasMisskey = this.auth.isMisskeyPrimary;
     if (session.token === previous) {
       return;
     }
@@ -798,6 +800,8 @@ export class Shell implements OnInit, AccountSwitcher {
           this.auth.enterAnonymous();
         } else if (previousWasBluesky) {
           this.auth.enterBluesky();
+        } else if (previousWasMisskey) {
+          this.auth.enterMisskey();
         } else if (previous) {
           this.auth.switchTo(previous);
         } else {
@@ -822,6 +826,10 @@ export class Shell implements OnInit, AccountSwitcher {
 
   addBlueskyAccount(): void {
     location.assign('login/bluesky?add=1');
+  }
+
+  addMisskeyAccount(): void {
+    location.assign('login/misskey?add=1');
   }
 
   /**

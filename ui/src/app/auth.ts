@@ -14,6 +14,15 @@ import {
 } from './providers/bluesky/bluesky-identity-store';
 import { BlueskyOAuth } from './providers/bluesky/bluesky-oauth';
 import {
+  clearAllMisskeyIdentities,
+  clearMisskeyIdentity,
+  misskeyIdentities,
+  misskeyIdentity,
+  misskeyIdentityKeyActive,
+  misskeyIdentityPresent,
+  setActiveMisskeyIdentity,
+} from './providers/misskey/misskey-identity-store';
+import {
   clearMastodonConnectorTokenForDid,
   mastodonConnectorToken,
   mastodonConnectorServer,
@@ -48,9 +57,16 @@ export const ACCOUNT_MODE_KEY = 'mastodon_mock_account_mode';
  * `anonymous` predates this type and was bolted onto an enum whose name said
  * Mastodon — it was always a poor fit for a Mastodon-primary identity model.
  * Generalising to kinds makes it a first-class citizen, as a side effect of
- * making `bluesky` one.
+ * making `bluesky` one. `misskey` followed the same path (2026-11).
+ *
+ * `bluesky` and `misskey` are the *foreign-primary* kinds: a network other than
+ * Mastodon owns the identity, there is no Mastodon identity token, and most of
+ * the app treats them alike — see {@link Auth.isForeignPrimary}.
  */
-export type AccountKind = 'mastodon' | 'bluesky' | 'anonymous';
+export type AccountKind = 'mastodon' | 'bluesky' | 'misskey' | 'anonymous';
+
+/** The kinds whose identity lives on a network other than Mastodon. */
+export const FOREIGN_PRIMARY_KINDS: readonly AccountKind[] = ['bluesky', 'misskey'];
 
 /**
  * @deprecated Use {@link AccountKind}. Kept so existing imports keep compiling;
@@ -75,6 +91,10 @@ function storedKind(): AccountKind | null {
     // carried the profile but not the JWTs, or by a half-finished unlink —
     // would strand the app in an account that cannot make a single request.
     return blueskyIdentityPresent() ? 'bluesky' : null;
+  }
+  if (raw === 'misskey') {
+    // Same rule as Bluesky: a mode key without its identity is stale.
+    return misskeyIdentityPresent() ? 'misskey' : null;
   }
   if (raw === 'mastodon') {
     return 'mastodon';
@@ -121,6 +141,8 @@ export interface AccountChoice {
   token: string | null;
   /** Stable identity key for tokenless Bluesky account choices. */
   did?: string;
+  /** Identity key (`<origin>#<userId>`) for Misskey account choices. */
+  misskeyKey?: string;
   server: string;
   account: Account | null;
 }
@@ -219,6 +241,55 @@ function blueskyIdentityAccount(
 }
 
 /**
+ * The Misskey-primary identity as a Mastodon-shaped {@link Account}, for the
+ * switcher and the rail. Built from the stored profile only, like
+ * {@link blueskyIdentityAccount}; counts stay zero rather than invented.
+ */
+function misskeyIdentityAccount(
+  key: string | null = misskeyIdentityKeyActive(),
+): { key: string; server: string; account: Account } | null {
+  const identity = misskeyIdentity(key);
+  if (!identity) return null;
+  const { profile } = identity;
+  let host = profile.server;
+  try {
+    host = new URL(profile.server).host;
+  } catch {
+    // Keep the stored value; it was validated when saved.
+  }
+  const acct = `${profile.username}@${host}`;
+  return {
+    key: identity.key,
+    server: profile.server,
+    account: {
+      // Namespaced like every foreign id; matches the Misskey adapter.
+      id: `mk:${profile.userId}`,
+      username: profile.username,
+      acct,
+      display_name: profile.name || profile.username,
+      emojis: Object.entries(profile.emojis ?? {}).map(([shortcode, url]) => ({
+        shortcode,
+        url,
+        static_url: url,
+        visible_in_picker: false,
+      })),
+      note: '',
+      url: `${profile.server}/@${profile.username}`,
+      avatar: profile.avatarUrl ?? '',
+      avatar_static: profile.avatarUrl ?? '',
+      header: '',
+      header_static: '',
+      followers_count: 0,
+      following_count: 0,
+      statuses_count: 0,
+      bot: false,
+      locked: false,
+      fields: [],
+    },
+  };
+}
+
+/**
  * Holds the active access token plus a Twitter-style stable of saved sessions so a
  * tester can switch accounts without re-pasting tokens. The active token is mirrored
  * to ``TOKEN_KEY`` for the interceptor and back-compat.
@@ -270,9 +341,18 @@ export class Auth {
   private blueskyDid = signal<string | null>(
     this.kind() === 'bluesky' ? blueskyIdentityDid() : null,
   );
+  /** The Misskey-primary identity key, when that is the active kind. */
+  private misskeyKey = signal<string | null>(
+    this.kind() === 'misskey' ? misskeyIdentityKeyActive() : null,
+  );
   readonly account = linkedSignal(() => {
     if (this.kind() === 'anonymous') {
       return this.anonymous.account();
+    }
+    if (this.kind() === 'misskey') {
+      const key = this.misskeyKey();
+      this.misskeyRevision();
+      return key ? (misskeyIdentityAccount(key)?.account ?? null) : null;
     }
     if (this.kind() === 'bluesky') {
       // Read through blueskyDid so this recomputes on a switch; the DID itself
@@ -302,6 +382,29 @@ export class Auth {
   /** Every account the tester has logged into and not removed. */
   readonly sessions = signal<Session[]>(loadSessions());
   private readonly blueskyRevision = signal(0);
+  private readonly misskeyRevision = signal(0);
+
+  /** Every saved Misskey-primary identity, including the active one. */
+  readonly misskeyAccounts = computed<AccountChoice[]>(() => {
+    this.kind();
+    this.misskeyKey();
+    this.misskeyRevision();
+    return misskeyIdentities().flatMap((stored) => {
+      const identity = misskeyIdentityAccount(stored.key);
+      return identity
+        ? [
+            {
+              key: `misskey:${identity.key}`,
+              kind: 'misskey' as const,
+              token: null,
+              misskeyKey: identity.key,
+              server: identity.server,
+              account: identity.account,
+            },
+          ]
+        : [];
+    });
+  });
 
   /** Every saved first-class Bluesky identity, including the active one. */
   readonly blueskyAccounts = computed<AccountChoice[]>(() => {
@@ -341,6 +444,10 @@ export class Auth {
     const activeDid = this.kind() === 'bluesky' ? this.blueskyDid() : null;
     for (const identity of this.blueskyAccounts()) {
       if (identity.did !== activeDid) choices.push(identity);
+    }
+    const activeMisskey = this.kind() === 'misskey' ? this.misskeyKey() : null;
+    for (const identity of this.misskeyAccounts()) {
+      if (identity.misskeyKey !== activeMisskey) choices.push(identity);
     }
     if (this.kind() !== 'anonymous') {
       choices.push({
@@ -414,9 +521,38 @@ export class Auth {
     return this.kind() === 'bluesky';
   }
 
+  /** Misskey owns this account's identity. There is no Mastodon connector yet. */
+  get isMisskeyPrimary(): boolean {
+    return this.kind() === 'misskey';
+  }
+
+  /**
+   * A network other than Mastodon owns this identity: Bluesky or Misskey.
+   *
+   * The question most code means when it asks {@link isBlueskyPrimary}: "this
+   * is a signed-in account with no Mastodon identity behind it, so hide the
+   * Mastodon-only surfaces". Ask this for that, and keep `isBlueskyPrimary` for
+   * code that genuinely talks to Bluesky.
+   */
+  get isForeignPrimary(): boolean {
+    // Composed from the per-kind getters (one per FOREIGN_PRIMARY_KINDS entry)
+    // so anything that overrides one of them sees a consistent answer here.
+    return this.isBlueskyPrimary || this.isMisskeyPrimary;
+  }
+
+  /** The active Misskey identity key, for services that call the Misskey API. */
+  readonly activeMisskeyKey = computed(() =>
+    this.kind() === 'misskey' ? this.misskeyKey() : null,
+  );
+
   /** Whether Anonymous is the only account available in this browser. */
   get shouldOfferLogin(): boolean {
-    return this.isAnonymous && this.sessions().length === 0 && blueskyIdentities().length === 0;
+    return (
+      this.isAnonymous &&
+      this.sessions().length === 0 &&
+      blueskyIdentities().length === 0 &&
+      misskeyIdentities().length === 0
+    );
   }
 
   /**
@@ -429,6 +565,7 @@ export class Auth {
     this.kind.set('mastodon');
     this.token.set(token);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     const server = this.server.baseUrl();
     const existing = this.sessions().find((s) => s.token === token);
     if (!existing) {
@@ -520,7 +657,7 @@ export class Auth {
       }
       return;
     }
-    if (this.isBlueskyPrimary) {
+    if (this.isForeignPrimary) {
       // The Bluesky-primary identity is rendered from its own stored profile,
       // not from a verified Mastodon account. Writing here would put a Mastodon
       // snapshot behind a Bluesky identity and, worse, `persistSessions` below
@@ -572,6 +709,7 @@ export class Auth {
     this.kind.set('mastodon');
     this.token.set(newToken);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(account);
     this.account.set(account);
     this.prefs.setDefaultVisibility(account.source?.privacy);
@@ -592,6 +730,7 @@ export class Auth {
       if (kind !== this.kind()) return false;
       if (kind === 'mastodon') return localStorage.getItem(TOKEN_KEY) === this.token();
       if (kind === 'bluesky') return blueskyIdentityDid() === this.blueskyDid();
+      if (kind === 'misskey') return misskeyIdentityKeyActive() === this.misskeyKey();
       return true;
     } catch {
       // Unreadable storage cannot prove a switch happened.
@@ -608,6 +747,7 @@ export class Auth {
     const kind = this.kind();
     if (kind === 'mastodon') return `mastodon:${shortHash(this.token() ?? '')}`;
     if (kind === 'bluesky') return `bluesky:${shortHash(this.blueskyDid() ?? '')}`;
+    if (kind === 'misskey') return `misskey:${shortHash(this.misskeyKey() ?? '')}`;
     return kind ?? 'none';
   }
 
@@ -617,6 +757,7 @@ export class Auth {
       const kind = storedKind();
       if (kind === 'anonymous') return null;
       if (kind === 'bluesky') return blueskyIdentityAccount()?.account?.acct ?? null;
+      if (kind === 'misskey') return misskeyIdentityAccount()?.account?.acct ?? null;
       const token = localStorage.getItem(TOKEN_KEY);
       return loadSessions().find((session) => session.token === token)?.account?.acct ?? null;
     } catch {
@@ -648,6 +789,7 @@ export class Auth {
     this.kind.set('mastodon');
     this.token.set(token);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(session.account);
     return true;
   }
@@ -667,6 +809,7 @@ export class Auth {
     this.token.set(null);
     this.mastodonAccount.set(null);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.kind.set('anonymous');
     // Entering Anonymous never touches the stable. Logged with the count anyway:
     // this is the step users reported their accounts disappearing *at*, and the
@@ -702,6 +845,7 @@ export class Auth {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.setItem(ACCOUNT_MODE_KEY, 'bluesky');
     this.mastodonAccount.set(null);
+    this.misskeyKey.set(null);
     this.blueskyDid.set(identity.did);
     this.kind.set('bluesky');
     // Restore this account's Mastodon connector, if it has one. Order matters:
@@ -726,7 +870,46 @@ export class Auth {
     this.blueskyDid.set(blueskyIdentityDid());
   }
 
-  /** Switch to the virtual account, the Bluesky identity, or a saved Mastodon token. */
+  /**
+   * Activate a saved Misskey-primary identity. Like {@link enterBluesky}, this
+   * never creates one (the MiAuth login page does) and never touches the
+   * Mastodon stable. There is no Mastodon connector under Misskey yet, so the
+   * Mastodon token is simply cleared.
+   */
+  enterMisskey(key: string | null = misskeyIdentityKeyActive()): boolean {
+    const requested = key ?? misskeyIdentities()[0]?.key ?? null;
+    const identity = misskeyIdentityAccount(requested);
+    if (!identity || !setActiveMisskeyIdentity(identity.key)) {
+      this.diagnostics.warn('enter-misskey-without-identity', { saved: this.sessions().length });
+      return false;
+    }
+    this.misskeyRevision.update((revision) => revision + 1);
+    const saved = this.sessions().length;
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.setItem(ACCOUNT_MODE_KEY, 'misskey');
+    this.mastodonAccount.set(null);
+    this.blueskyDid.set(null);
+    this.misskeyKey.set(identity.key);
+    this.kind.set('misskey');
+    this.token.set(null);
+    this.server.setBaseUrl('');
+    this.diagnostics.transition('enter-misskey', saved, this.sessions().length, {
+      handle: identity.account.acct,
+    });
+    return true;
+  }
+
+  /** Forget one saved Misskey identity without disturbing its alts. */
+  removeMisskeyIdentity(key: string): void {
+    const wasActive = this.kind() === 'misskey' && this.misskeyKey() === key;
+    clearMisskeyIdentity(key);
+    this.misskeyRevision.update((revision) => revision + 1);
+    if (wasActive) {
+      this.exitToLoggedOut();
+    }
+  }
+
+  /** Switch to the virtual account, a foreign-primary identity, or a saved Mastodon token. */
   switchAccount(choice: AccountChoice): boolean {
     if (choice.kind === 'anonymous') {
       this.enterAnonymous();
@@ -734,6 +917,9 @@ export class Auth {
     }
     if (choice.kind === 'bluesky') {
       return this.enterBluesky(choice.did ?? null);
+    }
+    if (choice.kind === 'misskey') {
+      return this.enterMisskey(choice.misskeyKey ?? null);
     }
     return choice.token !== null && this.switchTo(choice.token);
   }
@@ -757,6 +943,7 @@ export class Auth {
     this.kind.set(null);
     this.token.set(null);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(null);
   }
 
@@ -771,6 +958,7 @@ export class Auth {
     this.kind.set(null);
     this.token.set(null);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(null);
   }
 
@@ -828,6 +1016,7 @@ export class Auth {
     this.kind.set(null);
     this.token.set(null);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(null);
     // Note what is *not* here: the Bluesky-primary identity is left in storage,
     // for the same reason the Mastodon stable is. Leaving to the login screen
@@ -862,6 +1051,22 @@ export class Auth {
       this.diagnostics.transition('logout-anonymous', saved, saved);
       return;
     }
+    if (this.isMisskeyPrimary) {
+      // Same reasoning as the Bluesky branch below: forget this identity only,
+      // and never fall through to the Mastodon path with a null token.
+      clearMisskeyIdentity(this.misskeyKey());
+      this.misskeyRevision.update((revision) => revision + 1);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(ACCOUNT_MODE_KEY);
+      this.kind.set(null);
+      this.token.set(null);
+      this.misskeyKey.set(null);
+      this.mastodonAccount.set(null);
+      this.diagnostics.transition('logout-misskey-identity', saved, this.sessions().length, {
+        reason: 'forgot the Misskey-primary identity; Mastodon stable untouched',
+      });
+      return;
+    }
     if (this.isBlueskyPrimary) {
       // "Remove this account" for a Bluesky-primary identity means forgetting
       // the Bluesky identity — not filtering the Mastodon stable by a token
@@ -883,6 +1088,7 @@ export class Auth {
       this.kind.set(null);
       this.token.set(null);
       this.blueskyDid.set(null);
+      this.misskeyKey.set(null);
       this.mastodonAccount.set(null);
       this.diagnostics.transition('logout-bluesky-identity', saved, this.sessions().length, {
         reason: 'forgot the Bluesky-primary identity; Mastodon stable untouched',
@@ -939,12 +1145,15 @@ export class Auth {
     }
     clearAllBlueskyIdentities();
     this.blueskyRevision.update((revision) => revision + 1);
+    clearAllMisskeyIdentities();
+    this.misskeyRevision.update((revision) => revision + 1);
     this.diagnostics.transition('logout-all', saved, 0);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(ACCOUNT_MODE_KEY);
     this.kind.set(null);
     this.token.set(null);
     this.blueskyDid.set(null);
+    this.misskeyKey.set(null);
     this.mastodonAccount.set(null);
   }
 

@@ -203,7 +203,7 @@ export class FollowState {
 
   /** Refresh the profile badge once a bulk run settles, including partial success. */
   refreshAccount(): void {
-    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    if (this.auth.isAnonymous || this.auth.isForeignPrimary) return;
     const token = this.auth.token();
     if (!token) return;
     this.api.verifyCredentials().subscribe({

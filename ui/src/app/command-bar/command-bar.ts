@@ -184,7 +184,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
             <!-- WHAT: networks included in this feed. The label is intentionally a
              code comment rather than visible toolbar furniture. -->
             <mb-toolbar class="provider-group" label="Feed sources" density="compact" embedded>
-              @if ((!auth.isAnonymous && !auth.isBlueskyPrimary) || privateFedi()) {
+              @if ((!auth.isAnonymous && !auth.isForeignPrimary) || privateFedi()) {
                 <button
                   mbToolbarButton
                   [pressed]="prefs.isProviderVisible('mastodon')"
@@ -292,7 +292,7 @@ export class CommandBar {
   /** Provider ids behind each Feed sources button, in the order they render. */
   protected readonly sourceIds = computed<ProviderId[]>(() => {
     const ids: ProviderId[] = [];
-    if ((!this.auth.isAnonymous && !this.auth.isBlueskyPrimary) || this.privateFedi()) {
+    if ((!this.auth.isAnonymous && !this.auth.isForeignPrimary) || this.privateFedi()) {
       ids.push('mastodon');
     }
     if (this.anonymousFedi()) ids.push('anonymous-mastodon');
@@ -310,7 +310,6 @@ export class CommandBar {
     if (ids.length > 1) return true;
     return ids.length === 1 && !this.prefs.isProviderVisible(ids[0]);
   });
-
 
   /**
    * Whether to show a manual refresh button — for pages where live streaming

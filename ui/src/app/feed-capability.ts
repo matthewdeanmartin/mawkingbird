@@ -228,7 +228,8 @@ export class FeedCapability {
     if (this.auth.isAnonymous) {
       return 'anon';
     }
-    return this.auth.isBlueskyPrimary ? 'bsky' : 'auth';
+    // 'bsky' means "signed in, but with no Mastodon token": every foreign-primary kind.
+    return this.auth.isForeignPrimary ? 'bsky' : 'auth';
   }
 
   private write(host: string, kind: FeedKind, ability: FeedAbility): void {

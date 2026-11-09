@@ -5,6 +5,7 @@ import { Auth } from '../../auth';
 import { Server } from '../../server';
 import { LoginChooser } from './login-chooser';
 import { ClientPrefs } from '../../client-prefs';
+import { FeatureFlags } from '../../feature-flags';
 
 /** Stand in for the activated route's query params. */
 function withQuery(params: Record<string, string>): void {
@@ -174,5 +175,32 @@ describe('LoginChooser', () => {
 
     expect(navigate).not.toHaveBeenCalled();
     expect(navigateByUrl).not.toHaveBeenCalled();
+  });
+});
+
+/** The Misskey door follows its rollout flag (Sprint M1). */
+describe('LoginChooser Misskey door', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    TestBed.configureTestingModule({ providers: [Auth, Server, provideRouter([])] });
+  });
+
+  function hrefs(state: 'production' | 'off'): (string | null)[] {
+    withQuery({});
+    TestBed.inject(FeatureFlags).setState('misskey', state);
+    const fixture = TestBed.createComponent(LoginChooser);
+    fixture.detectChanges();
+    return Array.from(
+      fixture.nativeElement.querySelectorAll('a[href]') as NodeListOf<HTMLAnchorElement>,
+    ).map((a) => a.getAttribute('href'));
+  }
+
+  it('shows the Misskey door when the flag is on', () => {
+    expect(hrefs('production')).toContain('/login/misskey');
+  });
+
+  it('hides the Misskey door when the flag is off', () => {
+    expect(hrefs('off')).not.toContain('/login/misskey');
   });
 });

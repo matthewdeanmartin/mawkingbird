@@ -35,6 +35,18 @@
             </span>
           </span>
         </a>
+
+        @if (misskeyEnabled) {
+          <a class="door" routerLink="/login/misskey" [queryParams]="adding ? { add: 1 } : null">
+            <span class="door-badge" aria-hidden="true">Ⓜ️</span>
+            <span class="door-body">
+              <span class="door-name">{{ 'loginChooser.misskey' | transloco }}</span>
+              <span class="door-hint muted small">
+                {{ 'loginChooser.misskeyHint' | transloco }}
+              </span>
+            </span>
+          </a>
+        }
       </div>
 
       <!-- For anyone who took the wrong door. Quiet, but a real way out. -->

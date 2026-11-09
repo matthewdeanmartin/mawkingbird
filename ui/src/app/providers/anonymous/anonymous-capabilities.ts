@@ -19,7 +19,8 @@ export class AnonymousCapabilities {
   }
 
   get canCompose(): boolean {
-    return !this.active;
+    // Misskey-primary cannot post until Sprint M2 adds the Misskey composer.
+    return !this.active && !this.auth.isMisskeyPrimary;
   }
 
   get canManageRelationships(): boolean {

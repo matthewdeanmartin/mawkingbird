@@ -328,6 +328,15 @@ export const routes: Routes = [
     title: 'Sign in with Bluesky',
     loadComponent: () => import('./pages/login-bluesky/login-bluesky').then((m) => m.LoginBluesky),
   },
+  // Both halves of Misskey's MiAuth round trip: the server form, and the
+  // `?session=` callback that MiAuth sends the reader back to.
+  {
+    path: 'login/misskey',
+    title: 'Sign in with Misskey',
+    canActivate: [featureFlagGuard],
+    data: { featureFlag: 'misskey' },
+    loadComponent: () => import('./pages/login-misskey/login-misskey').then((m) => m.LoginMisskey),
+  },
   {
     path: 'oauth/bluesky/callback',
     title: 'Connecting Bluesky',

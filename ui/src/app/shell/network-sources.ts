@@ -25,6 +25,7 @@
  * mastodon-primary    yes (identity)        only if connector linked
  * bluesky-primary     only if opted in      yes (identity)
  * anonymous           yes (reads a server)  only if connector linked
+ * misskey-primary     no (no connector yet) only if connector linked
  * ```
  *
  * A user with both sees both. That is correct, and the crowding it causes is
@@ -66,6 +67,11 @@ export function networkSources(): NetworkSources {
       // sprint modelled `absent` as a state rather than defaulting to anonymous.
       if (auth.isBlueskyPrimary) {
         return connector.optedIn();
+      }
+      // Misskey-primary has no Mastodon connector yet (roadmap M4), so no
+      // Mastodon widget in the chrome could work for it.
+      if (auth.isMisskeyPrimary) {
+        return false;
       }
       // Everyone else keeps exactly the rails they had. That includes:
       //

@@ -1,0 +1,54 @@
+<div class="mk-wrap">
+  <div class="mk-card">
+    <span class="mk-badge" aria-hidden="true">Ⓜ️</span>
+    <h1 class="mk-title">{{ 'pages.loginMisskey.title' | transloco }}</h1>
+
+    @if (completing()) {
+      <p class="mk-body muted" role="status" aria-live="polite">
+        {{ 'pages.loginMisskey.completing' | transloco }}
+      </p>
+    } @else {
+      <p class="mk-body muted">
+        {{ 'pages.loginMisskey.intro' | transloco: { brand: brand } }}
+      </p>
+
+      <form class="mk-form" (ngSubmit)="submit()">
+        <label class="mk-field">
+          <span class="mk-label">{{ 'pages.loginMisskey.serverLabel' | transloco }}</span>
+          <input
+            type="text"
+            name="misskeyServer"
+            inputmode="url"
+            [placeholder]="'pages.loginMisskey.serverPlaceholder' | transloco"
+            autocomplete="url"
+            autocapitalize="none"
+            spellcheck="false"
+            [ngModel]="server()"
+            (ngModelChange)="server.set($event)"
+            [disabled]="working()"
+          />
+          <span class="mk-hint muted small">{{ 'pages.loginMisskey.serverHint' | transloco }}</span>
+        </label>
+
+        <button mbButton class="mk-submit" type="submit" [disabled]="!server().trim() || working()">
+          {{
+            (working() ? 'pages.loginMisskey.checking' : 'pages.loginMisskey.continue') | transloco
+          }}
+        </button>
+      </form>
+
+      <p class="mk-note muted small">
+        {{ 'pages.loginMisskey.note' | transloco: { brand: brand } }}
+      </p>
+    }
+
+    @if (error(); as message) {
+      <p class="mk-error" role="alert">{{ message }}</p>
+    }
+
+    <p class="mk-out small">
+      <a routerLink="/login">{{ 'pages.loginMisskey.useDifferentNetwork' | transloco }}</a> ·
+      <a routerLink="/anonymous">{{ 'pages.loginMisskey.lookAround' | transloco }}</a>
+    </p>
+  </div>
+</div>

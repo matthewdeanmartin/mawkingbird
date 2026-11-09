@@ -4,6 +4,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
+import { FeatureFlags } from '../../feature-flags';
 
 // i18n loginChooser.title: Where's your account?
 // i18n loginChooser.connecting: Connecting your account…
@@ -12,6 +13,8 @@ import { ClientPrefs } from '../../client-prefs';
 // i18n loginChooser.blueskyHint: A handle like yourname.bsky.social, or your own domain.
 // i18n loginChooser.mastodon: Mastodon
 // i18n loginChooser.bluesky: Bluesky
+// i18n loginChooser.misskey: Misskey
+// i18n loginChooser.misskeyHint: Misskey.io, misskey.design, or any other server that runs Misskey.
 // i18n loginChooser.notSure: Not sure yet?
 // i18n loginChooser.anonymousLink: Look around without an account
 // i18n loginChooser.instead: instead.
@@ -47,6 +50,8 @@ export class LoginChooser implements OnInit {
   private auth = inject(Auth);
   /** For the analytics opt-out, which lives on the signed-out page by design. */
   protected prefs = inject(ClientPrefs);
+  /** The Misskey door shows only where its flag is on. */
+  protected misskeyEnabled = inject(FeatureFlags).enabled('misskey');
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   protected adding = false;

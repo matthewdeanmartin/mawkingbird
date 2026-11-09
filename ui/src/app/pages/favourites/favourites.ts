@@ -46,6 +46,12 @@ export class Favourites implements OnInit {
   protected error = signal<string | null>(null);
 
   ngOnInit(): void {
+    if (this.auth.isMisskeyPrimary) {
+      // Misskey reactions and favourites are not read yet (roadmap M2/M3), and
+      // the Mastodon path has no token here: show the empty list, not a 401.
+      this.loading.set(false);
+      return;
+    }
     if (this.auth.isBlueskyPrimary) {
       this.loadBluesky(null);
       return;
@@ -55,7 +61,7 @@ export class Favourites implements OnInit {
 
   protected loadMore(): void {
     const cursor = this.cursor();
-    if (!cursor || this.loadingMore()) return;
+    if (!cursor || this.loadingMore() || this.auth.isMisskeyPrimary) return;
     if (this.auth.isBlueskyPrimary) this.loadBluesky(cursor);
     else this.loadMastodon(cursor);
   }

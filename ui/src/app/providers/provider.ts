@@ -35,6 +35,10 @@ export const PROVIDER_CAPS: Record<ProviderId, ProviderCapabilities> = {
   mastodon: { reply: true, favourite: true, reblog: true },
   'anonymous-mastodon': { reply: true, favourite: true, reblog: true },
   bluesky: { reply: true, favourite: true, reblog: true },
+  // Read-only until Sprint M2 adds writing. Reactions, replies and renotes go
+  // through the Misskey API, never `/api/v1/statuses`, so until that path
+  // exists the honest answer is no.
+  misskey: { reply: false, favourite: false, reblog: false },
   rss: { reply: false, favourite: false, reblog: false },
   paste: { reply: false, favourite: false, reblog: false },
   blog: { reply: false, favourite: false, reblog: false },
@@ -57,6 +61,10 @@ const NO_WRITES: ProviderCapabilities = { reply: false, favourite: false, reblog
  * `/api/v1/statuses/{id}/…` can only 404.
  */
 const CLIENT_SIDE_ONLY: ReadonlySet<ProviderId> = new Set<ProviderId>([
+  // A Misskey note id (`mk:…`) names a note on a Misskey server, not anything
+  // a Mastodon home server has seen; its translate and bookmark paths must not
+  // go to `/api/v1/statuses`.
+  'misskey',
   'twitter',
   'rss',
   'paste',

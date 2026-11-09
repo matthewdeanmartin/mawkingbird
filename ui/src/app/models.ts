@@ -6,7 +6,7 @@
  * shapes and tag it, so the rest of the app renders everything identically.
  */
 export type ProviderId =
-  'mastodon' | 'anonymous-mastodon' | 'bluesky' | 'rss' | 'paste' | 'blog' | 'twitter';
+  'mastodon' | 'anonymous-mastodon' | 'bluesky' | 'misskey' | 'rss' | 'paste' | 'blog' | 'twitter';
 
 export interface Role {
   id: string;
@@ -215,6 +215,22 @@ export interface Status {
    * Undefined on every non-RSS provider.
    */
   rssFullContent?: boolean;
+  /**
+   * Emoji reactions, most used first. Misskey only today; absent on networks
+   * that have a single like instead. Read-only display until reacting ships.
+   */
+  reactions?: StatusReaction[];
+}
+
+/** One emoji reaction on a post and how many people chose it. */
+export interface StatusReaction {
+  /** A Unicode emoji, or a custom emoji's `:shortcode:`. */
+  name: string;
+  count: number;
+  /** Image for a custom emoji; null for Unicode. */
+  url: string | null;
+  /** Whether the signed-in reader chose this one. */
+  me: boolean;
 }
 
 /** One matched filter on a status (`Status.filtered[]`). */

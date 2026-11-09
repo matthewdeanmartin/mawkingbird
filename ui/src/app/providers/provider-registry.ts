@@ -1,5 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { BlueskyProvider } from './bluesky/bluesky-provider';
+import { MisskeyProvider } from './misskey/misskey-provider';
 import { FeedProvider } from './provider';
 import { RssProvider } from './rss/rss-provider';
 import { AnonymousBlueskyProvider } from './anonymous/anonymous-bluesky-provider';
@@ -23,6 +24,7 @@ import { FeatureFlagId, FeatureFlags } from '../feature-flags';
 const PROVIDER_FLAGS: Record<string, FeatureFlagId> = {
   paste: 'pastebin',
   bluesky: 'connector-bluesky',
+  misskey: 'misskey',
   rss: 'connector-rss',
   twitter: 'connector-twitter',
 };
@@ -34,6 +36,7 @@ const PROVIDER_FLAGS: Record<string, FeatureFlagId> = {
 @Injectable({ providedIn: 'root' })
 export class ProviderRegistry {
   private bluesky = inject(BlueskyProvider);
+  private misskey = inject(MisskeyProvider);
   private rss = inject(RssProvider);
   private anonymousMastodon = inject(AnonymousMastodonProvider);
   private anonymousBluesky = inject(AnonymousBlueskyProvider);
@@ -48,6 +51,8 @@ export class ProviderRegistry {
     // that one requires a linked session.
     this.anonymousBluesky,
     this.bluesky,
+    // Linked only while a Misskey identity is the active account.
+    this.misskey,
     this.rss,
     this.twitter,
     this.paste,

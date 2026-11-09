@@ -282,7 +282,7 @@
                 ) | transloco
               }}</a>
               <!-- The server card lives in the right rail, which a phone never shows. -->
-              @if (!auth.isBlueskyPrimary) {
+              @if (!auth.isForeignPrimary) {
                 <a routerLink="/server">{{ 'shell.menu.myServer' | transloco }}</a>
               }
               <!-- Lists and Tags moved to the Feeds landing page's drill-down
@@ -461,6 +461,11 @@
                   <button type="button" class="menu-action" (click)="addBlueskyAccount()">
                     {{ 'shell.account.addBluesky' | transloco }}
                   </button>
+                  @if (featureFlags.enabled('misskey')) {
+                    <button type="button" class="menu-action" (click)="addMisskeyAccount()">
+                      {{ 'shell.account.addMisskey' | transloco }}
+                    </button>
+                  }
                 }
                 <!-- "Log out" is right for a Bluesky-primary identity: it is a real
                    account with real credentials, not the browser-local session

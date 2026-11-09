@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThreadLoader } from './thread-loader';
 import { ThreadPreload } from './thread-preload';
 import { Auth } from '../../auth';
 import { SearchServer } from '../../search-server';
 import { Status } from '../../models';
 import { anonymousStatusRouteRef } from '../../providers/anonymous/anonymous-route-ref';
+import { saveMisskeyIdentity } from '../../providers/misskey/misskey-identity-store';
 
 const ORIGINAL = 'https://graz.social/@publicvoit/117170026233980502';
 
@@ -246,5 +247,125 @@ describe('ThreadLoader refreshing replies', () => {
     loader.refreshReplies();
     expect(loader.canRefreshReplies).toBe(false);
     httpMock.expectNone((request) => request.url.endsWith('/context'));
+  });
+});
+
+/**
+ * A Misskey note (`mk:` id), read as the active Misskey identity: the note,
+ * its parents (nearest first from the API, oldest first on screen) and its
+ * direct replies, all from the reader's own Misskey server.
+ */
+describe('ThreadLoader with a Misskey note', () => {
+  let httpMock: HttpTestingController;
+
+  const user = { id: 'u1', name: null, username: 'alice', host: null, avatarUrl: null };
+  const mkNote = (id: string, replyId: string | null = null) => ({
+    id,
+    createdAt: '2026-11-09T10:00:00.000Z',
+    text: `note ${id}`,
+    user,
+    userId: 'u1',
+    visibility: 'public',
+    replyId,
+  });
+
+  function setUp(activeKey: string | null): ThreadLoader {
+    TestBed.configureTestingModule({
+      providers: [
+        ThreadLoader,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: Auth,
+          useValue: { activeMisskeyKey: () => activeKey, lacksMastodonToken: true },
+        },
+        { provide: SearchServer, useValue: { active: () => false } },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    return TestBed.inject(ThreadLoader);
+  }
+
+  beforeEach(() => localStorage.clear());
+
+  it('asks the reader to sign in when no Misskey identity is active', () => {
+    const loader = setUp(null);
+    loader.load('mk:n2');
+    expect(loader.loading()).toBe(false);
+    expect(loader.loadError()).toBeTruthy();
+    httpMock.verify();
+  });
+
+  it('loads the note, its parents oldest first, and its replies', async () => {
+    const key = saveMisskeyIdentity(
+      {
+        server: 'https://misskey.io',
+        userId: 'u1',
+        username: 'alice',
+        name: null,
+        avatarUrl: null,
+      },
+      { token: 'tok' },
+    );
+    const loader = setUp(key);
+    loader.load('mk:n2');
+    httpMock.expectOne('https://misskey.io/api/notes/show').flush(mkNote('n2', 'n1'));
+    // Nearest parent first, as Misskey sends it.
+    httpMock
+      .expectOne('https://misskey.io/api/notes/conversation')
+      .flush([mkNote('n1', 'n0'), mkNote('n0')]);
+    httpMock.expectOne('https://misskey.io/api/notes/children').flush([mkNote('n3', 'n2')]);
+    await vi.waitFor(() => expect(loader.loading()).toBe(false));
+    expect(loader.status()?.id).toBe('mk:n2');
+    expect(loader.ancestors().map((s) => s.id)).toEqual(['mk:n0', 'mk:n1']);
+    expect(loader.descendants().map((s) => s.id)).toEqual(['mk:n3']);
+    expect(loader.canRefreshReplies).toBe(true);
+    httpMock.verify();
+  });
+
+  it('keeps the note readable when the parent lookup fails', async () => {
+    const key = saveMisskeyIdentity(
+      {
+        server: 'https://misskey.io',
+        userId: 'u1',
+        username: 'alice',
+        name: null,
+        avatarUrl: null,
+      },
+      { token: 'tok' },
+    );
+    const loader = setUp(key);
+    loader.load('mk:n2');
+    httpMock.expectOne('https://misskey.io/api/notes/show').flush(mkNote('n2'));
+    httpMock
+      .expectOne('https://misskey.io/api/notes/conversation')
+      .flush({ error: { code: 'X' } }, { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne('https://misskey.io/api/notes/children').flush([]);
+    await vi.waitFor(() => expect(loader.loading()).toBe(false));
+    expect(loader.status()?.id).toBe('mk:n2');
+    expect(loader.loadError()).toBeNull();
+  });
+
+  it('says the note is gone when Misskey answers NO_SUCH_NOTE', async () => {
+    const key = saveMisskeyIdentity(
+      {
+        server: 'https://misskey.io',
+        userId: 'u1',
+        username: 'alice',
+        name: null,
+        avatarUrl: null,
+      },
+      { token: 'tok' },
+    );
+    const loader = setUp(key);
+    loader.load('mk:gone');
+    httpMock.expectOne('https://misskey.io/api/notes/conversation').flush([]);
+    httpMock.expectOne('https://misskey.io/api/notes/children').flush([]);
+    httpMock
+      .expectOne('https://misskey.io/api/notes/show')
+      .flush({ error: { code: 'NO_SUCH_NOTE' } }, { status: 400, statusText: 'Bad Request' });
+    await vi.waitFor(() => expect(loader.loading()).toBe(false));
+    expect(loader.status()).toBeNull();
+    expect(loader.loadError()).toBeTruthy();
   });
 });

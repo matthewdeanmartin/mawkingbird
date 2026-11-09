@@ -33,6 +33,8 @@ import { CustomEmoji } from '../../../models';
 // i18n settings.profile.intro: How you appear to other people on this server.
 // i18n settings.profile.intro.anonymous: Your browser-local identity. Nothing here is published to {{server}}.
 // i18n settings.profile.intro.bluesky: How you appear to people on Bluesky.
+// i18n settings.profile.intro.misskey: Your profile lives on your Misskey server. Editing it from here comes in a later update; for now, change it on Misskey.
+// i18n settings.profile.misskeyLink: Edit your profile on {{server}}
 // i18n settings.profile.displayName: Display name
 // i18n settings.profile.localHandle: Local handle
 // i18n settings.profile.localHandle.hint: Shown only in this browser. It does not create an account.
@@ -102,9 +104,24 @@ export class SettingsProfile implements OnInit {
    */
   protected verifiedAt = signal<Record<string, string>>({});
 
+  /** Where a Misskey-primary reader edits their profile until this page can. */
+  protected readonly misskeyProfileUrl = computed(() => {
+    const url = this.auth.isMisskeyPrimary ? this.auth.account()?.url : null;
+    return url ? new URL('/settings/profile', url).href : null;
+  });
+  protected readonly misskeyHost = computed(() => {
+    const href = this.misskeyProfileUrl();
+    return href ? new URL(href).host : '';
+  });
+
   ngOnInit(): void {
     if (this.auth.isAnonymous) {
       this.loadAccount(this.anonymous.account());
+      return;
+    }
+    if (this.auth.isMisskeyPrimary) {
+      // Nothing to load: the form is not shown, and `verifyCredentials` is a
+      // Mastodon call this account has no token for.
       return;
     }
     if (this.auth.isBlueskyPrimary) {

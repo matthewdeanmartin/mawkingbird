@@ -1,4 +1,5 @@
 import { blueskyRouteFor } from '../bluesky-links';
+import { StatusReactions } from './status-reactions';
 import { accountScopeSuffix } from '../account-scope';
 import { PostHistory } from '../post-history';
 import { MbMenuItem } from '../design-system/menu/menu-item';
@@ -204,6 +205,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.likes: likes
 // i18n statusCard.favouritesTitle: Favourites
 // i18n statusCard.likesTitle: Likes
+// i18n statusCard.reactions: Reactions
 // i18n statusCard.favouritedBy: Favourited by
 // i18n statusCard.favouritedByCount: {{count}} Favourited by
 // i18n statusCard.openOnNitter: Open on {{host}}, a tracker-free front-end for Twitter
@@ -427,6 +429,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
 @Component({
   selector: 'app-status-card',
   imports: [
+    StatusReactions,
     ExternalPlayerHost,
     NgTemplateOutlet,
     MbButton,
@@ -1747,7 +1750,9 @@ export class StatusCard {
   protected bookmarkActive(): boolean {
     return this.auth.isAnonymous ||
       this.remoteMastodonReadOnly ||
-      (this.display.provider === 'bluesky' && !this.blueskySession.linked())
+      (this.display.provider === 'bluesky' && !this.blueskySession.linked()) ||
+      // Misskey bookmarks are browser-local until Misskey favourites ship (M2/M3).
+      this.display.provider === 'misskey'
       ? this.anonymousBookmarks.has(this.display)
       : this.display.bookmarked;
   }
@@ -1779,6 +1784,8 @@ export class StatusCard {
     return (
       this.display.provider === 'twitter' ||
       this.display.provider === 'bluesky' ||
+      // Misskey: real counts, no actions until writing ships (M2).
+      this.display.provider === 'misskey' ||
       this.remoteMastodonReadOnly
     );
   }
@@ -1816,6 +1823,8 @@ export class StatusCard {
     return (
       provider === 'mastodon' ||
       provider === 'bluesky' ||
+      // `mk:` ids open through ThreadLoader as the active Misskey identity.
+      provider === 'misskey' ||
       provider === 'rss' ||
       // tweets open a thread view backed by `tweet/replies`. Costs one request
       // per open, which is why the thread page shows the price and does not
@@ -2974,7 +2983,10 @@ export class StatusCard {
 
   protected pollClosed = computed<boolean>(() => {
     const p = this.poll();
-    return this.capabilities.active || !p || p.expired || p.voted;
+    // Misskey polls show results only until voting goes through the Misskey API (M2).
+    return (
+      this.capabilities.active || !p || p.expired || p.voted || this.display.provider === 'misskey'
+    );
   });
 
   pollPercent(option: { votes_count: number }): number {

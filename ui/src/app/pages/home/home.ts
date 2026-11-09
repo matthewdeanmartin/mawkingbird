@@ -85,6 +85,8 @@ import { DiscoveryCard } from '../../discovery-card/discovery-card';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
+import { MK_TIMELINES, MisskeyProvider } from '../../providers/misskey/misskey-provider';
+import { MkTimeline } from '../../providers/misskey/misskey-types';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
 import { MbField, MbControl } from '../../design-system/field/field';
 import { isVideoStatus } from '../../video-player/video-discovery';
@@ -188,6 +190,14 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
 // i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Retry the request. If your session has expired or access was revoked, sign in again.
 // i18n pages.home.warnings.blueskyError.link: Check Bluesky connection
+// i18n pages.home.warnings.misskeyError: Misskey could not load this timeline. Retry the request. If access was revoked, sign in again.
+// i18n pages.home.warnings.misskeyError.retry: Retry
+// i18n pages.home.warnings.misskeyError.signIn: Sign in to Misskey again
+// i18n pages.home.misskey.timelinesLabel: Misskey timeline
+// i18n pages.home.misskey.timeline.home: Home
+// i18n pages.home.misskey.timeline.social: Social
+// i18n pages.home.misskey.timeline.local: Local
+// i18n pages.home.misskey.timeline.global: Global
 // i18n pages.home.warnings.blueskyError.primaryLink: Sign in to Bluesky again
 // i18n pages.home.warnings.blueskyError.retry: Retry Bluesky feed
 // i18n pages.home.warnings.blueskyError.dialogTitle: Sign in to Bluesky again?
@@ -306,6 +316,20 @@ export class Home implements OnInit, OnDestroy {
       .linked()
       .some((provider) => provider.id === 'bluesky' && provider.errors().length > 0),
   );
+  private misskeyProvider = inject(MisskeyProvider);
+  /** Home, Social, Local, Global: which Misskey timeline Home reads. */
+  protected readonly misskeyTimelines = MK_TIMELINES;
+  protected readonly misskeyTimeline = this.misskeyProvider.timeline;
+  protected misskeyFeedErrors = computed(() =>
+    this.auth.isMisskeyPrimary ? this.misskeyProvider.errors() : [],
+  );
+  protected readonly misskeySignInRequired = this.misskeyProvider.authenticationFailed;
+
+  protected setMisskeyTimeline(timeline: MkTimeline): void {
+    if (timeline === this.misskeyTimeline()) return;
+    this.misskeyProvider.setTimeline(timeline);
+    this.load(true);
+  }
   private bsky = inject(BlueskySession);
   private bskyProvider = inject(BlueskyProvider);
   protected showBlueskyReauth = signal(false);
@@ -430,7 +454,11 @@ export class Home implements OnInit, OnDestroy {
    * publishing. The sign-in invitation on the cards below is the honest offer
    * here; a second composer would just be the same over-promise again.
    */
-  protected readonly offersWriting = computed(() => !this.auth.isAnonymous);
+  // Nor for a Misskey account yet: posting to Misskey is Sprint M2, and the
+  // composer's targets are Mastodon and Bluesky, which it has no token for.
+  protected readonly offersWriting = computed(
+    () => !this.auth.isAnonymous && !this.auth.isMisskeyPrimary,
+  );
 
   /** The full writing workspace is behind a flag; without it, Write goes to /drafts. */
   protected readonly hasWritePage = computed(() => this.flags.enabled('write'));
@@ -562,7 +590,7 @@ export class Home implements OnInit, OnDestroy {
   private serverTagNames = signal<string[]>([]);
   private myTagsGeneration = 0;
   protected followedTagNames = computed(() =>
-    (this.auth.isAnonymous || this.auth.isBlueskyPrimary
+    (this.auth.isAnonymous || this.auth.isForeignPrimary
       ? this.anonymousTags.tags()
       : this.serverTagNames()
     )
@@ -579,7 +607,7 @@ export class Home implements OnInit, OnDestroy {
     this.myTagsError.set(false);
     this.myTagsLoading.set(false);
     this.serverTagNames.set([]);
-    if (!enabled || this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    if (!enabled || this.auth.isAnonymous || this.auth.isForeignPrimary) return;
     this.myTagsLoading.set(true);
     const scope = accountScopeSuffix();
     const names: string[] = [];
@@ -987,7 +1015,7 @@ export class Home implements OnInit, OnDestroy {
     () =>
       !this.nudgeDismissed() &&
       !this.auth.isAnonymous &&
-      !this.auth.isBlueskyPrimary &&
+      !this.auth.isForeignPrimary &&
       this.auth.account() !== null &&
       this.followingCount() < FOLLOW_NUDGE_THRESHOLD,
   );
@@ -1131,7 +1159,7 @@ export class Home implements OnInit, OnDestroy {
     const wanted =
       this.prefs.autoRefreshTimeline() &&
       !this.auth.isAnonymous &&
-      !this.auth.isBlueskyPrimary &&
+      !this.auth.isForeignPrimary &&
       !this.justMyServer.enabled();
     if (wanted === this.live()) {
       return;
@@ -1179,9 +1207,7 @@ export class Home implements OnInit, OnDestroy {
   private finishRefresh(): void {
     const baseline = this.refreshBaseline;
     if (!baseline) return;
-    const nothingNew = !this.statuses().some(
-      (status) => !baseline.has(canonicalStatusKey(status)),
-    );
+    const nothingNew = !this.statuses().some((status) => !baseline.has(canonicalStatusKey(status)));
     this.noNewPosts.set(nothingNew);
     this.refreshBaseline = null;
     // The check on the refresh button is a moment's confirmation, not a state.
@@ -1815,7 +1841,7 @@ export class Home implements OnInit, OnDestroy {
     if (this.loading() || !this.noLocalSources() || !this.noLoadedPosts()) return;
     if (
       !this.auth.isAnonymous &&
-      !this.auth.isBlueskyPrimary &&
+      !this.auth.isForeignPrimary &&
       this.auth.account()?.following_count === 0 &&
       !this.tagsChecked
     ) {
@@ -1844,12 +1870,13 @@ export class Home implements OnInit, OnDestroy {
     () =>
       this.homeSource.settings.value().mode === 'friends' &&
       !this.blueskyFeedFailed() &&
+      !this.misskeyFeedErrors().length &&
       this.noLoadedPosts() &&
       this.noLocalSources() &&
       (!this.bsky.session() || this.bskyHasFollows() === false) &&
       (this.auth.isAnonymous ||
-        this.auth.isBlueskyPrimary ||
-        (!this.auth.isBlueskyPrimary &&
+        this.auth.isForeignPrimary ||
+        (!this.auth.isForeignPrimary &&
           this.auth.account()?.following_count === 0 &&
           this.serverHasTags() === false)),
   );

@@ -65,7 +65,7 @@ export class RadioStudioSession {
       this.opening.set(false);
       this.storageFailed.set(false);
       this.catalogue.set(this.newCatalogue());
-      if (!this.auth.isAnonymous && !this.auth.isBlueskyPrimary) void this.initialize();
+      if (!this.auth.isAnonymous && !this.auth.isForeignPrimary) void this.initialize();
     });
   }
 

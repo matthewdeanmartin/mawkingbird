@@ -11,6 +11,7 @@ export type FeatureFlagId =
   | 'write'
   | 'unified-share'
   | 'mawkingbird-plus'
+  | 'misskey'
   | 'connector-mastodon'
   | 'connector-bluesky'
   | 'connector-twitter'
@@ -88,6 +89,8 @@ interface StoredFeatureFlags {
 // i18n flags.connectorMastodon.description: Mastodon attached to a Bluesky-primary account: Explore, trends and tag timelines, read anonymously or signed in.
 // i18n flags.connectorBluesky.label: Bluesky
 // i18n flags.connectorBluesky.description: Bluesky posts in your timeline, replies and likes, and Bluesky DMs in Chat.
+// i18n flags.misskey.label: Misskey
+// i18n flags.misskey.description: Sign in with a Misskey account and read its timelines. Reading only for now; posting and reactions come next.
 // i18n flags.connectorTwitter.label: Twitter
 // i18n flags.connectorTwitter.description: Following and reading public Twitter accounts through a scraper service.
 // i18n flags.connectorMataroa.label: Blog (Mataroa)
@@ -169,6 +172,17 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     // leads to a checkout. Until there is a live Stripe price it must not be
     // reachable anywhere a real customer can press the button.
     defaultState: 'test',
+    group: 'features',
+  },
+  {
+    id: 'misskey',
+    labelKey: 'flags.misskey.label',
+    descriptionKey: 'flags.misskey.description',
+    // A feature, not a connector: Misskey is a network you sign in *as*; there
+    // is no Misskey connector under other accounts yet (roadmap M4).
+    // `canary` while it is read-only (Sprint M1, 2026-11). Production readers
+    // can switch it on in Settings; it reaches `production` with posting (M2).
+    defaultState: 'canary',
     group: 'features',
   },
   {

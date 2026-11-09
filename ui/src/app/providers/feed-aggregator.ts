@@ -179,7 +179,7 @@ export class FeedAggregator {
     const connectorFeedsHome = this.auth.isBlueskyPrimary && this.connector.signedIn();
     this.mastodonExhausted =
       this.auth.isAnonymous ||
-      (this.auth.isBlueskyPrimary && !connectorFeedsHome) ||
+      (this.auth.isForeignPrimary && !connectorFeedsHome) ||
       !this.prefs.isProviderVisible('mastodon');
     this.foreign = this.registry
       .linked()
@@ -191,13 +191,20 @@ export class FeedAggregator {
     // The same recovery as Mastodon: a primary Bluesky identity must not be
     // stranded by filters hiding every source. Never enable a Mastodon call
     // as a substitute for the reader's own network.
-    if (this.auth.isBlueskyPrimary && this.mastodonExhausted && !this.foreign.length) {
-      const primary = this.registry.linked().find((provider) => provider.id === 'bluesky');
+    // Applies to every foreign-primary kind; the account kind names its provider.
+    const primaryKind = this.auth.kind();
+    if (
+      this.auth.isForeignPrimary &&
+      primaryKind &&
+      this.mastodonExhausted &&
+      !this.foreign.length
+    ) {
+      const primary = this.registry.linked().find((provider) => provider.id === primaryKind);
       if (primary) {
-        if (!this.prefs.isProviderVisible('bluesky')) this.prefs.toggleProvider('bluesky');
+        if (!this.prefs.isProviderVisible(primary.id)) this.prefs.toggleProvider(primary.id);
         primary.reset();
         this.foreign = [{ provider: primary, exhausted: false, reason: 'active' }];
-        this.diagnostics.warn('aggregator:all-sources-hidden-fallback', { provider: 'bluesky' });
+        this.diagnostics.warn('aggregator:all-sources-hidden-fallback', { provider: primary.id });
       }
     }
     // Safety net: an authenticated reader whose persisted filters hide *every*
@@ -213,7 +220,7 @@ export class FeedAggregator {
     // usable Mastodon token, so the net catches them like anyone else.
     if (
       !this.auth.isAnonymous &&
-      (!this.auth.isBlueskyPrimary || connectorFeedsHome) &&
+      (!this.auth.isForeignPrimary || connectorFeedsHome) &&
       this.mastodonExhausted &&
       !this.foreign.length
     ) {

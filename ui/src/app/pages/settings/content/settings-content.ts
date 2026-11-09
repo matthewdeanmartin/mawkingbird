@@ -102,7 +102,7 @@ export class SettingsContent {
     }
   });
 
-  protected showsServerRow = computed(() => !this.auth.isAnonymous && !this.auth.isBlueskyPrimary);
+  protected showsServerRow = computed(() => !this.auth.isAnonymous && !this.auth.isForeignPrimary);
 
   constructor() {
     if (this.showsServerRow()) {

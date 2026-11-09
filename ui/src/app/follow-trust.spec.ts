@@ -26,7 +26,17 @@ describe('FollowTrust', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: Auth, useValue: { isAnonymous: false, isBlueskyPrimary: false, ...auth } },
+        {
+          provide: Auth,
+          // isForeignPrimary is derived from the per-kind getters in Auth; mirror that.
+          useValue: (({ isBlueskyPrimary = false, isMisskeyPrimary = false, ...rest }) => ({
+            isAnonymous: false,
+            ...rest,
+            isBlueskyPrimary,
+            isMisskeyPrimary,
+            isForeignPrimary: isBlueskyPrimary || isMisskeyPrimary,
+          }))(auth),
+        },
         {
           provide: AnonymousFollows,
           useValue: { isFollowing: (a: Account) => anonFollowing.includes(a.acct) },

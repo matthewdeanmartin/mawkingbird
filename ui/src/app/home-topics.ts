@@ -11,7 +11,7 @@ export class HomeTopics {
   private auth = inject(Auth);
   private tags = inject(AnonymousTags);
   async followed(): Promise<string[]> {
-    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) return this.tags.tags();
+    if (this.auth.isAnonymous || this.auth.isForeignPrimary) return this.tags.tags();
     const tags: string[] = [];
     const seen = new Set<string>();
     let cursor: string | undefined;

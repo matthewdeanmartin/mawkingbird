@@ -2,6 +2,7 @@ import {
   ANONYMOUS_SCOPE_SUFFIX,
   legacyScopeSuffixForDid,
   scopeSuffixForDid,
+  scopeSuffixForMisskey,
   scopeSuffixForMastodonAccount,
   scopeSuffixForToken,
 } from './account-scope';
@@ -65,15 +66,17 @@ export type AccountDataRef =
   | null
   | { kind: 'mastodon'; token: string; accountId?: string; server?: string }
   | { kind: 'bluesky'; did: string }
+  | { kind: 'misskey'; key: string }
   | { kind: 'anonymous' };
 
-/** The storage scope suffix for a saved Mastodon, Bluesky, or Anonymous account. */
+/** The storage scope suffix for a saved Mastodon, Bluesky, Misskey, or Anonymous account. */
 export function scopeForAccount(account: AccountDataRef): string {
   if (account === null || (typeof account === 'object' && account.kind === 'anonymous')) {
     return ANONYMOUS_SCOPE_SUFFIX;
   }
   if (typeof account === 'string') return scopeSuffixForToken(account);
   if (account.kind === 'bluesky') return scopeSuffixForDid(account.did);
+  if (account.kind === 'misskey') return scopeSuffixForMisskey(account.key);
   return account.accountId
     ? scopeSuffixForMastodonAccount(account.accountId, account.server ?? '')
     : scopeSuffixForToken(account.token);
@@ -85,6 +88,8 @@ function scopesForAccount(account: AccountDataRef): string[] {
   if (typeof account !== 'object' || account === null || account.kind === 'anonymous') {
     return [current];
   }
+  // Misskey scopes are new (2026-11): there is no older layout to clean up.
+  if (account.kind === 'misskey') return [current].filter(Boolean);
   const legacy =
     account.kind === 'bluesky'
       ? legacyScopeSuffixForDid(account.did)

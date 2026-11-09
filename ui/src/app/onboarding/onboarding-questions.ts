@@ -178,6 +178,8 @@ function feedSources(ctx: OnboardingContext): ChoiceOption[] {
 
 /** Which network the connect card offers, if any. */
 function connectTarget(ctx: OnboardingContext): 'Bluesky' | 'Mastodon' | null {
+  // Connectors under a Misskey identity are roadmap M4; offer none until then.
+  if (ctx.auth.isMisskeyPrimary) return null;
   if (ctx.auth.isBlueskyPrimary) {
     return !ctx.connector.optedIn() && ctx.flags.enabled('connector-mastodon') ? 'Mastodon' : null;
   }

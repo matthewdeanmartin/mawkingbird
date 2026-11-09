@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { finalize, map, Observable, Subscription } from 'rxjs';
+import { finalize, forkJoin, from, map, Observable, of, Subscription, catchError } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -9,6 +9,8 @@ import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptPost } from '../../providers/bluesky/bluesky-adapter';
 import { BskyThreadNode } from '../../providers/bluesky/bluesky-types';
 import { RssProvider } from '../../providers/rss/rss-provider';
+import { MisskeyApi } from '../../providers/misskey/misskey-api';
+import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
 import { TwitterApi } from '../../providers/twitter/twitter-api';
 import { TwitterFeed } from '../../providers/twitter/twitter-feed';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
@@ -57,6 +59,7 @@ export class ThreadLoader {
   private auth = inject(Auth);
   private searchServer = inject(SearchServer);
   private bsky = inject(BlueskyApi);
+  private misskey = inject(MisskeyApi);
   private rss = inject(RssProvider);
   private twitterApi = inject(TwitterApi);
   private twitterFeed = inject(TwitterFeed);
@@ -191,6 +194,10 @@ export class ThreadLoader {
 
     if (id.startsWith('bsky:')) {
       this.loadBsky(id.slice('bsky:'.length));
+      return;
+    }
+    if (id.startsWith('mk:')) {
+      this.loadMisskey(id.slice('mk:'.length));
       return;
     }
     if (id.startsWith('rss:')) {
@@ -406,6 +413,54 @@ export class ThreadLoader {
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
+      }),
+    );
+  }
+
+  /**
+   * A Misskey note with its parents and direct replies, read as the active
+   * Misskey identity. Three requests in parallel; a failed parent or reply
+   * lookup leaves the note itself readable. The adapter is imported here, not
+   * at the top, to keep the MFM parser out of this page's eager code.
+   */
+  private loadMisskey(noteId: string): void {
+    const identity = misskeyIdentity(this.auth.activeMisskeyKey());
+    if (!identity) {
+      this.loading.set(false);
+      this.loadError.set(this.transloco.translate('pages.thread.error.misskeySignIn'));
+      return;
+    }
+    const server = identity.profile.server;
+    const adapter = from(import('../../providers/misskey/misskey-adapter'));
+    this.repliesSource = () =>
+      forkJoin([this.misskey.children(noteId), adapter]).pipe(
+        map(([notes, { adaptMisskeyNote }]) => notes.map((n) => adaptMisskeyNote(n, server))),
+      );
+    this.sub.add(
+      forkJoin([
+        this.misskey.note(noteId),
+        this.misskey.conversation(noteId).pipe(catchError(() => of([]))),
+        this.misskey.children(noteId).pipe(catchError(() => of([]))),
+        adapter,
+      ]).subscribe({
+        next: ([note, parents, children, { adaptMisskeyNote }]) => {
+          this.status.set(adaptMisskeyNote(note, server));
+          // `notes/conversation` lists the nearest parent first; a thread reads oldest first.
+          this.ancestors.set([...parents].reverse().map((n) => adaptMisskeyNote(n, server)));
+          this.descendants.set(children.map((n) => adaptMisskeyNote(n, server)));
+          this.loading.set(false);
+        },
+        error: (error: unknown) => {
+          const code = (error as { code?: string | null })?.code;
+          this.loading.set(false);
+          this.loadError.set(
+            this.transloco.translate(
+              code === 'NO_SUCH_NOTE'
+                ? 'pages.thread.error.notFound'
+                : 'pages.thread.error.loadPost',
+            ),
+          );
+        },
       }),
     );
   }

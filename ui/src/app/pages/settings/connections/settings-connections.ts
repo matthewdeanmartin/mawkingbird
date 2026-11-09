@@ -91,6 +91,7 @@ export interface ConnectionCatalogRow {
 // i18n settings.connections.retentionAriaLabel: Credential retention
 // i18n settings.connections.retentionNeverWarning: Nothing will expire on its own. Revoke tokens at the provider when you stop using a connection.
 // i18n settings.connections.mastodonAnonymousActive: Anonymous browsing already reads a Mastodon server — change it in Settings → Anonymous.
+// i18n settings.connections.mastodonUnderMisskey: Connecting Mastodon to a Misskey account is not available yet.
 // i18n settings.connections.mastodonAlreadySignedIn: You are signed in to Mastodon already — it is your account here, not a connector.
 // i18n settings.connections.blueskyAlreadySignedIn: You are signed in to Bluesky already — it is your account here, not a connector.
 // i18n settings.connections.dropboxNotConfigured: Not configured for this build — the Dropbox app key is missing.
@@ -204,7 +205,7 @@ export class SettingsConnections implements OnInit {
       // Anonymous is deliberately not included: it reads a Mastodon server, but
       // the row still offers a real choice (which server), so it keeps its
       // greyed explanation rather than vanishing.
-      return !this.auth.isBlueskyPrimary && !this.auth.isAnonymous;
+      return !this.auth.isForeignPrimary && !this.auth.isAnonymous;
     }
     return false;
   }
@@ -231,9 +232,13 @@ export class SettingsConnections implements OnInit {
             return {
               entry,
               connected: false,
-              unavailableReason: this.auth.isAnonymous
-                ? this.transloco.translate<string>('settings.connections.mastodonAnonymousActive')
-                : this.transloco.translate<string>('settings.connections.mastodonAlreadySignedIn'),
+              unavailableReason: this.auth.isMisskeyPrimary
+                ? this.transloco.translate<string>('settings.connections.mastodonUnderMisskey')
+                : this.auth.isAnonymous
+                  ? this.transloco.translate<string>('settings.connections.mastodonAnonymousActive')
+                  : this.transloco.translate<string>(
+                      'settings.connections.mastodonAlreadySignedIn',
+                    ),
             };
           }
           return { entry, connected: this.mastodon.optedIn(), unavailableReason: null };

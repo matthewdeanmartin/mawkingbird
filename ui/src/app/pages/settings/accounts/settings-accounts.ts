@@ -19,7 +19,9 @@ interface StoredAccount {
   /** Mastodon token; null for Bluesky and Anonymous rows. */
   token: string | null;
   did?: string;
-  kind: 'mastodon' | 'bluesky' | 'anonymous';
+  /** Identity key for Misskey rows. */
+  misskeyKey?: string;
+  kind: 'mastodon' | 'bluesky' | 'misskey' | 'anonymous';
   scope: AccountDataRef;
   account: Account | null;
   /** Base URL this credential belongs to ('' = this server). */
@@ -114,6 +116,20 @@ export class SettingsAccounts {
         server: identity.server,
         active: mode === 'bluesky' && this.auth.account()?.id === `bsky:${identity.did}`,
         ...this.sizeOf({ kind: 'bluesky', did: identity.did }),
+      });
+    }
+    for (const identity of this.auth.misskeyAccounts()) {
+      if (!identity.misskeyKey) continue;
+      rows.push({
+        key: identity.key,
+        token: null,
+        misskeyKey: identity.misskeyKey,
+        kind: 'misskey',
+        scope: { kind: 'misskey', key: identity.misskeyKey },
+        account: identity.account,
+        server: identity.server,
+        active: mode === 'misskey' && this.auth.activeMisskeyKey() === identity.misskeyKey,
+        ...this.sizeOf({ kind: 'misskey', key: identity.misskeyKey }),
       });
     }
     // Anonymous is a permanent local identity, so it is always a row — it owns
@@ -231,6 +247,8 @@ export class SettingsAccounts {
         this.auth.exitAnonymous();
       } else if (row.kind === 'bluesky' && row.did) {
         this.auth.removeBlueskyIdentity(row.did);
+      } else if (row.kind === 'misskey' && row.misskeyKey) {
+        this.auth.removeMisskeyIdentity(row.misskeyKey);
       } else if (row.token) {
         this.auth.removeSession(row.token);
       }

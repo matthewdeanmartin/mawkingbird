@@ -236,7 +236,7 @@ export class RadioPage {
   }
 
   get signedIn(): boolean {
-    return !this.auth.isAnonymous && !this.auth.isBlueskyPrimary;
+    return !this.auth.isAnonymous && !this.auth.isForeignPrimary;
   }
 
   chooseSource(choice: string): void {

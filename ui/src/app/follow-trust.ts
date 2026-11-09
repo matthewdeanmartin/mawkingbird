@@ -139,7 +139,7 @@ export class FollowTrust {
    * in but has no Mastodon token to spend on `/relationships`.
    */
   private usesLocalFollows(): boolean {
-    return this.auth.isAnonymous || this.auth.isBlueskyPrimary;
+    return this.auth.isAnonymous || this.auth.isForeignPrimary;
   }
 
   /**

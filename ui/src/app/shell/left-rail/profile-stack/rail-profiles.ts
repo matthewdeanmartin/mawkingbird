@@ -74,7 +74,7 @@ export class RailProfiles {
   }
 
   private refreshProfile(): void {
-    if (this.auth.isAnonymous || this.auth.isBlueskyPrimary) return;
+    if (this.auth.isAnonymous || this.auth.isForeignPrimary) return;
     const token = this.auth.token();
     const revision = ++this.profileRevision;
     this.api.verifyCredentials().subscribe({
@@ -171,10 +171,15 @@ export class RailProfiles {
       // that was not Anonymous was Mastodon by definition — which labelled a
       // Bluesky-primary account "🐘 Mastodon" under its own bsky.social handle.
       const blueskyActive = this.auth.isBlueskyPrimary;
+      const misskeyActive = this.auth.isMisskeyPrimary;
       cards.push({
-        key: blueskyActive ? `bluesky:${active.id}` : `mastodon:${active.id}`,
-        badge: blueskyActive ? '🦋' : '🐘',
-        network: blueskyActive ? 'Bluesky' : 'Mastodon',
+        key: blueskyActive
+          ? `bluesky:${active.id}`
+          : misskeyActive
+            ? `misskey:${active.id}`
+            : `mastodon:${active.id}`,
+        badge: blueskyActive ? '🦋' : misskeyActive ? 'Ⓜ️' : '🐘',
+        network: blueskyActive ? 'Bluesky' : misskeyActive ? 'Misskey' : 'Mastodon',
         displayName: active.display_name || active.username,
         handle: active.username,
         avatar: active.avatar_static || active.avatar,
@@ -186,33 +191,38 @@ export class RailProfiles {
         // none), and `load()` has already fetched the real figures for the card.
         // No Hashtags row — followed hashtags are a Mastodon concept this
         // account does not have until Sprint 4 attaches one.
+        // Misskey: no stats until the profile page reads them (roadmap M3), for
+        // the same reason — the stored identity has no counts to show.
         stats: blueskyActive
           ? this.blueskyStats()
-          : [
-              {
-                label: this.words().Posts,
-                value: active.statuses_count,
-                link: accountProfilePath(active),
-              },
-              {
-                label: 'Following',
-                value: this.followingCount(),
-                link: accountProfilePath(active),
-                queryParams: { tab: 'following' },
-              },
-              {
-                label: 'Followers',
-                value: active.followers_count,
-                link: accountProfilePath(active),
-                queryParams: { tab: 'followers' },
-              },
-              {
-                label: 'Hashtags',
-                value: this.hashtagCount(),
-                link: ['/feeds/tags'],
-              },
-            ],
-        link: accountProfilePath(active),
+          : misskeyActive
+            ? []
+            : [
+                {
+                  label: this.words().Posts,
+                  value: active.statuses_count,
+                  link: accountProfilePath(active),
+                },
+                {
+                  label: 'Following',
+                  value: this.followingCount(),
+                  link: accountProfilePath(active),
+                  queryParams: { tab: 'following' },
+                },
+                {
+                  label: 'Followers',
+                  value: active.followers_count,
+                  link: accountProfilePath(active),
+                  queryParams: { tab: 'followers' },
+                },
+                {
+                  label: 'Hashtags',
+                  value: this.hashtagCount(),
+                  link: ['/feeds/tags'],
+                },
+              ],
+        // The in-app profile page reads Mastodon; a Misskey account opens on its server.
+        ...(misskeyActive ? { href: active.url } : { link: accountProfilePath(active) }),
         account: active,
         active: true,
       });
@@ -281,7 +291,7 @@ export class RailProfiles {
     this.loaded = true;
     if (this.auth.isAnonymous) {
       this.hashtagCount.set(this.anonymousTags.count());
-    } else if (this.auth.isBlueskyPrimary) {
+    } else if (this.auth.isForeignPrimary) {
       // `followedTags()` is an authenticated Mastodon call and would 401 here.
       // Followed hashtags are a Mastodon concept this account does not have until
       // Sprint 4 attaches one.

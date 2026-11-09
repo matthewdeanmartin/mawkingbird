@@ -203,6 +203,25 @@
     <app-pinned-server-feeds />
   }
 
+  @if (auth.isMisskeyPrimary) {
+    <mb-toolbar
+      class="home-misskey-timelines"
+      density="compact"
+      [label]="'pages.home.misskey.timelinesLabel' | transloco"
+    >
+      @for (timeline of misskeyTimelines; track timeline) {
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="misskeyTimeline() === timeline"
+          (click)="setMisskeyTimeline(timeline)"
+        >
+          {{ 'pages.home.misskey.timeline.' + timeline | transloco }}
+        </button>
+      }
+    </mb-toolbar>
+  }
+
   <!-- READER: the full long-form control set gets its own fourth row. Keeping it
      out of HOW prevents these controls from starting beyond the visible edge. -->
   @if (prefs.feedReader()) {
@@ -631,6 +650,23 @@
       }
       @if (blueskyReauthError()) {
         <p>{{ 'pages.home.warnings.blueskyError.signInFailed' | transloco }}</p>
+      }
+    </aside>
+  }
+
+  @if (misskeyFeedErrors().length) {
+    <aside class="muted feed-warning" role="alert">
+      <p>{{ 'pages.home.warnings.misskeyError' | transloco }}</p>
+      @for (detail of misskeyFeedErrors(); track $index) {
+        <p>{{ detail }}</p>
+      }
+      <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load(true)">
+        {{ 'pages.home.warnings.misskeyError.retry' | transloco }}
+      </button>
+      @if (misskeySignInRequired()) {
+        <a routerLink="/login/misskey" [queryParams]="{ add: 1 }">{{
+          'pages.home.warnings.misskeyError.signIn' | transloco
+        }}</a>
       }
     </aside>
   }

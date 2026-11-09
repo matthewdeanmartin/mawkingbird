@@ -642,6 +642,10 @@
           }
         </mb-toolbar>
       }
+      <!-- Emoji reactions (Misskey). Read-only: reacting arrives with writing (M2). -->
+      @if (display.reactions; as reactions) {
+        <app-status-reactions [reactions]="reactions" />
+      }
       <mb-post-actions
         density="compact"
         narrowAlign="end"

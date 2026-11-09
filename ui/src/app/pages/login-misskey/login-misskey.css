@@ -1,0 +1,82 @@
+/* Same layout as the Bluesky sign-in page, so the doors feel like one family. */
+.mk-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.mk-card {
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  width: 520px;
+  max-width: 94vw;
+  text-align: center;
+}
+
+.mk-badge {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.mk-title {
+  margin: 12px 0 12px;
+  font-size: 23px;
+}
+
+.mk-body {
+  margin: 0 auto 16px;
+  max-width: 46ch;
+  line-height: 1.5;
+}
+
+.mk-form {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+
+.mk-field {
+  display: grid;
+  gap: 4px;
+}
+
+.mk-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mk-form input {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.mk-hint {
+  line-height: 1.4;
+}
+
+.mk-submit {
+  justify-content: center;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.mk-note {
+  margin: 12px auto 0;
+  max-width: 48ch;
+}
+
+.mk-error {
+  margin: 14px 0 0;
+  color: var(--col-danger, #d33);
+}
+
+.mk-out {
+  margin: 22px 0 0;
+}

@@ -55,6 +55,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n pages.thread.error.notFound: Status not found.
 // i18n pages.thread.error.postNotOnServer: This post isn’t on the server you’re browsing. Post links only work on the server that hosts them.
 // i18n pages.thread.error.loadPost: Could not load this post.
+// i18n pages.thread.error.misskeySignIn: Sign in with your Misskey account to read this post.
 // i18n pages.thread.twitter.loadPost: Could not load this post.
 // i18n pages.thread.twitter.loadReplies: Could not load replies.
 @Component({
@@ -196,8 +197,9 @@ export class Thread implements OnInit {
     if (this.auth.isAnonymous) {
       return false;
     }
-    if (this.auth.isBlueskyPrimary) {
-      return provider === 'bluesky';
+    if (this.auth.isForeignPrimary) {
+      // Each foreign identity can act only on its own network's posts.
+      return provider === this.auth.kind();
     }
     // Mastodon-primary: Bluesky posts are writable when the connector is linked,
     // which is what the capability table already assumes for a linked provider.

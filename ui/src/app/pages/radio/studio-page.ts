@@ -91,7 +91,7 @@ export class StudioPage {
   private handedOver = false;
 
   get signedIn(): boolean {
-    return !this.auth.isAnonymous && !this.auth.isBlueskyPrimary;
+    return !this.auth.isAnonymous && !this.auth.isForeignPrimary;
   }
 
   constructor() {

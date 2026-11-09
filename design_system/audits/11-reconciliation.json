@@ -683,6 +683,11 @@
       "nextStep": "Candidate controls use shared widgets in this template. Retain behavior coverage; see the relevant Sprint 3/9/10/11 audit for bounded scope."
     },
     {
+      "file": "ui/src/app/pages/login-misskey/login-misskey.html",
+      "disposition": "adopted scope",
+      "nextStep": "Misskey MiAuth sign-in: one MbButton submit and a native text input in the login-bluesky card layout. Preserve the callback state (no form while exchanging ?session=), the role=alert error and the two way-out links. Adopt Field/Control together with the other sign-in pages, not alone."
+    },
+    {
       "file": "ui/src/app/pages/login/login.html",
       "disposition": "partial adoption",
       "nextStep": "Analytics and registration consent adopted; login/register inputs, provider choices and actions remain."

@@ -1,4 +1,5 @@
 import { blueskyIdentityDid } from './providers/bluesky/bluesky-identity-store';
+import { misskeyIdentityKeyActive } from './providers/misskey/misskey-identity-store';
 import { STORAGE_KEYS } from './storage-registry';
 
 const TOKEN_KEY = 'mastodon_mock_token';
@@ -22,6 +23,7 @@ interface StoredMastodonSession {
 export const ANONYMOUS_SCOPE_SUFFIX = '_anonymous';
 export const BLUESKY_SCOPE_PREFIX = '_bluesky_';
 export const MASTODON_SCOPE_PREFIX = '_mastodon_';
+export const MISSKEY_SCOPE_PREFIX = '_misskey_';
 
 /** Return the active account's stable browser-storage identity. */
 export function accountScopeSuffix(): string {
@@ -34,6 +36,9 @@ export function accountScopeSuffix(): string {
       const stable = scopeSuffixForDid(did);
       migrateScope(legacyScopeSuffixForDid(did), stable);
       return stable;
+    }
+    if (mode === 'misskey') {
+      return scopeSuffixForMisskey(misskeyIdentityKeyActive() ?? '');
     }
   } catch {
     return '';
@@ -81,6 +86,11 @@ export function adoptMastodonStorageScope(
 /** Build a collision-free suffix for a Bluesky-primary DID. */
 export function scopeSuffixForDid(did: string): string {
   return did ? `${BLUESKY_SCOPE_PREFIX}${encodeIdentity(`bluesky\0${did}`)}` : '';
+}
+
+/** Build a collision-free suffix for a Misskey-primary identity key (`<origin>#<userId>`). */
+export function scopeSuffixForMisskey(identityKey: string): string {
+  return identityKey ? `${MISSKEY_SCOPE_PREFIX}${encodeIdentity(`misskey\0${identityKey}`)}` : '';
 }
 
 /** The old Bluesky suffix, used only to adopt and delete existing data. */

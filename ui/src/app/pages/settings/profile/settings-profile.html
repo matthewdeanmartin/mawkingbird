@@ -2,6 +2,15 @@
   <h1>{{ 'settings.profile.title' | transloco }}</h1>
   @if (auth.isAnonymous) {
     <p>{{ 'settings.profile.intro.anonymous' | transloco: { server: anonymous.server() } }}</p>
+  } @else if (auth.isMisskeyPrimary) {
+    <p>{{ 'settings.profile.intro.misskey' | transloco }}</p>
+    @if (misskeyProfileUrl(); as href) {
+      <p>
+        <a [href]="href" target="_blank" rel="noopener">{{
+          'settings.profile.misskeyLink' | transloco: { server: misskeyHost() }
+        }}</a>
+      </p>
+    }
   } @else if (auth.isBlueskyPrimary) {
     <p>{{ 'settings.profile.intro.bluesky' | transloco }}</p>
   } @else {
@@ -9,192 +18,197 @@
   }
 </div>
 
-<form class="spage-body" (ngSubmit)="saveProfile()">
-  <div class="ssection">
-    <div class="srow">
-      <span class="slabel">{{ 'settings.profile.displayName' | transloco }}</span>
-      <div class="scontrol">
-        <input
-          type="text"
-          [ngModel]="displayName()"
-          (ngModelChange)="displayName.set($event)"
-          name="display_name"
-          [maxlength]="auth.isBlueskyPrimary ? 64 : 30"
-        />
-      </div>
-    </div>
-
-    @if (auth.isAnonymous) {
+@if (!auth.isMisskeyPrimary) {
+  <form class="spage-body" (ngSubmit)="saveProfile()">
+    <div class="ssection">
       <div class="srow">
-        <span class="slabel">{{ 'settings.profile.localHandle' | transloco }}</span>
+        <span class="slabel">{{ 'settings.profile.displayName' | transloco }}</span>
         <div class="scontrol">
           <input
             type="text"
-            [ngModel]="username()"
-            (ngModelChange)="username.set($event)"
-            name="username"
-            maxlength="64"
+            [ngModel]="displayName()"
+            (ngModelChange)="displayName.set($event)"
+            name="display_name"
+            [maxlength]="auth.isBlueskyPrimary ? 64 : 30"
           />
-          <span class="hint">{{ 'settings.profile.localHandle.hint' | transloco }}</span>
         </div>
       </div>
-    }
 
-    <div class="srow">
-      <span class="slabel">{{ 'settings.profile.bio' | transloco }}</span>
-      <div class="scontrol">
-        <div class="profile-bio" [innerHTML]="renderedNote() | customEmoji: profileEmojis()"></div>
-        <button
-          mbButton
-          type="button"
-          variant="outline"
-          size="small"
-          [disabled]="saving()"
-          (click)="bioDialog.set(true)"
-        >
-          {{ 'settings.profile.bio.edit' | transloco }}
-        </button>
-        <span class="hint">{{ 'settings.profile.bio.hint' | transloco }}</span>
+      @if (auth.isAnonymous) {
+        <div class="srow">
+          <span class="slabel">{{ 'settings.profile.localHandle' | transloco }}</span>
+          <div class="scontrol">
+            <input
+              type="text"
+              [ngModel]="username()"
+              (ngModelChange)="username.set($event)"
+              name="username"
+              maxlength="64"
+            />
+            <span class="hint">{{ 'settings.profile.localHandle.hint' | transloco }}</span>
+          </div>
+        </div>
+      }
+
+      <div class="srow">
+        <span class="slabel">{{ 'settings.profile.bio' | transloco }}</span>
+        <div class="scontrol">
+          <div
+            class="profile-bio"
+            [innerHTML]="renderedNote() | customEmoji: profileEmojis()"
+          ></div>
+          <button
+            mbButton
+            type="button"
+            variant="outline"
+            size="small"
+            [disabled]="saving()"
+            (click)="bioDialog.set(true)"
+          >
+            {{ 'settings.profile.bio.edit' | transloco }}
+          </button>
+          <span class="hint">{{ 'settings.profile.bio.hint' | transloco }}</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  @if (!auth.isBlueskyPrimary) {
-    <div class="ssection">
-      <div class="srow">
-        <span class="slabel">{{ 'settings.profile.metadata' | transloco }}</span>
-        <div class="scontrol">
-          <div class="link-actions">
-            <button
-              mbButton
-              type="button"
-              variant="outline"
-              size="small"
-              [disabled]="saving()"
-              (click)="linkDialog.set('link')"
-            >
-              {{ 'settings.profile.link.add' | transloco }}
-            </button>
-            <button
-              mbButton
-              type="button"
-              variant="outline"
-              size="small"
-              [disabled]="saving()"
-              (click)="linkDialog.set('profile')"
-            >
-              {{ 'settings.profile.link.other' | transloco }}
-            </button>
-          </div>
-          @for (f of fields(); track $index; let i = $index) {
-            <div class="meta-row" [class.meta-verified]="verifiedAt()[f.name]">
-              <mb-field hideLabel [label]="'settings.profile.field.label' | transloco">
-                <input
-                  mbControl
-                  type="text"
-                  [placeholder]="'settings.profile.field.label' | transloco"
-                  [ngModel]="f.name"
-                  (ngModelChange)="setField(i, 'name', $event)"
-                  [name]="'field_name_' + i"
-                />
-              </mb-field>
-              <mb-field hideLabel [label]="'settings.profile.field.content' | transloco">
-                <input
-                  mbControl
-                  type="text"
-                  [placeholder]="'settings.profile.field.content' | transloco"
-                  [ngModel]="f.value"
-                  (ngModelChange)="setField(i, 'value', $event)"
-                  [name]="'field_value_' + i"
-                />
-              </mb-field>
+    @if (!auth.isBlueskyPrimary) {
+      <div class="ssection">
+        <div class="srow">
+          <span class="slabel">{{ 'settings.profile.metadata' | transloco }}</span>
+          <div class="scontrol">
+            <div class="link-actions">
               <button
                 mbButton
                 type="button"
                 variant="outline"
                 size="small"
-                (click)="removeField(i)"
-                [attr.aria-label]="'settings.profile.field.remove' | transloco"
+                [disabled]="saving()"
+                (click)="linkDialog.set('link')"
               >
-                ✕
+                {{ 'settings.profile.link.add' | transloco }}
               </button>
-              @if (verifiedAt()[f.name]; as when) {
-                <span
-                  class="meta-verified-badge"
-                  [title]="
-                    'settings.profile.verified.title'
-                      | transloco: { date: when | date: 'mediumDate' }
-                  "
-                  >{{ 'settings.profile.verified' | transloco }}</span
-                >
-              }
+              <button
+                mbButton
+                type="button"
+                variant="outline"
+                size="small"
+                [disabled]="saving()"
+                (click)="linkDialog.set('profile')"
+              >
+                {{ 'settings.profile.link.other' | transloco }}
+              </button>
             </div>
-          }
-          @if (fields().length < 4) {
-            <button
-              mbButton
-              type="button"
-              variant="outline"
-              size="small"
-              class="add-field"
-              (click)="addField()"
-            >
-              {{ 'settings.profile.addField' | transloco }}
-            </button>
-          }
-          <span class="hint">{{ 'settings.profile.metadata.hint' | transloco }}</span>
+            @for (f of fields(); track $index; let i = $index) {
+              <div class="meta-row" [class.meta-verified]="verifiedAt()[f.name]">
+                <mb-field hideLabel [label]="'settings.profile.field.label' | transloco">
+                  <input
+                    mbControl
+                    type="text"
+                    [placeholder]="'settings.profile.field.label' | transloco"
+                    [ngModel]="f.name"
+                    (ngModelChange)="setField(i, 'name', $event)"
+                    [name]="'field_name_' + i"
+                  />
+                </mb-field>
+                <mb-field hideLabel [label]="'settings.profile.field.content' | transloco">
+                  <input
+                    mbControl
+                    type="text"
+                    [placeholder]="'settings.profile.field.content' | transloco"
+                    [ngModel]="f.value"
+                    (ngModelChange)="setField(i, 'value', $event)"
+                    [name]="'field_value_' + i"
+                  />
+                </mb-field>
+                <button
+                  mbButton
+                  type="button"
+                  variant="outline"
+                  size="small"
+                  (click)="removeField(i)"
+                  [attr.aria-label]="'settings.profile.field.remove' | transloco"
+                >
+                  ✕
+                </button>
+                @if (verifiedAt()[f.name]; as when) {
+                  <span
+                    class="meta-verified-badge"
+                    [title]="
+                      'settings.profile.verified.title'
+                        | transloco: { date: when | date: 'mediumDate' }
+                    "
+                    >{{ 'settings.profile.verified' | transloco }}</span
+                  >
+                }
+              </div>
+            }
+            @if (fields().length < 4) {
+              <button
+                mbButton
+                type="button"
+                variant="outline"
+                size="small"
+                class="add-field"
+                (click)="addField()"
+              >
+                {{ 'settings.profile.addField' | transloco }}
+              </button>
+            }
+            <span class="hint">{{ 'settings.profile.metadata.hint' | transloco }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="ssection">
+      <div class="srow">
+        <span class="slabel">{{ 'settings.profile.avatar' | transloco }}</span>
+        <div class="scontrol">
+          <input type="file" accept="image/*" (change)="onAvatar($event)" />
+        </div>
+      </div>
+      <div class="srow">
+        <span class="slabel">{{ 'settings.profile.header' | transloco }}</span>
+        <div class="scontrol">
+          <input type="file" accept="image/*" (change)="onHeader($event)" />
         </div>
       </div>
     </div>
-  }
 
-  <div class="ssection">
-    <div class="srow">
-      <span class="slabel">{{ 'settings.profile.avatar' | transloco }}</span>
-      <div class="scontrol">
-        <input type="file" accept="image/*" (change)="onAvatar($event)" />
+    @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
+      <div class="ssection">
+        <h2>{{ 'settings.profile.accountType' | transloco }}</h2>
+        <mb-settings-row [heading]="'settings.profile.automation' | transloco">
+          <mb-checkbox
+            [label]="'settings.profile.bot' | transloco"
+            [hint]="'settings.profile.bot.hint' | transloco"
+            [checked]="bot()"
+            (checkedChange)="bot.set($event)"
+            [disabled]="saving()"
+          />
+        </mb-settings-row>
       </div>
-    </div>
-    <div class="srow">
-      <span class="slabel">{{ 'settings.profile.header' | transloco }}</span>
-      <div class="scontrol">
-        <input type="file" accept="image/*" (change)="onHeader($event)" />
-      </div>
-    </div>
-  </div>
-
-  @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
-    <div class="ssection">
-      <h2>{{ 'settings.profile.accountType' | transloco }}</h2>
-      <mb-settings-row [heading]="'settings.profile.automation' | transloco">
-        <mb-checkbox
-          [label]="'settings.profile.bot' | transloco"
-          [hint]="'settings.profile.bot.hint' | transloco"
-          [checked]="bot()"
-          (checkedChange)="bot.set($event)"
-          [disabled]="saving()"
-        />
-      </mb-settings-row>
-    </div>
-  }
-
-  <div class="sactions">
-    @if (saveError(); as error) {
-      <span class="error">{{ error }}</span>
     }
-    @if (saved()) {
-      <span class="saved-note">{{ 'common.saved' | transloco }}</span>
-    }
-    @if (auth.isAnonymous) {
-      <button class="btn btn-outline" type="button" (click)="resetAnonymousProfile()">
-        {{ 'settings.profile.resetLocal' | transloco }}
+
+    <div class="sactions">
+      @if (saveError(); as error) {
+        <span class="error">{{ error }}</span>
+      }
+      @if (saved()) {
+        <span class="saved-note">{{ 'common.saved' | transloco }}</span>
+      }
+      @if (auth.isAnonymous) {
+        <button class="btn btn-outline" type="button" (click)="resetAnonymousProfile()">
+          {{ 'settings.profile.resetLocal' | transloco }}
+        </button>
+      }
+      <button class="btn" type="submit" [disabled]="saving()">
+        {{ (saving() ? 'common.saving' : 'common.saveChanges') | transloco }}
       </button>
-    }
-    <button class="btn" type="submit" [disabled]="saving()">
-      {{ (saving() ? 'common.saving' : 'common.saveChanges') | transloco }}
-    </button>
-  </div>
-</form>
+    </div>
+  </form>
+}
 @if (bioDialog()) {
   <app-profile-bio-dialog
     [text]="note()"
