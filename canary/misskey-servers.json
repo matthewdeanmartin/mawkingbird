@@ -1,0 +1,322 @@
+[
+  {
+    "host": "misskey.design",
+    "name": "一次創作 misskey.design",
+    "language": "ja",
+    "users": 38410,
+    "openRegistrations": true,
+    "iconUrl": "https://file.misskey.design/logo.png"
+  },
+  {
+    "host": "takusuki.com",
+    "name": "TRPGがすきー！",
+    "language": "ja",
+    "users": 22127,
+    "openRegistrations": true,
+    "iconUrl": "https://083.takusuki.com/house/shell02/ec8ee075-dc50-4e05-a4ac-c6edc098d81d.png"
+  },
+  {
+    "host": "sushi.ski",
+    "name": "すしすきー",
+    "language": "ja",
+    "users": 20604,
+    "openRegistrations": true,
+    "iconUrl": "https://s3.us-west-1.wasabisys.com/sushi-ski/files/8832d21e-5de9-4c8a-af22-a0454e5def72.png"
+  },
+  {
+    "host": "voskey.icalo.net",
+    "name": "ぼすきー",
+    "language": "ja",
+    "users": 6476,
+    "openRegistrations": true,
+    "iconUrl": "https://voskey-s.icalo.net/res/voskey_icon.webp"
+  },
+  {
+    "host": "live-theater.net",
+    "name": "LIVE THE@TER NET",
+    "language": "ja",
+    "users": 4265,
+    "openRegistrations": true,
+    "iconUrl": null
+  },
+  {
+    "host": "misskey.gamelore.fun",
+    "name": "ゲームすきー",
+    "language": "ja",
+    "users": 3987,
+    "openRegistrations": false,
+    "iconUrl": "https://storage.gamelore.fun/files/c03d5942-8551-4730-8068-cc07b9c894d6.webp"
+  },
+  {
+    "host": "misskey.art",
+    "name": "Misskey.art",
+    "language": "ja",
+    "users": 13368,
+    "openRegistrations": true,
+    "iconUrl": "https://files.misskey.art//2ddd6a58-2203-47ba-9aae-af6529f73b0b.png"
+  },
+  {
+    "host": "misskey.ranranhome.info",
+    "name": "Misskey by ranranhome.info（登録開放中）",
+    "language": "ja",
+    "users": 11857,
+    "openRegistrations": true,
+    "iconUrl": null
+  },
+  {
+    "host": "misskey.gg",
+    "name": "Misskey.gg ",
+    "language": "ja",
+    "users": 10253,
+    "openRegistrations": true,
+    "iconUrl": "https://p.misskey.gg/image.webp?url=https://sss.misskey.gg/sss/gg/75346d60-1572-4e33-b88d-93ffabe19d57.png"
+  },
+  {
+    "host": "misskey.yukineko.me",
+    "name": "隠れ家",
+    "language": "ja",
+    "users": 6859,
+    "openRegistrations": false,
+    "iconUrl": "https://kakurega.app/static-assets/splash.png"
+  },
+  {
+    "host": "noc.ski",
+    "name": "オランスキー ノクターン",
+    "language": "ja",
+    "users": 9786,
+    "openRegistrations": true,
+    "iconUrl": "https://noc.ski/files/b5880464-5792-4556-b83d-f0b53fba3102"
+  },
+  {
+    "host": "misskey.flowers",
+    "name": "はなみすきー",
+    "language": "ja",
+    "users": 4103,
+    "openRegistrations": true,
+    "iconUrl": "https://static-assets.misskey.flowers/brand-assets/icons/general_v1_192x192.png"
+  },
+  {
+    "host": "mivatter.com",
+    "name": "Mivatter",
+    "language": "ja",
+    "users": 4495,
+    "openRegistrations": true,
+    "iconUrl": "https://media.mivatter.com/null/79e6a453-9b98-4474-80f6-9428409e7547.png"
+  },
+  {
+    "host": "side.misskey.productions",
+    "name": "さいどみすきー sideMisskey",
+    "language": "ja",
+    "users": 2870,
+    "openRegistrations": false,
+    "iconUrl": "https://side.misskey.productions/storage/files/14c02ba5-820f-4aad-beef-6a617d6c534e.png"
+  },
+  {
+    "host": "misskey.io",
+    "name": "Misskey.io",
+    "language": "ja",
+    "users": 745607,
+    "openRegistrations": false,
+    "iconUrl": "https://media.misskeyusercontent.jp/io/2f626cae-dc9b-435d-8ec3-7e3e8a25005b.png"
+  },
+  {
+    "host": "misskey.niri.la",
+    "name": "にりらみすきー部",
+    "language": "ja",
+    "users": 3643,
+    "openRegistrations": true,
+    "iconUrl": "https://media.niri.la/misskey_nirila_192.png"
+  },
+  {
+    "host": "buicha.social",
+    "name": "ぶいちゃ.social",
+    "language": "ja",
+    "users": 3716,
+    "openRegistrations": true,
+    "iconUrl": "https://media.buicha.social/files/8027e004-b4b8-4573-90cd-b156b2dcb6bb.png"
+  },
+  {
+    "host": "misskey.systems",
+    "name": "みすてむず　いず　みすきーしすてむず",
+    "language": "ja",
+    "users": 2136,
+    "openRegistrations": true,
+    "iconUrl": "https://storage.misskey.systems/storage/files/489b622c-bf02-49a6-a7cc-c67ba1f0930f.png"
+  },
+  {
+    "host": "mk.shrimpia.network",
+    "name": "シュリンピア",
+    "language": "ja",
+    "users": 1681,
+    "openRegistrations": false,
+    "iconUrl": "https://media.shrimpia.network/mk-shrimpia/files/5baabd7f-73fd-4f8d-89e5-bc4d415cde16.webp"
+  },
+  {
+    "host": "misskey.04.si",
+    "name": "りんごぱい",
+    "language": "ja",
+    "users": 1837,
+    "openRegistrations": true,
+    "iconUrl": "https://04.si/favicon.png"
+  },
+  {
+    "host": "mattyaski.co",
+    "name": "まっちゃすきー。",
+    "language": "ja",
+    "users": 4030,
+    "openRegistrations": true,
+    "iconUrl": "https://files.mattyaski.co/null/5d0ecddf-7898-4a32-a1c2-f74547600f15.png"
+  },
+  {
+    "host": "kasei.ski",
+    "name": "かせいすきー",
+    "language": "ja",
+    "users": 1139,
+    "openRegistrations": false,
+    "iconUrl": "https://assets.kasei.ski/kaseiski_mark_small.webp"
+  },
+  {
+    "host": "pari.cafe",
+    "name": "Pari Cafe",
+    "language": "zh",
+    "users": 1520,
+    "openRegistrations": true,
+    "iconUrl": "https://eu-federal-media.pari.network/pari/3ab05fdf-542d-4877-840a-e33f74b4f67b.png"
+  },
+  {
+    "host": "otomad.site",
+    "name": "オトマッド・サイト（γ）",
+    "language": "ja",
+    "users": 2088,
+    "openRegistrations": true,
+    "iconUrl": "https://res.otomad.site/meta/favicon.png"
+  },
+  {
+    "host": "tickler.cc",
+    "name": "Tickle社区",
+    "language": "zh",
+    "users": 14790,
+    "openRegistrations": true,
+    "iconUrl": "https://files.catbox.moe/gx79i0.png"
+  },
+  {
+    "host": "misskey.resonite.love",
+    "name": "Resonite.love",
+    "language": "ja",
+    "users": 517,
+    "openRegistrations": true,
+    "iconUrl": "https://s3.resonite.love/resonite/1a60f55a-95cf-4fe2-bd75-035cc22ba2b1.png"
+  },
+  {
+    "host": "misskey.id",
+    "name": "Misskey Indonesia",
+    "language": "en",
+    "users": 1932,
+    "openRegistrations": true,
+    "iconUrl": null
+  },
+  {
+    "host": "daepi.so",
+    "name": "대피소",
+    "language": "ko",
+    "users": 1068,
+    "openRegistrations": false,
+    "iconUrl": "https://cdn.daepi.so/logo.jpg"
+  },
+  {
+    "host": "misskey.stream",
+    "name": "Stream",
+    "language": "ja",
+    "users": 1385,
+    "openRegistrations": true,
+    "iconUrl": "https://misskey.stream/files/069e73f7-cee5-4aec-9482-1533d8f59a5d"
+  },
+  {
+    "host": "oekakiskey.com",
+    "name": "お絵かきすきー",
+    "language": "ja",
+    "users": 19402,
+    "openRegistrations": true,
+    "iconUrl": "https://storage.googleapis.com/oekakiskey/drive/e55ebf2bdef4f81a.png"
+  },
+  {
+    "host": "n-kaiwai.work",
+    "name": "なりきりすきー",
+    "language": "ja",
+    "users": 774,
+    "openRegistrations": true,
+    "iconUrl": "https://n-kaiwai.work/static-assets/server-icon.png"
+  },
+  {
+    "host": "milkiyatelier.quest",
+    "name": "밀키웨이 아틀리에",
+    "language": "ko",
+    "users": 629,
+    "openRegistrations": true,
+    "iconUrl": "https://r2.milkiyatelier.quest/contents/f7fe75cd-8a02-4bd0-9e68-f824e6b261de.png"
+  },
+  {
+    "host": "buttersc.one",
+    "name": "버터스콘",
+    "language": "ko",
+    "users": 2737,
+    "openRegistrations": false,
+    "iconUrl": "https://box.buttersc.one/bucket/c998ed88-0531-4299-b304-c95f60fb1b16.webp"
+  },
+  {
+    "host": "misskey.favskey.online",
+    "name": "ふぁぼすきー",
+    "language": "ja",
+    "users": 662,
+    "openRegistrations": true,
+    "iconUrl": "https://storage.favskey.online/files/2aa4c3a4-300d-4af9-907b-febc6ecdc570.webp"
+  },
+  {
+    "host": "drdr.club",
+    "name": "#だらだら倶楽部",
+    "language": "de",
+    "users": 997,
+    "openRegistrations": true,
+    "iconUrl": null
+  },
+  {
+    "host": "misskirara.net",
+    "name": "Misskirara",
+    "language": "ja",
+    "users": 461,
+    "openRegistrations": true,
+    "iconUrl": "https://objstrage.misskirara.net/misskirara_icon.webp"
+  },
+  {
+    "host": "ojousama-tea.party",
+    "name": "お嬢様達のお茶会",
+    "language": "ja",
+    "users": 926,
+    "openRegistrations": true,
+    "iconUrl": "https://ojousama-tea.party/files/8133ab5f-8959-48cf-9af5-e9ba5f6063ee"
+  },
+  {
+    "host": "mk.yopo.work",
+    "name": "暫定よぽすき",
+    "language": "ja",
+    "users": 581,
+    "openRegistrations": false,
+    "iconUrl": "https://mk.yopo.work/files/a30321d1-aecc-48ea-ac5f-47ec6563ee3a"
+  },
+  {
+    "host": "nicomedkey.cc",
+    "name": "nicomedkey.cc",
+    "language": "ja",
+    "users": 365,
+    "openRegistrations": true,
+    "iconUrl": "https://s3.ap-northeast-1.wasabisys.com/s3.nicomedkey.cc/public/nicomedkey/icon_b.svg"
+  },
+  {
+    "host": "misskey-square.net",
+    "name": "みすきーすくえあ！",
+    "language": "ja",
+    "users": 22258,
+    "openRegistrations": true,
+    "iconUrl": "https://misskey-square.net/files/9d173e10-18a4-421f-9585-cce13d33299e"
+  }
+]
