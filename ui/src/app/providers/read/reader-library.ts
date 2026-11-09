@@ -511,6 +511,17 @@ export class ReaderLibrary {
     this.persist(rest);
   }
 
+  /**
+   * Empty one shelf in a single write: whatever {@link shelf} lists there now,
+   * hand-filed or shelved automatically. Returns how many were removed.
+   */
+  clearShelf(shelf: Shelf): number {
+    const ids = new Set(this.shelf(shelf).map((row) => row.id));
+    if (!ids.size) return 0;
+    this.persist(Object.fromEntries(Object.entries(this.entries()).filter(([id]) => !ids.has(id))));
+    return ids.size;
+  }
+
   /** Forget everything. For Storage Diagnostics' "clear my library". */
   clear(): void {
     this.persist({});

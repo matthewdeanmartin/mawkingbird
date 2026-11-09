@@ -29,6 +29,11 @@ import { ClientPrefs } from '../../../client-prefs';
 // i18n reader.library.clearAllConfirm: Clear all {{count}}?
 // i18n reader.library.clearAllCancel: Keep them
 // i18n reader.library.clearAllTitle: Remove every document from the library
+// i18n reader.library.clearShelf.intend: Clear intend to read
+// i18n reader.library.clearShelf.reading: Clear still reading
+// i18n reader.library.clearShelf.read: Clear read
+// i18n reader.library.clearShelfConfirm: Clear {{count}} from {{shelf}}?
+// i18n reader.library.clear: Clear
 
 /** One shelf, with the heading it gets and the order it appears in. */
 const SHELVES: readonly { id: Shelf; labelKey: string }[] = [
@@ -162,19 +167,44 @@ export class LibraryPanel {
    * decision that belongs in the sheet. Emptying a shelf that caps at a year of
    * reading is not undoable, so it does not happen on one stray tap.
    */
-  protected readonly confirmingClear = signal(false);
+  protected readonly confirmingClear = signal<Shelf | 'all' | null>(null);
+
+  /** One clear button per shelf that has something on it, then Clear all. */
+  protected readonly clearTargets = computed(() =>
+    this.shelves()
+      .filter((shelf) => shelf.rows.length)
+      .map((shelf) => ({ id: shelf.id, labelKey: shelf.labelKey, count: shelf.rows.length })),
+  );
+
+  protected readonly pendingShelf = computed(() => {
+    const target = this.confirmingClear();
+    return target && target !== 'all'
+      ? (this.clearTargets().find((shelf) => shelf.id === target) ?? null)
+      : null;
+  });
+
+  protected askClear(target: Shelf | 'all'): void {
+    this.openMenu.set(null);
+    this.confirmingClear.set(target);
+  }
 
   protected askClearAll(): void {
-    this.openMenu.set(null);
-    this.confirmingClear.set(true);
+    this.askClear('all');
   }
 
   protected cancelClearAll(): void {
-    this.confirmingClear.set(false);
+    this.confirmingClear.set(null);
+  }
+
+  protected confirmClear(): void {
+    const target = this.confirmingClear();
+    if (target === 'all') this.library.clear();
+    else if (target) this.library.clearShelf(target);
+    this.confirmingClear.set(null);
   }
 
   protected clearAll(): void {
     this.library.clear();
-    this.confirmingClear.set(false);
+    this.confirmingClear.set(null);
   }
 }

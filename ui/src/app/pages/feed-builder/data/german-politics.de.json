@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "topic": "german-politics",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T00:05:30+00:00",
+  "tags": [
+    {
+      "name": "Demokratie",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Bundestag",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Kommunalpolitik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Innenpolitik",
+      "lang": "de",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "afelia@chaos.social",
+      "id": "109240636274228697",
+      "url": "https://chaos.social/@afelia",
+      "displayName": "Marina Weisband",
+      "avatar": "https://assets.chaos.social/accounts/avatars/109/240/636/274/228/697/original/c9f87bbaddfdfcfe.jpg",
+      "bio": "Demokratie wachsen lassen.",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCj3x3qh1NKuWXPWLRBraXEw",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-09"
+      }
+    },
+    {
+      "acct": "a_watch@bewegung.social",
+      "id": "114358504263909993",
+      "url": "https://bewegung.social/@a_watch",
+      "displayName": "abgeordnetenwatch",
+      "avatar": "https://s3.bewegung.social/accounts/avatars/114/358/504/263/909/993/original/f9f13fd58aac2b00.png",
+      "bio": "Demokratie. Besser machen. Frageplattform, Recherchen, Petitionen. Datenschutz: https://www. abgeordnetenwatch.de/datenschu tzerklaerung",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCL2Ec5jtBlMoCKw8WdZJ66A",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-08"
+      }
+    },
+    {
+      "acct": "netzpolitik_feed@chaos.social",
+      "id": "16863",
+      "url": "https://chaos.social/@netzpolitik_feed",
+      "displayName": "netzpolitik.org",
+      "avatar": "https://assets.chaos.social/accounts/avatars/000/016/863/original/1658c25e98d1e0d0.png",
+      "bio": "Medium für digitale Freiheitsrechte. Offizieller Account. Anfragen bitte per E-Mail an kontakt@netzpolitik.org. # Netzpolitik",
+      "shelf": "youtube",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UCyVCt3CM0PPJ69PVHgNsNnQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2025-12"
+      }
+    },
+    {
+      "acct": "koerberstiftung@stiftungen.social",
+      "id": "116442517044426738",
+      "url": "https://stiftungen.social/@koerberstiftung",
+      "displayName": "Körber-Stiftung",
+      "avatar": "https://stiftungen.social/system/accounts/avatars/116/442/517/044/426/738/original/5e3532a944bcc693.png",
+      "bio": "Als operative Stiftung wollen wir Debatten anstoßen, Lösungen erproben und Menschen zum Mitmachen bewegen. Unsere Schwerpunkte: Polarisierung begegnen & Europa stärken – mit Projekten, Netzwerken und…",
+      "shelf": "youtube",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-625"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UC6D1pU_EWhzDPHtm5Uu1Gug",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "landtag_bw@bawü.social",
+      "id": "109658202504728286",
+      "url": "https://xn--baw-joa.social/@Landtag_BW",
+      "displayName": "Landtag von Baden-Württemberg",
+      "avatar": "https://xn--baw-joa.social/system/accounts/avatars/109/658/202/504/728/286/original/b0050f26f1b915c2.jpg",
+      "bio": "Hier auf Mastodon: Aktuelle Infos aus dem Landtag von Baden-Württemberg. Wir freuen uns auf den Austausch mit euch. 💛 www.landtag-bw.de /Team LandtagBW",
+      "shelf": "youtube",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCA1vuZISvoamlMx-Z_-K6oQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "tagesschau@ard.social",
+      "id": "110316234024575088",
+      "url": "https://ard.social/@tagesschau",
+      "displayName": "tagesschau",
+      "avatar": "https://ard.social/system/accounts/avatars/110/316/234/024/575/088/original/44d05faa621f371b.png",
+      "bio": "Hier trötet die tagesschau Nachrichten von https://www. tagesschau.de/ Offizieller Account.",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "br24@ard.social",
+      "id": "110468759057276622",
+      "url": "https://ard.social/@BR24",
+      "displayName": "BR24",
+      "avatar": "https://ard.social/system/accounts/avatars/110/468/759/057/276/622/original/83a4d7db1848bfbf.png",
+      "bio": "Hier ist Bayern 🥨 Account wird überwiegend automatisiert bespielt.",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "lz@social.anoxinon.de",
+      "id": "109298953777859845",
+      "url": "https://social.anoxinon.de/@lz",
+      "displayName": "Leipziger Zeitung",
+      "avatar": "https://social.anoxinon.de/system/accounts/avatars/109/298/953/777/859/845/original/990eb80d199b64c3.jpg",
+      "bio": "Deine Stadt. Deine Zeitung. Deine Entscheidung. Tagesaktueller Journalismus: https://www. I-iz.de",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "hib_nachrichten@social.bund.de",
+      "id": "109681386453076348",
+      "url": "https://social.bund.de/@hib_Nachrichten",
+      "displayName": "Heute im Bundestag",
+      "avatar": "https://social.bund.de/system/accounts/avatars/109/681/386/453/076/348/original/f5020eddfecaf6ce.png",
+      "bio": "Meldungen aus den Ausschüssen des Deutschen Bundestages und über aktuelle parlamentarische Initiativen. # Bundestag 📝Sie haben Fragen oder möchten uns etwas mitteilen? 👉 socialmedia@bundestag.de",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "dawum@mastodon.social",
+      "id": "117574937362319549",
+      "url": "https://mastodon.social/@dawum",
+      "displayName": "Wahlumfragen • dawum.de",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/574/937/362/319/549/original/83636d5603d6c6ee.png",
+      "bio": "Aktuelle # Wahlumfragen mit Auswertung, Verlauf und Chronik | # Sonntagsfrage | # Wahltrend zur # Bundestagswahl und zu Landtagswahlen",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "gsi@bonn.social",
+      "id": "116475959228679716",
+      "url": "https://bonn.social/@gsi",
+      "displayName": "Gustav-Stresemann-Institut",
+      "avatar": "https://bonn.social/system/accounts/avatars/116/475/959/228/679/716/original/2500690d1dc5a06b.png",
+      "bio": "Haus mit Haltung Das GSI in Bonn verbindet politische Bildung, professionelle Tagungsräume, kulinarische Vielfalt und komfortable Hotelzimmer unter einem Dach. Seit über 70 Jahren schaffen wir Räume…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "offenekommunen@nrw.social",
+      "id": "111177506973023890",
+      "url": "https://nrw.social/@offenekommunen",
+      "displayName": "Offene Kommunen.NRW",
+      "avatar": "https://media.nrw.social/accounts/avatars/111/177/506/973/023/890/original/97f3b2d143c3cbda.png",
+      "bio": "Der Verein „Offene Kommunen.NRW Institut e.V.“, kurz OKNRW Institut, setzt sich dafür ein, den Prozess der Offenheit, Zusammenarbeit und Transparenz auf landespolitischer und kommunaler Ebene in NRW…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

@@ -57,7 +57,7 @@ describe('HistoryPanel', () => {
       expect(el.textContent).toContain('Could not load this post');
     });
     expect(el.textContent).toContain(`post ${POST_HISTORY_PAGE + 2}`);
-    expect(el.textContent).toContain('Load 3 more');
+    expect(el.textContent).toContain('Load more');
   });
 
   it('filters by remembered text without any request', () => {

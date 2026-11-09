@@ -151,7 +151,7 @@
       }
     </nav>
 
-    @if (raindropLoading()) {
+    @if (raindropLoading() && !loadingMore()) {
       <p class="muted center">{{ 'pages.bookmarks.loading' | transloco }}</p>
     } @else if (!raindropBookmarks().length) {
       <p class="muted center">{{ 'pages.bookmarks.emptyRaindrop' | transloco }}</p>
@@ -189,35 +189,15 @@
     }
   }
 
-  @if (provider() === 'native' ? !loading() : !raindropLoading()) {
-    <nav class="pager" [aria-label]="'pages.bookmarks.pagesNav' | transloco">
-      <button
-        class="btn btn-outline"
-        [disabled]="provider() === 'native' ? nativePage() === 0 : raindropPage() === 0"
-        (click)="firstPage()"
-      >
-        {{ 'pages.bookmarks.first' | transloco }}
+  @if (
+    provider() === 'native'
+      ? !loading() && statuses().length && !exhausted()
+      : raindropBookmarks().length && raindropHasNext() && (!raindropLoading() || loadingMore())
+  ) {
+    <div class="more">
+      <button mbButton variant="outline" type="button" [disabled]="loadingMore()" (click)="loadMore()">
+        {{ (loadingMore() ? 'pages.bookmarks.loading' : 'pages.bookmarks.loadMore') | transloco }}
       </button>
-      <button
-        class="btn btn-outline"
-        [disabled]="provider() === 'native' ? nativePage() === 0 : raindropPage() === 0"
-        (click)="previousPage()"
-      >
-        {{ 'pages.bookmarks.previous' | transloco }}
-      </button>
-      <span class="muted small">
-        {{
-          'pages.bookmarks.pageNumber'
-            | transloco: { page: (provider() === 'native' ? nativePage() : raindropPage()) + 1 }
-        }}
-      </span>
-      <button
-        class="btn btn-outline"
-        [disabled]="loadingMore() || (provider() === 'native' ? exhausted() : !raindropHasNext())"
-        (click)="nextPage()"
-      >
-        {{ (loadingMore() ? 'pages.bookmarks.loading' : 'pages.bookmarks.next') | transloco }}
-      </button>
-    </nav>
+    </div>
   }
 }

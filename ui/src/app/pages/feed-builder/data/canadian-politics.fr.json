@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "topic": "canadian-politics",
+  "lang": "fr",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T22:43:46+00:00",
+  "tags": [
+    {
+      "name": "PolCan",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "PolQc",
+      "lang": "fr",
+      "kind": "tag"
+    },
+    {
+      "name": "PolitiqueCanadienne",
+      "lang": "fr",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "lapresse@mastodon.quebec",
+      "id": "111301276025029611",
+      "url": "https://mastodon.quebec/@lapresse",
+      "displayName": "La Presse",
+      "avatar": "https://mastodon-quebec-cdn.nyc3.digitaloceanspaces.com/accounts/avatars/111/301/276/025/029/611/original/516781391ab15f95.png",
+      "bio": "Publications automatisées à partir du flux RSS « Les manchettes » de La Presse. Ce compte n'est pas affilié à La Presse. Vous aimerez peut-être aussi ces comptes: @ ledevoir @ radiocanada @ lactualit…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "radiocanada@mastodon.quebec",
+      "id": "111305005474573399",
+      "url": "https://mastodon.quebec/@radiocanada",
+      "displayName": "Radio-Canada",
+      "avatar": "https://mastodon-quebec-cdn.nyc3.digitaloceanspaces.com/accounts/avatars/111/305/005/474/573/399/original/e4c48aeeb96d880f.png",
+      "bio": "Publications automatisées à partir du flux RSS « Grands titres » de Radio-Canada. Ce compte n'est pas affilié à Radio-Canada. Vous aimerez peut-être aussi ces comptes: @ lapresse @ ledevoir @ lactual…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "oniquet@jasette.facil.services",
+      "id": "109367693680686070",
+      "url": "https://jasette.facil.services/@oniquet",
+      "displayName": "Olivier Niquet",
+      "avatar": "https://jasette.facil.services/system/accounts/avatars/109/367/693/680/686/070/original/666abd95b5cd9a85.jpeg",
+      "bio": "« Patrouilleur idéologique » (selon Mathieu Bock-Côté). Infolettre: https://www. tourniquet.quebec/ Infos: https://www. olivierniquet.com/",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "lactualite@mastodon.quebec",
+      "id": "111307958170314726",
+      "url": "https://mastodon.quebec/@lactualite",
+      "displayName": "L'Actualité",
+      "avatar": "https://mastodon-quebec-cdn.nyc3.digitaloceanspaces.com/accounts/avatars/111/307/958/170/314/726/original/2efa2721d7c91a1e.png",
+      "bio": "Publications automatisées à partir du flux RSS « Général » de L'Actualité. Ce compte n'est pas affilié à L'Actualité. Vous aimerez peut-être aussi ces comptes: @ lapresse @ ledevoir @ radiocanada @ p…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "ckiafm@jasette.facil.services",
+      "id": "112005169445663822",
+      "url": "https://jasette.facil.services/@CKIAFM",
+      "displayName": "CKIA FM - Radio Basse-Ville",
+      "avatar": "https://jasette.facil.services/system/accounts/avatars/112/005/169/445/663/822/original/00e910793f6043e9.png",
+      "bio": "Radio communautaire de la ville de Québec # Medias # FediQc # Québec # VilleDeQuébec # Radio # MediaQc # Actualités",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["bluesky", "website"]
+    }
+  ],
+  "servers": []
+}

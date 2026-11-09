@@ -1,6 +1,6 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1720,
+  "filesScanned": 1723,
   "filesWithCandidates": 605,
   "inventory": [
     {
@@ -3650,6 +3650,10 @@
           "line": 22
         },
         {
+          "pattern": "shared",
+          "line": 198
+        },
+        {
           "pattern": "nativeButtons",
           "line": 2
         },
@@ -3699,15 +3703,7 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 194
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 201
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 214
+          "line": 198
         },
         {
           "pattern": "legacyPills",
@@ -3724,18 +3720,6 @@
         {
           "pattern": "legacyPills",
           "line": 175
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 195
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 202
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 215
         }
       ]
     },
@@ -5400,11 +5384,11 @@
       "status": "needs semantic review",
       "findings": [
         {
-          "pattern": "nativeButtons",
+          "pattern": "shared",
           "line": 13
         },
         {
-          "pattern": "legacyPills",
+          "pattern": "nativeButtons",
           "line": 13
         }
       ]
@@ -13485,15 +13469,19 @@
         },
         {
           "pattern": "shared",
-          "line": 140
+          "line": 147
         },
         {
           "pattern": "shared",
-          "line": 149
+          "line": 156
         },
         {
           "pattern": "shared",
-          "line": 154
+          "line": 163
+        },
+        {
+          "pattern": "shared",
+          "line": 174
         },
         {
           "pattern": "nativeButtons",
@@ -13521,15 +13509,19 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 139
+          "line": 146
         },
         {
           "pattern": "nativeButtons",
-          "line": 149
+          "line": 156
         },
         {
           "pattern": "nativeButtons",
-          "line": 153
+          "line": 162
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 173
         },
         {
           "pattern": "legacyPills",

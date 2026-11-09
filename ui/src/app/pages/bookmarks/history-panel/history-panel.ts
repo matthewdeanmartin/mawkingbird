@@ -30,7 +30,6 @@ import { StatusCard } from '../../../status-card/status-card';
 // i18n pages.bookmarks.history.noMatch: No remembered post matches that.
 // i18n pages.bookmarks.history.noAccount: Sign in or use Anonymous to keep a history.
 // i18n pages.bookmarks.history.loading: Loading…
-// i18n pages.bookmarks.history.loadMore: Load {{count}} more
 // i18n pages.bookmarks.history.seen: Seen {{time}}
 // i18n pages.bookmarks.history.unavailable: Could not load this post. It may have been deleted, or its server is unreachable.
 // i18n pages.bookmarks.history.open: Open original

@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "topic": "canadian-politics",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-08T22:43:46+00:00",
+  "tags": [
+    {
+      "name": "CDNPoli",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "BCPoli",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "ONPoli",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "thetyee@mstdn.ca",
+      "id": "109383826409790391",
+      "url": "https://mstdn.ca/@thetyee",
+      "displayName": "The Tyee",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/383/826/409/790/391/original/eaa1ab3269087a47.jpg",
+      "bio": "Independent BC-based journalism that swims against the current. Paywall-free since 2003.",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCfNcOPNCseYzc9fWwGdIRIw",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "paulatics@mstdn.ca",
+      "id": "109328322033551536",
+      "url": "https://mstdn.ca/@Paulatics",
+      "displayName": "Senator Paula Simons🇨🇦",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/328/322/033/551/536/original/6a12f92590879f0a.png",
+      "bio": "Independent senator from Alberta. Host of Alberta Unbound. I live on Treaty Six Territory.",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["youtube"]
+    },
+    {
+      "acct": "thenarwhal@mstdn.ca",
+      "id": "109367859589025895",
+      "url": "https://mstdn.ca/@thenarwhal",
+      "displayName": "The Narwhal",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/367/859/589/025/895/original/db6cb33ab8744fea.png",
+      "bio": "Our team of investigative journalists dives deep to tell stories about the natural world in Canada you can’t find anywhere else.",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "davidakin@mstdn.ca",
+      "id": "109315368999049023",
+      "url": "https://mstdn.ca/@davidakin",
+      "displayName": "David Akin 🇨🇦",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/315/368/999/049/023/original/2793defd09b6c2b3.jpg",
+      "bio": "Ottawa Bureau Chief | Global News | Normally working from Ottawa.",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "mgeist@mas.to",
+      "id": "109292394676194229",
+      "url": "https://mas.to/@mgeist",
+      "displayName": "Michael Geist",
+      "avatar": "https://media.mas.to/accounts/avatars/109/292/394/676/194/229/original/68608a03fdd4bead.png",
+      "bio": "Law Professor & Canada Research Chair in Internet and E-commerce Law University of Ottawa michaelgeist.ca | Twitter: @ mgeist @lawbytespod",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "winnipegfreepress@journa.host",
+      "id": "109349710376698469",
+      "url": "https://journa.host/@winnipegfreepress",
+      "displayName": "Winnipeg Free Press",
+      "avatar": "https://assets.journa.host/accounts/avatars/109/349/710/376/698/469/original/7a028a9bee7a70de.jpg",
+      "bio": "The oldest newspaper in Western Canada, the Winnipeg Free Press has published since 1872 on Treaty 1 land and the National Homeland of the Red River Métis. Our editorial mission is to strengthen soci…",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "windspeaker@mstdn.ca",
+      "id": "109383978875863364",
+      "url": "https://mstdn.ca/@Windspeaker",
+      "displayName": "Windspeaker.com",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/383/978/875/863/364/original/f0cd28b1baf1f75d.jpg",
+      "bio": "Inform. Impact. Inspire... Canada's source for Indigenous News. Windspeaker.com reports on the nuts and bolts of Indigenous Nation Building, and Windspeaker Buffalo Spirit pours the foundation. News,…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "halifaxexaminer@mstdn.ca",
+      "id": "110657357176447449",
+      "url": "https://mstdn.ca/@HalifaxExaminer",
+      "displayName": "Halifax Examiner",
+      "avatar": "https://cdn.mstdn.ca/accounts/avatars/110/657/357/176/447/449/original/8d7cb03fea4d2aaa.jpeg",
+      "bio": "Nova Scotia's independent news source",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

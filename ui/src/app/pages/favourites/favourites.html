@@ -8,9 +8,9 @@
   @for (s of statuses(); track s.id; let i = $index) {
     <app-status-card [status]="s" (changed)="onChanged(i, $event)" (deleted)="onDeleted($event)" />
   }
-  @if (auth.isBlueskyPrimary && cursor()) {
-    <div class="center">
-      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+  @if (cursor()) {
+    <div class="more">
+      <button mbButton variant="outline" type="button" [disabled]="loadingMore()" (click)="loadMore()">
         {{
           loadingMore() ? ('favourites.loading' | transloco) : ('favourites.loadMore' | transloco)
         }}

@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "topic": "running",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T01:04:51+00:00",
+  "tags": [
+    {
+      "name": "Running",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "TrailRunning",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Marathon",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Parkrun",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "UltraRunning",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "moelholm@fosstodon.org",
+      "id": "109293306421767806",
+      "url": "https://fosstodon.org/@moelholm",
+      "displayName": "moelholm🏃🏻‍♂️",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/293/306/421/767/806/original/c5cbdc2d9f10911f.png",
+      "bio": "Software Developer working for the LEGO Group in Billund, Denmark 🇩🇰 🤩 I primarily talk about running and training here. # running # trailrunning",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "askekammer@mastodon.online",
+      "id": "109258899399303677",
+      "url": "https://mastodon.online/@askekammer",
+      "displayName": "Aske Kammer",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/258/899/399/303/677/original/879b34d7278c9a74.png",
+      "bio": "Accidental marathoner. I mainly (but not exclusively) post about # running . I am Associate Professor of Journalism Studies at Roskilde University. I do the professional stuff over at Bluesky and Lin…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "fezzifezzino@mastodon.social",
+      "id": "113412606067234193",
+      "url": "https://mastodon.social/@fezzifezzino",
+      "displayName": "Fezzi Fezzino",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/412/606/067/234/193/original/2dcb9230151b4d47.jpg",
+      "bio": "@fezzi.de Just another human. Retired in Phuket at home on this planet. Sport addict, interested in all tech and computer stuff, mobile photography, and other silly things... life isn't fair all the…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "anttijuu@hachyderm.io",
+      "id": "109561520008006887",
+      "url": "https://hachyderm.io/@anttijuu",
+      "displayName": "Antti",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/109/561/520/008/006/887/original/599715aefb17056d.jpeg",
+      "bio": "Teaching programming (fundamentals, data structures and algorithms, GUI programming). Formerly did also training for companies as a freelancer. Programming for myself and fun. C/C++, Java, Swift and…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "dredmann666@mastodon.online",
+      "id": "109275178567134462",
+      "url": "https://mastodon.online/@dredmann666",
+      "displayName": "dredmann666",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/275/178/567/134/462/original/61fd38a11e528e5c.png",
+      "bio": "Name’s Chris, 6 years retired and counting. Dreadlocks since 2002. I post mainly about running but occasionally music especially metal, quality beers, bourbons and ryes.",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "daviddack@mastodon.social",
+      "id": "114363222200376349",
+      "url": "https://mastodon.social/@daviddack",
+      "displayName": "David Dack",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/363/222/200/376/349/original/25d938460361150c.jpg",
+      "bio": "🏃‍♂️ Running Coach | 🌄 Trail Runner | 🌍 Endurance Athlete living in Bali. Inspiring athletes to push their limits one step at a time.",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "henningddorf@mastodon.social",
+      "id": "114261995110190970",
+      "url": "https://mastodon.social/@henningddorf",
+      "displayName": "Henning Düsseldorf",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/261/995/110/190/970/original/a7c85d7ffd16b68f.jpg",
+      "bio": "Volksgarten parkrun Düsseldorf Volleyball at MVD Swimming at Düsseldorf Dolphins Curling at CCD61 Nordisch by nature 🇪🇺🇩🇪🏳️‍🌈",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "cricket_bacon@mastodon.social",
+      "id": "115156904354832054",
+      "url": "https://mastodon.social/@cricket_bacon",
+      "displayName": "cricket_bacon",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/156/904/354/832/054/original/5ec8fe87547eac3d.webp",
+      "bio": "Chances are you probably do not want to follow me. I am just not that interesting.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

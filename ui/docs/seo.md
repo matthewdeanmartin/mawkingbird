@@ -669,4 +669,26 @@ under Society: 15 public accounts and five tags. Copy and data load lazily;
 the topic registry supplies client/server routes and sitemap entries. Copy
 explicitly distinguishes curated accounts from open hashtag streams and offers
 an account-only selection by unchecking tags. No claim of equal ideological
-representation is made. Canadian Politics remains a separate private draft.
+representation is made. Canadian Politics is integrated below.
+
+Canadian Politics has approved English and French editions at
+`/canadian-politics-on-mastodon/` and
+`/fr/politique-canadienne-sur-mastodon/`, under Society. English has eight
+accounts, French five, with three tags each. Topic copy/data load lazily; the
+shared registry supplies routes, sitemap entries and language alternates. Copy
+explains open hashtag streams and the French edition labels unofficial RSS
+mirrors. German Politics is integrated below.
+
+German Politics has one approved German edition at
+`/de/deutsche-politik-auf-mastodon/`, under Society: 12 public accounts and four
+tags. Copy/data are lazy; the registry supplies routes and sitemap entries.
+Copy distinguishes neutral party reporting from endorsement and open tags from
+curated accounts. No equal ideological representation is promised.
+
+
+Running has approved English (`/running-on-mastodon/`) and German
+(`/de/laufen-auf-mastodon/`) editions under Games and sport: eight accounts/five
+tags in English and five accounts/seven tags in German. Both feature opted-in
+community runners. Native copy and data are lazy; routes, sitemap entries and
+language alternates derive from the shared registry. French, Spanish, Italian
+and Japanese were reviewed but withheld below the publishing floor.

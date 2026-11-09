@@ -75,7 +75,29 @@ describe('Favourites', () => {
     const fixture = setUp();
     expect(internals(fixture).loading()).toBe(true);
     expect(internals(fixture).statuses()).toEqual([]);
-    httpMock.expectOne('/api/v1/favourites').flush([]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([]);
+  });
+
+  it('loads more Mastodon likes from the Link header cursor, not the last post id', () => {
+    const fixture = setUp();
+    const component = fixture.componentInstance as unknown as {
+      statuses: () => Status[];
+      cursor: () => string | null;
+      loadMore: () => void;
+    };
+    httpMock
+      .expectOne('/api/v1/favourites?limit=20')
+      .flush([makeStatus('900')], {
+        headers: { Link: '<https://example.social/api/v1/favourites?max_id=55>; rel="next"' },
+      });
+    // The cursor is the favourite id from the Link header, which is what
+    // the Load more button is shown for.
+    expect(component.cursor()).toBe('55');
+    component.loadMore();
+    httpMock.expectOne('/api/v1/favourites?limit=20&max_id=55').flush([makeStatus('800')]);
+    expect(component.statuses().map((s) => s.id)).toEqual(['900', '800']);
+    // No Link header on the last page: nothing more to offer.
+    expect(component.cursor()).toBeNull();
   });
 
   it('populates statuses and clears loading on successful fetch', () => {
@@ -83,7 +105,7 @@ describe('Favourites', () => {
     const s1 = makeStatus('1');
     const s2 = makeStatus('2');
 
-    httpMock.expectOne('/api/v1/favourites').flush([s1, s2]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([s1, s2]);
 
     expect(internals(fixture).loading()).toBe(false);
     expect(internals(fixture).statuses()).toEqual([s1, s2]);
@@ -92,7 +114,7 @@ describe('Favourites', () => {
   it('clears loading on HTTP error', () => {
     const fixture = setUp();
 
-    httpMock.expectOne('/api/v1/favourites').error(new ProgressEvent('error'));
+    httpMock.expectOne('/api/v1/favourites?limit=20').error(new ProgressEvent('error'));
 
     expect(internals(fixture).loading()).toBe(false);
     expect(internals(fixture).statuses()).toEqual([]);
@@ -109,14 +131,14 @@ describe('Favourites', () => {
 
     expect(getActorLikes).toHaveBeenCalledWith('did:plc:me', null);
     expect(internals(fixture).loading()).toBe(false);
-    httpMock.expectNone('/api/v1/favourites');
+    httpMock.expectNone('/api/v1/favourites?limit=20');
   });
 
   it('onChanged replaces the status at the given index', () => {
     const fixture = setUp();
     const s1 = makeStatus('1');
     const s2 = makeStatus('2');
-    httpMock.expectOne('/api/v1/favourites').flush([s1, s2]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([s1, s2]);
 
     const updated = { ...s2, content: '<p>updated</p>' };
     internals(fixture).onChanged(1, updated);
@@ -128,7 +150,7 @@ describe('Favourites', () => {
     const fixture = setUp();
     const s1 = makeStatus('1');
     const s2 = makeStatus('2');
-    httpMock.expectOne('/api/v1/favourites').flush([s1, s2]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([s1, s2]);
 
     internals(fixture).onChanged(0, { ...s1, favourited: false });
 
@@ -139,7 +161,7 @@ describe('Favourites', () => {
     const fixture = setUp();
     const s1 = makeStatus('1');
     const s2 = makeStatus('2');
-    httpMock.expectOne('/api/v1/favourites').flush([s1, s2]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([s1, s2]);
 
     internals(fixture).onDeleted(s1);
 
@@ -151,7 +173,7 @@ describe('Favourites', () => {
     const s1 = makeStatus('1');
     const s2 = makeStatus('2');
     const s3 = makeStatus('3');
-    httpMock.expectOne('/api/v1/favourites').flush([s1, s2, s3]);
+    httpMock.expectOne('/api/v1/favourites?limit=20').flush([s1, s2, s3]);
 
     const updated = { ...s2, content: '<p>changed</p>' };
     internals(fixture).onChanged(1, updated);

@@ -159,6 +159,50 @@ describe('Feed Builder topic pages', () => {
     ).toEqual(['en']);
   });
 
+  it('renders only the approved Running editions with community accounts', async () => {
+    for (const [path, lang, heading, count, tag] of [
+      ['running-on-mastodon', 'en', 'Running on Mastodon', 8, 'Running'],
+      ['de/laufen-auf-mastodon', 'de', 'Laufen auf Mastodon', 5, 'Laufen'],
+    ] as const) {
+      TestBed.resetTestingModule();
+      const el = await render(at(path));
+      expect(el.querySelector('main')?.getAttribute('lang')).toBe(lang);
+      expect(el.querySelector('h1')?.textContent).toContain(heading);
+      expect(el.querySelectorAll('.people li')).toHaveLength(count);
+      expect(el.querySelector(`a[href="/tags/${tag}"]`)).not.toBeNull();
+    }
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'running').map((page) => page.lang),
+    ).toEqual(['en', 'de']);
+  });
+
+  it('renders approved German politics with open-tag guidance', async () => {
+    const el = await render(at('de/deutsche-politik-auf-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('de');
+    expect(el.querySelector('h1')?.textContent).toContain('Deutsche Politik auf Mastodon');
+    expect(el.querySelectorAll('.people li')).toHaveLength(12);
+    expect(el.querySelector('a[href="/tags/Bundestag"]')).not.toBeNull();
+    expect(el.textContent).toContain('Hashtags sind offene Gesprächsräume');
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'german-politics').map(
+        (page) => page.lang,
+      ),
+    ).toEqual(['de']);
+  });
+
+  it('renders the approved French Canadian politics edition and both language choices', async () => {
+    const el = await render(at('fr/politique-canadienne-sur-mastodon'));
+    expect(el.querySelector('h1')?.textContent).toContain('La politique canadienne sur Mastodon');
+    expect(el.querySelectorAll('.people li').length).toBe(5);
+    expect(el.querySelector('a[href="/tags/PolCan"]')).not.toBeNull();
+    expect(el.textContent).toContain('ils ne sont pas affiliés à ces médias');
+    expect(
+      FEED_BUILDER_PAGES.filter((page) => page.topic === 'canadian-politics')
+        .map((page) => page.lang)
+        .sort(),
+    ).toEqual(['en', 'fr']);
+  });
+
   it('renders the approved English US politics selection with open-tag guidance', async () => {
     const el = await render(at('us-politics-on-mastodon'));
     expect(el.querySelector('h1')?.textContent).toContain('US politics on Mastodon');

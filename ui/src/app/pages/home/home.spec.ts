@@ -1868,6 +1868,22 @@ describe('Home, bookmark review', () => {
     expect(fixture.nativeElement.textContent).toContain('From your bookmarks');
   });
 
+  it('asks for the next bookmarks from the Link header cursor, not the last post id', () => {
+    const fixture = setUpWithBookmarks(true);
+    internals(fixture).reviewBookmarks();
+    httpMock
+      .expectOne((c) => c.url === '/api/v1/bookmarks' && !c.params.has('max_id'))
+      .flush([makeStatus('b1')], {
+        headers: { Link: '<https://example.social/api/v1/bookmarks?max_id=314>; rel="next"' },
+      });
+    internals(fixture).reviewBookmarks();
+    httpMock
+      .expectOne((c) => c.url === '/api/v1/bookmarks' && c.params.get('max_id') === '314')
+      .flush([makeStatus('b2')]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Review bookmarks');
+  });
+
   it('stops offering more once a short page comes back', () => {
     const fixture = setUpWithBookmarks(true);
     internals(fixture).reviewBookmarks();

@@ -130,11 +130,18 @@
        second press is the confirmation, so a stray tap costs nothing. -->
   @if (total()) {
     <div class="library-foot">
-      @if (confirmingClear()) {
-        <!-- Announced: the prompt replaces the button in place, which a screen
+      @if (confirmingClear(); as target) {
+        <!-- Announced: the prompt replaces the buttons in place, which a screen
              reader would otherwise pass over in silence. -->
         <span class="muted small" role="status">
-          {{ 'reader.library.clearAllConfirm' | transloco: { count: total() } }}
+          @if (pendingShelf(); as shelf) {
+            {{
+              'reader.library.clearShelfConfirm'
+                | transloco: { count: shelf.count, shelf: (shelf.labelKey | transloco) }
+            }}
+          } @else {
+            {{ 'reader.library.clearAllConfirm' | transloco: { count: total() } }}
+          }
         </span>
         <button
           mbPostAction
@@ -142,14 +149,27 @@
           class="tool danger"
           tone="danger"
           type="button"
-          (click)="clearAll()"
+          (click)="confirmClear()"
         >
-          {{ 'reader.library.clearAll' | transloco }}
+          {{ (target === 'all' ? 'reader.library.clearAll' : 'reader.library.clear') | transloco }}
         </button>
         <button mbPostAction size="small" class="tool" type="button" (click)="cancelClearAll()">
           {{ 'reader.library.clearAllCancel' | transloco }}
         </button>
       } @else {
+        @if (clearTargets().length > 1) {
+          @for (shelf of clearTargets(); track shelf.id) {
+            <button
+              mbPostAction
+              size="small"
+              class="tool clear-shelf"
+              type="button"
+              (click)="askClear(shelf.id)"
+            >
+              {{ 'reader.library.clearShelf.' + shelf.id | transloco }}
+            </button>
+          }
+        }
         <button
           mbPostAction
           size="small"

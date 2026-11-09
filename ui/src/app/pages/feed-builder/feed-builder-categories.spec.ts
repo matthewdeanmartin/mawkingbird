@@ -26,6 +26,9 @@ describe('communities hub categories', () => {
     expect(filled.every((category) => category.topics.length > 0)).toBe(true);
     // Declared ahead of their topics, so not shown yet.
     expect(filled.map((category) => category.id)).not.toContain('music');
+    expect(filled.find((category) => category.id === 'games-and-sport')?.topics).toContain(
+      'running',
+    );
     expect(filled.find((category) => category.id === 'society')?.topics).toContain('dmv');
     expect(filled.find((category) => category.id === 'culture')?.topics).toContain('romance-books');
     const order = filled.map((category) => HUB_CATEGORIES.indexOf(category.id));

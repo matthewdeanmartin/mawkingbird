@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "topic": "running",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-09T01:04:51+00:00",
+  "tags": [
+    {
+      "name": "Laufen",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Lauftraining",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Laufsport",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Running",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "TrailRunning",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Marathon",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Parkrun",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "elektrobier@mastodon.social",
+      "id": "109253171757888535",
+      "url": "https://mastodon.social/@elektrobier",
+      "displayName": "elektrobier",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/253/171/757/888/535/original/dcac16989fd8bf8a.jpg",
+      "bio": "Diskordianischer Papst Katzenrelatiert Marathonik Stadtverordneter",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "moviescape@mastodon.social",
+      "id": "109353471240953872",
+      "url": "https://mastodon.social/@moviescape",
+      "displayName": "moviescape",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/353/471/240/953/872/original/6b85470128cd6015.png",
+      "bio": "Filmfreak 🎥 | Seriennarr 📺 | Musikfreund 🎸 | Leseratte 📚 | Blogger 💻 | Läufer 👟 | Und vor allem Vater 👨‍👩‍👧‍👦",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "barefootmicha@mastodon.social",
+      "id": "113237986796896979",
+      "url": "https://mastodon.social/@BarefootMicha",
+      "displayName": "Micha 🇪🇺🤝🇺🇦",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/237/986/796/896/979/original/3a200b9e93fce37a.png",
+      "bio": "Ü60-Kölner der laufend die Welt erkundet und dabei manchmal ein Fussballstadion umrundet 🏃 # Stadionrundlauf # ParkRun",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "dermenschlaeuft@troet.cafe",
+      "id": "108203299700967973",
+      "url": "https://troet.cafe/@dermenschlaeuft",
+      "displayName": "Der Mensch läuft",
+      "avatar": "https://media.troet.cafe/troet/accounts/avatars/108/203/299/700/967/973/original/652008776fca53f8.jpg",
+      "bio": "Der Mensch läuft ist ein # Laufblog mit Lauftipps, Laufberichten, Rezensionen zu Laufbüchern und Empfehlungen zum Lauftraining. # Running # Laufen # Marathon # Blog",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "dadbodrunning@mastodon.social",
+      "id": "117007999698082020",
+      "url": "https://mastodon.social/@DadBodRunning",
+      "displayName": "Dad Bod Running",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/007/999/698/082/020/original/0e82e80104d638d2.jpg",
+      "bio": "Tja was gibt's über mich schon zu sagen...ich laufe gerne :) und das ist das Profil, das mit meinem Laufblog dad-bod-running.de verknüpft ist",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

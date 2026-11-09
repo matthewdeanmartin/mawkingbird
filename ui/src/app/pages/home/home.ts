@@ -462,6 +462,8 @@ export class Home implements OnInit, OnDestroy {
   protected loadingBookmarks = signal(false);
   /** No more bookmarks to append: the last page came back short. */
   protected bookmarksExhausted = signal(false);
+  /** Where the next page of bookmarks starts (the `Link` header's max_id). */
+  private bookmarkCursor: string | null = null;
   /** Ticks so `capActive` re-evaluates the cooldown without a user action. */
   private now = signal(Date.now());
   private clock: ReturnType<typeof setInterval> | null = null;
@@ -1143,6 +1145,7 @@ export class Home implements OnInit, OnDestroy {
     this.maxHitAt.set(null);
     this.bookmarkReview.set([]);
     this.bookmarksExhausted.set(false);
+    this.bookmarkCursor = null;
     this.loadingBookmarks.set(false);
     if (this.homeSource.settings.value().mode === 'friends' && this.waitingForServerList()) {
       this.statuses.set([]);
@@ -1637,9 +1640,9 @@ export class Home implements OnInit, OnDestroy {
   /**
    * Append the next page of saved bookmarks.
    *
-   * Paged by the id of the last one held, matching how `/bookmarks` is walked on
-   * its own page: `/api/v1/bookmarks` returns statuses, and a short page is what
-   * ends the walk. Alternating this with "Load more" is the point — the two
+   * Paged by the cursor in the response's `Link` header, as `/bookmarks` is
+   * walked on its own page. Mastodon pages bookmarks by an internal bookmark id,
+   * never a post id, so asking from the last post's id returned page one again. Alternating this with "Load more" is the point — the two
    * buttons sit side by side and each one re-renders both, so the reader can
    * take a page of feed, a page of bookmarks, and another page of feed.
    */
@@ -1656,9 +1659,15 @@ export class Home implements OnInit, OnDestroy {
       this.bookmarksExhausted.set(held.length + next.length >= all.length);
       return;
     }
+    const cursor = held.length ? this.bookmarkCursor : null;
+    if (held.length && !cursor) {
+      this.bookmarksExhausted.set(true);
+      return;
+    }
     this.loadingBookmarks.set(true);
-    this.bookmarkSub = this.api.bookmarks(held.at(-1)?.id, BOOKMARK_PAGE_SIZE).subscribe({
-      next: (marks) => {
+    this.bookmarkSub = this.api.bookmarksPage(cursor ?? undefined, BOOKMARK_PAGE_SIZE).subscribe({
+      next: ({ statuses: marks, nextMaxId }) => {
+        this.bookmarkCursor = nextMaxId;
         this.loadingBookmarks.set(false);
         // Dedupe against what is already held: a repeated boundary item would
         // otherwise render twice under its own "from your bookmarks" label.
@@ -1666,7 +1675,7 @@ export class Home implements OnInit, OnDestroy {
         const fresh = marks.filter((s) => !seen.has(s.id));
         this.bookmarkReview.update((list) => [...list, ...fresh]);
         // Short page, or a page that added nothing new, is the end.
-        this.bookmarksExhausted.set(marks.length < BOOKMARK_PAGE_SIZE || !fresh.length);
+        this.bookmarksExhausted.set(!nextMaxId || !fresh.length);
       },
       error: (error: unknown) => {
         this.loadingBookmarks.set(false);

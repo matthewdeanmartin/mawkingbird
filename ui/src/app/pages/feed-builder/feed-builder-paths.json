@@ -63,5 +63,16 @@
   },
   "uspol": {
     "en": "us-politics-on-mastodon"
+  },
+  "canadian-politics": {
+    "en": "canadian-politics-on-mastodon",
+    "fr": "fr/politique-canadienne-sur-mastodon"
+  },
+  "german-politics": {
+    "de": "de/deutsche-politik-auf-mastodon"
+  },
+  "running": {
+    "en": "running-on-mastodon",
+    "de": "de/laufen-auf-mastodon"
   }
 }

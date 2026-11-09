@@ -54,6 +54,8 @@ type Loader = () => Promise<{ default: unknown }>;
  * `feed-builder-data.spec.ts` fails when a routed page has no loader.
  */
 export const DATA_LOADERS: Record<string, Loader> = {
+  'running.en': () => import('./data/running.en.json'),
+  'running.de': () => import('./data/running.de.json'),
   'literary-fiction.en': () => import('./data/literary-fiction.en.json'),
   'historical-fiction.en': () => import('./data/historical-fiction.en.json'),
   'mystery-and-crime.en': () => import('./data/mystery-and-crime.en.json'),
@@ -62,6 +64,9 @@ export const DATA_LOADERS: Record<string, Loader> = {
   'romance-books.de': () => import('./data/romance-books.de.json'),
   'buddhism.en': () => import('./data/buddhism.en.json'),
   'war-in-ukraine.en': () => import('./data/war-in-ukraine.en.json'),
+  'german-politics.de': () => import('./data/german-politics.de.json'),
+  'canadian-politics.en': () => import('./data/canadian-politics.en.json'),
+  'canadian-politics.fr': () => import('./data/canadian-politics.fr.json'),
   'uspol.en': () => import('./data/uspol.en.json'),
   'dmv.en': () => import('./data/dmv.en.json'),
   'retrocomputing.en': () => import('./data/retrocomputing.en.json'),

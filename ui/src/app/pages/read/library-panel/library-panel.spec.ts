@@ -223,6 +223,26 @@ describe('LibraryPanel clearing everything', () => {
     expect(el().textContent).not.toContain('Clear all 2?');
   });
 
+  it('clears one shelf after a second press and leaves the others', () => {
+    library.setShelf('1', 'read');
+    fixture.detectChanges();
+    expect(buttonSaying('Clear read')).toBeDefined();
+    expect(buttonSaying('Clear still reading')).toBeDefined();
+    expect(buttonSaying('Clear intend to read')).toBeUndefined();
+
+    buttonSaying('Clear read')!.click();
+    fixture.detectChanges();
+    expect(el().textContent).toContain('Clear 1 from Read?');
+    expect(library.total()).toBe(2);
+
+    buttonSaying('Clear')!.click();
+    fixture.detectChanges();
+    expect(library.has('1')).toBe(false);
+    expect(library.has('2')).toBe(true);
+    // One shelf left: Clear all says it, so no separate shelf button.
+    expect(buttonSaying('Clear still reading')).toBeUndefined();
+  });
+
   it('empties every shelf on the second press', () => {
     buttonSaying('Clear all')!.click();
     fixture.detectChanges();

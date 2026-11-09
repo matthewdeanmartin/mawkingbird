@@ -7,15 +7,31 @@ import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptFeedItem } from '../../providers/bluesky/bluesky-adapter';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { StatusCard } from '../../status-card/status-card';
+import { MbButton } from '../../design-system/button/button';
 
 // i18n favourites.loading: Loading…
 // i18n favourites.empty: You haven't liked anything yet.
 // i18n favourites.loadMore: Load more
 
+const PAGE_SIZE = 20;
+
+/** Append a page, skipping posts already listed. */
+function appendNew(current: Status[], incoming: Status[]): Status[] {
+  const seen = new Set(current.map((status) => status.id));
+  return [...current, ...incoming.filter((status) => !seen.has(status.id))];
+}
+
 @Component({
   selector: 'app-favourites',
-  imports: [StatusCard, TranslocoPipe],
+  imports: [StatusCard, TranslocoPipe, MbButton],
   templateUrl: './favourites.html',
+  styles: `
+    .more {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+  `,
 })
 export class Favourites implements OnInit {
   private api = inject(Api);
@@ -34,22 +50,35 @@ export class Favourites implements OnInit {
       this.loadBluesky(null);
       return;
     }
-    this.api.favourites().subscribe({
-      next: (s) => {
-        this.statuses.set(s);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set("Couldn't load Mastodon favourites.");
-      },
-    });
+    this.loadMastodon(null);
   }
 
   protected loadMore(): void {
     const cursor = this.cursor();
     if (!cursor || this.loadingMore()) return;
-    this.loadBluesky(cursor);
+    if (this.auth.isBlueskyPrimary) this.loadBluesky(cursor);
+    else this.loadMastodon(cursor);
+  }
+
+  /**
+   * Favourites page by an internal favourite id that only the `Link` header
+   * carries, so the cursor comes from there rather than the last post's id.
+   */
+  private loadMastodon(cursor: string | null): void {
+    this.loadingMore.set(cursor !== null);
+    this.api.favouritesPage(cursor ?? undefined, PAGE_SIZE).subscribe({
+      next: ({ statuses, nextMaxId }) => {
+        this.statuses.update((current) => appendNew(current, statuses));
+        this.cursor.set(statuses.length ? nextMaxId : null);
+        this.loading.set(false);
+        this.loadingMore.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.loadingMore.set(false);
+        this.error.set("Couldn't load Mastodon favourites.");
+      },
+    });
   }
 
   private loadBluesky(cursor: string | null): void {
@@ -69,10 +98,7 @@ export class Favourites implements OnInit {
           ...adaptFeedItem(item),
           favourited: true,
         }));
-        this.statuses.update((current) => {
-          const seen = new Set(current.map((status) => status.id));
-          return [...current, ...incoming.filter((status) => !seen.has(status.id))];
-        });
+        this.statuses.update((current) => appendNew(current, incoming));
         this.cursor.set(page.cursor ?? null);
         this.loading.set(false);
         this.loadingMore.set(false);

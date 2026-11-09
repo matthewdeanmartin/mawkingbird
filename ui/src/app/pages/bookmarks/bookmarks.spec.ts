@@ -32,7 +32,6 @@ interface BookmarksInternals {
   statuses: WritableSignal<Status[]>;
   loading: WritableSignal<boolean>;
   exhausted: WritableSignal<boolean>;
-  nativePage: WritableSignal<number>;
   provider: WritableSignal<'native' | 'likes' | 'history' | 'raindrop' | 'read-later'>;
   collections: WritableSignal<RaindropCollection[]>;
   raindropBookmarks: WritableSignal<RaindropBookmark[]>;
@@ -44,9 +43,7 @@ interface BookmarksInternals {
   view: WritableSignal<'all' | 'authors' | 'hashtags' | 'media' | 'video'>;
   setView(view: 'all' | 'authors' | 'hashtags' | 'media' | 'video'): void;
   groups: Signal<BookmarkGroup[]>;
-  nextPage(): void;
-  previousPage(): void;
-  firstPage(): void;
+  loadMore(): void;
   selectProvider(provider: 'native' | 'likes' | 'history' | 'raindrop' | 'read-later'): void;
   selectRaindropCollection(id: number): void;
   applyFilter(event?: Event): void;
@@ -149,7 +146,7 @@ describe('Bookmarks', () => {
     expect(fixture.nativeElement.textContent).toContain('Saved article');
     expect(fixture.nativeElement.textContent).toContain('In progress');
     expect(fixture.nativeElement.querySelector('.bookmark-filter')).toBeNull();
-    expect(fixture.nativeElement.querySelector('.pager')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.more')).toBeNull();
     expect(fixture.nativeElement.querySelector('.library-head button')).toBeNull();
     expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
     const link = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
@@ -300,21 +297,30 @@ describe('Bookmarks', () => {
     expect(internals(fixture).statuses()).toEqual([]);
   });
 
-  it('pages Native bookmarks 20 at a time and returns to a cached previous page', () => {
+  it('loads more Native bookmarks from the Link header cursor and appends them', () => {
     const fixture = setUp();
     const first = Array.from({ length: 20 }, (_, index) => makeStatus(String(index + 1)));
-    httpMock.expectOne('/api/v1/bookmarks?limit=20').flush(first);
+    // Mastodon pages bookmarks by an internal bookmark id (here 77), which is
+    // never a post id; asking with max_id=<last post id> returned page one again.
+    httpMock.expectOne('/api/v1/bookmarks?limit=20').flush(first, {
+      headers: { Link: '<https://example.social/api/v1/bookmarks?max_id=77>; rel="next"' },
+    });
+    fixture.detectChanges();
+    const more = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (b) => b.textContent?.trim() === 'Load more',
+    ) as HTMLButtonElement;
+    expect(more).toBeTruthy();
+    expect(fixture.nativeElement.textContent).not.toContain('Previous');
 
-    internals(fixture).nextPage();
-    const next = httpMock.expectOne('/api/v1/bookmarks?max_id=20&limit=20');
-    next.flush([makeStatus('21')]);
-    expect(internals(fixture).nativePage()).toBe(1);
+    more.click();
+    httpMock.expectOne('/api/v1/bookmarks?limit=20&max_id=77').flush([makeStatus('21')]);
+    expect(internals(fixture).statuses().map((s) => s.id)).toEqual([
+      ...first.map((s) => s.id),
+      '21',
+    ]);
     expect(internals(fixture).exhausted()).toBe(true);
-
-    internals(fixture).previousPage();
-    expect(internals(fixture).nativePage()).toBe(0);
-    expect(internals(fixture).statuses()).toEqual(first);
-    httpMock.expectNone((request) => request.url === '/api/v1/bookmarks');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Load more');
   });
 
   it('filters only the currently visible Native page without another API call', () => {
@@ -381,10 +387,10 @@ describe('Bookmarks', () => {
     await vi.waitFor(() => expect(internals(fixture).raindropBookmarks()).toHaveLength(20));
     internals(fixture).selectRaindropCollection(7);
     await vi.waitFor(() => expect(internals(fixture).raindropBookmarks()).toHaveLength(20));
-    internals(fixture).nextPage();
+    internals(fixture).loadMore();
     await vi.waitFor(() => expect(internals(fixture).raindropPage()).toBe(1));
-    internals(fixture).previousPage();
-    await vi.waitFor(() => expect(internals(fixture).raindropPage()).toBe(0));
+    // Appended below the first page, not swapped for it.
+    expect(internals(fixture).raindropBookmarks()).toHaveLength(40);
 
     expect(fetchMock.mock.calls.map((call) => call[0])).toContain(
       'https://api.raindrop.io/rest/v1/raindrops/7?page=1&perpage=20',

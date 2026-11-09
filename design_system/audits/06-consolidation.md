@@ -1947,3 +1947,38 @@ The source-file count increases by one; all 605 candidate files, control counts
 and evidence lines are unchanged. The page uses the existing Feed Builder
 components. No candidates were added or removed, so 11-reconciliation.json
 requires no entry changes. No shared design widget changed.
+
+### Canadian Politics copy registration — 2026-11-08
+
+Inventory adds one topic-copy source (1721 files). All 605 control/style
+candidates and their evidence remain unchanged; no candidate files were added
+or removed, so 11-reconciliation.json needs no edits. No shared widget changed.
+
+German Politics topic addition (2026-11-08): reviewed regenerated inventory,
+1722 source files and the same 605 candidate files. Only the source count changed;
+no control/style candidate or disposition changed, so 11-reconciliation.json
+requires no edits. Native topic copy is not a shared design-widget change.
+
+## Bookmarks, Likes and History: one "Load more"; Read Later shelf clears, 2026-11-08
+
+Source and candidate counts are unchanged by this change (1,722 and 605).
+
+- `bookmarks.html`: `legacyPills` 7 to 4, `nativeButtons` 15 to 13, `shared` 6
+  to 7. The First / Previous / Page N / Next pager (three `btn btn-outline`
+  buttons) is now one outline `mbButton` "Load more" that appends. It matches
+  the History panel's existing `.more` footer.
+- `favourites.html`: `legacyPills` 1 to 0, `shared` 0 to 1. Likes' "Load more"
+  moved from `btn btn-outline` to the same outline `mbButton`, and is now
+  offered for Mastodon as well as Bluesky.
+- `library-panel.html`: `nativeButtons` 9 to 10, `shared` 8 to 9. A
+  per-shelf "Clear intend to read / still reading / read" `mbPostAction` sits
+  beside Clear all. It shows only when two or more shelves have rows, and uses
+  the same two-press confirm.
+
+No shared widget changed; 11-reconciliation.json needs no edits.
+
+
+Running topic integration: reviewed regenerated inventory, 1723 source files and
+605 candidate files. The sole inventory change is the new copy source; no
+candidate findings changed. Reconciliation candidate set is unchanged, so
+11-reconciliation.json needs no edit.

@@ -97,12 +97,10 @@
   white-space: nowrap;
 }
 
-.pager {
+.more {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 1.25rem 1rem;
+  padding: 1rem;
 }
 
 @media (max-width: 600px) {

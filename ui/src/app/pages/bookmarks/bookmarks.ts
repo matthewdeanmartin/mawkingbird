@@ -1,8 +1,9 @@
+import { MbButton } from '../../design-system/button/button';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LibraryPanel } from '../read/library-panel/library-panel';
-import { firstValueFrom, skip } from 'rxjs';
+import { firstValueFrom, map, Observable, skip } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -42,22 +43,18 @@ const PAGE_SIZE = 20;
 // i18n pages.bookmarks.loading: Loading…
 // i18n pages.bookmarks.nativeFolders: Native synthetic folders
 // i18n pages.bookmarks.emptyNative: You haven't bookmarked anything here.
-// i18n pages.bookmarks.noFilterMatch: No bookmarks on this page match that filter.
+// i18n pages.bookmarks.noFilterMatch: No loaded bookmarks match that filter.
 // i18n pages.bookmarks.emptyGroup: Nothing here.
 // i18n pages.bookmarks.raindropFolders: Raindrop folders
 // i18n pages.bookmarks.all: All
 // i18n pages.bookmarks.emptyRaindrop: No Raindrop bookmarks in this folder.
-// i18n pages.bookmarks.pagesNav: Bookmark pages
-// i18n pages.bookmarks.first: First
-// i18n pages.bookmarks.previous: Previous
-// i18n pages.bookmarks.next: Next
-// i18n pages.bookmarks.filterHint.native: Filters only the {{count}} Native bookmarks on this page.
+// i18n pages.bookmarks.loadMore: Load more
+// i18n pages.bookmarks.filterHint.native: Filters the {{count}} bookmarks loaded so far.
 // i18n pages.bookmarks.filterHint.raindrop: Sent to Raindrop.io; text and Raindrop search operators are supported.
 // i18n pages.bookmarks.groupHeading: {{label}} ({{count}})
 // i18n pages.bookmarks.moving: Moving…
 // i18n pages.bookmarks.moveToRaindrop: Move to Raindrop
 // i18n pages.bookmarks.moveToNative: Move to Native
-// i18n pages.bookmarks.pageNumber: Page {{page}}
 // i18n pages.bookmarks.placeholder.native: Words or author on this page
 // i18n pages.bookmarks.placeholder.raindrop: Search Raindrop
 /**
@@ -74,6 +71,7 @@ const PAGE_SIZE = 20;
     HistoryPanel,
     MbToolbar,
     MbToolbarButton,
+    MbButton,
   ],
   templateUrl: './bookmarks.html',
   styleUrl: './bookmarks.css',
@@ -103,9 +101,14 @@ export class Bookmarks implements OnInit {
   protected nativeFilter = signal('');
   protected raindropFilter = signal('');
 
-  private nativePages = signal<Status[][]>([]);
-  private blueskyPageCursors = signal<(string | null)[]>([]);
-  protected nativePage = signal(0);
+  /**
+   * Where the next Native page starts. Mastodon bookmarks page by an internal
+   * bookmark id that only the `Link` header carries (never a post id); Bluesky
+   * gives a cursor. Null when there is nothing more to load.
+   */
+  private nativeCursor: string | null = null;
+  /** Anonymous bookmarks are all local; this is how many are shown so far. */
+  private anonymousShown = 0;
 
   protected collections = signal<RaindropCollection[]>([]);
   protected raindropBookmarks = signal<RaindropBookmark[]>([]);
@@ -181,13 +184,10 @@ export class Bookmarks implements OnInit {
     if (this.nativeStarted) return;
     this.nativeStarted = true;
     if (this.auth.isAnonymous) {
-      const bookmarks = this.anonymousBookmarks.bookmarks().slice(0, PAGE_SIZE);
-      this.nativePages.set([bookmarks]);
-      this.statuses.set(bookmarks);
+      this.showMoreAnonymous();
       this.loading.set(false);
-      this.exhausted.set(true);
     } else {
-      this.loadNativePage(0);
+      this.loadNative(false);
     }
   }
 
@@ -255,38 +255,22 @@ export class Bookmarks implements OnInit {
     void this.loadRaindropPage(0);
   }
 
-  protected firstPage(): void {
+  /** One "Load more" for every source: the next page is appended below. */
+  protected loadMore(): void {
     if (this.provider() === 'raindrop') {
-      void this.loadRaindropPage(0);
+      if (this.raindropHasNext()) void this.loadRaindropPage(this.raindropPage() + 1, true);
       return;
     }
-    this.showNativePage(0);
+    if (this.exhausted() || this.loadingMore()) return;
+    if (this.auth.isAnonymous) this.showMoreAnonymous();
+    else this.loadNative(true);
   }
 
-  protected previousPage(): void {
-    if (this.provider() === 'raindrop') {
-      void this.loadRaindropPage(Math.max(0, this.raindropPage() - 1));
-      return;
-    }
-    this.showNativePage(Math.max(0, this.nativePage() - 1));
-  }
-
-  protected nextPage(): void {
-    if (this.provider() === 'raindrop') {
-      if (this.raindropHasNext()) void this.loadRaindropPage(this.raindropPage() + 1);
-      return;
-    }
-    const next = this.nativePage() + 1;
-    if (this.nativePages()[next]) {
-      this.showNativePage(next);
-    } else if (!this.exhausted()) {
-      this.loadNativePage(next);
-    }
-  }
-
-  /** Backward-compatible alias for callers from the old load-more footer. */
-  loadMore(): void {
-    this.nextPage();
+  private showMoreAnonymous(): void {
+    const all = this.anonymousBookmarks.bookmarks();
+    this.anonymousShown = Math.min(all.length, this.anonymousShown + PAGE_SIZE);
+    this.statuses.set(all.slice(0, this.anonymousShown));
+    this.exhausted.set(this.anonymousShown >= all.length);
   }
 
   protected async moveNativeToRaindrop(status: Status): Promise<void> {
@@ -360,76 +344,51 @@ export class Bookmarks implements OnInit {
     this.statuses.update((list) =>
       list.map((status) => (status.id === updated.id ? updated : status)),
     );
-    this.nativePages.update((pages) =>
-      pages.map((page) => page.map((status) => (status.id === updated.id ? updated : status))),
-    );
   }
 
   onDeleted(removed: Status): void {
     this.removeNative(removed.id);
   }
 
-  private loadNativePage(index: number): void {
-    if (this.auth.isBlueskyPrimary) {
-      this.loadBlueskyPage(index);
-      return;
-    }
-    const previous = index === 0 ? undefined : this.nativePages()[index - 1]?.at(-1)?.id;
-    if (index > 0 && !previous) return;
-    this.loadingMore.set(index > 0);
-    if (index === 0) this.loading.set(true);
-    this.api.bookmarks(previous, PAGE_SIZE).subscribe({
-      next: (bookmarks) => {
-        this.nativePages.update((pages) => {
-          const next = pages.slice(0, index);
-          next[index] = bookmarks;
-          return next;
+  private loadNative(append: boolean): void {
+    const cursor = append ? this.nativeCursor : null;
+    if (append && !cursor) return;
+    this.loadingMore.set(append);
+    if (!append) this.loading.set(true);
+    const page: Observable<{ statuses: Status[]; cursor: string | null }> = this.auth
+      .isBlueskyPrimary
+      ? this.blueskyApi.getBookmarks(cursor, PAGE_SIZE).pipe(
+          map((result) => ({
+            statuses: result.bookmarks
+              .map((bookmark) => bookmark.item)
+              .filter(isBskyPostView)
+              .map((post) => ({ ...adaptPost(post), bookmarked: true })),
+            cursor: result.cursor ?? null,
+          })),
+        )
+      : this.api
+          .bookmarksPage(cursor ?? undefined, PAGE_SIZE)
+          .pipe(map((result) => ({ statuses: result.statuses, cursor: result.nextMaxId })));
+    page.subscribe({
+      next: ({ statuses, cursor: next }) => {
+        this.statuses.update((current) => {
+          if (!append) return statuses;
+          const seen = new Set(current.map((status) => status.id));
+          return [...current, ...statuses.filter((status) => !seen.has(status.id))];
         });
-        this.nativePage.set(index);
-        this.statuses.set(bookmarks);
-        this.exhausted.set(bookmarks.length < PAGE_SIZE);
+        this.nativeCursor = next;
+        this.exhausted.set(!next || !statuses.length);
         this.loading.set(false);
         this.loadingMore.set(false);
       },
       error: () => {
         this.loading.set(false);
         this.loadingMore.set(false);
-        this.error.set("Couldn't load Native bookmarks.");
-      },
-    });
-  }
-
-  private loadBlueskyPage(index: number): void {
-    const cursor = index === 0 ? null : this.blueskyPageCursors()[index - 1];
-    if (index > 0 && !cursor) return;
-    this.loadingMore.set(index > 0);
-    if (index === 0) this.loading.set(true);
-    this.blueskyApi.getBookmarks(cursor, PAGE_SIZE).subscribe({
-      next: (page) => {
-        const bookmarks = page.bookmarks
-          .map((bookmark) => bookmark.item)
-          .filter(isBskyPostView)
-          .map((post) => ({ ...adaptPost(post), bookmarked: true }));
-        this.nativePages.update((pages) => {
-          const next = pages.slice(0, index);
-          next[index] = bookmarks;
-          return next;
-        });
-        this.blueskyPageCursors.update((cursors) => {
-          const next = cursors.slice(0, index);
-          next[index] = page.cursor ?? null;
-          return next;
-        });
-        this.nativePage.set(index);
-        this.statuses.set(bookmarks);
-        this.exhausted.set(!page.cursor);
-        this.loading.set(false);
-        this.loadingMore.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.loadingMore.set(false);
-        this.error.set("Couldn't load Bluesky bookmarks.");
+        this.error.set(
+          this.auth.isBlueskyPrimary
+            ? "Couldn't load Bluesky bookmarks."
+            : "Couldn't load Native bookmarks.",
+        );
       },
     });
   }
@@ -450,14 +409,6 @@ export class Bookmarks implements OnInit {
     return { ...adaptPost(post), bookmarked: true };
   }
 
-  private showNativePage(index: number): void {
-    const page = this.nativePages()[index];
-    if (!page) return;
-    this.nativePage.set(index);
-    this.statuses.set(page);
-    this.exhausted.set(page.length < PAGE_SIZE);
-  }
-
   private async loadRaindropCollections(): Promise<void> {
     try {
       this.collections.set(await this.raindrop.collections(3));
@@ -467,9 +418,10 @@ export class Bookmarks implements OnInit {
     }
   }
 
-  private async loadRaindropPage(page: number): Promise<void> {
+  private async loadRaindropPage(page: number, append = false): Promise<void> {
     if (this.raindropLoading()) return;
     this.raindropLoading.set(true);
+    this.loadingMore.set(append);
     this.clearNotice();
     try {
       const bookmarks = await this.raindrop.bookmarks(
@@ -478,7 +430,7 @@ export class Bookmarks implements OnInit {
         PAGE_SIZE,
         this.raindropFilter(),
       );
-      this.raindropBookmarks.set(bookmarks);
+      this.raindropBookmarks.update((current) => (append ? [...current, ...bookmarks] : bookmarks));
       this.raindropPage.set(page);
       this.raindropHasNext.set(bookmarks.length === PAGE_SIZE);
     } catch (error) {
@@ -486,25 +438,16 @@ export class Bookmarks implements OnInit {
       this.error.set(describeError(error, "Couldn't load Raindrop.io bookmarks."));
     } finally {
       this.raindropLoading.set(false);
+      this.loadingMore.set(false);
     }
   }
 
   private removeNative(id: string): void {
     this.statuses.update((list) => list.filter((status) => status.id !== id));
-    this.nativePages.update((pages) =>
-      pages.map((page) => page.filter((status) => status.id !== id)),
-    );
   }
 
   private prependNative(status: Status): void {
-    this.nativePages.update((pages) => {
-      const first = [status, ...(pages[0] ?? []).filter((item) => item.id !== status.id)].slice(
-        0,
-        PAGE_SIZE,
-      );
-      return [first, ...pages.slice(1)];
-    });
-    if (this.nativePage() === 0) this.statuses.set(this.nativePages()[0]);
+    this.statuses.update((list) => [status, ...list.filter((item) => item.id !== status.id)]);
   }
 
   private clearNotice(): void {

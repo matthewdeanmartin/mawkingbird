@@ -178,7 +178,7 @@ const de: FeedChrome = {
     'Jeder Mastodon-Server kann allen folgen, du kannst also bleiben, wo du bist. Wenn du einen Server suchst, der sich um dieses Thema dreht, sind diese ein guter Anfang.',
   chooseHeading: 'Wie wir auswählen',
   choose: [
-    'Aufgenommen wird, wer seinen Server gebeten hat, ihn auffindbar zu machen, oder wer eine öffentliche Person ist, belegt durch einen Eintrag in Wikipedia oder Wikidata, einen YouTube-Kanal mit 10.000 Abos oder 2.500 Follower auf Mastodon.',
+    'Aufgenommen wird, wer seinen Server gebeten hat, ihn auffindbar zu machen, oder wer eine öffentliche Person ist, belegt durch einen Eintrag in Wikipedia oder Wikidata, einen YouTube-Kanal mit 10.000 Abos oder mindestens 625 Follower bei einem klar deutschsprachigen Mastodon-Konto.',
     'Wer erkennbar unbemerkt bleiben will, bleibt draußen: wenige Follower, versteckte Follower-Listen, kein Profilbild, zusammen mit der Bitte, nicht indexiert zu werden. Wer die Auffindbarkeit abschaltet, wird nie aufgenommen.',
     'Ein Sprachmodell prüft, ob jemand wirklich über das Thema schreibt, und belegt das mit Zitaten aus den eigenen Beiträgen. Jedes Konto wird jeden Monat neu geprüft: Stille Konten fallen heraus und kommen zurück, sobald sie wieder schreiben.',
   ],
@@ -254,7 +254,7 @@ const fr: FeedChrome = {
     'N’importe quel serveur Mastodon peut suivre tout le monde, tu peux donc rester où tu es. Si tu cherches un serveur dédié à ce sujet, ceux-ci sont un bon point de départ.',
   chooseHeading: 'Comment nous choisissons',
   choose: [
-    'Une personne apparaît ici si elle a demandé à son serveur de la rendre découvrable, ou si c’est une figure publique avec des preuves publiques\u00a0: une fiche Wikipédia ou Wikidata, une chaîne YouTube de 10\u202f000 abonnés, ou 2\u202f500 abonnés sur Mastodon.',
+    'Une personne apparaît ici si elle a demandé à son serveur de la rendre découvrable, ou si c’est une figure publique avec des preuves publiques\u00a0: une fiche Wikipédia ou Wikidata, une chaîne YouTube de 10\u202f000 abonnés, ou au moins 625 abonnés pour un compte Mastodon clairement francophone.',
     'Un compte qui semble vouloir rester discret est écarté\u00a0: peu d’abonnés, listes d’abonnés masquées, pas de photo de profil, avec une demande de non-indexation. Quiconque désactive la découvrabilité n’est jamais listé.',
     'Un modèle de langage vérifie que chaque personne parle vraiment du sujet, en citant ses propres messages. Chaque compte est revérifié tous les mois\u00a0: les comptes silencieux disparaissent et reviennent dès qu’ils publient à nouveau.',
   ],
@@ -330,7 +330,7 @@ const es: FeedChrome = {
     'Cualquier servidor de Mastodon puede seguir a cualquiera, así que puedes quedarte donde estás. Si buscas un servidor dedicado a este tema, estos son un buen comienzo.',
   chooseHeading: 'Cómo elegimos',
   choose: [
-    'Aparece aquí quien pidió a su servidor aparecer en el directorio, o quien es una figura pública con pruebas públicas: una entrada en Wikipedia o Wikidata, un canal de YouTube con 10 000 suscriptores o 2500 seguidores en Mastodon.',
+    'Aparece aquí quien pidió a su servidor aparecer en el directorio, o quien es una figura pública con pruebas públicas: una entrada en Wikipedia o Wikidata, un canal de YouTube con 10 000 suscriptores o al menos 625 seguidores en una cuenta de Mastodon claramente en español.',
     'Si una cuenta parece querer pasar desapercibida, la dejamos fuera: pocos seguidores, listas de seguidores ocultas, sin foto de perfil, junto con la petición de no ser indexada. Quien desactiva aparecer en el directorio nunca aparece aquí.',
     'Un modelo de lenguaje comprueba que cada persona habla de verdad del tema, citando sus propias publicaciones. Cada cuenta se revisa de nuevo cada mes: las cuentas inactivas salen y vuelven cuando publican otra vez.',
   ],
@@ -405,7 +405,7 @@ const it: FeedChrome = {
     'Ogni server Mastodon può seguire chiunque, quindi puoi restare dove sei. Se cerchi un server dedicato a questo argomento, questi sono un buon inizio.',
   chooseHeading: 'Come scegliamo',
   choose: [
-    'Compare qui chi ha chiesto al proprio server di essere trovabile, o chi è una figura pubblica con prove pubbliche: una voce su Wikipedia o Wikidata, un canale YouTube da 10.000 iscritti o 2.500 follower su Mastodon.',
+    'Compare qui chi ha chiesto al proprio server di essere trovabile, o chi è una figura pubblica con prove pubbliche: una voce su Wikipedia o Wikidata, un canale YouTube da 10.000 iscritti o almeno 625 follower per un account Mastodon chiaramente in italiano.',
     'Un account che sembra voler restare in disparte viene escluso: pochi follower, liste dei follower nascoste, nessuna foto profilo, insieme alla richiesta di non essere indicizzato. Chi disattiva la trovabilità non compare mai.',
     'Un modello linguistico verifica che ogni persona parli davvero dell’argomento, citando i suoi post. Ogni account viene ricontrollato ogni mese: gli account fermi escono e tornano quando ricominciano a scrivere.',
   ],
@@ -480,7 +480,7 @@ const ja: FeedChrome = {
     'Mastodon はどのサーバーからでも誰でもフォローできるので、今のサーバーのままで大丈夫です。このテーマのサーバーを探しているなら、ここから始めるのがおすすめです。',
   chooseHeading: '選び方',
   choose: [
-    'ここに載るのは、自分のサーバーで「見つけてもらう」設定をオンにした人か、公開された根拠がある著名人です。根拠とは、Wikipedia や Wikidata の項目、登録者 1 万人以上の YouTube チャンネル、Mastodon のフォロワー 2,500 人以上のいずれかです。',
+    'ここに載るのは、自分のサーバーで「見つけてもらう」設定をオンにした人か、公開された根拠がある著名人です。根拠とは、Wikipedia や Wikidata の項目、登録者 1 万人以上の YouTube チャンネル、日本語で発信していることが確認できる Mastodon アカウントのフォロワー 625 人以上のいずれかです。',
     '目立たずにいたいように見えるアカウントは載せません。フォロワーが少ない、フォロー・フォロワー一覧を隠している、プロフィール画像がない、といった点に加えて検索エンジンに載せない設定をしている場合です。「見つけてもらう」設定をオフにしている人は決して載りません。',
     '言語モデルが、その人が本当にこのテーマについて投稿しているかを、本人の投稿を引用して確かめます。すべてのアカウントは毎月見直します。投稿が止まったアカウントは外れ、また投稿を始めれば戻ります。',
   ],
