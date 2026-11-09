@@ -10,7 +10,7 @@ import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../../poll-results/poll-results';
-import { catchError, forkJoin, map, Observable, of, Subscription, timeout } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of, Subscription, timeout } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { Api } from '../../api';
 import { ClientPrefs } from '../../client-prefs';
@@ -22,6 +22,8 @@ import { AccountWithMatches } from '../search/account-refine';
 import { PageDiagnostics } from '../../page-diagnostics';
 import { Auth } from '../../auth';
 import { BlueskyNotifications } from '../../providers/bluesky/bluesky-notifications';
+import { MisskeyApi } from '../../providers/misskey/misskey-api';
+import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptRelationship } from '../../providers/bluesky/bluesky-adapter';
@@ -31,7 +33,7 @@ type NotifAudience = 'all' | 'friends' | 'followers' | 'mutuals' | 'not-followin
 type NotificationView = 'notifications' | 'new-accounts';
 
 /** Each network keeps its own cursor; rows can be merged by creation time. */
-export type NotificationSource = 'all' | 'mastodon' | 'bluesky';
+export type NotificationSource = 'all' | 'mastodon' | 'bluesky' | 'misskey';
 
 export interface NewAccountCandidate {
   account: Account;
@@ -46,6 +48,7 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.sourceAriaLabel: Notification source
 // i18n pages.notifications.source.mastodon: 🐘 Mastodon
 // i18n pages.notifications.source.bluesky: 🦋 Bluesky
+// i18n pages.notifications.source.misskey: Ⓜ️ Misskey
 // i18n pages.notifications.source.all: Both
 // i18n pages.notifications.mastodonLoadFailed: Could not load Mastodon notifications. Try refreshing.
 // i18n pages.notifications.viewAriaLabel: Notification view
@@ -78,6 +81,7 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.loadMore: Load more
 // i18n pages.notifications.bskyNotLinked: Link a Bluesky account in Settings → Connections to see its notifications.
 // i18n pages.notifications.bskyLoadFailed: Could not load Bluesky notifications.
+// i18n pages.notifications.misskeyLoadFailed: Could not load Misskey notifications.
 // i18n pages.notifications.reason.likedPost: liked your post
 // i18n pages.notifications.reason.boostedPost: boosted your post
 // i18n pages.notifications.reason.replied: replied to you
@@ -371,6 +375,11 @@ export class Notifications implements OnInit, OnDestroy {
   private diagnostics = inject(PageDiagnostics);
   private auth = inject(Auth);
   private bskyNotifications = inject(BlueskyNotifications);
+  private misskeyApi = inject(MisskeyApi);
+  /** Misskey notifications exist only while a Misskey identity is the account. */
+  protected readonly misskeyAvailable = computed(() => this.auth.activeMisskeyKey() !== null);
+  private misskeyUntil: string | null = null;
+  private misskeyDone = true;
   protected bskySession = inject(BlueskySession);
   private transloco = inject(TranslocoService);
   protected mastodonAvailable = computed(() => !!this.auth.token());
@@ -388,6 +397,7 @@ export class Notifications implements OnInit, OnDestroy {
   protected mastodonError = signal<string | null>(null);
   /** Why the Bluesky list is empty, when it is empty for a reason. */
   protected bskyError = signal<string | null>(null);
+  protected misskeyError = signal<string | null>(null);
 
   protected items = signal<MastodonNotification[]>([]);
   protected loading = signal(true);
@@ -536,7 +546,13 @@ export class Notifications implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.source.set(
-      this.bskySession.linked() ? (this.mastodonAvailable() ? 'all' : 'bluesky') : 'mastodon',
+      this.misskeyAvailable()
+        ? 'misskey'
+        : this.bskySession.linked()
+          ? this.mastodonAvailable()
+            ? 'all'
+            : 'bluesky'
+          : 'mastodon',
     );
     this.diagnostics.info('Notifications', 'page:open', {
       source: this.source(),
@@ -555,10 +571,16 @@ export class Notifications implements OnInit, OnDestroy {
     this.exhausted.set(false);
     this.bskyError.set(null);
     this.mastodonError.set(null);
+    this.misskeyError.set(null);
     this.bskyCursor = null;
     this.mastodonCursor = undefined;
-    this.mastodonDone = this.source() === 'bluesky' || !this.mastodonAvailable();
-    this.bskyDone = this.source() === 'mastodon' || !this.bskySession.linked();
+    this.mastodonDone =
+      this.source() === 'bluesky' || this.source() === 'misskey' || !this.mastodonAvailable();
+    this.bskyDone =
+      this.source() === 'mastodon' || this.source() === 'misskey' || !this.bskySession.linked();
+    this.misskeyUntil = null;
+    this.misskeyDone =
+      (this.source() !== 'misskey' && this.source() !== 'all') || !this.misskeyAvailable();
     this.loadRound();
   }
 
@@ -636,11 +658,42 @@ export class Notifications implements OnInit, OnDestroy {
         ),
       );
     }
+    if (!this.misskeyDone) {
+      const until = this.misskeyUntil;
+      const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server ?? '';
+      pages.push(
+        forkJoin([
+          this.misskeyApi.notifications(until),
+          from(import('../../providers/misskey/misskey-adapter')),
+        ]).pipe(
+          timeout(15_000),
+          map(([batch, { adaptMisskeyNotification }]) => {
+            const last = batch.at(-1)?.id ?? null;
+            this.misskeyDone = !last || last === until;
+            this.misskeyUntil = last;
+            this.diagnostics.info('Notifications', 'load:misskey-success', {
+              notifications: batch.length,
+            });
+            return batch
+              .map((n) => adaptMisskeyNotification(n, server))
+              .filter((n): n is MastodonNotification => n !== null);
+          }),
+          catchError((error: unknown) => {
+            this.misskeyDone = true;
+            this.misskeyError.set(
+              this.transloco.translate<string>('pages.notifications.misskeyLoadFailed'),
+            );
+            this.diagnostics.error('Notifications', 'load:misskey-error', error);
+            return of([]);
+          }),
+        ),
+      );
+    }
     this.pageSub = (pages.length ? forkJoin(pages) : of([])).subscribe((batches) => {
       this.mergeItems(batches.flat());
       this.loading.set(false);
       this.loadingMore.set(false);
-      this.exhausted.set(this.mastodonDone && this.bskyDone);
+      this.exhausted.set(this.mastodonDone && this.bskyDone && this.misskeyDone);
     });
   }
 

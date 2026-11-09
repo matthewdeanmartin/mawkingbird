@@ -85,9 +85,27 @@ Roadmap: `sprint/misskey-and-language-learning-roadmap-2026-11.md`.
       with read permissions only. Revoke it, reload Mawkingbird: Home shows
       "Misskey could not load this timeline" with **Sign in to Misskey again**.
 
+### M1 follow-up (2026-11-09)
+
+- [ ] 26. Full account picker (/switch-account or /choose-account): choosing a
+      Misskey account switches to it (it used to do nothing).
+- [ ] 27. On Home, click a Misskey author name or avatar: their profile opens
+      in Mawkingbird with name, bio (formatted), counts and notes.
+- [ ] 28. Scroll the profile: older notes load. Toggle replies / boosts if
+      shown; the list reloads.
+- [ ] 29. **Open on Misskey** opens the profile on your server; there is no
+      Follow button, no Following/Followers tabs, no Analytics.
+- [ ] 30. Notifications shows a **Ⓜ️ Misskey** source with your reactions
+      (as likes), renotes (as boosts), follows, replies and mentions.
+- [ ] 31. A mention or reply has **View thread** and no **Open chat**; it opens
+      the Misskey thread.
+- [ ] 32. A follow request shows no Approve/Deny (answer it on Misskey).
+- [ ] 33. Scrolling notifications loads older ones; on Misskey, they are now
+      marked read.
+
 ## Known gaps (not bugs in M1)
 
 - No posting, reacting, voting, following or muting (M2).
-- No Misskey profile page or notifications page yet; author names are not
-  links (M1 follow-up).
+- No hashtag page for Misskey tags; @mentions inside note text open on the
+  server.
 - Bookmarks are browser-local, not Misskey favourites or clips (M3).

@@ -25,6 +25,7 @@ import { MbPageHeader } from '../../design-system/page-header/page-header';
 // i18n accountPicker.thisServer: this server
 // i18n accountPicker.kind.mastodon: Mastodon
 // i18n accountPicker.kind.bluesky: Bluesky
+// i18n accountPicker.kind.misskey: Misskey
 // i18n accountPicker.kind.anonymous: Local only
 // i18n accountPicker.addMastodon: + Add Mastodon account
 // i18n accountPicker.addBluesky: + Add Bluesky account

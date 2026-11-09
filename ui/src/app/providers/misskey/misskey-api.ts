@@ -5,11 +5,13 @@ import { Auth } from '../../auth';
 import { externalFetch } from '../external-fetch';
 import { misskeyIdentity } from './misskey-identity-store';
 import {
+  MK_SOCIAL_NOTIFICATION_TYPES,
   MK_TIMELINE_ENDPOINTS,
   MkErrorBody,
   MkMeta,
   MkMiAuthCheck,
   MkNote,
+  MkNotification,
   MkTimeline,
   MkUserDetailed,
 } from './misskey-types';
@@ -157,6 +159,40 @@ export class MisskeyApi {
     return this.signed<{ sourceLang: string; text: string } | null>('notes/translate', {
       noteId,
       targetLang,
+    });
+  }
+
+  /**
+   * One page of the reader's notifications, newest first, social types only.
+   * `markAsRead` stays on (Misskey's default), as reading them here is reading them.
+   */
+  notifications(untilId: string | null, limit = 30): Observable<MkNotification[]> {
+    return this.signed<MkNotification[]>('i/notifications', {
+      limit,
+      includeTypes: [...MK_SOCIAL_NOTIFICATION_TYPES],
+      ...(untilId ? { untilId } : {}),
+    });
+  }
+
+  /** A user's profile, by id or by `username` + `host` (null host = this server). */
+  user(
+    query: { userId: string } | { username: string; host: string | null },
+  ): Observable<MkUserDetailed> {
+    return this.signed<MkUserDetailed>('users/show', query);
+  }
+
+  /** One page of a user's notes, newest first; renotes in, replies out unless asked. */
+  userNotes(
+    userId: string,
+    untilId: string | null,
+    options: { withReplies?: boolean; withRenotes?: boolean; limit?: number } = {},
+  ): Observable<MkNote[]> {
+    return this.signed<MkNote[]>('users/notes', {
+      userId,
+      limit: options.limit ?? 20,
+      withReplies: options.withReplies ?? false,
+      withRenotes: options.withRenotes ?? true,
+      ...(untilId ? { untilId } : {}),
     });
   }
 

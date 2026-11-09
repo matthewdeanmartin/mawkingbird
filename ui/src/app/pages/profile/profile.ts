@@ -25,6 +25,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
   catchError,
+  forkJoin,
+  from,
   throwError,
   firstValueFrom,
   map,
@@ -67,6 +69,8 @@ import { TwitterApi } from '../../providers/twitter/twitter-api';
 import { TwitterFeed } from '../../providers/twitter/twitter-feed';
 import { TwitterFollow, TwitterFollows } from '../../providers/twitter/twitter-follows';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
+import { MisskeyApi } from '../../providers/misskey/misskey-api';
+import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
 import { BlueskyGraph } from '../../providers/bluesky/bluesky-graph';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import {
@@ -228,6 +232,9 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.errors.thisServer: This server
 // i18n pages.profile.twitter.postsLoadFailed: Could not load posts for @{{handle}}.
 // i18n pages.profile.twitter.refreshFailed: Could not refresh @{{handle}}.
+// i18n pages.profile.misskey.signIn: Sign in with your Misskey account to view this profile.
+// i18n pages.profile.misskey.loadFailed: Could not load this Misskey profile.
+// i18n pages.profile.actions.openOnMisskey: Open on Misskey
 // i18n pages.profile.bluesky.linkRequired: Link a Bluesky account in Settings → Connections to view this profile.
 // i18n pages.profile.bluesky.profileLoadFailed: Could not load this Bluesky profile.
 // i18n pages.profile.bluesky.postsLoadFailed: Could not load posts for this account.
@@ -434,6 +441,14 @@ export class Profile implements OnInit, OnDestroy {
   protected isRss = signal(false);
   /** True when this profile is a Twitter account (id `twitter:@<handle>`). */
   protected isTwitter = signal(false);
+  /**
+   * A Misskey user (`mk:<userId>`), read through the reader's own Misskey
+   * server. Read-only until Sprint M2: no follow, no graph tabs, no analytics.
+   */
+  protected isMisskey = signal(false);
+  private misskeyApi = inject(MisskeyApi);
+  /** `untilId` for the next page of a Misskey user's notes. */
+  private mkUntil: string | null = null;
   /** The handle behind a Twitter profile, for the follow toggle. */
   private twitterHandle = signal<string | null>(null);
   /** Why this Twitter profile's posts could not be loaded, if they could not. */
@@ -1118,6 +1133,7 @@ export class Profile implements OnInit, OnDestroy {
     return (
       id.startsWith('rss:') ||
       id.startsWith('bsky:') ||
+      id.startsWith('mk:') ||
       id.startsWith('twitter:@') ||
       id.startsWith('anonymous-account.') ||
       isElizaId(id) ||
@@ -1210,6 +1226,8 @@ export class Profile implements OnInit, OnDestroy {
     this.collections.set([]);
     this.rssFeedUrl.set(null);
     this.isTwitter.set(false);
+    this.isMisskey.set(false);
+    this.mkUntil = null;
     this.twitterHandle.set(null);
     this.twitterError.set(null);
     this.isBluesky.set(false);
@@ -1254,6 +1272,10 @@ export class Profile implements OnInit, OnDestroy {
     }
     if (id.startsWith('bsky:')) {
       this.loadBluesky(id.slice('bsky:'.length));
+      return;
+    }
+    if (id.startsWith('mk:')) {
+      this.loadMisskey(id.slice('mk:'.length));
       return;
     }
     if (id.startsWith('twitter:@')) {
@@ -1495,6 +1517,82 @@ export class Profile implements OnInit, OnDestroy {
    * billable request per visit for an account you already follow. Only an
    * *unfollowed* handle needs the lookup.
    */
+  /** A Misskey user's profile and first page of notes, read as the active Misskey identity. */
+  private loadMisskey(userId: string): void {
+    this.isMisskey.set(true);
+    this.statuses.set([]);
+    this.pinnedStatuses.set([]);
+    this.featured.set([]);
+    this.statusesLoading.set(true);
+    this.exhausted.set(false);
+    this.mkUntil = null;
+    const seq = ++this.loadSeq;
+    const identity = misskeyIdentity(this.auth.activeMisskeyKey());
+    if (!identity) {
+      this.loading.set(false);
+      this.statusesLoading.set(false);
+      this.exhausted.set(true);
+      this.loadError.set(this.transloco.translate<string>('pages.profile.misskey.signIn'));
+      return;
+    }
+    const server = identity.profile.server;
+    this.routeLoadSub.add(
+      forkJoin([
+        this.misskeyApi.user({ userId }),
+        from(import('../../providers/misskey/misskey-adapter')),
+      ]).subscribe({
+        next: ([user, { adaptMisskeyUser }]) => {
+          if (seq !== this.loadSeq) return;
+          this.account.set(adaptMisskeyUser(user, server));
+          this.loading.set(false);
+        },
+        error: (error: unknown) => {
+          if (seq !== this.loadSeq) return;
+          this.diagnostics.error('Profile', 'misskey:load-failed', error, { userId });
+          this.loading.set(false);
+          this.loadError.set(this.transloco.translate<string>('pages.profile.misskey.loadFailed'));
+        },
+      }),
+    );
+    this.loadMisskeyPosts(seq, userId);
+  }
+
+  /** One page of a Misskey user's notes; also serves load-more via {@link mkUntil}. */
+  private loadMisskeyPosts(seq: number, userId: string | null = this.misskeyUserId()): void {
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server;
+    if (!userId || !server) return;
+    this.statusLoadSub = forkJoin([
+      this.misskeyApi.userNotes(userId, this.mkUntil, {
+        withReplies: this.showReplies(),
+        withRenotes: this.showBoosts(),
+      }),
+      from(import('../../providers/misskey/misskey-adapter')),
+    ]).subscribe({
+      next: ([notes, { adaptMisskeyNote }]) => {
+        if (seq !== this.loadSeq) return;
+        const last = notes.at(-1)?.id ?? null;
+        const statuses = notes.filter((n) => !n.isHidden).map((n) => adaptMisskeyNote(n, server));
+        this.statuses.update((current) => [...current, ...statuses]);
+        this.exhausted.set(!last || last === this.mkUntil);
+        this.mkUntil = last;
+        this.statusesLoading.set(false);
+        this.loadingMore.set(false);
+      },
+      error: (error: unknown) => {
+        if (seq !== this.loadSeq) return;
+        this.diagnostics.error('Profile', 'misskey:notes-failed', error, { userId });
+        this.statusesLoading.set(false);
+        this.loadingMore.set(false);
+        this.exhausted.set(true);
+      },
+    });
+  }
+
+  private misskeyUserId(): string | null {
+    const id = this.account()?.id ?? '';
+    return id.startsWith('mk:') ? id.slice('mk:'.length) : null;
+  }
+
   private loadTwitter(id: string): void {
     this.isTwitter.set(true);
     const handle = id.slice('twitter:@'.length);
@@ -1851,6 +1949,15 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   private reloadStatuses(): void {
+    // Misskey re-queries too: replies and renotes are server-side options.
+    if (this.isMisskey()) {
+      this.mkUntil = null;
+      this.statuses.set([]);
+      this.statusesLoading.set(true);
+      this.exhausted.set(false);
+      this.loadMisskeyPosts(++this.loadSeq);
+      return;
+    }
     // Bluesky re-queries rather than re-filters: the replies toggle is a
     // different server-side filter, so the feed restarts from the newest post.
     if (this.isBluesky()) {
@@ -2055,6 +2162,12 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   loadMore(): void {
+    if (this.isMisskey()) {
+      if (this.loadingMore() || this.exhausted() || !this.mkUntil) return;
+      this.loadingMore.set(true);
+      this.loadMisskeyPosts(this.loadSeq);
+      return;
+    }
     if (this.isBluesky()) {
       if (this.loadingMore() || this.exhausted() || !this.bskyCursor) {
         return;
@@ -2397,7 +2510,8 @@ export class Profile implements OnInit, OnDestroy {
       ),
   );
   protected headerZoomable = computed(
-    () => !this.imagesHidden() && this.profileImages().some((image) => image.id === 'profile-header'),
+    () =>
+      !this.imagesHidden() && this.profileImages().some((image) => image.id === 'profile-header'),
   );
   protected openProfileImage(id: 'profile-avatar' | 'profile-header'): void {
     if (this.imagesHidden()) return;

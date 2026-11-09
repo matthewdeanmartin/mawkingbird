@@ -122,6 +122,36 @@ describe('MisskeyApi', () => {
     expect(error!.signInRequired).toBe(true);
   });
 
+  it('reads profiles, user notes and social notifications', () => {
+    signIn();
+    api.user({ userId: 'u9' }).subscribe();
+    expect(http.expectOne('https://misskey.io/api/users/show').request.body).toEqual({
+      userId: 'u9',
+      i: 'tok',
+    });
+    api.userNotes('u9', 'n5').subscribe();
+    expect(http.expectOne('https://misskey.io/api/users/notes').request.body).toEqual({
+      userId: 'u9',
+      limit: 20,
+      withReplies: false,
+      withRenotes: true,
+      untilId: 'n5',
+      i: 'tok',
+    });
+    api.notifications(null).subscribe();
+    const req = http.expectOne('https://misskey.io/api/i/notifications');
+    expect(req.request.body.includeTypes).toEqual([
+      'follow',
+      'mention',
+      'reply',
+      'renote',
+      'quote',
+      'reaction',
+      'receiveFollowRequest',
+    ]);
+    expect(req.request.body.untilId).toBeUndefined();
+  });
+
   it('checks a MiAuth session at /api/miauth/<session>/check', () => {
     api.miauthCheck('https://misskey.io', 'abc-123').subscribe();
     const req = http.expectOne('https://misskey.io/api/miauth/abc-123/check');

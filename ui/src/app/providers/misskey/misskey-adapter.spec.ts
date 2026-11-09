@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   adaptMisskeyNote,
+  adaptMisskeyNotification,
   adaptMisskeyUser,
   adaptReactions,
   isPureRenote,
@@ -222,5 +223,46 @@ describe('adaptMisskeyUser', () => {
       SERVER,
     );
     expect(account.fields[0].value).toBe('&lt;b&gt;x&lt;/b&gt;');
+  });
+});
+
+describe('adaptMisskeyNotification', () => {
+  const ai = user({ id: 'u9', username: 'ai' });
+  const mine = note({ id: 'n1' });
+
+  it('maps social types onto the types the notifications page renders', () => {
+    const at = '2026-11-09T10:00:00.000Z';
+    const map = (type: string, extra: object = {}) =>
+      adaptMisskeyNotification({ id: 'x', createdAt: at, type, user: ai, ...extra }, SERVER)?.type;
+    expect(map('reaction', { note: mine, reaction: '👍' })).toBe('favourite');
+    expect(map('renote', { note: note({ id: 'rn', text: null, renote: mine }) })).toBe('reblog');
+    expect(map('reply', { note: mine })).toBe('mention');
+    expect(map('quote', { note: mine })).toBe('mention');
+    expect(map('follow')).toBe('follow');
+    expect(map('receiveFollowRequest')).toBe('follow_request');
+  });
+
+  it('points a renote notification at the reader’s own note, not the renote', () => {
+    const adapted = adaptMisskeyNotification(
+      {
+        id: 'x1',
+        createdAt: '2026-11-09T10:00:00.000Z',
+        type: 'renote',
+        user: ai,
+        note: note({ id: 'rn', text: null, renote: mine }),
+      },
+      SERVER,
+    );
+    expect(adapted?.status?.id).toBe('mk:n1');
+    expect(adapted?.id).toBe('mk:x1');
+    expect(adapted?.account.id).toBe('mk:u9');
+  });
+
+  it('drops types it does not show, and notifications without an actor', () => {
+    const at = '2026-11-09T10:00:00.000Z';
+    expect(
+      adaptMisskeyNotification({ id: 'a', createdAt: at, type: 'achievementEarned' }, SERVER),
+    ).toBeNull();
+    expect(adaptMisskeyNotification({ id: 'b', createdAt: at, type: 'follow' }, SERVER)).toBeNull();
   });
 });

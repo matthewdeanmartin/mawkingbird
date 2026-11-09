@@ -25,6 +25,11 @@
             {{ 'pages.notifications.source.bluesky' | transloco }}
           </button>
         }
+        @if (misskeyAvailable()) {
+          <button [class.active]="source() === 'misskey'" (click)="setSource('misskey')">
+            {{ 'pages.notifications.source.misskey' | transloco }}
+          </button>
+        }
       </div>
     }
     <!-- Accounts New to Me reads relationships from the Mastodon server, so it
@@ -117,13 +122,16 @@
 @if (bskyError(); as error) {
   <p class="muted center" role="alert">{{ error }}</p>
 }
+@if (misskeyError(); as error) {
+  <p class="muted center" role="alert">{{ error }}</p>
+}
 @if (accountActionError() && view() !== 'new-accounts') {
   <p role="alert">{{ accountActionError() }}</p>
 }
 @if (loading()) {
   <p class="muted center">{{ 'pages.notifications.loading' | transloco }}</p>
 } @else if (!items().length) {
-  @if (!mastodonError() && !bskyError()) {
+  @if (!mastodonError() && !bskyError() && !misskeyError()) {
     <p class="muted center">{{ 'pages.notifications.empty' | transloco }}</p>
   }
 } @else if (view() === 'new-accounts') {
@@ -224,7 +232,7 @@
           @if (row.status.poll; as poll) {
             <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
           }
-          @if (!row.status.id.startsWith('bsky:')) {
+          @if (!row.status.id.startsWith('bsky:') && !row.status.id.startsWith('mk:')) {
             <div class="mention-actions">
               <button
                 type="button"
@@ -259,7 +267,8 @@
             row.notif.account.display_name || row.notif.account.username
           }}</a>
           <span class="what muted">{{ label(row.notif.type) }}</span>
-          @if (row.notif.type === 'follow_request') {
+          <!-- Misskey follow requests are answered on Misskey until M2 writes. -->
+          @if (row.notif.type === 'follow_request' && !row.notif.account.id.startsWith('mk:')) {
             <div class="mention-actions">
               <button
                 class="btn btn-sm"
@@ -285,7 +294,13 @@
                  "open in chat" means the Mastodon DM tab and `chatKey` builds a
                  key from a Mastodon acct. A bsky reply goes to its thread, which
                  is where the reply actually is. -->
-            @if (row.notif.type === 'mention' && !row.notif.account.id.startsWith('bsky:')) {
+            <!-- Misskey mentions, like Bluesky ones, open their thread: the
+                 chat tab is Mastodon's. -->
+            @if (
+              row.notif.type === 'mention' &&
+              !row.notif.account.id.startsWith('bsky:') &&
+              !row.notif.account.id.startsWith('mk:')
+            ) {
               <!-- Mentions open as a chat: click the body to jump into the DM
                    tab's public chat with this person (we nudge chat over thread). -->
               <a
@@ -337,18 +352,21 @@
           <div class="mention-actions">
             @if (row.notif.type === 'mention' && row.notif.status) {
               @if (!row.notif.account.id.startsWith('bsky:')) {
-                <a
-                  class="btn btn-sm"
-                  [routerLink]="['/conversations']"
-                  [queryParams]="{ open: chatKey(row.notif) }"
-                >
-                  {{ 'pages.notifications.openChat' | transloco }}
-                </a>
+                <!-- Chat is Mastodon's DM tab; a Misskey mention opens its thread. -->
+                @if (!row.notif.account.id.startsWith('mk:')) {
+                  <a
+                    class="btn btn-sm"
+                    [routerLink]="['/conversations']"
+                    [queryParams]="{ open: chatKey(row.notif) }"
+                  >
+                    {{ 'pages.notifications.openChat' | transloco }}
+                  </a>
+                }
                 <a class="btn btn-outline btn-sm" [routerLink]="['/statuses', row.notif.status.id]">
                   {{ 'pages.notifications.viewThread' | transloco }}
                 </a>
               }
-              @if (!row.notif.id.startsWith('bsky:')) {
+              @if (!row.notif.id.startsWith('bsky:') && !row.notif.id.startsWith('mk:')) {
                 <button
                   type="button"
                   mbButton
@@ -379,7 +397,8 @@
             }
             @if (
               (row.notif.type !== 'mention' || !row.notif.status) &&
-              !row.notif.id.startsWith('bsky:')
+              !row.notif.id.startsWith('bsky:') &&
+              !row.notif.id.startsWith('mk:')
             ) {
               <button
                 type="button"
@@ -402,7 +421,7 @@
 @if (!loading() && items().length) {
   <div class="load-more-row">
     @if (exhausted()) {
-      @if (!mastodonError() && !bskyError()) {
+      @if (!mastodonError() && !bskyError() && !misskeyError()) {
         <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
       }
     } @else {

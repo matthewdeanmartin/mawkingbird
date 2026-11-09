@@ -763,7 +763,8 @@ export class Shell implements OnInit, AccountSwitcher {
     // which picks the identity or connector keys at construction). Without this,
     // a Bluesky choice fell through to the token comparison below, matched
     // null === null, and returned having done nothing at all.
-    if (session.kind === 'anonymous' || session.kind === 'bluesky') {
+    // Misskey-primary is tokenless here too (its token lives in its own store).
+    if (session.kind === 'anonymous' || session.kind === 'bluesky' || session.kind === 'misskey') {
       if (this.auth.switchAccount(session)) {
         location.reload();
       }

@@ -94,6 +94,28 @@ export interface MkNote {
   isHidden?: boolean;
 }
 
+/** A packed notification (`i/notifications`), the social types only. */
+export interface MkNotification {
+  id: string;
+  createdAt: string;
+  type: string;
+  user?: MkUserLite;
+  note?: MkNote;
+  /** For `reaction`: the emoji used. */
+  reaction?: string;
+}
+
+/** The notification types this client shows; system notices are left out. */
+export const MK_SOCIAL_NOTIFICATION_TYPES = [
+  'follow',
+  'mention',
+  'reply',
+  'renote',
+  'quote',
+  'reaction',
+  'receiveFollowRequest',
+] as const;
+
 /** `POST /api/meta` (abridged). */
 export interface MkMeta {
   name: string | null;

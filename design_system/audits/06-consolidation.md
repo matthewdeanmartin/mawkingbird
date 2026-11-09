@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Misskey profiles and notifications, 2026-11-09
+
+Reviewed 1,741 source files and 606 candidate files; no candidate is added.
+The profile page gains an `MbButton` link, "Open on Misskey", in the
+read-only Misskey branch (no follow, tabs or analytics, like Twitter
+profiles). The notifications page gains one native source button,
+"Misskey", in its existing segmented source row, matching its Mastodon and
+Bluesky neighbours. No shared widget changed.
+
 ## Translation footnotes behind help; no-translator notice, 2026-11-09
 
 Reviewed 1,741 source files and 606 candidate files; no candidate is added.

@@ -55,7 +55,7 @@
     <!-- Back rides in the tab row (below) where there is one. RSS and Twitter
        profiles have no tabs, so they keep a standalone button rather than no
        way back. -->
-    @if (isRss() || isTwitter()) {
+    @if (isRss() || isTwitter() || isMisskey()) {
       <button mbButton variant="outline" class="back-button" type="button" (click)="goBack()">
         {{ 'pages.profile.actions.back' | transloco }}
       </button>
@@ -204,6 +204,22 @@
                   | transloco
               }}
             </button>
+          </div>
+        } @else if (isMisskey()) {
+          <!-- Read-only until M2: following, muting and blocking go through the
+             Misskey API, which this client does not write to yet. -->
+          <div class="profile-buttons">
+            @if (a.url) {
+              <a
+                mbButton
+                variant="outline"
+                [href]="a.url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ 'pages.profile.actions.openOnMisskey' | transloco }}
+              </a>
+            }
           </div>
         } @else if (isTwitter()) {
           <!-- Follow is local storage only. There is deliberately no like, repost
@@ -687,7 +703,7 @@
           ><strong>{{ a.statuses_count | humanCount }}</strong>
           {{ isRss() ? ('pages.profile.stats.items' | transloco) : words().posts }}</span
         >
-        @if (!isRss() && !isTwitter()) {
+        @if (!isRss() && !isTwitter() && !isMisskey()) {
           <button type="button" class="count-btn" (click)="setTab('following')">
             <strong>{{
               auth.isAnonymous && isSelf()
@@ -816,7 +832,7 @@
       </div>
     }
 
-    @if (!isRss() && !isTwitter()) {
+    @if (!isRss() && !isTwitter() && !isMisskey()) {
       <div
         class="profile-tabs"
         role="group"
@@ -897,7 +913,9 @@
       </div>
     }
 
-    @if (!isRss() && !isTwitter() && (tab() === 'following' || tab() === 'followers')) {
+    @if (
+      !isRss() && !isTwitter() && !isMisskey() && (tab() === 'following' || tab() === 'followers')
+    ) {
       <app-people-browser
         [accountId]="a.id"
         [mode]="tab() === 'followers' ? 'followers' : 'following'"
@@ -964,7 +982,7 @@
       </section>
     }
 
-    @if (!isRss() && !isTwitter() && !isBluesky() && tab() === 'analytics') {
+    @if (!isRss() && !isTwitter() && !isMisskey() && !isBluesky() && tab() === 'analytics') {
       <app-account-analytics [account]="a" [publicRef]="publicRef" />
     }
 
@@ -999,7 +1017,14 @@
     }
 
     @if (tab() === 'posts') {
-      @if (!isRss() && !isTwitter() && !isBluesky() && auth.shouldOfferLogin && isSelf()) {
+      @if (
+        !isRss() &&
+        !isTwitter() &&
+        !isMisskey() &&
+        !isBluesky() &&
+        auth.shouldOfferLogin &&
+        isSelf()
+      ) {
         <a class="profile-login-post" routerLink="/login" (click)="auth.exitAnonymous()">
           <div class="profile-login-post-label muted">
             📌 {{ 'pages.profile.posts.pinned' | transloco }}
@@ -1020,7 +1045,7 @@
          three timeline toggles below are meaningless (there are no boosts,
          replies or pins on browser-local posts) but searching what you wrote
          still works. -->
-      @if (!isRss() && !isTwitter()) {
+      @if (!isRss() && !isTwitter() && !isMisskey()) {
         <div
           class="profile-filters"
           role="group"

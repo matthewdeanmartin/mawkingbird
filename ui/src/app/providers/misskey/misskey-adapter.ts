@@ -4,10 +4,19 @@
 // Ids are namespaced (`mk:<noteId>`, `mk:<userId>`) per the standing rule that a
 // foreign id must never collide with a Mastodon id in an id-keyed cache.
 
-import { Account, CustomEmoji, MediaAttachment, Poll, Status, StatusReaction } from '../../models';
+import {
+  Account,
+  CustomEmoji,
+  MastodonNotification,
+  MediaAttachment,
+  Poll,
+  Status,
+  StatusReaction,
+} from '../../models';
 import {
   MkDriveFile,
   MkNote,
+  MkNotification,
   MkPoll,
   MkUserDetailed,
   MkUserLite,
@@ -235,5 +244,41 @@ function baseStatus(note: MkNote, server: string): Status {
       url: `${server}/search?q=${encodeURIComponent(`#${tag}`)}`,
     })),
     ...(reactions.length ? { reactions } : {}),
+  };
+}
+
+/**
+ * Misskey notification type → the Mastodon type the notifications page renders.
+ * Replies and quotes arrive as mentions, as Bluesky's do; a reaction is the
+ * nearest thing to a favourite.
+ */
+const NOTIFICATION_TYPES: Readonly<Record<string, string>> = {
+  follow: 'follow',
+  mention: 'mention',
+  reply: 'mention',
+  quote: 'mention',
+  renote: 'reblog',
+  reaction: 'favourite',
+  receiveFollowRequest: 'follow_request',
+};
+
+/** Adapt one notification; null for a type this client does not show or one with no actor. */
+export function adaptMisskeyNotification(
+  notification: MkNotification,
+  server: string,
+): MastodonNotification | null {
+  const type = NOTIFICATION_TYPES[notification.type];
+  if (!type || !notification.user) return null;
+  // A renote notification carries the renote; the reader's own note is inside it.
+  const note =
+    notification.type === 'renote'
+      ? (notification.note?.renote ?? notification.note)
+      : notification.note;
+  return {
+    id: `${MK_ID_PREFIX}${notification.id}`,
+    type,
+    created_at: notification.createdAt,
+    account: adaptMisskeyUser(notification.user, server),
+    ...(note ? { status: adaptMisskeyNote(note, server) } : {}),
   };
 }

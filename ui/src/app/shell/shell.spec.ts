@@ -17,6 +17,7 @@ import { Hotkeys } from '../hotkeys';
 import { ClientPrefs } from '../client-prefs';
 import { PreviewSeed } from '../first-run/preview-seed';
 import { stubLocation } from '../testing/stub-location';
+import { saveMisskeyIdentity } from '../providers/misskey/misskey-identity-store';
 import { Server } from '../server';
 import { serverInterceptor } from '../server.interceptor';
 import { WritingZen } from '../writing-zen';
@@ -122,6 +123,29 @@ describe('Shell account switching', () => {
         (session: { id: string }) => session.id === social.id,
       ).account.display_name,
     ).toBe('New pretty name');
+    drainRailRequests();
+  });
+
+  it('switches to a Misskey account (tokenless, like Bluesky) and reloads', () => {
+    const key = saveMisskeyIdentity(
+      {
+        server: 'https://misskey.design',
+        userId: 'u1',
+        username: 'me',
+        name: null,
+        avatarUrl: null,
+      },
+      { token: 'mk-token' },
+    );
+    const fixture = createShell();
+    let reloaded = false;
+    stubLocation({ onReload: () => (reloaded = true) });
+    const choice = auth.otherSessions().find((c) => c.kind === 'misskey')!;
+    expect(choice.misskeyKey).toBe(key);
+    fixture.componentInstance.switchTo(choice);
+    expect(auth.kind()).toBe('misskey');
+    expect(auth.activeMisskeyKey()).toBe(key);
+    expect(reloaded).toBe(true);
     drainRailRequests();
   });
 

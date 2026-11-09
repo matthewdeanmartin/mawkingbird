@@ -476,3 +476,28 @@ Manual plan: `test_plans/misskey-t1-translation.md`.
   names, notification snippets.
 - Automatic mode still skips notes the local detector cannot decide; the
   eligibility check runs before the router knows Misskey could help.
+
+---
+
+## M1 follow-up (2026-11-09): code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-m1-sign-in-and-read.md` (steps 26–33).
+
+- **Account picker:** choosing a Misskey account on the full picker (or the
+  account menu) did nothing. The shell switcher treated it as a Mastodon
+  choice with a null token and returned early, the bug Bluesky once had.
+  Misskey is now a tokenless kind there too. Picker label "Misskey" added.
+- **Profile page** `/accounts/mk:<userId>`: `users/show` and `users/notes`
+  (paged by `untilId`; replies and renotes follow the page toggles), as the
+  active Misskey identity. Read-only like a Twitter profile: header, MFM bio,
+  notes, **Open on Misskey**; no follow, graph tabs or analytics until M2.
+  Author names and avatars on Misskey posts now link here.
+- **Notifications:** a Misskey source (`i/notifications`, social types only:
+  follow, mention, reply, renote, quote, reaction, follow request). Reactions
+  show as likes, replies/quotes as mentions. Mentions open their thread, not
+  the Mastodon chat; Mastodon-only actions (approve/deny, hide) are not shown
+  for Misskey rows. Reading marks them read on Misskey (its default).
+
+Still not done: a hashtag page for Misskey tags, in-app links for @mentions
+inside note text (they open on the server), the reaction emoji in
+notifications (shown as a like), channels/antennas (M3).
