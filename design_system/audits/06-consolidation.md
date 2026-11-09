@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Misskey writing (M2), 2026-11-09
+
+Reviewed 1,744 source files and 608 candidate files. Two candidates are added:
+`providers/misskey/misskey-compose.html` (adopted scope: Field/Control,
+MbCheckbox and MbButton throughout; the file input is a hidden native input
+opened by an MbButton) and `status-card/status-reactions.ts` (backlog: the
+reaction chips become native buttons when the reader can react, plus a "+"
+button for the emoji picker). Home gains the Misskey composer and a one-time
+write-approval `mb-notice` with an MbButton; the Misskey profile gains
+Follow, Mute and Block MbButtons; the status card gains a Delete post action
+for the reader's own Misskey notes. No shared widget changed.
+
 ## Misskey profiles and notifications, 2026-11-09
 
 Reviewed 1,741 source files and 606 candidate files; no candidate is added.

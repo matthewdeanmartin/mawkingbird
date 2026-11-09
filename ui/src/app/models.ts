@@ -226,6 +226,12 @@ export interface Status {
 export interface StatusReaction {
   /** A Unicode emoji, or a custom emoji's `:shortcode:`. */
   name: string;
+  /**
+   * What to send to react with this one, when the reader can: the Unicode
+   * emoji, or `:name:` for a custom emoji of the reader's own server. Absent
+   * for another server's custom emoji, which cannot be reused.
+   */
+  key?: string;
   count: number;
   /** Image for a custom emoji; null for Unicode. */
   url: string | null;

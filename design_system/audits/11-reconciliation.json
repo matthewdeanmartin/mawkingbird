@@ -78,6 +78,16 @@
       "nextStep": "Field, Control, MbButton and Content State build the video search; fediverse results reuse StatusCard and YouTube results reuse the video player controls. Preserve q in the URL, discarding answers to superseded searches, the Plus gate on YouTube, the noopener Google hand-off and the rail/results grid on the header tracks."
     },
     {
+      "file": "ui/src/app/providers/misskey/misskey-compose.html",
+      "disposition": "adopted scope",
+      "nextStep": "Misskey note composer: Field/Control for text, content warning, alt text and the visibility select; MbCheckbox for local-only and sensitive; MbButton for CW toggle, attach (opens a hidden native file input), remove and post. Preserve the reply visibility floor, the server length limit, uploads straight to the Drive, and the one-time write approval path."
+    },
+    {
+      "file": "ui/src/app/status-card/status-reactions.ts",
+      "disposition": "backlog",
+      "nextStep": "Reaction chips are native buttons styled as pills (react with a chip, open the picker), plain spans when the reader cannot react. Review against MbToolbarButton/pressed-chip semantics with the post action bar; keep aria-pressed for the reader's own reaction and the host click guard that keeps clicks out of the card."
+    },
+    {
       "file": "ui/src/app/video-player/queue-button.ts",
       "disposition": "adopted scope",
       "nextStep": "One MbButton toggle with aria-pressed and a video-specific label adds to or removes from the watch queue, disabled when the queue is full. Preserve the per-video label and the absence of the control when a source cannot be replayed from Watch."

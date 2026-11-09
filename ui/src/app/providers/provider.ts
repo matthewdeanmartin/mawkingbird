@@ -35,10 +35,9 @@ export const PROVIDER_CAPS: Record<ProviderId, ProviderCapabilities> = {
   mastodon: { reply: true, favourite: true, reblog: true },
   'anonymous-mastodon': { reply: true, favourite: true, reblog: true },
   bluesky: { reply: true, favourite: true, reblog: true },
-  // Read-only until Sprint M2 adds writing. Reactions, replies and renotes go
-  // through the Misskey API, never `/api/v1/statuses`, so until that path
-  // exists the honest answer is no.
-  misskey: { reply: false, favourite: false, reblog: false },
+  // Through the Misskey API (StatusActions), never `/api/v1/statuses`.
+  // AnonymousCapabilities narrows this to tokens that may write (M2).
+  misskey: { reply: true, favourite: true, reblog: true },
   rss: { reply: false, favourite: false, reblog: false },
   paste: { reply: false, favourite: false, reblog: false },
   blog: { reply: false, favourite: false, reblog: false },

@@ -1,5 +1,8 @@
 import { blueskyRouteFor } from '../bluesky-links';
 import { StatusReactions } from './status-reactions';
+import { MisskeyCompose } from '../providers/misskey/misskey-compose';
+import { MisskeyApi } from '../providers/misskey/misskey-api';
+import type { MisskeyRef } from '../providers/misskey/misskey-adapter';
 import { MbHelp } from '../design-system/help/help';
 import { accountScopeSuffix } from '../account-scope';
 import { PostHistory } from '../post-history';
@@ -116,7 +119,7 @@ import { BskyReply } from '../providers/bluesky/bluesky-reply';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
 import { BskyRef, BskyPostView } from '../providers/bluesky/bluesky-types';
-import { firstValueFrom } from 'rxjs';
+import { concat, firstValueFrom, last } from 'rxjs';
 
 // i18n statusCard.replacePost: Delete and repost
 // i18n statusCard.replaceHint: Bluesky edits replace the original with a new post. Existing links and engagement will not move to the replacement.
@@ -432,6 +435,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   selector: 'app-status-card',
   imports: [
     StatusReactions,
+    MisskeyCompose,
     MbHelp,
     ExternalPlayerHost,
     NgTemplateOutlet,
@@ -613,6 +617,7 @@ export class StatusCard {
   /** For "Save as to-do", which parks a local draft rather than publishing. */
   private drafts = inject(Drafts).forCurrentAccount();
   private actions = inject(StatusActions);
+  private misskeyApi = inject(MisskeyApi);
   private router = inject(Router);
   private mutedPosts = inject(MutedPosts);
   private localMod = inject(LocalModeration);
@@ -1395,6 +1400,14 @@ export class StatusCard {
       return;
     }
     this.actionError.set(null);
+    if (this.display.provider === 'misskey') {
+      const ref = this.display.providerRef as MisskeyRef;
+      this.misskeyApi.deleteNote(ref.noteId).subscribe({
+        next: () => this.deleted.emit(this.status()),
+        error: () => this.actionError.set(this.actionFailureMessage('delete this post')),
+      });
+      return;
+    }
     if (this.display.provider === 'bluesky') {
       const ref = this.display.providerRef as BskyRef;
       this.blueskyApi.deleteRecord(ref.uri).subscribe({
@@ -2391,13 +2404,15 @@ export class StatusCard {
   }
 
   private actionFailureMessage(
-    verb: 'delete this post' | 'like' | 'boost' | 'bookmark this post',
+    verb: 'delete this post' | 'like' | 'boost' | 'bookmark this post' | 'react' | 'vote',
   ): string {
     const actionKeys = {
       'delete this post': 'statusCard.delete',
       like: 'pages.profile.media.like',
       boost: 'pages.profile.media.boost',
       'bookmark this post': 'statusCard.bookmark',
+      react: 'statusCard.addReaction',
+      vote: 'statusCard.vote',
     } as const;
     const localizedVerb =
       this.transloco.getActiveLang() === 'ko' ? this.transloco.translate(actionKeys[verb]) : verb;
@@ -2991,9 +3006,13 @@ export class StatusCard {
 
   protected pollClosed = computed<boolean>(() => {
     const p = this.poll();
-    // Misskey polls show results only until voting goes through the Misskey API (M2).
+    // Misskey polls vote through the Misskey API; results only for a read-only token.
     return (
-      this.capabilities.active || !p || p.expired || p.voted || this.display.provider === 'misskey'
+      this.capabilities.active ||
+      !p ||
+      p.expired ||
+      p.voted ||
+      (this.display.provider === 'misskey' && !this.capabilities.canWriteMisskey)
     );
   });
 
@@ -3018,6 +3037,10 @@ export class StatusCard {
 
   submitVote(event: Event): void {
     event.stopPropagation();
+    if (this.display.provider === 'misskey') {
+      this.submitMisskeyVote();
+      return;
+    }
     if (!this.capabilities.canUseServerActions) {
       return;
     }
@@ -3029,6 +3052,55 @@ export class StatusCard {
       // Reflect the updated poll back onto the status for re-render.
       this.changed.emit({ ...this.display, poll: updated });
       this.pollSelection.set([]);
+    });
+  }
+
+  /** Misskey takes one choice per call; a multiple-choice vote is several calls. */
+  private submitMisskeyVote(): void {
+    const p = this.poll();
+    const choices = this.pollSelection();
+    if (!p || !choices.length || !this.capabilities.canWriteMisskey) return;
+    const ref = this.display.providerRef as MisskeyRef;
+    concat(...choices.map((choice) => this.misskeyApi.vote(ref.noteId, choice)))
+      .pipe(last())
+      .subscribe({
+        next: () => {
+          this.changed.emit({
+            ...this.display,
+            poll: {
+              ...p,
+              voted: true,
+              own_votes: choices,
+              votes_count: p.votes_count + choices.length,
+              voters_count: p.voters_count + 1,
+              options: p.options.map((option, i) =>
+                choices.includes(i) ? { ...option, votes_count: option.votes_count + 1 } : option,
+              ),
+            },
+          });
+          this.pollSelection.set([]);
+        },
+        error: () => this.actionError.set(this.actionFailureMessage('vote')),
+      });
+  }
+
+  /**
+   * React to this Misskey note with `reaction` (null removes the reader's).
+   * Same optimistic pattern as the heart: the response replaces the guess.
+   */
+  react(reaction: string | null): void {
+    if (!this.caps.favourite || this.display.provider !== 'misskey') return;
+    this.inFlight.set('favourite');
+    this.actionError.set(null);
+    this.actions.react(this.display, reaction).subscribe({
+      next: (updated) => {
+        this.inFlight.set(null);
+        this.changed.emit(updated);
+      },
+      error: () => {
+        this.inFlight.set(null);
+        this.actionError.set(this.actionFailureMessage('react'));
+      },
     });
   }
 

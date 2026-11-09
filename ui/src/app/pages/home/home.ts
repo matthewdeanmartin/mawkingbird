@@ -87,7 +87,12 @@ import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { MK_TIMELINES, MisskeyProvider } from '../../providers/misskey/misskey-provider';
 import { MkTimeline } from '../../providers/misskey/misskey-types';
-import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
+import {
+  misskeyIdentity,
+  misskeyIdentityCanWrite,
+} from '../../providers/misskey/misskey-identity-store';
+import { MisskeyCompose } from '../../providers/misskey/misskey-compose';
+import { MisskeyAuth } from '../../providers/misskey/misskey-auth';
 import { TranslationRouter } from '../../translation/translation-router';
 import { TranslationConnectors } from '../../translation/translation-connectors';
 import { MbNotice } from '../../design-system/notice/notice';
@@ -220,6 +225,9 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.misskey.translateOffer.body: Many Misskey posts are in Japanese. Translate posts that are not in your languages automatically as they scroll into view? Your Misskey server's translator is tried first, then the free translators. Change this any time in Settings → Languages.
 // i18n pages.home.misskey.translateOffer.yes: Translate as I scroll
 // i18n pages.home.misskey.translateOffer.no: No thanks
+// i18n pages.home.misskey.approve.title: One more approval to post
+// i18n pages.home.misskey.approve.body: Mawkingbird can now post, react and follow on Misskey. Your sign-in from before only allowed reading, so {{server}} needs to approve once more.
+// i18n pages.home.misskey.approve.button: Approve on Misskey
 // i18n pages.home.misskey.noEngine.title: Nothing can translate yet
 // i18n pages.home.misskey.noEngine.body: Automatic translation is on, but {{server}} has no translator of its own and no free translator is switched on. Turn on MyMemory (free, about 5,000 characters a day; post text is sent to translated.net), or press 🌐 Translate on any post once to download this browser's own translator, if it has one.
 // i18n pages.home.misskey.noEngine.myMemory: Turn on MyMemory
@@ -249,6 +257,7 @@ const NO_NEW_POSTS_MS = 2500;
   providers: [HomeSource],
   imports: [
     MbNotice,
+    MisskeyCompose,
     MbField,
     MbControl,
     FormsModule,
@@ -544,11 +553,26 @@ export class Home implements OnInit, OnDestroy {
    * publishing. The sign-in invitation on the cards below is the honest offer
    * here; a second composer would just be the same over-promise again.
    */
-  // Nor for a Misskey account yet: posting to Misskey is Sprint M2, and the
-  // composer's targets are Mastodon and Bluesky, which it has no token for.
+  // A Misskey account writes with its own composer (below), not this one:
+  // the shared composer's targets are Mastodon and Bluesky.
   protected readonly offersWriting = computed(
     () => !this.auth.isAnonymous && !this.auth.isMisskeyPrimary,
   );
+
+  /** The Misskey composer: a Misskey account whose token may write. */
+  protected readonly offersMisskeyWriting = computed(
+    () => this.auth.isMisskeyPrimary && misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
+  );
+  /** A Misskey token from the read-only M1 sign-in: ask for write once. */
+  protected readonly misskeyNeedsApproval = computed(
+    () => this.auth.isMisskeyPrimary && !misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
+  );
+  private readonly misskeyAuth = inject(MisskeyAuth);
+
+  protected approveMisskeyWriting(): void {
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server;
+    if (server) location.assign(this.misskeyAuth.begin(server, false));
+  }
 
   /** The full writing workspace is behind a flag; without it, Write goes to /drafts. */
   protected readonly hasWritePage = computed(() => this.flags.enabled('write'));

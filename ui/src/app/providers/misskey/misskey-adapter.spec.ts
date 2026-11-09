@@ -181,8 +181,15 @@ describe('adaptReactions', () => {
       SERVER,
     );
     expect(reactions).toEqual([
-      { name: ':blobcat:', count: 5, url: 'https://misskey.io/emoji/blobcat.webp', me: true },
-      { name: '👍', count: 2, url: null, me: false },
+      // `key` is what to send to react with it: absent for another server's emoji.
+      {
+        name: ':blobcat:',
+        key: ':blobcat:',
+        count: 5,
+        url: 'https://misskey.io/emoji/blobcat.webp',
+        me: true,
+      },
+      { name: '👍', key: '👍', count: 2, url: null, me: false },
       { name: ':party:', count: 1, url: 'https://other.example/party.png', me: false },
     ]);
   });

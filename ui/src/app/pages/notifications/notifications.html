@@ -267,8 +267,11 @@
             row.notif.account.display_name || row.notif.account.username
           }}</a>
           <span class="what muted">{{ label(row.notif.type) }}</span>
-          <!-- Misskey follow requests are answered on Misskey until M2 writes. -->
-          @if (row.notif.type === 'follow_request' && !row.notif.account.id.startsWith('mk:')) {
+          <!-- Misskey follow requests need a token that may write (M2). -->
+          @if (
+            row.notif.type === 'follow_request' &&
+            (!row.notif.account.id.startsWith('mk:') || misskeyCanWrite())
+          ) {
             <div class="mention-actions">
               <button
                 class="btn btn-sm"
@@ -284,9 +287,12 @@
               >
                 {{ 'pages.notifications.requests.deny' | transloco }}
               </button>
-              <a routerLink="/settings/follows">{{
-                'pages.notifications.requests.manage' | transloco
-              }}</a>
+              <!-- The request manager is Mastodon's. -->
+              @if (!row.notif.account.id.startsWith('mk:')) {
+                <a routerLink="/settings/follows">{{
+                  'pages.notifications.requests.manage' | transloco
+                }}</a>
+              }
             </div>
           }
           @if (row.notif.status) {

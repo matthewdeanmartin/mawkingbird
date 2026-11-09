@@ -70,7 +70,11 @@ import { TwitterFeed } from '../../providers/twitter/twitter-feed';
 import { TwitterFollow, TwitterFollows } from '../../providers/twitter/twitter-follows';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { MisskeyApi } from '../../providers/misskey/misskey-api';
-import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
+import {
+  misskeyIdentity,
+  misskeyIdentityCanWrite,
+} from '../../providers/misskey/misskey-identity-store';
+import { MkRelation } from '../../providers/misskey/misskey-types';
 import { BlueskyGraph } from '../../providers/bluesky/bluesky-graph';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import {
@@ -235,6 +239,16 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.misskey.signIn: Sign in with your Misskey account to view this profile.
 // i18n pages.profile.misskey.loadFailed: Could not load this Misskey profile.
 // i18n pages.profile.actions.openOnMisskey: Open on Misskey
+// i18n pages.profile.misskey.follow: Follow
+// i18n pages.profile.misskey.unfollow: Unfollow
+// i18n pages.profile.misskey.requested: Requested
+// i18n pages.profile.misskey.followsYou: Follows you
+// i18n pages.profile.misskey.mute: Mute
+// i18n pages.profile.misskey.unmute: Unmute
+// i18n pages.profile.misskey.block: Block
+// i18n pages.profile.misskey.unblock: Unblock
+// i18n pages.profile.misskey.blockConfirm: Block {{name}}? They will not be able to follow you or see your notes, and you will stop following each other.
+// i18n pages.profile.misskey.actionFailed: That did not work on Misskey. Please try again.
 // i18n pages.profile.bluesky.linkRequired: Link a Bluesky account in Settings → Connections to view this profile.
 // i18n pages.profile.bluesky.profileLoadFailed: Could not load this Bluesky profile.
 // i18n pages.profile.bluesky.postsLoadFailed: Could not load posts for this account.
@@ -449,6 +463,79 @@ export class Profile implements OnInit, OnDestroy {
   private misskeyApi = inject(MisskeyApi);
   /** `untilId` for the next page of a Misskey user's notes. */
   private mkUntil: string | null = null;
+  /** The reader's relationship to this Misskey user, once loaded. */
+  protected mkRelation = signal<MkRelation | null>(null);
+  protected mkBusy = signal(false);
+  protected mkActionError = signal<string | null>(null);
+  /** Follow, mute and block need a token that may write, and are never offered on oneself. */
+  protected readonly mkCanAct = computed(
+    () =>
+      this.isMisskey() && !this.isSelf() && misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
+  );
+
+  /**
+   * Follow, unfollow, or withdraw a pending request (a locked account), then
+   * re-read the relation: Misskey decides whether a follow became a request.
+   */
+  protected mkToggleFollow(): void {
+    const relation = this.mkRelation();
+    const userId = this.misskeyUserId();
+    if (!relation || !userId) return;
+    const call = relation.isFollowing
+      ? this.misskeyApi.unfollow(userId)
+      : relation.hasPendingFollowRequestFromYou
+        ? this.misskeyApi.cancelFollowRequest(userId)
+        : this.misskeyApi.follow(userId);
+    this.mkRun(call, userId);
+  }
+
+  protected mkToggleMute(): void {
+    const relation = this.mkRelation();
+    const userId = this.misskeyUserId();
+    if (!relation || !userId) return;
+    this.mkRun(
+      relation.isMuted ? this.misskeyApi.unmute(userId) : this.misskeyApi.mute(userId),
+      userId,
+    );
+  }
+
+  protected async mkToggleBlock(): Promise<void> {
+    const relation = this.mkRelation();
+    const userId = this.misskeyUserId();
+    const account = this.account();
+    if (!relation || !userId || !account) return;
+    if (
+      !relation.isBlocking &&
+      !(await this.dialogs.confirm(
+        this.transloco.translate<string>('pages.profile.misskey.blockConfirm', {
+          name: account.display_name || account.acct,
+        }),
+      ))
+    ) {
+      return;
+    }
+    this.mkRun(
+      relation.isBlocking ? this.misskeyApi.unblock(userId) : this.misskeyApi.block(userId),
+      userId,
+    );
+  }
+
+  private mkRun(call: Observable<unknown>, userId: string): void {
+    this.mkBusy.set(true);
+    this.mkActionError.set(null);
+    call.pipe(switchMap(() => this.misskeyApi.relation(userId))).subscribe({
+      next: (relation) => {
+        this.mkRelation.set(relation);
+        this.mkBusy.set(false);
+      },
+      error: () => {
+        this.mkBusy.set(false);
+        this.mkActionError.set(
+          this.transloco.translate<string>('pages.profile.misskey.actionFailed'),
+        );
+      },
+    });
+  }
   /** The handle behind a Twitter profile, for the follow toggle. */
   private twitterHandle = signal<string | null>(null);
   /** Why this Twitter profile's posts could not be loaded, if they could not. */
@@ -1228,6 +1315,8 @@ export class Profile implements OnInit, OnDestroy {
     this.isTwitter.set(false);
     this.isMisskey.set(false);
     this.mkUntil = null;
+    this.mkRelation.set(null);
+    this.mkActionError.set(null);
     this.twitterHandle.set(null);
     this.twitterError.set(null);
     this.isBluesky.set(false);
@@ -1555,6 +1644,15 @@ export class Profile implements OnInit, OnDestroy {
       }),
     );
     this.loadMisskeyPosts(seq, userId);
+    // The relation is a read; only the buttons that change it need write.
+    this.routeLoadSub.add(
+      this.misskeyApi.relation(userId).subscribe({
+        next: (relation) => {
+          if (seq === this.loadSeq) this.mkRelation.set(relation);
+        },
+        error: () => undefined,
+      }),
+    );
   }
 
   /** One page of a Misskey user's notes; also serves load-more via {@link mkUntil}. */

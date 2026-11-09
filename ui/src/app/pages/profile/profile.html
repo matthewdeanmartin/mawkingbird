@@ -206,9 +206,58 @@
             </button>
           </div>
         } @else if (isMisskey()) {
-          <!-- Read-only until M2: following, muting and blocking go through the
-             Misskey API, which this client does not write to yet. -->
+          <!-- Following, muting and blocking go through the
+             Misskey API. -->
           <div class="profile-buttons">
+            @if (mkCanAct() && mkRelation(); as relation) {
+              <button
+                mbButton
+                type="button"
+                [variant]="
+                  relation.isFollowing || relation.hasPendingFollowRequestFromYou
+                    ? 'outline'
+                    : 'solid'
+                "
+                [disabled]="mkBusy() || relation.isBlocking"
+                (click)="mkToggleFollow()"
+              >
+                {{
+                  (relation.isFollowing
+                    ? 'pages.profile.misskey.unfollow'
+                    : relation.hasPendingFollowRequestFromYou
+                      ? 'pages.profile.misskey.requested'
+                      : 'pages.profile.misskey.follow'
+                  ) | transloco
+                }}
+              </button>
+              <button
+                mbButton
+                variant="outline"
+                type="button"
+                [disabled]="mkBusy()"
+                (click)="mkToggleMute()"
+              >
+                {{
+                  (relation.isMuted ? 'pages.profile.misskey.unmute' : 'pages.profile.misskey.mute')
+                    | transloco
+                }}
+              </button>
+              <button
+                mbButton
+                variant="outline"
+                tone="danger"
+                type="button"
+                [disabled]="mkBusy()"
+                (click)="mkToggleBlock()"
+              >
+                {{
+                  (relation.isBlocking
+                    ? 'pages.profile.misskey.unblock'
+                    : 'pages.profile.misskey.block'
+                  ) | transloco
+                }}
+              </button>
+            }
             @if (a.url) {
               <a
                 mbButton
@@ -221,6 +270,12 @@
               </a>
             }
           </div>
+          @if (mkRelation()?.isFollowed) {
+            <p class="muted small">{{ 'pages.profile.misskey.followsYou' | transloco }}</p>
+          }
+          @if (mkActionError(); as error) {
+            <p class="error" role="alert">{{ error }}</p>
+          }
         } @else if (isTwitter()) {
           <!-- Follow is local storage only. There is deliberately no like, repost
              or reply: those are Twitter mutations needing a Twitter login this app never

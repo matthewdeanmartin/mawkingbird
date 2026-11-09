@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Auth } from '../../auth';
 import { ProviderId } from '../../models';
 import { capabilitiesFor, ProviderCapabilities } from '../provider';
+import { misskeyIdentityCanWrite } from '../misskey/misskey-identity-store';
 
 /**
  * Central policy for features that require a real signed-in identity.
@@ -19,8 +20,16 @@ export class AnonymousCapabilities {
   }
 
   get canCompose(): boolean {
-    // Misskey-primary cannot post until Sprint M2 adds the Misskey composer.
-    return !this.active && !this.auth.isMisskeyPrimary;
+    // A Misskey token from the read-only M1 sign-in cannot post until re-approved.
+    return (
+      !this.active &&
+      (!this.auth.isMisskeyPrimary || misskeyIdentityCanWrite(this.auth.activeMisskeyKey()))
+    );
+  }
+
+  /** The active Misskey identity's token may write (post, react, follow). */
+  get canWriteMisskey(): boolean {
+    return this.auth.isMisskeyPrimary && misskeyIdentityCanWrite(this.auth.activeMisskeyKey());
   }
 
   get canManageRelationships(): boolean {
@@ -70,6 +79,7 @@ export class AnonymousCapabilities {
    * `!caps.favourite`, so the click produced no request and no error to show.
    */
   statusCaps(provider: ProviderId): ProviderCapabilities {
+    if (provider === 'misskey') return capabilitiesFor('misskey', this.canWriteMisskey);
     const mastodon = provider === 'mastodon' || provider === 'anonymous-mastodon';
     return capabilitiesFor(provider, mastodon ? this.canUseServerActions : !this.active);
   }

@@ -642,9 +642,14 @@
           }
         </mb-toolbar>
       }
-      <!-- Emoji reactions (Misskey). Read-only: reacting arrives with writing (M2). -->
+      <!-- Emoji reactions (Misskey): press one to react with it, + for any emoji. -->
       @if (display.reactions; as reactions) {
-        <app-status-reactions [reactions]="reactions" />
+        <app-status-reactions
+          [reactions]="reactions"
+          [canReact]="caps.favourite && display.provider === 'misskey'"
+          [busy]="busyWith('favourite')"
+          (react)="react($event)"
+        />
       }
       <mb-post-actions
         density="compact"
@@ -1268,6 +1273,18 @@
               🤖🌐
             </button>
           }
+          @if (display.provider === 'misskey' && isOwn() && capabilities.canWriteMisskey) {
+            <button
+              type="button"
+              mbPostAction
+              class="action"
+              (click)="remove($event)"
+              [title]="'statusCard.delete' | transloco"
+              [attr.aria-label]="'statusCard.delete' | transloco"
+            >
+              <span aria-hidden="true">🗑️</span>
+            </button>
+          }
           @if (canUsePostOwnerActions) {
             @if (display.provider !== 'bluesky' && display.edited_at) {
               <button
@@ -1867,6 +1884,13 @@
             <app-local-compose [inReplyTo]="display.id" (posted)="onReplied($event)" />
           } @else if (display.provider === 'bluesky') {
             <app-bsky-reply [replyTo]="display" (posted)="onReplied($event)" />
+          } @else if (display.provider === 'misskey') {
+            <app-misskey-compose
+              [replyTo]="display"
+              [compact]="true"
+              [placeholder]="'statusCard.postYourReply' | transloco"
+              (posted)="onReplied($event)"
+            />
           } @else {
             <app-compose
               [inReplyToId]="display.id"
@@ -1879,7 +1903,11 @@
         </div>
       }
 
-      @if (quoting()) {
+      @if (quoting() && display.provider === 'misskey') {
+        <div class="inline-compose" (click)="$event.stopPropagation()">
+          <app-misskey-compose [quote]="display" [compact]="true" (posted)="onQuoted($event)" />
+        </div>
+      } @else if (quoting()) {
         <!-- A quote is a fresh statement to your own audience, not a reply to a
              conversation: it opens as its own dialog, your words above the
              quoted post, and goes through Drafts like any other post. -->

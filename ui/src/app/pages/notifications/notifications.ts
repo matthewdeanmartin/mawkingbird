@@ -23,7 +23,10 @@ import { PageDiagnostics } from '../../page-diagnostics';
 import { Auth } from '../../auth';
 import { BlueskyNotifications } from '../../providers/bluesky/bluesky-notifications';
 import { MisskeyApi } from '../../providers/misskey/misskey-api';
-import { misskeyIdentity } from '../../providers/misskey/misskey-identity-store';
+import {
+  misskeyIdentity,
+  misskeyIdentityCanWrite,
+} from '../../providers/misskey/misskey-identity-store';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BlueskyApi } from '../../providers/bluesky/bluesky-api';
 import { adaptRelationship } from '../../providers/bluesky/bluesky-adapter';
@@ -378,6 +381,10 @@ export class Notifications implements OnInit, OnDestroy {
   private misskeyApi = inject(MisskeyApi);
   /** Misskey notifications exist only while a Misskey identity is the account. */
   protected readonly misskeyAvailable = computed(() => this.auth.activeMisskeyKey() !== null);
+  /** Answering Misskey follow requests needs a token that may write. */
+  protected readonly misskeyCanWrite = computed(() =>
+    misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
+  );
   private misskeyUntil: string | null = null;
   private misskeyDone = true;
   protected bskySession = inject(BlueskySession);
@@ -952,9 +959,14 @@ export class Notifications implements OnInit, OnDestroy {
     if (this.isAccountActionBusy(account.id)) return;
     this.accountActionBusy.update((ids) => new Set([...ids, account.id]));
     this.accountActionError.set(null);
-    const request = approve
-      ? this.api.authorizeFollowRequest(account.id)
-      : this.api.rejectFollowRequest(account.id);
+    const misskeyUser = account.id.startsWith('mk:') ? account.id.slice('mk:'.length) : null;
+    const request: Observable<unknown> = misskeyUser
+      ? approve
+        ? this.misskeyApi.acceptFollowRequest(misskeyUser)
+        : this.misskeyApi.rejectFollowRequest(misskeyUser)
+      : approve
+        ? this.api.authorizeFollowRequest(account.id)
+        : this.api.rejectFollowRequest(account.id);
     request.subscribe({
       next: () => {
         this.items.update((items) =>

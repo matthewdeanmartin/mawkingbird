@@ -163,7 +163,7 @@ export function adaptReactions(note: MkNote, server: string): StatusReaction[] {
     .map(([key, count]) => {
       const custom = /^:([^:@\s]+)(?:@([^:\s]+))?:$/.exec(key);
       if (!custom) {
-        return { name: key, count, url: null, me: note.myReaction === key };
+        return { name: key, key, count, url: null, me: note.myReaction === key };
       }
       const [, name, host] = custom;
       const local = !host || host === '.';
@@ -171,7 +171,14 @@ export function adaptReactions(note: MkNote, server: string): StatusReaction[] {
         note.reactionEmojis?.[local ? `${name}@.` : `${name}@${host}`] ??
         note.reactionEmojis?.[name] ??
         (local ? `${server}/emoji/${encodeURIComponent(name)}.webp` : null);
-      return { name: `:${name}:`, count, url, me: note.myReaction === key };
+      return {
+        name: `:${name}:`,
+        // Only the reader's own server's custom emoji can be sent back.
+        ...(local ? { key: `:${name}:` } : {}),
+        count,
+        url,
+        me: note.myReaction === key,
+      };
     });
 }
 

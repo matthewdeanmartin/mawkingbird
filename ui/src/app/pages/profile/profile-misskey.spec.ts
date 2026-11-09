@@ -8,8 +8,18 @@ import { Auth } from '../../auth';
 import { saveMisskeyIdentity } from '../../providers/misskey/misskey-identity-store';
 import { MkNote } from '../../providers/misskey/misskey-types';
 import { Profile } from './profile';
+import { MISSKEY_PERMISSIONS } from '../../providers/misskey/misskey-auth';
 
 const SERVER = 'https://misskey.design';
+const RELATION = {
+  id: 'u9',
+  isFollowing: false,
+  hasPendingFollowRequestFromYou: false,
+  hasPendingFollowRequestToYou: false,
+  isFollowed: true,
+  isBlocking: false,
+  isMuted: false,
+};
 
 const note = (id: string): MkNote => ({
   id,
@@ -81,6 +91,8 @@ describe('Profile of a Misskey user', () => {
     const notes = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/notes`));
     expect(notes.request.body).toMatchObject({ userId: 'u9', i: 'tok' });
     notes.flush([note('n2'), note('n1')]);
+    const relation = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/relation`));
+    relation.flush(RELATION);
     await vi.waitFor(() => {
       fixture.detectChanges();
       expect((fixture.nativeElement as HTMLElement).textContent).toContain('note n2');
@@ -114,5 +126,36 @@ describe('Profile of a Misskey user', () => {
     const next = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/notes`));
     expect(next.request.body.untilId).toBe('n1');
     next.flush([]);
+  });
+
+  it('shows no follow buttons for a read-only (M1) token', async () => {
+    const fixture = await setUp();
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).not.toContain('Follow ');
+    expect(text).toContain('Follows you');
+  });
+
+  it('follows, then re-reads the relation (Misskey decides request vs follow)', async () => {
+    saveMisskeyIdentity(
+      { server: SERVER, userId: 'u1', username: 'me', name: null, avatarUrl: null },
+      { token: 'tok', permissions: [...MISSKEY_PERMISSIONS] },
+    );
+    const fixture = await setUp();
+    const follow = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('button'),
+    ).find((b) => b.textContent?.trim() === 'Follow') as HTMLButtonElement;
+    expect(follow).toBeDefined();
+    follow.click();
+    const create = await vi.waitFor(() => http.expectOne(`${SERVER}/api/following/create`));
+    expect(create.request.body).toEqual({ userId: 'u9', i: 'tok' });
+    create.flush({});
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/relation`))).flush({
+      ...RELATION,
+      hasPendingFollowRequestFromYou: true,
+    });
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('Requested');
+    });
   });
 });

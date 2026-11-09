@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.mk-compose {
+  display: grid;
+  gap: 8px;
+}
+
+.mk-compose textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.mk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.mk-count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.mk-count.over {
+  color: var(--col-danger, #d33);
+}
+
+.mk-files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.mk-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.mk-file img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.mk-error {
+  margin: 0;
+  color: var(--col-danger, #d33);
+}

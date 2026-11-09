@@ -104,6 +104,25 @@
   />
 }
 
+<!-- A Misskey account writes with its own composer: the shared one targets
+     Mastodon and Bluesky. -->
+@if (offersMisskeyWriting()) {
+  <div class="home-misskey-compose">
+    <app-misskey-compose (posted)="onPosted($event)" />
+  </div>
+} @else if (misskeyNeedsApproval()) {
+  <mb-notice
+    class="home-misskey-approve"
+    announcement="status"
+    [title]="'pages.home.misskey.approve.title' | transloco"
+  >
+    <p>{{ 'pages.home.misskey.approve.body' | transloco: { server: misskeyHost() } }}</p>
+    <button mbButton type="button" (click)="approveMisskeyWriting()">
+      {{ 'pages.home.misskey.approve.button' | transloco }}
+    </button>
+  </mb-notice>
+}
+
 <!-- Outside the block above on purpose: this is the Eliza practice box, not a
      way to post, so collapsing the real composer must not take it away. -->
 @if (auth.isAnonymous && eliza.following()) {

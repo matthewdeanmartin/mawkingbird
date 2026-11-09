@@ -308,6 +308,7 @@ language, so the feed becomes comprehensible input.
 | 8. Languages | **Start with English ↔ Chinese / Japanese / Korean, both directions;** eventually every app i18n locale. | Translation and learner tools must work for a CJK speaker learning English too. L1 needs JMdict (ja), CC-CEDICT (zh) and a Korean source, plus English headwords with CJK glosses for the reverse direction. Segmentation via `Intl.Segmenter` covers all four. |
 | 9. Testing | **A new `misskey_mock` server later; not now.** | Specs use captured fixtures. No `make test-integration` coverage for Misskey until the mock exists. |
 | 10. Outbound | **Likely wanted** (owner expects to post in Japanese). | T3 moves up: after M2. Needs a back-translation check before posting. |
+| T2 cap | **Default daily cap $0.25** (owner, 2026-11-09). When it is reached, offer to raise it in a pop-up rather than silently stopping. Model: the reader's current OpenRouter model choice. | T2 budget UI. |
 
 ## Open questions for the owner
 
@@ -501,3 +502,32 @@ Manual plan: `test_plans/misskey-m1-sign-in-and-read.md` (steps 26–33).
 Still not done: a hashtag page for Misskey tags, in-app links for @mentions
 inside note text (they open on the server), the reaction emoji in
 notifications (shown as a like), channels/antennas (M3).
+
+---
+
+## M2 progress (2026-11-09): code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-m2-writing.md`. Flag `misskey` already
+defaults to production (since the T1 login fixes).
+
+- **Permissions:** MiAuth now asks for read and write (notes, reactions,
+  votes, following, mutes, blocks, favourites, Drive, report-abuse; never
+  account settings or admin). Granted permissions are stored with the token;
+  M1 tokens (none stored) get a one-time "Approve on Misskey" on Home, which
+  re-runs MiAuth for the same identity key (no duplicate account). A 403
+  `PERMISSION_DENIED` from any write is recognised the same way.
+- **Composer:** `app-misskey-compose`, its own component rather than a
+  seventh target in the shared composer. Text, CW, visibility (public, home,
+  followers), local-only, up to 4 files with alt text and sensitive flag
+  uploaded straight to the Drive, the server's length limit, Ctrl+Enter.
+  Used for new notes (Home), replies (card and thread page) and quotes.
+- **Actions** (`StatusActions`): ❤ like = the server default reaction
+  (U+2764); renote / unrenote; react with any chip (one reaction per person,
+  so changing is unreact-then-react); "+" opens the emoji picker, which now
+  lists the Misskey server's custom emoji for Misskey accounts; delete own
+  notes; poll votes (one call per choice). No edit, pin or redraft (Misskey
+  has no edit).
+- **People:** profile Follow / Unfollow / Requested (withdraw), Mute, Block
+  (confirmed), "Follows you"; notifications Approve / Deny for follow requests.
+- Not done: creating polls, Misskey drafts, report UI, renote state for
+  renotes made before this visit (the API does not expose it).

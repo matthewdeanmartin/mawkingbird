@@ -1,0 +1,139 @@
+<form class="mk-compose" [class.compact]="compact()" (ngSubmit)="submit()">
+  @if (cwOn()) {
+    <mb-field [label]="'misskeyCompose.cwLabel' | transloco" hideLabel density="compact">
+      <input
+        mbControl
+        type="text"
+        name="cw"
+        [placeholder]="'misskeyCompose.cwPlaceholder' | transloco"
+        [ngModel]="cw()"
+        (ngModelChange)="cw.set($event)"
+        [disabled]="posting()"
+      />
+    </mb-field>
+  }
+
+  <mb-field [label]="'misskeyCompose.textLabel' | transloco" hideLabel>
+    <textarea
+      mbControl
+      name="text"
+      [rows]="compact() ? 3 : 5"
+      [placeholder]="placeholder() ?? ('misskeyCompose.placeholder' | transloco)"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+      (keydown.control.enter)="submit()"
+      (keydown.meta.enter)="submit()"
+      [disabled]="posting()"
+    ></textarea>
+  </mb-field>
+
+  @if (files().length) {
+    <ul class="mk-files">
+      @for (pending of files(); track pending.preview; let i = $index) {
+        <li class="mk-file">
+          @if (pending.file.type.startsWith('image/')) {
+            <img [src]="pending.preview" alt="" />
+          } @else {
+            <span class="mk-file-name">{{ pending.file.name }}</span>
+          }
+          <mb-field [label]="'misskeyCompose.altLabel' | transloco" density="compact">
+            <input
+              mbControl
+              type="text"
+              [name]="'alt' + i"
+              [ngModel]="pending.alt"
+              (ngModelChange)="updateFile(i, { alt: $event })"
+              [disabled]="posting()"
+            />
+          </mb-field>
+          <mb-checkbox
+            [name]="'sensitive' + i"
+            [label]="'misskeyCompose.sensitive' | transloco"
+            [checked]="pending.sensitive"
+            (checkedChange)="updateFile(i, { sensitive: $event })"
+          />
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            (click)="removeFile(i)"
+            [disabled]="posting()"
+          >
+            {{ 'misskeyCompose.remove' | transloco }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="mk-bar">
+    <button
+      mbButton
+      variant="outline"
+      size="small"
+      type="button"
+      [attr.aria-pressed]="cwOn()"
+      (click)="cwOn.set(!cwOn())"
+    >
+      {{ 'misskeyCompose.cw' | transloco }}
+    </button>
+    <button
+      mbButton
+      variant="outline"
+      size="small"
+      type="button"
+      (click)="fileInput.click()"
+      [disabled]="posting() || files().length >= maxFiles"
+    >
+      {{ 'misskeyCompose.attach' | transloco }}
+    </button>
+    <input
+      #fileInput
+      hidden
+      type="file"
+      accept="image/*,video/*,audio/*"
+      multiple
+      (change)="onFiles($event)"
+    />
+    <mb-field [label]="'misskeyCompose.visibilityLabel' | transloco" hideLabel density="compact">
+      <select
+        mbControl
+        name="visibility"
+        [ngModel]="visibility()"
+        (ngModelChange)="visibility.set($event)"
+        [disabled]="posting()"
+      >
+        @for (choice of visibilities; track choice) {
+          <option [value]="choice" [disabled]="!visibilityAllowed(choice)">
+            {{ 'misskeyCompose.visibility.' + choice | transloco }}
+          </option>
+        }
+      </select>
+    </mb-field>
+    <mb-checkbox
+      name="localOnly"
+      [label]="'misskeyCompose.localOnly' | transloco"
+      [checked]="localOnly()"
+      (checkedChange)="localOnly.set($event)"
+    />
+    <span class="mk-count muted small" [class.over]="remaining() < 0">
+      {{ 'misskeyCompose.remaining' | transloco: { count: remaining() } }}
+    </span>
+    <button mbButton type="submit" [disabled]="!canPost()">
+      {{ (posting() ? 'misskeyCompose.posting' : actionKey()) | transloco }}
+    </button>
+  </div>
+
+  @if (needsApproval()) {
+    <p class="mk-error" role="alert">
+      {{ 'misskeyCompose.needsApproval' | transloco }}
+      <button mbButton variant="link" type="button" (click)="approve()">
+        {{ 'misskeyCompose.approve' | transloco }}
+      </button>
+    </p>
+  }
+  @if (error(); as message) {
+    <p class="mk-error" role="alert">{{ message }}</p>
+  }
+</form>

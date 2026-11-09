@@ -9,6 +9,7 @@ import { MkNotification } from '../../providers/misskey/misskey-types';
 import { Streaming } from '../../streaming';
 import { FakeStreaming } from '../../testing/fake-streaming';
 import { Notifications } from './notifications';
+import { MISSKEY_PERMISSIONS } from '../../providers/misskey/misskey-auth';
 
 const SERVER = 'https://misskey.design';
 const URL = `${SERVER}/api/i/notifications`;
@@ -143,5 +144,33 @@ describe('Notifications as a Misskey account', () => {
     const next = await vi.waitFor(() => http.expectOne(URL));
     expect(next.request.body.untilId).toBe('x1');
     next.flush([]);
+  });
+
+  it('approves a Misskey follow request through Misskey once the token may write', async () => {
+    saveMisskeyIdentity(
+      { server: SERVER, userId: 'u1', username: 'me', name: null, avatarUrl: null },
+      { token: 'tok', permissions: [...MISSKEY_PERMISSIONS] },
+    );
+    const fixture = await setUp([
+      { id: 'x1', createdAt: '2026-11-09T10:00:00.000Z', type: 'receiveFollowRequest', user: ai },
+    ]);
+    let approve: HTMLButtonElement | undefined;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      approve = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button')).find(
+        (b) => b.textContent?.trim() === 'Approve',
+      );
+      expect(approve).toBeDefined();
+    });
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('a[href="/settings/follows"]'),
+    ).toBeNull();
+    approve!.click();
+    const req = await vi.waitFor(() => http.expectOne(`${SERVER}/api/following/requests/accept`));
+    expect(req.request.body).toEqual({ userId: 'u9', i: 'tok' });
+    req.flush(null);
+    await vi.waitFor(() =>
+      expect((fixture.componentInstance as unknown as { items(): unknown[] }).items()).toEqual([]),
+    );
   });
 });

@@ -18,6 +18,8 @@ import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import { BskyReply } from '../../providers/bluesky/bluesky-reply';
 import { StatusActions } from '../../providers/status-actions';
 import { capabilitiesFor } from '../../providers/provider';
+import { AnonymousCapabilities } from '../../providers/anonymous/anonymous-capabilities';
+import { MisskeyCompose } from '../../providers/misskey/misskey-compose';
 import { RssProvider } from '../../providers/rss/rss-provider';
 import { TwitterApi } from '../../providers/twitter/twitter-api';
 import { TwitterFeed } from '../../providers/twitter/twitter-feed';
@@ -61,6 +63,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 @Component({
   selector: 'app-thread',
   imports: [
+    MisskeyCompose,
     CustomEmojiPipe,
     MbPostAction,
     StatusCard,
@@ -97,6 +100,7 @@ export class Thread implements OnInit {
   private loadSub = new Subscription();
 
   protected readonly prefs = inject(ClientPrefs);
+  protected readonly capabilities = inject(AnonymousCapabilities);
   protected words = inject(Terminology).words;
 
   /**

@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, throwError } from 'rxjs';
 import { Auth } from '../../auth';
 import { externalFetch } from '../external-fetch';
 import { misskeyIdentity } from './misskey-identity-store';
@@ -8,10 +8,14 @@ import {
   MK_SOCIAL_NOTIFICATION_TYPES,
   MK_TIMELINE_ENDPOINTS,
   MkErrorBody,
+  MkCreateNote,
+  MkDriveFile,
+  MkEmoji,
   MkMeta,
   MkMiAuthCheck,
   MkNote,
   MkNotification,
+  MkRelation,
   MkTimeline,
   MkUserDetailed,
 } from './misskey-types';
@@ -26,6 +30,11 @@ export class MisskeyApiError extends Error {
   ) {
     super(message);
     this.name = 'MisskeyApiError';
+  }
+
+  /** The token lacks a `write:*` permission: an M1 read-only sign-in. */
+  get needsWriteApproval(): boolean {
+    return this.status === 403 && this.code === 'PERMISSION_DENIED';
   }
 
   /** The token was revoked or expired: the reader must sign in again. */
@@ -101,6 +110,26 @@ export class MisskeyApi {
     return this.call<T>(identity.profile.server, endpoint, body, identity.credentials.token);
   }
 
+  /** The server's custom emoji (public; no token). */
+  emojis(server: string): Observable<{ emojis: MkEmoji[] }> {
+    return this.call<{ emojis: MkEmoji[] }>(server, 'emojis');
+  }
+
+  private readonly noteLengths = new Map<string, Promise<number>>();
+
+  /** The server's note length limit, from `meta`, asked once per server; 3,000 if unknown. */
+  maxNoteLength(server: string): Promise<number> {
+    let limit = this.noteLengths.get(server);
+    if (!limit) {
+      limit = firstValueFrom(this.meta(server)).then(
+        (meta) => meta.maxNoteTextLength ?? 3000,
+        () => 3000,
+      );
+      this.noteLengths.set(server, limit);
+    }
+    return limit;
+  }
+
   /** Public server information; no token. Also how a server is recognised as Misskey. */
   meta(server: string): Observable<MkMeta> {
     return this.call<MkMeta>(server, 'meta', { detail: false });
@@ -172,6 +201,105 @@ export class MisskeyApi {
       includeTypes: [...MK_SOCIAL_NOTIFICATION_TYPES],
       ...(untilId ? { untilId } : {}),
     });
+  }
+
+  // ---------------------------------------------------------------- writes
+  // Each needs a `write:*` permission; a token without it gets HTTP 403
+  // `PERMISSION_DENIED`, which {@link MisskeyApiError.needsWriteApproval} names.
+
+  /** Post a note. Returns the created note. */
+  createNote(body: MkCreateNote): Observable<MkNote> {
+    return this.signed<{ createdNote: MkNote }>('notes/create', body).pipe(
+      map((result) => result.createdNote),
+    );
+  }
+
+  deleteNote(noteId: string): Observable<void> {
+    return this.signed<void>('notes/delete', { noteId });
+  }
+
+  /** React; one reaction per user per note (unreact first to change it). */
+  react(noteId: string, reaction: string): Observable<void> {
+    return this.signed<void>('notes/reactions/create', { noteId, reaction });
+  }
+
+  unreact(noteId: string): Observable<void> {
+    return this.signed<void>('notes/reactions/delete', { noteId });
+  }
+
+  /** Remove every renote of this note by the reader. */
+  unrenote(noteId: string): Observable<void> {
+    return this.signed<void>('notes/unrenote', { noteId });
+  }
+
+  vote(noteId: string, choice: number): Observable<void> {
+    return this.signed<void>('notes/polls/vote', { noteId, choice });
+  }
+
+  /** Upload one file straight to the reader's Drive (never through a proxy). */
+  uploadFile(
+    file: File,
+    options: { comment?: string; isSensitive?: boolean } = {},
+  ): Observable<MkDriveFile> {
+    const key = this.auth.activeMisskeyKey();
+    const identity = key ? misskeyIdentity(key) : null;
+    if (!identity) {
+      return throwError(
+        () => new MisskeyApiError('Not signed in to Misskey.', 401, 'CREDENTIAL_REQUIRED'),
+      );
+    }
+    const form = new FormData();
+    form.append('i', identity.credentials.token);
+    form.append('file', file, file.name);
+    if (options.comment) form.append('comment', options.comment);
+    if (options.isSensitive) form.append('isSensitive', 'true');
+    return this.http
+      .post<MkDriveFile>(`${identity.profile.server}/api/drive/files/create`, form, {
+        context: externalFetch(),
+      })
+      .pipe(catchError((err: unknown) => throwError(() => toMisskeyError(err))));
+  }
+
+  /** The reader's relationship to these users. */
+  relation(userId: string): Observable<MkRelation> {
+    return this.signed<MkRelation>('users/relation', { userId });
+  }
+
+  follow(userId: string): Observable<unknown> {
+    return this.signed<unknown>('following/create', { userId });
+  }
+
+  unfollow(userId: string): Observable<unknown> {
+    return this.signed<unknown>('following/delete', { userId });
+  }
+
+  /** Withdraw a follow request the reader sent to a locked account. */
+  cancelFollowRequest(userId: string): Observable<unknown> {
+    return this.signed<unknown>('following/requests/cancel', { userId });
+  }
+
+  acceptFollowRequest(userId: string): Observable<void> {
+    return this.signed<void>('following/requests/accept', { userId });
+  }
+
+  rejectFollowRequest(userId: string): Observable<void> {
+    return this.signed<void>('following/requests/reject', { userId });
+  }
+
+  mute(userId: string): Observable<void> {
+    return this.signed<void>('mute/create', { userId });
+  }
+
+  unmute(userId: string): Observable<void> {
+    return this.signed<void>('mute/delete', { userId });
+  }
+
+  block(userId: string): Observable<unknown> {
+    return this.signed<unknown>('blocking/create', { userId });
+  }
+
+  unblock(userId: string): Observable<unknown> {
+    return this.signed<unknown>('blocking/delete', { userId });
   }
 
   /** A user's profile, by id or by `username` + `host` (null host = this server). */

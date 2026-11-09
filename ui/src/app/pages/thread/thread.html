@@ -141,6 +141,16 @@
         </a>
       </p>
     }
+  } @else if (s.provider === 'misskey') {
+    <!-- A Misskey note is answered with the Misskey composer, when the token may write. -->
+    @if (capabilities.canWriteMisskey) {
+      <app-misskey-compose
+        [replyTo]="s"
+        [compact]="true"
+        [placeholder]="'pages.thread.reply.placeholder' | transloco"
+        (posted)="onReply($event)"
+      />
+    }
   } @else if (!isRss() && !isAnonymousPublic() && !isMessageStatus()) {
     <app-compose
       [inReplyToId]="s.id"

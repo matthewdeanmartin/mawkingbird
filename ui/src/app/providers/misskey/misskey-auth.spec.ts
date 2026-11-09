@@ -87,14 +87,17 @@ describe('MisskeyAuth', () => {
     expect(((await result) as MisskeySignInError).problem).toBe('unreachable');
   });
 
-  it('builds a MiAuth URL with a callback to this app and read-only permissions', () => {
+  it('builds a MiAuth URL with a callback to this app and read and write permissions', () => {
     const url = new URL(auth.begin(ORIGIN, true));
     expect(url.origin).toBe(ORIGIN);
     const session = url.pathname.replace('/miauth/', '');
     expect(session).toMatch(/^[0-9a-f-]{36}$/);
     expect(url.searchParams.get('callback')).toBe(new URL('login/misskey', document.baseURI).href);
     expect(url.searchParams.get('permission')).toBe(MISSKEY_PERMISSIONS.join(','));
-    expect(url.searchParams.get('permission')).not.toContain('write:');
+    // M2: writing (notes, reactions, follows); never account settings or admin.
+    expect(url.searchParams.get('permission')).toContain('write:notes');
+    expect(url.searchParams.get('permission')).not.toContain('write:account');
+    expect(url.searchParams.get('permission')).not.toContain('admin');
     expect(auth.pending(session)?.adding).toBe(true);
   });
 

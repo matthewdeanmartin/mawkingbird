@@ -10,6 +10,7 @@ import { saveMisskeyIdentity } from '../../providers/misskey/misskey-identity-st
 import { Streaming } from '../../streaming';
 import { FakeStreaming } from '../../testing/fake-streaming';
 import { Home } from './home';
+import { MISSKEY_PERMISSIONS } from '../../providers/misskey/misskey-auth';
 import { BrowserTranslator } from '../../translation/browser-translator';
 import { TranslationConnectors } from '../../translation/translation-connectors';
 
@@ -140,5 +141,23 @@ describe('Home as a Misskey account', () => {
         (fixture.nativeElement as HTMLElement).querySelector('.home-no-translator'),
       ).toBeNull();
     });
+  });
+
+  it('asks a read-only (M1) sign-in to approve writing once, with no composer', async () => {
+    const fixture = await setUp();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.home-misskey-approve')).not.toBeNull();
+    expect(el.querySelector('app-misskey-compose')).toBeNull();
+  });
+
+  it('shows the Misskey composer once the token may write', async () => {
+    saveMisskeyIdentity(
+      { server: SERVER, userId: 'u1', username: 'me', name: null, avatarUrl: null },
+      { token: 'tok', permissions: [...MISSKEY_PERMISSIONS] },
+    );
+    const fixture = await setUp();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-misskey-compose')).not.toBeNull();
+    expect(el.querySelector('.home-misskey-approve')).toBeNull();
   });
 });

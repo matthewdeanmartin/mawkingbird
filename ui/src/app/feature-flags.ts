@@ -90,7 +90,7 @@ interface StoredFeatureFlags {
 // i18n flags.connectorBluesky.label: Bluesky
 // i18n flags.connectorBluesky.description: Bluesky posts in your timeline, replies and likes, and Bluesky DMs in Chat.
 // i18n flags.misskey.label: Misskey
-// i18n flags.misskey.description: Sign in with a Misskey account and read its timelines. Reading only for now; posting and reactions come next.
+// i18n flags.misskey.description: Sign in with a Misskey account: read its timelines, post notes, react, and follow people.
 // i18n flags.connectorTwitter.label: Twitter
 // i18n flags.connectorTwitter.description: Following and reading public Twitter accounts through a scraper service.
 // i18n flags.connectorMataroa.label: Blog (Mataroa)

@@ -7,9 +7,10 @@ import { MisskeyApi } from './misskey-api';
 import { misskeyOrigin, saveMisskeyIdentity } from './misskey-identity-store';
 
 /**
- * Permissions asked for at sign-in. Read-only for now: Sprint M1 only reads.
- * Writing (M2) will ask once more for `write:*`, rather than asking today for
- * powers nothing uses yet.
+ * Permissions asked for at sign-in (M2: reading and writing). Tokens from the
+ * read-only M1 sign-in lack the `write:*` half and are re-approved once.
+ * Not asked for: account settings, Drive deletion, admin, chat (M4), pages,
+ * gallery, flash, notifications writes (marking read happens on reading).
  */
 export const MISSKEY_PERMISSIONS = [
   'read:account',
@@ -20,6 +21,16 @@ export const MISSKEY_PERMISSIONS = [
   'read:mutes',
   'read:blocks',
   'read:channels',
+  'read:drive',
+  'write:notes',
+  'write:reactions',
+  'write:votes',
+  'write:following',
+  'write:mutes',
+  'write:blocks',
+  'write:favorites',
+  'write:drive',
+  'write:report-abuse',
 ] as const;
 
 /** Where a MiAuth round trip is remembered between leaving and coming back. */
@@ -178,7 +189,7 @@ export class MisskeyAuth {
         avatarUrl: result.user.avatarUrl,
         ...(result.user.emojis ? { emojis: result.user.emojis } : {}),
       },
-      { token: result.token, connectedAt: Date.now() },
+      { token: result.token, connectedAt: Date.now(), permissions: [...MISSKEY_PERMISSIONS] },
     );
     return { key, adding: pending.adding };
   }

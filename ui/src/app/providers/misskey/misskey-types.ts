@@ -116,6 +116,39 @@ export const MK_SOCIAL_NOTIFICATION_TYPES = [
   'receiveFollowRequest',
 ] as const;
 
+/** `notes/create` parameters this client sends. */
+export interface MkCreateNote {
+  text?: string | null;
+  cw?: string | null;
+  visibility?: Exclude<MkVisibility, 'specified'>;
+  localOnly?: boolean;
+  replyId?: string;
+  /** With text: a quote. Without text, files or poll: a plain renote. */
+  renoteId?: string;
+  fileIds?: string[];
+  poll?: { choices: string[]; multiple?: boolean; expiredAfter?: number | null };
+}
+
+/** `EmojiSimple`: one custom emoji of a server. */
+export interface MkEmoji {
+  name: string;
+  url: string;
+  category: string | null;
+  aliases?: string[];
+  isSensitive?: boolean;
+}
+
+/** `users/relation` (abridged). */
+export interface MkRelation {
+  id: string;
+  isFollowing: boolean;
+  hasPendingFollowRequestFromYou: boolean;
+  hasPendingFollowRequestToYou: boolean;
+  isFollowed: boolean;
+  isBlocking: boolean;
+  isMuted: boolean;
+}
+
 /** `POST /api/meta` (abridged). */
 export interface MkMeta {
   name: string | null;

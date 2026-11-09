@@ -29,6 +29,12 @@ export interface MisskeyIdentityProfile {
 export interface MisskeyIdentityCredentials {
   token: string;
   connectedAt?: number;
+  /**
+   * The MiAuth permissions this token was granted. Absent on tokens from the
+   * read-only M1 sign-in, which is how they are recognised as needing one
+   * more approval before anything can be written.
+   */
+  permissions?: string[];
 }
 
 export interface MisskeyIdentity {
@@ -96,7 +102,9 @@ function isCredentials(value: unknown): value is MisskeyIdentityCredentials {
   return (
     typeof raw['token'] === 'string' &&
     raw['token'].length > 0 &&
-    (raw['connectedAt'] === undefined || typeof raw['connectedAt'] === 'number')
+    (raw['connectedAt'] === undefined || typeof raw['connectedAt'] === 'number') &&
+    (raw['permissions'] === undefined ||
+      (Array.isArray(raw['permissions']) && raw['permissions'].every((p) => typeof p === 'string')))
   );
 }
 
@@ -214,6 +222,11 @@ export function clearMisskeyIdentity(key: string | null = misskeyIdentityKeyActi
   if (localStorage.getItem(MK_ACTIVE_IDENTITY_KEY) === key) {
     localStorage.removeItem(MK_ACTIVE_IDENTITY_KEY);
   }
+}
+
+/** Whether this identity's token may write (post, react, follow). */
+export function misskeyIdentityCanWrite(key: string | null = misskeyIdentityKeyActive()): boolean {
+  return !!misskeyIdentity(key)?.credentials.permissions?.includes('write:notes');
 }
 
 export function clearAllMisskeyIdentities(): void {
