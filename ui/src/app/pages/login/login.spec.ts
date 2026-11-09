@@ -389,6 +389,46 @@ describe('Login', () => {
     httpMock.expectNone('/api/v1/accounts/verify_credentials');
   });
 
+  it('sends a reader who typed a Misskey server to the Misskey door, not connection help', async () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    const component = fixture.componentInstance as unknown as {
+      onServerInput(value: string): void;
+      applyServerNow(): void;
+      serverStatus(): string;
+      misskeyServer(): string | null;
+      intent: { set(value: string | null): void };
+    };
+    component.intent.set('have');
+    // Misskey has no /api/v1/instance, so the Mastodon probe fails.
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 404 }));
+
+    component.onServerInput('misskey.design');
+    component.applyServerNow();
+    await vi.waitFor(() => expect(component.serverStatus()).toBe('unreachable'));
+    // NodeInfo, asked only after the Mastodon probe failed, names Misskey.
+    (
+      await vi.waitFor(() => httpMock.expectOne('https://misskey.design/.well-known/nodeinfo'))
+    ).flush({
+      links: [
+        {
+          rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
+          href: 'https://misskey.design/nodeinfo/2.1',
+        },
+      ],
+    });
+    (await vi.waitFor(() => httpMock.expectOne('https://misskey.design/nodeinfo/2.1'))).flush({
+      software: { name: 'misskey' },
+    });
+    await vi.waitFor(() => expect(component.misskeyServer()).toBe('misskey.design'));
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('.login-misskey-hint a') as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/login/misskey?server=misskey.design');
+    expect(fixture.nativeElement.querySelector('app-server-connection-help')).toBeNull();
+  });
+
   it('does not select a degraded server until the user accepts the warning', async () => {
     const fixture = setUp();
     fixture.detectChanges();

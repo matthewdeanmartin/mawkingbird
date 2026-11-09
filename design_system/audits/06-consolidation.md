@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Misskey translation offer and wrong-door hint, 2026-11-09
+
+Reviewed 1,741 source files and 606 candidate files; no candidate is added.
+Home gains a one-time `mb-notice` for Misskey accounts offering
+translate-as-you-scroll, with two `MbButton`s (accept, decline). The Mastodon
+sign-in page gains an `mb-notice` that links to the Misskey sign-in when the
+typed server turns out to be Misskey, shown in place of the connection help.
+The Misskey sign-in field gains a native `datalist` of suggested servers.
+Existing candidates shift lines only. No shared widget changed.
+
 ## Misskey sign-in and Home timelines, 2026-11-09
 
 Reviewed 1,740 source files and 606 candidate files. One candidate is

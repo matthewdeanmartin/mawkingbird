@@ -394,6 +394,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'One in-flight MiAuth sign-in: session id, server, whether adding an account. Tab-lived and consumed by the callback; the session id becomes a token once.',
   },
   {
+    base: 'mockingbird_misskey_translate_offer',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'setting',
+    note: 'This Misskey account answered the one-time translate-as-you-scroll offer on Home (either way). The choice itself lives in client prefs.',
+  },
+  {
     base: 'mockingbird_misskey_timeline',
     storage: 'local',
     suffix: 'account',

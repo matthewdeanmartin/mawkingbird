@@ -64,7 +64,8 @@
     "starter-kits:check": "node scripts/update-bundled-starter-kits.mjs --check",
     "check:subpaths": "node scripts/check-subpath-deployments.mjs",
     "check:mock-leakage": "node scripts/check-mock-leakage.mjs",
-    "dead-code": "knip"
+    "dead-code": "knip",
+    "servers:misskey": "node scripts/update-misskey-servers.mjs"
   },
   "private": true,
   "packageManager": "npm@11.17.0",

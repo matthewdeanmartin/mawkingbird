@@ -139,6 +139,27 @@ export class MisskeyApi {
     return this.signed<MkNote[]>('notes/conversation', { noteId, limit });
   }
 
+  /**
+   * Translate a note with the server's own translator (the admin's DeepL key).
+   *
+   * DeepL detects the source language itself, so no source is sent. The
+   * server joins a content warning and the body as `cw + '
+-----
+' + text`
+   * and translates them as one string. Resolves to null when the note has no
+   * text (the server answers 204). Fails with code `UNAVAILABLE` when the
+   * server has no translator or the reader's role may not use it.
+   */
+  translate(
+    noteId: string,
+    targetLang: string,
+  ): Observable<{ sourceLang: string; text: string } | null> {
+    return this.signed<{ sourceLang: string; text: string } | null>('notes/translate', {
+      noteId,
+      targetLang,
+    });
+  }
+
   /** Direct replies to this note, plus quotes of it (Misskey counts both as children). */
   children(noteId: string, limit = 30): Observable<MkNote[]> {
     return this.signed<MkNote[]>('notes/children', { noteId, limit });

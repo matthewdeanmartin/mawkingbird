@@ -106,6 +106,8 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.engines.on: On
 // i18n settings.i18n.engines.off: Off
 // i18n settings.i18n.engines.noServer: Not available without a signed-in Mastodon account
+// i18n settings.i18n.engines.misskeyServer: For Misskey posts: your Misskey server, if its admin set up translation.
+// i18n settings.i18n.engines.misskeyNotSignedIn: Only when you are signed in with Misskey.
 // i18n settings.i18n.engines.serverUnknown: Your server does not say which languages it translates; it is asked anyway
 // i18n settings.i18n.engines.serverLanguages: Translates from {{count}} languages
 // i18n settings.i18n.engines.serverNone: Your server has no translator set up, so it is skipped
@@ -270,6 +272,10 @@ export class SettingsI18n implements OnInit {
             ? row('settings.i18n.engines.serverLanguages', { count })
             : row('settings.i18n.engines.serverNone');
         }
+        case 'misskey':
+          return this.auth.isMisskeyPrimary
+            ? row('settings.i18n.engines.misskeyServer')
+            : row('settings.i18n.engines.misskeyNotSignedIn');
         case 'browser':
           if (!this.browserSupported) return row('settings.i18n.engines.browserMissing');
           return row(

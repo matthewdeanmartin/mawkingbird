@@ -416,3 +416,51 @@ first-class identity. So M0 became:
 - Not run: `make design-verify` (no shared widget changed), the SEO suites
   (no public page changed), `make test-integration` (no Misskey mock yet), and
   the manual live test plan.
+
+---
+
+## T1 progress (2026-11-09): code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-t1-translation.md`.
+
+### Fixes from the owner's first live try (same day)
+
+- The Misskey door was invisible on production (flag `canary`). The `misskey`
+  flag now defaults to **production** (read-only until M2).
+- Typing a Misskey server at the Mastodon door said "Can't reach". When the
+  Mastodon probe fails, the page now checks NodeInfo and, for Misskey, shows
+  "is a Misskey server" with a link to `/login/misskey?server=…` (prefilled).
+- Server suggestions on `/login/misskey`: `public/misskey-servers.json`, built
+  by `npm run servers:misskey` from servers.misskey.ink (unofficial). That
+  list already drops JoinMisskey's `ignorehosts.yml` and non-Misskey software;
+  the script keeps alive, unsuspended servers, ranks by its
+  `recommendation_score`, and keeps 40 whose NodeInfo says plain `misskey`
+  (forks are refused at sign-in). Never fetched from readers' browsers.
+  misskey.io qualifies but ranks outside the top 40 (closed registrations).
+
+### As built
+
+- New engine `misskey` (`notes/translate`, the server's DeepL), second in the
+  chain after Mastodon and used only for Misskey notes read as the active
+  Misskey identity. Free to the reader, but it spends the admin's DeepL
+  quota, so daily guard 100 soft / 200 hard. `UNAVAILABLE` is remembered per
+  server for the session. The `cw\n-----\ntext` join is split back.
+- Kanji-only notes: when the local detector cannot decide, a Misskey note goes
+  to the server anyway (DeepL detects the source); only if that fails is the
+  reader asked.
+- `TranslationCache` (IndexedDB `mockingbird_translations`, memory fallback):
+  key = target + ActivityPub `uri` + hash of the text, 30-day TTL, 2,000
+  entries. Plain-text results from every engine but Mastodon's. Bypassed
+  when the reader picks a source or skips engines. Listed in Settings →
+  Storage as "Saved translations".
+- The free engines now also translate image descriptions (🖼) and poll choices
+  (☐), which Mastodon's own translator already did.
+- Home: a one-time offer per Misskey account, "Translate as you scroll?",
+  which sets automatic mode `view` and "translate all foreign posts".
+
+### Not done in T1 (follow-up)
+
+- Display names, bios, profile fields, custom-emoji names, channel/antenna
+  names, notification snippets.
+- Automatic mode still skips notes the local detector cannot decide; the
+  eligibility check runs before the router knows Misskey could help.

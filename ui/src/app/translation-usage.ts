@@ -49,11 +49,14 @@ const STORAGE_KEY = 'mockingbird_translation_usage';
  * which is DeepL or LibreTranslate behind the scenes depending on how the admin
  * configured it. `openrouter` is {@link AiTranslate} going out to a chosen model.
  */
-export type TranslationEngine = 'mastodon' | 'browser' | 'mymemory' | 'apertium' | 'openrouter';
+export type TranslationEngine =
+  'mastodon' | 'misskey' | 'browser' | 'mymemory' | 'apertium' | 'openrouter';
 
 /** Also the fallback chain's order (see translation/translation-router.ts). */
 export const TRANSLATION_ENGINES: readonly TranslationEngine[] = [
   'mastodon',
+  // A Misskey note's own server (its DeepL key). Only ever tries Misskey notes.
+  'misskey',
   'browser',
   'mymemory',
   'apertium',
@@ -66,6 +69,7 @@ export const ENGINE_LABELS: Record<TranslationEngine, string> = {
   // someone deciding where to spend a daily allowance deserves to know what they are
   // about to hit.
   mastodon: 'Mastodon (DeepL/LibreTranslate)',
+  misskey: 'Misskey (DeepL)',
   browser: 'This browser (on device)',
   mymemory: 'MyMemory (characters)',
   apertium: 'Apertium',
@@ -117,12 +121,21 @@ export const DEFAULT_MYMEMORY_SOFT_LIMIT = 4_000;
 export const DEFAULT_MYMEMORY_HARD_LIMIT = 5_000;
 export const MYMEMORY_EMAIL_DAILY_CHARS = 50_000;
 
+/**
+ * The reader's Misskey server translates through the admin's own DeepL key.
+ * Free to the reader, but every call spends someone else's quota, so the
+ * guard is tighter than Mastodon's: this is used by automatic translation.
+ */
+export const DEFAULT_MISSKEY_SOFT_LIMIT = 100;
+export const DEFAULT_MISSKEY_HARD_LIMIT = 200;
+
 /** Apertium's public server publishes no quota; be a polite guest. */
 export const DEFAULT_APERTIUM_SOFT_LIMIT = 100;
 export const DEFAULT_APERTIUM_HARD_LIMIT = 500;
 
 const DEFAULT_LIMITS: Record<TranslationEngine, { soft: number; hard: number }> = {
   mastodon: { soft: DEFAULT_MASTODON_SOFT_LIMIT, hard: DEFAULT_MASTODON_HARD_LIMIT },
+  misskey: { soft: DEFAULT_MISSKEY_SOFT_LIMIT, hard: DEFAULT_MISSKEY_HARD_LIMIT },
   browser: { soft: DEFAULT_BROWSER_LIMIT, hard: DEFAULT_BROWSER_LIMIT },
   mymemory: { soft: DEFAULT_MYMEMORY_SOFT_LIMIT, hard: DEFAULT_MYMEMORY_HARD_LIMIT },
   apertium: { soft: DEFAULT_APERTIUM_SOFT_LIMIT, hard: DEFAULT_APERTIUM_HARD_LIMIT },
@@ -160,6 +173,7 @@ function emptyEngine(): EngineUsage {
 function emptyState(): StoredUsage {
   return {
     mastodon: emptyEngine(),
+    misskey: emptyEngine(),
     browser: emptyEngine(),
     mymemory: emptyEngine(),
     apertium: emptyEngine(),
@@ -194,6 +208,7 @@ function read(): StoredUsage {
     // other half's honest count.
     return {
       mastodon: readEngine(parsed?.mastodon),
+      misskey: readEngine(parsed?.misskey),
       browser: readEngine(parsed?.browser),
       mymemory: readEngine(parsed?.mymemory),
       apertium: readEngine(parsed?.apertium),

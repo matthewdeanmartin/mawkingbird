@@ -22,6 +22,9 @@ import { AppFooter } from '../../shell/app-footer/app-footer';
 import { ServerDiscovery } from '../../server-discovery/server-discovery';
 import { redirectToSecureLogin } from '../../secure-login';
 import { loginDestination } from '../../login-destination';
+import { MisskeyAuth } from '../../providers/misskey/misskey-auth';
+import { FeatureFlags } from '../../feature-flags';
+import { MbNotice } from '../../design-system/notice/notice';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 
@@ -115,6 +118,8 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.server.degraded: ⚠ Connected to <strong>{{server}}</strong>, but {{media}} is blocked or down. Images will not load.
 // i18n pages.login.server.itsMediaServer: its media server
 // i18n pages.login.server.useAnyway: Use anyway
+// i18n pages.login.server.misskey: {{server}} is a Misskey server, not Mastodon.
+// i18n pages.login.server.misskeyLink: Sign in with Misskey instead
 // i18n pages.login.server.unreachable: ⚠ Can’t reach {{server}}. The server may be offline or blocked.
 // i18n pages.login.server.tryAgain: Try again
 // i18n pages.login.server.talkingTo: Talking to
@@ -179,6 +184,7 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 @Component({
   selector: 'app-login',
   imports: [
+    MbNotice,
     MbServerPickerSurface,
     MbButton,
     ServerConnectionHelp,
@@ -313,6 +319,26 @@ export class Login implements OnInit, OnDestroy {
   protected token = signal('');
   protected error = signal<string | null>(null);
   protected connectionFailed = signal(false);
+  private misskeyAuth = inject(MisskeyAuth);
+  private flags = inject(FeatureFlags);
+  /**
+   * The host, when the server the reader typed turned out to be Misskey.
+   *
+   * Misskey has no Mastodon API, so the Mastodon probe calls it unreachable;
+   * a reader who took the wrong door deserves the right one, not a
+   * troubleshooting panel. Only checked after the Mastodon probe fails.
+   */
+  protected misskeyServer = signal<string | null>(null);
+
+  private async detectMisskey(base: string, seq: number): Promise<void> {
+    if (!this.flags.enabled('misskey')) return;
+    try {
+      const origin = await this.misskeyAuth.checkServer(base);
+      if (seq === this.probeSeq) this.misskeyServer.set(new URL(origin).host);
+    } catch {
+      // Not Misskey either: the ordinary connection help stands.
+    }
+  }
   protected checking = signal(false);
   protected enteringHome = signal(false);
   /** Home, or the allowlisted page that sent the visitor here (`?next=`). */
@@ -535,6 +561,7 @@ export class Login implements OnInit, OnDestroy {
     this.mediaHost.set(null);
     this.suggestOpen.set(false);
     this.serverStatus.set('checking');
+    this.misskeyServer.set(null);
     try {
       const result = await probeServerAvailability(base, this.probeController.signal);
       if (seq !== this.probeSeq) {
@@ -542,6 +569,7 @@ export class Login implements OnInit, OnDestroy {
       }
       if (result.status === 'unreachable') {
         this.serverStatus.set('unreachable');
+        void this.detectMisskey(base, seq);
         return;
       }
       this.serverTitle.set(result.title || null);
@@ -557,6 +585,7 @@ export class Login implements OnInit, OnDestroy {
     } catch {
       if (seq === this.probeSeq) {
         this.serverStatus.set('unreachable');
+        void this.detectMisskey(base, seq);
       }
     }
   }

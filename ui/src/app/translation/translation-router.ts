@@ -13,6 +13,9 @@ import { bareLanguage } from './language-codes';
 import { TranslationPairCatalog } from './pair-catalog';
 import { resolveSource } from './source-language';
 import { TranslationConnectors } from './translation-connectors';
+import { Auth } from '../auth';
+import { MisskeyApi, MisskeyApiError } from '../providers/misskey/misskey-api';
+import { TranslationCache, translationCacheKey } from './translation-cache';
 
 /** Why an engine was passed over. Shown to the reader when every engine fails. */
 export type SkipReason =
@@ -86,10 +89,28 @@ export class TranslationRouter {
   private connectors = inject(TranslationConnectors);
   private ai = inject(AiTranslate);
   private languages = inject(FeedLanguageFilter);
+  private auth = inject(Auth);
+  private misskey = inject(MisskeyApi);
+  private cache = inject(TranslationCache);
+  /** Misskey servers that said they cannot translate (no DeepL key, or role policy). */
+  private readonly misskeyUnavailable = new Set<string>();
+
+  /**
+   * Whether this post can go to the reader's Misskey server: a Misskey note,
+   * read as the active Misskey identity, on a server not already known to
+   * have no translator. Its DeepL detects the source itself.
+   */
+  misskeyCanTry(status: Status | null | undefined): boolean {
+    const post = status?.reblog ?? status;
+    if (post?.provider !== 'misskey' || !this.auth.activeMisskeyKey()) return false;
+    const server = (post.providerRef as { server?: string } | undefined)?.server ?? '';
+    return !this.misskeyUnavailable.has(server);
+  }
 
   /** True when some engine other than the server could be tried at all. */
-  hasFallback(aiAvailable: boolean): boolean {
+  hasFallback(aiAvailable: boolean, status?: Status | null): boolean {
     return (
+      this.misskeyCanTry(status) ||
       (this.prefs.browserTranslator() && this.browser.supported()) ||
       this.connectors.myMemoryEnabled() ||
       this.connectors.apertiumEnabled() ||
@@ -122,6 +143,13 @@ export class TranslationRouter {
             : { kind: 'failed', attempts: [], source: '', target };
         }
       } else if (decision.kind === 'ask') {
+        // A Misskey note can still go to its server, whose DeepL detects the
+        // language itself: the kanji-only (Japanese or Chinese?) case needs no
+        // guess. Only if that fails does the reader get asked.
+        if (this.misskeyCanTry(status) && !request.skip?.includes('misskey')) {
+          const outcome = await this.misskeyOnly(request, status, target);
+          if (outcome) return outcome;
+        }
         return request.mode === 'manual'
           ? { kind: 'ask', candidates: decision.candidates, target }
           : { kind: 'failed', attempts: [], source: '', target };
@@ -133,6 +161,16 @@ export class TranslationRouter {
     if (source === target) return { kind: 'same', language: source };
 
     const text = plainText(status);
+    // The cache answers ordinary requests only: a reader who picked a source or
+    // skipped engines is asking for something different from what is stored.
+    const cacheKey =
+      !request.source && !request.skip?.length
+        ? translationCacheKey(status.uri ?? status.url ?? status.id, text, target)
+        : null;
+    if (cacheKey) {
+      const cached = await this.cache.get(cacheKey);
+      if (cached) return { kind: 'text', ...cached };
+    }
     const attempts: Attempt[] = [];
     for (const engine of TRANSLATION_ENGINES) {
       if (request.skip?.includes(engine)) continue;
@@ -147,6 +185,14 @@ export class TranslationRouter {
       if (typeof result === 'string') {
         attempts.push({ engine, reason: result });
         continue;
+      }
+      if (cacheKey && result.kind === 'text') {
+        void this.cache.put(cacheKey, {
+          text: result.text,
+          engine: result.engine,
+          source: result.source,
+          target: result.target,
+        });
       }
       return result;
     }
@@ -188,6 +234,8 @@ export class TranslationRouter {
           return 'failed';
         }
       }
+      case 'misskey':
+        return this.tryMisskey(status, target);
       case 'browser': {
         if (!this.prefs.browserTranslator() || !this.browser.supported()) return 'off';
         const availability = await this.browser.availability(source, target);
@@ -247,6 +295,54 @@ export class TranslationRouter {
     }
   }
 
+  /** The Misskey engine alone, for a note whose source language is unknown. */
+  private async misskeyOnly(
+    request: RouteRequest,
+    status: Status,
+    target: string,
+  ): Promise<RouteOutcome | null> {
+    const text = plainText(status);
+    const cacheKey = translationCacheKey(status.uri ?? status.url ?? status.id, text, target);
+    if (!request.source) {
+      const cached = await this.cache.get(cacheKey);
+      if (cached) return { kind: 'text', ...cached };
+    }
+    const result = await this.tryMisskey(status, target);
+    if (typeof result === 'string' || result.kind !== 'text') return null;
+    void this.cache.put(cacheKey, {
+      text: result.text,
+      engine: result.engine,
+      source: result.source,
+      target: result.target,
+    });
+    return result;
+  }
+
+  private async tryMisskey(status: Status, target: string): Promise<RouteOutcome | SkipReason> {
+    if (!this.misskeyCanTry(status)) return status.provider === 'misskey' ? 'off' : 'no-server';
+    if (!this.usage.canSpend('misskey')) return 'budget';
+    const ref = status.providerRef as { server: string; noteId: string };
+    this.usage.record('misskey');
+    try {
+      const result = await firstValueFrom(this.misskey.translate(ref.noteId, target));
+      if (!result?.text) return 'failed';
+      return {
+        kind: 'text',
+        // The server joined CW and body with a rule; show them as two paragraphs.
+        text: result.text.replace(/\n-{3,}\n/, '\n\n'),
+        engine: 'misskey',
+        source: bareLanguage(result.sourceLang) || 'und',
+        target,
+      };
+    } catch (error) {
+      if (error instanceof MisskeyApiError && error.code === 'UNAVAILABLE') {
+        this.misskeyUnavailable.add(ref.server);
+        return 'no-provider';
+      }
+      return 'failed';
+    }
+  }
+
   private refusal(
     engine: TranslationEngine,
     error: unknown,
@@ -268,10 +364,22 @@ export class TranslationRouter {
   }
 }
 
-/** The text an engine translates: content warning, then the body, as plain text. */
+/** The text an engine translates: content warning, body, image descriptions and poll choices. */
 export function plainText(status: Status): string {
   const body = htmlToPlainText(status.content);
-  return status.spoiler_text ? `${status.spoiler_text}\n\n${body}` : body;
+  const main = status.spoiler_text ? `${status.spoiler_text}\n\n${body}` : body;
+  // Mastodon's own translator returns translated alt text and poll options;
+  // the other engines only see this string, so those parts ride along as
+  // marked lines (🖼 an image description, ☐ a poll choice). The marks are
+  // symbols, so no engine tries to translate them.
+  const extras = [
+    ...(status.media_attachments ?? [])
+      .map((media) => media.description?.trim())
+      .filter((alt): alt is string => !!alt)
+      .map((alt) => `🖼 ${alt}`),
+    ...(status.poll?.options ?? []).map((option) => `☐ ${option.title}`),
+  ];
+  return extras.length ? `${main}\n\n${extras.join('\n')}` : main;
 }
 
 /** A translation shown as plain text, from any engine but the server. */
@@ -286,6 +394,7 @@ export interface ChainTranslation {
 /** Short engine names for the line under a translation and the failure message. */
 export const CHAIN_ENGINE_NAMES: Record<TranslationEngine, string> = {
   mastodon: 'Your server',
+  misskey: 'Your Misskey server',
   browser: 'This browser',
   mymemory: 'MyMemory',
   apertium: 'Apertium',

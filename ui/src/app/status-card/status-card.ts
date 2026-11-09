@@ -2550,7 +2550,8 @@ export class StatusCard {
   /** Whether the 🌐 button has any engine behind it. */
   protected showChainTranslate = computed(
     () =>
-      this.serverPathAvailable || this.translationRouter.hasFallback(this.openrouterConnected()),
+      this.serverPathAvailable ||
+      this.translationRouter.hasFallback(this.openrouterConnected(), this.display),
   );
 
   private async runChain(

@@ -226,7 +226,14 @@
               </button>
             }
           }
-          @if (serverStatus() === 'unreachable' || connectionFailed()) {
+          @if (misskeyServer(); as host) {
+            <mb-notice class="login-misskey-hint" announcement="status">
+              {{ 'pages.login.server.misskey' | transloco: { server: host } }}
+              <a routerLink="/login/misskey" [queryParams]="{ server: host }">{{
+                'pages.login.server.misskeyLink' | transloco
+              }}</a>
+            </mb-notice>
+          } @else if (serverStatus() === 'unreachable' || connectionFailed()) {
             <app-server-connection-help [server]="customServer()" />
           }
         </div>

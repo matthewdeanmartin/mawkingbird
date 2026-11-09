@@ -193,6 +193,7 @@ export class SettingsStorage {
       'mockingbird_rss/profile_probes': 'Checked websites (friends’ blogs)',
       'mockingbird_rss/friend_opml': 'Friends’ blogs, as OPML',
       'mockingbird_twitter/timelines': 'Twitter timeline cache',
+      'mockingbird_translations/translations': 'Saved translations',
     };
     return known[`${database}/${store}`] ?? `${database} / ${store}`;
   }

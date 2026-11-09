@@ -18,6 +18,7 @@
           <input
             type="text"
             name="misskeyServer"
+            list="misskey-server-suggestions"
             inputmode="url"
             [placeholder]="'pages.loginMisskey.serverPlaceholder' | transloco"
             autocomplete="url"
@@ -27,6 +28,11 @@
             (ngModelChange)="server.set($event)"
             [disabled]="working()"
           />
+          <datalist id="misskey-server-suggestions">
+            @for (option of suggestions(); track option.host) {
+              <option [value]="option.host">{{ option.name }}</option>
+            }
+          </datalist>
           <span class="mk-hint muted small">{{ 'pages.loginMisskey.serverHint' | transloco }}</span>
         </label>
 

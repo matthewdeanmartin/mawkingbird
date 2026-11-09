@@ -5,7 +5,7 @@ import { MbButton } from '../../design-system/button/button';
 import { statusHashtags, normalizeHashtag } from '../../hashtag';
 import { reconcileStatus } from '../../reconcile-status';
 import { FeedCtaStore } from '../../feed-cta-store';
-import { accountScopeSuffix } from '../../account-scope';
+import { accountScopeSuffix, scopedKey } from '../../account-scope';
 import { FeedCta } from '../../feed-ctas';
 import {
   Component,
@@ -87,6 +87,7 @@ import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
 import { MK_TIMELINES, MisskeyProvider } from '../../providers/misskey/misskey-provider';
 import { MkTimeline } from '../../providers/misskey/misskey-types';
+import { MbNotice } from '../../design-system/notice/notice';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../../home-defaults';
 import { MbField, MbControl } from '../../design-system/field/field';
 import { isVideoStatus } from '../../video-player/video-discovery';
@@ -111,6 +112,24 @@ import { isVideoStatus } from '../../video-player/video-discovery';
 /** Below this many follows, nudge toward /find-friends (few follows = empty-feeling feed). */
 const FOLLOW_NUDGE_THRESHOLD = 5;
 const NUDGE_DISMISSED_KEY = 'mockingbird_follow_nudge_dismissed';
+/** Per Misskey account: the translate-as-you-scroll offer was answered. */
+const MK_TRANSLATE_OFFER_KEY = 'mockingbird_misskey_translate_offer';
+
+function readFlag(base: string): boolean {
+  try {
+    return localStorage.getItem(scopedKey(base)) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function writeFlag(base: string): void {
+  try {
+    localStorage.setItem(scopedKey(base), 'true');
+  } catch {
+    // Unstorable: the offer may come back next visit, which is harmless.
+  }
+}
 /** How many saved bookmarks one press of "Review bookmarks" appends. */
 const BOOKMARK_PAGE_SIZE = 20;
 
@@ -194,6 +213,10 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.warnings.misskeyError.retry: Retry
 // i18n pages.home.warnings.misskeyError.signIn: Sign in to Misskey again
 // i18n pages.home.misskey.timelinesLabel: Misskey timeline
+// i18n pages.home.misskey.translateOffer.title: Translate as you scroll?
+// i18n pages.home.misskey.translateOffer.body: Many Misskey posts are in Japanese. Translate posts that are not in your languages automatically as they scroll into view? Your Misskey server's translator is tried first, then the free translators. Change this any time in Settings → Languages.
+// i18n pages.home.misskey.translateOffer.yes: Translate as I scroll
+// i18n pages.home.misskey.translateOffer.no: No thanks
 // i18n pages.home.misskey.timeline.home: Home
 // i18n pages.home.misskey.timeline.social: Social
 // i18n pages.home.misskey.timeline.local: Local
@@ -218,6 +241,7 @@ const NO_NEW_POSTS_MS = 2500;
   selector: 'app-home',
   providers: [HomeSource],
   imports: [
+    MbNotice,
     MbField,
     MbControl,
     FormsModule,
@@ -324,6 +348,31 @@ export class Home implements OnInit, OnDestroy {
     this.auth.isMisskeyPrimary ? this.misskeyProvider.errors() : [],
   );
   protected readonly misskeySignInRequired = this.misskeyProvider.authenticationFailed;
+
+  /**
+   * A one-time offer, per Misskey account, to translate as you scroll.
+   *
+   * Automatic translation is off by default for everyone, and stays so; but a
+   * reader who signed in to a Japanese server most likely cannot read most of
+   * Home. Asked once, never again whichever answer: the choice lives in
+   * Settings → Languages afterwards.
+   */
+  private readonly misskeyOfferAnswered = signal(readFlag(MK_TRANSLATE_OFFER_KEY));
+  protected readonly showMisskeyTranslateOffer = computed(
+    () =>
+      this.auth.isMisskeyPrimary &&
+      !this.misskeyOfferAnswered() &&
+      (this.prefs.autoTranslateMode() === 'off' || !this.prefs.translateAllForeign()),
+  );
+
+  protected answerMisskeyTranslateOffer(accept: boolean): void {
+    if (accept) {
+      this.prefs.setAutoTranslateMode('view');
+      this.prefs.setTranslateAllForeign(true);
+    }
+    writeFlag(MK_TRANSLATE_OFFER_KEY);
+    this.misskeyOfferAnswered.set(true);
+  }
 
   protected setMisskeyTimeline(timeline: MkTimeline): void {
     if (timeline === this.misskeyTimeline()) return;

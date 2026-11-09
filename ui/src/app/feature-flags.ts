@@ -180,9 +180,10 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     descriptionKey: 'flags.misskey.description',
     // A feature, not a connector: Misskey is a network you sign in *as*; there
     // is no Misskey connector under other accounts yet (roadmap M4).
-    // `canary` while it is read-only (Sprint M1, 2026-11). Production readers
-    // can switch it on in Settings; it reaches `production` with posting (M2).
-    defaultState: 'canary',
+    // `production` from 2026-11-09 (owner: public from day one), read-only
+    // until M2. Was `canary` for one build: the Misskey door was invisible on
+    // production and readers tried the Mastodon door with a Misskey server.
+    defaultState: 'production',
     group: 'features',
   },
   {

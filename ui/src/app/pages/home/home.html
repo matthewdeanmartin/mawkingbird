@@ -203,6 +203,22 @@
     <app-pinned-server-feeds />
   }
 
+  @if (showMisskeyTranslateOffer()) {
+    <mb-notice
+      class="home-translate-offer"
+      announcement="status"
+      [title]="'pages.home.misskey.translateOffer.title' | transloco"
+    >
+      <p>{{ 'pages.home.misskey.translateOffer.body' | transloco }}</p>
+      <button mbButton type="button" (click)="answerMisskeyTranslateOffer(true)">
+        {{ 'pages.home.misskey.translateOffer.yes' | transloco }}
+      </button>
+      <button mbButton variant="outline" type="button" (click)="answerMisskeyTranslateOffer(false)">
+        {{ 'pages.home.misskey.translateOffer.no' | transloco }}
+      </button>
+    </mb-notice>
+  }
+
   @if (auth.isMisskeyPrimary) {
     <mb-toolbar
       class="home-misskey-timelines"
