@@ -270,6 +270,18 @@
             </div>
           }
 
+          @if (wordsOpen() && lookupLanguage(); as language) {
+            @if (wordPanel(); as panel) {
+              <ng-container
+                *ngComponentOutlet="panel; inputs: { status: display, language: language }"
+              />
+            } @else {
+              <div class="translation-note muted small" role="status">
+                {{ 'statusCard.lookUpLoading' | transloco }}
+              </div>
+            }
+          }
+
           @if (aiTranslating()) {
             <div class="translation-note muted small" role="status">
               {{ 'statusCard.translating' | transloco }}
@@ -1250,6 +1262,21 @@
               [attr.aria-label]="'statusCard.translate' | transloco"
             >
               <span aria-hidden="true">🌐</span>
+            </button>
+          }
+          <!-- Tap a word (L1): only on posts in a language the reader is learning. -->
+          @if (lookupLanguage()) {
+            <button
+              type="button"
+              mbPostAction
+              class="action"
+              [class.on]="wordsOpen()"
+              [pressed]="wordsOpen()"
+              (click)="toggleWords($event)"
+              [title]="'statusCard.lookUpWords' | transloco"
+              [attr.aria-label]="'statusCard.lookUpWords' | transloco"
+            >
+              <span aria-hidden="true">📖</span>
             </button>
           }
           <!-- Always present for anonymous readers, connected or not: they have no

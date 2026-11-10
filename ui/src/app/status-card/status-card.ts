@@ -1,4 +1,7 @@
 import { blueskyRouteFor } from '../bluesky-links';
+import { hasDictionary } from '../learn/dictionary/dictionary-registry';
+import type { WordLookupPanel } from '../learn/word-lookup-panel';
+import { FeedLanguageFilter } from '../trend-language-filter';
 import { StatusReactions } from './status-reactions';
 import { MisskeyCompose } from '../providers/misskey/misskey-compose';
 import { MisskeyApi } from '../providers/misskey/misskey-api';
@@ -35,7 +38,7 @@ import {
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../poll-results/poll-results';
-import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { NgOptimizedImage, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AccountHoverCard } from '../account-hover-card/account-hover-card';
 import { PreviewCardComponent } from '../preview-card/preview-card';
@@ -228,6 +231,8 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.openOriginalTitle: Open on the original site
 // i18n statusCard.openOriginal: ↗ Open original
 // i18n statusCard.translate: Translate
+// i18n statusCard.lookUpWords: Look up words
+// i18n statusCard.lookUpLoading: Opening the dictionary…
 // i18n statusCard.translateWithAi: Translate with AI
 // i18n statusCard.editHistory: Edit history
 // i18n statusCard.pin: Pin
@@ -440,6 +445,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     MbHelp,
     ExternalPlayerHost,
     NgTemplateOutlet,
+    NgComponentOutlet,
     MbButton,
     QuoteDialog,
     HighlightCode,
@@ -2580,6 +2586,51 @@ export class StatusCard {
   }
 
   /** Whether the 🌐 button has any engine behind it. */
+  private feedLanguages = inject(FeedLanguageFilter);
+  /** The tap-a-word panel (L1) is open under this post. */
+  protected wordsOpen = signal(false);
+  /**
+   * The language to look words up in, when this post is in a language the
+   * reader is learning and word lookup has a dictionary for it; else null,
+   * and no 📖 button. Readers who list no learning languages never see it.
+   */
+  protected readonly lookupLanguage = computed(() => {
+    const learning = this.prefs.learningLanguages();
+    if (!learning.length) return null;
+    const target = this.display.reblog ?? this.display;
+    if (!hasTranslatableText(target)) return null;
+    const declared = (target.language ?? '').toLowerCase().split(/[-_]/)[0];
+    const assessment = this.feedLanguages.languageAssessment(target);
+    const candidates = [
+      declared,
+      assessment.language,
+      assessment.prose.language,
+      ...assessment.candidates,
+    ];
+    return (
+      candidates.find(
+        (language): language is string =>
+          !!language && learning.includes(language) && hasDictionary(language),
+      ) ?? null
+    );
+  });
+
+  /**
+   * The panel's component, imported on first open: its code (and then the
+   * dictionaries) stay out of every bundle until a reader asks. A dynamic
+   * import rather than `@defer`, which would make every test that builds a
+   * status card compile it asynchronously.
+   */
+  protected wordPanel = signal<typeof WordLookupPanel | null>(null);
+
+  protected toggleWords(event: Event): void {
+    event.stopPropagation();
+    this.wordsOpen.update((open) => !open);
+    if (this.wordsOpen() && !this.wordPanel()) {
+      void import('../learn/word-lookup-panel').then((m) => this.wordPanel.set(m.WordLookupPanel));
+    }
+  }
+
   protected showChainTranslate = computed(
     () =>
       hasTranslatableText(this.display.reblog ?? this.display) &&

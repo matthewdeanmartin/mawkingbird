@@ -28,6 +28,8 @@ export const MISSKEY_PERMISSIONS = [
   'write:following',
   'write:mutes',
   'write:blocks',
+  // M3: following channels from their feed page.
+  'write:channels',
   'write:favorites',
   'write:drive',
   'write:report-abuse',

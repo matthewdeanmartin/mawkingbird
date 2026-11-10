@@ -65,7 +65,9 @@
     "check:subpaths": "node scripts/check-subpath-deployments.mjs",
     "check:mock-leakage": "node scripts/check-mock-leakage.mjs",
     "dead-code": "knip",
-    "servers:misskey": "node scripts/update-misskey-servers.mjs"
+    "servers:misskey": "node scripts/update-misskey-servers.mjs",
+    "dict:jmdict": "node scripts/build-dictionaries.mjs jmdict",
+    "dict:cedict": "node scripts/build-dictionaries.mjs cedict"
   },
   "private": true,
   "packageManager": "npm@11.17.0",

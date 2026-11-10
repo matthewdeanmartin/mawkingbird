@@ -11,14 +11,35 @@ import {
   MkCreateNote,
   MkDriveFile,
   MkEmoji,
+  MkAntenna,
+  MkChannel,
+  MkClip,
+  MkFeedKind,
   MkMeta,
   MkMiAuthCheck,
+  MkUserList,
   MkNote,
   MkNotification,
   MkRelation,
   MkTimeline,
   MkUserDetailed,
 } from './misskey-types';
+
+/** Endpoint and id parameter that read each kind of feed's notes. */
+const FEED_NOTES: Record<MkFeedKind, [string, string]> = {
+  antenna: ['antennas/notes', 'antennaId'],
+  list: ['notes/user-list-timeline', 'listId'],
+  channel: ['channels/timeline', 'channelId'],
+  clip: ['clips/notes', 'clipId'],
+};
+
+/** Endpoint and id parameter that describe each kind of feed. */
+const FEED_SHOW: Record<MkFeedKind, [string, string]> = {
+  antenna: ['antennas/show', 'antennaId'],
+  list: ['users/lists/show', 'listId'],
+  channel: ['channels/show', 'channelId'],
+  clip: ['clips/show', 'clipId'],
+};
 
 /** A Misskey API failure, carrying the server's own error code when it sent one. */
 export class MisskeyApiError extends Error {
@@ -361,6 +382,65 @@ export class MisskeyApi {
       withRenotes: options.withRenotes ?? true,
       ...(untilId ? { untilId } : {}),
     });
+  }
+
+  /** The reader's antennas (needs an account). */
+  antennas(): Observable<MkAntenna[]> {
+    return this.signed<MkAntenna[]>('antennas/list');
+  }
+
+  /** The reader's user lists (needs an account). */
+  userLists(): Observable<MkUserList[]> {
+    return this.signed<MkUserList[]>('users/lists/list');
+  }
+
+  /** Channels the reader follows (needs an account). */
+  followedChannels(): Observable<MkChannel[]> {
+    return this.signed<MkChannel[]>('channels/followed', { limit: 100 });
+  }
+
+  /** Channels the reader marked as favourites (needs an account). */
+  favoriteChannels(): Observable<MkChannel[]> {
+    return this.signed<MkChannel[]>('channels/my-favorites');
+  }
+
+  /** The server's featured channels; open to visitors. */
+  featuredChannels(): Observable<MkChannel[]> {
+    return this.signed<MkChannel[]>('channels/featured');
+  }
+
+  /** The reader's clips (needs an account). */
+  clips(): Observable<MkClip[]> {
+    return this.signed<MkClip[]>('clips/list');
+  }
+
+  /** One antenna, list, channel or clip, for its page heading. */
+  feedInfo(
+    kind: MkFeedKind,
+    id: string,
+  ): Observable<{ name: string; description?: string | null }> {
+    const [endpoint, key] = FEED_SHOW[kind];
+    return this.signed<{ name: string; description?: string | null }>(endpoint, { [key]: id });
+  }
+
+  /** One page of an antenna, list, channel or clip, newest first. */
+  feedNotes(
+    kind: MkFeedKind,
+    id: string,
+    untilId: string | null,
+    limit = 20,
+  ): Observable<MkNote[]> {
+    const [endpoint, key] = FEED_NOTES[kind];
+    return this.signed<MkNote[]>(endpoint, {
+      [key]: id,
+      limit,
+      ...(untilId ? { untilId } : {}),
+    });
+  }
+
+  /** Follow or unfollow a channel, so it appears under Followed (and Home's Social). */
+  setChannelFollowing(channelId: string, follow: boolean): Observable<void> {
+    return this.signed<void>(follow ? 'channels/follow' : 'channels/unfollow', { channelId });
   }
 
   /** Direct replies to this note, plus quotes of it (Misskey counts both as children). */

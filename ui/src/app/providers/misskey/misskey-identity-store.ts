@@ -281,6 +281,14 @@ export function clearMisskeyIdentity(key: string | null = misskeyIdentityKeyActi
   }
 }
 
+/** Whether this identity's token was granted `permission` (tokens from before it was asked for were not). */
+export function misskeyIdentityHas(
+  permission: string,
+  key: string | null = misskeyIdentityKeyActive(),
+): boolean {
+  return !!misskeyIdentity(key)?.credentials.permissions?.includes(permission);
+}
+
 /** Whether this identity's token may write (post, react, follow). */
 export function misskeyIdentityCanWrite(key: string | null = misskeyIdentityKeyActive()): boolean {
   return !!misskeyIdentity(key)?.credentials.permissions?.includes('write:notes');

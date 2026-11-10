@@ -124,6 +124,13 @@ export class HomeFeedCatalog {
         return this.videos.feeds().map((f) => choice(f.id, f.title));
       case 'twitter':
         return this.twitter.follows().map((f) => choice(f.username, '@' + f.username));
+      // Misskey feeds are not favourite-feed sources (yet).
+      case 'mk-timelines':
+      case 'mk-antennas':
+      case 'mk-lists':
+      case 'mk-channels':
+      case 'mk-clips':
+        return [];
       default: {
         const entries = await firstValueFrom(
           type === 'bsky-popular' ? this.bsky.loadPopular() : this.bsky.load(),
@@ -262,6 +269,12 @@ export class HomeFeedCatalog {
           .searchPosts(saved.search, cursor)
           .pipe(map((p) => ({ posts: p.posts.map(adaptPost), cursor: p.cursor ?? null })));
       }
+      case 'mk-timelines':
+      case 'mk-antennas':
+      case 'mk-lists':
+      case 'mk-channels':
+      case 'mk-clips':
+        return once(of([]));
       default:
         return this.bsky
           .page(

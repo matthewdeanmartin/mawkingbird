@@ -1351,6 +1351,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/collection/collection').then((m) => m.CollectionPage),
       },
       {
+        // A Misskey antenna, list, channel or clip, opened from Feeds (M3).
+        path: 'misskey/:kind/:id',
+        title: 'Misskey feed',
+        canMatch: [misskeyPrimaryMatch],
+        loadComponent: () => import('./pages/misskey-feed/misskey-feed').then((m) => m.MisskeyFeed),
+      },
+      {
         path: 'tags/:tag',
         title: 'Tag',
         canMatch: [misskeyPrimaryMatch],

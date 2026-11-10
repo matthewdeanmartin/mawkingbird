@@ -9,6 +9,23 @@ MbToolbar of MbToolbarButtons for Notes, People and Hashtags) and
 Routing picks them over the shared search and tag pages only for Misskey
 accounts. No shared widget changed.
 
+## Tap a word (L1), 2026-11-10
+
+Reviewed 1,766 source files and 613 candidate files. One candidate is added:
+`learn/word-lookup-panel.ts`: MbButton for the AI explanation, and the post's
+words as native buttons styled as inline text, a new inline control with no
+shared equivalent. Adopted scope. `status-card/status-card.html` gains one
+MbPostAction (📖) beside 🌐 and a lazily created panel. No shared widget changed.
+
+## Misskey feeds (M3 part 2), 2026-11-10
+
+Reviewed 1,758 source files and 612 candidate files. One candidate is added:
+`pages/misskey-feed/misskey-feed.ts` (MbButton to follow a channel, to approve
+channel following and to load more). Adopted scope. The Feeds page's Misskey
+sections (`pages/lists/misskey-feed-sections.ts`) are links only and are not a
+candidate; `pages/lists/lists.html` gains one host element and stays backlog.
+No shared widget changed.
+
 ## Misskey visitor (MA), 2026-11-10
 
 Reviewed 1,755 source files and 611 candidate files; none added or removed.

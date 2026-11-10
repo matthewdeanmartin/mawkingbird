@@ -67,7 +67,9 @@ type FeedFilter = 'all' | 'lists' | 'tags';
  * is nothing but tags to narrow, so the picker is not offered.
  */
 export { FEED_SECTIONS } from '../../lists/feed-sections';
-import { FEED_SECTIONS, FeedSection } from '../../lists/feed-sections';
+import { FEED_SECTIONS, FeedNetwork, FeedSection } from '../../lists/feed-sections';
+import { networkSources } from '../../shell/network-sources';
+import { MisskeyFeedSections } from './misskey-feed-sections';
 
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n pages.lists.title.lists: Lists
@@ -204,6 +206,7 @@ import { FEED_SECTIONS, FeedSection } from '../../lists/feed-sections';
 @Component({
   selector: 'app-lists',
   imports: [
+    MisskeyFeedSections,
     OtherServers,
     MbButton,
     MbNavigation,
@@ -326,13 +329,30 @@ export class Lists implements OnInit {
     return this.filter === 'all' || this.filter === section;
   }
 
+  private readonly networks = networkSources();
+
+  /**
+   * Whether this account can read a network at all. Sections of a network it
+   * cannot read are neither offered nor loaded: they could only ever be empty
+   * (a Misskey account has no Mastodon lists; a Bluesky account without a
+   * Mastodon connector has no Mastodon server feeds).
+   */
+  protected readsNetwork(network: FeedNetwork): boolean {
+    switch (network) {
+      case 'mastodon':
+        return this.networks.usableMastodon();
+      case 'bluesky':
+        return this.bskySession.linked();
+      case 'misskey':
+        return this.auth.isMisskeyPrimary;
+      case 'any':
+        return true;
+    }
+  }
+
   protected readonly sectionOptions = computed(() =>
     FEED_SECTIONS.filter((section) =>
-      section.id === 'twitter'
-        ? this.twitterAvailable()
-        : section.id.startsWith('bsky-')
-          ? this.bskySession.linked()
-          : true,
+      section.id === 'twitter' ? this.twitterAvailable() : this.readsNetwork(section.network),
     ),
   );
 
@@ -366,9 +386,22 @@ export class Lists implements OnInit {
     'rss:' + new URL('news/atom.xml', inject(DOCUMENT).baseURI).href,
   ];
 
-  /** True when `section` renders this kind — the template's per-section guard. */
+  /**
+   * True when `section` renders this kind — the template's per-section guard.
+   * Never for a section of a network this account cannot read.
+   */
   protected showsSection(section: FeedSection): boolean {
+    const network = FEED_SECTIONS.find((item) => item.id === section)?.network ?? 'any';
+    if (!this.readsNetwork(network)) return false;
     return this.section() === 'all' || this.section() === section;
+  }
+
+  /** The Misskey sections render together, in their own component. */
+  protected showsMisskey(): boolean {
+    return (
+      this.readsNetwork('misskey') &&
+      (this.section() === 'all' || this.section().toString().startsWith('mk-'))
+    );
   }
 
   protected recentLink(url: string) {
@@ -689,16 +722,21 @@ export class Lists implements OnInit {
       mode: this.auth.mode() ?? 'unauthenticated',
       filter: this.filter,
     });
+    // Mastodon's sections are not shown to an account that cannot read
+    // Mastodon, so neither are they loaded (the calls would only fail).
+    const mastodon = this.readsNetwork('mastodon');
     if (this.shows('lists')) {
-      this.probeDirectory();
-      this.load();
-      this.loadCollections();
-      this.resolveServerFeeds();
+      if (mastodon) {
+        this.probeDirectory();
+        this.load();
+        this.loadCollections();
+        this.resolveServerFeeds();
+        void this.loadProfileLists();
+      }
       this.loadBlueskyFeeds();
       this.loadPopularFeeds();
-      void this.loadProfileLists();
     }
-    if (this.shows('tags')) {
+    if (this.shows('tags') && mastodon) {
       this.loadTags();
     }
   }

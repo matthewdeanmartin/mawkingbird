@@ -53,6 +53,16 @@
       "nextStep": "Misskey search: Field/Control search input, MbButton submit and load more, MbToolbar/MbToolbarButton for Notes, People and Hashtags (pressed state, not pills). Preserve the URL-held query and type, the note-search-unavailable message, and the @user@host lookup."
     },
     {
+      "file": "ui/src/app/learn/word-lookup-panel.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Tap-a-word panel (L1): MbButton for Explain in this sentence; each word of the post is a native button styled as inline text (dotted underline, focus and selected states), a deliberate inline control with no shared equivalent. Preserve flush word spacing (bound text), keyboard reach and the per-result dictionary credit."
+    },
+    {
+      "file": "ui/src/app/pages/misskey-feed/misskey-feed.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Misskey antenna, list, channel or clip page: MbButton to follow a channel, approve channel following, and load more under status cards; a native link back to Feeds. Preserve untilId paging and the shared status card for each note."
+    },
+    {
       "file": "ui/src/app/pages/misskey-tag/misskey-tag.ts",
       "disposition": "adopted scope",
       "nextStep": "Misskey hashtag page: MbButton load more under status cards; a native link to search. Preserve untilId paging and the shared status card for each note."

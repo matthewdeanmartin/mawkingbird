@@ -167,6 +167,42 @@ export interface MkMeta {
   ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
 }
 
+/** An antenna: the reader's saved filter over incoming notes (`antennas/list`). */
+export interface MkAntenna {
+  id: string;
+  name: string;
+}
+
+/** A user list (`users/lists/list`): the reader's list of people. */
+export interface MkUserList {
+  id: string;
+  name: string;
+  userIds?: string[];
+}
+
+/** A channel: a topic room with its own timeline (`channels/*`). */
+export interface MkChannel {
+  id: string;
+  name: string;
+  description?: string | null;
+  bannerUrl?: string | null;
+  notesCount?: number;
+  usersCount?: number;
+  isFollowing?: boolean;
+  isFavorited?: boolean;
+}
+
+/** A clip: a saved collection of notes (`clips/list`). */
+export interface MkClip {
+  id: string;
+  name: string;
+  description?: string | null;
+  notesCount?: number;
+}
+
+/** The Misskey feeds the Feeds page opens, each one a paged list of notes. */
+export type MkFeedKind = 'antenna' | 'list' | 'channel' | 'clip';
+
 /** `POST /api/miauth/{session}/check`. */
 export type MkMiAuthCheck = { ok: true; token: string; user: MkUserDetailed } | { ok: false };
 

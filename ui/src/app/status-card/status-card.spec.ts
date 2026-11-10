@@ -3448,3 +3448,61 @@ describe('StatusCard — link preview', () => {
     expect(el.textContent).toContain('A Linked Article');
   });
 });
+
+// ---------------------------------------------------------------- tap a word (L1)
+
+describe('StatusCard tap a word (L1)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+  });
+
+  function lookUpButton(status: Status): HTMLButtonElement | null {
+    const fixture = TestBed.createComponent(StatusCard);
+    fixture.componentRef.setInput('status', status);
+    fixture.detectChanges();
+    return (fixture.nativeElement as HTMLElement).querySelector(
+      'button[aria-label="Look up words"]',
+    );
+  }
+
+  const japanese = () =>
+    makeStatus({ content: '<p>昨日は寿司を食べなかった。</p>', language: 'ja' });
+
+  it('offers 📖 on a post in a language the reader is learning', () => {
+    TestBed.inject(ClientPrefs).setLearningLanguages(['ja']);
+    expect(lookUpButton(japanese())).not.toBeNull();
+  });
+
+  it('opens the word panel, loaded on first use, when 📖 is pressed', async () => {
+    TestBed.inject(ClientPrefs).setLearningLanguages(['ja']);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: false, status: 404, json: async () => null })),
+    );
+    const fixture = TestBed.createComponent(StatusCard);
+    fixture.componentRef.setInput('status', japanese());
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.word-lookup')).toBeNull();
+    (el.querySelector('button[aria-label="Look up words"]') as HTMLButtonElement).click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(el.querySelector('.word-lookup .words')?.textContent).toContain('寿司');
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it('stays away for readers who are not learning the language', () => {
+    expect(lookUpButton(japanese())).toBeNull();
+    TestBed.inject(ClientPrefs).setLearningLanguages(['es']);
+    expect(lookUpButton(japanese())).toBeNull();
+  });
+
+  it('stays away for a learning language with no dictionary yet', () => {
+    TestBed.inject(ClientPrefs).setLearningLanguages(['ko']);
+    expect(lookUpButton(makeStatus({ content: '<p>안녕하세요</p>', language: 'ko' }))).toBeNull();
+  });
+});

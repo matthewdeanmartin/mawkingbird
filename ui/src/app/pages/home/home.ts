@@ -91,6 +91,7 @@ import {
   misskeyTimelinesFor,
 } from '../../providers/misskey/misskey-provider';
 import { MisskeyVisitorFollows } from '../../providers/misskey/misskey-visitor-follows';
+import { MisskeyStreaming } from '../../providers/misskey/misskey-streaming';
 import {
   misskeyIdentity,
   misskeyIdentityCanWrite,
@@ -1184,6 +1185,9 @@ export class Home implements OnInit, OnDestroy {
   }
 
   private liveSub: Subscription | null = null;
+  private misskeyStreaming = inject(MisskeyStreaming);
+  /** The Misskey timeline the live stream is open on, or null. */
+  private liveMisskeyTimeline: MkHomeTimeline | null = null;
   private pageSub: Subscription | null = null;
   private bookmarkSub: Subscription | null = null;
   private anonymousCacheGeneration = 0;
@@ -1312,6 +1316,10 @@ export class Home implements OnInit, OnDestroy {
       this.live.set(false);
       return;
     }
+    if (this.auth.isMisskeyPrimary) {
+      this.syncMisskeyLive();
+      return;
+    }
     // Bluesky-primary excluded too: this opens a *Mastodon* streaming
     // connection, which such an account has no token to authenticate.
     const wanted =
@@ -1341,6 +1349,38 @@ export class Home implements OnInit, OnDestroy {
         this.statuses.update((list) => list.filter((s) => s.id !== id));
       }
     });
+  }
+
+  /**
+   * Live updates for a Misskey account: Misskey's own streaming channel for
+   * the timeline on screen, under the same "Auto-refresh timeline" setting.
+   * Reconnects when the timeline changes. Following (the visitor's
+   * browser-local follows) has no stream: there is no server timeline to
+   * follow, so it refreshes by hand.
+   */
+  private syncMisskeyLive(): void {
+    const timeline = this.misskeyTimeline();
+    const wanted = this.prefs.autoRefreshTimeline() && timeline !== 'following' ? timeline : null;
+    if (wanted === this.liveMisskeyTimeline) return;
+    this.liveSub?.unsubscribe();
+    this.liveSub = null;
+    this.liveMisskeyTimeline = wanted;
+    const identity = misskeyIdentity(this.auth.activeMisskeyKey());
+    if (!wanted || !identity) {
+      this.live.set(false);
+      return;
+    }
+    this.diagnostics.info('user:misskey-live-on', { timeline: wanted });
+    this.live.set(true);
+    const server = identity.profile.server;
+    this.liveSub = this.misskeyStreaming
+      .notes(server, identity.credentials.token || null, wanted)
+      .subscribe((note) => {
+        if (note.isHidden) return;
+        void import('../../providers/misskey/misskey-adapter').then(({ adaptMisskeyNote }) =>
+          this.mergeStatuses([adaptMisskeyNote(note, server)], 'newer'),
+        );
+      });
   }
 
   /**

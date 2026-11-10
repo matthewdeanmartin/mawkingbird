@@ -54,7 +54,8 @@ export class SettingsHomeAlgo implements OnInit {
   private catalog = inject(HomeFeedCatalog);
   protected draft = structuredClone(this.settings.value());
   protected presentation: HomeDefault = this.defaults.value() ?? 'all';
-  protected types = FEED_SECTIONS.filter((s) => s.id !== 'all');
+  // Misskey feeds are not favourite-feed sources (yet).
+  protected types = FEED_SECTIONS.filter((s) => s.id !== 'all' && s.network !== 'misskey');
   protected type: FavoriteFeed['type'] = this.draft.favorite?.type ?? 'tags';
   protected choices = signal<FavoriteFeed[]>(this.draft.favorite ? [this.draft.favorite] : []);
   protected loading = signal(false);

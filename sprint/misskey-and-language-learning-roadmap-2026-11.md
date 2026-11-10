@@ -200,12 +200,13 @@ other servers before committing should not need an account on each.
 - Browser-local follows of Misskey users then feed Home, like Anonymous's
   local follows of Mastodon accounts.
 
-### Sprint M4 (optional): chat and connector mode
+### Sprint M4: Misskey chat (wanted, owner 2026-11-10)
 
 - Chat rooms and 1:1 (`chat/*`) on the existing chat surface (Bluesky chat
   precedent).
-- Misskey as a **connector** under a Mastodon or Anonymous account, and as a
-  cross-post target.
+- **Not** a connector: Misskey stays a primary account only. Owner, 2026-11-10:
+  "There are like 20+ fediverse platforms, gotta pick and choose what makes the
+  most sense as a connector vs primary account."
 
 ---
 
@@ -327,6 +328,8 @@ language, so the feed becomes comprehensible input.
 | 8. Languages | **Start with English ↔ Chinese / Japanese / Korean, both directions;** eventually every app i18n locale. | Translation and learner tools must work for a CJK speaker learning English too. L1 needs JMdict (ja), CC-CEDICT (zh) and a Korean source, plus English headwords with CJK glosses for the reverse direction. Segmentation via `Intl.Segmenter` covers all four. |
 | 9. Testing | **A new `misskey_mock` server later; not now.** | Specs use captured fixtures. No `make test-integration` coverage for Misskey until the mock exists. |
 | 10. Outbound | **Likely wanted** (owner expects to post in Japanese). | T3 moves up: after M2. Needs a back-translation check before posting. |
+| 11. Misskey connector | **No** (owner, 2026-11-10). Misskey is a primary account only; chat (M4) is wanted. | M4 is chat only. |
+| 12. Dictionary data | **JMdict and CC-CEDICT, lazily loaded; interfaces so other languages can follow** (owner, 2026-11-10). The owner had read JMdict as MIT: the MIT licence covers only jmdict-simplified's npm helper packages; the data is CC BY-SA 4.0 (EDRDG), as is CC-CEDICT. | L1 credits both on every lookup and on Credits, and keeps the data refreshed. |
 | T2 cap | **Default daily cap $0.25** (owner, 2026-11-09). When it is reached, offer to raise it in a pop-up rather than silently stopping. Model: the reader's current OpenRouter model choice. | T2 budget UI. |
 
 ## Open questions for the owner
@@ -647,3 +650,76 @@ The Feeds page offers feed types from platforms the account cannot use (for a
 Misskey account: Mastodon lists, followed tags, server directory and so on),
 which can never show anything. Gate the Feeds sections by the networks the
 account actually has, alongside adding antennas, channels and clips.
+
+## M3 part 2 (2026-11-10): feeds and live updates — code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-m3-feeds.md`. Completes M3.
+
+- **Feeds by network** (the owner's note above): every `FEED_SECTIONS` entry
+  names its network (`mastodon`, `bluesky`, `misskey`, `any`). Feeds offers,
+  renders and loads a section only when the account reads that network
+  (`usableMastodon` from `network-sources.ts`, a linked Bluesky session, a
+  Misskey account). Mastodon-only: lists, client lists and tag bundles (both
+  read through the Mastodon API), saved searches, server feeds, followed and
+  featured tags, collections, endorsements. Any network: other servers, RSS,
+  videos, Twitter. So a Bluesky account without a Mastodon connector loses
+  the Mastodon sections too.
+- **Misskey sections** (`pages/lists/misskey-feed-sections.ts`): Timelines
+  (links to Home on that timeline), Antennas, Misskey lists, Channels
+  (followed, favourites, the server's featured), Clips, with "Manage on
+  <server>" links. The visitor gets Timelines and featured channels.
+- **Feed page** `/misskey/:kind/:id` (`MisskeyFeed`, `canMatch` Misskey only):
+  `antennas/notes`, `notes/user-list-timeline`, `channels/timeline`,
+  `clips/notes`, paged by `untilId`, headed by the `*/show` name and
+  description. Channels can be followed (`channels/follow`), which needs
+  `write:channels`: added to the MiAuth permissions; older tokens get an
+  "Allow following channels" re-approval on the channel page.
+- **Live updates** (`MisskeyStreaming`): Misskey's streaming WebSocket
+  (`/streaming?i=`, channels `homeTimeline`, `hybridTimeline`,
+  `localTimeline`, `globalTimeline`) under the existing "Auto-refresh
+  timeline" setting; follows Home's timeline switch; reconnects with
+  backoff. The visitor streams Local/Global without a token. Following has
+  no stream.
+- Misskey feeds are not Home favourite-feed sources (excluded in Settings →
+  Home algorithm), and live updates cover Home only, not the feed pages.
+- Not done: posting into a channel; making or editing antennas, lists and
+  clips in-app (linked to the server instead).
+
+## L1 (2026-11-10): tap a word — code complete, needs a live trial
+
+Manual plan: `test_plans/learn-l1-tap-a-word.md`.
+
+- **Licences, checked at the source** (2026-11-10). JMdict: EDRDG licence,
+  CC BY-SA 4.0. It requires acknowledgement in the app's documentation and
+  on every screen that shows an entry, and "a procedure for regular updating
+  of the data" (monthly for web servers). CC-CEDICT: CC BY-SA 4.0, attribution;
+  MDBG's download page forbids automated or scripted access. Our derived shard
+  files are therefore CC BY-SA 4.0 too.
+- **Data**: `npm run dict:jmdict` fetches the latest jmdict-simplified release
+  (common words, English; 22,650 entries) and writes `ui/public/dict/jmdict/`:
+  a manifest and 256 shards keyed by first character (7.7 MB, about 2.5 MB
+  gzipped; a tap fetches one shard, about 30 KB, then it is cached).
+  **Owner to-do: rerun monthly** (licence condition). `npm run dict:cedict --
+  --file <cedict_1_0_ts_utf-8_mdbg.txt.gz>` builds Chinese from a hand-
+  downloaded file; **not built yet**, so Chinese lookups say the dictionary is
+  not available.
+- **Interfaces** (`ui/src/app/learn/dictionary/`): `DictionarySource`
+  (`ShardedDictionary` today), `Deinflector` (Japanese rules; none for
+  Chinese), `LanguageDictionary`, and a registry of lazily imported
+  languages. Adding Korean or English is a file under `languages/`, its data
+  build, a Credits line and a registry line.
+- **Lookup**: longest match from the tapped position (16 characters for
+  Japanese) through the deinflector, which chains rules and checks the word
+  class (食べなかった → 食べる, negative, past; 勉強しました → 勉強, with する,
+  polite past).
+- **UI**: 📖 beside 🌐 on posts in a language the reader is learning (Settings
+  → Languages) that has a dictionary. It opens a panel under the post: the
+  text as tappable words (`Intl.Segmenter`), then entries with reading,
+  inflection, parts of speech and meanings, "More on jisho.org / mdbg.net",
+  **Explain in this sentence** (the reader's OpenRouter key, on request), and
+  the dictionary credit under every result. The panel's code is a lazy chunk
+  (dynamic import into `NgComponentOutlet`; `@defer` would have made every
+  status-card test compile asynchronously).
+- Not done: furigana, Save word (L2), Korean, English headwords for CJK
+  speakers, full (not common-only) JMdict, counting explanations against the
+  AI dollar cap.
