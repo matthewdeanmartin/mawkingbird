@@ -2105,13 +2105,11 @@ from 1727 to 1728; all 605 candidate files and control records remain unchanged.
 No added/removed candidates require changes to 11-reconciliation.json. No shared
 widget implementation changed.
 
-
 ### Ukrainian Technology — 2026-11-09
 
 Reviewed inventory regeneration: 1744 to 1745 scanned source files from the new topic copy; 608 candidate files unchanged. Existing status-card candidates moved from lines 349/1545 to 350/1546 due to concurrent work outside this SIG. No controls or candidate files were added by the SIG; reconciliation membership remains unchanged.
 
 Concurrent translation edits landed during the SIG check: final regeneration scans 1748 files / 609 candidate files. Reviewed added Home MbButton, Settings MbField/mbControl and shell prompt insertion; the new ai-budget-prompt uses MbDialog/MbButton with a native settings link. Added its reconciliation entry. These are separate translation changes; SIG tests do not validate their runtime behavior.
-
 
 ### Ukrainian Culture and Hobbies — 2026-11-09
 

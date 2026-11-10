@@ -242,6 +242,12 @@ export function setActiveMisskeyIdentity(key: string): boolean {
  * Falls back to the first saved identity only while Misskey is the active
  * account kind, mirroring the Bluesky store: a stale pointer must not strand
  * an account that still has a usable alt.
+ *
+ * Never writes the fallback back. Tabs share this pointer, and a tab running
+ * other code (an older build at the site root beside /canary/, which shares
+ * its storage) may not know an identity this tab just chose, such as the
+ * Misskey visitor; writing "the first one" over it undid the reader's switch
+ * the moment it was made (owner report, 2026-11-10). Reading leaves it alone.
  */
 export function misskeyIdentityKeyActive(): string | null {
   try {
@@ -249,9 +255,7 @@ export function misskeyIdentityKeyActive(): string | null {
     const all = misskeyIdentities();
     if (active && all.some((identity) => identity.key === active)) return active;
     if (localStorage.getItem(ACCOUNT_MODE_KEY) !== 'misskey') return null;
-    const first = all[0]?.key ?? null;
-    if (first) localStorage.setItem(MK_ACTIVE_IDENTITY_KEY, first);
-    return first;
+    return all[0]?.key ?? null;
   } catch {
     return null;
   }

@@ -66,6 +66,8 @@ describe('misskey identity store', () => {
     expect(misskeyIdentityKeyActive()).toBeNull();
     localStorage.setItem(ACCOUNT_MODE_KEY, 'misskey');
     expect(misskeyIdentityKeyActive()).toBe(key);
+    // Reading never rewrites the shared pointer another tab may have just set.
+    expect(localStorage.getItem(MK_ACTIVE_IDENTITY_KEY)).toBe('https://gone.example#x');
   });
 
   it('refuses to activate an unknown identity', () => {
