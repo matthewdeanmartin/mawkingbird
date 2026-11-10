@@ -61,7 +61,8 @@
   line-height: 1.4;
 }
 
-.mk-submit {
+.mk-submit,
+.mk-visit {
   justify-content: center;
   margin-top: 4px;
   width: 100%;

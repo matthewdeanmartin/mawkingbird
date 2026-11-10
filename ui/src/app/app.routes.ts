@@ -9,6 +9,7 @@ import {
 } from './providers/anonymous/anonymous-route.guard';
 import { anonymousOnlyGuard } from './providers/anonymous/anonymous-only.guard';
 import { featureFlagGuard } from './feature-flag.guard';
+import { misskeyPrimaryMatch } from './providers/misskey/misskey-route.guard';
 import { forumThreadGuard } from './forum-thread.guard';
 import { inviteAccessGuard } from './invites/invite-access.guard';
 import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
@@ -1122,6 +1123,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/videos/watch-queue-page').then((m) => m.WatchQueuePage),
       },
+      // A Misskey account searches its Misskey server (M3); everyone else
+      // falls through to the shared search page below.
+      {
+        path: 'search',
+        title: 'Search',
+        canMatch: [misskeyPrimaryMatch],
+        loadComponent: () =>
+          import('./pages/misskey-search/misskey-search').then((m) => m.MisskeySearch),
+      },
       {
         path: 'search',
         title: 'Search',
@@ -1339,6 +1349,12 @@ export const routes: Routes = [
         canActivate: [anonymousCollectionGuard],
         data: { anonymousFeature: 'Collections' },
         loadComponent: () => import('./pages/collection/collection').then((m) => m.CollectionPage),
+      },
+      {
+        path: 'tags/:tag',
+        title: 'Tag',
+        canMatch: [misskeyPrimaryMatch],
+        loadComponent: () => import('./pages/misskey-tag/misskey-tag').then((m) => m.MisskeyTag),
       },
       {
         path: 'tags/:tag',

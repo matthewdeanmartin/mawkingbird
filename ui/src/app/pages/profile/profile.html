@@ -209,6 +209,22 @@
           <!-- Following, muting and blocking go through the
              Misskey API. -->
           <div class="profile-buttons">
+            @if (mkVisitorCanFollow()) {
+              <button
+                mbButton
+                type="button"
+                [variant]="mkVisitorFollowing() ? 'outline' : 'solid'"
+                [title]="'pages.profile.misskey.visitorFollowHint' | transloco"
+                (click)="mkVisitorToggleFollow()"
+              >
+                {{
+                  (mkVisitorFollowing()
+                    ? 'pages.profile.misskey.unfollow'
+                    : 'pages.profile.misskey.follow'
+                  ) | transloco
+                }}
+              </button>
+            }
             @if (mkCanAct() && mkRelation(); as relation) {
               <button
                 mbButton

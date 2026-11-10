@@ -106,7 +106,9 @@ export class SettingsProfile implements OnInit {
 
   /** Where a Misskey-primary reader edits their profile until this page can. */
   protected readonly misskeyProfileUrl = computed(() => {
-    const url = this.auth.isMisskeyPrimary ? this.auth.account()?.url : null;
+    // The visitor has no profile on the server to edit.
+    const url =
+      this.auth.isMisskeyPrimary && !this.auth.isMisskeyVisitor ? this.auth.account()?.url : null;
     return url ? new URL('/settings/profile', url).href : null;
   });
   protected readonly misskeyHost = computed(() => {

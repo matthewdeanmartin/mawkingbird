@@ -6,7 +6,12 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../auth';
 import { loginDestination, stashLoginNext, takeLoginNext } from '../../login-destination';
 import { MisskeyAuth, MisskeySignInError } from '../../providers/misskey/misskey-auth';
-import { MisskeyApiError } from '../../providers/misskey/misskey-api';
+import { MisskeyApi, MisskeyApiError } from '../../providers/misskey/misskey-api';
+import {
+  MISSKEY_VISITOR,
+  saveMisskeyVisitor,
+} from '../../providers/misskey/misskey-identity-store';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { redirectToSecureLogin } from '../../secure-login';
 
@@ -20,7 +25,11 @@ import { redirectToSecureLogin } from '../../secure-login';
 // i18n pages.loginMisskey.completing: Finishing sign-in…
 // i18n pages.loginMisskey.note: Misskey will ask you to approve read access for {{brand}}. {{brand}} never sees your password.
 // i18n pages.loginMisskey.useDifferentNetwork: Use a different network
-// i18n pages.loginMisskey.lookAround: Look around without an account
+// i18n pages.loginMisskey.lookAround: Mastodon and Bluesky without an account
+// i18n pages.loginMisskey.visitTitle: Look around a Misskey server
+// i18n pages.loginMisskey.visit: Look around without an account
+// i18n pages.loginMisskey.visitNote: Or just look around: read a server's public notes, profiles and hashtags without an account. Follows stay in this browser.
+// i18n pages.loginMisskey.errors.visitorsBlocked: {{server}} does not show its notes to visitors. Sign in there, or look around another server.
 // i18n pages.loginMisskey.errors.invalidAddress: That does not look like a server address. Try something like misskey.io.
 // i18n pages.loginMisskey.errors.unreachable: Could not reach that server, or it did not say what software it runs. Check the address and your connection.
 // i18n pages.loginMisskey.errors.mastodon: That server runs {{software}}, not Misskey. Sign in with the Mastodon option instead.
@@ -58,6 +67,7 @@ export interface MisskeyServerSuggestion {
 export class LoginMisskey implements OnInit {
   private auth = inject(Auth);
   private misskey = inject(MisskeyAuth);
+  private api = inject(MisskeyApi);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private transloco = inject(TranslocoService);
@@ -76,6 +86,8 @@ export class LoginMisskey implements OnInit {
    * `npm run servers:misskey` from servers.misskey.ink; empty if it fails to load.
    */
   protected suggestions = signal<MisskeyServerSuggestion[]>([]);
+  /** Came here to visit a server (from the visitor's Home), not to sign in. */
+  protected visiting = signal(false);
 
   ngOnInit(): void {
     if (redirectToSecureLogin()) return;
@@ -87,11 +99,12 @@ export class LoginMisskey implements OnInit {
       return;
     }
     this.adding = params.has('add');
+    this.visiting.set(params.has('visit'));
     // Sent here from the Mastodon door with the server already typed.
     const server = params.get('server');
     if (server) this.server.set(server);
     this.destination = loginDestination(params.get('next'));
-    if (this.auth.isAuthenticated && !this.adding) {
+    if (this.auth.isAuthenticated && !this.adding && !this.visiting()) {
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
     }
   }
@@ -117,6 +130,43 @@ export class LoginMisskey implements OnInit {
       const origin = await this.misskey.checkServer(input);
       stashLoginNext(this.destination);
       location.assign(this.misskey.begin(origin, this.adding));
+    } catch (err) {
+      this.working.set(false);
+      this.error.set(this.describe(err));
+    }
+  }
+
+  /**
+   * Become (or move) the Misskey visitor: the account-less Misskey user,
+   * reading this server's public notes without a token. A server that hides
+   * everything from visitors is turned down here rather than showing an
+   * empty Home.
+   */
+  async visit(): Promise<void> {
+    const input = this.server().trim();
+    if (!input || this.working()) return;
+    this.working.set(true);
+    this.error.set(null);
+    try {
+      const origin = await this.misskey.checkServer(input);
+      const meta = await firstValueFrom(this.api.meta(origin));
+      if (meta.ugcVisibilityForVisitor === 'none') {
+        this.working.set(false);
+        this.error.set(
+          this.transloco.translate<string>('pages.loginMisskey.errors.visitorsBlocked', {
+            server: new URL(origin).host,
+          }),
+        );
+        return;
+      }
+      saveMisskeyVisitor(origin);
+      if (!this.auth.enterMisskey(MISSKEY_VISITOR)) {
+        this.fail(this.transloco.translate<string>('pages.loginMisskey.errors.storageBlocked'));
+        return;
+      }
+      // A hard navigation, as when adding an account: services chose their
+      // account scope and server when Angular built them.
+      location.assign(this.destination.replace(/^\//, ''));
     } catch (err) {
       this.working.set(false);
       this.error.set(this.describe(err));

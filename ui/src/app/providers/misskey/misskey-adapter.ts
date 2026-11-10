@@ -248,7 +248,7 @@ function baseStatus(note: MkNote, server: string): Status {
     mentions: [],
     tags: (note.tags ?? []).map((tag) => ({
       name: tag,
-      url: `${server}/search?q=${encodeURIComponent(`#${tag}`)}`,
+      url: `${server}/tags/${encodeURIComponent(tag)}`,
     })),
     ...(reactions.length ? { reactions } : {}),
   };

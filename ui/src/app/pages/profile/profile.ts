@@ -75,6 +75,10 @@ import {
   misskeyIdentityCanWrite,
 } from '../../providers/misskey/misskey-identity-store';
 import { MkRelation } from '../../providers/misskey/misskey-types';
+import {
+  MisskeyFollowTarget,
+  MisskeyVisitorFollows,
+} from '../../providers/misskey/misskey-visitor-follows';
 import { BlueskyGraph } from '../../providers/bluesky/bluesky-graph';
 import { BlueskySession } from '../../providers/bluesky/bluesky-session';
 import {
@@ -249,6 +253,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.misskey.unblock: Unblock
 // i18n pages.profile.misskey.blockConfirm: Block {{name}}? They will not be able to follow you or see your notes, and you will stop following each other.
 // i18n pages.profile.misskey.actionFailed: That did not work on Misskey. Please try again.
+// i18n pages.profile.misskey.visitorFollowHint: Follows are kept in this browser and fill Home → Following.
+// i18n pages.profile.misskey.visitorFollowFull: You follow as many people as a visitor can (50). Unfollow someone first.
 // i18n pages.profile.bluesky.linkRequired: Link a Bluesky account in Settings → Connections to view this profile.
 // i18n pages.profile.bluesky.profileLoadFailed: Could not load this Bluesky profile.
 // i18n pages.profile.bluesky.postsLoadFailed: Could not load posts for this account.
@@ -467,6 +473,34 @@ export class Profile implements OnInit, OnDestroy {
   protected mkRelation = signal<MkRelation | null>(null);
   protected mkBusy = signal(false);
   protected mkActionError = signal<string | null>(null);
+  private visitorFollows = inject(MisskeyVisitorFollows);
+  /** Who this Misskey profile is, as the visitor's follow list needs it. */
+  private mkTarget = signal<MisskeyFollowTarget | null>(null);
+  /** The visitor follows in this browser instead of on the server. */
+  protected readonly mkVisitorCanFollow = computed(
+    () => this.isMisskey() && this.auth.isMisskeyVisitor && this.mkTarget() !== null,
+  );
+  protected readonly mkVisitorFollowing = computed(() => {
+    const target = this.mkTarget();
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server;
+    this.visitorFollows.follows();
+    return !!target && !!server && this.visitorFollows.isFollowing(target, server);
+  });
+
+  protected mkVisitorToggleFollow(): void {
+    const target = this.mkTarget();
+    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server;
+    if (!target || !server) return;
+    this.mkActionError.set(null);
+    if (this.visitorFollows.isFollowing(target, server)) {
+      this.visitorFollows.unfollow(target, server);
+    } else if (!this.visitorFollows.follow(target, server)) {
+      this.mkActionError.set(
+        this.transloco.translate<string>('pages.profile.misskey.visitorFollowFull'),
+      );
+    }
+  }
+
   /** Follow, mute and block need a token that may write, and are never offered on oneself. */
   protected readonly mkCanAct = computed(
     () =>
@@ -1609,6 +1643,7 @@ export class Profile implements OnInit, OnDestroy {
   /** A Misskey user's profile and first page of notes, read as the active Misskey identity. */
   private loadMisskey(userId: string): void {
     this.isMisskey.set(true);
+    this.mkTarget.set(null);
     this.statuses.set([]);
     this.pinnedStatuses.set([]);
     this.featured.set([]);
@@ -1625,15 +1660,30 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
     const server = identity.profile.server;
+    // `mk:<userId>`, or `mk:@user[@host]` from a mention: resolve the handle
+    // first, then load notes and the relation by the real id.
+    const handle = /^@([A-Za-z0-9_]+)(?:@([A-Za-z0-9.-]+))?$/.exec(userId);
+    const serverHost = new URL(server).host;
+    const query = handle
+      ? { username: handle[1], host: handle[2] && handle[2] !== serverHost ? handle[2] : null }
+      : { userId };
     this.routeLoadSub.add(
       forkJoin([
-        this.misskeyApi.user({ userId }),
+        this.misskeyApi.user(query),
         from(import('../../providers/misskey/misskey-adapter')),
       ]).subscribe({
         next: ([user, { adaptMisskeyUser }]) => {
           if (seq !== this.loadSeq) return;
           this.account.set(adaptMisskeyUser(user, server));
+          this.mkTarget.set({
+            id: user.id,
+            username: user.username,
+            host: user.host ?? null,
+            name: user.name ?? null,
+            avatarUrl: user.avatarUrl ?? null,
+          });
           this.loading.set(false);
+          if (handle) this.loadMisskeyById(seq, user.id);
         },
         error: (error: unknown) => {
           if (seq !== this.loadSeq) return;
@@ -1643,7 +1693,14 @@ export class Profile implements OnInit, OnDestroy {
         },
       }),
     );
+    if (!handle) this.loadMisskeyById(seq, userId);
+  }
+
+  /** Notes and the reader's relation, once the user's id is known. */
+  private loadMisskeyById(seq: number, userId: string): void {
     this.loadMisskeyPosts(seq, userId);
+    // The visitor has no relation to anyone on the server (it needs a token).
+    if (this.auth.isMisskeyVisitor) return;
     // The relation is a read; only the buttons that change it need write.
     this.routeLoadSub.add(
       this.misskeyApi.relation(userId).subscribe({

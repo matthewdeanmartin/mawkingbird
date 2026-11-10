@@ -181,6 +181,25 @@ Tests: adapter table tests per note shape; MFM renderer escapes everything
   search (`notes/search`, which some servers disable); announcements; a basic
   Drive browser.
 
+### Sprint MA: anonymous Misskey (owner request, 2026-11-10)
+
+Browse a Misskey server without an account, the way Anonymous already
+browses a Mastodon server: pick any Misskey server and read its public
+timelines (Local, Global where allowed), threads, profiles, hashtags and
+search, with follows, bookmarks and mutes kept in the browser. The owner's
+reason: the server they signed up on is narrow ("recreational"), and trying
+other servers before committing should not need an account on each.
+
+- Misskey answers most read endpoints without a token (`notes/local-timeline`,
+  `notes/show`, `users/show`, `users/notes`, `notes/search-by-tag`), unless the
+  server sets `ugcVisibilityForVisitor` to hide content from visitors; check
+  `meta` and say so. CORS is open, so no proxy.
+- Likely shape: a `MisskeyApi` "visitor" mode (no `i`), an
+  `anonymous-misskey` provider beside `anonymous-mastodon`, and a server
+  picker fed by `public/misskey-servers.json` (already built).
+- Browser-local follows of Misskey users then feed Home, like Anonymous's
+  local follows of Mastodon accounts.
+
 ### Sprint M4 (optional): chat and connector mode
 
 - Chat rooms and 1:1 (`chat/*`) on the existing chat surface (Bluesky chat
@@ -571,3 +590,60 @@ Manual plan: `test_plans/misskey-t2-ai-translation.md`.
   design); a batch counts as one call, so 100 calls ≈ 1,000 posts.
 - Automatic mode starts a screen ahead of the viewport (rootMargin 600 px).
 - Not done: "retranslate with a better model" (second tier).
+
+---
+
+## M3 part 1 (2026-11-10): search, hashtags, mentions — code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-m3-search.md`. Owner asked for search first.
+
+- `/search` for Misskey accounts is `MisskeySearch` (a `canMatch` route
+  before the shared one, which is untouched): Notes (`notes/search`; `#tag`
+  goes to `notes/search-by-tag`, which works where note search is off),
+  People (`users/search`, plus an `@user@host` lookup through `users/show`),
+  Hashtags (`hashtags/search`), and trending tags (`hashtags/trend`) before a
+  search. A server with note search off gets a plain message, not an empty list.
+  Query and type live in the URL.
+- `/tags/:tag` for Misskey accounts is `MisskeyTag` (`notes/search-by-tag`,
+  paged). Hashtags inside notes now link to `<server>/tags/x`, which the card
+  routes in-app.
+- Mentions inside Misskey notes open the in-app profile by handle
+  (`/accounts/mk:@user@host`, resolved with `users/show`).
+- Still to do in M3: antennas, channels and clips as feeds; live updates
+  (streaming). Then sprint MA (anonymous Misskey), added at the owner's request.
+
+## MA (2026-11-10): the Misskey visitor — code complete, needs a live trial
+
+Manual plan: `test_plans/misskey-ma-visitor.md`. Owner direction (same day):
+the anonymous user is a **virtual user per platform**. So the Misskey visitor
+is its own account in the switcher, not a network inside Anonymous; Anonymous
+stays Mastodon + Bluesky as built.
+
+- **Identity**: a fixed identity key `visitor` (not `<origin>#<id>`), stored
+  as `mockingbird_misskey_visitor` = `{ server }` and listed by
+  `misskeyIdentities()` with an empty token. Fixed so that moving to another
+  server keeps the account scope (follows, timeline choice). `Auth.isMisskeyVisitor`.
+- **No token**: `MisskeyApi` already omits `i` when the token is empty. Off for
+  the visitor: Home/Social timelines, notifications (and the inbox / joined
+  nav items), relations, every write (`misskeyIdentityCanWrite` is false), the
+  write-approval notice, the server's translator (`notes/translate` needs an
+  account), the profile-settings link.
+- **Sign-in page**: `/login/misskey` gains **Look around without an account**.
+  It checks the server is Misskey (as sign-in does), reads `meta`, and refuses
+  a server whose `ugcVisibilityForVisitor` is `none`. `?visit=1` (from the
+  visitor's Home) skips the signed-in redirect, to move to another server.
+- **Home**: a "Visiting <server>" notice; timelines Following · Local · Global,
+  starting on Local.
+- **Follows**: `MisskeyVisitorFollows` (`mockingbird_misskey_visitor_follows`,
+  unscoped, up to 50), keyed `username@host`, each remembering the server its
+  user id came from. Following reads `users/notes` per user on that server
+  (8 users a page), so follows survive a server move. Misskey profiles show a
+  browser-local Follow button to the visitor.
+- Not done: importing visitor follows into a real account on sign-in.
+
+### For M3 part 2 (owner note, 2026-11-10)
+
+The Feeds page offers feed types from platforms the account cannot use (for a
+Misskey account: Mastodon lists, followed tags, server directory and so on),
+which can never show anything. Gate the Feeds sections by the networks the
+account actually has, alongside adding antennas, channels and clips.

@@ -48,6 +48,16 @@
       "nextStep": "Forum's discussion list: Page Header with a help link, Field/Control for the source picker, MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers in each card's footer, and Content State for empty and Mastodon-only states. Roots reuse StatusCard; each footer's stats line is the native link into the discussion. One persistent sr-only status announces scan start and end, never the call counter. Preserve the 16px inset, Stop keeping found results, stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
     },
     {
+      "file": "ui/src/app/pages/misskey-search/misskey-search.html",
+      "disposition": "adopted scope",
+      "nextStep": "Misskey search: Field/Control search input, MbButton submit and load more, MbToolbar/MbToolbarButton for Notes, People and Hashtags (pressed state, not pills). Preserve the URL-held query and type, the note-search-unavailable message, and the @user@host lookup."
+    },
+    {
+      "file": "ui/src/app/pages/misskey-tag/misskey-tag.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Misskey hashtag page: MbButton load more under status cards; a native link to search. Preserve untilId paging and the shared status card for each note."
+    },
+    {
       "file": "ui/src/app/pages/radio/radio-studio.html",
       "disposition": "adopted scope",
       "nextStep": "The Studio catalogue uses Button for scanning, refreshing, cancelling and previews, and Content State for failures. Preserve bounded catalogue scrolling, account-isolated scan checkpoints, cached reloads and distinct missing-post handling."

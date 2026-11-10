@@ -325,3 +325,7 @@ a.eliza-invite:hover {
     display: none;
   }
 }
+
+.home-misskey-no-follows {
+  margin: 8px 16px;
+}

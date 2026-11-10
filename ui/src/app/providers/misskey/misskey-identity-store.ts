@@ -13,6 +13,22 @@ export const ACCOUNT_MODE_KEY = 'mastodon_mock_account_mode';
 export const MK_IDENTITY_PROFILE_KEY = 'mockingbird_misskey_identity_profile';
 export const MK_IDENTITY_CREDENTIALS_KEY = 'mockingbird_misskey_identity_credentials';
 export const MK_ACTIVE_IDENTITY_KEY = 'mockingbird_misskey_active_identity';
+export const MK_VISITOR_KEY = 'mockingbird_misskey_visitor';
+/** The visitor's follows (`misskey-visitor-follows.ts`); forgotten with the visitor. */
+export const MK_VISITOR_FOLLOWS_KEY = 'mockingbird_misskey_visitor_follows';
+
+/**
+ * The identity key of the **Misskey visitor**: the virtual, account-less
+ * Misskey user, one per browser (Anonymous's counterpart on Misskey). It reads
+ * one Misskey server's public notes without a token; its follows live in this
+ * browser. Fixed rather than `<origin>#…`, so changing the visited server
+ * keeps the visitor's account scope, and with it the follows and settings.
+ */
+export const MISSKEY_VISITOR = 'visitor';
+
+export function isMisskeyVisitor(key: string | null | undefined): boolean {
+  return key === MISSKEY_VISITOR;
+}
 
 export interface MisskeyIdentityProfile {
   /** Server origin, e.g. `https://misskey.io`. No trailing slash. */
@@ -27,6 +43,7 @@ export interface MisskeyIdentityProfile {
 }
 
 export interface MisskeyIdentityCredentials {
+  /** Empty for the visitor, which calls the API without one. */
   token: string;
   connectedAt?: number;
   /**
@@ -131,14 +148,46 @@ function persistMap(key: string, value: ProfileMap | CredentialsMap): void {
   }
 }
 
-/** Every saved identity that has both a profile and a token. */
+/** The server the visitor reads, or null when there is no visitor. */
+export function misskeyVisitorServer(): string | null {
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem(MK_VISITOR_KEY) ?? 'null');
+    const server =
+      raw && typeof raw === 'object' ? (raw as Record<string, unknown>)['server'] : null;
+    return typeof server === 'string' ? misskeyOrigin(server) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Create the visitor, or point it at another server. Returns its identity key. */
+export function saveMisskeyVisitor(server: string, activate = false): string {
+  const origin = misskeyOrigin(server) ?? server;
+  localStorage.setItem(MK_VISITOR_KEY, JSON.stringify({ server: origin }));
+  if (activate) localStorage.setItem(MK_ACTIVE_IDENTITY_KEY, MISSKEY_VISITOR);
+  return MISSKEY_VISITOR;
+}
+
+function visitorIdentity(): MisskeyIdentity | null {
+  const server = misskeyVisitorServer();
+  if (!server) return null;
+  return {
+    key: MISSKEY_VISITOR,
+    profile: { server, userId: '', username: 'visitor', name: null, avatarUrl: null },
+    credentials: { token: '' },
+  };
+}
+
+/** Every saved identity that has both a profile and a token, then the visitor. */
 export function misskeyIdentities(): MisskeyIdentity[] {
   try {
     const { profiles, credentials } = stores();
-    return Object.entries(profiles).flatMap(([key, profile]) => {
+    const signedIn = Object.entries(profiles).flatMap(([key, profile]) => {
       const creds = credentials[key];
       return creds ? [{ key, profile, credentials: creds }] : [];
     });
+    const visitor = visitorIdentity();
+    return visitor ? [...signedIn, visitor] : signedIn;
   } catch {
     return [];
   }
@@ -214,6 +263,14 @@ export function misskeyIdentityPresent(key: string | null = misskeyIdentityKeyAc
 
 export function clearMisskeyIdentity(key: string | null = misskeyIdentityKeyActive()): void {
   if (!key) return;
+  if (isMisskeyVisitor(key)) {
+    localStorage.removeItem(MK_VISITOR_KEY);
+    localStorage.removeItem(MK_VISITOR_FOLLOWS_KEY);
+    if (localStorage.getItem(MK_ACTIVE_IDENTITY_KEY) === key) {
+      localStorage.removeItem(MK_ACTIVE_IDENTITY_KEY);
+    }
+    return;
+  }
   const current = stores();
   delete current.profiles[key];
   delete current.credentials[key];
@@ -233,4 +290,6 @@ export function clearAllMisskeyIdentities(): void {
   localStorage.removeItem(MK_IDENTITY_PROFILE_KEY);
   localStorage.removeItem(MK_IDENTITY_CREDENTIALS_KEY);
   localStorage.removeItem(MK_ACTIVE_IDENTITY_KEY);
+  localStorage.removeItem(MK_VISITOR_KEY);
+  localStorage.removeItem(MK_VISITOR_FOLLOWS_KEY);
 }

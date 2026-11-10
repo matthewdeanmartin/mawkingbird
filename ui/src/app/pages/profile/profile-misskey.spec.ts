@@ -5,7 +5,12 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../auth';
-import { saveMisskeyIdentity } from '../../providers/misskey/misskey-identity-store';
+import {
+  MISSKEY_VISITOR,
+  saveMisskeyIdentity,
+  saveMisskeyVisitor,
+} from '../../providers/misskey/misskey-identity-store';
+import { MisskeyVisitorFollows } from '../../providers/misskey/misskey-visitor-follows';
 import { MkNote } from '../../providers/misskey/misskey-types';
 import { Profile } from './profile';
 import { MISSKEY_PERMISSIONS } from '../../providers/misskey/misskey-auth';
@@ -157,5 +162,104 @@ describe('Profile of a Misskey user', () => {
       fixture.detectChanges();
       expect((fixture.nativeElement as HTMLElement).textContent).toContain('Requested');
     });
+  });
+});
+
+describe('Profile of a Misskey user opened from a mention', () => {
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    const id = 'mk:@ai@misskey.io';
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id })),
+            snapshot: { queryParamMap: convertToParamMap({}), paramMap: convertToParamMap({ id }) },
+            queryParamMap: of(convertToParamMap({})),
+          },
+        },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+    const key = saveMisskeyIdentity(
+      { server: SERVER, userId: 'u1', username: 'me', name: null, avatarUrl: null },
+      { token: 'tok' },
+    );
+    TestBed.inject(Auth).enterMisskey(key);
+  });
+  afterEach(() => localStorage.clear());
+
+  it('resolves a mention handle (mk:@user@host) before loading notes', async () => {
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    const show = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/show`));
+    expect(show.request.body).toEqual({ username: 'ai', host: 'misskey.io', i: 'tok' });
+    show.flush({ id: 'u9', name: 'Ai', username: 'ai', host: 'misskey.io', avatarUrl: null });
+    const notes = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/notes`));
+    expect(notes.request.body).toMatchObject({ userId: 'u9' });
+    notes.flush([]);
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/relation`))).flush(RELATION);
+  });
+});
+
+/** MA: the Misskey visitor follows in this browser; there is no relation to read. */
+describe('Profile of a Misskey user, seen by the Misskey visitor', () => {
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'mk:u9' })),
+            snapshot: {
+              queryParamMap: convertToParamMap({}),
+              paramMap: convertToParamMap({ id: 'mk:u9' }),
+            },
+            queryParamMap: of(convertToParamMap({})),
+          },
+        },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+    saveMisskeyVisitor(SERVER);
+    TestBed.inject(Auth).enterMisskey(MISSKEY_VISITOR);
+  });
+
+  afterEach(() => localStorage.clear());
+
+  it('offers Follow, kept in this browser, and never asks for a relation', async () => {
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    const show = await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/show`));
+    expect(show.request.body).toEqual({ userId: 'u9' });
+    show.flush({ id: 'u9', name: 'Ai', username: 'ai', host: null, avatarUrl: null });
+    (await vi.waitFor(() => http.expectOne(`${SERVER}/api/users/notes`))).flush([note('n1')]);
+    http.expectNone(`${SERVER}/api/users/relation`);
+    const button = await vi.waitFor(() => {
+      fixture.detectChanges();
+      const found = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+        (b) => b.textContent?.trim() === 'Follow',
+      );
+      expect(found).toBeTruthy();
+      return found!;
+    });
+    button.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(MisskeyVisitorFollows).follows()).toMatchObject([
+      { key: 'ai@misskey.design', userId: 'u9', server: SERVER },
+    ]);
+    expect(button.textContent?.trim()).toBe('Unfollow');
   });
 });

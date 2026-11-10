@@ -155,11 +155,13 @@ export class TranslationRouter {
   /**
    * Whether this post can go to the reader's Misskey server: a Misskey note,
    * read as the active Misskey identity, on a server not already known to
-   * have no translator. Its DeepL detects the source itself.
+   * have no translator. Its DeepL detects the source itself. Never for the
+   * Misskey visitor: `notes/translate` needs an account on the server.
    */
   misskeyCanTry(status: Status | null | undefined): boolean {
     const post = status?.reblog ?? status;
     if (post?.provider !== 'misskey' || !this.auth.activeMisskeyKey()) return false;
+    if (this.auth.isMisskeyVisitor) return false;
     const server = (post.providerRef as { server?: string } | undefined)?.server ?? '';
     return !this.misskeyUnavailable.has(server);
   }

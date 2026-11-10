@@ -402,7 +402,9 @@ export class Shell implements OnInit, AccountSwitcher {
   /** The current mode's (or mini-app's) tabs, less any this visitor cannot use. */
   protected readonly modeItems = computed(() =>
     (this.focusedApp()?.items ?? MODE_NAV[this.appMode.mode()]).filter((item) => {
-      if (item.requires === 'signedIn') return !this.auth.isAnonymous;
+      // The Misskey visitor has no account either: no inbox, nothing joined.
+      if (item.requires === 'signedIn')
+        return !this.auth.isAnonymous && !this.auth.isMisskeyVisitor;
       if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
       return true;
     }),

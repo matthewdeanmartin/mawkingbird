@@ -1617,6 +1617,15 @@ export class StatusCard {
       this.router.navigate(['/tags', tag]);
       return;
     }
+    // A mention inside a Misskey note (`<server>/@user@host`) opens the
+    // Misskey profile in-app, resolved by handle; never Mastodon's lookup.
+    const misskeyMention = this.display.provider === 'misskey' ? misskeyProfileRoute(href) : null;
+    if (misskeyMention) {
+      event.preventDefault();
+      event.stopPropagation();
+      void this.router.navigate(misskeyMention);
+      return;
+    }
     const mention = blueskyRouteFor(href) ?? this.mentionLink(anchor, href);
     if (mention) {
       event.preventDefault();
@@ -3155,4 +3164,21 @@ function linkedName(url: string): string {
   } catch {
     return url;
   }
+}
+
+/**
+ * `<server>/@user` or `<server>/@user@host` → `/accounts/mk:@user[@host]`,
+ * which the profile page resolves through the reader's Misskey server.
+ */
+export function misskeyProfileRoute(href: string): string[] | null {
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  const match = /^\/@([A-Za-z0-9_]+)(?:@([A-Za-z0-9.-]+))?\/?$/.exec(url.pathname);
+  if (!match) return null;
+  const host = match[2] && match[2] !== url.host ? match[2] : null;
+  return ['/accounts', `mk:@${match[1]}${host ? `@${host}` : ''}`];
 }

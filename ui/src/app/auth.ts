@@ -16,6 +16,7 @@ import { BlueskyOAuth } from './providers/bluesky/bluesky-oauth';
 import {
   clearAllMisskeyIdentities,
   clearMisskeyIdentity,
+  isMisskeyVisitor,
   misskeyIdentities,
   misskeyIdentity,
   misskeyIdentityKeyActive,
@@ -258,15 +259,17 @@ function misskeyIdentityAccount(
     // Keep the stored value; it was validated when saved.
   }
   const acct = `${profile.username}@${host}`;
+  // The visitor is nobody on the server: no user id, no profile page there.
+  const visitor = isMisskeyVisitor(identity.key);
   return {
     key: identity.key,
     server: profile.server,
     account: {
       // Namespaced like every foreign id; matches the Misskey adapter.
-      id: `mk:${profile.userId}`,
+      id: visitor ? 'mk:visitor' : `mk:${profile.userId}`,
       username: profile.username,
       acct,
-      display_name: profile.name || profile.username,
+      display_name: visitor ? `Misskey visitor` : profile.name || profile.username,
       emojis: Object.entries(profile.emojis ?? {}).map(([shortcode, url]) => ({
         shortcode,
         url,
@@ -274,7 +277,7 @@ function misskeyIdentityAccount(
         visible_in_picker: false,
       })),
       note: '',
-      url: `${profile.server}/@${profile.username}`,
+      url: visitor ? profile.server : `${profile.server}/@${profile.username}`,
       avatar: profile.avatarUrl ?? '',
       avatar_static: profile.avatarUrl ?? '',
       header: '',
@@ -524,6 +527,16 @@ export class Auth {
   /** Misskey owns this account's identity. There is no Mastodon connector yet. */
   get isMisskeyPrimary(): boolean {
     return this.kind() === 'misskey';
+  }
+
+  /**
+   * The Misskey visitor is active: the account-less Misskey user, reading one
+   * server's public notes with no token. Everything that needs a token (the
+   * home timeline, notifications, writing, the server's translator) is off;
+   * follows are kept in this browser.
+   */
+  get isMisskeyVisitor(): boolean {
+    return this.kind() === 'misskey' && isMisskeyVisitor(this.misskeyKey());
   }
 
   /**

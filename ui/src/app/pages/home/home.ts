@@ -85,8 +85,12 @@ import { DiscoveryCard } from '../../discovery-card/discovery-card';
 import { ReaderToolbar } from '../../reader-toolbar/reader-toolbar';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { BlueskyProvider } from '../../providers/bluesky/bluesky-provider';
-import { MK_TIMELINES, MisskeyProvider } from '../../providers/misskey/misskey-provider';
-import { MkTimeline } from '../../providers/misskey/misskey-types';
+import {
+  MkHomeTimeline,
+  MisskeyProvider,
+  misskeyTimelinesFor,
+} from '../../providers/misskey/misskey-provider';
+import { MisskeyVisitorFollows } from '../../providers/misskey/misskey-visitor-follows';
 import {
   misskeyIdentity,
   misskeyIdentityCanWrite,
@@ -238,6 +242,12 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.misskey.timeline.social: Social
 // i18n pages.home.misskey.timeline.local: Local
 // i18n pages.home.misskey.timeline.global: Global
+// i18n pages.home.misskey.timeline.following: Following
+// i18n pages.home.misskey.visitor.title: Visiting {{server}}
+// i18n pages.home.misskey.visitor.body: You are reading {{server}} without an account. Its public notes, profiles, hashtags and search are open to you; follows stay in this browser and fill Following. Posting, reactions and notifications need an account.
+// i18n pages.home.misskey.visitor.another: Visit another server
+// i18n pages.home.misskey.visitor.signIn: Sign in with Misskey
+// i18n pages.home.misskey.visitor.noFollows: You are not following anyone yet. Open someone's profile from Local or Global and press Follow; their notes then appear here.
 // i18n pages.home.warnings.blueskyError.primaryLink: Sign in to Bluesky again
 // i18n pages.home.warnings.blueskyError.retry: Retry Bluesky feed
 // i18n pages.home.warnings.blueskyError.dialogTitle: Sign in to Bluesky again?
@@ -359,8 +369,18 @@ export class Home implements OnInit, OnDestroy {
       .some((provider) => provider.id === 'bluesky' && provider.errors().length > 0),
   );
   private misskeyProvider = inject(MisskeyProvider);
-  /** Home, Social, Local, Global: which Misskey timeline Home reads. */
-  protected readonly misskeyTimelines = MK_TIMELINES;
+  /** Home, Social, Local, Global (Following, Local, Global for the visitor). */
+  protected readonly misskeyTimelines = computed(() =>
+    misskeyTimelinesFor(this.auth.activeMisskeyKey()),
+  );
+  private readonly visitorFollows = inject(MisskeyVisitorFollows);
+  /** The visitor's Following timeline has no one to read yet. */
+  protected readonly visitorFollowsNobody = computed(
+    () =>
+      this.auth.isMisskeyVisitor &&
+      this.misskeyTimeline() === 'following' &&
+      this.visitorFollows.count() === 0,
+  );
   protected readonly misskeyTimeline = this.misskeyProvider.timeline;
   protected misskeyFeedErrors = computed(() =>
     this.auth.isMisskeyPrimary ? this.misskeyProvider.errors() : [],
@@ -407,7 +427,10 @@ export class Home implements OnInit, OnDestroy {
       this.noAutomaticEngine.set(false);
       return;
     }
-    const server = misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server ?? null;
+    // The visitor cannot use the server's translator (it needs an account).
+    const server = this.auth.isMisskeyVisitor
+      ? null
+      : (misskeyIdentity(this.auth.activeMisskeyKey())?.profile.server ?? null);
     // Japanese is the case this exists for; most Misskey servers are Japanese.
     void this.translationRouter
       .automaticEngineAvailable('ja', server)
@@ -442,7 +465,7 @@ export class Home implements OnInit, OnDestroy {
     this.misskeyOfferAnswered.set(true);
   }
 
-  protected setMisskeyTimeline(timeline: MkTimeline): void {
+  protected setMisskeyTimeline(timeline: MkHomeTimeline): void {
     if (timeline === this.misskeyTimeline()) return;
     this.misskeyProvider.setTimeline(timeline);
     this.load(true);
@@ -583,7 +606,10 @@ export class Home implements OnInit, OnDestroy {
   );
   /** A Misskey token from the read-only M1 sign-in: ask for write once. */
   protected readonly misskeyNeedsApproval = computed(
-    () => this.auth.isMisskeyPrimary && !misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
+    () =>
+      this.auth.isMisskeyPrimary &&
+      !this.auth.isMisskeyVisitor &&
+      !misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),
   );
   private readonly misskeyAuth = inject(MisskeyAuth);
 

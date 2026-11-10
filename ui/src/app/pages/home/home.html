@@ -110,6 +110,23 @@
   <div class="home-misskey-compose">
     <app-misskey-compose (posted)="onPosted($event)" />
   </div>
+} @else if (auth.isMisskeyVisitor) {
+  <mb-notice
+    class="home-misskey-visitor"
+    announcement="status"
+    [title]="'pages.home.misskey.visitor.title' | transloco: { server: misskeyHost() }"
+  >
+    <p>{{ 'pages.home.misskey.visitor.body' | transloco: { server: misskeyHost() } }}</p>
+    <p class="home-misskey-visitor-links">
+      <a routerLink="/login/misskey" [queryParams]="{ visit: 1 }">{{
+        'pages.home.misskey.visitor.another' | transloco
+      }}</a>
+      ·
+      <a routerLink="/login/misskey" [queryParams]="{ add: 1 }">{{
+        'pages.home.misskey.visitor.signIn' | transloco
+      }}</a>
+    </p>
+  </mb-notice>
 } @else if (misskeyNeedsApproval()) {
   <mb-notice
     class="home-misskey-approve"
@@ -270,7 +287,7 @@
       density="compact"
       [label]="'pages.home.misskey.timelinesLabel' | transloco"
     >
-      @for (timeline of misskeyTimelines; track timeline) {
+      @for (timeline of misskeyTimelines(); track timeline) {
         <button
           type="button"
           mbToolbarButton
@@ -281,6 +298,11 @@
         </button>
       }
     </mb-toolbar>
+    @if (visitorFollowsNobody()) {
+      <p class="home-misskey-no-follows muted">
+        {{ 'pages.home.misskey.visitor.noFollows' | transloco }}
+      </p>
+    }
   }
 
   <!-- READER: the full long-form control set gets its own fourth row. Keeping it

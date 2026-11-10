@@ -52,10 +52,11 @@ describe('mfmToHtml', () => {
     expect(mfmToHtml('@carol', ctx)).toContain('href="https://misskey.io/@carol"');
   });
 
-  it('sends hashtags to server search, not /tags/ (which the app would reroute)', () => {
+  // M3 (2026-11-10): the card routes /tags/x in-app, and for a Misskey account
+  // that is now the Misskey tag page, so hashtags link there.
+  it('links hashtags to /tags/ on the reader server, which the card routes in-app', () => {
     const html = mfmToHtml('#猫', ctx);
-    expect(html).toContain(`href="https://misskey.io/search?q=${encodeURIComponent('#猫')}"`);
-    expect(html).not.toContain('/tags/');
+    expect(html).toContain(`href="https://misskey.io/tags/${encodeURIComponent('猫')}"`);
   });
 
   it('links only http(s) URLs', () => {

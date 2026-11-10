@@ -203,6 +203,45 @@ export class MisskeyApi {
     });
   }
 
+  // ---------------------------------------------------------------- search
+
+  /**
+   * Full-text note search. Servers can switch it off, globally or per role;
+   * then it fails with code `UNAVAILABLE` ({@link MisskeyApiError.code}).
+   */
+  searchNotes(query: string, untilId: string | null, limit = 20): Observable<MkNote[]> {
+    return this.signed<MkNote[]>('notes/search', { query, limit, ...(untilId ? { untilId } : {}) });
+  }
+
+  /** Notes carrying a hashtag (without the #), newest first. */
+  notesByTag(tag: string, untilId: string | null, limit = 20): Observable<MkNote[]> {
+    return this.signed<MkNote[]>('notes/search-by-tag', {
+      tag,
+      limit,
+      ...(untilId ? { untilId } : {}),
+    });
+  }
+
+  /** People by name or username, local and remote; paged by offset. */
+  searchUsers(query: string, offset = 0, limit = 20): Observable<MkUserDetailed[]> {
+    return this.signed<MkUserDetailed[]>('users/search', {
+      query,
+      offset,
+      limit,
+      origin: 'combined',
+    });
+  }
+
+  /** Hashtag names (without #) starting with or containing `query`. */
+  searchHashtags(query: string, limit = 20): Observable<string[]> {
+    return this.signed<string[]>('hashtags/search', { query, limit });
+  }
+
+  /** Trending hashtags on the server, with how many people used each recently. */
+  trendingHashtags(): Observable<{ tag: string; usersCount: number }[]> {
+    return this.signed<{ tag: string; usersCount: number }[]>('hashtags/trend', {});
+  }
+
   // ---------------------------------------------------------------- writes
   // Each needs a `write:*` permission; a token without it gets HTTP 403
   // `PERMISSION_DENIED`, which {@link MisskeyApiError.needsWriteApproval} names.

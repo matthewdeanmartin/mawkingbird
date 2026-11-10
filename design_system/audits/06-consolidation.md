@@ -1,5 +1,22 @@
 # Sprint 6 opening consolidation audit
 
+## Misskey search and hashtag pages (M3), 2026-11-10
+
+Reviewed 1,754 source files and 611 candidate files. Two candidates are added:
+`pages/misskey-search/misskey-search.html` (Field/Control, MbButton, and an
+MbToolbar of MbToolbarButtons for Notes, People and Hashtags) and
+`pages/misskey-tag/misskey-tag.ts` (MbButton load more). Both are adopted scope.
+Routing picks them over the shared search and tag pages only for Misskey
+accounts. No shared widget changed.
+
+## Misskey visitor (MA), 2026-11-10
+
+Reviewed 1,755 source files and 611 candidate files; none added or removed.
+Three existing candidates gain controls, all shared components: the Misskey
+sign-in page adds an outline MbButton ("Look around without an account"), the
+profile page adds the visitor's browser-local Follow MbButton, and Home adds an
+MbNotice for the visitor. No shared widget changed.
+
 ## Misskey writing (M2), 2026-11-09
 
 Reviewed 1,744 source files and 608 candidate files. Two candidates are added:

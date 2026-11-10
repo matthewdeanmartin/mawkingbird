@@ -160,6 +160,11 @@ export interface MkMeta {
   policies?: { ltlAvailable?: boolean; gtlAvailable?: boolean };
   /** Whether the admin configured a translator (a DeepL key) for `notes/translate`. */
   translatorAvailable?: boolean;
+  /**
+   * What visitors (no token) may read: everything, local notes only, or
+   * nothing. Absent on older servers, which show visitors everything.
+   */
+  ugcVisibilityForVisitor?: 'all' | 'local' | 'none';
 }
 
 /** `POST /api/miauth/{session}/check`. */

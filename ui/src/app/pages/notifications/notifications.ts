@@ -380,7 +380,9 @@ export class Notifications implements OnInit, OnDestroy {
   private bskyNotifications = inject(BlueskyNotifications);
   private misskeyApi = inject(MisskeyApi);
   /** Misskey notifications exist only while a Misskey identity is the account. */
-  protected readonly misskeyAvailable = computed(() => this.auth.activeMisskeyKey() !== null);
+  protected readonly misskeyAvailable = computed(
+    () => this.auth.activeMisskeyKey() !== null && !this.auth.isMisskeyVisitor,
+  );
   /** Answering Misskey follow requests needs a token that may write. */
   protected readonly misskeyCanWrite = computed(() =>
     misskeyIdentityCanWrite(this.auth.activeMisskeyKey()),

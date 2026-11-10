@@ -1,7 +1,9 @@
 <div class="mk-wrap">
   <div class="mk-card">
     <span class="mk-badge" aria-hidden="true">Ⓜ️</span>
-    <h1 class="mk-title">{{ 'pages.loginMisskey.title' | transloco }}</h1>
+    <h1 class="mk-title">
+      {{ (visiting() ? 'pages.loginMisskey.visitTitle' : 'pages.loginMisskey.title') | transloco }}
+    </h1>
 
     @if (completing()) {
       <p class="mk-body muted" role="status" aria-live="polite">
@@ -41,10 +43,23 @@
             (working() ? 'pages.loginMisskey.checking' : 'pages.loginMisskey.continue') | transloco
           }}
         </button>
+        <button
+          mbButton
+          variant="outline"
+          class="mk-visit"
+          type="button"
+          [disabled]="!server().trim() || working()"
+          (click)="visit()"
+        >
+          {{ 'pages.loginMisskey.visit' | transloco }}
+        </button>
       </form>
 
       <p class="mk-note muted small">
         {{ 'pages.loginMisskey.note' | transloco: { brand: brand } }}
+      </p>
+      <p class="mk-note muted small">
+        {{ 'pages.loginMisskey.visitNote' | transloco }}
       </p>
     }
 

@@ -14,11 +14,11 @@
 //   language learners this client is built for.
 // - Every other `$[fn …]` effect (x2, spin, flip, blur, rainbow…) renders its
 //   text without the effect. Animated text is decoration; the words are kept.
-// - Mentions and hashtags link to the note's server, not into the app: the
-//   in-app profile and tag pages read Mastodon, and a Misskey handle or tag
-//   sent there would look up the wrong network. Hashtags go to the server's
-//   search rather than `/tags/x`, because `rendered-html-links.ts` routes any
-//   `/tags/x` URL to the in-app (Mastodon) tag page.
+// - Hashtags link to `<server>/tags/x`, which the status card routes to the
+//   in-app tag page; for a Misskey account that route is the Misskey tag page
+//   (M3). Mentions link to `<server>/@user@host`, which the card routes to the
+//   in-app Misskey profile for Misskey notes. Opened outside the app (a new
+//   tab, a copied link), both still work on the server.
 
 import { parse, type MfmNode } from 'mfm-js';
 
@@ -116,7 +116,7 @@ function inlineNode(node: MfmNode, ctx: MfmContext): string {
     case 'mention':
       return link(mentionHref(node, ctx), escapeHtml(node.props.acct));
     case 'hashtag': {
-      const href = `${ctx.server}/search?q=${encodeURIComponent(`#${node.props.hashtag}`)}`;
+      const href = `${ctx.server}/tags/${encodeURIComponent(node.props.hashtag)}`;
       return link(href, `#${escapeHtml(node.props.hashtag)}`);
     }
     case 'url': {

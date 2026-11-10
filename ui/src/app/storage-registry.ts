@@ -387,6 +387,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which saved Misskey-primary identity is selected. The account mode separately records that Misskey is active.',
   },
   {
+    base: 'mockingbird_misskey_visitor',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'The Misskey visitor (account-less Misskey user): which server it reads. Its identity key is fixed, so moving servers keeps its account scope. No token.',
+  },
+  {
+    base: 'mockingbird_misskey_visitor_follows',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Users the Misskey visitor follows in this browser (up to 50): handle, the server their id belongs to, user id, name, avatar. Read by Home → Following; removed with the visitor.',
+  },
+  {
     base: 'mockingbird_misskey_miauth_pending',
     storage: 'session',
     suffix: 'none',

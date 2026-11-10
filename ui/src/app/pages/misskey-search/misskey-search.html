@@ -1,0 +1,135 @@
+<div class="mk-search">
+  <h1 class="mk-search-title">{{ 'pages.misskeySearch.title' | transloco }}</h1>
+
+  <form class="mk-search-form" role="search" (ngSubmit)="submit()">
+    <mb-field [label]="'pages.misskeySearch.label' | transloco" hideLabel>
+      <input
+        mbControl
+        type="search"
+        name="q"
+        enterkeyhint="search"
+        autocapitalize="none"
+        [placeholder]="'pages.misskeySearch.placeholder' | transloco"
+        [ngModel]="query()"
+        (ngModelChange)="query.set($event)"
+      />
+    </mb-field>
+    <button mbButton type="submit">{{ 'pages.misskeySearch.submit' | transloco }}</button>
+  </form>
+
+  <mb-toolbar density="compact" [label]="'pages.misskeySearch.typesLabel' | transloco">
+    @for (choice of types; track choice) {
+      <button type="button" mbToolbarButton [pressed]="type() === choice" (click)="setType(choice)">
+        {{ 'pages.misskeySearch.type.' + choice | transloco }}
+      </button>
+    }
+  </mb-toolbar>
+
+  @if (searched() === null) {
+    @if (trending().length) {
+      <section class="mk-trending">
+        <h2>{{ 'pages.misskeySearch.trending' | transloco: { server: serverHost() } }}</h2>
+        <ul>
+          @for (trend of trending(); track trend.tag) {
+            <li>
+              <a [routerLink]="['/tags', trend.tag]">#{{ trend.tag }}</a>
+              <span class="muted small">{{
+                'pages.misskeySearch.trendingUsers' | transloco: { count: trend.usersCount }
+              }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  } @else {
+    @if (handle()) {
+      @if (handleResult(); as account) {
+        <p class="mk-handle">
+          <a [routerLink]="['/accounts', account.id]">{{
+            'pages.misskeySearch.openProfile' | transloco: { handle: '@' + account.acct }
+          }}</a>
+        </p>
+      } @else if (handleResult() === false) {
+        <p class="mk-handle muted">
+          {{ 'pages.misskeySearch.notFound' | transloco: { handle: searched() } }}
+        </p>
+      }
+    }
+
+    @if (error() === 'unavailable') {
+      <p class="mk-search-note" role="status">
+        {{ 'pages.misskeySearch.unavailable' | transloco: { server: serverHost() } }}
+      </p>
+    } @else if (error() === 'failed') {
+      <p class="mk-search-note" role="alert">{{ 'pages.misskeySearch.failed' | transloco }}</p>
+    }
+
+    @if (loading()) {
+      <p class="muted center" role="status">{{ 'pages.misskeySearch.searching' | transloco }}</p>
+    } @else {
+      @switch (type()) {
+        @case ('notes') {
+          @for (status of notes(); track status.id) {
+            <app-status-card
+              [status]="status"
+              (changed)="onChanged($event)"
+              (deleted)="onDeleted($event)"
+            />
+          } @empty {
+            @if (!error()) {
+              <p class="muted center">{{ 'pages.misskeySearch.none' | transloco }}</p>
+            }
+          }
+        }
+        @case ('users') {
+          <ul class="mk-people">
+            @for (account of users(); track account.id) {
+              <li>
+                <a class="mk-person" [routerLink]="['/accounts', account.id]">
+                  @if (account.avatar) {
+                    <img [src]="account.avatar" alt="" width="40" height="40" loading="lazy" />
+                  }
+                  <span class="mk-person-names">
+                    <strong>{{ account.display_name }}</strong>
+                    <span class="muted small">&#64;{{ account.acct }}</span>
+                  </span>
+                </a>
+              </li>
+            } @empty {
+              @if (!error()) {
+                <li class="muted center">{{ 'pages.misskeySearch.none' | transloco }}</li>
+              }
+            }
+          </ul>
+        }
+        @case ('tags') {
+          <ul class="mk-tags">
+            @for (tag of tags(); track tag) {
+              <li>
+                <a [routerLink]="['/tags', tag]">#{{ tag }}</a>
+              </li>
+            } @empty {
+              @if (!error()) {
+                <li class="muted center">{{ 'pages.misskeySearch.none' | transloco }}</li>
+              }
+            }
+          </ul>
+        }
+      }
+
+      @if (!exhausted() && type() !== 'tags' && (notes().length || users().length)) {
+        <div class="mk-more">
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="loadingMore()"
+            (click)="more()"
+          >
+            {{ 'pages.misskeySearch.more' | transloco }}
+          </button>
+        </div>
+      }
+    }
+  }
+</div>
